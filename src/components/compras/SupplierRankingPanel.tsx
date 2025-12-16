@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react';
-import { Trophy, Medal, TrendingUp, TrendingDown, Clock, CheckCircle, Star, Info } from 'lucide-react';
+import { Trophy, Medal, TrendingUp, TrendingDown, Clock, CheckCircle, Star, Info, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 
 interface SupplierScore {
@@ -24,8 +25,10 @@ const WEIGHTS = {
   quality: 0.25,
 };
 
-// Generate mock supplier ranking data
-const generateSupplierRankingData = (): SupplierScore[] => {
+type PeriodDays = 7 | 30 | 90;
+
+// Generate mock supplier ranking data based on period
+const generateSupplierRankingData = (periodDays: PeriodDays): SupplierScore[] => {
   const suppliers = [
     { id: 'xbz', name: 'XBZ Brindes' },
     { id: 'tech', name: 'Tech Brindes' },
@@ -36,29 +39,38 @@ const generateSupplierRankingData = (): SupplierScore[] => {
     { id: 'somarcas', name: 'Só Marcas' },
   ];
 
-  return suppliers.map((supplier) => {
-    const slaScore = 70 + Math.random() * 30;
-    const deliveryScore = 65 + Math.random() * 35;
-    const qualityScore = 75 + Math.random() * 25;
+  // Use period as seed for slightly different data per period
+  const periodSeed = periodDays / 100;
+
+  return suppliers.map((supplier, idx) => {
+    // Generate consistent but varying scores based on supplier index and period
+    const baseVariation = (idx * 7 + periodDays) % 20;
+    const slaScore = 70 + baseVariation + Math.sin(idx + periodSeed) * 10;
+    const deliveryScore = 65 + baseVariation + Math.cos(idx + periodSeed) * 12;
+    const qualityScore = 75 + (baseVariation * 0.8) + Math.sin(idx * 2 + periodSeed) * 8;
     
     const overallScore = 
       slaScore * WEIGHTS.sla + 
       deliveryScore * WEIGHTS.delivery + 
       qualityScore * WEIGHTS.quality;
     
-    const trendRandom = Math.random();
+    // Different trends based on period
+    const trendValue = Math.sin(idx + periodDays / 10);
     const trend: 'up' | 'down' | 'stable' = 
-      trendRandom > 0.6 ? 'up' : trendRandom > 0.3 ? 'stable' : 'down';
+      trendValue > 0.3 ? 'up' : trendValue < -0.3 ? 'down' : 'stable';
+
+    // More orders for longer periods
+    const orderMultiplier = periodDays / 30;
 
     return {
       id: supplier.id,
       name: supplier.name,
-      slaScore: Math.round(slaScore * 10) / 10,
-      deliveryScore: Math.round(deliveryScore * 10) / 10,
-      qualityScore: Math.round(qualityScore * 10) / 10,
-      overallScore: Math.round(overallScore * 10) / 10,
+      slaScore: Math.round(Math.min(100, Math.max(60, slaScore)) * 10) / 10,
+      deliveryScore: Math.round(Math.min(100, Math.max(60, deliveryScore)) * 10) / 10,
+      qualityScore: Math.round(Math.min(100, Math.max(60, qualityScore)) * 10) / 10,
+      overallScore: Math.round(Math.min(100, Math.max(60, overallScore)) * 10) / 10,
       trend,
-      totalOrders: Math.floor(15 + Math.random() * 50),
+      totalOrders: Math.floor((15 + idx * 5) * orderMultiplier),
     };
   }).sort((a, b) => b.overallScore - a.overallScore);
 };
@@ -231,38 +243,60 @@ const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: Supplier
 
 export const SupplierRankingPanel = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [periodDays, setPeriodDays] = useState<PeriodDays>(30);
   
-  const supplierData = useMemo(() => generateSupplierRankingData(), []);
+  const supplierData = useMemo(() => generateSupplierRankingData(periodDays), [periodDays]);
 
   const topPerformer = supplierData[0];
   const avgScore = supplierData.reduce((sum, s) => sum + s.overallScore, 0) / supplierData.length;
 
+  const periodLabels: Record<PeriodDays, string> = {
+    7: 'Últimos 7 dias',
+    30: 'Últimos 30 dias',
+    90: 'Últimos 90 dias',
+  };
+
   return (
     <Card>
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle className="text-lg flex items-center gap-2">
             <Trophy className="h-5 w-5 text-yellow-500" />
-            Ranking de Fornecedores
+            Ranking
           </CardTitle>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Badge variant="outline" className="gap-1 cursor-help">
-                  <Info className="h-3 w-3" />
-                  Critérios
-                </Badge>
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p className="font-medium mb-1">Pesos da pontuação:</p>
-                <ul className="text-xs space-y-1">
-                  <li>• SLA: {(WEIGHTS.sla * 100).toFixed(0)}%</li>
-                  <li>• Prazo de Entrega: {(WEIGHTS.delivery * 100).toFixed(0)}%</li>
-                  <li>• Qualidade: {(WEIGHTS.quality * 100).toFixed(0)}%</li>
-                </ul>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <div className="flex items-center gap-2">
+            <Select
+              value={periodDays.toString()}
+              onValueChange={(value) => setPeriodDays(Number(value) as PeriodDays)}
+            >
+              <SelectTrigger className="h-8 w-[130px] text-xs">
+                <Calendar className="h-3 w-3 mr-1" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="7">7 dias</SelectItem>
+                <SelectItem value="30">30 dias</SelectItem>
+                <SelectItem value="90">90 dias</SelectItem>
+              </SelectContent>
+            </Select>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Badge variant="outline" className="gap-1 cursor-help">
+                    <Info className="h-3 w-3" />
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent className="max-w-xs">
+                  <p className="font-medium mb-1">Pesos da pontuação:</p>
+                  <ul className="text-xs space-y-1">
+                    <li>• SLA: {(WEIGHTS.sla * 100).toFixed(0)}%</li>
+                    <li>• Prazo de Entrega: {(WEIGHTS.delivery * 100).toFixed(0)}%</li>
+                    <li>• Qualidade: {(WEIGHTS.quality * 100).toFixed(0)}%</li>
+                  </ul>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
