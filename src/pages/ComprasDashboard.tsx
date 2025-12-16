@@ -15,6 +15,7 @@ import { KpiCard } from "@/components/compras/KpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
 import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
 import { SLADistributionChart } from "@/components/compras/SLADistributionChart";
+import { CriticalAlertsBar } from "@/components/compras/CriticalAlertsBar";
 import { kpisMock, pipelineMock, itensUrgentesMock } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
 
@@ -22,6 +23,9 @@ const ComprasDashboard = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
+        {/* Critical Alerts */}
+        <CriticalAlertsBar />
+        
         {/* Page Title */}
         <div>
           <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>

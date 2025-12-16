@@ -396,6 +396,15 @@
     animation: pulse-glow 2s ease-in-out infinite;
   }
 
+  .animate-pulse-slow {
+    animation: pulse-slow 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-slow {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.85; }
+  }
+
   @keyframes pulse-glow {
     0%, 100% { box-shadow: 0 0 20px hsl(var(--primary) / 0.3); }
     50% { box-shadow: 0 0 40px hsl(var(--primary) / 0.6); }
