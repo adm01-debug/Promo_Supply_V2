@@ -65,6 +65,45 @@ export type Database = {
         }
         Relationships: []
       }
+      dashboard_filter_favorites: {
+        Row: {
+          category_filter: string | null
+          created_at: string
+          id: string
+          is_default: boolean | null
+          name: string
+          period_filter: string | null
+          show_comparison: boolean | null
+          supplier_filter: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category_filter?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean | null
+          name: string
+          period_filter?: string | null
+          show_comparison?: boolean | null
+          supplier_filter?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category_filter?: string | null
+          created_at?: string
+          id?: string
+          is_default?: boolean | null
+          name?: string
+          period_filter?: string | null
+          show_comparison?: boolean | null
+          supplier_filter?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null

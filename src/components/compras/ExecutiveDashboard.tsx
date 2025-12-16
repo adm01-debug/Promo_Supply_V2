@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useDashboardFilters, DashboardFilter } from '@/hooks/useDashboardFilters';
+import { FilterFavoritesManager } from './FilterFavoritesManager';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -328,6 +330,38 @@ export const ExecutiveDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
 
+  // Filter favorites hook
+  const {
+    favorites,
+    loading: favoritesLoading,
+    saveFavorite,
+    deleteFavorite,
+    setAsDefault,
+    getDefaultFilter
+  } = useDashboardFilters();
+
+  // Apply default filter on load
+  useEffect(() => {
+    const defaultFilter = getDefaultFilter();
+    if (defaultFilter) {
+      applyFilter(defaultFilter);
+    }
+  }, [favorites]);
+
+  const applyFilter = (filter: DashboardFilter) => {
+    setSelectedCategory(filter.category_filter);
+    setSelectedSupplier(filter.supplier_filter);
+    setSelectedPeriod(filter.period_filter);
+    setShowComparison(filter.show_comparison);
+  };
+
+  const currentFilters = {
+    category: selectedCategory,
+    supplier: selectedSupplier,
+    period: selectedPeriod,
+    showComparison
+  };
+
   // Filter data based on selected category and supplier
   const filteredCategorySpend = useMemo(() => {
     let data = categorySpend;
@@ -509,28 +543,42 @@ export const ExecutiveDashboard = () => {
             {hasActiveFilters && (
               <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground hover:text-foreground">
                 <X className="h-4 w-4 mr-1" />
-                Limpar Filtros
+                Limpar
               </Button>
             )}
 
-            {/* Active Filters Summary */}
-            {hasActiveFilters && (
-              <div className="ml-auto flex items-center gap-2">
-                {selectedCategory !== 'all' && (
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    Categoria: {selectedCategory}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => setSelectedCategory('all')} />
-                  </Badge>
-                )}
-                {selectedSupplier !== 'all' && (
-                  <Badge variant="secondary" className="flex items-center gap-1">
-                    Fornecedor: {selectedSupplier}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => setSelectedSupplier('all')} />
-                  </Badge>
-                )}
-              </div>
-            )}
+            {/* Filter Favorites Manager */}
+            <div className="ml-auto">
+              <FilterFavoritesManager
+                favorites={favorites}
+                currentFilters={currentFilters}
+                onSave={saveFavorite}
+                onDelete={deleteFavorite}
+                onSetDefault={setAsDefault}
+                onApply={applyFilter}
+                loading={favoritesLoading}
+              />
+            </div>
           </div>
+
+          {/* Active Filters Summary */}
+          {hasActiveFilters && (
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t">
+              <span className="text-xs text-muted-foreground">Ativos:</span>
+              {selectedCategory !== 'all' && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  {selectedCategory}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => setSelectedCategory('all')} />
+                </Badge>
+              )}
+              {selectedSupplier !== 'all' && (
+                <Badge variant="secondary" className="flex items-center gap-1">
+                  {selectedSupplier}
+                  <X className="h-3 w-3 cursor-pointer" onClick={() => setSelectedSupplier('all')} />
+                </Badge>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
 
