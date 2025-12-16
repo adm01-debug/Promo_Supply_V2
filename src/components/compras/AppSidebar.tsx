@@ -11,7 +11,8 @@ import {
   Truck,
   BarChart3,
   History,
-  PiggyBank
+  PiggyBank,
+  ClipboardCheck
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -72,6 +73,12 @@ const menuItems = [
     icon: PiggyBank, 
     href: "/relatorios/negociacoes",
     description: "Performance comprador"
+  },
+  { 
+    title: "Aprovações", 
+    icon: ClipboardCheck, 
+    href: "/aprovacoes",
+    description: "Workflow aprovação"
   },
   { 
     title: "Auditoria", 
