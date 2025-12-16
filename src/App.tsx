@@ -19,6 +19,7 @@ import Aprovacoes from "./pages/Aprovacoes";
 import Auditoria from "./pages/Auditoria";
 import SupplierPerformance from "./pages/SupplierPerformance";
 import DashboardExecutivo from "./pages/DashboardExecutivo";
+import BuyerPerformanceDashboard from "./pages/BuyerPerformanceDashboard";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -51,6 +52,7 @@ const App = () => (
             <Route path="/aprovacoes" element={<ProtectedRoute requiredRole={['admin', 'coordinator']}><Aprovacoes /></ProtectedRoute>} />
             <Route path="/supplier-performance" element={<ProtectedRoute><SupplierPerformance /></ProtectedRoute>} />
             <Route path="/dashboard-executivo" element={<ProtectedRoute requiredRole={['admin', 'coordinator']}><DashboardExecutivo /></ProtectedRoute>} />
+            <Route path="/buyer-performance" element={<ProtectedRoute requiredRole={['admin', 'coordinator']}><BuyerPerformanceDashboard /></ProtectedRoute>} />
             <Route path="/auditoria" element={<ProtectedRoute requiredRole="admin"><Auditoria /></ProtectedRoute>} />
             
             {/* Catch-all */}
