@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { 
   Clock, 
   Check, 
@@ -8,7 +8,9 @@ import {
   User,
   DollarSign,
   Calendar,
-  ArrowUpRight
+  ArrowUpRight,
+  Bell,
+  BellRing
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
+import { useApprovalNotifications } from "@/hooks/useApprovalNotifications";
 
 interface PendingApproval {
   id: string;
@@ -99,6 +102,50 @@ export const PendingApprovalsPanel = () => {
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
   const { toast } = useToast();
+  
+  const { 
+    notifications,
+    unreadCount,
+    permissionGranted,
+    startMonitoring,
+    stopMonitoring,
+    checkApprovalDeadlines,
+    clearNotifications
+  } = useApprovalNotifications();
+
+  // Convert approvals to monitoring format and start monitoring
+  const getMonitoringApprovals = useCallback(() => {
+    return approvals.map(a => ({
+      id: a.id,
+      solicitacaoId: a.solicitacao,
+      requesterName: a.solicitante,
+      value: a.valor,
+      createdAt: new Date(a.dataHoraSolicitacao),
+      deadlineMinutes: a.tempoLimite * 60, // Convert hours to minutes
+      currentStage: a.etapaAtual,
+      totalStages: a.totalEtapas
+    }));
+  }, [approvals]);
+
+  // Start monitoring on mount
+  useEffect(() => {
+    const cleanup = startMonitoring(getMonitoringApprovals, 30000); // Check every 30 seconds
+    return cleanup;
+  }, [startMonitoring, getMonitoringApprovals]);
+
+  // Manual check trigger
+  const triggerNotificationCheck = () => {
+    checkApprovalDeadlines(
+      getMonitoringApprovals(),
+      120, // Warning: 2 hours before
+      30,  // Critical: 30 min before
+      0    // Escalate at 0
+    );
+    toast({
+      title: "Verificação de Prazos",
+      description: "Notificações disparadas para aprovações próximas do limite.",
+    });
+  };
 
   const getTimeStatus = (tempoDecorrido: number, tempoLimite: number) => {
     const percentual = (tempoDecorrido / tempoLimite) * 100;
@@ -143,6 +190,26 @@ export const PendingApprovalsPanel = () => {
           Aprovações Pendentes
           <Badge variant="secondary" className="ml-2">{approvals.length}</Badge>
         </h2>
+        <div className="flex items-center gap-2">
+          {unreadCount > 0 && (
+            <Badge variant="destructive" className="text-xs">
+              {unreadCount} alertas
+            </Badge>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={triggerNotificationCheck}
+            className="flex items-center gap-1"
+          >
+            {permissionGranted ? (
+              <BellRing className="w-4 h-4" />
+            ) : (
+              <Bell className="w-4 h-4" />
+            )}
+            Verificar Prazos
+          </Button>
+        </div>
       </div>
 
       {approvals.length === 0 ? (
