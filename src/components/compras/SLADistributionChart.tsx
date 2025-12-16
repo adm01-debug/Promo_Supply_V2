@@ -1,16 +1,44 @@
-import { useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { useMemo, useState } from 'react';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AlertCircle, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { AlertCircle, AlertTriangle, CheckCircle, Clock, Calendar } from 'lucide-react';
 import { solicitacoesMock, Solicitacao } from '@/data/mockData';
 import { useSLASettings } from '@/stores/slaSettingsStore';
 
 type SLAStatus = 'ok' | 'warning' | 'critical' | 'overdue';
+type PeriodFilter = 'week' | 'month' | 'quarter' | 'all';
+
+const PERIOD_OPTIONS = [
+  { value: 'week', label: 'Última Semana' },
+  { value: 'month', label: 'Último Mês' },
+  { value: 'quarter', label: 'Último Trimestre' },
+  { value: 'all', label: 'Todos' },
+];
 
 const parsePrazoToDays = (prazo: string): number => {
   const match = prazo.match(/(\d+)/);
   return match ? parseInt(match[1], 10) : 14;
+};
+
+const isWithinPeriod = (dateStr: string, period: PeriodFilter): boolean => {
+  if (period === 'all') return true;
+  
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffDays = Math.ceil((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+  
+  switch (period) {
+    case 'week':
+      return diffDays <= 7;
+    case 'month':
+      return diffDays <= 30;
+    case 'quarter':
+      return diffDays <= 90;
+    default:
+      return true;
+  }
 };
 
 const calculateSLAStatus = (
@@ -62,6 +90,7 @@ const STATUS_CONFIG = {
 
 export const SLADistributionChart = () => {
   const { settings } = useSLASettings();
+  const [period, setPeriod] = useState<PeriodFilter>('month');
 
   const distributionData = useMemo(() => {
     const counts: Record<SLAStatus, number> = {
@@ -71,7 +100,11 @@ export const SLADistributionChart = () => {
       overdue: 0,
     };
 
-    solicitacoesMock.forEach((sol) => {
+    const filteredSolicitacoes = solicitacoesMock.filter((sol) =>
+      isWithinPeriod(sol.createdAt, period)
+    );
+
+    filteredSolicitacoes.forEach((sol) => {
       const status = calculateSLAStatus(
         sol,
         settings.warningThresholdDays,
@@ -90,7 +123,7 @@ export const SLADistributionChart = () => {
         status: key as SLAStatus,
         color: STATUS_CONFIG[key as SLAStatus].color,
       }));
-  }, [settings.warningThresholdDays, settings.criticalThresholdDays]);
+  }, [settings.warningThresholdDays, settings.criticalThresholdDays, period]);
 
   const total = distributionData.reduce((acc, item) => acc + item.value, 0);
 
@@ -113,10 +146,25 @@ export const SLADistributionChart = () => {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <Clock className="h-5 w-5 text-primary" />
-          Distribuição de SLA
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Clock className="h-5 w-5 text-primary" />
+            Distribuição de SLA
+          </CardTitle>
+          <Select value={period} onValueChange={(v) => setPeriod(v as PeriodFilter)}>
+            <SelectTrigger className="w-[160px] h-8 text-xs">
+              <Calendar className="h-3 w-3 mr-1" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {PERIOD_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col lg:flex-row items-center gap-4">
