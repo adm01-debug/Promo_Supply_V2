@@ -9,7 +9,8 @@ import {
   Menu,
   Package,
   Truck,
-  BarChart3
+  BarChart3,
+  History
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -64,6 +65,12 @@ const menuItems = [
     icon: BarChart3, 
     href: "/relatorios",
     description: "Analytics"
+  },
+  { 
+    title: "Auditoria", 
+    icon: History, 
+    href: "/auditoria",
+    description: "Trilha de ações"
   },
 ];
 
