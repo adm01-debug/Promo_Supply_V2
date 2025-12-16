@@ -17,6 +17,7 @@ import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
 import { SLADistributionChart } from "@/components/compras/SLADistributionChart";
 import { SLAPerformanceDashboard } from "@/components/compras/SLAPerformanceDashboard";
 import { CriticalAlertsBar } from "@/components/compras/CriticalAlertsBar";
+import { SupplierAlertsPanel } from "@/components/compras/SupplierAlertsPanel";
 import { kpisMock, pipelineMock, itensUrgentesMock } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
 
@@ -112,8 +113,13 @@ const ComprasDashboard = () => {
           </Card>
         </div>
 
-        {/* SLA Performance Dashboard */}
-        <SLAPerformanceDashboard />
+        {/* SLA Performance + Supplier Alerts */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <SLAPerformanceDashboard />
+          </div>
+          <SupplierAlertsPanel />
+        </div>
 
         {/* Itens Urgentes */}
         <Card className="p-6">

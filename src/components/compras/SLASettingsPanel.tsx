@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { Settings2, RotateCcw, Save, Bell, Mail, Clock, AlertTriangle, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Settings2, RotateCcw, Save, Bell, Mail, Clock, AlertTriangle, Building2, Percent } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
+import { Slider } from '@/components/ui/slider';
 import {
   Dialog,
   DialogContent,
@@ -14,12 +15,24 @@ import {
   DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { useSLASettings } from '@/stores/slaSettingsStore';
+import { useSLASettings, SLASettings } from '@/stores/slaSettingsStore';
 import { toast } from 'sonner';
+
+const DEFAULT_SETTINGS: SLASettings = {
+  warningThresholdDays: 3,
+  criticalThresholdDays: 1,
+  checkIntervalMinutes: 1,
+  enableBrowserNotifications: true,
+  enableEmailNotifications: true,
+  emailRecipients: ['compras@promobrindes.com.br'],
+  supplierSLAThreshold: 85,
+  enableSupplierAlerts: true,
+  supplierAlertConfigs: [],
+};
 
 export const SLASettingsPanel = () => {
   const { settings, updateSettings, resetToDefaults } = useSLASettings();
-  const [localSettings, setLocalSettings] = useState(settings);
+  const [localSettings, setLocalSettings] = useState<SLASettings>(settings);
   const [open, setOpen] = useState(false);
 
   const handleOpenChange = (isOpen: boolean) => {
@@ -30,7 +43,6 @@ export const SLASettingsPanel = () => {
   };
 
   const handleSave = () => {
-    // Validation
     if (localSettings.warningThresholdDays < localSettings.criticalThresholdDays) {
       toast.error('O threshold de atenção deve ser maior que o crítico');
       return;
@@ -43,6 +55,10 @@ export const SLASettingsPanel = () => {
       toast.error('O intervalo de verificação deve ser pelo menos 1 minuto');
       return;
     }
+    if (localSettings.supplierSLAThreshold < 50 || localSettings.supplierSLAThreshold > 100) {
+      toast.error('O threshold de SLA do fornecedor deve estar entre 50% e 100%');
+      return;
+    }
 
     updateSettings(localSettings);
     toast.success('Configurações de SLA salvas');
@@ -51,14 +67,7 @@ export const SLASettingsPanel = () => {
 
   const handleReset = () => {
     resetToDefaults();
-    setLocalSettings({
-      warningThresholdDays: 3,
-      criticalThresholdDays: 1,
-      checkIntervalMinutes: 1,
-      enableBrowserNotifications: true,
-      enableEmailNotifications: true,
-      emailRecipients: ['compras@promobrindes.com.br'],
-    });
+    setLocalSettings(DEFAULT_SETTINGS);
     toast.info('Configurações restauradas para o padrão');
   };
 
@@ -69,7 +78,7 @@ export const SLASettingsPanel = () => {
           <Settings2 className="h-5 w-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5 text-primary" />
@@ -81,11 +90,11 @@ export const SLASettingsPanel = () => {
         </DialogHeader>
 
         <div className="space-y-6 py-4">
-          {/* Thresholds Section */}
+          {/* Order Thresholds Section */}
           <div className="space-y-4">
             <h4 className="text-sm font-medium flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-warning" />
-              Limites de Alerta (dias antes do prazo)
+              Limites de Alerta - Pedidos (dias antes do prazo)
             </h4>
             
             <div className="grid grid-cols-2 gap-4">
@@ -135,6 +144,59 @@ export const SLASettingsPanel = () => {
                 </p>
               </div>
             </div>
+          </div>
+
+          <Separator />
+
+          {/* Supplier SLA Threshold */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-sm font-medium flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-primary" />
+                Alertas de Fornecedor
+              </h4>
+              <Switch
+                checked={localSettings.enableSupplierAlerts}
+                onCheckedChange={(checked) =>
+                  setLocalSettings({
+                    ...localSettings,
+                    enableSupplierAlerts: checked,
+                  })
+                }
+              />
+            </div>
+
+            {localSettings.enableSupplierAlerts && (
+              <div className="space-y-3 pl-2 border-l-2 border-primary/20">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <Percent className="h-3 w-3" />
+                    Threshold Mínimo de SLA
+                  </Label>
+                  <div className="flex items-center gap-4">
+                    <Slider
+                      value={[localSettings.supplierSLAThreshold]}
+                      onValueChange={(value) =>
+                        setLocalSettings({
+                          ...localSettings,
+                          supplierSLAThreshold: value[0],
+                        })
+                      }
+                      min={50}
+                      max={100}
+                      step={1}
+                      className="flex-1"
+                    />
+                    <span className="text-lg font-bold w-14 text-right">
+                      {localSettings.supplierSLAThreshold}%
+                    </span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Alerta será disparado quando fornecedor cair abaixo de {localSettings.supplierSLAThreshold}%
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
           <Separator />
