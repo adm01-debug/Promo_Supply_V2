@@ -36,7 +36,7 @@ const Pagamentos = () => {
   const [pagamentoSelecionado, setPagamentoSelecionado] = useState<Pagamento | null>(null);
   const [modalAberto, setModalAberto] = useState(false);
 
-  const pagamentosPendentes = pagamentos.filter(p => p.status === "PENDENTE");
+  const pagamentosPendentes = pagamentos.filter(p => p.status === "PENDENTE" || p.status === "PROCESSANDO");
   const pagamentosPagos = pagamentos.filter(p => p.status === "PAGO");
 
   const totalPendente = pagamentosPendentes.reduce((acc, p) => acc + p.valor, 0);
