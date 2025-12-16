@@ -24,6 +24,7 @@ import { CriticalAlertsBar } from "@/components/compras/CriticalAlertsBar";
 import { SupplierAlertsPanel } from "@/components/compras/SupplierAlertsPanel";
 import { SupplierRankingPanel } from "@/components/compras/SupplierRankingPanel";
 import { BuyerPerformancePanel } from "@/components/compras/BuyerPerformancePanel";
+import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
 import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
 
@@ -160,20 +161,23 @@ const ComprasDashboard = () => {
           <SupplierRankingPanel />
         </div>
 
-        {/* Buyer Performance + Itens Urgentes */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Buyer Performance + Savings Goal */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <BuyerPerformancePanel />
-          <Card className="p-6 lg:col-span-2">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Clock className="w-5 h-5 text-destructive" />
-                Itens Urgentes
-              </h2>
-              <Link to="/solicitacoes" className="text-sm text-primary hover:underline">Ver Todos</Link>
-            </div>
-            <UrgentItemsList items={itensUrgentesMock} />
-          </Card>
+          <SavingsGoalPanel />
         </div>
+
+        {/* Itens Urgentes */}
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <Clock className="w-5 h-5 text-destructive" />
+              Itens Urgentes
+            </h2>
+            <Link to="/solicitacoes" className="text-sm text-primary hover:underline">Ver Todos</Link>
+          </div>
+          <UrgentItemsList items={itensUrgentesMock} />
+        </Card>
       </div>
     </MainLayout>
   );

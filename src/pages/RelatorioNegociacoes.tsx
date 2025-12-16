@@ -24,6 +24,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { BuyerDrilldownModal } from "@/components/compras/BuyerDrilldownModal";
+import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
 import {
   AreaChart,
   Area,
@@ -231,6 +232,9 @@ const RelatorioNegociacoes = () => {
             </p>
           </Card>
         </div>
+
+        {/* Savings Goal Panel */}
+        <SavingsGoalPanel />
 
         {/* Charts Row 1 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
