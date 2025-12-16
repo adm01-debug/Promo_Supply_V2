@@ -11,7 +11,10 @@ import {
   Check,
   ArrowLeft,
   Send,
-  Printer
+  Printer,
+  Truck,
+  Percent,
+  StickyNote
 } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
@@ -45,6 +48,9 @@ const GerarOrdem = () => {
   const [mensagemWhatsApp, setMensagemWhatsApp] = useState("");
   const [mensagemEmail, setMensagemEmail] = useState("");
   const [assuntoEmail, setAssuntoEmail] = useState("");
+  const [frete, setFrete] = useState(ordemMock.frete);
+  const [desconto, setDesconto] = useState(ordemMock.desconto);
+  const [observacoes, setObservacoes] = useState(ordemMock.observacoes);
 
   // Busca dados
   const solicitacao = solicitacoesMock.find(s => s.id === solicitacaoId) || ordemMock.solicitacao;
@@ -52,8 +58,6 @@ const GerarOrdem = () => {
 
   // Cálculos financeiros
   const subtotal = (solicitacao.valorUnitario || 12) * solicitacao.quantidadeReal;
-  const frete = ordemMock.frete;
-  const desconto = ordemMock.desconto;
   const total = subtotal + frete - desconto;
 
   // Gera mensagens automáticas
@@ -67,12 +71,13 @@ Gostaríamos de confirmar o pedido abaixo:
 📦 *Produto:* ${solicitacao.produto}
 📊 *Quantidade:* ${solicitacao.quantidadeReal} unidades
 💰 *Valor Unitário:* R$ ${(solicitacao.valorUnitario || 12).toFixed(2)}
-🚚 *Frete:* R$ ${frete.toFixed(2)}
+${frete > 0 ? `🚚 *Frete:* R$ ${frete.toFixed(2)}` : '🚚 *Frete:* Grátis'}
+${desconto > 0 ? `🎁 *Desconto:* R$ ${desconto.toFixed(2)}` : ''}
 💵 *TOTAL:* R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
 
 📅 *Prazo de Entrega:* ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
 💳 *Condição:* ${ordemMock.condicaoPagamento}
-
+${observacoes ? `\n📝 *Observações:* ${observacoes}` : ''}
 Por favor, confirme o recebimento e disponibilidade.
 
 Atenciosamente,
@@ -98,13 +103,14 @@ DADOS DO PEDIDO:
 VALORES:
 • Valor Unitário: R$ ${(solicitacao.valorUnitario || 12).toFixed(2)}
 • Subtotal: R$ ${subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-• Frete: R$ ${frete.toFixed(2)}
+• Frete: ${frete > 0 ? `R$ ${frete.toFixed(2)}` : 'Grátis'}
+${desconto > 0 ? `• Desconto: R$ ${desconto.toFixed(2)}` : ''}
 • Total: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
 
 CONDIÇÕES:
 • Pagamento: ${ordemMock.condicaoPagamento}
 • Prazo de Entrega: ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
-
+${observacoes ? `\nOBSERVAÇÕES:\n${observacoes}` : ''}
 DADOS PARA ENTREGA:
 Promo Brindes
 [Endereço da empresa]
@@ -249,6 +255,20 @@ compras@promobrindes.com.br`;
               </div>
             </Card>
 
+            {/* Observações */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+                <StickyNote className="w-5 h-5 text-primary" />
+                Observações
+              </h2>
+              <Textarea
+                value={observacoes}
+                onChange={(e) => setObservacoes(e.target.value)}
+                placeholder="Adicione observações ou instruções especiais para o pedido..."
+                className="min-h-[100px]"
+              />
+            </Card>
+
             {/* Mensagens */}
             <Card className="p-6">
               <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
@@ -369,16 +389,45 @@ compras@promobrindes.com.br`;
                   <span className="text-muted-foreground">Subtotal</span>
                   <span className="font-medium">R$ {subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Frete</span>
-                  <span className="font-medium">R$ {frete.toFixed(2)}</span>
-                </div>
-                {desconto > 0 && (
-                  <div className="flex justify-between text-sm text-success">
-                    <span>Desconto</span>
-                    <span>- R$ {desconto.toFixed(2)}</span>
+                
+                {/* Frete Editável */}
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Truck className="w-3 h-3" />
+                    Frete
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
+                    <Input
+                      type="number"
+                      value={frete}
+                      onChange={(e) => setFrete(Number(e.target.value) || 0)}
+                      className="pl-10 h-9 text-sm"
+                      min={0}
+                      step={0.01}
+                    />
                   </div>
-                )}
+                </div>
+
+                {/* Desconto Editável */}
+                <div className="space-y-1">
+                  <Label className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Percent className="w-3 h-3" />
+                    Desconto
+                  </Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">R$</span>
+                    <Input
+                      type="number"
+                      value={desconto}
+                      onChange={(e) => setDesconto(Number(e.target.value) || 0)}
+                      className="pl-10 h-9 text-sm"
+                      min={0}
+                      step={0.01}
+                    />
+                  </div>
+                </div>
+
                 <Separator />
                 <div className="flex justify-between">
                   <span className="font-semibold text-foreground">TOTAL</span>
