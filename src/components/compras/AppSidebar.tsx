@@ -13,7 +13,8 @@ import {
   History,
   PiggyBank,
   ClipboardCheck,
-  Users
+  Users,
+  TrendingUp
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -68,6 +69,12 @@ const menuItems = [
     icon: Users, 
     href: "/supplier-performance",
     description: "Scorecard e riscos"
+  },
+  { 
+    title: "Executivo", 
+    icon: TrendingUp, 
+    href: "/dashboard-executivo",
+    description: "Visão consolidada"
   },
   { 
     title: "Relatórios", 
