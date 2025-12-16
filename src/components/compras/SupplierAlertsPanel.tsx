@@ -1,13 +1,35 @@
-import { Building2, AlertTriangle, AlertCircle, RefreshCw, Trash2, TestTube } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Building2, AlertTriangle, AlertCircle, RefreshCw, Trash2, TestTube, TrendingUp, TrendingDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useSupplierSLAMonitor, SupplierAlert } from '@/hooks/useSupplierSLAMonitor';
 import { useSLASettings } from '@/stores/slaSettingsStore';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, subDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+
+// Generate mock historical trend data
+const generateTrendData = (supplierId: string, days: number = 7) => {
+  const data = [];
+  const baseCompliance = 75 + Math.random() * 20;
+  
+  for (let i = days - 1; i >= 0; i--) {
+    const date = subDays(new Date(), i);
+    const variation = (Math.random() - 0.5) * 10;
+    const compliance = Math.min(100, Math.max(60, baseCompliance + variation + (Math.random() > 0.7 ? -5 : 2)));
+    
+    data.push({
+      date: format(date, 'dd/MM'),
+      fullDate: format(date, 'dd/MM/yyyy'),
+      compliance: Math.round(compliance * 10) / 10,
+    });
+  }
+  return data;
+};
 
 const AlertItem = ({ alert }: { alert: SupplierAlert }) => {
   const Icon = alert.type === 'critical' ? AlertCircle : AlertTriangle;
@@ -42,8 +64,86 @@ const AlertItem = ({ alert }: { alert: SupplierAlert }) => {
   );
 };
 
+// Supplier trend mini-chart component
+const SupplierTrendChart = ({ 
+  supplierName, 
+  supplierId,
+  currentSLA,
+  threshold 
+}: { 
+  supplierName: string; 
+  supplierId: string;
+  currentSLA: number;
+  threshold: number;
+}) => {
+  const trendData = useMemo(() => generateTrendData(supplierId), [supplierId]);
+  
+  const trend = trendData.length >= 2 
+    ? trendData[trendData.length - 1].compliance - trendData[0].compliance 
+    : 0;
+  
+  const isPositive = trend >= 0;
+  const isBelowThreshold = currentSLA < threshold;
+
+  return (
+    <div className={cn(
+      "p-3 rounded-lg border",
+      isBelowThreshold ? "border-destructive/30 bg-destructive/5" : "border-border bg-muted/30"
+    )}>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-medium truncate">{supplierName}</span>
+        <div className="flex items-center gap-2">
+          <Badge variant={isBelowThreshold ? "destructive" : "secondary"} className="text-xs">
+            {currentSLA}%
+          </Badge>
+          <div className={cn(
+            "flex items-center text-xs",
+            isPositive ? "text-success" : "text-destructive"
+          )}>
+            {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+            <span className="ml-0.5">{Math.abs(trend).toFixed(1)}%</span>
+          </div>
+        </div>
+      </div>
+      <div className="h-[60px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={trendData} margin={{ top: 5, right: 5, bottom: 0, left: 0 }}>
+            <XAxis dataKey="date" hide />
+            <YAxis domain={[60, 100]} hide />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: 'hsl(var(--popover))',
+                border: '1px solid hsl(var(--border))',
+                borderRadius: '6px',
+                fontSize: '12px',
+              }}
+              formatter={(value: number) => [`${value}%`, 'SLA']}
+              labelFormatter={(label) => `Data: ${label}`}
+            />
+            <ReferenceLine 
+              y={threshold} 
+              stroke="hsl(var(--destructive))" 
+              strokeDasharray="3 3" 
+              strokeOpacity={0.5}
+            />
+            <Line
+              type="monotone"
+              dataKey="compliance"
+              stroke={isBelowThreshold ? "hsl(var(--destructive))" : "hsl(var(--primary))"}
+              strokeWidth={2}
+              dot={false}
+              activeDot={{ r: 3 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  );
+};
+
 export const SupplierAlertsPanel = () => {
   const { settings } = useSLASettings();
+  const [activeTab, setActiveTab] = useState('status');
   const { 
     supplierAlerts, 
     supplierData,
@@ -101,31 +201,58 @@ export const SupplierAlertsPanel = () => {
           </div>
         </div>
 
-        {/* Alerts List */}
-        <div>
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium">Alertas Recentes</span>
-            <span className="text-xs text-muted-foreground">
-              {supplierAlerts.length} alerta(s)
-            </span>
-          </div>
-          
-          <ScrollArea className="h-[200px] border border-border rounded-lg">
-            {supplierAlerts.length === 0 ? (
-              <div className="p-6 text-center text-muted-foreground">
-                <Building2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p className="text-sm">Nenhum alerta de fornecedor</p>
-                <p className="text-xs mt-1">
-                  Alertas aparecem quando SLA cai abaixo de {settings.supplierSLAThreshold}%
-                </p>
+        {/* Tabs for Alerts and Trends */}
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="status" className="text-xs">
+              Alertas ({supplierAlerts.length})
+            </TabsTrigger>
+            <TabsTrigger value="trends" className="text-xs">
+              Tendências
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="status" className="mt-3">
+            <ScrollArea className="h-[200px] border border-border rounded-lg">
+              {supplierAlerts.length === 0 ? (
+                <div className="p-6 text-center text-muted-foreground">
+                  <Building2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">Nenhum alerta de fornecedor</p>
+                  <p className="text-xs mt-1">
+                    Alertas aparecem quando SLA cai abaixo de {settings.supplierSLAThreshold}%
+                  </p>
+                </div>
+              ) : (
+                supplierAlerts.slice(0, 10).map((alert) => (
+                  <AlertItem key={alert.id} alert={alert} />
+                ))
+              )}
+            </ScrollArea>
+          </TabsContent>
+
+          <TabsContent value="trends" className="mt-3">
+            <ScrollArea className="h-[200px]">
+              <div className="space-y-3 pr-3">
+                {supplierData.length === 0 ? (
+                  <div className="p-6 text-center text-muted-foreground">
+                    <TrendingUp className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">Aguardando dados de fornecedores</p>
+                  </div>
+                ) : (
+                  supplierData.map((supplier) => (
+                    <SupplierTrendChart
+                      key={supplier.id}
+                      supplierId={supplier.id}
+                      supplierName={supplier.name}
+                      currentSLA={supplier.slaCompliance}
+                      threshold={settings.supplierSLAThreshold}
+                    />
+                  ))
+                )}
               </div>
-            ) : (
-              supplierAlerts.slice(0, 10).map((alert) => (
-                <AlertItem key={alert.id} alert={alert} />
-              ))
-            )}
-          </ScrollArea>
-        </div>
+            </ScrollArea>
+          </TabsContent>
+        </Tabs>
 
         {/* Actions */}
         <div className="flex gap-2">
