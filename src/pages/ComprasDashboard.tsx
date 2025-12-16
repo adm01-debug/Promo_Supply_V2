@@ -36,6 +36,22 @@ const ComprasDashboard = () => {
               <p className="text-xs text-muted-foreground">Promo Brindes</p>
             </div>
           </div>
+
+          {/* Quick Nav */}
+          <nav className="hidden md:flex items-center gap-1">
+            <Link to="/solicitacoes">
+              <Button variant="ghost" size="sm">
+                <ClipboardList className="w-4 h-4 mr-2" />
+                Solicitações
+              </Button>
+            </Link>
+            <Link to="/cotacao">
+              <Button variant="ghost" size="sm">
+                <Search className="w-4 h-4 mr-2" />
+                Cotações
+              </Button>
+            </Link>
+          </nav>
           
           <div className="flex items-center gap-4">
             <button className="relative p-2 rounded-lg hover:bg-accent transition-colors">
@@ -140,7 +156,7 @@ const ComprasDashboard = () => {
               <Clock className="w-5 h-5 text-destructive" />
               Itens Urgentes
             </h2>
-            <button className="text-sm text-primary hover:underline">Ver Todos</button>
+            <Link to="/solicitacoes" className="text-sm text-primary hover:underline">Ver Todos</Link>
           </div>
           <UrgentItemsList items={itensUrgentesMock} />
         </Card>

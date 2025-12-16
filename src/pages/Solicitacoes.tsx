@@ -1,0 +1,201 @@
+import { useState } from "react";
+import { 
+  ArrowLeft, 
+  Search, 
+  Filter, 
+  Plus, 
+  Eye, 
+  BarChart3, 
+  FileText, 
+  CheckCircle,
+  ClipboardList
+} from "lucide-react";
+import { Link } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
+import { solicitacoesMock, getStatusLabel } from "@/data/mockData";
+
+const Solicitacoes = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("todas");
+  const [tipoFilter, setTipoFilter] = useState("todos");
+
+  const filteredSolicitacoes = solicitacoesMock.filter(s => {
+    const matchesSearch = 
+      s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.produto.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesStatus = statusFilter === "todas" || s.status === statusFilter;
+    const matchesTipo = tipoFilter === "todos" || s.tipo === tipoFilter;
+
+    return matchesSearch && matchesStatus && matchesTipo;
+  });
+
+  // Agrupa por status para exibição
+  const groupedByStatus = {
+    AGUARDANDO_COTACAO: filteredSolicitacoes.filter(s => s.status === 'AGUARDANDO_COTACAO'),
+    EM_COTACAO: filteredSolicitacoes.filter(s => s.status === 'EM_COTACAO'),
+    FORNECEDOR_SELECIONADO: filteredSolicitacoes.filter(s => s.status === 'FORNECEDOR_SELECIONADO'),
+    AGUARDANDO_PAGAMENTO: filteredSolicitacoes.filter(s => s.status === 'AGUARDANDO_PAGAMENTO'),
+    PAGO: filteredSolicitacoes.filter(s => s.status === 'PAGO'),
+    EM_TRANSITO: filteredSolicitacoes.filter(s => s.status === 'EM_TRANSITO'),
+  };
+
+  const statusConfig = {
+    AGUARDANDO_COTACAO: { label: 'Aguardando Cotação', color: 'bg-emerald-500', icon: ClipboardList },
+    EM_COTACAO: { label: 'Em Cotação', color: 'bg-yellow-500', icon: Search },
+    FORNECEDOR_SELECIONADO: { label: 'Fornecedor Selecionado', color: 'bg-blue-500', icon: CheckCircle },
+    AGUARDANDO_PAGAMENTO: { label: 'Aguardando Pagamento', color: 'bg-orange-500', icon: FileText },
+    PAGO: { label: 'Pago', color: 'bg-cyan-500', icon: CheckCircle },
+    EM_TRANSITO: { label: 'Em Trânsito', color: 'bg-purple-500', icon: BarChart3 },
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Link to="/" className="p-2 hover:bg-accent rounded-lg transition-colors">
+                <ArrowLeft className="w-5 h-5 text-muted-foreground" />
+              </Link>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                  <ClipboardList className="w-4 h-4 text-emerald-500" />
+                </div>
+                <h1 className="text-lg font-bold text-foreground">Solicitações</h1>
+              </div>
+            </div>
+            <Button>
+              <Plus className="w-4 h-4 mr-2" />
+              Nova Solicitação
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-6 space-y-6">
+        {/* Busca e Filtros */}
+        <Card className="p-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Busca */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Buscar pedido, empresa, produto..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+
+            {/* Filtros */}
+            <div className="flex gap-2">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-[180px] bg-background">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border z-50">
+                  <SelectItem value="todas">Todos os Status</SelectItem>
+                  <SelectItem value="AGUARDANDO_COTACAO">Aguardando Cotação</SelectItem>
+                  <SelectItem value="EM_COTACAO">Em Cotação</SelectItem>
+                  <SelectItem value="FORNECEDOR_SELECIONADO">Fornecedor Selecionado</SelectItem>
+                  <SelectItem value="AGUARDANDO_PAGAMENTO">Aguardando Pagamento</SelectItem>
+                  <SelectItem value="PAGO">Pago</SelectItem>
+                  <SelectItem value="EM_TRANSITO">Em Trânsito</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={tipoFilter} onValueChange={setTipoFilter}>
+                <SelectTrigger className="w-[160px] bg-background">
+                  <SelectValue placeholder="Tipo" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border border-border z-50">
+                  <SelectItem value="todos">Todos os Tipos</SelectItem>
+                  <SelectItem value="PE_LISO">P.E. Liso</SelectItem>
+                  <SelectItem value="FAB_LISO">Fab. Liso</SelectItem>
+                  <SelectItem value="FAB_PERSONALIZADO">Fab. Personalizado</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button variant="outline" size="icon">
+                <Filter className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </Card>
+
+        {/* Contadores por Status */}
+        <div className="flex flex-wrap gap-2">
+          {Object.entries(statusConfig).map(([key, config]) => {
+            const count = groupedByStatus[key as keyof typeof groupedByStatus]?.length || 0;
+            if (count === 0 && statusFilter !== "todas" && statusFilter !== key) return null;
+            
+            return (
+              <Badge
+                key={key}
+                variant={statusFilter === key ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => setStatusFilter(statusFilter === key ? "todas" : key)}
+              >
+                <span className={`w-2 h-2 rounded-full ${config.color} mr-2`} />
+                {config.label} ({count})
+              </Badge>
+            );
+          })}
+        </div>
+
+        {/* Lista de Solicitações */}
+        <div className="space-y-6">
+          {Object.entries(groupedByStatus).map(([status, items]) => {
+            if (items.length === 0) return null;
+            if (statusFilter !== "todas" && statusFilter !== status) return null;
+            
+            const config = statusConfig[status as keyof typeof statusConfig];
+            const Icon = config.icon;
+
+            return (
+              <div key={status} className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className={`w-3 h-3 rounded-full ${config.color}`} />
+                  <h2 className="font-semibold text-foreground">{config.label}</h2>
+                  <Badge variant="secondary" className="ml-2">{items.length}</Badge>
+                </div>
+
+                <div className="grid gap-3">
+                  {items.map((solicitacao) => (
+                    <SolicitacaoCard key={solicitacao.id} solicitacao={solicitacao} />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {filteredSolicitacoes.length === 0 && (
+          <Card className="p-8 text-center">
+            <ClipboardList className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+            <h3 className="font-semibold text-foreground mb-2">Nenhuma solicitação encontrada</h3>
+            <p className="text-sm text-muted-foreground">
+              Tente ajustar os filtros ou criar uma nova solicitação
+            </p>
+          </Card>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default Solicitacoes;
