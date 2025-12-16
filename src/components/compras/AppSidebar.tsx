@@ -10,7 +10,8 @@ import {
   Package,
   Truck,
   BarChart3,
-  History
+  History,
+  PiggyBank
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -65,6 +66,12 @@ const menuItems = [
     icon: BarChart3, 
     href: "/relatorios",
     description: "Analytics"
+  },
+  { 
+    title: "Negociações", 
+    icon: PiggyBank, 
+    href: "/relatorios/negociacoes",
+    description: "Performance comprador"
   },
   { 
     title: "Auditoria", 
