@@ -2,8 +2,9 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "@/components/compras/AppSidebar";
 import { NotificationCenter } from "@/components/compras/NotificationCenter";
+import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
 import { cn } from "@/lib/utils";
-import { Settings, User, Menu, X } from "lucide-react";
+import { User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface MainLayoutProps {
@@ -67,9 +68,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             {/* Right Actions */}
             <div className="flex items-center gap-2">
               <NotificationCenter />
-              <Button variant="ghost" size="icon">
-                <Settings className="w-5 h-5 text-muted-foreground" />
-              </Button>
+              <SLASettingsPanel />
               <div className="flex items-center gap-2 pl-3 ml-2 border-l border-border">
                 <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                   <User className="w-4 h-4 text-primary" />
