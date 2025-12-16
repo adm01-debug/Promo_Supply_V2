@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "@/components/compras/AppSidebar";
+import { NotificationCenter } from "@/components/compras/NotificationCenter";
 import { cn } from "@/lib/utils";
-import { Bell, Settings, User, Menu, X } from "lucide-react";
+import { Settings, User, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface MainLayoutProps {
@@ -65,12 +66,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
             {/* Right Actions */}
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="w-5 h-5 text-muted-foreground" />
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center font-medium">
-                  3
-                </span>
-              </Button>
+              <NotificationCenter />
               <Button variant="ghost" size="icon">
                 <Settings className="w-5 h-5 text-muted-foreground" />
               </Button>
