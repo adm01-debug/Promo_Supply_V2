@@ -1,4 +1,5 @@
-import { AlertCircle, Clock, AlertTriangle } from "lucide-react";
+import { AlertCircle, Clock, AlertTriangle, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 interface UrgentItem {
@@ -45,10 +46,11 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
         const Icon = config.icon;
         
         return (
-          <div
+          <Link
+            to={`/cotacao?id=${item.id}`}
             key={item.id}
             className={cn(
-              "flex items-center gap-4 p-4 rounded-lg border transition-all duration-200 hover:shadow-md cursor-pointer",
+              "flex items-center gap-4 p-4 rounded-lg border transition-all duration-200 hover:shadow-md group",
               config.bg,
               config.border
             )}
@@ -70,15 +72,16 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <span className={cn(
                 "px-2 py-1 rounded text-xs font-semibold text-white",
                 config.badge
               )}>
                 Vence: {item.vencimento}
               </span>
+              <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
-          </div>
+          </Link>
         );
       })}
     </div>
