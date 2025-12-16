@@ -23,7 +23,8 @@ import {
   Percent,
   RefreshCw,
   X,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Target
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -396,21 +397,101 @@ const HistoricoCompras = () => {
     })).sort((a, b) => b.value - a.value);
 
     // Monthly trend (current period only for simplicity)
-    const monthlyData: Record<string, { month: string; value: number; quantity: number; orders: number; avgPrice: number }> = {};
+    const monthlyData: Record<string, { month: string; value: number; quantity: number; orders: number; avgPrice: number; monthIndex: number }> = {};
     filteredPurchaseRecords.forEach(record => {
       const monthKey = format(parseISO(record.purchaseDate), 'yyyy-MM');
       const monthLabel = format(parseISO(record.purchaseDate), 'MMM/yy', { locale: ptBR });
       if (!monthlyData[monthKey]) {
-        monthlyData[monthKey] = { month: monthLabel, value: 0, quantity: 0, orders: 0, avgPrice: 0 };
+        monthlyData[monthKey] = { month: monthLabel, value: 0, quantity: 0, orders: 0, avgPrice: 0, monthIndex: 0 };
       }
       monthlyData[monthKey].value += record.totalPrice;
       monthlyData[monthKey].quantity += record.quantity;
       monthlyData[monthKey].orders += 1;
     });
-    Object.keys(monthlyData).forEach(key => {
+    const sortedKeys = Object.keys(monthlyData).sort();
+    sortedKeys.forEach((key, idx) => {
       monthlyData[key].avgPrice = monthlyData[key].quantity > 0 ? monthlyData[key].value / monthlyData[key].quantity : 0;
+      monthlyData[key].monthIndex = idx;
     });
-    const monthlyTrend = Object.keys(monthlyData).sort().map(key => monthlyData[key]);
+    const monthlyTrend = sortedKeys.map(key => monthlyData[key]);
+
+    // Price forecast using linear regression
+    const calculateForecast = () => {
+      if (monthlyTrend.length < 2) return [];
+      
+      // Calculate linear regression on avgPrice
+      const n = monthlyTrend.length;
+      const sumX = monthlyTrend.reduce((sum, d) => sum + d.monthIndex, 0);
+      const sumY = monthlyTrend.reduce((sum, d) => sum + d.avgPrice, 0);
+      const sumXY = monthlyTrend.reduce((sum, d) => sum + d.monthIndex * d.avgPrice, 0);
+      const sumXX = monthlyTrend.reduce((sum, d) => sum + d.monthIndex * d.monthIndex, 0);
+      
+      const denominator = n * sumXX - sumX * sumX;
+      const slope = denominator !== 0 ? (n * sumXY - sumX * sumY) / denominator : 0;
+      const intercept = (sumY - slope * sumX) / n;
+      
+      // Generate forecast for next 3 months
+      const forecastMonths = 3;
+      const lastDate = parseISO(sortedKeys[sortedKeys.length - 1] + '-01');
+      const forecastData: { month: string; avgPrice: number | null; forecast: number; type: 'historical' | 'forecast' }[] = [];
+      
+      // Add historical data with trend line
+      monthlyTrend.forEach((d, idx) => {
+        forecastData.push({
+          month: d.month,
+          avgPrice: d.avgPrice,
+          forecast: intercept + slope * idx,
+          type: 'historical'
+        });
+      });
+      
+      // Add forecast points
+      for (let i = 1; i <= forecastMonths; i++) {
+        const futureDate = new Date(lastDate);
+        futureDate.setMonth(futureDate.getMonth() + i);
+        const futureMonth = format(futureDate, 'MMM/yy', { locale: ptBR });
+        const forecastValue = intercept + slope * (n - 1 + i);
+        forecastData.push({
+          month: futureMonth,
+          avgPrice: null,
+          forecast: Math.max(0, forecastValue),
+          type: 'forecast'
+        });
+      }
+      
+      return forecastData;
+    };
+    
+    const priceForecast = calculateForecast();
+    
+    // Calculate confidence metrics for forecast
+    const forecastMetrics = (() => {
+      if (monthlyTrend.length < 2) return null;
+      
+      const avgPrice = monthlyTrend.reduce((sum, d) => sum + d.avgPrice, 0) / monthlyTrend.length;
+      const variance = monthlyTrend.reduce((sum, d) => sum + Math.pow(d.avgPrice - avgPrice, 2), 0) / monthlyTrend.length;
+      const stdDev = Math.sqrt(variance);
+      const cv = avgPrice > 0 ? (stdDev / avgPrice) * 100 : 0;
+      
+      const lastPrice = monthlyTrend[monthlyTrend.length - 1]?.avgPrice || 0;
+      const firstPrice = monthlyTrend[0]?.avgPrice || 0;
+      const priceChange = firstPrice > 0 ? ((lastPrice - firstPrice) / firstPrice) * 100 : 0;
+      
+      const forecastValues = priceForecast.filter(d => d.type === 'forecast');
+      const nextMonthForecast = forecastValues[0]?.forecast || 0;
+      const threeMonthForecast = forecastValues[forecastValues.length - 1]?.forecast || 0;
+      
+      return {
+        avgPrice,
+        stdDev,
+        cv,
+        priceChange,
+        trend: priceChange > 2 ? 'up' : priceChange < -2 ? 'down' : 'stable',
+        nextMonthForecast,
+        threeMonthForecast,
+        confidence: cv < 10 ? 'high' : cv < 25 ? 'medium' : 'low'
+      };
+    })();
 
     // Price evolution by product
     const priceByProduct: Record<string, { product: string; prices: { date: string; price: number }[] }> = {};
@@ -438,7 +519,7 @@ const HistoricoCompras = () => {
       avgDiscount: comparisonRecords.length > 0 ? comparisonRecords.reduce((sum, r) => sum + r.discount, 0) / comparisonRecords.length : 0
     } : null;
 
-    return { monthlyTrend, byCategory, bySupplier, priceByProduct, currentStats, compStats };
+    return { monthlyTrend, byCategory, bySupplier, priceByProduct, currentStats, compStats, priceForecast, forecastMetrics };
   }, [filteredPurchaseRecords, comparisonRecords, comparisonEnabled]);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
@@ -1261,6 +1342,180 @@ const HistoricoCompras = () => {
               ) : (
                 <div className="flex items-center justify-center h-[280px] text-muted-foreground">
                   <p className="text-sm">Sem dados para o período selecionado</p>
+                </div>
+              )}
+            </Card>
+
+            {/* Price Trend Forecast */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="font-semibold text-foreground flex items-center gap-2">
+                    <Target className="w-4 h-4 text-primary" />
+                    Tendência de Preços com Previsão
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-1">Projeção baseada em regressão linear do histórico</p>
+                </div>
+                {chartData.forecastMetrics && (
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className={`text-xs ${
+                      chartData.forecastMetrics.confidence === 'high' 
+                        ? 'bg-green-500/10 text-green-600 border-green-500/20' 
+                        : chartData.forecastMetrics.confidence === 'medium'
+                        ? 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20'
+                        : 'bg-red-500/10 text-red-600 border-red-500/20'
+                    }`}>
+                      Confiança: {chartData.forecastMetrics.confidence === 'high' ? 'Alta' : chartData.forecastMetrics.confidence === 'medium' ? 'Média' : 'Baixa'}
+                    </Badge>
+                    <Badge variant="outline" className={`text-xs ${
+                      chartData.forecastMetrics.trend === 'up' 
+                        ? 'bg-red-500/10 text-red-600 border-red-500/20' 
+                        : chartData.forecastMetrics.trend === 'down'
+                        ? 'bg-green-500/10 text-green-600 border-green-500/20'
+                        : 'bg-blue-500/10 text-blue-600 border-blue-500/20'
+                    }`}>
+                      {chartData.forecastMetrics.trend === 'up' ? (
+                        <><ArrowUpRight className="w-3 h-3 mr-1" />Tendência de Alta</>
+                      ) : chartData.forecastMetrics.trend === 'down' ? (
+                        <><ArrowDownRight className="w-3 h-3 mr-1" />Tendência de Queda</>
+                      ) : (
+                        <>Estável</>
+                      )}
+                    </Badge>
+                  </div>
+                )}
+              </div>
+              
+              {chartData.priceForecast.length > 0 ? (
+                <>
+                  {/* Forecast metrics */}
+                  {chartData.forecastMetrics && (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                      <div className="p-3 rounded-lg bg-muted/50">
+                        <p className="text-xs text-muted-foreground">Preço Médio Atual</p>
+                        <p className="text-lg font-bold text-foreground">R$ {chartData.forecastMetrics.avgPrice.toFixed(2)}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-muted/50">
+                        <p className="text-xs text-muted-foreground">Variação no Período</p>
+                        <p className={`text-lg font-bold ${chartData.forecastMetrics.priceChange > 0 ? 'text-red-600' : chartData.forecastMetrics.priceChange < 0 ? 'text-green-600' : 'text-foreground'}`}>
+                          {chartData.forecastMetrics.priceChange > 0 ? '+' : ''}{chartData.forecastMetrics.priceChange.toFixed(1)}%
+                        </p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-primary/10">
+                        <p className="text-xs text-primary">Previsão Próx. Mês</p>
+                        <p className="text-lg font-bold text-primary">R$ {chartData.forecastMetrics.nextMonthForecast.toFixed(2)}</p>
+                      </div>
+                      <div className="p-3 rounded-lg bg-primary/10">
+                        <p className="text-xs text-primary">Previsão 3 Meses</p>
+                        <p className="text-lg font-bold text-primary">R$ {chartData.forecastMetrics.threeMonthForecast.toFixed(2)}</p>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <ResponsiveContainer width="100%" height={320}>
+                    <LineChart data={chartData.priceForecast}>
+                      <defs>
+                        <linearGradient id="forecastGradient" x1="0" y1="0" x2="1" y2="0">
+                          <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={1}/>
+                          <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                      <XAxis 
+                        dataKey="month" 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} 
+                      />
+                      <YAxis 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} 
+                        tickFormatter={(value) => `R$ ${value.toFixed(0)}`}
+                        domain={['auto', 'auto']}
+                      />
+                      <Tooltip 
+                        content={({ active, payload, label }) => {
+                          if (active && payload && payload.length) {
+                            const data = payload[0].payload;
+                            return (
+                              <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
+                                <p className="font-medium text-foreground">{label}</p>
+                                {data.avgPrice !== null && (
+                                  <p className="text-sm text-emerald-600">
+                                    Preço Real: R$ {data.avgPrice.toFixed(2)}
+                                  </p>
+                                )}
+                                <p className="text-sm text-primary">
+                                  {data.type === 'forecast' ? 'Previsão' : 'Tendência'}: R$ {data.forecast.toFixed(2)}
+                                </p>
+                                {data.type === 'forecast' && (
+                                  <p className="text-xs text-muted-foreground mt-1">
+                                    * Valor projetado
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                      <Legend 
+                        formatter={(value) => <span className="text-xs text-muted-foreground">{value}</span>}
+                      />
+                      {/* Historical prices line */}
+                      <Line 
+                        type="monotone" 
+                        dataKey="avgPrice" 
+                        name="Preço Real" 
+                        stroke="hsl(142, 76%, 36%)" 
+                        strokeWidth={2}
+                        dot={{ r: 5, fill: 'hsl(142, 76%, 36%)' }}
+                        connectNulls={false}
+                      />
+                      {/* Trend/Forecast line */}
+                      <Line 
+                        type="monotone" 
+                        dataKey="forecast" 
+                        name="Linha de Tendência / Previsão" 
+                        stroke="hsl(var(--primary))" 
+                        strokeWidth={2}
+                        strokeDasharray="5 5"
+                        dot={(props: any) => {
+                          const { cx, cy, payload } = props;
+                          if (payload.type === 'forecast') {
+                            return (
+                              <circle 
+                                cx={cx} 
+                                cy={cy} 
+                                r={6} 
+                                fill="hsl(var(--primary))" 
+                                stroke="hsl(var(--background))"
+                                strokeWidth={2}
+                              />
+                            );
+                          }
+                          return <circle cx={cx} cy={cy} r={0} />;
+                        }}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                  
+                  {/* Legend explanation */}
+                  <div className="flex items-center justify-center gap-6 mt-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-0.5 bg-emerald-600" />
+                      <span>Preços históricos reais</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-0.5 bg-primary" style={{ borderTop: '2px dashed hsl(var(--primary))' }} />
+                      <span>Linha de tendência</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-primary" />
+                      <span>Previsão futura</span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+                  <p className="text-sm">Dados insuficientes para previsão (mínimo 2 meses)</p>
                 </div>
               )}
             </Card>
