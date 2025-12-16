@@ -130,12 +130,41 @@ const HistoricoCompras = () => {
   const [drilldownType, setDrilldownType] = useState<'month' | 'category' | 'supplier' | null>(null);
   const [drilldownData, setDrilldownData] = useState<any>(null);
 
+  // Period comparison state
+  const [comparisonEnabled, setComparisonEnabled] = useState(false);
+  const [comparisonPeriod, setComparisonPeriod] = useState<'previousPeriod' | 'lastYear' | 'custom'>('previousPeriod');
+  const [comparisonDateRange, setComparisonDateRange] = useState<DateRange | undefined>(undefined);
+
   // Handle chart drill-down
   const handleDrilldown = (type: 'month' | 'category' | 'supplier', data: any) => {
     setDrilldownType(type);
     setDrilldownData(data);
     setDrilldownOpen(true);
   };
+
+  // Calculate comparison date range based on selected mode
+  const getComparisonDateRange = useMemo(() => {
+    if (!comparisonEnabled || !dateRange?.from) return undefined;
+    
+    const daysDiff = dateRange.to 
+      ? Math.ceil((dateRange.to.getTime() - dateRange.from.getTime()) / (1000 * 60 * 60 * 24))
+      : 0;
+
+    if (comparisonPeriod === 'previousPeriod') {
+      const newTo = subDays(dateRange.from, 1);
+      const newFrom = subDays(newTo, daysDiff);
+      return { from: newFrom, to: newTo };
+    }
+    
+    if (comparisonPeriod === 'lastYear') {
+      return {
+        from: subMonths(dateRange.from, 12),
+        to: dateRange.to ? subMonths(dateRange.to, 12) : subMonths(dateRange.from, 12)
+      };
+    }
+    
+    return comparisonDateRange;
+  }, [comparisonEnabled, dateRange, comparisonPeriod, comparisonDateRange]);
 
   // Period presets
   const applyPeriodPreset = (preset: string) => {
@@ -198,6 +227,28 @@ const HistoricoCompras = () => {
       return matchesSearch && matchesCategory && matchesStatus && matchesDate;
     });
   }, [searchTerm, categoryFilter, statusFilter, dateRange]);
+
+  // Filter comparison records
+  const comparisonRecords = useMemo(() => {
+    if (!comparisonEnabled || !getComparisonDateRange) return [];
+    
+    return purchaseRecords.filter(record => {
+      const matchesSearch = record.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.orderNumber.includes(searchTerm);
+      
+      const matchesCategory = categoryFilter === 'all' || record.productCategory === categoryFilter;
+      const matchesStatus = statusFilter === 'all' || record.status === statusFilter;
+      
+      const purchaseDate = parseISO(record.purchaseDate);
+      const matchesDate = isWithinInterval(purchaseDate, {
+        start: getComparisonDateRange.from!,
+        end: getComparisonDateRange.to || getComparisonDateRange.from!
+      });
+      
+      return matchesSearch && matchesCategory && matchesStatus && matchesDate;
+    });
+  }, [searchTerm, categoryFilter, statusFilter, getComparisonDateRange, comparisonEnabled]);
 
   // Get records for drill-down
   const drilldownRecords = useMemo(() => {
@@ -278,13 +329,77 @@ const HistoricoCompras = () => {
 
   // Chart data for comparative analysis
   const chartData = useMemo(() => {
-    // Group records by month
+    // Helper function to aggregate records by category
+    const aggregateByCategory = (records: typeof purchaseRecords) => {
+      const categoryData: Record<string, { category: string; value: number; quantity: number; orders: number }> = {};
+      records.forEach(record => {
+        if (!categoryData[record.productCategory]) {
+          categoryData[record.productCategory] = { category: record.productCategory, value: 0, quantity: 0, orders: 0 };
+        }
+        categoryData[record.productCategory].value += record.totalPrice;
+        categoryData[record.productCategory].quantity += record.quantity;
+        categoryData[record.productCategory].orders += 1;
+      });
+      return categoryData;
+    };
+
+    // Helper function to aggregate records by supplier
+    const aggregateBySupplier = (records: typeof purchaseRecords) => {
+      const supplierData: Record<string, { supplier: string; value: number; quantity: number; orders: number; avgDiscount: number; discountSum: number }> = {};
+      records.forEach(record => {
+        if (!supplierData[record.supplierId]) {
+          supplierData[record.supplierId] = { supplier: record.supplierName, value: 0, quantity: 0, orders: 0, avgDiscount: 0, discountSum: 0 };
+        }
+        supplierData[record.supplierId].value += record.totalPrice;
+        supplierData[record.supplierId].quantity += record.quantity;
+        supplierData[record.supplierId].orders += 1;
+        supplierData[record.supplierId].discountSum += record.discount;
+      });
+      Object.keys(supplierData).forEach(key => {
+        supplierData[key].avgDiscount = supplierData[key].orders > 0 ? supplierData[key].discountSum / supplierData[key].orders : 0;
+      });
+      return supplierData;
+    };
+
+    // Current period data
+    const currentCategoryData = aggregateByCategory(filteredPurchaseRecords);
+    const currentSupplierData = aggregateBySupplier(filteredPurchaseRecords);
+
+    // Comparison period data
+    const comparisonCategoryData = comparisonEnabled ? aggregateByCategory(comparisonRecords) : {};
+    const comparisonSupplierData = comparisonEnabled ? aggregateBySupplier(comparisonRecords) : {};
+
+    // Merge category data for comparison
+    const allCategories = new Set([...Object.keys(currentCategoryData), ...Object.keys(comparisonCategoryData)]);
+    const byCategory = Array.from(allCategories).map(cat => ({
+      category: cat,
+      value: currentCategoryData[cat]?.value || 0,
+      quantity: currentCategoryData[cat]?.quantity || 0,
+      orders: currentCategoryData[cat]?.orders || 0,
+      compValue: comparisonCategoryData[cat]?.value || 0,
+      compQuantity: comparisonCategoryData[cat]?.quantity || 0,
+      compOrders: comparisonCategoryData[cat]?.orders || 0,
+    })).sort((a, b) => b.value - a.value);
+
+    // Merge supplier data for comparison
+    const allSuppliers = new Set([...Object.keys(currentSupplierData), ...Object.keys(comparisonSupplierData)]);
+    const bySupplier = Array.from(allSuppliers).map(sup => ({
+      supplier: currentSupplierData[sup]?.supplier || comparisonSupplierData[sup]?.supplier || sup,
+      value: currentSupplierData[sup]?.value || 0,
+      quantity: currentSupplierData[sup]?.quantity || 0,
+      orders: currentSupplierData[sup]?.orders || 0,
+      avgDiscount: currentSupplierData[sup]?.avgDiscount || 0,
+      compValue: comparisonSupplierData[sup]?.value || 0,
+      compQuantity: comparisonSupplierData[sup]?.quantity || 0,
+      compOrders: comparisonSupplierData[sup]?.orders || 0,
+      compAvgDiscount: comparisonSupplierData[sup]?.avgDiscount || 0,
+    })).sort((a, b) => b.value - a.value);
+
+    // Monthly trend (current period only for simplicity)
     const monthlyData: Record<string, { month: string; value: number; quantity: number; orders: number; avgPrice: number }> = {};
-    
     filteredPurchaseRecords.forEach(record => {
       const monthKey = format(parseISO(record.purchaseDate), 'yyyy-MM');
       const monthLabel = format(parseISO(record.purchaseDate), 'MMM/yy', { locale: ptBR });
-      
       if (!monthlyData[monthKey]) {
         monthlyData[monthKey] = { month: monthLabel, value: 0, quantity: 0, orders: 0, avgPrice: 0 };
       }
@@ -292,63 +407,13 @@ const HistoricoCompras = () => {
       monthlyData[monthKey].quantity += record.quantity;
       monthlyData[monthKey].orders += 1;
     });
-
-    // Calculate average price per month
     Object.keys(monthlyData).forEach(key => {
-      monthlyData[key].avgPrice = monthlyData[key].quantity > 0 
-        ? monthlyData[key].value / monthlyData[key].quantity 
-        : 0;
+      monthlyData[key].avgPrice = monthlyData[key].quantity > 0 ? monthlyData[key].value / monthlyData[key].quantity : 0;
     });
-
-    const monthlyTrend = Object.keys(monthlyData)
-      .sort()
-      .map(key => monthlyData[key]);
-
-    // Group by category
-    const categoryData: Record<string, { category: string; value: number; quantity: number; orders: number }> = {};
-    
-    filteredPurchaseRecords.forEach(record => {
-      if (!categoryData[record.productCategory]) {
-        categoryData[record.productCategory] = { category: record.productCategory, value: 0, quantity: 0, orders: 0 };
-      }
-      categoryData[record.productCategory].value += record.totalPrice;
-      categoryData[record.productCategory].quantity += record.quantity;
-      categoryData[record.productCategory].orders += 1;
-    });
-
-    const byCategory = Object.values(categoryData).sort((a, b) => b.value - a.value);
-
-    // Group by supplier
-    const supplierData: Record<string, { supplier: string; value: number; quantity: number; orders: number; avgDiscount: number; discountSum: number }> = {};
-    
-    filteredPurchaseRecords.forEach(record => {
-      if (!supplierData[record.supplierId]) {
-        supplierData[record.supplierId] = { 
-          supplier: record.supplierName, 
-          value: 0, 
-          quantity: 0, 
-          orders: 0, 
-          avgDiscount: 0,
-          discountSum: 0 
-        };
-      }
-      supplierData[record.supplierId].value += record.totalPrice;
-      supplierData[record.supplierId].quantity += record.quantity;
-      supplierData[record.supplierId].orders += 1;
-      supplierData[record.supplierId].discountSum += record.discount;
-    });
-
-    Object.keys(supplierData).forEach(key => {
-      supplierData[key].avgDiscount = supplierData[key].orders > 0 
-        ? supplierData[key].discountSum / supplierData[key].orders 
-        : 0;
-    });
-
-    const bySupplier = Object.values(supplierData).sort((a, b) => b.value - a.value);
+    const monthlyTrend = Object.keys(monthlyData).sort().map(key => monthlyData[key]);
 
     // Price evolution by product
     const priceByProduct: Record<string, { product: string; prices: { date: string; price: number }[] }> = {};
-    
     filteredPurchaseRecords.forEach(record => {
       if (!priceByProduct[record.productId]) {
         priceByProduct[record.productId] = { product: record.productName, prices: [] };
@@ -359,8 +424,22 @@ const HistoricoCompras = () => {
       });
     });
 
-    return { monthlyTrend, byCategory, bySupplier, priceByProduct };
-  }, [filteredPurchaseRecords]);
+    // Summary comparison stats
+    const currentStats = {
+      totalSpent: filteredPurchaseRecords.reduce((sum, r) => sum + r.totalPrice, 0),
+      totalOrders: filteredPurchaseRecords.length,
+      totalQuantity: filteredPurchaseRecords.reduce((sum, r) => sum + r.quantity, 0),
+      avgDiscount: filteredPurchaseRecords.length > 0 ? filteredPurchaseRecords.reduce((sum, r) => sum + r.discount, 0) / filteredPurchaseRecords.length : 0
+    };
+    const compStats = comparisonEnabled ? {
+      totalSpent: comparisonRecords.reduce((sum, r) => sum + r.totalPrice, 0),
+      totalOrders: comparisonRecords.length,
+      totalQuantity: comparisonRecords.reduce((sum, r) => sum + r.quantity, 0),
+      avgDiscount: comparisonRecords.length > 0 ? comparisonRecords.reduce((sum, r) => sum + r.discount, 0) / comparisonRecords.length : 0
+    } : null;
+
+    return { monthlyTrend, byCategory, bySupplier, priceByProduct, currentStats, compStats };
+  }, [filteredPurchaseRecords, comparisonRecords, comparisonEnabled]);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -953,6 +1032,117 @@ const HistoricoCompras = () => {
 
           {/* Analytics Tab */}
           <TabsContent value="analises" className="space-y-6">
+            {/* Comparison Controls */}
+            <Card className="p-4">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="comparison-toggle"
+                      checked={comparisonEnabled}
+                      onChange={(e) => setComparisonEnabled(e.target.checked)}
+                      className="h-4 w-4 rounded border-border"
+                    />
+                    <label htmlFor="comparison-toggle" className="text-sm font-medium text-foreground cursor-pointer">
+                      Comparar Períodos
+                    </label>
+                  </div>
+                  
+                  {comparisonEnabled && dateRange?.from && (
+                    <Select value={comparisonPeriod} onValueChange={(v: 'previousPeriod' | 'lastYear' | 'custom') => setComparisonPeriod(v)}>
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="previousPeriod">Período Anterior</SelectItem>
+                        <SelectItem value="lastYear">Mesmo Período Ano Passado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
+
+                {comparisonEnabled && !dateRange?.from && (
+                  <p className="text-xs text-amber-600">Selecione um período nos filtros avançados para habilitar comparação</p>
+                )}
+
+                {comparisonEnabled && getComparisonDateRange && (
+                  <div className="flex items-center gap-4 text-xs">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded bg-primary" />
+                      <span className="text-muted-foreground">
+                        Atual: {dateRange?.from && format(dateRange.from, "dd/MM/yy", { locale: ptBR })} - {dateRange?.to && format(dateRange.to, "dd/MM/yy", { locale: ptBR })}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded bg-muted-foreground/50" />
+                      <span className="text-muted-foreground">
+                        Comparação: {format(getComparisonDateRange.from!, "dd/MM/yy", { locale: ptBR })} - {format(getComparisonDateRange.to!, "dd/MM/yy", { locale: ptBR })}
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Comparison Summary Stats */}
+              {comparisonEnabled && chartData.compStats && (
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 pt-4 border-t border-border">
+                  <div className="space-y-1">
+                    <p className="text-xs text-muted-foreground">Volume Total</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-lg font-bold">R$ {chartData.currentStats.totalSpent.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</span>
+                      {chartData.compStats.totalSpent > 0 && (
+                        <Badge variant={chartData.currentStats.totalSpent >= chartData.compStats.totalSpent ? "default" : "secondary"} className={`text-[10px] ${chartData.currentStats.totalSpent >= chartData.compStats.totalSpent ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'}`}>
+                          {chartData.currentStats.totalSpent >= chartData.compStats.totalSpent ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
+                          {Math.abs(((chartData.currentStats.totalSpent - chartData.compStats.totalSpent) / chartData.compStats.totalSpent) * 100).toFixed(1)}%
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">vs R$ {chartData.compStats.totalSpent.toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs text-muted-foreground">Pedidos</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-lg font-bold">{chartData.currentStats.totalOrders}</span>
+                      {chartData.compStats.totalOrders > 0 && (
+                        <Badge variant="secondary" className={`text-[10px] ${chartData.currentStats.totalOrders >= chartData.compStats.totalOrders ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'}`}>
+                          {chartData.currentStats.totalOrders >= chartData.compStats.totalOrders ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
+                          {Math.abs(((chartData.currentStats.totalOrders - chartData.compStats.totalOrders) / chartData.compStats.totalOrders) * 100).toFixed(1)}%
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">vs {chartData.compStats.totalOrders}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs text-muted-foreground">Quantidade</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-lg font-bold">{chartData.currentStats.totalQuantity.toLocaleString('pt-BR')}</span>
+                      {chartData.compStats.totalQuantity > 0 && (
+                        <Badge variant="secondary" className={`text-[10px] ${chartData.currentStats.totalQuantity >= chartData.compStats.totalQuantity ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'}`}>
+                          {chartData.currentStats.totalQuantity >= chartData.compStats.totalQuantity ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
+                          {Math.abs(((chartData.currentStats.totalQuantity - chartData.compStats.totalQuantity) / chartData.compStats.totalQuantity) * 100).toFixed(1)}%
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">vs {chartData.compStats.totalQuantity.toLocaleString('pt-BR')}</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs text-muted-foreground">Desconto Médio</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-lg font-bold text-green-600">{chartData.currentStats.avgDiscount.toFixed(1)}%</span>
+                      {chartData.compStats.avgDiscount > 0 && (
+                        <Badge variant="secondary" className={`text-[10px] ${chartData.currentStats.avgDiscount >= chartData.compStats.avgDiscount ? 'bg-green-500/10 text-green-600' : 'bg-red-500/10 text-red-600'}`}>
+                          {chartData.currentStats.avgDiscount >= chartData.compStats.avgDiscount ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
+                          {Math.abs(chartData.currentStats.avgDiscount - chartData.compStats.avgDiscount).toFixed(1)}pp
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-muted-foreground">vs {chartData.compStats.avgDiscount.toFixed(1)}%</p>
+                  </div>
+                </div>
+              )}
+            </Card>
+
             {/* Monthly Trend Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Volume por Mês */}
@@ -1104,7 +1294,10 @@ const HistoricoCompras = () => {
                         width={100}
                       />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="value" name="Valor (R$)" radius={[0, 4, 4, 0]} style={{ cursor: 'pointer' }}>
+                      {comparisonEnabled && (
+                        <Bar dataKey="compValue" name="Comparação (R$)" fill="hsl(var(--muted-foreground))" fillOpacity={0.3} radius={[0, 4, 4, 0]} />
+                      )}
+                      <Bar dataKey="value" name="Atual (R$)" radius={[0, 4, 4, 0]} style={{ cursor: 'pointer' }}>
                         {chartData.byCategory.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
@@ -1145,7 +1338,10 @@ const HistoricoCompras = () => {
                         width={100}
                       />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="value" name="Valor (R$)" fill="hsl(38, 92%, 50%)" radius={[0, 4, 4, 0]} style={{ cursor: 'pointer' }} />
+                      {comparisonEnabled && (
+                        <Bar dataKey="compValue" name="Comparação (R$)" fill="hsl(var(--muted-foreground))" fillOpacity={0.3} radius={[0, 4, 4, 0]} />
+                      )}
+                      <Bar dataKey="value" name="Atual (R$)" fill="hsl(38, 92%, 50%)" radius={[0, 4, 4, 0]} style={{ cursor: 'pointer' }} />
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
