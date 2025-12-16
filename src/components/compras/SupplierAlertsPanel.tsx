@@ -10,7 +10,7 @@ import { useSLASettings } from '@/stores/slaSettingsStore';
 import { formatDistanceToNow, subDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, BarChart, Bar, Cell } from 'recharts';
 
 // Generate mock historical trend data
 const generateTrendData = (supplierId: string, days: number = 7) => {
@@ -201,11 +201,14 @@ export const SupplierAlertsPanel = () => {
           </div>
         </div>
 
-        {/* Tabs for Alerts and Trends */}
+        {/* Tabs for Alerts, Trends and Comparison */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="status" className="text-xs">
               Alertas ({supplierAlerts.length})
+            </TabsTrigger>
+            <TabsTrigger value="compare" className="text-xs">
+              Comparativo
             </TabsTrigger>
             <TabsTrigger value="trends" className="text-xs">
               Tendências
@@ -228,6 +231,77 @@ export const SupplierAlertsPanel = () => {
                 ))
               )}
             </ScrollArea>
+          </TabsContent>
+
+          <TabsContent value="compare" className="mt-3">
+            <div className="h-[200px] border border-border rounded-lg p-2">
+              {supplierData.length === 0 ? (
+                <div className="h-full flex items-center justify-center text-muted-foreground">
+                  <div className="text-center">
+                    <Building2 className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">Aguardando dados de fornecedores</p>
+                  </div>
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={supplierData
+                      .map((s) => ({
+                        name: s.name.split(' ')[0],
+                        fullName: s.name,
+                        sla: s.slaCompliance,
+                        belowThreshold: s.slaCompliance < settings.supplierSLAThreshold,
+                      }))
+                      .sort((a, b) => b.sla - a.sla)}
+                    margin={{ top: 10, right: 10, bottom: 20, left: 10 }}
+                  >
+                    <XAxis 
+                      dataKey="name" 
+                      tick={{ fontSize: 10 }}
+                      angle={-45}
+                      textAnchor="end"
+                      height={40}
+                    />
+                    <YAxis 
+                      domain={[60, 100]} 
+                      tick={{ fontSize: 10 }}
+                      width={30}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'hsl(var(--popover))',
+                        border: '1px solid hsl(var(--border))',
+                        borderRadius: '6px',
+                        fontSize: '12px',
+                      }}
+                      formatter={(value: number) => [`${value}%`, 'SLA']}
+                      labelFormatter={(_, payload) => payload[0]?.payload?.fullName || ''}
+                    />
+                    <ReferenceLine 
+                      y={settings.supplierSLAThreshold} 
+                      stroke="hsl(var(--destructive))" 
+                      strokeDasharray="3 3"
+                      label={{ 
+                        value: `${settings.supplierSLAThreshold}%`, 
+                        position: 'right',
+                        fontSize: 10,
+                        fill: 'hsl(var(--destructive))'
+                      }}
+                    />
+                    <Bar dataKey="sla" radius={[4, 4, 0, 0]}>
+                      {supplierData.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={entry.slaCompliance < settings.supplierSLAThreshold 
+                            ? 'hsl(var(--destructive))' 
+                            : 'hsl(var(--primary))'}
+                        />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
           </TabsContent>
 
           <TabsContent value="trends" className="mt-3">
