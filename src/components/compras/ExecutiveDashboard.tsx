@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -27,7 +28,9 @@ import {
   PieChart,
   Activity,
   GitCompare,
-  Calendar
+  Calendar,
+  Filter,
+  X
 } from 'lucide-react';
 import {
   AreaChart,
@@ -160,36 +163,40 @@ const comparisonTrend = monthlyTrend.map((current, index) => ({
 }));
 
 const categorySpend = [
-  { name: 'Mochilas', value: 450000, previousValue: 380000, percentage: 18.4, orders: 45 },
-  { name: 'Canetas', value: 380000, previousValue: 350000, percentage: 15.5, orders: 120 },
-  { name: 'Camisetas', value: 320000, previousValue: 290000, percentage: 13.1, orders: 38 },
-  { name: 'Bonés', value: 280000, previousValue: 260000, percentage: 11.4, orders: 52 },
-  { name: 'Cadernos', value: 250000, previousValue: 230000, percentage: 10.2, orders: 65 },
-  { name: 'Outros', value: 770000, previousValue: 668000, percentage: 31.4, orders: 180 }
+  { name: 'Mochilas', value: 450000, previousValue: 380000, percentage: 18.4, orders: 45, supplier: 'XBZ Brindes' },
+  { name: 'Canetas', value: 380000, previousValue: 350000, percentage: 15.5, orders: 120, supplier: 'Stricker' },
+  { name: 'Camisetas', value: 320000, previousValue: 290000, percentage: 13.1, orders: 38, supplier: 'Asia Import' },
+  { name: 'Bonés', value: 280000, previousValue: 260000, percentage: 11.4, orders: 52, supplier: 'Só Marcas' },
+  { name: 'Cadernos', value: 250000, previousValue: 230000, percentage: 10.2, orders: 65, supplier: 'Spot Gifts' },
+  { name: 'Outros', value: 770000, previousValue: 668000, percentage: 31.4, orders: 180, supplier: 'XBZ Brindes' }
 ];
 
 const topSuppliers = [
-  { name: 'XBZ Brindes', spend: 420000, previousSpend: 360000, orders: 45, savings: 42000, compliance: 94 },
-  { name: 'Stricker', spend: 380000, previousSpend: 340000, orders: 38, savings: 35000, compliance: 91 },
-  { name: 'Asia Import', spend: 320000, previousSpend: 295000, orders: 52, savings: 28000, compliance: 88 },
-  { name: 'Só Marcas', spend: 280000, previousSpend: 250000, orders: 41, savings: 25000, compliance: 85 },
-  { name: 'Spot Gifts', spend: 250000, previousSpend: 220000, orders: 35, savings: 22000, compliance: 82 }
+  { name: 'XBZ Brindes', spend: 420000, previousSpend: 360000, orders: 45, savings: 42000, compliance: 94, categories: ['Mochilas', 'Outros'] },
+  { name: 'Stricker', spend: 380000, previousSpend: 340000, orders: 38, savings: 35000, compliance: 91, categories: ['Canetas'] },
+  { name: 'Asia Import', spend: 320000, previousSpend: 295000, orders: 52, savings: 28000, compliance: 88, categories: ['Camisetas'] },
+  { name: 'Só Marcas', spend: 280000, previousSpend: 250000, orders: 41, savings: 25000, compliance: 85, categories: ['Bonés'] },
+  { name: 'Spot Gifts', spend: 250000, previousSpend: 220000, orders: 35, savings: 22000, compliance: 82, categories: ['Cadernos'] }
 ];
 
 const buyerPerformance = [
-  { name: 'Ana Silva', orders: 45, previousOrders: 38, savings: 52000, previousSavings: 42000, avgCycle: 3.8, compliance: 96 },
-  { name: 'Carlos Santos', orders: 38, previousOrders: 35, savings: 41000, previousSavings: 35000, avgCycle: 4.2, compliance: 92 },
-  { name: 'Maria Costa', orders: 42, previousOrders: 40, savings: 38000, previousSavings: 34000, avgCycle: 4.5, compliance: 89 },
-  { name: 'João Pereira', orders: 31, previousOrders: 28, savings: 28000, previousSavings: 24000, avgCycle: 5.1, compliance: 85 }
+  { name: 'Ana Silva', orders: 45, previousOrders: 38, savings: 52000, previousSavings: 42000, avgCycle: 3.8, compliance: 96, categories: ['Mochilas', 'Canetas'], suppliers: ['XBZ Brindes', 'Stricker'] },
+  { name: 'Carlos Santos', orders: 38, previousOrders: 35, savings: 41000, previousSavings: 35000, avgCycle: 4.2, compliance: 92, categories: ['Camisetas', 'Bonés'], suppliers: ['Asia Import', 'Só Marcas'] },
+  { name: 'Maria Costa', orders: 42, previousOrders: 40, savings: 38000, previousSavings: 34000, avgCycle: 4.5, compliance: 89, categories: ['Cadernos', 'Outros'], suppliers: ['Spot Gifts', 'XBZ Brindes'] },
+  { name: 'João Pereira', orders: 31, previousOrders: 28, savings: 28000, previousSavings: 24000, avgCycle: 5.1, compliance: 85, categories: ['Mochilas', 'Camisetas'], suppliers: ['XBZ Brindes', 'Asia Import'] }
 ];
 
 const pendingItems = [
-  { id: 'APR-001', type: 'Aprovação', item: 'PO #2638 - Mochilas', value: 45000, days: 2, priority: 'high' },
-  { id: 'APR-002', type: 'Aprovação', item: 'PO #2641 - Camisetas', value: 32000, days: 1, priority: 'critical' },
-  { id: 'PAY-001', type: 'Pagamento', item: 'NF 12345 - XBZ Brindes', value: 28000, days: 3, priority: 'medium' },
-  { id: 'ORD-001', type: 'Pedido Atrasado', item: 'PO #2612 - Canetas', value: 15000, days: 5, priority: 'critical' },
-  { id: 'APR-003', type: 'Aprovação', item: 'PO #2645 - Bonés', value: 18000, days: 0, priority: 'high' }
+  { id: 'APR-001', type: 'Aprovação', item: 'PO #2638 - Mochilas', value: 45000, days: 2, priority: 'high', category: 'Mochilas', supplier: 'XBZ Brindes' },
+  { id: 'APR-002', type: 'Aprovação', item: 'PO #2641 - Camisetas', value: 32000, days: 1, priority: 'critical', category: 'Camisetas', supplier: 'Asia Import' },
+  { id: 'PAY-001', type: 'Pagamento', item: 'NF 12345 - XBZ Brindes', value: 28000, days: 3, priority: 'medium', category: 'Outros', supplier: 'XBZ Brindes' },
+  { id: 'ORD-001', type: 'Pedido Atrasado', item: 'PO #2612 - Canetas', value: 15000, days: 5, priority: 'critical', category: 'Canetas', supplier: 'Stricker' },
+  { id: 'APR-003', type: 'Aprovação', item: 'PO #2645 - Bonés', value: 18000, days: 0, priority: 'high', category: 'Bonés', supplier: 'Só Marcas' }
 ];
+
+// Extract unique categories and suppliers for filters
+const allCategories = categorySpend.map(c => c.name);
+const allSuppliers = topSuppliers.map(s => s.name);
 
 const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))', 'hsl(var(--muted))'];
 
@@ -318,6 +325,76 @@ export const ExecutiveDashboard = () => {
   const [drillDown, setDrillDown] = useState<DrillDownData | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState('6m');
   const [showComparison, setShowComparison] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
+
+  // Filter data based on selected category and supplier
+  const filteredCategorySpend = useMemo(() => {
+    let data = categorySpend;
+    if (selectedCategory !== 'all') {
+      data = data.filter(c => c.name === selectedCategory);
+    }
+    if (selectedSupplier !== 'all') {
+      data = data.filter(c => c.supplier === selectedSupplier);
+    }
+    return data;
+  }, [selectedCategory, selectedSupplier]);
+
+  const filteredSuppliers = useMemo(() => {
+    let data = topSuppliers;
+    if (selectedSupplier !== 'all') {
+      data = data.filter(s => s.name === selectedSupplier);
+    }
+    if (selectedCategory !== 'all') {
+      data = data.filter(s => s.categories.includes(selectedCategory));
+    }
+    return data;
+  }, [selectedCategory, selectedSupplier]);
+
+  const filteredBuyers = useMemo(() => {
+    let data = buyerPerformance;
+    if (selectedCategory !== 'all') {
+      data = data.filter(b => b.categories.includes(selectedCategory));
+    }
+    if (selectedSupplier !== 'all') {
+      data = data.filter(b => b.suppliers.includes(selectedSupplier));
+    }
+    return data;
+  }, [selectedCategory, selectedSupplier]);
+
+  const filteredPendingItems = useMemo(() => {
+    let data = pendingItems;
+    if (selectedCategory !== 'all') {
+      data = data.filter(p => p.category === selectedCategory);
+    }
+    if (selectedSupplier !== 'all') {
+      data = data.filter(p => p.supplier === selectedSupplier);
+    }
+    return data;
+  }, [selectedCategory, selectedSupplier]);
+
+  // Calculate filtered metrics
+  const filteredMetrics = useMemo(() => {
+    const totalSpend = filteredCategorySpend.reduce((acc, c) => acc + c.value, 0);
+    const previousSpend = filteredCategorySpend.reduce((acc, c) => acc + c.previousValue, 0);
+    const totalOrders = filteredCategorySpend.reduce((acc, c) => acc + c.orders, 0);
+    const totalSavings = filteredSuppliers.reduce((acc, s) => acc + s.savings, 0);
+    
+    return {
+      totalSpend,
+      previousSpend,
+      totalOrders,
+      totalSavings,
+      spendChange: previousSpend > 0 ? ((totalSpend - previousSpend) / previousSpend) * 100 : 0
+    };
+  }, [filteredCategorySpend, filteredSuppliers]);
+
+  const hasActiveFilters = selectedCategory !== 'all' || selectedSupplier !== 'all';
+
+  const clearFilters = () => {
+    setSelectedCategory('all');
+    setSelectedSupplier('all');
+  };
 
   const handleCategoryDrillDown = (category: any) => {
     setDrillDown({ type: 'category', data: category });
@@ -359,7 +436,7 @@ export const ExecutiveDashboard = () => {
           <h2 className="text-2xl font-bold">Dashboard Executivo</h2>
           <p className="text-muted-foreground">Visão consolidada de compras - Atualizado em tempo real</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
           {/* Comparison Toggle */}
           <div className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-card">
             <GitCompare className="h-4 w-4 text-muted-foreground" />
@@ -386,6 +463,76 @@ export const ExecutiveDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Filters Row */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Filter className="h-4 w-4 text-muted-foreground" />
+              <span className="text-sm font-medium">Filtros:</span>
+            </div>
+            
+            {/* Category Filter */}
+            <div className="flex items-center gap-2">
+              <Label className="text-sm text-muted-foreground">Categoria:</Label>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-[160px] h-9 bg-background">
+                  <SelectValue placeholder="Todas" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectItem value="all">Todas</SelectItem>
+                  {allCategories.map(cat => (
+                    <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            {/* Supplier Filter */}
+            <div className="flex items-center gap-2">
+              <Label className="text-sm text-muted-foreground">Fornecedor:</Label>
+              <Select value={selectedSupplier} onValueChange={setSelectedSupplier}>
+                <SelectTrigger className="w-[160px] h-9 bg-background">
+                  <SelectValue placeholder="Todos" />
+                </SelectTrigger>
+                <SelectContent className="bg-background border shadow-lg z-50">
+                  <SelectItem value="all">Todos</SelectItem>
+                  {allSuppliers.map(sup => (
+                    <SelectItem key={sup} value={sup}>{sup}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Clear Filters */}
+            {hasActiveFilters && (
+              <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground hover:text-foreground">
+                <X className="h-4 w-4 mr-1" />
+                Limpar Filtros
+              </Button>
+            )}
+
+            {/* Active Filters Summary */}
+            {hasActiveFilters && (
+              <div className="ml-auto flex items-center gap-2">
+                {selectedCategory !== 'all' && (
+                  <Badge variant="secondary" className="flex items-center gap-1">
+                    Categoria: {selectedCategory}
+                    <X className="h-3 w-3 cursor-pointer" onClick={() => setSelectedCategory('all')} />
+                  </Badge>
+                )}
+                {selectedSupplier !== 'all' && (
+                  <Badge variant="secondary" className="flex items-center gap-1">
+                    Fornecedor: {selectedSupplier}
+                    <X className="h-3 w-3 cursor-pointer" onClick={() => setSelectedSupplier('all')} />
+                  </Badge>
+                )}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Period Comparison Summary */}
       {showComparison && (
@@ -414,6 +561,44 @@ export const ExecutiveDashboard = () => {
         </Card>
       )}
 
+      {/* Filtered Summary */}
+      {hasActiveFilters && (
+        <Card className="border-chart-2/30 bg-chart-2/5">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-3">
+                <Filter className="h-5 w-5 text-chart-2" />
+                <div>
+                  <p className="font-medium text-chart-2">Dados Filtrados</p>
+                  <p className="text-sm text-muted-foreground">
+                    Exibindo resultados para 
+                    {selectedCategory !== 'all' && <span className="font-medium"> {selectedCategory}</span>}
+                    {selectedCategory !== 'all' && selectedSupplier !== 'all' && ' de'}
+                    {selectedSupplier !== 'all' && <span className="font-medium"> {selectedSupplier}</span>}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-6">
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">Spend Filtrado</p>
+                  <p className="font-bold text-lg">{formatCurrency(filteredMetrics.totalSpend)}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">Pedidos</p>
+                  <p className="font-bold text-lg">{filteredMetrics.totalOrders}</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-xs text-muted-foreground">Variação</p>
+                  <p className={`font-bold text-lg ${filteredMetrics.spendChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                    {filteredMetrics.spendChange >= 0 ? '+' : ''}{filteredMetrics.spendChange.toFixed(1)}%
+                  </p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Critical Alerts Banner */}
       {(executiveMetrics.pendingApprovals.urgent > 0 || executiveMetrics.overdueOrders.critical > 0) && (
         <Card className="border-destructive bg-destructive/5">
@@ -426,7 +611,7 @@ export const ExecutiveDashboard = () => {
                   {executiveMetrics.pendingApprovals.urgent} aprovações urgentes e {executiveMetrics.overdueOrders.critical} pedidos críticos aguardando ação
                 </p>
               </div>
-              <Button variant="destructive" size="sm" onClick={() => setDrillDown({ type: 'pending', data: pendingItems })}>
+              <Button variant="destructive" size="sm" onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}>
                 Ver Detalhes
               </Button>
             </div>
@@ -496,7 +681,7 @@ export const ExecutiveDashboard = () => {
           change={executiveMetrics.pendingApprovals.change}
           urgent={executiveMetrics.pendingApprovals.urgent}
           icon={CheckCircle2}
-          onClick={() => setDrillDown({ type: 'pending', data: pendingItems })}
+          onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}
           showComparison={showComparison}
           invertChange={true}
         />
@@ -615,7 +800,7 @@ export const ExecutiveDashboard = () => {
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               {showComparison ? (
-                <BarChart data={categorySpend} layout="vertical">
+                <BarChart data={filteredCategorySpend} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                   <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} className="text-xs" />
                   <YAxis dataKey="name" type="category" className="text-xs" width={80} />
@@ -633,7 +818,7 @@ export const ExecutiveDashboard = () => {
               ) : (
                 <RechartsPieChart>
                   <Pie
-                    data={categorySpend}
+                    data={filteredCategorySpend}
                     cx="50%"
                     cy="50%"
                     innerRadius={60}
@@ -643,7 +828,7 @@ export const ExecutiveDashboard = () => {
                     onClick={(data) => handleCategoryDrillDown(data)}
                     className="cursor-pointer"
                   >
-                    {categorySpend.map((_, index) => (
+                    {filteredCategorySpend.map((_, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
@@ -671,7 +856,7 @@ export const ExecutiveDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {topSuppliers.map((supplier, index) => {
+              {filteredSuppliers.length > 0 ? filteredSuppliers.map((supplier, index) => {
                 const spendChange = ((supplier.spend - supplier.previousSpend) / supplier.previousSpend) * 100;
                 return (
                   <div 
@@ -702,7 +887,9 @@ export const ExecutiveDashboard = () => {
                     </Badge>
                   </div>
                 );
-              })}
+              }) : (
+                <p className="text-center text-muted-foreground py-4">Nenhum fornecedor encontrado para os filtros selecionados</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -717,7 +904,7 @@ export const ExecutiveDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {buyerPerformance.map((buyer, index) => {
+              {filteredBuyers.length > 0 ? filteredBuyers.map((buyer, index) => {
                 const savingsChange = ((buyer.savings - buyer.previousSavings) / buyer.previousSavings) * 100;
                 const ordersChange = ((buyer.orders - buyer.previousOrders) / buyer.previousOrders) * 100;
                 return (
@@ -757,7 +944,9 @@ export const ExecutiveDashboard = () => {
                     </Badge>
                   </div>
                 );
-              })}
+              }) : (
+                <p className="text-center text-muted-foreground py-4">Nenhum comprador encontrado para os filtros selecionados</p>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -773,7 +962,7 @@ export const ExecutiveDashboard = () => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {pendingItems.slice(0, 6).map((item) => (
+            {filteredPendingItems.length > 0 ? filteredPendingItems.slice(0, 6).map((item) => (
               <div 
                 key={item.id}
                 className={`p-4 rounded-lg border ${
@@ -794,7 +983,9 @@ export const ExecutiveDashboard = () => {
                 <p className="font-medium text-sm mb-1">{item.item}</p>
                 <p className="text-lg font-bold">{formatCurrency(item.value)}</p>
               </div>
-            ))}
+            )) : (
+              <p className="text-center text-muted-foreground py-4 col-span-3">Nenhuma ação pendente para os filtros selecionados</p>
+            )}
           </div>
         </CardContent>
       </Card>
