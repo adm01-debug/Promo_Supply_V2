@@ -10,9 +10,12 @@ import {
   BarChart3,
   Bell,
   Settings,
-  User
+  User,
+  Search
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { KpiCard } from "@/components/compras/KpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
 import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
