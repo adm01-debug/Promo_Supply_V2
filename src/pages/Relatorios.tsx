@@ -12,7 +12,11 @@ import {
   PieChart as PieChartIcon,
   ArrowUpRight,
   ArrowDownRight,
-  Star
+  Star,
+  Scale,
+  Check,
+  Clock,
+  Boxes
 } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
@@ -135,6 +139,72 @@ const topProdutos = [
   { produto: "Squeeze 500ml", quantidade: 4200, valor: 50400 },
   { produto: "Carregador Portátil", quantidade: 1200, valor: 66000 },
   { produto: "Caderno A5", quantidade: 3500, valor: 52500 },
+];
+
+// Comparativo de preços entre fornecedores
+const comparativoPrecos = [
+  {
+    produto: "Mochila Executiva",
+    categoria: "Bolsas",
+    fornecedores: [
+      { nome: "XBZ Brindes", preco: 45.00, prazo: 2, estoque: 1500, melhorPreco: true },
+      { nome: "Asia Import", preco: 48.50, prazo: 5, estoque: 800, melhorPreco: false },
+      { nome: "Só Marcas", preco: 52.00, prazo: 3, estoque: 1200, melhorPreco: false },
+    ]
+  },
+  {
+    produto: "Caneta Metal Premium",
+    categoria: "Escritório",
+    fornecedores: [
+      { nome: "Stricker / Spot Gifts", preco: 4.50, prazo: 3, estoque: 5000, melhorPreco: true },
+      { nome: "XBZ Brindes", preco: 4.80, prazo: 2, estoque: 3000, melhorPreco: false },
+      { nome: "Asia Import", preco: 5.20, prazo: 5, estoque: 8000, melhorPreco: false },
+    ]
+  },
+  {
+    produto: "Squeeze 500ml",
+    categoria: "Utilidades",
+    fornecedores: [
+      { nome: "Asia Import", preco: 11.00, prazo: 5, estoque: 4000, melhorPreco: true },
+      { nome: "Eco Brindes", preco: 12.50, prazo: 4, estoque: 2000, melhorPreco: false },
+      { nome: "XBZ Brindes", preco: 13.00, prazo: 2, estoque: 1500, melhorPreco: false },
+    ]
+  },
+  {
+    produto: "Carregador Portátil 10000mAh",
+    categoria: "Eletrônicos",
+    fornecedores: [
+      { nome: "Tech Brindes", preco: 52.00, prazo: 3, estoque: 800, melhorPreco: true },
+      { nome: "XBZ Brindes", preco: 58.00, prazo: 2, estoque: 500, melhorPreco: false },
+      { nome: "Asia Import", preco: 55.00, prazo: 6, estoque: 1200, melhorPreco: false },
+    ]
+  },
+  {
+    produto: "Camiseta Polo",
+    categoria: "Têxtil",
+    fornecedores: [
+      { nome: "Estrela Brindes", preco: 38.00, prazo: 7, estoque: 2000, melhorPreco: true },
+      { nome: "Só Marcas", preco: 42.00, prazo: 5, estoque: 1500, melhorPreco: false },
+      { nome: "Premium Gifts", preco: 45.00, prazo: 4, estoque: 800, melhorPreco: false },
+    ]
+  },
+  {
+    produto: "Boné Trucker",
+    categoria: "Têxtil",
+    fornecedores: [
+      { nome: "Estrela Brindes", preco: 16.50, prazo: 5, estoque: 3000, melhorPreco: true },
+      { nome: "Só Marcas", preco: 18.00, prazo: 4, estoque: 2500, melhorPreco: false },
+      { nome: "XBZ Brindes", preco: 19.50, prazo: 2, estoque: 1000, melhorPreco: false },
+    ]
+  },
+];
+
+const comparativoBarChart = [
+  { produto: "Mochila", XBZ: 45, Asia: 48.5, SoMarcas: 52 },
+  { produto: "Caneta", Stricker: 4.5, XBZ: 4.8, Asia: 5.2 },
+  { produto: "Squeeze", Asia: 11, Eco: 12.5, XBZ: 13 },
+  { produto: "Carregador", Tech: 52, XBZ: 58, Asia: 55 },
+  { produto: "Camiseta", Estrela: 38, SoMarcas: 42, Premium: 45 },
 ];
 
 const Relatorios = () => {
@@ -520,6 +590,152 @@ const Relatorios = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </Card>
+
+        {/* Comparativo de Preços */}
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <Scale className="w-5 h-5 text-primary" />
+                Comparativo de Preços entre Fornecedores
+              </h3>
+              <p className="text-sm text-muted-foreground">Compare preços do mesmo produto em diferentes fornecedores</p>
+            </div>
+            <Button variant="outline" size="sm" className="gap-2">
+              <Filter className="w-4 h-4" />
+              Filtrar categoria
+            </Button>
+          </div>
+
+          <div className="space-y-6">
+            {comparativoPrecos.map((item) => {
+              const menorPreco = Math.min(...item.fornecedores.map(f => f.preco));
+              const maiorPreco = Math.max(...item.fornecedores.map(f => f.preco));
+              const economiaMaxima = ((maiorPreco - menorPreco) / maiorPreco * 100).toFixed(1);
+
+              return (
+                <div key={item.produto} className="border border-border rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h4 className="font-medium text-foreground">{item.produto}</h4>
+                      <Badge variant="outline" className="mt-1 text-xs">{item.categoria}</Badge>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-muted-foreground">Economia potencial</p>
+                      <p className="text-lg font-bold text-success">até {economiaMaxima}%</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    {item.fornecedores.map((fornecedor, idx) => (
+                      <div 
+                        key={fornecedor.nome}
+                        className={`relative p-4 rounded-lg border transition-all ${
+                          fornecedor.melhorPreco 
+                            ? 'border-success bg-success/5 ring-1 ring-success/20' 
+                            : 'border-border bg-muted/30'
+                        }`}
+                      >
+                        {fornecedor.melhorPreco && (
+                          <div className="absolute -top-2 -right-2">
+                            <Badge className="bg-success text-success-foreground text-xs gap-1">
+                              <Check className="w-3 h-3" />
+                              Melhor preço
+                            </Badge>
+                          </div>
+                        )}
+                        
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                            idx === 0 ? 'bg-yellow-500/20 text-yellow-600' :
+                            idx === 1 ? 'bg-gray-200 text-gray-600' :
+                            'bg-amber-600/20 text-amber-700'
+                          }`}>
+                            {idx + 1}º
+                          </div>
+                          <span className="font-medium text-foreground text-sm">{fornecedor.nome}</span>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <DollarSign className="w-3 h-3" />
+                              Preço unitário
+                            </span>
+                            <span className={`font-bold ${fornecedor.melhorPreco ? 'text-success' : 'text-foreground'}`}>
+                              R$ {fornecedor.preco.toFixed(2)}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              Prazo
+                            </span>
+                            <span className="text-sm text-foreground">{fornecedor.prazo} dias</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Boxes className="w-3 h-3" />
+                              Estoque
+                            </span>
+                            <span className="text-sm text-foreground">{fornecedor.estoque.toLocaleString('pt-BR')} un</span>
+                          </div>
+                        </div>
+
+                        {!fornecedor.melhorPreco && (
+                          <div className="mt-3 pt-3 border-t border-border">
+                            <p className="text-xs text-muted-foreground">
+                              +R$ {(fornecedor.preco - menorPreco).toFixed(2)} vs melhor preço
+                              <span className="text-orange-500 ml-1">
+                                (+{((fornecedor.preco - menorPreco) / menorPreco * 100).toFixed(1)}%)
+                              </span>
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+
+        {/* Gráfico Comparativo de Preços */}
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="font-semibold text-foreground">Comparativo Visual de Preços</h3>
+              <p className="text-sm text-muted-foreground">Preços por produto e fornecedor</p>
+            </div>
+          </div>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={comparativoBarChart} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => `R$ ${v}`} />
+                <YAxis dataKey="produto" type="category" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} width={80} />
+                <Tooltip 
+                  formatter={(value: number) => `R$ ${value.toFixed(2)}`}
+                  contentStyle={{ 
+                    backgroundColor: 'hsl(var(--popover))', 
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '8px'
+                  }}
+                />
+                <Legend />
+                <Bar dataKey="XBZ" fill="#3b82f6" name="XBZ Brindes" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="Asia" fill="#10b981" name="Asia Import" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="Stricker" fill="#8b5cf6" name="Stricker" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="Tech" fill="#f59e0b" name="Tech Brindes" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="Eco" fill="#06b6d4" name="Eco Brindes" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="SoMarcas" fill="#ec4899" name="Só Marcas" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="Premium" fill="#84cc16" name="Premium Gifts" radius={[0, 4, 4, 0]} />
+                <Bar dataKey="Estrela" fill="#f97316" name="Estrela Brindes" radius={[0, 4, 4, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </Card>
       </div>
