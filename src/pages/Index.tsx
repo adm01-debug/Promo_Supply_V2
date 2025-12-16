@@ -31,8 +31,8 @@ const Index = () => {
               <LayoutDashboard className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-display font-bold text-foreground">Unified Business Suite</h1>
-              <p className="text-sm text-muted-foreground">Hub Central</p>
+              <h1 className="text-xl font-display font-bold text-foreground">Estoque e Triagem</h1>
+              <p className="text-sm text-muted-foreground">Sistema de Compras</p>
             </div>
           </div>
           
@@ -62,8 +62,8 @@ const Index = () => {
           </div>
           
           <h2 className="text-4xl md:text-5xl font-display font-bold mb-4 animate-slide-up">
-            <span className="text-gradient">Unified Business</span>{" "}
-            <span className="text-foreground">Suite</span>
+            <span className="text-gradient">Estoque e</span>{" "}
+            <span className="text-foreground">Triagem</span>
           </h2>
           
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8 animate-slide-up" style={{ animationDelay: "0.1s" }}>
@@ -137,7 +137,7 @@ const Index = () => {
       {/* Footer */}
       <footer className="border-t border-border mt-section-lg py-8">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>Unified Business Suite • Design System Padronizado • Gamificação Pervasiva</p>
+          <p>Estoque e Triagem • Sistema de Compras • Promo Brindes</p>
         </div>
       </footer>
     </div>
