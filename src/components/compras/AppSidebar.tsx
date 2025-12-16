@@ -12,7 +12,8 @@ import {
   BarChart3,
   History,
   PiggyBank,
-  ClipboardCheck
+  ClipboardCheck,
+  Users
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -61,6 +62,12 @@ const menuItems = [
     icon: Factory, 
     href: "/fornecedores",
     description: "Cadastros"
+  },
+  { 
+    title: "Performance", 
+    icon: Users, 
+    href: "/supplier-performance",
+    description: "Scorecard e riscos"
   },
   { 
     title: "Relatórios", 

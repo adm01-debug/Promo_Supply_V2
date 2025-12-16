@@ -17,6 +17,7 @@ import Relatorios from "./pages/Relatorios";
 import RelatorioNegociacoes from "./pages/RelatorioNegociacoes";
 import Aprovacoes from "./pages/Aprovacoes";
 import Auditoria from "./pages/Auditoria";
+import SupplierPerformance from "./pages/SupplierPerformance";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -47,6 +48,7 @@ const App = () => (
             <Route path="/relatorios" element={<ProtectedRoute><Relatorios /></ProtectedRoute>} />
             <Route path="/relatorios/negociacoes" element={<ProtectedRoute><RelatorioNegociacoes /></ProtectedRoute>} />
             <Route path="/aprovacoes" element={<ProtectedRoute requiredRole={['admin', 'coordinator']}><Aprovacoes /></ProtectedRoute>} />
+            <Route path="/supplier-performance" element={<ProtectedRoute><SupplierPerformance /></ProtectedRoute>} />
             <Route path="/auditoria" element={<ProtectedRoute requiredRole="admin"><Auditoria /></ProtectedRoute>} />
             
             {/* Catch-all */}
