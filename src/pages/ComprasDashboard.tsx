@@ -7,7 +7,11 @@ import {
   TrendingUp,
   AlertTriangle,
   Timer,
-  BarChart3
+  BarChart3,
+  PiggyBank,
+  Percent,
+  Target,
+  Award
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -19,7 +23,8 @@ import { SLAPerformanceDashboard } from "@/components/compras/SLAPerformanceDash
 import { CriticalAlertsBar } from "@/components/compras/CriticalAlertsBar";
 import { SupplierAlertsPanel } from "@/components/compras/SupplierAlertsPanel";
 import { SupplierRankingPanel } from "@/components/compras/SupplierRankingPanel";
-import { kpisMock, pipelineMock, itensUrgentesMock } from "@/data/mockData";
+import { BuyerPerformancePanel } from "@/components/compras/BuyerPerformancePanel";
+import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
 
 const ComprasDashboard = () => {
@@ -69,7 +74,7 @@ const ComprasDashboard = () => {
           />
         </div>
 
-        {/* KPIs Grid - Segunda linha */}
+        {/* KPIs Grid - Segunda linha (Operacionais) */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <KpiCard
             title="Volume Mês"
@@ -101,6 +106,38 @@ const ComprasDashboard = () => {
           />
         </div>
 
+        {/* KPIs Grid - Terceira linha (Performance do Comprador) */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <KpiCard
+            title="Economia Gerada"
+            value={`R$ ${(buyerPerformanceMock.economiaGerada / 1000).toFixed(1)}K`}
+            icon={PiggyBank}
+            color="emerald"
+            subtitle={`${buyerPerformanceMock.economiaPercentual}% do volume`}
+          />
+          <KpiCard
+            title="Desconto Médio"
+            value={`${buyerPerformanceMock.descontoMedio}%`}
+            icon={Percent}
+            color="blue"
+            subtitle={`${buyerPerformanceMock.cotacoesNegociadas} cotações`}
+          />
+          <KpiCard
+            title="Melhor Preço"
+            value={`${buyerPerformanceMock.melhorPrecoRate}%`}
+            icon={Target}
+            color="purple"
+            subtitle="Taxa de acerto"
+          />
+          <KpiCard
+            title="Valor Negociado"
+            value={`R$ ${(buyerPerformanceMock.valorNegociado / 1000).toFixed(0)}K`}
+            icon={Award}
+            color="orange"
+            subtitle="Total do mês"
+          />
+        </div>
+
         {/* SLA Distribution + Pipeline */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <SLADistributionChart />
@@ -123,17 +160,20 @@ const ComprasDashboard = () => {
           <SupplierRankingPanel />
         </div>
 
-        {/* Itens Urgentes */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Clock className="w-5 h-5 text-destructive" />
-              Itens Urgentes
-            </h2>
-            <Link to="/solicitacoes" className="text-sm text-primary hover:underline">Ver Todos</Link>
-          </div>
-          <UrgentItemsList items={itensUrgentesMock} />
-        </Card>
+        {/* Buyer Performance + Itens Urgentes */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <BuyerPerformancePanel />
+          <Card className="p-6 lg:col-span-2">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Clock className="w-5 h-5 text-destructive" />
+                Itens Urgentes
+              </h2>
+              <Link to="/solicitacoes" className="text-sm text-primary hover:underline">Ver Todos</Link>
+            </div>
+            <UrgentItemsList items={itensUrgentesMock} />
+          </Card>
+        </div>
       </div>
     </MainLayout>
   );
