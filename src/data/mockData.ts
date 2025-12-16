@@ -71,6 +71,25 @@ export const kpisMock = {
   taxaEntrega: 98,
 };
 
+// KPIs de Performance do Comprador
+export const buyerPerformanceMock = {
+  economiaGerada: 8750, // Total economizado no mês (R$)
+  economiaPercentual: 12.3, // % de economia sobre valor total
+  descontoMedio: 8.5, // % médio de desconto obtido
+  melhorPrecoRate: 87, // % de vezes que escolheu o melhor preço
+  cotacoesNegociadas: 45, // Total de cotações negociadas
+  valorNegociado: 71200, // Valor total negociado
+  precoReferenciaTotal: 79950, // Soma dos preços de referência
+  precoFinalTotal: 71200, // Soma dos preços finais
+  topEconomias: [
+    { produto: "Mochila Executiva", economia: 2340, percentual: 18 },
+    { produto: "Kit Escolar Personalizado", economia: 1850, percentual: 15 },
+    { produto: "Caneta Metal Premium", economia: 1200, percentual: 12 },
+    { produto: "Caderno Corporativo", economia: 980, percentual: 10 },
+    { produto: "Squeeze Térmico", economia: 760, percentual: 9 },
+  ],
+};
+
 // Pipeline counts
 export const pipelineMock = {
   solicitacao: 12,
