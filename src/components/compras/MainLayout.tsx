@@ -3,8 +3,9 @@ import { Outlet } from "react-router-dom";
 import { AppSidebar } from "@/components/compras/AppSidebar";
 import { NotificationCenter } from "@/components/compras/NotificationCenter";
 import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
+import { UserMenu } from "@/components/compras/UserMenu";
 import { cn } from "@/lib/utils";
-import { User, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface MainLayoutProps {
@@ -69,11 +70,8 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             <div className="flex items-center gap-2">
               <NotificationCenter />
               <SLASettingsPanel />
-              <div className="flex items-center gap-2 pl-3 ml-2 border-l border-border">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                  <User className="w-4 h-4 text-primary" />
-                </div>
-                <span className="text-sm font-medium text-foreground hidden sm:inline">Comprador</span>
+              <div className="pl-3 ml-2 border-l border-border">
+                <UserMenu />
               </div>
             </div>
           </div>

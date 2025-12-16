@@ -3,6 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "@/hooks/useAuth";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import ComprasDashboard from "./pages/ComprasDashboard";
 import Cotacao from "./pages/Cotacao";
 import Solicitacoes from "./pages/Solicitacoes";
@@ -13,6 +15,7 @@ import Acompanhamento from "./pages/Acompanhamento";
 import GerarOrdem from "./pages/GerarOrdem";
 import Relatorios from "./pages/Relatorios";
 import Auditoria from "./pages/Auditoria";
+import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,22 +26,29 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<ComprasDashboard />} />
-          <Route path="/compras" element={<ComprasDashboard />} />
-          <Route path="/cotacao" element={<Cotacao />} />
-          <Route path="/cotacao/:id" element={<Cotacao />} />
-          <Route path="/solicitacoes" element={<Solicitacoes />} />
-          <Route path="/pedidos" element={<Pedidos />} />
-          <Route path="/pagamentos" element={<Pagamentos />} />
-          <Route path="/fornecedores" element={<Fornecedores />} />
-          <Route path="/acompanhamento" element={<Acompanhamento />} />
-          <Route path="/gerar-ordem" element={<GerarOrdem />} />
-          <Route path="/relatorios" element={<Relatorios />} />
-          <Route path="/auditoria" element={<Auditoria />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            {/* Public route */}
+            <Route path="/auth" element={<Auth />} />
+            
+            {/* Protected routes */}
+            <Route path="/" element={<ProtectedRoute><ComprasDashboard /></ProtectedRoute>} />
+            <Route path="/compras" element={<ProtectedRoute><ComprasDashboard /></ProtectedRoute>} />
+            <Route path="/cotacao" element={<ProtectedRoute><Cotacao /></ProtectedRoute>} />
+            <Route path="/cotacao/:id" element={<ProtectedRoute><Cotacao /></ProtectedRoute>} />
+            <Route path="/solicitacoes" element={<ProtectedRoute><Solicitacoes /></ProtectedRoute>} />
+            <Route path="/pedidos" element={<ProtectedRoute><Pedidos /></ProtectedRoute>} />
+            <Route path="/pagamentos" element={<ProtectedRoute requiredRole={['admin', 'coordinator', 'finance']}><Pagamentos /></ProtectedRoute>} />
+            <Route path="/fornecedores" element={<ProtectedRoute><Fornecedores /></ProtectedRoute>} />
+            <Route path="/acompanhamento" element={<ProtectedRoute><Acompanhamento /></ProtectedRoute>} />
+            <Route path="/gerar-ordem" element={<ProtectedRoute><GerarOrdem /></ProtectedRoute>} />
+            <Route path="/relatorios" element={<ProtectedRoute><Relatorios /></ProtectedRoute>} />
+            <Route path="/auditoria" element={<ProtectedRoute requiredRole="admin"><Auditoria /></ProtectedRoute>} />
+            
+            {/* Catch-all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
