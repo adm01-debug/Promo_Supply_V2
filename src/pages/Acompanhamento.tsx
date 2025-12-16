@@ -9,7 +9,9 @@ import {
   User,
   Calendar,
   Truck,
-  MapPin
+  MapPin,
+  LayoutList,
+  LayoutGrid
 } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
@@ -17,8 +19,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PedidoTimeline, EtapaPipeline } from "@/components/compras/PedidoTimeline";
+import { KanbanBoard } from "@/components/compras/KanbanBoard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { solicitacoesMock, getStatusLabel, getTipoLabel } from "@/data/mockData";
+import { solicitacoesMock, Solicitacao, getStatusLabel, getTipoLabel } from "@/data/mockData";
+import { toast } from "sonner";
 
 // Gera etapas do pipeline baseado no status atual
 const gerarEtapasPipeline = (status: string): EtapaPipeline[] => {
@@ -58,14 +62,23 @@ const pedidosAcompanhamento = solicitacoesMock.filter(s =>
 
 const Acompanhamento = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [pedidoDetalhes, setPedidoDetalhes] = useState<typeof solicitacoesMock[0] | null>(null);
+  const [pedidoDetalhes, setPedidoDetalhes] = useState<Solicitacao | null>(null);
+  const [viewMode, setViewMode] = useState<'lista' | 'kanban'>('lista');
+  const [pedidosState, setPedidosState] = useState(pedidosAcompanhamento);
 
-  const pedidosFiltrados = pedidosAcompanhamento.filter(pedido =>
+  const pedidosFiltrados = pedidosState.filter(pedido =>
     pedido.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
     pedido.produto.toLowerCase().includes(searchTerm.toLowerCase()) ||
     pedido.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
     pedido.fornecedorSelecionado?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleStatusChange = (pedidoId: string, novoStatus: string) => {
+    setPedidosState(prev => prev.map(p => 
+      p.id === pedidoId ? { ...p, status: novoStatus as Solicitacao['status'] } : p
+    ));
+    toast.success(`Pedido #${pedidoId} movido para ${getStatusLabel(novoStatus as Solicitacao['status'])}`);
+  };
 
   const getStatusBadgeColor = (status: string) => {
     const colors: Record<string, string> = {
@@ -90,6 +103,28 @@ const Acompanhamento = () => {
               Acompanhamento
             </h1>
             <p className="text-sm text-muted-foreground">Acompanhe o progresso dos pedidos através do pipeline</p>
+          </div>
+          
+          {/* Toggle View */}
+          <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+            <Button
+              variant={viewMode === 'lista' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('lista')}
+              className="gap-2"
+            >
+              <LayoutList className="w-4 h-4" />
+              Lista
+            </Button>
+            <Button
+              variant={viewMode === 'kanban' ? 'default' : 'ghost'}
+              size="sm"
+              onClick={() => setViewMode('kanban')}
+              className="gap-2"
+            >
+              <LayoutGrid className="w-4 h-4" />
+              Kanban
+            </Button>
           </div>
         </div>
 
@@ -168,82 +203,90 @@ const Acompanhamento = () => {
           </div>
         </Card>
 
-        {/* Lista de Pedidos com Timeline */}
-        <div className="space-y-4">
-          {pedidosFiltrados.length === 0 ? (
-            <Card className="p-12 text-center">
-              <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold text-foreground mb-2">Nenhum pedido encontrado</h3>
-              <p className="text-sm text-muted-foreground">Tente ajustar os filtros de busca</p>
-            </Card>
-          ) : (
-            pedidosFiltrados.map((pedido) => (
-              <Card key={pedido.id} className="p-6 hover:shadow-md transition-shadow">
-                <div className="flex flex-col lg:flex-row gap-6">
-                  {/* Info do Pedido */}
-                  <div className="lg:w-1/3 space-y-3">
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-lg font-bold text-foreground">#{pedido.id}</span>
-                          <Badge className={getStatusBadgeColor(pedido.status)}>
-                            {getStatusLabel(pedido.status)}
-                          </Badge>
-                        </div>
-                        <p className="text-sm font-medium text-foreground mt-1">{pedido.produto}</p>
-                      </div>
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={() => setPedidoDetalhes(pedido)}
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                    </div>
-
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Building2 className="w-4 h-4" />
-                        <span className="truncate">{pedido.empresa}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <User className="w-4 h-4" />
-                        <span>Fornecedor: {pedido.fornecedorSelecionado || '-'}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-muted-foreground">
-                        <Calendar className="w-4 h-4" />
-                        <span>Entrega: {new Date(pedido.prazoEntrega).toLocaleDateString('pt-BR')}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Package className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">{pedido.quantidade} un</span>
-                        <Badge variant="outline" className="text-xs">{getTipoLabel(pedido.tipo)}</Badge>
-                      </div>
-                    </div>
-
-                    {pedido.valorTotal && (
-                      <div className="pt-2 border-t border-border">
-                        <p className="text-xs text-muted-foreground">Valor Total</p>
-                        <p className="text-lg font-bold text-primary">
-                          R$ {pedido.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Timeline */}
-                  <div className="lg:flex-1 lg:border-l lg:pl-6">
-                    <p className="text-sm font-medium text-foreground mb-4">Progresso do Pedido</p>
-                    <PedidoTimeline 
-                      etapas={gerarEtapasPipeline(pedido.status)} 
-                      orientacao="horizontal" 
-                    />
-                  </div>
-                </div>
+        {/* View Content */}
+        {viewMode === 'kanban' ? (
+          <KanbanBoard 
+            pedidos={pedidosFiltrados}
+            onViewDetails={setPedidoDetalhes}
+            onStatusChange={handleStatusChange}
+          />
+        ) : (
+          <div className="space-y-4">
+            {pedidosFiltrados.length === 0 ? (
+              <Card className="p-12 text-center">
+                <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-lg font-semibold text-foreground mb-2">Nenhum pedido encontrado</h3>
+                <p className="text-sm text-muted-foreground">Tente ajustar os filtros de busca</p>
               </Card>
-            ))
-          )}
-        </div>
+            ) : (
+              pedidosFiltrados.map((pedido) => (
+                <Card key={pedido.id} className="p-6 hover:shadow-md transition-shadow">
+                  <div className="flex flex-col lg:flex-row gap-6">
+                    {/* Info do Pedido */}
+                    <div className="lg:w-1/3 space-y-3">
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-bold text-foreground">#{pedido.id}</span>
+                            <Badge className={getStatusBadgeColor(pedido.status)}>
+                              {getStatusLabel(pedido.status)}
+                            </Badge>
+                          </div>
+                          <p className="text-sm font-medium text-foreground mt-1">{pedido.produto}</p>
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => setPedidoDetalhes(pedido)}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      </div>
+
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Building2 className="w-4 h-4" />
+                          <span className="truncate">{pedido.empresa}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <User className="w-4 h-4" />
+                          <span>Fornecedor: {pedido.fornecedorSelecionado || '-'}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Calendar className="w-4 h-4" />
+                          <span>Entrega: {new Date(pedido.prazoEntrega).toLocaleDateString('pt-BR')}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Package className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">{pedido.quantidade} un</span>
+                          <Badge variant="outline" className="text-xs">{getTipoLabel(pedido.tipo)}</Badge>
+                        </div>
+                      </div>
+
+                      {pedido.valorTotal && (
+                        <div className="pt-2 border-t border-border">
+                          <p className="text-xs text-muted-foreground">Valor Total</p>
+                          <p className="text-lg font-bold text-primary">
+                            R$ {pedido.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Timeline */}
+                    <div className="lg:flex-1 lg:border-l lg:pl-6">
+                      <p className="text-sm font-medium text-foreground mb-4">Progresso do Pedido</p>
+                      <PedidoTimeline 
+                        etapas={gerarEtapasPipeline(pedido.status)} 
+                        orientacao="horizontal" 
+                      />
+                    </div>
+                  </div>
+                </Card>
+              ))
+            )}
+          </div>
+        )}
       </div>
 
       {/* Modal de Detalhes */}
