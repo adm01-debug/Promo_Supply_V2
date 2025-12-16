@@ -7,7 +7,8 @@ import {
   Factory,
   ChevronLeft,
   Menu,
-  Package
+  Package,
+  Truck
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,12 @@ const menuItems = [
     icon: FileText, 
     href: "/pedidos",
     description: "Ordens de compra"
+  },
+  { 
+    title: "Acompanhamento", 
+    icon: Truck, 
+    href: "/acompanhamento",
+    description: "Timeline de pedidos"
   },
   { 
     title: "Pagamentos", 
