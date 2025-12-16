@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { ArrowLeft, Package, RefreshCw, Search, Plus, Trophy, Clock, Check, X, Loader2 } from "lucide-react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Package, RefreshCw, Search, Plus, Trophy, Clock, Check, Loader2 } from "lucide-react";
+import { useSearchParams } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BuscaAutomatica } from "@/components/compras/BuscaAutomatica";
 import { RankingCotacoes } from "@/components/compras/RankingCotacoes";
 import { CotacaoManualModal } from "@/components/compras/CotacaoManualModal";
+import { MainLayout } from "@/components/compras/MainLayout";
 import { solicitacoesMock, fornecedoresMock, getTipoLabel } from "@/data/mockData";
 
 const Cotacao = () => {
@@ -23,7 +24,6 @@ const Cotacao = () => {
   const handleBuscarCotacoes = () => {
     setBuscaStatus('searching');
     
-    // Simula busca automática com delay
     setTimeout(() => {
       setCotacoesEncontradas([
         { 
@@ -95,28 +95,18 @@ const Cotacao = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center gap-4">
-            <Link to="/" className="p-2 hover:bg-accent rounded-lg transition-colors">
-              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-            </Link>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center">
-                <Search className="w-4 h-4 text-orange-500" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-foreground">Cotação #{solicitacao.id}</h1>
-                <p className="text-xs text-muted-foreground">{solicitacao.empresa}</p>
-              </div>
-            </div>
+    <MainLayout>
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <Badge variant="outline" className="font-mono">#{solicitacao.id}</Badge>
+            <span className="text-muted-foreground">•</span>
+            <span className="text-sm text-muted-foreground">{solicitacao.empresa}</span>
           </div>
+          <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
         </div>
-      </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Info do Produto */}
         <Card className="p-5 border-primary/20 bg-primary/5">
           <div className="flex items-start gap-4">
@@ -253,7 +243,7 @@ const Cotacao = () => {
             </Button>
           </div>
         )}
-      </main>
+      </div>
 
       <CotacaoManualModal
         open={showManualModal}
@@ -261,7 +251,7 @@ const Cotacao = () => {
         onSave={handleAdicionarCotacaoManual}
         fornecedores={fornecedoresMock}
       />
-    </div>
+    </MainLayout>
   );
 };
 

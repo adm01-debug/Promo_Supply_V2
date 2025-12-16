@@ -7,73 +7,26 @@ import {
   TrendingUp,
   AlertTriangle,
   Timer,
-  BarChart3,
-  Bell,
-  Settings,
-  User,
-  Search
+  BarChart3
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { KpiCard } from "@/components/compras/KpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
 import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
 import { kpisMock, pipelineMock, itensUrgentesMock } from "@/data/mockData";
+import { MainLayout } from "@/components/compras/MainLayout";
 
 const ComprasDashboard = () => {
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-              <ClipboardList className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div>
-              <h1 className="text-lg font-bold text-foreground">Sistema de Compras</h1>
-              <p className="text-xs text-muted-foreground">Promo Brindes</p>
-            </div>
-          </div>
-
-          {/* Quick Nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            <Link to="/solicitacoes">
-              <Button variant="ghost" size="sm">
-                <ClipboardList className="w-4 h-4 mr-2" />
-                Solicitações
-              </Button>
-            </Link>
-            <Link to="/cotacao">
-              <Button variant="ghost" size="sm">
-                <Search className="w-4 h-4 mr-2" />
-                Cotações
-              </Button>
-            </Link>
-          </nav>
-          
-          <div className="flex items-center gap-4">
-            <button className="relative p-2 rounded-lg hover:bg-accent transition-colors">
-              <Bell className="w-5 h-5 text-muted-foreground" />
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center font-medium">
-                3
-              </span>
-            </button>
-            <button className="p-2 rounded-lg hover:bg-accent transition-colors">
-              <Settings className="w-5 h-5 text-muted-foreground" />
-            </button>
-            <div className="flex items-center gap-2 pl-4 border-l border-border">
-              <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                <User className="w-4 h-4 text-primary" />
-              </div>
-              <span className="text-sm font-medium text-foreground">Comprador</span>
-            </div>
-          </div>
+    <MainLayout>
+      <div className="space-y-6">
+        {/* Page Title */}
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Visão geral do sistema de compras</p>
         </div>
-      </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-6">
         {/* KPIs Grid - Primeira linha */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <KpiCard
@@ -160,8 +113,8 @@ const ComprasDashboard = () => {
           </div>
           <UrgentItemsList items={itensUrgentesMock} />
         </Card>
-      </main>
-    </div>
+      </div>
+    </MainLayout>
   );
 };
 

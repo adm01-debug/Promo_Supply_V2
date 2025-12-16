@@ -1,16 +1,10 @@
 import { useState } from "react";
 import { 
-  ArrowLeft, 
   Search, 
   Filter, 
   Plus, 
-  Eye, 
-  BarChart3, 
-  FileText, 
-  CheckCircle,
   ClipboardList
 } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +17,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
-import { solicitacoesMock, getStatusLabel } from "@/data/mockData";
+import { MainLayout } from "@/components/compras/MainLayout";
+import { solicitacoesMock } from "@/data/mockData";
 
 const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,7 +37,6 @@ const Solicitacoes = () => {
     return matchesSearch && matchesStatus && matchesTipo;
   });
 
-  // Agrupa por status para exibição
   const groupedByStatus = {
     AGUARDANDO_COTACAO: filteredSolicitacoes.filter(s => s.status === 'AGUARDANDO_COTACAO'),
     EM_COTACAO: filteredSolicitacoes.filter(s => s.status === 'EM_COTACAO'),
@@ -52,45 +46,33 @@ const Solicitacoes = () => {
     EM_TRANSITO: filteredSolicitacoes.filter(s => s.status === 'EM_TRANSITO'),
   };
 
-  const statusConfig = {
-    AGUARDANDO_COTACAO: { label: 'Aguardando Cotação', color: 'bg-emerald-500', icon: ClipboardList },
-    EM_COTACAO: { label: 'Em Cotação', color: 'bg-yellow-500', icon: Search },
-    FORNECEDOR_SELECIONADO: { label: 'Fornecedor Selecionado', color: 'bg-blue-500', icon: CheckCircle },
-    AGUARDANDO_PAGAMENTO: { label: 'Aguardando Pagamento', color: 'bg-orange-500', icon: FileText },
-    PAGO: { label: 'Pago', color: 'bg-cyan-500', icon: CheckCircle },
-    EM_TRANSITO: { label: 'Em Trânsito', color: 'bg-purple-500', icon: BarChart3 },
+  const statusConfig: Record<string, { label: string; color: string }> = {
+    AGUARDANDO_COTACAO: { label: 'Aguardando Cotação', color: 'bg-emerald-500' },
+    EM_COTACAO: { label: 'Em Cotação', color: 'bg-yellow-500' },
+    FORNECEDOR_SELECIONADO: { label: 'Fornecedor Selecionado', color: 'bg-blue-500' },
+    AGUARDANDO_PAGAMENTO: { label: 'Aguardando Pagamento', color: 'bg-orange-500' },
+    PAGO: { label: 'Pago', color: 'bg-cyan-500' },
+    EM_TRANSITO: { label: 'Em Trânsito', color: 'bg-purple-500' },
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link to="/" className="p-2 hover:bg-accent rounded-lg transition-colors">
-                <ArrowLeft className="w-5 h-5 text-muted-foreground" />
-              </Link>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                  <ClipboardList className="w-4 h-4 text-emerald-500" />
-                </div>
-                <h1 className="text-lg font-bold text-foreground">Solicitações</h1>
-              </div>
-            </div>
-            <Button>
-              <Plus className="w-4 h-4 mr-2" />
-              Nova Solicitação
-            </Button>
+    <MainLayout>
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Solicitações</h1>
+            <p className="text-sm text-muted-foreground">Gerencie todas as solicitações de compra</p>
           </div>
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            Nova Solicitação
+          </Button>
         </div>
-      </header>
 
-      <main className="container mx-auto px-4 py-6 space-y-6">
         {/* Busca e Filtros */}
         <Card className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
-            {/* Busca */}
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
@@ -101,7 +83,6 @@ const Solicitacoes = () => {
               />
             </div>
 
-            {/* Filtros */}
             <div className="flex gap-2">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-[180px] bg-background">
@@ -163,8 +144,7 @@ const Solicitacoes = () => {
             if (items.length === 0) return null;
             if (statusFilter !== "todas" && statusFilter !== status) return null;
             
-            const config = statusConfig[status as keyof typeof statusConfig];
-            const Icon = config.icon;
+            const config = statusConfig[status];
 
             return (
               <div key={status} className="space-y-3">
@@ -193,8 +173,8 @@ const Solicitacoes = () => {
             </p>
           </Card>
         )}
-      </main>
-    </div>
+      </div>
+    </MainLayout>
   );
 };
 
