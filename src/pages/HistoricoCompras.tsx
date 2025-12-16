@@ -21,7 +21,9 @@ import {
   ArrowDownRight,
   ShoppingCart,
   Percent,
-  RefreshCw
+  RefreshCw,
+  X,
+  SlidersHorizontal
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -45,6 +47,12 @@ import {
   TableRow
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { format, subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { cn } from "@/lib/utils";
+import { DateRange } from "react-day-picker";
 import { Separator } from "@/components/ui/separator";
 import { MainLayout } from "@/components/compras/MainLayout";
 import {
@@ -109,8 +117,74 @@ const HistoricoCompras = () => {
   const [activeTab, setActiveTab] = useState("produtos");
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
+  const [periodPreset, setPeriodPreset] = useState("all");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string | null>(null);
+
+  // Period presets
+  const applyPeriodPreset = (preset: string) => {
+    setPeriodPreset(preset);
+    const today = new Date();
+    switch (preset) {
+      case "7d":
+        setDateRange({ from: subDays(today, 7), to: today });
+        break;
+      case "30d":
+        setDateRange({ from: subDays(today, 30), to: today });
+        break;
+      case "90d":
+        setDateRange({ from: subDays(today, 90), to: today });
+        break;
+      case "thisMonth":
+        setDateRange({ from: startOfMonth(today), to: endOfMonth(today) });
+        break;
+      case "lastMonth":
+        const lastMonth = subMonths(today, 1);
+        setDateRange({ from: startOfMonth(lastMonth), to: endOfMonth(lastMonth) });
+        break;
+      case "all":
+      default:
+        setDateRange(undefined);
+        break;
+    }
+  };
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setSearchTerm("");
+    setCategoryFilter("all");
+    setStatusFilter("all");
+    setDateRange(undefined);
+    setPeriodPreset("all");
+  };
+
+  const hasActiveFilters = searchTerm || categoryFilter !== "all" || statusFilter !== "all" || dateRange;
+
+  // Filter purchase records based on all filters
+  const filteredPurchaseRecords = useMemo(() => {
+    return purchaseRecords.filter(record => {
+      const matchesSearch = record.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.orderNumber.includes(searchTerm);
+      
+      const matchesCategory = categoryFilter === 'all' || record.productCategory === categoryFilter;
+      const matchesStatus = statusFilter === 'all' || record.status === statusFilter;
+      
+      let matchesDate = true;
+      if (dateRange?.from) {
+        const purchaseDate = parseISO(record.purchaseDate);
+        matchesDate = isWithinInterval(purchaseDate, {
+          start: dateRange.from,
+          end: dateRange.to || dateRange.from
+        });
+      }
+      
+      return matchesSearch && matchesCategory && matchesStatus && matchesDate;
+    });
+  }, [searchTerm, categoryFilter, statusFilter, dateRange]);
 
   // Filter products
   const filteredProducts = useMemo(() => {
@@ -154,16 +228,21 @@ const HistoricoCompras = () => {
     [selectedSupplierId]
   );
 
-  // Summary stats
-  const summaryStats = useMemo(() => ({
-    totalProducts: productsHistory.length,
-    totalSuppliers: suppliersHistory.length,
-    totalOrders: purchaseRecords.length,
-    totalSpent: purchaseRecords.reduce((sum, r) => sum + r.totalPrice, 0),
-    avgDiscount: purchaseRecords.reduce((sum, r) => sum + r.discount, 0) / purchaseRecords.length,
-    onTimeRate: (purchaseRecords.filter(r => r.deliveredOnTime && r.status === 'delivered').length /
-      purchaseRecords.filter(r => r.status === 'delivered').length) * 100
-  }), []);
+  // Summary stats based on filtered data
+  const summaryStats = useMemo(() => {
+    const records = filteredPurchaseRecords;
+    const deliveredRecords = records.filter(r => r.status === 'delivered');
+    return {
+      totalProducts: new Set(records.map(r => r.productId)).size,
+      totalSuppliers: new Set(records.map(r => r.supplierId)).size,
+      totalOrders: records.length,
+      totalSpent: records.reduce((sum, r) => sum + r.totalPrice, 0),
+      avgDiscount: records.length > 0 ? records.reduce((sum, r) => sum + r.discount, 0) / records.length : 0,
+      onTimeRate: deliveredRecords.length > 0 
+        ? (deliveredRecords.filter(r => r.deliveredOnTime).length / deliveredRecords.length) * 100 
+        : 0
+    };
+  }, [filteredPurchaseRecords]);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -273,32 +352,163 @@ const HistoricoCompras = () => {
               </TabsTrigger>
             </TabsList>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   placeholder="Buscar..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-9 w-[200px]"
+                  className="pl-9 w-[180px]"
                 />
               </div>
-              {activeTab === 'produtos' && (
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-[150px]">
-                    <Filter className="w-4 h-4 mr-2" />
-                    <SelectValue placeholder="Categoria" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todas</SelectItem>
-                    {productCategories.map(cat => (
-                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <Button 
+                variant={showAdvancedFilters ? "secondary" : "outline"} 
+                size="sm"
+                onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
+                className="gap-2"
+              >
+                <SlidersHorizontal className="w-4 h-4" />
+                Filtros
+                {hasActiveFilters && (
+                  <Badge className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-[10px]">
+                    {[categoryFilter !== 'all', statusFilter !== 'all', !!dateRange].filter(Boolean).length}
+                  </Badge>
+                )}
+              </Button>
+              {hasActiveFilters && (
+                <Button variant="ghost" size="sm" onClick={clearAllFilters} className="gap-1 text-muted-foreground">
+                  <X className="w-3 h-3" />
+                  Limpar
+                </Button>
               )}
             </div>
           </div>
+
+          {/* Advanced Filters Panel */}
+          {showAdvancedFilters && (
+            <Card className="p-4">
+              <div className="flex flex-wrap gap-4">
+                {/* Period Filter */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">Período</label>
+                  <div className="flex items-center gap-2">
+                    <Select value={periodPreset} onValueChange={applyPeriodPreset}>
+                      <SelectTrigger className="w-[140px]">
+                        <SelectValue placeholder="Selecione" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todo período</SelectItem>
+                        <SelectItem value="7d">Últimos 7 dias</SelectItem>
+                        <SelectItem value="30d">Últimos 30 dias</SelectItem>
+                        <SelectItem value="90d">Últimos 90 dias</SelectItem>
+                        <SelectItem value="thisMonth">Este mês</SelectItem>
+                        <SelectItem value="lastMonth">Mês passado</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" size="sm" className={cn(
+                          "w-[220px] justify-start text-left font-normal",
+                          !dateRange && "text-muted-foreground"
+                        )}>
+                          <Calendar className="mr-2 h-4 w-4" />
+                          {dateRange?.from ? (
+                            dateRange.to ? (
+                              <>
+                                {format(dateRange.from, "dd/MM/yy", { locale: ptBR })} -{" "}
+                                {format(dateRange.to, "dd/MM/yy", { locale: ptBR })}
+                              </>
+                            ) : (
+                              format(dateRange.from, "dd/MM/yyyy", { locale: ptBR })
+                            )
+                          ) : (
+                            <span>Período personalizado</span>
+                          )}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <CalendarComponent
+                          initialFocus
+                          mode="range"
+                          defaultMonth={dateRange?.from}
+                          selected={dateRange}
+                          onSelect={(range) => {
+                            setDateRange(range);
+                            setPeriodPreset("custom");
+                          }}
+                          numberOfMonths={2}
+                          className="pointer-events-auto"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                </div>
+
+                {/* Category Filter */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">Categoria</label>
+                  <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                    <SelectTrigger className="w-[160px]">
+                      <SelectValue placeholder="Todas" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todas</SelectItem>
+                      {productCategories.map(cat => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Status Filter */}
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-muted-foreground">Status</label>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-[140px]">
+                      <SelectValue placeholder="Todos" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Todos</SelectItem>
+                      <SelectItem value="pending">Pendente</SelectItem>
+                      <SelectItem value="shipped">Enviado</SelectItem>
+                      <SelectItem value="delivered">Entregue</SelectItem>
+                      <SelectItem value="returned">Devolvido</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Active Filters Summary */}
+              {hasActiveFilters && (
+                <div className="flex items-center gap-2 mt-3 pt-3 border-t border-border">
+                  <span className="text-xs text-muted-foreground">Filtros ativos:</span>
+                  {dateRange && (
+                    <Badge variant="secondary" className="text-xs gap-1">
+                      <Calendar className="w-3 h-3" />
+                      {format(dateRange.from!, "dd/MM", { locale: ptBR })} - {format(dateRange.to || dateRange.from!, "dd/MM", { locale: ptBR })}
+                      <X className="w-3 h-3 cursor-pointer hover:text-foreground" onClick={() => { setDateRange(undefined); setPeriodPreset("all"); }} />
+                    </Badge>
+                  )}
+                  {categoryFilter !== 'all' && (
+                    <Badge variant="secondary" className="text-xs gap-1">
+                      {categoryFilter}
+                      <X className="w-3 h-3 cursor-pointer hover:text-foreground" onClick={() => setCategoryFilter("all")} />
+                    </Badge>
+                  )}
+                  {statusFilter !== 'all' && (
+                    <Badge variant="secondary" className="text-xs gap-1">
+                      {statusFilter === 'pending' ? 'Pendente' : statusFilter === 'shipped' ? 'Enviado' : statusFilter === 'delivered' ? 'Entregue' : 'Devolvido'}
+                      <X className="w-3 h-3 cursor-pointer hover:text-foreground" onClick={() => setStatusFilter("all")} />
+                    </Badge>
+                  )}
+                  <span className="text-xs text-muted-foreground ml-auto">
+                    {filteredPurchaseRecords.length} registros encontrados
+                  </span>
+                </div>
+              )}
+            </Card>
+          )}
 
           {/* Products Tab */}
           <TabsContent value="produtos" className="space-y-4">
@@ -624,7 +834,9 @@ const HistoricoCompras = () => {
             <Card className="p-0">
               <div className="p-4 border-b border-border">
                 <h3 className="font-semibold text-foreground">Todos os Registros de Compra</h3>
-                <p className="text-xs text-muted-foreground">{purchaseRecords.length} registros • Vinculados ao Bitrix24 (Mock)</p>
+                <p className="text-xs text-muted-foreground">
+                  {filteredPurchaseRecords.length} registros {hasActiveFilters && `(filtrado de ${purchaseRecords.length})`} • Vinculados ao Bitrix24 (Mock)
+                </p>
               </div>
               <div className="overflow-x-auto">
                 <Table>
@@ -645,7 +857,7 @@ const HistoricoCompras = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {purchaseRecords.map(record => (
+                    {filteredPurchaseRecords.map(record => (
                       <TableRow key={record.id}>
                         <TableCell className="text-xs font-medium">#{record.orderNumber}</TableCell>
                         <TableCell className="text-xs">
