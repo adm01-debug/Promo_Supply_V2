@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -23,7 +25,9 @@ import {
   CreditCard,
   BarChart3,
   PieChart,
-  Activity
+  Activity,
+  GitCompare,
+  Calendar
 } from 'lucide-react';
 import {
   AreaChart,
@@ -40,21 +44,91 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  Legend
+  Legend,
+  ComposedChart
 } from 'recharts';
 
-// Mock executive data
-const executiveMetrics = {
-  totalSpend: { value: 2450000, change: 12.5, target: 2500000 },
-  savings: { value: 245000, change: 18.2, target: 200000 },
-  ordersThisMonth: { value: 156, change: -5.3, target: 170 },
-  avgCycleTime: { value: 4.2, change: -15.0, target: 5.0 },
-  supplierCount: { value: 48, change: 8.0, target: 50 },
-  pendingApprovals: { value: 12, change: 0, urgent: 3 },
-  overdueOrders: { value: 5, change: -20.0, critical: 2 },
-  contractCompliance: { value: 87, change: 5.0, target: 90 }
+// Current period data
+const currentPeriodMetrics = {
+  totalSpend: { value: 2450000, target: 2500000 },
+  savings: { value: 245000, target: 200000 },
+  ordersThisMonth: { value: 156, target: 170 },
+  avgCycleTime: { value: 4.2, target: 5.0 },
+  supplierCount: { value: 48, target: 50 },
+  pendingApprovals: { value: 12, urgent: 3 },
+  overdueOrders: { value: 5, critical: 2 },
+  contractCompliance: { value: 87, target: 90 }
 };
 
+// Previous period data (for comparison)
+const previousPeriodMetrics = {
+  totalSpend: { value: 2178000 },
+  savings: { value: 207000 },
+  ordersThisMonth: { value: 165 },
+  avgCycleTime: { value: 4.95 },
+  supplierCount: { value: 44 },
+  pendingApprovals: { value: 15 },
+  overdueOrders: { value: 8 },
+  contractCompliance: { value: 82.8 }
+};
+
+// Calculate changes
+const calculateChange = (current: number, previous: number) => {
+  return ((current - previous) / previous) * 100;
+};
+
+const executiveMetrics = {
+  totalSpend: { 
+    value: currentPeriodMetrics.totalSpend.value, 
+    previousValue: previousPeriodMetrics.totalSpend.value,
+    change: calculateChange(currentPeriodMetrics.totalSpend.value, previousPeriodMetrics.totalSpend.value), 
+    target: currentPeriodMetrics.totalSpend.target 
+  },
+  savings: { 
+    value: currentPeriodMetrics.savings.value, 
+    previousValue: previousPeriodMetrics.savings.value,
+    change: calculateChange(currentPeriodMetrics.savings.value, previousPeriodMetrics.savings.value), 
+    target: currentPeriodMetrics.savings.target 
+  },
+  ordersThisMonth: { 
+    value: currentPeriodMetrics.ordersThisMonth.value, 
+    previousValue: previousPeriodMetrics.ordersThisMonth.value,
+    change: calculateChange(currentPeriodMetrics.ordersThisMonth.value, previousPeriodMetrics.ordersThisMonth.value), 
+    target: currentPeriodMetrics.ordersThisMonth.target 
+  },
+  avgCycleTime: { 
+    value: currentPeriodMetrics.avgCycleTime.value, 
+    previousValue: previousPeriodMetrics.avgCycleTime.value,
+    change: calculateChange(currentPeriodMetrics.avgCycleTime.value, previousPeriodMetrics.avgCycleTime.value), 
+    target: currentPeriodMetrics.avgCycleTime.target 
+  },
+  supplierCount: { 
+    value: currentPeriodMetrics.supplierCount.value, 
+    previousValue: previousPeriodMetrics.supplierCount.value,
+    change: calculateChange(currentPeriodMetrics.supplierCount.value, previousPeriodMetrics.supplierCount.value), 
+    target: currentPeriodMetrics.supplierCount.target 
+  },
+  pendingApprovals: { 
+    value: currentPeriodMetrics.pendingApprovals.value, 
+    previousValue: previousPeriodMetrics.pendingApprovals.value,
+    change: calculateChange(currentPeriodMetrics.pendingApprovals.value, previousPeriodMetrics.pendingApprovals.value), 
+    urgent: currentPeriodMetrics.pendingApprovals.urgent 
+  },
+  overdueOrders: { 
+    value: currentPeriodMetrics.overdueOrders.value, 
+    previousValue: previousPeriodMetrics.overdueOrders.value,
+    change: calculateChange(currentPeriodMetrics.overdueOrders.value, previousPeriodMetrics.overdueOrders.value), 
+    critical: currentPeriodMetrics.overdueOrders.critical 
+  },
+  contractCompliance: { 
+    value: currentPeriodMetrics.contractCompliance.value, 
+    previousValue: previousPeriodMetrics.contractCompliance.value,
+    change: calculateChange(currentPeriodMetrics.contractCompliance.value, previousPeriodMetrics.contractCompliance.value), 
+    target: currentPeriodMetrics.contractCompliance.target 
+  }
+};
+
+// Current period trend
 const monthlyTrend = [
   { month: 'Jul', spend: 180000, savings: 18000, orders: 120 },
   { month: 'Ago', spend: 220000, savings: 24000, orders: 145 },
@@ -64,28 +138,49 @@ const monthlyTrend = [
   { month: 'Dez', spend: 235000, savings: 30000, orders: 156 }
 ];
 
+// Previous period trend
+const previousMonthlyTrend = [
+  { month: 'Jan', spend: 165000, savings: 14000, orders: 108 },
+  { month: 'Fev', spend: 185000, savings: 17000, orders: 125 },
+  { month: 'Mar', spend: 175000, savings: 16000, orders: 118 },
+  { month: 'Abr', spend: 210000, savings: 20000, orders: 142 },
+  { month: 'Mai', spend: 195000, savings: 19000, orders: 135 },
+  { month: 'Jun', spend: 205000, savings: 21000, orders: 140 }
+];
+
+// Combined trend for comparison chart
+const comparisonTrend = monthlyTrend.map((current, index) => ({
+  month: current.month,
+  currentSpend: current.spend,
+  previousSpend: previousMonthlyTrend[index]?.spend || 0,
+  currentSavings: current.savings,
+  previousSavings: previousMonthlyTrend[index]?.savings || 0,
+  currentOrders: current.orders,
+  previousOrders: previousMonthlyTrend[index]?.orders || 0
+}));
+
 const categorySpend = [
-  { name: 'Mochilas', value: 450000, percentage: 18.4, orders: 45 },
-  { name: 'Canetas', value: 380000, percentage: 15.5, orders: 120 },
-  { name: 'Camisetas', value: 320000, percentage: 13.1, orders: 38 },
-  { name: 'Bonés', value: 280000, percentage: 11.4, orders: 52 },
-  { name: 'Cadernos', value: 250000, percentage: 10.2, orders: 65 },
-  { name: 'Outros', value: 770000, percentage: 31.4, orders: 180 }
+  { name: 'Mochilas', value: 450000, previousValue: 380000, percentage: 18.4, orders: 45 },
+  { name: 'Canetas', value: 380000, previousValue: 350000, percentage: 15.5, orders: 120 },
+  { name: 'Camisetas', value: 320000, previousValue: 290000, percentage: 13.1, orders: 38 },
+  { name: 'Bonés', value: 280000, previousValue: 260000, percentage: 11.4, orders: 52 },
+  { name: 'Cadernos', value: 250000, previousValue: 230000, percentage: 10.2, orders: 65 },
+  { name: 'Outros', value: 770000, previousValue: 668000, percentage: 31.4, orders: 180 }
 ];
 
 const topSuppliers = [
-  { name: 'XBZ Brindes', spend: 420000, orders: 45, savings: 42000, compliance: 94 },
-  { name: 'Stricker', spend: 380000, orders: 38, savings: 35000, compliance: 91 },
-  { name: 'Asia Import', spend: 320000, orders: 52, savings: 28000, compliance: 88 },
-  { name: 'Só Marcas', spend: 280000, orders: 41, savings: 25000, compliance: 85 },
-  { name: 'Spot Gifts', spend: 250000, orders: 35, savings: 22000, compliance: 82 }
+  { name: 'XBZ Brindes', spend: 420000, previousSpend: 360000, orders: 45, savings: 42000, compliance: 94 },
+  { name: 'Stricker', spend: 380000, previousSpend: 340000, orders: 38, savings: 35000, compliance: 91 },
+  { name: 'Asia Import', spend: 320000, previousSpend: 295000, orders: 52, savings: 28000, compliance: 88 },
+  { name: 'Só Marcas', spend: 280000, previousSpend: 250000, orders: 41, savings: 25000, compliance: 85 },
+  { name: 'Spot Gifts', spend: 250000, previousSpend: 220000, orders: 35, savings: 22000, compliance: 82 }
 ];
 
 const buyerPerformance = [
-  { name: 'Ana Silva', orders: 45, savings: 52000, avgCycle: 3.8, compliance: 96 },
-  { name: 'Carlos Santos', orders: 38, savings: 41000, avgCycle: 4.2, compliance: 92 },
-  { name: 'Maria Costa', orders: 42, savings: 38000, avgCycle: 4.5, compliance: 89 },
-  { name: 'João Pereira', orders: 31, savings: 28000, avgCycle: 5.1, compliance: 85 }
+  { name: 'Ana Silva', orders: 45, previousOrders: 38, savings: 52000, previousSavings: 42000, avgCycle: 3.8, compliance: 96 },
+  { name: 'Carlos Santos', orders: 38, previousOrders: 35, savings: 41000, previousSavings: 35000, avgCycle: 4.2, compliance: 92 },
+  { name: 'Maria Costa', orders: 42, previousOrders: 40, savings: 38000, previousSavings: 34000, avgCycle: 4.5, compliance: 89 },
+  { name: 'João Pereira', orders: 31, previousOrders: 28, savings: 28000, previousSavings: 24000, avgCycle: 5.1, compliance: 85 }
 ];
 
 const pendingItems = [
@@ -114,16 +209,20 @@ const formatNumber = (value: number) => {
 const MetricCard = ({ 
   title, 
   value, 
+  previousValue,
   change, 
   target,
   icon: Icon, 
   format = 'number',
   onClick,
   urgent,
-  critical
+  critical,
+  showComparison,
+  invertChange = false
 }: { 
   title: string; 
   value: number; 
+  previousValue?: number;
   change?: number;
   target?: number;
   icon: any;
@@ -131,16 +230,22 @@ const MetricCard = ({
   onClick?: () => void;
   urgent?: number;
   critical?: number;
+  showComparison?: boolean;
+  invertChange?: boolean;
 }) => {
   const isPositive = change && change > 0;
   const isNegative = change && change < 0;
   const targetProgress = target ? (value / target) * 100 : null;
   const isAboveTarget = target && value >= target;
   
+  // For metrics like cycle time and overdue orders, negative change is good
+  const isGoodChange = invertChange ? isNegative : isPositive;
+  const isBadChange = invertChange ? isPositive : isNegative;
+  
   const formatValue = (val: number) => {
     switch (format) {
       case 'currency': return formatCurrency(val);
-      case 'percent': return `${val}%`;
+      case 'percent': return `${val.toFixed(1)}%`;
       case 'days': return `${val} dias`;
       default: return formatNumber(val);
     }
@@ -157,9 +262,9 @@ const MetricCard = ({
             <Icon className="h-5 w-5 text-primary" />
           </div>
           {change !== undefined && (
-            <Badge variant={isPositive ? 'default' : isNegative ? 'destructive' : 'secondary'} className="flex items-center gap-1">
+            <Badge variant={isGoodChange ? 'default' : isBadChange ? 'destructive' : 'secondary'} className="flex items-center gap-1">
               {isPositive ? <ArrowUpRight className="h-3 w-3" /> : isNegative ? <ArrowDownRight className="h-3 w-3" /> : null}
-              {Math.abs(change)}%
+              {Math.abs(change).toFixed(1)}%
             </Badge>
           )}
           {urgent !== undefined && urgent > 0 && (
@@ -172,6 +277,18 @@ const MetricCard = ({
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">{title}</p>
           <p className="text-2xl font-bold">{formatValue(value)}</p>
+          
+          {showComparison && previousValue !== undefined && (
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <Calendar className="h-3 w-3" />
+              <span>Anterior: {formatValue(previousValue)}</span>
+              {change !== undefined && (
+                <span className={isGoodChange ? 'text-green-600' : isBadChange ? 'text-red-600' : ''}>
+                  ({change > 0 ? '+' : ''}{change.toFixed(1)}%)
+                </span>
+              )}
+            </div>
+          )}
           
           {target && (
             <div className="space-y-1">
@@ -200,6 +317,7 @@ const MetricCard = ({
 export const ExecutiveDashboard = () => {
   const [drillDown, setDrillDown] = useState<DrillDownData | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState('6m');
+  const [showComparison, setShowComparison] = useState(true);
 
   const handleCategoryDrillDown = (category: any) => {
     setDrillDown({ type: 'category', data: category });
@@ -213,25 +331,88 @@ export const ExecutiveDashboard = () => {
     setDrillDown({ type: 'buyer', data: buyer });
   };
 
+  const getPeriodLabel = () => {
+    switch (selectedPeriod) {
+      case '1m': return 'Último Mês';
+      case '3m': return 'Últimos 3 Meses';
+      case '6m': return 'Últimos 6 Meses';
+      case '1y': return 'Último Ano';
+      default: return 'Período Atual';
+    }
+  };
+
+  const getPreviousPeriodLabel = () => {
+    switch (selectedPeriod) {
+      case '1m': return 'Mês Anterior';
+      case '3m': return '3 Meses Anteriores';
+      case '6m': return '6 Meses Anteriores';
+      case '1y': return 'Ano Anterior';
+      default: return 'Período Anterior';
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h2 className="text-2xl font-bold">Dashboard Executivo</h2>
           <p className="text-muted-foreground">Visão consolidada de compras - Atualizado em tempo real</p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => setSelectedPeriod('1m')} 
-            className={selectedPeriod === '1m' ? 'bg-primary text-primary-foreground' : ''}>1M</Button>
-          <Button variant="outline" size="sm" onClick={() => setSelectedPeriod('3m')}
-            className={selectedPeriod === '3m' ? 'bg-primary text-primary-foreground' : ''}>3M</Button>
-          <Button variant="outline" size="sm" onClick={() => setSelectedPeriod('6m')}
-            className={selectedPeriod === '6m' ? 'bg-primary text-primary-foreground' : ''}>6M</Button>
-          <Button variant="outline" size="sm" onClick={() => setSelectedPeriod('1y')}
-            className={selectedPeriod === '1y' ? 'bg-primary text-primary-foreground' : ''}>1A</Button>
+        <div className="flex items-center gap-4">
+          {/* Comparison Toggle */}
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-card">
+            <GitCompare className="h-4 w-4 text-muted-foreground" />
+            <Label htmlFor="comparison-mode" className="text-sm cursor-pointer">
+              Comparar Períodos
+            </Label>
+            <Switch
+              id="comparison-mode"
+              checked={showComparison}
+              onCheckedChange={setShowComparison}
+            />
+          </div>
+          
+          {/* Period Selector */}
+          <div className="flex items-center gap-1">
+            <Button variant="outline" size="sm" onClick={() => setSelectedPeriod('1m')} 
+              className={selectedPeriod === '1m' ? 'bg-primary text-primary-foreground' : ''}>1M</Button>
+            <Button variant="outline" size="sm" onClick={() => setSelectedPeriod('3m')}
+              className={selectedPeriod === '3m' ? 'bg-primary text-primary-foreground' : ''}>3M</Button>
+            <Button variant="outline" size="sm" onClick={() => setSelectedPeriod('6m')}
+              className={selectedPeriod === '6m' ? 'bg-primary text-primary-foreground' : ''}>6M</Button>
+            <Button variant="outline" size="sm" onClick={() => setSelectedPeriod('1y')}
+              className={selectedPeriod === '1y' ? 'bg-primary text-primary-foreground' : ''}>1A</Button>
+          </div>
         </div>
       </div>
+
+      {/* Period Comparison Summary */}
+      {showComparison && (
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4 flex-wrap">
+              <GitCompare className="h-5 w-5 text-primary" />
+              <div className="flex-1">
+                <p className="font-medium text-primary">Modo Comparativo Ativo</p>
+                <p className="text-sm text-muted-foreground">
+                  Comparando <span className="font-medium">{getPeriodLabel()}</span> vs <span className="font-medium">{getPreviousPeriodLabel()}</span>
+                </p>
+              </div>
+              <div className="flex gap-4 text-sm">
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded-full bg-primary" />
+                  <span>Atual</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-3 rounded-full bg-muted-foreground/50" />
+                  <span>Anterior</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Critical Alerts Banner */}
       {(executiveMetrics.pendingApprovals.urgent > 0 || executiveMetrics.overdueOrders.critical > 0) && (
@@ -258,33 +439,42 @@ export const ExecutiveDashboard = () => {
         <MetricCard
           title="Spend Total"
           value={executiveMetrics.totalSpend.value}
+          previousValue={executiveMetrics.totalSpend.previousValue}
           change={executiveMetrics.totalSpend.change}
           target={executiveMetrics.totalSpend.target}
           icon={DollarSign}
           format="currency"
+          showComparison={showComparison}
         />
         <MetricCard
           title="Economia Realizada"
           value={executiveMetrics.savings.value}
+          previousValue={executiveMetrics.savings.previousValue}
           change={executiveMetrics.savings.change}
           target={executiveMetrics.savings.target}
           icon={TrendingUp}
           format="currency"
+          showComparison={showComparison}
         />
         <MetricCard
           title="Pedidos no Mês"
           value={executiveMetrics.ordersThisMonth.value}
+          previousValue={executiveMetrics.ordersThisMonth.previousValue}
           change={executiveMetrics.ordersThisMonth.change}
           target={executiveMetrics.ordersThisMonth.target}
           icon={ShoppingCart}
+          showComparison={showComparison}
         />
         <MetricCard
           title="Tempo Médio Ciclo"
           value={executiveMetrics.avgCycleTime.value}
+          previousValue={executiveMetrics.avgCycleTime.previousValue}
           change={executiveMetrics.avgCycleTime.change}
           target={executiveMetrics.avgCycleTime.target}
           icon={Clock}
           format="days"
+          showComparison={showComparison}
+          invertChange={true}
         />
       </div>
 
@@ -293,31 +483,42 @@ export const ExecutiveDashboard = () => {
         <MetricCard
           title="Base de Fornecedores"
           value={executiveMetrics.supplierCount.value}
+          previousValue={executiveMetrics.supplierCount.previousValue}
           change={executiveMetrics.supplierCount.change}
           target={executiveMetrics.supplierCount.target}
           icon={Users}
+          showComparison={showComparison}
         />
         <MetricCard
           title="Aprovações Pendentes"
           value={executiveMetrics.pendingApprovals.value}
+          previousValue={executiveMetrics.pendingApprovals.previousValue}
+          change={executiveMetrics.pendingApprovals.change}
           urgent={executiveMetrics.pendingApprovals.urgent}
           icon={CheckCircle2}
           onClick={() => setDrillDown({ type: 'pending', data: pendingItems })}
+          showComparison={showComparison}
+          invertChange={true}
         />
         <MetricCard
           title="Pedidos Atrasados"
           value={executiveMetrics.overdueOrders.value}
+          previousValue={executiveMetrics.overdueOrders.previousValue}
           change={executiveMetrics.overdueOrders.change}
           critical={executiveMetrics.overdueOrders.critical}
           icon={XCircle}
+          showComparison={showComparison}
+          invertChange={true}
         />
         <MetricCard
           title="Compliance Contratos"
           value={executiveMetrics.contractCompliance.value}
+          previousValue={executiveMetrics.contractCompliance.previousValue}
           change={executiveMetrics.contractCompliance.change}
           target={executiveMetrics.contractCompliance.target}
           icon={Target}
           format="percent"
+          showComparison={showComparison}
         />
       </div>
 
@@ -328,69 +529,131 @@ export const ExecutiveDashboard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />
-              Tendência de Spend e Savings
+              {showComparison ? 'Comparativo Spend - Atual vs Anterior' : 'Tendência de Spend e Savings'}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={monthlyTrend}>
-                <defs>
-                  <linearGradient id="spendGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                  </linearGradient>
-                  <linearGradient id="savingsGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis dataKey="month" className="text-xs" />
-                <YAxis className="text-xs" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
-                <Tooltip 
-                  formatter={(value: number) => formatCurrency(value)}
-                  contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}
-                />
-                <Legend />
-                <Area type="monotone" dataKey="spend" name="Spend" stroke="hsl(var(--primary))" fill="url(#spendGradient)" />
-                <Area type="monotone" dataKey="savings" name="Savings" stroke="hsl(var(--chart-2))" fill="url(#savingsGradient)" />
-              </AreaChart>
+              {showComparison ? (
+                <ComposedChart data={comparisonTrend}>
+                  <defs>
+                    <linearGradient id="currentSpendGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis dataKey="month" className="text-xs" />
+                  <YAxis className="text-xs" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
+                  <Tooltip 
+                    formatter={(value: number, name: string) => [
+                      formatCurrency(value),
+                      name.includes('current') || name.includes('Atual') ? 'Atual' : 'Anterior'
+                    ]}
+                    contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}
+                  />
+                  <Legend />
+                  <Area 
+                    type="monotone" 
+                    dataKey="currentSpend" 
+                    name="Spend Atual" 
+                    stroke="hsl(var(--primary))" 
+                    fill="url(#currentSpendGradient)" 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="previousSpend" 
+                    name="Spend Anterior" 
+                    stroke="hsl(var(--muted-foreground))" 
+                    strokeDasharray="5 5"
+                    dot={{ fill: 'hsl(var(--muted-foreground))' }}
+                  />
+                  <Bar 
+                    dataKey="currentSavings" 
+                    name="Savings Atual" 
+                    fill="hsl(var(--chart-2))" 
+                    radius={[4, 4, 0, 0]}
+                    opacity={0.8}
+                  />
+                </ComposedChart>
+              ) : (
+                <AreaChart data={monthlyTrend}>
+                  <defs>
+                    <linearGradient id="spendGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                    </linearGradient>
+                    <linearGradient id="savingsGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis dataKey="month" className="text-xs" />
+                  <YAxis className="text-xs" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
+                  <Tooltip 
+                    formatter={(value: number) => formatCurrency(value)}
+                    contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}
+                  />
+                  <Legend />
+                  <Area type="monotone" dataKey="spend" name="Spend" stroke="hsl(var(--primary))" fill="url(#spendGradient)" />
+                  <Area type="monotone" dataKey="savings" name="Savings" stroke="hsl(var(--chart-2))" fill="url(#savingsGradient)" />
+                </AreaChart>
+              )}
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Category Spend Pie */}
+        {/* Category Spend Comparison */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <PieChart className="h-5 w-5" />
-              Distribuição por Categoria
+              {showComparison ? <BarChart3 className="h-5 w-5" /> : <PieChart className="h-5 w-5" />}
+              {showComparison ? 'Comparativo por Categoria' : 'Distribuição por Categoria'}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <RechartsPieChart>
-                <Pie
-                  data={categorySpend}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={100}
-                  paddingAngle={2}
-                  dataKey="value"
-                  onClick={(data) => handleCategoryDrillDown(data)}
-                  className="cursor-pointer"
-                >
-                  {categorySpend.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip 
-                  formatter={(value: number) => formatCurrency(value)}
-                  contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}
-                />
-                <Legend />
-              </RechartsPieChart>
+              {showComparison ? (
+                <BarChart data={categorySpend} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis type="number" tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} className="text-xs" />
+                  <YAxis dataKey="name" type="category" className="text-xs" width={80} />
+                  <Tooltip 
+                    formatter={(value: number, name: string) => [
+                      formatCurrency(value),
+                      name === 'value' ? 'Atual' : 'Anterior'
+                    ]}
+                    contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}
+                  />
+                  <Legend />
+                  <Bar dataKey="value" name="Atual" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]} />
+                  <Bar dataKey="previousValue" name="Anterior" fill="hsl(var(--muted-foreground))" opacity={0.5} radius={[0, 4, 4, 0]} />
+                </BarChart>
+              ) : (
+                <RechartsPieChart>
+                  <Pie
+                    data={categorySpend}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={2}
+                    dataKey="value"
+                    onClick={(data) => handleCategoryDrillDown(data)}
+                    className="cursor-pointer"
+                  >
+                    {categorySpend.map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip 
+                    formatter={(value: number) => formatCurrency(value)}
+                    contentStyle={{ backgroundColor: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }}
+                  />
+                  <Legend />
+                </RechartsPieChart>
+              )}
             </ResponsiveContainer>
           </CardContent>
         </Card>
@@ -408,28 +671,38 @@ export const ExecutiveDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {topSuppliers.map((supplier, index) => (
-                <div 
-                  key={supplier.name} 
-                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                  onClick={() => handleSupplierDrillDown(supplier)}
-                >
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
-                    {index + 1}
+              {topSuppliers.map((supplier, index) => {
+                const spendChange = ((supplier.spend - supplier.previousSpend) / supplier.previousSpend) * 100;
+                return (
+                  <div 
+                    key={supplier.name} 
+                    className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+                    onClick={() => handleSupplierDrillDown(supplier)}
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
+                      {index + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{supplier.name}</p>
+                      <p className="text-sm text-muted-foreground">{supplier.orders} pedidos</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">{formatCurrency(supplier.spend)}</p>
+                      {showComparison ? (
+                        <p className={`text-xs flex items-center justify-end gap-1 ${spendChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {spendChange > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                          {Math.abs(spendChange).toFixed(1)}% vs anterior
+                        </p>
+                      ) : (
+                        <p className="text-sm text-green-600">+{formatCurrency(supplier.savings)}</p>
+                      )}
+                    </div>
+                    <Badge variant={supplier.compliance >= 90 ? 'default' : supplier.compliance >= 85 ? 'secondary' : 'destructive'}>
+                      {supplier.compliance}%
+                    </Badge>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{supplier.name}</p>
-                    <p className="text-sm text-muted-foreground">{supplier.orders} pedidos</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium">{formatCurrency(supplier.spend)}</p>
-                    <p className="text-sm text-green-600">+{formatCurrency(supplier.savings)}</p>
-                  </div>
-                  <Badge variant={supplier.compliance >= 90 ? 'default' : supplier.compliance >= 85 ? 'secondary' : 'destructive'}>
-                    {supplier.compliance}%
-                  </Badge>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -444,28 +717,47 @@ export const ExecutiveDashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {buyerPerformance.map((buyer, index) => (
-                <div 
-                  key={buyer.name} 
-                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                  onClick={() => handleBuyerDrillDown(buyer)}
-                >
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-chart-2/20 text-chart-2 font-bold text-sm">
-                    {index + 1}
+              {buyerPerformance.map((buyer, index) => {
+                const savingsChange = ((buyer.savings - buyer.previousSavings) / buyer.previousSavings) * 100;
+                const ordersChange = ((buyer.orders - buyer.previousOrders) / buyer.previousOrders) * 100;
+                return (
+                  <div 
+                    key={buyer.name} 
+                    className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+                    onClick={() => handleBuyerDrillDown(buyer)}
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-chart-2/20 text-chart-2 font-bold text-sm">
+                      {index + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{buyer.name}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {buyer.orders} pedidos 
+                        {showComparison && (
+                          <span className={ordersChange > 0 ? 'text-green-600' : 'text-red-600'}>
+                            {' '}({ordersChange > 0 ? '+' : ''}{ordersChange.toFixed(0)}%)
+                          </span>
+                        )}
+                        {' '}• {buyer.avgCycle} dias
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-green-600">{formatCurrency(buyer.savings)}</p>
+                      {showComparison ? (
+                        <p className={`text-xs flex items-center justify-end gap-1 ${savingsChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                          {savingsChange > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
+                          {Math.abs(savingsChange).toFixed(1)}%
+                        </p>
+                      ) : (
+                        <p className="text-sm text-muted-foreground">economia</p>
+                      )}
+                    </div>
+                    <Badge variant={buyer.compliance >= 95 ? 'default' : buyer.compliance >= 90 ? 'secondary' : 'outline'}>
+                      {buyer.compliance}%
+                    </Badge>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{buyer.name}</p>
-                    <p className="text-sm text-muted-foreground">{buyer.orders} pedidos • {buyer.avgCycle} dias</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium text-green-600">{formatCurrency(buyer.savings)}</p>
-                    <p className="text-sm text-muted-foreground">economia</p>
-                  </div>
-                  <Badge variant={buyer.compliance >= 95 ? 'default' : buyer.compliance >= 90 ? 'secondary' : 'outline'}>
-                    {buyer.compliance}%
-                  </Badge>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </CardContent>
         </Card>
