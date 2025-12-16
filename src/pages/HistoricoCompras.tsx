@@ -244,6 +244,92 @@ const HistoricoCompras = () => {
     };
   }, [filteredPurchaseRecords]);
 
+  // Chart data for comparative analysis
+  const chartData = useMemo(() => {
+    // Group records by month
+    const monthlyData: Record<string, { month: string; value: number; quantity: number; orders: number; avgPrice: number }> = {};
+    
+    filteredPurchaseRecords.forEach(record => {
+      const monthKey = format(parseISO(record.purchaseDate), 'yyyy-MM');
+      const monthLabel = format(parseISO(record.purchaseDate), 'MMM/yy', { locale: ptBR });
+      
+      if (!monthlyData[monthKey]) {
+        monthlyData[monthKey] = { month: monthLabel, value: 0, quantity: 0, orders: 0, avgPrice: 0 };
+      }
+      monthlyData[monthKey].value += record.totalPrice;
+      monthlyData[monthKey].quantity += record.quantity;
+      monthlyData[monthKey].orders += 1;
+    });
+
+    // Calculate average price per month
+    Object.keys(monthlyData).forEach(key => {
+      monthlyData[key].avgPrice = monthlyData[key].quantity > 0 
+        ? monthlyData[key].value / monthlyData[key].quantity 
+        : 0;
+    });
+
+    const monthlyTrend = Object.keys(monthlyData)
+      .sort()
+      .map(key => monthlyData[key]);
+
+    // Group by category
+    const categoryData: Record<string, { category: string; value: number; quantity: number; orders: number }> = {};
+    
+    filteredPurchaseRecords.forEach(record => {
+      if (!categoryData[record.productCategory]) {
+        categoryData[record.productCategory] = { category: record.productCategory, value: 0, quantity: 0, orders: 0 };
+      }
+      categoryData[record.productCategory].value += record.totalPrice;
+      categoryData[record.productCategory].quantity += record.quantity;
+      categoryData[record.productCategory].orders += 1;
+    });
+
+    const byCategory = Object.values(categoryData).sort((a, b) => b.value - a.value);
+
+    // Group by supplier
+    const supplierData: Record<string, { supplier: string; value: number; quantity: number; orders: number; avgDiscount: number; discountSum: number }> = {};
+    
+    filteredPurchaseRecords.forEach(record => {
+      if (!supplierData[record.supplierId]) {
+        supplierData[record.supplierId] = { 
+          supplier: record.supplierName, 
+          value: 0, 
+          quantity: 0, 
+          orders: 0, 
+          avgDiscount: 0,
+          discountSum: 0 
+        };
+      }
+      supplierData[record.supplierId].value += record.totalPrice;
+      supplierData[record.supplierId].quantity += record.quantity;
+      supplierData[record.supplierId].orders += 1;
+      supplierData[record.supplierId].discountSum += record.discount;
+    });
+
+    Object.keys(supplierData).forEach(key => {
+      supplierData[key].avgDiscount = supplierData[key].orders > 0 
+        ? supplierData[key].discountSum / supplierData[key].orders 
+        : 0;
+    });
+
+    const bySupplier = Object.values(supplierData).sort((a, b) => b.value - a.value);
+
+    // Price evolution by product
+    const priceByProduct: Record<string, { product: string; prices: { date: string; price: number }[] }> = {};
+    
+    filteredPurchaseRecords.forEach(record => {
+      if (!priceByProduct[record.productId]) {
+        priceByProduct[record.productId] = { product: record.productName, prices: [] };
+      }
+      priceByProduct[record.productId].prices.push({
+        date: format(parseISO(record.purchaseDate), 'dd/MM'),
+        price: record.unitPrice
+      });
+    });
+
+    return { monthlyTrend, byCategory, bySupplier, priceByProduct };
+  }, [filteredPurchaseRecords]);
+
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
@@ -337,7 +423,7 @@ const HistoricoCompras = () => {
         {/* Main Content with Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <TabsList className="grid w-full sm:w-auto grid-cols-3">
+            <TabsList className="grid w-full sm:w-auto grid-cols-4">
               <TabsTrigger value="produtos" className="gap-2">
                 <Package className="w-4 h-4" />
                 Produtos
@@ -345,6 +431,10 @@ const HistoricoCompras = () => {
               <TabsTrigger value="fornecedores" className="gap-2">
                 <Building2 className="w-4 h-4" />
                 Fornecedores
+              </TabsTrigger>
+              <TabsTrigger value="analises" className="gap-2">
+                <BarChart3 className="w-4 h-4" />
+                Análises
               </TabsTrigger>
               <TabsTrigger value="registros" className="gap-2">
                 <FileText className="w-4 h-4" />
@@ -827,6 +917,257 @@ const HistoricoCompras = () => {
                 )}
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analises" className="space-y-6">
+            {/* Monthly Trend Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Volume por Mês */}
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="font-semibold text-foreground flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-primary" />
+                      Volume Financeiro por Período
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1">Evolução do valor total de compras</p>
+                  </div>
+                </div>
+                {chartData.monthlyTrend.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={280}>
+                    <AreaChart data={chartData.monthlyTrend}>
+                      <defs>
+                        <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                      <XAxis dataKey="month" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
+                      <YAxis 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} 
+                        tickFormatter={(value) => `R$ ${(value/1000).toFixed(0)}k`}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Area 
+                        type="monotone" 
+                        dataKey="value" 
+                        name="Valor (R$)" 
+                        stroke="hsl(var(--primary))" 
+                        fillOpacity={1} 
+                        fill="url(#colorValue)" 
+                        strokeWidth={2}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+                    <p className="text-sm">Sem dados para o período selecionado</p>
+                  </div>
+                )}
+              </Card>
+
+              {/* Quantidade por Mês */}
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="font-semibold text-foreground flex items-center gap-2">
+                      <ShoppingCart className="w-4 h-4 text-blue-600" />
+                      Volume de Itens por Período
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1">Quantidade total de itens comprados</p>
+                  </div>
+                </div>
+                {chartData.monthlyTrend.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={280}>
+                    <BarChart data={chartData.monthlyTrend}>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                      <XAxis dataKey="month" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
+                      <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Bar 
+                        dataKey="quantity" 
+                        name="Quantidade" 
+                        fill="hsl(221, 83%, 53%)" 
+                        radius={[4, 4, 0, 0]}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+                    <p className="text-sm">Sem dados para o período selecionado</p>
+                  </div>
+                )}
+              </Card>
+            </div>
+
+            {/* Price Evolution */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="font-semibold text-foreground flex items-center gap-2">
+                    <TrendingUp className="w-4 h-4 text-emerald-600" />
+                    Evolução do Preço Médio
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-1">Preço médio unitário ao longo do tempo</p>
+                </div>
+              </div>
+              {chartData.monthlyTrend.length > 0 ? (
+                <ResponsiveContainer width="100%" height={280}>
+                  <LineChart data={chartData.monthlyTrend}>
+                    <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                    <XAxis dataKey="month" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
+                    <YAxis 
+                      tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} 
+                      tickFormatter={(value) => `R$ ${value.toFixed(0)}`}
+                    />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Line 
+                      type="monotone" 
+                      dataKey="avgPrice" 
+                      name="Preço Médio (R$)" 
+                      stroke="hsl(142, 76%, 36%)" 
+                      strokeWidth={2}
+                      dot={{ r: 4, fill: 'hsl(142, 76%, 36%)' }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+                  <p className="text-sm">Sem dados para o período selecionado</p>
+                </div>
+              )}
+            </Card>
+
+            {/* Category and Supplier Analysis */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Por Categoria */}
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="font-semibold text-foreground flex items-center gap-2">
+                      <Package className="w-4 h-4 text-purple-600" />
+                      Distribuição por Categoria
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1">Volume de compras por categoria de produto</p>
+                  </div>
+                </div>
+                {chartData.byCategory.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={280}>
+                    <BarChart data={chartData.byCategory} layout="vertical">
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                      <XAxis 
+                        type="number" 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} 
+                        tickFormatter={(value) => `R$ ${(value/1000).toFixed(0)}k`}
+                      />
+                      <YAxis 
+                        type="category" 
+                        dataKey="category" 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} 
+                        width={100}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Bar dataKey="value" name="Valor (R$)" radius={[0, 4, 4, 0]}>
+                        {chartData.byCategory.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+                    <p className="text-sm">Sem dados para o período selecionado</p>
+                  </div>
+                )}
+              </Card>
+
+              {/* Por Fornecedor */}
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="font-semibold text-foreground flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-amber-600" />
+                      Volume por Fornecedor
+                    </h3>
+                    <p className="text-xs text-muted-foreground mt-1">Distribuição de compras entre fornecedores</p>
+                  </div>
+                </div>
+                {chartData.bySupplier.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={280}>
+                    <BarChart data={chartData.bySupplier} layout="vertical">
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                      <XAxis 
+                        type="number" 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} 
+                        tickFormatter={(value) => `R$ ${(value/1000).toFixed(0)}k`}
+                      />
+                      <YAxis 
+                        type="category" 
+                        dataKey="supplier" 
+                        tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} 
+                        width={100}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Bar dataKey="value" name="Valor (R$)" fill="hsl(38, 92%, 50%)" radius={[0, 4, 4, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-[280px] text-muted-foreground">
+                    <p className="text-sm">Sem dados para o período selecionado</p>
+                  </div>
+                )}
+              </Card>
+            </div>
+
+            {/* Supplier Metrics Table */}
+            <Card className="p-0">
+              <div className="p-4 border-b border-border">
+                <h3 className="font-semibold text-foreground flex items-center gap-2">
+                  <Percent className="w-4 h-4 text-primary" />
+                  Métricas Comparativas por Fornecedor
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">Análise detalhada de performance</p>
+              </div>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-muted/30">
+                      <TableHead className="text-xs">Fornecedor</TableHead>
+                      <TableHead className="text-xs text-right">Pedidos</TableHead>
+                      <TableHead className="text-xs text-right">Quantidade</TableHead>
+                      <TableHead className="text-xs text-right">Volume (R$)</TableHead>
+                      <TableHead className="text-xs text-right">Ticket Médio</TableHead>
+                      <TableHead className="text-xs text-right">Desconto Médio</TableHead>
+                      <TableHead className="text-xs">Participação</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {chartData.bySupplier.map((supplier, idx) => {
+                      const totalValue = chartData.bySupplier.reduce((sum, s) => sum + s.value, 0);
+                      const share = totalValue > 0 ? (supplier.value / totalValue) * 100 : 0;
+                      return (
+                        <TableRow key={idx}>
+                          <TableCell className="text-sm font-medium">{supplier.supplier}</TableCell>
+                          <TableCell className="text-sm text-right">{supplier.orders}</TableCell>
+                          <TableCell className="text-sm text-right">{supplier.quantity.toLocaleString('pt-BR')}</TableCell>
+                          <TableCell className="text-sm text-right font-medium">R$ {supplier.value.toLocaleString('pt-BR')}</TableCell>
+                          <TableCell className="text-sm text-right">R$ {(supplier.value / supplier.orders).toLocaleString('pt-BR', { maximumFractionDigits: 0 })}</TableCell>
+                          <TableCell className="text-sm text-right text-green-600">{supplier.avgDiscount.toFixed(1)}%</TableCell>
+                          <TableCell className="text-sm">
+                            <div className="flex items-center gap-2">
+                              <Progress value={share} className="h-2 w-16" />
+                              <span className="text-xs text-muted-foreground">{share.toFixed(1)}%</span>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            </Card>
           </TabsContent>
 
           {/* All Records Tab */}
