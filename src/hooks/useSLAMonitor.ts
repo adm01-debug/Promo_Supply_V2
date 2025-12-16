@@ -1,18 +1,13 @@
 import { useEffect, useCallback, useRef } from 'react';
 import { useNotifications } from './useNotifications';
 import { solicitacoesMock, Solicitacao } from '@/data/mockData';
+import { useSLASettings } from '@/stores/slaSettingsStore';
 
 interface SLAConfig {
-  warningThresholdDays: number;  // Days before deadline to warn
-  criticalThresholdDays: number; // Days before deadline for critical
-  checkIntervalMs: number;       // How often to check (ms)
+  warningThresholdDays: number;
+  criticalThresholdDays: number;
+  checkIntervalMs: number;
 }
-
-const DEFAULT_CONFIG: SLAConfig = {
-  warningThresholdDays: 3,
-  criticalThresholdDays: 1,
-  checkIntervalMs: 60000 // Check every minute
-};
 
 // Parse prazo string to days (e.g., "15-20 dias" -> 15)
 const parsePrazoToDays = (prazo: string): number => {
@@ -56,10 +51,16 @@ const calculateSLAStatus = (
   return 'ok';
 };
 
-export const useSLAMonitor = (config: Partial<SLAConfig> = {}) => {
-  const finalConfig = { ...DEFAULT_CONFIG, ...config };
+export const useSLAMonitor = () => {
+  const { settings } = useSLASettings();
   const { sendNotification } = useNotifications();
   const notifiedOrdersRef = useRef<Set<string>>(new Set());
+  
+  const finalConfig: SLAConfig = {
+    warningThresholdDays: settings.warningThresholdDays,
+    criticalThresholdDays: settings.criticalThresholdDays,
+    checkIntervalMs: settings.checkIntervalMinutes * 60000,
+  };
 
   const checkSLA = useCallback(async () => {
     console.log('🔍 Verificando SLA dos pedidos...');
