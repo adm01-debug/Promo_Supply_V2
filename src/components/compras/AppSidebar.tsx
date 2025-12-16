@@ -8,7 +8,8 @@ import {
   ChevronLeft,
   Menu,
   Package,
-  Truck
+  Truck,
+  BarChart3
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -57,6 +58,12 @@ const menuItems = [
     icon: Factory, 
     href: "/fornecedores",
     description: "Cadastros"
+  },
+  { 
+    title: "Relatórios", 
+    icon: BarChart3, 
+    href: "/relatorios",
+    description: "Analytics"
   },
 ];
 
