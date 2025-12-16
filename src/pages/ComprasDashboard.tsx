@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import { KpiCard } from "@/components/compras/KpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
 import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
+import { SLADistributionChart } from "@/components/compras/SLADistributionChart";
 import { kpisMock, pipelineMock, itensUrgentesMock } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
 
@@ -93,14 +94,18 @@ const ComprasDashboard = () => {
           />
         </div>
 
-        {/* Pipeline Visual */}
-        <Card className="p-6">
-          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-primary" />
-            Pipeline Visual
-          </h2>
-          <PipelineChart data={pipelineMock} />
-        </Card>
+        {/* SLA Distribution + Pipeline */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <SLADistributionChart />
+          
+          <Card className="p-6">
+            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-primary" />
+              Pipeline Visual
+            </h2>
+            <PipelineChart data={pipelineMock} />
+          </Card>
+        </div>
 
         {/* Itens Urgentes */}
         <Card className="p-6">
