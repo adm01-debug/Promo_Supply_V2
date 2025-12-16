@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   TrendingUp,
   TrendingDown,
@@ -12,11 +12,13 @@ import {
   Percent,
   ArrowUpRight,
   ArrowDownRight,
-  Minus
+  Minus,
+  RefreshCw
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -42,6 +44,10 @@ import {
   AreaChart
 } from "recharts";
 import { cn } from "@/lib/utils";
+import { useKPITargetsStore, checkKPIStatus } from "@/stores/kpiTargetsStore";
+import { KPITargetsConfig } from "./KPITargetsConfig";
+import { KPIAlertsPanel } from "./KPIAlertsPanel";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock data for KPIs
 const kpiData = {
@@ -152,11 +158,75 @@ const TrendBadge = ({ current, previous }: { current: number; previous: number }
 
 export const AdvancedProcurementKPIs = () => {
   const [period, setPeriod] = useState("30");
+  const { targets, addAlert } = useKPITargetsStore();
+  const { toast } = useToast();
+
+  // Check KPIs against targets and generate alerts
+  const checkAllKPIs = () => {
+    const kpiChecks = [
+      { id: 'procurement_roi', value: kpiData.procurementROI.current, isInverse: false },
+      { id: 'maverick_spend', value: kpiData.maverickSpend.percentage, isInverse: true },
+      { id: 'contract_compliance', value: kpiData.contractCompliance.percentage, isInverse: false },
+      { id: 'cost_avoidance', value: kpiData.costAvoidance.total, isInverse: false },
+      { id: 'po_cycle_time', value: kpiData.poCycleTime.current, isInverse: true },
+      { id: 'supplier_concentration', value: kpiData.supplierConcentration.top5Percentage, isInverse: true },
+      { id: 'first_time_match', value: kpiData.firstTimeMatchRate.current, isInverse: false },
+      { id: 'savings_realization', value: kpiData.savingsRealization.percentage, isInverse: false },
+    ];
+
+    let alertsGenerated = 0;
+
+    kpiChecks.forEach(({ id, value, isInverse }) => {
+      const target = targets.find(t => t.id === id);
+      if (!target || !target.enabled) return;
+
+      const { status } = checkKPIStatus(id, value, target, isInverse);
+      
+      if (status !== 'success') {
+        addAlert({
+          kpiId: id,
+          kpiName: target.name,
+          type: status,
+          message: status === 'critical' 
+            ? `KPI crítico! Valor atual ${value.toFixed(1)}${target.unit} está muito abaixo da meta ${target.target}${target.unit}`
+            : `Atenção: ${value.toFixed(1)}${target.unit} está abaixo da meta ${target.target}${target.unit}`,
+          currentValue: value,
+          targetValue: target.target
+        });
+        alertsGenerated++;
+      }
+    });
+
+    toast({
+      title: "Verificação Concluída",
+      description: alertsGenerated > 0 
+        ? `${alertsGenerated} alerta(s) gerado(s)` 
+        : "Todos os KPIs estão dentro das metas",
+    });
+  };
+
+  // Get status indicator for a KPI card
+  const getKPIStatusIndicator = (kpiId: string, currentValue: number, isInverse: boolean = false) => {
+    const target = targets.find(t => t.id === kpiId);
+    if (!target || !target.enabled) return null;
+    
+    const { status } = checkKPIStatus(kpiId, currentValue, target, isInverse);
+    
+    if (status === 'success') return null;
+    
+    return (
+      <div className={cn(
+        "absolute top-2 right-2 w-2 h-2 rounded-full animate-pulse",
+        status === 'critical' && "bg-red-500",
+        status === 'warning' && "bg-amber-500"
+      )} />
+    );
+  };
 
   return (
     <div className="space-y-6">
-      {/* Period Filter */}
-      <div className="flex items-center gap-4">
+      {/* Period Filter & Actions */}
+      <div className="flex items-center justify-between gap-4 flex-wrap">
         <Select value={period} onValueChange={setPeriod}>
           <SelectTrigger className="w-[160px]">
             <SelectValue />
@@ -168,12 +238,22 @@ export const AdvancedProcurementKPIs = () => {
             <SelectItem value="365">Último ano</SelectItem>
           </SelectContent>
         </Select>
+        
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={checkAllKPIs} className="gap-2">
+            <RefreshCw className="w-4 h-4" />
+            Verificar KPIs
+          </Button>
+          <KPIAlertsPanel />
+          <KPITargetsConfig />
+        </div>
       </div>
 
       {/* Main KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Procurement ROI */}
-        <Card className="p-5">
+        <Card className="p-5 relative">
+          {getKPIStatusIndicator('procurement_roi', kpiData.procurementROI.current, false)}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
@@ -185,9 +265,9 @@ export const AdvancedProcurementKPIs = () => {
           </div>
           <p className="text-3xl font-bold text-foreground">{kpiData.procurementROI.current}x</p>
           <div className="mt-2 flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Meta: {kpiData.procurementROI.target}x</span>
+            <span className="text-xs text-muted-foreground">Meta: {targets.find(t => t.id === 'procurement_roi')?.target || kpiData.procurementROI.target}x</span>
             <Progress 
-              value={(kpiData.procurementROI.current / kpiData.procurementROI.target) * 100} 
+              value={(kpiData.procurementROI.current / (targets.find(t => t.id === 'procurement_roi')?.target || kpiData.procurementROI.target)) * 100} 
               className="h-1.5 flex-1"
             />
           </div>
@@ -197,7 +277,8 @@ export const AdvancedProcurementKPIs = () => {
         </Card>
 
         {/* Maverick Spend */}
-        <Card className="p-5 border-amber-500/30">
+        <Card className="p-5 border-amber-500/30 relative">
+          {getKPIStatusIndicator('maverick_spend', kpiData.maverickSpend.percentage, true)}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
@@ -206,7 +287,7 @@ export const AdvancedProcurementKPIs = () => {
               <span className="text-sm font-medium text-muted-foreground">Maverick Spend</span>
             </div>
             <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">
-              Meta: {kpiData.maverickSpend.target}%
+              Meta: {targets.find(t => t.id === 'maverick_spend')?.target || kpiData.maverickSpend.target}%
             </Badge>
           </div>
           <p className="text-3xl font-bold text-amber-500">{kpiData.maverickSpend.percentage}%</p>
@@ -223,7 +304,8 @@ export const AdvancedProcurementKPIs = () => {
         </Card>
 
         {/* Contract Compliance */}
-        <Card className="p-5">
+        <Card className="p-5 relative">
+          {getKPIStatusIndicator('contract_compliance', kpiData.contractCompliance.percentage, false)}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -237,7 +319,7 @@ export const AdvancedProcurementKPIs = () => {
           </div>
           <p className="text-3xl font-bold text-foreground">{kpiData.contractCompliance.percentage}%</p>
           <div className="mt-2 flex items-center gap-2">
-            <span className="text-xs text-muted-foreground">Meta: {kpiData.contractCompliance.target}%</span>
+            <span className="text-xs text-muted-foreground">Meta: {targets.find(t => t.id === 'contract_compliance')?.target || kpiData.contractCompliance.target}%</span>
             <Progress 
               value={kpiData.contractCompliance.percentage} 
               className="h-1.5 flex-1"
@@ -254,7 +336,8 @@ export const AdvancedProcurementKPIs = () => {
         </Card>
 
         {/* Cost Avoidance */}
-        <Card className="p-5">
+        <Card className="p-5 relative">
+          {getKPIStatusIndicator('cost_avoidance', kpiData.costAvoidance.total, false)}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
@@ -262,6 +345,9 @@ export const AdvancedProcurementKPIs = () => {
               </div>
               <span className="text-sm font-medium text-muted-foreground">Cost Avoidance</span>
             </div>
+            <Badge variant="outline" className="text-[10px]">
+              Meta: R$ {((targets.find(t => t.id === 'cost_avoidance')?.target || 150000) / 1000).toFixed(0)}k
+            </Badge>
           </div>
           <p className="text-3xl font-bold text-emerald-500">
             R$ {(kpiData.costAvoidance.total / 1000).toFixed(0)}k
@@ -286,7 +372,8 @@ export const AdvancedProcurementKPIs = () => {
       {/* Secondary KPIs Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* PO Cycle Time */}
-        <Card className="p-5">
+        <Card className="p-5 relative">
+          {getKPIStatusIndicator('po_cycle_time', kpiData.poCycleTime.current, true)}
           <div className="flex items-center gap-2 mb-3">
             <Clock className="w-5 h-5 text-primary" />
             <span className="text-sm font-medium text-foreground">PO Cycle Time</span>
@@ -295,7 +382,7 @@ export const AdvancedProcurementKPIs = () => {
             <p className="text-2xl font-bold text-foreground">{kpiData.poCycleTime.current}</p>
             <p className="text-sm text-muted-foreground mb-0.5">dias</p>
             <Badge className="ml-auto bg-emerald-500/10 text-emerald-500 text-[10px]">
-              Meta: {kpiData.poCycleTime.target}d
+              Meta: {targets.find(t => t.id === 'po_cycle_time')?.target || kpiData.poCycleTime.target}d
             </Badge>
           </div>
           <div className="h-24 mt-3">
@@ -365,7 +452,8 @@ export const AdvancedProcurementKPIs = () => {
         </Card>
 
         {/* First-Time Match Rate */}
-        <Card className="p-5">
+        <Card className="p-5 relative">
+          {getKPIStatusIndicator('first_time_match', kpiData.firstTimeMatchRate.current, false)}
           <div className="flex items-center gap-2 mb-3">
             <Target className="w-5 h-5 text-primary" />
             <span className="text-sm font-medium text-foreground">First-Time Match Rate</span>
@@ -373,7 +461,7 @@ export const AdvancedProcurementKPIs = () => {
           <div className="flex items-end gap-2">
             <p className="text-2xl font-bold text-foreground">{kpiData.firstTimeMatchRate.current}%</p>
             <Badge className="ml-auto bg-primary/10 text-primary text-[10px]">
-              Meta: {kpiData.firstTimeMatchRate.target}%
+              Meta: {targets.find(t => t.id === 'first_time_match')?.target || kpiData.firstTimeMatchRate.target}%
             </Badge>
           </div>
           <Progress 
