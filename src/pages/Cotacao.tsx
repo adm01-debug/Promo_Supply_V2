@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Package, RefreshCw, Search, Plus, Trophy, Clock, Check, Loader2 } from "lucide-react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -237,9 +237,11 @@ const Cotacao = () => {
             <Button variant="outline" onClick={() => setFornecedorSelecionado(null)}>
               Cancelar Seleção
             </Button>
-            <Button className="bg-green-600 hover:bg-green-700">
-              <Check className="w-4 h-4 mr-2" />
-              Gerar Pedido
+            <Button asChild className="bg-green-600 hover:bg-green-700">
+              <Link to={`/gerar-ordem?id=${solicitacaoId}`}>
+                <Check className="w-4 h-4 mr-2" />
+                Gerar Pedido
+              </Link>
             </Button>
           </div>
         )}
