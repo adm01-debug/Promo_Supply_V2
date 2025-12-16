@@ -26,6 +26,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { SLABySupplierAnalysis } from "@/components/compras/SLABySupplierAnalysis";
+import { AdvancedProcurementKPIs } from "@/components/compras/AdvancedProcurementKPIs";
 import { 
   BarChart, 
   Bar, 
@@ -210,6 +211,7 @@ const comparativoBarChart = [
 
 const Relatorios = () => {
   const [periodo, setPeriodo] = useState("6m");
+  const [activeTab, setActiveTab] = useState("geral");
 
   // KPIs calculados
   const totalVolume = volumeMensal.reduce((acc, m) => acc + m.volume, 0);
@@ -270,7 +272,24 @@ const Relatorios = () => {
           </div>
         </div>
 
-        {/* KPIs Principais */}
+        {/* Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:inline-flex">
+            <TabsTrigger value="geral" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Visão Geral
+            </TabsTrigger>
+            <TabsTrigger value="kpis" className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              KPIs Avançados
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="kpis" className="mt-6">
+            <AdvancedProcurementKPIs />
+          </TabsContent>
+
+          <TabsContent value="geral" className="mt-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="p-5">
             <div className="flex items-start justify-between">
@@ -742,6 +761,8 @@ const Relatorios = () => {
             </ResponsiveContainer>
           </div>
         </Card>
+          </TabsContent>
+        </Tabs>
       </div>
     </MainLayout>
   );
