@@ -15,7 +15,8 @@ import {
   ClipboardCheck,
   Users,
   TrendingUp,
-  Award
+  Award,
+  ShoppingCart
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -64,6 +65,12 @@ const menuItems = [
     icon: Factory, 
     href: "/fornecedores",
     description: "Cadastros"
+  },
+  { 
+    title: "Histórico", 
+    icon: ShoppingCart, 
+    href: "/historico-compras",
+    description: "Produto/Fornecedor"
   },
   { 
     title: "Performance", 
