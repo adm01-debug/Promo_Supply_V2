@@ -9,7 +9,8 @@ import {
   Target,
   Award,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  ExternalLink
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { BuyerDrilldownModal } from "@/components/compras/BuyerDrilldownModal";
 import {
   AreaChart,
   Area,
@@ -111,6 +113,13 @@ const COLORS = ['hsl(var(--primary))', 'hsl(142, 76%, 36%)', 'hsl(221, 83%, 53%)
 
 const RelatorioNegociacoes = () => {
   const [periodo, setPeriodo] = useState("6m");
+  const [selectedBuyer, setSelectedBuyer] = useState<typeof comparativoCompradores[0] | null>(null);
+  const [drilldownOpen, setDrilldownOpen] = useState(false);
+
+  const handleBuyerClick = (comprador: typeof comparativoCompradores[0]) => {
+    setSelectedBuyer(comprador);
+    setDrilldownOpen(true);
+  };
 
   const totalEconomia = historicoMensal.reduce((acc, curr) => acc + curr.economia, 0);
   const mediaPercentual = historicoMensal.reduce((acc, curr) => acc + curr.percentual, 0) / historicoMensal.length;
@@ -301,7 +310,11 @@ const RelatorioNegociacoes = () => {
             {/* Ranking Table */}
             <div className="space-y-3">
               {comparativoCompradores.map((comprador, index) => (
-                <div key={index} className="flex items-center gap-4 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+                <div 
+                  key={index} 
+                  onClick={() => handleBuyerClick(comprador)}
+                  className="flex items-center gap-4 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors cursor-pointer group"
+                >
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
                     {comprador.avatar}
                   </div>
@@ -313,6 +326,7 @@ const RelatorioNegociacoes = () => {
                       ) : (
                         <ArrowDownRight className="w-4 h-4 text-red-500" />
                       )}
+                      <ExternalLink className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                     <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
                       <span>{comprador.cotacoes} cotações</span>
@@ -325,6 +339,9 @@ const RelatorioNegociacoes = () => {
                   </div>
                 </div>
               ))}
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                Clique em um comprador para ver detalhes
+              </p>
             </div>
           </div>
         </Card>
@@ -411,6 +428,13 @@ const RelatorioNegociacoes = () => {
           </Card>
         </div>
       </div>
+
+      {/* Buyer Drilldown Modal */}
+      <BuyerDrilldownModal 
+        open={drilldownOpen} 
+        onOpenChange={setDrilldownOpen} 
+        comprador={selectedBuyer} 
+      />
     </MainLayout>
   );
 };
