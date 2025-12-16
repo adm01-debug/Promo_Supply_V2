@@ -25,6 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { SLABySupplierAnalysis } from "@/components/compras/SLABySupplierAnalysis";
 import { 
   BarChart, 
   Bar, 
@@ -479,6 +480,9 @@ const Relatorios = () => {
             </div>
           </Card>
         </div>
+
+        {/* SLA Analysis by Supplier */}
+        <SLABySupplierAnalysis />
 
         {/* Performance de Fornecedores */}
         <Card className="p-6">
