@@ -15,6 +15,7 @@ import Acompanhamento from "./pages/Acompanhamento";
 import GerarOrdem from "./pages/GerarOrdem";
 import Relatorios from "./pages/Relatorios";
 import RelatorioNegociacoes from "./pages/RelatorioNegociacoes";
+import Aprovacoes from "./pages/Aprovacoes";
 import Auditoria from "./pages/Auditoria";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -45,6 +46,7 @@ const App = () => (
             <Route path="/gerar-ordem" element={<ProtectedRoute><GerarOrdem /></ProtectedRoute>} />
             <Route path="/relatorios" element={<ProtectedRoute><Relatorios /></ProtectedRoute>} />
             <Route path="/relatorios/negociacoes" element={<ProtectedRoute><RelatorioNegociacoes /></ProtectedRoute>} />
+            <Route path="/aprovacoes" element={<ProtectedRoute requiredRole={['admin', 'coordinator']}><Aprovacoes /></ProtectedRoute>} />
             <Route path="/auditoria" element={<ProtectedRoute requiredRole="admin"><Auditoria /></ProtectedRoute>} />
             
             {/* Catch-all */}
