@@ -14,7 +14,8 @@ import {
   PiggyBank,
   ClipboardCheck,
   Users,
-  TrendingUp
+  TrendingUp,
+  Award
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -87,6 +88,12 @@ const menuItems = [
     icon: PiggyBank, 
     href: "/relatorios/negociacoes",
     description: "Performance comprador"
+  },
+  { 
+    title: "Compradores", 
+    icon: Award, 
+    href: "/buyer-performance",
+    description: "Dashboard individual"
   },
   { 
     title: "Aprovações", 
