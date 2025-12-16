@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { format, subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -123,6 +124,18 @@ const HistoricoCompras = () => {
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [selectedSupplierId, setSelectedSupplierId] = useState<string | null>(null);
+  
+  // Drill-down state
+  const [drilldownOpen, setDrilldownOpen] = useState(false);
+  const [drilldownType, setDrilldownType] = useState<'month' | 'category' | 'supplier' | null>(null);
+  const [drilldownData, setDrilldownData] = useState<any>(null);
+
+  // Handle chart drill-down
+  const handleDrilldown = (type: 'month' | 'category' | 'supplier', data: any) => {
+    setDrilldownType(type);
+    setDrilldownData(data);
+    setDrilldownOpen(true);
+  };
 
   // Period presets
   const applyPeriodPreset = (preset: string) => {
@@ -185,6 +198,25 @@ const HistoricoCompras = () => {
       return matchesSearch && matchesCategory && matchesStatus && matchesDate;
     });
   }, [searchTerm, categoryFilter, statusFilter, dateRange]);
+
+  // Get records for drill-down
+  const drilldownRecords = useMemo(() => {
+    if (!drilldownData || !drilldownType) return [];
+    
+    return filteredPurchaseRecords.filter(record => {
+      if (drilldownType === 'month') {
+        const recordMonth = format(parseISO(record.purchaseDate), 'MMM/yy', { locale: ptBR });
+        return recordMonth === drilldownData.month;
+      }
+      if (drilldownType === 'category') {
+        return record.productCategory === drilldownData.category;
+      }
+      if (drilldownType === 'supplier') {
+        return record.supplierName === drilldownData.supplier;
+      }
+      return false;
+    });
+  }, [drilldownData, drilldownType, filteredPurchaseRecords]);
 
   // Filter products
   const filteredProducts = useMemo(() => {
@@ -931,12 +963,12 @@ const HistoricoCompras = () => {
                       <DollarSign className="w-4 h-4 text-primary" />
                       Volume Financeiro por Período
                     </h3>
-                    <p className="text-xs text-muted-foreground mt-1">Evolução do valor total de compras</p>
+                    <p className="text-xs text-muted-foreground mt-1">Clique nas barras para ver detalhes</p>
                   </div>
                 </div>
                 {chartData.monthlyTrend.length > 0 ? (
                   <ResponsiveContainer width="100%" height={280}>
-                    <AreaChart data={chartData.monthlyTrend}>
+                    <AreaChart data={chartData.monthlyTrend} onClick={(e) => e?.activePayload && handleDrilldown('month', e.activePayload[0].payload)}>
                       <defs>
                         <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
@@ -958,6 +990,7 @@ const HistoricoCompras = () => {
                         fillOpacity={1} 
                         fill="url(#colorValue)" 
                         strokeWidth={2}
+                        style={{ cursor: 'pointer' }}
                       />
                     </AreaChart>
                   </ResponsiveContainer>
@@ -976,12 +1009,12 @@ const HistoricoCompras = () => {
                       <ShoppingCart className="w-4 h-4 text-blue-600" />
                       Volume de Itens por Período
                     </h3>
-                    <p className="text-xs text-muted-foreground mt-1">Quantidade total de itens comprados</p>
+                    <p className="text-xs text-muted-foreground mt-1">Clique nas barras para ver detalhes</p>
                   </div>
                 </div>
                 {chartData.monthlyTrend.length > 0 ? (
                   <ResponsiveContainer width="100%" height={280}>
-                    <BarChart data={chartData.monthlyTrend}>
+                    <BarChart data={chartData.monthlyTrend} onClick={(e) => e?.activePayload && handleDrilldown('month', e.activePayload[0].payload)}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                       <XAxis dataKey="month" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
                       <YAxis tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
@@ -991,6 +1024,7 @@ const HistoricoCompras = () => {
                         name="Quantidade" 
                         fill="hsl(221, 83%, 53%)" 
                         radius={[4, 4, 0, 0]}
+                        style={{ cursor: 'pointer' }}
                       />
                     </BarChart>
                   </ResponsiveContainer>
@@ -1010,12 +1044,12 @@ const HistoricoCompras = () => {
                     <TrendingUp className="w-4 h-4 text-emerald-600" />
                     Evolução do Preço Médio
                   </h3>
-                  <p className="text-xs text-muted-foreground mt-1">Preço médio unitário ao longo do tempo</p>
+                  <p className="text-xs text-muted-foreground mt-1">Clique nos pontos para ver detalhes do mês</p>
                 </div>
               </div>
               {chartData.monthlyTrend.length > 0 ? (
                 <ResponsiveContainer width="100%" height={280}>
-                  <LineChart data={chartData.monthlyTrend}>
+                  <LineChart data={chartData.monthlyTrend} onClick={(e) => e?.activePayload && handleDrilldown('month', e.activePayload[0].payload)}>
                     <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                     <XAxis dataKey="month" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }} />
                     <YAxis 
@@ -1029,7 +1063,8 @@ const HistoricoCompras = () => {
                       name="Preço Médio (R$)" 
                       stroke="hsl(142, 76%, 36%)" 
                       strokeWidth={2}
-                      dot={{ r: 4, fill: 'hsl(142, 76%, 36%)' }}
+                      dot={{ r: 4, fill: 'hsl(142, 76%, 36%)', cursor: 'pointer' }}
+                      style={{ cursor: 'pointer' }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
@@ -1050,12 +1085,12 @@ const HistoricoCompras = () => {
                       <Package className="w-4 h-4 text-purple-600" />
                       Distribuição por Categoria
                     </h3>
-                    <p className="text-xs text-muted-foreground mt-1">Volume de compras por categoria de produto</p>
+                    <p className="text-xs text-muted-foreground mt-1">Clique nas barras para ver detalhes</p>
                   </div>
                 </div>
                 {chartData.byCategory.length > 0 ? (
                   <ResponsiveContainer width="100%" height={280}>
-                    <BarChart data={chartData.byCategory} layout="vertical">
+                    <BarChart data={chartData.byCategory} layout="vertical" onClick={(e) => e?.activePayload && handleDrilldown('category', e.activePayload[0].payload)}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                       <XAxis 
                         type="number" 
@@ -1069,7 +1104,7 @@ const HistoricoCompras = () => {
                         width={100}
                       />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="value" name="Valor (R$)" radius={[0, 4, 4, 0]}>
+                      <Bar dataKey="value" name="Valor (R$)" radius={[0, 4, 4, 0]} style={{ cursor: 'pointer' }}>
                         {chartData.byCategory.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
@@ -1091,12 +1126,12 @@ const HistoricoCompras = () => {
                       <Building2 className="w-4 h-4 text-amber-600" />
                       Volume por Fornecedor
                     </h3>
-                    <p className="text-xs text-muted-foreground mt-1">Distribuição de compras entre fornecedores</p>
+                    <p className="text-xs text-muted-foreground mt-1">Clique nas barras para ver detalhes</p>
                   </div>
                 </div>
                 {chartData.bySupplier.length > 0 ? (
                   <ResponsiveContainer width="100%" height={280}>
-                    <BarChart data={chartData.bySupplier} layout="vertical">
+                    <BarChart data={chartData.bySupplier} layout="vertical" onClick={(e) => e?.activePayload && handleDrilldown('supplier', e.activePayload[0].payload)}>
                       <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
                       <XAxis 
                         type="number" 
@@ -1110,7 +1145,7 @@ const HistoricoCompras = () => {
                         width={100}
                       />
                       <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="value" name="Valor (R$)" fill="hsl(38, 92%, 50%)" radius={[0, 4, 4, 0]} />
+                      <Bar dataKey="value" name="Valor (R$)" fill="hsl(38, 92%, 50%)" radius={[0, 4, 4, 0]} style={{ cursor: 'pointer' }} />
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
@@ -1230,6 +1265,98 @@ const HistoricoCompras = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Drill-down Modal */}
+        <Dialog open={drilldownOpen} onOpenChange={setDrilldownOpen}>
+          <DialogContent className="max-w-4xl max-h-[85vh] overflow-hidden flex flex-col">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                {drilldownType === 'month' && <Calendar className="w-5 h-5 text-primary" />}
+                {drilldownType === 'category' && <Package className="w-5 h-5 text-purple-600" />}
+                {drilldownType === 'supplier' && <Building2 className="w-5 h-5 text-amber-600" />}
+                Detalhes: {drilldownType === 'month' && drilldownData?.month}
+                {drilldownType === 'category' && drilldownData?.category}
+                {drilldownType === 'supplier' && drilldownData?.supplier}
+              </DialogTitle>
+            </DialogHeader>
+            
+            {drilldownData && (
+              <div className="flex-1 overflow-hidden flex flex-col gap-4">
+                {/* Summary Stats */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <Card className="p-3">
+                    <p className="text-xs text-muted-foreground">Total</p>
+                    <p className="text-lg font-bold text-foreground">
+                      R$ {drilldownRecords.reduce((sum, r) => sum + r.totalPrice, 0).toLocaleString('pt-BR')}
+                    </p>
+                  </Card>
+                  <Card className="p-3">
+                    <p className="text-xs text-muted-foreground">Pedidos</p>
+                    <p className="text-lg font-bold text-foreground">{drilldownRecords.length}</p>
+                  </Card>
+                  <Card className="p-3">
+                    <p className="text-xs text-muted-foreground">Quantidade</p>
+                    <p className="text-lg font-bold text-foreground">
+                      {drilldownRecords.reduce((sum, r) => sum + r.quantity, 0).toLocaleString('pt-BR')}
+                    </p>
+                  </Card>
+                  <Card className="p-3">
+                    <p className="text-xs text-muted-foreground">Desconto Médio</p>
+                    <p className="text-lg font-bold text-green-600">
+                      {drilldownRecords.length > 0 
+                        ? (drilldownRecords.reduce((sum, r) => sum + r.discount, 0) / drilldownRecords.length).toFixed(1)
+                        : 0}%
+                    </p>
+                  </Card>
+                </div>
+
+                {/* Records Table */}
+                <div className="flex-1 overflow-hidden border border-border rounded-lg">
+                  <ScrollArea className="h-[400px]">
+                    <Table>
+                      <TableHeader>
+                        <TableRow className="bg-muted/30">
+                          <TableHead className="text-xs sticky top-0 bg-muted/30">Pedido</TableHead>
+                          <TableHead className="text-xs sticky top-0 bg-muted/30">Bitrix ID</TableHead>
+                          <TableHead className="text-xs sticky top-0 bg-muted/30">Produto</TableHead>
+                          <TableHead className="text-xs sticky top-0 bg-muted/30">Fornecedor</TableHead>
+                          <TableHead className="text-xs text-right sticky top-0 bg-muted/30">Qtd</TableHead>
+                          <TableHead className="text-xs text-right sticky top-0 bg-muted/30">Preço Unit.</TableHead>
+                          <TableHead className="text-xs text-right sticky top-0 bg-muted/30">Total</TableHead>
+                          <TableHead className="text-xs text-right sticky top-0 bg-muted/30">Desc.</TableHead>
+                          <TableHead className="text-xs sticky top-0 bg-muted/30">Data</TableHead>
+                          <TableHead className="text-xs sticky top-0 bg-muted/30">Status</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {drilldownRecords.map(record => (
+                          <TableRow key={record.id}>
+                            <TableCell className="text-xs font-medium">#{record.orderNumber}</TableCell>
+                            <TableCell className="text-xs">
+                              <Badge variant="outline" className="text-[10px] bg-blue-500/5 text-blue-600">
+                                {record.bitrixDealId}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-xs max-w-[120px] truncate">{record.productName}</TableCell>
+                            <TableCell className="text-xs">{record.supplierName}</TableCell>
+                            <TableCell className="text-xs text-right">{record.quantity}</TableCell>
+                            <TableCell className="text-xs text-right">R$ {record.unitPrice.toFixed(2)}</TableCell>
+                            <TableCell className="text-xs text-right font-medium">R$ {record.totalPrice.toLocaleString('pt-BR')}</TableCell>
+                            <TableCell className="text-xs text-right text-green-600">{record.discount}%</TableCell>
+                            <TableCell className="text-xs">{new Date(record.purchaseDate).toLocaleDateString('pt-BR')}</TableCell>
+                            <TableCell className="text-xs">
+                              <StatusBadge status={record.status} />
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </ScrollArea>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </MainLayout>
   );
