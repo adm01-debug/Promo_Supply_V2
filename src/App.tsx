@@ -10,6 +10,7 @@ import Pedidos from "./pages/Pedidos";
 import Pagamentos from "./pages/Pagamentos";
 import Fornecedores from "./pages/Fornecedores";
 import Acompanhamento from "./pages/Acompanhamento";
+import GerarOrdem from "./pages/GerarOrdem";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,12 +23,15 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ComprasDashboard />} />
+          <Route path="/compras" element={<ComprasDashboard />} />
           <Route path="/cotacao" element={<Cotacao />} />
+          <Route path="/cotacao/:id" element={<Cotacao />} />
           <Route path="/solicitacoes" element={<Solicitacoes />} />
           <Route path="/pedidos" element={<Pedidos />} />
           <Route path="/pagamentos" element={<Pagamentos />} />
           <Route path="/fornecedores" element={<Fornecedores />} />
           <Route path="/acompanhamento" element={<Acompanhamento />} />
+          <Route path="/gerar-ordem" element={<GerarOrdem />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
