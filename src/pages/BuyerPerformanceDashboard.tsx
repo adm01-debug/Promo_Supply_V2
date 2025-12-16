@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   User,
   TrendingUp,
@@ -17,7 +17,9 @@ import {
   ShoppingCart,
   Zap,
   Users,
-  GitCompare
+  GitCompare,
+  AlertTriangle,
+  AlertCircle
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,6 +34,11 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { BuyerPerformanceAlerts } from "@/components/compras/BuyerPerformanceAlerts";
+import {
+  useBuyerAlertsStore,
+  checkBuyerPerformance
+} from "@/stores/buyerAlertsStore";
 import {
   AreaChart,
   Area,
@@ -337,11 +344,26 @@ const ComparisonMetricCard = ({
   );
 };
 
+// Helper to get status color and icon for metrics
+const getMetricStatus = (percentage: number): { status: 'success' | 'warning' | 'critical'; color: string } => {
+  if (percentage >= 100) return { status: 'success', color: 'text-green-500' };
+  if (percentage >= 85) return { status: 'warning', color: 'text-yellow-500' };
+  return { status: 'critical', color: 'text-destructive' };
+};
+
+const MetricStatusIcon = ({ percentage }: { percentage: number }) => {
+  const { status } = getMetricStatus(percentage);
+  if (status === 'success') return <CheckCircle2 className="w-4 h-4 text-green-500" />;
+  if (status === 'warning') return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
+  return <AlertCircle className="w-4 h-4 text-destructive" />;
+};
+
 const BuyerPerformanceDashboard = () => {
   const [selectedBuyerId, setSelectedBuyerId] = useState(buyersData[0].id);
   const [compareBuyerId, setCompareBuyerId] = useState(buyersData[1].id);
   const [compareMode, setCompareMode] = useState(false);
   const [periodo, setPeriodo] = useState("6m");
+  const { targets } = useBuyerAlertsStore();
 
   const buyer = useMemo(() => 
     buyersData.find(b => b.id === selectedBuyerId) || buyersData[0], 
@@ -356,6 +378,20 @@ const BuyerPerformanceDashboard = () => {
   const economiaVsMeta = (buyer.performance.economiaMes / buyer.meta.economiaMensal) * 100;
   const descontoVsMeta = (buyer.performance.descontoMedio / buyer.meta.descontoMedio) * 100;
   const cotacoesVsMeta = (buyer.performance.cotacoesRealizadas / buyer.meta.cotacoesMinimas) * 100;
+
+  // Get status for current buyer's metrics
+  const economiaStatus = getMetricStatus(economiaVsMeta);
+  const descontoStatus = getMetricStatus(descontoVsMeta);
+  const cotacoesStatus = getMetricStatus(cotacoesVsMeta);
+  
+  // Count alerts for current buyer
+  const currentBuyerAlerts = useMemo(() => {
+    let count = 0;
+    if (economiaStatus.status !== 'success') count++;
+    if (descontoStatus.status !== 'success') count++;
+    if (cotacoesStatus.status !== 'success') count++;
+    return count;
+  }, [economiaStatus, descontoStatus, cotacoesStatus]);
 
   // Merge radar data for comparison
   const comparisonRadarData = useMemo(() => {
@@ -462,8 +498,30 @@ const BuyerPerformanceDashboard = () => {
               <Download className="w-4 h-4 mr-2" />
               Exportar
             </Button>
+            <BuyerPerformanceAlerts />
           </div>
         </div>
+
+        {/* Alert Banner for Current Buyer */}
+        {!compareMode && currentBuyerAlerts > 0 && (
+          <Card className="p-4 border-yellow-500/50 bg-yellow-500/5">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="w-5 h-5 text-yellow-500" />
+              <div className="flex-1">
+                <p className="text-sm font-medium text-foreground">
+                  {buyer.nome} tem {currentBuyerAlerts} métrica{currentBuyerAlerts > 1 ? 's' : ''} abaixo da meta
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {economiaStatus.status !== 'success' && 'Economia mensal'}
+                  {economiaStatus.status !== 'success' && descontoStatus.status !== 'success' && ', '}
+                  {descontoStatus.status !== 'success' && 'Desconto médio'}
+                  {(economiaStatus.status !== 'success' || descontoStatus.status !== 'success') && cotacoesStatus.status !== 'success' && ', '}
+                  {cotacoesStatus.status !== 'success' && 'Cotações realizadas'}
+                </p>
+              </div>
+            </div>
+          </Card>
+        )}
 
         {compareMode ? (
           // ============ COMPARISON VIEW ============
@@ -710,10 +768,13 @@ const BuyerPerformanceDashboard = () => {
 
             {/* KPIs com Metas */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <Card className="p-4">
-                <div className="flex items-center gap-2 text-emerald-600 mb-2">
-                  <PiggyBank className="w-4 h-4" />
-                  <span className="text-xs font-medium">Economia do Mês</span>
+              <Card className={`p-4 ${economiaStatus.status === 'critical' ? 'border-destructive/50' : economiaStatus.status === 'warning' ? 'border-yellow-500/50' : ''}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2 text-emerald-600">
+                    <PiggyBank className="w-4 h-4" />
+                    <span className="text-xs font-medium">Economia do Mês</span>
+                  </div>
+                  <MetricStatusIcon percentage={economiaVsMeta} />
                 </div>
                 <p className="text-2xl font-bold text-emerald-600">
                   R$ {buyer.performance.economiaMes.toLocaleString('pt-BR')}
@@ -721,7 +782,7 @@ const BuyerPerformanceDashboard = () => {
                 <div className="mt-2">
                   <div className="flex justify-between text-xs mb-1">
                     <span className="text-muted-foreground">Meta: R$ {buyer.meta.economiaMensal.toLocaleString('pt-BR')}</span>
-                    <span className={economiaVsMeta >= 100 ? "text-emerald-600" : "text-amber-600"}>
+                    <span className={economiaStatus.color}>
                       {economiaVsMeta.toFixed(0)}%
                     </span>
                   </div>
@@ -729,10 +790,13 @@ const BuyerPerformanceDashboard = () => {
                 </div>
               </Card>
 
-              <Card className="p-4">
-                <div className="flex items-center gap-2 text-blue-600 mb-2">
-                  <Percent className="w-4 h-4" />
-                  <span className="text-xs font-medium">Desconto Médio</span>
+              <Card className={`p-4 ${descontoStatus.status === 'critical' ? 'border-destructive/50' : descontoStatus.status === 'warning' ? 'border-yellow-500/50' : ''}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2 text-blue-600">
+                    <Percent className="w-4 h-4" />
+                    <span className="text-xs font-medium">Desconto Médio</span>
+                  </div>
+                  <MetricStatusIcon percentage={descontoVsMeta} />
                 </div>
                 <p className="text-2xl font-bold text-blue-600">
                   {buyer.performance.descontoMedio}%
@@ -740,7 +804,7 @@ const BuyerPerformanceDashboard = () => {
                 <div className="mt-2">
                   <div className="flex justify-between text-xs mb-1">
                     <span className="text-muted-foreground">Meta: {buyer.meta.descontoMedio}%</span>
-                    <span className={descontoVsMeta >= 100 ? "text-emerald-600" : "text-amber-600"}>
+                    <span className={descontoStatus.color}>
                       {descontoVsMeta.toFixed(0)}%
                     </span>
                   </div>
@@ -748,10 +812,13 @@ const BuyerPerformanceDashboard = () => {
                 </div>
               </Card>
 
-              <Card className="p-4">
-                <div className="flex items-center gap-2 text-purple-600 mb-2">
-                  <Target className="w-4 h-4" />
-                  <span className="text-xs font-medium">Cotações Realizadas</span>
+              <Card className={`p-4 ${cotacoesStatus.status === 'critical' ? 'border-destructive/50' : cotacoesStatus.status === 'warning' ? 'border-yellow-500/50' : ''}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2 text-purple-600">
+                    <Target className="w-4 h-4" />
+                    <span className="text-xs font-medium">Cotações Realizadas</span>
+                  </div>
+                  <MetricStatusIcon percentage={cotacoesVsMeta} />
                 </div>
                 <p className="text-2xl font-bold text-purple-600">
                   {buyer.performance.cotacoesRealizadas}
@@ -759,7 +826,7 @@ const BuyerPerformanceDashboard = () => {
                 <div className="mt-2">
                   <div className="flex justify-between text-xs mb-1">
                     <span className="text-muted-foreground">Meta: {buyer.meta.cotacoesMinimas}</span>
-                    <span className={cotacoesVsMeta >= 100 ? "text-emerald-600" : "text-amber-600"}>
+                    <span className={cotacoesStatus.color}>
                       {cotacoesVsMeta.toFixed(0)}%
                     </span>
                   </div>
