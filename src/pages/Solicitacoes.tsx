@@ -3,14 +3,15 @@ import {
   Search, 
   ClipboardList,
   LayoutGrid,
-  List
+  List,
+  Loader2
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -24,8 +25,50 @@ import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal"
 import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
 import { BulkActionsBar } from "@/components/compras/BulkActionsBar";
 import { MainLayout } from "@/components/compras/MainLayout";
-import { solicitacoesMock, Solicitacao } from "@/data/mockData";
+import { useSolicitacoes, type Solicitacao } from "@/hooks/useSolicitacoes";
 import { toast } from "sonner";
+
+// Map DB status to legacy status for UI compatibility
+const mapDbStatusToLegacy = (status: Solicitacao['status']): string => {
+  const mapping: Record<string, string> = {
+    'pendente': 'AGUARDANDO_COTACAO',
+    'em_cotacao': 'EM_COTACAO',
+    'aprovada': 'FORNECEDOR_SELECIONADO',
+    'em_andamento': 'AGUARDANDO_PAGAMENTO',
+    'concluida': 'PAGO',
+    'rejeitada': 'CANCELADO',
+    'cancelada': 'CANCELADO',
+  };
+  return mapping[status] || 'AGUARDANDO_COTACAO';
+};
+
+const mapLegacyStatusToDb = (legacyStatus: string): Solicitacao['status'] => {
+  const mapping: Record<string, Solicitacao['status']> = {
+    'AGUARDANDO_COTACAO': 'pendente',
+    'EM_COTACAO': 'em_cotacao',
+    'FORNECEDOR_SELECIONADO': 'aprovada',
+    'AGUARDANDO_PAGAMENTO': 'em_andamento',
+    'PAGO': 'concluida',
+    'EM_TRANSITO': 'concluida',
+    'CANCELADO': 'cancelada',
+  };
+  return mapping[legacyStatus] || 'pendente';
+};
+
+// Adapt DB solicitacao to legacy format for components
+const adaptToLegacyFormat = (sol: Solicitacao): any => ({
+  id: sol.id,
+  empresa: sol.departamento || 'Empresa',
+  produto: sol.titulo,
+  quantidade: sol.quantidade,
+  valorTotal: sol.valor_estimado || 0,
+  vendedor: sol.observacoes || 'Vendedor',
+  prazoEntrega: sol.data_necessidade || sol.created_at,
+  status: mapDbStatusToLegacy(sol.status),
+  tipo: sol.tipo === 'material' ? 'PE_LISO' : sol.tipo === 'servico' ? 'FAB_LISO' : 'FAB_PERSONALIZADO',
+  dataCriacao: sol.created_at,
+  prioridade: sol.prioridade,
+});
 
 const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -34,14 +77,29 @@ const Solicitacoes = () => {
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(initialFilters);
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('kanban');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  
-  // Local state for solicitacoes (to handle drag-and-drop updates)
-  const [localSolicitacoes, setLocalSolicitacoes] = useState<Solicitacao[]>(solicitacoesMock);
+
+  // Use real data from Supabase
+  const { 
+    solicitacoes, 
+    loading, 
+    updateStatus, 
+    bulkDelete, 
+    bulkUpdateStatus,
+    refetch 
+  } = useSolicitacoes({
+    search: searchTerm || undefined,
+    status: statusFilter !== 'todas' ? mapLegacyStatusToDb(statusFilter) : undefined,
+  });
+
+  // Adapt and filter solicitacoes
+  const adaptedSolicitacoes = useMemo(() => {
+    return solicitacoes.map(adaptToLegacyFormat);
+  }, [solicitacoes]);
 
   const filteredSolicitacoes = useMemo(() => {
-    return localSolicitacoes.filter(s => {
-      // Text search
-      const matchesSearch = 
+    return adaptedSolicitacoes.filter(s => {
+      // Text search (already filtered server-side, but double check)
+      const matchesSearch = !searchTerm || 
         s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.produto.toLowerCase().includes(searchTerm.toLowerCase());
@@ -50,36 +108,29 @@ const Solicitacoes = () => {
       const matchesStatus = statusFilter === "todas" || s.status === statusFilter;
       const matchesTipo = tipoFilter === "todos" || s.tipo === tipoFilter;
 
-      // Advanced filters - Date range
+      // Advanced filters
       const solicitacaoDate = new Date(s.prazoEntrega);
       const matchesDateFrom = !advancedFilters.dateRange.from || 
         solicitacaoDate >= new Date(advancedFilters.dateRange.from);
       const matchesDateTo = !advancedFilters.dateRange.to || 
         solicitacaoDate <= new Date(advancedFilters.dateRange.to);
 
-      // Advanced filters - Value range
       const solicitacaoValor = s.valorTotal || 0;
       const matchesValorMin = solicitacaoValor >= advancedFilters.valorMin;
       const matchesValorMax = solicitacaoValor <= advancedFilters.valorMax || advancedFilters.valorMax === 100000;
 
-      // Advanced filters - Empresas
       const matchesEmpresas = advancedFilters.empresas.length === 0 || 
         advancedFilters.empresas.includes(s.empresa);
 
-      // Advanced filters - Vendedores
-      const matchesVendedores = advancedFilters.vendedores.length === 0 || 
-        advancedFilters.vendedores.includes(s.vendedor);
-
-      // Advanced filters - Tipos
       const matchesTiposAdvanced = advancedFilters.tipos.length === 0 || 
         advancedFilters.tipos.includes(s.tipo);
 
       return matchesSearch && matchesStatus && matchesTipo && 
         matchesDateFrom && matchesDateTo && 
         matchesValorMin && matchesValorMax && 
-        matchesEmpresas && matchesVendedores && matchesTiposAdvanced;
+        matchesEmpresas && matchesTiposAdvanced;
     });
-  }, [localSolicitacoes, searchTerm, statusFilter, tipoFilter, advancedFilters]);
+  }, [adaptedSolicitacoes, searchTerm, statusFilter, tipoFilter, advancedFilters]);
 
   const groupedByStatus = useMemo(() => ({
     AGUARDANDO_COTACAO: filteredSolicitacoes.filter(s => s.status === 'AGUARDANDO_COTACAO'),
@@ -100,13 +151,10 @@ const Solicitacoes = () => {
   };
 
   // Handle status change from drag-and-drop
-  const handleStatusChange = useCallback((id: string, newStatus: Solicitacao['status']) => {
-    setLocalSolicitacoes(prev => 
-      prev.map(sol => 
-        sol.id === id ? { ...sol, status: newStatus } : sol
-      )
-    );
-  }, []);
+  const handleStatusChange = useCallback(async (id: string, newLegacyStatus: string) => {
+    const dbStatus = mapLegacyStatusToDb(newLegacyStatus);
+    await updateStatus(id, dbStatus);
+  }, [updateStatus]);
 
   // Selection handlers
   const handleSelectItem = useCallback((id: string, selected: boolean) => {
@@ -129,25 +177,24 @@ const Solicitacoes = () => {
     setSelectedIds(new Set());
   }, []);
 
-  const handleBulkDelete = useCallback(() => {
-    setLocalSolicitacoes(prev => prev.filter(s => !selectedIds.has(s.id)));
+  const handleBulkDelete = useCallback(async () => {
+    const ids = Array.from(selectedIds);
+    await bulkDelete(ids);
     setSelectedIds(new Set());
-  }, [selectedIds]);
+  }, [selectedIds, bulkDelete]);
 
-  const handleBulkStatusChange = useCallback((newStatus: Solicitacao['status']) => {
-    setLocalSolicitacoes(prev => 
-      prev.map(sol => 
-        selectedIds.has(sol.id) ? { ...sol, status: newStatus } : sol
-      )
-    );
+  const handleBulkStatusChange = useCallback(async (newLegacyStatus: string) => {
+    const ids = Array.from(selectedIds);
+    const dbStatus = mapLegacyStatusToDb(newLegacyStatus);
+    await bulkUpdateStatus(ids, dbStatus);
     setSelectedIds(new Set());
-  }, [selectedIds]);
+  }, [selectedIds, bulkUpdateStatus]);
 
   const handleBulkExport = useCallback((format: 'pdf' | 'excel') => {
-    const selectedItems = localSolicitacoes.filter(s => selectedIds.has(s.id));
+    const selectedItems = filteredSolicitacoes.filter(s => selectedIds.has(s.id));
     console.log(`Exporting ${selectedItems.length} items to ${format}`, selectedItems);
     toast.success(`Exportando ${selectedItems.length} solicitação(ões) para ${format.toUpperCase()}`);
-  }, [localSolicitacoes, selectedIds]);
+  }, [filteredSolicitacoes, selectedIds]);
 
   const handleSelectAllInGroup = useCallback((status: string) => {
     const items = groupedByStatus[status as keyof typeof groupedByStatus] || [];
@@ -169,6 +216,26 @@ const Solicitacoes = () => {
   const isAllSelected = filteredSolicitacoes.length > 0 && 
     filteredSolicitacoes.every(s => selectedIds.has(s.id));
 
+  // Loading skeleton
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+          <Skeleton className="h-16 w-full" />
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[...Array(6)].map((_, i) => (
+              <Skeleton key={i} className="h-64 w-full" />
+            ))}
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -176,7 +243,9 @@ const Solicitacoes = () => {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Solicitações</h1>
-            <p className="text-sm text-muted-foreground">Gerencie todas as solicitações de compra</p>
+            <p className="text-sm text-muted-foreground">
+              Gerencie todas as solicitações de compra ({solicitacoes.length} registros)
+            </p>
           </div>
           <div className="flex items-center gap-2">
             {/* View Mode Toggle */}
@@ -192,7 +261,7 @@ const Solicitacoes = () => {
                 </TabsTrigger>
               </TabsList>
             </Tabs>
-            <NovaSolicitacaoModal onSuccess={() => {}} />
+            <NovaSolicitacaoModal onSuccess={refetch} />
           </div>
         </div>
 
@@ -321,12 +390,15 @@ const Solicitacoes = () => {
           </div>
         )}
 
-        {filteredSolicitacoes.length === 0 && (
+        {filteredSolicitacoes.length === 0 && !loading && (
           <Card className="p-8 text-center">
             <ClipboardList className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
             <h3 className="font-semibold text-foreground mb-2">Nenhuma solicitação encontrada</h3>
             <p className="text-sm text-muted-foreground">
-              Tente ajustar os filtros ou criar uma nova solicitação
+              {solicitacoes.length === 0 
+                ? "Crie sua primeira solicitação de compra"
+                : "Tente ajustar os filtros ou criar uma nova solicitação"
+              }
             </p>
           </Card>
         )}
