@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "@/components/compras/AppSidebar";
-import { NotificationCenter } from "@/components/compras/NotificationCenter";
-import { RealtimeNotificationCenter } from "@/components/compras/RealtimeNotificationCenter";
+import { RealNotificationCenter } from "@/components/compras/RealNotificationCenter";
 import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
 import { UserMenu } from "@/components/compras/UserMenu";
 import { SupplierChat } from "@/components/compras/SupplierChat";
@@ -94,8 +93,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               >
                 <Keyboard className="w-4 h-4" />
               </Button>
-              <RealtimeNotificationCenter />
-              <NotificationCenter />
+              <RealNotificationCenter />
               <SLASettingsPanel />
               <div className="pl-3 ml-2 border-l border-border">
                 <UserMenu />
