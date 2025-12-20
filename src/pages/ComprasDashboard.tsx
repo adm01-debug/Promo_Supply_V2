@@ -25,6 +25,7 @@ import { SupplierAlertsPanel } from "@/components/compras/SupplierAlertsPanel";
 import { SupplierRankingPanel } from "@/components/compras/SupplierRankingPanel";
 import { BuyerPerformancePanel } from "@/components/compras/BuyerPerformancePanel";
 import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
+import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidget";
 import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
 
@@ -35,10 +36,13 @@ const ComprasDashboard = () => {
         {/* Critical Alerts */}
         <CriticalAlertsBar />
         
-        {/* Page Title */}
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Visão geral do sistema de compras</p>
+        {/* Page Title + Climate Widget */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
+            <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+            <p className="text-sm text-muted-foreground">Visão geral do sistema de compras</p>
+          </div>
+          <PurchaseClimateWidget />
         </div>
 
         {/* KPIs Grid - Primeira linha */}
