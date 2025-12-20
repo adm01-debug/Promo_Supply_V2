@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { 
   Search, 
-  ClipboardList
+  ClipboardList,
+  LayoutGrid,
+  List
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -14,18 +18,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
+import { SolicitacaoKanban } from "@/components/compras/SolicitacaoKanban";
 import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
 import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
 import { MainLayout } from "@/components/compras/MainLayout";
-import { solicitacoesMock } from "@/data/mockData";
+import { solicitacoesMock, Solicitacao } from "@/data/mockData";
 
 const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("todas");
   const [tipoFilter, setTipoFilter] = useState("todos");
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(initialFilters);
+  const [viewMode, setViewMode] = useState<'list' | 'kanban'>('kanban');
+  
+  // Local state for solicitacoes (to handle drag-and-drop updates)
+  const [localSolicitacoes, setLocalSolicitacoes] = useState<Solicitacao[]>(solicitacoesMock);
 
-  const filteredSolicitacoes = solicitacoesMock.filter(s => {
+  const filteredSolicitacoes = localSolicitacoes.filter(s => {
     const matchesSearch = 
       s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -55,6 +64,15 @@ const Solicitacoes = () => {
     EM_TRANSITO: { label: 'Em Trânsito', color: 'bg-purple-500' },
   };
 
+  // Handle status change from drag-and-drop
+  const handleStatusChange = useCallback((id: string, newStatus: Solicitacao['status']) => {
+    setLocalSolicitacoes(prev => 
+      prev.map(sol => 
+        sol.id === id ? { ...sol, status: newStatus } : sol
+      )
+    );
+  }, []);
+
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -64,7 +82,22 @@ const Solicitacoes = () => {
             <h1 className="text-2xl font-bold text-foreground">Solicitações</h1>
             <p className="text-sm text-muted-foreground">Gerencie todas as solicitações de compra</p>
           </div>
-          <NovaSolicitacaoModal onSuccess={() => {}} />
+          <div className="flex items-center gap-2">
+            {/* View Mode Toggle */}
+            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'list' | 'kanban')}>
+              <TabsList className="h-9">
+                <TabsTrigger value="kanban" className="px-3">
+                  <LayoutGrid className="w-4 h-4 mr-1" />
+                  Kanban
+                </TabsTrigger>
+                <TabsTrigger value="list" className="px-3">
+                  <List className="w-4 h-4 mr-1" />
+                  Lista
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <NovaSolicitacaoModal onSuccess={() => {}} />
+          </div>
         </div>
 
         {/* Busca e Filtros */}
@@ -117,51 +150,65 @@ const Solicitacoes = () => {
           </div>
         </Card>
 
-        {/* Contadores por Status */}
-        <div className="flex flex-wrap gap-2">
-          {Object.entries(statusConfig).map(([key, config]) => {
-            const count = groupedByStatus[key as keyof typeof groupedByStatus]?.length || 0;
-            if (count === 0 && statusFilter !== "todas" && statusFilter !== key) return null;
-            
-            return (
-              <Badge
-                key={key}
-                variant={statusFilter === key ? "default" : "outline"}
-                className="cursor-pointer"
-                onClick={() => setStatusFilter(statusFilter === key ? "todas" : key)}
-              >
-                <span className={`w-2 h-2 rounded-full ${config.color} mr-2`} />
-                {config.label} ({count})
-              </Badge>
-            );
-          })}
-        </div>
+        {/* Contadores por Status (only in list view) */}
+        {viewMode === 'list' && (
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(statusConfig).map(([key, config]) => {
+              const count = groupedByStatus[key as keyof typeof groupedByStatus]?.length || 0;
+              if (count === 0 && statusFilter !== "todas" && statusFilter !== key) return null;
+              
+              return (
+                <Badge
+                  key={key}
+                  variant={statusFilter === key ? "default" : "outline"}
+                  className="cursor-pointer"
+                  onClick={() => setStatusFilter(statusFilter === key ? "todas" : key)}
+                >
+                  <span className={`w-2 h-2 rounded-full ${config.color} mr-2`} />
+                  {config.label} ({count})
+                </Badge>
+              );
+            })}
+          </div>
+        )}
 
-        {/* Lista de Solicitações */}
-        <div className="space-y-6">
-          {Object.entries(groupedByStatus).map(([status, items]) => {
-            if (items.length === 0) return null;
-            if (statusFilter !== "todas" && statusFilter !== status) return null;
-            
-            const config = statusConfig[status];
+        {/* Kanban View */}
+        {viewMode === 'kanban' && (
+          <div className="overflow-x-auto -mx-4 px-4">
+            <SolicitacaoKanban 
+              solicitacoes={filteredSolicitacoes}
+              onStatusChange={handleStatusChange}
+            />
+          </div>
+        )}
 
-            return (
-              <div key={status} className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <span className={`w-3 h-3 rounded-full ${config.color}`} />
-                  <h2 className="font-semibold text-foreground">{config.label}</h2>
-                  <Badge variant="secondary" className="ml-2">{items.length}</Badge>
+        {/* List View */}
+        {viewMode === 'list' && (
+          <div className="space-y-6">
+            {Object.entries(groupedByStatus).map(([status, items]) => {
+              if (items.length === 0) return null;
+              if (statusFilter !== "todas" && statusFilter !== status) return null;
+              
+              const config = statusConfig[status];
+
+              return (
+                <div key={status} className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className={`w-3 h-3 rounded-full ${config.color}`} />
+                    <h2 className="font-semibold text-foreground">{config.label}</h2>
+                    <Badge variant="secondary" className="ml-2">{items.length}</Badge>
+                  </div>
+
+                  <div className="grid gap-3">
+                    {items.map((solicitacao) => (
+                      <SolicitacaoCard key={solicitacao.id} solicitacao={solicitacao} />
+                    ))}
+                  </div>
                 </div>
-
-                <div className="grid gap-3">
-                  {items.map((solicitacao) => (
-                    <SolicitacaoCard key={solicitacao.id} solicitacao={solicitacao} />
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
 
         {filteredSolicitacoes.length === 0 && (
           <Card className="p-8 text-center">
