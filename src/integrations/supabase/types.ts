@@ -296,6 +296,102 @@ export type Database = {
         }
         Relationships: []
       }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          email_notifications: boolean | null
+          id: string
+          order_updates: boolean | null
+          payment_alerts: boolean | null
+          price_alerts: boolean | null
+          push_notifications: boolean | null
+          sla_critical: boolean | null
+          sla_warnings: boolean | null
+          sound_enabled: boolean | null
+          supplier_alerts: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email_notifications?: boolean | null
+          id?: string
+          order_updates?: boolean | null
+          payment_alerts?: boolean | null
+          price_alerts?: boolean | null
+          push_notifications?: boolean | null
+          sla_critical?: boolean | null
+          sla_warnings?: boolean | null
+          sound_enabled?: boolean | null
+          supplier_alerts?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email_notifications?: boolean | null
+          id?: string
+          order_updates?: boolean | null
+          payment_alerts?: boolean | null
+          price_alerts?: boolean | null
+          push_notifications?: boolean | null
+          sla_critical?: boolean | null
+          sla_warnings?: boolean | null
+          sound_enabled?: boolean | null
+          supplier_alerts?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          action_label: string | null
+          action_url: string | null
+          created_at: string
+          data: Json | null
+          id: string
+          message: string
+          priority: string
+          read: boolean | null
+          sent_email: boolean | null
+          sent_push: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          action_label?: string | null
+          action_url?: string | null
+          created_at?: string
+          data?: Json | null
+          id?: string
+          message: string
+          priority?: string
+          read?: boolean | null
+          sent_email?: boolean | null
+          sent_push?: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          action_label?: string | null
+          action_url?: string | null
+          created_at?: string
+          data?: Json | null
+          id?: string
+          message?: string
+          priority?: string
+          read?: boolean | null
+          sent_email?: boolean | null
+          sent_push?: boolean | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       order_contracts: {
         Row: {
           contract_id: string
@@ -356,6 +452,36 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      push_subscriptions: {
+        Row: {
+          auth: string
+          created_at: string
+          endpoint: string
+          id: string
+          p256dh: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auth: string
+          created_at?: string
+          endpoint: string
+          id?: string
+          p256dh: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auth?: string
+          created_at?: string
+          endpoint?: string
+          id?: string
+          p256dh?: string
           updated_at?: string
           user_id?: string
         }
