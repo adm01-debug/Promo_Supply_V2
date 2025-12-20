@@ -26,6 +26,7 @@ import { SupplierRankingPanel } from "@/components/compras/SupplierRankingPanel"
 import { BuyerPerformancePanel } from "@/components/compras/BuyerPerformancePanel";
 import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
 import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidget";
+import { DeliveryCalendar } from "@/components/compras/DeliveryCalendar";
 import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
 
@@ -163,6 +164,11 @@ const ComprasDashboard = () => {
           </div>
           <SupplierAlertsPanel />
           <SupplierRankingPanel />
+        </div>
+
+        {/* Delivery Calendar */}
+        <div className="grid grid-cols-1 gap-6">
+          <DeliveryCalendar />
         </div>
 
         {/* Buyer Performance + Savings Goal */}
