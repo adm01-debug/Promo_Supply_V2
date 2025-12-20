@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.ai-demand-prediction]
 verify_jwt = false
+
+[functions.ai-supplier-risk]
+verify_jwt = false

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { DigitalSignature } from "@/components/compras/DigitalSignature";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -181,10 +182,13 @@ export default function Contratos() {
               Gerencie contratos com fornecedores, renovações e vencimentos
             </p>
           </div>
-          <Button onClick={() => setIsCreateModalOpen(true)} className="gap-2">
-            <Plus className="w-4 h-4" />
-            Novo Contrato
-          </Button>
+          <div className="flex gap-2">
+            <DigitalSignature />
+            <Button onClick={() => setIsCreateModalOpen(true)} className="gap-2">
+              <Plus className="w-4 h-4" />
+              Novo Contrato
+            </Button>
+          </div>
         </div>
 
         {/* KPI Cards */}
