@@ -3,6 +3,8 @@ import { MainLayout } from "@/components/compras/MainLayout";
 import { FornecedorModal } from "@/components/compras/FornecedorModal";
 import { HistoricoComprasModal } from "@/components/compras/HistoricoComprasModal";
 import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
+import { SupplierRiskAnalysis } from "@/components/compras/SupplierRiskAnalysis";
+import { PriceComparator } from "@/components/compras/PriceComparator";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -117,8 +119,10 @@ const Fornecedores = () => {
             <h1 className="text-2xl font-bold text-foreground">Fornecedores</h1>
             <p className="text-sm text-muted-foreground">Cadastro e gestão de fornecedores</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <AISupplierSuggestion />
+            <SupplierRiskAnalysis />
+            <PriceComparator />
             <Button onClick={() => handleOpenModal()} className="gap-2">
               <Plus className="w-4 h-4" />
               Novo Fornecedor
