@@ -27,6 +27,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { SLABySupplierAnalysis } from "@/components/compras/SLABySupplierAnalysis";
 import { AdvancedProcurementKPIs } from "@/components/compras/AdvancedProcurementKPIs";
+import { DemandPredictionPanel } from "@/components/compras/DemandPredictionPanel";
 import { 
   BarChart, 
   Bar, 
@@ -274,7 +275,7 @@ const Relatorios = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
             <TabsTrigger value="geral" className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4" />
               Visão Geral
@@ -282,6 +283,10 @@ const Relatorios = () => {
             <TabsTrigger value="kpis" className="flex items-center gap-2">
               <TrendingUp className="w-4 h-4" />
               KPIs Avançados
+            </TabsTrigger>
+            <TabsTrigger value="previsao" className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4" />
+              Previsão IA
             </TabsTrigger>
           </TabsList>
 
@@ -761,6 +766,11 @@ const Relatorios = () => {
             </ResponsiveContainer>
           </div>
         </Card>
+          </TabsContent>
+
+          {/* Tab: Previsão IA */}
+          <TabsContent value="previsao" className="mt-6">
+            <DemandPredictionPanel />
           </TabsContent>
         </Tabs>
       </div>

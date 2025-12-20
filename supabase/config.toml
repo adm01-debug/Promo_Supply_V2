@@ -1,1 +1,7 @@
 project_id = "apuzcrkeqodktmpwobnz"
+
+[functions.ai-supplier-suggestion]
+verify_jwt = false
+
+[functions.ai-demand-prediction]
+verify_jwt = false
