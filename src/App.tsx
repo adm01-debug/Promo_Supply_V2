@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import ComprasDashboard from "./pages/ComprasDashboard";
 import Cotacao from "./pages/Cotacao";
 import Solicitacoes from "./pages/Solicitacoes";
@@ -29,9 +30,10 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+  <TooltipProvider>
       <Toaster />
       <Sonner />
+      <PWAInstallPrompt />
       <BrowserRouter>
         <AuthProvider>
           <Routes>
