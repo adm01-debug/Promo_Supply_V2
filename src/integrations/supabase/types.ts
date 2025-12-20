@@ -65,6 +65,198 @@ export type Database = {
         }
         Relationships: []
       }
+      contract_documents: {
+        Row: {
+          contract_id: string
+          created_at: string
+          file_name: string
+          file_size: number | null
+          file_type: string | null
+          file_url: string
+          id: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          contract_id: string
+          created_at?: string
+          file_name: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url: string
+          id?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          contract_id?: string
+          created_at?: string
+          file_name?: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string
+          id?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_documents_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contract_history: {
+        Row: {
+          action_description: string | null
+          action_type: string
+          contract_id: string
+          created_at: string
+          id: string
+          new_values: Json | null
+          old_values: Json | null
+          performed_by: string | null
+        }
+        Insert: {
+          action_description?: string | null
+          action_type: string
+          contract_id: string
+          created_at?: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          performed_by?: string | null
+        }
+        Update: {
+          action_description?: string | null
+          action_type?: string
+          contract_id?: string
+          created_at?: string
+          id?: string
+          new_values?: Json | null
+          old_values?: Json | null
+          performed_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_history_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contract_items: {
+        Row: {
+          contract_id: string
+          created_at: string
+          description: string | null
+          id: string
+          item_name: string
+          quantity: number
+          total_price: number
+          unit: string
+          unit_price: number
+        }
+        Insert: {
+          contract_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          item_name: string
+          quantity?: number
+          total_price?: number
+          unit: string
+          unit_price?: number
+        }
+        Update: {
+          contract_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          item_name?: string
+          quantity?: number
+          total_price?: number
+          unit?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_items_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contracts: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          contract_number: string
+          contract_type: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          end_date: string
+          id: string
+          payment_terms: string | null
+          renewal_notice_days: number | null
+          renewal_type: string | null
+          start_date: string
+          status: string
+          supplier_id: string
+          supplier_name: string
+          title: string
+          total_value: number
+          updated_at: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          contract_number: string
+          contract_type?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date: string
+          id?: string
+          payment_terms?: string | null
+          renewal_notice_days?: number | null
+          renewal_type?: string | null
+          start_date: string
+          status?: string
+          supplier_id: string
+          supplier_name: string
+          title: string
+          total_value?: number
+          updated_at?: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          contract_number?: string
+          contract_type?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date?: string
+          id?: string
+          payment_terms?: string | null
+          renewal_notice_days?: number | null
+          renewal_type?: string | null
+          start_date?: string
+          status?: string
+          supplier_id?: string
+          supplier_name?: string
+          title?: string
+          total_value?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       dashboard_filter_favorites: {
         Row: {
           category_filter: string | null
@@ -103,6 +295,35 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      order_contracts: {
+        Row: {
+          contract_id: string
+          created_at: string
+          id: string
+          order_id: string
+        }
+        Insert: {
+          contract_id: string
+          created_at?: string
+          id?: string
+          order_id: string
+        }
+        Update: {
+          contract_id?: string
+          created_at?: string
+          id?: string
+          order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_contracts_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

@@ -16,7 +16,8 @@ import {
   Users,
   TrendingUp,
   Award,
-  ShoppingCart
+  ShoppingCart,
+  FileSignature
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -65,6 +66,12 @@ const menuItems = [
     icon: Factory, 
     href: "/fornecedores",
     description: "Cadastros"
+  },
+  { 
+    title: "Contratos", 
+    icon: FileSignature, 
+    href: "/contratos",
+    description: "Gestão contratos"
   },
   { 
     title: "Histórico", 
