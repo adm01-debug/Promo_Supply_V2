@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { BuscaAutomatica } from "@/components/compras/BuscaAutomatica";
 import { RankingCotacoes } from "@/components/compras/RankingCotacoes";
 import { CotacaoManualModal } from "@/components/compras/CotacaoManualModal";
+import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { solicitacoesMock, fornecedoresMock, getTipoLabel } from "@/data/mockData";
 
@@ -188,6 +189,13 @@ const Cotacao = () => {
                 <Trophy className="w-5 h-5 text-yellow-500" />
                 Ranking de Cotações
               </h3>
+              
+              {/* Comparador de Cotações */}
+              <ComparadorCotacoes 
+                cotacoes={cotacoesEncontradas.filter(c => c.status === 'encontrado')}
+                quantidade={solicitacao.quantidadeReal}
+                onSelecionar={handleSelecionarFornecedor}
+              />
             </div>
 
             <RankingCotacoes 
