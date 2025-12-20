@@ -5,6 +5,7 @@ import { NotificationCenter } from "@/components/compras/NotificationCenter";
 import { RealtimeNotificationCenter } from "@/components/compras/RealtimeNotificationCenter";
 import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
 import { UserMenu } from "@/components/compras/UserMenu";
+import { SupplierChat } from "@/components/compras/SupplierChat";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -84,6 +85,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           {children}
         </main>
       </div>
+
+      {/* Supplier Chat */}
+      <SupplierChat />
     </div>
   );
 };

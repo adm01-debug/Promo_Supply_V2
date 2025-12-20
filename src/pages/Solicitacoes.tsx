@@ -1,12 +1,9 @@
 import { useState } from "react";
 import { 
   Search, 
-  Filter, 
-  Plus, 
   ClipboardList
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -17,6 +14,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
+import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
+import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { solicitacoesMock } from "@/data/mockData";
 
@@ -24,6 +23,7 @@ const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("todas");
   const [tipoFilter, setTipoFilter] = useState("todos");
+  const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(initialFilters);
 
   const filteredSolicitacoes = solicitacoesMock.filter(s => {
     const matchesSearch = 
@@ -64,10 +64,7 @@ const Solicitacoes = () => {
             <h1 className="text-2xl font-bold text-foreground">Solicitações</h1>
             <p className="text-sm text-muted-foreground">Gerencie todas as solicitações de compra</p>
           </div>
-          <Button>
-            <Plus className="w-4 h-4 mr-2" />
-            Nova Solicitação
-          </Button>
+          <NovaSolicitacaoModal onSuccess={() => {}} />
         </div>
 
         {/* Busca e Filtros */}
@@ -111,9 +108,11 @@ const Solicitacoes = () => {
                 </SelectContent>
               </Select>
 
-              <Button variant="outline" size="icon">
-                <Filter className="w-4 h-4" />
-              </Button>
+              <FiltrosAvancados 
+                filters={advancedFilters}
+                onFiltersChange={setAdvancedFilters}
+                onApply={() => {}}
+              />
             </div>
           </div>
         </Card>
