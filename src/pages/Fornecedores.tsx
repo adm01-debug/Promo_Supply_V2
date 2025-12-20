@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { FornecedorModal } from "@/components/compras/FornecedorModal";
 import { HistoricoComprasModal } from "@/components/compras/HistoricoComprasModal";
@@ -9,10 +9,10 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { 
-  Factory, 
   Search, 
   Plus, 
   Edit, 
@@ -24,74 +24,133 @@ import {
   Plug,
   Building2,
   Users,
-  DollarSign
+  TrendingUp
 } from "lucide-react";
-import { fornecedoresMock, Fornecedor } from "@/data/mockData";
+import { useFornecedores, useFornecedoresKPIs, type Fornecedor } from "@/hooks/useFornecedores";
 import { toast } from "sonner";
 
+// Legacy adapter types
+interface LegacyFornecedor {
+  id: string;
+  razaoSocial: string;
+  nomeFantasia: string;
+  cnpj: string;
+  tipo: "IMPORTADORA" | "FABRICANTE" | "DISTRIBUIDORA";
+  ramos: string[];
+  vendeProduto: "LISO" | "PERSONALIZADO" | "AMBOS";
+  email: string;
+  telefone: string;
+  whatsapp: string;
+  apiIntegrada: boolean;
+  rating: number;
+  totalMes: number;
+  ultimaCompra: string;
+}
+
+// Map DB fornecedor to legacy format
+const adaptToLegacy = (f: Fornecedor): LegacyFornecedor => ({
+  id: f.id,
+  razaoSocial: f.razao_social,
+  nomeFantasia: f.nome_fantasia || f.razao_social,
+  cnpj: f.cnpj || '',
+  tipo: f.tipo === 'internacional' ? 'IMPORTADORA' : f.tipo === 'local' ? 'DISTRIBUIDORA' : 'FABRICANTE',
+  ramos: f.segmento ? [f.segmento] : [],
+  vendeProduto: 'AMBOS',
+  email: f.email || '',
+  telefone: f.telefone || '',
+  whatsapp: f.telefone || '',
+  apiIntegrada: f.integrado_api,
+  rating: Math.round(f.avaliacao),
+  totalMes: 0,
+  ultimaCompra: '-',
+});
+
 const Fornecedores = () => {
-  const [fornecedores, setFornecedores] = useState<Fornecedor[]>(fornecedoresMock);
   const [search, setSearch] = useState("");
   const [tipoFilter, setTipoFilter] = useState<string>("todos");
   const [modalOpen, setModalOpen] = useState(false);
   const [historicoModalOpen, setHistoricoModalOpen] = useState(false);
-  const [selectedFornecedor, setSelectedFornecedor] = useState<Fornecedor | null>(null);
+  const [selectedFornecedor, setSelectedFornecedor] = useState<LegacyFornecedor | null>(null);
 
-  const filteredFornecedores = fornecedores.filter(f => {
-    const matchSearch = 
-      f.nomeFantasia.toLowerCase().includes(search.toLowerCase()) ||
-      f.razaoSocial.toLowerCase().includes(search.toLowerCase()) ||
-      f.cnpj.includes(search);
-    const matchTipo = tipoFilter === "todos" || f.tipo === tipoFilter;
-    return matchSearch && matchTipo;
-  });
+  // Use real data from Supabase
+  const { 
+    fornecedores: dbFornecedores, 
+    loading, 
+    createFornecedor, 
+    updateFornecedor, 
+    refetch 
+  } = useFornecedores({ search: search || undefined });
 
-  const handleOpenModal = (fornecedor?: Fornecedor) => {
+  const { kpis } = useFornecedoresKPIs();
+
+  // Adapt to legacy format
+  const fornecedores = useMemo(() => {
+    return dbFornecedores.map(adaptToLegacy);
+  }, [dbFornecedores]);
+
+  const filteredFornecedores = useMemo(() => {
+    return fornecedores.filter(f => {
+      const matchSearch = !search || 
+        f.nomeFantasia.toLowerCase().includes(search.toLowerCase()) ||
+        f.razaoSocial.toLowerCase().includes(search.toLowerCase()) ||
+        f.cnpj.includes(search);
+      
+      const dbTipo = tipoFilter === 'IMPORTADORA' ? 'internacional' : 
+                     tipoFilter === 'DISTRIBUIDORA' ? 'local' : 
+                     tipoFilter === 'FABRICANTE' ? 'nacional' : null;
+      const matchTipo = tipoFilter === "todos" || f.tipo === tipoFilter;
+      
+      return matchSearch && matchTipo;
+    });
+  }, [fornecedores, search, tipoFilter]);
+
+  const handleOpenModal = (fornecedor?: LegacyFornecedor) => {
     setSelectedFornecedor(fornecedor || null);
     setModalOpen(true);
   };
 
-  const handleOpenHistorico = (fornecedor: Fornecedor) => {
+  const handleOpenHistorico = (fornecedor: LegacyFornecedor) => {
     setSelectedFornecedor(fornecedor);
     setHistoricoModalOpen(true);
   };
 
-  const handleSaveFornecedor = (data: Partial<Fornecedor>) => {
+  const handleSaveFornecedor = async (data: Partial<LegacyFornecedor>) => {
     if (selectedFornecedor) {
-      // Edit existing
-      setFornecedores(fornecedores.map(f => 
-        f.id === selectedFornecedor.id ? { ...f, ...data } : f
-      ));
-      toast.success("Fornecedor atualizado com sucesso!");
+      // Find original DB record
+      const dbRecord = dbFornecedores.find(f => f.id === selectedFornecedor.id);
+      if (dbRecord) {
+        await updateFornecedor(dbRecord.id, {
+          razao_social: data.razaoSocial || dbRecord.razao_social,
+          nome_fantasia: data.nomeFantasia,
+          cnpj: data.cnpj,
+          email: data.email,
+          telefone: data.telefone,
+          tipo: data.tipo === 'IMPORTADORA' ? 'internacional' : 
+                data.tipo === 'DISTRIBUIDORA' ? 'local' : 'nacional',
+          segmento: data.ramos?.[0],
+        });
+      }
     } else {
-      // Create new
-      const newFornecedor: Fornecedor = {
-        id: String(Date.now()),
-        razaoSocial: data.razaoSocial || "",
-        nomeFantasia: data.nomeFantasia || "",
-        cnpj: data.cnpj || "",
-        tipo: data.tipo || "DISTRIBUIDORA",
-        ramos: data.ramos || [],
-        vendeProduto: data.vendeProduto || "AMBOS",
-        email: data.email || "",
-        telefone: data.telefone || "",
-        whatsapp: data.whatsapp || "",
-        apiIntegrada: false,
-        rating: 0,
-        totalMes: 0,
-        ultimaCompra: "-",
-      };
-      setFornecedores([...fornecedores, newFornecedor]);
-      toast.success("Fornecedor cadastrado com sucesso!");
+      await createFornecedor({
+        razao_social: data.razaoSocial || 'Novo Fornecedor',
+        nome_fantasia: data.nomeFantasia,
+        cnpj: data.cnpj,
+        email: data.email,
+        telefone: data.telefone,
+        tipo: data.tipo === 'IMPORTADORA' ? 'internacional' : 
+              data.tipo === 'DISTRIBUIDORA' ? 'local' : 'nacional',
+        segmento: data.ramos?.[0],
+      });
     }
+    setModalOpen(false);
   };
 
-  const getTipoLabel = (tipo: Fornecedor["tipo"]) => {
+  const getTipoLabel = (tipo: LegacyFornecedor["tipo"]) => {
     const labels = { IMPORTADORA: "Importadora", FABRICANTE: "Fabricante", DISTRIBUIDORA: "Distribuidora" };
     return labels[tipo];
   };
 
-  const getTipoBadgeColor = (tipo: Fornecedor["tipo"]) => {
+  const getTipoBadgeColor = (tipo: LegacyFornecedor["tipo"]) => {
     const colors = { 
       IMPORTADORA: "bg-blue-500/20 text-blue-400 border-blue-500/30",
       FABRICANTE: "bg-purple-500/20 text-purple-400 border-purple-500/30",
@@ -100,15 +159,31 @@ const Fornecedores = () => {
     return colors[tipo];
   };
 
-  const getProdutoLabel = (produto: Fornecedor["vendeProduto"]) => {
+  const getProdutoLabel = (produto: LegacyFornecedor["vendeProduto"]) => {
     const labels = { LISO: "Liso", PERSONALIZADO: "Personalizado", AMBOS: "Liso + Personalizado" };
     return labels[produto];
   };
 
-  // KPIs
-  const totalFornecedores = fornecedores.length;
-  const apiIntegradas = fornecedores.filter(f => f.apiIntegrada).length;
-  const volumeTotal = fornecedores.reduce((acc, f) => acc + f.totalMes, 0);
+  // Loading skeleton
+  if (loading) {
+    return (
+      <MainLayout>
+        <div className="space-y-6">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-8 w-48" />
+            <Skeleton className="h-10 w-40" />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[...Array(3)].map((_, i) => (
+              <Skeleton key={i} className="h-24 w-full" />
+            ))}
+          </div>
+          <Skeleton className="h-16 w-full" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -117,7 +192,9 @@ const Fornecedores = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Fornecedores</h1>
-            <p className="text-sm text-muted-foreground">Cadastro e gestão de fornecedores</p>
+            <p className="text-sm text-muted-foreground">
+              Cadastro e gestão de fornecedores ({dbFornecedores.length} registros)
+            </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <AISupplierSuggestion />
@@ -139,7 +216,7 @@ const Fornecedores = () => {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Total Fornecedores</p>
-                <p className="text-2xl font-bold text-foreground">{totalFornecedores}</p>
+                <p className="text-2xl font-bold text-foreground">{kpis.total}</p>
               </div>
             </div>
           </Card>
@@ -151,7 +228,7 @@ const Fornecedores = () => {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">APIs Integradas</p>
-                <p className="text-2xl font-bold text-foreground">{apiIntegradas}</p>
+                <p className="text-2xl font-bold text-foreground">{kpis.integradosApi}</p>
               </div>
             </div>
           </Card>
@@ -159,12 +236,12 @@ const Fornecedores = () => {
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-amber-500/20">
-                <DollarSign className="w-5 h-5 text-amber-500" />
+                <TrendingUp className="w-5 h-5 text-amber-500" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Volume do Mês</p>
+                <p className="text-sm text-muted-foreground">Avaliação Média</p>
                 <p className="text-2xl font-bold text-foreground">
-                  {volumeTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                  {kpis.mediaAvaliacao.toFixed(1)} ★
                 </p>
               </div>
             </div>
@@ -209,7 +286,6 @@ const Fornecedores = () => {
                   <TableHead>Produto</TableHead>
                   <TableHead>Contato</TableHead>
                   <TableHead className="text-center">Rating</TableHead>
-                  <TableHead className="text-right">Volume/Mês</TableHead>
                   <TableHead className="text-center">API</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
@@ -220,7 +296,7 @@ const Fornecedores = () => {
                     <TableCell>
                       <div>
                         <p className="font-medium text-foreground">{fornecedor.nomeFantasia}</p>
-                        <p className="text-xs text-muted-foreground">{fornecedor.cnpj}</p>
+                        <p className="text-xs text-muted-foreground">{fornecedor.cnpj || 'Sem CNPJ'}</p>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -240,6 +316,9 @@ const Fornecedores = () => {
                             +{fornecedor.ramos.length - 2}
                           </Badge>
                         )}
+                        {fornecedor.ramos.length === 0 && (
+                          <span className="text-xs text-muted-foreground">-</span>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -249,30 +328,36 @@ const Fornecedores = () => {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8"
-                          onClick={() => window.open(`mailto:${fornecedor.email}`)}
-                        >
-                          <Mail className="w-4 h-4 text-muted-foreground" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8"
-                          onClick={() => window.open(`tel:${fornecedor.telefone}`)}
-                        >
-                          <Phone className="w-4 h-4 text-muted-foreground" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8"
-                          onClick={() => window.open(`https://wa.me/55${fornecedor.whatsapp.replace(/\D/g, '')}`)}
-                        >
-                          <MessageCircle className="w-4 h-4 text-emerald-500" />
-                        </Button>
+                        {fornecedor.email && (
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8"
+                            onClick={() => window.open(`mailto:${fornecedor.email}`)}
+                          >
+                            <Mail className="w-4 h-4 text-muted-foreground" />
+                          </Button>
+                        )}
+                        {fornecedor.telefone && (
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8"
+                            onClick={() => window.open(`tel:${fornecedor.telefone}`)}
+                          >
+                            <Phone className="w-4 h-4 text-muted-foreground" />
+                          </Button>
+                        )}
+                        {fornecedor.whatsapp && (
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8"
+                            onClick={() => window.open(`https://wa.me/55${fornecedor.whatsapp.replace(/\D/g, '')}`)}
+                          >
+                            <MessageCircle className="w-4 h-4 text-emerald-500" />
+                          </Button>
+                        )}
                       </div>
                     </TableCell>
                     <TableCell>
@@ -284,9 +369,6 @@ const Fornecedores = () => {
                           />
                         ))}
                       </div>
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
-                      {fornecedor.totalMes.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                     </TableCell>
                     <TableCell className="text-center">
                       {fornecedor.apiIntegrada ? (
@@ -328,10 +410,15 @@ const Fornecedores = () => {
             </Table>
           </div>
 
-          {filteredFornecedores.length === 0 && (
+          {filteredFornecedores.length === 0 && !loading && (
             <div className="text-center py-12 text-muted-foreground">
               <Building2 className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>Nenhum fornecedor encontrado</p>
+              <p>
+                {dbFornecedores.length === 0 
+                  ? "Nenhum fornecedor cadastrado ainda" 
+                  : "Nenhum fornecedor encontrado"
+                }
+              </p>
             </div>
           )}
         </Card>
