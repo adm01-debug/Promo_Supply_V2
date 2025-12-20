@@ -40,17 +40,46 @@ const Solicitacoes = () => {
 
   const filteredSolicitacoes = useMemo(() => {
     return localSolicitacoes.filter(s => {
+      // Text search
       const matchesSearch = 
         s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.produto.toLowerCase().includes(searchTerm.toLowerCase());
       
+      // Basic filters
       const matchesStatus = statusFilter === "todas" || s.status === statusFilter;
       const matchesTipo = tipoFilter === "todos" || s.tipo === tipoFilter;
 
-      return matchesSearch && matchesStatus && matchesTipo;
+      // Advanced filters - Date range
+      const solicitacaoDate = new Date(s.prazoEntrega);
+      const matchesDateFrom = !advancedFilters.dateRange.from || 
+        solicitacaoDate >= new Date(advancedFilters.dateRange.from);
+      const matchesDateTo = !advancedFilters.dateRange.to || 
+        solicitacaoDate <= new Date(advancedFilters.dateRange.to);
+
+      // Advanced filters - Value range
+      const solicitacaoValor = s.valorTotal || 0;
+      const matchesValorMin = solicitacaoValor >= advancedFilters.valorMin;
+      const matchesValorMax = solicitacaoValor <= advancedFilters.valorMax || advancedFilters.valorMax === 100000;
+
+      // Advanced filters - Empresas
+      const matchesEmpresas = advancedFilters.empresas.length === 0 || 
+        advancedFilters.empresas.includes(s.empresa);
+
+      // Advanced filters - Vendedores
+      const matchesVendedores = advancedFilters.vendedores.length === 0 || 
+        advancedFilters.vendedores.includes(s.vendedor);
+
+      // Advanced filters - Tipos
+      const matchesTiposAdvanced = advancedFilters.tipos.length === 0 || 
+        advancedFilters.tipos.includes(s.tipo);
+
+      return matchesSearch && matchesStatus && matchesTipo && 
+        matchesDateFrom && matchesDateTo && 
+        matchesValorMin && matchesValorMax && 
+        matchesEmpresas && matchesVendedores && matchesTiposAdvanced;
     });
-  }, [localSolicitacoes, searchTerm, statusFilter, tipoFilter]);
+  }, [localSolicitacoes, searchTerm, statusFilter, tipoFilter, advancedFilters]);
 
   const groupedByStatus = useMemo(() => ({
     AGUARDANDO_COTACAO: filteredSolicitacoes.filter(s => s.status === 'AGUARDANDO_COTACAO'),
