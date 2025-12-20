@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { 
   Search, 
   ClipboardList,
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectContent,
@@ -21,8 +22,10 @@ import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
 import { SolicitacaoKanban } from "@/components/compras/SolicitacaoKanban";
 import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
 import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
+import { BulkActionsBar } from "@/components/compras/BulkActionsBar";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { solicitacoesMock, Solicitacao } from "@/data/mockData";
+import { toast } from "sonner";
 
 const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -30,30 +33,33 @@ const Solicitacoes = () => {
   const [tipoFilter, setTipoFilter] = useState("todos");
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(initialFilters);
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('kanban');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   
   // Local state for solicitacoes (to handle drag-and-drop updates)
   const [localSolicitacoes, setLocalSolicitacoes] = useState<Solicitacao[]>(solicitacoesMock);
 
-  const filteredSolicitacoes = localSolicitacoes.filter(s => {
-    const matchesSearch = 
-      s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      s.produto.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = statusFilter === "todas" || s.status === statusFilter;
-    const matchesTipo = tipoFilter === "todos" || s.tipo === tipoFilter;
+  const filteredSolicitacoes = useMemo(() => {
+    return localSolicitacoes.filter(s => {
+      const matchesSearch = 
+        s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        s.produto.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = statusFilter === "todas" || s.status === statusFilter;
+      const matchesTipo = tipoFilter === "todos" || s.tipo === tipoFilter;
 
-    return matchesSearch && matchesStatus && matchesTipo;
-  });
+      return matchesSearch && matchesStatus && matchesTipo;
+    });
+  }, [localSolicitacoes, searchTerm, statusFilter, tipoFilter]);
 
-  const groupedByStatus = {
+  const groupedByStatus = useMemo(() => ({
     AGUARDANDO_COTACAO: filteredSolicitacoes.filter(s => s.status === 'AGUARDANDO_COTACAO'),
     EM_COTACAO: filteredSolicitacoes.filter(s => s.status === 'EM_COTACAO'),
     FORNECEDOR_SELECIONADO: filteredSolicitacoes.filter(s => s.status === 'FORNECEDOR_SELECIONADO'),
     AGUARDANDO_PAGAMENTO: filteredSolicitacoes.filter(s => s.status === 'AGUARDANDO_PAGAMENTO'),
     PAGO: filteredSolicitacoes.filter(s => s.status === 'PAGO'),
     EM_TRANSITO: filteredSolicitacoes.filter(s => s.status === 'EM_TRANSITO'),
-  };
+  }), [filteredSolicitacoes]);
 
   const statusConfig: Record<string, { label: string; color: string }> = {
     AGUARDANDO_COTACAO: { label: 'Aguardando Cotação', color: 'bg-emerald-500' },
@@ -72,6 +78,67 @@ const Solicitacoes = () => {
       )
     );
   }, []);
+
+  // Selection handlers
+  const handleSelectItem = useCallback((id: string, selected: boolean) => {
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      if (selected) {
+        newSet.add(id);
+      } else {
+        newSet.delete(id);
+      }
+      return newSet;
+    });
+  }, []);
+
+  const handleSelectAll = useCallback(() => {
+    setSelectedIds(new Set(filteredSolicitacoes.map(s => s.id)));
+  }, [filteredSolicitacoes]);
+
+  const handleDeselectAll = useCallback(() => {
+    setSelectedIds(new Set());
+  }, []);
+
+  const handleBulkDelete = useCallback(() => {
+    setLocalSolicitacoes(prev => prev.filter(s => !selectedIds.has(s.id)));
+    setSelectedIds(new Set());
+  }, [selectedIds]);
+
+  const handleBulkStatusChange = useCallback((newStatus: Solicitacao['status']) => {
+    setLocalSolicitacoes(prev => 
+      prev.map(sol => 
+        selectedIds.has(sol.id) ? { ...sol, status: newStatus } : sol
+      )
+    );
+    setSelectedIds(new Set());
+  }, [selectedIds]);
+
+  const handleBulkExport = useCallback((format: 'pdf' | 'excel') => {
+    const selectedItems = localSolicitacoes.filter(s => selectedIds.has(s.id));
+    console.log(`Exporting ${selectedItems.length} items to ${format}`, selectedItems);
+    toast.success(`Exportando ${selectedItems.length} solicitação(ões) para ${format.toUpperCase()}`);
+  }, [localSolicitacoes, selectedIds]);
+
+  const handleSelectAllInGroup = useCallback((status: string) => {
+    const items = groupedByStatus[status as keyof typeof groupedByStatus] || [];
+    const allSelected = items.every(s => selectedIds.has(s.id));
+    
+    setSelectedIds(prev => {
+      const newSet = new Set(prev);
+      items.forEach(s => {
+        if (allSelected) {
+          newSet.delete(s.id);
+        } else {
+          newSet.add(s.id);
+        }
+      });
+      return newSet;
+    });
+  }, [groupedByStatus, selectedIds]);
+
+  const isAllSelected = filteredSolicitacoes.length > 0 && 
+    filteredSolicitacoes.every(s => selectedIds.has(s.id));
 
   return (
     <MainLayout>
@@ -178,6 +245,9 @@ const Solicitacoes = () => {
             <SolicitacaoKanban 
               solicitacoes={filteredSolicitacoes}
               onStatusChange={handleStatusChange}
+              selectable
+              selectedIds={selectedIds}
+              onSelectChange={handleSelectItem}
             />
           </div>
         )}
@@ -190,10 +260,16 @@ const Solicitacoes = () => {
               if (statusFilter !== "todas" && statusFilter !== status) return null;
               
               const config = statusConfig[status];
+              const allInGroupSelected = items.every(s => selectedIds.has(s.id));
 
               return (
                 <div key={status} className="space-y-3">
                   <div className="flex items-center gap-2">
+                    <Checkbox
+                      checked={allInGroupSelected}
+                      onCheckedChange={() => handleSelectAllInGroup(status)}
+                      className="h-5 w-5"
+                    />
                     <span className={`w-3 h-3 rounded-full ${config.color}`} />
                     <h2 className="font-semibold text-foreground">{config.label}</h2>
                     <Badge variant="secondary" className="ml-2">{items.length}</Badge>
@@ -201,7 +277,13 @@ const Solicitacoes = () => {
 
                   <div className="grid gap-3">
                     {items.map((solicitacao) => (
-                      <SolicitacaoCard key={solicitacao.id} solicitacao={solicitacao} />
+                      <SolicitacaoCard 
+                        key={solicitacao.id} 
+                        solicitacao={solicitacao}
+                        selectable
+                        selected={selectedIds.has(solicitacao.id)}
+                        onSelectChange={(selected) => handleSelectItem(solicitacao.id, selected)}
+                      />
                     ))}
                   </div>
                 </div>
@@ -219,6 +301,18 @@ const Solicitacoes = () => {
             </p>
           </Card>
         )}
+
+        {/* Bulk Actions Bar */}
+        <BulkActionsBar
+          selectedCount={selectedIds.size}
+          totalCount={filteredSolicitacoes.length}
+          onSelectAll={handleSelectAll}
+          onDeselectAll={handleDeselectAll}
+          onDelete={handleBulkDelete}
+          onChangeStatus={handleBulkStatusChange}
+          onExport={handleBulkExport}
+          isAllSelected={isAllSelected}
+        />
       </div>
     </MainLayout>
   );

@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Solicitacao, getTipoLabel } from "@/data/mockData";
@@ -36,6 +37,9 @@ import { toast } from "sonner";
 interface SolicitacaoKanbanProps {
   solicitacoes: Solicitacao[];
   onStatusChange: (id: string, newStatus: Solicitacao['status']) => void;
+  selectable?: boolean;
+  selectedIds?: Set<string>;
+  onSelectChange?: (id: string, selected: boolean) => void;
 }
 
 const statusConfig: Record<Solicitacao['status'], { label: string; color: string; bgColor: string }> = {
@@ -53,9 +57,12 @@ const statusConfig: Record<Solicitacao['status'], { label: string; color: string
 interface SortableItemProps {
   solicitacao: Solicitacao;
   isDragging?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelectChange?: (selected: boolean) => void;
 }
 
-function SortableItem({ solicitacao, isDragging }: SortableItemProps) {
+function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectChange }: SortableItemProps) {
   const {
     attributes,
     listeners,
@@ -82,6 +89,9 @@ function SortableItem({ solicitacao, isDragging }: SortableItemProps) {
       <SolicitacaoKanbanCard 
         solicitacao={solicitacao} 
         dragHandleProps={{ ...attributes, ...listeners }}
+        selectable={selectable}
+        selected={selected}
+        onSelectChange={onSelectChange}
       />
     </div>
   );
@@ -92,16 +102,38 @@ interface SolicitacaoKanbanCardProps {
   solicitacao: Solicitacao;
   dragHandleProps?: React.HTMLAttributes<HTMLDivElement>;
   isOverlay?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelectChange?: (selected: boolean) => void;
 }
 
-function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay }: SolicitacaoKanbanCardProps) {
+function SolicitacaoKanbanCard({ 
+  solicitacao, 
+  dragHandleProps, 
+  isOverlay,
+  selectable,
+  selected,
+  onSelectChange
+}: SolicitacaoKanbanCardProps) {
   return (
     <Card className={cn(
       "p-3 cursor-pointer hover:shadow-md transition-all border-l-4",
       statusConfig[solicitacao.status]?.color.replace('bg-', 'border-'),
-      isOverlay && "shadow-xl rotate-2 scale-105"
+      isOverlay && "shadow-xl rotate-2 scale-105",
+      selected && "ring-2 ring-primary bg-primary/5"
     )}>
       <div className="flex items-start gap-2">
+        {/* Checkbox for selection */}
+        {selectable && !isOverlay && (
+          <div onClick={(e) => e.stopPropagation()} className="shrink-0 mt-1">
+            <Checkbox
+              checked={selected}
+              onCheckedChange={(checked) => onSelectChange?.(checked === true)}
+              className="h-4 w-4"
+            />
+          </div>
+        )}
+
         {/* Drag Handle */}
         <div 
           {...dragHandleProps}
@@ -163,9 +195,19 @@ interface DroppableColumnProps {
   status: Solicitacao['status'];
   solicitacoes: Solicitacao[];
   isOver?: boolean;
+  selectable?: boolean;
+  selectedIds?: Set<string>;
+  onSelectChange?: (id: string, selected: boolean) => void;
 }
 
-function DroppableColumn({ status, solicitacoes, isOver }: DroppableColumnProps) {
+function DroppableColumn({ 
+  status, 
+  solicitacoes, 
+  isOver,
+  selectable,
+  selectedIds,
+  onSelectChange
+}: DroppableColumnProps) {
   const config = statusConfig[status];
   
   return (
@@ -204,7 +246,10 @@ function DroppableColumn({ status, solicitacoes, isOver }: DroppableColumnProps)
               solicitacoes.map(solicitacao => (
                 <SortableItem 
                   key={solicitacao.id} 
-                  solicitacao={solicitacao} 
+                  solicitacao={solicitacao}
+                  selectable={selectable}
+                  selected={selectedIds?.has(solicitacao.id)}
+                  onSelectChange={(selected) => onSelectChange?.(solicitacao.id, selected)}
                 />
               ))
             )}
@@ -215,7 +260,13 @@ function DroppableColumn({ status, solicitacoes, isOver }: DroppableColumnProps)
   );
 }
 
-export function SolicitacaoKanban({ solicitacoes, onStatusChange }: SolicitacaoKanbanProps) {
+export function SolicitacaoKanban({ 
+  solicitacoes, 
+  onStatusChange,
+  selectable,
+  selectedIds,
+  onSelectChange
+}: SolicitacaoKanbanProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
 
@@ -338,6 +389,9 @@ export function SolicitacaoKanban({ solicitacoes, onStatusChange }: SolicitacaoK
             status={status}
             solicitacoes={groupedByStatus[status]}
             isOver={overId === status || (overId !== null && findColumn(overId) === status)}
+            selectable={selectable}
+            selectedIds={selectedIds}
+            onSelectChange={onSelectChange}
           />
         ))}
       </div>

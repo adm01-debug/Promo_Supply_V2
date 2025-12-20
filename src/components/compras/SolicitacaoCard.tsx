@@ -3,12 +3,16 @@ import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import type { Solicitacao } from "@/data/mockData";
 import { getTipoLabel, getStatusColor } from "@/data/mockData";
 
 interface SolicitacaoCardProps {
   solicitacao: Solicitacao;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelectChange?: (selected: boolean) => void;
 }
 
 const statusActions: Record<string, { 
@@ -49,13 +53,35 @@ const statusActions: Record<string, {
   },
 };
 
-export const SolicitacaoCard = ({ solicitacao }: SolicitacaoCardProps) => {
+export const SolicitacaoCard = ({ 
+  solicitacao, 
+  selectable = false,
+  selected = false,
+  onSelectChange 
+}: SolicitacaoCardProps) => {
   const actions = statusActions[solicitacao.status];
   const statusColor = getStatusColor(solicitacao.status);
 
   return (
-    <Card className="p-4 hover:shadow-md transition-all duration-200 border-l-4" style={{ borderLeftColor: `var(--${statusColor.replace('bg-', '')})` }}>
+    <Card 
+      className={cn(
+        "p-4 hover:shadow-md transition-all duration-200 border-l-4",
+        selected && "ring-2 ring-primary bg-primary/5"
+      )} 
+      style={{ borderLeftColor: `var(--${statusColor.replace('bg-', '')})` }}
+    >
       <div className="flex flex-col md:flex-row md:items-center gap-4">
+        {/* Checkbox for selection */}
+        {selectable && (
+          <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
+            <Checkbox
+              checked={selected}
+              onCheckedChange={(checked) => onSelectChange?.(checked === true)}
+              className="h-5 w-5"
+            />
+          </div>
+        )}
+
         {/* Info Principal */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
