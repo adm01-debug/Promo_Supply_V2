@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { AppSidebar } from "@/components/compras/AppSidebar";
 import { NotificationCenter } from "@/components/compras/NotificationCenter";
+import { RealtimeNotificationCenter } from "@/components/compras/RealtimeNotificationCenter";
 import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
 import { UserMenu } from "@/components/compras/UserMenu";
 import { cn } from "@/lib/utils";
@@ -68,6 +69,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
             {/* Right Actions */}
             <div className="flex items-center gap-2">
+              <RealtimeNotificationCenter />
               <NotificationCenter />
               <SLASettingsPanel />
               <div className="pl-3 ml-2 border-l border-border">
