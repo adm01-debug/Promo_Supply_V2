@@ -27,61 +27,31 @@ import { BuyerPerformancePanel } from "@/components/compras/BuyerPerformancePane
 import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
 import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidget";
 import { DeliveryCalendar } from "@/components/compras/DeliveryCalendar";
+import { DashboardCustomizer } from "@/components/compras/DashboardCustomizer";
 import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { useDashboardLayoutStore } from "@/stores/dashboardLayoutStore";
+import { cn } from "@/lib/utils";
 
 const ComprasDashboard = () => {
-  return (
-    <MainLayout>
-      <div className="space-y-6">
-        {/* Critical Alerts */}
-        <CriticalAlertsBar />
-        
-        {/* Page Title + Climate Widget */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Visão geral do sistema de compras</p>
-          </div>
-          <PurchaseClimateWidget />
-        </div>
+  const { widgets } = useDashboardLayoutStore();
+  
+  const sortedWidgets = [...widgets].sort((a, b) => a.order - b.order);
+  const visibleWidgets = sortedWidgets.filter(w => w.visible);
 
-        {/* KPIs Grid - Primeira linha */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+  const getWidgetComponent = (widgetId: string) => {
+    switch (widgetId) {
+      case 'kpi-aguardando':
+        return (
           <KpiCard
             title="Aguard. Cotação"
             value={kpisMock.aguardandoCotacao}
             icon={ClipboardList}
             color="emerald"
           />
-          <KpiCard
-            title="Aguard. Pagto"
-            value={kpisMock.aguardandoPagamento}
-            icon={DollarSign}
-            color="orange"
-          />
-          <KpiCard
-            title="Em Trânsito"
-            value={kpisMock.emTransito}
-            icon={Clock}
-            color="blue"
-          />
-          <KpiCard
-            title="Em Coleta"
-            value={kpisMock.emColeta}
-            icon={Truck}
-            color="purple"
-          />
-          <KpiCard
-            title="Finalizados"
-            value={kpisMock.finalizados}
-            icon={CheckCircle2}
-            color="green"
-          />
-        </div>
-
-        {/* KPIs Grid - Segunda linha (Operacionais) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        );
+      case 'kpi-volume':
+        return (
           <KpiCard
             title="Volume Mês"
             value={`R$ ${(kpisMock.volumeMes / 1000).toFixed(0)}K`}
@@ -89,31 +59,9 @@ const ComprasDashboard = () => {
             color="cyan"
             subtitle="Total em compras"
           />
-          <KpiCard
-            title="Atrasados"
-            value={kpisMock.atrasados}
-            icon={AlertTriangle}
-            color="red"
-            highlight={kpisMock.atrasados > 0}
-          />
-          <KpiCard
-            title="Lead Time"
-            value={`${kpisMock.leadTime}d`}
-            icon={Timer}
-            color="indigo"
-            subtitle="Média"
-          />
-          <KpiCard
-            title="Taxa Entrega"
-            value={`${kpisMock.taxaEntrega}%`}
-            icon={BarChart3}
-            color="teal"
-            subtitle="No prazo"
-          />
-        </div>
-
-        {/* KPIs Grid - Terceira linha (Performance do Comprador) */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        );
+      case 'kpi-economia':
+        return (
           <KpiCard
             title="Economia Gerada"
             value={`R$ ${(buyerPerformanceMock.economiaGerada / 1000).toFixed(1)}K`}
@@ -121,73 +69,111 @@ const ComprasDashboard = () => {
             color="emerald"
             subtitle={`${buyerPerformanceMock.economiaPercentual}% do volume`}
           />
+        );
+      case 'kpi-sla':
+        return (
           <KpiCard
-            title="Desconto Médio"
-            value={`${buyerPerformanceMock.descontoMedio}%`}
-            icon={Percent}
-            color="blue"
-            subtitle={`${buyerPerformanceMock.cotacoesNegociadas} cotações`}
+            title="Taxa Entrega"
+            value={`${kpisMock.taxaEntrega}%`}
+            icon={BarChart3}
+            color="teal"
+            subtitle="No prazo"
           />
-          <KpiCard
-            title="Melhor Preço"
-            value={`${buyerPerformanceMock.melhorPrecoRate}%`}
-            icon={Target}
-            color="purple"
-            subtitle="Taxa de acerto"
-          />
-          <KpiCard
-            title="Valor Negociado"
-            value={`R$ ${(buyerPerformanceMock.valorNegociado / 1000).toFixed(0)}K`}
-            icon={Award}
-            color="orange"
-            subtitle="Total do mês"
-          />
-        </div>
-
-        {/* SLA Distribution + Pipeline */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <SLADistributionChart />
-          
-          <Card className="p-6">
+        );
+      case 'chart-sla':
+        return <SLADistributionChart />;
+      case 'chart-pipeline':
+        return (
+          <Card className="p-6 h-full">
             <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-primary" />
               Pipeline Visual
             </h2>
             <PipelineChart data={pipelineMock} />
           </Card>
-        </div>
+        );
+      case 'supplier-alerts':
+        return <SupplierAlertsPanel />;
+      case 'supplier-ranking':
+        return <SupplierRankingPanel />;
+      case 'buyer-performance':
+        return <BuyerPerformancePanel />;
+      case 'savings-goal':
+        return <SavingsGoalPanel />;
+      case 'delivery-calendar':
+        return <DeliveryCalendar />;
+      case 'urgent-items':
+        return (
+          <Card className="p-6 h-full">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Clock className="w-5 h-5 text-destructive" />
+                Itens Urgentes
+              </h2>
+              <Link to="/solicitacoes" className="text-sm text-primary hover:underline">Ver Todos</Link>
+            </div>
+            <UrgentItemsList items={itensUrgentesMock} />
+          </Card>
+        );
+      default:
+        return null;
+    }
+  };
 
-        {/* SLA Performance + Supplier Alerts + Ranking */}
+  const getGridClasses = (size: string) => {
+    switch (size) {
+      case 'small': return 'col-span-1';
+      case 'medium': return 'col-span-1 lg:col-span-1';
+      case 'large': return 'col-span-1 lg:col-span-2';
+      case 'full': return 'col-span-full';
+      default: return 'col-span-1';
+    }
+  };
+
+  // Separate KPIs and other widgets
+  const kpiWidgets = visibleWidgets.filter(w => w.type === 'kpi');
+  const otherWidgets = visibleWidgets.filter(w => w.type !== 'kpi');
+
+  return (
+    <MainLayout>
+      <div className="space-y-6">
+        {/* Critical Alerts */}
+        <CriticalAlertsBar />
+        
+        {/* Page Title + Climate Widget + Customizer */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-1">
-            <SLAPerformanceDashboard />
+          <div className="lg:col-span-2 flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+              <p className="text-sm text-muted-foreground">Visão geral do sistema de compras</p>
+            </div>
+            <DashboardCustomizer />
           </div>
-          <SupplierAlertsPanel />
-          <SupplierRankingPanel />
+          <PurchaseClimateWidget />
         </div>
 
-        {/* Delivery Calendar */}
-        <div className="grid grid-cols-1 gap-6">
-          <DeliveryCalendar />
-        </div>
+        {/* KPIs Grid */}
+        {kpiWidgets.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {kpiWidgets.map(widget => (
+              <div key={widget.id}>
+                {getWidgetComponent(widget.id)}
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* Buyer Performance + Savings Goal */}
+        {/* Dynamic Widgets Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <BuyerPerformancePanel />
-          <SavingsGoalPanel />
+          {otherWidgets.map(widget => (
+            <div 
+              key={widget.id} 
+              className={cn(getGridClasses(widget.size))}
+            >
+              {getWidgetComponent(widget.id)}
+            </div>
+          ))}
         </div>
-
-        {/* Itens Urgentes */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Clock className="w-5 h-5 text-destructive" />
-              Itens Urgentes
-            </h2>
-            <Link to="/solicitacoes" className="text-sm text-primary hover:underline">Ver Todos</Link>
-          </div>
-          <UrgentItemsList items={itensUrgentesMock} />
-        </Card>
       </div>
     </MainLayout>
   );

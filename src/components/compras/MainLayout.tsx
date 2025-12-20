@@ -6,8 +6,11 @@ import { RealtimeNotificationCenter } from "@/components/compras/RealtimeNotific
 import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
 import { UserMenu } from "@/components/compras/UserMenu";
 import { SupplierChat } from "@/components/compras/SupplierChat";
+import { GlobalSearch } from "@/components/compras/GlobalSearch";
+import { KeyboardShortcutsDialog } from "@/components/compras/KeyboardShortcutsDialog";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Keyboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface MainLayoutProps {
@@ -17,9 +20,15 @@ interface MainLayoutProps {
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Initialize keyboard shortcuts
+  useKeyboardShortcuts();
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Keyboard Shortcuts Dialog */}
+      <KeyboardShortcutsDialog />
+      
       {/* Desktop Sidebar */}
       <div className="hidden md:block">
         <AppSidebar 
@@ -65,11 +74,26 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
 
-            {/* Spacer for desktop */}
-            <div className="hidden md:block" />
+            {/* Global Search */}
+            <div className="hidden md:block flex-1 max-w-md">
+              <GlobalSearch />
+            </div>
 
             {/* Right Actions */}
             <div className="flex items-center gap-2">
+              {/* Keyboard shortcuts button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => {
+                  const event = new CustomEvent('show-keyboard-shortcuts');
+                  window.dispatchEvent(event);
+                }}
+                className="hidden md:flex"
+                title="Atalhos de teclado (Shift + ?)"
+              >
+                <Keyboard className="w-4 h-4" />
+              </Button>
               <RealtimeNotificationCenter />
               <NotificationCenter />
               <SLASettingsPanel />
