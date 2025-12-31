@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      active_sessions: {
+        Row: {
+          created_at: string
+          device_info: Json | null
+          expires_at: string
+          id: string
+          ip_address: string | null
+          last_activity: string
+          session_token: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          device_info?: Json | null
+          expires_at: string
+          id?: string
+          ip_address?: string | null
+          last_activity?: string
+          session_token: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          device_info?: Json | null
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          last_activity?: string
+          session_token?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action_type: Database["public"]["Enums"]["audit_action_type"]
@@ -62,6 +98,39 @@ export type Database = {
           user_email?: string | null
           user_id?: string | null
           user_name?: string | null
+        }
+        Relationships: []
+      }
+      blocked_ips: {
+        Row: {
+          attempts_count: number | null
+          blocked_at: string
+          blocked_by: string | null
+          expires_at: string | null
+          id: string
+          ip_address: string
+          permanent: boolean
+          reason: string
+        }
+        Insert: {
+          attempts_count?: number | null
+          blocked_at?: string
+          blocked_by?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address: string
+          permanent?: boolean
+          reason: string
+        }
+        Update: {
+          attempts_count?: number | null
+          blocked_at?: string
+          blocked_by?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string
+          permanent?: boolean
+          reason?: string
         }
         Relationships: []
       }
@@ -503,6 +572,93 @@ export type Database = {
         }
         Relationships: []
       }
+      ip_whitelist: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          ip_address: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          ip_address: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          ip_address?: string
+        }
+        Relationships: []
+      }
+      login_attempts: {
+        Row: {
+          created_at: string
+          email: string
+          failure_reason: string | null
+          id: string
+          ip_address: string | null
+          success: boolean
+          user_agent: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: string | null
+          success?: boolean
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      mfa_settings: {
+        Row: {
+          backup_codes: string[] | null
+          created_at: string
+          id: string
+          last_verified_at: string | null
+          mfa_enabled: boolean
+          mfa_method: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          backup_codes?: string[] | null
+          created_at?: string
+          id?: string
+          last_verified_at?: string | null
+          mfa_enabled?: boolean
+          mfa_method?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          backup_codes?: string[] | null
+          created_at?: string
+          id?: string
+          last_verified_at?: string | null
+          mfa_enabled?: boolean
+          mfa_method?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notification_preferences: {
         Row: {
           created_at: string
@@ -712,6 +868,36 @@ export type Database = {
           },
         ]
       }
+      password_reset_tokens: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          token: string
+          used: boolean
+          used_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at: string
+          id?: string
+          token: string
+          used?: boolean
+          used_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token?: string
+          used?: boolean
+          used_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       pedido_itens: {
         Row: {
           created_at: string
@@ -860,6 +1046,33 @@ export type Database = {
           },
         ]
       }
+      permissions: {
+        Row: {
+          action: string
+          created_at: string
+          description: string | null
+          id: string
+          module: string
+          name: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          module: string
+          name: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          module?: string
+          name?: string
+        }
+        Relationships: []
+      }
       produtos: {
         Row: {
           ativo: boolean | null
@@ -973,6 +1186,110 @@ export type Database = {
           p256dh?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      rate_limit_logs: {
+        Row: {
+          blocked: boolean
+          created_at: string
+          endpoint: string
+          id: string
+          ip_address: string
+          request_count: number
+          user_agent: string | null
+          user_id: string | null
+          window_start: string
+        }
+        Insert: {
+          blocked?: boolean
+          created_at?: string
+          endpoint: string
+          id?: string
+          ip_address: string
+          request_count?: number
+          user_agent?: string | null
+          user_id?: string | null
+          window_start?: string
+        }
+        Update: {
+          blocked?: boolean
+          created_at?: string
+          endpoint?: string
+          id?: string
+          ip_address?: string
+          request_count?: number
+          user_agent?: string | null
+          user_id?: string | null
+          window_start?: string
+        }
+        Relationships: []
+      }
+      role_permissions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          permission_id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          permission_id: string
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          permission_id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "role_permissions_permission_id_fkey"
+            columns: ["permission_id"]
+            isOneToOne: false
+            referencedRelation: "permissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      security_logs: {
+        Row: {
+          created_at: string
+          event_description: string | null
+          event_type: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          severity: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_description?: string | null
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          severity?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_description?: string | null
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          severity?: string
+          user_agent?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -1105,9 +1422,17 @@ export type Database = {
         Args: { prefix: string; table_name: string }
         Returns: string
       }
+      get_failed_login_count: {
+        Args: { _email: string; _minutes?: number }
+        Returns: number
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
+      }
+      has_permission: {
+        Args: { _action: string; _module: string; _user_id: string }
+        Returns: boolean
       }
       has_role: {
         Args: {
@@ -1115,6 +1440,30 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      is_ip_blocked: { Args: { _ip_address: string }; Returns: boolean }
+      is_ip_whitelisted: { Args: { _ip_address: string }; Returns: boolean }
+      log_login_attempt: {
+        Args: {
+          _email: string
+          _failure_reason?: string
+          _ip_address: string
+          _success: boolean
+          _user_agent: string
+        }
+        Returns: string
+      }
+      log_security_event: {
+        Args: {
+          _event_description: string
+          _event_type: string
+          _ip_address?: string
+          _metadata?: Json
+          _severity?: string
+          _user_agent?: string
+          _user_id: string
+        }
+        Returns: string
       }
     }
     Enums: {
