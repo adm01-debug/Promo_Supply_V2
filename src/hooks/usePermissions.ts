@@ -37,7 +37,7 @@ export const usePermissions = () => {
     enabled: !!user,
   });
 
-  // Fetch user's role permissions
+// Fetch user's role permissions
   const { data: userPermissions, isLoading: userPermissionsLoading } = useQuery({
     queryKey: ['user-permissions', role],
     queryFn: async () => {
@@ -55,6 +55,24 @@ export const usePermissions = () => {
       return data as (RolePermission & { permission: Permission })[];
     },
     enabled: !!user && !!role,
+  });
+
+  // Fetch ALL role permissions (for admin matrix view)
+  const { data: allRolePermissions, isLoading: allRolePermissionsLoading } = useQuery({
+    queryKey: ['all-role-permissions'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('role_permissions')
+        .select(`
+          *,
+          permission:permissions(*)
+        `)
+        .order('role');
+      
+      if (error) throw error;
+      return data as (RolePermission & { permission: Permission })[];
+    },
+    enabled: !!user,
   });
 
   // Check if user has specific permission
@@ -99,12 +117,13 @@ export const usePermissions = () => {
   return {
     permissions,
     userPermissions,
+    allRolePermissions,
     hasPermission,
     hasAnyPermission,
     hasAllPermissions,
     getModulePermissions,
     groupedPermissions,
-    isLoading: permissionsLoading || userPermissionsLoading,
+    isLoading: permissionsLoading || userPermissionsLoading || allRolePermissionsLoading,
   };
 };
 

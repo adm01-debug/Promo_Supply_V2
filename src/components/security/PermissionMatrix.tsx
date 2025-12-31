@@ -14,7 +14,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 type RolePermissions = Record<string, Record<string, boolean>>;
 
 export const PermissionMatrix = () => {
-  const { permissions, userPermissions, groupedPermissions, isLoading } = usePermissions();
+  const { permissions, allRolePermissions, groupedPermissions, isLoading } = usePermissions();
   const { isAdmin } = useAuth();
   const queryClient = useQueryClient();
   const [changes, setChanges] = useState<RolePermissions>({});
@@ -42,9 +42,9 @@ export const PermissionMatrix = () => {
       return changes[role][permissionId];
     }
 
-    // Check database
-    const rolePerms = userPermissions?.filter(
-      rp => rp.permission_id === permissionId
+    // Check database using all role permissions
+    const rolePerms = allRolePermissions?.filter(
+      rp => rp.role === role && rp.permission_id === permissionId
     );
     return !!rolePerms?.length;
   };
@@ -77,6 +77,7 @@ export const PermissionMatrix = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-permissions'] });
+      queryClient.invalidateQueries({ queryKey: ['all-role-permissions'] });
       setChanges({});
       toast.success('Permissões atualizadas com sucesso');
     },
