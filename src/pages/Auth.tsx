@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, Mail, Lock, User, Loader2, Eye, EyeOff, Fingerprint } from 'lucide-react';
+import { Package, Mail, Lock, User, Loader2, Eye, EyeOff, Fingerprint, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '@/hooks/useAuth';
 import { useWebAuthn } from '@/hooks/useWebAuthn';
+import { useAccountLockout } from '@/hooks/useAccountLockout';
 import { PasswordStrengthIndicator } from '@/components/security/PasswordStrengthIndicator';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -38,11 +40,13 @@ const Auth = () => {
   const navigate = useNavigate();
   const { user, loading, signIn, signUp } = useAuth();
   const { isSupported, isLoading: isPasskeyLoading, authenticateWithPasskey } = useWebAuthn();
+  const { isLocked, countdown, formatCountdown, checkLockout, recordFailedAttempt, clearLockout } = useAccountLockout();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [passkeyEmail, setPasskeyEmail] = useState('');
   const [isPasswordLeaked, setIsPasswordLeaked] = useState(false);
+  const [remainingAttempts, setRemainingAttempts] = useState<number | null>(null);
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -61,9 +65,25 @@ const Auth = () => {
     }
   }, [user, loading, navigate]);
 
+  // Check lockout status when email changes
+  useEffect(() => {
+    if (loginEmail && loginEmail.includes('@')) {
+      const timeout = setTimeout(() => {
+        checkLockout(loginEmail);
+      }, 500);
+      return () => clearTimeout(timeout);
+    }
+  }, [loginEmail, checkLockout]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+
+    // Check if account is locked
+    if (isLocked) {
+      toast.error(`Conta temporariamente bloqueada. Aguarde ${formatCountdown(countdown)}`);
+      return;
+    }
 
     // Validate
     const result = loginSchema.safeParse({ email: loginEmail, password: loginPassword });
@@ -83,12 +103,24 @@ const Auth = () => {
     setIsSubmitting(false);
 
     if (error) {
-      if (error.message.includes('Invalid login credentials')) {
-        toast.error('Email ou senha incorretos');
+      // Record failed attempt
+      const lockoutResult = await recordFailedAttempt(loginEmail);
+      
+      if (lockoutResult.locked) {
+        toast.error(`Muitas tentativas falhadas. Conta bloqueada por ${lockoutResult.lockoutMinutes} minuto(s).`);
+        setRemainingAttempts(null);
       } else {
-        toast.error(error.message);
+        if (error.message.includes('Invalid login credentials')) {
+          toast.error(`Email ou senha incorretos. ${lockoutResult.remainingAttempts} tentativa(s) restante(s).`);
+        } else {
+          toast.error(error.message);
+        }
+        setRemainingAttempts(lockoutResult.remainingAttempts ?? null);
       }
     } else {
+      // Clear lockout on successful login
+      await clearLockout(loginEmail);
+      setRemainingAttempts(null);
       toast.success('Login realizado com sucesso!');
       navigate('/');
     }
@@ -173,6 +205,28 @@ const Auth = () => {
             <CardContent>
               {/* Login Tab */}
               <TabsContent value="login" className="mt-0">
+                {/* Lockout Alert */}
+                {isLocked && (
+                  <Alert variant="destructive" className="mb-4">
+                    <AlertTriangle className="h-4 w-4" />
+                    <AlertDescription>
+                      Conta temporariamente bloqueada devido a múltiplas tentativas falhadas.
+                      <br />
+                      <span className="font-mono font-bold text-lg">{formatCountdown(countdown)}</span>
+                    </AlertDescription>
+                  </Alert>
+                )}
+
+                {/* Remaining attempts warning */}
+                {!isLocked && remainingAttempts !== null && remainingAttempts <= 2 && (
+                  <Alert variant="destructive" className="mb-4 bg-warning/10 border-warning text-warning-foreground">
+                    <AlertTriangle className="h-4 w-4 text-warning" />
+                    <AlertDescription className="text-warning">
+                      Atenção: {remainingAttempts} tentativa(s) restante(s) antes do bloqueio.
+                    </AlertDescription>
+                  </Alert>
+                )}
+
                 <form onSubmit={handleLogin} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="login-email">Email</Label>
@@ -219,7 +273,7 @@ const Auth = () => {
                     )}
                   </div>
 
-                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    <Button type="submit" className="w-full" disabled={isSubmitting || isLocked}>
                       {isSubmitting ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />

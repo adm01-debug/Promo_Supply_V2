@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_lockouts: {
+        Row: {
+          created_at: string
+          email: string
+          failed_attempts: number
+          id: string
+          last_failed_attempt: string | null
+          locked_until: string | null
+          lockout_count: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          failed_attempts?: number
+          id?: string
+          last_failed_attempt?: string | null
+          locked_until?: string | null
+          lockout_count?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          failed_attempts?: number
+          id?: string
+          last_failed_attempt?: string | null
+          locked_until?: string | null
+          lockout_count?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       active_sessions: {
         Row: {
           created_at: string
@@ -1659,6 +1692,7 @@ export type Database = {
     }
     Functions: {
       cleanup_expired_challenges: { Args: never; Returns: undefined }
+      clear_login_lockout: { Args: { _email: string }; Returns: undefined }
       generate_sequential_number: {
         Args: { prefix: string; table_name: string }
         Returns: string
@@ -1682,6 +1716,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_account_locked: { Args: { _email: string }; Returns: Json }
       is_ip_blocked: { Args: { _ip_address: string }; Returns: boolean }
       is_ip_whitelisted: { Args: { _ip_address: string }; Returns: boolean }
       log_login_attempt: {
@@ -1706,6 +1741,7 @@ export type Database = {
         }
         Returns: string
       }
+      record_failed_login: { Args: { _email: string }; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "coordinator" | "buyer" | "finance" | "viewer"
