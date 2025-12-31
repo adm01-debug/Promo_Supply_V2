@@ -982,6 +982,57 @@ export type Database = {
           },
         ]
       }
+      password_reset_requests: {
+        Row: {
+          admin_notes: string | null
+          completed_at: string | null
+          email: string
+          expires_at: string
+          id: string
+          ip_address: string | null
+          reason: string | null
+          requested_at: string
+          reset_token: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          admin_notes?: string | null
+          completed_at?: string | null
+          email: string
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          reason?: string | null
+          requested_at?: string
+          reset_token?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          admin_notes?: string | null
+          completed_at?: string | null
+          email?: string
+          expires_at?: string
+          id?: string
+          ip_address?: string | null
+          reason?: string | null
+          requested_at?: string
+          reset_token?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       password_reset_tokens: {
         Row: {
           created_at: string

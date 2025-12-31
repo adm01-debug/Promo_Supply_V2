@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe } from 'lucide-react';
+import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe, KeyRound } from 'lucide-react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +8,7 @@ import { MFASettings } from '@/components/security/MFASettings';
 import { BlockedIPsPanel } from '@/components/security/BlockedIPsPanel';
 import { IPWhitelistPanel } from '@/components/security/IPWhitelistPanel';
 import { GeoWhitelistPanel } from '@/components/security/GeoWhitelistPanel';
+import { PasswordResetRequestsPanel } from '@/components/security/PasswordResetRequestsPanel';
 import { ActiveSessionsPanel } from '@/components/security/ActiveSessionsPanel';
 import { SecurityLogsPanel } from '@/components/security/SecurityLogsPanel';
 import { LoginAttemptsPanel } from '@/components/security/LoginAttemptsPanel';
@@ -112,6 +113,10 @@ const Seguranca = () => {
             <TabsTrigger value="sessions" className="flex items-center gap-2">
               <Monitor className="w-4 h-4" />
               <span className="hidden sm:inline">Sessões</span>
+            </TabsTrigger>
+            <TabsTrigger value="password-reset" className="flex items-center gap-2">
+              <KeyRound className="w-4 h-4" />
+              <span className="hidden sm:inline">Reset Senha</span>
             </TabsTrigger>
             <PermissionGate module="security" action="manage_ips" fallback={null}>
               <TabsTrigger value="blocked" className="flex items-center gap-2">
@@ -218,6 +223,11 @@ const Seguranca = () => {
           {/* Sessions Tab */}
           <TabsContent value="sessions">
             <ActiveSessionsPanel />
+          </TabsContent>
+
+          {/* Password Reset Requests Tab */}
+          <TabsContent value="password-reset">
+            <PasswordResetRequestsPanel />
           </TabsContent>
 
           {/* Blocked IPs Tab */}
