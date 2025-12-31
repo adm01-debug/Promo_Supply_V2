@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint } from 'lucide-react';
+import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe } from 'lucide-react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { MFASettings } from '@/components/security/MFASettings';
 import { BlockedIPsPanel } from '@/components/security/BlockedIPsPanel';
 import { IPWhitelistPanel } from '@/components/security/IPWhitelistPanel';
+import { GeoWhitelistPanel } from '@/components/security/GeoWhitelistPanel';
 import { ActiveSessionsPanel } from '@/components/security/ActiveSessionsPanel';
 import { SecurityLogsPanel } from '@/components/security/SecurityLogsPanel';
 import { LoginAttemptsPanel } from '@/components/security/LoginAttemptsPanel';
@@ -119,7 +120,11 @@ const Seguranca = () => {
               </TabsTrigger>
               <TabsTrigger value="whitelist" className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4" />
-                <span className="hidden sm:inline">Whitelist</span>
+                <span className="hidden sm:inline">Whitelist IP</span>
+              </TabsTrigger>
+              <TabsTrigger value="geo" className="flex items-center gap-2">
+                <Globe className="w-4 h-4" />
+                <span className="hidden sm:inline">Geo</span>
               </TabsTrigger>
             </PermissionGate>
             <PermissionGate module="security" action="view_logs" fallback={null}>
@@ -223,6 +228,11 @@ const Seguranca = () => {
           {/* Whitelist Tab */}
           <TabsContent value="whitelist">
             <IPWhitelistPanel />
+          </TabsContent>
+
+          {/* Geo Whitelist Tab */}
+          <TabsContent value="geo">
+            <GeoWhitelistPanel />
           </TabsContent>
 
           {/* Login Attempts Tab */}
