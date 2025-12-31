@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
 import { useWebAuthn } from '@/hooks/useWebAuthn';
+import { PasswordStrengthIndicator } from '@/components/security/PasswordStrengthIndicator';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -327,6 +328,7 @@ const Auth = () => {
                     {errors.password && (
                       <p className="text-xs text-destructive">{errors.password}</p>
                     )}
+                    <PasswordStrengthIndicator password={signupPassword} />
                   </div>
 
                   <div className="space-y-2">
