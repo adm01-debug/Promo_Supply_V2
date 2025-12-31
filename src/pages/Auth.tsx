@@ -16,13 +16,18 @@ import { z } from 'zod';
 // Validation schemas
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
+  password: z.string().min(1, 'Senha é obrigatória'),
 });
 
 const signupSchema = z.object({
   fullName: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
   email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'Senha deve ter pelo menos 6 caracteres'),
+  password: z.string()
+    .min(8, 'Senha deve ter pelo menos 8 caracteres')
+    .regex(/[A-Z]/, 'Senha deve ter pelo menos uma letra maiúscula')
+    .regex(/[a-z]/, 'Senha deve ter pelo menos uma letra minúscula')
+    .regex(/[0-9]/, 'Senha deve ter pelo menos um número')
+    .regex(/[!@#$%^&*(),.?":{}|<>\-_=+\[\]\\;'/`~]/, 'Senha deve ter pelo menos um caractere especial'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'As senhas não coincidem',
@@ -37,6 +42,7 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [passkeyEmail, setPasskeyEmail] = useState('');
+  const [isPasswordLeaked, setIsPasswordLeaked] = useState(false);
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -91,6 +97,12 @@ const Auth = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+
+    // Check if password was leaked
+    if (isPasswordLeaked) {
+      toast.error('Esta senha foi encontrada em vazamentos de dados. Escolha outra senha.');
+      return;
+    }
 
     // Validate
     const result = signupSchema.safeParse({
@@ -328,7 +340,10 @@ const Auth = () => {
                     {errors.password && (
                       <p className="text-xs text-destructive">{errors.password}</p>
                     )}
-                    <PasswordStrengthIndicator password={signupPassword} />
+                    <PasswordStrengthIndicator 
+                      password={signupPassword} 
+                      onStrengthChange={(_, leaked) => setIsPasswordLeaked(leaked)}
+                    />
                   </div>
 
                   <div className="space-y-2">
