@@ -14,7 +14,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 type RolePermissions = Record<string, Record<string, boolean>>;
 
 export const PermissionMatrix = () => {
-  const { permissions, groupedPermissions, isLoading } = usePermissions();
+  const { permissions, userPermissions, groupedPermissions, isLoading } = usePermissions();
   const { isAdmin } = useAuth();
   const queryClient = useQueryClient();
   const [changes, setChanges] = useState<RolePermissions>({});
@@ -43,7 +43,7 @@ export const PermissionMatrix = () => {
     }
 
     // Check database
-    const rolePerms = rolePermissions?.userPermissions?.filter(
+    const rolePerms = userPermissions?.filter(
       rp => rp.permission_id === permissionId
     );
     return !!rolePerms?.length;

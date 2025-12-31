@@ -24,6 +24,7 @@ import BuyerPerformanceDashboard from "./pages/BuyerPerformanceDashboard";
 import HistoricoCompras from "./pages/HistoricoCompras";
 import Contratos from "./pages/Contratos";
 import Auth from "./pages/Auth";
+import Seguranca from "./pages/Seguranca";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -60,6 +61,7 @@ const App = () => (
             <Route path="/historico-compras" element={<ProtectedRoute><HistoricoCompras /></ProtectedRoute>} />
             <Route path="/contratos" element={<ProtectedRoute><Contratos /></ProtectedRoute>} />
             <Route path="/auditoria" element={<ProtectedRoute requiredRole="admin"><Auditoria /></ProtectedRoute>} />
+            <Route path="/seguranca" element={<ProtectedRoute><Seguranca /></ProtectedRoute>} />
             
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />

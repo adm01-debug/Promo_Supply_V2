@@ -17,7 +17,8 @@ import {
   TrendingUp,
   Award,
   ShoppingCart,
-  FileSignature
+  FileSignature,
+  Shield
 } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -120,6 +121,12 @@ const menuItems = [
     icon: History, 
     href: "/auditoria",
     description: "Trilha de ações"
+  },
+  { 
+    title: "Segurança", 
+    icon: Shield, 
+    href: "/seguranca",
+    description: "MFA e controles"
   },
 ];
 
