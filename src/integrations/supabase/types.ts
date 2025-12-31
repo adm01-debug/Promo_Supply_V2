@@ -50,6 +50,33 @@ export type Database = {
         }
         Relationships: []
       }
+      allowed_countries: {
+        Row: {
+          added_at: string
+          added_by: string | null
+          country_code: string
+          country_name: string
+          id: string
+          is_active: boolean
+        }
+        Insert: {
+          added_at?: string
+          added_by?: string | null
+          country_code: string
+          country_name: string
+          id?: string
+          is_active?: boolean
+        }
+        Update: {
+          added_at?: string
+          added_by?: string | null
+          country_code?: string
+          country_name?: string
+          id?: string
+          is_active?: boolean
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action_type: Database["public"]["Enums"]["audit_action_type"]
@@ -98,6 +125,36 @@ export type Database = {
           user_email?: string | null
           user_id?: string | null
           user_name?: string | null
+        }
+        Relationships: []
+      }
+      blocked_countries: {
+        Row: {
+          blocked_at: string
+          blocked_by: string | null
+          country_code: string
+          country_name: string
+          id: string
+          is_active: boolean
+          reason: string | null
+        }
+        Insert: {
+          blocked_at?: string
+          blocked_by?: string | null
+          country_code: string
+          country_name: string
+          id?: string
+          is_active?: boolean
+          reason?: string | null
+        }
+        Update: {
+          blocked_at?: string
+          blocked_by?: string | null
+          country_code?: string
+          country_name?: string
+          id?: string
+          is_active?: boolean
+          reason?: string | null
         }
         Relationships: []
       }
@@ -569,6 +626,63 @@ export type Database = {
           tipo?: string
           updated_at?: string
           website?: string | null
+        }
+        Relationships: []
+      }
+      geo_access_logs: {
+        Row: {
+          blocked: boolean
+          country_code: string | null
+          country_name: string | null
+          created_at: string
+          endpoint: string | null
+          id: string
+          ip_address: string
+          user_agent: string | null
+        }
+        Insert: {
+          blocked?: boolean
+          country_code?: string | null
+          country_name?: string | null
+          created_at?: string
+          endpoint?: string | null
+          id?: string
+          ip_address: string
+          user_agent?: string | null
+        }
+        Update: {
+          blocked?: boolean
+          country_code?: string | null
+          country_name?: string | null
+          created_at?: string
+          endpoint?: string | null
+          id?: string
+          ip_address?: string
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
+      geo_settings: {
+        Row: {
+          geo_restriction_enabled: boolean
+          id: string
+          restriction_mode: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          geo_restriction_enabled?: boolean
+          id?: string
+          restriction_mode?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          geo_restriction_enabled?: boolean
+          id?: string
+          restriction_mode?: string
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
