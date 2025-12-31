@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock } from 'lucide-react';
+import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint } from 'lucide-react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +13,7 @@ import { LoginAttemptsPanel } from '@/components/security/LoginAttemptsPanel';
 import { RateLimitDashboard } from '@/components/security/RateLimitDashboard';
 import { PermissionMatrix } from '@/components/security/PermissionMatrix';
 import { PermissionGate } from '@/components/security/PermissionGate';
+import { PasskeyManager } from '@/components/security/PasskeyManager';
 import { useSecurityLogs } from '@/hooks/useSecurityLogs';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -97,8 +98,12 @@ const Seguranca = () => {
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="mfa" className="space-y-6">
+        <Tabs defaultValue="passkeys" className="space-y-6">
           <TabsList className="flex flex-wrap h-auto gap-2 bg-muted/50 p-2">
+            <TabsTrigger value="passkeys" className="flex items-center gap-2">
+              <Fingerprint className="w-4 h-4" />
+              <span className="hidden sm:inline">Passkeys</span>
+            </TabsTrigger>
             <TabsTrigger value="mfa" className="flex items-center gap-2">
               <Key className="w-4 h-4" />
               <span className="hidden sm:inline">MFA</span>
@@ -138,6 +143,11 @@ const Seguranca = () => {
               </TabsTrigger>
             )}
           </TabsList>
+
+          {/* Passkeys Tab */}
+          <TabsContent value="passkeys" className="space-y-6">
+            <PasskeyManager />
+          </TabsContent>
 
           {/* MFA Tab */}
           <TabsContent value="mfa" className="space-y-6">

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package, Mail, Lock, User, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Package, Mail, Lock, User, Loader2, Eye, EyeOff, Fingerprint } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
+import { useWebAuthn } from '@/hooks/useWebAuthn';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -29,9 +31,11 @@ const signupSchema = z.object({
 const Auth = () => {
   const navigate = useNavigate();
   const { user, loading, signIn, signUp } = useAuth();
+  const { isSupported, isLoading: isPasskeyLoading, authenticateWithPasskey } = useWebAuthn();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [passkeyEmail, setPasskeyEmail] = useState('');
 
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -202,17 +206,60 @@ const Auth = () => {
                     )}
                   </div>
 
-                  <Button type="submit" className="w-full" disabled={isSubmitting}>
-                    {isSubmitting ? (
+                    <Button type="submit" className="w-full" disabled={isSubmitting}>
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Entrando...
+                        </>
+                      ) : (
+                        'Entrar'
+                      )}
+                    </Button>
+
+                    {isSupported && (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Entrando...
+                        <div className="relative my-4">
+                          <Separator />
+                          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-2 text-xs text-muted-foreground">
+                            ou
+                          </span>
+                        </div>
+
+                        <div className="space-y-3">
+                          <div className="space-y-2">
+                            <Label htmlFor="passkey-email">Email para Passkey</Label>
+                            <Input
+                              id="passkey-email"
+                              type="email"
+                              placeholder="seu@email.com"
+                              value={passkeyEmail}
+                              onChange={(e) => setPasskeyEmail(e.target.value)}
+                            />
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="w-full"
+                            disabled={isPasskeyLoading || !passkeyEmail}
+                            onClick={async () => {
+                              const result = await authenticateWithPasskey(passkeyEmail);
+                              if (result.success) {
+                                navigate('/');
+                              }
+                            }}
+                          >
+                            {isPasskeyLoading ? (
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                              <Fingerprint className="mr-2 h-4 w-4" />
+                            )}
+                            Entrar com Passkey
+                          </Button>
+                        </div>
                       </>
-                    ) : (
-                      'Entrar'
                     )}
-                  </Button>
-                </form>
+                  </form>
               </TabsContent>
 
               {/* Signup Tab */}
