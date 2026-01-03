@@ -8,6 +8,7 @@ import { SupplierChat } from "@/components/compras/SupplierChat";
 import { GlobalSearch } from "@/components/compras/GlobalSearch";
 import { KeyboardShortcutsDialog } from "@/components/compras/KeyboardShortcutsDialog";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 import { Menu, X, Keyboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -80,6 +81,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
             {/* Right Actions */}
             <div className="flex items-center gap-2">
+              {/* Theme Toggle */}
+              <ThemeToggle />
+              
               {/* Keyboard shortcuts button */}
               <Button
                 variant="ghost"

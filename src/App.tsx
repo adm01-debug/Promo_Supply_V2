@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
+import { ThemeProvider } from "next-themes";
 import ComprasDashboard from "./pages/ComprasDashboard";
 import Cotacao from "./pages/Cotacao";
 import Solicitacoes from "./pages/Solicitacoes";
@@ -30,11 +31,12 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-  <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <PWAInstallPrompt />
+  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <PWAInstallPrompt />
       <BrowserRouter>
         <AuthProvider>
           <Routes>
@@ -67,9 +69,10 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
 );
 
 export default App;

@@ -1,17 +1,10 @@
 /**
- * FINANCE HUB - Hook para Filtros Salvos
- * 
- * @module hooks/useSavedFilters
- * @description Gerencia filtros salvos por usuário e entidade
+ * Hook para Filtros Salvos
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-
-// ============================================
-// TIPOS
-// ============================================
 
 export interface SavedFilter {
   id: string;
@@ -27,63 +20,78 @@ interface SaveFilterInput {
   is_default?: boolean;
 }
 
-// ============================================
-// HOOK
-// ============================================
-
+// Note: This hook uses a 'saved_filters' table that may need to be created
+// For now, we'll use dashboard_filter_favorites table as a fallback
 export function useSavedFilters(entityType: string) {
   const queryClient = useQueryClient();
   const queryKey = ['saved-filters', entityType];
 
-  // Listar filtros salvos
   const { data: filters = [], isLoading } = useQuery({
     queryKey,
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return [];
 
+      // Use dashboard_filter_favorites as the table
       const { data, error } = await supabase
-        .from('saved_filters')
+        .from('dashboard_filter_favorites')
         .select('*')
         .eq('user_id', user.id)
-        .eq('entity_type', entityType)
         .order('created_at', { ascending: false });
-      
-      if (error) throw error;
-      return data as SavedFilter[];
+
+      if (error) {
+        console.error('Error fetching filters:', error);
+        return [];
+      }
+
+      // Map to SavedFilter format
+      return (data || []).map((item) => ({
+        id: item.id,
+        name: item.name,
+        filters: {
+          period: item.period_filter,
+          supplier: item.supplier_filter,
+          category: item.category_filter,
+          showComparison: item.show_comparison,
+        },
+        is_default: item.is_default ?? false,
+        created_at: item.created_at,
+      })) as SavedFilter[];
     },
   });
 
-  // Obter filtro padrão
-  const defaultFilter = filters.find(f => f.is_default);
+  const defaultFilter = filters.find((f) => f.is_default);
 
-  // Salvar novo filtro
   const saveMutation = useMutation({
     mutationFn: async (input: SaveFilterInput) => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
-      // Se marcado como padrão, remove padrão dos outros
       if (input.is_default) {
         await supabase
-          .from('saved_filters')
+          .from('dashboard_filter_favorites')
           .update({ is_default: false })
-          .eq('user_id', user.id)
-          .eq('entity_type', entityType);
+          .eq('user_id', user.id);
       }
 
       const { data, error } = await supabase
-        .from('saved_filters')
+        .from('dashboard_filter_favorites')
         .insert({
           user_id: user.id,
-          entity_type: entityType,
           name: input.name,
-          filters: input.filters,
+          period_filter: (input.filters.period as string) || null,
+          supplier_filter: (input.filters.supplier as string) || null,
+          category_filter: (input.filters.category as string) || null,
+          show_comparison: (input.filters.showComparison as boolean) || null,
           is_default: input.is_default ?? false,
         })
         .select()
         .single();
-      
+
       if (error) throw error;
       return data;
     },
@@ -91,19 +99,21 @@ export function useSavedFilters(entityType: string) {
       queryClient.invalidateQueries({ queryKey });
       toast.success('Filtro salvo com sucesso!');
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error(`Erro ao salvar filtro: ${error.message}`);
     },
   });
 
-  // Atualizar filtro
   const updateMutation = useMutation({
     mutationFn: async ({ id, ...input }: SaveFilterInput & { id: string }) => {
       const { error } = await supabase
-        .from('saved_filters')
-        .update(input)
+        .from('dashboard_filter_favorites')
+        .update({
+          name: input.name,
+          is_default: input.is_default,
+        })
         .eq('id', id);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -112,44 +122,38 @@ export function useSavedFilters(entityType: string) {
     },
   });
 
-  // Deletar filtro
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from('saved_filters')
-        .delete()
-        .eq('id', id);
-      
+      const { error } = await supabase.from('dashboard_filter_favorites').delete().eq('id', id);
+
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
       toast.success('Filtro removido');
     },
-    onError: (error) => {
+    onError: (error: Error) => {
       toast.error(`Erro ao remover: ${error.message}`);
     },
   });
 
-  // Definir como padrão
   const setDefaultMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) throw new Error('Usuário não autenticado');
 
-      // Remove padrão de todos
       await supabase
-        .from('saved_filters')
+        .from('dashboard_filter_favorites')
         .update({ is_default: false })
-        .eq('user_id', user.id)
-        .eq('entity_type', entityType);
-      
-      // Define novo padrão
+        .eq('user_id', user.id);
+
       const { error } = await supabase
-        .from('saved_filters')
+        .from('dashboard_filter_favorites')
         .update({ is_default: true })
         .eq('id', id);
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
