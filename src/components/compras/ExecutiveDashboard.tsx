@@ -463,7 +463,7 @@ export const ExecutiveDashboard = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-tour="dashboard-content">
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
@@ -668,7 +668,7 @@ export const ExecutiveDashboard = () => {
       )}
 
       {/* Main KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" data-tour="kpi-cards">
         <MetricCard
           title="Spend Total"
           value={executiveMetrics.totalSpend.value}
