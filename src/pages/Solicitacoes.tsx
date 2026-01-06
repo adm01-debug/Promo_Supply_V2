@@ -1,17 +1,27 @@
 import { useState, useCallback, useMemo } from "react";
 import { 
-  Search, 
   ClipboardList,
   LayoutGrid,
   List,
-  Loader2
+  Plus
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Skeleton } from "@/components/ui/skeleton";
+import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
+import { SolicitacaoKanban } from "@/components/compras/SolicitacaoKanban";
+import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
+import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
+import { BulkActionsBar } from "@/components/compras/BulkActionsBar";
+import { MainLayout } from "@/components/compras/MainLayout";
+import { PageHeader, PageHeaderStats } from "@/components/ui/page-header";
+import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
+import { EnhancedSearch } from "@/components/ui/enhanced-search";
+import { StatusIndicator, PriorityIndicator } from "@/components/ui/status-indicators";
+import { KanbanSkeleton } from "@/components/ui/contextual-skeletons";
+import { useSolicitacoes, type Solicitacao } from "@/hooks/useSolicitacoes";
+import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -19,14 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
-import { SolicitacaoKanban } from "@/components/compras/SolicitacaoKanban";
-import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
-import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
-import { BulkActionsBar } from "@/components/compras/BulkActionsBar";
-import { MainLayout } from "@/components/compras/MainLayout";
-import { useSolicitacoes, type Solicitacao } from "@/hooks/useSolicitacoes";
-import { toast } from "sonner";
 
 // Map DB status to legacy status for UI compatibility
 const mapDbStatusToLegacy = (status: Solicitacao['status']): string => {
@@ -98,17 +100,14 @@ const Solicitacoes = () => {
 
   const filteredSolicitacoes = useMemo(() => {
     return adaptedSolicitacoes.filter(s => {
-      // Text search (already filtered server-side, but double check)
       const matchesSearch = !searchTerm || 
         s.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.empresa.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.produto.toLowerCase().includes(searchTerm.toLowerCase());
       
-      // Basic filters
       const matchesStatus = statusFilter === "todas" || s.status === statusFilter;
       const matchesTipo = tipoFilter === "todos" || s.tipo === tipoFilter;
 
-      // Advanced filters
       const solicitacaoDate = new Date(s.prazoEntrega);
       const matchesDateFrom = !advancedFilters.dateRange.from || 
         solicitacaoDate >= new Date(advancedFilters.dateRange.from);
@@ -141,20 +140,40 @@ const Solicitacoes = () => {
     EM_TRANSITO: filteredSolicitacoes.filter(s => s.status === 'EM_TRANSITO'),
   }), [filteredSolicitacoes]);
 
-  const statusConfig: Record<string, { label: string; color: string }> = {
-    AGUARDANDO_COTACAO: { label: 'Aguardando Cotação', color: 'bg-emerald-500' },
-    EM_COTACAO: { label: 'Em Cotação', color: 'bg-yellow-500' },
-    FORNECEDOR_SELECIONADO: { label: 'Fornecedor Selecionado', color: 'bg-blue-500' },
-    AGUARDANDO_PAGAMENTO: { label: 'Aguardando Pagamento', color: 'bg-orange-500' },
-    PAGO: { label: 'Pago', color: 'bg-cyan-500' },
-    EM_TRANSITO: { label: 'Em Trânsito', color: 'bg-purple-500' },
+  const statusConfig: Record<string, { label: string; color: string; indicatorStatus: "pending" | "processing" | "approved" | "completed" | "warning" | "info" }> = {
+    AGUARDANDO_COTACAO: { label: 'Aguardando Cotação', color: 'bg-emerald-500', indicatorStatus: 'pending' },
+    EM_COTACAO: { label: 'Em Cotação', color: 'bg-yellow-500', indicatorStatus: 'warning' },
+    FORNECEDOR_SELECIONADO: { label: 'Fornecedor Selecionado', color: 'bg-blue-500', indicatorStatus: 'info' },
+    AGUARDANDO_PAGAMENTO: { label: 'Aguardando Pagamento', color: 'bg-orange-500', indicatorStatus: 'processing' },
+    PAGO: { label: 'Pago', color: 'bg-cyan-500', indicatorStatus: 'completed' },
+    EM_TRANSITO: { label: 'Em Trânsito', color: 'bg-purple-500', indicatorStatus: 'approved' },
   };
+
+  // Calculate stats for header
+  const stats = useMemo(() => {
+    const pending = groupedByStatus.AGUARDANDO_COTACAO.length + groupedByStatus.EM_COTACAO.length;
+    const inProgress = groupedByStatus.FORNECEDOR_SELECIONADO.length + groupedByStatus.AGUARDANDO_PAGAMENTO.length;
+    const completed = groupedByStatus.PAGO.length + groupedByStatus.EM_TRANSITO.length;
+    const totalValue = filteredSolicitacoes.reduce((acc, s) => acc + (s.valorTotal || 0), 0);
+
+    return [
+      { label: 'Total', value: filteredSolicitacoes.length },
+      { label: 'Pendentes', value: pending, trend: pending > 0 ? { value: 12, direction: 'up' as const } : undefined },
+      { label: 'Em Andamento', value: inProgress },
+      { label: 'Valor Total', value: `R$ ${totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}` },
+    ];
+  }, [groupedByStatus, filteredSolicitacoes]);
 
   // Handle status change from drag-and-drop
   const handleStatusChange = useCallback(async (id: string, newLegacyStatus: string) => {
     const dbStatus = mapLegacyStatusToDb(newLegacyStatus);
     await updateStatus(id, dbStatus);
   }, [updateStatus]);
+
+  // Handle search
+  const handleSearch = useCallback((query: string) => {
+    setSearchTerm(query);
+  }, []);
 
   // Selection handlers
   const handleSelectItem = useCallback((id: string, selected: boolean) => {
@@ -216,21 +235,17 @@ const Solicitacoes = () => {
   const isAllSelected = filteredSolicitacoes.length > 0 && 
     filteredSolicitacoes.every(s => selectedIds.has(s.id));
 
-  // Loading skeleton
+  // Loading skeleton using contextual skeleton
   if (loading) {
     return (
       <MainLayout>
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-10 w-32" />
-          </div>
-          <Skeleton className="h-16 w-full" />
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[...Array(6)].map((_, i) => (
-              <Skeleton key={i} className="h-64 w-full" />
-            ))}
-          </div>
+          <PageHeader
+            title="Solicitações"
+            description="Carregando solicitações de compra..."
+            icon={ClipboardList}
+          />
+          <KanbanSkeleton columns={6} />
         </div>
       </MainLayout>
     );
@@ -239,46 +254,42 @@ const Solicitacoes = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
-        {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Solicitações</h1>
-            <p className="text-sm text-muted-foreground">
-              Gerencie todas as solicitações de compra ({solicitacoes.length} registros)
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            {/* View Mode Toggle */}
-            <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as 'list' | 'kanban')}>
-              <TabsList className="h-9">
-                <TabsTrigger value="kanban" className="px-3">
-                  <LayoutGrid className="w-4 h-4 mr-1" />
-                  Kanban
-                </TabsTrigger>
-                <TabsTrigger value="list" className="px-3">
-                  <List className="w-4 h-4 mr-1" />
-                  Lista
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-            <NovaSolicitacaoModal onSuccess={refetch} />
-          </div>
-        </div>
+        {/* Page Header com novo componente */}
+        <PageHeader
+          title="Solicitações de Compra"
+          description="Gerencie todo o ciclo de vida das suas solicitações"
+          icon={ClipboardList}
+          badge={solicitacoes.length > 0 ? { label: `${solicitacoes.length} registros`, variant: 'secondary' } : undefined}
+          breadcrumbs={[
+            { label: 'Dashboard', href: '/compras' },
+            { label: 'Solicitações' }
+          ]}
+          actions={[
+            {
+              label: viewMode === 'kanban' ? 'Lista' : 'Kanban',
+              icon: viewMode === 'kanban' ? List : LayoutGrid,
+              variant: 'outline',
+              onClick: () => setViewMode(prev => prev === 'kanban' ? 'list' : 'kanban')
+            }
+          ]}
+        />
 
-        {/* Busca e Filtros */}
+        {/* Stats Row */}
+        <PageHeaderStats stats={stats} />
+
+        {/* Enhanced Search and Filters */}
         <Card className="p-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Buscar pedido, empresa, produto..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-9"
+          <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex-1">
+              <EnhancedSearch
+                placeholder="Buscar por produto, empresa, ID..."
+                onSearch={handleSearch}
+                recentSearches={['Notebook Dell', 'Material de escritório']}
+                trendingSearches={['Equipamentos TI', 'Suprimentos']}
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-[180px] bg-background">
                   <SelectValue placeholder="Status" />
@@ -311,11 +322,13 @@ const Solicitacoes = () => {
                 onFiltersChange={setAdvancedFilters}
                 onApply={() => {}}
               />
+
+              <NovaSolicitacaoModal onSuccess={refetch} />
             </div>
           </div>
         </Card>
 
-        {/* Contadores por Status (only in list view) */}
+        {/* Status Counters with new StatusIndicator (only in list view) */}
         {viewMode === 'list' && (
           <div className="flex flex-wrap gap-2">
             {Object.entries(statusConfig).map(([key, config]) => {
@@ -323,22 +336,24 @@ const Solicitacoes = () => {
               if (count === 0 && statusFilter !== "todas" && statusFilter !== key) return null;
               
               return (
-                <Badge
+                <div
                   key={key}
-                  variant={statusFilter === key ? "default" : "outline"}
-                  className="cursor-pointer"
                   onClick={() => setStatusFilter(statusFilter === key ? "todas" : key)}
+                  className="cursor-pointer"
                 >
-                  <span className={`w-2 h-2 rounded-full ${config.color} mr-2`} />
-                  {config.label} ({count})
-                </Badge>
+                  <StatusIndicator 
+                    status={config.indicatorStatus}
+                    label={`${config.label} (${count})`}
+                    showPulse={statusFilter === key}
+                  />
+                </div>
               );
             })}
           </div>
         )}
 
         {/* Kanban View */}
-        {viewMode === 'kanban' && (
+        {viewMode === 'kanban' && filteredSolicitacoes.length > 0 && (
           <div className="overflow-x-auto -mx-4 px-4">
             <SolicitacaoKanban 
               solicitacoes={filteredSolicitacoes}
@@ -351,7 +366,7 @@ const Solicitacoes = () => {
         )}
 
         {/* List View */}
-        {viewMode === 'list' && (
+        {viewMode === 'list' && filteredSolicitacoes.length > 0 && (
           <div className="space-y-6">
             {Object.entries(groupedByStatus).map(([status, items]) => {
               if (items.length === 0) return null;
@@ -390,17 +405,22 @@ const Solicitacoes = () => {
           </div>
         )}
 
+        {/* Empty State with IllustratedEmptyState */}
         {filteredSolicitacoes.length === 0 && !loading && (
-          <Card className="p-8 text-center">
-            <ClipboardList className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="font-semibold text-foreground mb-2">Nenhuma solicitação encontrada</h3>
-            <p className="text-sm text-muted-foreground">
-              {solicitacoes.length === 0 
-                ? "Crie sua primeira solicitação de compra"
-                : "Tente ajustar os filtros ou criar uma nova solicitação"
-              }
-            </p>
-          </Card>
+          <IllustratedEmptyState
+            type={solicitacoes.length === 0 ? "requests" : "search"}
+            title={solicitacoes.length === 0 ? "Nenhuma solicitação cadastrada" : "Nenhum resultado encontrado"}
+            description={
+              solicitacoes.length === 0 
+                ? "Crie sua primeira solicitação de compra para começar a gerenciar suas aquisições."
+                : "Tente ajustar os filtros ou buscar por outros termos."
+            }
+            action={
+              solicitacoes.length === 0 
+                ? undefined
+                : { label: "Limpar Filtros", onClick: () => { setSearchTerm(''); setStatusFilter('todas'); setTipoFilter('todos'); }, variant: "outline" }
+            }
+          />
         )}
 
         {/* Bulk Actions Bar */}
