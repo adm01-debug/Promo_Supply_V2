@@ -12,6 +12,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useWebAuthn } from '@/hooks/useWebAuthn';
 import { useAccountLockout } from '@/hooks/useAccountLockout';
 import { PasswordStrengthIndicator } from '@/components/security/PasswordStrengthIndicator';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -180,11 +181,16 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4 relative">
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
+      
+      <div className="w-full max-w-md animate-fade-in">
         {/* Logo */}
         <div className="flex items-center justify-center gap-3 mb-8">
-          <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center shadow-lg">
             <Package className="w-6 h-6 text-primary-foreground" />
           </div>
           <div>

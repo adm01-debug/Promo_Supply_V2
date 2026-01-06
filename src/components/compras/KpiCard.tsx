@@ -64,7 +64,7 @@ export const KpiCard = ({ title, value, icon: Icon, color, subtitle, highlight }
   
   return (
     <Card className={cn(
-      "p-4 border transition-all duration-200 hover:shadow-md",
+      "p-4 border card-interactive stagger-item group",
       colors.border,
       highlight && "ring-2 ring-red-500/50 animate-pulse"
     )}>
@@ -73,14 +73,20 @@ export const KpiCard = ({ title, value, icon: Icon, color, subtitle, highlight }
           <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             {title}
           </p>
-          <p className={cn("text-2xl font-bold", colors.text)}>
+          <p className={cn(
+            "text-2xl font-bold transition-transform duration-200 group-hover:scale-105 origin-left",
+            colors.text
+          )}>
             {value}
           </p>
           {subtitle && (
             <p className="text-xs text-muted-foreground">{subtitle}</p>
           )}
         </div>
-        <div className={cn("p-2 rounded-lg", colors.bg)}>
+        <div className={cn(
+          "p-2 rounded-lg transition-all duration-300 group-hover:scale-110 group-hover:rotate-3",
+          colors.bg
+        )}>
           <Icon className={cn("w-5 h-5", colors.text)} />
         </div>
       </div>

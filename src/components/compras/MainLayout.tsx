@@ -9,6 +9,7 @@ import { GlobalSearch } from "@/components/compras/GlobalSearch";
 import { KeyboardShortcutsDialog } from "@/components/compras/KeyboardShortcutsDialog";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { cn } from "@/lib/utils";
 import { Menu, X, Keyboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -107,7 +108,8 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         </header>
 
         {/* Page Content */}
-        <main className="p-4 md:p-6">
+        <main className="p-4 md:p-6 animate-fade-in">
+          <Breadcrumbs className="mb-4" />
           {children}
         </main>
       </div>
