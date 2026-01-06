@@ -200,31 +200,25 @@ export const dashboardTourSteps: TourStep[] = [
   {
     target: "[data-tour='sidebar']",
     title: "Menu de Navegação",
-    content: "Acesse todas as funcionalidades do sistema através do menu lateral. Os itens são organizados por categoria.",
+    content: "Acesse todas as funcionalidades do sistema através do menu lateral. Os itens são organizados por categoria para facilitar a navegação.",
     position: "right",
   },
   {
-    target: "[data-tour='search']",
+    target: "[data-tour='global-search']",
     title: "Busca Global",
-    content: "Encontre rapidamente solicitações, fornecedores e pedidos usando a busca global. Use Ctrl+K para abrir.",
+    content: "Encontre rapidamente solicitações, fornecedores e pedidos usando a busca global. Use Ctrl+K para abrir a qualquer momento.",
+    position: "bottom",
+  },
+  {
+    target: "[data-tour='kpi-cards']",
+    title: "Indicadores de Performance",
+    content: "Monitore os principais KPIs do setor de compras em tempo real. Clique em cada card para ver detalhes e drill-down.",
     position: "bottom",
   },
   {
     target: "[data-tour='notifications']",
     title: "Central de Notificações",
-    content: "Acompanhe alertas importantes, aprovações pendentes e atualizações de pedidos em tempo real.",
-    position: "bottom",
-  },
-  {
-    target: "[data-tour='kpis']",
-    title: "Indicadores Chave",
-    content: "Monitore os principais KPIs do setor de compras. Clique em cada card para ver detalhes.",
-    position: "bottom",
-  },
-  {
-    target: "[data-tour='theme']",
-    title: "Tema Claro/Escuro",
-    content: "Alterne entre os modos claro e escuro de acordo com sua preferência.",
-    position: "bottom",
+    content: "Acompanhe alertas importantes, aprovações pendentes e atualizações de pedidos. Nunca perca uma ação crítica!",
+    position: "left",
   },
 ];

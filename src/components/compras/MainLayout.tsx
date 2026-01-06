@@ -83,7 +83,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
             </Button>
 
             {/* Global Search */}
-            <div className="hidden md:flex flex-1 max-w-xl">
+            <div className="hidden md:flex flex-1 max-w-xl" data-tour="global-search">
               <GlobalSearch />
             </div>
 
@@ -113,7 +113,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 </TooltipContent>
               </Tooltip>
               
-              <RealNotificationCenter />
+              <div data-tour="notifications">
+                <RealNotificationCenter />
+              </div>
               <SLASettingsPanel />
               
               <div className="pl-2 ml-1 sm:pl-3 sm:ml-2 border-l border-border">
