@@ -72,48 +72,45 @@ const Confetti = () => {
   );
 };
 
-// Spotlight effect component
+// Spotlight effect component with cutout
 const Spotlight = ({ rect, highlight = "primary" }: { rect: DOMRect | null; highlight?: string }) => {
   if (!rect) return null;
   
-  const highlightColors = {
-    primary: 'ring-primary',
-    success: 'ring-success',
-    warning: 'ring-warning',
-    info: 'ring-info',
-  };
+  const padding = 8;
+  const borderRadius = 12;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 1.1 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
-      className={cn(
-        "fixed z-[9999] rounded-xl pointer-events-none",
-        "ring-4 ring-offset-4 ring-offset-background",
-        highlightColors[highlight as keyof typeof highlightColors] || highlightColors.primary
-      )}
-      style={{
-        top: rect.top - 8,
-        left: rect.left - 8,
-        width: rect.width + 16,
-        height: rect.height + 16,
-      }}
-    >
-      {/* Pulsing glow effect */}
+    <>
+      {/* Highlight ring around target */}
       <motion.div
-        animate={{ 
-          boxShadow: [
-            `0 0 20px hsl(var(--${highlight}) / 0.3)`,
-            `0 0 40px hsl(var(--${highlight}) / 0.5)`,
-            `0 0 20px hsl(var(--${highlight}) / 0.3)`,
-          ]
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 1.05 }}
+        transition={{ duration: 0.3, ease: 'easeOut' }}
+        className="fixed z-[9999] pointer-events-none rounded-xl border-2 border-primary"
+        style={{
+          top: rect.top - padding,
+          left: rect.left - padding,
+          width: rect.width + padding * 2,
+          height: rect.height + padding * 2,
+          boxShadow: `0 0 0 9999px rgba(0, 0, 0, 0.75), 0 0 30px hsl(var(--primary) / 0.5)`,
+          borderRadius: borderRadius,
         }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="absolute inset-0 rounded-xl"
-      />
-    </motion.div>
+      >
+        {/* Pulsing glow effect */}
+        <motion.div
+          animate={{ 
+            boxShadow: [
+              `0 0 15px hsl(var(--primary) / 0.4), inset 0 0 15px hsl(var(--primary) / 0.1)`,
+              `0 0 30px hsl(var(--primary) / 0.6), inset 0 0 20px hsl(var(--primary) / 0.15)`,
+              `0 0 15px hsl(var(--primary) / 0.4), inset 0 0 15px hsl(var(--primary) / 0.1)`,
+            ]
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          className="absolute inset-0 rounded-xl"
+        />
+      </motion.div>
+    </>
   );
 };
 
@@ -337,12 +334,13 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
 
   return (
     <>
-      {/* Backdrop Overlay */}
+      {/* Backdrop Overlay - transparent, spotlight creates its own overlay via box-shadow */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9998] bg-background/80 backdrop-blur-sm" 
+        className="fixed inset-0 z-[9998] pointer-events-auto" 
+        onClick={(e) => e.stopPropagation()}
       />
 
       {/* Spotlight Highlight */}
