@@ -9,6 +9,7 @@ import { GlobalSearch } from "@/components/compras/GlobalSearch";
 import { KeyboardShortcutsDialog } from "@/components/compras/KeyboardShortcutsDialog";
 import { CommandPalette, useCommandPalette } from "@/components/compras/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { useGlobalUndo } from "@/hooks/useGlobalUndo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
@@ -20,6 +21,7 @@ import { FeedbackSettingsPanel } from "@/components/settings/FeedbackSettingsPan
 import { QuickActionsFAB } from "@/components/compras/QuickActionsFAB";
 import { CelebrationOverlay } from "@/components/ui/celebration";
 import { UndoToastContainer } from "@/components/ui/undo-toast";
+import { UndoIndicator, FloatingUndoIndicator } from "@/components/ui/undo-indicator";
 import { cn } from "@/lib/utils";
 import { Menu, X, Keyboard, HelpCircle, Command, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -39,6 +41,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   
   // Initialize keyboard shortcuts
   useKeyboardShortcuts();
+  
+  // Initialize global undo (Ctrl+Z)
+  useGlobalUndo();
   
   // Command Palette
   const { open: commandPaletteOpen, setOpen: setCommandPaletteOpen } = useCommandPalette();

@@ -71,6 +71,14 @@ export const kpisMock = {
   taxaEntrega: 98,
 };
 
+// Sparkline data - tendência dos últimos 7 dias
+export const kpiSparklineData = {
+  aguardandoCotacao: [8, 10, 9, 14, 11, 10, 12],
+  volumeMes: [38000, 39500, 41200, 42800, 44100, 44800, 45230],
+  economia: [6200, 6800, 7100, 7600, 8100, 8400, 8750],
+  taxaEntrega: [95, 96, 97, 96, 98, 97, 98],
+};
+
 // KPIs de Performance do Comprador
 export const buyerPerformanceMock = {
   economiaGerada: 8750, // Total economizado no mês (R$)
