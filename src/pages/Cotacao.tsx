@@ -9,6 +9,7 @@ import { BuscaAutomatica } from "@/components/compras/BuscaAutomatica";
 import { RankingCotacoes } from "@/components/compras/RankingCotacoes";
 import { CotacaoManualModal } from "@/components/compras/CotacaoManualModal";
 import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
+import { VisualComparadorCotacoes } from "@/components/compras/VisualComparadorCotacoes";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { useSolicitacoes } from "@/hooks/useSolicitacoes";
 import { useFornecedores } from "@/hooks/useFornecedores";
@@ -331,11 +332,18 @@ const Cotacao = () => {
                 Cotações via API ({cotacoesAPI.length})
               </h3>
               
-              <ComparadorCotacoes 
-                cotacoes={cotacoesAPI}
-                quantidade={solicitacao.quantidade}
-                onSelecionar={handleSelecionarFornecedor}
-              />
+              <div className="flex gap-2">
+                <ComparadorCotacoes 
+                  cotacoes={cotacoesAPI}
+                  quantidade={solicitacao.quantidade}
+                  onSelecionar={handleSelecionarFornecedor}
+                />
+                <VisualComparadorCotacoes 
+                  cotacoes={cotacoesAPI}
+                  quantidade={solicitacao.quantidade}
+                  onSelecionar={handleSelecionarFornecedor}
+                />
+              </div>
             </div>
 
             <RankingCotacoes 
