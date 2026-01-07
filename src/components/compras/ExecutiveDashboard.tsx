@@ -12,6 +12,7 @@ import { useDashboardFilters, DashboardFilter } from '@/hooks/useDashboardFilter
 import { FilterFavoritesManager } from './FilterFavoritesManager';
 import { PurchaseClimateWidget } from './PurchaseClimateWidget';
 import { Sparkline } from '@/components/ui/sparkline';
+import { useKPICelebrations } from '@/hooks/useKPICelebrations';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -355,6 +356,33 @@ export const ExecutiveDashboard = () => {
   const [showComparison, setShowComparison] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
+
+  // KPI Celebrations - monitors metrics and triggers celebrations when goals are met
+  const kpiMetrics = useMemo(() => ({
+    savings: { 
+      value: currentPeriodMetrics.savings.value, 
+      target: currentPeriodMetrics.savings.target 
+    },
+    contractCompliance: { 
+      value: currentPeriodMetrics.contractCompliance.value, 
+      target: currentPeriodMetrics.contractCompliance.target 
+    },
+    avgCycleTime: { 
+      value: currentPeriodMetrics.avgCycleTime.value, 
+      target: currentPeriodMetrics.avgCycleTime.target 
+    },
+    totalSpend: { 
+      value: currentPeriodMetrics.totalSpend.value, 
+      target: currentPeriodMetrics.totalSpend.target 
+    }
+  }), []);
+
+  const { resetCelebrations } = useKPICelebrations(kpiMetrics);
+
+  // Reset celebrations when period changes
+  useEffect(() => {
+    resetCelebrations();
+  }, [selectedPeriod]);
 
   // Filter favorites hook
   const {
