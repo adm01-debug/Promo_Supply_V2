@@ -9,7 +9,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
+import { TableSkeleton, CardGridSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
+import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { 
@@ -164,22 +165,24 @@ const Fornecedores = () => {
     return labels[produto];
   };
 
-  // Loading skeleton
   if (loading) {
     return (
       <MainLayout>
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-10 w-40" />
+            <div className="space-y-2">
+              <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+              <div className="h-4 w-64 bg-muted animate-pulse rounded" />
+            </div>
+            <div className="h-10 w-40 bg-muted animate-pulse rounded" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {[...Array(3)].map((_, i) => (
-              <Skeleton key={i} className="h-24 w-full" />
-            ))}
+            <KPICardSkeleton />
+            <KPICardSkeleton />
+            <KPICardSkeleton />
           </div>
-          <Skeleton className="h-16 w-full" />
-          <Skeleton className="h-96 w-full" />
+          <CardGridSkeleton cards={1} columns={1} />
+          <TableSkeleton rows={6} columns={7} />
         </div>
       </MainLayout>
     );
@@ -411,15 +414,15 @@ const Fornecedores = () => {
           </div>
 
           {filteredFornecedores.length === 0 && !loading && (
-            <div className="text-center py-12 text-muted-foreground">
-              <Building2 className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>
-                {dbFornecedores.length === 0 
-                  ? "Nenhum fornecedor cadastrado ainda" 
-                  : "Nenhum fornecedor encontrado"
-                }
-              </p>
-            </div>
+            <IllustratedEmptyState
+              type="users"
+              title={dbFornecedores.length === 0 ? "Nenhum fornecedor cadastrado" : "Nenhum fornecedor encontrado"}
+              description={dbFornecedores.length === 0 
+                ? "Comece cadastrando seu primeiro fornecedor para gerenciar suas compras"
+                : "Tente ajustar os filtros de busca para encontrar o fornecedor desejado"
+              }
+              action={dbFornecedores.length === 0 ? { label: "Novo Fornecedor", onClick: () => handleOpenModal() } : undefined}
+            />
           )}
         </Card>
       </div>

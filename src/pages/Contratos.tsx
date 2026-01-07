@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
+import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DigitalSignature } from "@/components/compras/DigitalSignature";
@@ -323,28 +325,18 @@ export default function Contratos() {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <div className="grid grid-cols-1 gap-4">
+                <TableSkeleton rows={5} columns={7} />
               </div>
             ) : filteredContracts.length === 0 ? (
-              <div className="text-center py-12">
-                <FileText className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-foreground">Nenhum contrato encontrado</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {contracts.length === 0 
-                    ? "Comece criando seu primeiro contrato"
-                    : "Tente ajustar os filtros de busca"}
-                </p>
-                {contracts.length === 0 && (
-                  <Button 
-                    className="mt-4"
-                    onClick={() => setIsCreateModalOpen(true)}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Criar Contrato
-                  </Button>
-                )}
-              </div>
+              <IllustratedEmptyState
+                type="documents"
+                title="Nenhum contrato encontrado"
+                description={contracts.length === 0 
+                  ? "Comece criando seu primeiro contrato para gerenciar suas parcerias"
+                  : "Tente ajustar os filtros de busca para encontrar o contrato desejado"}
+                action={contracts.length === 0 ? { label: "Criar Contrato", onClick: () => setIsCreateModalOpen(true) } : undefined}
+              />
             ) : (
               <div className="overflow-x-auto">
                 <Table>

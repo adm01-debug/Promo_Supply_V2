@@ -57,7 +57,8 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
+import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
+import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { toast } from "sonner";
 import { format, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -165,16 +166,21 @@ const Pedidos = () => {
     return (
       <MainLayout>
         <div className="space-y-6">
-          <div className="flex justify-between">
-            <Skeleton className="h-8 w-64" />
-            <Skeleton className="h-10 w-32" />
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <div className="h-8 w-64 bg-muted animate-pulse rounded" />
+              <div className="h-4 w-48 bg-muted animate-pulse rounded" />
+            </div>
+            <div className="h-10 w-32 bg-muted animate-pulse rounded" />
           </div>
-          <div className="grid grid-cols-5 gap-4">
-            {[...Array(5)].map((_, i) => (
-              <Skeleton key={i} className="h-24" />
-            ))}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            <KPICardSkeleton />
+            <KPICardSkeleton />
+            <KPICardSkeleton />
+            <KPICardSkeleton />
+            <KPICardSkeleton />
           </div>
-          <Skeleton className="h-96" />
+          <TableSkeleton rows={8} columns={6} />
         </div>
       </MainLayout>
     );
@@ -369,14 +375,15 @@ const Pedidos = () => {
             <TableBody>
               {filteredPedidos.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-32 text-center">
-                    <Package className="w-12 h-12 mx-auto text-muted-foreground mb-3 opacity-50" />
-                    <p className="text-muted-foreground">Nenhum pedido encontrado</p>
-                    <p className="text-sm text-muted-foreground">
-                      {search || statusFilter !== 'all' || fornecedorFilter !== 'all' 
-                        ? 'Tente ajustar os filtros'
-                        : 'Crie um novo pedido para começar'}
-                    </p>
+                  <TableCell colSpan={6} className="h-32 text-center p-8">
+                    <IllustratedEmptyState
+                      type="orders"
+                      title="Nenhum pedido encontrado"
+                      description={search || statusFilter !== 'all' || fornecedorFilter !== 'all' 
+                        ? 'Tente ajustar os filtros de busca'
+                        : 'Crie um novo pedido para começar a gerenciar suas compras'}
+                      size="sm"
+                    />
                   </TableCell>
                 </TableRow>
               ) : (
