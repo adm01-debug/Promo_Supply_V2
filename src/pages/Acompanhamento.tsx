@@ -25,6 +25,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { PedidoTimeline, EtapaPipeline } from "@/components/compras/PedidoTimeline";
+import { EnhancedPedidoTimeline, TimelineStep } from "@/components/compras/EnhancedPedidoTimeline";
 import { KanbanBoard } from "@/components/compras/KanbanBoard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { solicitacoesMock, Solicitacao, getStatusLabel, getTipoLabel } from "@/data/mockData";
@@ -145,6 +146,102 @@ const gerarEtapasPipeline = (status: string): EtapaPipeline[] => {
     ...etapa,
     status: index < etapaAtual ? 'concluido' : index === etapaAtual ? 'atual' : 'pendente',
     data: index < etapaAtual ? '15/12/2025' : index === etapaAtual ? 'Agora' : undefined,
+  }));
+};
+
+// Gera etapas aprimoradas do pipeline com mais detalhes
+const gerarEtapasEnhanced = (pedido: Solicitacao): TimelineStep[] => {
+  const statusOrdem: Record<string, number> = {
+    AGUARDANDO_COTACAO: 0,
+    EM_COTACAO: 1,
+    FORNECEDOR_SELECIONADO: 2,
+    PEDIDO_GERADO: 2,
+    AGUARDANDO_PAGAMENTO: 3,
+    PAGO: 4,
+    EM_TRANSITO: 4,
+    ENTREGUE: 5,
+  };
+
+  const etapaAtual = statusOrdem[pedido.status] ?? 0;
+  const dataBase = new Date(pedido.createdAt);
+
+  const todasEtapas: TimelineStep[] = [
+    { 
+      id: 'solicitacao', 
+      nome: 'Solicitação Criada',
+      status: 'pendente',
+      dataReal: pedido.createdAt,
+      data: new Date(pedido.createdAt).toLocaleDateString('pt-BR'),
+      descricao: `Solicitação de ${pedido.quantidade} unidades de ${pedido.produto}`,
+      responsavel: 'Sistema',
+      duracao: '< 1 min',
+    },
+    { 
+      id: 'cotacao', 
+      nome: 'Cotação Enviada',
+      status: 'pendente',
+      dataReal: new Date(dataBase.getTime() + 86400000).toISOString(),
+      data: new Date(dataBase.getTime() + 86400000).toLocaleDateString('pt-BR'),
+      descricao: 'Cotações solicitadas a 3 fornecedores',
+      responsavel: 'Equipe de Compras',
+      duracao: '24 horas',
+    },
+    { 
+      id: 'selecao', 
+      nome: 'Fornecedor Selecionado',
+      status: 'pendente',
+      dataReal: new Date(dataBase.getTime() + 172800000).toISOString(),
+      data: new Date(dataBase.getTime() + 172800000).toLocaleDateString('pt-BR'),
+      descricao: pedido.fornecedorSelecionado ? `Selecionado: ${pedido.fornecedorSelecionado}` : 'Aguardando seleção',
+      responsavel: 'Gestor de Compras',
+      duracao: '2 dias',
+    },
+    { 
+      id: 'pedido', 
+      nome: 'Pedido Gerado',
+      status: 'pendente',
+      dataReal: new Date(dataBase.getTime() + 259200000).toISOString(),
+      data: new Date(dataBase.getTime() + 259200000).toLocaleDateString('pt-BR'),
+      descricao: 'Ordem de compra emitida',
+      responsavel: 'Sistema',
+      duracao: '< 1 hora',
+      documentos: [{ nome: 'OC-' + pedido.id + '.pdf', url: '#' }],
+    },
+    { 
+      id: 'pagamento', 
+      nome: 'Pagamento Realizado',
+      status: 'pendente',
+      dataReal: new Date(dataBase.getTime() + 345600000).toISOString(),
+      data: new Date(dataBase.getTime() + 345600000).toLocaleDateString('pt-BR'),
+      descricao: pedido.valorTotal ? `Valor: R$ ${pedido.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : 'Aguardando pagamento',
+      responsavel: 'Financeiro',
+      duracao: '1-3 dias',
+      documentos: pedido.valorTotal ? [{ nome: 'NF-' + pedido.id + '.pdf', url: '#' }] : undefined,
+    },
+    { 
+      id: 'transito', 
+      nome: 'Em Trânsito',
+      status: 'pendente',
+      dataReal: new Date(dataBase.getTime() + 432000000).toISOString(),
+      data: new Date(dataBase.getTime() + 432000000).toLocaleDateString('pt-BR'),
+      descricao: 'Produto em transporte para entrega',
+      responsavel: 'Transportadora',
+      duracao: '2-5 dias',
+      observacoes: 'Código de rastreamento disponível',
+    },
+    { 
+      id: 'entregue', 
+      nome: 'Entregue',
+      status: 'pendente',
+      data: new Date(pedido.prazoEntrega).toLocaleDateString('pt-BR'),
+      descricao: 'Produto entregue e conferido',
+      responsavel: 'Almoxarifado',
+    },
+  ];
+
+  return todasEtapas.map((etapa, index) => ({
+    ...etapa,
+    status: index < etapaAtual ? 'concluido' : index === etapaAtual ? 'atual' : 'pendente',
   }));
 };
 
@@ -623,12 +720,17 @@ const Acompanhamento = () => {
                   </div>
                 )}
 
-                {/* Timeline Vertical */}
+                {/* Timeline Visual Aprimorada */}
                 <div>
-                  <p className="text-sm font-medium text-foreground mb-4">Histórico do Pipeline</p>
-                  <PedidoTimeline 
-                    etapas={gerarEtapasPipeline(pedidoDetalhes.status)} 
-                    orientacao="vertical" 
+                  <p className="text-sm font-medium text-foreground mb-4">Histórico Completo do Pipeline</p>
+                  <EnhancedPedidoTimeline 
+                    etapas={gerarEtapasEnhanced(pedidoDetalhes)} 
+                    pedidoNumero={pedidoDetalhes.id}
+                    fornecedor={pedidoDetalhes.fornecedorSelecionado}
+                    valorTotal={pedidoDetalhes.valorTotal}
+                    prazoFinal={pedidoDetalhes.prazoEntrega}
+                    orientacao="vertical"
+                    showDetails={false}
                   />
                 </div>
               </div>
