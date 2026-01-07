@@ -16,6 +16,9 @@ import { OnboardingTour, useOnboardingTour, dashboardTourSteps } from "@/compone
 import { BottomNavigation } from "@/components/mobile/BottomNavigation";
 import { MobileRefreshWrapper } from "@/components/mobile/MobileRefreshWrapper";
 import { FeedbackSettingsPanel } from "@/components/settings/FeedbackSettingsPanel";
+import { QuickActionsFAB } from "@/components/compras/QuickActionsFAB";
+import { CelebrationOverlay } from "@/components/ui/celebration";
+import { UndoToastContainer } from "@/components/ui/undo-toast";
 import { cn } from "@/lib/utils";
 import { Menu, X, Keyboard, HelpCircle, Command, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -232,8 +235,17 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       {/* Mobile Bottom Navigation */}
       <BottomNavigation />
 
+      {/* Quick Actions FAB */}
+      <QuickActionsFAB />
+
       {/* Supplier Chat */}
       <SupplierChat />
+      
+      {/* Celebration Overlay */}
+      <CelebrationOverlay />
+      
+      {/* Undo Toast Container */}
+      <UndoToastContainer />
       
       {/* Onboarding Tour */}
       {isDashboard && (
