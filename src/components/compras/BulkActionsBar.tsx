@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import type { Solicitacao } from "@/data/mockData";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 interface BulkActionsBarProps {
   selectedCount: number;

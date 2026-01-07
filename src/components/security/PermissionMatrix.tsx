@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from 'sonner';
+import { toast } from "@/lib/feedbackToast";
 import { usePermissions, moduleLabels, actionLabels, Permission } from '@/hooks/usePermissions';
 import { useAuth, AppRole, roleLabels, roleColors } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';

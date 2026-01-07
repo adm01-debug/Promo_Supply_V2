@@ -60,7 +60,7 @@ import { Separator } from "@/components/ui/separator";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { PedidoMobileCard } from "@/components/pedidos/PedidoMobileCard";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { format, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { usePedidos, usePedidosKPIs, type Pedido } from "@/hooks/usePedidos";

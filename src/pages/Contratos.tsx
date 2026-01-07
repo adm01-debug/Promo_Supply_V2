@@ -46,7 +46,7 @@ import {
 import { format, differenceInDays, addDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { ContractModal } from "@/components/compras/ContractModal";
 import { ContractDetailsModal } from "@/components/compras/ContractDetailsModal";
 

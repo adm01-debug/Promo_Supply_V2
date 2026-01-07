@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { useFornecedores, useFornecedoresKPIs, type Fornecedor } from "@/hooks/useFornecedores";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 // Legacy adapter types
 interface LegacyFornecedor {

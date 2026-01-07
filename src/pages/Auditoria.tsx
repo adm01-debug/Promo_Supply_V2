@@ -21,7 +21,7 @@ import {
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
+import { toast } from "@/lib/feedbackToast";
 
 const Auditoria = () => {
   const [logs, setLogs] = useState<AuditLog[]>([]);

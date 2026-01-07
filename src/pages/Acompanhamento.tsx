@@ -29,7 +29,7 @@ import { EnhancedPedidoTimeline, TimelineStep } from "@/components/compras/Enhan
 import { KanbanBoard } from "@/components/compras/KanbanBoard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { solicitacoesMock, Solicitacao, getStatusLabel, getTipoLabel } from "@/data/mockData";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { differenceInDays, differenceInHours, isPast, isToday, isTomorrow, parseISO } from "date-fns";
 
 // Tipos de SLA
