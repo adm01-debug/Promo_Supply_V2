@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -15,24 +15,54 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BottomSheet } from './MobileComponents';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface NavItem {
   id: string;
   label: string;
   icon: React.ReactNode;
   path: string;
+  badgeKey?: 'solicitacoes' | 'pedidos' | 'pagamentos' | 'aprovacoes';
+}
+
+// Hook para buscar contagens de badges
+function useNavBadges() {
+  return useQuery({
+    queryKey: ['nav-badges'],
+    queryFn: async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return { solicitacoes: 0, pedidos: 0, pagamentos: 0, aprovacoes: 0 };
+
+      // Buscar contagens em paralelo
+      const [solicitacoesRes, pedidosRes, pagamentosRes] = await Promise.all([
+        supabase.from('solicitacoes').select('id', { count: 'exact', head: true }).eq('status', 'pendente'),
+        supabase.from('pedidos').select('id', { count: 'exact', head: true }).in('status', ['pendente', 'em_transito']),
+        supabase.from('pagamentos').select('id', { count: 'exact', head: true }).eq('status', 'pendente'),
+      ]);
+
+      return {
+        solicitacoes: solicitacoesRes.count || 0,
+        pedidos: pedidosRes.count || 0,
+        pagamentos: pagamentosRes.count || 0,
+        aprovacoes: (solicitacoesRes.count || 0) + (pagamentosRes.count || 0),
+      };
+    },
+    refetchInterval: 30000, // Atualiza a cada 30 segundos
+    staleTime: 10000,
+  });
 }
 
 const mainNavItems: NavItem[] = [
   { id: 'dashboard', label: 'Início', icon: <LayoutDashboard className="w-5 h-5" />, path: '/' },
-  { id: 'solicitacoes', label: 'Solicitações', icon: <ClipboardList className="w-5 h-5" />, path: '/solicitacoes' },
-  { id: 'pedidos', label: 'Pedidos', icon: <ShoppingCart className="w-5 h-5" />, path: '/pedidos' },
+  { id: 'solicitacoes', label: 'Solicitações', icon: <ClipboardList className="w-5 h-5" />, path: '/solicitacoes', badgeKey: 'solicitacoes' },
+  { id: 'pedidos', label: 'Pedidos', icon: <ShoppingCart className="w-5 h-5" />, path: '/pedidos', badgeKey: 'pedidos' },
   { id: 'fornecedores', label: 'Fornec.', icon: <Users className="w-5 h-5" />, path: '/fornecedores' },
 ];
 
 const moreNavItems: NavItem[] = [
   { id: 'cotacao', label: 'Cotações', icon: <FileText className="w-5 h-5" />, path: '/cotacao' },
-  { id: 'pagamentos', label: 'Pagamentos', icon: <CreditCard className="w-5 h-5" />, path: '/pagamentos' },
+  { id: 'pagamentos', label: 'Pagamentos', icon: <CreditCard className="w-5 h-5" />, path: '/pagamentos', badgeKey: 'pagamentos' },
   { id: 'contratos', label: 'Contratos', icon: <FileSignature className="w-5 h-5" />, path: '/contratos' },
   { id: 'relatorios', label: 'Relatórios', icon: <TrendingUp className="w-5 h-5" />, path: '/relatorios' },
   { id: 'acompanhamento', label: 'Acompanhamento', icon: <Settings className="w-5 h-5" />, path: '/acompanhamento' },
@@ -42,6 +72,7 @@ export function BottomNavigation() {
   const location = useLocation();
   const navigate = useNavigate();
   const [moreSheetOpen, setMoreSheetOpen] = React.useState(false);
+  const { data: badges = { solicitacoes: 0, pedidos: 0, pagamentos: 0, aprovacoes: 0 } } = useNavBadges();
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -51,6 +82,14 @@ export function BottomNavigation() {
   };
 
   const isMoreActive = moreNavItems.some(item => isActive(item.path));
+  
+  // Calcular badge total para o botão "Mais"
+  const moreBadgeCount = moreNavItems.reduce((acc, item) => {
+    if (item.badgeKey && badges[item.badgeKey]) {
+      return acc + badges[item.badgeKey];
+    }
+    return acc;
+  }, 0);
 
   const handleNavClick = (path: string) => {
     navigate(path);
@@ -75,6 +114,7 @@ export function BottomNavigation() {
                 item={item}
                 isActive={isActive(item.path)}
                 onClick={() => handleNavClick(item.path)}
+                badgeCount={item.badgeKey ? badges[item.badgeKey] : 0}
               />
             ))}
             
@@ -83,6 +123,7 @@ export function BottomNavigation() {
               item={{ id: 'more', label: 'Mais', icon: <MoreHorizontal className="w-5 h-5" />, path: '' }}
               isActive={isMoreActive || moreSheetOpen}
               onClick={() => setMoreSheetOpen(true)}
+              badgeCount={moreBadgeCount}
             />
           </div>
         </div>
@@ -100,7 +141,7 @@ export function BottomNavigation() {
             <motion.button
               key={item.id}
               className={cn(
-                "flex flex-col items-center gap-2 p-4 rounded-xl transition-colors",
+                "flex flex-col items-center gap-2 p-4 rounded-xl transition-colors relative",
                 isActive(item.path)
                   ? "bg-primary/10 text-primary"
                   : "bg-muted/50 text-muted-foreground hover:bg-muted"
@@ -108,7 +149,12 @@ export function BottomNavigation() {
               onClick={() => handleNavClick(item.path)}
               whileTap={{ scale: 0.95 }}
             >
-              {item.icon}
+              <div className="relative">
+                {item.icon}
+                {item.badgeKey && badges[item.badgeKey] > 0 && (
+                  <Badge count={badges[item.badgeKey]} />
+                )}
+              </div>
               <span className="text-xs font-medium">{item.label}</span>
             </motion.button>
           ))}
@@ -121,13 +167,41 @@ export function BottomNavigation() {
   );
 }
 
+// Badge Component com animação
+function Badge({ count }: { count: number }) {
+  const displayCount = count > 99 ? '99+' : count.toString();
+  
+  return (
+    <AnimatePresence>
+      {count > 0 && (
+        <motion.span
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0, opacity: 0 }}
+          transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+          className={cn(
+            "absolute -top-1.5 -right-1.5 flex items-center justify-center",
+            "min-w-[16px] h-4 px-1 rounded-full",
+            "bg-destructive text-destructive-foreground",
+            "text-[9px] font-bold shadow-sm",
+            "ring-2 ring-background"
+          )}
+        >
+          {displayCount}
+        </motion.span>
+      )}
+    </AnimatePresence>
+  );
+}
+
 interface NavButtonProps {
   item: NavItem;
   isActive: boolean;
   onClick: () => void;
+  badgeCount?: number;
 }
 
-function NavButton({ item, isActive, onClick }: NavButtonProps) {
+function NavButton({ item, isActive, onClick, badgeCount = 0 }: NavButtonProps) {
   return (
     <motion.button
       className={cn(
@@ -149,10 +223,12 @@ function NavButton({ item, isActive, onClick }: NavButtonProps) {
       )}
       
       <motion.div
+        className="relative"
         animate={{ scale: isActive ? 1.1 : 1 }}
         transition={{ type: 'spring', stiffness: 400, damping: 20 }}
       >
         {item.icon}
+        {badgeCount > 0 && <Badge count={badgeCount} />}
       </motion.div>
       
       <span className={cn(
