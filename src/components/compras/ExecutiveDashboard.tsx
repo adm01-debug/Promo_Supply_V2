@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useDashboardFilters, DashboardFilter } from '@/hooks/useDashboardFilters';
 import { FilterFavoritesManager } from './FilterFavoritesManager';
+import { PurchaseClimateWidget } from './PurchaseClimateWidget';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -667,48 +668,53 @@ export const ExecutiveDashboard = () => {
         </Card>
       )}
 
-      {/* Main KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" data-tour="kpi-cards">
-        <MetricCard
-          title="Spend Total"
-          value={executiveMetrics.totalSpend.value}
-          previousValue={executiveMetrics.totalSpend.previousValue}
-          change={executiveMetrics.totalSpend.change}
-          target={executiveMetrics.totalSpend.target}
-          icon={DollarSign}
-          format="currency"
-          showComparison={showComparison}
-        />
-        <MetricCard
-          title="Economia Realizada"
-          value={executiveMetrics.savings.value}
-          previousValue={executiveMetrics.savings.previousValue}
-          change={executiveMetrics.savings.change}
-          target={executiveMetrics.savings.target}
-          icon={TrendingUp}
-          format="currency"
-          showComparison={showComparison}
-        />
-        <MetricCard
-          title="Pedidos no Mês"
-          value={executiveMetrics.ordersThisMonth.value}
-          previousValue={executiveMetrics.ordersThisMonth.previousValue}
-          change={executiveMetrics.ordersThisMonth.change}
-          target={executiveMetrics.ordersThisMonth.target}
-          icon={ShoppingCart}
-          showComparison={showComparison}
-        />
-        <MetricCard
-          title="Tempo Médio Ciclo"
-          value={executiveMetrics.avgCycleTime.value}
-          previousValue={executiveMetrics.avgCycleTime.previousValue}
-          change={executiveMetrics.avgCycleTime.change}
-          target={executiveMetrics.avgCycleTime.target}
-          icon={Clock}
-          format="days"
-          showComparison={showComparison}
-          invertChange={true}
-        />
+      {/* Purchase Climate Widget */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-1">
+          <PurchaseClimateWidget />
+        </div>
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <MetricCard
+            title="Spend Total"
+            value={executiveMetrics.totalSpend.value}
+            previousValue={executiveMetrics.totalSpend.previousValue}
+            change={executiveMetrics.totalSpend.change}
+            target={executiveMetrics.totalSpend.target}
+            icon={DollarSign}
+            format="currency"
+            showComparison={showComparison}
+          />
+          <MetricCard
+            title="Economia Realizada"
+            value={executiveMetrics.savings.value}
+            previousValue={executiveMetrics.savings.previousValue}
+            change={executiveMetrics.savings.change}
+            target={executiveMetrics.savings.target}
+            icon={TrendingUp}
+            format="currency"
+            showComparison={showComparison}
+          />
+          <MetricCard
+            title="Pedidos no Mês"
+            value={executiveMetrics.ordersThisMonth.value}
+            previousValue={executiveMetrics.ordersThisMonth.previousValue}
+            change={executiveMetrics.ordersThisMonth.change}
+            target={executiveMetrics.ordersThisMonth.target}
+            icon={ShoppingCart}
+            showComparison={showComparison}
+          />
+          <MetricCard
+            title="Tempo Médio Ciclo"
+            value={executiveMetrics.avgCycleTime.value}
+            previousValue={executiveMetrics.avgCycleTime.previousValue}
+            change={executiveMetrics.avgCycleTime.change}
+            target={executiveMetrics.avgCycleTime.target}
+            icon={Clock}
+            format="days"
+            showComparison={showComparison}
+            invertChange={true}
+          />
+        </div>
       </div>
 
       {/* Secondary KPIs */}
