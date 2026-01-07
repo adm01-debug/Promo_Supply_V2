@@ -1,13 +1,15 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
-import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, Eye, EyeOff, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export interface ValidatedInputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;
   error?: string;
   helperText?: string;
+  tooltip?: string;
   icon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   success?: boolean;
@@ -17,6 +19,10 @@ export interface ValidatedInputProps
   validateOnBlur?: boolean;
   onValidate?: (value: string) => Promise<string | undefined> | string | undefined;
   debounceMs?: number;
+  showPasswordToggle?: boolean;
+  showCharacterCount?: boolean;
+  maxCharacters?: number;
+  variant?: 'default' | 'filled' | 'outlined';
 }
 
 const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputProps>(
@@ -25,7 +31,8 @@ const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputProps>(
     type, 
     label, 
     error: externalError, 
-    helperText, 
+    helperText,
+    tooltip,
     icon, 
     rightIcon, 
     success: externalSuccess, 
@@ -35,6 +42,10 @@ const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputProps>(
     validateOnBlur = true,
     onValidate,
     debounceMs = 300,
+    showPasswordToggle = false,
+    showCharacterCount = false,
+    maxCharacters,
+    variant = 'default',
     id, 
     ...props 
   }, ref) => {
@@ -45,13 +56,25 @@ const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputProps>(
     const [internalSuccess, setInternalSuccess] = React.useState(false);
     const [internalValidating, setInternalValidating] = React.useState(false);
     const [touched, setTouched] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState(false);
+    const [charCount, setCharCount] = React.useState(
+      typeof props.value === 'string' ? props.value.length : 
+      typeof props.defaultValue === 'string' ? props.defaultValue.length : 0
+    );
     const inputId = id || React.useId();
     const debounceRef = React.useRef<ReturnType<typeof setTimeout>>();
+
+    // Determine actual input type
+    const actualType = type === 'password' && showPassword ? 'text' : type;
 
     // Use external values if provided, otherwise use internal state
     const error = externalError ?? internalError;
     const success = externalSuccess ?? internalSuccess;
     const validating = externalValidating ?? internalValidating;
+    
+    // Character count warning threshold
+    const isNearLimit = maxCharacters && charCount >= maxCharacters * 0.9;
+    const isOverLimit = maxCharacters && charCount > maxCharacters;
 
     // Shake animation when error appears
     React.useEffect(() => {
@@ -112,6 +135,7 @@ const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputProps>(
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
       setHasValue(!!value);
+      setCharCount(value.length);
       
       if (showValidationOnChange && touched && onValidate) {
         debouncedValidation(value);
@@ -130,6 +154,13 @@ const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputProps>(
     }, []);
 
     const isFloating = isFocused || hasValue || !!props.value || !!props.defaultValue;
+    
+    // Variant styles
+    const variantStyles = {
+      default: "bg-background",
+      filled: "bg-muted/50 border-transparent focus:bg-background",
+      outlined: "bg-transparent"
+    };
 
     // Determine status icon
     const statusIcon = validating ? (
@@ -178,21 +209,41 @@ const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputProps>(
           </div>
         )}
 
+        {/* Tooltip */}
+        {tooltip && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button 
+                type="button"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors z-20"
+              >
+                <Info className="w-4 h-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="top" className="max-w-xs">
+              {tooltip}
+            </TooltipContent>
+          </Tooltip>
+        )}
+
         {/* Input */}
         <input
-          type={type}
+          type={actualType}
           id={inputId}
           className={cn(
-            "peer flex h-12 w-full rounded-lg border bg-background px-4 pt-4 pb-1 text-sm transition-all duration-200",
+            "peer flex h-12 w-full rounded-lg border px-4 pt-4 pb-1 text-sm transition-all duration-200",
             "placeholder:text-transparent",
             "focus:outline-none focus:ring-2 focus:ring-offset-0",
+            variantStyles[variant],
             icon && "pl-10",
-            (rightIcon || statusIcon) && "pr-10",
+            (rightIcon || statusIcon || (type === 'password' && showPasswordToggle) || tooltip) && "pr-10",
             error && touched
               ? "border-destructive bg-destructive/5 focus:ring-destructive/20 focus:border-destructive" 
               : success && touched
                 ? "border-[hsl(var(--success))] bg-[hsl(var(--success)/0.05)] focus:ring-[hsl(var(--success)/0.2)] focus:border-[hsl(var(--success))]"
-                : "border-input focus:ring-primary/20 focus:border-primary",
+                : isOverLimit
+                  ? "border-destructive"
+                  : "border-input focus:ring-primary/20 focus:border-primary",
             "disabled:cursor-not-allowed disabled:opacity-50",
             className
           )}
@@ -201,7 +252,8 @@ const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputProps>(
           onFocus={handleFocus}
           onBlur={handleBlur}
           onChange={handleChange}
-          aria-invalid={!!(error && touched)}
+          maxLength={maxCharacters}
+          aria-invalid={!!(error && touched) || isOverLimit}
           aria-describedby={error && touched ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined}
           {...props}
         />
@@ -228,10 +280,22 @@ const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputProps>(
           {props.required && <span className="text-destructive ml-0.5">*</span>}
         </label>
 
-        {/* Right Icon / Status Icon */}
+        {/* Right Icon / Status Icon / Password Toggle */}
         <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+          {/* Password toggle */}
+          {type === 'password' && showPasswordToggle && (
+            <motion.button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              whileTap={{ scale: 0.9 }}
+              aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
+            >
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </motion.button>
+          )}
           {statusIcon}
-          {rightIcon && !statusIcon && (
+          {rightIcon && !statusIcon && !(type === 'password' && showPasswordToggle) && (
             <div className="text-muted-foreground">
               {rightIcon}
             </div>
@@ -270,15 +334,27 @@ const ValidatedInput = React.forwardRef<HTMLInputElement, ValidatedInputProps>(
           )}
         </AnimatePresence>
 
-        {/* Helper Text */}
-        {helperText && !error && !(successMessage && success) && (
-          <p 
-            id={`${inputId}-helper`}
-            className="mt-1.5 text-xs text-muted-foreground"
-          >
-            {helperText}
-          </p>
-        )}
+        {/* Helper Text + Character Counter */}
+        <div className="flex items-center justify-between mt-1.5">
+          {helperText && !error && !(successMessage && success) ? (
+            <p id={`${inputId}-helper`} className="text-xs text-muted-foreground">
+              {helperText}
+            </p>
+          ) : <span />}
+          
+          {showCharacterCount && maxCharacters && (
+            <motion.span 
+              className={cn(
+                "text-xs transition-colors",
+                isOverLimit ? "text-destructive font-medium" : 
+                isNearLimit ? "text-warning" : "text-muted-foreground"
+              )}
+              animate={isOverLimit ? { scale: [1, 1.1, 1] } : {}}
+            >
+              {charCount}/{maxCharacters}
+            </motion.span>
+          )}
+        </div>
 
         {/* Validating indicator line */}
         {validating && (
