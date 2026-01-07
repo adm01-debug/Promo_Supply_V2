@@ -68,8 +68,14 @@ interface CommandItemType {
 
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
+  const [mounted, setMounted] = React.useState(false);
   const { theme, setTheme } = useTheme();
   const [search, setSearch] = React.useState("");
+
+  // Prevent hydration mismatch
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Navigation items
   const navigationItems: CommandItemType[] = [
@@ -101,13 +107,14 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     { id: "atualizar", label: "Atualizar Dados", icon: RefreshCw, action: () => window.location.reload(), shortcut: "⌘⇧R", keywords: ["refresh", "recarregar"], group: "Ações Rápidas" },
   ];
 
-  // Settings items
+  // Settings items - only use theme after mount to prevent hydration issues
+  const currentTheme = mounted ? theme : "system";
   const settingsItems: CommandItemType[] = [
     { 
       id: "theme", 
-      label: theme === "dark" ? "Modo Claro" : "Modo Escuro", 
-      icon: theme === "dark" ? Sun : Moon, 
-      action: () => setTheme(theme === "dark" ? "light" : "dark"), 
+      label: currentTheme === "dark" ? "Modo Claro" : "Modo Escuro", 
+      icon: currentTheme === "dark" ? Sun : Moon, 
+      action: () => setTheme(currentTheme === "dark" ? "light" : "dark"), 
       shortcut: "⌘T",
       keywords: ["tema", "aparência"],
       group: "Configurações"
