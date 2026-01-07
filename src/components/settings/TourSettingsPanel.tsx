@@ -22,12 +22,17 @@ const AVAILABLE_TOURS = [
   { 
     key: 'cotacao', 
     name: 'Tour de Cotações', 
-    description: 'Como gerenciar cotações de fornecedores' 
+    description: 'Como buscar e comparar cotações de fornecedores' 
   },
   { 
     key: 'fornecedor', 
     name: 'Tour de Fornecedores', 
     description: 'Cadastro e gestão de fornecedores' 
+  },
+  { 
+    key: 'pedidos', 
+    name: 'Tour de Pedidos', 
+    description: 'Acompanhamento e gestão de pedidos de compra' 
   },
 ];
 
