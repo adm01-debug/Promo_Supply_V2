@@ -175,14 +175,14 @@ export function GlobalSearch() {
 
   return (
     <>
-      {/* Search trigger button */}
+      {/* Search trigger button - responsive */}
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center gap-2 px-3 py-1.5 text-sm text-muted-foreground bg-muted/50 hover:bg-muted rounded-lg border border-border transition-colors"
+        className="flex items-center gap-2 px-2.5 md:px-3 py-1.5 text-sm text-muted-foreground bg-muted/50 hover:bg-muted rounded-lg border border-border transition-colors w-full md:w-auto"
       >
-        <Search className="w-4 h-4" />
-        <span className="hidden md:inline">Buscar...</span>
-        <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+        <Search className="w-4 h-4 shrink-0" />
+        <span className="text-xs md:text-sm truncate">Buscar...</span>
+        <kbd className="hidden md:inline-flex h-5 items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground ml-auto">
           <span className="text-xs">⌘</span>K
         </kbd>
       </button>

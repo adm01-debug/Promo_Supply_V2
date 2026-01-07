@@ -235,7 +235,7 @@ interface HeaderStatProps {
 
 export const PageHeaderStats = ({ stats }: { stats: HeaderStatProps[] }) => (
   <motion.div 
-    className="flex flex-wrap items-center gap-6 pt-2"
+    className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-4 md:gap-6 pt-2 overflow-x-auto scrollbar-hide"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     transition={{ delay: 0.3 }}
@@ -245,17 +245,17 @@ export const PageHeaderStats = ({ stats }: { stats: HeaderStatProps[] }) => (
       return (
         <motion.div 
           key={index} 
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/50"
+          className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg bg-muted/50 min-w-0"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 + index * 0.05 }}
         >
-          {StatIcon && <StatIcon className="w-4 h-4 text-muted-foreground" />}
-          <span className="text-sm text-muted-foreground">{stat.label}:</span>
-          <span className="font-semibold text-foreground">{stat.value}</span>
+          {StatIcon && <StatIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground shrink-0" />}
+          <span className="text-xs sm:text-sm text-muted-foreground truncate">{stat.label}:</span>
+          <span className="font-semibold text-foreground text-xs sm:text-sm truncate">{stat.value}</span>
           {stat.trend && (
             <span className={cn(
-              "text-xs font-medium px-1.5 py-0.5 rounded",
+              "text-[10px] sm:text-xs font-medium px-1 sm:px-1.5 py-0.5 rounded shrink-0",
               stat.trend.direction === "up" && "text-success bg-success/10",
               stat.trend.direction === "down" && "text-destructive bg-destructive/10",
               stat.trend.direction === "neutral" && "text-muted-foreground bg-muted"
