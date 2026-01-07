@@ -3,7 +3,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 // Types
-type FeedbackType = 'success' | 'error' | 'warning' | 'info' | 'notification' | 'click' | 'approval' | 'rejection';
+export type FeedbackType = 'success' | 'error' | 'warning' | 'info' | 'notification' | 'click' | 'approval' | 'rejection';
 
 interface FeedbackPreferences {
   soundEnabled: boolean;
@@ -32,7 +32,7 @@ export const useFeedbackPreferences = create<FeedbackPreferences>()(
 );
 
 // Haptic patterns (duration in ms)
-const hapticPatterns: Record<FeedbackType, number[]> = {
+export const hapticPatterns: Record<FeedbackType, number[]> = {
   success: [10, 50, 20],
   error: [50, 30, 50, 30, 50],
   warning: [30, 20, 30],
@@ -44,15 +44,17 @@ const hapticPatterns: Record<FeedbackType, number[]> = {
 };
 
 // Sound configurations
-const soundConfigs: Record<FeedbackType, { frequency: number; duration: number; type: OscillatorType; pattern?: number[] }> = {
-  success: { frequency: 880, duration: 150, type: 'sine', pattern: [523, 659, 784] },
-  error: { frequency: 200, duration: 300, type: 'sawtooth', pattern: [300, 200] },
-  warning: { frequency: 440, duration: 200, type: 'triangle', pattern: [440, 520, 440] },
-  info: { frequency: 660, duration: 100, type: 'sine' },
-  notification: { frequency: 800, duration: 100, type: 'sine', pattern: [600, 800] },
-  click: { frequency: 1000, duration: 30, type: 'sine' },
-  approval: { frequency: 523, duration: 100, type: 'sine', pattern: [523, 659, 784, 1047] },
-  rejection: { frequency: 300, duration: 150, type: 'sawtooth', pattern: [400, 300, 200] },
+export type SoundConfig = { frequency: number; frequencyEnd?: number; duration: number; type: OscillatorType; pattern?: number[] };
+
+export const soundConfigs: Record<FeedbackType, SoundConfig> = {
+  success: { frequency: 880, duration: 0.15, type: 'sine', pattern: [523, 659, 784] },
+  error: { frequency: 200, duration: 0.3, type: 'sawtooth', pattern: [300, 200] },
+  warning: { frequency: 440, duration: 0.2, type: 'triangle', pattern: [440, 520, 440] },
+  info: { frequency: 660, duration: 0.1, type: 'sine' },
+  notification: { frequency: 800, duration: 0.1, type: 'sine', pattern: [600, 800] },
+  click: { frequency: 1000, duration: 0.03, type: 'sine' },
+  approval: { frequency: 523, duration: 0.1, type: 'sine', pattern: [523, 659, 784, 1047] },
+  rejection: { frequency: 300, duration: 0.15, type: 'sawtooth', pattern: [400, 300, 200] },
 };
 
 // Main hook

@@ -15,10 +15,12 @@ import { SkipLinks } from "@/components/accessibility/SkipLinks";
 import { OnboardingTour, useOnboardingTour, dashboardTourSteps } from "@/components/onboarding/OnboardingTour";
 import { BottomNavigation } from "@/components/mobile/BottomNavigation";
 import { MobileRefreshWrapper } from "@/components/mobile/MobileRefreshWrapper";
+import { FeedbackSettingsPanel } from "@/components/settings/FeedbackSettingsPanel";
 import { cn } from "@/lib/utils";
-import { Menu, X, Keyboard, HelpCircle, Command } from "lucide-react";
+import { Menu, X, Keyboard, HelpCircle, Command, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface MainLayoutProps {
@@ -137,6 +139,30 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               
               {/* Theme Toggle */}
               <ThemeToggle />
+              
+              {/* Feedback Settings */}
+              <Popover>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hidden md:flex"
+                        aria-label="Configurações de feedback"
+                      >
+                        <Settings2 className="w-4 h-4" />
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Som e vibração</p>
+                  </TooltipContent>
+                </Tooltip>
+                <PopoverContent className="w-80 p-0" align="end">
+                  <FeedbackSettingsPanel />
+                </PopoverContent>
+              </Popover>
               
               {/* Keyboard shortcuts button */}
               <Tooltip>
