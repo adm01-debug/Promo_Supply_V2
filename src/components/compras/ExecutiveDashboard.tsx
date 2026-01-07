@@ -402,9 +402,14 @@ export const ExecutiveDashboard = () => {
   useEffect(() => {
     const defaultFilter = getDefaultFilter();
     if (defaultFilter) {
-      applyFilter(defaultFilter);
+      setSelectedCategory(defaultFilter.category_filter);
+      setSelectedSupplier(defaultFilter.supplier_filter);
+      setSelectedPeriod(defaultFilter.period_filter);
+      setShowComparison(defaultFilter.show_comparison);
     }
-  }, [favorites]);
+    // Only run once when favorites are first loaded
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [favorites.length > 0]);
 
   const applyFilter = (filter: DashboardFilter) => {
     setSelectedCategory(filter.category_filter);
