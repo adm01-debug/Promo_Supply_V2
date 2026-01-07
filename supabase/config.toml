@@ -14,3 +14,9 @@ verify_jwt = false
 
 [functions.webauthn-authenticate]
 verify_jwt = false
+
+[functions.send-push-notification]
+verify_jwt = false
+
+[functions.check-sla-alerts]
+verify_jwt = false
