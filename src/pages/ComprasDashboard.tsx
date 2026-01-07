@@ -14,6 +14,7 @@ import {
   Award
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { KpiCard } from "@/components/compras/KpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
@@ -28,6 +29,7 @@ import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
 import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidget";
 import { DeliveryCalendar } from "@/components/compras/DeliveryCalendar";
 import { DashboardCustomizer } from "@/components/compras/DashboardCustomizer";
+import { PageTransition, StaggerContainer, StaggerItem } from "@/components/animations/MotionComponents";
 import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { useDashboardLayoutStore } from "@/stores/dashboardLayoutStore";
@@ -39,7 +41,7 @@ const ComprasDashboard = () => {
   const sortedWidgets = [...widgets].sort((a, b) => a.order - b.order);
   const visibleWidgets = sortedWidgets.filter(w => w.visible);
 
-  const getWidgetComponent = (widgetId: string) => {
+  const getWidgetComponent = (widgetId: string, index: number = 0) => {
     switch (widgetId) {
       case 'kpi-aguardando':
         return (
@@ -48,6 +50,7 @@ const ComprasDashboard = () => {
             value={kpisMock.aguardandoCotacao}
             icon={ClipboardList}
             color="emerald"
+            index={index}
           />
         );
       case 'kpi-volume':
@@ -58,6 +61,7 @@ const ComprasDashboard = () => {
             icon={TrendingUp}
             color="cyan"
             subtitle="Total em compras"
+            index={index}
           />
         );
       case 'kpi-economia':
@@ -68,6 +72,7 @@ const ComprasDashboard = () => {
             icon={PiggyBank}
             color="emerald"
             subtitle={`${buyerPerformanceMock.economiaPercentual}% do volume`}
+            index={index}
           />
         );
       case 'kpi-sla':
@@ -78,6 +83,7 @@ const ComprasDashboard = () => {
             icon={BarChart3}
             color="teal"
             subtitle="No prazo"
+            index={index}
           />
         );
       case 'chart-sla':
@@ -136,45 +142,87 @@ const ComprasDashboard = () => {
 
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <PageTransition className="space-y-6">
         {/* Critical Alerts */}
-        <CriticalAlertsBar />
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <CriticalAlertsBar />
+        </motion.div>
         
         {/* Page Title + Climate Widget + Customizer */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <motion.div 
+          className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1, duration: 0.4 }}
+        >
           <div className="lg:col-span-2 flex items-start justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
-              <p className="text-sm text-muted-foreground">Visão geral do sistema de compras</p>
+              <motion.h1 
+                className="text-2xl font-bold text-foreground"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.2, duration: 0.4 }}
+              >
+                Dashboard
+              </motion.h1>
+              <motion.p 
+                className="text-sm text-muted-foreground"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+              >
+                Visão geral do sistema de compras
+              </motion.p>
             </div>
-            <DashboardCustomizer />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3 }}
+            >
+              <DashboardCustomizer />
+            </motion.div>
           </div>
-          <PurchaseClimateWidget />
-        </div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.4 }}
+          >
+            <PurchaseClimateWidget />
+          </motion.div>
+        </motion.div>
 
         {/* KPIs Grid */}
         {kpiWidgets.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {kpiWidgets.map(widget => (
+            {kpiWidgets.map((widget, index) => (
               <div key={widget.id}>
-                {getWidgetComponent(widget.id)}
+                {getWidgetComponent(widget.id, index)}
               </div>
             ))}
           </div>
         )}
 
         {/* Dynamic Widgets Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {otherWidgets.map(widget => (
-            <div 
+        <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-6" staggerDelay={0.1}>
+          {otherWidgets.map((widget, index) => (
+            <StaggerItem 
               key={widget.id} 
               className={cn(getGridClasses(widget.size))}
             >
-              {getWidgetComponent(widget.id)}
-            </div>
+              <motion.div
+                whileHover={{ y: -2 }}
+                transition={{ duration: 0.2 }}
+              >
+                {getWidgetComponent(widget.id, index)}
+              </motion.div>
+            </StaggerItem>
           ))}
-        </div>
-      </div>
+        </StaggerContainer>
+      </PageTransition>
     </MainLayout>
   );
 };
