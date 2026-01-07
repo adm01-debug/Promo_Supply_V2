@@ -703,4 +703,462 @@
   .progressive-reveal:nth-child(3) { animation-delay: 150ms; }
   .progressive-reveal:nth-child(4) { animation-delay: 225ms; }
   .progressive-reveal:nth-child(5) { animation-delay: 300ms; }
+
+  /* =================================================================
+     WCAG 2.1 AAA ACCESSIBILITY IMPROVEMENTS
+     ================================================================= */
+
+  /* Minimum touch target size (44x44px) for mobile accessibility */
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+    @apply inline-flex items-center justify-center;
+  }
+
+  .touch-target-sm {
+    min-width: 36px;
+    min-height: 36px;
+    @apply inline-flex items-center justify-center;
+  }
+
+  .touch-target-lg {
+    min-width: 48px;
+    min-height: 48px;
+    @apply inline-flex items-center justify-center;
+  }
+
+  /* Mobile-specific touch targets */
+  @media (max-width: 768px) {
+    .mobile-touch-target {
+      min-width: 48px !important;
+      min-height: 48px !important;
+      @apply p-3;
+    }
+
+    /* Increase spacing between interactive elements on mobile */
+    .mobile-spacing > * + * {
+      margin-top: 0.5rem;
+    }
+
+    /* Better tap feedback */
+    .mobile-tap-feedback {
+      @apply transition-all duration-150 active:scale-95 active:opacity-80;
+    }
+  }
+
+  /* High contrast text utilities - WCAG AAA 7:1 ratio */
+  .text-high-contrast {
+    color: hsl(var(--foreground));
+  }
+
+  .text-medium-contrast {
+    color: hsl(var(--foreground) / 0.87);
+  }
+
+  .text-low-contrast {
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Ensure sufficient contrast for muted text */
+  .dark .text-low-contrast {
+    color: hsl(220 9% 70%);
+  }
+
+  /* Link underline for better visibility */
+  .link-visible {
+    @apply underline decoration-1 underline-offset-2 hover:decoration-2 transition-all;
+  }
+
+  /* Skip link for keyboard navigation */
+  .skip-link {
+    @apply absolute -top-full left-4 z-50 px-4 py-2 bg-primary text-primary-foreground rounded-md transition-all;
+  }
+
+  .skip-link:focus {
+    @apply top-4;
+  }
+
+  /* Focus trap indicator */
+  .focus-trap-active {
+    @apply ring-2 ring-primary ring-offset-2;
+  }
+
+  /* =================================================================
+     ENHANCED MICRO-ANIMATIONS
+     ================================================================= */
+
+  /* Entry animations with stagger support */
+  .animate-enter {
+    animation: enter 0.3s ease-out forwards;
+  }
+
+  @keyframes enter {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Exit animations */
+  .animate-exit {
+    animation: exit 0.2s ease-in forwards;
+  }
+
+  @keyframes exit {
+    from {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-4px) scale(0.98);
+    }
+  }
+
+  /* Smooth expand/collapse */
+  .animate-expand {
+    animation: expand 0.3s ease-out forwards;
+    transform-origin: top;
+  }
+
+  @keyframes expand {
+    from {
+      opacity: 0;
+      transform: scaleY(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+  }
+
+  .animate-collapse {
+    animation: collapse 0.2s ease-in forwards;
+    transform-origin: top;
+  }
+
+  @keyframes collapse {
+    from {
+      opacity: 1;
+      transform: scaleY(1);
+    }
+    to {
+      opacity: 0;
+      transform: scaleY(0.9);
+    }
+  }
+
+  /* Slide animations for panels */
+  .animate-slide-in-left {
+    animation: slide-in-left 0.3s ease-out forwards;
+  }
+
+  @keyframes slide-in-left {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-slide-in-right {
+    animation: slide-in-right 0.3s ease-out forwards;
+  }
+
+  @keyframes slide-in-right {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-slide-in-bottom {
+    animation: slide-in-bottom 0.3s ease-out forwards;
+  }
+
+  @keyframes slide-in-bottom {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Attention animation */
+  .animate-attention {
+    animation: attention 0.5s ease-in-out;
+  }
+
+  @keyframes attention {
+    0%, 100% { transform: scale(1); }
+    25% { transform: scale(1.02); }
+    50% { transform: scale(0.98); }
+    75% { transform: scale(1.01); }
+  }
+
+  /* Success pulse */
+  .animate-success-pulse {
+    animation: success-pulse 0.6s ease-out;
+  }
+
+  @keyframes success-pulse {
+    0% { 
+      box-shadow: 0 0 0 0 hsl(var(--success) / 0.5);
+    }
+    70% { 
+      box-shadow: 0 0 0 15px hsl(var(--success) / 0);
+    }
+    100% { 
+      box-shadow: 0 0 0 0 hsl(var(--success) / 0);
+    }
+  }
+
+  /* Error shake */
+  .animate-error-shake {
+    animation: error-shake 0.4s ease-in-out;
+  }
+
+  @keyframes error-shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
+  }
+
+  /* Counting animation helper */
+  .animate-count {
+    animation: count-up 0.8s ease-out forwards;
+  }
+
+  @keyframes count-up {
+    from { opacity: 0.5; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Staggered list entry with more items */
+  .stagger-list > *:nth-child(1) { animation-delay: 0ms; }
+  .stagger-list > *:nth-child(2) { animation-delay: 30ms; }
+  .stagger-list > *:nth-child(3) { animation-delay: 60ms; }
+  .stagger-list > *:nth-child(4) { animation-delay: 90ms; }
+  .stagger-list > *:nth-child(5) { animation-delay: 120ms; }
+  .stagger-list > *:nth-child(6) { animation-delay: 150ms; }
+  .stagger-list > *:nth-child(7) { animation-delay: 180ms; }
+  .stagger-list > *:nth-child(8) { animation-delay: 210ms; }
+  .stagger-list > *:nth-child(9) { animation-delay: 240ms; }
+  .stagger-list > *:nth-child(10) { animation-delay: 270ms; }
+
+  /* =================================================================
+     IMPROVED INTERACTIVE STATES
+     ================================================================= */
+
+  /* Better button states */
+  .btn-interactive {
+    @apply transition-all duration-200;
+    @apply hover:brightness-110 hover:-translate-y-px;
+    @apply active:brightness-95 active:translate-y-0 active:scale-[0.98];
+    @apply focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+  }
+
+  /* Card with improved hover */
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+    @apply hover:shadow-lg hover:-translate-y-1 hover:border-primary/20;
+    @apply hover:bg-card-elevated;
+  }
+
+  /* Selection highlight */
+  .selection-highlight {
+    @apply relative transition-all duration-200;
+  }
+
+  .selection-highlight::before {
+    content: '';
+    @apply absolute inset-0 rounded-inherit opacity-0 transition-opacity duration-200;
+    @apply bg-primary/5;
+  }
+
+  .selection-highlight:hover::before,
+  .selection-highlight[data-selected="true"]::before {
+    @apply opacity-100;
+  }
+
+  /* Table row hover */
+  .table-row-hover {
+    @apply transition-colors duration-150;
+    @apply hover:bg-muted/50;
+  }
+
+  .table-row-hover[data-selected="true"] {
+    @apply bg-primary/5 hover:bg-primary/10;
+  }
+
+  /* Drag handle indicator */
+  .drag-handle {
+    @apply cursor-grab active:cursor-grabbing;
+    @apply transition-colors duration-150;
+    @apply text-muted-foreground hover:text-foreground;
+  }
+
+  /* =================================================================
+     STATUS INDICATOR ANIMATIONS
+     ================================================================= */
+
+  /* Live/online indicator */
+  .status-live {
+    @apply relative;
+  }
+
+  .status-live::after {
+    content: '';
+    @apply absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full;
+    @apply bg-success;
+    animation: status-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes status-pulse {
+    0%, 100% { 
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% { 
+      opacity: 0.6;
+      transform: scale(1.2);
+    }
+  }
+
+  /* Warning indicator */
+  .status-warning::after {
+    @apply bg-warning;
+  }
+
+  /* Critical indicator */
+  .status-critical::after {
+    @apply bg-destructive;
+    animation: status-critical 1s ease-in-out infinite;
+  }
+
+  @keyframes status-critical {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* =================================================================
+     FORM ENHANCEMENTS
+     ================================================================= */
+
+  /* Input with floating label support */
+  .input-enhanced {
+    @apply transition-all duration-200;
+    @apply border-input bg-background;
+    @apply focus:border-primary focus:ring-1 focus:ring-primary;
+    @apply placeholder:text-muted-foreground/60;
+  }
+
+  .input-enhanced:not(:placeholder-shown) {
+    @apply border-border;
+  }
+
+  .input-enhanced.input-error {
+    @apply border-destructive focus:border-destructive focus:ring-destructive;
+  }
+
+  .input-enhanced.input-success {
+    @apply border-success focus:border-success focus:ring-success;
+  }
+
+  /* Checkbox/Radio enhanced */
+  .checkbox-enhanced {
+    @apply transition-all duration-200;
+    @apply border-2 border-input;
+    @apply data-[state=checked]:bg-primary data-[state=checked]:border-primary;
+    @apply focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+  }
+
+  /* =================================================================
+     NOTIFICATION BADGES
+     ================================================================= */
+
+  .notification-badge {
+    @apply absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1;
+    @apply flex items-center justify-center;
+    @apply text-[10px] font-bold text-white bg-destructive rounded-full;
+    @apply animate-scale-in;
+  }
+
+  .notification-badge-dot {
+    @apply absolute top-0 right-0 w-2 h-2;
+    @apply bg-destructive rounded-full;
+    animation: notification-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes notification-dot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.2); opacity: 0.8; }
+  }
+
+  /* =================================================================
+     LOADING STATES
+     ================================================================= */
+
+  /* Skeleton with improved animation */
+  .skeleton-enhanced {
+    @apply relative overflow-hidden bg-muted rounded;
+  }
+
+  .skeleton-enhanced::after {
+    content: '';
+    @apply absolute inset-0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--foreground) / 0.04) 50%,
+      transparent 100%
+    );
+    animation: skeleton-wave 1.5s ease-in-out infinite;
+  }
+
+  @keyframes skeleton-wave {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+
+  /* Progress bar animation */
+  .progress-animated {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  .progress-striped {
+    background-image: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0.15) 25%,
+      transparent 25%,
+      transparent 50%,
+      rgba(255, 255, 255, 0.15) 50%,
+      rgba(255, 255, 255, 0.15) 75%,
+      transparent 75%,
+      transparent
+    );
+    background-size: 1rem 1rem;
+    animation: progress-stripes 1s linear infinite;
+  }
+
+  @keyframes progress-stripes {
+    from { background-position: 1rem 0; }
+    to { background-position: 0 0; }
+  }
 }
