@@ -29,6 +29,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { OnboardingTour, solicitacoesTourSteps } from "@/components/onboarding/OnboardingTour";
+import { useTourPreferences } from "@/hooks/useTourPreferences";
 
 // Map DB status to legacy status for UI compatibility
 const mapDbStatusToLegacy = (status: Solicitacao['status']): string => {
@@ -79,6 +81,9 @@ const Solicitacoes = () => {
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(initialFilters);
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('kanban');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // Tour preferences
+  const { isOpen: isTourOpen, isLoading: isTourLoading, complete: completeTour, skip: skipTour } = useTourPreferences('solicitacoes');
 
   // Use real data from Supabase
   const { 
@@ -260,30 +265,34 @@ const Solicitacoes = () => {
     <MainLayout>
       <div className="space-y-6">
         {/* Page Header com novo componente */}
-        <PageHeader
-          title="Solicitações de Compra"
-          description="Gerencie todo o ciclo de vida das suas solicitações"
-          icon={ClipboardList}
-          badge={solicitacoes.length > 0 ? { label: `${solicitacoes.length} registros`, variant: 'secondary' } : undefined}
-          breadcrumbs={[
-            { label: 'Dashboard', href: '/compras' },
-            { label: 'Solicitações' }
-          ]}
-          actions={[
-            {
-              label: viewMode === 'kanban' ? 'Lista' : 'Kanban',
-              icon: viewMode === 'kanban' ? List : LayoutGrid,
-              variant: 'outline',
-              onClick: () => setViewMode(prev => prev === 'kanban' ? 'list' : 'kanban')
-            }
-          ]}
-        />
+        <div data-tour="solicitacoes-header">
+          <PageHeader
+            title="Solicitações de Compra"
+            description="Gerencie todo o ciclo de vida das suas solicitações"
+            icon={ClipboardList}
+            badge={solicitacoes.length > 0 ? { label: `${solicitacoes.length} registros`, variant: 'secondary' } : undefined}
+            breadcrumbs={[
+              { label: 'Dashboard', href: '/compras' },
+              { label: 'Solicitações' }
+            ]}
+            actions={[
+              {
+                label: viewMode === 'kanban' ? 'Lista' : 'Kanban',
+                icon: viewMode === 'kanban' ? List : LayoutGrid,
+                variant: 'outline',
+                onClick: () => setViewMode(prev => prev === 'kanban' ? 'list' : 'kanban')
+              }
+            ]}
+          />
+        </div>
 
         {/* Stats Row */}
-        <PageHeaderStats stats={stats} />
+        <div data-tour="solicitacoes-stats">
+          <PageHeaderStats stats={stats} />
+        </div>
 
         {/* Enhanced Search and Filters */}
-        <Card className="p-3 md:p-4">
+        <Card className="p-3 md:p-4" data-tour="solicitacoes-busca">
           <div className="flex flex-col gap-3 md:gap-4">
             <div className="w-full">
               <EnhancedSearch
@@ -329,7 +338,9 @@ const Solicitacoes = () => {
                   onApply={() => {}}
                 />
 
-                <NovaSolicitacaoModal onSuccess={refetch} />
+                <div data-tour="solicitacoes-nova">
+                  <NovaSolicitacaoModal onSuccess={refetch} />
+                </div>
               </div>
             </div>
           </div>
@@ -361,7 +372,7 @@ const Solicitacoes = () => {
 
         {/* Kanban View */}
         {viewMode === 'kanban' && filteredSolicitacoes.length > 0 && (
-          <div className="overflow-x-auto -mx-4 px-4">
+          <div className="overflow-x-auto -mx-4 px-4" data-tour="solicitacoes-kanban">
             <SolicitacaoKanban 
               solicitacoes={filteredSolicitacoes}
               onStatusChange={handleStatusChange}
@@ -443,6 +454,16 @@ const Solicitacoes = () => {
           isAllSelected={isAllSelected}
         />
       </div>
+
+      {/* Onboarding Tour */}
+      {isTourOpen && !isTourLoading && (
+        <OnboardingTour
+          steps={solicitacoesTourSteps}
+          isOpen={isTourOpen}
+          onComplete={completeTour}
+          onSkip={skipTour}
+        />
+      )}
     </MainLayout>
   );
 };

@@ -637,3 +637,42 @@ export const pedidosTourSteps: TourStep[] = [
     highlight: "warning",
   },
 ];
+
+// Solicitações page tour
+export const solicitacoesTourSteps: TourStep[] = [
+  {
+    target: "[data-tour='solicitacoes-header']",
+    title: "Central de Solicitações",
+    content: "Gerencie todo o ciclo de vida das suas solicitações de compra. Desde a criação até a aprovação e conclusão.",
+    position: "bottom",
+    highlight: "primary",
+  },
+  {
+    target: "[data-tour='solicitacoes-stats']",
+    title: "Estatísticas Rápidas",
+    content: "Acompanhe o resumo das solicitações: total, pendentes, em andamento e valor total comprometido.",
+    position: "bottom",
+    highlight: "info",
+  },
+  {
+    target: "[data-tour='solicitacoes-busca']",
+    title: "Busca e Filtros",
+    content: "Encontre solicitações por produto, empresa ou ID. Use os filtros de status e tipo para refinar sua busca.",
+    position: "bottom",
+    highlight: "success",
+  },
+  {
+    target: "[data-tour='solicitacoes-nova']",
+    title: "Nova Solicitação",
+    content: "Clique aqui para criar uma nova solicitação de compra. Preencha os dados do produto, quantidade e prazo desejado.",
+    position: "left",
+    highlight: "warning",
+  },
+  {
+    target: "[data-tour='solicitacoes-kanban']",
+    title: "Visualização Kanban",
+    content: "Arraste e solte cards entre as colunas para mudar o status. Visualize o fluxo completo das solicitações de forma intuitiva.",
+    position: "top",
+    highlight: "primary",
+  },
+];

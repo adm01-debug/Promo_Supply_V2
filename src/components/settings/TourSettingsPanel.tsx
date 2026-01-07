@@ -20,6 +20,11 @@ const AVAILABLE_TOURS = [
     description: 'Guia inicial do painel principal' 
   },
   { 
+    key: 'solicitacoes', 
+    name: 'Tour de Solicitações', 
+    description: 'Criação e aprovação de solicitações de compra' 
+  },
+  { 
     key: 'cotacao', 
     name: 'Tour de Cotações', 
     description: 'Como buscar e comparar cotações de fornecedores' 
