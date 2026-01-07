@@ -1,4 +1,4 @@
-import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit } from "lucide-react";
+import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils";
 import type { Solicitacao } from "@/data/mockData";
 import { getTipoLabel, getStatusColor } from "@/data/mockData";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
+import { useHapticFeedback } from "@/hooks/useMobileGestures";
+import { toast } from "sonner";
+
 interface SolicitacaoCardProps {
   solicitacao: Solicitacao;
   selectable?: boolean;
@@ -15,6 +18,9 @@ interface SolicitacaoCardProps {
   onSelectChange?: (selected: boolean) => void;
   onDelete?: () => void;
   onEdit?: () => void;
+  onApprove?: () => void;
+  onReject?: () => void;
+  onArchive?: () => void;
 }
 
 const statusActions: Record<string, { 
@@ -62,9 +68,76 @@ export const SolicitacaoCard = ({
   onSelectChange,
   onDelete,
   onEdit,
+  onApprove,
+  onReject,
+  onArchive,
 }: SolicitacaoCardProps) => {
   const actions = statusActions[solicitacao.status];
   const statusColor = getStatusColor(solicitacao.status);
+  const haptic = useHapticFeedback();
+
+  // Enhanced swipe handlers with haptic feedback
+  const handleApprove = () => {
+    haptic.success();
+    if (onApprove) {
+      onApprove();
+    } else {
+      toast.success(`Solicitação #${solicitacao.id} aprovada`);
+    }
+  };
+
+  const handleReject = () => {
+    haptic.error();
+    if (onReject) {
+      onReject();
+    } else {
+      toast.error(`Solicitação #${solicitacao.id} rejeitada`);
+    }
+  };
+
+  const handleArchive = () => {
+    haptic.mediumTap();
+    if (onArchive) {
+      onArchive();
+    } else {
+      toast.info(`Solicitação #${solicitacao.id} arquivada`);
+    }
+  };
+
+  const handleDelete = () => {
+    haptic.error();
+    if (onDelete) {
+      onDelete();
+    }
+  };
+
+  // Swipe actions configuration
+  const leftActions = [
+    {
+      id: 'approve',
+      icon: <CheckCircle className="w-5 h-5" />,
+      label: 'Aprovar',
+      color: 'bg-success',
+      onClick: handleApprove,
+    },
+  ];
+
+  const rightActions = [
+    {
+      id: 'archive',
+      icon: <Archive className="w-5 h-5" />,
+      label: 'Arquivar',
+      color: 'bg-muted-foreground',
+      onClick: handleArchive,
+    },
+    {
+      id: 'reject',
+      icon: <XCircle className="w-5 h-5" />,
+      label: 'Rejeitar',
+      color: 'bg-destructive',
+      onClick: handleReject,
+    },
+  ];
 
   const cardContent = (
     <Card 
@@ -127,6 +200,11 @@ export const SolicitacaoCard = ({
           </div>
         )}
 
+        {/* Swipe hint for mobile */}
+        <div className="md:hidden text-[10px] text-muted-foreground/60 text-center">
+          ← Deslize para ações rápidas →
+        </div>
+
         {/* Ações - responsive layout */}
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
           {actions?.secondary && (
@@ -167,14 +245,15 @@ export const SolicitacaoCard = ({
     </Card>
   );
 
-  // Wrap with SwipeableListItem for mobile swipe actions
-  if (onDelete || onEdit) {
-    return (
-      <SwipeableListItem onDelete={onDelete} onEdit={onEdit}>
-        {cardContent}
-      </SwipeableListItem>
-    );
-  }
-
-  return cardContent;
+  // Always wrap with SwipeableListItem for mobile swipe actions
+  return (
+    <SwipeableListItem 
+      onDelete={onDelete ? handleDelete : undefined} 
+      onEdit={onEdit}
+      leftActions={leftActions}
+      rightActions={rightActions}
+    >
+      {cardContent}
+    </SwipeableListItem>
+  );
 };

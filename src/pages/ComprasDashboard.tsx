@@ -30,7 +30,7 @@ import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidge
 import { DeliveryCalendar } from "@/components/compras/DeliveryCalendar";
 import { DashboardCustomizer } from "@/components/compras/DashboardCustomizer";
 import { PageTransition, StaggerContainer, StaggerItem } from "@/components/animations/MotionComponents";
-import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock } from "@/data/mockData";
+import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock, kpiSparklineData } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { useDashboardLayoutStore } from "@/stores/dashboardLayoutStore";
 import { cn } from "@/lib/utils";
@@ -51,6 +51,7 @@ const ComprasDashboard = () => {
             icon={ClipboardList}
             color="emerald"
             index={index}
+            sparklineData={kpiSparklineData.aguardandoCotacao}
           />
         );
       case 'kpi-volume':
@@ -62,6 +63,7 @@ const ComprasDashboard = () => {
             color="cyan"
             subtitle="Total em compras"
             index={index}
+            sparklineData={kpiSparklineData.volumeMes}
           />
         );
       case 'kpi-economia':
@@ -73,6 +75,7 @@ const ComprasDashboard = () => {
             color="emerald"
             subtitle={`${buyerPerformanceMock.economiaPercentual}% do volume`}
             index={index}
+            sparklineData={kpiSparklineData.economia}
           />
         );
       case 'kpi-sla':
@@ -84,6 +87,7 @@ const ComprasDashboard = () => {
             color="teal"
             subtitle="No prazo"
             index={index}
+            sparklineData={kpiSparklineData.taxaEntrega}
           />
         );
       case 'chart-sla':

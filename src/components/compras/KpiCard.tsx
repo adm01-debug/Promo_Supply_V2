@@ -1,11 +1,13 @@
-import { LucideIcon } from "lucide-react";
+import { LucideIcon, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useAnimatedValue } from "@/hooks/useAnimatedValue";
+import { Sparkline } from "@/components/ui/sparkline";
+import { useMemo } from "react";
 
 export type KpiColor = 'emerald' | 'orange' | 'blue' | 'purple' | 'green' | 'cyan' | 'red' | 'indigo' | 'teal';
 
-interface KpiCardProps {
+export interface KpiCardProps {
   title: string;
   value: string | number;
   icon: LucideIcon;
@@ -13,6 +15,7 @@ interface KpiCardProps {
   subtitle?: string;
   highlight?: boolean;
   index?: number;
+  sparklineData?: number[];
 }
 
 // Using semantic tokens from design system (index.css)
@@ -73,7 +76,7 @@ const colorClasses: Record<KpiColor, { bg: string; text: string; border: string;
   },
 };
 
-export const KpiCard = ({ title, value, icon: Icon, color, subtitle, highlight, index = 0 }: KpiCardProps) => {
+export const KpiCard = ({ title, value, icon: Icon, color, subtitle, highlight, index = 0, sparklineData }: KpiCardProps) => {
   const colors = colorClasses[color];
   
   // Extract numeric value for animation if it's a number
@@ -84,6 +87,18 @@ export const KpiCard = ({ title, value, icon: Icon, color, subtitle, highlight, 
   const displayValue = numericValue !== null 
     ? animatedNumber.toLocaleString('pt-BR')
     : value;
+
+  // Calculate trend from sparkline data
+  const trend = useMemo(() => {
+    if (!sparklineData || sparklineData.length < 2) return null;
+    const first = sparklineData[0];
+    const last = sparklineData[sparklineData.length - 1];
+    const percentChange = ((last - first) / first) * 100;
+    return {
+      direction: percentChange > 0.5 ? 'up' : percentChange < -0.5 ? 'down' : 'neutral',
+      value: Math.abs(percentChange).toFixed(1)
+    };
+  }, [sparklineData]);
   
   return (
     <motion.div
@@ -139,6 +154,38 @@ export const KpiCard = ({ title, value, icon: Icon, color, subtitle, highlight, 
           <Icon className={cn("w-4 h-4 md:w-5 md:h-5", colors.text)} />
         </motion.div>
       </div>
+
+      {/* Sparkline and Trend */}
+      {sparklineData && sparklineData.length >= 2 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 + index * 0.1 }}
+          className="mt-2 pt-2 border-t border-border/50 flex items-center justify-between gap-2"
+        >
+          <Sparkline
+            data={sparklineData}
+            width={80}
+            height={24}
+            showArea={true}
+            animate={true}
+            className="flex-1"
+          />
+          {trend && (
+            <div className={cn(
+              "flex items-center gap-0.5 text-[10px] font-medium px-1.5 py-0.5 rounded-full",
+              trend.direction === 'up' && "bg-success/10 text-success",
+              trend.direction === 'down' && "bg-destructive/10 text-destructive",
+              trend.direction === 'neutral' && "bg-muted text-muted-foreground"
+            )}>
+              {trend.direction === 'up' && <TrendingUp className="w-3 h-3" />}
+              {trend.direction === 'down' && <TrendingDown className="w-3 h-3" />}
+              {trend.direction === 'neutral' && <Minus className="w-3 h-3" />}
+              <span>{trend.value}%</span>
+            </div>
+          )}
+        </motion.div>
+      )}
       
       {highlight && (
         <motion.div
