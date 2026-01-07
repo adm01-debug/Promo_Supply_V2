@@ -197,7 +197,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
         </Button>
       </DialogTrigger>
       
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="w-5 h-5 text-primary" />
@@ -244,7 +244,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
         {/* Step 1: Identification */}
         {step === 1 && (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="empresa" className="flex items-center gap-2">
                   <Building2 className="w-4 h-4" />
@@ -300,20 +300,20 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
 
             <div className="space-y-2">
               <Label>Prioridade</Label>
-              <div className="flex gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-2">
                 {Object.entries(prioridadeConfig).map(([key, config]) => (
                   <button
                     key={key}
                     type="button"
                     className={cn(
-                      "flex-1 py-2 px-3 rounded-lg border-2 transition-colors text-sm font-medium",
+                      "py-2 px-2 sm:px-3 sm:flex-1 rounded-lg border-2 transition-colors text-xs sm:text-sm font-medium",
                       formData.prioridade === key 
                         ? "border-primary bg-primary/10" 
                         : "border-muted hover:border-muted-foreground/30"
                     )}
                     onClick={() => updateField('prioridade', key as NovaSolicitacaoData['prioridade'])}
                   >
-                    <span className={cn("w-2 h-2 rounded-full inline-block mr-2", config.color)} />
+                    <span className={cn("w-2 h-2 rounded-full inline-block mr-1 sm:mr-2", config.color)} />
                     {config.label}
                   </button>
                 ))}
@@ -345,7 +345,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
               )}
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="quantidade">Quantidade *</Label>
                 <Input

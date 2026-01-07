@@ -183,48 +183,48 @@ const Aprovacoes = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <Card className="p-4 border-amber-500/20">
-            <p className="text-xs text-muted-foreground">Pendentes</p>
-            <p className="text-2xl font-bold text-amber-600">{approvalStats.pendentes}</p>
+        <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-5">
+          <Card className="p-3 sm:p-4 border-amber-500/20">
+            <p className="text-xs text-muted-foreground truncate">Pendentes</p>
+            <p className="text-xl sm:text-2xl font-bold text-amber-600">{approvalStats.pendentes}</p>
           </Card>
-          <Card className="p-4 border-emerald-500/20">
-            <p className="text-xs text-muted-foreground">Aprovadas (mês)</p>
-            <p className="text-2xl font-bold text-emerald-600">{approvalStats.aprovadasMes}</p>
+          <Card className="p-3 sm:p-4 border-emerald-500/20">
+            <p className="text-xs text-muted-foreground truncate">Aprovadas</p>
+            <p className="text-xl sm:text-2xl font-bold text-emerald-600">{approvalStats.aprovadasMes}</p>
           </Card>
-          <Card className="p-4 border-red-500/20">
-            <p className="text-xs text-muted-foreground">Rejeitadas (mês)</p>
-            <p className="text-2xl font-bold text-red-500">{approvalStats.rejeitadasMes}</p>
+          <Card className="p-3 sm:p-4 border-red-500/20">
+            <p className="text-xs text-muted-foreground truncate">Rejeitadas</p>
+            <p className="text-xl sm:text-2xl font-bold text-red-500">{approvalStats.rejeitadasMes}</p>
           </Card>
-          <Card className="p-4 border-blue-500/20">
-            <p className="text-xs text-muted-foreground">Tempo Médio</p>
-            <p className="text-2xl font-bold text-blue-600">{approvalStats.tempoMedioAprovacao}</p>
+          <Card className="p-3 sm:p-4 border-blue-500/20">
+            <p className="text-xs text-muted-foreground truncate">Tempo Médio</p>
+            <p className="text-xl sm:text-2xl font-bold text-blue-600">{approvalStats.tempoMedioAprovacao}</p>
           </Card>
-          <Card className="p-4 border-purple-500/20">
-            <p className="text-xs text-muted-foreground">Escalações (mês)</p>
-            <p className="text-2xl font-bold text-purple-600">{approvalStats.escalacoesMes}</p>
+          <Card className="p-3 sm:p-4 border-purple-500/20 col-span-2 md:col-span-1">
+            <p className="text-xs text-muted-foreground truncate">Escalações</p>
+            <p className="text-xl sm:text-2xl font-bold text-purple-600">{approvalStats.escalacoesMes}</p>
           </Card>
         </div>
 
         {/* Tabs */}
         <Tabs defaultValue="pendentes" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="pendentes" className="flex items-center gap-2">
-              <ClipboardCheck className="w-4 h-4" />
-              Pendentes
-              <Badge variant="secondary" className="ml-1">{approvalStats.pendentes}</Badge>
+          <TabsList className="w-full grid grid-cols-2 gap-1 h-auto p-1 sm:grid-cols-4">
+            <TabsTrigger value="pendentes" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <ClipboardCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Pendentes</span>
+              <Badge variant="secondary" className="ml-1 text-xs">{approvalStats.pendentes}</Badge>
             </TabsTrigger>
-            <TabsTrigger value="config" className="flex items-center gap-2">
-              <Settings className="w-4 h-4" />
-              Configuração
+            <TabsTrigger value="config" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <Settings className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Config</span>
             </TabsTrigger>
-            <TabsTrigger value="historico" className="flex items-center gap-2">
-              <History className="w-4 h-4" />
-              Histórico
+            <TabsTrigger value="historico" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <History className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Histórico</span>
             </TabsTrigger>
-            <TabsTrigger value="metricas" className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" />
-              Métricas
+            <TabsTrigger value="metricas" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Métricas</span>
             </TabsTrigger>
           </TabsList>
 
@@ -298,7 +298,7 @@ const Aprovacoes = () => {
             </div>
 
             {/* KPIs Principais */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
               <Card className="p-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-primary/10">
