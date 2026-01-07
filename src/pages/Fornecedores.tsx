@@ -1,10 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { FornecedorModal } from "@/components/compras/FornecedorModal";
 import { HistoricoComprasModal } from "@/components/compras/HistoricoComprasModal";
 import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
 import { SupplierRiskAnalysis } from "@/components/compras/SupplierRiskAnalysis";
 import { PriceComparator } from "@/components/compras/PriceComparator";
+import { FornecedorMobileCard } from "@/components/fornecedores/FornecedorMobileCard";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +29,7 @@ import {
   TrendingUp
 } from "lucide-react";
 import { useFornecedores, useFornecedoresKPIs, type Fornecedor } from "@/hooks/useFornecedores";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 
 // Legacy adapter types
@@ -67,6 +69,7 @@ const adaptToLegacy = (f: Fornecedor): LegacyFornecedor => ({
 });
 
 const Fornecedores = () => {
+  const isMobile = useIsMobile();
   const [search, setSearch] = useState("");
   const [tipoFilter, setTipoFilter] = useState<string>("todos");
   const [modalOpen, setModalOpen] = useState(false);
@@ -277,154 +280,181 @@ const Fornecedores = () => {
           </div>
         </Card>
 
-        {/* Suppliers Table */}
-        <Card className="overflow-hidden">
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-muted/50">
-                  <TableHead>Fornecedor</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Ramos</TableHead>
-                  <TableHead>Produto</TableHead>
-                  <TableHead>Contato</TableHead>
-                  <TableHead className="text-center">Rating</TableHead>
-                  <TableHead className="text-center">API</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredFornecedores.map((fornecedor) => (
-                  <TableRow key={fornecedor.id} className="hover:bg-muted/30">
-                    <TableCell>
-                      <div>
-                        <p className="font-medium text-foreground">{fornecedor.nomeFantasia}</p>
-                        <p className="text-xs text-muted-foreground">{fornecedor.cnpj || 'Sem CNPJ'}</p>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={getTipoBadgeColor(fornecedor.tipo)}>
-                        {getTipoLabel(fornecedor.tipo)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex flex-wrap gap-1">
-                        {fornecedor.ramos.slice(0, 2).map(ramo => (
-                          <Badge key={ramo} variant="secondary" className="text-xs">
-                            {ramo}
-                          </Badge>
-                        ))}
-                        {fornecedor.ramos.length > 2 && (
-                          <Badge variant="secondary" className="text-xs">
-                            +{fornecedor.ramos.length - 2}
-                          </Badge>
-                        )}
-                        {fornecedor.ramos.length === 0 && (
-                          <span className="text-xs text-muted-foreground">-</span>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm text-muted-foreground">
-                        {getProdutoLabel(fornecedor.vendeProduto)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        {fornecedor.email && (
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8"
-                            onClick={() => window.open(`mailto:${fornecedor.email}`)}
-                          >
-                            <Mail className="w-4 h-4 text-muted-foreground" />
-                          </Button>
-                        )}
-                        {fornecedor.telefone && (
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8"
-                            onClick={() => window.open(`tel:${fornecedor.telefone}`)}
-                          >
-                            <Phone className="w-4 h-4 text-muted-foreground" />
-                          </Button>
-                        )}
-                        {fornecedor.whatsapp && (
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-8 w-8"
-                            onClick={() => window.open(`https://wa.me/55${fornecedor.whatsapp.replace(/\D/g, '')}`)}
-                          >
-                            <MessageCircle className="w-4 h-4 text-emerald-500" />
-                          </Button>
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center justify-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`w-4 h-4 ${i < fornecedor.rating ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground/30'}`} 
-                          />
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {fornecedor.apiIntegrada ? (
-                        <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
-                          <Plug className="w-3 h-3 mr-1" />
-                          Ativa
-                        </Badge>
-                      ) : (
-                        <Badge variant="secondary" className="text-muted-foreground">
-                          Manual
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex justify-end gap-1">
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8"
-                          onClick={() => handleOpenHistorico(fornecedor)}
-                          title="Ver histórico"
-                        >
-                          <History className="w-4 h-4 text-muted-foreground" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="icon" 
-                          className="h-8 w-8"
-                          onClick={() => handleOpenModal(fornecedor)}
-                          title="Editar"
-                        >
-                          <Edit className="w-4 h-4 text-muted-foreground" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+        {/* Mobile Cards View */}
+        {isMobile && (
+          <div className="space-y-3">
+            {filteredFornecedores.map((fornecedor) => (
+              <FornecedorMobileCard
+                key={fornecedor.id}
+                fornecedor={fornecedor}
+                onEdit={() => handleOpenModal(fornecedor)}
+                onHistory={() => handleOpenHistorico(fornecedor)}
+              />
+            ))}
+            {filteredFornecedores.length === 0 && !loading && (
+              <IllustratedEmptyState
+                type="users"
+                title={dbFornecedores.length === 0 ? "Nenhum fornecedor cadastrado" : "Nenhum fornecedor encontrado"}
+                description={dbFornecedores.length === 0 
+                  ? "Comece cadastrando seu primeiro fornecedor para gerenciar suas compras"
+                  : "Tente ajustar os filtros de busca para encontrar o fornecedor desejado"
+                }
+                action={dbFornecedores.length === 0 ? { label: "Novo Fornecedor", onClick: () => handleOpenModal() } : undefined}
+              />
+            )}
           </div>
+        )}
 
-          {filteredFornecedores.length === 0 && !loading && (
-            <IllustratedEmptyState
-              type="users"
-              title={dbFornecedores.length === 0 ? "Nenhum fornecedor cadastrado" : "Nenhum fornecedor encontrado"}
-              description={dbFornecedores.length === 0 
-                ? "Comece cadastrando seu primeiro fornecedor para gerenciar suas compras"
-                : "Tente ajustar os filtros de busca para encontrar o fornecedor desejado"
-              }
-              action={dbFornecedores.length === 0 ? { label: "Novo Fornecedor", onClick: () => handleOpenModal() } : undefined}
-            />
-          )}
-        </Card>
+        {/* Desktop Table View */}
+        {!isMobile && (
+          <Card className="overflow-hidden">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-muted/50">
+                    <TableHead>Fornecedor</TableHead>
+                    <TableHead>Tipo</TableHead>
+                    <TableHead>Ramos</TableHead>
+                    <TableHead>Produto</TableHead>
+                    <TableHead>Contato</TableHead>
+                    <TableHead className="text-center">Rating</TableHead>
+                    <TableHead className="text-center">API</TableHead>
+                    <TableHead className="text-right">Ações</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredFornecedores.map((fornecedor) => (
+                    <TableRow key={fornecedor.id} className="hover:bg-muted/30">
+                      <TableCell>
+                        <div>
+                          <p className="font-medium text-foreground">{fornecedor.nomeFantasia}</p>
+                          <p className="text-xs text-muted-foreground">{fornecedor.cnpj || 'Sem CNPJ'}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className={getTipoBadgeColor(fornecedor.tipo)}>
+                          {getTipoLabel(fornecedor.tipo)}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                          {fornecedor.ramos.slice(0, 2).map(ramo => (
+                            <Badge key={ramo} variant="secondary" className="text-xs">
+                              {ramo}
+                            </Badge>
+                          ))}
+                          {fornecedor.ramos.length > 2 && (
+                            <Badge variant="secondary" className="text-xs">
+                              +{fornecedor.ramos.length - 2}
+                            </Badge>
+                          )}
+                          {fornecedor.ramos.length === 0 && (
+                            <span className="text-xs text-muted-foreground">-</span>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="text-sm text-muted-foreground">
+                          {getProdutoLabel(fornecedor.vendeProduto)}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-1">
+                          {fornecedor.email && (
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8"
+                              onClick={() => window.open(`mailto:${fornecedor.email}`)}
+                            >
+                              <Mail className="w-4 h-4 text-muted-foreground" />
+                            </Button>
+                          )}
+                          {fornecedor.telefone && (
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8"
+                              onClick={() => window.open(`tel:${fornecedor.telefone}`)}
+                            >
+                              <Phone className="w-4 h-4 text-muted-foreground" />
+                            </Button>
+                          )}
+                          {fornecedor.whatsapp && (
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8"
+                              onClick={() => window.open(`https://wa.me/55${fornecedor.whatsapp.replace(/\D/g, '')}`)}
+                            >
+                              <MessageCircle className="w-4 h-4 text-emerald-500" />
+                            </Button>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center justify-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star 
+                              key={i} 
+                              className={`w-4 h-4 ${i < fornecedor.rating ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground/30'}`} 
+                            />
+                          ))}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        {fornecedor.apiIntegrada ? (
+                          <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                            <Plug className="w-3 h-3 mr-1" />
+                            Ativa
+                          </Badge>
+                        ) : (
+                          <Badge variant="secondary" className="text-muted-foreground">
+                            Manual
+                          </Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex justify-end gap-1">
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8"
+                            onClick={() => handleOpenHistorico(fornecedor)}
+                            title="Ver histórico"
+                          >
+                            <History className="w-4 h-4 text-muted-foreground" />
+                          </Button>
+                          <Button 
+                            variant="ghost" 
+                            size="icon" 
+                            className="h-8 w-8"
+                            onClick={() => handleOpenModal(fornecedor)}
+                            title="Editar"
+                          >
+                            <Edit className="w-4 h-4 text-muted-foreground" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {filteredFornecedores.length === 0 && !loading && (
+              <IllustratedEmptyState
+                type="users"
+                title={dbFornecedores.length === 0 ? "Nenhum fornecedor cadastrado" : "Nenhum fornecedor encontrado"}
+                description={dbFornecedores.length === 0 
+                  ? "Comece cadastrando seu primeiro fornecedor para gerenciar suas compras"
+                  : "Tente ajustar os filtros de busca para encontrar o fornecedor desejado"
+                }
+                action={dbFornecedores.length === 0 ? { label: "Novo Fornecedor", onClick: () => handleOpenModal() } : undefined}
+              />
+            )}
+          </Card>
+        )}
       </div>
 
       {/* Modals */}

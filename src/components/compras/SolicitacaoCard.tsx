@@ -1,4 +1,4 @@
-import { Eye, BarChart3, FileText, Check, ArrowRight } from "lucide-react";
+import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,12 +7,14 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
 import type { Solicitacao } from "@/data/mockData";
 import { getTipoLabel, getStatusColor } from "@/data/mockData";
-
+import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
 interface SolicitacaoCardProps {
   solicitacao: Solicitacao;
   selectable?: boolean;
   selected?: boolean;
   onSelectChange?: (selected: boolean) => void;
+  onDelete?: () => void;
+  onEdit?: () => void;
 }
 
 const statusActions: Record<string, { 
@@ -57,12 +59,14 @@ export const SolicitacaoCard = ({
   solicitacao, 
   selectable = false,
   selected = false,
-  onSelectChange 
+  onSelectChange,
+  onDelete,
+  onEdit,
 }: SolicitacaoCardProps) => {
   const actions = statusActions[solicitacao.status];
   const statusColor = getStatusColor(solicitacao.status);
 
-  return (
+  const cardContent = (
     <Card 
       className={cn(
         "p-4 hover:shadow-md transition-all duration-200 border-l-4",
@@ -157,4 +161,15 @@ export const SolicitacaoCard = ({
       </div>
     </Card>
   );
+
+  // Wrap with SwipeableListItem for mobile swipe actions
+  if (onDelete || onEdit) {
+    return (
+      <SwipeableListItem onDelete={onDelete} onEdit={onEdit}>
+        {cardContent}
+      </SwipeableListItem>
+    );
+  }
+
+  return cardContent;
 };

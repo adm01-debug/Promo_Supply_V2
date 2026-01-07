@@ -196,6 +196,11 @@ const Solicitacoes = () => {
     setSelectedIds(new Set());
   }, []);
 
+  const handleSingleDelete = useCallback(async (id: string) => {
+    await bulkDelete([id]);
+    toast.success('Solicitação excluída com sucesso');
+  }, [bulkDelete]);
+
   const handleBulkDelete = useCallback(async () => {
     const ids = Array.from(selectedIds);
     await bulkDelete(ids);
@@ -396,6 +401,7 @@ const Solicitacoes = () => {
                         selectable
                         selected={selectedIds.has(solicitacao.id)}
                         onSelectChange={(selected) => handleSelectItem(solicitacao.id, selected)}
+                        onDelete={() => handleSingleDelete(solicitacao.id)}
                       />
                     ))}
                   </div>
