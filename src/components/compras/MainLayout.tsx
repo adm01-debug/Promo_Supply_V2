@@ -12,7 +12,8 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
-import { OnboardingTour, useOnboardingTour, dashboardTourSteps } from "@/components/onboarding/OnboardingTour";
+import { OnboardingTour, dashboardTourSteps } from "@/components/onboarding/OnboardingTour";
+import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { BottomNavigation } from "@/components/mobile/BottomNavigation";
 import { MobileRefreshWrapper } from "@/components/mobile/MobileRefreshWrapper";
 import { FeedbackSettingsPanel } from "@/components/settings/FeedbackSettingsPanel";
@@ -44,7 +45,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   
   // Onboarding tour - only show on dashboard
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
-  const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, restart: restartTour } = useOnboardingTour('dashboard');
+  const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, restart: restartTour, isLoading: isTourLoading } = useTourPreferences('dashboard');
 
   // Pull-to-refresh handler - invalidates all queries
   const handleRefresh = useCallback(async () => {
@@ -248,7 +249,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <UndoToastContainer />
       
       {/* Onboarding Tour */}
-      {isDashboard && (
+      {isDashboard && !isTourLoading && (
         <OnboardingTour
           steps={dashboardTourSteps}
           isOpen={isTourOpen}

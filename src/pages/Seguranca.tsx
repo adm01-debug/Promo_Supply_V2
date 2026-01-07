@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe, KeyRound, Bell, Gauge } from 'lucide-react';
+import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe, KeyRound, Bell, Gauge, GraduationCap } from 'lucide-react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +18,7 @@ import { PermissionGate } from '@/components/security/PermissionGate';
 import { PasskeyManager } from '@/components/security/PasskeyManager';
 import { NotificationSettingsPanel } from '@/components/notifications/NotificationSettingsPanel';
 import { PerformanceMonitor } from '@/components/performance/PerformanceMonitor';
+import { TourSettingsPanel } from '@/components/settings/TourSettingsPanel';
 import { useSecurityLogs } from '@/hooks/useSecurityLogs';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -164,6 +165,10 @@ const Seguranca = () => {
                 </TabsTrigger>
               </>
             )}
+            <TabsTrigger value="tours" className="flex items-center gap-2">
+              <GraduationCap className="w-4 h-4" />
+              <span className="hidden sm:inline">Tours</span>
+            </TabsTrigger>
           </TabsList>
 
           {/* Notifications Tab */}
@@ -338,6 +343,11 @@ const Seguranca = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Tours Settings Tab */}
+          <TabsContent value="tours">
+            <TourSettingsPanel />
           </TabsContent>
         </Tabs>
       </div>

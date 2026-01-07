@@ -1611,6 +1611,42 @@ export type Database = {
         }
         Relationships: []
       }
+      user_tour_preferences: {
+        Row: {
+          completed: boolean | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          skipped: boolean | null
+          skipped_at: string | null
+          tour_key: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          skipped?: boolean | null
+          skipped_at?: string | null
+          tour_key: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          skipped?: boolean | null
+          skipped_at?: string | null
+          tour_key?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       webauthn_challenges: {
         Row: {
           challenge: string
