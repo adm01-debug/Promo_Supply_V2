@@ -61,14 +61,14 @@ export function BottomNavigation() {
     <>
       {/* Bottom Navigation Bar */}
       <motion.nav
-        className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-card/95 backdrop-blur-lg border-t border-border"
+        className="fixed bottom-0 left-0 right-0 z-40 md:hidden bg-card/95 backdrop-blur-lg border-t border-border safe-area-inset"
         initial={{ y: 100 }}
         animate={{ y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       >
         {/* Safe area padding for iOS */}
         <div className="pb-safe">
-          <div className="flex items-center justify-around h-16 px-2">
+          <div className="flex items-center justify-around h-14 sm:h-16 px-1 sm:px-2">
             {mainNavItems.map((item) => (
               <NavButton
                 key={item.id}
@@ -116,7 +116,7 @@ export function BottomNavigation() {
       </BottomSheet>
 
       {/* Spacer to prevent content from being hidden behind bottom nav */}
-      <div className="h-16 md:hidden" />
+      <div className="h-14 sm:h-16 md:hidden" />
     </>
   );
 }
@@ -131,7 +131,7 @@ function NavButton({ item, isActive, onClick }: NavButtonProps) {
   return (
     <motion.button
       className={cn(
-        "flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl min-w-[60px] transition-colors relative",
+        "flex flex-col items-center justify-center gap-0.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl min-w-[52px] sm:min-w-[60px] transition-colors relative touch-target-sm",
         isActive 
           ? "text-primary" 
           : "text-muted-foreground"
@@ -142,7 +142,7 @@ function NavButton({ item, isActive, onClick }: NavButtonProps) {
       {/* Active indicator */}
       {isActive && (
         <motion.div
-          className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-full"
+          className="absolute top-0 left-1/2 -translate-x-1/2 w-6 sm:w-8 h-0.5 sm:h-1 bg-primary rounded-full"
           layoutId="bottomNavIndicator"
           transition={{ type: 'spring', stiffness: 400, damping: 30 }}
         />
@@ -156,7 +156,7 @@ function NavButton({ item, isActive, onClick }: NavButtonProps) {
       </motion.div>
       
       <span className={cn(
-        "text-[10px] font-medium transition-colors",
+        "text-[9px] sm:text-[10px] font-medium transition-colors",
         isActive ? "text-primary" : "text-muted-foreground"
       )}>
         {item.label}

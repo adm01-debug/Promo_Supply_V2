@@ -97,22 +97,22 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         sidebarCollapsed ? "md:ml-16" : "md:ml-64"
       )}>
         {/* Top Header */}
-        <header className="sticky top-0 z-20 h-16 border-b border-border bg-card/95 backdrop-blur-md supports-[backdrop-filter]:bg-card/80">
-          <div className="h-full px-4 flex items-center justify-between gap-4">
+        <header className="sticky top-0 z-20 h-14 md:h-16 border-b border-border bg-card/95 backdrop-blur-md supports-[backdrop-filter]:bg-card/80">
+          <div className="h-full px-3 md:px-4 flex items-center justify-between gap-2 md:gap-4">
             {/* Mobile Menu Button */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden shrink-0"
+              className="md:hidden shrink-0 h-9 w-9"
               aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
 
-            {/* Global Search */}
-            <div className="hidden md:flex flex-1 max-w-xl" data-tour="global-search">
+            {/* Global Search - responsive */}
+            <div className="flex flex-1 max-w-xl" data-tour="global-search">
               <GlobalSearch />
             </div>
 

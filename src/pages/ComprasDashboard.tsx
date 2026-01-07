@@ -195,9 +195,9 @@ const ComprasDashboard = () => {
           </motion.div>
         </motion.div>
 
-        {/* KPIs Grid */}
+        {/* KPIs Grid - responsive */}
         {kpiWidgets.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4" data-tour="kpi-cards">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4" data-tour="kpi-cards">
             {kpiWidgets.map((widget, index) => (
               <div key={widget.id}>
                 {getWidgetComponent(widget.id, index)}

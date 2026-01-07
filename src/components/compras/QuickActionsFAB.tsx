@@ -104,7 +104,7 @@ export function QuickActionsFAB() {
   };
 
   return (
-    <div className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-40">
+    <div className="fixed bottom-[4.5rem] sm:bottom-20 right-3 sm:right-4 md:bottom-6 md:right-6 z-40">
       <AnimatePresence>
         {isOpen && (
           <>

@@ -99,20 +99,20 @@ export const KpiCard = ({ title, value, icon: Icon, color, subtitle, highlight, 
         transition: { duration: 0.2 }
       }}
       className={cn(
-        "relative rounded-lg border bg-card text-card-foreground shadow-sm p-4 group cursor-default",
+        "relative rounded-lg border bg-card text-card-foreground shadow-sm p-3 md:p-4 group cursor-default",
         "transition-shadow duration-300 hover:shadow-lg",
         colors.border,
         colors.glow,
         highlight && "ring-2 ring-destructive/50"
       )}
     >
-      <div className="flex items-start justify-between">
-        <div className="space-y-1">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+      <div className="flex items-start justify-between gap-2">
+        <div className="space-y-0.5 md:space-y-1 min-w-0 flex-1">
+          <p className="text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-wide truncate">
             {title}
           </p>
           <motion.p 
-            className={cn("text-2xl font-bold", colors.text)}
+            className={cn("text-lg md:text-2xl font-bold truncate", colors.text)}
             key={String(value)}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -122,7 +122,7 @@ export const KpiCard = ({ title, value, icon: Icon, color, subtitle, highlight, 
           </motion.p>
           {subtitle && (
             <motion.p 
-              className="text-xs text-muted-foreground"
+              className="text-[10px] md:text-xs text-muted-foreground truncate"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
@@ -132,11 +132,11 @@ export const KpiCard = ({ title, value, icon: Icon, color, subtitle, highlight, 
           )}
         </div>
         <motion.div 
-          className={cn("p-2 rounded-lg", colors.bg)}
+          className={cn("p-1.5 md:p-2 rounded-lg shrink-0", colors.bg)}
           whileHover={{ scale: 1.1, rotate: 5 }}
           transition={{ type: "spring", stiffness: 400, damping: 17 }}
         >
-          <Icon className={cn("w-5 h-5", colors.text)} />
+          <Icon className={cn("w-4 h-4 md:w-5 md:h-5", colors.text)} />
         </motion.div>
       </div>
       

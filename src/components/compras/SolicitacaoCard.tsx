@@ -69,67 +69,71 @@ export const SolicitacaoCard = ({
   const cardContent = (
     <Card 
       className={cn(
-        "p-4 hover:shadow-md transition-all duration-200 border-l-4",
+        "p-3 md:p-4 hover:shadow-md transition-all duration-200 border-l-4",
         statusColor.replace('bg-', 'border-l-'),
         selected && "ring-2 ring-primary bg-primary/5"
       )}
     >
-      <div className="flex flex-col md:flex-row md:items-center gap-4">
-        {/* Checkbox for selection */}
-        {selectable && (
-          <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
-            <Checkbox
-              checked={selected}
-              onCheckedChange={(checked) => onSelectChange?.(checked === true)}
-              className="h-5 w-5"
-            />
+      <div className="flex flex-col gap-3">
+        {/* Header row with checkbox and ID */}
+        <div className="flex items-start gap-3">
+          {/* Checkbox for selection */}
+          {selectable && (
+            <div className="shrink-0 pt-0.5" onClick={(e) => e.stopPropagation()}>
+              <Checkbox
+                checked={selected}
+                onCheckedChange={(checked) => onSelectChange?.(checked === true)}
+                className="h-5 w-5"
+              />
+            </div>
+          )}
+
+          {/* Info Principal */}
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <span className="font-mono text-xs sm:text-sm font-bold text-primary">#{solicitacao.id}</span>
+              <span className="text-muted-foreground hidden sm:inline">|</span>
+              <span className="font-semibold text-foreground text-sm truncate">{solicitacao.empresa}</span>
+            </div>
+            
+            <p className="text-sm text-foreground mb-2 line-clamp-2">{solicitacao.produto}</p>
+            
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-muted-foreground">
+              <span>{solicitacao.quantidade} un</span>
+              <span className="hidden sm:inline">•</span>
+              <Badge variant="outline" className="text-xs">{getTipoLabel(solicitacao.tipo)}</Badge>
+              <span className="hidden md:inline">•</span>
+              <span className="hidden md:inline">Vendedor: {solicitacao.vendedor}</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="hidden sm:inline">Prazo: {new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Info adicional por status */}
+        {solicitacao.status === 'EM_COTACAO' && solicitacao.cotacoes && (
+          <div className="mt-2 p-2 bg-yellow-500/10 rounded-md">
+            <span className="text-xs text-yellow-600 font-medium">
+              {solicitacao.cotacoes.length} cotações recebidas | Melhor: R$ {Math.min(...solicitacao.cotacoes.map(c => c.valorUnitario)).toFixed(2)}/un
+            </span>
           </div>
         )}
 
-        {/* Info Principal */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="font-mono text-sm font-bold text-primary">#{solicitacao.id}</span>
-            <span className="text-muted-foreground">|</span>
-            <span className="font-semibold text-foreground truncate">{solicitacao.empresa}</span>
+        {solicitacao.status === 'FORNECEDOR_SELECIONADO' && solicitacao.fornecedorSelecionado && (
+          <div className="mt-2 p-2 bg-blue-500/10 rounded-md">
+            <span className="text-xs text-blue-600 font-medium">
+              Fornecedor: {solicitacao.fornecedorSelecionado} | R$ {solicitacao.valorUnitario?.toFixed(2)}/un | Total: R$ {solicitacao.valorTotal?.toLocaleString('pt-BR')}
+            </span>
           </div>
-          
-          <p className="text-sm text-foreground mb-2">{solicitacao.produto}</p>
-          
-          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-            <span>{solicitacao.quantidade} un</span>
-            <span>•</span>
-            <Badge variant="outline" className="text-xs">{getTipoLabel(solicitacao.tipo)}</Badge>
-            <span>•</span>
-            <span>Vendedor: {solicitacao.vendedor}</span>
-            <span>•</span>
-            <span>Prazo: {new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
-          </div>
+        )}
 
-          {/* Info adicional por status */}
-          {solicitacao.status === 'EM_COTACAO' && solicitacao.cotacoes && (
-            <div className="mt-2 p-2 bg-yellow-500/10 rounded-md">
-              <span className="text-xs text-yellow-600 font-medium">
-                {solicitacao.cotacoes.length} cotações recebidas | Melhor: R$ {Math.min(...solicitacao.cotacoes.map(c => c.valorUnitario)).toFixed(2)}/un
-              </span>
-            </div>
-          )}
-
-          {solicitacao.status === 'FORNECEDOR_SELECIONADO' && solicitacao.fornecedorSelecionado && (
-            <div className="mt-2 p-2 bg-blue-500/10 rounded-md">
-              <span className="text-xs text-blue-600 font-medium">
-                Fornecedor: {solicitacao.fornecedorSelecionado} | R$ {solicitacao.valorUnitario?.toFixed(2)}/un | Total: R$ {solicitacao.valorTotal?.toLocaleString('pt-BR')}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Ações */}
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Ações - responsive layout */}
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
           {actions?.secondary && (
-            <Button variant="outline" size="sm">
-              <actions.secondary.icon className="w-4 h-4 mr-1" />
-              {actions.secondary.label}
+            <Button variant="outline" size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm h-8 sm:h-9">
+              <actions.secondary.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
+              <span className="hidden sm:inline">{actions.secondary.label}</span>
+              <span className="sm:hidden">Ver</span>
             </Button>
           )}
           
@@ -138,6 +142,7 @@ export const SolicitacaoCard = ({
               size="sm" 
               asChild={!!actions.primary.href}
               className={cn(
+                "flex-1 sm:flex-none text-xs sm:text-sm h-8 sm:h-9",
                 solicitacao.status === 'AGUARDANDO_COTACAO' && "bg-emerald-600 hover:bg-emerald-700",
                 solicitacao.status === 'EM_COTACAO' && "bg-yellow-600 hover:bg-yellow-700",
                 solicitacao.status === 'FORNECEDOR_SELECIONADO' && "bg-blue-600 hover:bg-blue-700",
@@ -146,12 +151,12 @@ export const SolicitacaoCard = ({
             >
               {actions.primary.href ? (
                 <Link to={`${actions.primary.href}?id=${solicitacao.id}`}>
-                  <actions.primary.icon className="w-4 h-4 mr-1" />
+                  <actions.primary.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
                   {actions.primary.label}
                 </Link>
               ) : (
                 <>
-                  <actions.primary.icon className="w-4 h-4 mr-1" />
+                  <actions.primary.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
                   {actions.primary.label}
                 </>
               )}

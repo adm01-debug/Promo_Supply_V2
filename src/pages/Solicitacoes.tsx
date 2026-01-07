@@ -283,9 +283,9 @@ const Solicitacoes = () => {
         <PageHeaderStats stats={stats} />
 
         {/* Enhanced Search and Filters */}
-        <Card className="p-4">
-          <div className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1">
+        <Card className="p-3 md:p-4">
+          <div className="flex flex-col gap-3 md:gap-4">
+            <div className="w-full">
               <EnhancedSearch
                 placeholder="Buscar por produto, empresa, ID..."
                 onSearch={handleSearch}
@@ -296,7 +296,7 @@ const Solicitacoes = () => {
 
             <div className="flex flex-wrap gap-2">
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-[180px] bg-background">
+                <SelectTrigger className="w-full sm:w-[160px] md:w-[180px] bg-background text-xs sm:text-sm">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent className="bg-background border border-border z-50">
@@ -311,7 +311,7 @@ const Solicitacoes = () => {
               </Select>
 
               <Select value={tipoFilter} onValueChange={setTipoFilter}>
-                <SelectTrigger className="w-[160px] bg-background">
+                <SelectTrigger className="w-full sm:w-[140px] md:w-[160px] bg-background text-xs sm:text-sm">
                   <SelectValue placeholder="Tipo" />
                 </SelectTrigger>
                 <SelectContent className="bg-background border border-border z-50">
@@ -322,13 +322,15 @@ const Solicitacoes = () => {
                 </SelectContent>
               </Select>
 
-              <FiltrosAvancados 
-                filters={advancedFilters}
-                onFiltersChange={setAdvancedFilters}
-                onApply={() => {}}
-              />
+              <div className="flex gap-2 w-full sm:w-auto">
+                <FiltrosAvancados 
+                  filters={advancedFilters}
+                  onFiltersChange={setAdvancedFilters}
+                  onApply={() => {}}
+                />
 
-              <NovaSolicitacaoModal onSuccess={refetch} />
+                <NovaSolicitacaoModal onSuccess={refetch} />
+              </div>
             </div>
           </div>
         </Card>
