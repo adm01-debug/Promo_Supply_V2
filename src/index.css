@@ -163,111 +163,132 @@
   }
 
   .dark {
-    --background: 224 71% 4%;
-    --foreground: 220 14% 96%;
+    /* ===== ENHANCED DARK MODE WITH BETTER CONTRAST ===== */
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
 
-    --card: 224 71% 8%;
-    --card-foreground: 220 14% 96%;
-    --card-elevated: 224 71% 10%;
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 98%;
+    --card-elevated: 222 47% 11%;
 
-    --popover: 224 71% 8%;
-    --popover-foreground: 220 14% 96%;
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 262 83% 65%;
+    --primary: 262 83% 68%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 262 83% 75%;
+    --primary-glow: 262 83% 78%;
 
-    --secondary: 224 71% 12%;
-    --secondary-foreground: 220 14% 96%;
+    --secondary: 222 47% 14%;
+    --secondary-foreground: 210 40% 96%;
 
-    --muted: 224 71% 12%;
-    --muted-foreground: 220 9% 60%;
+    --muted: 222 47% 16%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 262 83% 20%;
-    --accent-foreground: 262 83% 80%;
+    --accent: 262 70% 25%;
+    --accent-foreground: 262 70% 90%;
 
-    --destructive: 0 62% 50%;
+    --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 71% 40%;
+    --success: 142 64% 48%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 45%;
-    --warning-foreground: 0 0% 0%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 38 92% 10%;
 
-    --info: 199 89% 45%;
+    --info: 199 89% 52%;
     --info-foreground: 0 0% 100%;
 
-    --border: 224 71% 15%;
-    --input: 224 71% 15%;
-    --ring: 262 83% 65%;
+    --border: 222 47% 18%;
+    --input: 222 47% 18%;
+    --ring: 262 83% 68%;
 
-    /* Dark module colors with adjusted brightness */
-    --tasks: 45 93% 55%;
-    --gravacoes: 199 89% 55%;
-    --finance: 142 71% 50%;
-    --sales: 262 83% 65%;
-    --store: 326 78% 65%;
-    --zapp: 142 70% 55%;
-    --loggi: 24 95% 58%;
+    /* Dark module colors with enhanced brightness for WCAG compliance */
+    --tasks: 45 93% 60%;
+    --tasks-foreground: 45 93% 10%;
+    --gravacoes: 199 89% 58%;
+    --gravacoes-foreground: 199 89% 10%;
+    --finance: 142 71% 55%;
+    --finance-foreground: 142 71% 10%;
+    --sales: 262 83% 70%;
+    --sales-foreground: 262 83% 10%;
+    --store: 326 78% 68%;
+    --store-foreground: 326 78% 10%;
+    --zapp: 142 70% 58%;
+    --zapp-foreground: 142 70% 10%;
+    --loggi: 24 95% 62%;
+    --loggi-foreground: 24 95% 10%;
 
-    /* Dark gamification */
-    --xp: 45 93% 55%;
-    --coins: 45 93% 55%;
-    --streak: 0 84% 55%;
+    /* Dark gamification with vibrant colors */
+    --xp: 45 93% 60%;
+    --xp-foreground: 45 93% 10%;
+    --coins: 45 93% 58%;
+    --coins-foreground: 45 93% 10%;
+    --streak: 0 84% 58%;
+    --streak-foreground: 0 0% 100%;
+    --level: 262 83% 70%;
+    --level-foreground: 0 0% 100%;
+    --badge: 199 89% 55%;
+    --badge-foreground: 0 0% 100%;
 
-    /* Dark rank colors */
-    --rank-gold: 45 93% 55%;
-    --rank-silver: 220 9% 70%;
-    --rank-bronze: 30 50% 55%;
+    /* Dark rank colors with enhanced visibility */
+    --rank-gold: 45 93% 58%;
+    --rank-gold-foreground: 45 93% 10%;
+    --rank-silver: 220 9% 75%;
+    --rank-silver-foreground: 220 9% 15%;
+    --rank-bronze: 30 50% 58%;
+    --rank-bronze-foreground: 30 50% 10%;
 
-    /* Dark KPI colors */
-    --kpi-emerald: 160 84% 50%;
-    --kpi-emerald-bg: 160 84% 15%;
-    --kpi-orange: 25 95% 58%;
-    --kpi-orange-bg: 25 95% 15%;
-    --kpi-blue: 217 91% 65%;
-    --kpi-blue-bg: 217 91% 15%;
-    --kpi-purple: 271 81% 65%;
-    --kpi-purple-bg: 271 81% 15%;
-    --kpi-green: 142 71% 50%;
-    --kpi-green-bg: 142 71% 15%;
-    --kpi-cyan: 186 94% 50%;
-    --kpi-cyan-bg: 186 94% 15%;
-    --kpi-red: 0 84% 55%;
-    --kpi-red-bg: 0 84% 15%;
-    --kpi-indigo: 239 84% 72%;
-    --kpi-indigo-bg: 239 84% 15%;
-    --kpi-teal: 175 77% 48%;
-    --kpi-teal-bg: 175 77% 15%;
+    /* Dark KPI colors with better contrast */
+    --kpi-emerald: 160 84% 52%;
+    --kpi-emerald-bg: 160 84% 12%;
+    --kpi-orange: 25 95% 62%;
+    --kpi-orange-bg: 25 95% 12%;
+    --kpi-blue: 217 91% 68%;
+    --kpi-blue-bg: 217 91% 12%;
+    --kpi-purple: 271 81% 68%;
+    --kpi-purple-bg: 271 81% 12%;
+    --kpi-green: 142 71% 52%;
+    --kpi-green-bg: 142 71% 12%;
+    --kpi-cyan: 186 94% 52%;
+    --kpi-cyan-bg: 186 94% 12%;
+    --kpi-red: 0 84% 58%;
+    --kpi-red-bg: 0 84% 12%;
+    --kpi-indigo: 239 84% 74%;
+    --kpi-indigo-bg: 239 84% 12%;
+    --kpi-teal: 175 77% 50%;
+    --kpi-teal-bg: 175 77% 12%;
 
-    /* Dark chart colors */
-    --chart-1: 262 83% 65%;
-    --chart-2: 199 89% 55%;
-    --chart-3: 142 71% 50%;
-    --chart-4: 45 93% 55%;
-    --chart-5: 326 78% 65%;
+    /* Dark chart colors with enhanced visibility */
+    --chart-1: 262 83% 70%;
+    --chart-2: 199 89% 60%;
+    --chart-3: 142 71% 55%;
+    --chart-4: 45 93% 60%;
+    --chart-5: 326 78% 68%;
 
-    /* Dark sidebar */
-    --sidebar-background: 224 71% 6%;
-    --sidebar-foreground: 220 14% 96%;
-    --sidebar-primary: 262 83% 65%;
+    /* Dark sidebar with subtle depth */
+    --sidebar-background: 222 47% 5%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 262 83% 68%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 262 83% 20%;
-    --sidebar-accent-foreground: 262 83% 80%;
-    --sidebar-border: 224 71% 15%;
-    --sidebar-ring: 262 83% 65%;
+    --sidebar-accent: 262 70% 22%;
+    --sidebar-accent-foreground: 262 70% 90%;
+    --sidebar-border: 222 47% 15%;
+    --sidebar-ring: 262 83% 68%;
 
-    /* Dark shadows */
-    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.2);
-    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.3), 0 1px 2px -1px hsl(0 0% 0% / 0.3);
-    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.3), 0 2px 4px -2px hsl(0 0% 0% / 0.3);
-    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.4), 0 4px 6px -4px hsl(0 0% 0% / 0.3);
-    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.4), 0 8px 10px -6px hsl(0 0% 0% / 0.3);
+    /* Dark shadows with subtle glow */
+    --shadow-xs: 0 1px 2px 0 hsl(0 0% 0% / 0.3);
+    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.4), 0 1px 2px -1px hsl(0 0% 0% / 0.4);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.4), 0 2px 4px -2px hsl(0 0% 0% / 0.4);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.5), 0 4px 6px -4px hsl(0 0% 0% / 0.4);
+    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.5), 0 8px 10px -6px hsl(0 0% 0% / 0.4);
+    --shadow-glow-primary: 0 0 25px hsl(var(--primary) / 0.35);
+    --shadow-glow-secondary: 0 0 25px hsl(var(--secondary) / 0.25);
+    --shadow-glow-success: 0 0 25px hsl(var(--success) / 0.35);
   }
 }
 
-/* ===== BASE STYLES ===== */
+/* ===== BASE STYLES WITH SMOOTH THEME TRANSITIONS ===== */
 @layer base {
   * {
     @apply border-border;
@@ -275,6 +296,28 @@
 
   html {
     @apply scroll-smooth;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  /* Smooth theme transition for all elements */
+  html,
+  body,
+  *:not([class*="no-transition"]) {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+
+  /* Prevent transition on page load */
+  html.theme-transition-disabled,
+  html.theme-transition-disabled *,
+  html.theme-transition-disabled *::before,
+  html.theme-transition-disabled *::after {
+    transition: none !important;
   }
 
   body {
@@ -302,22 +345,65 @@
   h4 {
     @apply text-lg md:text-xl;
   }
+
+  /* Enhanced focus visibility for dark mode */
+  .dark :focus-visible {
+    outline-offset: 3px;
+  }
+
+  /* Better text rendering in dark mode */
+  .dark body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
 }
 
 /* ===== COMPONENT UTILITIES ===== */
 @layer utilities {
-  /* Glass effect */
+  /* Glass effect with improved dark mode */
   .glass {
     @apply bg-card/80 backdrop-blur-xl border border-border/50;
+  }
+
+  .dark .glass {
+    @apply bg-card/70 backdrop-blur-xl border border-border/40;
+    box-shadow: 0 4px 30px hsl(0 0% 0% / 0.2);
   }
 
   .glass-dark {
     @apply bg-card/60 backdrop-blur-xl border border-border/30;
   }
 
-  /* Gradients */
+  .dark .glass-dark {
+    @apply bg-card/50 backdrop-blur-xl border border-white/5;
+    box-shadow: 0 8px 32px hsl(0 0% 0% / 0.3);
+  }
+
+  /* Glass morphism variant for dark mode */
+  .glass-morphism {
+    @apply bg-card/75 backdrop-blur-2xl border border-border/40;
+  }
+
+  .dark .glass-morphism {
+    background: linear-gradient(
+      135deg,
+      hsl(var(--card) / 0.8) 0%,
+      hsl(var(--card) / 0.6) 100%
+    );
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: 
+      0 8px 32px hsl(0 0% 0% / 0.25),
+      inset 0 0 0 1px hsl(0 0% 100% / 0.03);
+  }
+
+  /* Gradients with dark mode variants */
   .gradient-primary {
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
+  }
+
+  .dark .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow) / 0.9) 100%);
   }
 
   .gradient-xp {
@@ -336,6 +422,42 @@
     background: radial-gradient(ellipse at center, hsl(var(--primary) / 0.15) 0%, transparent 70%);
   }
 
+  .dark .gradient-radial {
+    background: radial-gradient(ellipse at center, hsl(var(--primary) / 0.2) 0%, transparent 70%);
+  }
+
+  /* Subtle gradient backgrounds for dark mode */
+  .gradient-subtle {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background)) 0%,
+      hsl(var(--muted) / 0.3) 100%
+    );
+  }
+
+  .dark .gradient-subtle {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--background)) 0%,
+      hsl(var(--card)) 100%
+    );
+  }
+
+  /* Mesh gradient for hero sections */
+  .gradient-mesh {
+    background: 
+      radial-gradient(at 40% 20%, hsl(var(--primary) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--info) / 0.1) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--success) / 0.1) 0px, transparent 50%);
+  }
+
+  .dark .gradient-mesh {
+    background: 
+      radial-gradient(at 40% 20%, hsl(var(--primary) / 0.25) 0px, transparent 50%),
+      radial-gradient(at 80% 0%, hsl(var(--info) / 0.15) 0px, transparent 50%),
+      radial-gradient(at 0% 50%, hsl(var(--success) / 0.15) 0px, transparent 50%);
+  }
+
   /* Text gradients */
   .text-gradient {
     background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
@@ -349,17 +471,54 @@
     background: linear-gradient(135deg, hsl(var(--rank-gold)) 0%, hsl(55 93% 55%) 100%);
   }
 
-  /* Shadows */
+  /* Shadows with dark mode enhancements */
   .shadow-glow {
     box-shadow: 0 0 40px hsl(var(--primary) / 0.2);
+  }
+
+  .dark .shadow-glow {
+    box-shadow: 0 0 50px hsl(var(--primary) / 0.3);
   }
 
   .shadow-glow-sm {
     box-shadow: 0 0 20px hsl(var(--primary) / 0.15);
   }
 
+  .dark .shadow-glow-sm {
+    box-shadow: 0 0 25px hsl(var(--primary) / 0.25);
+  }
+
   .shadow-glow-lg {
     box-shadow: 0 0 60px hsl(var(--primary) / 0.25);
+  }
+
+  .dark .shadow-glow-lg {
+    box-shadow: 0 0 80px hsl(var(--primary) / 0.35);
+  }
+
+  /* Elevation shadows for dark mode */
+  .shadow-elevation-1 {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .dark .shadow-elevation-1 {
+    box-shadow: 0 1px 3px hsl(0 0% 0% / 0.4), 0 0 0 1px hsl(var(--border) / 0.5);
+  }
+
+  .shadow-elevation-2 {
+    box-shadow: var(--shadow-md);
+  }
+
+  .dark .shadow-elevation-2 {
+    box-shadow: 0 4px 6px hsl(0 0% 0% / 0.45), 0 0 0 1px hsl(var(--border) / 0.5);
+  }
+
+  .shadow-elevation-3 {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .dark .shadow-elevation-3 {
+    box-shadow: 0 10px 20px hsl(0 0% 0% / 0.5), 0 0 0 1px hsl(var(--border) / 0.5);
   }
 
   /* Interactive states */
@@ -383,15 +542,27 @@
     box-shadow: 0 0 30px hsl(var(--primary) / 0.3);
   }
 
+  .dark .hover-glow:hover {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.4);
+  }
+
   /* Focus states */
   .focus-ring {
     @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
   }
 
-  /* Scrollbar styling */
+  .dark .focus-ring {
+    @apply focus-visible:ring-offset-background;
+  }
+
+  /* Scrollbar styling with dark mode */
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+
+  .dark .scrollbar-thin {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.25) transparent;
   }
 
   .scrollbar-thin::-webkit-scrollbar {
@@ -408,8 +579,16 @@
     border-radius: 3px;
   }
 
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.25);
+  }
+
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: hsl(var(--muted-foreground) / 0.5);
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.4);
   }
 
   /* Hide scrollbar but keep functionality */

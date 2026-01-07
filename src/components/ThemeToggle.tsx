@@ -1,4 +1,4 @@
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Monitor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -7,32 +7,129 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useTheme } from 'next-themes';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState } from 'react';
 
 export function ThemeToggle() {
-  const { setTheme, theme } = useTheme();
+  const { setTheme, theme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Smooth theme transition handler
+  const handleThemeChange = (newTheme: string) => {
+    // Add transition class before changing theme
+    document.documentElement.classList.remove('theme-transition-disabled');
+    
+    // Change theme
+    setTheme(newTheme);
+    
+    // Optional: Add a subtle animation effect
+    document.documentElement.style.setProperty('--theme-transition', '1');
+    setTimeout(() => {
+      document.documentElement.style.removeProperty('--theme-transition');
+    }, 300);
+  };
+
+  if (!mounted) {
+    return (
+      <Button variant="ghost" size="icon" className="relative w-9 h-9">
+        <span className="sr-only">Carregando tema</span>
+      </Button>
+    );
+  }
+
+  const isDark = resolvedTheme === 'dark';
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="relative">
-          <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className="relative w-9 h-9 overflow-hidden"
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            {isDark ? (
+              <motion.div
+                key="moon"
+                initial={{ y: -20, opacity: 0, rotate: -90 }}
+                animate={{ y: 0, opacity: 1, rotate: 0 }}
+                exit={{ y: 20, opacity: 0, rotate: 90 }}
+                transition={{ duration: 0.2, ease: 'easeInOut' }}
+                className="absolute"
+              >
+                <Moon className="h-4 w-4 text-yellow-400" />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="sun"
+                initial={{ y: 20, opacity: 0, rotate: 90 }}
+                animate={{ y: 0, opacity: 1, rotate: 0 }}
+                exit={{ y: -20, opacity: 0, rotate: -90 }}
+                transition={{ duration: 0.2, ease: 'easeInOut' }}
+                className="absolute"
+              >
+                <Sun className="h-4 w-4 text-amber-500" />
+              </motion.div>
+            )}
+          </AnimatePresence>
           <span className="sr-only">Alternar tema</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="bg-popover border border-border">
-        <DropdownMenuItem onClick={() => setTheme('light')} className="cursor-pointer">
-          <Sun className="mr-2 h-4 w-4" />
-          Claro
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')} className="cursor-pointer">
-          <Moon className="mr-2 h-4 w-4" />
-          Escuro
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')} className="cursor-pointer">
-          <span className="mr-2">💻</span>
-          Sistema
-        </DropdownMenuItem>
+      <DropdownMenuContent 
+        align="end" 
+        className="bg-popover border border-border min-w-[140px]"
+        sideOffset={8}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.15 }}
+        >
+          <DropdownMenuItem 
+            onClick={() => handleThemeChange('light')} 
+            className={`cursor-pointer gap-2 ${theme === 'light' ? 'bg-accent' : ''}`}
+          >
+            <Sun className="h-4 w-4 text-amber-500" />
+            <span>Claro</span>
+            {theme === 'light' && (
+              <motion.div
+                layoutId="theme-indicator"
+                className="ml-auto h-2 w-2 rounded-full bg-primary"
+              />
+            )}
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => handleThemeChange('dark')} 
+            className={`cursor-pointer gap-2 ${theme === 'dark' ? 'bg-accent' : ''}`}
+          >
+            <Moon className="h-4 w-4 text-blue-400" />
+            <span>Escuro</span>
+            {theme === 'dark' && (
+              <motion.div
+                layoutId="theme-indicator"
+                className="ml-auto h-2 w-2 rounded-full bg-primary"
+              />
+            )}
+          </DropdownMenuItem>
+          <DropdownMenuItem 
+            onClick={() => handleThemeChange('system')} 
+            className={`cursor-pointer gap-2 ${theme === 'system' ? 'bg-accent' : ''}`}
+          >
+            <Monitor className="h-4 w-4 text-muted-foreground" />
+            <span>Sistema</span>
+            {theme === 'system' && (
+              <motion.div
+                layoutId="theme-indicator"
+                className="ml-auto h-2 w-2 rounded-full bg-primary"
+              />
+            )}
+          </DropdownMenuItem>
+        </motion.div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
