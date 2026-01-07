@@ -404,3 +404,182 @@ export const ShimmerEffect = ({ className }: { className?: string }) => {
     />
   );
 };
+
+// AnimatedList with AnimatePresence
+import { AnimatePresence } from "framer-motion";
+
+interface AnimatedListProps extends HTMLMotionProps<"div"> {
+  children: React.ReactNode;
+}
+
+export const AnimatedList = forwardRef<HTMLDivElement, AnimatedListProps>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <AnimatePresence mode="popLayout">
+        <motion.div
+          ref={ref}
+          className={className}
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainerVariants}
+          {...props}
+        >
+          {children}
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+);
+AnimatedList.displayName = "AnimatedList";
+
+// AnimatedListItem for list items with exit animations
+export const AnimatedListItem = forwardRef<HTMLDivElement, StaggerItemProps>(
+  ({ children, className, ...props }, ref) => {
+    return (
+      <motion.div
+        ref={ref}
+        className={className}
+        layout
+        variants={staggerItemVariants}
+        exit={{ opacity: 0, x: -20, transition: { duration: 0.2 } }}
+        {...props}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+);
+AnimatedListItem.displayName = "AnimatedListItem";
+
+// Hover scale wrapper
+interface HoverScaleProps extends HTMLMotionProps<"div"> {
+  children: React.ReactNode;
+  scale?: number;
+}
+
+export const HoverScale = forwardRef<HTMLDivElement, HoverScaleProps>(
+  ({ children, className, scale = 1.02, ...props }, ref) => {
+    return (
+      <motion.div
+        ref={ref}
+        className={className}
+        whileHover={{ scale }}
+        whileTap={{ scale: 0.98 }}
+        transition={smoothSpringConfig}
+        {...props}
+      >
+        {children}
+      </motion.div>
+    );
+  }
+);
+HoverScale.displayName = "HoverScale";
+
+// Attention animation for important elements
+export const AttentionPulse = ({ 
+  children, 
+  className,
+  active = true
+}: { 
+  children: React.ReactNode; 
+  className?: string;
+  active?: boolean;
+}) => {
+  return (
+    <motion.div
+      className={className}
+      animate={active ? {
+        scale: [1, 1.02, 1],
+        boxShadow: [
+          "0 0 0 0 rgba(var(--primary), 0)",
+          "0 0 0 8px rgba(var(--primary), 0.1)",
+          "0 0 0 0 rgba(var(--primary), 0)"
+        ]
+      } : {}}
+      transition={{
+        duration: 2,
+        repeat: active ? Infinity : 0,
+        ease: "easeInOut"
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// Success check animation
+export const SuccessCheck = ({ className }: { className?: string }) => {
+  return (
+    <motion.svg
+      className={cn("w-6 h-6 text-success", className)}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={3}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <motion.path
+        d="M20 6L9 17l-5-5"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      />
+    </motion.svg>
+  );
+};
+
+// Loading spinner with framer motion
+export const LoadingSpinner = ({ 
+  className,
+  size = 24
+}: { 
+  className?: string;
+  size?: number;
+}) => {
+  return (
+    <motion.div
+      className={cn("border-2 border-primary/30 border-t-primary rounded-full", className)}
+      style={{ width: size, height: size }}
+      animate={{ rotate: 360 }}
+      transition={{
+        duration: 1,
+        repeat: Infinity,
+        ease: "linear"
+      }}
+    />
+  );
+};
+
+// Entrance animation wrapper with direction
+export const EntranceAnimation = ({ 
+  children, 
+  className,
+  direction = "up",
+  delay = 0,
+  duration = 0.4
+}: { 
+  children: React.ReactNode; 
+  className?: string;
+  direction?: "up" | "down" | "left" | "right";
+  delay?: number;
+  duration?: number;
+}) => {
+  const directionMap = {
+    up: { y: 20, x: 0 },
+    down: { y: -20, x: 0 },
+    left: { x: -20, y: 0 },
+    right: { x: 20, y: 0 },
+  };
+
+  return (
+    <motion.div
+      className={className}
+      initial={{ opacity: 0, ...directionMap[direction] }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
+      transition={{ duration, delay, ease: "easeOut" }}
+    >
+      {children}
+    </motion.div>
+  );
+};

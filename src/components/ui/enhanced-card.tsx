@@ -1,6 +1,8 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { cva, type VariantProps } from "class-variance-authority";
+import { motion } from "framer-motion";
+import { TrendingUp, TrendingDown, Minus } from "lucide-react";
 
 const enhancedCardVariants = cva(
   "rounded-xl border bg-card text-card-foreground transition-all duration-300",
@@ -64,10 +66,12 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
     }
 
     return (
-      <div 
+      <motion.div 
         ref={ref} 
         className={cn(enhancedCardVariants({ variant, size, glow }), "relative", className)} 
-        {...props}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
       >
         {badge && (
           <div className="absolute -top-2 -right-2 z-10">
@@ -88,7 +92,7 @@ const EnhancedCard = React.forwardRef<HTMLDivElement, EnhancedCardProps>(
             {footer}
           </div>
         )}
-      </div>
+      </motion.div>
     );
   }
 );
@@ -104,6 +108,7 @@ interface StatCardProps extends React.HTMLAttributes<HTMLDivElement> {
   trend?: {
     value: number;
     direction: "up" | "down" | "neutral";
+    label?: string;
   };
   variant?: "default" | "primary" | "success" | "warning" | "destructive";
 }
@@ -126,56 +131,83 @@ const StatCard = React.forwardRef<HTMLDivElement, StatCardProps>(
       destructive: "bg-destructive/10 text-destructive",
     };
 
+    const TrendIcon = trend?.direction === "up" 
+      ? TrendingUp 
+      : trend?.direction === "down" 
+      ? TrendingDown 
+      : Minus;
+
     const trendColors = {
-      up: "text-success",
-      down: "text-destructive",
-      neutral: "text-muted-foreground",
+      up: "text-success bg-success/10",
+      down: "text-destructive bg-destructive/10",
+      neutral: "text-muted-foreground bg-muted",
     };
 
     return (
-      <div 
+      <motion.div 
         ref={ref} 
         className={cn(
           "rounded-xl border p-5 transition-all duration-200 hover:shadow-md",
           variantStyles[variant],
           className
-        )} 
-        {...props}
+        )}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        whileHover={{ y: -2 }}
       >
         <div className="flex items-start justify-between">
           <div className="space-y-1">
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
               {title}
             </p>
-            <p className="text-2xl font-bold tracking-tight">{value}</p>
+            <motion.p 
+              className="text-2xl font-bold tracking-tight"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            >
+              {value}
+            </motion.p>
             {description && (
               <p className="text-xs text-muted-foreground">{description}</p>
             )}
           </div>
           
           {icon && (
-            <div className={cn(
-              "flex h-10 w-10 items-center justify-center rounded-lg shrink-0",
-              iconStyles[variant]
-            )}>
+            <motion.div 
+              className={cn(
+                "flex h-10 w-10 items-center justify-center rounded-lg shrink-0",
+                iconStyles[variant]
+              )}
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
               {icon}
-            </div>
+            </motion.div>
           )}
         </div>
 
         {trend && (
-          <div className={cn(
-            "mt-3 flex items-center gap-1 text-xs font-medium",
-            trendColors[trend.direction]
-          )}>
-            <span>
-              {trend.direction === "up" ? "↑" : trend.direction === "down" ? "↓" : "→"}
+          <motion.div 
+            className="mt-3 flex items-center gap-2"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <span className={cn(
+              "flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full",
+              trendColors[trend.direction]
+            )}>
+              <TrendIcon className="w-3 h-3" />
+              {trend.value > 0 ? "+" : ""}{Math.abs(trend.value)}%
             </span>
-            <span>{Math.abs(trend.value)}%</span>
-            <span className="text-muted-foreground ml-1">vs período anterior</span>
-          </div>
+            <span className="text-xs text-muted-foreground">
+              {trend.label || "vs período anterior"}
+            </span>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
     );
   }
 );
