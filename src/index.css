@@ -106,6 +106,26 @@
     --rank-bronze: 30 50% 50%;
     --rank-bronze-foreground: 30 50% 15%;
 
+    /* ===== KPI COLORS ===== */
+    --kpi-emerald: 160 84% 39%;
+    --kpi-emerald-bg: 160 84% 95%;
+    --kpi-orange: 25 95% 53%;
+    --kpi-orange-bg: 25 95% 95%;
+    --kpi-blue: 217 91% 60%;
+    --kpi-blue-bg: 217 91% 95%;
+    --kpi-purple: 271 81% 56%;
+    --kpi-purple-bg: 271 81% 95%;
+    --kpi-green: 142 71% 45%;
+    --kpi-green-bg: 142 71% 95%;
+    --kpi-cyan: 186 94% 41%;
+    --kpi-cyan-bg: 186 94% 95%;
+    --kpi-red: 0 84% 60%;
+    --kpi-red-bg: 0 84% 95%;
+    --kpi-indigo: 239 84% 67%;
+    --kpi-indigo-bg: 239 84% 95%;
+    --kpi-teal: 175 77% 38%;
+    --kpi-teal-bg: 175 77% 95%;
+
     /* ===== CHART COLORS ===== */
     --chart-1: 262 83% 58%;
     --chart-2: 199 89% 48%;
@@ -200,6 +220,26 @@
     --rank-gold: 45 93% 55%;
     --rank-silver: 220 9% 70%;
     --rank-bronze: 30 50% 55%;
+
+    /* Dark KPI colors */
+    --kpi-emerald: 160 84% 50%;
+    --kpi-emerald-bg: 160 84% 15%;
+    --kpi-orange: 25 95% 58%;
+    --kpi-orange-bg: 25 95% 15%;
+    --kpi-blue: 217 91% 65%;
+    --kpi-blue-bg: 217 91% 15%;
+    --kpi-purple: 271 81% 65%;
+    --kpi-purple-bg: 271 81% 15%;
+    --kpi-green: 142 71% 50%;
+    --kpi-green-bg: 142 71% 15%;
+    --kpi-cyan: 186 94% 50%;
+    --kpi-cyan-bg: 186 94% 15%;
+    --kpi-red: 0 84% 55%;
+    --kpi-red-bg: 0 84% 15%;
+    --kpi-indigo: 239 84% 72%;
+    --kpi-indigo-bg: 239 84% 15%;
+    --kpi-teal: 175 77% 48%;
+    --kpi-teal-bg: 175 77% 15%;
 
     /* Dark chart colors */
     --chart-1: 262 83% 65%;
