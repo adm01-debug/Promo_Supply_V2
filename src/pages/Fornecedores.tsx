@@ -6,6 +6,8 @@ import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion"
 import { SupplierRiskAnalysis } from "@/components/compras/SupplierRiskAnalysis";
 import { PriceComparator } from "@/components/compras/PriceComparator";
 import { FornecedorMobileCard } from "@/components/fornecedores/FornecedorMobileCard";
+import { OnboardingTour, fornecedorTourSteps } from "@/components/onboarding/OnboardingTour";
+import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -75,6 +77,9 @@ const Fornecedores = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [historicoModalOpen, setHistoricoModalOpen] = useState(false);
   const [selectedFornecedor, setSelectedFornecedor] = useState<LegacyFornecedor | null>(null);
+
+  // Tour preferences
+  const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, isLoading: isTourLoading } = useTourPreferences('fornecedor');
 
   // Use real data from Supabase
   const { 
@@ -195,7 +200,7 @@ const Fornecedores = () => {
     <MainLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-tour="fornecedor-header">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Fornecedores</h1>
             <p className="text-sm text-muted-foreground">
@@ -214,7 +219,7 @@ const Fornecedores = () => {
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" data-tour="fornecedor-kpis">
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-primary/20">
@@ -255,7 +260,7 @@ const Fornecedores = () => {
         </div>
 
         {/* Filters */}
-        <Card className="p-4">
+        <Card className="p-4" data-tour="fornecedor-filtros">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -307,7 +312,7 @@ const Fornecedores = () => {
 
         {/* Desktop Table View */}
         {!isMobile && (
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden" data-tour="fornecedor-tabela">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
@@ -470,6 +475,16 @@ const Fornecedores = () => {
         onOpenChange={setHistoricoModalOpen}
         fornecedor={selectedFornecedor}
       />
+
+      {/* Onboarding Tour */}
+      {!isTourLoading && (
+        <OnboardingTour
+          steps={fornecedorTourSteps}
+          isOpen={isTourOpen}
+          onComplete={completeTour}
+          onSkip={skipTour}
+        />
+      )}
     </MainLayout>
   );
 };

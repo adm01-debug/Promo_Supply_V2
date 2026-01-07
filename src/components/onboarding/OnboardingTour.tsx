@@ -549,44 +549,91 @@ export const dashboardTourSteps: TourStep[] = [
   },
 ];
 
-// Additional tour for specific features
+// Cotação page tour
 export const cotacaoTourSteps: TourStep[] = [
   {
-    target: "[data-tour='cotacao-form']",
-    title: "Nova Cotação",
-    content: "Preencha os dados da solicitação e adicione os itens que deseja cotar. O sistema irá buscar fornecedores automaticamente.",
-    position: "right",
+    target: "[data-tour='cotacao-produto']",
+    title: "Detalhes do Produto",
+    content: "Visualize todas as informações da solicitação: produto, quantidade, prazo e valor estimado. Essencial para comparar cotações.",
+    position: "bottom",
     highlight: "primary",
   },
   {
-    target: "[data-tour='fornecedores-list']",
-    title: "Fornecedores Sugeridos",
-    content: "A IA analisa o histórico de compras e sugere os melhores fornecedores para cada item, considerando preço, prazo e qualidade.",
+    target: "[data-tour='cotacao-busca']",
+    title: "Busca Automática de Preços",
+    content: "Clique para buscar cotações automaticamente em todos os fornecedores integrados por API. O sistema consulta preços em tempo real!",
     position: "bottom",
     highlight: "info",
   },
   {
-    target: "[data-tour='comparador']",
-    title: "Compare e Decida",
-    content: "Visualize todas as propostas lado a lado, compare preços, prazos e condições de pagamento para tomar a melhor decisão.",
+    target: "[data-tour='cotacao-manual']",
+    title: "Cotações Manuais",
+    content: "Adicione cotações recebidas por WhatsApp, email ou telefone. Centralize todas as propostas em um só lugar.",
     position: "top",
     highlight: "success",
   },
 ];
 
+// Fornecedores page tour
 export const fornecedorTourSteps: TourStep[] = [
   {
-    target: "[data-tour='fornecedor-card']",
-    title: "Perfil do Fornecedor",
-    content: "Veja todas as informações do fornecedor, incluindo avaliação, histórico de pedidos e documentos.",
-    position: "right",
+    target: "[data-tour='fornecedor-header']",
+    title: "Gestão de Fornecedores",
+    content: "Gerencie todos os seus fornecedores em um só lugar. Cadastre novos, edite informações e acompanhe o desempenho de cada um.",
+    position: "bottom",
     highlight: "primary",
   },
   {
-    target: "[data-tour='fornecedor-rating']",
-    title: "Sistema de Avaliação",
-    content: "Cada fornecedor é avaliado automaticamente baseado em critérios de preço, prazo de entrega e qualidade dos produtos.",
+    target: "[data-tour='fornecedor-kpis']",
+    title: "Indicadores de Fornecedores",
+    content: "Acompanhe métricas importantes: total de fornecedores, integrações ativas e avaliação média.",
     position: "bottom",
+    highlight: "info",
+  },
+  {
+    target: "[data-tour='fornecedor-filtros']",
+    title: "Filtros Inteligentes",
+    content: "Busque por nome, CNPJ ou filtre por tipo de fornecedor. Encontre rapidamente quem você precisa.",
+    position: "bottom",
+    highlight: "success",
+  },
+  {
+    target: "[data-tour='fornecedor-tabela']",
+    title: "Lista de Fornecedores",
+    content: "Veja todos os fornecedores com suas informações, contatos e rating. Clique para editar ou ver histórico de compras.",
+    position: "top",
+    highlight: "warning",
+  },
+];
+
+// Pedidos page tour
+export const pedidosTourSteps: TourStep[] = [
+  {
+    target: "[data-tour='pedidos-header']",
+    title: "Central de Pedidos",
+    content: "Acompanhe todos os pedidos de compra em um único lugar. Visualize status, valores e prazos de entrega.",
+    position: "bottom",
+    highlight: "primary",
+  },
+  {
+    target: "[data-tour='pedidos-kpis']",
+    title: "Resumo dos Pedidos",
+    content: "Veja o panorama geral: total de pedidos, pendentes, em trânsito, entregues e valor total comprometido.",
+    position: "bottom",
+    highlight: "info",
+  },
+  {
+    target: "[data-tour='pedidos-filtros']",
+    title: "Filtros Avançados",
+    content: "Filtre por status, fornecedor ou busque por número do pedido. Encontre qualquer pedido em segundos.",
+    position: "bottom",
+    highlight: "success",
+  },
+  {
+    target: "[data-tour='pedidos-tabela']",
+    title: "Acompanhamento de Pedidos",
+    content: "Clique em qualquer pedido para ver detalhes completos, atualizar status ou entrar em contato com o fornecedor.",
+    position: "top",
     highlight: "warning",
   },
 ];

@@ -27,6 +27,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { OnboardingTour, pedidosTourSteps } from "@/components/onboarding/OnboardingTour";
+import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { 
   Select, 
   SelectContent, 
@@ -89,6 +91,9 @@ const Pedidos = () => {
   const { pedidos, loading, refetch, updateStatus } = usePedidos();
   const { kpis } = usePedidosKPIs();
   const { fornecedores } = useFornecedores();
+
+  // Tour preferences
+  const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, isLoading: isTourLoading } = useTourPreferences('pedidos');
 
   // Filtros e ordenação
   const filteredPedidos = useMemo(() => {
@@ -193,7 +198,7 @@ const Pedidos = () => {
     <MainLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="pedidos-header">
           <div>
             <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <FileText className="w-6 h-6 text-primary" />
@@ -229,7 +234,7 @@ const Pedidos = () => {
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4" data-tour="pedidos-kpis">
           <Card className="p-4">
             <div className="flex items-center gap-3">
               <div className="p-2 rounded-lg bg-primary/10">
@@ -294,7 +299,7 @@ const Pedidos = () => {
         </div>
 
         {/* Filtros */}
-        <Card className="p-4">
+        <Card className="p-4" data-tour="pedidos-filtros">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -373,7 +378,7 @@ const Pedidos = () => {
           </div>
         ) : (
           /* Desktop Table */
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden" data-tour="pedidos-tabela">
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
@@ -754,6 +759,16 @@ const Pedidos = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Onboarding Tour */}
+      {!isTourLoading && (
+        <OnboardingTour
+          steps={pedidosTourSteps}
+          isOpen={isTourOpen}
+          onComplete={completeTour}
+          onSkip={skipTour}
+        />
+      )}
     </MainLayout>
   );
 };

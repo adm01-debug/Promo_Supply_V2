@@ -11,6 +11,8 @@ import { CotacaoManualModal } from "@/components/compras/CotacaoManualModal";
 import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
 import { VisualComparadorCotacoes } from "@/components/compras/VisualComparadorCotacoes";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { OnboardingTour, cotacaoTourSteps } from "@/components/onboarding/OnboardingTour";
+import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { useSolicitacoes } from "@/hooks/useSolicitacoes";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/hooks/useCotacoes";
@@ -20,6 +22,9 @@ import { toast } from "@/lib/feedbackToast";
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
   const solicitacaoId = searchParams.get("id");
+  
+  // Tour preferences
+  const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, isLoading: isTourLoading } = useTourPreferences('cotacao');
   
   const { solicitacoes, loading: loadingSolicitacoes } = useSolicitacoes();
   const { fornecedores } = useFornecedores();
@@ -222,7 +227,7 @@ const Cotacao = () => {
         </div>
 
         {/* Info do Produto */}
-        <Card className="p-5 border-primary/20 bg-primary/5">
+        <Card className="p-5 border-primary/20 bg-primary/5" data-tour="cotacao-produto">
           <div className="flex items-start gap-4">
             <div className="p-3 rounded-lg bg-primary/10">
               <Package className="w-6 h-6 text-primary" />
@@ -292,7 +297,7 @@ const Cotacao = () => {
         )}
 
         {/* Busca Automática */}
-        <Card className="p-5">
+        <Card className="p-5" data-tour="cotacao-busca">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-foreground flex items-center gap-2">
               <Search className="w-5 h-5 text-primary" />
@@ -356,7 +361,7 @@ const Cotacao = () => {
         )}
 
         {/* Cotação Manual */}
-        <Card className="p-5">
+        <Card className="p-5" data-tour="cotacao-manual">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-foreground flex items-center gap-2">
               <Clock className="w-5 h-5 text-blue-500" />
@@ -410,6 +415,16 @@ const Cotacao = () => {
         onSave={handleAdicionarCotacaoManual}
         fornecedores={legacyFornecedores}
       />
+      
+      {/* Onboarding Tour */}
+      {!isTourLoading && (
+        <OnboardingTour
+          steps={cotacaoTourSteps}
+          isOpen={isTourOpen}
+          onComplete={completeTour}
+          onSkip={skipTour}
+        />
+      )}
     </MainLayout>
   );
 };
