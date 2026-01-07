@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
+import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
+import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import {
   Table,
   TableBody,
@@ -134,15 +135,19 @@ const Pagamentos = () => {
     return (
       <MainLayout>
         <div className="space-y-6">
-          <div className="flex justify-between">
-            <Skeleton className="h-8 w-48" />
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+              <div className="h-4 w-64 bg-muted animate-pulse rounded" />
+            </div>
           </div>
-          <div className="grid grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => (
-              <Skeleton key={i} className="h-24" />
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <KPICardSkeleton />
+            <KPICardSkeleton />
+            <KPICardSkeleton />
+            <KPICardSkeleton />
           </div>
-          <Skeleton className="h-96" />
+          <TableSkeleton rows={6} columns={7} />
         </div>
       </MainLayout>
     );
@@ -348,9 +353,13 @@ const Pagamentos = () => {
                   })}
                   {filtrarPagamentos(pagamentosPendentes).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                        <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        {busca ? "Nenhum pagamento encontrado para a busca" : "Nenhum pagamento pendente"}
+                      <TableCell colSpan={7} className="text-center py-8">
+                        <IllustratedEmptyState
+                          type="payments"
+                          title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento pendente"}
+                          description={busca ? "Tente ajustar os termos da busca" : "Todos os pagamentos estão em dia!"}
+                          size="sm"
+                        />
                       </TableCell>
                     </TableRow>
                   )}
@@ -418,9 +427,13 @@ const Pagamentos = () => {
                   ))}
                   {filtrarPagamentos(pagamentosPagos).length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                        <DollarSign className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                        {busca ? "Nenhum pagamento encontrado para a busca" : "Nenhum pagamento confirmado"}
+                      <TableCell colSpan={7} className="text-center py-8">
+                        <IllustratedEmptyState
+                          type="payments"
+                          title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento confirmado"}
+                          description={busca ? "Tente ajustar os termos da busca" : "Os pagamentos confirmados aparecerão aqui"}
+                          size="sm"
+                        />
                       </TableCell>
                     </TableRow>
                   )}
