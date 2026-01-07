@@ -246,13 +246,13 @@ const Pagamentos = () => {
 
         {/* Tabs */}
         <Tabs defaultValue="pendentes" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="pendentes" className="gap-2">
-              <Clock className="h-4 w-4" />
+          <TabsList className="w-full grid grid-cols-2 h-auto p-1">
+            <TabsTrigger value="pendentes" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Pendentes ({pagamentosPendentes.length})
             </TabsTrigger>
-            <TabsTrigger value="pagos" className="gap-2">
-              <CheckCircle2 className="h-4 w-4" />
+            <TabsTrigger value="pagos" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               Pagos ({pagamentosPagos.length})
             </TabsTrigger>
           </TabsList>

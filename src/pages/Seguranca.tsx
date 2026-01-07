@@ -42,58 +42,58 @@ const Seguranca = () => {
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
-                  <LogIn className="w-5 h-5 text-destructive" />
+            <CardContent className="p-3 sm:pt-6 sm:px-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
+                  <LogIn className="w-4 h-4 sm:w-5 sm:h-5 text-destructive" />
                 </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.failedLogins24h}</p>
-                  <p className="text-xs text-muted-foreground">Falhas Login (24h)</p>
+                <div className="min-w-0">
+                  <p className="text-lg sm:text-2xl font-bold">{stats.failedLogins24h}</p>
+                  <p className="text-xs text-muted-foreground truncate">Falhas (24h)</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-warning/10 flex items-center justify-center">
-                  <Ban className="w-5 h-5 text-warning" />
+            <CardContent className="p-3 sm:pt-6 sm:px-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-warning/10 flex items-center justify-center shrink-0">
+                  <Ban className="w-4 h-4 sm:w-5 sm:h-5 text-warning" />
                 </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.blockedIPsActive}</p>
-                  <p className="text-xs text-muted-foreground">IPs Bloqueados</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-destructive" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.criticalEvents}</p>
-                  <p className="text-xs text-muted-foreground">Eventos Críticos</p>
+                <div className="min-w-0">
+                  <p className="text-lg sm:text-2xl font-bold">{stats.blockedIPsActive}</p>
+                  <p className="text-xs text-muted-foreground truncate">IPs Bloqueados</p>
                 </div>
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
-                  <Monitor className="w-5 h-5 text-success" />
+            <CardContent className="p-3 sm:pt-6 sm:px-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-destructive/10 flex items-center justify-center shrink-0">
+                  <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-destructive" />
                 </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.activeSessionsCount}</p>
-                  <p className="text-xs text-muted-foreground">Sessões Ativas</p>
+                <div className="min-w-0">
+                  <p className="text-lg sm:text-2xl font-bold">{stats.criticalEvents}</p>
+                  <p className="text-xs text-muted-foreground truncate">Eventos Críticos</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardContent className="p-3 sm:pt-6 sm:px-4">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-success/10 flex items-center justify-center shrink-0">
+                  <Monitor className="w-4 h-4 sm:w-5 sm:h-5 text-success" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-lg sm:text-2xl font-bold">{stats.activeSessionsCount}</p>
+                  <p className="text-xs text-muted-foreground truncate">Sessões Ativas</p>
                 </div>
               </div>
             </CardContent>

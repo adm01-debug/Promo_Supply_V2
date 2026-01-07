@@ -77,7 +77,7 @@ export const CotacaoManualModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="w-[95vw] max-w-lg max-h-[85vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Save className="w-5 h-5 text-primary" />
@@ -115,7 +115,7 @@ export const CotacaoManualModal = ({
           </div>
 
           {/* Valores */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <div className="space-y-2">
               <Label>Valor Unitário (R$) *</Label>
               <Input
@@ -141,7 +141,7 @@ export const CotacaoManualModal = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <div className="space-y-2">
               <Label>Prazo Entrega (dias) *</Label>
               <Input

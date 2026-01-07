@@ -35,22 +35,22 @@ const SupplierPerformance = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
-            <TabsTrigger value="scorecard" className="flex items-center gap-2">
-              <Award className="w-4 h-4" />
+          <TabsList className="w-full grid grid-cols-4 h-auto p-1">
+            <TabsTrigger value="scorecard" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Scorecard</span>
             </TabsTrigger>
-            <TabsTrigger value="heatmap" className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4" />
+            <TabsTrigger value="heatmap" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Risk Map</span>
             </TabsTrigger>
-            <TabsTrigger value="ranking" className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
+            <TabsTrigger value="ranking" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Ranking</span>
             </TabsTrigger>
-            <TabsTrigger value="alerts" className="flex items-center gap-2">
-              <Shield className="w-4 h-4" />
-              <span className="hidden sm:inline">Alertas SLA</span>
+            <TabsTrigger value="alerts" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Alertas</span>
             </TabsTrigger>
           </TabsList>
 

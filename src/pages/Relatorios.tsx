@@ -275,18 +275,18 @@ const Relatorios = () => {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-flex">
-            <TabsTrigger value="geral" className="flex items-center gap-2">
-              <BarChart3 className="w-4 h-4" />
-              Visão Geral
+          <TabsList className="w-full grid grid-cols-3 h-auto p-1">
+            <TabsTrigger value="geral" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Visão</span> Geral
             </TabsTrigger>
-            <TabsTrigger value="kpis" className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
-              KPIs Avançados
+            <TabsTrigger value="kpis" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              KPIs
             </TabsTrigger>
-            <TabsTrigger value="previsao" className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4" />
-              Previsão IA
+            <TabsTrigger value="previsao" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Previsão</span> IA
             </TabsTrigger>
           </TabsList>
 
@@ -295,71 +295,71 @@ const Relatorios = () => {
           </TabsContent>
 
           <TabsContent value="geral" className="mt-6 space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-5">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Volume Total</p>
-                <p className="text-2xl font-bold text-foreground mt-1">
-                  R$ {totalVolume.toLocaleString('pt-BR')}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          <Card className="p-3 sm:p-5">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Volume Total</p>
+                <p className="text-lg sm:text-2xl font-bold text-foreground mt-1 truncate">
+                  R$ {(totalVolume / 1000).toFixed(0)}K
                 </p>
-                <div className="flex items-center gap-1 mt-2 text-success text-sm">
-                  <ArrowUpRight className="w-4 h-4" />
-                  <span>+18% vs período anterior</span>
+                <div className="hidden sm:flex items-center gap-1 mt-2 text-success text-xs sm:text-sm">
+                  <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span>+18%</span>
                 </div>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-primary" />
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
               </div>
             </div>
           </Card>
 
-          <Card className="p-5">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Pedidos</p>
-                <p className="text-2xl font-bold text-foreground mt-1">{totalPedidos}</p>
-                <div className="flex items-center gap-1 mt-2 text-success text-sm">
-                  <ArrowUpRight className="w-4 h-4" />
-                  <span>+24% vs período anterior</span>
+          <Card className="p-3 sm:p-5">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Total Pedidos</p>
+                <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{totalPedidos}</p>
+                <div className="hidden sm:flex items-center gap-1 mt-2 text-success text-xs sm:text-sm">
+                  <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span>+24%</span>
                 </div>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-                <Package className="w-6 h-6 text-blue-500" />
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
+                <Package className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
               </div>
             </div>
           </Card>
 
-          <Card className="p-5">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Economia Gerada</p>
-                <p className="text-2xl font-bold text-foreground mt-1">
-                  R$ {totalEconomia.toLocaleString('pt-BR')}
+          <Card className="p-3 sm:p-5">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Economia</p>
+                <p className="text-lg sm:text-2xl font-bold text-foreground mt-1 truncate">
+                  R$ {(totalEconomia / 1000).toFixed(0)}K
                 </p>
-                <div className="flex items-center gap-1 mt-2 text-success text-sm">
-                  <TrendingUp className="w-4 h-4" />
-                  <span>{mediaEconomia.toFixed(1)}% média de economia</span>
+                <div className="hidden sm:flex items-center gap-1 mt-2 text-success text-xs sm:text-sm">
+                  <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span>{mediaEconomia.toFixed(1)}%</span>
                 </div>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-success" />
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-success/10 flex items-center justify-center shrink-0">
+                <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-success" />
               </div>
             </div>
           </Card>
 
-          <Card className="p-5">
-            <div className="flex items-start justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Fornecedores Ativos</p>
-                <p className="text-2xl font-bold text-foreground mt-1">{fornecedoresMock.length}</p>
-                <div className="flex items-center gap-1 mt-2 text-muted-foreground text-sm">
-                  <Building2 className="w-4 h-4" />
-                  <span>{performanceFornecedores.filter(f => f.rating >= 4).length} com rating ≥4</span>
+          <Card className="p-3 sm:p-5">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-muted-foreground truncate">Fornecedores</p>
+                <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{fornecedoresMock.length}</p>
+                <div className="hidden sm:flex items-center gap-1 mt-2 text-muted-foreground text-xs sm:text-sm">
+                  <Building2 className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span>{performanceFornecedores.filter(f => f.rating >= 4).length} ★≥4</span>
                 </div>
               </div>
-              <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-purple-500" />
+              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
+                <Building2 className="w-4 h-4 sm:w-6 sm:h-6 text-purple-500" />
               </div>
             </div>
           </Card>

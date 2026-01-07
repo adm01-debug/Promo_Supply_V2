@@ -235,7 +235,7 @@ const Cotacao = () => {
                 </div>
                 <Badge variant="secondary">{solicitacao.tipo}</Badge>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2">
+              <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4 pt-2">
                 <div>
                   <p className="text-xs text-muted-foreground">Quantidade</p>
                   <p className="font-semibold text-foreground">

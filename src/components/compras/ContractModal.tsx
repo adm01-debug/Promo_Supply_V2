@@ -267,7 +267,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-4xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Editar Contrato" : "Novo Contrato"}
@@ -478,7 +478,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
                         <Trash2 className="w-4 h-4" />
                       </Button>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5 sm:gap-3">
                       <div className="md:col-span-2">
                         <Input
                           placeholder="Nome do item"
