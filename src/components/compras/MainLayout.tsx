@@ -7,13 +7,14 @@ import { UserMenu } from "@/components/compras/UserMenu";
 import { SupplierChat } from "@/components/compras/SupplierChat";
 import { GlobalSearch } from "@/components/compras/GlobalSearch";
 import { KeyboardShortcutsDialog } from "@/components/compras/KeyboardShortcutsDialog";
+import { CommandPalette, useCommandPalette } from "@/components/compras/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
 import { OnboardingTour, useOnboardingTour, dashboardTourSteps } from "@/components/onboarding/OnboardingTour";
 import { cn } from "@/lib/utils";
-import { Menu, X, Keyboard, HelpCircle } from "lucide-react";
+import { Menu, X, Keyboard, HelpCircle, Command } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -29,6 +30,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   // Initialize keyboard shortcuts
   useKeyboardShortcuts();
   
+  // Command Palette
+  const { open: commandPaletteOpen, setOpen: setCommandPaletteOpen } = useCommandPalette();
+  
   // Onboarding tour - only show on dashboard
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
   const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, restart: restartTour } = useOnboardingTour('dashboard');
@@ -37,6 +41,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
     <div className="min-h-screen bg-background">
       {/* Skip Links for accessibility */}
       <SkipLinks />
+      
+      {/* Command Palette (Ctrl+K) */}
+      <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
       
       {/* Keyboard Shortcuts Dialog */}
       <KeyboardShortcutsDialog />
@@ -95,6 +102,28 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
             {/* Right Actions */}
             <div className="flex items-center gap-1 sm:gap-2">
+              {/* Command Palette Button */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setCommandPaletteOpen(true)}
+                    className="hidden md:flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                    aria-label="Abrir Command Palette"
+                  >
+                    <Command className="w-4 h-4" />
+                    <span className="text-xs">Buscar...</span>
+                    <kbd className="ml-2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                      <span className="text-xs">⌘</span>K
+                    </kbd>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Busca rápida (Ctrl+K / ⌘K)</p>
+                </TooltipContent>
+              </Tooltip>
+              
               {/* Theme Toggle */}
               <ThemeToggle />
               
