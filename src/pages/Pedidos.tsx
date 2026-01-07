@@ -59,11 +59,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
+import { PedidoMobileCard } from "@/components/pedidos/PedidoMobileCard";
 import { toast } from "sonner";
 import { format, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { usePedidos, usePedidosKPIs, type Pedido } from "@/hooks/usePedidos";
 import { useFornecedores } from "@/hooks/useFornecedores";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle2 }> = {
   pendente: { label: 'Pendente', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20', icon: Clock },
@@ -83,6 +85,7 @@ const Pedidos = () => {
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
+  const isMobile = useIsMobile();
   const { pedidos, loading, refetch, updateStatus } = usePedidos();
   const { kpis } = usePedidosKPIs();
   const { fornecedores } = useFornecedores();
@@ -343,178 +346,205 @@ const Pedidos = () => {
           </div>
         </Card>
 
-        {/* Tabela */}
-        <Card className="overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead>Número</TableHead>
-                <TableHead>Fornecedor</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead 
-                  className="cursor-pointer hover:text-foreground"
-                  onClick={() => handleSort('data_previsao')}
-                >
-                  <div className="flex items-center gap-1">
-                    Prazo
-                    <ArrowUpDown className="w-3 h-3" />
-                  </div>
-                </TableHead>
-                <TableHead 
-                  className="text-right cursor-pointer hover:text-foreground"
-                  onClick={() => handleSort('valor_total')}
-                >
-                  <div className="flex items-center justify-end gap-1">
-                    Valor Total
-                    <ArrowUpDown className="w-3 h-3" />
-                  </div>
-                </TableHead>
-                <TableHead className="text-right">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredPedidos.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="h-32 text-center p-8">
-                    <IllustratedEmptyState
-                      type="orders"
-                      title="Nenhum pedido encontrado"
-                      description={search || statusFilter !== 'all' || fornecedorFilter !== 'all' 
-                        ? 'Tente ajustar os filtros de busca'
-                        : 'Crie um novo pedido para começar a gerenciar suas compras'}
-                      size="sm"
-                    />
-                  </TableCell>
+        {/* Mobile View */}
+        {isMobile ? (
+          <div className="space-y-3">
+            {filteredPedidos.length === 0 ? (
+              <Card className="p-8">
+                <IllustratedEmptyState
+                  type="orders"
+                  title="Nenhum pedido encontrado"
+                  description={search || statusFilter !== 'all' || fornecedorFilter !== 'all' 
+                    ? 'Tente ajustar os filtros de busca'
+                    : 'Crie um novo pedido para começar a gerenciar suas compras'}
+                  size="sm"
+                />
+              </Card>
+            ) : (
+              filteredPedidos.map((pedido) => (
+                <PedidoMobileCard
+                  key={pedido.id}
+                  pedido={pedido}
+                  onView={handleViewDetails}
+                  onUpdateStatus={handleUpdateStatus}
+                />
+              ))
+            )}
+          </div>
+        ) : (
+          /* Desktop Table */
+          <Card className="overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-muted/50">
+                  <TableHead>Número</TableHead>
+                  <TableHead>Fornecedor</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead 
+                    className="cursor-pointer hover:text-foreground"
+                    onClick={() => handleSort('data_previsao')}
+                  >
+                    <div className="flex items-center gap-1">
+                      Prazo
+                      <ArrowUpDown className="w-3 h-3" />
+                    </div>
+                  </TableHead>
+                  <TableHead 
+                    className="text-right cursor-pointer hover:text-foreground"
+                    onClick={() => handleSort('valor_total')}
+                  >
+                    <div className="flex items-center justify-end gap-1">
+                      Valor Total
+                      <ArrowUpDown className="w-3 h-3" />
+                    </div>
+                  </TableHead>
+                  <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
-              ) : (
-                filteredPedidos.map((pedido) => {
-                  const config = statusConfig[pedido.status] || statusConfig.pendente;
-                  const StatusIcon = config?.icon || FileText;
-                  const prazoStatus = getPrazoStatus(pedido.data_previsao);
+              </TableHeader>
+              <TableBody>
+                {filteredPedidos.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="h-32 text-center p-8">
+                      <IllustratedEmptyState
+                        type="orders"
+                        title="Nenhum pedido encontrado"
+                        description={search || statusFilter !== 'all' || fornecedorFilter !== 'all' 
+                          ? 'Tente ajustar os filtros de busca'
+                          : 'Crie um novo pedido para começar a gerenciar suas compras'}
+                        size="sm"
+                      />
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredPedidos.map((pedido) => {
+                    const config = statusConfig[pedido.status] || statusConfig.pendente;
+                    const StatusIcon = config?.icon || FileText;
+                    const prazoStatus = getPrazoStatus(pedido.data_previsao);
 
-                  return (
-                    <TableRow 
-                      key={pedido.id} 
-                      className="hover:bg-muted/30 cursor-pointer"
-                      onClick={() => handleViewDetails(pedido)}
-                    >
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono font-medium text-primary">{pedido.numero}</span>
-                          <Button 
-                            variant="ghost" 
-                            size="icon" 
-                            className="h-6 w-6"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleCopyOrderNumber(pedido.numero);
-                            }}
-                          >
-                            <Copy className="w-3 h-3" />
-                          </Button>
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                          {format(new Date(pedido.data_emissao), 'dd/MM/yyyy')}
-                        </p>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Building2 className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-sm">
-                            {pedido.fornecedor?.razao_social || 'Fornecedor não encontrado'}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={config?.color}>
-                          <StatusIcon className="w-3 h-3 mr-1" />
-                          {config?.label}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4 text-muted-foreground" />
-                          <span className="text-sm">
-                            {pedido.data_previsao 
-                              ? format(new Date(pedido.data_previsao), 'dd/MM/yy')
-                              : '-'}
-                          </span>
-                          {prazoStatus.urgent && pedido.status !== 'entregue' && (
-                            <Badge variant="outline" className={`text-xs ${prazoStatus.color}`}>
-                              {prazoStatus.label}
-                            </Badge>
-                          )}
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className="font-bold">
-                          {pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                              <MoreHorizontal className="w-4 h-4" />
+                    return (
+                      <TableRow 
+                        key={pedido.id} 
+                        className="hover:bg-muted/30 cursor-pointer"
+                        onClick={() => handleViewDetails(pedido)}
+                      >
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono font-medium text-primary">{pedido.numero}</span>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-6 w-6"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleCopyOrderNumber(pedido.numero);
+                              }}
+                            >
+                              <Copy className="w-3 h-3" />
                             </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => handleViewDetails(pedido)}>
-                              <Eye className="w-4 h-4 mr-2" />
-                              Ver Detalhes
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <Printer className="w-4 h-4 mr-2" />
-                              Imprimir
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={(e) => {
-                              e.stopPropagation();
-                              handleUpdateStatus(pedido.id, 'aprovado');
-                            }}>
-                              <CheckCircle2 className="w-4 h-4 mr-2" />
-                              Aprovar
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={(e) => {
-                              e.stopPropagation();
-                              handleUpdateStatus(pedido.id, 'enviado');
-                            }}>
-                              <Truck className="w-4 h-4 mr-2" />
-                              Marcar Enviado
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={(e) => {
-                              e.stopPropagation();
-                              handleUpdateStatus(pedido.id, 'entregue');
-                            }}>
-                              <Package className="w-4 h-4 mr-2" />
-                              Marcar Entregue
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>
-                              <Mail className="w-4 h-4 mr-2" />
-                              Enviar por E-mail
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                              <MessageCircle className="w-4 h-4 mr-2" />
-                              Enviar WhatsApp
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
-        </Card>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {format(new Date(pedido.data_emissao), 'dd/MM/yyyy')}
+                          </p>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Building2 className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">
+                              {pedido.fornecedor?.razao_social || 'Fornecedor não encontrado'}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className={config?.color}>
+                            <StatusIcon className="w-3 h-3 mr-1" />
+                            {config?.label}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4 text-muted-foreground" />
+                            <span className="text-sm">
+                              {pedido.data_previsao 
+                                ? format(new Date(pedido.data_previsao), 'dd/MM/yy')
+                                : '-'}
+                            </span>
+                            {prazoStatus.urgent && pedido.status !== 'entregue' && (
+                              <Badge variant="outline" className={`text-xs ${prazoStatus.color}`}>
+                                {prazoStatus.label}
+                              </Badge>
+                            )}
+                          </div>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <span className="font-bold">
+                            {pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <MoreHorizontal className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => handleViewDetails(pedido)}>
+                                <Eye className="w-4 h-4 mr-2" />
+                                Ver Detalhes
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <Printer className="w-4 h-4 mr-2" />
+                                Imprimir
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpdateStatus(pedido.id, 'aprovado');
+                              }}>
+                                <CheckCircle2 className="w-4 h-4 mr-2" />
+                                Aprovar
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpdateStatus(pedido.id, 'enviado');
+                              }}>
+                                <Truck className="w-4 h-4 mr-2" />
+                                Marcar Enviado
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={(e) => {
+                                e.stopPropagation();
+                                handleUpdateStatus(pedido.id, 'entregue');
+                              }}>
+                                <Package className="w-4 h-4 mr-2" />
+                                Marcar Entregue
+                              </DropdownMenuItem>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem>
+                                <Mail className="w-4 h-4 mr-2" />
+                                Enviar por E-mail
+                              </DropdownMenuItem>
+                              <DropdownMenuItem>
+                                <MessageCircle className="w-4 h-4 mr-2" />
+                                Enviar WhatsApp
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                )}
+              </TableBody>
+            </Table>
+          </Card>
+        )}
 
         {/* Resumo */}
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <p>
             Mostrando {filteredPedidos.length} de {pedidos.length} pedidos
           </p>
-          <p>
+          <p className="hidden sm:block">
             Valor filtrado: {filteredPedidos.reduce((acc, o) => acc + o.valor_total, 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
           </p>
         </div>

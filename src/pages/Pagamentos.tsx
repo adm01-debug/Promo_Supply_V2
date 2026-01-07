@@ -46,7 +46,9 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { PagamentoMobileCard } from "@/components/pagamentos/PagamentoMobileCard";
 import { usePagamentos, usePagamentosKPIs, type Pagamento } from "@/hooks/usePagamentos";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
 import { format, differenceInDays } from "date-fns";
 
@@ -57,6 +59,7 @@ const Pagamentos = () => {
   const [comprovante, setComprovante] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
+  const isMobile = useIsMobile();
   const { pagamentos, loading, refetch, markAsPaid, approvePagamento } = usePagamentos();
   const { kpis } = usePagamentosKPIs();
 
@@ -255,34 +258,188 @@ const Pagamentos = () => {
           </TabsList>
 
           <TabsContent value="pendentes">
-            <Card>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Número</TableHead>
-                    <TableHead>Fornecedor</TableHead>
-                    <TableHead>NF</TableHead>
-                    <TableHead>Forma Pgto</TableHead>
-                    <TableHead>Vencimento</TableHead>
-                    <TableHead className="text-right">Valor</TableHead>
-                    <TableHead className="text-right">Ações</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filtrarPagamentos(pagamentosPendentes).map((pagamento) => {
-                    const vencStatus = getVencimentoStatus(pagamento.data_vencimento, pagamento.status);
-                    const VencIcon = vencStatus.icon;
-                    const statusBadge = getStatusBadge(pagamento.status);
-                    
-                    return (
+            {isMobile ? (
+              /* Mobile View */
+              <div className="space-y-3">
+                {filtrarPagamentos(pagamentosPendentes).length === 0 ? (
+                  <Card className="p-8">
+                    <IllustratedEmptyState
+                      type="payments"
+                      title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento pendente"}
+                      description={busca ? "Tente ajustar os termos da busca" : "Todos os pagamentos estão em dia!"}
+                      size="sm"
+                    />
+                  </Card>
+                ) : (
+                  filtrarPagamentos(pagamentosPendentes).map((pagamento) => (
+                    <PagamentoMobileCard
+                      key={pagamento.id}
+                      pagamento={pagamento}
+                      onPagar={handlePagar}
+                      onAprovar={handleAprovar}
+                    />
+                  ))
+                )}
+              </div>
+            ) : (
+              /* Desktop Table */
+              <Card>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Número</TableHead>
+                      <TableHead>Fornecedor</TableHead>
+                      <TableHead>NF</TableHead>
+                      <TableHead>Forma Pgto</TableHead>
+                      <TableHead>Vencimento</TableHead>
+                      <TableHead className="text-right">Valor</TableHead>
+                      <TableHead className="text-right">Ações</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filtrarPagamentos(pagamentosPendentes).map((pagamento) => {
+                      const vencStatus = getVencimentoStatus(pagamento.data_vencimento, pagamento.status);
+                      const VencIcon = vencStatus.icon;
+                      const statusBadge = getStatusBadge(pagamento.status);
+                      
+                      return (
+                        <TableRow key={pagamento.id}>
+                          <TableCell>
+                            <span className="font-mono font-medium">{pagamento.numero}</span>
+                            <div className="mt-1">
+                              <Badge variant="outline" className={statusBadge.color}>
+                                {statusBadge.label}
+                              </Badge>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Building2 className="h-4 w-4 text-muted-foreground" />
+                              {pagamento.fornecedor?.razao_social || 'Fornecedor não encontrado'}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {pagamento.numero_nf || '-'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={pagamento.forma_pagamento === "pix" ? "default" : "secondary"} className="gap-1">
+                              {pagamento.forma_pagamento === "pix" ? (
+                                <QrCode className="h-3 w-3" />
+                              ) : (
+                                <FileText className="h-3 w-3" />
+                              )}
+                              {pagamento.forma_pagamento?.toUpperCase() || 'N/D'}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Badge 
+                                variant={vencStatus.variant === "warning" ? "outline" : vencStatus.variant === "success" ? "default" : vencStatus.variant}
+                                className={vencStatus.variant === "warning" ? "border-orange-500 text-orange-600" : vencStatus.variant === "success" ? "bg-green-600" : ""}
+                              >
+                                <VencIcon className="h-3 w-3 mr-1" />
+                                {vencStatus.label}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {format(new Date(pagamento.data_vencimento), 'dd/MM/yyyy')}
+                            </p>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <span className="font-bold">
+                              {pagamento.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                  <MoreHorizontal className="w-4 h-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => handlePagar(pagamento)}>
+                                  <CreditCard className="w-4 h-4 mr-2" />
+                                  Registrar Pagamento
+                                </DropdownMenuItem>
+                                {pagamento.status === 'pendente' && (
+                                  <DropdownMenuItem onClick={() => handleAprovar(pagamento)}>
+                                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                                    Aprovar
+                                  </DropdownMenuItem>
+                                )}
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>
+                                  <Eye className="w-4 h-4 mr-2" />
+                                  Ver Detalhes
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                    {filtrarPagamentos(pagamentosPendentes).length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center py-8">
+                          <IllustratedEmptyState
+                            type="payments"
+                            title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento pendente"}
+                            description={busca ? "Tente ajustar os termos da busca" : "Todos os pagamentos estão em dia!"}
+                            size="sm"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="pagos">
+            {isMobile ? (
+              /* Mobile View */
+              <div className="space-y-3">
+                {filtrarPagamentos(pagamentosPagos).length === 0 ? (
+                  <Card className="p-8">
+                    <IllustratedEmptyState
+                      type="payments"
+                      title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento confirmado"}
+                      description={busca ? "Tente ajustar os termos da busca" : "Os pagamentos confirmados aparecerão aqui"}
+                      size="sm"
+                    />
+                  </Card>
+                ) : (
+                  filtrarPagamentos(pagamentosPagos).map((pagamento) => (
+                    <PagamentoMobileCard
+                      key={pagamento.id}
+                      pagamento={pagamento}
+                      onPagar={handlePagar}
+                    />
+                  ))
+                )}
+              </div>
+            ) : (
+              /* Desktop Table */
+              <Card>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Número</TableHead>
+                      <TableHead>Fornecedor</TableHead>
+                      <TableHead>NF</TableHead>
+                      <TableHead>Forma Pgto</TableHead>
+                      <TableHead>Data Pagamento</TableHead>
+                      <TableHead className="text-right">Valor</TableHead>
+                      <TableHead className="text-right">Status</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filtrarPagamentos(pagamentosPagos).map((pagamento) => (
                       <TableRow key={pagamento.id}>
                         <TableCell>
                           <span className="font-mono font-medium">{pagamento.numero}</span>
-                          <div className="mt-1">
-                            <Badge variant="outline" className={statusBadge.color}>
-                              {statusBadge.label}
-                            </Badge>
-                          </div>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
@@ -294,7 +451,7 @@ const Pagamentos = () => {
                           {pagamento.numero_nf || '-'}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={pagamento.forma_pagamento === "pix" ? "default" : "secondary"} className="gap-1">
+                          <Badge variant="outline" className="gap-1">
                             {pagamento.forma_pagamento === "pix" ? (
                               <QrCode className="h-3 w-3" />
                             ) : (
@@ -304,18 +461,9 @@ const Pagamentos = () => {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Badge 
-                              variant={vencStatus.variant === "warning" ? "outline" : vencStatus.variant === "success" ? "default" : vencStatus.variant}
-                              className={vencStatus.variant === "warning" ? "border-orange-500 text-orange-600" : vencStatus.variant === "success" ? "bg-green-600" : ""}
-                            >
-                              <VencIcon className="h-3 w-3 mr-1" />
-                              {vencStatus.label}
-                            </Badge>
-                          </div>
-                          <p className="text-xs text-muted-foreground mt-1">
-                            {format(new Date(pagamento.data_vencimento), 'dd/MM/yyyy')}
-                          </p>
+                          {pagamento.data_pagamento 
+                            ? format(new Date(pagamento.data_pagamento), 'dd/MM/yyyy')
+                            : '-'}
                         </TableCell>
                         <TableCell className="text-right">
                           <span className="font-bold">
@@ -323,123 +471,29 @@ const Pagamentos = () => {
                           </span>
                         </TableCell>
                         <TableCell className="text-right">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8">
-                                <MoreHorizontal className="w-4 h-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem onClick={() => handlePagar(pagamento)}>
-                                <CreditCard className="w-4 h-4 mr-2" />
-                                Registrar Pagamento
-                              </DropdownMenuItem>
-                              {pagamento.status === 'pendente' && (
-                                <DropdownMenuItem onClick={() => handleAprovar(pagamento)}>
-                                  <CheckCircle2 className="w-4 h-4 mr-2" />
-                                  Aprovar
-                                </DropdownMenuItem>
-                              )}
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem>
-                                <Eye className="w-4 h-4 mr-2" />
-                                Ver Detalhes
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                          <Badge variant="default" className="bg-emerald-600 gap-1">
+                            <CheckCircle2 className="h-3 w-3" />
+                            Pago
+                          </Badge>
                         </TableCell>
                       </TableRow>
-                    );
-                  })}
-                  {filtrarPagamentos(pagamentosPendentes).length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center py-8">
-                        <IllustratedEmptyState
-                          type="payments"
-                          title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento pendente"}
-                          description={busca ? "Tente ajustar os termos da busca" : "Todos os pagamentos estão em dia!"}
-                          size="sm"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="pagos">
-            <Card>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Número</TableHead>
-                    <TableHead>Fornecedor</TableHead>
-                    <TableHead>NF</TableHead>
-                    <TableHead>Forma Pgto</TableHead>
-                    <TableHead>Data Pagamento</TableHead>
-                    <TableHead className="text-right">Valor</TableHead>
-                    <TableHead className="text-right">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filtrarPagamentos(pagamentosPagos).map((pagamento) => (
-                    <TableRow key={pagamento.id}>
-                      <TableCell>
-                        <span className="font-mono font-medium">{pagamento.numero}</span>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Building2 className="h-4 w-4 text-muted-foreground" />
-                          {pagamento.fornecedor?.razao_social || 'Fornecedor não encontrado'}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {pagamento.numero_nf || '-'}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="gap-1">
-                          {pagamento.forma_pagamento === "pix" ? (
-                            <QrCode className="h-3 w-3" />
-                          ) : (
-                            <FileText className="h-3 w-3" />
-                          )}
-                          {pagamento.forma_pagamento?.toUpperCase() || 'N/D'}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {pagamento.data_pagamento 
-                          ? format(new Date(pagamento.data_pagamento), 'dd/MM/yyyy')
-                          : '-'}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className="font-bold">
-                          {pagamento.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Badge variant="default" className="bg-emerald-600 gap-1">
-                          <CheckCircle2 className="h-3 w-3" />
-                          Pago
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                  {filtrarPagamentos(pagamentosPagos).length === 0 && (
-                    <TableRow>
-                      <TableCell colSpan={7} className="text-center py-8">
-                        <IllustratedEmptyState
-                          type="payments"
-                          title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento confirmado"}
-                          description={busca ? "Tente ajustar os termos da busca" : "Os pagamentos confirmados aparecerão aqui"}
-                          size="sm"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </Card>
+                    ))}
+                    {filtrarPagamentos(pagamentosPagos).length === 0 && (
+                      <TableRow>
+                        <TableCell colSpan={7} className="text-center py-8">
+                          <IllustratedEmptyState
+                            type="payments"
+                            title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento confirmado"}
+                            description={busca ? "Tente ajustar os termos da busca" : "Os pagamentos confirmados aparecerão aqui"}
+                            size="sm"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </Card>
+            )}
           </TabsContent>
         </Tabs>
 
