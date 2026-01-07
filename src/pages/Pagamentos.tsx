@@ -49,7 +49,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PagamentoMobileCard } from "@/components/pagamentos/PagamentoMobileCard";
 import { usePagamentos, usePagamentosKPIs, type Pagamento } from "@/hooks/usePagamentos";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { format, differenceInDays } from "date-fns";
 
 const Pagamentos = () => {

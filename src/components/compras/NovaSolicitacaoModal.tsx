@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { cn } from "@/lib/utils";
 
 interface NovaSolicitacaoData {

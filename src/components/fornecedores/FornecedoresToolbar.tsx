@@ -7,7 +7,7 @@ import { DataImporter } from '@/components/DataImporter';
 import { fornecedorSchema } from '@/lib/comprasSchemas';
 import { exportToExcel } from '@/lib/excelImporter';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { toast } from "@/lib/feedbackToast";
 import type { TablesInsert } from '@/integrations/supabase/types';
 
 interface FornecedoresToolbarProps {

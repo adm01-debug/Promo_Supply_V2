@@ -17,7 +17,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { useSLASettings, SLASettings, SupplierAlertConfig } from '@/stores/slaSettingsStore';
-import { toast } from 'sonner';
+import { toast } from "@/lib/feedbackToast";
 
 // Known suppliers for configuration
 const KNOWN_SUPPLIERS = [

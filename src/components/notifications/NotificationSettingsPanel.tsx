@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useRealPushNotifications } from "@/hooks/useRealPushNotifications";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { supabase } from "@/integrations/supabase/client";
 
 export const NotificationSettingsPanel = () => {

@@ -15,7 +15,7 @@ import { useSolicitacoes } from "@/hooks/useSolicitacoes";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/hooks/useCotacoes";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 const Cotacao = () => {
   const [searchParams] = useSearchParams();

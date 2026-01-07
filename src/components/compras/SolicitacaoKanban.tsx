@@ -32,7 +32,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Solicitacao, getTipoLabel } from "@/data/mockData";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 interface SolicitacaoKanbanProps {
   solicitacoes: Solicitacao[];

@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { toast } from 'sonner';
+import { toast } from "@/lib/feedbackToast";
 import { usePasswordResetRequests, PasswordResetRequest } from '@/hooks/usePasswordResetRequests';
 import { useAuth } from '@/hooks/useAuth';
 import { format } from 'date-fns';
