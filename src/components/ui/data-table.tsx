@@ -1,8 +1,10 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,11 +17,56 @@ import {
   ChevronDown,
   MoreHorizontal,
   ArrowUpDown,
-  Pin,
-  Eye,
-  EyeOff,
-  GripVertical,
+  ChevronsLeft,
+  ChevronsRight,
 } from "lucide-react";
+
+// Animated Sort Indicator
+const SortIndicator = ({ 
+  active, 
+  direction 
+}: { 
+  active: boolean; 
+  direction?: "asc" | "desc" 
+}) => (
+  <span className={cn(
+    "ml-1 inline-flex transition-all duration-200",
+    active ? "text-primary" : "text-muted-foreground/40"
+  )}>
+    <AnimatePresence mode="wait">
+      {active && direction === "asc" ? (
+        <motion.span
+          key="asc"
+          initial={{ y: 5, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -5, opacity: 0 }}
+          transition={{ duration: 0.15 }}
+        >
+          <ChevronUp className="w-4 h-4" />
+        </motion.span>
+      ) : active && direction === "desc" ? (
+        <motion.span
+          key="desc"
+          initial={{ y: -5, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 5, opacity: 0 }}
+          transition={{ duration: 0.15 }}
+        >
+          <ChevronDown className="w-4 h-4" />
+        </motion.span>
+      ) : (
+        <motion.span
+          key="none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.4 }}
+          className="opacity-0 group-hover:opacity-40"
+        >
+          <ArrowUpDown className="w-3.5 h-3.5" />
+        </motion.span>
+      )}
+    </AnimatePresence>
+  </span>
+);
 
 // Column definition
 interface Column<T> {
@@ -32,6 +79,7 @@ interface Column<T> {
   align?: "left" | "center" | "right";
   sticky?: boolean;
   hidden?: boolean;
+  className?: string;
 }
 
 // Table props
@@ -53,6 +101,7 @@ interface DataTableProps<T> {
   compact?: boolean;
   striped?: boolean;
   bordered?: boolean;
+  animatedRows?: boolean;
   className?: string;
 }
 
