@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -378,11 +378,15 @@ export const ExecutiveDashboard = () => {
   }), []);
 
   const { resetCelebrations } = useKPICelebrations(kpiMetrics);
+  const previousPeriodRef = useRef(selectedPeriod);
 
-  // Reset celebrations when period changes
+  // Reset celebrations only when period actually changes (not on initial mount)
   useEffect(() => {
-    resetCelebrations();
-  }, [selectedPeriod]);
+    if (previousPeriodRef.current !== selectedPeriod) {
+      resetCelebrations();
+      previousPeriodRef.current = selectedPeriod;
+    }
+  }, [selectedPeriod, resetCelebrations]);
 
   // Filter favorites hook
   const {

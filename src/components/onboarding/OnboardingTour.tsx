@@ -13,7 +13,7 @@ interface TourStep {
   title: string;
   content: string;
   position?: "top" | "bottom" | "left" | "right";
-  icon?: React.ReactNode;
+  icon?: React.ElementType; // Changed from React.ReactNode to React.ElementType
   highlight?: "primary" | "success" | "warning" | "info";
   action?: {
     label: string;
@@ -318,7 +318,7 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
   if (!isOpen) return null;
 
   const stepIcons = [Sparkles, Lightbulb, Target, Zap, Rocket];
-  const StepIcon = step.icon || stepIcons[currentStep % stepIcons.length];
+  const StepIcon: React.ElementType = step.icon || stepIcons[currentStep % stepIcons.length];
 
   const tooltipVariants = {
     enter: (direction: number) => ({
@@ -389,15 +389,13 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
                   "bg-primary/10"
                 )}
               >
-                {typeof StepIcon === 'function' ? (
-                  <StepIcon className={cn(
-                    "w-5 h-5",
-                    step.highlight === "success" ? "text-success" :
-                    step.highlight === "warning" ? "text-warning" :
-                    step.highlight === "info" ? "text-info" :
-                    "text-primary"
-                  )} />
-                ) : StepIcon}
+                <StepIcon className={cn(
+                  "w-5 h-5",
+                  step.highlight === "success" ? "text-success" :
+                  step.highlight === "warning" ? "text-warning" :
+                  step.highlight === "info" ? "text-info" :
+                  "text-primary"
+                )} />
               </motion.div>
               <div>
                 <span className="text-xs font-medium text-muted-foreground">

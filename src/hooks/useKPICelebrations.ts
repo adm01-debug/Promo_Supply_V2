@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useTriggerCelebration } from '@/components/ui/celebration';
 
 interface KPIMetrics {
@@ -25,21 +25,33 @@ export const useKPICelebrations = (metrics: KPIMetrics) => {
     cycleTime: false,
     underBudget: false
   });
+  const isInitialMount = useRef(true);
 
   // Load previously achieved celebrations from session
   useEffect(() => {
     const stored = sessionStorage.getItem(STORAGE_KEY);
     if (stored) {
-      hasTriggeredRef.current = JSON.parse(stored);
+      try {
+        hasTriggeredRef.current = JSON.parse(stored);
+      } catch {
+        // Invalid stored data, reset
+        sessionStorage.removeItem(STORAGE_KEY);
+      }
     }
   }, []);
 
   // Save achievements to session
-  const saveAchievements = (state: AchievementState) => {
+  const saveAchievements = useCallback((state: AchievementState) => {
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  };
+  }, []);
 
   useEffect(() => {
+    // Skip initial mount to prevent celebrations on page load
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
     const { savings, contractCompliance, avgCycleTime, totalSpend } = metrics;
 
     // Check savings goal
@@ -87,10 +99,10 @@ export const useKPICelebrations = (metrics: KPIMetrics) => {
         `R$ ${(saved / 1000).toFixed(0)}k abaixo do orçamento planejado`
       );
     }
-  }, [metrics, celebrateSuccess, celebrateAchievement, celebrateMilestone]);
+  }, [metrics, celebrateSuccess, celebrateAchievement, celebrateMilestone, saveAchievements]);
 
   // Reset celebrations (can be called when period changes)
-  const resetCelebrations = () => {
+  const resetCelebrations = useCallback(() => {
     hasTriggeredRef.current = {
       savings: false,
       compliance: false,
@@ -98,7 +110,7 @@ export const useKPICelebrations = (metrics: KPIMetrics) => {
       underBudget: false
     };
     sessionStorage.removeItem(STORAGE_KEY);
-  };
+  }, []);
 
   return { resetCelebrations };
 };
