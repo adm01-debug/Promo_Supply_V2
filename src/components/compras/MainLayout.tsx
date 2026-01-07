@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { AppSidebar } from "@/components/compras/AppSidebar";
 import { RealNotificationCenter } from "@/components/compras/RealNotificationCenter";
 import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
@@ -11,6 +11,7 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
+import { OnboardingTour, useOnboardingTour, dashboardTourSteps } from "@/components/onboarding/OnboardingTour";
 import { cn } from "@/lib/utils";
 import { Menu, X, Keyboard, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -23,9 +24,14 @@ interface MainLayoutProps {
 export const MainLayout = ({ children }: MainLayoutProps) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const location = useLocation();
   
   // Initialize keyboard shortcuts
   useKeyboardShortcuts();
+  
+  // Onboarding tour - only show on dashboard
+  const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
+  const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, restart: restartTour } = useOnboardingTour('dashboard');
 
   return (
     <div className="min-h-screen bg-background">
@@ -36,7 +42,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       <KeyboardShortcutsDialog />
       
       {/* Desktop Sidebar */}
-      <div className="hidden md:block" id="main-navigation">
+      <div className="hidden md:block" id="main-navigation" data-tour="sidebar">
         <AppSidebar 
           collapsed={sidebarCollapsed} 
           onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} 
@@ -113,6 +119,26 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
                 </TooltipContent>
               </Tooltip>
               
+              {/* Help / Restart Tour */}
+              {isDashboard && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={restartTour}
+                      className="hidden md:flex"
+                      aria-label="Ver tour de introdução"
+                    >
+                      <HelpCircle className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Ver tour de introdução</p>
+                  </TooltipContent>
+                </Tooltip>
+              )}
+              
               <div data-tour="notifications">
                 <RealNotificationCenter />
               </div>
@@ -134,6 +160,16 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
       {/* Supplier Chat */}
       <SupplierChat />
+      
+      {/* Onboarding Tour */}
+      {isDashboard && (
+        <OnboardingTour
+          steps={dashboardTourSteps}
+          isOpen={isTourOpen}
+          onComplete={completeTour}
+          onSkip={skipTour}
+        />
+      )}
     </div>
   );
 };
