@@ -70,9 +70,9 @@ export const SolicitacaoCard = ({
     <Card 
       className={cn(
         "p-4 hover:shadow-md transition-all duration-200 border-l-4",
+        statusColor.replace('bg-', 'border-l-'),
         selected && "ring-2 ring-primary bg-primary/5"
-      )} 
-      style={{ borderLeftColor: `var(--${statusColor.replace('bg-', '')})` }}
+      )}
     >
       <div className="flex flex-col md:flex-row md:items-center gap-4">
         {/* Checkbox for selection */}

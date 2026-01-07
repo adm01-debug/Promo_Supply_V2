@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
@@ -26,7 +26,7 @@ export const useDashboardFilters = () => {
   const [favorites, setFavorites] = useState<DashboardFilter[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchFavorites = async () => {
+  const fetchFavorites = useCallback(async () => {
     if (!user) return;
     
     setLoading(true);
@@ -44,7 +44,7 @@ export const useDashboardFilters = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   const saveFavorite = async (name: string, filters: FilterValues) => {
     if (!user) {
@@ -125,13 +125,13 @@ export const useDashboardFilters = () => {
     }
   };
 
-  const getDefaultFilter = (): DashboardFilter | null => {
+  const getDefaultFilter = useCallback((): DashboardFilter | null => {
     return favorites.find(f => f.is_default) || null;
-  };
+  }, [favorites]);
 
   useEffect(() => {
     fetchFavorites();
-  }, [user]);
+  }, [fetchFavorites]);
 
   return {
     favorites,
