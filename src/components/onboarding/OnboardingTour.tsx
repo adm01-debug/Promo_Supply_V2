@@ -507,37 +507,8 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
   );
 };
 
-// Hook to manage tour state
-export const useOnboardingTour = (tourKey: string) => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const storageKey = `onboarding-${tourKey}-completed`;
-
-  React.useEffect(() => {
-    const completed = localStorage.getItem(storageKey);
-    if (!completed) {
-      // Delay start for better UX
-      const timer = setTimeout(() => setIsOpen(true), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [storageKey]);
-
-  const complete = () => {
-    localStorage.setItem(storageKey, "true");
-    setIsOpen(false);
-  };
-
-  const skip = () => {
-    localStorage.setItem(storageKey, "skipped");
-    setIsOpen(false);
-  };
-
-  const restart = () => {
-    localStorage.removeItem(storageKey);
-    setIsOpen(true);
-  };
-
-  return { isOpen, complete, skip, restart, setIsOpen };
-};
+// Re-export the database-backed hook for managing tour state
+export { useTourPreferences as useOnboardingTour } from '@/hooks/useTourPreferences';
 
 // Predefined tour steps for main features
 export const dashboardTourSteps: TourStep[] = [
