@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useDashboardFilters, DashboardFilter } from '@/hooks/useDashboardFilters';
 import { FilterFavoritesManager } from './FilterFavoritesManager';
 import { PurchaseClimateWidget } from './PurchaseClimateWidget';
+import { Sparkline } from '@/components/ui/sparkline';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -165,6 +166,18 @@ const comparisonTrend = monthlyTrend.map((current, index) => ({
   previousOrders: previousMonthlyTrend[index]?.orders || 0
 }));
 
+// Sparkline trend data extracted from monthly trends
+const trendDataSets = {
+  spend: monthlyTrend.map(m => m.spend),
+  savings: monthlyTrend.map(m => m.savings),
+  orders: monthlyTrend.map(m => m.orders),
+  cycleTime: [5.2, 4.9, 4.8, 4.5, 4.3, 4.2],
+  suppliers: [42, 44, 45, 46, 47, 48],
+  pendingApprovals: [18, 15, 14, 16, 13, 12],
+  overdueOrders: [10, 8, 7, 6, 5, 5],
+  compliance: [82, 84, 85, 86, 86, 87]
+};
+
 const categorySpend = [
   { name: 'Mochilas', value: 450000, previousValue: 380000, percentage: 18.4, orders: 45, supplier: 'XBZ Brindes' },
   { name: 'Canetas', value: 380000, previousValue: 350000, percentage: 15.5, orders: 120, supplier: 'Stricker' },
@@ -228,7 +241,8 @@ const MetricCard = ({
   urgent,
   critical,
   showComparison,
-  invertChange = false
+  invertChange = false,
+  trendData
 }: { 
   title: string; 
   value: number; 
@@ -242,6 +256,7 @@ const MetricCard = ({
   critical?: number;
   showComparison?: boolean;
   invertChange?: boolean;
+  trendData?: number[];
 }) => {
   const isPositive = change && change > 0;
   const isNegative = change && change < 0;
@@ -271,12 +286,22 @@ const MetricCard = ({
           <div className="p-2 rounded-lg bg-primary/10">
             <Icon className="h-5 w-5 text-primary" />
           </div>
-          {change !== undefined && (
-            <Badge variant={isGoodChange ? 'default' : isBadChange ? 'destructive' : 'secondary'} className="flex items-center gap-1">
-              {isPositive ? <ArrowUpRight className="h-3 w-3" /> : isNegative ? <ArrowDownRight className="h-3 w-3" /> : null}
-              {Math.abs(change).toFixed(1)}%
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            {trendData && trendData.length >= 2 && (
+              <Sparkline 
+                data={trendData} 
+                width={60} 
+                height={20}
+                color={isGoodChange ? 'hsl(var(--success))' : isBadChange ? 'hsl(var(--destructive))' : 'hsl(var(--primary))'}
+              />
+            )}
+            {change !== undefined && (
+              <Badge variant={isGoodChange ? 'default' : isBadChange ? 'destructive' : 'secondary'} className="flex items-center gap-1">
+                {isPositive ? <ArrowUpRight className="h-3 w-3" /> : isNegative ? <ArrowDownRight className="h-3 w-3" /> : null}
+                {Math.abs(change).toFixed(1)}%
+              </Badge>
+            )}
+          </div>
           {urgent !== undefined && urgent > 0 && (
             <Badge variant="destructive" className="animate-pulse">
               {urgent} urgente{urgent > 1 ? 's' : ''}
@@ -683,6 +708,7 @@ export const ExecutiveDashboard = () => {
             icon={DollarSign}
             format="currency"
             showComparison={showComparison}
+            trendData={trendDataSets.spend}
           />
           <MetricCard
             title="Economia Realizada"
@@ -693,6 +719,7 @@ export const ExecutiveDashboard = () => {
             icon={TrendingUp}
             format="currency"
             showComparison={showComparison}
+            trendData={trendDataSets.savings}
           />
           <MetricCard
             title="Pedidos no Mês"
@@ -702,6 +729,7 @@ export const ExecutiveDashboard = () => {
             target={executiveMetrics.ordersThisMonth.target}
             icon={ShoppingCart}
             showComparison={showComparison}
+            trendData={trendDataSets.orders}
           />
           <MetricCard
             title="Tempo Médio Ciclo"
@@ -713,6 +741,7 @@ export const ExecutiveDashboard = () => {
             format="days"
             showComparison={showComparison}
             invertChange={true}
+            trendData={trendDataSets.cycleTime}
           />
         </div>
       </div>
@@ -727,6 +756,7 @@ export const ExecutiveDashboard = () => {
           target={executiveMetrics.supplierCount.target}
           icon={Users}
           showComparison={showComparison}
+          trendData={trendDataSets.suppliers}
         />
         <MetricCard
           title="Aprovações Pendentes"
@@ -738,6 +768,7 @@ export const ExecutiveDashboard = () => {
           onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}
           showComparison={showComparison}
           invertChange={true}
+          trendData={trendDataSets.pendingApprovals}
         />
         <MetricCard
           title="Pedidos Atrasados"
@@ -748,6 +779,7 @@ export const ExecutiveDashboard = () => {
           icon={XCircle}
           showComparison={showComparison}
           invertChange={true}
+          trendData={trendDataSets.overdueOrders}
         />
         <MetricCard
           title="Compliance Contratos"
@@ -758,6 +790,7 @@ export const ExecutiveDashboard = () => {
           icon={Target}
           format="percent"
           showComparison={showComparison}
+          trendData={trendDataSets.compliance}
         />
       </div>
 
