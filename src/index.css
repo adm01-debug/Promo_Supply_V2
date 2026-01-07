@@ -655,6 +655,26 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
+  /* Bottom safe area for iOS bottom navigation */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .mb-safe {
+    margin-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  /* Mobile bottom navigation height offset */
+  .mobile-nav-offset {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  @media (min-width: 768px) {
+    .mobile-nav-offset {
+      padding-bottom: 0;
+    }
+  }
+
   /* Enhanced focus states */
   .enhanced-focus {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background;

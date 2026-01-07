@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { AppSidebar } from "@/components/compras/AppSidebar";
 import { RealNotificationCenter } from "@/components/compras/RealNotificationCenter";
@@ -13,10 +13,13 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
 import { OnboardingTour, useOnboardingTour, dashboardTourSteps } from "@/components/onboarding/OnboardingTour";
+import { BottomNavigation } from "@/components/mobile/BottomNavigation";
+import { MobileRefreshWrapper } from "@/components/mobile/MobileRefreshWrapper";
 import { cn } from "@/lib/utils";
 import { Menu, X, Keyboard, HelpCircle, Command } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -26,6 +29,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const queryClient = useQueryClient();
   
   // Initialize keyboard shortcuts
   useKeyboardShortcuts();
@@ -37,8 +41,15 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
   const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, restart: restartTour } = useOnboardingTour('dashboard');
 
+  // Pull-to-refresh handler - invalidates all queries
+  const handleRefresh = useCallback(async () => {
+    await queryClient.invalidateQueries();
+    // Simulate minimum loading time for better UX
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }, [queryClient]);
+
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-16 md:pb-0">
       {/* Skip Links for accessibility */}
       <SkipLinks />
       
@@ -180,12 +191,20 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
           </div>
         </header>
 
-        {/* Page Content */}
-        <main id="main-content" className="p-4 md:p-6 animate-fade-in" tabIndex={-1}>
-          <Breadcrumbs className="mb-4" />
-          {children}
-        </main>
+        {/* Page Content with Pull-to-Refresh */}
+        <MobileRefreshWrapper
+          onRefresh={handleRefresh}
+          className="min-h-[calc(100vh-4rem)]"
+        >
+          <main id="main-content" className="p-4 md:p-6 animate-fade-in" tabIndex={-1}>
+            <Breadcrumbs className="mb-4" />
+            {children}
+          </main>
+        </MobileRefreshWrapper>
       </div>
+
+      {/* Mobile Bottom Navigation */}
+      <BottomNavigation />
 
       {/* Supplier Chat */}
       <SupplierChat />
