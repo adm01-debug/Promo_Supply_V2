@@ -30,7 +30,7 @@ export const useUndoStore = create<UndoStore>((set, get) => ({
   maxActions: 10,
 
   addAction: (action) => {
-    const id = `undo-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = `undo-${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
     const newAction: UndoAction = {
       ...action,
       id,

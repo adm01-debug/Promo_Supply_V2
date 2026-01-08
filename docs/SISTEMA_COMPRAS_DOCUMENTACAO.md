@@ -284,14 +284,14 @@ CREATE TYPE audit_entity_type AS ENUM ('solicitacao', 'cotacao', 'pedido', 'paga
 | Hook | Arquivo | Função |
 |------|---------|--------|
 | `useDashboardFilters` | `src/hooks/useDashboardFilters.ts` | Filtros persistentes do dashboard |
-| `useNotifications` | `src/hooks/useNotifications.ts` | Sistema de notificações |
 | `useApprovalNotifications` | `src/hooks/useApprovalNotifications.ts` | Notificações de aprovação |
-| `useSLAMonitor` | `src/hooks/useSLAMonitor.ts` | Monitoramento de SLA |
-| `useSupplierSLAMonitor` | `src/hooks/useSupplierSLAMonitor.ts` | SLA por fornecedor |
-| `useOfflineSync` | `src/hooks/useOfflineSync.ts` | Sincronização offline |
-| `useRealPushNotifications` | `src/hooks/useRealPushNotifications.ts` | Push notifications |
-| `useRealtimePushNotifications` | `src/hooks/useRealtimePushNotifications.ts` | Notificações em tempo real |
+| `useRealPushNotifications` | `src/hooks/useRealPushNotifications.ts` | Push notifications e notificações em tempo real |
 | `useKeyboardShortcuts` | `src/hooks/useKeyboardShortcuts.ts` | Atalhos de teclado |
+| `useGlobalUndo` | `src/hooks/useGlobalUndo.ts` | Sistema de desfazer global |
+| `useMobileGestures` | `src/hooks/useMobileGestures.ts` | Gestos touch para mobile |
+| `useFeedback` | `src/hooks/useFeedback.ts` | Sistema de feedback háptico e visual |
+| `useAnimatedValue` | `src/hooks/useAnimatedValue.ts` | Valores animados |
+| `useTourPreferences` | `src/hooks/useTourPreferences.ts` | Preferências de tour de onboarding |
 
 ### Utilitários UI
 
@@ -310,7 +310,7 @@ CREATE TYPE audit_entity_type AS ENUM ('solicitacao', 'cotacao', 'pedido', 'paga
 | `dashboardLayoutStore` | `src/stores/dashboardLayoutStore.ts` | ✅ LocalStorage | Layout do dashboard customizável |
 | `kpiTargetsStore` | `src/stores/kpiTargetsStore.ts` | ✅ LocalStorage | Metas de KPIs |
 | `buyerAlertsStore` | `src/stores/buyerAlertsStore.ts` | ✅ LocalStorage | Alertas de compradores |
-| `pushNotificationStore` | `src/stores/pushNotificationStore.ts` | ❌ | Estado de push notifications |
+| `undoStore` | `src/stores/undoStore.ts` | ❌ | Estado do sistema de desfazer |
 
 ### Exemplo de Store com Persistência
 
