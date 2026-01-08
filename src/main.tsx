@@ -13,7 +13,7 @@ registerSW({
     }
   },
   onOfflineReady() {
-    console.log('App pronto para uso offline');
+    // PWA ready for offline usage
   },
 });
 

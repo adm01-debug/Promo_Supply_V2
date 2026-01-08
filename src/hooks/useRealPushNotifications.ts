@@ -98,7 +98,6 @@ export function useRealPushNotifications() {
       
       // Check if push is supported
       if (!registration.pushManager) {
-        console.log('Push notifications not supported');
         return;
       }
 
@@ -116,8 +115,7 @@ export function useRealPushNotifications() {
             userVisibleOnly: true,
             applicationServerKey: applicationServerKey as BufferSource,
           });
-        } catch (err) {
-          console.log('Could not subscribe to push:', err);
+        } catch {
           return;
         }
       }

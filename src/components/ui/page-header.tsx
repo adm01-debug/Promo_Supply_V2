@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { motion } from "framer-motion";
 import { ChevronRight, type LucideIcon, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 interface PageHeaderAction {
   label: string;
@@ -90,12 +90,12 @@ export const PageHeader = ({
             <React.Fragment key={index}>
               {index > 0 && <ChevronRight className="w-4 h-4" />}
               {crumb.href ? (
-                <a 
-                  href={crumb.href} 
+                <Link 
+                  to={crumb.href} 
                   className="hover:text-foreground transition-colors hover:underline underline-offset-4"
                 >
                   {crumb.label}
-                </a>
+                </Link>
               ) : (
                 <span className="text-foreground font-medium">{crumb.label}</span>
               )}

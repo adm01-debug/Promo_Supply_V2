@@ -24,7 +24,7 @@ interface UndoStore {
 export const useUndoStore = create<UndoStore>((set, get) => ({
   actions: [],
   addAction: (action) => {
-    const id = Math.random().toString(36).substr(2, 9);
+    const id = Math.random().toString(36).slice(2, 11);
     set((state) => ({
       actions: [...state.actions, { ...action, id }]
     }));
