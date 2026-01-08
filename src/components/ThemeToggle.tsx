@@ -1,4 +1,4 @@
-import { Moon, Sun, Monitor } from 'lucide-react';
+import { Moon, Sun, Monitor, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -9,6 +9,7 @@ import {
 import { useTheme } from 'next-themes';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export function ThemeToggle() {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -85,47 +86,45 @@ export function ThemeToggle() {
         className="bg-popover border border-border min-w-[140px]"
         sideOffset={8}
       >
-        <div className="animate-in fade-in-0 zoom-in-95 duration-150">
-          <DropdownMenuItem 
-            onClick={() => handleThemeChange('light')} 
-            className={`cursor-pointer gap-2 ${theme === 'light' ? 'bg-accent' : ''}`}
-          >
-            <Sun className="h-4 w-4 text-amber-500" />
-            <span>Claro</span>
-            {theme === 'light' && (
-              <motion.div
-                layoutId="theme-indicator"
-                className="ml-auto h-2 w-2 rounded-full bg-primary"
-              />
-            )}
-          </DropdownMenuItem>
-          <DropdownMenuItem 
-            onClick={() => handleThemeChange('dark')} 
-            className={`cursor-pointer gap-2 ${theme === 'dark' ? 'bg-accent' : ''}`}
-          >
-            <Moon className="h-4 w-4 text-blue-400" />
-            <span>Escuro</span>
-            {theme === 'dark' && (
-              <motion.div
-                layoutId="theme-indicator"
-                className="ml-auto h-2 w-2 rounded-full bg-primary"
-              />
-            )}
-          </DropdownMenuItem>
-          <DropdownMenuItem 
-            onClick={() => handleThemeChange('system')} 
-            className={`cursor-pointer gap-2 ${theme === 'system' ? 'bg-accent' : ''}`}
-          >
-            <Monitor className="h-4 w-4 text-muted-foreground" />
-            <span>Sistema</span>
-            {theme === 'system' && (
-              <motion.div
-                layoutId="theme-indicator"
-                className="ml-auto h-2 w-2 rounded-full bg-primary"
-              />
-            )}
-          </DropdownMenuItem>
-        </div>
+        <DropdownMenuItem 
+          onClick={() => handleThemeChange('light')} 
+          className={cn(
+            "cursor-pointer gap-2",
+            theme === 'light' && "bg-accent"
+          )}
+        >
+          <Sun className="h-4 w-4 text-amber-500" />
+          <span>Claro</span>
+          {theme === 'light' && (
+            <Check className="ml-auto h-4 w-4 text-primary" />
+          )}
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => handleThemeChange('dark')} 
+          className={cn(
+            "cursor-pointer gap-2",
+            theme === 'dark' && "bg-accent"
+          )}
+        >
+          <Moon className="h-4 w-4 text-blue-400" />
+          <span>Escuro</span>
+          {theme === 'dark' && (
+            <Check className="ml-auto h-4 w-4 text-primary" />
+          )}
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => handleThemeChange('system')} 
+          className={cn(
+            "cursor-pointer gap-2",
+            theme === 'system' && "bg-accent"
+          )}
+        >
+          <Monitor className="h-4 w-4 text-muted-foreground" />
+          <span>Sistema</span>
+          {theme === 'system' && (
+            <Check className="ml-auto h-4 w-4 text-primary" />
+          )}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

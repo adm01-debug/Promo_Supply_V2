@@ -221,7 +221,6 @@ const Solicitacoes = () => {
 
   const handleBulkExport = useCallback((format: 'pdf' | 'excel') => {
     const selectedItems = filteredSolicitacoes.filter(s => selectedIds.has(s.id));
-    console.log(`Exporting ${selectedItems.length} items to ${format}`, selectedItems);
     toast.success(`Exportando ${selectedItems.length} solicitação(ões) para ${format.toUpperCase()}`);
   }, [filteredSolicitacoes, selectedIds]);
 
