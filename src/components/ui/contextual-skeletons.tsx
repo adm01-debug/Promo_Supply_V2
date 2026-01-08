@@ -1,6 +1,5 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import React from "react";
 
 // Base animated skeleton with enhanced shimmer
 const ShimmerSkeleton = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
