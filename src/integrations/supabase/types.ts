@@ -254,6 +254,44 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_notes: {
+        Row: {
+          author_id: string | null
+          contact_id: string
+          content: string
+          created_at: string
+          fornecedor_id: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          author_id?: string | null
+          contact_id: string
+          content: string
+          created_at?: string
+          fornecedor_id?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string | null
+          contact_id?: string
+          content?: string
+          created_at?: string
+          fornecedor_id?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_notes_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contract_documents: {
         Row: {
           contract_id: string
