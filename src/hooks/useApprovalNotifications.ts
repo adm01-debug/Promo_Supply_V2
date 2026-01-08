@@ -25,17 +25,9 @@ interface PendingApproval {
   totalStages: number;
 }
 
-// Mock email function - logs to console
-const mockSendApprovalEmail = async (notification: ApprovalNotification): Promise<boolean> => {
-  console.log('📧 [MOCK EMAIL] Notificação de Aprovação:', {
-    to: 'aprovadores@promobrindes.com.br',
-    subject: `[${notification.type.toUpperCase()}] Aprovação Pendente - ${notification.requestId}`,
-    body: notification.message,
-    value: `R$ ${notification.value.toLocaleString('pt-BR')}`,
-    timeRemaining: `${notification.timeRemaining} minutos`,
-    timestamp: new Date().toISOString()
-  });
-  
+// Mock email function - simulates sending email
+const mockSendApprovalEmail = async (_notification: ApprovalNotification): Promise<boolean> => {
+  // In production, this would call an actual email API
   await new Promise(resolve => setTimeout(resolve, 300));
   return true;
 };

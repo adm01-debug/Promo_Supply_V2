@@ -104,9 +104,6 @@ const Fornecedores = () => {
         f.razaoSocial.toLowerCase().includes(search.toLowerCase()) ||
         f.cnpj.includes(search);
       
-      const dbTipo = tipoFilter === 'IMPORTADORA' ? 'internacional' : 
-                     tipoFilter === 'DISTRIBUIDORA' ? 'local' : 
-                     tipoFilter === 'FABRICANTE' ? 'nacional' : null;
       const matchTipo = tipoFilter === "todos" || f.tipo === tipoFilter;
       
       return matchSearch && matchTipo;
