@@ -421,60 +421,66 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
         onTouchEnd={() => swipeHandlers.onTouchEnd()}
       >
         {/* Previous card preview (shown during swipe right) */}
-        {isMobile && !isFirstStep && swipeState.swiping && swipeState.deltaX > 0 && (
-          <motion.div
-            initial={{ opacity: 0, x: -100, scale: 0.85 }}
-            animate={{ 
-              opacity: Math.min(swipeState.deltaX / 100, 0.7),
-              x: -380 + swipeState.deltaX * 0.4,
-              scale: 0.85 + (swipeState.deltaX / 500),
-            }}
-            className="absolute w-[360px] bg-card/80 rounded-2xl border shadow-xl overflow-hidden backdrop-blur-sm"
-            style={{ top: 0 }}
-          >
-            <div className="h-2 bg-gradient-to-r from-primary/50 via-info/50 to-success/50" />
-            <div className="p-4 space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  {React.createElement(steps[currentStep - 1]?.icon || stepIcons[(currentStep - 1) % stepIcons.length], {
-                    className: "w-5 h-5 text-primary/70"
-                  })}
+        {isMobile && !isFirstStep && swipeState.swiping && swipeState.deltaX > 0 && steps[currentStep - 1] && (() => {
+          const prevStep = steps[currentStep - 1];
+          const prevIndex = currentStep - 1;
+          const PrevIcon = prevStep.icon || stepIcons[Math.abs(prevIndex) % stepIcons.length];
+          return (
+            <motion.div
+              initial={{ opacity: 0, x: -100, scale: 0.85 }}
+              animate={{ 
+                opacity: Math.min(swipeState.deltaX / 100, 0.7),
+                x: -380 + swipeState.deltaX * 0.4,
+                scale: Math.min(0.85 + (swipeState.deltaX / 500), 1),
+              }}
+              className="absolute w-[360px] bg-card/80 rounded-2xl border shadow-xl overflow-hidden backdrop-blur-sm"
+              style={{ top: 0 }}
+            >
+              <div className="h-2 bg-gradient-to-r from-primary/50 via-info/50 to-success/50" />
+              <div className="p-4 space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <PrevIcon className="w-5 h-5 text-primary/70" />
+                  </div>
+                  <span className="text-xs text-muted-foreground">Passo {currentStep} de {steps.length}</span>
                 </div>
-                <span className="text-xs text-muted-foreground">Passo {currentStep} de {steps.length}</span>
+                <h3 className="text-lg font-semibold text-foreground/70">{prevStep.title}</h3>
+                <p className="text-sm text-muted-foreground/60 line-clamp-2">{prevStep.content}</p>
               </div>
-              <h3 className="text-lg font-semibold text-foreground/70">{steps[currentStep - 1]?.title}</h3>
-              <p className="text-sm text-muted-foreground/60 line-clamp-2">{steps[currentStep - 1]?.content}</p>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          );
+        })()}
 
         {/* Next card preview (shown during swipe left) */}
-        {isMobile && !isLastStep && swipeState.swiping && swipeState.deltaX < 0 && (
-          <motion.div
-            initial={{ opacity: 0, x: 100, scale: 0.85 }}
-            animate={{ 
-              opacity: Math.min(Math.abs(swipeState.deltaX) / 100, 0.7),
-              x: 380 + swipeState.deltaX * 0.4,
-              scale: 0.85 + (Math.abs(swipeState.deltaX) / 500),
-            }}
-            className="absolute w-[360px] bg-card/80 rounded-2xl border shadow-xl overflow-hidden backdrop-blur-sm"
-            style={{ top: 0 }}
-          >
-            <div className="h-2 bg-gradient-to-r from-primary/50 via-info/50 to-success/50" />
-            <div className="p-4 space-y-2">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  {React.createElement(steps[currentStep + 1]?.icon || stepIcons[(currentStep + 1) % stepIcons.length], {
-                    className: "w-5 h-5 text-primary/70"
-                  })}
+        {isMobile && !isLastStep && swipeState.swiping && swipeState.deltaX < 0 && steps[currentStep + 1] && (() => {
+          const nextStep = steps[currentStep + 1];
+          const nextIndex = currentStep + 1;
+          const NextIcon = nextStep.icon || stepIcons[nextIndex % stepIcons.length];
+          return (
+            <motion.div
+              initial={{ opacity: 0, x: 100, scale: 0.85 }}
+              animate={{ 
+                opacity: Math.min(Math.abs(swipeState.deltaX) / 100, 0.7),
+                x: 380 + swipeState.deltaX * 0.4,
+                scale: Math.min(0.85 + (Math.abs(swipeState.deltaX) / 500), 1),
+              }}
+              className="absolute w-[360px] bg-card/80 rounded-2xl border shadow-xl overflow-hidden backdrop-blur-sm"
+              style={{ top: 0 }}
+            >
+              <div className="h-2 bg-gradient-to-r from-primary/50 via-info/50 to-success/50" />
+              <div className="p-4 space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <NextIcon className="w-5 h-5 text-primary/70" />
+                  </div>
+                  <span className="text-xs text-muted-foreground">Passo {currentStep + 2} de {steps.length}</span>
                 </div>
-                <span className="text-xs text-muted-foreground">Passo {currentStep + 2} de {steps.length}</span>
+                <h3 className="text-lg font-semibold text-foreground/70">{nextStep.title}</h3>
+                <p className="text-sm text-muted-foreground/60 line-clamp-2">{nextStep.content}</p>
               </div>
-              <h3 className="text-lg font-semibold text-foreground/70">{steps[currentStep + 1]?.title}</h3>
-              <p className="text-sm text-muted-foreground/60 line-clamp-2">{steps[currentStep + 1]?.content}</p>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          );
+        })()}
 
         {/* Main current card */}
         <AnimatePresence mode="wait" custom={direction}>
