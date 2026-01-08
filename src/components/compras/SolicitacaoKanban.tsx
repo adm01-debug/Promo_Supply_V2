@@ -21,7 +21,6 @@ import { CSS } from "@dnd-kit/utilities";
 import { 
   GripVertical, 
   Package, 
-  Clock, 
   Building2,
   User,
   Calendar
