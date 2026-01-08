@@ -164,11 +164,6 @@ export function GlobalSearch() {
     navigate(result.href);
   }, [navigate]);
 
-  const hasResults = filteredPages.length > 0 || 
-    filteredSolicitacoes.length > 0 || 
-    filteredFornecedores.length > 0 ||
-    filteredContracts.length > 0;
-
   return (
     <>
       {/* Search trigger button - responsive */}
