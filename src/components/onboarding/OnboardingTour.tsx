@@ -408,170 +408,234 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
         />
       </AnimatePresence>
 
-      {/* Tooltip */}
-      <AnimatePresence mode="wait" custom={direction}>
-        <motion.div
-          key={currentStep}
-          custom={direction}
-          variants={tooltipVariants}
-          initial="enter"
-          animate="center"
-          exit="exit"
-          transition={springTransition}
-          className="fixed z-[10000] w-[360px] bg-card rounded-2xl border shadow-2xl overflow-hidden touch-pan-y"
-          style={{
-            top: tooltipPosition.top,
-            left: tooltipPosition.left,
-            transform: `translateX(-50%) ${swipeState.swiping ? `translateX(${swipeState.deltaX * 0.3}px)` : ''}`,
-            transition: swipeState.swiping ? 'none' : undefined,
-          }}
-          onTouchStart={(e) => swipeHandlers.onTouchStart(e.nativeEvent)}
-          onTouchMove={(e) => swipeHandlers.onTouchMove(e.nativeEvent)}
-          onTouchEnd={() => swipeHandlers.onTouchEnd()}
-        >
-          {/* Gradient Header */}
-          <div className="relative h-2 bg-gradient-to-r from-primary via-info to-success" />
-
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 pb-3">
-            <div className="flex items-center gap-3">
-              <motion.div 
-                key={`icon-${currentStep}`}
-                initial={{ scale: 0, rotate: -180, opacity: 0 }}
-                animate={{ scale: 1, rotate: 0, opacity: 1 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.1 }}
-                className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center",
-                  step.highlight === "success" ? "bg-success/10" :
-                  step.highlight === "warning" ? "bg-warning/10" :
-                  step.highlight === "info" ? "bg-info/10" :
-                  "bg-primary/10"
-                )}
-              >
-                <StepIcon className={cn(
-                  "w-5 h-5",
-                  step.highlight === "success" ? "text-success" :
-                  step.highlight === "warning" ? "text-warning" :
-                  step.highlight === "info" ? "text-info" :
-                  "text-primary"
-                )} />
-              </motion.div>
-              <div>
-                <span className="text-xs font-medium text-muted-foreground">
-                  Passo {currentStep + 1} de {steps.length}
-                </span>
+      {/* Tooltip with adjacent card previews */}
+      <div
+        className="fixed z-[10000]"
+        style={{
+          top: tooltipPosition.top,
+          left: tooltipPosition.left,
+          transform: 'translateX(-50%)',
+        }}
+        onTouchStart={(e) => swipeHandlers.onTouchStart(e.nativeEvent)}
+        onTouchMove={(e) => swipeHandlers.onTouchMove(e.nativeEvent)}
+        onTouchEnd={() => swipeHandlers.onTouchEnd()}
+      >
+        {/* Previous card preview (shown during swipe right) */}
+        {isMobile && !isFirstStep && swipeState.swiping && swipeState.deltaX > 0 && (
+          <motion.div
+            initial={{ opacity: 0, x: -100, scale: 0.85 }}
+            animate={{ 
+              opacity: Math.min(swipeState.deltaX / 100, 0.7),
+              x: -380 + swipeState.deltaX * 0.4,
+              scale: 0.85 + (swipeState.deltaX / 500),
+            }}
+            className="absolute w-[360px] bg-card/80 rounded-2xl border shadow-xl overflow-hidden backdrop-blur-sm"
+            style={{ top: 0 }}
+          >
+            <div className="h-2 bg-gradient-to-r from-primary/50 via-info/50 to-success/50" />
+            <div className="p-4 space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  {React.createElement(steps[currentStep - 1]?.icon || stepIcons[(currentStep - 1) % stepIcons.length], {
+                    className: "w-5 h-5 text-primary/70"
+                  })}
+                </div>
+                <span className="text-xs text-muted-foreground">Passo {currentStep} de {steps.length}</span>
               </div>
+              <h3 className="text-lg font-semibold text-foreground/70">{steps[currentStep - 1]?.title}</h3>
+              <p className="text-sm text-muted-foreground/60 line-clamp-2">{steps[currentStep - 1]?.content}</p>
             </div>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-8 w-8 rounded-full hover:bg-destructive/10 hover:text-destructive" 
-              onClick={onSkip}
-            >
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
+          </motion.div>
+        )}
 
-          {/* Content */}
-          <div className="px-4 pb-4 space-y-3">
-            <motion.h3 
-              key={`title-${currentStep}`}
-              custom={1}
-              variants={contentVariants}
-              initial="hidden"
-              animate="visible"
-              className="text-lg font-semibold text-foreground"
-            >
-              {step.title}
-            </motion.h3>
-            <motion.p 
-              key={`content-${currentStep}`}
-              custom={2}
-              variants={contentVariants}
-              initial="hidden"
-              animate="visible"
-              className="text-sm text-muted-foreground leading-relaxed"
-            >
-              {step.content}
-            </motion.p>
-            
-            {step.action && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
+        {/* Next card preview (shown during swipe left) */}
+        {isMobile && !isLastStep && swipeState.swiping && swipeState.deltaX < 0 && (
+          <motion.div
+            initial={{ opacity: 0, x: 100, scale: 0.85 }}
+            animate={{ 
+              opacity: Math.min(Math.abs(swipeState.deltaX) / 100, 0.7),
+              x: 380 + swipeState.deltaX * 0.4,
+              scale: 0.85 + (Math.abs(swipeState.deltaX) / 500),
+            }}
+            className="absolute w-[360px] bg-card/80 rounded-2xl border shadow-xl overflow-hidden backdrop-blur-sm"
+            style={{ top: 0 }}
+          >
+            <div className="h-2 bg-gradient-to-r from-primary/50 via-info/50 to-success/50" />
+            <div className="p-4 space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  {React.createElement(steps[currentStep + 1]?.icon || stepIcons[(currentStep + 1) % stepIcons.length], {
+                    className: "w-5 h-5 text-primary/70"
+                  })}
+                </div>
+                <span className="text-xs text-muted-foreground">Passo {currentStep + 2} de {steps.length}</span>
+              </div>
+              <h3 className="text-lg font-semibold text-foreground/70">{steps[currentStep + 1]?.title}</h3>
+              <p className="text-sm text-muted-foreground/60 line-clamp-2">{steps[currentStep + 1]?.content}</p>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Main current card */}
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={currentStep}
+            custom={direction}
+            variants={tooltipVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={springTransition}
+            className="w-[360px] bg-card rounded-2xl border shadow-2xl overflow-hidden touch-pan-y"
+            style={{
+              transform: swipeState.swiping ? `translateX(${swipeState.deltaX * 0.5}px) rotate(${swipeState.deltaX * 0.02}deg) scale(${1 - Math.abs(swipeState.deltaX) / 1000})` : undefined,
+              transition: swipeState.swiping ? 'none' : 'transform 0.3s ease-out',
+            }}
+          >
+            {/* Gradient Header */}
+            <div className="relative h-2 bg-gradient-to-r from-primary via-info to-success" />
+
+            {/* Header */}
+            <div className="flex items-center justify-between p-4 pb-3">
+              <div className="flex items-center gap-3">
+                <motion.div 
+                  key={`icon-${currentStep}`}
+                  initial={{ scale: 0, rotate: -180, opacity: 0 }}
+                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.1 }}
+                  className={cn(
+                    "w-10 h-10 rounded-xl flex items-center justify-center",
+                    step.highlight === "success" ? "bg-success/10" :
+                    step.highlight === "warning" ? "bg-warning/10" :
+                    step.highlight === "info" ? "bg-info/10" :
+                    "bg-primary/10"
+                  )}
+                >
+                  <StepIcon className={cn(
+                    "w-5 h-5",
+                    step.highlight === "success" ? "text-success" :
+                    step.highlight === "warning" ? "text-warning" :
+                    step.highlight === "info" ? "text-info" :
+                    "text-primary"
+                  )} />
+                </motion.div>
+                <div>
+                  <span className="text-xs font-medium text-muted-foreground">
+                    Passo {currentStep + 1} de {steps.length}
+                  </span>
+                </div>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 rounded-full hover:bg-destructive/10 hover:text-destructive" 
+                onClick={onSkip}
               >
+                <X className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Content */}
+            <div className="px-4 pb-4 space-y-3">
+              <motion.h3 
+                key={`title-${currentStep}`}
+                custom={1}
+                variants={contentVariants}
+                initial="hidden"
+                animate="visible"
+                className="text-lg font-semibold text-foreground"
+              >
+                {step.title}
+              </motion.h3>
+              <motion.p 
+                key={`content-${currentStep}`}
+                custom={2}
+                variants={contentVariants}
+                initial="hidden"
+                animate="visible"
+                className="text-sm text-muted-foreground leading-relaxed"
+              >
+                {step.content}
+              </motion.p>
+              
+              {step.action && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  <Button 
+                    size="sm" 
+                    variant="outline" 
+                    onClick={step.action.onClick} 
+                    className="mt-2 gap-2"
+                  >
+                    <Zap className="w-3 h-3" />
+                    {step.action.label}
+                  </Button>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Step Indicators */}
+            <div className="px-4 pb-3">
+              <StepIndicators 
+                total={steps.length} 
+                current={currentStep}
+                onStepClick={handleStepClick}
+              />
+              {/* Mobile swipe hint */}
+              {isMobile && (
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: swipeState.swiping ? 0 : 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="text-xs text-muted-foreground/60 text-center mt-2"
+                >
+                  ← Deslize para navegar →
+                </motion.p>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between p-4 pt-3 border-t bg-muted/30">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handlePrev}
+                disabled={isFirstStep}
+                className="gap-1"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Anterior
+              </Button>
+              
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                 <Button 
                   size="sm" 
-                  variant="outline" 
-                  onClick={step.action.onClick} 
-                  className="mt-2 gap-2"
+                  onClick={handleNext} 
+                  className={cn(
+                    "gap-1",
+                    isLastStep && "bg-gradient-to-r from-primary to-primary-glow hover:from-primary/90 hover:to-primary-glow/90"
+                  )}
                 >
-                  <Zap className="w-3 h-3" />
-                  {step.action.label}
+                  {isLastStep ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      Concluir
+                    </>
+                  ) : (
+                    <>
+                      Próximo
+                      <ChevronRight className="w-4 h-4" />
+                    </>
+                  )}
                 </Button>
               </motion.div>
-            )}
-          </div>
-
-          {/* Step Indicators */}
-          <div className="px-4 pb-3">
-            <StepIndicators 
-              total={steps.length} 
-              current={currentStep}
-              onStepClick={handleStepClick}
-            />
-            {/* Mobile swipe hint */}
-            {isMobile && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="text-xs text-muted-foreground/60 text-center mt-2"
-              >
-                ← Deslize para navegar →
-              </motion.p>
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="flex items-center justify-between p-4 pt-3 border-t bg-muted/30">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handlePrev}
-              disabled={isFirstStep}
-              className="gap-1"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              Anterior
-            </Button>
-            
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button 
-                size="sm" 
-                onClick={handleNext} 
-                className={cn(
-                  "gap-1",
-                  isLastStep && "bg-gradient-to-r from-primary to-primary-glow hover:from-primary/90 hover:to-primary-glow/90"
-                )}
-              >
-                {isLastStep ? (
-                  <>
-                    <Check className="w-4 h-4" />
-                    Concluir
-                  </>
-                ) : (
-                  <>
-                    Próximo
-                    <ChevronRight className="w-4 h-4" />
-                  </>
-                )}
-              </Button>
-            </motion.div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
       {/* Completion Modal */}
       <AnimatePresence>
