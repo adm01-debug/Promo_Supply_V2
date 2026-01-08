@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Shield, AlertTriangle, CheckCircle2, XCircle, TrendingUp, TrendingDown, Loader2, RefreshCw, Target, AlertCircle, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
 import { Progress } from '@/components/ui/progress';
 import {
   Dialog,
@@ -23,7 +22,7 @@ import {
 } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { fornecedoresMock, Fornecedor } from '@/data/mockData';
+import { fornecedoresMock } from '@/data/mockData';
 import { cn } from '@/lib/utils';
 
 interface RiskFactor {
