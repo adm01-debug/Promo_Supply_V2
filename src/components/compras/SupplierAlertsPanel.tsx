@@ -1,16 +1,37 @@
 import { useState, useMemo } from 'react';
-import { Building2, AlertTriangle, AlertCircle, RefreshCw, Trash2, TestTube, TrendingUp, TrendingDown } from 'lucide-react';
+import { Building2, AlertTriangle, AlertCircle, RefreshCw, TrendingUp, TrendingDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useSupplierSLAMonitor, SupplierAlert } from '@/hooks/useSupplierSLAMonitor';
 import { useSLASettings } from '@/stores/slaSettingsStore';
 import { formatDistanceToNow, subDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, BarChart, Bar, Cell } from 'recharts';
+
+// Local interface for SupplierAlert
+interface SupplierAlert {
+  id: string;
+  supplierId: string;
+  supplierName: string;
+  type: 'warning' | 'critical';
+  message: string;
+  slaCompliance: number;
+  createdAt: Date;
+}
+
+// Mock supplier data
+const mockSupplierData = [
+  { id: '1', name: 'ABC Ltda', slaCompliance: 92, deliveries: 45, onTime: 41 },
+  { id: '2', name: 'XYZ Corp', slaCompliance: 78, deliveries: 32, onTime: 25 },
+  { id: '3', name: 'Distribuidora 123', slaCompliance: 85, deliveries: 28, onTime: 24 },
+];
+
+const mockAlerts: SupplierAlert[] = [
+  { id: '1', supplierId: '2', supplierName: 'XYZ Corp', type: 'warning', message: 'SLA abaixo do threshold', slaCompliance: 78, createdAt: new Date() },
+];
 
 // Generate mock historical trend data
 const generateTrendData = (supplierId: string, days: number = 7) => {

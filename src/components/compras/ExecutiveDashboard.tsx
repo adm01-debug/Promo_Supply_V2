@@ -12,7 +12,6 @@ import { useDashboardFilters, DashboardFilter } from '@/hooks/useDashboardFilter
 import { FilterFavoritesManager } from './FilterFavoritesManager';
 import { PurchaseClimateWidget } from './PurchaseClimateWidget';
 import { Sparkline } from '@/components/ui/sparkline';
-import { useKPICelebrations } from '@/hooks/useKPICelebrations';
 import { 
   TrendingUp, 
   TrendingDown, 
@@ -377,16 +376,7 @@ export const ExecutiveDashboard = () => {
     }
   }), []);
 
-  const { resetCelebrations } = useKPICelebrations(kpiMetrics);
   const previousPeriodRef = useRef(selectedPeriod);
-
-  // Reset celebrations only when period actually changes (not on initial mount)
-  useEffect(() => {
-    if (previousPeriodRef.current !== selectedPeriod) {
-      resetCelebrations();
-      previousPeriodRef.current = selectedPeriod;
-    }
-  }, [selectedPeriod, resetCelebrations]);
 
   // Filter favorites hook
   const {
