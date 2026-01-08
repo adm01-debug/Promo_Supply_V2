@@ -1,17 +1,9 @@
 import { 
   ClipboardList, 
-  DollarSign, 
   Clock, 
-  Truck, 
-  CheckCircle2, 
   TrendingUp,
-  AlertTriangle,
-  Timer,
   BarChart3,
-  PiggyBank,
-  Percent,
-  Target,
-  Award
+  PiggyBank
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
