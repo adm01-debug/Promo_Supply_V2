@@ -7,23 +7,19 @@ import {
   MoreVertical,
   Phone,
   Video,
-  X,
-  User,
   Building2,
   Clock,
   Check,
   CheckCheck,
-  Image as ImageIcon,
   FileText,
-  Smile
+  Smile,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -33,11 +29,7 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { fornecedoresMock } from "@/data/mockData";
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
