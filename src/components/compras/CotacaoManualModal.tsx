@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Upload, Save } from "lucide-react";
+import { Upload, Save } from "lucide-react";
 import {
   Dialog,
   DialogContent,
