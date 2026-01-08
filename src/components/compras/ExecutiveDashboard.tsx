@@ -26,8 +26,6 @@ import {
   ArrowDownRight,
   Target,
   Zap,
-  Package,
-  CreditCard,
   BarChart3,
   PieChart,
   Activity,
