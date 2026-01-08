@@ -7,6 +7,8 @@ import {
   PartyPopper, Star
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSwipeGesture, useHapticFeedback } from "@/hooks/useMobileGestures";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TourStep {
   target: string; // CSS selector
@@ -226,10 +228,37 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
   const [highlightRect, setHighlightRect] = React.useState<DOMRect | null>(null);
   const [showCompletion, setShowCompletion] = React.useState(false);
   const [direction, setDirection] = React.useState(1); // 1 = forward, -1 = backward
+  
+  const isMobile = useIsMobile();
+  const { lightTap } = useHapticFeedback();
 
   const step = steps[currentStep];
   const isLastStep = currentStep === steps.length - 1;
   const isFirstStep = currentStep === 0;
+  
+  // Swipe handlers for mobile navigation
+  const { swipeState, handlers: swipeHandlers } = useSwipeGesture(
+    {
+      onSwipeLeft: () => {
+        if (!isLastStep) {
+          lightTap();
+          setDirection(1);
+          setCurrentStep((prev) => prev + 1);
+        } else {
+          lightTap();
+          setShowCompletion(true);
+        }
+      },
+      onSwipeRight: () => {
+        if (!isFirstStep) {
+          lightTap();
+          setDirection(-1);
+          setCurrentStep((prev) => prev - 1);
+        }
+      },
+    },
+    { threshold: 50, enabled: isOpen && isMobile }
+  );
 
   React.useEffect(() => {
     if (!isOpen || !step) return;
@@ -389,12 +418,16 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
           animate="center"
           exit="exit"
           transition={springTransition}
-          className="fixed z-[10000] w-[360px] bg-card rounded-2xl border shadow-2xl overflow-hidden"
+          className="fixed z-[10000] w-[360px] bg-card rounded-2xl border shadow-2xl overflow-hidden touch-pan-y"
           style={{
             top: tooltipPosition.top,
             left: tooltipPosition.left,
-            transform: "translateX(-50%)",
+            transform: `translateX(-50%) ${swipeState.swiping ? `translateX(${swipeState.deltaX * 0.3}px)` : ''}`,
+            transition: swipeState.swiping ? 'none' : undefined,
           }}
+          onTouchStart={(e) => swipeHandlers.onTouchStart(e.nativeEvent)}
+          onTouchMove={(e) => swipeHandlers.onTouchMove(e.nativeEvent)}
+          onTouchEnd={() => swipeHandlers.onTouchEnd()}
         >
           {/* Gradient Header */}
           <div className="relative h-2 bg-gradient-to-r from-primary via-info to-success" />
@@ -488,6 +521,17 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
               current={currentStep}
               onStepClick={handleStepClick}
             />
+            {/* Mobile swipe hint */}
+            {isMobile && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="text-xs text-muted-foreground/60 text-center mt-2"
+              >
+                ← Deslize para navegar →
+              </motion.p>
+            )}
           </div>
 
           {/* Footer */}
