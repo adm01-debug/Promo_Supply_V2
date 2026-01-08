@@ -85,11 +85,7 @@ export function ThemeToggle() {
         className="bg-popover border border-border min-w-[140px]"
         sideOffset={8}
       >
-        <motion.div
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.15 }}
-        >
+        <div className="animate-in fade-in-0 zoom-in-95 duration-150">
           <DropdownMenuItem 
             onClick={() => handleThemeChange('light')} 
             className={`cursor-pointer gap-2 ${theme === 'light' ? 'bg-accent' : ''}`}
@@ -129,7 +125,7 @@ export function ThemeToggle() {
               />
             )}
           </DropdownMenuItem>
-        </motion.div>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
