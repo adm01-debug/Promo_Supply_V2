@@ -3,7 +3,6 @@ import {
   Clock, 
   Check, 
   X, 
-  AlertTriangle,
   MessageSquare,
   User,
   DollarSign,
@@ -104,13 +103,10 @@ export const PendingApprovalsPanel = () => {
   const { toast } = useToast();
   
   const { 
-    notifications,
     unreadCount,
     permissionGranted,
     startMonitoring,
-    stopMonitoring,
-    checkApprovalDeadlines,
-    clearNotifications
+    checkApprovalDeadlines
   } = useApprovalNotifications();
 
   // Convert approvals to monitoring format and start monitoring
