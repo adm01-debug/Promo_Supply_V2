@@ -319,17 +319,44 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
 
   const tooltipVariants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? 50 : -50,
+      x: direction > 0 ? 80 : -80,
       opacity: 0,
+      scale: 0.92,
+      filter: 'blur(8px)',
     }),
     center: {
       x: 0,
       opacity: 1,
+      scale: 1,
+      filter: 'blur(0px)',
     },
     exit: (direction: number) => ({
-      x: direction > 0 ? -50 : 50,
+      x: direction > 0 ? -80 : 80,
       opacity: 0,
+      scale: 0.92,
+      filter: 'blur(8px)',
     }),
+  };
+
+  const contentVariants = {
+    hidden: { opacity: 0, y: 15, scale: 0.95 },
+    visible: (delay: number) => ({
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        delay: delay * 0.08,
+        duration: 0.4,
+        ease: [0.25, 0.46, 0.45, 0.94] as [number, number, number, number],
+      },
+    }),
+  };
+
+  const springTransition = {
+    type: 'spring' as const,
+    stiffness: 300,
+    damping: 30,
+    mass: 0.8,
   };
 
   return (
@@ -361,7 +388,7 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          transition={springTransition}
           className="fixed z-[10000] w-[360px] bg-card rounded-2xl border shadow-2xl overflow-hidden"
           style={{
             top: tooltipPosition.top,
@@ -376,9 +403,10 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
           <div className="flex items-center justify-between p-4 pb-3">
             <div className="flex items-center gap-3">
               <motion.div 
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: 'spring', damping: 10 }}
+                key={`icon-${currentStep}`}
+                initial={{ scale: 0, rotate: -180, opacity: 0 }}
+                animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 15, delay: 0.1 }}
                 className={cn(
                   "w-10 h-10 rounded-xl flex items-center justify-center",
                   step.highlight === "success" ? "bg-success/10" :
@@ -414,17 +442,21 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
           {/* Content */}
           <div className="px-4 pb-4 space-y-3">
             <motion.h3 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
+              key={`title-${currentStep}`}
+              custom={1}
+              variants={contentVariants}
+              initial="hidden"
+              animate="visible"
               className="text-lg font-semibold text-foreground"
             >
               {step.title}
             </motion.h3>
             <motion.p 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
+              key={`content-${currentStep}`}
+              custom={2}
+              variants={contentVariants}
+              initial="hidden"
+              animate="visible"
               className="text-sm text-muted-foreground leading-relaxed"
             >
               {step.content}
