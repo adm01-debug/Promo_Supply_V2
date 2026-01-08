@@ -24,8 +24,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  BarChart,
-  Bar,
   XAxis,
   YAxis,
   CartesianGrid,
