@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Building2, AlertTriangle, AlertCircle, RefreshCw, TrendingUp, TrendingDown } from 'lucide-react';
+import { useState, useMemo, useCallback } from 'react';
+import { Building2, AlertTriangle, AlertCircle, RefreshCw, TrendingUp, TrendingDown, TestTube, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,15 +22,26 @@ interface SupplierAlert {
   createdAt: Date;
 }
 
+interface SupplierData {
+  id: string;
+  name: string;
+  slaCompliance: number;
+  deliveries: number;
+  onTime: number;
+}
+
 // Mock supplier data
-const mockSupplierData = [
+const mockSupplierData: SupplierData[] = [
   { id: '1', name: 'ABC Ltda', slaCompliance: 92, deliveries: 45, onTime: 41 },
   { id: '2', name: 'XYZ Corp', slaCompliance: 78, deliveries: 32, onTime: 25 },
   { id: '3', name: 'Distribuidora 123', slaCompliance: 85, deliveries: 28, onTime: 24 },
+  { id: '4', name: 'Fornecedor Premium', slaCompliance: 96, deliveries: 50, onTime: 48 },
+  { id: '5', name: 'Quick Supply', slaCompliance: 72, deliveries: 20, onTime: 14 },
 ];
 
 const mockAlerts: SupplierAlert[] = [
   { id: '1', supplierId: '2', supplierName: 'XYZ Corp', type: 'warning', message: 'SLA abaixo do threshold', slaCompliance: 78, createdAt: new Date() },
+  { id: '2', supplierId: '5', supplierName: 'Quick Supply', type: 'critical', message: 'SLA crítico - ação urgente necessária', slaCompliance: 72, createdAt: subDays(new Date(), 1) },
 ];
 
 // Generate mock historical trend data
@@ -165,13 +176,30 @@ const SupplierTrendChart = ({
 export const SupplierAlertsPanel = () => {
   const { settings } = useSLASettings();
   const [activeTab, setActiveTab] = useState('status');
-  const { 
-    supplierAlerts, 
-    supplierData,
-    checkSupplierSLA, 
-    triggerTestSupplierAlert,
-    clearSupplierAlerts 
-  } = useSupplierSLAMonitor();
+  const [supplierAlerts, setSupplierAlerts] = useState<SupplierAlert[]>(mockAlerts);
+  const [supplierData] = useState<SupplierData[]>(mockSupplierData);
+
+  const checkSupplierSLA = useCallback(() => {
+    // Simulate checking SLA
+    console.log('Verificando SLA dos fornecedores...');
+  }, []);
+
+  const triggerTestSupplierAlert = useCallback(() => {
+    const newAlert: SupplierAlert = {
+      id: Date.now().toString(),
+      supplierId: 'test',
+      supplierName: 'Fornecedor Teste',
+      type: 'warning',
+      message: 'Alerta de teste gerado',
+      slaCompliance: 75,
+      createdAt: new Date(),
+    };
+    setSupplierAlerts(prev => [newAlert, ...prev]);
+  }, []);
+
+  const clearSupplierAlerts = useCallback(() => {
+    setSupplierAlerts([]);
+  }, []);
 
   if (!settings.enableSupplierAlerts) {
     return null;
