@@ -13,6 +13,7 @@ import {
   CheckCheck,
   FileText,
   Smile,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +31,9 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
-import { fornecedoresMock } from "@/data/mockData";
+import { useFornecedores } from "@/hooks/useFornecedores";
+import { useContactNotes, ContactNote } from "@/hooks/useContactNotes";
+import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -56,116 +59,40 @@ interface ChatContact {
   lastMessage?: string;
   lastMessageTime?: Date;
   unreadCount: number;
-}
-
-// Generate mock chat contacts from suppliers
-function generateChatContacts(): ChatContact[] {
-  return fornecedoresMock.slice(0, 8).map((fornecedor, index) => ({
-    id: fornecedor.id,
-    name: `Vendedor ${fornecedor.nomeFantasia.split(' ')[0]}`,
-    company: fornecedor.nomeFantasia,
-    online: index % 3 === 0,
-    lastMessage: index === 0 
-      ? 'Acabei de enviar o orçamento atualizado' 
-      : index === 1 
-        ? 'Confirmado! Envio amanhã' 
-        : 'Ok, vou verificar',
-    lastMessageTime: new Date(Date.now() - index * 3600000 * (index + 1)),
-    unreadCount: index === 0 ? 2 : index === 2 ? 1 : 0,
-  }));
-}
-
-// Generate mock messages for a conversation
-function generateMockMessages(contactId: string): Message[] {
-  const now = new Date();
-  const messages: Message[] = [
-    {
-      id: '1',
-      senderId: contactId,
-      senderName: 'Fornecedor',
-      content: 'Bom dia! Recebi sua solicitação de cotação.',
-      timestamp: new Date(now.getTime() - 3600000 * 5),
-      status: 'read',
-      type: 'text',
-    },
-    {
-      id: '2',
-      senderId: 'me',
-      senderName: 'Você',
-      content: 'Olá! Sim, precisamos de 5.000 unidades de canetas personalizadas.',
-      timestamp: new Date(now.getTime() - 3600000 * 4.5),
-      status: 'read',
-      type: 'text',
-    },
-    {
-      id: '3',
-      senderId: contactId,
-      senderName: 'Fornecedor',
-      content: 'Entendido. Qual a arte para personalização?',
-      timestamp: new Date(now.getTime() - 3600000 * 4),
-      status: 'read',
-      type: 'text',
-    },
-    {
-      id: '4',
-      senderId: 'me',
-      senderName: 'Você',
-      content: 'Segue o arquivo da logo em alta resolução.',
-      timestamp: new Date(now.getTime() - 3600000 * 3.5),
-      status: 'read',
-      type: 'text',
-    },
-    {
-      id: '5',
-      senderId: 'me',
-      senderName: 'Você',
-      content: 'logo-empresa.pdf',
-      timestamp: new Date(now.getTime() - 3600000 * 3.4),
-      status: 'read',
-      type: 'file',
-      attachmentName: 'logo-empresa.pdf',
-    },
-    {
-      id: '6',
-      senderId: contactId,
-      senderName: 'Fornecedor',
-      content: 'Perfeito! Vou preparar o orçamento ainda hoje.',
-      timestamp: new Date(now.getTime() - 3600000 * 3),
-      status: 'read',
-      type: 'text',
-    },
-    {
-      id: '7',
-      senderId: contactId,
-      senderName: 'Fornecedor',
-      content: 'Acabei de enviar o orçamento atualizado. Por favor, confira os valores.',
-      timestamp: new Date(now.getTime() - 3600000 * 0.5),
-      status: 'read',
-      type: 'text',
-    },
-    {
-      id: '8',
-      senderId: contactId,
-      senderName: 'Fornecedor',
-      content: 'orcamento-canetas-5000un.pdf',
-      timestamp: new Date(now.getTime() - 3600000 * 0.4),
-      status: 'read',
-      type: 'file',
-      attachmentName: 'orcamento-canetas-5000un.pdf',
-    },
-  ];
-  
-  return messages;
+  fornecedorId: string;
 }
 
 export function SupplierChat() {
+  const { user } = useAuth();
+  const { fornecedores, loading: loadingFornecedores } = useFornecedores();
+  
   const [isOpen, setIsOpen] = useState(false);
-  const [contacts] = useState<ChatContact[]>(() => generateChatContacts());
   const [selectedContact, setSelectedContact] = useState<ChatContact | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [sendingMessage, setSendingMessage] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Hook for notes - now uses fornecedor_id
+  const { 
+    notes, 
+    loading: loadingNotes, 
+    createNote 
+  } = useContactNotes(undefined, selectedContact?.fornecedorId);
+
+  // Convert fornecedores to chat contacts
+  const contacts = useMemo<ChatContact[]>(() => {
+    return fornecedores.slice(0, 15).map((fornecedor, index) => ({
+      id: fornecedor.id,
+      fornecedorId: fornecedor.id,
+      name: fornecedor.nome_fantasia || fornecedor.razao_social,
+      company: fornecedor.razao_social,
+      online: index % 3 === 0,
+      lastMessage: undefined,
+      lastMessageTime: undefined,
+      unreadCount: 0,
+    }));
+  }, [fornecedores]);
 
   // Filter contacts by search
   const filteredContacts = useMemo(() => {
@@ -177,47 +104,40 @@ export function SupplierChat() {
     );
   }, [contacts, searchQuery]);
 
-  // Load messages when contact is selected
-  useEffect(() => {
-    if (selectedContact) {
-      setMessages(generateMockMessages(selectedContact.id));
-    }
-  }, [selectedContact]);
+  // Convert notes to messages
+  const messages = useMemo<Message[]>(() => {
+    return notes.map(note => ({
+      id: note.id,
+      senderId: note.author_id === user?.id ? 'me' : note.author_id || 'supplier',
+      senderName: note.author_id === user?.id ? 'Você' : 'Fornecedor',
+      content: note.content,
+      timestamp: new Date(note.created_at),
+      status: 'read' as const,
+      type: 'text' as const,
+    })).reverse(); // Reverse to show oldest first
+  }, [notes, user?.id]);
 
   // Scroll to bottom on new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSendMessage = () => {
-    if (!newMessage.trim() || !selectedContact) return;
+  const handleSendMessage = async () => {
+    if (!newMessage.trim() || !selectedContact || sendingMessage) return;
 
-    const message: Message = {
-      id: `msg-${Date.now()}`,
-      senderId: 'me',
-      senderName: 'Você',
-      content: newMessage,
-      timestamp: new Date(),
-      status: 'sent',
-      type: 'text',
-    };
+    setSendingMessage(true);
+    
+    const result = await createNote({
+      contact_id: selectedContact.id,
+      fornecedor_id: selectedContact.fornecedorId,
+      content: newMessage.trim(),
+    });
 
-    setMessages(prev => [...prev, message]);
-    setNewMessage('');
-
-    // Simulate message delivery
-    setTimeout(() => {
-      setMessages(prev => 
-        prev.map(m => m.id === message.id ? { ...m, status: 'delivered' as const } : m)
-      );
-    }, 1000);
-
-    // Simulate message read
-    setTimeout(() => {
-      setMessages(prev => 
-        prev.map(m => m.id === message.id ? { ...m, status: 'read' as const } : m)
-      );
-    }, 2000);
+    if (result) {
+      setNewMessage('');
+    }
+    
+    setSendingMessage(false);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -270,60 +190,70 @@ export function SupplierChat() {
               </div>
 
               <ScrollArea className="flex-1">
-                <div className="divide-y">
-                  {filteredContacts.map(contact => (
-                    <button
-                      key={contact.id}
-                      className={cn(
-                        "w-full p-3 flex items-start gap-3 hover:bg-muted/50 transition-colors text-left",
-                        selectedContact?.id === contact.id && "bg-muted"
-                      )}
-                      onClick={() => setSelectedContact(contact)}
-                    >
-                      <div className="relative">
-                        <Avatar className="h-10 w-10">
-                          <AvatarImage src={contact.avatar} />
-                          <AvatarFallback>
-                            <Building2 className="w-5 h-5" />
-                          </AvatarFallback>
-                        </Avatar>
-                        {contact.online && (
-                          <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full" />
+                {loadingFornecedores ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                  </div>
+                ) : filteredContacts.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground text-sm">
+                    Nenhum fornecedor encontrado
+                  </div>
+                ) : (
+                  <div className="divide-y">
+                    {filteredContacts.map(contact => (
+                      <button
+                        key={contact.id}
+                        className={cn(
+                          "w-full p-3 flex items-start gap-3 hover:bg-muted/50 transition-colors text-left",
+                          selectedContact?.id === contact.id && "bg-muted"
                         )}
-                      </div>
-
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-sm truncate">
-                            {contact.company}
-                          </span>
-                          {contact.lastMessageTime && (
-                            <span className="text-[10px] text-muted-foreground">
-                              {formatDistanceToNow(contact.lastMessageTime, { 
-                                addSuffix: false, 
-                                locale: ptBR 
-                              })}
-                            </span>
+                        onClick={() => setSelectedContact(contact)}
+                      >
+                        <div className="relative">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={contact.avatar} />
+                            <AvatarFallback>
+                              <Building2 className="w-5 h-5" />
+                            </AvatarFallback>
+                          </Avatar>
+                          {contact.online && (
+                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full" />
                           )}
                         </div>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {contact.name}
-                        </p>
-                        {contact.lastMessage && (
-                          <p className="text-xs text-muted-foreground truncate mt-0.5">
-                            {contact.lastMessage}
-                          </p>
-                        )}
-                      </div>
 
-                      {contact.unreadCount > 0 && (
-                        <Badge variant="default" className="h-5 min-w-[20px] px-1 text-xs">
-                          {contact.unreadCount}
-                        </Badge>
-                      )}
-                    </button>
-                  ))}
-                </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <span className="font-medium text-sm truncate">
+                              {contact.name}
+                            </span>
+                            {contact.lastMessageTime && (
+                              <span className="text-[10px] text-muted-foreground">
+                                {formatDistanceToNow(contact.lastMessageTime, { 
+                                  addSuffix: false, 
+                                  locale: ptBR 
+                                })}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {contact.company}
+                          </p>
+                          {contact.lastMessage && (
+                            <p className="text-xs text-muted-foreground truncate mt-0.5">
+                              {contact.lastMessage}
+                            </p>
+                          )}
+                        </div>
+
+                        {contact.unreadCount > 0 && (
+                          <Badge variant="default" className="h-5 min-w-[20px] px-1 text-xs">
+                            {contact.unreadCount}
+                          </Badge>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </ScrollArea>
             </div>
 
@@ -341,7 +271,7 @@ export function SupplierChat() {
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-medium">{selectedContact.company}</p>
+                        <p className="font-medium">{selectedContact.name}</p>
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                           {selectedContact.online ? (
                             <>
@@ -385,78 +315,90 @@ export function SupplierChat() {
 
                   {/* Messages */}
                   <ScrollArea className="flex-1 p-4">
-                    <div className="space-y-4">
-                      {messages.map((message, index) => {
-                        const isMe = message.senderId === 'me';
-                        const showDate = index === 0 || 
-                          format(messages[index - 1].timestamp, 'yyyy-MM-dd') !== 
-                          format(message.timestamp, 'yyyy-MM-dd');
+                    {loadingNotes ? (
+                      <div className="flex items-center justify-center h-full">
+                        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+                      </div>
+                    ) : messages.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center h-full text-muted-foreground">
+                        <MessageCircle className="w-12 h-12 mb-2 opacity-20" />
+                        <p className="text-sm">Nenhuma mensagem ainda</p>
+                        <p className="text-xs">Envie uma mensagem para iniciar a conversa</p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4">
+                        {messages.map((message, index) => {
+                          const isMe = message.senderId === 'me';
+                          const showDate = index === 0 || 
+                            format(messages[index - 1].timestamp, 'yyyy-MM-dd') !== 
+                            format(message.timestamp, 'yyyy-MM-dd');
 
-                        return (
-                          <div key={message.id}>
-                            {showDate && (
-                              <div className="flex justify-center my-4">
-                                <Badge variant="outline" className="text-xs">
-                                  {format(message.timestamp, "dd 'de' MMMM", { locale: ptBR })}
-                                </Badge>
-                              </div>
-                            )}
-                            
-                            <div className={cn(
-                              "flex",
-                              isMe ? "justify-end" : "justify-start"
-                            )}>
+                          return (
+                            <div key={message.id}>
+                              {showDate && (
+                                <div className="flex justify-center my-4">
+                                  <Badge variant="outline" className="text-xs">
+                                    {format(message.timestamp, "dd 'de' MMMM", { locale: ptBR })}
+                                  </Badge>
+                                </div>
+                              )}
+                              
                               <div className={cn(
-                                "max-w-[70%] rounded-2xl px-4 py-2",
-                                isMe 
-                                  ? "bg-primary text-primary-foreground rounded-br-md" 
-                                  : "bg-muted rounded-bl-md"
+                                "flex",
+                                isMe ? "justify-end" : "justify-start"
                               )}>
-                                {message.type === 'file' && (
-                                  <div className={cn(
-                                    "flex items-center gap-2 p-2 rounded mb-1",
-                                    isMe ? "bg-primary-foreground/10" : "bg-background"
-                                  )}>
-                                    <FileText className="w-5 h-5" />
-                                    <span className="text-sm truncate">
-                                      {message.attachmentName}
-                                    </span>
-                                  </div>
-                                )}
-                                
-                                {message.type !== 'file' && (
-                                  <p className="text-sm whitespace-pre-wrap">
-                                    {message.content}
-                                  </p>
-                                )}
-                                
                                 <div className={cn(
-                                  "flex items-center gap-1 mt-1",
-                                  isMe ? "justify-end" : "justify-start"
+                                  "max-w-[70%] rounded-2xl px-4 py-2",
+                                  isMe 
+                                    ? "bg-primary text-primary-foreground rounded-br-md" 
+                                    : "bg-muted rounded-bl-md"
                                 )}>
-                                  <span className={cn(
-                                    "text-[10px]",
-                                    isMe ? "text-primary-foreground/70" : "text-muted-foreground"
-                                  )}>
-                                    {format(message.timestamp, 'HH:mm')}
-                                  </span>
-                                  {isMe && (
-                                    message.status === 'read' ? (
-                                      <CheckCheck className="w-3 h-3 text-primary-foreground/70" />
-                                    ) : message.status === 'delivered' ? (
-                                      <CheckCheck className="w-3 h-3 text-primary-foreground/50" />
-                                    ) : (
-                                      <Check className="w-3 h-3 text-primary-foreground/50" />
-                                    )
+                                  {message.type === 'file' && (
+                                    <div className={cn(
+                                      "flex items-center gap-2 p-2 rounded mb-1",
+                                      isMe ? "bg-primary-foreground/10" : "bg-background"
+                                    )}>
+                                      <FileText className="w-5 h-5" />
+                                      <span className="text-sm truncate">
+                                        {message.attachmentName}
+                                      </span>
+                                    </div>
                                   )}
+                                  
+                                  {message.type !== 'file' && (
+                                    <p className="text-sm whitespace-pre-wrap">
+                                      {message.content}
+                                    </p>
+                                  )}
+                                  
+                                  <div className={cn(
+                                    "flex items-center gap-1 mt-1",
+                                    isMe ? "justify-end" : "justify-start"
+                                  )}>
+                                    <span className={cn(
+                                      "text-[10px]",
+                                      isMe ? "text-primary-foreground/70" : "text-muted-foreground"
+                                    )}>
+                                      {format(message.timestamp, 'HH:mm')}
+                                    </span>
+                                    {isMe && (
+                                      message.status === 'read' ? (
+                                        <CheckCheck className="w-3 h-3 text-primary-foreground/70" />
+                                      ) : message.status === 'delivered' ? (
+                                        <CheckCheck className="w-3 h-3 text-primary-foreground/50" />
+                                      ) : (
+                                        <Check className="w-3 h-3 text-primary-foreground/50" />
+                                      )
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                        );
-                      })}
-                      <div ref={messagesEndRef} />
-                    </div>
+                          );
+                        })}
+                        <div ref={messagesEndRef} />
+                      </div>
+                    )}
                   </ScrollArea>
 
                   {/* Message Input */}
@@ -474,6 +416,7 @@ export function SupplierChat() {
                           onKeyDown={handleKeyPress}
                           className="min-h-[44px] max-h-32 resize-none pr-10"
                           rows={1}
+                          disabled={sendingMessage}
                         />
                         <Button 
                           variant="ghost" 
@@ -488,9 +431,13 @@ export function SupplierChat() {
                         size="icon" 
                         className="h-10 w-10 flex-shrink-0"
                         onClick={handleSendMessage}
-                        disabled={!newMessage.trim()}
+                        disabled={!newMessage.trim() || sendingMessage}
                       >
-                        <Send className="w-5 h-5" />
+                        {sendingMessage ? (
+                          <Loader2 className="w-5 h-5 animate-spin" />
+                        ) : (
+                          <Send className="w-5 h-5" />
+                        )}
                       </Button>
                     </div>
                   </div>
