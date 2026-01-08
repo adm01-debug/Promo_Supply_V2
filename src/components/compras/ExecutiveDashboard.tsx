@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -353,28 +353,6 @@ export const ExecutiveDashboard = () => {
   const [showComparison, setShowComparison] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
-
-  // KPI Celebrations - monitors metrics and triggers celebrations when goals are met
-  const kpiMetrics = useMemo(() => ({
-    savings: { 
-      value: currentPeriodMetrics.savings.value, 
-      target: currentPeriodMetrics.savings.target 
-    },
-    contractCompliance: { 
-      value: currentPeriodMetrics.contractCompliance.value, 
-      target: currentPeriodMetrics.contractCompliance.target 
-    },
-    avgCycleTime: { 
-      value: currentPeriodMetrics.avgCycleTime.value, 
-      target: currentPeriodMetrics.avgCycleTime.target 
-    },
-    totalSpend: { 
-      value: currentPeriodMetrics.totalSpend.value, 
-      target: currentPeriodMetrics.totalSpend.target 
-    }
-  }), []);
-
-  const previousPeriodRef = useRef(selectedPeriod);
 
   // Filter favorites hook
   const {
