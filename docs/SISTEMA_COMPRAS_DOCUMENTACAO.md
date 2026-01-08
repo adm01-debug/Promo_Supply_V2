@@ -367,25 +367,6 @@ await auditService.log({
 });
 ```
 
-### notificationService
-
-| Arquivo | `src/services/notificationService.ts` |
-|---------|--------------------------------------|
-| **Função** | Gerencia notificações do sistema |
-
-```typescript
-// Criar notificação
-await notificationService.create({
-  userId: 'user-123',
-  title: 'Nova aprovação pendente',
-  message: 'Solicitação SOL-001 aguarda sua aprovação',
-  type: 'approval'
-});
-
-// Marcar como lida
-await notificationService.markAsRead('notification-id');
-```
-
 ---
 
 ## 📄 Páginas do Sistema
@@ -422,8 +403,7 @@ await notificationService.markAsRead('notification-id');
 | Componente | Arquivo | Função |
 |------------|---------|--------|
 | `MainLayout` | `MainLayout.tsx` | Layout principal com sidebar |
-| `AppSidebar` | `AppSidebar.tsx` | Sidebar de navegação |
-| `NavLink` | `NavLink.tsx` | Links de navegação |
+| `AppSidebar` | `AppSidebar.tsx` | Sidebar de navegação (usa NavLink do react-router-dom) |
 | `ProtectedRoute` | `ProtectedRoute.tsx` | Proteção de rotas por role |
 | `UserMenu` | `UserMenu.tsx` | Menu do usuário logado |
 
