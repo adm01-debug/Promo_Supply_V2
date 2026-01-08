@@ -16,7 +16,6 @@ import {
   FileText,
   CreditCard,
   Factory,
-  Package,
   Truck,
   BarChart3,
   History,
@@ -25,9 +24,6 @@ import {
   TrendingUp,
   FileSignature,
   ShoppingCart,
-  Settings,
-  User,
-  LogOut,
   PiggyBank,
   Award,
 } from "lucide-react";
