@@ -6,7 +6,6 @@ import {
   Star,
   Clock,
   Package,
-  DollarSign,
   Award,
   AlertTriangle,
   CheckCircle,
