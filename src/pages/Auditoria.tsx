@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { History, Download, Calendar, Filter, Search, RefreshCw, ChevronDown, ChevronRight, User, FileText, Clock } from 'lucide-react';
+import { History, Download, Filter, Search, RefreshCw, ChevronDown, ChevronRight, User, FileText, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
