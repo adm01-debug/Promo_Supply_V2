@@ -121,8 +121,6 @@ export const logAuditAction = async (entry: AuditLogEntry): Promise<void> => {
 
     if (error) {
       console.error('Erro ao registrar auditoria:', error);
-    } else {
-      console.log('📋 Auditoria registrada:', entry.action_type, entry.entity_type, entry.entity_description);
     }
   } catch (err) {
     console.error('Erro ao registrar auditoria:', err);

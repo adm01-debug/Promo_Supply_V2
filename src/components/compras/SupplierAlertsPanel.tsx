@@ -180,8 +180,7 @@ export const SupplierAlertsPanel = () => {
   const [supplierData] = useState<SupplierData[]>(mockSupplierData);
 
   const checkSupplierSLA = useCallback(() => {
-    // Simulate checking SLA
-    console.log('Verificando SLA dos fornecedores...');
+    // Simulate checking SLA - silent operation
   }, []);
 
   const triggerTestSupplierAlert = useCallback(() => {
