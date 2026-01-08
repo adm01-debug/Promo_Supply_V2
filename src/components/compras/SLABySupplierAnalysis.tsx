@@ -32,7 +32,7 @@ import {
   Star,
   Calendar,
 } from 'lucide-react';
-import { fornecedoresMock } from '@/data/mockData';
+
 
 // Mock SLA data per supplier
 const generateSupplierSLAData = () => {
