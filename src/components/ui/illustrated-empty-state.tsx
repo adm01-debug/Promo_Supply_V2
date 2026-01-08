@@ -384,3 +384,154 @@ export const EmptyAnalytics = () => (
     description="Ainda não há dados suficientes para gerar análises. Continue usando o sistema."
   />
 );
+
+export const EmptyCotacoes = ({ onCreate }: { onCreate?: () => void }) => (
+  <IllustratedEmptyState
+    type="cart"
+    title="Nenhuma cotação encontrada"
+    description="Solicite cotações aos fornecedores para comparar preços e condições."
+    action={onCreate ? { label: "Solicitar Cotação", onClick: onCreate } : undefined}
+  />
+);
+
+export const EmptyAuditoria = () => (
+  <IllustratedEmptyState
+    type="documents"
+    title="Nenhum registro de auditoria"
+    description="Os registros de atividades aparecerão aqui conforme as ações são realizadas."
+    size="sm"
+  />
+);
+
+export const EmptyRelatorios = ({ onCreate }: { onCreate?: () => void }) => (
+  <IllustratedEmptyState
+    type="analytics"
+    title="Nenhum relatório gerado"
+    description="Gere relatórios personalizados para analisar o desempenho das compras."
+    action={onCreate ? { label: "Gerar Relatório", onClick: onCreate } : undefined}
+  />
+);
+
+export const EmptyAprovacoes = () => (
+  <IllustratedEmptyState
+    type="inbox"
+    title="Nenhuma aprovação pendente"
+    description="Excelente! Todas as solicitações foram processadas."
+  />
+);
+
+// Contextualized empty state with suggestions
+interface ContextualEmptyStateProps {
+  context: "first-time" | "filtered" | "error" | "success";
+  type: IllustratedEmptyStateProps["type"];
+  title: string;
+  description?: string;
+  suggestions?: string[];
+  action?: IllustratedEmptyStateProps["action"];
+  secondaryAction?: IllustratedEmptyStateProps["secondaryAction"];
+  className?: string;
+}
+
+export const ContextualEmptyState = ({
+  context,
+  type,
+  title,
+  description,
+  suggestions,
+  action,
+  secondaryAction,
+  className,
+}: ContextualEmptyStateProps) => {
+  const contextStyles = {
+    "first-time": "border-primary/20 bg-primary/5",
+    "filtered": "border-warning/20 bg-warning/5",
+    "error": "border-destructive/20 bg-destructive/5",
+    "success": "border-success/20 bg-success/5",
+  };
+
+  const contextIcons = {
+    "first-time": "🚀",
+    "filtered": "🔍",
+    "error": "⚠️",
+    "success": "✅",
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className={cn(
+        "rounded-xl border p-6",
+        contextStyles[context],
+        className
+      )}
+    >
+      <IllustratedEmptyState
+        type={type}
+        title={title}
+        description={description}
+        action={action}
+        secondaryAction={secondaryAction}
+        className="border-0 bg-transparent"
+      />
+      
+      {suggestions && suggestions.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="mt-6 pt-4 border-t border-border/50"
+        >
+          <p className="text-xs font-medium text-muted-foreground mb-3 flex items-center gap-2">
+            <span>{contextIcons[context]}</span>
+            {context === "first-time" && "Comece por aqui:"}
+            {context === "filtered" && "Sugestões:"}
+            {context === "error" && "Tente:"}
+            {context === "success" && "Próximos passos:"}
+          </p>
+          <ul className="space-y-2">
+            {suggestions.map((suggestion, i) => (
+              <motion.li
+                key={i}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.4 + i * 0.1 }}
+                className="text-sm text-muted-foreground flex items-start gap-2"
+              >
+                <span className="text-primary mt-0.5">•</span>
+                {suggestion}
+              </motion.li>
+            ))}
+          </ul>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+};
+
+// Quick action empty state for inline use
+export const InlineEmptyState = ({
+  message,
+  action,
+  className,
+}: {
+  message: string;
+  action?: { label: string; onClick: () => void };
+  className?: string;
+}) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className={cn(
+      "flex items-center justify-center gap-3 py-8 text-muted-foreground text-sm",
+      className
+    )}
+  >
+    <span>{message}</span>
+    {action && (
+      <Button size="sm" variant="link" onClick={action.onClick} className="h-auto p-0">
+        {action.label}
+      </Button>
+    )}
+  </motion.div>
+);
