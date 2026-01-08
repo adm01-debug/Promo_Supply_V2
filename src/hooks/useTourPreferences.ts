@@ -18,7 +18,9 @@ export const useTourPreferences = (tourKey: string) => {
 
   // Fetch preference from database
   const fetchPreference = useCallback(async () => {
+    // Don't show tour if user is not logged in
     if (!user?.id) {
+      setIsOpen(false);
       setIsLoading(false);
       return;
     }
@@ -44,19 +46,23 @@ export const useTourPreferences = (tourKey: string) => {
         // Don't show tour if already completed or skipped
         setIsOpen(false);
       } else {
-        // First time user - show tour
+        // First time logged-in user - show tour
         setIsOpen(true);
       }
     } catch (error) {
-      console.error('Error fetching tour preference:', error);
       // On error, check localStorage as fallback
       const localKey = `tour_${tourKey}`;
       const localData = localStorage.getItem(localKey);
       if (localData) {
-        const parsed = JSON.parse(localData);
-        setIsOpen(!parsed.completed && !parsed.skipped);
+        try {
+          const parsed = JSON.parse(localData);
+          setIsOpen(!parsed.completed && !parsed.skipped);
+        } catch {
+          setIsOpen(false);
+        }
       } else {
-        setIsOpen(true);
+        // Don't show tour on error - safer default
+        setIsOpen(false);
       }
     } finally {
       setIsLoading(false);
