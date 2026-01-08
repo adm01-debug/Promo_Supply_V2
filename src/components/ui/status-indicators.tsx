@@ -737,3 +737,362 @@ export function AnimatedCounter({
     </span>
   );
 }
+
+// =============================================================================
+// CONNECTION STATUS - Online/Offline indicator
+// =============================================================================
+
+interface ConnectionStatusProps {
+  status: 'online' | 'offline' | 'connecting' | 'error';
+  showLabel?: boolean;
+  size?: 'sm' | 'default' | 'lg';
+  className?: string;
+}
+
+const connectionConfigs = {
+  online: { label: 'Online', color: 'bg-success', textColor: 'text-success' },
+  offline: { label: 'Offline', color: 'bg-muted-foreground', textColor: 'text-muted-foreground' },
+  connecting: { label: 'Conectando...', color: 'bg-warning', textColor: 'text-warning' },
+  error: { label: 'Erro de conexão', color: 'bg-destructive', textColor: 'text-destructive' },
+};
+
+export function ConnectionStatus({
+  status,
+  showLabel = true,
+  size = 'default',
+  className
+}: ConnectionStatusProps) {
+  const config = connectionConfigs[status];
+  const dotSizes = { sm: 'w-1.5 h-1.5', default: 'w-2 h-2', lg: 'w-2.5 h-2.5' };
+  const textSizes = { sm: 'text-[10px]', default: 'text-xs', lg: 'text-sm' };
+
+  return (
+    <div className={cn("inline-flex items-center gap-1.5", className)}>
+      <span className="relative flex">
+        <span className={cn("rounded-full", dotSizes[size], config.color)} />
+        {(status === 'online' || status === 'connecting') && (
+          <span className={cn(
+            "absolute inline-flex rounded-full opacity-75 animate-ping",
+            dotSizes[size],
+            config.color
+          )} />
+        )}
+      </span>
+      {showLabel && (
+        <span className={cn("font-medium", textSizes[size], config.textColor)}>
+          {config.label}
+        </span>
+      )}
+    </div>
+  );
+}
+
+// =============================================================================
+// SLA STATUS - Service Level Agreement indicator
+// =============================================================================
+
+interface SLAStatusProps {
+  daysRemaining: number;
+  totalDays: number;
+  showProgress?: boolean;
+  size?: 'sm' | 'default' | 'lg';
+  className?: string;
+}
+
+export function SLAStatus({
+  daysRemaining,
+  totalDays,
+  showProgress = true,
+  size = 'default',
+  className
+}: SLAStatusProps) {
+  const percentage = ((totalDays - daysRemaining) / totalDays) * 100;
+  const isOverdue = daysRemaining < 0;
+  const isWarning = daysRemaining <= 3 && daysRemaining >= 0;
+  const isOnTrack = daysRemaining > 3;
+
+  const getColor = () => {
+    if (isOverdue) return { bg: 'bg-destructive', text: 'text-destructive', badge: 'bg-destructive/10' };
+    if (isWarning) return { bg: 'bg-warning', text: 'text-warning', badge: 'bg-warning/10' };
+    return { bg: 'bg-success', text: 'text-success', badge: 'bg-success/10' };
+  };
+
+  const colors = getColor();
+  const textSizes = { sm: 'text-xs', default: 'text-sm', lg: 'text-base' };
+
+  return (
+    <div className={cn("space-y-1", className)}>
+      <div className="flex items-center justify-between">
+        <span className={cn("font-medium", textSizes[size], colors.text)}>
+          {isOverdue ? (
+            <>Atrasado {Math.abs(daysRemaining)} dia{Math.abs(daysRemaining) !== 1 ? 's' : ''}</>
+          ) : (
+            <>{daysRemaining} dia{daysRemaining !== 1 ? 's' : ''} restante{daysRemaining !== 1 ? 's' : ''}</>
+          )}
+        </span>
+        <Badge variant="outline" className={cn(colors.badge, colors.text, "border-0")}>
+          {isOverdue ? 'Atrasado' : isWarning ? 'Urgente' : 'No Prazo'}
+        </Badge>
+      </div>
+      {showProgress && (
+        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${Math.min(percentage, 100)}%` }}
+            transition={{ duration: 0.5 }}
+            className={cn("h-full rounded-full", colors.bg)}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// =============================================================================
+// SYNC STATUS - Data synchronization indicator
+// =============================================================================
+
+interface SyncStatusProps {
+  lastSynced?: Date;
+  isSyncing?: boolean;
+  hasError?: boolean;
+  size?: 'sm' | 'default' | 'lg';
+  className?: string;
+}
+
+export function SyncStatus({
+  lastSynced,
+  isSyncing = false,
+  hasError = false,
+  size = 'default',
+  className
+}: SyncStatusProps) {
+  const getTimeAgo = (date: Date) => {
+    const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
+    if (seconds < 60) return 'agora mesmo';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)}min atrás`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h atrás`;
+    return `${Math.floor(seconds / 86400)}d atrás`;
+  };
+
+  const iconSizes = { sm: 'h-3 w-3', default: 'h-4 w-4', lg: 'h-5 w-5' };
+  const textSizes = { sm: 'text-[10px]', default: 'text-xs', lg: 'text-sm' };
+
+  return (
+    <div className={cn("inline-flex items-center gap-1.5", className)}>
+      {isSyncing ? (
+        <>
+          <Loader2 className={cn(iconSizes[size], "animate-spin text-info")} />
+          <span className={cn(textSizes[size], "text-info")}>Sincronizando...</span>
+        </>
+      ) : hasError ? (
+        <>
+          <XCircle className={cn(iconSizes[size], "text-destructive")} />
+          <span className={cn(textSizes[size], "text-destructive")}>Erro ao sincronizar</span>
+        </>
+      ) : (
+        <>
+          <CheckCircle2 className={cn(iconSizes[size], "text-success")} />
+          <span className={cn(textSizes[size], "text-muted-foreground")}>
+            Sincronizado {lastSynced ? getTimeAgo(lastSynced) : ''}
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+
+// =============================================================================
+// STEP STATUS - Multi-step process indicator
+// =============================================================================
+
+interface Step {
+  label: string;
+  description?: string;
+  status: 'pending' | 'current' | 'completed' | 'error';
+}
+
+interface StepStatusProps {
+  steps: Step[];
+  orientation?: 'horizontal' | 'vertical';
+  size?: 'sm' | 'default' | 'lg';
+  className?: string;
+}
+
+export function StepStatus({
+  steps,
+  orientation = 'horizontal',
+  size = 'default',
+  className
+}: StepStatusProps) {
+  const isHorizontal = orientation === 'horizontal';
+  const dotSizes = { sm: 'w-6 h-6', default: 'w-8 h-8', lg: 'w-10 h-10' };
+  const iconSizes = { sm: 'h-3 w-3', default: 'h-4 w-4', lg: 'h-5 w-5' };
+  const textSizes = { sm: 'text-xs', default: 'text-sm', lg: 'text-base' };
+
+  const getStepStyles = (status: Step['status']) => {
+    switch (status) {
+      case 'completed': return { bg: 'bg-success', text: 'text-success', icon: CheckCircle2 };
+      case 'current': return { bg: 'bg-primary', text: 'text-primary', icon: null };
+      case 'error': return { bg: 'bg-destructive', text: 'text-destructive', icon: XCircle };
+      default: return { bg: 'bg-muted', text: 'text-muted-foreground', icon: null };
+    }
+  };
+
+  return (
+    <div className={cn(
+      "flex",
+      isHorizontal ? "flex-row items-start" : "flex-col",
+      className
+    )}>
+      {steps.map((step, index) => {
+        const styles = getStepStyles(step.status);
+        const Icon = styles.icon;
+        const isLast = index === steps.length - 1;
+
+        return (
+          <div 
+            key={index}
+            className={cn(
+              "flex",
+              isHorizontal ? "flex-col items-center flex-1" : "flex-row items-start gap-4"
+            )}
+          >
+            <div className={cn(
+              "flex items-center",
+              isHorizontal ? "flex-col" : "flex-row"
+            )}>
+              {/* Step circle */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: index * 0.1, type: "spring" }}
+                className={cn(
+                  "rounded-full flex items-center justify-center font-medium text-white relative z-10",
+                  dotSizes[size],
+                  styles.bg,
+                  step.status === 'current' && "ring-4 ring-primary/20"
+                )}
+              >
+                {Icon ? (
+                  <Icon className={iconSizes[size]} />
+                ) : (
+                  <span className={textSizes[size]}>{index + 1}</span>
+                )}
+              </motion.div>
+              
+              {/* Connector line */}
+              {!isLast && (
+                <div className={cn(
+                  isHorizontal ? "w-full h-0.5" : "w-0.5 h-full min-h-8",
+                  step.status === 'completed' ? "bg-success" : "bg-muted"
+                )} />
+              )}
+            </div>
+            
+            {/* Step content */}
+            <div className={cn(
+              isHorizontal ? "text-center mt-2 px-2" : "pb-8"
+            )}>
+              <p className={cn(
+                "font-medium",
+                textSizes[size],
+                styles.text
+              )}>
+                {step.label}
+              </p>
+              {step.description && (
+                <p className={cn(
+                  "text-muted-foreground mt-0.5",
+                  size === 'sm' ? 'text-[10px]' : 'text-xs'
+                )}>
+                  {step.description}
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// =============================================================================
+// HEALTH CHECK STATUS - System health indicator
+// =============================================================================
+
+interface HealthCheckProps {
+  items: Array<{
+    name: string;
+    status: 'healthy' | 'degraded' | 'down' | 'checking';
+    message?: string;
+  }>;
+  title?: string;
+  compact?: boolean;
+  className?: string;
+}
+
+export function HealthCheck({
+  items,
+  title = "Status do Sistema",
+  compact = false,
+  className
+}: HealthCheckProps) {
+  const getStatusConfig = (status: 'healthy' | 'degraded' | 'down' | 'checking') => {
+    switch (status) {
+      case 'healthy': return { icon: CheckCircle2, color: 'text-success', bg: 'bg-success/10', label: 'Operacional' };
+      case 'degraded': return { icon: AlertTriangle, color: 'text-warning', bg: 'bg-warning/10', label: 'Degradado' };
+      case 'down': return { icon: XCircle, color: 'text-destructive', bg: 'bg-destructive/10', label: 'Inoperante' };
+      case 'checking': return { icon: Loader2, color: 'text-info', bg: 'bg-info/10', label: 'Verificando' };
+    }
+  };
+
+  const overallStatus = items.some(i => i.status === 'down') 
+    ? 'down' 
+    : items.some(i => i.status === 'degraded')
+    ? 'degraded'
+    : items.some(i => i.status === 'checking')
+    ? 'checking'
+    : 'healthy';
+
+  const overallConfig = getStatusConfig(overallStatus);
+
+  return (
+    <div className={cn("space-y-3", className)}>
+      {/* Overall status */}
+      <div className={cn("flex items-center justify-between p-3 rounded-lg border", overallConfig.bg)}>
+        <span className="font-medium">{title}</span>
+        <div className={cn("flex items-center gap-2", overallConfig.color)}>
+          <overallConfig.icon className={cn("h-4 w-4", overallStatus === 'checking' && "animate-spin")} />
+          <span className="text-sm font-medium">{overallConfig.label}</span>
+        </div>
+      </div>
+
+      {/* Individual items */}
+      {!compact && (
+        <div className="space-y-2">
+          {items.map((item, index) => {
+            const config = getStatusConfig(item.status);
+            return (
+              <motion.div
+                key={item.name}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.05 }}
+                className="flex items-center justify-between py-2 px-3 rounded-lg bg-muted/50"
+              >
+                <span className="text-sm">{item.name}</span>
+                <div className="flex items-center gap-2">
+                  {item.message && (
+                    <span className="text-xs text-muted-foreground">{item.message}</span>
+                  )}
+                  <config.icon className={cn("h-4 w-4", config.color, item.status === 'checking' && "animate-spin")} />
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
