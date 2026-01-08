@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe, KeyRound, Bell, Gauge, GraduationCap } from 'lucide-react';
+import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe, KeyRound, Bell, GraduationCap } from 'lucide-react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +17,6 @@ import { PermissionMatrix } from '@/components/security/PermissionMatrix';
 import { PermissionGate } from '@/components/security/PermissionGate';
 import { PasskeyManager } from '@/components/security/PasskeyManager';
 import { NotificationSettingsPanel } from '@/components/notifications/NotificationSettingsPanel';
-import { PerformanceMonitor } from '@/components/performance/PerformanceMonitor';
 import { TourSettingsPanel } from '@/components/settings/TourSettingsPanel';
 import { useSecurityLogs } from '@/hooks/useSecurityLogs';
 import { useAuth } from '@/hooks/useAuth';
@@ -154,16 +153,10 @@ const Seguranca = () => {
               </TabsTrigger>
             </PermissionGate>
             {isAdmin && (
-              <>
-                <TabsTrigger value="permissions" className="flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
-                  <span className="hidden sm:inline">Permissões</span>
-                </TabsTrigger>
-                <TabsTrigger value="performance" className="flex items-center gap-2">
-                  <Gauge className="w-4 h-4" />
-                  <span className="hidden sm:inline">Performance</span>
-                </TabsTrigger>
-              </>
+              <TabsTrigger value="permissions" className="flex items-center gap-2">
+                <Lock className="w-4 h-4" />
+                <span className="hidden sm:inline">Permissões</span>
+              </TabsTrigger>
             )}
             <TabsTrigger value="tours" className="flex items-center gap-2">
               <GraduationCap className="w-4 h-4" />
@@ -287,63 +280,6 @@ const Seguranca = () => {
             <PermissionMatrix />
           </TabsContent>
 
-          {/* Performance Monitor Tab */}
-          <TabsContent value="performance">
-            <div className="grid gap-6 lg:grid-cols-2">
-              <PerformanceMonitor />
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Gauge className="w-5 h-5" />
-                    Core Web Vitals
-                  </CardTitle>
-                  <CardDescription>
-                    Métricas de performance do Google
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="p-3 rounded-lg border">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium">LCP (Largest Contentful Paint)</span>
-                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600">{'< 2.5s'}</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Tempo para renderizar o maior elemento visível na viewport
-                    </p>
-                  </div>
-                  
-                  <div className="p-3 rounded-lg border">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium">INP (Interaction to Next Paint)</span>
-                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600">{'< 200ms'}</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Responsividade a interações do usuário
-                    </p>
-                  </div>
-                  
-                  <div className="p-3 rounded-lg border">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-medium">CLS (Cumulative Layout Shift)</span>
-                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600">{'< 0.1'}</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Estabilidade visual durante carregamento
-                    </p>
-                  </div>
-                  
-                  <div className="p-3 rounded-lg border bg-muted/30">
-                    <p className="font-medium mb-2">Coleta de Dados</p>
-                    <ul className="text-sm text-muted-foreground space-y-1">
-                      <li>• Métricas coletadas automaticamente</li>
-                      <li>• Armazenadas localmente por sessão</li>
-                      <li>• Enviadas em page unload</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
 
           {/* Tours Settings Tab */}
           <TabsContent value="tours">
