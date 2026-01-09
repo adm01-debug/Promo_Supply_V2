@@ -583,3 +583,350 @@ export const TypingAnimation = ({
     </span>
   );
 };
+
+// ============================================
+// BOUNCE IN ANIMATION
+// ============================================
+interface BounceInProps {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}
+
+export const BounceIn = ({ children, delay = 0, className }: BounceInProps) => (
+  <motion.div
+    className={className}
+    initial={{ scale: 0, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    transition={{
+      type: "spring",
+      stiffness: 400,
+      damping: 15,
+      delay
+    }}
+  >
+    {children}
+  </motion.div>
+);
+
+// ============================================
+// SLIDE REVEAL ANIMATION
+// ============================================
+interface SlideRevealProps {
+  children: React.ReactNode;
+  direction?: 'left' | 'right' | 'up' | 'down';
+  delay?: number;
+  className?: string;
+}
+
+export const SlideReveal = ({ 
+  children, 
+  direction = 'up', 
+  delay = 0, 
+  className 
+}: SlideRevealProps) => {
+  const getInitial = () => {
+    switch(direction) {
+      case 'left': return { x: -50, opacity: 0 };
+      case 'right': return { x: 50, opacity: 0 };
+      case 'up': return { y: 50, opacity: 0 };
+      case 'down': return { y: -50, opacity: 0 };
+    }
+  };
+
+  return (
+    <motion.div
+      className={className}
+      initial={getInitial()}
+      animate={{ x: 0, y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, delay, ease: "easeOut" }}
+    >
+      {children}
+    </motion.div>
+  );
+};
+
+// ============================================
+// CONFETTI BURST
+// ============================================
+interface ConfettiBurstProps {
+  show: boolean;
+  count?: number;
+  duration?: number;
+}
+
+export const ConfettiBurst = ({ show, count = 20, duration = 2 }: ConfettiBurstProps) => {
+  if (!show) return null;
+
+  const colors = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444', '#EC4899'];
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {Array.from({ length: count }).map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-2 h-2 rounded-full"
+          style={{ 
+            backgroundColor: colors[i % colors.length],
+            left: '50%',
+            top: '50%',
+          }}
+          initial={{ 
+            x: 0, 
+            y: 0, 
+            scale: 0, 
+            opacity: 1 
+          }}
+          animate={{ 
+            x: (Math.random() - 0.5) * 300,
+            y: (Math.random() - 0.5) * 300,
+            scale: [0, 1.5, 0],
+            opacity: [1, 1, 0],
+            rotate: Math.random() * 360
+          }}
+          transition={{ 
+            duration,
+            ease: "easeOut",
+            delay: i * 0.02
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+// ============================================
+// HEARTBEAT ANIMATION
+// ============================================
+interface HeartbeatProps {
+  children: React.ReactNode;
+  active?: boolean;
+  className?: string;
+}
+
+export const Heartbeat = ({ children, active = true, className }: HeartbeatProps) => (
+  <motion.div
+    className={className}
+    animate={active ? {
+      scale: [1, 1.05, 1, 1.05, 1],
+    } : {}}
+    transition={{
+      duration: 1.5,
+      repeat: Infinity,
+      repeatDelay: 1
+    }}
+  >
+    {children}
+  </motion.div>
+);
+
+// ============================================
+// SHIMMER TEXT
+// ============================================
+interface ShimmerTextProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+export const ShimmerText = ({ children, className }: ShimmerTextProps) => (
+  <motion.span
+    className={cn(
+      "inline-block bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent bg-[length:200%_100%]",
+      className
+    )}
+    animate={{ backgroundPosition: ['200% 0', '-200% 0'] }}
+    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+  >
+    {children}
+  </motion.span>
+);
+
+// ============================================
+// ATTENTION PULSE
+// ============================================
+interface AttentionPulseProps {
+  children: React.ReactNode;
+  active?: boolean;
+  color?: string;
+  className?: string;
+}
+
+export const AttentionPulse = ({ 
+  children, 
+  active = true, 
+  color = "hsl(var(--primary))",
+  className 
+}: AttentionPulseProps) => (
+  <div className={cn("relative", className)}>
+    {children}
+    {active && (
+      <motion.div
+        className="absolute inset-0 rounded-inherit pointer-events-none"
+        style={{ 
+          boxShadow: `0 0 0 0 ${color}`,
+          borderRadius: 'inherit'
+        }}
+        animate={{
+          boxShadow: [
+            `0 0 0 0 ${color}`,
+            `0 0 0 8px transparent`,
+          ]
+        }}
+        transition={{ duration: 1, repeat: Infinity }}
+      />
+    )}
+  </div>
+);
+
+// ============================================
+// FLIP CARD
+// ============================================
+interface FlipCardProps {
+  front: React.ReactNode;
+  back: React.ReactNode;
+  flipped?: boolean;
+  className?: string;
+}
+
+export const FlipCard = ({ front, back, flipped = false, className }: FlipCardProps) => (
+  <motion.div
+    className={cn("relative", className)}
+    style={{ perspective: 1000, transformStyle: "preserve-3d" }}
+  >
+    <motion.div
+      className="w-full h-full"
+      animate={{ rotateY: flipped ? 180 : 0 }}
+      transition={{ duration: 0.6 }}
+      style={{ transformStyle: "preserve-3d" }}
+    >
+      {/* Front */}
+      <div 
+        className="absolute inset-0 backface-hidden"
+        style={{ backfaceVisibility: "hidden" }}
+      >
+        {front}
+      </div>
+      {/* Back */}
+      <div 
+        className="absolute inset-0"
+        style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
+      >
+        {back}
+      </div>
+    </motion.div>
+  </motion.div>
+);
+
+// ============================================
+// MORPH NUMBERS
+// ============================================
+interface MorphNumberProps {
+  value: number;
+  className?: string;
+  format?: (n: number) => string;
+}
+
+export const MorphNumber = ({ 
+  value, 
+  className,
+  format = (n) => n.toLocaleString('pt-BR')
+}: MorphNumberProps) => {
+  const motionValue = useMotionValue(0);
+  const displayValue = useTransform(motionValue, (v) => format(Math.round(v)));
+  const [display, setDisplay] = useState(format(0));
+
+  useState(() => {
+    import("framer-motion").then(({ animate }) => {
+      const controls = animate(motionValue, value, {
+        duration: 1,
+        ease: "easeOut"
+      });
+      const unsubscribe = motionValue.on("change", (v) => {
+        setDisplay(format(Math.round(v)));
+      });
+      return () => {
+        controls.stop();
+        unsubscribe();
+      };
+    });
+  });
+
+  return <span className={className}>{display}</span>;
+};
+
+// ============================================
+// BLUR FADE IN
+// ============================================
+interface BlurFadeInProps {
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}
+
+export const BlurFadeIn = ({ children, delay = 0, className }: BlurFadeInProps) => (
+  <motion.div
+    className={className}
+    initial={{ opacity: 0, filter: "blur(10px)" }}
+    animate={{ opacity: 1, filter: "blur(0px)" }}
+    transition={{ duration: 0.5, delay }}
+  >
+    {children}
+  </motion.div>
+);
+
+// ============================================
+// GRADIENT BORDER
+// ============================================
+interface GradientBorderProps {
+  children: React.ReactNode;
+  animate?: boolean;
+  className?: string;
+}
+
+export const GradientBorder = ({ children, animate = true, className }: GradientBorderProps) => (
+  <div className={cn("relative p-[2px] rounded-xl overflow-hidden", className)}>
+    <motion.div
+      className="absolute inset-0 bg-gradient-to-r from-primary via-accent to-primary"
+      animate={animate ? { backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] } : undefined}
+      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+      style={{ backgroundSize: '200% 200%' }}
+    />
+    <div className="relative bg-background rounded-[10px]">
+      {children}
+    </div>
+  </div>
+);
+
+// ============================================
+// SKELETON SHIMMER
+// ============================================
+interface SkeletonShimmerProps {
+  className?: string;
+  rounded?: 'none' | 'sm' | 'md' | 'lg' | 'full';
+}
+
+export const SkeletonShimmer = ({ className, rounded = 'md' }: SkeletonShimmerProps) => {
+  const roundedClasses = {
+    none: 'rounded-none',
+    sm: 'rounded-sm',
+    md: 'rounded-md',
+    lg: 'rounded-lg',
+    full: 'rounded-full'
+  };
+
+  return (
+    <div 
+      className={cn(
+        "relative overflow-hidden bg-muted",
+        roundedClasses[rounded],
+        className
+      )}
+    >
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
+        animate={{ x: ['-100%', '100%'] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+      />
+    </div>
+  );
+};
