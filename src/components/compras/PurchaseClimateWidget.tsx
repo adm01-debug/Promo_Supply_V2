@@ -118,7 +118,7 @@ export function PurchaseClimateWidget() {
     const leadTimeScore = Math.max(0, 100 - ((kpisMock.leadTime - 3) * 10));
     
     // 6. Completion Rate
-    const completionScore = (finalizados / Math.max(1, totalSolicitacoes)) * 100;
+    const completionScore = Math.min(100, (finalizados / Math.max(1, finalizados + totalSolicitacoes)) * 100);
 
     const indicators: ClimateIndicator[] = [
       {
