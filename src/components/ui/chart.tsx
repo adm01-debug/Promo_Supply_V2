@@ -29,6 +29,65 @@ function useChart() {
   return context;
 }
 
+// Dark mode aware chart palette
+export const chartPalette = {
+  primary: {
+    light: "hsl(221.2 83.2% 53.3%)",
+    dark: "hsl(217.2 91.2% 59.8%)",
+  },
+  success: {
+    light: "hsl(142.1 76.2% 36.3%)",
+    dark: "hsl(142.1 70.6% 45.3%)",
+  },
+  warning: {
+    light: "hsl(45.4 93.4% 47.5%)",
+    dark: "hsl(45.4 93.4% 52.5%)",
+  },
+  danger: {
+    light: "hsl(0 84.2% 60.2%)",
+    dark: "hsl(0 72.2% 50.6%)",
+  },
+  purple: {
+    light: "hsl(262.1 83.3% 57.8%)",
+    dark: "hsl(263.4 70% 50.4%)",
+  },
+  blue: {
+    light: "hsl(199.2 89.4% 48.4%)",
+    dark: "hsl(199.2 95.5% 53.8%)",
+  },
+  cyan: {
+    light: "hsl(174.6 83.9% 31.6%)",
+    dark: "hsl(174.6 95.8% 41.4%)",
+  },
+  pink: {
+    light: "hsl(330.4 81.2% 60.4%)",
+    dark: "hsl(330.4 81.2% 65.4%)",
+  },
+} as const;
+
+// Extended dark mode chart colors for better visibility
+export const darkModeChartColors = [
+  "hsl(217 91% 60%)",      // Blue
+  "hsl(142 71% 45%)",      // Green  
+  "hsl(45 93% 52%)",       // Yellow
+  "hsl(0 72% 51%)",        // Red
+  "hsl(263 70% 50%)",      // Purple
+  "hsl(199 96% 54%)",      // Cyan
+  "hsl(330 81% 65%)",      // Pink
+  "hsl(25 95% 53%)",       // Orange
+];
+
+export const lightModeChartColors = [
+  "hsl(221 83% 53%)",      // Blue
+  "hsl(142 76% 36%)",      // Green
+  "hsl(45 93% 47%)",       // Yellow
+  "hsl(0 84% 60%)",        // Red
+  "hsl(262 83% 58%)",      // Purple
+  "hsl(199 89% 48%)",      // Cyan
+  "hsl(330 81% 60%)",      // Pink
+  "hsl(25 95% 50%)",       // Orange
+];
+
 const ChartContainer = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> & {
@@ -45,7 +104,45 @@ const ChartContainer = React.forwardRef<
         data-chart={chartId}
         ref={ref}
         className={cn(
-          "flex aspect-video justify-center text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border [&_.recharts-dot[stroke='#fff']]:stroke-transparent [&_.recharts-layer]:outline-none [&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border [&_.recharts-radial-bar-background-sector]:fill-muted [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted [&_.recharts-reference-line_[stroke='#ccc']]:stroke-border [&_.recharts-sector[stroke='#fff']]:stroke-transparent [&_.recharts-sector]:outline-none [&_.recharts-surface]:outline-none",
+          // Base styles
+          "flex aspect-video justify-center text-xs",
+          // Axis text
+          "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground",
+          "[&_.recharts-cartesian-axis-tick_text]:text-[11px]",
+          // Grid lines - more visible in dark mode
+          "[&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/50",
+          "dark:[&_.recharts-cartesian-grid_line[stroke='#ccc']]:stroke-border/30",
+          // Tooltip cursor
+          "[&_.recharts-curve.recharts-tooltip-cursor]:stroke-border",
+          // Dots
+          "[&_.recharts-dot[stroke='#fff']]:stroke-transparent",
+          "[&_.recharts-active-dot]:drop-shadow-md",
+          "dark:[&_.recharts-active-dot]:drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]",
+          // Layers
+          "[&_.recharts-layer]:outline-none",
+          // Polar grid
+          "[&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border",
+          "dark:[&_.recharts-polar-grid_[stroke='#ccc']]:stroke-border/50",
+          // Radial bar
+          "[&_.recharts-radial-bar-background-sector]:fill-muted",
+          "dark:[&_.recharts-radial-bar-background-sector]:fill-muted/50",
+          // Tooltip rectangle
+          "[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted",
+          "dark:[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted/30",
+          // Reference line
+          "[&_.recharts-reference-line_[stroke='#ccc']]:stroke-border",
+          // Sectors
+          "[&_.recharts-sector[stroke='#fff']]:stroke-transparent",
+          "[&_.recharts-sector]:outline-none",
+          "dark:[&_.recharts-sector]:drop-shadow-[0_0_4px_rgba(0,0,0,0.5)]",
+          // Surface
+          "[&_.recharts-surface]:outline-none",
+          // Legend
+          "[&_.recharts-legend-item-text]:!text-foreground",
+          // Dark mode glow effects
+          "dark:[&_.recharts-area]:drop-shadow-[0_0_12px_rgba(var(--primary),0.2)]",
+          "dark:[&_.recharts-bar]:drop-shadow-[0_2px_8px_rgba(0,0,0,0.3)]",
+          "dark:[&_.recharts-line]:drop-shadow-[0_0_6px_rgba(255,255,255,0.1)]",
           className,
         )}
         {...props}
@@ -154,7 +251,15 @@ const ChartTooltipContent = React.forwardRef<
       <div
         ref={ref}
         className={cn(
-          "grid min-w-[8rem] items-start gap-1.5 rounded-lg border border-border/50 bg-background px-2.5 py-1.5 text-xs shadow-xl",
+          // Base styles with better dark mode support
+          "grid min-w-[8rem] items-start gap-1.5 rounded-xl text-xs",
+          // Light mode
+          "border border-border/50 bg-background/95 backdrop-blur-sm shadow-xl",
+          // Dark mode - more pronounced tooltip
+          "dark:border-border/40 dark:bg-popover/95 dark:shadow-2xl dark:shadow-black/20",
+          // Glow effect in dark mode
+          "dark:ring-1 dark:ring-white/5",
+          "px-3 py-2.5",
           className,
         )}
       >
@@ -182,12 +287,17 @@ const ChartTooltipContent = React.forwardRef<
                     ) : (
                       !hideIndicator && (
                         <div
-                          className={cn("shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]", {
-                            "h-2.5 w-2.5": indicator === "dot",
-                            "w-1": indicator === "line",
-                            "w-0 border-[1.5px] border-dashed bg-transparent": indicator === "dashed",
-                            "my-0.5": nestLabel && indicator === "dashed",
-                          })}
+                          className={cn(
+                            "shrink-0 rounded-[2px] border-[--color-border] bg-[--color-bg]",
+                            // Add glow in dark mode
+                            "dark:shadow-[0_0_4px_var(--color-bg)]",
+                            {
+                              "h-2.5 w-2.5": indicator === "dot",
+                              "w-1": indicator === "line",
+                              "w-0 border-[1.5px] border-dashed bg-transparent": indicator === "dashed",
+                              "my-0.5": nestLabel && indicator === "dashed",
+                            }
+                          )}
                           style={
                             {
                               "--color-bg": indicatorColor,
@@ -208,7 +318,7 @@ const ChartTooltipContent = React.forwardRef<
                         <span className="text-muted-foreground">{itemConfig?.label || item.name}</span>
                       </div>
                       {item.value && (
-                        <span className="font-mono font-medium tabular-nums text-foreground">
+                        <span className="font-mono font-semibold tabular-nums text-foreground">
                           {item.value.toLocaleString()}
                         </span>
                       )}
@@ -244,7 +354,11 @@ const ChartLegendContent = React.forwardRef<
   return (
     <div
       ref={ref}
-      className={cn("flex items-center justify-center gap-4", verticalAlign === "top" ? "pb-3" : "pt-3", className)}
+      className={cn(
+        "flex items-center justify-center gap-4 flex-wrap",
+        verticalAlign === "top" ? "pb-3" : "pt-3",
+        className
+      )}
     >
       {payload.map((item) => {
         const key = `${nameKey || item.dataKey || "value"}`;
@@ -253,19 +367,27 @@ const ChartLegendContent = React.forwardRef<
         return (
           <div
             key={item.value}
-            className={cn("flex items-center gap-1.5 [&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground")}
+            className={cn(
+              "flex items-center gap-1.5 text-sm",
+              "[&>svg]:h-3 [&>svg]:w-3 [&>svg]:text-muted-foreground",
+              "transition-opacity hover:opacity-80 cursor-default"
+            )}
           >
             {itemConfig?.icon && !hideIcon ? (
               <itemConfig.icon />
             ) : (
               <div
-                className="h-2 w-2 shrink-0 rounded-[2px]"
+                className={cn(
+                  "h-2.5 w-2.5 shrink-0 rounded-full",
+                  // Glow effect in dark mode
+                  "dark:shadow-[0_0_4px_currentColor]"
+                )}
                 style={{
                   backgroundColor: item.color,
                 }}
               />
             )}
-            {itemConfig?.label}
+            <span className="text-muted-foreground">{itemConfig?.label}</span>
           </div>
         );
       })}
@@ -298,6 +420,37 @@ function getPayloadConfigFromPayload(config: ChartConfig, payload: unknown, key:
   }
 
   return configLabelKey in config ? config[configLabelKey] : config[key as keyof typeof config];
+}
+
+// Utility hook for getting theme-aware chart colors
+export function useChartTheme() {
+  const [isDark, setIsDark] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkTheme = () => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    };
+
+    checkTheme();
+
+    const observer = new MutationObserver(checkTheme);
+    observer.observe(document.documentElement, { 
+      attributes: true, 
+      attributeFilter: ['class'] 
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
+  return {
+    isDark,
+    colors: isDark ? darkModeChartColors : lightModeChartColors,
+    getColor: (index: number) => {
+      const colors = isDark ? darkModeChartColors : lightModeChartColors;
+      return colors[index % colors.length];
+    },
+    palette: chartPalette,
+  };
 }
 
 export { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, ChartStyle };
