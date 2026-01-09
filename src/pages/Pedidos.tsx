@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { 
   FileText, 
   Search, 
@@ -20,15 +20,20 @@ import {
   ArrowUpDown,
   ChevronDown,
   ExternalLink,
-  RefreshCw
+  RefreshCw,
+  Trash2
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { OnboardingTour, pedidosTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
+import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
+import { useBulkOperations, pedidosStatusOptions } from "@/hooks/useBulkOperations";
+import { BulkAction, BulkItem } from "@/components/compras/BulkOperationsPreview";
 import { 
   Select, 
   SelectContent, 
@@ -86,16 +91,17 @@ const Pedidos = () => {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const isMobile = useIsMobile();
-  const { pedidos, loading, refetch, updateStatus } = usePedidos();
+  const { pedidos, loading, refetch, updateStatus, bulkUpdateStatus, bulkDelete } = usePedidos();
   const { kpis } = usePedidosKPIs();
   const { fornecedores } = useFornecedores();
 
   // Tour preferences
   const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, isLoading: isTourLoading } = useTourPreferences('pedidos');
 
-  // Filtros e ordenação
+  // Filtros e ordenação (moved before bulk operations)
   const filteredPedidos = useMemo(() => {
     let result = pedidos.filter(pedido => {
       const matchSearch = 
@@ -126,6 +132,60 @@ const Pedidos = () => {
 
     return result;
   }, [pedidos, search, statusFilter, fornecedorFilter, sortField, sortDirection]);
+
+  // Bulk operations
+  const { executeAction, convertToBulkItems } = useBulkOperations({
+    onDelete: bulkDelete,
+    onUpdateStatus: bulkUpdateStatus,
+  });
+
+  // Bulk actions configuration
+  const bulkActions: BulkAction[] = [
+    { id: 'approve', label: 'Aprovar', icon: CheckCircle2, variant: 'default', targetStatus: 'aprovado' },
+    { id: 'mark-shipped', label: 'Marcar Enviado', icon: Truck, variant: 'default', targetStatus: 'enviado' },
+    { id: 'mark-delivered', label: 'Marcar Entregue', icon: Package, variant: 'default', targetStatus: 'entregue' },
+    { id: 'change-status', label: 'Alterar Status', icon: RefreshCw },
+    { id: 'delete', label: 'Excluir', icon: Trash2, variant: 'destructive', requiresConfirmation: true },
+  ];
+
+  // Handle bulk action execution
+  const handleBulkAction = useCallback(async (
+    action: BulkAction, 
+    itemIds: string[], 
+    options?: { targetStatus?: string }
+  ) => {
+    const success = await executeAction(action, itemIds, options);
+    if (success) {
+      setSelectedIds([]);
+    }
+    return success;
+  }, [executeAction]);
+
+  // Convert pedidos to bulk items
+  const selectedBulkItems: BulkItem[] = useMemo(() => {
+    const selectedPedidos = pedidos.filter(p => selectedIds.includes(p.id));
+    return convertToBulkItems(selectedPedidos, (pedido) => ({
+      title: pedido.numero,
+      subtitle: pedido.fornecedor?.razao_social || 'Fornecedor',
+      status: pedido.status,
+      value: pedido.valor_total,
+    }));
+  }, [pedidos, selectedIds, convertToBulkItems]);
+
+  // Selection handlers
+  const handleSelectAll = useCallback(() => {
+    if (selectedIds.length === filteredPedidos.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredPedidos.map(p => p.id));
+    }
+  }, [selectedIds.length, filteredPedidos]);
+
+  const handleSelectOne = useCallback((id: string) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  }, []);
 
   const handleSort = (field: typeof sortField) => {
     if (sortField === field) {
@@ -382,6 +442,13 @@ const Pedidos = () => {
             <Table>
               <TableHeader>
                 <TableRow className="bg-muted/50">
+                  <TableHead className="w-12">
+                    <Checkbox
+                      checked={selectedIds.length === filteredPedidos.length && filteredPedidos.length > 0}
+                      onCheckedChange={handleSelectAll}
+                      aria-label="Selecionar todos"
+                    />
+                  </TableHead>
                   <TableHead>Número</TableHead>
                   <TableHead>Fornecedor</TableHead>
                   <TableHead>Status</TableHead>
@@ -409,7 +476,7 @@ const Pedidos = () => {
               <TableBody>
                 {filteredPedidos.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="h-32 text-center p-8">
+                    <TableCell colSpan={7} className="h-32 text-center p-8">
                       <IllustratedEmptyState
                         type="orders"
                         title="Nenhum pedido encontrado"
@@ -425,13 +492,21 @@ const Pedidos = () => {
                     const config = statusConfig[pedido.status] || statusConfig.pendente;
                     const StatusIcon = config?.icon || FileText;
                     const prazoStatus = getPrazoStatus(pedido.data_previsao);
+                    const isSelected = selectedIds.includes(pedido.id);
 
                     return (
                       <TableRow 
                         key={pedido.id} 
-                        className="hover:bg-muted/30 cursor-pointer"
+                        className={`hover:bg-muted/30 cursor-pointer ${isSelected ? 'bg-primary/5' : ''}`}
                         onClick={() => handleViewDetails(pedido)}
                       >
+                        <TableCell onClick={(e) => e.stopPropagation()}>
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={() => handleSelectOne(pedido.id)}
+                            aria-label={`Selecionar ${pedido.numero}`}
+                          />
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <span className="font-mono font-medium text-primary">{pedido.numero}</span>
@@ -759,6 +834,19 @@ const Pedidos = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Bulk Actions Bar */}
+      <EnhancedBulkActionsBar
+        entityType="pedidos"
+        selectedItems={selectedBulkItems}
+        totalCount={filteredPedidos.length}
+        onSelectAll={handleSelectAll}
+        onDeselectAll={() => setSelectedIds([])}
+        onExecute={handleBulkAction}
+        isAllSelected={selectedIds.length === filteredPedidos.length && filteredPedidos.length > 0}
+        statusOptions={pedidosStatusOptions}
+        availableActions={bulkActions}
+      />
 
       {/* Onboarding Tour */}
       {!isTourLoading && (
