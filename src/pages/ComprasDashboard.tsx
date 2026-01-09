@@ -20,6 +20,8 @@ import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
 import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidget";
 import { DeliveryCalendar } from "@/components/compras/DeliveryCalendar";
 import { DraggableDashboard } from "@/components/compras/DraggableDashboard";
+import { DemandPredictionPanel } from "@/components/compras/DemandPredictionPanel";
+import { RiskHeatMap } from "@/components/compras/RiskHeatMap";
 import { PageTransition } from "@/components/animations/MotionComponents";
 import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock, kpiSparklineData } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
@@ -110,6 +112,10 @@ const ComprasDashboard = () => {
             <UrgentItemsList items={itensUrgentesMock} />
           </Card>
         );
+      case 'demand-prediction':
+        return <DemandPredictionPanel />;
+      case 'risk-heatmap':
+        return <RiskHeatMap />;
       default:
         return null;
     }
