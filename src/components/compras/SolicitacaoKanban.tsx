@@ -363,14 +363,16 @@ export function SolicitacaoKanban({
     }
   };
 
-  // Only show relevant columns (hide empty ones at the end)
+  // Mostrar todos os status relevantes para o fluxo completo
   const visibleStatuses: Solicitacao['status'][] = [
     'AGUARDANDO_COTACAO',
     'EM_COTACAO',
     'FORNECEDOR_SELECIONADO',
+    'PEDIDO_GERADO',
     'AGUARDANDO_PAGAMENTO',
     'PAGO',
     'EM_TRANSITO',
+    'ENTREGUE',
   ];
 
   return (

@@ -152,7 +152,7 @@ export function BottomNavigation() {
               <div className="relative">
                 {item.icon}
                 {item.badgeKey && badges[item.badgeKey] > 0 && (
-                  <Badge count={badges[item.badgeKey]} />
+                  <NavBadge count={badges[item.badgeKey]} />
                 )}
               </div>
               <span className="text-xs font-medium">{item.label}</span>
@@ -167,30 +167,28 @@ export function BottomNavigation() {
   );
 }
 
-// Badge Component com animação
-function Badge({ count }: { count: number }) {
+// Badge Component com animação - nome diferenciado para evitar conflito com ui/badge
+function NavBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  
   const displayCount = count > 99 ? '99+' : count.toString();
   
   return (
-    <AnimatePresence>
-      {count > 0 && (
-        <motion.span
-          initial={{ scale: 0, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-          className={cn(
-            "absolute -top-1.5 -right-1.5 flex items-center justify-center",
-            "min-w-[16px] h-4 px-1 rounded-full",
-            "bg-destructive text-destructive-foreground",
-            "text-[9px] font-bold shadow-sm",
-            "ring-2 ring-background"
-          )}
-        >
-          {displayCount}
-        </motion.span>
+    <motion.span
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0, opacity: 0 }}
+      transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+      className={cn(
+        "absolute -top-1.5 -right-1.5 flex items-center justify-center",
+        "min-w-[16px] h-4 px-1 rounded-full",
+        "bg-destructive text-destructive-foreground",
+        "text-[9px] font-bold shadow-sm",
+        "ring-2 ring-background"
       )}
-    </AnimatePresence>
+    >
+      {displayCount}
+    </motion.span>
   );
 }
 
@@ -228,7 +226,7 @@ function NavButton({ item, isActive, onClick, badgeCount = 0 }: NavButtonProps) 
         transition={{ type: 'spring', stiffness: 400, damping: 20 }}
       >
         {item.icon}
-        {badgeCount > 0 && <Badge count={badgeCount} />}
+        {badgeCount > 0 && <NavBadge count={badgeCount} />}
       </motion.div>
       
       <span className={cn(
