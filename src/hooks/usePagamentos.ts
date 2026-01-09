@@ -253,6 +253,26 @@ export function usePagamentos(filters?: PagamentoFilters) {
     }
   }, [fetchPagamentos]);
 
+  // Bulk delete
+  const bulkDelete = useCallback(async (ids: string[]) => {
+    try {
+      const { error } = await supabase
+        .from('pagamentos')
+        .delete()
+        .in('id', ids);
+
+      if (error) throw error;
+
+      toast.success(`${ids.length} pagamento(s) excluído(s)!`);
+      fetchPagamentos();
+      return true;
+    } catch (err: any) {
+      console.error('Error bulk deleting pagamentos:', err);
+      toast.error('Erro ao excluir pagamentos: ' + err.message);
+      return false;
+    }
+  }, [fetchPagamentos]);
+
   // Initial fetch
   useEffect(() => {
     fetchPagamentos();
@@ -292,6 +312,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
     markAsPaid,
     approvePagamento,
     bulkUpdateStatus,
+    bulkDelete,
     deletePagamento,
   };
 }

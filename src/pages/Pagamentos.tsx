@@ -1,12 +1,16 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
+import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
+import { useBulkOperations, pagamentosStatusOptions } from "@/hooks/useBulkOperations";
+import { BulkAction, BulkItem } from "@/components/compras/BulkOperationsPreview";
 import {
   Table,
   TableBody,
@@ -28,7 +32,8 @@ import {
   DollarSign,
   RefreshCw,
   Eye,
-  MoreHorizontal
+  MoreHorizontal,
+  Trash2
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -45,7 +50,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { PagamentoMobileCard } from "@/components/pagamentos/PagamentoMobileCard";
 import { usePagamentos, usePagamentosKPIs, type Pagamento } from "@/hooks/usePagamentos";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -58,9 +62,11 @@ const Pagamentos = () => {
   const [modalPagamento, setModalPagamento] = useState(false);
   const [comprovante, setComprovante] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState("pendentes");
 
   const isMobile = useIsMobile();
-  const { pagamentos, loading, refetch, markAsPaid, approvePagamento } = usePagamentos();
+  const { pagamentos, loading, refetch, markAsPaid, approvePagamento, bulkUpdateStatus, bulkDelete } = usePagamentos();
   const { kpis } = usePagamentosKPIs();
 
   const pagamentosPendentes = useMemo(() => 
@@ -73,6 +79,9 @@ const Pagamentos = () => {
     [pagamentos]
   );
 
+  // Get current list based on active tab
+  const currentList = activeTab === 'pendentes' ? pagamentosPendentes : pagamentosPagos;
+
   const filtrarPagamentos = (lista: Pagamento[]) => {
     if (!busca) return lista;
     const termoBusca = busca.toLowerCase();
@@ -81,6 +90,67 @@ const Pagamentos = () => {
       p.fornecedor?.razao_social?.toLowerCase().includes(termoBusca) ||
       p.numero_nf?.toLowerCase().includes(termoBusca)
     );
+  };
+
+  const filteredPagamentos = filtrarPagamentos(currentList);
+
+  // Bulk operations
+  const { executeAction, convertToBulkItems } = useBulkOperations({
+    onDelete: bulkDelete,
+    onUpdateStatus: bulkUpdateStatus,
+  });
+
+  // Bulk actions configuration
+  const bulkActions: BulkAction[] = [
+    { id: 'approve', label: 'Aprovar', icon: CheckCircle2, variant: 'default', targetStatus: 'aprovado' },
+    { id: 'mark-paid', label: 'Marcar Pago', icon: CreditCard, variant: 'default', targetStatus: 'pago' },
+    { id: 'change-status', label: 'Alterar Status', icon: RefreshCw },
+    { id: 'delete', label: 'Excluir', icon: Trash2, variant: 'destructive', requiresConfirmation: true },
+  ];
+
+  // Handle bulk action execution
+  const handleBulkAction = useCallback(async (
+    action: BulkAction, 
+    itemIds: string[], 
+    options?: { targetStatus?: string }
+  ) => {
+    const success = await executeAction(action, itemIds, options);
+    if (success) {
+      setSelectedIds([]);
+    }
+    return success;
+  }, [executeAction]);
+
+  // Convert pagamentos to bulk items
+  const selectedBulkItems: BulkItem[] = useMemo(() => {
+    const selectedPagamentos = pagamentos.filter(p => selectedIds.includes(p.id));
+    return convertToBulkItems(selectedPagamentos, (pagamento) => ({
+      title: pagamento.numero,
+      subtitle: pagamento.fornecedor?.razao_social || 'Fornecedor',
+      status: pagamento.status,
+      value: pagamento.valor,
+    }));
+  }, [pagamentos, selectedIds, convertToBulkItems]);
+
+  // Selection handlers
+  const handleSelectAll = useCallback(() => {
+    if (selectedIds.length === filteredPagamentos.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredPagamentos.map(p => p.id));
+    }
+  }, [selectedIds.length, filteredPagamentos]);
+
+  const handleSelectOne = useCallback((id: string) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  }, []);
+
+  // Clear selection when changing tabs
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    setSelectedIds([]);
   };
 
   const handlePagar = (pagamento: Pagamento) => {
@@ -245,7 +315,7 @@ const Pagamentos = () => {
         </Card>
 
         {/* Tabs */}
-        <Tabs defaultValue="pendentes" className="space-y-4">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
           <TabsList className="w-full grid grid-cols-2 h-auto p-1">
             <TabsTrigger value="pendentes" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2">
               <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
@@ -287,6 +357,13 @@ const Pagamentos = () => {
                 <Table>
                   <TableHeader>
                     <TableRow>
+                      <TableHead className="w-12">
+                        <Checkbox
+                          checked={selectedIds.length === filtrarPagamentos(pagamentosPendentes).length && filtrarPagamentos(pagamentosPendentes).length > 0}
+                          onCheckedChange={handleSelectAll}
+                          aria-label="Selecionar todos"
+                        />
+                      </TableHead>
                       <TableHead>Número</TableHead>
                       <TableHead>Fornecedor</TableHead>
                       <TableHead>NF</TableHead>
@@ -301,9 +378,17 @@ const Pagamentos = () => {
                       const vencStatus = getVencimentoStatus(pagamento.data_vencimento, pagamento.status);
                       const VencIcon = vencStatus.icon;
                       const statusBadge = getStatusBadge(pagamento.status);
+                      const isSelected = selectedIds.includes(pagamento.id);
                       
                       return (
-                        <TableRow key={pagamento.id}>
+                        <TableRow key={pagamento.id} className={isSelected ? 'bg-primary/5' : ''}>
+                          <TableCell>
+                            <Checkbox
+                              checked={isSelected}
+                              onCheckedChange={() => handleSelectOne(pagamento.id)}
+                              aria-label={`Selecionar ${pagamento.numero}`}
+                            />
+                          </TableCell>
                           <TableCell>
                             <span className="font-mono font-medium">{pagamento.numero}</span>
                             <div className="mt-1">
@@ -381,7 +466,7 @@ const Pagamentos = () => {
                     })}
                     {filtrarPagamentos(pagamentosPendentes).length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8">
+                        <TableCell colSpan={8} className="text-center py-8">
                           <IllustratedEmptyState
                             type="payments"
                             title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento pendente"}
@@ -560,6 +645,19 @@ const Pagamentos = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Bulk Actions Bar */}
+      <EnhancedBulkActionsBar
+        entityType="pagamentos"
+        selectedItems={selectedBulkItems}
+        totalCount={filteredPagamentos.length}
+        onSelectAll={handleSelectAll}
+        onDeselectAll={() => setSelectedIds([])}
+        onExecute={handleBulkAction}
+        isAllSelected={selectedIds.length === filteredPagamentos.length && filteredPagamentos.length > 0}
+        statusOptions={pagamentosStatusOptions}
+        availableActions={bulkActions}
+      />
     </MainLayout>
   );
 };
