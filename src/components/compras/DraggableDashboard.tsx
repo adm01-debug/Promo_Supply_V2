@@ -105,12 +105,14 @@ const DraggableWidget = ({
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button
-                      className="p-1 cursor-grab active:cursor-grabbing hover:bg-muted rounded-full transition-colors"
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="p-1 h-6 w-6 cursor-grab active:cursor-grabbing hover:bg-muted rounded-full transition-colors"
                       onPointerDown={(e) => dragControls.start(e)}
                     >
                       <GripVertical className="w-4 h-4 text-muted-foreground" />
-                    </button>
+                    </Button>
                   </TooltipTrigger>
                   <TooltipContent>Arrastar</TooltipContent>
                 </Tooltip>
@@ -123,9 +125,9 @@ const DraggableWidget = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <DropdownMenuTrigger asChild>
-                      <button className="p-1 hover:bg-muted rounded-full transition-colors">
+                      <Button variant="ghost" size="icon" className="p-1 h-6 w-6 hover:bg-muted rounded-full transition-colors">
                         <Maximize2 className="w-4 h-4 text-muted-foreground" />
-                      </button>
+                      </Button>
                     </DropdownMenuTrigger>
                   </TooltipTrigger>
                   <TooltipContent>Redimensionar</TooltipContent>
@@ -157,8 +159,10 @@ const DraggableWidget = ({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button
-                    className="p-1 hover:bg-muted rounded-full transition-colors"
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="p-1 h-6 w-6 hover:bg-muted rounded-full transition-colors"
                     onClick={() => onToggleVisibility(widget.id)}
                   >
                     {widget.visible ? (
@@ -166,7 +170,7 @@ const DraggableWidget = ({
                     ) : (
                       <EyeOff className="w-4 h-4 text-muted-foreground" />
                     )}
-                  </button>
+                  </Button>
                 </TooltipTrigger>
                 <TooltipContent>{widget.visible ? 'Ocultar' : 'Mostrar'}</TooltipContent>
               </Tooltip>

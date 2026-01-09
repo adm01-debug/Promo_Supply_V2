@@ -189,10 +189,10 @@ export const RiskHeatMap = () => {
                     <th key={cat.key} className="p-2 text-center">
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <div className="flex flex-col items-center gap-1 cursor-help">
+                          <button type="button" className="flex flex-col items-center gap-1 cursor-help w-full bg-transparent border-0">
                             <cat.icon className="w-4 h-4 text-muted-foreground" />
                             <span className="text-xs text-muted-foreground">{cat.label}</span>
-                          </div>
+                          </button>
                         </TooltipTrigger>
                         <TooltipContent>
                           <p>{cat.description}</p>
@@ -241,9 +241,10 @@ export const RiskHeatMap = () => {
                           <td key={cat.key} className="p-2">
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <div
+                                <button
+                                  type="button"
                                   className={cn(
-                                    "w-12 h-12 mx-auto rounded-lg flex items-center justify-center transition-all cursor-pointer",
+                                    "w-12 h-12 mx-auto rounded-lg flex items-center justify-center transition-all cursor-pointer border-0 bg-transparent",
                                     color.light,
                                     isHovered && "ring-2 ring-primary scale-110"
                                   )}
@@ -256,7 +257,7 @@ export const RiskHeatMap = () => {
                                   <span className={cn("text-sm font-bold", color.text)}>
                                     {value}
                                   </span>
-                                </div>
+                                </button>
                               </TooltipTrigger>
                               <TooltipContent>
                                 <div className="space-y-1">

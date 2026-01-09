@@ -292,7 +292,7 @@ export function PurchaseClimateWidget() {
                   
                   return (
                     <Tooltip key={indicator.name}>
-                      <TooltipTrigger asChild>
+                      <TooltipTrigger className="w-full text-left cursor-help">
                         <div className={cn(
                           "p-3 rounded-lg border transition-colors",
                           indConfig.bgColor,

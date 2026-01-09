@@ -235,12 +235,12 @@ export const EnhancedPedidoTimeline = ({
               return (
                 <TooltipProvider key={etapa.id}>
                   <Tooltip>
-                    <TooltipTrigger asChild>
+                    <TooltipTrigger className="cursor-pointer">
                       <motion.div
                         initial={{ scale: 0, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: index * 0.1, type: "spring", stiffness: 200 }}
-                        className="flex flex-col items-center cursor-pointer group"
+                        className="flex flex-col items-center group"
                         onClick={() => setExpandedStep(expandedStep === etapa.id ? null : etapa.id)}
                       >
                         {/* Círculo */}
