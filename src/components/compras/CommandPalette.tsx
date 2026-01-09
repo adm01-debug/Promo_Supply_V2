@@ -144,7 +144,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       groups[item.group].push(item);
     });
     return groups;
-  }, [allItems]);
+  }, [mounted, theme]);
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
