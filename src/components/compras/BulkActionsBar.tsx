@@ -45,9 +45,11 @@ const statusOptions: { value: Solicitacao['status']; label: string }[] = [
   { value: 'AGUARDANDO_COTACAO', label: 'Aguardando Cotação' },
   { value: 'EM_COTACAO', label: 'Em Cotação' },
   { value: 'FORNECEDOR_SELECIONADO', label: 'Fornecedor Selecionado' },
+  { value: 'PEDIDO_GERADO', label: 'Pedido Gerado' },
   { value: 'AGUARDANDO_PAGAMENTO', label: 'Aguardando Pagamento' },
   { value: 'PAGO', label: 'Pago' },
   { value: 'EM_TRANSITO', label: 'Em Trânsito' },
+  { value: 'ENTREGUE', label: 'Entregue' },
 ];
 
 export function BulkActionsBar({
