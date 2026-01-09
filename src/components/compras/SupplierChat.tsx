@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { 
   MessageCircle, 
   Send, 
@@ -15,6 +15,7 @@ import {
   Smile,
   Loader2,
 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -71,7 +72,11 @@ export function SupplierChat() {
   const [newMessage, setNewMessage] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const presenceChannelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
 
   // Hook for notes - now uses fornecedor_id
   const { 
@@ -122,8 +127,102 @@ export function SupplierChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Presence channel for typing indicator
+  useEffect(() => {
+    if (!selectedContact || !user) return;
+
+    const channelName = `chat-presence-${selectedContact.fornecedorId}`;
+    const channel = supabase.channel(channelName);
+    
+    channel
+      .on('presence', { event: 'sync' }, () => {
+        const state = channel.presenceState();
+        const usersTyping: string[] = [];
+        
+        Object.values(state).forEach((presences: any[]) => {
+          presences.forEach((presence: any) => {
+            if (presence.isTyping && presence.userId !== user.id) {
+              usersTyping.push(presence.userName || 'Alguém');
+            }
+          });
+        });
+        
+        setTypingUsers(usersTyping);
+      })
+      .subscribe(async (status) => {
+        if (status === 'SUBSCRIBED') {
+          await channel.track({
+            userId: user.id,
+            userName: user.email?.split('@')[0] || 'Usuário',
+            isTyping: false,
+            online_at: new Date().toISOString(),
+          });
+        }
+      });
+
+    presenceChannelRef.current = channel;
+
+    return () => {
+      if (presenceChannelRef.current) {
+        supabase.removeChannel(presenceChannelRef.current);
+        presenceChannelRef.current = null;
+      }
+    };
+  }, [selectedContact?.fornecedorId, user]);
+
+  // Update typing status
+  const updateTypingStatus = useCallback(async (typing: boolean) => {
+    if (!presenceChannelRef.current || !user) return;
+    
+    try {
+      await presenceChannelRef.current.track({
+        userId: user.id,
+        userName: user.email?.split('@')[0] || 'Usuário',
+        isTyping: typing,
+        online_at: new Date().toISOString(),
+      });
+    } catch (error) {
+      console.error('Error updating typing status:', error);
+    }
+  }, [user]);
+
+  // Handle typing with debounce
+  const handleTyping = useCallback(() => {
+    if (!isTyping) {
+      setIsTyping(true);
+      updateTypingStatus(true);
+    }
+
+    // Clear existing timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    // Set new timeout to stop typing after 2 seconds of inactivity
+    typingTimeoutRef.current = setTimeout(() => {
+      setIsTyping(false);
+      updateTypingStatus(false);
+    }, 2000);
+  }, [isTyping, updateTypingStatus]);
+
+  // Cleanup typing timeout
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !selectedContact || sendingMessage) return;
+
+    // Stop typing indicator when sending
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    setIsTyping(false);
+    updateTypingStatus(false);
 
     setSendingMessage(true);
     
@@ -145,6 +244,11 @@ export function SupplierChat() {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setNewMessage(e.target.value);
+    handleTyping();
   };
 
   const totalUnread = contacts.reduce((acc, c) => acc + c.unreadCount, 0);
@@ -401,6 +505,25 @@ export function SupplierChat() {
                     )}
                   </ScrollArea>
 
+                  {/* Typing Indicator */}
+                  {typingUsers.length > 0 && (
+                    <div className="px-4 py-2 border-t bg-muted/30">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                          <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                          <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                        </div>
+                        <span className="text-xs italic">
+                          {typingUsers.length === 1 
+                            ? `${typingUsers[0]} está digitando...`
+                            : `${typingUsers.slice(0, -1).join(', ')} e ${typingUsers[typingUsers.length - 1]} estão digitando...`
+                          }
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Message Input */}
                   <div className="p-4 border-t">
                     <div className="flex items-end gap-2">
@@ -412,7 +535,7 @@ export function SupplierChat() {
                         <Textarea
                           placeholder="Digite sua mensagem..."
                           value={newMessage}
-                          onChange={(e) => setNewMessage(e.target.value)}
+                          onChange={handleMessageChange}
                           onKeyDown={handleKeyPress}
                           className="min-h-[44px] max-h-32 resize-none pr-10"
                           rows={1}
