@@ -162,7 +162,7 @@ const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: Supplier
           <div className="grid grid-cols-3 gap-2 text-xs">
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
+                <TooltipTrigger className="w-full text-left cursor-help">
                   <div className="space-y-1">
                     <div className="flex items-center gap-1 text-muted-foreground">
                       <CheckCircle className="h-3 w-3" />
@@ -187,7 +187,7 @@ const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: Supplier
 
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
+                <TooltipTrigger className="w-full text-left cursor-help">
                   <div className="space-y-1">
                     <div className="flex items-center gap-1 text-muted-foreground">
                       <Clock className="h-3 w-3" />
@@ -212,7 +212,7 @@ const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: Supplier
 
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
+                <TooltipTrigger className="w-full text-left cursor-help">
                   <div className="space-y-1">
                     <div className="flex items-center gap-1 text-muted-foreground">
                       <Star className="h-3 w-3" />
