@@ -365,7 +365,11 @@ export const ExecutiveDashboard = () => {
   } = useDashboardFilters();
 
   // Apply default filter on load
+  const [hasAppliedDefault, setHasAppliedDefault] = useState(false);
+  
   useEffect(() => {
+    if (hasAppliedDefault || favorites.length === 0) return;
+    
     const defaultFilter = getDefaultFilter();
     if (defaultFilter) {
       setSelectedCategory(defaultFilter.category_filter);
@@ -373,9 +377,8 @@ export const ExecutiveDashboard = () => {
       setSelectedPeriod(defaultFilter.period_filter);
       setShowComparison(defaultFilter.show_comparison);
     }
-    // Only run once when favorites are first loaded
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [favorites.length > 0]);
+    setHasAppliedDefault(true);
+  }, [favorites.length, getDefaultFilter, hasAppliedDefault]);
 
   const applyFilter = (filter: DashboardFilter) => {
     setSelectedCategory(filter.category_filter);

@@ -31,6 +31,7 @@ export function useBulkOperations(options: UseBulkOperationsOptions) {
 
         case 'mark-paid':
         case 'mark-shipped':
+        case 'mark-delivered':
         case 'approve':
         case 'deactivate':
           if (onUpdateStatus && action.targetStatus) {
