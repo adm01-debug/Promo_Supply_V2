@@ -5,7 +5,7 @@ import { RealNotificationCenter } from "@/components/compras/RealNotificationCen
 import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
 import { UserMenu } from "@/components/compras/UserMenu";
 import { SupplierChat } from "@/components/compras/SupplierChat";
-import { GlobalSearch } from "@/components/compras/GlobalSearch";
+import { AdvancedSearch } from "@/components/compras/AdvancedSearch";
 import { KeyboardShortcutsDialog } from "@/components/compras/KeyboardShortcutsDialog";
 import { CommandPalette, useCommandPalette } from "@/components/compras/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
@@ -117,9 +117,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
 
-            {/* Global Search - responsive */}
+            {/* Advanced Search - responsive */}
             <div className="flex flex-1 max-w-xl" data-tour="global-search">
-              <GlobalSearch />
+              <AdvancedSearch />
             </div>
 
             {/* Right Actions */}
