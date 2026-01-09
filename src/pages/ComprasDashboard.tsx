@@ -12,7 +12,6 @@ import { KpiCard } from "@/components/compras/KpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
 import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
 import { SLADistributionChart } from "@/components/compras/SLADistributionChart";
-import { SLAPerformanceDashboard } from "@/components/compras/SLAPerformanceDashboard";
 import { CriticalAlertsBar } from "@/components/compras/CriticalAlertsBar";
 import { SupplierAlertsPanel } from "@/components/compras/SupplierAlertsPanel";
 import { SupplierRankingPanel } from "@/components/compras/SupplierRankingPanel";
@@ -20,19 +19,13 @@ import { BuyerPerformancePanel } from "@/components/compras/BuyerPerformancePane
 import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
 import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidget";
 import { DeliveryCalendar } from "@/components/compras/DeliveryCalendar";
-import { DashboardCustomizer } from "@/components/compras/DashboardCustomizer";
-import { PageTransition, StaggerContainer, StaggerItem } from "@/components/animations/MotionComponents";
+import { DraggableDashboard } from "@/components/compras/DraggableDashboard";
+import { PageTransition } from "@/components/animations/MotionComponents";
 import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock, kpiSparklineData } from "@/data/mockData";
 import { MainLayout } from "@/components/compras/MainLayout";
-import { useDashboardLayoutStore } from "@/stores/dashboardLayoutStore";
 import { cn } from "@/lib/utils";
 
 const ComprasDashboard = () => {
-  const { widgets } = useDashboardLayoutStore();
-  
-  const sortedWidgets = [...widgets].sort((a, b) => a.order - b.order);
-  const visibleWidgets = sortedWidgets.filter(w => w.visible);
-
   const getWidgetComponent = (widgetId: string, index: number = 0) => {
     switch (widgetId) {
       case 'kpi-aguardando':
@@ -132,10 +125,6 @@ const ComprasDashboard = () => {
     }
   };
 
-  // Separate KPIs and other widgets
-  const kpiWidgets = visibleWidgets.filter(w => w.type === 'kpi');
-  const otherWidgets = visibleWidgets.filter(w => w.type !== 'kpi');
-
   return (
     <MainLayout>
       <PageTransition className="space-y-6">
@@ -148,7 +137,7 @@ const ComprasDashboard = () => {
           <CriticalAlertsBar />
         </motion.div>
         
-        {/* Page Title + Climate Widget + Customizer */}
+        {/* Page Title + Climate Widget */}
         <motion.div 
           className="grid grid-cols-1 lg:grid-cols-3 gap-6"
           initial={{ opacity: 0 }}
@@ -174,13 +163,6 @@ const ComprasDashboard = () => {
                 Visão geral do sistema de compras
               </motion.p>
             </div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.3 }}
-            >
-              <DashboardCustomizer />
-            </motion.div>
           </div>
           <motion.div
             initial={{ opacity: 0, x: 20 }}
@@ -191,33 +173,11 @@ const ComprasDashboard = () => {
           </motion.div>
         </motion.div>
 
-        {/* KPIs Grid - responsive */}
-        {kpiWidgets.length > 0 && (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4" data-tour="kpi-cards">
-            {kpiWidgets.map((widget, index) => (
-              <div key={widget.id}>
-                {getWidgetComponent(widget.id, index)}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Dynamic Widgets Grid */}
-        <StaggerContainer className="grid grid-cols-1 lg:grid-cols-2 gap-6" staggerDelay={0.1}>
-          {otherWidgets.map((widget, index) => (
-            <StaggerItem 
-              key={widget.id} 
-              className={cn(getGridClasses(widget.size))}
-            >
-              <motion.div
-                whileHover={{ y: -2 }}
-                transition={{ duration: 0.2 }}
-              >
-                {getWidgetComponent(widget.id, index)}
-              </motion.div>
-            </StaggerItem>
-          ))}
-        </StaggerContainer>
+        {/* Draggable Dashboard with Widgets */}
+        <DraggableDashboard
+          renderWidget={getWidgetComponent}
+          getGridClasses={getGridClasses}
+        />
       </PageTransition>
     </MainLayout>
   );
