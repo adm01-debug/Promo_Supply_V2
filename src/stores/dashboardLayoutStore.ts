@@ -32,6 +32,8 @@ const defaultWidgets: DashboardWidget[] = [
   { id: 'savings-goal', type: 'panel', title: 'Meta de Economia', visible: true, order: 9, size: 'medium' },
   { id: 'delivery-calendar', type: 'calendar', title: 'Calendário Entregas', visible: true, order: 10, size: 'large' },
   { id: 'urgent-items', type: 'list', title: 'Itens Urgentes', visible: true, order: 11, size: 'medium' },
+  { id: 'demand-prediction', type: 'ai', title: 'Previsão de Demanda (IA)', visible: true, order: 12, size: 'large' },
+  { id: 'risk-heatmap', type: 'ai', title: 'Análise de Riscos', visible: true, order: 13, size: 'full' },
 ];
 
 export const useDashboardLayoutStore = create<DashboardLayoutState>()(
