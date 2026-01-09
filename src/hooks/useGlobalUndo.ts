@@ -20,14 +20,14 @@ export function useGlobalUndo() {
       toast.success(`Desfeito: ${lastAction.description}`, {
         action: canRedo() ? {
           label: 'Refazer',
-          onClick: handleRedo,
+          onClick: () => redo(),
         } : undefined,
       });
     } else {
       haptic.error();
       toast.error('Não foi possível desfazer a ação');
     }
-  }, [undo, getLastAction, haptic]);
+  }, [undo, redo, getLastAction, canRedo, haptic]);
 
   const handleRedo = useCallback(async () => {
     if (!canRedo()) {
