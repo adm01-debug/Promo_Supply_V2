@@ -203,6 +203,36 @@ export function usePagamentos(filters?: PagamentoFilters) {
     });
   }, [user, updatePagamento]);
 
+  // Bulk update status
+  const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pagamento['status']) => {
+    try {
+      const updates: Partial<Pagamento> = { status: newStatus };
+      
+      if (newStatus === 'pago') {
+        updates.data_pagamento = new Date().toISOString().split('T')[0];
+      }
+      if (newStatus === 'aprovado' && user) {
+        updates.aprovador_id = user.id;
+        updates.data_aprovacao = new Date().toISOString();
+      }
+
+      const { error } = await supabase
+        .from('pagamentos')
+        .update(updates)
+        .in('id', ids);
+
+      if (error) throw error;
+
+      toast.success(`${ids.length} pagamento(s) atualizado(s)!`);
+      fetchPagamentos();
+      return true;
+    } catch (err: any) {
+      console.error('Error bulk updating pagamentos:', err);
+      toast.error('Erro ao atualizar pagamentos: ' + err.message);
+      return false;
+    }
+  }, [user, fetchPagamentos]);
+
   // Delete pagamento
   const deletePagamento = useCallback(async (id: string) => {
     try {
@@ -261,6 +291,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
     updatePagamento,
     markAsPaid,
     approvePagamento,
+    bulkUpdateStatus,
     deletePagamento,
   };
 }

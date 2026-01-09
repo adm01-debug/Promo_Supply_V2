@@ -227,6 +227,51 @@ export function usePedidos(filters?: PedidoFilters) {
     return updatePedido(id, updates);
   }, [updatePedido]);
 
+  // Bulk update status
+  const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pedido['status']) => {
+    try {
+      const updates: Partial<Pedido> = { status: newStatus };
+      if (newStatus === 'entregue') {
+        updates.data_entrega = new Date().toISOString().split('T')[0];
+      }
+
+      const { error } = await supabase
+        .from('pedidos')
+        .update(updates)
+        .in('id', ids);
+
+      if (error) throw error;
+
+      toast.success(`${ids.length} pedido(s) atualizado(s)!`);
+      fetchPedidos();
+      return true;
+    } catch (err: any) {
+      console.error('Error bulk updating pedidos:', err);
+      toast.error('Erro ao atualizar pedidos: ' + err.message);
+      return false;
+    }
+  }, [fetchPedidos]);
+
+  // Bulk delete
+  const bulkDelete = useCallback(async (ids: string[]) => {
+    try {
+      const { error } = await supabase
+        .from('pedidos')
+        .delete()
+        .in('id', ids);
+
+      if (error) throw error;
+
+      toast.success(`${ids.length} pedido(s) excluído(s)!`);
+      fetchPedidos();
+      return true;
+    } catch (err: any) {
+      console.error('Error bulk deleting pedidos:', err);
+      toast.error('Erro ao excluir pedidos: ' + err.message);
+      return false;
+    }
+  }, [fetchPedidos]);
+
   // Delete pedido
   const deletePedido = useCallback(async (id: string) => {
     try {
@@ -284,6 +329,8 @@ export function usePedidos(filters?: PedidoFilters) {
     createPedido,
     updatePedido,
     updateStatus,
+    bulkUpdateStatus,
+    bulkDelete,
     deletePedido,
   };
 }
