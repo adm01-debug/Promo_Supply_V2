@@ -13,7 +13,7 @@ import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
 import { SolicitacaoKanban } from "@/components/compras/SolicitacaoKanban";
 import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
 import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
-import { BulkActionsBar } from "@/components/compras/BulkActionsBar";
+import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { PageHeader, PageHeaderStats } from "@/components/ui/page-header";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
@@ -21,6 +21,8 @@ import { EnhancedSearch } from "@/components/ui/enhanced-search";
 import { StatusIndicator, PriorityIndicator } from "@/components/ui/status-indicators";
 import { KanbanSkeleton } from "@/components/ui/contextual-skeletons";
 import { useSolicitacoes, type Solicitacao } from "@/hooks/useSolicitacoes";
+import { useBulkOperations, solicitacoesStatusOptions } from "@/hooks/useBulkOperations";
+import { BulkItem, BulkAction } from "@/components/compras/BulkOperationsPreview";
 import { toast } from "sonner";
 import {
   Select,
@@ -219,9 +221,38 @@ const Solicitacoes = () => {
     setSelectedIds(new Set());
   }, [selectedIds, bulkUpdateStatus]);
 
-  const handleBulkExport = useCallback((format: 'pdf' | 'excel') => {
-    const selectedItems = filteredSolicitacoes.filter(s => selectedIds.has(s.id));
+  const handleBulkExport = useCallback((format: 'pdf' | 'excel', itemIds?: string[]) => {
+    const ids = itemIds || Array.from(selectedIds);
+    const selectedItems = filteredSolicitacoes.filter(s => ids.includes(s.id));
     toast.success(`Exportando ${selectedItems.length} solicitação(ões) para ${format.toUpperCase()}`);
+  }, [filteredSolicitacoes, selectedIds]);
+
+  // Bulk operations hook
+  const { executeAction, convertToBulkItems } = useBulkOperations({
+    onDelete: async (ids) => {
+      await bulkDelete(ids);
+      setSelectedIds(new Set());
+      return true;
+    },
+    onUpdateStatus: async (ids, status) => {
+      await bulkUpdateStatus(ids, status as Solicitacao['status']);
+      setSelectedIds(new Set());
+      return true;
+    },
+  });
+
+  // Convert selected items to BulkItem format for preview
+  const selectedBulkItems: BulkItem[] = useMemo(() => {
+    return filteredSolicitacoes
+      .filter(s => selectedIds.has(s.id))
+      .map(s => ({
+        id: s.id,
+        title: s.produto,
+        subtitle: s.empresa,
+        status: mapLegacyStatusToDb(s.status),
+        value: s.valorTotal,
+        date: s.dataCriacao,
+      }));
   }, [filteredSolicitacoes, selectedIds]);
 
   const handleSelectAllInGroup = useCallback((status: string) => {
@@ -441,16 +472,17 @@ const Solicitacoes = () => {
           />
         )}
 
-        {/* Bulk Actions Bar */}
-        <BulkActionsBar
-          selectedCount={selectedIds.size}
+        {/* Enhanced Bulk Actions Bar with Preview */}
+        <EnhancedBulkActionsBar
+          entityType="solicitacoes"
+          selectedItems={selectedBulkItems}
           totalCount={filteredSolicitacoes.length}
           onSelectAll={handleSelectAll}
           onDeselectAll={handleDeselectAll}
-          onDelete={handleBulkDelete}
-          onChangeStatus={handleBulkStatusChange}
+          onExecute={executeAction}
           onExport={handleBulkExport}
           isAllSelected={isAllSelected}
+          statusOptions={solicitacoesStatusOptions}
         />
       </div>
 
