@@ -1,11 +1,12 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MainLayout } from "@/components/compras/MainLayout";
-import { ApprovalMatrixConfig } from "@/components/compras/ApprovalMatrixConfig";
-import { PendingApprovalsPanel } from "@/components/compras/PendingApprovalsPanel";
+import { DynamicApprovalMatrix } from "@/components/compras/DynamicApprovalMatrix";
+import { PendingApprovalsList } from "@/components/compras/PendingApprovalsList";
+import { useApprovalWorkflow } from "@/hooks/useApprovalWorkflow";
 import { 
   ClipboardCheck, 
-  Settings, 
+  Settings,
   History,
   BarChart3,
   TrendingUp,
@@ -137,6 +138,22 @@ const COLORS = ['#10b981', '#ef4444', '#f59e0b', '#8b5cf6'];
 
 const Aprovacoes = () => {
   const [periodo, setPeriodo] = useState("6m");
+  const { allHistory, fetchAllHistory, workflows, checkEscalations } = useApprovalWorkflow();
+
+  // Check escalations periodically
+  useEffect(() => {
+    checkEscalations();
+    const interval = setInterval(() => {
+      checkEscalations();
+    }, 5 * 60 * 1000); // Every 5 minutes
+    
+    return () => clearInterval(interval);
+  }, [checkEscalations]);
+
+  // Fetch approval history
+  useEffect(() => {
+    fetchAllHistory();
+  }, [fetchAllHistory]);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
@@ -229,11 +246,11 @@ const Aprovacoes = () => {
           </TabsList>
 
           <TabsContent value="pendentes">
-            <PendingApprovalsPanel />
+            <PendingApprovalsList />
           </TabsContent>
 
           <TabsContent value="config">
-            <ApprovalMatrixConfig />
+            <DynamicApprovalMatrix />
           </TabsContent>
 
           <TabsContent value="historico">
@@ -243,36 +260,44 @@ const Aprovacoes = () => {
                 Histórico de Aprovações
               </h2>
               <div className="space-y-3">
-                {approvalHistory.map((item) => (
+                {(allHistory.length > 0 ? allHistory : approvalHistory).map((item: any) => (
                   <div 
                     key={item.id} 
                     className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center gap-4">
                       <div>
-                        <p className="font-mono text-sm">{item.solicitacao}</p>
+                        <p className="font-mono text-sm">{item.solicitacao || item.solicitacao_id?.substring(0, 8)}</p>
                         <p className="text-xs text-muted-foreground">
-                          R$ {item.valor.toLocaleString('pt-BR')}
+                          {item.valor ? `R$ ${item.valor.toLocaleString('pt-BR')}` : item.acao}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <Badge 
                         variant={
-                          item.acao === "Aprovado" ? "default" : 
-                          item.acao === "Rejeitado" ? "destructive" : 
-                          "secondary"
+                          item.acao === "Aprovado" || item.acao === "aprovado" ? "default" : 
+                          item.acao === "Rejeitado" || item.acao === "rejeitado" ? "destructive" : 
+                          item.acao === "escalado_automatico" ? "secondary" :
+                          "outline"
                         }
                       >
-                        {item.acao}
+                        {item.acao === "escalado_automatico" ? "Escalado" : item.acao}
                       </Badge>
                       <div className="text-right">
-                        <p className="text-sm">{item.por}</p>
-                        <p className="text-xs text-muted-foreground">{item.data}</p>
+                        <p className="text-sm">{item.por || item.usuario_nome || "Sistema"}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {item.data || new Date(item.created_at).toLocaleString('pt-BR')}
+                        </p>
                       </div>
                     </div>
                   </div>
                 ))}
+                {history.length === 0 && approvalHistory.length === 0 && (
+                  <p className="text-center text-muted-foreground py-8">
+                    Nenhum histórico de aprovação encontrado.
+                  </p>
+                )}
               </div>
             </Card>
           </TabsContent>
