@@ -10,6 +10,8 @@ import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import { ThemeProvider } from "next-themes";
 import { PageLoader } from "@/components/PageLoader";
 import { AnimatePresence, motion } from "framer-motion";
+import { ErrorBoundary } from "@/components/ui/error-boundary";
+import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 
 // Lazy load all pages for better initial bundle size
 const ComprasDashboard = lazy(() => import("./pages/ComprasDashboard"));
@@ -77,27 +79,147 @@ const AnimatedRoutes = () => {
           {/* Public route */}
           <Route path="/auth" element={<Auth />} />
           
-          {/* Protected routes */}
-          <Route path="/" element={<ProtectedRoute><ComprasDashboard /></ProtectedRoute>} />
-          <Route path="/compras" element={<ProtectedRoute><ComprasDashboard /></ProtectedRoute>} />
-          <Route path="/cotacao" element={<ProtectedRoute><Cotacao /></ProtectedRoute>} />
-          <Route path="/cotacao/:id" element={<ProtectedRoute><Cotacao /></ProtectedRoute>} />
-          <Route path="/solicitacoes" element={<ProtectedRoute><Solicitacoes /></ProtectedRoute>} />
-          <Route path="/pedidos" element={<ProtectedRoute><Pedidos /></ProtectedRoute>} />
-          <Route path="/pagamentos" element={<ProtectedRoute requiredRole={['admin', 'coordinator', 'finance']}><Pagamentos /></ProtectedRoute>} />
-          <Route path="/fornecedores" element={<ProtectedRoute><Fornecedores /></ProtectedRoute>} />
-          <Route path="/acompanhamento" element={<ProtectedRoute><Acompanhamento /></ProtectedRoute>} />
-          <Route path="/gerar-ordem" element={<ProtectedRoute><GerarOrdem /></ProtectedRoute>} />
-          <Route path="/relatorios" element={<ProtectedRoute><Relatorios /></ProtectedRoute>} />
-          <Route path="/relatorios/negociacoes" element={<ProtectedRoute><RelatorioNegociacoes /></ProtectedRoute>} />
-          <Route path="/aprovacoes" element={<ProtectedRoute requiredRole={['admin', 'coordinator']}><Aprovacoes /></ProtectedRoute>} />
-          <Route path="/supplier-performance" element={<ProtectedRoute><SupplierPerformance /></ProtectedRoute>} />
-          <Route path="/dashboard-executivo" element={<ProtectedRoute requiredRole={['admin', 'coordinator']}><DashboardExecutivo /></ProtectedRoute>} />
-          <Route path="/buyer-performance" element={<ProtectedRoute requiredRole={['admin', 'coordinator']}><BuyerPerformanceDashboard /></ProtectedRoute>} />
-          <Route path="/historico-compras" element={<ProtectedRoute><HistoricoCompras /></ProtectedRoute>} />
-          <Route path="/contratos" element={<ProtectedRoute><Contratos /></ProtectedRoute>} />
-          <Route path="/auditoria" element={<ProtectedRoute requiredRole="admin"><Auditoria /></ProtectedRoute>} />
-          <Route path="/seguranca" element={<ProtectedRoute><Seguranca /></ProtectedRoute>} />
+          {/* Protected routes with Module Error Boundaries */}
+          <Route path="/" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="dashboard">
+                <ComprasDashboard />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/compras" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="dashboard">
+                <ComprasDashboard />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/cotacao" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="cotacoes">
+                <Cotacao />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/cotacao/:id" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="cotacoes">
+                <Cotacao />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/solicitacoes" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="solicitacoes">
+                <Solicitacoes />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/pedidos" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="pedidos">
+                <Pedidos />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/pagamentos" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator', 'finance']}>
+              <ModuleErrorBoundary module="pagamentos">
+                <Pagamentos />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/fornecedores" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="fornecedores">
+                <Fornecedores />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/acompanhamento" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="pedidos">
+                <Acompanhamento />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/gerar-ordem" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="pedidos">
+                <GerarOrdem />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/relatorios" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="relatorios">
+                <Relatorios />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/relatorios/negociacoes" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="relatorios">
+                <RelatorioNegociacoes />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/aprovacoes" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator']}>
+              <ModuleErrorBoundary module="solicitacoes">
+                <Aprovacoes />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/supplier-performance" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="fornecedores">
+                <SupplierPerformance />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/dashboard-executivo" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator']}>
+              <ModuleErrorBoundary module="dashboard">
+                <DashboardExecutivo />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/buyer-performance" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator']}>
+              <ModuleErrorBoundary module="dashboard">
+                <BuyerPerformanceDashboard />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/historico-compras" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="pedidos">
+                <HistoricoCompras />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/contratos" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="fornecedores">
+                <Contratos />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/auditoria" element={
+            <ProtectedRoute requiredRole="admin">
+              <ModuleErrorBoundary module="relatorios">
+                <Auditoria />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/seguranca" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="default">
+                <Seguranca />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
