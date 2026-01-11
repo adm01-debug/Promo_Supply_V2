@@ -293,7 +293,7 @@ const Aprovacoes = () => {
                     </div>
                   </div>
                 ))}
-                {history.length === 0 && approvalHistory.length === 0 && (
+                {allHistory.length === 0 && approvalHistory.length === 0 && (
                   <p className="text-center text-muted-foreground py-8">
                     Nenhum histórico de aprovação encontrado.
                   </p>

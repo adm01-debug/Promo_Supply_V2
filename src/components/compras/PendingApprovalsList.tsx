@@ -52,8 +52,6 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useApprovalNotifications } from "@/hooks/useApprovalNotifications";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 
 interface PendingApprovalItem {
@@ -133,7 +131,6 @@ type SortOption = 'prazo' | 'valor' | 'data';
 type FilterStatus = 'all' | 'urgente' | 'escalado' | 'normal';
 
 export const PendingApprovalsList = () => {
-  const { user } = useAuth();
   const [approvals, setApprovals] = useState<PendingApprovalItem[]>(mockPendingApprovals);
   const [selectedApproval, setSelectedApproval] = useState<PendingApprovalItem | null>(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
