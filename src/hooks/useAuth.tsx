@@ -41,24 +41,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       // Fetch profile
       const { data: profileData } = await supabase
-        .from('profiles' as any)
+        .from('profiles')
         .select('*')
         .eq('user_id', userId)
         .maybeSingle();
       
       if (profileData) {
-        setProfile(profileData as unknown as UserProfile);
+        setProfile(profileData as UserProfile);
       }
 
       // Fetch role
       const { data: roleData } = await supabase
-        .from('user_roles' as any)
+        .from('user_roles')
         .select('role')
         .eq('user_id', userId)
         .maybeSingle();
       
       if (roleData) {
-        setRole((roleData as any).role as AppRole);
+        setRole(roleData.role as AppRole);
       }
     } catch (error) {
       console.error('Error fetching user data:', error);

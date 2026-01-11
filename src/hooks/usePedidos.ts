@@ -126,9 +126,10 @@ export function usePedidos(filters?: PedidoFilters) {
       if (fetchError) throw fetchError;
 
       setPedidos((data as Pedido[]) || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error fetching pedidos:', err);
-      setError(err.message);
+      setError(errorMessage);
       toast.error('Erro ao carregar pedidos');
     } finally {
       setLoading(false);
@@ -189,9 +190,10 @@ export function usePedidos(filters?: PedidoFilters) {
       toast.success('Pedido criado com sucesso!');
       fetchPedidos();
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error creating pedido:', err);
-      toast.error('Erro ao criar pedido: ' + err.message);
+      toast.error('Erro ao criar pedido: ' + errorMessage);
       return null;
     }
   }, [user, fetchPedidos]);
@@ -209,9 +211,10 @@ export function usePedidos(filters?: PedidoFilters) {
       toast.success('Pedido atualizado!');
       fetchPedidos();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error updating pedido:', err);
-      toast.error('Erro ao atualizar: ' + err.message);
+      toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
   }, [fetchPedidos]);
@@ -245,9 +248,10 @@ export function usePedidos(filters?: PedidoFilters) {
       toast.success(`${ids.length} pedido(s) atualizado(s)!`);
       fetchPedidos();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error bulk updating pedidos:', err);
-      toast.error('Erro ao atualizar pedidos: ' + err.message);
+      toast.error('Erro ao atualizar pedidos: ' + errorMessage);
       return false;
     }
   }, [fetchPedidos]);
@@ -265,9 +269,10 @@ export function usePedidos(filters?: PedidoFilters) {
       toast.success(`${ids.length} pedido(s) excluído(s)!`);
       fetchPedidos();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error bulk deleting pedidos:', err);
-      toast.error('Erro ao excluir pedidos: ' + err.message);
+      toast.error('Erro ao excluir pedidos: ' + errorMessage);
       return false;
     }
   }, [fetchPedidos]);
@@ -285,9 +290,10 @@ export function usePedidos(filters?: PedidoFilters) {
       toast.success('Pedido excluído!');
       fetchPedidos();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error deleting pedido:', err);
-      toast.error('Erro ao excluir: ' + err.message);
+      toast.error('Erro ao excluir: ' + errorMessage);
       return false;
     }
   }, [fetchPedidos]);

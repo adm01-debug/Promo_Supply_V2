@@ -61,7 +61,7 @@ interface ComparisonMetric {
   label: string;
   key: keyof Cotacao | 'score';
   icon: React.ReactNode;
-  format: (value: any, cotacao: Cotacao, allCotacoes: Cotacao[]) => React.ReactNode;
+  format: (value: number, cotacao: Cotacao, allCotacoes: Cotacao[]) => React.ReactNode;
   getBest: (cotacoes: Cotacao[]) => string; // Returns the best cotacao id for this metric
   weight: number; // For scoring
 }
@@ -409,7 +409,11 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                             >
                               <div className="flex justify-center">
                                 {metric.format(
-                                  metric.key === 'score' ? getScore(cotacao.id) : cotacao[metric.key as keyof Cotacao],
+                                  metric.key === 'score' 
+                                    ? getScore(cotacao.id) 
+                                    : (typeof cotacao[metric.key as keyof Cotacao] === 'number' 
+                                        ? cotacao[metric.key as keyof Cotacao] as number 
+                                        : 0),
                                   cotacao,
                                   selectedCotacoes
                                 )}

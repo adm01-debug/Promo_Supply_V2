@@ -54,9 +54,10 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
       if (fetchError) throw fetchError;
 
       setNotes((data as ContactNote[]) || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error fetching contact notes:', err);
-      setError(err.message);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -86,9 +87,10 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
       toast.success('Nota adicionada!');
       fetchNotes();
       return data as ContactNote;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error creating note:', err);
-      toast.error('Erro ao adicionar nota: ' + err.message);
+      toast.error('Erro ao adicionar nota: ' + errorMessage);
       return null;
     }
   }, [user, fetchNotes]);
@@ -106,9 +108,10 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
       toast.success('Nota atualizada!');
       fetchNotes();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error updating note:', err);
-      toast.error('Erro ao atualizar nota: ' + err.message);
+      toast.error('Erro ao atualizar nota: ' + errorMessage);
       return false;
     }
   }, [fetchNotes]);
@@ -126,9 +129,10 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
       toast.success('Nota excluída!');
       fetchNotes();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error deleting note:', err);
-      toast.error('Erro ao excluir nota: ' + err.message);
+      toast.error('Erro ao excluir nota: ' + errorMessage);
       return false;
     }
   }, [fetchNotes]);

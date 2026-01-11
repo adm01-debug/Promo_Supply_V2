@@ -95,7 +95,7 @@ export function useUndoableAction() {
   const { addAction } = useUndoStore();
 
   const registerAction = useCallback(
-    <T extends any>(
+    <T>(
       description: string,
       undoFn: () => Promise<void> | void,
       redoFn?: () => Promise<void> | void,

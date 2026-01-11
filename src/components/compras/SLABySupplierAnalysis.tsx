@@ -15,7 +15,9 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
+  TooltipProps,
 } from 'recharts';
+import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -178,12 +180,18 @@ export const SLABySupplierAnalysis = () => {
     (supplierSLAData.reduce((acc, s) => acc + s.slaCompliance, 0) / supplierSLAData.length) * 10
   ) / 10;
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  interface PayloadEntry {
+    color: string;
+    name: string;
+    value: number;
+  }
+
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-popover border border-border rounded-lg p-3 shadow-lg">
           <p className="font-medium text-sm mb-2">{label}</p>
-          {payload.map((entry: any, index: number) => (
+          {(payload as PayloadEntry[]).map((entry, index: number) => (
             <div key={index} className="flex items-center gap-2 text-xs">
               <div
                 className="w-2 h-2 rounded-full"

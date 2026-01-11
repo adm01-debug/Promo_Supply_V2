@@ -32,7 +32,7 @@ interface EnhancedBulkActionsBarProps {
   totalCount: number;
   onSelectAll: () => void;
   onDeselectAll: () => void;
-  onExecute: (action: BulkAction, itemIds: string[], options?: any) => Promise<boolean>;
+  onExecute: (action: BulkAction, itemIds: string[], options?: Record<string, unknown>) => Promise<boolean>;
   onExport?: (format: 'pdf' | 'excel', itemIds: string[]) => void;
   isAllSelected: boolean;
   statusOptions: { value: string; label: string; color?: string }[];
