@@ -19,10 +19,22 @@ import {
 } from "@/components/ui/select";
 import type { Fornecedor } from "@/data/mockData";
 
+export interface ManualCotacaoData {
+  fornecedor: string;
+  fornecedor_id?: string;
+  valorUnitario: number;
+  quantidadeDisponivel: number;
+  prazoEntrega: number;
+  frete: number;
+  freteInfo: string;
+  condicaoPagamento: string;
+  observacoes?: string;
+}
+
 interface CotacaoManualModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (cotacao: any) => void;
+  onSave: (cotacao: ManualCotacaoData) => void;
   fornecedores: Fornecedor[];
 }
 
@@ -47,12 +59,14 @@ export const CotacaoManualModal = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    const selectedFornecedor = fornecedores.find(f => f.id === formData.fornecedor);
     const fornecedorNome = formData.fornecedor === 'novo' 
       ? formData.novoFornecedor 
-      : fornecedores.find(f => f.id === formData.fornecedor)?.nomeFantasia || '';
+      : selectedFornecedor?.nomeFantasia || '';
 
     onSave({
       fornecedor: fornecedorNome,
+      fornecedor_id: formData.fornecedor === 'novo' ? undefined : formData.fornecedor,
       valorUnitario: parseFloat(formData.valorUnitario),
       quantidadeDisponivel: parseInt(formData.quantidadeDisponivel),
       prazoEntrega: parseInt(formData.prazoEntrega),

@@ -79,8 +79,10 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
-  Cell
+  Cell,
+  TooltipProps
 } from "recharts";
+import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 
 const COLORS = ['hsl(var(--primary))', 'hsl(142, 76%, 36%)', 'hsl(221, 83%, 53%)', 'hsl(262, 83%, 58%)', 'hsl(38, 92%, 50%)'];
 
@@ -136,8 +138,15 @@ const HistoricoCompras = () => {
   const [comparisonPeriod, setComparisonPeriod] = useState<'previousPeriod' | 'lastYear' | 'custom'>('previousPeriod');
   const [comparisonDateRange, setComparisonDateRange] = useState<DateRange | undefined>(undefined);
 
+  // Define drilldown data type
+  interface DrilldownData {
+    name?: string;
+    month?: string;
+    [key: string]: unknown;
+  }
+
   // Handle chart drill-down
-  const handleDrilldown = (type: 'month' | 'category' | 'supplier', data: any) => {
+  const handleDrilldown = (type: 'month' | 'category' | 'supplier', data: DrilldownData) => {
     setDrilldownType(type);
     setDrilldownData(data);
     setDrilldownOpen(true);
@@ -522,12 +531,18 @@ const HistoricoCompras = () => {
     return { monthlyTrend, byCategory, bySupplier, priceByProduct, currentStats, compStats, priceForecast, forecastMetrics };
   }, [filteredPurchaseRecords, comparisonRecords, comparisonEnabled]);
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  interface PayloadEntry {
+    color: string;
+    name: string;
+    value: number;
+  }
+
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
           <p className="font-medium text-foreground">{label}</p>
-          {payload.map((entry: any, index: number) => (
+          {(payload as PayloadEntry[]).map((entry, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.name.includes('R$') || entry.name.includes('Preço') || entry.name.includes('Valor')
                 ? `R$ ${entry.value.toLocaleString('pt-BR')}`

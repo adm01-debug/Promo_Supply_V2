@@ -43,8 +43,10 @@ import {
   Cell,
   Legend,
   Area,
-  AreaChart
+  AreaChart,
+  TooltipProps
 } from "recharts";
+import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import { solicitacoesMock, fornecedoresMock } from "@/data/mockData";
 
 // Dados mock para gráficos
@@ -220,12 +222,19 @@ const Relatorios = () => {
   const totalEconomia = economiaGerada.reduce((acc, m) => acc + m.economia, 0);
   const mediaEconomia = economiaGerada.reduce((acc, m) => acc + m.percentual, 0) / economiaGerada.length;
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  interface PayloadEntry {
+    color: string;
+    name: string;
+    dataKey: string;
+    value: number;
+  }
+
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
           <p className="font-medium text-foreground">{label}</p>
-          {payload.map((entry: any, index: number) => (
+          {(payload as PayloadEntry[]).map((entry, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.name.includes("R$") || entry.dataKey === "volume" || entry.dataKey === "economia" 
                 ? `R$ ${entry.value.toLocaleString('pt-BR')}` 

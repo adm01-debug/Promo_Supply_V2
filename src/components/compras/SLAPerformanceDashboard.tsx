@@ -10,8 +10,11 @@ import {
   AreaChart,
   Area,
   BarChart,
-  Bar
+  Bar,
+  TooltipProps
 } from 'recharts';
+import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -82,7 +85,7 @@ const MetricCard = ({
   suffix?: string;
   trend?: 'up' | 'down' | 'neutral';
   trendValue?: string;
-  icon: any;
+  icon: LucideIcon;
   color?: 'primary' | 'success' | 'warning' | 'destructive';
 }) => {
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus;
@@ -116,12 +119,18 @@ const MetricCard = ({
   );
 };
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+interface PayloadEntry {
+  color: string;
+  name: string;
+  value: number;
+}
+
+const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-popover border border-border rounded-lg p-3 shadow-lg">
         <p className="font-medium text-sm mb-2">{label}</p>
-        {payload.map((entry: any, index: number) => (
+        {(payload as PayloadEntry[]).map((entry, index: number) => (
           <div key={index} className="flex items-center gap-2 text-sm">
             <div 
               className="w-2 h-2 rounded-full" 

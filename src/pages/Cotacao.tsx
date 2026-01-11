@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { BuscaAutomatica } from "@/components/compras/BuscaAutomatica";
 import { RankingCotacoes } from "@/components/compras/RankingCotacoes";
-import { CotacaoManualModal } from "@/components/compras/CotacaoManualModal";
+import { CotacaoManualModal, type ManualCotacaoData } from "@/components/compras/CotacaoManualModal";
 import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
 import { VisualComparadorCotacoes } from "@/components/compras/VisualComparadorCotacoes";
 import { MainLayout } from "@/components/compras/MainLayout";
@@ -149,16 +149,7 @@ const Cotacao = () => {
     setFornecedorSelecionado(cotacaoId);
   };
 
-  interface CotacaoManualData {
-    fornecedor_id: string;
-    valorUnitario: number;
-    frete?: number;
-    prazoEntrega?: number;
-    condicaoPagamento?: string;
-    observacoes?: string;
-  }
-
-  const handleAdicionarCotacaoManual = async (cotacaoData: CotacaoManualData) => {
+  const handleAdicionarCotacaoManual = async (cotacaoData: ManualCotacaoData) => {
     if (!solicitacao) {
       toast.error('Selecione uma solicitação primeiro');
       return;

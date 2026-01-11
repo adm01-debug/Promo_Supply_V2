@@ -4,7 +4,7 @@ import { BulkAction, BulkItem } from '@/components/compras/BulkOperationsPreview
 interface UseBulkOperationsOptions {
   onDelete?: (ids: string[]) => Promise<boolean>;
   onUpdateStatus?: (ids: string[], status: string) => Promise<boolean>;
-  onCustomAction?: (actionId: string, ids: string[], options?: any) => Promise<boolean>;
+  onCustomAction?: (actionId: string, ids: string[], options?: Record<string, unknown>) => Promise<boolean>;
 }
 
 export function useBulkOperations(options: UseBulkOperationsOptions) {

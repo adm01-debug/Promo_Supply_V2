@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import type { Json } from '@/integrations/supabase/types';
 
 export interface Cotacao {
   id: string;
@@ -23,7 +24,7 @@ export interface Cotacao {
   score_qualidade: number;
   score_total: number;
   observacoes: string | null;
-  anexos: any[];
+  anexos: Json | null;
   avaliador_id: string | null;
   data_avaliacao: string | null;
   created_at: string;
@@ -102,9 +103,10 @@ export function useCotacoes(filters?: CotacaoFilters) {
       if (fetchError) throw fetchError;
 
       setCotacoes((data as Cotacao[]) || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error fetching cotacoes:', err);
-      setError(err.message);
+      setError(errorMessage);
       toast.error('Erro ao carregar cotações');
     } finally {
       setLoading(false);
@@ -153,9 +155,10 @@ export function useCotacoes(filters?: CotacaoFilters) {
       toast.success('Cotação adicionada com sucesso!');
       fetchCotacoes();
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error creating cotacao:', err);
-      toast.error('Erro ao adicionar cotação: ' + err.message);
+      toast.error('Erro ao adicionar cotação: ' + errorMessage);
       return null;
     }
   }, [user, fetchCotacoes]);
@@ -173,9 +176,10 @@ export function useCotacoes(filters?: CotacaoFilters) {
       toast.success('Cotação atualizada!');
       fetchCotacoes();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error updating cotacao:', err);
-      toast.error('Erro ao atualizar: ' + err.message);
+      toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
   }, [fetchCotacoes]);
@@ -203,9 +207,10 @@ export function useCotacoes(filters?: CotacaoFilters) {
       toast.success('Fornecedor selecionado!');
       fetchCotacoes();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error selecting cotacao:', err);
-      toast.error('Erro ao selecionar: ' + err.message);
+      toast.error('Erro ao selecionar: ' + errorMessage);
       return false;
     }
   }, [cotacoes, fetchCotacoes]);
@@ -223,9 +228,10 @@ export function useCotacoes(filters?: CotacaoFilters) {
       toast.success('Cotação excluída!');
       fetchCotacoes();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error deleting cotacao:', err);
-      toast.error('Erro ao excluir: ' + err.message);
+      toast.error('Erro ao excluir: ' + errorMessage);
       return false;
     }
   }, [fetchCotacoes]);
