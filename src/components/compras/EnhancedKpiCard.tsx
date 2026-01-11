@@ -379,7 +379,7 @@ export const EnhancedKpiCard = ({
                 )}
                 whileHover={{ scale: 1.1, rotate: 5 }}
               >
-                <Icon className="w-6 h-6 text-white" />
+                <Icon className="w-6 h-6 text-primary-foreground" />
               </motion.div>
               
               {targetProgress !== null && (
