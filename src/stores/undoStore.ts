@@ -7,7 +7,7 @@ export interface UndoAction {
   timestamp: number;
   undo: () => Promise<void> | void;
   redo?: () => Promise<void> | void;
-  data?: any;
+  data?: unknown;
 }
 
 interface UndoStore {

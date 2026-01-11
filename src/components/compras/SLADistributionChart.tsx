@@ -1,5 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, TooltipProps } from 'recharts';
+import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -160,9 +161,9 @@ export const SLADistributionChart = () => {
 
   const total = distributionData.reduce((acc, item) => acc + item.value, 0);
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload;
+      const data = payload[0].payload as { name: string; value: number };
       const percentage = ((data.value / total) * 100).toFixed(1);
       return (
         <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-lg p-3 shadow-xl dark:shadow-2xl dark:shadow-black/20 dark:ring-1 dark:ring-white/5">

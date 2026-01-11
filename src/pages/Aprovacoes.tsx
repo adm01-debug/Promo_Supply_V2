@@ -33,6 +33,7 @@ import {
   Line,
   XAxis,
   YAxis,
+  TooltipProps,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
@@ -41,6 +42,7 @@ import {
   Pie,
   Cell
 } from "recharts";
+import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 
 // Mock approval history
 const approvalHistory = [
@@ -155,14 +157,20 @@ const Aprovacoes = () => {
     fetchAllHistory();
   }, [fetchAllHistory]);
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  interface PayloadEntry {
+    name: string;
+    value: number | string;
+    color: string;
+  }
+
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
           <p className="font-medium text-foreground">{label}</p>
-          {payload.map((entry: any, index: number) => (
+          {(payload as PayloadEntry[]).map((entry, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: {entry.value}{entry.name.includes('Tempo') ? 'h' : ''}
+              {entry.name}: {entry.value}{String(entry.name).includes('Tempo') ? 'h' : ''}
             </p>
           ))}
         </div>

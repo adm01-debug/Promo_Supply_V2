@@ -28,21 +28,12 @@ import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-
-interface ContractItem {
-  id?: string;
-  item_name: string;
-  description: string;
-  unit: string;
-  quantity: number;
-  unit_price: number;
-  total_price: number;
-}
+import type { Contract, ContractItem } from "@/types/contract";
 
 interface ContractModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  contract?: any;
+  contract?: Contract;
   onSuccess: () => void;
 }
 
@@ -133,7 +124,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
     }]);
   };
 
-  const updateItem = (index: number, field: keyof ContractItem, value: any) => {
+  const updateItem = (index: number, field: keyof ContractItem, value: string | number) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
     
@@ -257,9 +248,10 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
 
       onSuccess();
       onOpenChange(false);
-    } catch (error: any) {
-      console.error('Error saving contract:', error);
-      toast.error(error.message || "Erro ao salvar contrato");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao salvar contrato';
+      console.error('Error saving contract:', err);
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -34,14 +34,15 @@ import {
 import { format, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
+import type { Contract, ContractItem, ContractDocument, ContractHistory, StatusConfig, TypeConfig } from "@/types/contract";
 
 interface ContractDetailsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  contract: any;
+  contract: Contract;
 }
 
-const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
+const statusConfig: Record<string, StatusConfig> = {
   draft: { label: "Rascunho", color: "bg-muted text-muted-foreground", icon: FileText },
   pending_approval: { label: "Aguard. Aprovação", color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400", icon: Clock },
   active: { label: "Ativo", color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400", icon: CheckCircle2 },
@@ -50,14 +51,14 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
   renewed: { label: "Renovado", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400", icon: RefreshCw },
 };
 
-const typeConfig: Record<string, { label: string; color: string }> = {
+const typeConfig: Record<string, TypeConfig> = {
   service: { label: "Serviço", color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400" },
   supply: { label: "Fornecimento", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
   framework: { label: "Acordo-Quadro", color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400" },
 };
 
 export function ContractDetailsModal({ open, onOpenChange, contract }: ContractDetailsModalProps) {
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<ContractItem[]>([]);
   const [history, setHistory] = useState<any[]>([]);
   const [linkedOrders, setLinkedOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
