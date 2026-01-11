@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { 
   Plus, 
   X, 
@@ -8,8 +8,12 @@ import {
   Calendar,
   FileText,
   Upload,
-  AlertCircle
+  AlertCircle,
+  Loader2,
+  Check
 } from "lucide-react";
+import { useImageCompression } from "@/hooks/useImageCompression";
+import { formatBytes } from "@/lib/imageCompression";
 import {
   Dialog,
   DialogContent,
@@ -157,10 +161,25 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Image compression hook
+  const { compressAndReplace, isCompressing } = useImageCompression({
+    maxWidth: 1920,
+    maxHeight: 1080,
+    quality: 0.8,
+    convertToWebP: true,
+  });
+
+  const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    updateField('anexos', [...formData.anexos, ...files]);
-  };
+    if (files.length === 0) return;
+
+    // Compress images automatically
+    const processedFiles = await compressAndReplace(files);
+    updateField('anexos', [...formData.anexos, ...processedFiles]);
+    
+    // Reset input
+    e.target.value = '';
+  }, [compressAndReplace, formData.anexos, updateField]);
 
   const removeFile = (index: number) => {
     updateField('anexos', formData.anexos.filter((_, i) => i !== index));
@@ -426,22 +445,43 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
               <Label className="flex items-center gap-2">
                 <Upload className="w-4 h-4" />
                 Anexos
+                {isCompressing && (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    Comprimindo...
+                  </span>
+                )}
               </Label>
-              <div className="border-2 border-dashed border-muted rounded-lg p-4">
+              <div className={cn(
+                "border-2 border-dashed rounded-lg p-4 transition-colors",
+                isCompressing ? "border-primary bg-primary/5" : "border-muted hover:border-primary/50"
+              )}>
                 <input
                   type="file"
                   multiple
+                  accept="image/*,.pdf,.doc,.docx,.xls,.xlsx"
                   onChange={handleFileUpload}
                   className="hidden"
                   id="file-upload"
+                  disabled={isCompressing}
                 />
                 <label 
                   htmlFor="file-upload" 
-                  className="flex flex-col items-center justify-center cursor-pointer"
+                  className={cn(
+                    "flex flex-col items-center justify-center cursor-pointer",
+                    isCompressing && "pointer-events-none opacity-50"
+                  )}
                 >
-                  <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                  {isCompressing ? (
+                    <Loader2 className="w-8 h-8 text-primary mb-2 animate-spin" />
+                  ) : (
+                    <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                  )}
                   <span className="text-sm text-muted-foreground">
-                    Clique para anexar arquivos
+                    {isCompressing ? "Comprimindo imagens..." : "Clique para anexar arquivos"}
+                  </span>
+                  <span className="text-xs text-muted-foreground mt-1">
+                    Imagens são comprimidas automaticamente em WebP
                   </span>
                 </label>
               </div>
@@ -449,9 +489,18 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
               {formData.anexos.length > 0 && (
                 <div className="flex flex-wrap gap-2 mt-2">
                   {formData.anexos.map((file, index) => (
-                    <Badge key={index} variant="secondary" className="gap-1">
-                      {file.name}
-                      <button onClick={() => removeFile(index)}>
+                    <Badge key={index} variant="secondary" className="gap-1 pr-1">
+                      <span className="max-w-[120px] truncate">{file.name}</span>
+                      <span className="text-[10px] text-muted-foreground">
+                        {formatBytes(file.size)}
+                      </span>
+                      {file.type === 'image/webp' && (
+                        <Check className="w-3 h-3 text-green-500" />
+                      )}
+                      <button 
+                        onClick={() => removeFile(index)}
+                        className="ml-1 hover:text-destructive"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
