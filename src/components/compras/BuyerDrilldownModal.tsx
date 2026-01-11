@@ -27,6 +27,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import type { TooltipProps } from 'recharts';
+import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 
 interface Comprador {
   nome: string;
@@ -124,15 +126,15 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, comprador }: BuyerDril
 
   const details = getMockBuyerDetails(comprador.nome);
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
           <p className="font-medium text-foreground">{label}</p>
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.dataKey === 'economia' 
-                ? `R$ ${entry.value.toLocaleString('pt-BR')}` 
+                ? `R$ ${Number(entry.value).toLocaleString('pt-BR')}` 
                 : entry.value}
             </p>
           ))}

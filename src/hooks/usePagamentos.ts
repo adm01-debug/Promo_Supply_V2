@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import type { Json } from '@/integrations/supabase/types';
 
 export interface Pagamento {
   id: string;
@@ -14,7 +15,7 @@ export interface Pagamento {
   data_vencimento: string;
   data_pagamento: string | null;
   forma_pagamento: 'boleto' | 'pix' | 'transferencia' | 'cartao' | 'cheque' | null;
-  dados_bancarios: any;
+  dados_bancarios: Json | null;
   numero_nf: string | null;
   chave_nf: string | null;
   aprovador_id: string | null;
@@ -103,9 +104,9 @@ export function usePagamentos(filters?: PagamentoFilters) {
       if (fetchError) throw fetchError;
 
       setPagamentos((data as Pagamento[]) || []);
-    } catch (err: any) {
-      console.error('Error fetching pagamentos:', err);
-      setError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      setError(errorMessage);
       toast.error('Erro ao carregar pagamentos');
     } finally {
       setLoading(false);
@@ -150,9 +151,9 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.success('Pagamento registrado com sucesso!');
       fetchPagamentos();
       return data;
-    } catch (err: any) {
-      console.error('Error creating pagamento:', err);
-      toast.error('Erro ao registrar pagamento: ' + err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao registrar pagamento: ' + errorMessage);
       return null;
     }
   }, [user, fetchPagamentos]);
@@ -170,9 +171,9 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.success('Pagamento atualizado!');
       fetchPagamentos();
       return true;
-    } catch (err: any) {
-      console.error('Error updating pagamento:', err);
-      toast.error('Erro ao atualizar: ' + err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
   }, [fetchPagamentos]);
@@ -226,9 +227,9 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.success(`${ids.length} pagamento(s) atualizado(s)!`);
       fetchPagamentos();
       return true;
-    } catch (err: any) {
-      console.error('Error bulk updating pagamentos:', err);
-      toast.error('Erro ao atualizar pagamentos: ' + err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao atualizar pagamentos: ' + errorMessage);
       return false;
     }
   }, [user, fetchPagamentos]);
@@ -246,9 +247,9 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.success('Pagamento excluído!');
       fetchPagamentos();
       return true;
-    } catch (err: any) {
-      console.error('Error deleting pagamento:', err);
-      toast.error('Erro ao excluir: ' + err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao excluir: ' + errorMessage);
       return false;
     }
   }, [fetchPagamentos]);
@@ -266,9 +267,9 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.success(`${ids.length} pagamento(s) excluído(s)!`);
       fetchPagamentos();
       return true;
-    } catch (err: any) {
-      console.error('Error bulk deleting pagamentos:', err);
-      toast.error('Erro ao excluir pagamentos: ' + err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao excluir pagamentos: ' + errorMessage);
       return false;
     }
   }, [fetchPagamentos]);
