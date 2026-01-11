@@ -26,23 +26,9 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
     return <Navigate to="/auth" replace />;
   }
 
-  // Check role if required
+  // Check role if required - redirect to home if unauthorized
   if (requiredRole && !hasRole(requiredRole)) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center max-w-md p-6">
-          <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl">🔒</span>
-          </div>
-          <h1 className="text-xl font-bold text-foreground mb-2">Acesso Restrito</h1>
-          <p className="text-muted-foreground mb-4">
-            Você não tem permissão para acessar esta página. 
-            Entre em contato com um administrador se precisar de acesso.
-          </p>
-          <Navigate to="/" replace />
-        </div>
-      </div>
-    );
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
