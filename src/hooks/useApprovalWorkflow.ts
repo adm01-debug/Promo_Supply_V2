@@ -88,6 +88,7 @@ export const useApprovalWorkflow = () => {
   const [delegations, setDelegations] = useState<ApprovalDelegation[]>([]);
   const [workflows, setWorkflows] = useState<ApprovalWorkflow[]>([]);
   const [pendingSteps, setPendingSteps] = useState<ApprovalStep[]>([]);
+  const [allHistory, setAllHistory] = useState<ApprovalHistory[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Fetch approval rules
@@ -536,6 +537,22 @@ export const useApprovalWorkflow = () => {
     }
   }, []);
 
+  // Fetch all history (for the history tab)
+  const fetchAllHistory = useCallback(async () => {
+    try {
+      const { data, error } = await supabase
+        .from('approval_history')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100);
+
+      if (error) throw error;
+      setAllHistory((data || []) as ApprovalHistory[]);
+    } catch (error) {
+      console.error('Error fetching all history:', error);
+    }
+  }, []);
+
   // Check and trigger escalations
   const checkEscalations = useCallback(async () => {
     try {
@@ -638,6 +655,7 @@ export const useApprovalWorkflow = () => {
     delegations,
     workflows,
     pendingSteps,
+    allHistory,
     loading,
     saveRule,
     deleteRule,
@@ -648,6 +666,7 @@ export const useApprovalWorkflow = () => {
     approveStep,
     rejectStep,
     fetchHistory,
+    fetchAllHistory,
     checkEscalations,
     refetch: useCallback(() => {
       fetchRules();
