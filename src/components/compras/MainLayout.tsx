@@ -22,6 +22,7 @@ import { QuickActionsFAB } from "@/components/compras/QuickActionsFAB";
 import { CelebrationOverlay } from "@/components/ui/celebration";
 import { UndoToastContainer } from "@/components/ui/undo-toast";
 import { UndoIndicator, FloatingUndoIndicator } from "@/components/ui/undo-indicator";
+import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { cn } from "@/lib/utils";
 import { Menu, X, Keyboard, HelpCircle, Command, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -252,6 +253,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       
       {/* Undo Toast Container */}
       <UndoToastContainer />
+      
+      {/* Offline Status Indicator */}
+      <OfflineIndicator />
       
       {/* Onboarding Tour */}
       {isDashboard && !isTourLoading && (
