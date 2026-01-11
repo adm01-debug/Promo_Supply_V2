@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { IllustratedEmptyState } from '@/components/ui/illustrated-empty-state';
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -42,6 +43,7 @@ interface DraggableWidgetProps {
   onToggleVisibility: (id: string) => void;
   onResize: (id: string, size: DashboardWidget['size']) => void;
   onRemove?: (id: string) => void;
+  className?: string;
 }
 
 const DraggableWidget = ({ 
@@ -50,7 +52,8 @@ const DraggableWidget = ({
   isEditMode, 
   onToggleVisibility, 
   onResize,
-  onRemove 
+  onRemove,
+  className
 }: DraggableWidgetProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const dragControls = useDragControls();
@@ -70,6 +73,7 @@ const DraggableWidget = ({
       dragControls={dragControls}
       className={cn(
         "relative group",
+        className,
         !widget.visible && "opacity-40"
       )}
       initial={{ opacity: 0, scale: 0.9 }}
@@ -349,67 +353,76 @@ export const DraggableDashboard = ({
 
       {/* KPIs Grid with Reorder */}
       {visibleKpiWidgets.length > 0 && (
-        <Reorder.Group
-          axis="x"
-          values={visibleKpiWidgets}
-          onReorder={(newOrder) => handleReorder('kpi', newOrder)}
-          className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4"
-        >
-          {visibleKpiWidgets.map((widget, index) => (
-            <DraggableWidget
-              key={widget.id}
-              widget={widget}
-              isEditMode={isEditMode}
-              onToggleVisibility={toggleWidgetVisibility}
-              onResize={resizeWidget}
-            >
-              {renderWidget(widget.id, index)}
-            </DraggableWidget>
-          ))}
-        </Reorder.Group>
+        <section aria-label="Indicadores" className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-foreground">Indicadores</h2>
+            {isEditMode && (
+              <p className="text-xs text-muted-foreground">
+                Arraste para reorganizar • Use o menu para redimensionar
+              </p>
+            )}
+          </div>
+
+          <Reorder.Group
+            axis="x"
+            values={visibleKpiWidgets}
+            onReorder={(newOrder) => handleReorder('kpi', newOrder)}
+            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4"
+          >
+            {visibleKpiWidgets.map((widget, index) => (
+              <DraggableWidget
+                key={widget.id}
+                widget={widget}
+                isEditMode={isEditMode}
+                onToggleVisibility={toggleWidgetVisibility}
+                onResize={resizeWidget}
+              >
+                {renderWidget(widget.id, index)}
+              </DraggableWidget>
+            ))}
+          </Reorder.Group>
+        </section>
       )}
 
       {/* Other Widgets Grid with Reorder */}
       {visibleOtherWidgets.length > 0 && (
-        <Reorder.Group
-          axis="y"
-          values={visibleOtherWidgets}
-          onReorder={(newOrder) => handleReorder('other', newOrder)}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
-        >
-          {visibleOtherWidgets.map((widget, index) => (
-            <DraggableWidget
-              key={widget.id}
-              widget={widget}
-              isEditMode={isEditMode}
-              onToggleVisibility={toggleWidgetVisibility}
-              onResize={resizeWidget}
-            >
-              <div className={cn(getGridClasses(widget.size))}>
+        <section aria-label="Widgets" className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold text-foreground">Análises & Painéis</h2>
+            <p className="text-xs text-muted-foreground">Widgets redimensionáveis por seção</p>
+          </div>
+
+          <Reorder.Group
+            axis="y"
+            values={visibleOtherWidgets}
+            onReorder={(newOrder) => handleReorder('other', newOrder)}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-6 auto-rows-fr"
+          >
+            {visibleOtherWidgets.map((widget, index) => (
+              <DraggableWidget
+                key={widget.id}
+                widget={widget}
+                isEditMode={isEditMode}
+                onToggleVisibility={toggleWidgetVisibility}
+                onResize={resizeWidget}
+                className={getGridClasses(widget.size)}
+              >
                 {renderWidget(widget.id, index)}
-              </div>
-            </DraggableWidget>
-          ))}
-        </Reorder.Group>
+              </DraggableWidget>
+            ))}
+          </Reorder.Group>
+        </section>
       )}
 
       {/* Empty State */}
       {visibleKpiWidgets.length === 0 && visibleOtherWidgets.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center justify-center p-12 border-2 border-dashed rounded-lg"
-        >
-          <LayoutGrid className="w-12 h-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Nenhum widget visível</h3>
-          <p className="text-muted-foreground text-sm mb-4">
-            Todos os widgets foram ocultados. Clique em "Editar Layout" para adicionar widgets.
-          </p>
-          <Button onClick={() => setIsEditMode(true)} className="gap-2">
-            <Plus className="w-4 h-4" />
-            Adicionar Widgets
-          </Button>
-        </motion.div>
+        <IllustratedEmptyState
+          type="analytics"
+          title="Seu dashboard está vazio"
+          description='Todos os widgets foram ocultados. Clique em "Editar Layout" para reativar e reorganizar.'
+          action={{ label: 'Editar dashboard', onClick: () => setIsEditMode(true) }}
+          size="lg"
+        />
       )}
     </div>
   );

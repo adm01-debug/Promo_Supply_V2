@@ -8,7 +8,7 @@ import {
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
-import { KpiCard } from "@/components/compras/KpiCard";
+import { EnhancedKpiCard } from "@/components/compras/EnhancedKpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
 import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
 import { SLADistributionChart } from "@/components/compras/SLADistributionChart";
@@ -28,53 +28,66 @@ import { MainLayout } from "@/components/compras/MainLayout";
 import { cn } from "@/lib/utils";
 
 const ComprasDashboard = () => {
+  const getPreviousValue = (data?: number[]) => {
+    if (!data || data.length < 2) return undefined;
+    return data[data.length - 2];
+  };
+
   const getWidgetComponent = (widgetId: string, index: number = 0) => {
     switch (widgetId) {
       case 'kpi-aguardando':
         return (
-          <KpiCard
+          <EnhancedKpiCard
             title="Aguard. Cotação"
             value={kpisMock.aguardandoCotacao}
+            previousValue={getPreviousValue(kpiSparklineData.aguardandoCotacao)}
             icon={ClipboardList}
             color="emerald"
-            index={index}
             sparklineData={kpiSparklineData.aguardandoCotacao}
+            format="number"
+            variant="default"
           />
         );
       case 'kpi-volume':
         return (
-          <KpiCard
+          <EnhancedKpiCard
             title="Volume Mês"
-            value={`R$ ${(kpisMock.volumeMes / 1000).toFixed(0)}K`}
+            value={kpisMock.volumeMes}
+            previousValue={getPreviousValue(kpiSparklineData.volumeMes)}
             icon={TrendingUp}
             color="cyan"
             subtitle="Total em compras"
-            index={index}
             sparklineData={kpiSparklineData.volumeMes}
+            format="currency"
+            variant="default"
           />
         );
       case 'kpi-economia':
         return (
-          <KpiCard
+          <EnhancedKpiCard
             title="Economia Gerada"
-            value={`R$ ${(buyerPerformanceMock.economiaGerada / 1000).toFixed(1)}K`}
+            value={buyerPerformanceMock.economiaGerada}
+            previousValue={getPreviousValue(kpiSparklineData.economia)}
             icon={PiggyBank}
             color="emerald"
             subtitle={`${buyerPerformanceMock.economiaPercentual}% do volume`}
-            index={index}
             sparklineData={kpiSparklineData.economia}
+            format="currency"
+            variant="default"
           />
         );
       case 'kpi-sla':
         return (
-          <KpiCard
+          <EnhancedKpiCard
             title="Taxa Entrega"
-            value={`${kpisMock.taxaEntrega}%`}
+            value={kpisMock.taxaEntrega}
+            previousValue={getPreviousValue(kpiSparklineData.taxaEntrega)}
             icon={BarChart3}
             color="teal"
             subtitle="No prazo"
-            index={index}
             sparklineData={kpiSparklineData.taxaEntrega}
+            format="percent"
+            variant="default"
           />
         );
       case 'chart-sla':

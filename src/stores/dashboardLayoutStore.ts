@@ -20,18 +20,27 @@ interface DashboardLayoutState {
 }
 
 const defaultWidgets: DashboardWidget[] = [
+  // KPIs (top row)
   { id: 'kpi-aguardando', type: 'kpi', title: 'Aguard. Cotação', visible: true, order: 0, size: 'small' },
   { id: 'kpi-volume', type: 'kpi', title: 'Volume Mês', visible: true, order: 1, size: 'small' },
   { id: 'kpi-economia', type: 'kpi', title: 'Economia Gerada', visible: true, order: 2, size: 'small' },
   { id: 'kpi-sla', type: 'kpi', title: 'Taxa SLA', visible: true, order: 3, size: 'small' },
-  { id: 'chart-sla', type: 'chart', title: 'Distribuição SLA', visible: true, order: 4, size: 'medium' },
-  { id: 'chart-pipeline', type: 'chart', title: 'Pipeline', visible: true, order: 5, size: 'medium' },
-  { id: 'supplier-alerts', type: 'panel', title: 'Alertas Fornecedores', visible: true, order: 6, size: 'medium' },
+
+  // Charts (hierarchy: bigger first)
+  { id: 'chart-pipeline', type: 'chart', title: 'Pipeline', visible: true, order: 4, size: 'large' },
+  { id: 'chart-sla', type: 'chart', title: 'Distribuição SLA', visible: true, order: 5, size: 'large' },
+
+  // Panels
+  { id: 'buyer-performance', type: 'panel', title: 'Performance Comprador', visible: true, order: 6, size: 'large' },
   { id: 'supplier-ranking', type: 'panel', title: 'Ranking Fornecedores', visible: true, order: 7, size: 'medium' },
-  { id: 'buyer-performance', type: 'panel', title: 'Performance Comprador', visible: true, order: 8, size: 'medium' },
+  { id: 'supplier-alerts', type: 'panel', title: 'Alertas Fornecedores', visible: true, order: 8, size: 'medium' },
   { id: 'savings-goal', type: 'panel', title: 'Meta de Economia', visible: true, order: 9, size: 'medium' },
-  { id: 'delivery-calendar', type: 'calendar', title: 'Calendário Entregas', visible: true, order: 10, size: 'large' },
+
+  // Operational widgets
+  { id: 'delivery-calendar', type: 'calendar', title: 'Calendário Entregas', visible: true, order: 10, size: 'full' },
   { id: 'urgent-items', type: 'list', title: 'Itens Urgentes', visible: true, order: 11, size: 'medium' },
+
+  // AI widgets
   { id: 'demand-prediction', type: 'ai', title: 'Previsão de Demanda (IA)', visible: true, order: 12, size: 'large' },
   { id: 'risk-heatmap', type: 'ai', title: 'Análise de Riscos', visible: true, order: 13, size: 'full' },
 ];
