@@ -110,6 +110,307 @@ export type Database = {
         }
         Relationships: []
       }
+      approval_delegations: {
+        Row: {
+          ativo: boolean
+          categorias_permitidas: Json | null
+          created_at: string
+          data_fim: string
+          data_inicio: string
+          delegado_id: string
+          delegante_id: string
+          id: string
+          motivo: string | null
+          updated_at: string
+          valor_maximo: number | null
+        }
+        Insert: {
+          ativo?: boolean
+          categorias_permitidas?: Json | null
+          created_at?: string
+          data_fim: string
+          data_inicio?: string
+          delegado_id: string
+          delegante_id: string
+          id?: string
+          motivo?: string | null
+          updated_at?: string
+          valor_maximo?: number | null
+        }
+        Update: {
+          ativo?: boolean
+          categorias_permitidas?: Json | null
+          created_at?: string
+          data_fim?: string
+          data_inicio?: string
+          delegado_id?: string
+          delegante_id?: string
+          id?: string
+          motivo?: string | null
+          updated_at?: string
+          valor_maximo?: number | null
+        }
+        Relationships: []
+      }
+      approval_history: {
+        Row: {
+          acao: string
+          created_at: string
+          detalhes: Json | null
+          id: string
+          solicitacao_id: string | null
+          step_id: string | null
+          usuario_id: string | null
+          usuario_nome: string | null
+          workflow_id: string | null
+        }
+        Insert: {
+          acao: string
+          created_at?: string
+          detalhes?: Json | null
+          id?: string
+          solicitacao_id?: string | null
+          step_id?: string | null
+          usuario_id?: string | null
+          usuario_nome?: string | null
+          workflow_id?: string | null
+        }
+        Update: {
+          acao?: string
+          created_at?: string
+          detalhes?: Json | null
+          id?: string
+          solicitacao_id?: string | null
+          step_id?: string | null
+          usuario_id?: string | null
+          usuario_nome?: string | null
+          workflow_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_history_solicitacao_id_fkey"
+            columns: ["solicitacao_id"]
+            isOneToOne: false
+            referencedRelation: "solicitacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_history_step_id_fkey"
+            columns: ["step_id"]
+            isOneToOne: false
+            referencedRelation: "approval_steps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_history_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "approval_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      approval_rules: {
+        Row: {
+          aprovadores: Json
+          ativo: boolean
+          categoria_id: string | null
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          escalacao_automatica: boolean
+          escalacao_para: string | null
+          id: string
+          niveis_aprovacao: number
+          nome: string
+          prioridade: number
+          requer_unanimidade: boolean
+          tempo_limite_horas: number
+          updated_at: string
+          valor_max: number
+          valor_min: number
+        }
+        Insert: {
+          aprovadores?: Json
+          ativo?: boolean
+          categoria_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          escalacao_automatica?: boolean
+          escalacao_para?: string | null
+          id?: string
+          niveis_aprovacao?: number
+          nome: string
+          prioridade?: number
+          requer_unanimidade?: boolean
+          tempo_limite_horas?: number
+          updated_at?: string
+          valor_max?: number
+          valor_min?: number
+        }
+        Update: {
+          aprovadores?: Json
+          ativo?: boolean
+          categoria_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          escalacao_automatica?: boolean
+          escalacao_para?: string | null
+          id?: string
+          niveis_aprovacao?: number
+          nome?: string
+          prioridade?: number
+          requer_unanimidade?: boolean
+          tempo_limite_horas?: number
+          updated_at?: string
+          valor_max?: number
+          valor_min?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_rules_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      approval_steps: {
+        Row: {
+          aprovador_efetivo_id: string | null
+          aprovador_id: string
+          comentario: string | null
+          created_at: string
+          decidido_em: string | null
+          delegacao_id: string | null
+          etapa: number
+          id: string
+          lembrete_enviado: boolean
+          notificado_em: string | null
+          prazo_limite: string | null
+          status: string
+          workflow_id: string
+        }
+        Insert: {
+          aprovador_efetivo_id?: string | null
+          aprovador_id: string
+          comentario?: string | null
+          created_at?: string
+          decidido_em?: string | null
+          delegacao_id?: string | null
+          etapa?: number
+          id?: string
+          lembrete_enviado?: boolean
+          notificado_em?: string | null
+          prazo_limite?: string | null
+          status?: string
+          workflow_id: string
+        }
+        Update: {
+          aprovador_efetivo_id?: string | null
+          aprovador_id?: string
+          comentario?: string | null
+          created_at?: string
+          decidido_em?: string | null
+          delegacao_id?: string | null
+          etapa?: number
+          id?: string
+          lembrete_enviado?: boolean
+          notificado_em?: string | null
+          prazo_limite?: string | null
+          status?: string
+          workflow_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_steps_delegacao_id_fkey"
+            columns: ["delegacao_id"]
+            isOneToOne: false
+            referencedRelation: "approval_delegations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_steps_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "approval_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      approval_workflows: {
+        Row: {
+          categoria_id: string | null
+          created_at: string
+          escalado_em: string | null
+          escalado_para: string | null
+          etapa_atual: number
+          id: string
+          prazo_limite: string | null
+          rule_id: string | null
+          solicitacao_id: string | null
+          status: string
+          total_etapas: number
+          updated_at: string
+          valor: number
+        }
+        Insert: {
+          categoria_id?: string | null
+          created_at?: string
+          escalado_em?: string | null
+          escalado_para?: string | null
+          etapa_atual?: number
+          id?: string
+          prazo_limite?: string | null
+          rule_id?: string | null
+          solicitacao_id?: string | null
+          status?: string
+          total_etapas?: number
+          updated_at?: string
+          valor: number
+        }
+        Update: {
+          categoria_id?: string | null
+          created_at?: string
+          escalado_em?: string | null
+          escalado_para?: string | null
+          etapa_atual?: number
+          id?: string
+          prazo_limite?: string | null
+          rule_id?: string | null
+          solicitacao_id?: string | null
+          status?: string
+          total_etapas?: number
+          updated_at?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_workflows_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_workflows_rule_id_fkey"
+            columns: ["rule_id"]
+            isOneToOne: false
+            referencedRelation: "approval_rules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_workflows_solicitacao_id_fkey"
+            columns: ["solicitacao_id"]
+            isOneToOne: false
+            referencedRelation: "solicitacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action_type: Database["public"]["Enums"]["audit_action_type"]
@@ -1425,6 +1726,89 @@ export type Database = {
         }
         Relationships: []
       }
+      qualification_history: {
+        Row: {
+          action_type: string
+          created_at: string
+          description: string | null
+          fornecedor_id: string
+          id: string
+          new_value: string | null
+          old_value: string | null
+          performed_by: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          description?: string | null
+          fornecedor_id: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          performed_by?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          description?: string | null
+          fornecedor_id?: string
+          id?: string
+          new_value?: string | null
+          old_value?: string | null
+          performed_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qualification_history_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qualification_requirements: {
+        Row: {
+          applies_to_types: string[] | null
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          is_mandatory: boolean
+          name: string
+          updated_at: string
+          validity_days: number | null
+          weight: number
+        }
+        Insert: {
+          applies_to_types?: string[] | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_mandatory?: boolean
+          name: string
+          updated_at?: string
+          validity_days?: number | null
+          weight?: number
+        }
+        Update: {
+          applies_to_types?: string[] | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          is_mandatory?: boolean
+          name?: string
+          updated_at?: string
+          validity_days?: number | null
+          weight?: number
+        }
+        Relationships: []
+      }
       rate_limit_logs: {
         Row: {
           blocked: boolean
@@ -1628,6 +2012,149 @@ export type Database = {
           },
         ]
       }
+      supplier_documents: {
+        Row: {
+          created_at: string
+          expiry_date: string | null
+          file_name: string
+          file_size: number | null
+          file_type: string | null
+          file_url: string
+          fornecedor_id: string
+          id: string
+          issue_date: string | null
+          rejection_reason: string | null
+          requirement_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          updated_at: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          expiry_date?: string | null
+          file_name: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url: string
+          fornecedor_id: string
+          id?: string
+          issue_date?: string | null
+          rejection_reason?: string | null
+          requirement_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          expiry_date?: string | null
+          file_name?: string
+          file_size?: number | null
+          file_type?: string | null
+          file_url?: string
+          fornecedor_id?: string
+          id?: string
+          issue_date?: string | null
+          rejection_reason?: string | null
+          requirement_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          updated_at?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_documents_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_documents_requirement_id_fkey"
+            columns: ["requirement_id"]
+            isOneToOne: false
+            referencedRelation: "qualification_requirements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_qualification_scores: {
+        Row: {
+          blocked_at: string | null
+          blocked_by: string | null
+          blocked_reason: string | null
+          compliance_score: number
+          created_at: string
+          document_score: number
+          documents_approved: number | null
+          documents_expired: number | null
+          documents_pending: number | null
+          documents_rejected: number | null
+          expiry_score: number
+          fornecedor_id: string
+          id: string
+          last_calculated_at: string
+          next_expiry_date: string | null
+          overall_score: number
+          qualification_status: string
+          updated_at: string
+        }
+        Insert: {
+          blocked_at?: string | null
+          blocked_by?: string | null
+          blocked_reason?: string | null
+          compliance_score?: number
+          created_at?: string
+          document_score?: number
+          documents_approved?: number | null
+          documents_expired?: number | null
+          documents_pending?: number | null
+          documents_rejected?: number | null
+          expiry_score?: number
+          fornecedor_id: string
+          id?: string
+          last_calculated_at?: string
+          next_expiry_date?: string | null
+          overall_score?: number
+          qualification_status?: string
+          updated_at?: string
+        }
+        Update: {
+          blocked_at?: string | null
+          blocked_by?: string | null
+          blocked_reason?: string | null
+          compliance_score?: number
+          created_at?: string
+          document_score?: number
+          documents_approved?: number | null
+          documents_expired?: number | null
+          documents_pending?: number | null
+          documents_rejected?: number | null
+          expiry_score?: number
+          fornecedor_id?: string
+          id?: string
+          last_calculated_at?: string
+          next_expiry_date?: string | null
+          overall_score?: number
+          qualification_status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_qualification_scores_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: true
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1765,11 +2292,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_supplier_qualification_score: {
+        Args: { p_fornecedor_id: string }
+        Returns: number
+      }
+      check_escalation: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
       clear_login_lockout: { Args: { _email: string }; Returns: undefined }
+      find_approval_rule: {
+        Args: { p_categoria_id?: string; p_valor: number }
+        Returns: string
+      }
       generate_sequential_number: {
         Args: { prefix: string; table_name: string }
         Returns: string
+      }
+      get_effective_approver: {
+        Args: {
+          p_approver_id: string
+          p_categoria_id?: string
+          p_valor?: number
+        }
+        Returns: {
+          approver_id: string
+          delegation_id: string
+        }[]
       }
       get_failed_login_count: {
         Args: { _email: string; _minutes?: number }
