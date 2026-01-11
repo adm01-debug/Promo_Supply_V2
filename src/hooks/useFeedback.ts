@@ -149,12 +149,4 @@ export function useFeedback() {
   };
 }
 
-// Hook for haptic-only feedback (useful for mobile gestures)
-export function useHapticFeedback() {
-  const { hapticEnabled } = useFeedbackPreferences();
-
-  return useCallback((pattern: number | number[] = 10) => {
-    if (!hapticEnabled || !('vibrate' in navigator)) return;
-    navigator.vibrate(pattern);
-  }, [hapticEnabled]);
-}
+// Note: For haptic-only feedback, use useHapticFeedback from useMobileGestures.ts

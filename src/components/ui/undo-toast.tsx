@@ -18,13 +18,13 @@ interface UndoAction {
   description?: string;
 }
 
-interface UndoStore {
+interface UndoToastStore {
   actions: UndoAction[];
   addAction: (action: Omit<UndoAction, 'id'>) => string;
   removeAction: (id: string) => void;
 }
 
-export const useUndoStore = create<UndoStore>((set, get) => ({
+const useUndoToastStore = create<UndoToastStore>((set) => ({
   actions: [],
   addAction: (action) => {
     const id = Math.random().toString(36).slice(2, 11);
@@ -85,7 +85,7 @@ const typeConfig: Record<ToastType, {
 };
 
 function UndoToastItem({ action }: { action: UndoAction }) {
-  const { removeAction } = useUndoStore();
+  const { removeAction } = useUndoToastStore();
   const { lightTap, success, error } = useHapticFeedback();
   const [progress, setProgress] = useState(100);
   const [isPaused, setIsPaused] = useState(false);
@@ -261,7 +261,7 @@ function UndoToastItem({ action }: { action: UndoAction }) {
 }
 
 export function UndoToastContainer() {
-  const { actions } = useUndoStore();
+  const { actions } = useUndoToastStore();
 
   return (
     <div 
@@ -285,7 +285,7 @@ export function UndoToastContainer() {
 
 // Enhanced hook for showing undo toasts
 export function useUndoToast() {
-  const { addAction, removeAction } = useUndoStore();
+  const { addAction, removeAction } = useUndoToastStore();
   const { lightTap } = useHapticFeedback();
 
   const showUndo = useCallback((
