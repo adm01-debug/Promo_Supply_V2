@@ -282,7 +282,7 @@ const Auth = () => {
 
         {/* Footer */}
         <p className="relative z-10 text-white/50 text-sm">
-          © 2024 Promo Brindes. Todos os direitos reservados.
+          © 2025 Promo Brindes. Todos os direitos reservados.
         </p>
       </div>
 
@@ -513,7 +513,7 @@ const Auth = () => {
 
           {/* Footer for mobile */}
           <p className="text-center text-muted-foreground text-xs mt-6 lg:hidden">
-            © 2024 Promo Brindes. Todos os direitos reservados.
+            © 2025 Promo Brindes. Todos os direitos reservados.
           </p>
         </div>
       </div>
