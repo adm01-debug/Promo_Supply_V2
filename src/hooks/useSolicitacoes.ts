@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import type { Json } from '@/integrations/supabase/types';
 
 export interface Solicitacao {
   id: string;
@@ -26,7 +27,7 @@ export interface Solicitacao {
   centro_custo: string | null;
   justificativa: string | null;
   observacoes: string | null;
-  anexos: any[];
+  anexos: Json | null;
   created_at: string;
   updated_at: string;
   // Joined fields
@@ -122,9 +123,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       if (fetchError) throw fetchError;
 
       setSolicitacoes((data as Solicitacao[]) || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error fetching solicitacoes:', err);
-      setError(err.message);
+      setError(errorMessage);
       toast.error('Erro ao carregar solicitações');
     } finally {
       setLoading(false);
@@ -173,9 +175,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       toast.success('Solicitação criada com sucesso!');
       fetchSolicitacoes();
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error creating solicitacao:', err);
-      toast.error('Erro ao criar solicitação: ' + err.message);
+      toast.error('Erro ao criar solicitação: ' + errorMessage);
       return null;
     }
   }, [user, fetchSolicitacoes]);
@@ -193,9 +196,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       toast.success('Solicitação atualizada!');
       fetchSolicitacoes();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error updating solicitacao:', err);
-      toast.error('Erro ao atualizar: ' + err.message);
+      toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
   }, [fetchSolicitacoes]);
@@ -218,9 +222,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       toast.success('Solicitação excluída!');
       fetchSolicitacoes();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error deleting solicitacao:', err);
-      toast.error('Erro ao excluir: ' + err.message);
+      toast.error('Erro ao excluir: ' + errorMessage);
       return false;
     }
   }, [fetchSolicitacoes]);
@@ -238,9 +243,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       toast.success(`${ids.length} solicitação(ões) excluída(s)!`);
       fetchSolicitacoes();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error bulk deleting:', err);
-      toast.error('Erro ao excluir: ' + err.message);
+      toast.error('Erro ao excluir: ' + errorMessage);
       return false;
     }
   }, [fetchSolicitacoes]);
@@ -258,9 +264,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       toast.success(`${ids.length} solicitação(ões) atualizada(s)!`);
       fetchSolicitacoes();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error bulk updating status:', err);
-      toast.error('Erro ao atualizar: ' + err.message);
+      toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
   }, [fetchSolicitacoes]);

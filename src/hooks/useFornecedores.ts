@@ -91,9 +91,10 @@ export function useFornecedores(filters?: FornecedorFilters) {
       if (fetchError) throw fetchError;
 
       setFornecedores((data as Fornecedor[]) || []);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error fetching fornecedores:', err);
-      setError(err.message);
+      setError(errorMessage);
       toast.error('Erro ao carregar fornecedores');
     } finally {
       setLoading(false);
@@ -144,9 +145,10 @@ export function useFornecedores(filters?: FornecedorFilters) {
       toast.success('Fornecedor cadastrado com sucesso!');
       fetchFornecedores();
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error creating fornecedor:', err);
-      toast.error('Erro ao cadastrar fornecedor: ' + err.message);
+      toast.error('Erro ao cadastrar fornecedor: ' + errorMessage);
       return null;
     }
   }, [user, fetchFornecedores]);
@@ -164,9 +166,10 @@ export function useFornecedores(filters?: FornecedorFilters) {
       toast.success('Fornecedor atualizado!');
       fetchFornecedores();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error updating fornecedor:', err);
-      toast.error('Erro ao atualizar: ' + err.message);
+      toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
   }, [fetchFornecedores]);
@@ -184,9 +187,10 @@ export function useFornecedores(filters?: FornecedorFilters) {
       toast.success('Fornecedor excluído!');
       fetchFornecedores();
       return true;
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
       console.error('Error deleting fornecedor:', err);
-      toast.error('Erro ao excluir: ' + err.message);
+      toast.error('Erro ao excluir: ' + errorMessage);
       return false;
     }
   }, [fetchFornecedores]);

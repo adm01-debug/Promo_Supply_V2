@@ -82,7 +82,7 @@ interface BulkOperationsPreviewProps {
   selectedItems: BulkItem[];
   availableActions: BulkAction[];
   statusOptions: { value: string; label: string; color?: string }[];
-  onExecute: (action: BulkAction, itemIds: string[], options?: any) => Promise<boolean>;
+  onExecute: (action: BulkAction, itemIds: string[], options?: Record<string, unknown>) => Promise<boolean>;
   onClose: () => void;
   onExport?: (format: 'pdf' | 'excel', itemIds: string[]) => void;
 }
