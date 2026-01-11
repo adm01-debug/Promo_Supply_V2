@@ -23,14 +23,15 @@ import {
   HelpCircle,
   Sparkles
 } from "lucide-react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { PrefetchLink } from "@/components/PrefetchLink";
 
 // Grouped menu structure for better UX
 const menuGroups = [
@@ -273,7 +274,7 @@ const NavItem = ({
     return (
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
-          <NavLink
+          <PrefetchLink
             to={item.href}
             className={cn(
               "flex items-center justify-center w-full h-10 rounded-lg transition-all duration-200 relative group",
@@ -292,7 +293,7 @@ const NavItem = ({
                 <AnimatedBadge count={item.badge.count} variant={item.badge.variant} size="small" />
               </span>
             )}
-          </NavLink>
+          </PrefetchLink>
         </TooltipTrigger>
         <TooltipContent side="right" className="flex items-center gap-2">
           <span className="font-medium">{item.title}</span>
@@ -310,7 +311,7 @@ const NavItem = ({
   }
 
   return (
-    <NavLink
+    <PrefetchLink
       to={item.href}
       className={cn(
         "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group ml-2 relative",
@@ -332,7 +333,7 @@ const NavItem = ({
           <AnimatedBadge count={item.badge.count} variant={item.badge.variant} />
         )}
       </div>
-    </NavLink>
+    </PrefetchLink>
   );
 };
 
