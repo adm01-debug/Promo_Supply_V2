@@ -33,17 +33,18 @@ import {
 } from "@/components/ui/select";
 import { OnboardingTour, solicitacoesTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
+import type { Solicitacao as MockSolicitacao } from "@/data/mockData";
 
 // Map DB status to legacy status for UI compatibility
-const mapDbStatusToLegacy = (status: Solicitacao['status']): string => {
-  const mapping: Record<string, string> = {
+const mapDbStatusToLegacy = (status: Solicitacao['status']): MockSolicitacao['status'] => {
+  const mapping: Record<Solicitacao['status'], MockSolicitacao['status']> = {
     'pendente': 'AGUARDANDO_COTACAO',
     'em_cotacao': 'EM_COTACAO',
     'aprovada': 'FORNECEDOR_SELECIONADO',
     'em_andamento': 'AGUARDANDO_PAGAMENTO',
     'concluida': 'PAGO',
-    'rejeitada': 'CANCELADO',
-    'cancelada': 'CANCELADO',
+    'rejeitada': 'ENTREGUE', // Map rejeitada to a valid status for display
+    'cancelada': 'ENTREGUE', // Map cancelada to a valid status for display
   };
   return mapping[status] || 'AGUARDANDO_COTACAO';
 };
@@ -56,24 +57,27 @@ const mapLegacyStatusToDb = (legacyStatus: string): Solicitacao['status'] => {
     'AGUARDANDO_PAGAMENTO': 'em_andamento',
     'PAGO': 'concluida',
     'EM_TRANSITO': 'concluida',
+    'ENTREGUE': 'concluida',
+    'PEDIDO_GERADO': 'em_andamento',
     'CANCELADO': 'cancelada',
   };
   return mapping[legacyStatus] || 'pendente';
 };
 
-// Adapt DB solicitacao to legacy format for components
-const adaptToLegacyFormat = (sol: Solicitacao): any => ({
+// Adapt DB solicitacao to legacy format for components (matches mockData.Solicitacao)
+const adaptToLegacyFormat = (sol: Solicitacao): MockSolicitacao => ({
   id: sol.id,
+  itemNumber: sol.id.slice(0, 8),
   empresa: sol.departamento || 'Empresa',
   produto: sol.titulo,
   quantidade: sol.quantidade,
-  valorTotal: sol.valor_estimado || 0,
+  quantidadeReal: Math.ceil(sol.quantidade * 1.02),
+  tipo: sol.tipo === 'material' ? 'PE_LISO' : sol.tipo === 'servico' ? 'FAB_LISO' : 'FAB_PERSONALIZADO',
+  status: mapDbStatusToLegacy(sol.status),
   vendedor: sol.observacoes || 'Vendedor',
   prazoEntrega: sol.data_necessidade || sol.created_at,
-  status: mapDbStatusToLegacy(sol.status),
-  tipo: sol.tipo === 'material' ? 'PE_LISO' : sol.tipo === 'servico' ? 'FAB_LISO' : 'FAB_PERSONALIZADO',
-  dataCriacao: sol.created_at,
-  prioridade: sol.prioridade,
+  valorTotal: sol.valor_estimado || 0,
+  createdAt: sol.created_at,
 });
 
 const Solicitacoes = () => {
@@ -251,7 +255,7 @@ const Solicitacoes = () => {
         subtitle: s.empresa,
         status: mapLegacyStatusToDb(s.status),
         value: s.valorTotal,
-        date: s.dataCriacao,
+        date: s.createdAt,
       }));
   }, [filteredSolicitacoes, selectedIds]);
 

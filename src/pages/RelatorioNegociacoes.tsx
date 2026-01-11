@@ -42,6 +42,8 @@ import {
   Pie,
   Cell
 } from "recharts";
+import type { TooltipProps } from 'recharts';
+import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 
 // Mock data for monthly savings history
 const historicoMensal = [
@@ -126,15 +128,15 @@ const RelatorioNegociacoes = () => {
   const mediaPercentual = historicoMensal.reduce((acc, curr) => acc + curr.percentual, 0) / historicoMensal.length;
   const totalCotacoes = historicoMensal.reduce((acc, curr) => acc + curr.cotacoes, 0);
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
           <p className="font-medium text-foreground">{label}</p>
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: {entry.name.includes('R$') || entry.dataKey === 'economia' 
-                ? `R$ ${entry.value.toLocaleString('pt-BR')}` 
+              {entry.name}: {String(entry.name).includes('R$') || entry.dataKey === 'economia' 
+                ? `R$ ${Number(entry.value).toLocaleString('pt-BR')}` 
                 : entry.dataKey === 'percentual' 
                   ? `${entry.value}%`
                   : entry.value}
