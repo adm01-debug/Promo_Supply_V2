@@ -1,5 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
-
+import type { Json } from '@/integrations/supabase/types';
 export type AuditActionType = 
   | 'create' 
   | 'update' 
@@ -109,15 +109,15 @@ export const logAuditAction = async (entry: AuditLogEntry): Promise<void> => {
       entity_type: entry.entity_type,
       entity_id: entry.entity_id || null,
       entity_description: entry.entity_description || null,
-      old_values: entry.old_values || null,
-      new_values: entry.new_values || null,
-      metadata: entry.metadata || {},
+      old_values: (entry.old_values || null) as Json,
+      new_values: (entry.new_values || null) as Json,
+      metadata: (entry.metadata || null) as Json,
       user_agent: navigator.userAgent,
     };
 
     const { error } = await supabase
-      .from('audit_logs' as any)
-      .insert(insertData as any);
+      .from('audit_logs')
+      .insert([insertData]);
 
     if (error) {
       console.error('Erro ao registrar auditoria:', error);
@@ -142,7 +142,7 @@ export const fetchAuditLogs = async (options?: {
 }): Promise<{ data: AuditLog[]; count: number }> => {
   try {
     let query = supabase
-      .from('audit_logs' as any)
+      .from('audit_logs')
       .select('*', { count: 'exact' })
       .order('created_at', { ascending: false });
 

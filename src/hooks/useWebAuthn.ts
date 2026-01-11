@@ -102,7 +102,7 @@ export function useWebAuthn() {
           displayName: options.user.displayName,
         },
         pubKeyCredParams: options.pubKeyCredParams,
-        excludeCredentials: options.excludeCredentials?.map((cred: any) => ({
+        excludeCredentials: options.excludeCredentials?.map((cred: { id: string; type: 'public-key'; transports?: AuthenticatorTransport[] }) => ({
           id: base64UrlDecode(cred.id),
           type: cred.type,
           transports: cred.transports,
@@ -127,7 +127,7 @@ export function useWebAuthn() {
         id: credential.id,
         rawId: base64UrlEncode(credential.rawId),
         type: credential.type,
-        authenticatorAttachment: (credential as any).authenticatorAttachment,
+        authenticatorAttachment: (credential as PublicKeyCredential & { authenticatorAttachment?: string }).authenticatorAttachment,
         response: {
           attestationObject: base64UrlEncode(attestationResponse.attestationObject),
           clientDataJSON: base64UrlEncode(attestationResponse.clientDataJSON),
@@ -152,18 +152,19 @@ export function useWebAuthn() {
       toast.success('Passkey registrada com sucesso!');
       await fetchCredentials();
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('WebAuthn registration error:', error);
       
-      if (error.name === 'NotAllowedError') {
+      const err = error as Error & { name?: string };
+      if (err.name === 'NotAllowedError') {
         toast.error('Operação cancelada pelo usuário');
-      } else if (error.name === 'SecurityError') {
+      } else if (err.name === 'SecurityError') {
         toast.error('Erro de segurança. Verifique se está usando HTTPS.');
       } else {
-        toast.error(error.message || 'Falha ao registrar passkey');
+        toast.error(err.message || 'Falha ao registrar passkey');
       }
       
-      return { success: false, error };
+      return { success: false, error: err };
     } finally {
       setIsLoading(false);
     }
@@ -195,7 +196,7 @@ export function useWebAuthn() {
         challenge: base64UrlDecode(options.challenge),
         timeout: options.timeout,
         rpId: options.rpId,
-        allowCredentials: options.allowCredentials?.map((cred: any) => ({
+        allowCredentials: options.allowCredentials?.map((cred: { id: string; type: 'public-key'; transports?: AuthenticatorTransport[] }) => ({
           id: base64UrlDecode(cred.id),
           type: cred.type,
           transports: cred.transports,
@@ -242,9 +243,10 @@ export function useWebAuthn() {
         const type = url.searchParams.get('type') || 'magiclink';
         
         if (token) {
+          const otpType = type as 'magiclink' | 'recovery' | 'signup' | 'invite' | 'email';
           const { error: verifyError } = await supabase.auth.verifyOtp({
             token_hash: token,
-            type: type as any,
+            type: otpType,
           });
 
           if (verifyError) {
@@ -256,18 +258,19 @@ export function useWebAuthn() {
 
       toast.success('Login realizado com sucesso!');
       return { success: true, userId: finishData.userId };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('WebAuthn authentication error:', error);
       
-      if (error.name === 'NotAllowedError') {
+      const err = error as Error & { name?: string };
+      if (err.name === 'NotAllowedError') {
         toast.error('Operação cancelada pelo usuário');
-      } else if (error.message === 'Nenhuma passkey registrada para este usuário') {
+      } else if (err.message === 'Nenhuma passkey registrada para este usuário') {
         toast.error('Nenhuma passkey registrada para este email');
       } else {
-        toast.error(error.message || 'Falha na autenticação');
+        toast.error(err.message || 'Falha na autenticação');
       }
       
-      return { success: false, error };
+      return { success: false, error: err };
     } finally {
       setIsLoading(false);
     }
@@ -286,10 +289,11 @@ export function useWebAuthn() {
       toast.success('Passkey removida com sucesso');
       await fetchCredentials();
       return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting credential:', error);
       toast.error('Falha ao remover passkey');
-      return { success: false, error };
+      const err = error as Error;
+      return { success: false, error: err };
     }
   }, [fetchCredentials]);
 

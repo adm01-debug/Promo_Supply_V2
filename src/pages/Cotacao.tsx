@@ -33,7 +33,21 @@ const Cotacao = () => {
   });
   
   const [buscaStatus, setBuscaStatus] = useState<'idle' | 'searching' | 'done'>('idle');
-  const [cotacoesAPI, setCotacoesAPI] = useState<any[]>([]);
+  interface CotacaoAPI {
+    id: string;
+    fornecedor: string;
+    fornecedor_id?: string;
+    status: 'encontrado' | 'nao_encontrado' | 'buscando';
+    valorUnitario: number;
+    quantidadeDisponivel: number;
+    prazoEntrega: number;
+    frete: number;
+    freteInfo: string;
+    condicaoPagamento: string;
+    total: number;
+  }
+  
+  const [cotacoesAPI, setCotacoesAPI] = useState<CotacaoAPI[]>([]);
   const [showManualModal, setShowManualModal] = useState(false);
   const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string | null>(null);
 
@@ -77,28 +91,30 @@ const Cotacao = () => {
       // Get suppliers with API integration
       const apiSuppliers = fornecedores.filter(f => f.integrado_api);
       
-      const results = apiSuppliers.map(supplier => ({
-        id: `api-${supplier.id}`,
-        fornecedor: supplier.nome_fantasia || supplier.razao_social,
-        fornecedor_id: supplier.id,
-        status: Math.random() > 0.3 ? 'encontrado' : 'nao_encontrado',
-        valorUnitario: 20 + Math.random() * 15,
-        quantidadeDisponivel: Math.floor(100 + Math.random() * 500),
-        prazoEntrega: Math.floor(2 + Math.random() * 5),
-        frete: Math.random() > 0.5 ? Math.floor(50 + Math.random() * 200) : 0,
-        freteInfo: Math.random() > 0.5 ? `+R$ ${Math.floor(50 + Math.random() * 200)}` : 'Incluso',
-        condicaoPagamento: ['À vista', '30 dias', '30/60 dias'][Math.floor(Math.random() * 3)],
-        total: 0,
-      })).map(c => ({
-        ...c,
-        total: c.status === 'encontrado' ? 
-          (c.valorUnitario * (solicitacao?.quantidade || 100)) + (c.frete || 0) : 0,
-      }));
+      const results: CotacaoAPI[] = apiSuppliers.map(supplier => {
+        const isEncontrado = Math.random() > 0.3;
+        const status: 'encontrado' | 'nao_encontrado' = isEncontrado ? 'encontrado' : 'nao_encontrado';
+        const valorUnitario = 20 + Math.random() * 15;
+        const frete = Math.random() > 0.5 ? Math.floor(50 + Math.random() * 200) : 0;
+        return {
+          id: `api-${supplier.id}`,
+          fornecedor: supplier.nome_fantasia || supplier.razao_social,
+          fornecedor_id: supplier.id,
+          status,
+          valorUnitario,
+          quantidadeDisponivel: Math.floor(100 + Math.random() * 500),
+          prazoEntrega: Math.floor(2 + Math.random() * 5),
+          frete,
+          freteInfo: frete > 0 ? `+R$ ${frete}` : 'Incluso',
+          condicaoPagamento: ['À vista', '30 dias', '30/60 dias'][Math.floor(Math.random() * 3)],
+          total: isEncontrado ? (valorUnitario * (solicitacao?.quantidade || 100)) + frete : 0,
+        };
+      });
 
       // Add manual suppliers that aren't in the results
       const manualSuppliers = fornecedores.filter(f => !f.integrado_api).slice(0, 3);
       manualSuppliers.forEach(s => {
-        results.push({
+        const manualCotacao: CotacaoAPI = {
           id: `manual-${s.id}`,
           fornecedor: s.nome_fantasia || s.razao_social,
           fornecedor_id: s.id,
@@ -110,7 +126,8 @@ const Cotacao = () => {
           freteInfo: '',
           condicaoPagamento: '',
           total: 0,
-        });
+        };
+        results.push(manualCotacao);
       });
 
       setCotacoesAPI(results.filter(r => r.status === 'encontrado'));
@@ -132,7 +149,16 @@ const Cotacao = () => {
     setFornecedorSelecionado(cotacaoId);
   };
 
-  const handleAdicionarCotacaoManual = async (cotacaoData: any) => {
+  interface CotacaoManualData {
+    fornecedor_id: string;
+    valorUnitario: number;
+    frete?: number;
+    prazoEntrega?: number;
+    condicaoPagamento?: string;
+    observacoes?: string;
+  }
+
+  const handleAdicionarCotacaoManual = async (cotacaoData: CotacaoManualData) => {
     if (!solicitacao) {
       toast.error('Selecione uma solicitação primeiro');
       return;
