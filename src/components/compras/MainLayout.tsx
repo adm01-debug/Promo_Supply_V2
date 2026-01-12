@@ -13,6 +13,7 @@ import { useGlobalUndo } from "@/hooks/useGlobalUndo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
+import { AccessibilityPanel } from "@/components/accessibility/AdvancedAccessibility";
 import { OnboardingTour, dashboardTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { BottomNavigation } from "@/components/mobile/BottomNavigation";
@@ -24,7 +25,7 @@ import { UndoToastContainer } from "@/components/ui/undo-toast";
 import { UndoIndicator, FloatingUndoIndicator } from "@/components/ui/undo-indicator";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
 import { cn } from "@/lib/utils";
-import { Menu, X, Keyboard, HelpCircle, Command, Settings2 } from "lucide-react";
+import { Menu, X, Keyboard, HelpCircle, Command, Settings2, Accessibility } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -149,6 +150,30 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
               
               {/* Theme Toggle */}
               <ThemeToggle />
+              
+              {/* Accessibility Settings */}
+              <Popover>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="hidden md:flex"
+                        aria-label="Configurações de acessibilidade"
+                      >
+                        <Accessibility className="w-4 h-4" />
+                      </Button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Acessibilidade</p>
+                  </TooltipContent>
+                </Tooltip>
+                <PopoverContent className="w-96 p-0" align="end">
+                  <AccessibilityPanel />
+                </PopoverContent>
+              </Popover>
               
               {/* Feedback Settings */}
               <Popover>

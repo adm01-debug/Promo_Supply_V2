@@ -12,6 +12,7 @@ import { PageLoader } from "@/components/PageLoader";
 import { AnimatePresence, motion } from "framer-motion";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { AccessibilityProvider } from "@/components/accessibility/AdvancedAccessibility";
 
 // Lazy load all pages for better initial bundle size
 const ComprasDashboard = lazy(() => import("./pages/ComprasDashboard"));
@@ -232,18 +233,20 @@ const AnimatedRoutes = () => {
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <PWAInstallPrompt />
-        <BrowserRouter>
-          <AuthProvider>
-            <Suspense fallback={<PageLoader />}>
-              <AnimatedRoutes />
-            </Suspense>
-          </AuthProvider>
-        </BrowserRouter>
-      </TooltipProvider>
+      <AccessibilityProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <PWAInstallPrompt />
+          <BrowserRouter>
+            <AuthProvider>
+              <Suspense fallback={<PageLoader />}>
+                <AnimatedRoutes />
+              </Suspense>
+            </AuthProvider>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AccessibilityProvider>
     </QueryClientProvider>
   </ThemeProvider>
 );
