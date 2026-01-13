@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import Fuse from "fuse.js";
 import {
   Search,
   X,
@@ -44,6 +45,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
 import { usePersistentFilters } from "@/hooks/usePersistentFilters";
+import { normalizeText } from "@/hooks/useFuseSearch";
 
 // Types
 interface SearchResult {
@@ -60,6 +62,7 @@ interface SearchResult {
     priority?: string;
   };
   score?: number;
+  matchedText?: { key: string; indices: [number, number][] }[];
 }
 
 type SearchCategory = 'all' | 'pages' | 'solicitacoes' | 'pedidos' | 'fornecedores' | 'pagamentos' | 'contratos';
@@ -70,6 +73,25 @@ interface SearchFilter {
   valueRange?: { min: number; max: number };
   priority?: string[];
 }
+
+// Fuse.js configuration for fuzzy search
+const fuseOptions = {
+  isCaseSensitive: false,
+  includeScore: true,
+  includeMatches: true,
+  shouldSort: true,
+  threshold: 0.4,
+  location: 0,
+  distance: 100,
+  minMatchCharLength: 2,
+  useExtendedSearch: true,
+  keys: [
+    { name: 'title', weight: 2.0 },
+    { name: 'subtitle', weight: 1.5 },
+    { name: 'normalizedTitle', weight: 1.8 },
+    { name: 'normalizedSubtitle', weight: 1.3 },
+  ],
+};
 
 // Category configuration
 const categoryConfig: Record<SearchCategory, { label: string; icon: React.ElementType; color: string }> = {
@@ -82,18 +104,79 @@ const categoryConfig: Record<SearchCategory, { label: string; icon: React.Elemen
   contratos: { label: 'Contratos', icon: FileSignature, color: 'text-purple-500' },
 };
 
-// Navigation pages
-const navigationPages: SearchResult[] = [
-  { id: "dashboard", title: "Dashboard", subtitle: "Visão geral do sistema", type: "pages", icon: LayoutDashboard, href: "/compras" },
-  { id: "solicitacoes", title: "Solicitações", subtitle: "Lista de solicitações de compra", type: "pages", icon: FileText, href: "/solicitacoes" },
-  { id: "cotacoes", title: "Cotações", subtitle: "Gerenciar cotações", type: "pages", icon: Search, href: "/cotacao" },
-  { id: "pedidos", title: "Pedidos", subtitle: "Ordens de compra", type: "pages", icon: ShoppingCart, href: "/pedidos" },
-  { id: "pagamentos", title: "Pagamentos", subtitle: "Gestão financeira", type: "pages", icon: CreditCard, href: "/pagamentos" },
-  { id: "fornecedores", title: "Fornecedores", subtitle: "Cadastro de fornecedores", type: "pages", icon: Building2, href: "/fornecedores" },
-  { id: "contratos", title: "Contratos", subtitle: "Gestão de contratos", type: "pages", icon: FileSignature, href: "/contratos" },
-  { id: "relatorios", title: "Relatórios", subtitle: "Analytics e métricas", type: "pages", icon: TrendingUp, href: "/relatorios" },
-  { id: "seguranca", title: "Segurança", subtitle: "Configurações de segurança", type: "pages", icon: Settings, href: "/seguranca" },
+// Navigation pages with normalized text for fuzzy search
+const navigationPages: (SearchResult & { normalizedTitle: string; normalizedSubtitle: string })[] = [
+  { id: "dashboard", title: "Dashboard", subtitle: "Visão geral do sistema", type: "pages", icon: LayoutDashboard, href: "/compras", normalizedTitle: normalizeText("Dashboard"), normalizedSubtitle: normalizeText("Visão geral do sistema") },
+  { id: "solicitacoes", title: "Solicitações", subtitle: "Lista de solicitações de compra", type: "pages", icon: FileText, href: "/solicitacoes", normalizedTitle: normalizeText("Solicitações"), normalizedSubtitle: normalizeText("Lista de solicitações de compra") },
+  { id: "cotacoes", title: "Cotações", subtitle: "Gerenciar cotações", type: "pages", icon: Search, href: "/cotacao", normalizedTitle: normalizeText("Cotações"), normalizedSubtitle: normalizeText("Gerenciar cotações") },
+  { id: "pedidos", title: "Pedidos", subtitle: "Ordens de compra", type: "pages", icon: ShoppingCart, href: "/pedidos", normalizedTitle: normalizeText("Pedidos"), normalizedSubtitle: normalizeText("Ordens de compra") },
+  { id: "pagamentos", title: "Pagamentos", subtitle: "Gestão financeira", type: "pages", icon: CreditCard, href: "/pagamentos", normalizedTitle: normalizeText("Pagamentos"), normalizedSubtitle: normalizeText("Gestão financeira") },
+  { id: "fornecedores", title: "Fornecedores", subtitle: "Cadastro de fornecedores", type: "pages", icon: Building2, href: "/fornecedores", normalizedTitle: normalizeText("Fornecedores"), normalizedSubtitle: normalizeText("Cadastro de fornecedores") },
+  { id: "contratos", title: "Contratos", subtitle: "Gestão de contratos", type: "pages", icon: FileSignature, href: "/contratos", normalizedTitle: normalizeText("Contratos"), normalizedSubtitle: normalizeText("Gestão de contratos") },
+  { id: "relatorios", title: "Relatórios", subtitle: "Analytics e métricas", type: "pages", icon: TrendingUp, href: "/relatorios", normalizedTitle: normalizeText("Relatórios"), normalizedSubtitle: normalizeText("Analytics e métricas") },
+  { id: "seguranca", title: "Segurança", subtitle: "Configurações de segurança", type: "pages", icon: Settings, href: "/seguranca", normalizedTitle: normalizeText("Segurança"), normalizedSubtitle: normalizeText("Configurações de segurança") },
 ];
+
+// Highlight matched text component
+const HighlightedText = React.memo(({ 
+  text, 
+  matches, 
+  targetKey 
+}: { 
+  text: string; 
+  matches?: { key: string; indices: [number, number][] }[];
+  targetKey: string;
+}) => {
+  if (!matches || !text) {
+    return <>{text}</>;
+  }
+
+  // Find match for this key (including normalized versions)
+  const relevantMatch = matches.find(m => 
+    m.key === targetKey || 
+    m.key === `normalized${targetKey.charAt(0).toUpperCase() + targetKey.slice(1)}`
+  );
+
+  if (!relevantMatch || !relevantMatch.indices.length) {
+    return <>{text}</>;
+  }
+
+  const result: React.ReactNode[] = [];
+  let lastIndex = 0;
+
+  // Sort indices by start position
+  const sortedIndices = [...relevantMatch.indices].sort((a, b) => a[0] - b[0]);
+
+  sortedIndices.forEach(([start, end], i) => {
+    // Ensure indices are within text bounds
+    const safeStart = Math.min(start, text.length);
+    const safeEnd = Math.min(end + 1, text.length);
+    
+    // Add non-matched text before this match
+    if (safeStart > lastIndex) {
+      result.push(<span key={`text-${i}`}>{text.slice(lastIndex, safeStart)}</span>);
+    }
+    // Add matched text with highlight
+    if (safeStart < safeEnd) {
+      result.push(
+        <mark 
+          key={`match-${i}`} 
+          className="bg-primary/25 text-primary font-semibold rounded-sm px-0.5 mx-px"
+        >
+          {text.slice(safeStart, safeEnd)}
+        </mark>
+      );
+    }
+    lastIndex = safeEnd;
+  });
+
+  // Add remaining text
+  if (lastIndex < text.length) {
+    result.push(<span key="remaining">{text.slice(lastIndex)}</span>);
+  }
+
+  return <>{result}</>;
+});
 
 // Quick actions
 const quickActions = [
@@ -196,7 +279,7 @@ export function AdvancedSearch() {
     }
   }, [open]);
 
-  // Search function
+  // Search function with Fuse.js fuzzy search
   const performSearch = useCallback(async (searchQuery: string, category: SearchCategory) => {
     if (!searchQuery.trim() || searchQuery.length < 2) {
       setResults([]);
@@ -204,34 +287,54 @@ export function AdvancedSearch() {
     }
 
     setIsLoading(true);
-    const searchLower = searchQuery.toLowerCase();
+    const normalizedQuery = normalizeText(searchQuery);
     const allResults: SearchResult[] = [];
 
     try {
-      // Search pages
+      // Search pages with Fuse.js
       if (category === 'all' || category === 'pages') {
-        const pageResults = navigationPages
-          .filter(p => 
-            p.title.toLowerCase().includes(searchLower) ||
-            p.subtitle?.toLowerCase().includes(searchLower)
-          )
-          .map(p => ({ ...p, score: p.title.toLowerCase().startsWith(searchLower) ? 100 : 50 }));
-        allResults.push(...pageResults);
+        const pageFuse = new Fuse(navigationPages, fuseOptions);
+        const pageResults = pageFuse.search(searchQuery);
+        
+        // Also search with normalized query for accent-insensitive search
+        const normalizedPageResults = pageFuse.search(normalizedQuery);
+        
+        // Merge results, removing duplicates
+        const seenIds = new Set<string>();
+        const mergedPageResults = [...pageResults, ...normalizedPageResults]
+          .filter(r => {
+            if (seenIds.has(r.item.id)) return false;
+            seenIds.add(r.item.id);
+            return true;
+          })
+          .map(r => ({
+            ...r.item,
+            score: (1 - (r.score || 0)) * 100,
+            matchedText: r.matches?.map(m => ({
+              key: m.key || '',
+              indices: m.indices as [number, number][],
+            })),
+          }));
+        
+        allResults.push(...mergedPageResults);
       }
 
       // Search solicitações from database
       if (category === 'all' || category === 'solicitacoes') {
         const { data: solicitacoes } = await supabase
           .from('solicitacoes')
-          .select('id, numero, titulo, status, prioridade, valor_estimado, created_at')
+          .select('id, numero, titulo, status, prioridade, valor_estimado, created_at, descricao')
           .or(`titulo.ilike.%${searchQuery}%,numero.ilike.%${searchQuery}%,descricao.ilike.%${searchQuery}%`)
-          .limit(10);
+          .limit(20);
 
-        if (solicitacoes) {
-          allResults.push(...solicitacoes.map(s => ({
+        if (solicitacoes && solicitacoes.length > 0) {
+          // Apply Fuse.js for fuzzy matching on results
+          const solicitacoesItems = solicitacoes.map(s => ({
             id: s.id,
             title: s.titulo,
             subtitle: `${s.numero} • ${s.status}`,
+            normalizedTitle: normalizeText(s.titulo),
+            normalizedSubtitle: normalizeText(`${s.numero} ${s.status}`),
             type: 'solicitacoes' as SearchCategory,
             icon: FileText,
             href: `/solicitacoes?id=${s.id}`,
@@ -240,8 +343,33 @@ export function AdvancedSearch() {
               value: s.valor_estimado,
               priority: s.prioridade,
             },
-            score: s.titulo.toLowerCase().startsWith(searchLower) ? 90 : 40,
-          })));
+          }));
+
+          const solFuse = new Fuse(solicitacoesItems, fuseOptions);
+          const fuzzyResults = solFuse.search(searchQuery);
+          const normalizedFuzzyResults = solFuse.search(normalizedQuery);
+          
+          const seenIds = new Set<string>();
+          [...fuzzyResults, ...normalizedFuzzyResults].forEach(r => {
+            if (!seenIds.has(r.item.id)) {
+              seenIds.add(r.item.id);
+              allResults.push({
+                ...r.item,
+                score: (1 - (r.score || 0)) * 90,
+                matchedText: r.matches?.map(m => ({
+                  key: m.key || '',
+                  indices: m.indices as [number, number][],
+                })),
+              });
+            }
+          });
+
+          // Add items not matched by Fuse (from DB search) with lower score
+          solicitacoesItems.forEach(item => {
+            if (!seenIds.has(item.id)) {
+              allResults.push({ ...item, score: 30 });
+            }
+          });
         }
       }
 
@@ -251,13 +379,15 @@ export function AdvancedSearch() {
           .from('pedidos')
           .select('id, numero, status, valor_total, created_at, fornecedor:fornecedores(razao_social)')
           .or(`numero.ilike.%${searchQuery}%`)
-          .limit(10);
+          .limit(20);
 
-        if (pedidos) {
-          allResults.push(...pedidos.map(p => ({
+        if (pedidos && pedidos.length > 0) {
+          const pedidosItems = pedidos.map(p => ({
             id: p.id,
             title: `Pedido ${p.numero}`,
             subtitle: `${(p.fornecedor as any)?.razao_social || 'Fornecedor'} • ${p.status}`,
+            normalizedTitle: normalizeText(`Pedido ${p.numero}`),
+            normalizedSubtitle: normalizeText(`${(p.fornecedor as any)?.razao_social || ''} ${p.status}`),
             type: 'pedidos' as SearchCategory,
             icon: ShoppingCart,
             href: `/pedidos?id=${p.id}`,
@@ -265,8 +395,32 @@ export function AdvancedSearch() {
               status: p.status,
               value: p.valor_total,
             },
-            score: 60,
-          })));
+          }));
+
+          const pedFuse = new Fuse(pedidosItems, fuseOptions);
+          const fuzzyResults = pedFuse.search(searchQuery);
+          const normalizedFuzzyResults = pedFuse.search(normalizedQuery);
+          
+          const seenIds = new Set<string>();
+          [...fuzzyResults, ...normalizedFuzzyResults].forEach(r => {
+            if (!seenIds.has(r.item.id)) {
+              seenIds.add(r.item.id);
+              allResults.push({
+                ...r.item,
+                score: (1 - (r.score || 0)) * 85,
+                matchedText: r.matches?.map(m => ({
+                  key: m.key || '',
+                  indices: m.indices as [number, number][],
+                })),
+              });
+            }
+          });
+
+          pedidosItems.forEach(item => {
+            if (!seenIds.has(item.id)) {
+              allResults.push({ ...item, score: 25 });
+            }
+          });
         }
       }
 
@@ -276,21 +430,47 @@ export function AdvancedSearch() {
           .from('fornecedores')
           .select('id, razao_social, nome_fantasia, cnpj, status, segmento')
           .or(`razao_social.ilike.%${searchQuery}%,nome_fantasia.ilike.%${searchQuery}%,cnpj.ilike.%${searchQuery}%`)
-          .limit(10);
+          .limit(20);
 
-        if (fornecedores) {
-          allResults.push(...fornecedores.map(f => ({
+        if (fornecedores && fornecedores.length > 0) {
+          const fornecedoresItems = fornecedores.map(f => ({
             id: f.id,
             title: f.nome_fantasia || f.razao_social,
             subtitle: `CNPJ: ${f.cnpj || 'N/A'} • ${f.segmento || 'Geral'}`,
+            normalizedTitle: normalizeText(f.nome_fantasia || f.razao_social),
+            normalizedSubtitle: normalizeText(`${f.cnpj || ''} ${f.segmento || ''}`),
             type: 'fornecedores' as SearchCategory,
             icon: Building2,
             href: `/fornecedores?id=${f.id}`,
             metadata: {
               status: f.status,
             },
-            score: (f.nome_fantasia || f.razao_social).toLowerCase().startsWith(searchLower) ? 85 : 45,
-          })));
+          }));
+
+          const fornFuse = new Fuse(fornecedoresItems, fuseOptions);
+          const fuzzyResults = fornFuse.search(searchQuery);
+          const normalizedFuzzyResults = fornFuse.search(normalizedQuery);
+          
+          const seenIds = new Set<string>();
+          [...fuzzyResults, ...normalizedFuzzyResults].forEach(r => {
+            if (!seenIds.has(r.item.id)) {
+              seenIds.add(r.item.id);
+              allResults.push({
+                ...r.item,
+                score: (1 - (r.score || 0)) * 88,
+                matchedText: r.matches?.map(m => ({
+                  key: m.key || '',
+                  indices: m.indices as [number, number][],
+                })),
+              });
+            }
+          });
+
+          fornecedoresItems.forEach(item => {
+            if (!seenIds.has(item.id)) {
+              allResults.push({ ...item, score: 28 });
+            }
+          });
         }
       }
 
@@ -300,13 +480,15 @@ export function AdvancedSearch() {
           .from('pagamentos')
           .select('id, numero, status, valor, data_vencimento, fornecedor:fornecedores(razao_social)')
           .or(`numero.ilike.%${searchQuery}%`)
-          .limit(10);
+          .limit(20);
 
-        if (pagamentos) {
-          allResults.push(...pagamentos.map(p => ({
+        if (pagamentos && pagamentos.length > 0) {
+          const pagamentosItems = pagamentos.map(p => ({
             id: p.id,
             title: `Pagamento ${p.numero}`,
             subtitle: `${(p.fornecedor as any)?.razao_social || 'Fornecedor'} • R$ ${p.valor?.toLocaleString('pt-BR')}`,
+            normalizedTitle: normalizeText(`Pagamento ${p.numero}`),
+            normalizedSubtitle: normalizeText(`${(p.fornecedor as any)?.razao_social || ''}`),
             type: 'pagamentos' as SearchCategory,
             icon: CreditCard,
             href: `/pagamentos?id=${p.id}`,
@@ -315,8 +497,32 @@ export function AdvancedSearch() {
               value: p.valor,
               date: p.data_vencimento,
             },
-            score: 55,
-          })));
+          }));
+
+          const pagFuse = new Fuse(pagamentosItems, fuseOptions);
+          const fuzzyResults = pagFuse.search(searchQuery);
+          const normalizedFuzzyResults = pagFuse.search(normalizedQuery);
+          
+          const seenIds = new Set<string>();
+          [...fuzzyResults, ...normalizedFuzzyResults].forEach(r => {
+            if (!seenIds.has(r.item.id)) {
+              seenIds.add(r.item.id);
+              allResults.push({
+                ...r.item,
+                score: (1 - (r.score || 0)) * 82,
+                matchedText: r.matches?.map(m => ({
+                  key: m.key || '',
+                  indices: m.indices as [number, number][],
+                })),
+              });
+            }
+          });
+
+          pagamentosItems.forEach(item => {
+            if (!seenIds.has(item.id)) {
+              allResults.push({ ...item, score: 22 });
+            }
+          });
         }
       }
 
@@ -326,13 +532,15 @@ export function AdvancedSearch() {
           .from('contracts')
           .select('id, contract_number, title, supplier_name, status, total_value')
           .or(`title.ilike.%${searchQuery}%,contract_number.ilike.%${searchQuery}%,supplier_name.ilike.%${searchQuery}%`)
-          .limit(10);
+          .limit(20);
 
-        if (contratos) {
-          allResults.push(...contratos.map(c => ({
+        if (contratos && contratos.length > 0) {
+          const contratosItems = contratos.map(c => ({
             id: c.id,
             title: c.title,
             subtitle: `${c.contract_number} • ${c.supplier_name}`,
+            normalizedTitle: normalizeText(c.title),
+            normalizedSubtitle: normalizeText(`${c.contract_number} ${c.supplier_name}`),
             type: 'contratos' as SearchCategory,
             icon: FileSignature,
             href: `/contratos?id=${c.id}`,
@@ -340,12 +548,36 @@ export function AdvancedSearch() {
               status: c.status,
               value: c.total_value,
             },
-            score: c.title.toLowerCase().startsWith(searchLower) ? 80 : 50,
-          })));
+          }));
+
+          const contFuse = new Fuse(contratosItems, fuseOptions);
+          const fuzzyResults = contFuse.search(searchQuery);
+          const normalizedFuzzyResults = contFuse.search(normalizedQuery);
+          
+          const seenIds = new Set<string>();
+          [...fuzzyResults, ...normalizedFuzzyResults].forEach(r => {
+            if (!seenIds.has(r.item.id)) {
+              seenIds.add(r.item.id);
+              allResults.push({
+                ...r.item,
+                score: (1 - (r.score || 0)) * 86,
+                matchedText: r.matches?.map(m => ({
+                  key: m.key || '',
+                  indices: m.indices as [number, number][],
+                })),
+              });
+            }
+          });
+
+          contratosItems.forEach(item => {
+            if (!seenIds.has(item.id)) {
+              allResults.push({ ...item, score: 26 });
+            }
+          });
         }
       }
 
-      // Sort by score
+      // Sort by score (highest first)
       allResults.sort((a, b) => (b.score || 0) - (a.score || 0));
       setResults(allResults);
     } catch (error) {
@@ -734,10 +966,20 @@ export function AdvancedSearch() {
                                       <Icon className={cn("w-5 h-5", config.color)} />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                      <p className="text-sm font-medium truncate">{result.title}</p>
+                                      <p className="text-sm font-medium truncate">
+                                        <HighlightedText 
+                                          text={result.title} 
+                                          matches={result.matchedText} 
+                                          targetKey="title" 
+                                        />
+                                      </p>
                                       {result.subtitle && (
                                         <p className="text-xs text-muted-foreground truncate">
-                                          {result.subtitle}
+                                          <HighlightedText 
+                                            text={result.subtitle} 
+                                            matches={result.matchedText} 
+                                            targetKey="subtitle" 
+                                          />
                                         </p>
                                       )}
                                     </div>
