@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
+import Fuse from "fuse.js";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { FornecedorModal } from "@/components/compras/FornecedorModal";
 import { HistoricoComprasModal } from "@/components/compras/HistoricoComprasModal";
@@ -33,6 +34,7 @@ import {
 import { useFornecedores, useFornecedoresKPIs, type Fornecedor } from "@/hooks/useFornecedores";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/lib/feedbackToast";
+import { normalizeText } from "@/hooks/useFuseSearch";
 
 // Legacy adapter types
 interface LegacyFornecedor {
@@ -97,18 +99,61 @@ const Fornecedores = () => {
     return dbFornecedores.map(adaptToLegacy);
   }, [dbFornecedores]);
 
+  // Fuse.js for fuzzy search
+  const fornecedoresFuse = useMemo(() => {
+    const preparedFornecedores = fornecedores.map(f => ({
+      ...f,
+      normalizedNomeFantasia: normalizeText(f.nomeFantasia),
+      normalizedRazaoSocial: normalizeText(f.razaoSocial),
+    }));
+    return new Fuse(preparedFornecedores, {
+      isCaseSensitive: false,
+      includeScore: true,
+      threshold: 0.4,
+      keys: [
+        { name: 'nomeFantasia', weight: 2.0 },
+        { name: 'razaoSocial', weight: 1.8 },
+        { name: 'cnpj', weight: 1.5 },
+        { name: 'normalizedNomeFantasia', weight: 1.8 },
+        { name: 'normalizedRazaoSocial', weight: 1.5 },
+      ],
+    });
+  }, [fornecedores]);
+
   const filteredFornecedores = useMemo(() => {
-    return fornecedores.filter(f => {
-      const matchSearch = !search || 
+    let filtered = fornecedores;
+
+    // Fuzzy search
+    if (search.trim()) {
+      const normalizedSearch = normalizeText(search);
+      const fuseResults = fornecedoresFuse.search(search);
+      const normalizedFuseResults = fornecedoresFuse.search(normalizedSearch);
+      
+      // Merge results
+      const seenIds = new Set<string>();
+      const merged: LegacyFornecedor[] = [];
+      
+      [...fuseResults, ...normalizedFuseResults].forEach(r => {
+        if (!seenIds.has(r.item.id)) {
+          seenIds.add(r.item.id);
+          merged.push(r.item);
+        }
+      });
+      
+      filtered = merged.length > 0 ? merged : fornecedores.filter(f =>
         f.nomeFantasia.toLowerCase().includes(search.toLowerCase()) ||
         f.razaoSocial.toLowerCase().includes(search.toLowerCase()) ||
-        f.cnpj.includes(search);
-      
-      const matchTipo = tipoFilter === "todos" || f.tipo === tipoFilter;
-      
-      return matchSearch && matchTipo;
-    });
-  }, [fornecedores, search, tipoFilter]);
+        f.cnpj.includes(search)
+      );
+    }
+    
+    // Type filter
+    if (tipoFilter !== "todos") {
+      filtered = filtered.filter(f => f.tipo === tipoFilter);
+    }
+    
+    return filtered;
+  }, [fornecedores, search, tipoFilter, fornecedoresFuse]);
 
   const handleOpenModal = (fornecedor?: LegacyFornecedor) => {
     setSelectedFornecedor(fornecedor || null);

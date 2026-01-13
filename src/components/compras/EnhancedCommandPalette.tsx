@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import Fuse from "fuse.js";
 
 import {
   Command,
@@ -52,6 +53,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRecentlyViewed, type RecentItem } from "@/hooks/useRecentlyViewed";
+import { normalizeText } from "@/hooks/useFuseSearch";
 
 interface CommandPaletteProps {
   open: boolean;
@@ -201,13 +203,59 @@ export function EnhancedCommandPalette({ open, onOpenChange }: CommandPalettePro
     }));
   }, [recentItems]);
 
-  const allItems = [
+  const allItems = React.useMemo(() => [
     ...smartSuggestions,
     ...recentCommandItems,
     ...navigationItems, 
     ...actionItems, 
     ...settingsItems
-  ];
+  ].map(item => ({
+    ...item,
+    normalizedLabel: normalizeText(item.label),
+    normalizedDescription: item.description ? normalizeText(item.description) : '',
+    normalizedKeywords: item.keywords ? item.keywords.map(normalizeText).join(' ') : '',
+  })), [smartSuggestions, recentCommandItems, navigationItems, actionItems, settingsItems]);
+
+  // Fuse.js for fuzzy search
+  const fuse = React.useMemo(() => new Fuse(allItems, {
+    isCaseSensitive: false,
+    includeScore: true,
+    includeMatches: true,
+    threshold: 0.4,
+    keys: [
+      { name: 'label', weight: 2.0 },
+      { name: 'description', weight: 1.5 },
+      { name: 'keywords', weight: 1.8 },
+      { name: 'normalizedLabel', weight: 1.8 },
+      { name: 'normalizedDescription', weight: 1.3 },
+      { name: 'normalizedKeywords', weight: 1.5 },
+    ],
+  }), [allItems]);
+
+  // Fuzzy search results
+  const filteredItems = React.useMemo(() => {
+    if (!search.trim()) return allItems;
+    
+    const normalizedSearch = normalizeText(search);
+    const results = fuse.search(search);
+    const normalizedResults = fuse.search(normalizedSearch);
+    
+    // Merge and deduplicate
+    const seenIds = new Set<string>();
+    const merged: typeof allItems = [];
+    
+    [...results, ...normalizedResults].forEach(r => {
+      if (!seenIds.has(r.item.id)) {
+        seenIds.add(r.item.id);
+        merged.push(r.item);
+      }
+    });
+    
+    return merged.length > 0 ? merged : allItems.filter(item =>
+      item.label.toLowerCase().includes(search.toLowerCase()) ||
+      item.keywords?.some(k => k.toLowerCase().includes(search.toLowerCase()))
+    );
+  }, [search, fuse, allItems]);
 
   const handleSelect = (item: CommandItemType) => {
     onOpenChange(false);
@@ -222,14 +270,14 @@ export function EnhancedCommandPalette({ open, onOpenChange }: CommandPalettePro
   // Group items
   const groupedItems = React.useMemo(() => {
     const groups: Record<string, CommandItemType[]> = {};
-    allItems.forEach(item => {
+    filteredItems.forEach(item => {
       if (!groups[item.group]) {
         groups[item.group] = [];
       }
       groups[item.group].push(item);
     });
     return groups;
-  }, [mounted, theme, recentItems]);
+  }, [filteredItems]);
 
   // Group order for display
   const groupOrder = [

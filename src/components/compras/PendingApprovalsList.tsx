@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
+import Fuse from "fuse.js";
 import { 
   Clock, 
   Check, 
@@ -17,6 +18,7 @@ import {
   Eye,
   History
 } from "lucide-react";
+import { normalizeText } from "@/hooks/useFuseSearch";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -169,17 +171,52 @@ export const PendingApprovalsList = () => {
     return cleanup;
   }, [startMonitoring, getMonitoringApprovals]);
 
-  // Filter and sort approvals
+  // Create Fuse instance for fuzzy search
+  const approvalsFuse = useMemo(() => {
+    const preparedApprovals = approvals.map(a => ({
+      ...a,
+      normalizedDescricao: normalizeText(a.descricao),
+      normalizedSolicitante: normalizeText(a.solicitante),
+    }));
+    return new Fuse(preparedApprovals, {
+      isCaseSensitive: false,
+      includeScore: true,
+      threshold: 0.4,
+      keys: [
+        { name: 'solicitacao_numero', weight: 2.0 },
+        { name: 'descricao', weight: 1.5 },
+        { name: 'solicitante', weight: 1.5 },
+        { name: 'normalizedDescricao', weight: 1.3 },
+        { name: 'normalizedSolicitante', weight: 1.3 },
+      ],
+    });
+  }, [approvals]);
+
+  // Filter and sort approvals with fuzzy search
   const filteredApprovals = useMemo(() => {
     let filtered = [...approvals];
 
-    // Search filter
-    if (searchTerm) {
-      const search = searchTerm.toLowerCase();
-      filtered = filtered.filter(a => 
-        a.solicitacao_numero.toLowerCase().includes(search) ||
-        a.descricao.toLowerCase().includes(search) ||
-        a.solicitante.toLowerCase().includes(search)
+    // Search filter with Fuse.js
+    if (searchTerm.trim()) {
+      const normalizedSearch = normalizeText(searchTerm);
+      const fuseResults = approvalsFuse.search(searchTerm);
+      const normalizedFuseResults = approvalsFuse.search(normalizedSearch);
+      
+      // Merge results
+      const seenIds = new Set<string>();
+      const merged: PendingApprovalItem[] = [];
+      
+      [...fuseResults, ...normalizedFuseResults].forEach(r => {
+        if (!seenIds.has(r.item.id)) {
+          seenIds.add(r.item.id);
+          merged.push(r.item);
+        }
+      });
+      
+      filtered = merged.length > 0 ? merged : filtered.filter(a => 
+        a.solicitacao_numero.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        a.descricao.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        a.solicitante.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -205,7 +242,7 @@ export const PendingApprovalsList = () => {
     });
 
     return filtered;
-  }, [approvals, searchTerm, filterStatus, sortBy]);
+  }, [approvals, searchTerm, filterStatus, sortBy, approvalsFuse]);
 
   const getTimeStatus = (prazoLimite: string) => {
     const now = new Date();

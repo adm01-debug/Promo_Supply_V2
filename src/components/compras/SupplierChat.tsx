@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import Fuse from "fuse.js";
 import { 
   MessageCircle, 
   Send, 
@@ -38,6 +39,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { format, formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { normalizeText } from "@/hooks/useFuseSearch";
 
 interface Message {
   id: string;
@@ -99,15 +101,50 @@ export function SupplierChat() {
     }));
   }, [fornecedores]);
 
-  // Filter contacts by search
+  // Fuse.js for fuzzy contact search
+  const contactFuse = useMemo(() => {
+    const preparedContacts = contacts.map(c => ({
+      ...c,
+      normalizedName: normalizeText(c.name),
+      normalizedCompany: normalizeText(c.company),
+    }));
+    return new Fuse(preparedContacts, {
+      isCaseSensitive: false,
+      includeScore: true,
+      threshold: 0.4,
+      keys: [
+        { name: 'name', weight: 2.0 },
+        { name: 'company', weight: 1.5 },
+        { name: 'normalizedName', weight: 1.8 },
+        { name: 'normalizedCompany', weight: 1.3 },
+      ],
+    });
+  }, [contacts]);
+
+  // Filter contacts by search with fuzzy matching
   const filteredContacts = useMemo(() => {
-    if (!searchQuery) return contacts;
-    const query = searchQuery.toLowerCase();
-    return contacts.filter(
-      c => c.name.toLowerCase().includes(query) || 
-           c.company.toLowerCase().includes(query)
+    if (!searchQuery.trim()) return contacts;
+    
+    const normalizedQuery = normalizeText(searchQuery);
+    const results = contactFuse.search(searchQuery);
+    const normalizedResults = contactFuse.search(normalizedQuery);
+    
+    // Merge and deduplicate
+    const seenIds = new Set<string>();
+    const merged: ChatContact[] = [];
+    
+    [...results, ...normalizedResults].forEach(r => {
+      if (!seenIds.has(r.item.id)) {
+        seenIds.add(r.item.id);
+        merged.push(r.item);
+      }
+    });
+    
+    return merged.length > 0 ? merged : contacts.filter(
+      c => c.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+           c.company.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [contacts, searchQuery]);
+  }, [contacts, searchQuery, contactFuse]);
 
   // Convert notes to messages
   const messages = useMemo<Message[]>(() => {
