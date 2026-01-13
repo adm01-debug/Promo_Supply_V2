@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import Fuse from "fuse.js";
 
 import {
   Command,
@@ -45,6 +46,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useTheme } from "next-themes";
+import { normalizeText } from "@/hooks/useFuseSearch";
 
 interface CommandPaletteProps {
   open: boolean;
@@ -54,14 +56,30 @@ interface CommandPaletteProps {
 interface CommandItemType {
   id: string;
   label: string;
+  normalizedLabel?: string;
   icon: LucideIcon;
   shortcut?: string;
   href?: string;
   action?: () => void;
   badge?: { text: string; variant: "default" | "secondary" | "destructive" | "outline" };
   keywords?: string[];
+  normalizedKeywords?: string[];
   group: string;
 }
+
+// Fuse.js configuration
+const fuseOptions = {
+  isCaseSensitive: false,
+  includeScore: true,
+  threshold: 0.4,
+  keys: [
+    { name: 'label', weight: 2 },
+    { name: 'normalizedLabel', weight: 1.5 },
+    { name: 'keywords', weight: 1 },
+    { name: 'normalizedKeywords', weight: 0.8 },
+    { name: 'group', weight: 0.5 },
+  ]
+};
 
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const navigate = useNavigate();
@@ -74,39 +92,50 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     setMounted(true);
   }, []);
 
-  // Navigation items
-  const navigationItems: CommandItemType[] = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/", shortcut: "⌘D", keywords: ["home", "início"], group: "Navegação" },
-    { id: "executivo", label: "Dashboard Executivo", icon: TrendingUp, href: "/dashboard-executivo", keywords: ["kpi", "métricas"], group: "Navegação" },
-    { id: "solicitacoes", label: "Solicitações", icon: ClipboardList, href: "/solicitacoes", shortcut: "⌘S", badge: { text: "5", variant: "default" }, keywords: ["pedidos", "requisições"], group: "Navegação" },
-    { id: "cotacoes", label: "Cotações", icon: Search, href: "/cotacao", shortcut: "⌘Q", badge: { text: "3", variant: "secondary" }, keywords: ["preços", "orçamentos"], group: "Navegação" },
-    { id: "pedidos", label: "Pedidos", icon: FileText, href: "/pedidos", shortcut: "⌘P", keywords: ["ordens", "compras"], group: "Navegação" },
-    { id: "acompanhamento", label: "Acompanhamento", icon: Truck, href: "/acompanhamento", keywords: ["entregas", "rastreio"], group: "Navegação" },
-    { id: "pagamentos", label: "Pagamentos", icon: CreditCard, href: "/pagamentos", badge: { text: "2", variant: "destructive" }, keywords: ["financeiro", "contas"], group: "Navegação" },
-    { id: "contratos", label: "Contratos", icon: FileSignature, href: "/contratos", keywords: ["acordos", "termos"], group: "Navegação" },
-    { id: "fornecedores", label: "Fornecedores", icon: Factory, href: "/fornecedores", shortcut: "⌘F", keywords: ["suppliers", "parceiros"], group: "Navegação" },
-    { id: "supplier-perf", label: "Performance Fornecedores", icon: Users, href: "/supplier-performance", keywords: ["scorecard", "avaliação"], group: "Navegação" },
-    { id: "historico", label: "Histórico de Compras", icon: ShoppingCart, href: "/historico-compras", keywords: ["passado", "registros"], group: "Navegação" },
-    { id: "relatorios", label: "Relatórios", icon: BarChart3, href: "/relatorios", shortcut: "⌘R", keywords: ["analytics", "dados"], group: "Navegação" },
-    { id: "negociacoes", label: "Negociações", icon: PiggyBank, href: "/relatorios/negociacoes", keywords: ["economia", "savings"], group: "Navegação" },
-    { id: "compradores", label: "Performance Compradores", icon: Award, href: "/buyer-performance", keywords: ["buyers", "equipe"], group: "Navegação" },
-    { id: "aprovacoes", label: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badge: { text: "4", variant: "secondary" }, keywords: ["pendentes", "workflow"], group: "Navegação" },
-    { id: "auditoria", label: "Auditoria", icon: History, href: "/auditoria", keywords: ["logs", "trilha"], group: "Navegação" },
-    { id: "seguranca", label: "Segurança", icon: Shield, href: "/seguranca", keywords: ["mfa", "senhas"], group: "Navegação" },
-  ];
+  // Navigation items with normalized text
+  const navigationItems: CommandItemType[] = React.useMemo(() => {
+    const items: CommandItemType[] = [
+      { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/", shortcut: "⌘D", keywords: ["home", "início"], group: "Navegação" },
+      { id: "executivo", label: "Dashboard Executivo", icon: TrendingUp, href: "/dashboard-executivo", keywords: ["kpi", "métricas"], group: "Navegação" },
+      { id: "solicitacoes", label: "Solicitações", icon: ClipboardList, href: "/solicitacoes", shortcut: "⌘S", badge: { text: "5", variant: "default" as const }, keywords: ["pedidos", "requisições"], group: "Navegação" },
+      { id: "cotacoes", label: "Cotações", icon: Search, href: "/cotacao", shortcut: "⌘Q", badge: { text: "3", variant: "secondary" as const }, keywords: ["preços", "orçamentos"], group: "Navegação" },
+      { id: "pedidos", label: "Pedidos", icon: FileText, href: "/pedidos", shortcut: "⌘P", keywords: ["ordens", "compras"], group: "Navegação" },
+      { id: "acompanhamento", label: "Acompanhamento", icon: Truck, href: "/acompanhamento", keywords: ["entregas", "rastreio"], group: "Navegação" },
+      { id: "pagamentos", label: "Pagamentos", icon: CreditCard, href: "/pagamentos", badge: { text: "2", variant: "destructive" as const }, keywords: ["financeiro", "contas"], group: "Navegação" },
+      { id: "contratos", label: "Contratos", icon: FileSignature, href: "/contratos", keywords: ["acordos", "termos"], group: "Navegação" },
+      { id: "fornecedores", label: "Fornecedores", icon: Factory, href: "/fornecedores", shortcut: "⌘F", keywords: ["suppliers", "parceiros"], group: "Navegação" },
+      { id: "supplier-perf", label: "Performance Fornecedores", icon: Users, href: "/supplier-performance", keywords: ["scorecard", "avaliação"], group: "Navegação" },
+      { id: "historico", label: "Histórico de Compras", icon: ShoppingCart, href: "/historico-compras", keywords: ["passado", "registros"], group: "Navegação" },
+      { id: "relatorios", label: "Relatórios", icon: BarChart3, href: "/relatorios", shortcut: "⌘R", keywords: ["analytics", "dados"], group: "Navegação" },
+      { id: "negociacoes", label: "Negociações", icon: PiggyBank, href: "/relatorios/negociacoes", keywords: ["economia", "savings"], group: "Navegação" },
+      { id: "compradores", label: "Performance Compradores", icon: Award, href: "/buyer-performance", keywords: ["buyers", "equipe"], group: "Navegação" },
+      { id: "aprovacoes", label: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badge: { text: "4", variant: "secondary" as const }, keywords: ["pendentes", "workflow"], group: "Navegação" },
+      { id: "auditoria", label: "Auditoria", icon: History, href: "/auditoria", keywords: ["logs", "trilha"], group: "Navegação" },
+      { id: "seguranca", label: "Segurança", icon: Shield, href: "/seguranca", keywords: ["mfa", "senhas"], group: "Navegação" },
+    ];
+    return items.map(item => ({
+      ...item,
+      normalizedLabel: normalizeText(item.label),
+      normalizedKeywords: item.keywords?.map(k => normalizeText(k)),
+    }));
+  }, []);
 
-  // Quick actions
-  const actionItems: CommandItemType[] = [
+  // Quick actions with normalized text
+  const actionItems: CommandItemType[] = React.useMemo(() => [
     { id: "nova-solicitacao", label: "Nova Solicitação", icon: Plus, action: () => navigate("/solicitacoes"), shortcut: "⌘N", keywords: ["criar", "adicionar"], group: "Ações Rápidas" },
     { id: "novo-fornecedor", label: "Cadastrar Fornecedor", icon: Factory, action: () => navigate("/fornecedores"), keywords: ["novo", "adicionar"], group: "Ações Rápidas" },
     { id: "exportar", label: "Exportar Dados", icon: Download, action: () => {}, keywords: ["download", "excel"], group: "Ações Rápidas" },
     { id: "importar", label: "Importar Dados", icon: FileUp, action: () => {}, keywords: ["upload", "csv"], group: "Ações Rápidas" },
     { id: "atualizar", label: "Atualizar Dados", icon: RefreshCw, action: () => window.location.reload(), shortcut: "⌘⇧R", keywords: ["refresh", "recarregar"], group: "Ações Rápidas" },
-  ];
+  ].map(item => ({
+    ...item,
+    normalizedLabel: normalizeText(item.label),
+    normalizedKeywords: item.keywords?.map(k => normalizeText(k)),
+  })), [navigate]);
 
-  // Settings items - only use theme after mount to prevent hydration issues
+  // Settings items with normalized text
   const currentTheme = mounted ? theme : "system";
-  const settingsItems: CommandItemType[] = [
+  const settingsItems: CommandItemType[] = React.useMemo(() => [
     { 
       id: "theme", 
       label: currentTheme === "dark" ? "Modo Claro" : "Modo Escuro", 
@@ -120,9 +149,39 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     { id: "perfil", label: "Meu Perfil", icon: User, action: () => {}, keywords: ["conta", "usuário"], group: "Configurações" },
     { id: "ajuda", label: "Ajuda & Suporte", icon: HelpCircle, action: () => {}, shortcut: "⌘?", keywords: ["help", "faq"], group: "Configurações" },
     { id: "sair", label: "Sair", icon: LogOut, action: () => navigate("/auth"), shortcut: "⌘⇧Q", keywords: ["logout", "desconectar"], group: "Configurações" },
-  ];
+  ].map(item => ({
+    ...item,
+    normalizedLabel: normalizeText(item.label),
+    normalizedKeywords: item.keywords?.map(k => normalizeText(k)),
+  })), [currentTheme, mounted, navigate, setTheme]);
 
-  const allItems = [...navigationItems, ...actionItems, ...settingsItems];
+  const allItems = React.useMemo(() => 
+    [...navigationItems, ...actionItems, ...settingsItems],
+    [navigationItems, actionItems, settingsItems]
+  );
+
+  // Create Fuse instance
+  const fuse = React.useMemo(() => new Fuse(allItems, fuseOptions), [allItems]);
+
+  // Fuzzy filtered items
+  const fuzzyFilteredItems = React.useMemo(() => {
+    if (!search.trim()) return allItems;
+    
+    const normalizedSearch = normalizeText(search);
+    const results = fuse.search(search);
+    const normalizedResults = fuse.search(normalizedSearch);
+    
+    const seen = new Set<string>();
+    const merged: CommandItemType[] = [];
+    [...results, ...normalizedResults].forEach(r => {
+      if (!seen.has(r.item.id)) {
+        seen.add(r.item.id);
+        merged.push(r.item);
+      }
+    });
+    
+    return merged;
+  }, [search, fuse, allItems]);
 
   const handleSelect = (item: CommandItemType) => {
     onOpenChange(false);
@@ -134,17 +193,17 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     }
   };
 
-  // Group items
+  // Group filtered items
   const groupedItems = React.useMemo(() => {
     const groups: Record<string, CommandItemType[]> = {};
-    allItems.forEach(item => {
+    fuzzyFilteredItems.forEach(item => {
       if (!groups[item.group]) {
         groups[item.group] = [];
       }
       groups[item.group].push(item);
     });
     return groups;
-  }, [mounted, theme]);
+  }, [fuzzyFilteredItems]);
 
   return (
     <CommandDialog open={open} onOpenChange={onOpenChange}>
