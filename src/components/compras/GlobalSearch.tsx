@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import Fuse from "fuse.js";
 import {
   CommandDialog,
   CommandEmpty,
@@ -29,35 +30,57 @@ import {
 } from "lucide-react";
 import { solicitacoesMock, fornecedoresMock } from "@/data/mockData";
 import { supabase } from "@/integrations/supabase/client";
+import { normalizeText } from "@/hooks/useFuseSearch";
 
 interface SearchResult {
   id: string;
   title: string;
   subtitle: string;
+  normalizedTitle?: string;
+  normalizedSubtitle?: string;
   type: "page" | "solicitacao" | "fornecedor" | "pedido" | "contrato";
   icon: any;
   href: string;
 }
 
-// Navigation pages
-const navigationPages: SearchResult[] = [
-  { id: "dashboard", title: "Dashboard", subtitle: "Visão geral do sistema", type: "page", icon: LayoutDashboard, href: "/" },
-  { id: "solicitacoes", title: "Solicitações", subtitle: "Lista de solicitações de compra", type: "page", icon: ClipboardList, href: "/solicitacoes" },
-  { id: "cotacoes", title: "Cotações", subtitle: "Gerenciar cotações", type: "page", icon: Search, href: "/cotacao" },
-  { id: "pedidos", title: "Pedidos", subtitle: "Ordens de compra", type: "page", icon: FileText, href: "/pedidos" },
-  { id: "acompanhamento", title: "Acompanhamento", subtitle: "Timeline de pedidos", type: "page", icon: Truck, href: "/acompanhamento" },
-  { id: "pagamentos", title: "Pagamentos", subtitle: "Gestão financeira", type: "page", icon: CreditCard, href: "/pagamentos" },
-  { id: "fornecedores", title: "Fornecedores", subtitle: "Cadastro de fornecedores", type: "page", icon: Factory, href: "/fornecedores" },
-  { id: "contratos", title: "Contratos", subtitle: "Gestão de contratos", type: "page", icon: FileSignature, href: "/contratos" },
-  { id: "historico", title: "Histórico de Compras", subtitle: "Histórico por produto/fornecedor", type: "page", icon: ShoppingCart, href: "/historico-compras" },
-  { id: "performance", title: "Performance Fornecedores", subtitle: "Scorecard e análises", type: "page", icon: Users, href: "/supplier-performance" },
-  { id: "executivo", title: "Dashboard Executivo", subtitle: "Visão consolidada", type: "page", icon: TrendingUp, href: "/dashboard-executivo" },
-  { id: "relatorios", title: "Relatórios", subtitle: "Analytics e métricas", type: "page", icon: BarChart3, href: "/relatorios" },
-  { id: "negociacoes", title: "Negociações", subtitle: "Performance do comprador", type: "page", icon: PiggyBank, href: "/relatorios/negociacoes" },
-  { id: "compradores", title: "Dashboard Compradores", subtitle: "Performance individual", type: "page", icon: Award, href: "/buyer-performance" },
-  { id: "aprovacoes", title: "Aprovações", subtitle: "Workflow de aprovação", type: "page", icon: ClipboardCheck, href: "/aprovacoes" },
-  { id: "auditoria", title: "Auditoria", subtitle: "Trilha de ações", type: "page", icon: History, href: "/auditoria" },
+// Navigation pages with normalized text for fuzzy search
+const navigationPagesRaw = [
+  { id: "dashboard", title: "Dashboard", subtitle: "Visão geral do sistema", type: "page" as const, icon: LayoutDashboard, href: "/" },
+  { id: "solicitacoes", title: "Solicitações", subtitle: "Lista de solicitações de compra", type: "page" as const, icon: ClipboardList, href: "/solicitacoes" },
+  { id: "cotacoes", title: "Cotações", subtitle: "Gerenciar cotações", type: "page" as const, icon: Search, href: "/cotacao" },
+  { id: "pedidos", title: "Pedidos", subtitle: "Ordens de compra", type: "page" as const, icon: FileText, href: "/pedidos" },
+  { id: "acompanhamento", title: "Acompanhamento", subtitle: "Timeline de pedidos", type: "page" as const, icon: Truck, href: "/acompanhamento" },
+  { id: "pagamentos", title: "Pagamentos", subtitle: "Gestão financeira", type: "page" as const, icon: CreditCard, href: "/pagamentos" },
+  { id: "fornecedores", title: "Fornecedores", subtitle: "Cadastro de fornecedores", type: "page" as const, icon: Factory, href: "/fornecedores" },
+  { id: "contratos", title: "Contratos", subtitle: "Gestão de contratos", type: "page" as const, icon: FileSignature, href: "/contratos" },
+  { id: "historico", title: "Histórico de Compras", subtitle: "Histórico por produto/fornecedor", type: "page" as const, icon: ShoppingCart, href: "/historico-compras" },
+  { id: "performance", title: "Performance Fornecedores", subtitle: "Scorecard e análises", type: "page" as const, icon: Users, href: "/supplier-performance" },
+  { id: "executivo", title: "Dashboard Executivo", subtitle: "Visão consolidada", type: "page" as const, icon: TrendingUp, href: "/dashboard-executivo" },
+  { id: "relatorios", title: "Relatórios", subtitle: "Analytics e métricas", type: "page" as const, icon: BarChart3, href: "/relatorios" },
+  { id: "negociacoes", title: "Negociações", subtitle: "Performance do comprador", type: "page" as const, icon: PiggyBank, href: "/relatorios/negociacoes" },
+  { id: "compradores", title: "Dashboard Compradores", subtitle: "Performance individual", type: "page" as const, icon: Award, href: "/buyer-performance" },
+  { id: "aprovacoes", title: "Aprovações", subtitle: "Workflow de aprovação", type: "page" as const, icon: ClipboardCheck, href: "/aprovacoes" },
+  { id: "auditoria", title: "Auditoria", subtitle: "Trilha de ações", type: "page" as const, icon: History, href: "/auditoria" },
 ];
+
+const navigationPages: SearchResult[] = navigationPagesRaw.map(p => ({
+  ...p,
+  normalizedTitle: normalizeText(p.title),
+  normalizedSubtitle: normalizeText(p.subtitle),
+}));
+
+// Fuse.js options
+const fuseOptions = {
+  isCaseSensitive: false,
+  includeScore: true,
+  threshold: 0.4,
+  keys: [
+    { name: 'title', weight: 2 },
+    { name: 'subtitle', weight: 1 },
+    { name: 'normalizedTitle', weight: 1.5 },
+    { name: 'normalizedSubtitle', weight: 0.8 },
+  ]
+};
 
 export function GlobalSearch() {
   const [open, setOpen] = useState(false);
@@ -87,76 +110,163 @@ export function GlobalSearch() {
     return () => document.removeEventListener("keydown", down);
   }, []);
 
-  // Filter results based on search
+  // Create Fuse instances
+  const pagesFuse = useMemo(() => new Fuse(navigationPages, fuseOptions), []);
+
+  const solicitacoesForSearch = useMemo(() => 
+    solicitacoesMock.map(s => ({
+      ...s,
+      normalizedEmpresa: normalizeText(s.empresa),
+      normalizedProduto: normalizeText(s.produto),
+    })), []);
+
+  const solicitacoesFuse = useMemo(() => new Fuse(solicitacoesForSearch, {
+    isCaseSensitive: false,
+    includeScore: true,
+    threshold: 0.4,
+    keys: [
+      { name: 'id', weight: 2 },
+      { name: 'empresa', weight: 1 },
+      { name: 'produto', weight: 1.5 },
+      { name: 'normalizedEmpresa', weight: 0.8 },
+      { name: 'normalizedProduto', weight: 1 },
+    ]
+  }), [solicitacoesForSearch]);
+
+  const fornecedoresForSearch = useMemo(() =>
+    fornecedoresMock.map(f => ({
+      ...f,
+      normalizedNomeFantasia: normalizeText(f.nomeFantasia),
+      normalizedRazaoSocial: normalizeText(f.razaoSocial),
+    })), []);
+
+  const fornecedoresFuse = useMemo(() => new Fuse(fornecedoresForSearch, {
+    isCaseSensitive: false,
+    includeScore: true,
+    threshold: 0.4,
+    keys: [
+      { name: 'nomeFantasia', weight: 2 },
+      { name: 'razaoSocial', weight: 1.5 },
+      { name: 'cnpj', weight: 1 },
+      { name: 'normalizedNomeFantasia', weight: 1.5 },
+      { name: 'normalizedRazaoSocial', weight: 1 },
+    ]
+  }), [fornecedoresForSearch]);
+
+  const contractsForSearch = useMemo(() =>
+    contracts.map(c => ({
+      ...c,
+      normalizedTitle: normalizeText(c.title || ''),
+      normalizedSupplierName: normalizeText(c.supplier_name || ''),
+    })), [contracts]);
+
+  const contractsFuse = useMemo(() => new Fuse(contractsForSearch, {
+    isCaseSensitive: false,
+    includeScore: true,
+    threshold: 0.4,
+    keys: [
+      { name: 'title', weight: 2 },
+      { name: 'contract_number', weight: 1.5 },
+      { name: 'supplier_name', weight: 1 },
+      { name: 'normalizedTitle', weight: 1.5 },
+      { name: 'normalizedSupplierName', weight: 0.8 },
+    ]
+  }), [contractsForSearch]);
+
+  // Fuzzy filter results
   const filteredPages = useMemo(() => {
     if (!search) return navigationPages;
-    const searchLower = search.toLowerCase();
-    return navigationPages.filter(
-      page => 
-        page.title.toLowerCase().includes(searchLower) ||
-        page.subtitle.toLowerCase().includes(searchLower)
+    const normalizedSearch = normalizeText(search);
+    const results = pagesFuse.search(search);
+    const normalizedResults = pagesFuse.search(normalizedSearch);
+    
+    const seen = new Set<string>();
+    const merged: SearchResult[] = [];
+    [...results, ...normalizedResults].forEach(r => {
+      if (!seen.has(r.item.id)) {
+        seen.add(r.item.id);
+        merged.push(r.item);
+      }
+    });
+    return merged.length > 0 ? merged : navigationPages.filter(p => 
+      p.title.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
+  }, [search, pagesFuse]);
 
   const filteredSolicitacoes = useMemo(() => {
     if (!search || search.length < 2) return [];
-    const searchLower = search.toLowerCase();
-    return solicitacoesMock
-      .filter(s => 
-        s.id.toLowerCase().includes(searchLower) ||
-        s.empresa.toLowerCase().includes(searchLower) ||
-        s.produto.toLowerCase().includes(searchLower)
-      )
-      .slice(0, 5)
-      .map(s => ({
-        id: s.id,
-        title: s.produto,
-        subtitle: `${s.id} • ${s.empresa}`,
-        type: "solicitacao" as const,
-        icon: ClipboardList,
-        href: `/solicitacoes?search=${s.id}`,
-      }));
-  }, [search]);
+    const normalizedSearch = normalizeText(search);
+    const results = solicitacoesFuse.search(search);
+    const normalizedResults = solicitacoesFuse.search(normalizedSearch);
+    
+    const seen = new Set<string>();
+    const merged: any[] = [];
+    [...results, ...normalizedResults].forEach(r => {
+      if (!seen.has(r.item.id)) {
+        seen.add(r.item.id);
+        merged.push(r.item);
+      }
+    });
+    
+    return merged.slice(0, 5).map(s => ({
+      id: s.id,
+      title: s.produto,
+      subtitle: `${s.id} • ${s.empresa}`,
+      type: "solicitacao" as const,
+      icon: ClipboardList,
+      href: `/solicitacoes?search=${s.id}`,
+    }));
+  }, [search, solicitacoesFuse]);
 
   const filteredFornecedores = useMemo(() => {
     if (!search || search.length < 2) return [];
-    const searchLower = search.toLowerCase();
-    return fornecedoresMock
-      .filter(f => 
-        f.nomeFantasia.toLowerCase().includes(searchLower) ||
-        f.razaoSocial.toLowerCase().includes(searchLower) ||
-        f.cnpj.includes(search)
-      )
-      .slice(0, 5)
-      .map(f => ({
-        id: f.id,
-        title: f.nomeFantasia,
-        subtitle: `CNPJ: ${f.cnpj}`,
-        type: "fornecedor" as const,
-        icon: Factory,
-        href: `/fornecedores?search=${f.nomeFantasia}`,
-      }));
-  }, [search]);
+    const normalizedSearch = normalizeText(search);
+    const results = fornecedoresFuse.search(search);
+    const normalizedResults = fornecedoresFuse.search(normalizedSearch);
+    
+    const seen = new Set<string>();
+    const merged: any[] = [];
+    [...results, ...normalizedResults].forEach(r => {
+      if (!seen.has(r.item.id)) {
+        seen.add(r.item.id);
+        merged.push(r.item);
+      }
+    });
+    
+    return merged.slice(0, 5).map(f => ({
+      id: f.id,
+      title: f.nomeFantasia,
+      subtitle: `CNPJ: ${f.cnpj}`,
+      type: "fornecedor" as const,
+      icon: Factory,
+      href: `/fornecedores?search=${f.nomeFantasia}`,
+    }));
+  }, [search, fornecedoresFuse]);
 
   const filteredContracts = useMemo(() => {
     if (!search || search.length < 2) return [];
-    const searchLower = search.toLowerCase();
-    return contracts
-      .filter(c => 
-        c.title.toLowerCase().includes(searchLower) ||
-        c.contract_number.toLowerCase().includes(searchLower) ||
-        c.supplier_name.toLowerCase().includes(searchLower)
-      )
-      .slice(0, 5)
-      .map(c => ({
-        id: c.id,
-        title: c.title,
-        subtitle: `${c.contract_number} • ${c.supplier_name}`,
-        type: "contrato" as const,
-        icon: FileSignature,
-        href: `/contratos?search=${c.contract_number}`,
-      }));
-  }, [search, contracts]);
+    const normalizedSearch = normalizeText(search);
+    const results = contractsFuse.search(search);
+    const normalizedResults = contractsFuse.search(normalizedSearch);
+    
+    const seen = new Set<string>();
+    const merged: any[] = [];
+    [...results, ...normalizedResults].forEach(r => {
+      if (!seen.has(r.item.id)) {
+        seen.add(r.item.id);
+        merged.push(r.item);
+      }
+    });
+    
+    return merged.slice(0, 5).map(c => ({
+      id: c.id,
+      title: c.title,
+      subtitle: `${c.contract_number} • ${c.supplier_name}`,
+      type: "contrato" as const,
+      icon: FileSignature,
+      href: `/contratos?search=${c.contract_number}`,
+    }));
+  }, [search, contractsFuse]);
 
   const handleSelect = useCallback((result: SearchResult) => {
     setOpen(false);
