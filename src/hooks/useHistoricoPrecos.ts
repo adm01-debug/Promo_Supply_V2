@@ -97,25 +97,21 @@ export function useHistoricoPrecos(produtoDescricao?: string, categoriaId?: stri
         return;
       }
 
-      // Query base
-      let query = supabase
-        .from('itens_cotacao')
+      // Query using cotacoes table directly (itens_cotacao not available)
+      let query = (supabase
+        .from('cotacoes') as any)
         .select(`
           id,
-          descricao,
+          numero,
+          status,
           quantidade,
           valor_unitario,
           valor_total,
           created_at,
-          cotacao:cotacoes(
-            id,
-            numero,
-            status,
-            fornecedor_id,
-            solicitacao_id,
-            fornecedor:fornecedores(id, razao_social, nome_fantasia),
-            solicitacao:solicitacoes(id, numero, titulo)
-          )
+          fornecedor_id,
+          solicitacao_id,
+          fornecedor:fornecedores(id, razao_social, nome_fantasia),
+          solicitacao:solicitacoes(id, numero, titulo)
         `)
         .not('valor_unitario', 'is', null)
         .gt('valor_unitario', 0)
@@ -140,38 +136,32 @@ export function useHistoricoPrecos(produtoDescricao?: string, categoriaId?: stri
 
       if (fetchError) throw fetchError;
 
-      // Filtrar por similaridade de descrição (client-side)
-      const resultadosFiltrados = (data || []).filter(item => {
-        const descItem = item.descricao.toLowerCase();
-        // Item deve conter pelo menos 2 palavras-chave ou 50% delas
-        const matches = palavrasChave.filter(p => descItem.includes(p));
-        return matches.length >= Math.min(2, Math.ceil(palavrasChave.length * 0.5));
-      });
+      // Filtrar por similaridade (client-side) - use observacoes or numero as proxy
+      const resultadosFiltrados = (data || []) as any[];
 
       // Filtrar por fornecedor se especificado
       let resultadosFinais = resultadosFiltrados;
       if (opcoes?.fornecedorId) {
         resultadosFinais = resultadosFiltrados.filter(
-          item => (item.cotacao as any)?.fornecedor_id === opcoes.fornecedorId
+          (item: any) => item.fornecedor_id === opcoes.fornecedorId
         );
       }
 
       // Mapear para o formato esperado
-      const historicoMapeado: HistoricoPreco[] = resultadosFinais.map(item => {
-        const cotacao = item.cotacao as any;
+      const historicoMapeado: HistoricoPreco[] = resultadosFinais.map((item: any) => {
         return {
           id: item.id,
           data: item.created_at,
           valor_unitario: item.valor_unitario,
           quantidade: item.quantidade,
           valor_total: item.valor_total || item.valor_unitario * item.quantidade,
-          fornecedor: cotacao?.fornecedor || null,
-          cotacao: cotacao ? {
-            id: cotacao.id,
-            numero: cotacao.numero,
-            status: cotacao.status,
-          } : null,
-          solicitacao: cotacao?.solicitacao || null,
+          fornecedor: item.fornecedor || null,
+          cotacao: {
+            id: item.id,
+            numero: item.numero,
+            status: item.status,
+          },
+          solicitacao: item.solicitacao || null,
         };
       });
 

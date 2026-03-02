@@ -178,12 +178,12 @@ export function RecebimentoParcialDialog({
       if (pedidoError) throw pedidoError;
 
       // Registrar no audit log
-      await supabase.from('audit_logs').insert({
-        action: status === 'entregue' ? 'full_receipt' : 'partial_receipt',
+      await (supabase.from('audit_logs') as any).insert({
+        action_type: 'update',
         entity_type: 'pedido',
         entity_id: pedido.id,
         user_id: user.id,
-        details: {
+        metadata: {
           status,
           itens: itensState,
           observacao_geral: observacaoGeral,

@@ -175,10 +175,10 @@ export function useCotacoesExpirando() {
         toast.success(`${data.length} cotação(ões) marcada(s) como expirada(s)`);
         
         // Registrar no audit log
-        await supabase.from('audit_logs').insert({
-          action: 'bulk_expire',
+        await (supabase.from('audit_logs') as any).insert({
+          action_type: 'update',
           entity_type: 'cotacao',
-          details: { count: data.length, ids: data.map(c => c.id) },
+          metadata: { count: data.length, ids: data.map(c => c.id) },
           user_id: user?.id,
         });
       }

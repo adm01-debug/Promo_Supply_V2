@@ -173,12 +173,12 @@ export function useAutoPagamento() {
       if (error) throw error;
 
       // Registrar no audit log
-      await supabase.from('audit_logs').insert({
-        action: 'auto_create',
+      await (supabase.from('audit_logs') as any).insert({
+        action_type: 'create',
         entity_type: 'pagamento',
         entity_id: novoPagamento.id,
         user_id: user.id,
-        details: {
+        metadata: {
           trigger: 'pedido_entregue',
           pedido_id: pedido.id,
           pedido_numero: pedido.numero,

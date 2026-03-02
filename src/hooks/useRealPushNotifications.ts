@@ -97,12 +97,12 @@ export function useRealPushNotifications() {
       const registration = await navigator.serviceWorker.ready;
       
       // Check if push is supported
-      if (!registration.pushManager) {
+      if (!(registration as any).pushManager) {
         return;
       }
 
       // Get existing subscription or create new one
-      let subscription = await registration.pushManager.getSubscription();
+      let subscription = await (registration as any).pushManager.getSubscription();
       
       if (!subscription) {
         // For now, we'll use a placeholder VAPID key
@@ -111,7 +111,7 @@ export function useRealPushNotifications() {
         
         try {
           const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
-          subscription = await registration.pushManager.subscribe({
+          subscription = await (registration as any).pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: applicationServerKey as BufferSource,
           });
