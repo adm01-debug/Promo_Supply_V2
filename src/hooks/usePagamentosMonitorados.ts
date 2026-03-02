@@ -179,8 +179,8 @@ export function usePagamentosMonitorados() {
       toast.info('Pagamento marcado como atrasado');
       
       // Registrar no audit log
-      await supabase.from('audit_logs').insert({
-        action: 'mark_overdue',
+      await (supabase.from('audit_logs') as any).insert({
+        action_type: 'update',
         entity_type: 'pagamento',
         entity_id: pagamentoId,
         user_id: user?.id,
@@ -213,10 +213,10 @@ export function usePagamentosMonitorados() {
         toast.warning(`${data.length} pagamento(s) marcado(s) como atrasado(s)`);
         
         // Registrar no audit log
-        await supabase.from('audit_logs').insert({
-          action: 'bulk_mark_overdue',
+        await (supabase.from('audit_logs') as any).insert({
+          action_type: 'update',
           entity_type: 'pagamento',
-          details: { count: data.length, ids: data.map(p => p.id) },
+          metadata: { count: data.length, ids: data.map(p => p.id) },
           user_id: user?.id,
         });
       }

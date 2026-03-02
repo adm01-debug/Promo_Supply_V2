@@ -32,12 +32,12 @@ export function useStatusTransitions() {
    */
   const logTransition = useCallback(async (transition: TransitionLog) => {
     try {
-      await supabase.from('audit_logs').insert({
-        action: 'status_transition',
+      await (supabase.from('audit_logs') as any).insert({
+        action_type: 'update',
         entity_type: transition.entity_type,
         entity_id: transition.entity_id,
         user_id: user?.id,
-        details: {
+        metadata: {
           from_status: transition.from_status,
           to_status: transition.to_status,
           trigger: transition.trigger,
