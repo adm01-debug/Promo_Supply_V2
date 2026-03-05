@@ -180,7 +180,7 @@ export function SupplierChat() {
         Object.values(state).forEach((presences: any[]) => {
           presences.forEach((presence: Record<string, unknown>) => {
             if (presence.isTyping && presence.userId !== user.id) {
-              usersTyping.push(presence.userName || 'Alguém');
+              usersTyping.push((presence.userName as string) || 'Alguém');
             }
           });
         });
