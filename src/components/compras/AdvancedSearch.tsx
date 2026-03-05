@@ -396,8 +396,9 @@ export function AdvancedSearch() {
             metadata: {
               status: p.status,
               value: p.valor_total,
-            },
-          }));
+            };
+          });
+
 
           const pedFuse = new Fuse(pedidosItems, fuseOptions);
           const fuzzyResults = pedFuse.search(searchQuery);
