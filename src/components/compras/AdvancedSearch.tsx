@@ -396,6 +396,7 @@ export function AdvancedSearch() {
             metadata: {
               status: p.status,
               value: p.valor_total,
+            },
             };
           });
 
