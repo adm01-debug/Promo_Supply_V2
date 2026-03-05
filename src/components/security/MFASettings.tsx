@@ -13,7 +13,7 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp
 
 // Inline MFA Enrollment Component
 const MFAEnroll = ({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: () => void }) => {
-  const { enrollMFA, verifyMFA } = useMFA();
+  const { enrollMFA, verifyEnrollment } = useMFA();
   const [step, setStep] = useState<'enroll' | 'verify'>('enroll');
   const [qrCode, setQrCode] = useState('');
   const [secret, setSecret] = useState('');
