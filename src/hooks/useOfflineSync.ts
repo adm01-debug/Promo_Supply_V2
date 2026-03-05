@@ -156,7 +156,7 @@ export function useOfflineSync() {
   // Handle online status changes
   useEffect(() => {
     const handleOnline = () => {
-      console.log('🌐 Back online - triggering sync');
+      // Back online - trigger sync
       setState(prev => ({ ...prev, isOnline: true }));
       
       // Delay sync slightly to ensure connection is stable
