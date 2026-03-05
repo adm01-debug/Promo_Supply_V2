@@ -24,8 +24,8 @@ interface SolicitacaoCardProps {
 }
 
 const statusActions: Record<string, { 
-  primary: { label: string; icon: any; href?: string } | null; 
-  secondary: { label: string; icon: any } | null;
+  primary: { label: string; icon: React.ElementType; href?: string } | null; 
+  secondary: { label: string; icon: React.ElementType } | null;
 }> = {
   AGUARDANDO_COTACAO: {
     primary: { label: 'Cotar', icon: BarChart3, href: '/cotacao' },

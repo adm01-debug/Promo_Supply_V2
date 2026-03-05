@@ -247,7 +247,7 @@ const MetricCard = ({
   previousValue?: number;
   change?: number;
   target?: number;
-  icon: any;
+  icon: React.ElementType;
   format?: 'currency' | 'number' | 'percent' | 'days';
   onClick?: () => void;
   urgent?: number;

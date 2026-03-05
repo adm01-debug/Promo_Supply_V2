@@ -304,7 +304,7 @@ const ComparisonMetricCard = ({
   color 
 }: { 
   label: string;
-  icon: any;
+  icon: React.ElementType;
   value1: number;
   value2: number;
   format?: "number" | "currency" | "percent";

@@ -58,7 +58,7 @@ const DraggableWidget = ({
   const [isHovered, setIsHovered] = useState(false);
   const dragControls = useDragControls();
 
-  const sizeOptions: { value: DashboardWidget['size']; label: string; icon: any }[] = [
+  const sizeOptions: { value: DashboardWidget['size']; label: string; icon: React.ElementType }[] = [
     { value: 'small', label: 'Pequeno', icon: Minimize2 },
     { value: 'medium', label: 'Médio', icon: LayoutGrid },
     { value: 'large', label: 'Grande', icon: Columns },

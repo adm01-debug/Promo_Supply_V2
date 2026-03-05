@@ -9,7 +9,7 @@ export interface FuseSearchItem {
   description?: string;
   type: string;
   keywords?: string[];
-  [key: string]: any;
+  [key: string]: string | number | boolean | undefined | string[];
 }
 
 export interface FuseSearchResult<T> {
