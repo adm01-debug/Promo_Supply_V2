@@ -14,7 +14,7 @@ import {
   FileSignature
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { BottomSheet } from './MobileComponents';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
