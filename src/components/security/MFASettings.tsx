@@ -90,8 +90,8 @@ const MFAEnroll = ({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: (
                 ))}
               </InputOTPGroup>
             </InputOTP>
-            <Button onClick={handleVerify} disabled={token.length < 6 || verifyMFA.isPending}>
-              {verifyMFA.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+            <Button onClick={handleVerify} disabled={token.length < 6 || verifyEnrollment.isPending}>
+              {verifyEnrollment.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
               Verificar e Ativar
             </Button>
           </div>
