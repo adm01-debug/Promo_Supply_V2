@@ -46,7 +46,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useKPITargetsStore, checkKPIStatus } from "@/stores/kpiTargetsStore";
 import { KPITargetsConfig } from "./KPITargetsConfig";
-import { KPIAlertsPanel } from "./KPIAlertsPanel";
+
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data for KPIs
