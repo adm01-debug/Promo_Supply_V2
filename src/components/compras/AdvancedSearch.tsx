@@ -503,7 +503,8 @@ export function AdvancedSearch() {
               value: p.valor,
               date: p.data_vencimento,
             },
-          }));
+            };
+          });
 
           const pagFuse = new Fuse(pagamentosItems, fuseOptions);
           const fuzzyResults = pagFuse.search(searchQuery);
