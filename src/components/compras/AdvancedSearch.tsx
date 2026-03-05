@@ -487,12 +487,14 @@ export function AdvancedSearch() {
           .limit(20);
 
         if (pagamentos && pagamentos.length > 0) {
-          const pagamentosItems = pagamentos.map(p => ({
+          const pagamentosItems = pagamentos.map(p => {
+            const fornecedorData = p.fornecedor as { razao_social: string } | null;
+            return {
             id: p.id,
             title: `Pagamento ${p.numero}`,
-            subtitle: `${(p.fornecedor as any)?.razao_social || 'Fornecedor'} • R$ ${p.valor?.toLocaleString('pt-BR')}`,
+            subtitle: `${fornecedorData?.razao_social || 'Fornecedor'} • R$ ${p.valor?.toLocaleString('pt-BR')}`,
             normalizedTitle: normalizeText(`Pagamento ${p.numero}`),
-            normalizedSubtitle: normalizeText(`${(p.fornecedor as any)?.razao_social || ''}`),
+            normalizedSubtitle: normalizeText(`${fornecedorData?.razao_social || ''}`),
             type: 'pagamentos' as SearchCategory,
             icon: CreditCard,
             href: `/pagamentos?id=${p.id}`,
