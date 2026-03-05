@@ -635,9 +635,13 @@ export function AdvancedSearch() {
   // Handle result selection
   const handleSelect = useCallback((result: SearchResult) => {
     saveToHistory(query);
+    const typeMap: Record<string, RecentItem['type']> = {
+      pages: 'page', solicitacoes: 'solicitacao', pedidos: 'pedido',
+      fornecedores: 'fornecedor', pagamentos: 'pagamento', contratos: 'contrato',
+    };
     addRecentItem({
       id: result.id,
-      type: result.type === 'pages' ? 'page' : result.type as any,
+      type: typeMap[result.type] || 'page',
       title: result.title,
       subtitle: result.subtitle,
       url: result.href,
