@@ -166,7 +166,7 @@ export function useOfflineSync() {
     };
 
     const handleOffline = () => {
-      console.log('📴 Gone offline');
+      // Gone offline
       setState(prev => ({ ...prev, isOnline: false }));
       
       if (syncTimeoutRef.current) {
