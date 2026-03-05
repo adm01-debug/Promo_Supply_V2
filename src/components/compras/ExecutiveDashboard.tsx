@@ -216,7 +216,7 @@ const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3
 
 interface DrillDownData {
   type: 'category' | 'supplier' | 'buyer' | 'pending';
-  data: any;
+  data: Record<string, unknown>;
 }
 
 const formatCurrency = (value: number) => {
