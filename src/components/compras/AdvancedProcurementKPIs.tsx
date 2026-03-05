@@ -244,7 +244,7 @@ export const AdvancedProcurementKPIs = () => {
             <RefreshCw className="w-4 h-4" />
             Verificar KPIs
           </Button>
-          <KPIAlertsPanel />
+          
           <KPITargetsConfig />
         </div>
       </div>
