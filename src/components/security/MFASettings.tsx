@@ -36,7 +36,7 @@ const MFAEnroll = ({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: (
 
   const handleVerify = async () => {
     try {
-      await verifyMFA.mutateAsync({ factorId, code: token });
+      await verifyEnrollment.mutateAsync({ factorId, code: token });
       toast.success('MFA ativado com sucesso!');
       onSuccess();
     } catch (error: unknown) {
