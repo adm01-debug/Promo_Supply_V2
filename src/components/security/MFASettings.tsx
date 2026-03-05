@@ -7,7 +7,102 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { useMFA } from '@/hooks/useMFA';
-import { MFAEnroll } from './MFAEnroll';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+
+// Inline MFA Enrollment Component
+const MFAEnroll = ({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: () => void }) => {
+  const { enrollMFA, verifyEnrollment } = useMFA();
+  const [step, setStep] = useState<'enroll' | 'verify'>('enroll');
+  const [qrCode, setQrCode] = useState('');
+  const [secret, setSecret] = useState('');
+  const [token, setToken] = useState('');
+  const [factorId, setFactorId] = useState('');
+
+  const handleEnroll = async () => {
+    try {
+      const result = await enrollMFA.mutateAsync();
+      if (result) {
+        setQrCode(result.totp?.qr_code || '');
+        setSecret(result.totp?.secret || '');
+        setFactorId(result.id || '');
+        setStep('verify');
+      }
+    } catch (error: unknown) {
+      toast.error('Erro ao iniciar configuração MFA');
+    }
+  };
+
+  const handleVerify = async () => {
+    try {
+      await verifyEnrollment.mutateAsync({ factorId, code: token });
+      toast.success('MFA ativado com sucesso!');
+      onSuccess();
+    } catch (error: unknown) {
+      toast.error('Código inválido. Tente novamente.');
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Shield className="w-5 h-5" />
+          Configurar Autenticação em Dois Fatores
+        </CardTitle>
+        <CardDescription>
+          {step === 'enroll'
+            ? 'Escaneie o QR Code com seu app autenticador'
+            : 'Digite o código de verificação do seu app'}
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {step === 'enroll' ? (
+          <>
+            {qrCode ? (
+              <div className="flex flex-col items-center gap-4">
+                <img src={qrCode} alt="QR Code MFA" className="w-48 h-48 rounded-lg border" />
+                <div className="text-center">
+                  <Label className="text-xs text-muted-foreground">Chave manual:</Label>
+                  <code className="block text-xs bg-muted px-3 py-1.5 rounded mt-1 select-all">{secret}</code>
+                </div>
+                <Button onClick={() => setStep('verify')}>Próximo</Button>
+              </div>
+            ) : (
+              <div className="flex flex-col items-center gap-4">
+                <p className="text-sm text-muted-foreground text-center">
+                  Clique para gerar o QR Code de configuração.
+                </p>
+                <Button onClick={handleEnroll} disabled={enrollMFA.isPending}>
+                  {enrollMFA.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+                  Gerar QR Code
+                </Button>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="flex flex-col items-center gap-4">
+            <InputOTP maxLength={6} value={token} onChange={setToken}>
+              <InputOTPGroup>
+                {[0, 1, 2, 3, 4, 5].map(i => (
+                  <InputOTPSlot key={i} index={i} />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
+            <Button onClick={handleVerify} disabled={token.length < 6 || verifyEnrollment.isPending}>
+              {verifyEnrollment.isPending && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              Verificar e Ativar
+            </Button>
+          </div>
+        )}
+        <Button variant="ghost" className="w-full" onClick={onCancel}>
+          Cancelar
+        </Button>
+      </CardContent>
+    </Card>
+  );
+};
 
 export const MFASettings = () => {
   const { mfaSettings, isMFAEnabled, disableMFA, generateBackupCodes, isLoading } = useMFA();

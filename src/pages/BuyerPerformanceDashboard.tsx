@@ -304,7 +304,7 @@ const ComparisonMetricCard = ({
   color 
 }: { 
   label: string;
-  icon: any;
+  icon: React.ElementType;
   value1: number;
   value2: number;
   format?: "number" | "currency" | "percent";
@@ -419,7 +419,7 @@ const BuyerPerformanceDashboard = () => {
       return (
         <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
           <p className="font-medium text-foreground">{label}</p>
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry: { color?: string; name?: string; value?: number }, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
               {entry.name}: {entry.name.includes('Economia') 
                 ? `R$ ${entry.value.toLocaleString('pt-BR')}` 
