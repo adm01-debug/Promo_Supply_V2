@@ -43,7 +43,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VisuallyHidden } from "@/components/accessibility/VisuallyHidden";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
+import { useRecentlyViewed, type RecentItem } from "@/hooks/useRecentlyViewed";
 import { usePersistentFilters } from "@/hooks/usePersistentFilters";
 import { normalizeText } from "@/hooks/useFuseSearch";
 
