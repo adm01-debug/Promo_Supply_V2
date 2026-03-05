@@ -125,7 +125,7 @@ export function useOfflineSync() {
           throw result.error;
         }
 
-        console.log(`✅ Synced operation: ${operation.type} on ${operation.table}`);
+        // Synced successfully
       } catch (error) {
         console.error(`Failed to sync operation ${operation.id}:`, error);
         
