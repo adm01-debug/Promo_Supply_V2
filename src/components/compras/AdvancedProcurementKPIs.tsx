@@ -46,7 +46,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useKPITargetsStore, checkKPIStatus } from "@/stores/kpiTargetsStore";
 import { KPITargetsConfig } from "./KPITargetsConfig";
-import { KPIAlertsPanel } from "./KPIAlertsPanel";
+
 import { useToast } from "@/hooks/use-toast";
 
 // Mock data for KPIs
@@ -244,7 +244,7 @@ export const AdvancedProcurementKPIs = () => {
             <RefreshCw className="w-4 h-4" />
             Verificar KPIs
           </Button>
-          <KPIAlertsPanel />
+          
           <KPITargetsConfig />
         </div>
       </div>

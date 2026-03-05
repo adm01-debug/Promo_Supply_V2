@@ -14,7 +14,7 @@ import {
   FileSignature
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { BottomSheet } from './MobileComponents';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -130,36 +130,36 @@ export function BottomNavigation() {
       </motion.nav>
 
       {/* More Options Bottom Sheet */}
-      <BottomSheet
-        isOpen={moreSheetOpen}
-        onClose={() => setMoreSheetOpen(false)}
-        title="Mais opções"
-        snapPoints={[0.5]}
-      >
-        <div className="grid grid-cols-3 gap-4">
-          {moreNavItems.map((item) => (
-            <motion.button
-              key={item.id}
-              className={cn(
-                "flex flex-col items-center gap-2 p-4 rounded-xl transition-colors relative",
-                isActive(item.path)
-                  ? "bg-primary/10 text-primary"
-                  : "bg-muted/50 text-muted-foreground hover:bg-muted"
-              )}
-              onClick={() => handleNavClick(item.path)}
-              whileTap={{ scale: 0.95 }}
-            >
-              <div className="relative">
-                {item.icon}
-                {item.badgeKey && badges[item.badgeKey] > 0 && (
-                  <NavBadge count={badges[item.badgeKey]} />
+      <Drawer open={moreSheetOpen} onOpenChange={setMoreSheetOpen}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Mais opções</DrawerTitle>
+          </DrawerHeader>
+          <div className="grid grid-cols-3 gap-4 p-4 pb-8">
+            {moreNavItems.map((item) => (
+              <motion.button
+                key={item.id}
+                className={cn(
+                  "flex flex-col items-center gap-2 p-4 rounded-xl transition-colors relative",
+                  isActive(item.path)
+                    ? "bg-primary/10 text-primary"
+                    : "bg-muted/50 text-muted-foreground hover:bg-muted"
                 )}
-              </div>
-              <span className="text-xs font-medium">{item.label}</span>
-            </motion.button>
-          ))}
-        </div>
-      </BottomSheet>
+                onClick={() => handleNavClick(item.path)}
+                whileTap={{ scale: 0.95 }}
+              >
+                <div className="relative">
+                  {item.icon}
+                  {item.badgeKey && badges[item.badgeKey] > 0 && (
+                    <NavBadge count={badges[item.badgeKey]} />
+                  )}
+                </div>
+                <span className="text-xs font-medium">{item.label}</span>
+              </motion.button>
+            ))}
+          </div>
+        </DrawerContent>
+      </Drawer>
 
       {/* Spacer to prevent content from being hidden behind bottom nav */}
       <div className="h-14 sm:h-16 md:hidden" />
