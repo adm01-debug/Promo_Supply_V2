@@ -43,7 +43,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { VisuallyHidden } from "@/components/accessibility/VisuallyHidden";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { useRecentlyViewed } from "@/hooks/useRecentlyViewed";
+import { useRecentlyViewed, type RecentItem } from "@/hooks/useRecentlyViewed";
 import { usePersistentFilters } from "@/hooks/usePersistentFilters";
 import { normalizeText } from "@/hooks/useFuseSearch";
 
@@ -382,12 +382,14 @@ export function AdvancedSearch() {
           .limit(20);
 
         if (pedidos && pedidos.length > 0) {
-          const pedidosItems = pedidos.map(p => ({
+          const pedidosItems = pedidos.map(p => {
+            const fornecedorData = p.fornecedor as { razao_social: string } | null;
+            return {
             id: p.id,
             title: `Pedido ${p.numero}`,
-            subtitle: `${(p.fornecedor as any)?.razao_social || 'Fornecedor'} • ${p.status}`,
+            subtitle: `${fornecedorData?.razao_social || 'Fornecedor'} • ${p.status}`,
             normalizedTitle: normalizeText(`Pedido ${p.numero}`),
-            normalizedSubtitle: normalizeText(`${(p.fornecedor as any)?.razao_social || ''} ${p.status}`),
+            normalizedSubtitle: normalizeText(`${fornecedorData?.razao_social || ''} ${p.status}`),
             type: 'pedidos' as SearchCategory,
             icon: ShoppingCart,
             href: `/pedidos?id=${p.id}`,
@@ -395,7 +397,9 @@ export function AdvancedSearch() {
               status: p.status,
               value: p.valor_total,
             },
-          }));
+            };
+          });
+
 
           const pedFuse = new Fuse(pedidosItems, fuseOptions);
           const fuzzyResults = pedFuse.search(searchQuery);
@@ -483,12 +487,14 @@ export function AdvancedSearch() {
           .limit(20);
 
         if (pagamentos && pagamentos.length > 0) {
-          const pagamentosItems = pagamentos.map(p => ({
+          const pagamentosItems = pagamentos.map(p => {
+            const fornecedorData = p.fornecedor as { razao_social: string } | null;
+            return {
             id: p.id,
             title: `Pagamento ${p.numero}`,
-            subtitle: `${(p.fornecedor as any)?.razao_social || 'Fornecedor'} • R$ ${p.valor?.toLocaleString('pt-BR')}`,
+            subtitle: `${fornecedorData?.razao_social || 'Fornecedor'} • R$ ${p.valor?.toLocaleString('pt-BR')}`,
             normalizedTitle: normalizeText(`Pagamento ${p.numero}`),
-            normalizedSubtitle: normalizeText(`${(p.fornecedor as any)?.razao_social || ''}`),
+            normalizedSubtitle: normalizeText(`${fornecedorData?.razao_social || ''}`),
             type: 'pagamentos' as SearchCategory,
             icon: CreditCard,
             href: `/pagamentos?id=${p.id}`,
@@ -497,7 +503,8 @@ export function AdvancedSearch() {
               value: p.valor,
               date: p.data_vencimento,
             },
-          }));
+            };
+          });
 
           const pagFuse = new Fuse(pagamentosItems, fuseOptions);
           const fuzzyResults = pagFuse.search(searchQuery);
@@ -628,9 +635,13 @@ export function AdvancedSearch() {
   // Handle result selection
   const handleSelect = useCallback((result: SearchResult) => {
     saveToHistory(query);
+    const typeMap: Record<string, RecentItem['type']> = {
+      pages: 'page', solicitacoes: 'solicitacao', pedidos: 'pedido',
+      fornecedores: 'fornecedor', pagamentos: 'pagamento', contratos: 'contrato',
+    };
     addRecentItem({
       id: result.id,
-      type: result.type === 'pages' ? 'page' : result.type as any,
+      type: typeMap[result.type] || 'page',
       title: result.title,
       subtitle: result.subtitle,
       url: result.href,

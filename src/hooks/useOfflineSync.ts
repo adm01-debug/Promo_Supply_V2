@@ -125,7 +125,7 @@ export function useOfflineSync() {
           throw result.error;
         }
 
-        console.log(`✅ Synced operation: ${operation.type} on ${operation.table}`);
+        // Synced successfully
       } catch (error) {
         console.error(`Failed to sync operation ${operation.id}:`, error);
         
@@ -156,7 +156,7 @@ export function useOfflineSync() {
   // Handle online status changes
   useEffect(() => {
     const handleOnline = () => {
-      console.log('🌐 Back online - triggering sync');
+      // Back online - trigger sync
       setState(prev => ({ ...prev, isOnline: true }));
       
       // Delay sync slightly to ensure connection is stable
@@ -166,7 +166,7 @@ export function useOfflineSync() {
     };
 
     const handleOffline = () => {
-      console.log('📴 Gone offline');
+      // Gone offline
       setState(prev => ({ ...prev, isOnline: false }));
       
       if (syncTimeoutRef.current) {
