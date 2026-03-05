@@ -9,7 +9,8 @@ export interface FuseSearchItem {
   description?: string;
   type: string;
   keywords?: string[];
-  [key: string]: string | number | boolean | undefined | string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
 
 export interface FuseSearchResult<T> {

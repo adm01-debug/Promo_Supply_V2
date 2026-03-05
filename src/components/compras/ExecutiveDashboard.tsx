@@ -216,7 +216,8 @@ const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3
 
 interface DrillDownData {
   type: 'category' | 'supplier' | 'buyer' | 'pending';
-  data: Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
 }
 
 const formatCurrency = (value: number) => {
