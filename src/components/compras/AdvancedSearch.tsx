@@ -382,12 +382,14 @@ export function AdvancedSearch() {
           .limit(20);
 
         if (pedidos && pedidos.length > 0) {
-          const pedidosItems = pedidos.map(p => ({
+          const pedidosItems = pedidos.map(p => {
+            const fornecedorData = p.fornecedor as { razao_social: string } | null;
+            return {
             id: p.id,
             title: `Pedido ${p.numero}`,
-            subtitle: `${(p.fornecedor as any)?.razao_social || 'Fornecedor'} • ${p.status}`,
+            subtitle: `${fornecedorData?.razao_social || 'Fornecedor'} • ${p.status}`,
             normalizedTitle: normalizeText(`Pedido ${p.numero}`),
-            normalizedSubtitle: normalizeText(`${(p.fornecedor as any)?.razao_social || ''} ${p.status}`),
+            normalizedSubtitle: normalizeText(`${fornecedorData?.razao_social || ''} ${p.status}`),
             type: 'pedidos' as SearchCategory,
             icon: ShoppingCart,
             href: `/pedidos?id=${p.id}`,
