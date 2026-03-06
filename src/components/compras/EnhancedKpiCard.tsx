@@ -258,7 +258,7 @@ const TargetProgressRing = ({
   );
 };
 
-export const EnhancedKpiCard = ({ 
+export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(({ 
   title, 
   value, 
   previousValue,
@@ -273,7 +273,7 @@ export const EnhancedKpiCard = ({
   periodLabel = 'vs período anterior',
   showComparison = true,
   animate = true
-}: EnhancedKpiCardProps) => {
+}, ref) => {
   const colors = colorClasses[color];
   
   const targetProgress = useMemo(() => {
