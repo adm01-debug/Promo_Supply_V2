@@ -296,7 +296,7 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
   if (variant === 'featured') {
     return (
       <motion.div
-        initial={animate ? { opacity: 0, y: 20, scale: 0.95 } : false}
+        ref={ref}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         whileHover={{ y: -4, scale: 1.01 }}
         whileTap={{ scale: 0.99 }}
