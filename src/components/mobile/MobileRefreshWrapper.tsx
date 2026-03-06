@@ -251,6 +251,6 @@ export const MobileRefreshWrapper = React.forwardRef<HTMLDivElement, MobileRefre
       </motion.div>
     </div>
   );
-}
+});
 
 export default MobileRefreshWrapper;
