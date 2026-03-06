@@ -54,7 +54,7 @@ const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({
   onResize,
   onRemove,
   className
-}, _ref) => {
+}, ref) => {
   const [isHovered, setIsHovered] = useState(false);
   const dragControls = useDragControls();
 
