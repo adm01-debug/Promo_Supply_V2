@@ -447,7 +447,7 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
   if (variant === 'compact') {
     return (
       <motion.div
-        initial={animate ? { opacity: 0, y: 10 } : false}
+        ref={ref}
         animate={{ opacity: 1, y: 0 }}
         whileHover={{ y: -2 }}
         onClick={onClick}
