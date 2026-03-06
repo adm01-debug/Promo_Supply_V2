@@ -25,7 +25,7 @@ const stages = [
   { key: 'entregue', label: 'Entregue', bgClass: 'bg-success', glowClass: 'dark:shadow-[0_0_12px_hsl(var(--success)/0.4)]' },
 ] as const;
 
-export const PipelineChart = ({ data }: PipelineChartProps) => {
+export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ data }, ref) => {
   const maxValue = Math.max(...Object.values(data));
   
   return (
