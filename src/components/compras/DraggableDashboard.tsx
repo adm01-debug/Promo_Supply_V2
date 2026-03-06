@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, forwardRef } from 'react';
 import { motion, AnimatePresence, Reorder, useDragControls } from 'framer-motion';
 import { 
   GripVertical, 
@@ -46,7 +46,7 @@ interface DraggableWidgetProps {
   className?: string;
 }
 
-const DraggableWidget = ({ 
+const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({ 
   widget, 
   children, 
   isEditMode, 
@@ -54,7 +54,7 @@ const DraggableWidget = ({
   onResize,
   onRemove,
   className
-}: DraggableWidgetProps) => {
+}, ref) => {
   const [isHovered, setIsHovered] = useState(false);
   const dragControls = useDragControls();
 
@@ -67,6 +67,7 @@ const DraggableWidget = ({
 
   return (
     <Reorder.Item
+      ref={ref}
       value={widget}
       id={widget.id}
       dragListener={false}
@@ -197,7 +198,9 @@ const DraggableWidget = ({
       </div>
     </Reorder.Item>
   );
-};
+});
+
+DraggableWidget.displayName = 'DraggableWidget';
 
 interface DraggableDashboardProps {
   renderWidget: (widgetId: string, index: number) => React.ReactNode;

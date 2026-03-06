@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { forwardRef } from "react";
 
 interface PipelineData {
   solicitacao: number;
@@ -24,11 +25,11 @@ const stages = [
   { key: 'entregue', label: 'Entregue', bgClass: 'bg-success', glowClass: 'dark:shadow-[0_0_12px_hsl(var(--success)/0.4)]' },
 ] as const;
 
-export const PipelineChart = ({ data }: PipelineChartProps) => {
+export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ data }, ref) => {
   const maxValue = Math.max(...Object.values(data));
   
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" ref={ref}>
       {/* Bar Chart with animations */}
       <div className="flex items-end gap-2 h-40">
         {stages.map((stage, index) => {
@@ -91,4 +92,6 @@ export const PipelineChart = ({ data }: PipelineChartProps) => {
       </div>
     </div>
   );
-};
+});
+
+PipelineChart.displayName = 'PipelineChart';
