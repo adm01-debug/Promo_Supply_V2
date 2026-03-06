@@ -59,8 +59,9 @@ export const GeoWhitelistPanel = () => {
       toast.success(`${country.name} adicionado à whitelist`);
       setShowAddDialog(false);
       setSelectedCountry('');
-    } catch (error: any) {
-      if (error.code === '23505') {
+    } catch (error: unknown) {
+      const dbError = error as { code?: string };
+      if (dbError.code === '23505') {
         toast.error('País já está na whitelist');
       } else {
         toast.error('Erro ao adicionar país');

@@ -217,7 +217,7 @@ const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3
 interface DrillDownData {
   type: 'category' | 'supplier' | 'buyer' | 'pending';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: any; // Union of category/supplier/buyer/pending drill-down data shapes
 }
 
 const formatCurrency = (value: number) => {
@@ -463,14 +463,17 @@ export const ExecutiveDashboard = () => {
     setSelectedSupplier('all');
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCategoryDrillDown = (category: any) => {
     setDrillDown({ type: 'category', data: category });
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSupplierDrillDown = (supplier: any) => {
     setDrillDown({ type: 'supplier', data: supplier });
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleBuyerDrillDown = (buyer: any) => {
     setDrillDown({ type: 'buyer', data: buyer });
   };
