@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { forwardRef } from "react";
 
 interface PipelineData {
   solicitacao: number;
