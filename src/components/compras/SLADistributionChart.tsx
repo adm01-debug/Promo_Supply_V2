@@ -265,4 +265,6 @@ export const SLADistributionChart = forwardRef<HTMLDivElement>((_props, ref) => 
       </CardContent>
     </Card>
   );
-};
+});
+
+SLADistributionChart.displayName = 'SLADistributionChart';
