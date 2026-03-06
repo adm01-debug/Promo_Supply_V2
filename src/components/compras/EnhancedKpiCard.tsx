@@ -1,7 +1,7 @@
 import { LucideIcon, TrendingUp, TrendingDown, Minus, ArrowUpRight, Sparkles, Target, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, forwardRef } from "react";
 import { Sparkline } from "@/components/ui/sparkline";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
@@ -258,7 +258,7 @@ const TargetProgressRing = ({
   );
 };
 
-export const EnhancedKpiCard = ({ 
+export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(({ 
   title, 
   value, 
   previousValue,
@@ -273,7 +273,7 @@ export const EnhancedKpiCard = ({
   periodLabel = 'vs período anterior',
   showComparison = true,
   animate = true
-}: EnhancedKpiCardProps) => {
+}, ref) => {
   const colors = colorClasses[color];
   
   const targetProgress = useMemo(() => {
@@ -296,6 +296,7 @@ export const EnhancedKpiCard = ({
   if (variant === 'featured') {
     return (
       <motion.div
+        ref={ref}
         initial={animate ? { opacity: 0, y: 20, scale: 0.95 } : false}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         whileHover={{ y: -4, scale: 1.01 }}
@@ -447,6 +448,7 @@ export const EnhancedKpiCard = ({
   if (variant === 'compact') {
     return (
       <motion.div
+        ref={ref}
         initial={animate ? { opacity: 0, y: 10 } : false}
         animate={{ opacity: 1, y: 0 }}
         whileHover={{ y: -2 }}
@@ -483,6 +485,7 @@ export const EnhancedKpiCard = ({
   // Default variant
   return (
     <motion.div
+      ref={ref}
       initial={animate ? { opacity: 0, y: 20 } : false}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -3 }}
@@ -549,6 +552,8 @@ export const EnhancedKpiCard = ({
       )}
     </motion.div>
   );
-};
+});
+
+EnhancedKpiCard.displayName = 'EnhancedKpiCard';
 
 export default EnhancedKpiCard;

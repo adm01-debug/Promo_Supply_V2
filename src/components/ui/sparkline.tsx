@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, forwardRef } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +13,7 @@ interface SparklineProps {
   className?: string;
 }
 
-export function Sparkline({
+export const Sparkline = forwardRef<SVGSVGElement, SparklineProps>(({
   data,
   width = 80,
   height = 24,
@@ -22,7 +22,7 @@ export function Sparkline({
   showDots = false,
   animate = true,
   className
-}: SparklineProps) {
+}, _ref) => {
   const pathData = useMemo(() => {
     if (!data || data.length < 2) return { line: "", area: "" };
 
@@ -147,7 +147,9 @@ export function Sparkline({
       )}
     </svg>
   );
-}
+});
+
+Sparkline.displayName = 'Sparkline';
 
 // Mini sparkline for inline use
 export function MiniSparkline({ 
