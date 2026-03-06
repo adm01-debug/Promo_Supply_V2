@@ -197,7 +197,9 @@ const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({
       </div>
     </Reorder.Item>
   );
-};
+});
+
+DraggableWidget.displayName = 'DraggableWidget';
 
 interface DraggableDashboardProps {
   renderWidget: (widgetId: string, index: number) => React.ReactNode;
