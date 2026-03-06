@@ -546,7 +546,7 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
             width={120}
             height={24}
             showArea={false}
-            className="w-full opacity-60"
+            className="w-full opacity-80"
           />
         </div>
       )}

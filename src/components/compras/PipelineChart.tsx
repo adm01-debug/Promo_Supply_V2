@@ -26,15 +26,17 @@ const stages = [
 ] as const;
 
 export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ data }, ref) => {
-  const maxValue = Math.max(...Object.values(data));
+  // Use square root scale to prevent extreme values from dwarfing small ones
+  const values = Object.values(data);
+  const maxSqrt = Math.max(...values.map(v => Math.sqrt(v)));
   
   return (
     <div className="space-y-4" ref={ref}>
-      {/* Bar Chart with animations */}
+      {/* Bar Chart with normalized scale */}
       <div className="flex items-end gap-2 h-40">
         {stages.map((stage, index) => {
           const value = data[stage.key];
-          const height = maxValue > 0 ? (value / maxValue) * 100 : 0;
+          const height = maxSqrt > 0 ? (Math.sqrt(value) / maxSqrt) * 100 : 0;
           
           return (
             <motion.div 
