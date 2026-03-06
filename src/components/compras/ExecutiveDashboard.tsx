@@ -463,15 +463,18 @@ export const ExecutiveDashboard = () => {
     setSelectedSupplier('all');
   };
 
-  const handleCategoryDrillDown = (category: Record<string, unknown>) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleCategoryDrillDown = (category: any) => {
     setDrillDown({ type: 'category', data: category });
   };
 
-  const handleSupplierDrillDown = (supplier: Record<string, unknown>) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSupplierDrillDown = (supplier: any) => {
     setDrillDown({ type: 'supplier', data: supplier });
   };
 
-  const handleBuyerDrillDown = (buyer: Record<string, unknown>) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleBuyerDrillDown = (buyer: any) => {
     setDrillDown({ type: 'buyer', data: buyer });
   };
 
