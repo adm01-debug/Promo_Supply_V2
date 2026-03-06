@@ -232,22 +232,24 @@ const AnimatedRoutes = () => {
 
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-    <QueryClientProvider client={queryClient}>
-      <AccessibilityProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <PWAInstallPrompt />
-          <BrowserRouter>
-            <AuthProvider>
-              <Suspense fallback={<PageLoader />}>
-                <AnimatedRoutes />
-              </Suspense>
-            </AuthProvider>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AccessibilityProvider>
-    </QueryClientProvider>
+    <div className="min-h-screen">
+      <QueryClientProvider client={queryClient}>
+        <AccessibilityProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <PWAInstallPrompt />
+            <BrowserRouter>
+              <AuthProvider>
+                <Suspense fallback={<PageLoader />}>
+                  <AnimatedRoutes />
+                </Suspense>
+              </AuthProvider>
+            </BrowserRouter>
+          </TooltipProvider>
+        </AccessibilityProvider>
+      </QueryClientProvider>
+    </div>
   </ThemeProvider>
 );
 
