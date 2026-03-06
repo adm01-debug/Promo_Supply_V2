@@ -14,14 +14,14 @@ interface MobileRefreshWrapperProps {
   successMessage?: string;
 }
 
-export function MobileRefreshWrapper({
+export const MobileRefreshWrapper = React.forwardRef<HTMLDivElement, MobileRefreshWrapperProps>(function MobileRefreshWrapper({
   onRefresh,
   children,
   className,
   enabled = true,
   variant = 'default',
   successMessage = 'Atualizado!',
-}: MobileRefreshWrapperProps) {
+}, _ref) {
   const isMobile = useIsMobile();
   const haptic = useHapticFeedback();
   const [showSuccess, setShowSuccess] = React.useState(false);
@@ -251,6 +251,6 @@ export function MobileRefreshWrapper({
       </motion.div>
     </div>
   );
-}
+});
 
 export default MobileRefreshWrapper;
