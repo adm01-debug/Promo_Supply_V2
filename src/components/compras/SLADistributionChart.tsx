@@ -103,7 +103,7 @@ const STATUS_CONFIG = {
   },
 };
 
-export const SLADistributionChart = () => {
+export const SLADistributionChart = forwardRef<HTMLDivElement>((_props, ref) => {
   const { settings } = useSLASettings();
   const [period, setPeriod] = useState<PeriodFilter>('month');
   
