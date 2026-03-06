@@ -463,15 +463,15 @@ export const ExecutiveDashboard = () => {
     setSelectedSupplier('all');
   };
 
-  const handleCategoryDrillDown = (category: any) => {
+  const handleCategoryDrillDown = (category: Record<string, unknown>) => {
     setDrillDown({ type: 'category', data: category });
   };
 
-  const handleSupplierDrillDown = (supplier: any) => {
+  const handleSupplierDrillDown = (supplier: Record<string, unknown>) => {
     setDrillDown({ type: 'supplier', data: supplier });
   };
 
-  const handleBuyerDrillDown = (buyer: any) => {
+  const handleBuyerDrillDown = (buyer: Record<string, unknown>) => {
     setDrillDown({ type: 'buyer', data: buyer });
   };
 
