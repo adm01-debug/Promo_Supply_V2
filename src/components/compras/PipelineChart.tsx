@@ -29,7 +29,7 @@ export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ d
   const maxValue = Math.max(...Object.values(data));
   
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" ref={ref}>
       {/* Bar Chart with animations */}
       <div className="flex items-end gap-2 h-40">
         {stages.map((stage, index) => {
