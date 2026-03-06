@@ -549,6 +549,8 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
       )}
     </motion.div>
   );
-};
+});
+
+EnhancedKpiCard.displayName = 'EnhancedKpiCard';
 
 export default EnhancedKpiCard;

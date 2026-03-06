@@ -147,7 +147,9 @@ export const Sparkline = forwardRef<SVGSVGElement, SparklineProps>(({
       )}
     </svg>
   );
-}
+});
+
+Sparkline.displayName = 'Sparkline';
 
 // Mini sparkline for inline use
 export function MiniSparkline({ 
