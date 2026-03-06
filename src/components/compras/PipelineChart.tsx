@@ -92,4 +92,6 @@ export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ d
       </div>
     </div>
   );
-};
+});
+
+PipelineChart.displayName = 'PipelineChart';
