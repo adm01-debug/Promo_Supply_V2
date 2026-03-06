@@ -414,7 +414,7 @@ const BuyerPerformanceDashboard = () => {
     }));
   }, [buyer, compareBuyer]);
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ color?: string; name?: string; value?: number }>; label?: string }) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
