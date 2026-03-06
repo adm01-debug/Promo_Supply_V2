@@ -217,7 +217,7 @@ const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3
 interface DrillDownData {
   type: 'category' | 'supplier' | 'buyer' | 'pending';
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: Record<string, unknown>;
+  data: any; // Union of category/supplier/buyer/pending drill-down data shapes
 }
 
 const formatCurrency = (value: number) => {
