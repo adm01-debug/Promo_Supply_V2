@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, forwardRef } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -37,6 +37,12 @@ const Seguranca = lazy(() => import("./pages/Seguranca"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
+
+const RefSafeBrowserRouter = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
+  ({ children }, _ref) => <BrowserRouter>{children}</BrowserRouter>
+);
+
+RefSafeBrowserRouter.displayName = "RefSafeBrowserRouter";
 
 // Page transition variants
 const pageVariants = {
@@ -239,13 +245,13 @@ const App = () => (
             <Toaster />
             <Sonner />
             <PWAInstallPrompt />
-            <BrowserRouter>
+            <RefSafeBrowserRouter>
               <AuthProvider>
                 <Suspense fallback={<PageLoader />}>
                   <AnimatedRoutes />
                 </Suspense>
               </AuthProvider>
-            </BrowserRouter>
+            </RefSafeBrowserRouter>
           </TooltipProvider>
         </AccessibilityProvider>
       </QueryClientProvider>
