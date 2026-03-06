@@ -68,6 +68,7 @@ const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({
   return (
     <Reorder.Item
       ref={ref}
+      value={widget}
       id={widget.id}
       dragListener={false}
       dragControls={dragControls}
