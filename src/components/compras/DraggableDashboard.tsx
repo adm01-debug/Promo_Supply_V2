@@ -262,7 +262,7 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
   };
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div ref={ref} className={cn("space-y-6", className)}>
       {/* Edit Mode Controls */}
       <motion.div 
         className="flex items-center justify-between flex-wrap gap-2"
