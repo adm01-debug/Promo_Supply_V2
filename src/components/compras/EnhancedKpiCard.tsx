@@ -131,19 +131,19 @@ const AnimatedCounter = forwardRef<HTMLSpanElement, { value: number; format?: 'n
 AnimatedCounter.displayName = 'AnimatedCounter';
 
 // Delta indicator component
-const DeltaIndicator = forwardRef<HTMLDivElement, { 
-  currentValue: number; 
+const DeltaIndicator = ({
+  currentValue,
+  previousValue,
+  invertColors = false,
+}: {
+  currentValue: number;
   previousValue: number;
   invertColors?: boolean;
-}>(({ 
-  currentValue, 
-  previousValue,
-  invertColors = false 
-}, ref) => {
-  const delta = previousValue !== 0 
-    ? ((currentValue - previousValue) / previousValue) * 100 
+}) => {
+  const delta = previousValue !== 0
+    ? ((currentValue - previousValue) / previousValue) * 100
     : 0;
-  
+
   const isPositive = delta > 0;
   const isNegative = delta < 0;
   const isNeutral = Math.abs(delta) < 0.5;
@@ -151,12 +151,12 @@ const DeltaIndicator = forwardRef<HTMLDivElement, {
   const colorClass = useMemo(() => {
     if (isNeutral) return 'bg-muted text-muted-foreground';
     if (invertColors) {
-      return isPositive 
-        ? 'bg-destructive/15 text-destructive' 
+      return isPositive
+        ? 'bg-destructive/15 text-destructive'
         : 'bg-success/15 text-success';
     }
-    return isPositive 
-      ? 'bg-success/15 text-success' 
+    return isPositive
+      ? 'bg-success/15 text-success'
       : 'bg-destructive/15 text-destructive';
   }, [isPositive, isNegative, isNeutral, invertColors]);
 
@@ -200,8 +200,7 @@ const DeltaIndicator = forwardRef<HTMLDivElement, {
       <span>{Math.abs(delta).toFixed(1)}%</span>
     </motion.div>
   );
-});
-DeltaIndicator.displayName = 'DeltaIndicator';
+};
 
 // Target progress ring
 const TargetProgressRing = ({ 
