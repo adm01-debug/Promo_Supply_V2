@@ -332,20 +332,18 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
           )
         </div>
 
-        <AnimatePresence>
-          {isEditMode && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-            >
-              <Badge variant="outline" className="gap-1">
-                <Settings2 className="w-3 h-3" />
-                Modo de Edição Ativo
-              </Badge>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {isEditMode && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+          >
+            <Badge variant="outline" className="gap-1">
+              <Settings2 className="w-3 h-3" />
+              Modo de Edição Ativo
+            </Badge>
+          </motion.div>
+        )
       </motion.div>
 
       {/* KPIs Grid with Reorder */}
