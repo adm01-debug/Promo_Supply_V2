@@ -320,8 +320,7 @@ const AccessibilityStyles = ({ settings }: { settings: AccessibilitySettings }) 
       </svg>
     </>
   );
-});
-AccessibilityStyles.displayName = 'AccessibilityStyles';
+};
 
 // ============================================
 // Accessibility Panel
