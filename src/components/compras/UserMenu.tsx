@@ -14,7 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth, roleLabels, roleColors } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
-export const UserMenu = forwardRef<HTMLDivElement>((_props, ref) => {
+export const UserMenu = forwardRef<HTMLDivElement>((_props, _ref) => {
   const { user, profile, role, signOut } = useAuth();
 
   if (!user) return null;
