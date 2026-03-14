@@ -67,7 +67,6 @@ const DraggableWidget = ({
 
   return (
     <Reorder.Item
-      ref={ref}
       value={widget}
       id={widget.id}
       dragListener={false}
