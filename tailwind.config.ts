@@ -110,72 +110,43 @@ export default {
           "5": "hsl(var(--chart-5))",
         },
 
-        // Gamification
-        xp: {
-          DEFAULT: "hsl(var(--xp))",
-          foreground: "hsl(var(--xp-foreground))",
+        // KPI Colors (mapped from CSS tokens)
+        "kpi-emerald": {
+          DEFAULT: "hsl(var(--kpi-emerald))",
+          bg: "hsl(var(--kpi-emerald-bg))",
         },
-        coins: {
-          DEFAULT: "hsl(var(--coins))",
-          foreground: "hsl(var(--coins-foreground))",
+        "kpi-orange": {
+          DEFAULT: "hsl(var(--kpi-orange))",
+          bg: "hsl(var(--kpi-orange-bg))",
         },
-        streak: {
-          DEFAULT: "hsl(var(--streak))",
-          foreground: "hsl(var(--streak-foreground))",
+        "kpi-blue": {
+          DEFAULT: "hsl(var(--kpi-blue))",
+          bg: "hsl(var(--kpi-blue-bg))",
         },
-        level: {
-          DEFAULT: "hsl(var(--level))",
-          foreground: "hsl(var(--level-foreground))",
+        "kpi-purple": {
+          DEFAULT: "hsl(var(--kpi-purple))",
+          bg: "hsl(var(--kpi-purple-bg))",
         },
-
-        // Ranks
-        "rank-gold": {
-          DEFAULT: "hsl(var(--rank-gold))",
-          foreground: "hsl(var(--rank-gold-foreground))",
+        "kpi-green": {
+          DEFAULT: "hsl(var(--kpi-green))",
+          bg: "hsl(var(--kpi-green-bg))",
         },
-        "rank-silver": {
-          DEFAULT: "hsl(var(--rank-silver))",
-          foreground: "hsl(var(--rank-silver-foreground))",
+        "kpi-cyan": {
+          DEFAULT: "hsl(var(--kpi-cyan))",
+          bg: "hsl(var(--kpi-cyan-bg))",
         },
-        "rank-bronze": {
-          DEFAULT: "hsl(var(--rank-bronze))",
-          foreground: "hsl(var(--rank-bronze-foreground))",
+        "kpi-red": {
+          DEFAULT: "hsl(var(--kpi-red))",
+          bg: "hsl(var(--kpi-red-bg))",
         },
-
-        // Modules
-        tasks: {
-          DEFAULT: "hsl(var(--tasks))",
-          foreground: "hsl(var(--tasks-foreground))",
+        "kpi-indigo": {
+          DEFAULT: "hsl(var(--kpi-indigo))",
+          bg: "hsl(var(--kpi-indigo-bg))",
         },
-        gravacoes: {
-          DEFAULT: "hsl(var(--gravacoes))",
-          foreground: "hsl(var(--gravacoes-foreground))",
+        "kpi-teal": {
+          DEFAULT: "hsl(var(--kpi-teal))",
+          bg: "hsl(var(--kpi-teal-bg))",
         },
-        finance: {
-          DEFAULT: "hsl(var(--finance))",
-          foreground: "hsl(var(--finance-foreground))",
-        },
-        sales: {
-          DEFAULT: "hsl(var(--sales))",
-          foreground: "hsl(var(--sales-foreground))",
-        },
-        store: {
-          DEFAULT: "hsl(var(--store))",
-          foreground: "hsl(var(--store-foreground))",
-        },
-        zapp: {
-          DEFAULT: "hsl(var(--zapp))",
-          foreground: "hsl(var(--zapp-foreground))",
-        },
-        loggi: {
-          DEFAULT: "hsl(var(--loggi))",
-          foreground: "hsl(var(--loggi-foreground))",
-        },
-
-        // Legacy compatibility
-        gold: "hsl(var(--rank-gold))",
-        silver: "hsl(var(--rank-silver))",
-        bronze: "hsl(var(--rank-bronze))",
       },
 
       /* ===== BORDER RADIUS ===== */
@@ -322,30 +293,6 @@ export default {
           "50%": { borderColor: "hsl(var(--primary) / 0.8)" },
         },
 
-        // Gamification specific
-        "count-up": {
-          from: { opacity: "0", transform: "translateY(10px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
-        },
-        "xp-shimmer": {
-          "0%": { backgroundPosition: "-100% 0" },
-          "100%": { backgroundPosition: "200% 0" },
-        },
-        "streak-fire": {
-          "0%, 100%": { transform: "scale(1)", filter: "brightness(1)" },
-          "50%": { transform: "scale(1.1)", filter: "brightness(1.3)" },
-        },
-        "coin-shine": {
-          "0%": { transform: "rotateY(0deg)" },
-          "50%": { transform: "rotateY(180deg)" },
-          "100%": { transform: "rotateY(360deg)" },
-        },
-        "level-up": {
-          "0%": { transform: "scale(1)", boxShadow: "0 0 0 0 hsl(var(--primary) / 0.7)" },
-          "50%": { transform: "scale(1.05)", boxShadow: "0 0 30px 10px hsl(var(--primary) / 0.4)" },
-          "100%": { transform: "scale(1)", boxShadow: "0 0 0 0 hsl(var(--primary) / 0)" },
-        },
-
         // Feedback
         "flash-success": {
           "0%, 100%": { backgroundColor: "transparent" },
@@ -394,13 +341,6 @@ export default {
         "pulse-ring": "pulse-ring 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
         "border-glow": "border-glow 2s ease-in-out infinite",
-
-        // Gamification
-        "count-up": "count-up 0.4s ease-out forwards",
-        "xp-shimmer": "xp-shimmer 2s ease-in-out infinite",
-        "streak-fire": "streak-fire 0.8s ease-in-out infinite",
-        "coin-shine": "coin-shine 2s ease-in-out infinite",
-        "level-up": "level-up 0.6s ease-out",
 
         // Feedback
         "flash-success": "flash-success 0.5s ease-in-out",
