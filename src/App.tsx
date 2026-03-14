@@ -239,13 +239,13 @@ const App = () => (
             <Toaster />
             <Sonner />
             <PWAInstallPrompt />
-            <RefSafeBrowserRouter>
+            <BrowserRouter>
               <AuthProvider>
                 <Suspense fallback={<PageLoader />}>
                   <AnimatedRoutes />
                 </Suspense>
               </AuthProvider>
-            </RefSafeBrowserRouter>
+            </BrowserRouter>
           </TooltipProvider>
         </AccessibilityProvider>
       </QueryClientProvider>
