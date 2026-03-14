@@ -329,7 +329,7 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
                 </DropdownMenu>
               )}
             </motion.div>
-          )
+          )}
         </div>
 
         {isEditMode && (
