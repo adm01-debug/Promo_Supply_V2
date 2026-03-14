@@ -399,7 +399,7 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
             axis="y"
             values={visibleOtherWidgets}
             onReorder={(newOrder) => handleReorder('other', newOrder)}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-6 auto-rows-fr"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-4 auto-rows-fr"
           >
             {visibleOtherWidgets.map((widget, index) => (
               <DraggableWidget
