@@ -63,6 +63,58 @@ const defaultSettings: AccessibilitySettings = {
   keyboardNavigation: true
 };
 
+const colorBlindModes: AccessibilitySettings['colorBlindMode'][] = [
+  'none',
+  'protanopia',
+  'deuteranopia',
+  'tritanopia',
+];
+
+const toBoolean = (value: unknown, fallback: boolean): boolean => {
+  if (typeof value === 'boolean') return value;
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+  return fallback;
+};
+
+const toNumber = (
+  value: unknown,
+  fallback: number,
+  min: number,
+  max: number
+): number => {
+  const numericValue = typeof value === 'number' ? value : Number(value);
+  if (!Number.isFinite(numericValue)) return fallback;
+  return Math.min(max, Math.max(min, numericValue));
+};
+
+const sanitizeAccessibilitySettings = (raw: unknown): AccessibilitySettings => {
+  const saved = raw && typeof raw === 'object'
+    ? (raw as Partial<AccessibilitySettings>)
+    : {};
+
+  const colorBlindMode =
+    typeof saved.colorBlindMode === 'string' &&
+    colorBlindModes.includes(saved.colorBlindMode as AccessibilitySettings['colorBlindMode'])
+      ? (saved.colorBlindMode as AccessibilitySettings['colorBlindMode'])
+      : defaultSettings.colorBlindMode;
+
+  return {
+    fontSize: toNumber(saved.fontSize, defaultSettings.fontSize, 80, 150),
+    highContrast: toBoolean(saved.highContrast, defaultSettings.highContrast),
+    reducedMotion: toBoolean(saved.reducedMotion, defaultSettings.reducedMotion),
+    largePointer: toBoolean(saved.largePointer, defaultSettings.largePointer),
+    focusHighlight: toBoolean(saved.focusHighlight, defaultSettings.focusHighlight),
+    screenReaderMode: toBoolean(saved.screenReaderMode, defaultSettings.screenReaderMode),
+    dyslexiaFont: toBoolean(saved.dyslexiaFont, defaultSettings.dyslexiaFont),
+    lineSpacing: toNumber(saved.lineSpacing, defaultSettings.lineSpacing, 1, 2.5),
+    letterSpacing: toNumber(saved.letterSpacing, defaultSettings.letterSpacing, 0, 0.2),
+    colorBlindMode,
+    textToSpeech: toBoolean(saved.textToSpeech, defaultSettings.textToSpeech),
+    keyboardNavigation: toBoolean(saved.keyboardNavigation, defaultSettings.keyboardNavigation),
+  };
+};
+
 interface AccessibilityContextValue {
   settings: AccessibilitySettings;
   updateSettings: (updates: Partial<AccessibilitySettings>) => void;
