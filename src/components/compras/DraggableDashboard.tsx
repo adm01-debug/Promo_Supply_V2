@@ -95,97 +95,95 @@ const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({
       )}
 
       {/* Widget Controls */}
-      <AnimatePresence>
-        {(isEditMode || isHovered) && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 bg-background border rounded-full shadow-lg px-2 py-1"
-          >
-            {/* Drag Handle */}
-            {isEditMode && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="p-1 h-6 w-6 cursor-grab active:cursor-grabbing hover:bg-muted rounded-full transition-colors"
-                      onPointerDown={(e) => dragControls.start(e)}
-                    >
-                      <GripVertical className="w-4 h-4 text-muted-foreground" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Arrastar</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-
-            {/* Size Selector */}
-            <DropdownMenu>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="p-1 h-6 w-6 hover:bg-muted rounded-full transition-colors">
-                        <Maximize2 className="w-4 h-4 text-muted-foreground" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>Redimensionar</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <DropdownMenuContent align="center">
-                <DropdownMenuLabel>Tamanho</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {sizeOptions.map((option) => (
-                  <DropdownMenuItem
-                    key={option.value}
-                    onClick={() => onResize(widget.id, option.value)}
-                    className={cn(
-                      "flex items-center gap-2",
-                      widget.size === option.value && "bg-primary/10"
-                    )}
-                  >
-                    <option.icon className="w-4 h-4" />
-                    {option.label}
-                    {widget.size === option.value && (
-                      <Badge variant="secondary" className="ml-auto text-xs">Atual</Badge>
-                    )}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Toggle Visibility */}
+      {(isEditMode || isHovered) && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 bg-background border rounded-full shadow-lg px-2 py-1"
+        >
+          {/* Drag Handle */}
+          {isEditMode && (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="p-1 h-6 w-6 hover:bg-muted rounded-full transition-colors"
-                    onClick={() => onToggleVisibility(widget.id)}
+                    className="p-1 h-6 w-6 cursor-grab active:cursor-grabbing hover:bg-muted rounded-full transition-colors"
+                    onPointerDown={(e) => dragControls.start(e)}
                   >
-                    {widget.visible ? (
-                      <Eye className="w-4 h-4 text-muted-foreground" />
-                    ) : (
-                      <EyeOff className="w-4 h-4 text-muted-foreground" />
-                    )}
+                    <GripVertical className="w-4 h-4 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>{widget.visible ? 'Ocultar' : 'Mostrar'}</TooltipContent>
+                <TooltipContent>Arrastar</TooltipContent>
               </Tooltip>
             </TooltipProvider>
+          )}
 
-            {/* Widget Title */}
-            <span className="text-xs font-medium text-muted-foreground px-1 max-w-[100px] truncate">
-              {widget.title}
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Size Selector */}
+          <DropdownMenu>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="p-1 h-6 w-6 hover:bg-muted rounded-full transition-colors">
+                      <Maximize2 className="w-4 h-4 text-muted-foreground" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                </TooltipTrigger>
+                <TooltipContent>Redimensionar</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <DropdownMenuContent align="center">
+              <DropdownMenuLabel>Tamanho</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {sizeOptions.map((option) => (
+                <DropdownMenuItem
+                  key={option.value}
+                  onClick={() => onResize(widget.id, option.value)}
+                  className={cn(
+                    "flex items-center gap-2",
+                    widget.size === option.value && "bg-primary/10"
+                  )}
+                >
+                  <option.icon className="w-4 h-4" />
+                  {option.label}
+                  {widget.size === option.value && (
+                    <Badge variant="secondary" className="ml-auto text-xs">Atual</Badge>
+                  )}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Toggle Visibility */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="p-1 h-6 w-6 hover:bg-muted rounded-full transition-colors"
+                  onClick={() => onToggleVisibility(widget.id)}
+                >
+                  {widget.visible ? (
+                    <Eye className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <EyeOff className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{widget.visible ? 'Ocultar' : 'Mostrar'}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {/* Widget Title */}
+          <span className="text-xs font-medium text-muted-foreground px-1 max-w-[100px] truncate">
+            {widget.title}
+          </span>
+        </motion.div>
+      )}
 
       {/* Widget Content */}
       <div className={cn(
