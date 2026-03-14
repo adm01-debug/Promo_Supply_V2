@@ -121,8 +121,8 @@ Por favor, confirme o recebimento desta ordem e a disponibilidade do prazo infor
 
 Atenciosamente,
 Equipe de Compras
-Promo Brindes
-compras@promobrindes.com.br`;
+Promo Supply
+compras@promosupply.com.br`;
     setMensagemEmail(msg);
   };
 
