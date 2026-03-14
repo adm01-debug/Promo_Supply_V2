@@ -61,7 +61,7 @@ export const PWAInstallPrompt = forwardRef<HTMLDivElement>((_props, _ref) => {
     if (outcome === 'accepted') {
       toast({
         title: "App Instalado!",
-        description: "O Sistema de Compras foi adicionado à sua tela inicial.",
+        description: "O Promo Supply foi adicionado à sua tela inicial.",
       });
     }
 
