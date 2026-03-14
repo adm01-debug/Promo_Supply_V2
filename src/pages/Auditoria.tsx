@@ -266,9 +266,14 @@ const Auditoria = () => {
                   ))
                 ) : logs.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="h-32 text-center">
-                      <History className="h-10 w-10 mx-auto mb-3 text-muted-foreground opacity-50" />
-                      <p className="text-muted-foreground">Nenhum registro encontrado</p>
+                    <TableCell colSpan={6} className="py-4">
+                      <IllustratedEmptyState
+                        type="analytics"
+                        title="Nenhum registro de auditoria"
+                        description={search ? "Tente ajustar os termos de busca ou remover filtros." : "Os registros de auditoria aparecerão aqui conforme as ações forem realizadas no sistema."}
+                        size="sm"
+                        action={search ? { label: "Limpar busca", onClick: () => { setSearch(''); setEntityFilter('all'); setActionFilter('all'); }, variant: "outline" } : undefined}
+                      />
                     </TableCell>
                   </TableRow>
                 ) : (
