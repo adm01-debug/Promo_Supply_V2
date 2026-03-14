@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Eye, 
   EyeOff, 
@@ -71,7 +71,6 @@ const colorBlindModes: AccessibilitySettings['colorBlindMode'][] = [
 ];
 
 const ACCESSIBILITY_STORAGE_KEY = 'accessibility-settings';
-const ACCESSIBILITY_CONFIRMATION_KEY = 'accessibility-settings-confirmed';
 
 const toBoolean = (value: unknown, fallback: boolean): boolean => {
   if (typeof value === 'boolean') return value;
@@ -118,12 +117,7 @@ const sanitizeAccessibilitySettings = (raw: unknown): AccessibilitySettings => {
   };
 };
 
-const shouldAutoRecoverVisualSettings = (
-  settings: AccessibilitySettings,
-  isConfirmed: boolean
-): boolean => {
-  if (isConfirmed) return false;
-
+const shouldAutoRecoverVisualSettings = (settings: AccessibilitySettings): boolean => {
   return (
     settings.highContrast ||
     settings.colorBlindMode !== 'none' ||
@@ -138,9 +132,9 @@ const getInitialAccessibilitySettings = (): AccessibilitySettings => {
 
   try {
     const parsed = sanitizeAccessibilitySettings(JSON.parse(savedSettings));
-    const isConfirmed = localStorage.getItem(ACCESSIBILITY_CONFIRMATION_KEY) === '1';
 
-    if (shouldAutoRecoverVisualSettings(parsed, isConfirmed)) {
+    // Recover visual layer to avoid persistent monochrome/no-motion state.
+    if (shouldAutoRecoverVisualSettings(parsed)) {
       const recoveredSettings: AccessibilitySettings = {
         ...parsed,
         highContrast: false,
@@ -182,38 +176,29 @@ interface AccessibilityProviderProps {
 export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
   const [settings, setSettings] = useState<AccessibilitySettings>(getInitialAccessibilitySettings);
 
-  const prefersReducedMotion = useReducedMotion();
-
   useEffect(() => {
     localStorage.setItem(ACCESSIBILITY_STORAGE_KEY, JSON.stringify(settings));
 
-    // Apply settings to document
     const root = document.documentElement;
-    const shouldReduceMotion = settings.reducedMotion || Boolean(prefersReducedMotion);
 
     root.style.fontSize = `${settings.fontSize}%`;
     root.style.setProperty('--line-height', settings.lineSpacing.toString());
     root.style.setProperty('--letter-spacing', `${settings.letterSpacing}em`);
 
     root.classList.toggle('high-contrast', settings.highContrast);
-    root.classList.toggle('reduced-motion', shouldReduceMotion);
+    root.classList.toggle('reduced-motion', settings.reducedMotion);
     root.classList.toggle('large-pointer', settings.largePointer);
     root.classList.toggle('focus-highlight', settings.focusHighlight);
     root.classList.toggle('dyslexia-font', settings.dyslexiaFont);
     root.classList.toggle('screen-reader-mode', settings.screenReaderMode);
-
-    // Color blind filters
     root.setAttribute('data-color-blind', settings.colorBlindMode);
-
-  }, [settings, prefersReducedMotion]);
+  }, [settings]);
 
   const updateSettings = useCallback((updates: Partial<AccessibilitySettings>) => {
-    localStorage.setItem(ACCESSIBILITY_CONFIRMATION_KEY, '1');
     setSettings(prev => ({ ...prev, ...updates }));
   }, []);
 
   const resetSettings = useCallback(() => {
-    localStorage.removeItem(ACCESSIBILITY_CONFIRMATION_KEY);
     setSettings(defaultSettings);
   }, []);
 
@@ -225,7 +210,7 @@ export const AccessibilityProvider = React.forwardRef<HTMLDivElement, Accessibil
     announcement.className = 'sr-only';
     announcement.textContent = message;
     document.body.appendChild(announcement);
-    
+
     setTimeout(() => {
       document.body.removeChild(announcement);
     }, 1000);
