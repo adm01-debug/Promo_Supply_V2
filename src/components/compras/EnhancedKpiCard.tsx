@@ -126,8 +126,9 @@ const AnimatedCounter = forwardRef<HTMLSpanElement, { value: number; format?: 'n
     }
   };
 
-  return <span>{formatValue(displayValue)}</span>;
-};
+  return <span ref={ref}>{formatValue(displayValue)}</span>;
+});
+AnimatedCounter.displayName = 'AnimatedCounter';
 
 // Delta indicator component
 const DeltaIndicator = ({ 

@@ -353,4 +353,5 @@ export const PurchaseClimateWidget = forwardRef<HTMLDivElement>((_props, ref) =>
       </CardContent>
     </Card>
   );
-}
+});
+PurchaseClimateWidget.displayName = 'PurchaseClimateWidget';

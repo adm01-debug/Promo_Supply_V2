@@ -429,4 +429,5 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
       )}
     </div>
   );
-};
+});
+DraggableDashboard.displayName = 'DraggableDashboard';

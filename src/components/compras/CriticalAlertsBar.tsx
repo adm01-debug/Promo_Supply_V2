@@ -133,4 +133,5 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
       </div>
     </Alert>
   );
-};
+});
+CriticalAlertsBar.displayName = 'CriticalAlertsBar';

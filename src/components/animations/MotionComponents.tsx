@@ -346,9 +346,10 @@ interface PageTransitionProps {
   className?: string;
 }
 
-export const PageTransition = ({ children, className }: PageTransitionProps) => {
+export const PageTransition = React.forwardRef<HTMLDivElement, PageTransitionProps>(({ children, className }, ref) => {
   return (
     <motion.div
+      ref={ref}
       className={className}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
