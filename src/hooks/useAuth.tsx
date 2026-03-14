@@ -144,6 +144,7 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
   };
 
   const signOut = async () => {
+    fetchedUserIdRef.current = null;
     await supabase.auth.signOut();
     setUser(null);
     setSession(null);
