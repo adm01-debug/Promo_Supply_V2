@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
   requiredRole?: AppRole | AppRole[];
 }
 
-export const ProtectedRoute = forwardRef<HTMLDivElement, ProtectedRouteProps>(({ children, requiredRole }, _ref) => {
+export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const { user, loading, hasRole } = useAuth();
 
   if (loading) {
