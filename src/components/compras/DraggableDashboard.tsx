@@ -193,7 +193,7 @@ const DraggableWidget = ({
       </div>
     </Reorder.Item>
   );
-});
+};
 
 DraggableWidget.displayName = 'DraggableWidget';
 
