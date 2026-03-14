@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { 
   Eye, 
   Search, 
