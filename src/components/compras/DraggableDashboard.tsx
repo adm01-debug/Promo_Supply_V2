@@ -208,11 +208,11 @@ interface DraggableDashboardProps {
   className?: string;
 }
 
-export const DraggableDashboard = ({ 
+export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardProps>(({ 
   renderWidget, 
   getGridClasses,
   className 
-}: DraggableDashboardProps) => {
+}, ref) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const { 
     widgets, 
