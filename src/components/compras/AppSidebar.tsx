@@ -398,7 +398,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
                 <Package className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-sm font-bold text-foreground tracking-tight">Sistema de Compras</h1>
+                <h1 className="text-sm font-bold text-foreground tracking-tight">Promo Supply</h1>
                 <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                   <Sparkles className="w-3 h-3" /> Promo Supply
                 </p>
@@ -417,7 +417,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
                 </motion.div>
               </TooltipTrigger>
               <TooltipContent side="right">
-                <p className="font-medium">Sistema de Compras</p>
+                <p className="font-medium">Promo Supply</p>
                 <p className="text-xs text-muted-foreground">Promo Supply</p>
               </TooltipContent>
             </Tooltip>
@@ -544,7 +544,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               Ajuda & Suporte
             </Button>
             <div className="px-3 py-2 rounded-lg bg-muted/50 border border-border/50">
-              <p className="text-xs text-muted-foreground">Sistema de Compras v2.0</p>
+              <p className="text-xs text-muted-foreground">Promo Supply v2.0</p>
               <p className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-kpi-success animate-pulse" />
                 Online • Atualizado

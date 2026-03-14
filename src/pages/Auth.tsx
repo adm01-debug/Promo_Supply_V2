@@ -239,7 +239,7 @@ const Auth = () => {
               <Package className="w-7 h-7 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">Sistema de Compras</h1>
+              <h1 className="text-2xl font-bold text-white">Promo Supply</h1>
               <p className="text-white/70 text-sm">Promo Supply</p>
             </div>
           </div>
