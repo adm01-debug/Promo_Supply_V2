@@ -346,7 +346,7 @@ interface PageTransitionProps {
   className?: string;
 }
 
-export const PageTransition = React.forwardRef<HTMLDivElement, PageTransitionProps>(({ children, className }, ref) => {
+export const PageTransition = forwardRef<HTMLDivElement, PageTransitionProps>(({ children, className }, ref) => {
   return (
     <motion.div
       ref={ref}
