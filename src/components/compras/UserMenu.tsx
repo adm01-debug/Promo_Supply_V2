@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { LogOut, User, Settings, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
