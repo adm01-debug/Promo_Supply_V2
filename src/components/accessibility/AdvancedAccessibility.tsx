@@ -173,7 +173,7 @@ interface AccessibilityProviderProps {
   children: React.ReactNode;
 }
 
-export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
+export const AccessibilityProvider = ({ children }: AccessibilityProviderProps) => {
   const [settings, setSettings] = useState<AccessibilitySettings>(getInitialAccessibilitySettings);
 
   useEffect(() => {
