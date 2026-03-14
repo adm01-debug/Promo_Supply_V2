@@ -83,7 +83,8 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
       if (mounted) setLoading(false);
     });
 
-    // Then listen for changes
+    // Then listen for changes — CRITICAL: never await inside onAuthStateChange
+    // to prevent deadlocks that block subsequent auth events
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (!mounted) return;
@@ -91,9 +92,11 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          // Only re-fetch on sign-in or token refresh with different user
+          // Fire-and-forget via setTimeout to avoid blocking the auth event loop
           if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-            fetchUserData(session.user.id);
+            setTimeout(() => {
+              if (mounted) fetchUserData(session.user.id);
+            }, 0);
           }
         } else {
           setProfile(null);
