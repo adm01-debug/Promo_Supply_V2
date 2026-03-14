@@ -1,3 +1,4 @@
+import { forwardRef } from 'react';
 import { LogOut, User, Settings, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth, roleLabels, roleColors } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
-export const UserMenu = () => {
+export const UserMenu = forwardRef<HTMLDivElement>((_props, ref) => {
   const { user, profile, role, signOut } = useAuth();
 
   if (!user) return null;
@@ -90,4 +91,5 @@ export const UserMenu = () => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-};
+});
+UserMenu.displayName = 'UserMenu';

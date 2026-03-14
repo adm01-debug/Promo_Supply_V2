@@ -2,6 +2,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { ChevronRight, Home, LucideIcon, FileText, ShoppingCart, CreditCard, Users, Package, BarChart3, Shield, ClipboardList, FileCheck, Truck, History, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { forwardRef } from 'react';
 import { useMemo } from 'react';
 import {
   Breadcrumb,
@@ -56,13 +57,13 @@ interface BreadcrumbsProps {
   variant?: 'default' | 'compact' | 'pills';
 }
 
-export function Breadcrumbs({ 
+export const Breadcrumbs = forwardRef<HTMLElement, BreadcrumbsProps>(({ 
   className, 
   showHome = true,
   showIcons = true,
   maxItems = 4,
   variant = 'default'
-}: BreadcrumbsProps) {
+}, ref) => {
   const location = useLocation();
   
   const breadcrumbs = useMemo(() => {
@@ -80,33 +81,20 @@ export function Breadcrumbs({
 
     pathnames.forEach((segment, index) => {
       const href = `/${pathnames.slice(0, index + 1).join('/')}`;
-      const config = routeConfig[segment] || { 
-        label: segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ') 
-      };
+      const config = routeConfig[segment];
       
-      if (index === pathnames.length - 1) {
-        items.push({ 
+      if (config) {
+        items.push({
           label: config.label,
+          href: index < pathnames.length - 1 ? href : undefined,
           icon: config.icon,
-          description: config.description
-        });
-      } else {
-        items.push({ 
-          label: config.label, 
-          href,
-          icon: config.icon,
-          description: config.description
+          description: config.description,
         });
       }
     });
 
     return items;
   }, [location.pathname, showHome]);
-
-  // Não mostrar breadcrumbs na home
-  if (location.pathname === '/' || location.pathname === '/compras') {
-    return null;
-  }
 
   // Truncar breadcrumbs se necessário
   const displayedBreadcrumbs = useMemo(() => {
@@ -116,6 +104,11 @@ export function Breadcrumbs({
     const last = breadcrumbs.slice(-2);
     return [first, { label: '...', href: undefined }, ...last];
   }, [breadcrumbs, maxItems]);
+
+  // Não mostrar breadcrumbs na home
+  if (location.pathname === '/' || location.pathname === '/compras') {
+    return null;
+  }
 
   // Compact variant
   if (variant === 'compact') {
@@ -266,7 +259,8 @@ export function Breadcrumbs({
       </BreadcrumbList>
     </Breadcrumb>
   );
-}
+});
+Breadcrumbs.displayName = 'Breadcrumbs';
 
 // Auto breadcrumb hook for programmatic use
 export function useAutoBreadcrumbs() {

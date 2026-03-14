@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
 import { Settings2, RotateCcw, Save, Bell, Mail, Clock, AlertTriangle, Building2, Percent, ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -183,7 +183,7 @@ const SupplierThresholdConfig = ({
   );
 };
 
-export const SLASettingsPanel = () => {
+export const SLASettingsPanel = forwardRef<HTMLDivElement>((_props, ref) => {
   const { settings, updateSettings, resetToDefaults } = useSLASettings();
   const [localSettings, setLocalSettings] = useState<SLASettings>(settings);
   const [open, setOpen] = useState(false);
@@ -447,4 +447,5 @@ export const SLASettingsPanel = () => {
       </DialogContent>
     </Dialog>
   );
-};
+});
+SLASettingsPanel.displayName = 'SLASettingsPanel';
