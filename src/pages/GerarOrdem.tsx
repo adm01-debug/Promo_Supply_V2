@@ -112,7 +112,7 @@ CONDIÇÕES:
 • Prazo de Entrega: ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
 ${observacoes ? `\nOBSERVAÇÕES:\n${observacoes}` : ''}
 DADOS PARA ENTREGA:
-Promo Brindes
+Promo Supply
 [Endereço da empresa]
 
 ═══════════════════════════════════════════
