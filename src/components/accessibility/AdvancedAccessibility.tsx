@@ -84,7 +84,7 @@ interface AccessibilityProviderProps {
   children: React.ReactNode;
 }
 
-export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ children }) => {
+export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
   const [settings, setSettings] = useState<AccessibilitySettings>(() => {
     const saved = localStorage.getItem('accessibility-settings');
     return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
@@ -148,13 +148,14 @@ export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ ch
       <AccessibilityStyles settings={settings} />
     </AccessibilityContext.Provider>
   );
-};
+});
+AccessibilityProvider.displayName = 'AccessibilityProvider';
 
 // ============================================
 // Accessibility Styles Injector
 // ============================================
 
-const AccessibilityStyles: React.FC<{ settings: AccessibilitySettings }> = ({ settings }) => {
+const AccessibilityStyles = React.forwardRef<HTMLStyleElement, { settings: AccessibilitySettings }>(({ settings }, _ref) => {
   const styles = `
     ${settings.highContrast ? `
       .high-contrast {
@@ -246,7 +247,8 @@ const AccessibilityStyles: React.FC<{ settings: AccessibilitySettings }> = ({ se
       </svg>
     </>
   );
-};
+});
+AccessibilityStyles.displayName = 'AccessibilityStyles';
 
 // ============================================
 // Accessibility Panel
