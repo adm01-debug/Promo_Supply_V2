@@ -233,8 +233,7 @@ const AnimatedRoutes = () => {
       </motion.div>
     </AnimatePresence>
   );
-});
-AnimatedRoutes.displayName = 'AnimatedRoutes';
+};
 
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
