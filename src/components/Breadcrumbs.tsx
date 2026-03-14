@@ -259,7 +259,8 @@ export const Breadcrumbs = forwardRef<HTMLElement, BreadcrumbsProps>(({
       </BreadcrumbList>
     </Breadcrumb>
   );
-}
+});
+Breadcrumbs.displayName = 'Breadcrumbs';
 
 // Auto breadcrumb hook for programmatic use
 export function useAutoBreadcrumbs() {
