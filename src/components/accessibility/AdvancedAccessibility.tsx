@@ -222,7 +222,8 @@ export const AccessibilityProvider = React.forwardRef<HTMLDivElement, Accessibil
       <AccessibilityStyles settings={settings} />
     </AccessibilityContext.Provider>
   );
-};
+});
+AccessibilityProvider.displayName = 'AccessibilityProvider';
 
 // ============================================
 // Accessibility Styles Injector
