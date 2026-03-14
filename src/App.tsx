@@ -1,4 +1,4 @@
-import { Suspense, lazy, forwardRef } from "react";
+import { Suspense, lazy } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -38,11 +38,10 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
-const RefSafeBrowserRouter = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
-  ({ children }, _ref) => <BrowserRouter>{children}</BrowserRouter>
+// Simple wrapper — no forwardRef needed
+const RefSafeBrowserRouter = ({ children }: { children: React.ReactNode }) => (
+  <BrowserRouter>{children}</BrowserRouter>
 );
-
-RefSafeBrowserRouter.displayName = "RefSafeBrowserRouter";
 
 // Page transition variants
 const pageVariants = {
@@ -69,7 +68,7 @@ const pageVariants = {
 };
 
 // Animated Routes Component
-const AnimatedRoutes = forwardRef<HTMLDivElement>((_props, _ref) => {
+const AnimatedRoutes = () => {
   const location = useLocation();
 
   return (
@@ -234,8 +233,7 @@ const AnimatedRoutes = forwardRef<HTMLDivElement>((_props, _ref) => {
       </motion.div>
     </AnimatePresence>
   );
-});
-AnimatedRoutes.displayName = 'AnimatedRoutes';
+};
 
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

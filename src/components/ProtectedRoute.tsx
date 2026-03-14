@@ -1,4 +1,4 @@
-import { ReactNode, forwardRef } from 'react';
+import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuth, AppRole } from '@/hooks/useAuth';
@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
   requiredRole?: AppRole | AppRole[];
 }
 
-export const ProtectedRoute = forwardRef<HTMLDivElement, ProtectedRouteProps>(({ children, requiredRole }, _ref) => {
+export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) => {
   const { user, loading, hasRole } = useAuth();
 
   if (loading) {
@@ -32,5 +32,4 @@ export const ProtectedRoute = forwardRef<HTMLDivElement, ProtectedRouteProps>(({
   }
 
   return <>{children}</>;
-});
-ProtectedRoute.displayName = 'ProtectedRoute';
+};
