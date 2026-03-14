@@ -81,7 +81,7 @@ ${observacoes ? `\n📝 *Observações:* ${observacoes}` : ''}
 Por favor, confirme o recebimento e disponibilidade.
 
 Atenciosamente,
-Equipe de Compras - Promo Brindes`;
+Equipe de Compras - Promo Supply`;
     setMensagemWhatsApp(msg);
   };
 
@@ -112,7 +112,7 @@ CONDIÇÕES:
 • Prazo de Entrega: ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
 ${observacoes ? `\nOBSERVAÇÕES:\n${observacoes}` : ''}
 DADOS PARA ENTREGA:
-Promo Brindes
+Promo Supply
 [Endereço da empresa]
 
 ═══════════════════════════════════════════
@@ -121,8 +121,8 @@ Por favor, confirme o recebimento desta ordem e a disponibilidade do prazo infor
 
 Atenciosamente,
 Equipe de Compras
-Promo Brindes
-compras@promobrindes.com.br`;
+Promo Supply
+compras@promosupply.com.br`;
     setMensagemEmail(msg);
   };
 

@@ -54,7 +54,7 @@ const initialFilters: AdvancedFilters = {
 };
 
 const empresasOptions = [
-  'Promo Brindes',
+  'Promo Supply',
   'Gift Solutions',
   'Marketing Promo',
   'Brindes Express',

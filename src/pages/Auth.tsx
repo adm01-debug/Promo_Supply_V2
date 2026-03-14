@@ -240,7 +240,7 @@ const Auth = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">Sistema de Compras</h1>
-              <p className="text-white/70 text-sm">Promo Brindes</p>
+              <p className="text-white/70 text-sm">Promo Supply</p>
             </div>
           </div>
 
@@ -282,7 +282,7 @@ const Auth = () => {
 
         {/* Footer */}
         <p className="relative z-10 text-white/50 text-sm">
-          © 2025 Promo Brindes. Todos os direitos reservados.
+           © 2025 Promo Supply. Todos os direitos reservados.
         </p>
       </div>
 
@@ -299,7 +299,7 @@ const Auth = () => {
             <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-lg">
               <Package className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-bold text-foreground">Promo Brindes</span>
+            <span className="font-bold text-foreground">Promo Supply</span>
           </div>
         </div>
         
@@ -513,7 +513,7 @@ const Auth = () => {
 
           {/* Footer for mobile */}
           <p className="text-center text-muted-foreground text-xs mt-6 lg:hidden">
-            © 2025 Promo Brindes. Todos os direitos reservados.
+            © 2025 Promo Supply. Todos os direitos reservados.
           </p>
         </div>
       </div>

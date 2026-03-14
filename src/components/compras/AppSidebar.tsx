@@ -400,7 +400,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               <div>
                 <h1 className="text-sm font-bold text-foreground tracking-tight">Sistema de Compras</h1>
                 <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> Promo Brindes
+                  <Sparkles className="w-3 h-3" /> Promo Supply
                 </p>
               </div>
             </motion.div>
@@ -418,7 +418,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               </TooltipTrigger>
               <TooltipContent side="right">
                 <p className="font-medium">Sistema de Compras</p>
-                <p className="text-xs text-muted-foreground">Promo Brindes</p>
+                <p className="text-xs text-muted-foreground">Promo Supply</p>
               </TooltipContent>
             </Tooltip>
           )}
