@@ -158,32 +158,31 @@ const ComprasDashboard = () => {
         
         {/* Page Title + Climate Widget */}
         <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-4 gap-4"
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.4 }}
         >
-          <div className="lg:col-span-3 flex items-start justify-between">
-            <div>
-              <motion.h1 
-                className="text-2xl font-bold text-foreground"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2, duration: 0.4 }}
-              >
-                Dashboard
-              </motion.h1>
-              <motion.p 
-                className="text-sm text-muted-foreground"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.4 }}
-              >
-                Visão geral do sistema de compras
-              </motion.p>
-            </div>
+          <div>
+            <motion.h1 
+              className="text-2xl font-bold text-foreground"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, duration: 0.4 }}
+            >
+              Dashboard
+            </motion.h1>
+            <motion.p 
+              className="text-sm text-muted-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.4 }}
+            >
+              Visão geral do sistema de compras
+            </motion.p>
           </div>
           <motion.div
+            className="w-full sm:w-auto sm:min-w-[320px] lg:min-w-[360px]"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.4 }}
