@@ -131,15 +131,15 @@ const AnimatedCounter = forwardRef<HTMLSpanElement, { value: number; format?: 'n
 AnimatedCounter.displayName = 'AnimatedCounter';
 
 // Delta indicator component
-const DeltaIndicator = ({ 
-  currentValue, 
-  previousValue,
-  invertColors = false 
-}: { 
+const DeltaIndicator = forwardRef<HTMLDivElement, { 
   currentValue: number; 
   previousValue: number;
   invertColors?: boolean;
-}) => {
+}>(({ 
+  currentValue, 
+  previousValue,
+  invertColors = false 
+}, ref) => {
   const delta = previousValue !== 0 
     ? ((currentValue - previousValue) / previousValue) * 100 
     : 0;
