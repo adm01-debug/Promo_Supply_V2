@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { AppSidebar } from "@/components/compras/AppSidebar";
 import { RealNotificationCenter } from "@/components/compras/RealNotificationCenter";
 import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";

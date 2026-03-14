@@ -37,7 +37,7 @@ export const usePermissions = () => {
     enabled: !!user,
   });
 
-// Fetch user's role permissions
+  // Fetch user's role permissions
   const { data: userPermissions, isLoading: userPermissionsLoading } = useQuery({
     queryKey: ['user-permissions', role],
     queryFn: async () => {
