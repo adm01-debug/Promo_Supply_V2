@@ -49,12 +49,15 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
         supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
       ]);
 
-      if (profileRes.data) {
-        setProfile(profileRes.data as UserProfile);
+      if (profileRes.error) {
+        console.error('Error fetching profile:', profileRes.error);
       }
-      if (roleRes.data) {
-        setRole(roleRes.data.role as AppRole);
+      if (roleRes.error) {
+        console.error('Error fetching role:', roleRes.error);
       }
+
+      setProfile(profileRes.data ? (profileRes.data as UserProfile) : null);
+      setRole(roleRes.data?.role ? (roleRes.data.role as AppRole) : null);
       fetchedUserIdRef.current = userId;
     } catch (error) {
       console.error('Error fetching user data:', error);
