@@ -547,10 +547,10 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
         <div className="mt-3 pt-3 border-t border-border/30">
           <Sparkline
             data={sparklineData}
-            width={120}
-            height={24}
-            showArea={false}
-            className="w-full opacity-80"
+            width={200}
+            height={32}
+            showArea={true}
+            className="w-full"
           />
         </div>
       )}
