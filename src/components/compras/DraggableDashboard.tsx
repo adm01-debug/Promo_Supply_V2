@@ -46,7 +46,7 @@ interface DraggableWidgetProps {
   className?: string;
 }
 
-const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({ 
+const DraggableWidget = ({ 
   widget, 
   children, 
   isEditMode, 
@@ -54,7 +54,7 @@ const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({
   onResize,
   onRemove,
   className
-}, ref) => {
+}: DraggableWidgetProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const dragControls = useDragControls();
 
