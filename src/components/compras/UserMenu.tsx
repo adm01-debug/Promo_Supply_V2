@@ -1,4 +1,3 @@
-import { forwardRef } from 'react';
 import { LogOut, User, Settings, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuth, roleLabels, roleColors } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 
-export const UserMenu = forwardRef<HTMLDivElement>((_props, _ref) => {
+export const UserMenu = () => {
   const { user, profile, role, signOut } = useAuth();
 
   if (!user) return null;
@@ -56,7 +55,7 @@ export const UserMenu = forwardRef<HTMLDivElement>((_props, _ref) => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        
+
         {role && (
           <>
             <DropdownMenuItem disabled className="opacity-100">
@@ -78,10 +77,10 @@ export const UserMenu = forwardRef<HTMLDivElement>((_props, _ref) => {
           <Settings className="mr-2 h-4 w-4" />
           Configurações
         </DropdownMenuItem>
-        
+
         <DropdownMenuSeparator />
-        
-        <DropdownMenuItem 
+
+        <DropdownMenuItem
           onClick={signOut}
           className="text-destructive focus:text-destructive"
         >
@@ -91,5 +90,4 @@ export const UserMenu = forwardRef<HTMLDivElement>((_props, _ref) => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-});
-UserMenu.displayName = 'UserMenu';
+};
