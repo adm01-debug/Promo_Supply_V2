@@ -359,7 +359,8 @@ export const PageTransition = React.forwardRef<HTMLDivElement, PageTransitionPro
       {children}
     </motion.div>
   );
-};
+});
+PageTransition.displayName = 'PageTransition';
 
 // Floating animation for decorative elements
 export const FloatingElement = ({ 
