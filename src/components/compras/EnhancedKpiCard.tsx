@@ -191,7 +191,9 @@ const DeltaIndicator = ({
           </motion.div>
         )}
         {isNeutral && (
-          <Minus className="w-3 h-3" />
+          <motion.div key="neutral" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <Minus className="w-3 h-3" />
+          </motion.div>
         )}
       </AnimatePresence>
       <span>{Math.abs(delta).toFixed(1)}%</span>
