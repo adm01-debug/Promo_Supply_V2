@@ -284,54 +284,52 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
             )}
           </Button>
 
-          <AnimatePresence>
-            {isEditMode && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                className="flex items-center gap-2"
+          {isEditMode && (
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="flex items-center gap-2"
+            >
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={resetLayout}
+                className="gap-2 text-muted-foreground"
               >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetLayout}
-                  className="gap-2 text-muted-foreground"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  Resetar
-                </Button>
+                <RotateCcw className="w-4 h-4" />
+                Resetar
+              </Button>
 
-                {hiddenWidgets.length > 0 && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Adicionar ({hiddenWidgets.length})
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                      <DropdownMenuLabel>Widgets Ocultos</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {hiddenWidgets.map((widget) => (
-                        <DropdownMenuItem
-                          key={widget.id}
-                          onClick={() => handleShowHiddenWidget(widget.id)}
-                          className="flex items-center gap-2"
-                        >
-                          <Eye className="w-4 h-4" />
-                          {widget.title}
-                          <Badge variant="secondary" className="ml-auto text-xs">
-                            {widget.type}
-                          </Badge>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
+              {hiddenWidgets.length > 0 && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <Plus className="w-4 h-4" />
+                      Adicionar ({hiddenWidgets.length})
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuLabel>Widgets Ocultos</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {hiddenWidgets.map((widget) => (
+                      <DropdownMenuItem
+                        key={widget.id}
+                        onClick={() => handleShowHiddenWidget(widget.id)}
+                        className="flex items-center gap-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        {widget.title}
+                        <Badge variant="secondary" className="ml-auto text-xs">
+                          {widget.type}
+                        </Badge>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </motion.div>
+          )
         </div>
 
         <AnimatePresence>
