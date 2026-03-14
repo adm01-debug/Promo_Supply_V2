@@ -200,7 +200,8 @@ const DeltaIndicator = forwardRef<HTMLDivElement, {
       <span>{Math.abs(delta).toFixed(1)}%</span>
     </motion.div>
   );
-};
+});
+DeltaIndicator.displayName = 'DeltaIndicator';
 
 // Target progress ring
 const TargetProgressRing = ({ 
