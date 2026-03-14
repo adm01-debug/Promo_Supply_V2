@@ -147,6 +147,20 @@ export default {
           DEFAULT: "hsl(var(--kpi-teal))",
           bg: "hsl(var(--kpi-teal-bg))",
         },
+
+        // Compatibility aliases for legacy KPI semantic classes
+        "kpi-warning": {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        "kpi-danger": {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        "kpi-success": {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
       },
 
       /* ===== BORDER RADIUS ===== */
