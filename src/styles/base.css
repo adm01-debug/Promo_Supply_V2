@@ -1,0 +1,63 @@
+/* =================================================================
+   PROMO SUPPLY - BASE STYLES
+   Reset, tipografia base, transições de tema
+   ================================================================= */
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  /* Smooth theme transition */
+  html,
+  body,
+  *:not([class*="no-transition"]) {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
+  }
+
+  /* Prevent transition on page load */
+  html.theme-transition-disabled,
+  html.theme-transition-disabled *,
+  html.theme-transition-disabled *::before,
+  html.theme-transition-disabled *::after {
+    transition: none !important;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply font-semibold tracking-tight;
+  }
+
+  h1 { @apply text-3xl md:text-4xl; }
+  h2 { @apply text-2xl md:text-3xl; }
+  h3 { @apply text-xl md:text-2xl; }
+  h4 { @apply text-lg md:text-xl; }
+
+  /* Enhanced focus visibility for dark mode */
+  .dark :focus-visible {
+    outline-offset: 3px;
+  }
+
+  /* Better text rendering in dark mode */
+  .dark body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
