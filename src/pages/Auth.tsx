@@ -513,7 +513,7 @@ const Auth = () => {
 
           {/* Footer for mobile */}
           <p className="text-center text-muted-foreground text-xs mt-6 lg:hidden">
-            © 2025 Promo Brindes. Todos os direitos reservados.
+            © 2025 Promo Supply. Todos os direitos reservados.
           </p>
         </div>
       </div>

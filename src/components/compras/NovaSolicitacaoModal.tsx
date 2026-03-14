@@ -63,7 +63,7 @@ const initialFormData: NovaSolicitacaoData = {
 };
 
 const empresasMock = [
-  'Promo Brindes',
+  'Promo Supply',
   'Gift Solutions',
   'Marketing Promo',
   'Brindes Express',
