@@ -131,15 +131,15 @@ const AnimatedCounter = forwardRef<HTMLSpanElement, { value: number; format?: 'n
 AnimatedCounter.displayName = 'AnimatedCounter';
 
 // Delta indicator component
-const DeltaIndicator = ({
-  currentValue,
-  previousValue,
-  invertColors = false,
-}: {
+const DeltaIndicator = forwardRef<HTMLDivElement, {
   currentValue: number;
   previousValue: number;
   invertColors?: boolean;
-}) => {
+}>(({
+  currentValue,
+  previousValue,
+  invertColors = false,
+}, ref) => {
   const delta = previousValue !== 0
     ? ((currentValue - previousValue) / previousValue) * 100
     : 0;
@@ -162,6 +162,7 @@ const DeltaIndicator = ({
 
   return (
     <motion.div
+      ref={ref}
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
@@ -200,7 +201,8 @@ const DeltaIndicator = ({
       <span>{Math.abs(delta).toFixed(1)}%</span>
     </motion.div>
   );
-};
+});
+DeltaIndicator.displayName = 'DeltaIndicator';
 
 // Target progress ring
 const TargetProgressRing = ({ 
