@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { Package, RefreshCw, Search, Plus, Trophy, Clock, Check, Loader2 } from "lucide-react";
+import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { useSearchParams, Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -196,16 +197,12 @@ const Cotacao = () => {
       <MainLayout>
         <div className="space-y-6">
           <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
-          <Card className="p-8 text-center">
-            <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="font-semibold text-foreground mb-2">Nenhuma solicitação selecionada</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Selecione uma solicitação para iniciar a cotação
-            </p>
-            <Button asChild>
-              <Link to="/solicitacoes">Ver Solicitações</Link>
-            </Button>
-          </Card>
+          <IllustratedEmptyState
+            type="orders"
+            title="Nenhuma solicitação selecionada"
+            description="Selecione uma solicitação da lista para iniciar o processo de cotação com fornecedores."
+            action={{ label: "Ver Solicitações", onClick: () => window.location.href = '/solicitacoes' }}
+          />
         </div>
       </MainLayout>
     );

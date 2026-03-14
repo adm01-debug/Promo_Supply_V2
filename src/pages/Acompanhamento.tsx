@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { 
   Eye, 
   Search, 
@@ -494,11 +495,12 @@ const Acompanhamento = () => {
         ) : (
           <div className="space-y-4">
             {pedidosFiltrados.length === 0 ? (
-              <Card className="p-12 text-center">
-                <Package className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold text-foreground mb-2">Nenhum pedido encontrado</h3>
-                <p className="text-sm text-muted-foreground">Tente ajustar os filtros de busca</p>
-              </Card>
+              <IllustratedEmptyState
+                type="orders"
+                title="Nenhum pedido em acompanhamento"
+                description="Nenhum pedido corresponde aos filtros atuais. Tente ajustar os critérios de busca."
+                action={{ label: "Limpar filtros", onClick: () => { setSearchTerm(''); setFiltroSLA('todos'); }, variant: "outline" }}
+              />
             ) : (
               pedidosFiltrados.map((pedido) => {
                 const SLAIcon = pedido.sla.icon;
