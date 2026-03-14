@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, forwardRef } from 'react';
-import { motion, AnimatePresence, Reorder, useDragControls } from 'framer-motion';
+import { motion, Reorder, useDragControls } from 'framer-motion';
 import { 
   GripVertical, 
   Maximize2, 
