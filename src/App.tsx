@@ -38,10 +38,11 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
 
-// Simple wrapper — no forwardRef needed
-const RefSafeBrowserRouter = ({ children }: { children: React.ReactNode }) => (
-  <BrowserRouter>{children}</BrowserRouter>
+const RefSafeBrowserRouter = forwardRef<HTMLDivElement, { children: React.ReactNode }>(
+  ({ children }, _ref) => <BrowserRouter>{children}</BrowserRouter>
 );
+
+RefSafeBrowserRouter.displayName = "RefSafeBrowserRouter";
 
 // Page transition variants
 const pageVariants = {
