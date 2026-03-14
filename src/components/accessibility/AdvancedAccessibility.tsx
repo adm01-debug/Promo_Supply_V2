@@ -70,6 +70,9 @@ const colorBlindModes: AccessibilitySettings['colorBlindMode'][] = [
   'tritanopia',
 ];
 
+const ACCESSIBILITY_STORAGE_KEY = 'accessibility-settings';
+const ACCESSIBILITY_CONFIRMATION_KEY = 'accessibility-settings-confirmed';
+
 const toBoolean = (value: unknown, fallback: boolean): boolean => {
   if (typeof value === 'boolean') return value;
   if (value === 'true') return true;
@@ -115,75 +118,83 @@ const sanitizeAccessibilitySettings = (raw: unknown): AccessibilitySettings => {
   };
 };
 
-interface AccessibilityContextValue {
-  settings: AccessibilitySettings;
-  updateSettings: (updates: Partial<AccessibilitySettings>) => void;
-  resetSettings: () => void;
-  announceToScreenReader: (message: string) => void;
-}
+const shouldAutoRecoverVisualSettings = (
+  settings: AccessibilitySettings,
+  isConfirmed: boolean
+): boolean => {
+  if (isConfirmed) return false;
 
-const AccessibilityContext = createContext<AccessibilityContextValue | null>(null);
-
-export const useAccessibility = () => {
-  const context = useContext(AccessibilityContext);
-  if (!context) {
-    throw new Error('useAccessibility must be used within AccessibilityProvider');
-  }
-  return context;
+  return (
+    settings.highContrast ||
+    settings.colorBlindMode !== 'none' ||
+    settings.reducedMotion
+  );
 };
 
-interface AccessibilityProviderProps {
-  children: React.ReactNode;
-}
+const getInitialAccessibilitySettings = (): AccessibilitySettings => {
+  const savedSettings = localStorage.getItem(ACCESSIBILITY_STORAGE_KEY);
 
-export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
-  const [settings, setSettings] = useState<AccessibilitySettings>(() => {
-    const savedSettings = localStorage.getItem('accessibility-settings');
+  if (!savedSettings) return defaultSettings;
 
-    if (!savedSettings) return defaultSettings;
+  try {
+    const parsed = sanitizeAccessibilitySettings(JSON.parse(savedSettings));
+    const isConfirmed = localStorage.getItem(ACCESSIBILITY_CONFIRMATION_KEY) === '1';
 
-    try {
-      return sanitizeAccessibilitySettings(JSON.parse(savedSettings));
-    } catch {
-      return defaultSettings;
+    if (shouldAutoRecoverVisualSettings(parsed, isConfirmed)) {
+      const recoveredSettings: AccessibilitySettings = {
+        ...parsed,
+        highContrast: false,
+        reducedMotion: false,
+        colorBlindMode: 'none',
+      };
+
+      localStorage.setItem(ACCESSIBILITY_STORAGE_KEY, JSON.stringify(recoveredSettings));
+      return recoveredSettings;
     }
-  });
+
+    return parsed;
+  } catch {
+    return defaultSettings;
+  }
+};
+
+interface AccessibilityContextValue {
+...
+export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
+  const [settings, setSettings] = useState<AccessibilitySettings>(getInitialAccessibilitySettings);
 
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (prefersReducedMotion && !settings.reducedMotion) {
-      setSettings(prev => ({ ...prev, reducedMotion: true }));
-    }
-  }, [prefersReducedMotion]);
+    localStorage.setItem(ACCESSIBILITY_STORAGE_KEY, JSON.stringify(settings));
 
-  useEffect(() => {
-    localStorage.setItem('accessibility-settings', JSON.stringify(settings));
-    
     // Apply settings to document
     const root = document.documentElement;
-    
+    const shouldReduceMotion = settings.reducedMotion || Boolean(prefersReducedMotion);
+
     root.style.fontSize = `${settings.fontSize}%`;
     root.style.setProperty('--line-height', settings.lineSpacing.toString());
     root.style.setProperty('--letter-spacing', `${settings.letterSpacing}em`);
-    
+
     root.classList.toggle('high-contrast', settings.highContrast);
-    root.classList.toggle('reduced-motion', settings.reducedMotion);
+    root.classList.toggle('reduced-motion', shouldReduceMotion);
     root.classList.toggle('large-pointer', settings.largePointer);
     root.classList.toggle('focus-highlight', settings.focusHighlight);
     root.classList.toggle('dyslexia-font', settings.dyslexiaFont);
     root.classList.toggle('screen-reader-mode', settings.screenReaderMode);
-    
+
     // Color blind filters
     root.setAttribute('data-color-blind', settings.colorBlindMode);
-    
-  }, [settings]);
+
+  }, [settings, prefersReducedMotion]);
 
   const updateSettings = useCallback((updates: Partial<AccessibilitySettings>) => {
+    localStorage.setItem(ACCESSIBILITY_CONFIRMATION_KEY, '1');
     setSettings(prev => ({ ...prev, ...updates }));
   }, []);
 
   const resetSettings = useCallback(() => {
+    localStorage.removeItem(ACCESSIBILITY_CONFIRMATION_KEY);
     setSettings(defaultSettings);
   }, []);
 
