@@ -257,7 +257,7 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
   };
 
   return (
-    <Card>
+    <Card ref={ref}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle className="text-lg flex items-center gap-2">
