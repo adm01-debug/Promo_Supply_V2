@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, forwardRef } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -230,9 +230,9 @@ const AnimatedRoutes = () => {
   );
 };
 
-const App = () => (
-  <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-    <div className="min-h-screen">
+const App = forwardRef<HTMLDivElement>((_props, ref) => (
+  <div ref={ref} className="min-h-screen">
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <QueryClientProvider client={queryClient}>
         <AccessibilityProvider>
           <TooltipProvider>
@@ -249,8 +249,10 @@ const App = () => (
           </TooltipProvider>
         </AccessibilityProvider>
       </QueryClientProvider>
-    </div>
-  </ThemeProvider>
-);
+    </ThemeProvider>
+  </div>
+));
+
+App.displayName = "App";
 
 export default App;
