@@ -27,7 +27,7 @@ const MAX_RETRIES = 3;
 
 export function useOfflineSync() {
   const queryClient = useQueryClient();
-  const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   
   const [state, setState] = useState<OfflineSyncState>({
     isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
