@@ -1,5 +1,5 @@
 import { useState, useCallback, useMemo, forwardRef } from 'react';
-import { motion, AnimatePresence, Reorder, useDragControls } from 'framer-motion';
+import { motion, Reorder, useDragControls } from 'framer-motion';
 import { 
   GripVertical, 
   Maximize2, 
@@ -46,7 +46,7 @@ interface DraggableWidgetProps {
   className?: string;
 }
 
-const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({ 
+const DraggableWidget = ({ 
   widget, 
   children, 
   isEditMode, 
@@ -54,7 +54,7 @@ const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({
   onResize,
   onRemove,
   className
-}, ref) => {
+}: DraggableWidgetProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const dragControls = useDragControls();
 
@@ -67,7 +67,6 @@ const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({
 
   return (
     <Reorder.Item
-      ref={ref}
       value={widget}
       id={widget.id}
       dragListener={false}
@@ -85,109 +84,105 @@ const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Edit Mode Overlay */}
-      <AnimatePresence>
-        {isEditMode && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-10 rounded-lg border-2 border-dashed border-primary/50 bg-primary/5 pointer-events-none"
-          />
-        )}
-      </AnimatePresence>
+      {isEditMode && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 z-10 rounded-lg border-2 border-dashed border-primary/50 bg-primary/5 pointer-events-none"
+        />
+      )}
 
       {/* Widget Controls */}
-      <AnimatePresence>
-        {(isEditMode || isHovered) && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 bg-background border rounded-full shadow-lg px-2 py-1"
-          >
-            {/* Drag Handle */}
-            {isEditMode && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="p-1 h-6 w-6 cursor-grab active:cursor-grabbing hover:bg-muted rounded-full transition-colors"
-                      onPointerDown={(e) => dragControls.start(e)}
-                    >
-                      <GripVertical className="w-4 h-4 text-muted-foreground" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Arrastar</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-
-            {/* Size Selector */}
-            <DropdownMenu>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="p-1 h-6 w-6 hover:bg-muted rounded-full transition-colors">
-                        <Maximize2 className="w-4 h-4 text-muted-foreground" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>Redimensionar</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-              <DropdownMenuContent align="center">
-                <DropdownMenuLabel>Tamanho</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {sizeOptions.map((option) => (
-                  <DropdownMenuItem
-                    key={option.value}
-                    onClick={() => onResize(widget.id, option.value)}
-                    className={cn(
-                      "flex items-center gap-2",
-                      widget.size === option.value && "bg-primary/10"
-                    )}
-                  >
-                    <option.icon className="w-4 h-4" />
-                    {option.label}
-                    {widget.size === option.value && (
-                      <Badge variant="secondary" className="ml-auto text-xs">Atual</Badge>
-                    )}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Toggle Visibility */}
+      {(isEditMode || isHovered) && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -10 }}
+          className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 bg-background border rounded-full shadow-lg px-2 py-1"
+        >
+          {/* Drag Handle */}
+          {isEditMode && (
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="p-1 h-6 w-6 hover:bg-muted rounded-full transition-colors"
-                    onClick={() => onToggleVisibility(widget.id)}
+                    className="p-1 h-6 w-6 cursor-grab active:cursor-grabbing hover:bg-muted rounded-full transition-colors"
+                    onPointerDown={(e) => dragControls.start(e)}
                   >
-                    {widget.visible ? (
-                      <Eye className="w-4 h-4 text-muted-foreground" />
-                    ) : (
-                      <EyeOff className="w-4 h-4 text-muted-foreground" />
-                    )}
+                    <GripVertical className="w-4 h-4 text-muted-foreground" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>{widget.visible ? 'Ocultar' : 'Mostrar'}</TooltipContent>
+                <TooltipContent>Arrastar</TooltipContent>
               </Tooltip>
             </TooltipProvider>
+          )}
 
-            {/* Widget Title */}
-            <span className="text-xs font-medium text-muted-foreground px-1 max-w-[100px] truncate">
-              {widget.title}
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Size Selector */}
+          <DropdownMenu>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="p-1 h-6 w-6 hover:bg-muted rounded-full transition-colors">
+                      <Maximize2 className="w-4 h-4 text-muted-foreground" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                </TooltipTrigger>
+                <TooltipContent>Redimensionar</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <DropdownMenuContent align="center">
+              <DropdownMenuLabel>Tamanho</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              {sizeOptions.map((option) => (
+                <DropdownMenuItem
+                  key={option.value}
+                  onClick={() => onResize(widget.id, option.value)}
+                  className={cn(
+                    "flex items-center gap-2",
+                    widget.size === option.value && "bg-primary/10"
+                  )}
+                >
+                  <option.icon className="w-4 h-4" />
+                  {option.label}
+                  {widget.size === option.value && (
+                    <Badge variant="secondary" className="ml-auto text-xs">Atual</Badge>
+                  )}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Toggle Visibility */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="p-1 h-6 w-6 hover:bg-muted rounded-full transition-colors"
+                  onClick={() => onToggleVisibility(widget.id)}
+                >
+                  {widget.visible ? (
+                    <Eye className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <EyeOff className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{widget.visible ? 'Ocultar' : 'Mostrar'}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {/* Widget Title */}
+          <span className="text-xs font-medium text-muted-foreground px-1 max-w-[100px] truncate">
+            {widget.title}
+          </span>
+        </motion.div>
+      )}
 
       {/* Widget Content */}
       <div className={cn(
@@ -198,7 +193,7 @@ const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({
       </div>
     </Reorder.Item>
   );
-});
+};
 
 DraggableWidget.displayName = 'DraggableWidget';
 
@@ -288,70 +283,66 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
             )}
           </Button>
 
-          <AnimatePresence>
-            {isEditMode && (
-              <motion.div
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -10 }}
-                className="flex items-center gap-2"
-              >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetLayout}
-                  className="gap-2 text-muted-foreground"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  Resetar
-                </Button>
-
-                {hiddenWidgets.length > 0 && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm" className="gap-2">
-                        <Plus className="w-4 h-4" />
-                        Adicionar ({hiddenWidgets.length})
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                      <DropdownMenuLabel>Widgets Ocultos</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {hiddenWidgets.map((widget) => (
-                        <DropdownMenuItem
-                          key={widget.id}
-                          onClick={() => handleShowHiddenWidget(widget.id)}
-                          className="flex items-center gap-2"
-                        >
-                          <Eye className="w-4 h-4" />
-                          {widget.title}
-                          <Badge variant="secondary" className="ml-auto text-xs">
-                            {widget.type}
-                          </Badge>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        <AnimatePresence>
           {isEditMode && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="flex items-center gap-2"
             >
-              <Badge variant="outline" className="gap-1">
-                <Settings2 className="w-3 h-3" />
-                Modo de Edição Ativo
-              </Badge>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={resetLayout}
+                className="gap-2 text-muted-foreground"
+              >
+                <RotateCcw className="w-4 h-4" />
+                Resetar
+              </Button>
+
+              {hiddenWidgets.length > 0 && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm" className="gap-2">
+                      <Plus className="w-4 h-4" />
+                      Adicionar ({hiddenWidgets.length})
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuLabel>Widgets Ocultos</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {hiddenWidgets.map((widget) => (
+                      <DropdownMenuItem
+                        key={widget.id}
+                        onClick={() => handleShowHiddenWidget(widget.id)}
+                        className="flex items-center gap-2"
+                      >
+                        <Eye className="w-4 h-4" />
+                        {widget.title}
+                        <Badge variant="secondary" className="ml-auto text-xs">
+                          {widget.type}
+                        </Badge>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </motion.div>
           )}
-        </AnimatePresence>
+        </div>
+
+        {isEditMode && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+          >
+            <Badge variant="outline" className="gap-1">
+              <Settings2 className="w-3 h-3" />
+              Modo de Edição Ativo
+            </Badge>
+          </motion.div>
+        )}
       </motion.div>
 
       {/* KPIs Grid with Reorder */}
