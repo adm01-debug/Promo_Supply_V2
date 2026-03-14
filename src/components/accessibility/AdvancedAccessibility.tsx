@@ -151,7 +151,52 @@ const getInitialAccessibilitySettings = (): AccessibilitySettings => {
     return defaultSettings;
   }
 };
-...
+
+interface AccessibilityContextValue {
+  settings: AccessibilitySettings;
+  updateSettings: (updates: Partial<AccessibilitySettings>) => void;
+  resetSettings: () => void;
+  announceToScreenReader: (message: string) => void;
+}
+
+const AccessibilityContext = createContext<AccessibilityContextValue | null>(null);
+
+export const useAccessibility = () => {
+  const context = useContext(AccessibilityContext);
+  if (!context) {
+    throw new Error('useAccessibility must be used within AccessibilityProvider');
+  }
+  return context;
+};
+
+interface AccessibilityProviderProps {
+  children: React.ReactNode;
+}
+
+export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
+  const [settings, setSettings] = useState<AccessibilitySettings>(getInitialAccessibilitySettings);
+
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    localStorage.setItem(ACCESSIBILITY_STORAGE_KEY, JSON.stringify(settings));
+
+    const root = document.documentElement;
+    const shouldReduceMotion = settings.reducedMotion || Boolean(prefersReducedMotion);
+
+    root.style.fontSize = `${settings.fontSize}%`;
+    root.style.setProperty('--line-height', settings.lineSpacing.toString());
+    root.style.setProperty('--letter-spacing', `${settings.letterSpacing}em`);
+
+    root.classList.toggle('high-contrast', settings.highContrast);
+    root.classList.toggle('reduced-motion', shouldReduceMotion);
+    root.classList.toggle('large-pointer', settings.largePointer);
+    root.classList.toggle('focus-highlight', settings.focusHighlight);
+    root.classList.toggle('dyslexia-font', settings.dyslexiaFont);
+    root.classList.toggle('screen-reader-mode', settings.screenReaderMode);
+    root.setAttribute('data-color-blind', settings.colorBlindMode);
+  }, [settings, prefersReducedMotion]);
+
   const updateSettings = useCallback((updates: Partial<AccessibilitySettings>) => {
     setSettings(prev => ({ ...prev, ...updates }));
   }, []);
@@ -168,7 +213,7 @@ const getInitialAccessibilitySettings = (): AccessibilitySettings => {
     announcement.className = 'sr-only';
     announcement.textContent = message;
     document.body.appendChild(announcement);
-    
+
     setTimeout(() => {
       document.body.removeChild(announcement);
     }, 1000);
