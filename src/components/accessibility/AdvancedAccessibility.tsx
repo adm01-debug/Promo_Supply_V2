@@ -138,8 +138,15 @@ interface AccessibilityProviderProps {
 
 export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
   const [settings, setSettings] = useState<AccessibilitySettings>(() => {
-    const saved = localStorage.getItem('accessibility-settings');
-    return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
+    const savedSettings = localStorage.getItem('accessibility-settings');
+
+    if (!savedSettings) return defaultSettings;
+
+    try {
+      return sanitizeAccessibilitySettings(JSON.parse(savedSettings));
+    } catch {
+      return defaultSettings;
+    }
   });
 
   const prefersReducedMotion = useReducedMotion();
