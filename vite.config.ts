@@ -17,9 +17,9 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "placeholder.svg"],
       manifest: {
-        name: "Sistema de Compras",
-        short_name: "Compras",
-        description: "Sistema completo de gestão de compras e fornecedores",
+        name: "Promo Supply",
+        short_name: "Promo Supply",
+        description: "Gestão completa de compras, fornecedores e contratos",
         theme_color: "#0f172a",
         background_color: "#0f172a",
         display: "standalone",
