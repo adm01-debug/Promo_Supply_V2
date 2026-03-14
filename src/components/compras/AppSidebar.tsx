@@ -418,7 +418,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               </TooltipTrigger>
               <TooltipContent side="right">
                 <p className="font-medium">Promo Supply</p>
-                <p className="text-xs text-muted-foreground">Promo Supply</p>
+                <p className="text-xs text-muted-foreground">Gestão de Compras</p>
               </TooltipContent>
             </Tooltip>
           )}
