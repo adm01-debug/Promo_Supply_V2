@@ -1,9 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* =================================================================
    PROMO SUPPLY - DESIGN SYSTEM
    Modular CSS Architecture
@@ -14,3 +10,7 @@
 @import './styles/utilities.css';
 @import './styles/animations.css';
 @import './styles/components.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
