@@ -260,23 +260,18 @@ export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ d
         </p>
       </motion.div>
 
-      {/* Legend Pills */}
-      <div className="flex flex-wrap gap-2 pt-3 border-t border-border">
+      {/* Compact Legend */}
+      <div className="flex flex-wrap gap-x-4 gap-y-1 pt-2 border-t border-border/50">
         {stages.map((stage) => (
-          <motion.div 
+          <div 
             key={stage.key} 
-            className={cn(
-              "flex items-center gap-1.5 px-2.5 py-1 rounded-full transition-all cursor-default",
-              hoveredStage === stage.key 
-                ? "bg-muted ring-1 ring-primary/30" 
-                : "hover:bg-muted/50"
-            )}
+            className="flex items-center gap-1.5"
             onMouseEnter={() => setHoveredStage(stage.key)}
             onMouseLeave={() => setHoveredStage(null)}
           >
-            <div className={cn("w-2.5 h-2.5 rounded-full", stage.bgClass, stage.glowClass)} />
-            <span className="text-xs text-muted-foreground">{stage.label}</span>
-          </motion.div>
+            <div className={cn("w-2 h-2 rounded-full", stage.bgClass)} />
+            <span className="text-[10px] text-muted-foreground">{stage.label}</span>
+          </div>
         ))}
       </div>
     </div>
