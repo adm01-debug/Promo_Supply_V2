@@ -91,4 +91,5 @@ export const UserMenu = forwardRef<HTMLDivElement>((_props, ref) => {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-};
+});
+UserMenu.displayName = 'UserMenu';

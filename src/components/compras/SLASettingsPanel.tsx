@@ -447,4 +447,5 @@ export const SLASettingsPanel = forwardRef<HTMLDivElement>((_props, ref) => {
       </DialogContent>
     </Dialog>
   );
-};
+});
+SLASettingsPanel.displayName = 'SLASettingsPanel';

@@ -2,6 +2,7 @@ import { useLocation, Link } from 'react-router-dom';
 import { ChevronRight, Home, LucideIcon, FileText, ShoppingCart, CreditCard, Users, Package, BarChart3, Shield, ClipboardList, FileCheck, Truck, History, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { forwardRef } from 'react';
 import { useMemo } from 'react';
 import {
   Breadcrumb,
