@@ -240,7 +240,7 @@ const Auth = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-white">Sistema de Compras</h1>
-              <p className="text-white/70 text-sm">Promo Brindes</p>
+              <p className="text-white/70 text-sm">Promo Supply</p>
             </div>
           </div>
 
