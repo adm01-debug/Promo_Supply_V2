@@ -81,7 +81,7 @@ ${observacoes ? `\n📝 *Observações:* ${observacoes}` : ''}
 Por favor, confirme o recebimento e disponibilidade.
 
 Atenciosamente,
-Equipe de Compras - Promo Brindes`;
+Equipe de Compras - Promo Supply`;
     setMensagemWhatsApp(msg);
   };
 
