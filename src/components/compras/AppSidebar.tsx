@@ -397,12 +397,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-glow-sm">
                 <Package className="w-5 h-5 text-primary-foreground" />
               </div>
-              <div>
-                <h1 className="text-sm font-bold text-foreground tracking-tight">Promo Supply</h1>
-                <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> Gestão de Compras
-                </p>
-              </div>
+              <h1 className="text-base font-bold text-foreground tracking-tight">Promo Supply</h1>
             </motion.div>
           ) : (
             <Tooltip delayDuration={0}>
