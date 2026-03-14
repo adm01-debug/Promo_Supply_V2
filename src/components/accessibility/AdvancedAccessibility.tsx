@@ -155,7 +155,7 @@ AccessibilityProvider.displayName = 'AccessibilityProvider';
 // Accessibility Styles Injector
 // ============================================
 
-const AccessibilityStyles: React.FC<{ settings: AccessibilitySettings }> = ({ settings }) => {
+const AccessibilityStyles = React.forwardRef<HTMLStyleElement, { settings: AccessibilitySettings }>(({ settings }, _ref) => {
   const styles = `
     ${settings.highContrast ? `
       .high-contrast {

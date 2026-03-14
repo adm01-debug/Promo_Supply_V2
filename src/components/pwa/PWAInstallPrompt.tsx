@@ -9,7 +9,7 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
-export function PWAInstallPrompt() {
+export const PWAInstallPrompt = forwardRef<HTMLDivElement>((_props, _ref) => {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [isOnline, setIsOnline] = useState(navigator.onLine);
