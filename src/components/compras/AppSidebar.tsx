@@ -544,7 +544,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               Ajuda & Suporte
             </Button>
             <div className="px-3 py-2 rounded-lg bg-muted/50 border border-border/50">
-              <p className="text-xs text-muted-foreground">Sistema de Compras v2.0</p>
+              <p className="text-xs text-muted-foreground">Promo Supply v2.0</p>
               <p className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-kpi-success animate-pulse" />
                 Online • Atualizado

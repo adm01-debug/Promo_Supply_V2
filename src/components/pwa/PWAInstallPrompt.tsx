@@ -123,7 +123,7 @@ export const PWAInstallPrompt = forwardRef<HTMLDivElement>((_props, _ref) => {
             </CardHeader>
             <CardContent className="pb-3">
               <p className="text-xs text-muted-foreground mb-3">
-                Instale o Sistema de Compras na sua tela inicial para acesso rápido, 
+                Instale o Promo Supply na sua tela inicial para acesso rápido, 
                 mesmo sem internet.
               </p>
               <div className="flex gap-2">
