@@ -96,11 +96,6 @@ export const Breadcrumbs = forwardRef<HTMLElement, BreadcrumbsProps>(({
     return items;
   }, [location.pathname, showHome]);
 
-  // Não mostrar breadcrumbs na home
-  if (location.pathname === '/' || location.pathname === '/compras') {
-    return null;
-  }
-
   // Truncar breadcrumbs se necessário
   const displayedBreadcrumbs = useMemo(() => {
     if (breadcrumbs.length <= maxItems) return breadcrumbs;
@@ -109,6 +104,11 @@ export const Breadcrumbs = forwardRef<HTMLElement, BreadcrumbsProps>(({
     const last = breadcrumbs.slice(-2);
     return [first, { label: '...', href: undefined }, ...last];
   }, [breadcrumbs, maxItems]);
+
+  // Não mostrar breadcrumbs na home
+  if (location.pathname === '/' || location.pathname === '/compras') {
+    return null;
+  }
 
   // Compact variant
   if (variant === 'compact') {
