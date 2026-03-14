@@ -50,7 +50,7 @@ const sendBrowserNotification = (notification: ApprovalNotification) => {
 export const useApprovalNotifications = () => {
   const [notifications, setNotifications] = useState<ApprovalNotification[]>([]);
   const [permissionGranted, setPermissionGranted] = useState(false);
-  const monitoringRef = useRef<NodeJS.Timeout | null>(null);
+  const monitoringRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const notifiedRef = useRef<Set<string>>(new Set());
 
   // Request notification permission
