@@ -499,7 +499,7 @@ const Acompanhamento = () => {
                 type="orders"
                 title="Nenhum pedido em acompanhamento"
                 description="Nenhum pedido corresponde aos filtros atuais. Tente ajustar os critérios de busca."
-                action={{ label: "Limpar filtros", onClick: () => { setBusca(''); setStatusFilter('todos'); }, variant: "outline" }}
+                action={{ label: "Limpar filtros", onClick: () => { setSearchTerm(''); setFiltroSLA('todos'); }, variant: "outline" }}
               />
             ) : (
               pedidosFiltrados.map((pedido) => {
