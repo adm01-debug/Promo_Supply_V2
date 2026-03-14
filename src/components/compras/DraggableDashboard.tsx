@@ -370,7 +370,7 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
             axis="x"
             values={visibleKpiWidgets}
             onReorder={(newOrder) => handleReorder('kpi', newOrder)}
-            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4"
+            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3"
           >
             {visibleKpiWidgets.map((widget, index) => (
               <DraggableWidget
