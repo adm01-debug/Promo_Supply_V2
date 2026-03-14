@@ -20,7 +20,7 @@ export interface RolePermission {
 }
 
 export const usePermissions = () => {
-  const { user, role } = useAuth();
+  const { user, role, isAdmin } = useAuth();
 
   // Fetch all permissions
   const { data: permissions, isLoading: permissionsLoading } = useQuery({
@@ -30,7 +30,7 @@ export const usePermissions = () => {
         .from('permissions')
         .select('*')
         .order('module', { ascending: true });
-      
+
       if (error) throw error;
       return data as Permission[];
     },
@@ -42,7 +42,7 @@ export const usePermissions = () => {
     queryKey: ['user-permissions', role],
     queryFn: async () => {
       if (!role) return [];
-      
+
       const { data, error } = await supabase
         .from('role_permissions')
         .select(`
@@ -50,14 +50,14 @@ export const usePermissions = () => {
           permission:permissions(*)
         `)
         .eq('role', role);
-      
+
       if (error) throw error;
       return data as (RolePermission & { permission: Permission })[];
     },
     enabled: !!user && !!role,
   });
 
-  // Fetch ALL role permissions (for admin matrix view)
+  // Fetch ALL role permissions (admin matrix only)
   const { data: allRolePermissions, isLoading: allRolePermissionsLoading } = useQuery({
     queryKey: ['all-role-permissions'],
     queryFn: async () => {
@@ -68,11 +68,11 @@ export const usePermissions = () => {
           permission:permissions(*)
         `)
         .order('role');
-      
+
       if (error) throw error;
       return data as (RolePermission & { permission: Permission })[];
     },
-    enabled: !!user,
+    enabled: !!user && isAdmin,
   });
 
   // Check if user has specific permission
