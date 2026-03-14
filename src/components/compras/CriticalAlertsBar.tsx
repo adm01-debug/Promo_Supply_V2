@@ -35,7 +35,7 @@ const calculateSLAStatus = (
   return null;
 };
 
-export const CriticalAlertsBar = () => {
+export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
   const { settings } = useSLASettings();
   const [dismissed, setDismissed] = useState(false);
 
