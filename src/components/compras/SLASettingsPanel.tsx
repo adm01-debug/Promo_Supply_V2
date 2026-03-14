@@ -183,7 +183,7 @@ const SupplierThresholdConfig = ({
   );
 };
 
-export const SLASettingsPanel = () => {
+export const SLASettingsPanel = forwardRef<HTMLDivElement>((_props, ref) => {
   const { settings, updateSettings, resetToDefaults } = useSLASettings();
   const [localSettings, setLocalSettings] = useState<SLASettings>(settings);
   const [open, setOpen] = useState(false);
