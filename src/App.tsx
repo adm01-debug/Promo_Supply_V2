@@ -63,7 +63,7 @@ const pageVariants = {
 };
 
 // Animated Routes Component
-const AnimatedRoutes = forwardRef<HTMLDivElement>((_props, _ref) => {
+const AnimatedRoutes = () => {
   const location = useLocation();
 
   return (
