@@ -176,26 +176,23 @@ interface AccessibilityProviderProps {
 export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
   const [settings, setSettings] = useState<AccessibilitySettings>(getInitialAccessibilitySettings);
 
-  const prefersReducedMotion = useReducedMotion();
-
   useEffect(() => {
     localStorage.setItem(ACCESSIBILITY_STORAGE_KEY, JSON.stringify(settings));
 
     const root = document.documentElement;
-    const shouldReduceMotion = settings.reducedMotion || Boolean(prefersReducedMotion);
 
     root.style.fontSize = `${settings.fontSize}%`;
     root.style.setProperty('--line-height', settings.lineSpacing.toString());
     root.style.setProperty('--letter-spacing', `${settings.letterSpacing}em`);
 
     root.classList.toggle('high-contrast', settings.highContrast);
-    root.classList.toggle('reduced-motion', shouldReduceMotion);
+    root.classList.toggle('reduced-motion', settings.reducedMotion);
     root.classList.toggle('large-pointer', settings.largePointer);
     root.classList.toggle('focus-highlight', settings.focusHighlight);
     root.classList.toggle('dyslexia-font', settings.dyslexiaFont);
     root.classList.toggle('screen-reader-mode', settings.screenReaderMode);
     root.setAttribute('data-color-blind', settings.colorBlindMode);
-  }, [settings, prefersReducedMotion]);
+  }, [settings]);
 
   const updateSettings = useCallback((updates: Partial<AccessibilitySettings>) => {
     setSettings(prev => ({ ...prev, ...updates }));
