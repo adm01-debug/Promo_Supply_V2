@@ -84,7 +84,7 @@ interface AccessibilityProviderProps {
   children: React.ReactNode;
 }
 
-export const AccessibilityProvider: React.FC<AccessibilityProviderProps> = ({ children }) => {
+export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
   const [settings, setSettings] = useState<AccessibilitySettings>(() => {
     const saved = localStorage.getItem('accessibility-settings');
     return saved ? { ...defaultSettings, ...JSON.parse(saved) } : defaultSettings;
