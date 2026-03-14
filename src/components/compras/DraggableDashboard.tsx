@@ -343,7 +343,7 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
               Modo de Edição Ativo
             </Badge>
           </motion.div>
-        )
+        )}
       </motion.div>
 
       {/* KPIs Grid with Reorder */}
