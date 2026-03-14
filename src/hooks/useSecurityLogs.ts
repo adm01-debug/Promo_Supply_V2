@@ -103,7 +103,7 @@ export const useSecurityLogs = () => {
     enabled: !!user && isAdmin,
   });
 
-  // Fetch blocked IPs
+  // Fetch blocked IPs (admin only)
   const { data: blockedIPs, isLoading: blockedLoading } = useQuery({
     queryKey: ['blocked-ips'],
     queryFn: async () => {
@@ -111,14 +111,14 @@ export const useSecurityLogs = () => {
         .from('blocked_ips')
         .select('*')
         .order('blocked_at', { ascending: false });
-      
+
       if (error) throw error;
       return data as BlockedIP[];
     },
-    enabled: !!user,
+    enabled: !!user && isAdmin,
   });
 
-  // Fetch IP whitelist
+  // Fetch IP whitelist (admin only)
   const { data: ipWhitelist, isLoading: whitelistLoading } = useQuery({
     queryKey: ['ip-whitelist'],
     queryFn: async () => {
@@ -126,11 +126,11 @@ export const useSecurityLogs = () => {
         .from('ip_whitelist')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
       return data as IPWhitelist[];
     },
-    enabled: !!user,
+    enabled: !!user && isAdmin,
   });
 
   // Fetch rate limit logs (admin only)
@@ -168,14 +168,16 @@ export const useSecurityLogs = () => {
   // Block IP
   const blockIP = useMutation({
     mutationFn: async (data: { ip_address: string; reason: string; permanent?: boolean; expires_at?: string }) => {
+      if (!isAdmin || !user?.id) throw new Error('Acesso negado');
+
       const { error } = await supabase.from('blocked_ips').insert({
         ip_address: data.ip_address,
         reason: data.reason,
         permanent: data.permanent ?? false,
         expires_at: data.expires_at ?? null,
-        blocked_by: user?.id,
+        blocked_by: user.id,
       });
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -186,6 +188,8 @@ export const useSecurityLogs = () => {
   // Unblock IP
   const unblockIP = useMutation({
     mutationFn: async (id: string) => {
+      if (!isAdmin) throw new Error('Acesso negado');
+
       const { error } = await supabase.from('blocked_ips').delete().eq('id', id);
       if (error) throw error;
     },
@@ -197,12 +201,14 @@ export const useSecurityLogs = () => {
   // Add to whitelist
   const addToWhitelist = useMutation({
     mutationFn: async (data: { ip_address: string; description?: string }) => {
+      if (!isAdmin || !user?.id) throw new Error('Acesso negado');
+
       const { error } = await supabase.from('ip_whitelist').insert({
         ip_address: data.ip_address,
         description: data.description ?? null,
-        created_by: user?.id,
+        created_by: user.id,
       });
-      
+
       if (error) throw error;
     },
     onSuccess: () => {
@@ -213,6 +219,8 @@ export const useSecurityLogs = () => {
   // Remove from whitelist
   const removeFromWhitelist = useMutation({
     mutationFn: async (id: string) => {
+      if (!isAdmin) throw new Error('Acesso negado');
+
       const { error } = await supabase.from('ip_whitelist').delete().eq('id', id);
       if (error) throw error;
     },

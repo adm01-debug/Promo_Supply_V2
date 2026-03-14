@@ -49,12 +49,15 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
         supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
       ]);
 
-      if (profileRes.data) {
-        setProfile(profileRes.data as UserProfile);
+      if (profileRes.error) {
+        console.error('Error fetching profile:', profileRes.error);
       }
-      if (roleRes.data) {
-        setRole(roleRes.data.role as AppRole);
+      if (roleRes.error) {
+        console.error('Error fetching role:', roleRes.error);
       }
+
+      setProfile(profileRes.data ? (profileRes.data as UserProfile) : null);
+      setRole(roleRes.data?.role ? (roleRes.data.role as AppRole) : null);
       fetchedUserIdRef.current = userId;
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -75,6 +78,9 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
         fetchUserData(session.user.id);
       }
       setLoading(false);
+    }).catch((error: unknown) => {
+      console.error('Error getting session:', error);
+      if (mounted) setLoading(false);
     });
 
     // Then listen for changes
@@ -108,8 +114,10 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
   }, [fetchUserData]);
 
   const signIn = async (email: string, password: string) => {
+    const normalizedEmail = email.trim().toLowerCase();
+
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      email: normalizedEmail,
       password,
     });
     return { error: error as Error | null };
@@ -117,9 +125,10 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
-    
+    const normalizedEmail = email.trim().toLowerCase();
+
     const { error } = await supabase.auth.signUp({
-      email,
+      email: normalizedEmail,
       password,
       options: {
         emailRedirectTo: redirectUrl,
