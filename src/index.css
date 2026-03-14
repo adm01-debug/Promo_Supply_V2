@@ -5,12 +5,16 @@
    Modular CSS Architecture
    ================================================================= */
 
+@tailwind base;
+
 @import './styles/tokens.css';
 @import './styles/base.css';
-@import './styles/utilities.css';
-@import './styles/animations.css';
+
+@tailwind components;
+
 @import './styles/components.css';
 
-@tailwind base;
-@tailwind components;
 @tailwind utilities;
+
+@import './styles/utilities.css';
+@import './styles/animations.css';
