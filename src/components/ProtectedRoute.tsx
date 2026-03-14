@@ -32,5 +32,4 @@ export const ProtectedRoute = ({ children, requiredRole }: ProtectedRouteProps) 
   }
 
   return <>{children}</>;
-});
-ProtectedRoute.displayName = 'ProtectedRoute';
+};
