@@ -398,7 +398,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
                 <Package className="w-5 h-5 text-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-sm font-bold text-foreground tracking-tight">Sistema de Compras</h1>
+                <h1 className="text-sm font-bold text-foreground tracking-tight">Promo Supply</h1>
                 <p className="text-[10px] text-muted-foreground flex items-center gap-1">
                   <Sparkles className="w-3 h-3" /> Promo Supply
                 </p>
