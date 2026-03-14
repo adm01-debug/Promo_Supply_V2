@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { History, Download, Filter, Search, RefreshCw, ChevronDown, ChevronRight, User, FileText, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
