@@ -1,13 +1,14 @@
+import { forwardRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { PiggyBank, TrendingDown, Award, ArrowUp } from "lucide-react";
 import { buyerPerformanceMock } from "@/data/mockData";
 
-export const BuyerPerformancePanel = () => {
+export const BuyerPerformancePanel = forwardRef<HTMLDivElement>((_props, ref) => {
   const data = buyerPerformanceMock;
 
   return (
-    <Card className="p-6">
+    <Card ref={ref} className="p-6">
       <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
         <Award className="w-5 h-5 text-amber-500" />
         Performance do Comprador
@@ -83,4 +84,5 @@ export const BuyerPerformancePanel = () => {
       </div>
     </Card>
   );
-};
+});
+BuyerPerformancePanel.displayName = 'BuyerPerformancePanel';

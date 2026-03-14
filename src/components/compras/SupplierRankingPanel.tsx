@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, forwardRef } from 'react';
 import { Trophy, Medal, TrendingUp, TrendingDown, Clock, CheckCircle, Star, Info, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -241,7 +241,7 @@ const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: Supplier
   );
 };
 
-export const SupplierRankingPanel = () => {
+export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [periodDays, setPeriodDays] = useState<PeriodDays>(30);
   
@@ -257,7 +257,7 @@ export const SupplierRankingPanel = () => {
   };
 
   return (
-    <Card>
+    <Card ref={ref}>
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle className="text-lg flex items-center gap-2">
@@ -331,4 +331,5 @@ export const SupplierRankingPanel = () => {
       </CardContent>
     </Card>
   );
-};
+});
+SupplierRankingPanel.displayName = 'SupplierRankingPanel';
