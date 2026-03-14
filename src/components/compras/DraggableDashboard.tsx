@@ -85,16 +85,14 @@ const DraggableWidget = forwardRef<HTMLLIElement, DraggableWidgetProps>(({
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Edit Mode Overlay */}
-      <AnimatePresence>
-        {isEditMode && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-10 rounded-lg border-2 border-dashed border-primary/50 bg-primary/5 pointer-events-none"
-          />
-        )}
-      </AnimatePresence>
+      {isEditMode && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="absolute inset-0 z-10 rounded-lg border-2 border-dashed border-primary/50 bg-primary/5 pointer-events-none"
+        />
+      )}
 
       {/* Widget Controls */}
       <AnimatePresence>
