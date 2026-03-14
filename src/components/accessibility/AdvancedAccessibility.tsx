@@ -228,7 +228,7 @@ export const AccessibilityProvider = ({ children }: AccessibilityProviderProps) 
 // Accessibility Styles Injector
 // ============================================
 
-const AccessibilityStyles = React.forwardRef<HTMLStyleElement, { settings: AccessibilitySettings }>(({ settings }, _ref) => {
+const AccessibilityStyles = ({ settings }: { settings: AccessibilitySettings }) => {
   const styles = `
     ${settings.highContrast ? `
       .high-contrast {
