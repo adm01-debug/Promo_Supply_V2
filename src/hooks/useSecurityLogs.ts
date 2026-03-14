@@ -103,7 +103,7 @@ export const useSecurityLogs = () => {
     enabled: !!user && isAdmin,
   });
 
-  // Fetch blocked IPs
+  // Fetch blocked IPs (admin only)
   const { data: blockedIPs, isLoading: blockedLoading } = useQuery({
     queryKey: ['blocked-ips'],
     queryFn: async () => {
@@ -111,14 +111,14 @@ export const useSecurityLogs = () => {
         .from('blocked_ips')
         .select('*')
         .order('blocked_at', { ascending: false });
-      
+
       if (error) throw error;
       return data as BlockedIP[];
     },
-    enabled: !!user,
+    enabled: !!user && isAdmin,
   });
 
-  // Fetch IP whitelist
+  // Fetch IP whitelist (admin only)
   const { data: ipWhitelist, isLoading: whitelistLoading } = useQuery({
     queryKey: ['ip-whitelist'],
     queryFn: async () => {
@@ -126,11 +126,11 @@ export const useSecurityLogs = () => {
         .from('ip_whitelist')
         .select('*')
         .order('created_at', { ascending: false });
-      
+
       if (error) throw error;
       return data as IPWhitelist[];
     },
-    enabled: !!user,
+    enabled: !!user && isAdmin,
   });
 
   // Fetch rate limit logs (admin only)
