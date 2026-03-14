@@ -222,8 +222,7 @@ export const AccessibilityProvider = ({ children }: AccessibilityProviderProps) 
       <AccessibilityStyles settings={settings} />
     </AccessibilityContext.Provider>
   );
-});
-AccessibilityProvider.displayName = 'AccessibilityProvider';
+};
 
 // ============================================
 // Accessibility Styles Injector
