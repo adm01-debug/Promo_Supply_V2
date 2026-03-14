@@ -114,8 +114,10 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
   }, [fetchUserData]);
 
   const signIn = async (email: string, password: string) => {
+    const normalizedEmail = email.trim().toLowerCase();
+
     const { error } = await supabase.auth.signInWithPassword({
-      email,
+      email: normalizedEmail,
       password,
     });
     return { error: error as Error | null };
@@ -123,9 +125,10 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
 
   const signUp = async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
-    
+    const normalizedEmail = email.trim().toLowerCase();
+
     const { error } = await supabase.auth.signUp({
-      email,
+      email: normalizedEmail,
       password,
       options: {
         emailRedirectTo: redirectUrl,
