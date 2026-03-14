@@ -331,4 +331,5 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
       </CardContent>
     </Card>
   );
-};
+});
+SupplierRankingPanel.displayName = 'SupplierRankingPanel';
