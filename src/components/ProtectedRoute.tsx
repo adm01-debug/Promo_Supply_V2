@@ -32,4 +32,5 @@ export const ProtectedRoute = forwardRef<HTMLDivElement, ProtectedRouteProps>(({
   }
 
   return <>{children}</>;
-};
+});
+ProtectedRoute.displayName = 'ProtectedRoute';

@@ -321,7 +321,8 @@ const AccessibilityStyles = React.forwardRef<HTMLStyleElement, { settings: Acces
       </svg>
     </>
   );
-};
+});
+AccessibilityStyles.displayName = 'AccessibilityStyles';
 
 // ============================================
 // Accessibility Panel

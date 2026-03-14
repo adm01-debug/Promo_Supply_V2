@@ -185,7 +185,8 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
       {children}
     </AuthContext.Provider>
   );
-};
+});
+AuthProvider.displayName = 'AuthProvider';
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
