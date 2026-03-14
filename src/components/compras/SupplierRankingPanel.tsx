@@ -241,7 +241,7 @@ const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: Supplier
   );
 };
 
-export const SupplierRankingPanel = () => {
+export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [periodDays, setPeriodDays] = useState<PeriodDays>(30);
   

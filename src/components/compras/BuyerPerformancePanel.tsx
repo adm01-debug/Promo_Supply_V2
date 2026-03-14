@@ -84,4 +84,5 @@ export const BuyerPerformancePanel = forwardRef<HTMLDivElement>((_props, ref) =>
       </div>
     </Card>
   );
-};
+});
+BuyerPerformancePanel.displayName = 'BuyerPerformancePanel';
