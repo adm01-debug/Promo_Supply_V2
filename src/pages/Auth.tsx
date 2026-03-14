@@ -282,7 +282,7 @@ const Auth = () => {
 
         {/* Footer */}
         <p className="relative z-10 text-white/50 text-sm">
-          © 2025 Promo Brindes. Todos os direitos reservados.
+           © 2025 Promo Supply. Todos os direitos reservados.
         </p>
       </div>
 
