@@ -208,11 +208,11 @@ interface DraggableDashboardProps {
   className?: string;
 }
 
-export const DraggableDashboard = ({ 
+export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardProps>(({ 
   renderWidget, 
   getGridClasses,
   className 
-}: DraggableDashboardProps) => {
+}, ref) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const { 
     widgets, 
@@ -262,7 +262,7 @@ export const DraggableDashboard = ({
   };
 
   return (
-    <div className={cn("space-y-6", className)}>
+    <div ref={ref} className={cn("space-y-6", className)}>
       {/* Edit Mode Controls */}
       <motion.div 
         className="flex items-center justify-between flex-wrap gap-2"
@@ -429,4 +429,5 @@ export const DraggableDashboard = ({
       )}
     </div>
   );
-};
+});
+DraggableDashboard.displayName = 'DraggableDashboard';

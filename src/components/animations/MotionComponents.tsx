@@ -346,9 +346,10 @@ interface PageTransitionProps {
   className?: string;
 }
 
-export const PageTransition = ({ children, className }: PageTransitionProps) => {
+export const PageTransition = forwardRef<HTMLDivElement, PageTransitionProps>(({ children, className }, ref) => {
   return (
     <motion.div
+      ref={ref}
       className={className}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -358,7 +359,8 @@ export const PageTransition = ({ children, className }: PageTransitionProps) => 
       {children}
     </motion.div>
   );
-};
+});
+PageTransition.displayName = 'PageTransition';
 
 // Floating animation for decorative elements
 export const FloatingElement = ({ 

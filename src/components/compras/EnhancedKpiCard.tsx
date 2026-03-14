@@ -91,7 +91,7 @@ const colorClasses: Record<KpiColor, {
 };
 
 // Animated counter component
-const AnimatedCounter = ({ value, format = 'number' }: { value: number; format?: 'number' | 'currency' | 'percent' }) => {
+const AnimatedCounter = forwardRef<HTMLSpanElement, { value: number; format?: 'number' | 'currency' | 'percent' }>(({ value, format = 'number' }, ref) => {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
@@ -126,19 +126,20 @@ const AnimatedCounter = ({ value, format = 'number' }: { value: number; format?:
     }
   };
 
-  return <span>{formatValue(displayValue)}</span>;
-};
+  return <span ref={ref}>{formatValue(displayValue)}</span>;
+});
+AnimatedCounter.displayName = 'AnimatedCounter';
 
 // Delta indicator component
-const DeltaIndicator = ({ 
-  currentValue, 
-  previousValue,
-  invertColors = false 
-}: { 
+const DeltaIndicator = forwardRef<HTMLDivElement, { 
   currentValue: number; 
   previousValue: number;
   invertColors?: boolean;
-}) => {
+}>(({ 
+  currentValue, 
+  previousValue,
+  invertColors = false 
+}, ref) => {
   const delta = previousValue !== 0 
     ? ((currentValue - previousValue) / previousValue) * 100 
     : 0;
@@ -199,7 +200,8 @@ const DeltaIndicator = ({
       <span>{Math.abs(delta).toFixed(1)}%</span>
     </motion.div>
   );
-};
+});
+DeltaIndicator.displayName = 'DeltaIndicator';
 
 // Target progress ring
 const TargetProgressRing = ({ 

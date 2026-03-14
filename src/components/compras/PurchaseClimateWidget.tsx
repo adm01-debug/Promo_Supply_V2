@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, forwardRef } from "react";
 import { 
   Thermometer, 
   TrendingUp, 
@@ -92,7 +92,7 @@ const getStatusLevel = (value: number): ClimateLevel => {
   return 'critical';
 };
 
-export function PurchaseClimateWidget() {
+export const PurchaseClimateWidget = forwardRef<HTMLDivElement>((_props, ref) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const climateData = useMemo(() => {
@@ -353,4 +353,5 @@ export function PurchaseClimateWidget() {
       </CardContent>
     </Card>
   );
-}
+});
+PurchaseClimateWidget.displayName = 'PurchaseClimateWidget';

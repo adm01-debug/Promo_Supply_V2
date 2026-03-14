@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, forwardRef } from 'react';
 import { AlertTriangle, AlertCircle, X, ChevronRight } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -35,7 +35,7 @@ const calculateSLAStatus = (
   return null;
 };
 
-export const CriticalAlertsBar = () => {
+export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
   const { settings } = useSLASettings();
   const [dismissed, setDismissed] = useState(false);
 
@@ -133,4 +133,5 @@ export const CriticalAlertsBar = () => {
       </div>
     </Alert>
   );
-};
+});
+CriticalAlertsBar.displayName = 'CriticalAlertsBar';
