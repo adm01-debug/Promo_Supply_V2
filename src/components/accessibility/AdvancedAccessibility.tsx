@@ -159,7 +159,26 @@ const getInitialAccessibilitySettings = (): AccessibilitySettings => {
 };
 
 interface AccessibilityContextValue {
-...
+  settings: AccessibilitySettings;
+  updateSettings: (updates: Partial<AccessibilitySettings>) => void;
+  resetSettings: () => void;
+  announceToScreenReader: (message: string) => void;
+}
+
+const AccessibilityContext = createContext<AccessibilityContextValue | null>(null);
+
+export const useAccessibility = () => {
+  const context = useContext(AccessibilityContext);
+  if (!context) {
+    throw new Error('useAccessibility must be used within AccessibilityProvider');
+  }
+  return context;
+};
+
+interface AccessibilityProviderProps {
+  children: React.ReactNode;
+}
+
 export const AccessibilityProvider = React.forwardRef<HTMLDivElement, AccessibilityProviderProps>(({ children }, _ref) => {
   const [settings, setSettings] = useState<AccessibilitySettings>(getInitialAccessibilitySettings);
 
