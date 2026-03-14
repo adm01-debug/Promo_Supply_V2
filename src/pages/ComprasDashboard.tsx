@@ -146,7 +146,7 @@ const ComprasDashboard = () => {
 
   return (
     <MainLayout>
-      <PageTransition className="space-y-6">
+      <PageTransition className="space-y-4">
         {/* Critical Alerts */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -158,12 +158,12 @@ const ComprasDashboard = () => {
         
         {/* Page Title + Climate Widget */}
         <motion.div 
-          className="grid grid-cols-1 lg:grid-cols-3 gap-6"
+          className="grid grid-cols-1 lg:grid-cols-4 gap-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1, duration: 0.4 }}
         >
-          <div className="lg:col-span-2 flex items-start justify-between">
+          <div className="lg:col-span-3 flex items-start justify-between">
             <div>
               <motion.h1 
                 className="text-2xl font-bold text-foreground"

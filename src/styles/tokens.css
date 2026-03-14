@@ -128,12 +128,12 @@
 
   .dark {
     /* ===== ENHANCED DARK MODE ===== */
-    --background: 222 47% 7%;
+    --background: 225 25% 8%;
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 9%;
+    --card: 225 20% 14%;
     --card-foreground: 210 40% 98%;
-    --card-elevated: 222 47% 11%;
+    --card-elevated: 225 20% 18%;
 
     --popover: 222 47% 9%;
     --popover-foreground: 210 40% 98%;
@@ -142,13 +142,13 @@
     --primary-foreground: 0 0% 100%;
     --primary-glow: 262 83% 78%;
 
-    --secondary: 222 47% 14%;
+    --secondary: 225 20% 18%;
     --secondary-foreground: 210 40% 96%;
 
-    --muted: 222 47% 16%;
+    --muted: 225 20% 20%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 262 70% 25%;
+    --accent: 262 50% 22%;
     --accent-foreground: 262 70% 90%;
 
     --destructive: 0 72% 55%;
@@ -163,8 +163,8 @@
     --info: 199 89% 52%;
     --info-foreground: 0 0% 100%;
 
-    --border: 222 47% 18%;
-    --input: 222 47% 18%;
+    --border: 225 20% 22%;
+    --input: 225 20% 22%;
     --ring: 262 83% 68%;
 
     /* Dark KPI colors */
@@ -195,13 +195,13 @@
     --chart-5: 326 78% 68%;
 
     /* Dark sidebar */
-    --sidebar-background: 222 47% 5%;
+    --sidebar-background: 225 25% 10%;
     --sidebar-foreground: 210 40% 98%;
     --sidebar-primary: 262 83% 68%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 262 70% 22%;
+    --sidebar-accent: 262 50% 22%;
     --sidebar-accent-foreground: 262 70% 90%;
-    --sidebar-border: 222 47% 15%;
+    --sidebar-border: 225 20% 20%;
     --sidebar-ring: 262 83% 68%;
 
     /* Dark shadows */

@@ -262,7 +262,7 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
   };
 
   return (
-    <div ref={ref} className={cn("space-y-6", className)}>
+    <div ref={ref} className={cn("space-y-4", className)}>
       {/* Edit Mode Controls */}
       <motion.div 
         className="flex items-center justify-between flex-wrap gap-2"
@@ -370,7 +370,7 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
             axis="x"
             values={visibleKpiWidgets}
             onReorder={(newOrder) => handleReorder('kpi', newOrder)}
-            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 md:gap-4"
+            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3"
           >
             {visibleKpiWidgets.map((widget, index) => (
               <DraggableWidget
@@ -399,7 +399,7 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
             axis="y"
             values={visibleOtherWidgets}
             onReorder={(newOrder) => handleReorder('other', newOrder)}
-            className="grid grid-cols-1 lg:grid-cols-2 gap-6 auto-rows-fr"
+            className="grid grid-cols-1 lg:grid-cols-2 gap-4 auto-rows-fr"
           >
             {visibleOtherWidgets.map((widget, index) => (
               <DraggableWidget
