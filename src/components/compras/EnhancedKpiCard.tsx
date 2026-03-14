@@ -91,7 +91,7 @@ const colorClasses: Record<KpiColor, {
 };
 
 // Animated counter component
-const AnimatedCounter = ({ value, format = 'number' }: { value: number; format?: 'number' | 'currency' | 'percent' }) => {
+const AnimatedCounter = forwardRef<HTMLSpanElement, { value: number; format?: 'number' | 'currency' | 'percent' }>(({ value, format = 'number' }, ref) => {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
