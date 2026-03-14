@@ -234,7 +234,8 @@ const AnimatedRoutes = forwardRef<HTMLDivElement>((_props, _ref) => {
       </motion.div>
     </AnimatePresence>
   );
-};
+});
+AnimatedRoutes.displayName = 'AnimatedRoutes';
 
 const App = () => (
   <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
