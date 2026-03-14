@@ -141,4 +141,5 @@ export const PWAInstallPrompt = forwardRef<HTMLDivElement>((_props, _ref) => {
       )}
     </>
   );
-}
+});
+PWAInstallPrompt.displayName = 'PWAInstallPrompt';
