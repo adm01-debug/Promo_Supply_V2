@@ -78,6 +78,9 @@ export const AuthProvider = forwardRef<HTMLDivElement, { children: ReactNode }>(
         fetchUserData(session.user.id);
       }
       setLoading(false);
+    }).catch((error: unknown) => {
+      console.error('Error getting session:', error);
+      if (mounted) setLoading(false);
     });
 
     // Then listen for changes
