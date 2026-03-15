@@ -224,6 +224,109 @@ async function spotFetch(
   return res;
 }
 
+function assertObject(value: unknown, fieldName: string): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new HttpError(400, `Parâmetro '${fieldName}' inválido`);
+  }
+
+  return value as Record<string, unknown>;
+}
+
+function readRequiredString(value: unknown, fieldName: string, maxLength = 200): string {
+  if (typeof value !== "string") {
+    throw new HttpError(400, `Parâmetro '${fieldName}' é obrigatório`);
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    throw new HttpError(400, `Parâmetro '${fieldName}' é obrigatório`);
+  }
+
+  return trimmed.slice(0, maxLength);
+}
+
+function readOptionalString(value: unknown, fieldName: string, maxLength = 200): string | undefined {
+  if (value === undefined || value === null || value === "") return undefined;
+  return readRequiredString(value, fieldName, maxLength);
+}
+
+function readPositiveInteger(value: unknown, fieldName: string): number {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 1) {
+    throw new HttpError(400, `Parâmetro '${fieldName}' deve ser um inteiro >= 1`);
+  }
+
+  return value;
+}
+
+function readStringArray(value: unknown, fieldName: string, maxItems = 20, maxLength = 50): string[] {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value)) {
+    throw new HttpError(400, `Parâmetro '${fieldName}' deve ser uma lista`);
+  }
+
+  if (value.length > maxItems) {
+    throw new HttpError(400, `Parâmetro '${fieldName}' excede limite de itens`);
+  }
+
+  return value.map((item, index) => readRequiredString(item, `${fieldName}[${index}]`, maxLength));
+}
+
+function readCatalogFilters(value: unknown): Record<string, string> {
+  if (value === undefined || value === null) return {};
+
+  const filtersObject = assertObject(value, "filters");
+  const filters: Record<string, string> = {};
+
+  for (const [key, filterValue] of Object.entries(filtersObject)) {
+    if (typeof filterValue !== "string") continue;
+
+    const sanitizedKey = key.trim().slice(0, 50);
+    const sanitizedValue = filterValue.trim().slice(0, 120);
+    if (sanitizedKey && sanitizedValue) {
+      filters[sanitizedKey] = sanitizedValue;
+    }
+  }
+
+  return filters;
+}
+
+function readOrderYear(value: unknown): string | undefined {
+  const year = readOptionalString(value, "year", 4);
+  if (!year) return undefined;
+  if (!/^\d{4}$/.test(year)) {
+    throw new HttpError(400, "Parâmetro 'year' inválido");
+  }
+  return year;
+}
+
+function readOrderPage(value: unknown): string | undefined {
+  const page = readOptionalString(value, "page", 4);
+  if (!page) return undefined;
+  if (!/^\d{1,4}$/.test(page)) {
+    throw new HttpError(400, "Parâmetro 'page' inválido");
+  }
+  return page;
+}
+
+function readRequestAction(body: Record<string, unknown>): SpotAction {
+  const actionValue = body.action;
+
+  if (typeof actionValue !== "string" || !VALID_ACTIONS.has(actionValue as SpotAction)) {
+    throw new HttpError(400, `Ação inválida: ${String(actionValue)}`);
+  }
+
+  return actionValue as SpotAction;
+}
+
+async function readJsonBody(req: Request): Promise<Record<string, unknown>> {
+  try {
+    const body = await req.json();
+    return assertObject(body, "body");
+  } catch {
+    throw new HttpError(400, "Payload JSON inválido");
+  }
+}
+
 // HANDLERS
 
 async function handleSearch(supabase: ReturnType<typeof getSupabaseAdmin>, query: string) {
