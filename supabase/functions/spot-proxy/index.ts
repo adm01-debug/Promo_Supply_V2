@@ -8,6 +8,7 @@ const corsHeaders = {
 
 const SPOT_BASE = "https://www.spotgifts.com.br";
 const LANG = "pt";
+const SPOT_REQUEST_TIMEOUT_MS = 15000;
 type SpotAction =
   | "search"
   | "catalog"
@@ -46,9 +47,21 @@ function getSupabaseAdmin() {
   return createClient(url, key);
 }
 
+function getSupabaseAuthClient(authHeader: string) {
+  const url = Deno.env.get("SUPABASE_URL")!;
+  const key = Deno.env.get("SUPABASE_ANON_KEY")!;
+  return createClient(url, key, {
+    global: {
+      headers: {
+        Authorization: authHeader,
+      },
+    },
+  });
+}
+
 /** Verify the caller is an authenticated user with appropriate role */
 async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
-  const authHeader = req.headers.get("authorization");
+  const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new HttpError(403, "Não autorizado: token ausente");
   }
@@ -58,9 +71,11 @@ async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupa
     throw new HttpError(403, "Não autorizado: token inválido");
   }
 
-  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+  const authClient = getSupabaseAuthClient(authHeader);
+  const { data, error } = await authClient.auth.getClaims(token);
+  const userId = data?.claims?.sub;
 
-  if (error || !user) {
+  if (error || !userId || typeof userId !== "string") {
     throw new HttpError(403, "Não autorizado: token inválido");
   }
 
@@ -68,14 +83,14 @@ async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupa
   const { data: roles, error: roleError } = await supabaseAdmin
     .from("user_roles")
     .select("role")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .in("role", [...ALLOWED_ROLES]);
 
   if (roleError || !roles || roles.length === 0) {
     throw new HttpError(403, "Sem permissão para acessar integração SPOT");
   }
 
-  return user.id;
+  return userId;
 }
 
 // Get or create a valid SPOT session
@@ -118,7 +133,10 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
   const loginUrl = `${SPOT_BASE}/${LANG}/area-reservada/login/`;
 
   // GET initial page to obtain PHPSESSID
-  const initRes = await fetch(loginUrl, { redirect: "manual" });
+  const initRes = await fetch(loginUrl, {
+    redirect: "manual",
+    signal: AbortSignal.timeout(SPOT_REQUEST_TIMEOUT_MS),
+  });
   const initCookies = initRes.headers.get("set-cookie") || "";
   const phpSessionMatch = initCookies.match(/PHPSESSID=([^;]+)/);
   let sessionId = phpSessionMatch ? phpSessionMatch[1] : "";
@@ -141,6 +159,7 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     },
     body: formData.toString(),
     redirect: "manual",
+    signal: AbortSignal.timeout(SPOT_REQUEST_TIMEOUT_MS),
   });
 
   // Check for new session cookie
@@ -157,7 +176,7 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     const location = loginRes.headers.get("location") || "";
     // If redirected back to login, credentials are wrong
     if (location.includes("login")) {
-      throw new Error("Credenciais SPOT inválidas — login rejeitado");
+      throw new HttpError(403, "Credenciais SPOT inválidas — login rejeitado");
     }
   } else if (status === 200) {
     // 200 means the login page was returned — check for error indicators
@@ -202,6 +221,7 @@ async function spotFetch(
     ...options,
     headers,
     redirect: "manual",
+    signal: AbortSignal.timeout(SPOT_REQUEST_TIMEOUT_MS),
   });
 
   // If redirected to login, re-authenticate
@@ -218,6 +238,7 @@ async function spotFetch(
       ...options,
       headers: { ...headers, Cookie: newCookie },
       redirect: "manual",
+      signal: AbortSignal.timeout(SPOT_REQUEST_TIMEOUT_MS),
     });
   }
 
