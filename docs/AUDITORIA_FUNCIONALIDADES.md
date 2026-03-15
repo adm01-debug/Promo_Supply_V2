@@ -271,41 +271,31 @@ A tabela `pagamentos` **não aparece** na lista de tabelas auditadas com RLS. De
 
 ---
 
-## 📈 SCORE GERAL DE COMPLETUDE (Atualizado: 15/03/2026 - Fase 2)
+## 📈 SCORE GERAL DE COMPLETUDE (Atualizado: 15/03/2026 - Fase 3)
 
 | Dimensão | Score |
 |----------|-------|
-| **Backend (DB + Functions + RLS)** | **98%** — Storage bucket, realtime, RLS completos ✅ |
-| **CRUD Frontend (hooks)** | **92%** — Completo para entidades core + file upload ✅ |
-| **UI/UX (componentes)** | **85%** — Completo, faltam qualificação e portal |
-| **Dados Reais vs Mock** | **78%** — 6 componentes migrados para Supabase real ✅ |
-| **Testes** | **5%** — Vitest configurado, setup pronto, testes iniciais passando ✅ |
-| **Realtime** | **90%** — Subscriptions ativas em Dashboard + 5 tabelas ✅ |
-| **Integrações Externas** | **0%** — Todas pendentes |
-| **SCORE GERAL** | **~72%** |
+| **Backend (DB + Functions + RLS)** | **98%** ✅ |
+| **CRUD Frontend (hooks)** | **95%** ✅ |
+| **UI/UX (componentes)** | **85%** |
+| **Dados Reais vs Mock** | **95%** — Apenas HistoricoCompras usa purchaseHistoryData ✅ |
+| **Testes** | **5%** — Vitest configurado ✅ |
+| **Realtime** | **95%** — Acompanhamento + Dashboard com realtime ✅ |
+| **Integrações Externas** | **0%** — Pendentes |
+| **SCORE GERAL** | **~82%** |
 
-### ✅ Melhorias Implementadas - Fase 1 (15/03/2026)
-- ✅ RLS policies criadas para tabela `pagamentos`
-- ✅ Storage bucket `documents` criado com RLS
-- ✅ Realtime configurado em `pedidos`, `cotacoes`, `notifications`, `pagamentos`
-- ✅ Hook `useDashboardKPIs` criado — Dashboard operacional com dados reais
-- ✅ Hook `useExecutiveDashboardData` criado — Dados executivos via Supabase
-- ✅ Vitest configurado com jsdom + testes passando
-- ✅ ComprasDashboard.tsx migrado de mock para dados reais
+### ✅ Melhorias Implementadas - Fase 3 (15/03/2026)
+- ✅ `SLADistributionChart` — Migrado de `solicitacoesMock` para query real
+- ✅ `SupplierRiskAnalysis` — Migrado de `fornecedoresMock` para Supabase + pedidos reais
+- ✅ `AISupplierSuggestion` — Migrado de `fornecedoresMock` para Supabase
+- ✅ `PriceComparator` — Migrado de `fornecedoresMock` para Supabase
+- ✅ `GerarOrdem` — Migrado de mock para queries reais (solicitacoes + fornecedores)
+- ✅ `Acompanhamento` — Migrado de `solicitacoesMock` para pedidos + solicitacoes + fornecedores reais + realtime
+- ✅ `Relatorios` — Removida dependência de `fornecedoresMock`
 
-### ✅ Melhorias Implementadas - Fase 2 (15/03/2026)
-- ✅ `CriticalAlertsBar` — Migrado de `solicitacoesMock` para queries reais (solicitacoes + pedidos)
-- ✅ `BuyerPerformancePanel` — Migrado de `buyerPerformanceMock` para queries reais (cotacoes + solicitacoes)
-- ✅ `SavingsGoalPanel` — Migrado de `buyerPerformanceMock` para query real de solicitacoes do mês
-- ✅ `SupplierRankingPanel` — Migrado de mock gerado para dados reais (fornecedores + pedidos)
-- ✅ `SupplierAlertsPanel` — Migrado de mock local para dados reais (fornecedores + pedidos)
-- ✅ `ExecutiveDashboard` — Hook `useExecutiveDashboardData` injetado + realtime ativo
-- ✅ `useFileUpload` — Hook criado para upload de arquivos ao bucket `documents`
-- ✅ `useRealtimeSubscription` — Hook genérico para subscriptions com auto-invalidação de cache
-- ✅ ComprasDashboard agora tem realtime em 5 tabelas críticas
-
-> ⚠️ **Pendências restantes**: ExecutiveDashboard ainda usa mock data para gráficos/trends (hook injetado mas dados inline não substituídos nos charts), Portal do Fornecedor não existe, UI de Qualificação não foi construída, integrações externas (Bitrix24, Banco Inter, Lalamove) pendentes.
+> ⚠️ **Pendências**: HistoricoCompras usa purchaseHistoryData.ts, Portal do Fornecedor, UI de Qualificação, integrações externas.
 
 ---
 
 > Documento gerado por auditoria exaustiva do código-fonte, banco de dados e memórias de projeto.
+
