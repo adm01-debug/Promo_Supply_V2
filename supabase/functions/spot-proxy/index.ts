@@ -238,6 +238,7 @@ async function spotFetch(
       ...options,
       headers: { ...headers, Cookie: newCookie },
       redirect: "manual",
+      signal: AbortSignal.timeout(SPOT_REQUEST_TIMEOUT_MS),
     });
   }
 
