@@ -103,9 +103,14 @@ const CatalogoSpot = () => {
     if (mountedRef.current && data) setFinancialDocs(data);
   }, [getFinancialDocs]);
 
-  const handleAddToCart = useCallback(async (ref: string) => {
-    await addToCart(ref, 1, '0', '0');
-    if (mountedRef.current) loadCart();
+  const handleAddToCart = useCallback(async (productId: string) => {
+    if (!productId) {
+      toast.error('Não foi possível identificar o produto SPOT para adicionar ao carrinho');
+      return;
+    }
+
+    await addToCart(productId, 1, '0', '0');
+    if (mountedRef.current) void loadCart();
   }, [addToCart, loadCart]);
 
   const handleRemoveFromCart = useCallback(async (groupId: string) => {
