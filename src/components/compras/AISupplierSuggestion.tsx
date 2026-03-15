@@ -99,22 +99,32 @@ export function AISupplierSuggestion() {
     setSuggestions(null);
 
     try {
-      // Prepare supplier data for AI
-      const suppliersData = fornecedoresMock.map(f => ({
+      // Prepare supplier data from Supabase
+      const suppliersData = fornecedores.map(f => ({
         id: f.id,
-        name: f.nomeFantasia,
+        name: f.nome_fantasia || f.razao_social,
         type: f.tipo,
-        rating: f.rating,
-        ramos: f.ramos,
-        apiIntegrada: f.apiIntegrada,
+        rating: f.avaliacao,
+        ramos: f.segmento,
+        apiIntegrada: f.integrado_api,
       }));
 
-      // Mock purchase history
-      const purchaseHistory = [
-        { supplier: 'TechParts Ltda', product: 'Componentes eletrônicos', value: 15000, rating: 4.5 },
-        { supplier: 'Office Solutions', product: 'Material de escritório', value: 5000, rating: 4.8 },
-        { supplier: 'Industrial Supply Co', product: 'Equipamentos industriais', value: 45000, rating: 4.2 },
-      ];
+      // Fetch real purchase history
+      const { data: recentPedidos } = await supabase
+        .from('pedidos')
+        .select('fornecedor_id, valor_total')
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      const purchaseHistory = (recentPedidos || []).map(p => {
+        const supplier = fornecedores.find(f => f.id === p.fornecedor_id);
+        return {
+          supplier: supplier?.nome_fantasia || supplier?.razao_social || 'Desconhecido',
+          product: 'Pedido recente',
+          value: Number(p.valor_total),
+          rating: Number(supplier?.avaliacao || 4),
+        };
+      });
 
       const { data, error } = await supabase.functions.invoke('ai-supplier-suggestion', {
         body: {

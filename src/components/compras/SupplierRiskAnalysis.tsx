@@ -197,9 +197,9 @@ export function SupplierRiskAnalysis() {
                     <SelectValue placeholder="Escolha um fornecedor" />
                   </SelectTrigger>
                   <SelectContent>
-                    {fornecedoresMock.map((f) => (
+                    {fornecedores.map((f) => (
                       <SelectItem key={f.id} value={f.id}>
-                        {f.nomeFantasia} - {f.cnpj}
+                        {f.nome_fantasia || f.razao_social} - {f.cnpj || 'N/A'}
                       </SelectItem>
                     ))}
                   </SelectContent>

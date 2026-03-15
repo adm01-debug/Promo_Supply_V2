@@ -108,13 +108,13 @@ export function PriceComparator() {
         
         return {
           supplierId: f.id,
-          supplierName: f.nomeFantasia,
+          supplierName: f.nome_fantasia || f.razao_social,
           unitPrice,
           totalPrice,
-          deliveryDays: Math.floor(3 + Math.random() * 12),
-          paymentTerms: ['30 dias', '28/56 dias', 'À vista -5%', '30/60/90 dias'][Math.floor(Math.random() * 4)],
+          deliveryDays: f.prazo_medio_entrega || Math.floor(3 + Math.random() * 12),
+          paymentTerms: f.condicoes_pagamento || ['30 dias', '28/56 dias', 'À vista -5%', '30/60/90 dias'][Math.floor(Math.random() * 4)],
           stock: Math.floor(50 + Math.random() * 500),
-          rating: Number((3.5 + Math.random() * 1.5).toFixed(1)),
+          rating: Number(f.avaliacao || (3.5 + Math.random() * 1.5).toFixed(1)),
           onTimeDelivery: Math.floor(85 + Math.random() * 15),
           savings,
           savingsPercent,
