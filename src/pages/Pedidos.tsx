@@ -608,6 +608,13 @@ const Pedidos = () => {
                                 <Package className="w-4 h-4 mr-2" />
                                 Marcar Entregue
                               </DropdownMenuItem>
+                              <DropdownMenuItem onClick={(e) => {
+                                e.stopPropagation();
+                                setReceivingPedido(pedido);
+                              }}>
+                                <ClipboardCheck className="w-4 h-4 mr-2" />
+                                Conferir Recebimento
+                              </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem>
                                 <Mail className="w-4 h-4 mr-2" />
