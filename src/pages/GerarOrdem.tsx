@@ -201,7 +201,7 @@ compras@promosupply.com.br`;
   const finalizarOrdem = () => {
     toast({
       title: "Ordem Gerada!",
-      description: `A ordem ${ordemMock.numero} foi gerada com sucesso.`,
+      description: `A ordem ${ordemNumero} foi gerada com sucesso.`,
     });
     navigate("/acompanhamento");
   };
