@@ -143,7 +143,7 @@ Equipe de Compras - Promo Supply`;
 Segue abaixo os detalhes da Ordem de Compra para confirmação:
 
 ═══════════════════════════════════════════
-ORDEM DE COMPRA: ${ordemMock.numero}
+ORDEM DE COMPRA: ${ordemNumero}
 ═══════════════════════════════════════════
 
 DADOS DO PEDIDO:
