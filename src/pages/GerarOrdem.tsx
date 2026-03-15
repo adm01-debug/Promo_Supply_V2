@@ -281,7 +281,7 @@ compras@promosupply.com.br`;
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div>
                   <p className="text-xs text-muted-foreground">Razão Social</p>
-                  <p className="font-medium text-foreground">{fornecedor.razaoSocial}</p>
+                  <p className="font-medium text-foreground">{fornecedor.razao_social}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Nome Fantasia</p>
