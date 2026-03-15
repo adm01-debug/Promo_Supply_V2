@@ -127,7 +127,7 @@ ${desconto > 0 ? `🎁 *Desconto:* R$ ${desconto.toFixed(2)}` : ''}
 💵 *TOTAL:* R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
 
 📅 *Prazo de Entrega:* ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
-💳 *Condição:* ${ordemMock.condicaoPagamento}
+💳 *Condição:* À vista via PIX
 ${observacoes ? `\n📝 *Observações:* ${observacoes}` : ''}
 Por favor, confirme o recebimento e disponibilidade.
 
