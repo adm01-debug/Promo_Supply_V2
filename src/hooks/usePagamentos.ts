@@ -199,7 +199,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
-  }, [fetchPagamentos]);
+  }, [pagamentos, fetchPagamentos]);
 
   // Mark as paid
   const markAsPaid = useCallback(async (id: string, valor_pago?: number) => {
