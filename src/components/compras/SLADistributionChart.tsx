@@ -5,8 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AlertCircle, AlertTriangle, CheckCircle, Clock, Calendar } from 'lucide-react';
-import { solicitacoesMock, Solicitacao } from '@/data/mockData';
 import { useSLASettings } from '@/stores/slaSettingsStore';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 type SLAStatus = 'ok' | 'warning' | 'critical' | 'overdue';
 type PeriodFilter = 'week' | 'month' | 'quarter' | 'all';
@@ -17,56 +19,6 @@ const PERIOD_OPTIONS = [
   { value: 'quarter', label: 'Último Trimestre' },
   { value: 'all', label: 'Todos' },
 ];
-
-const parsePrazoToDays = (prazo: string): number => {
-  const match = prazo.match(/(\d+)/);
-  return match ? parseInt(match[1], 10) : 14;
-};
-
-const isWithinPeriod = (dateStr: string, period: PeriodFilter): boolean => {
-  if (period === 'all') return true;
-  
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffDays = Math.ceil((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
-  
-  switch (period) {
-    case 'week':
-      return diffDays <= 7;
-    case 'month':
-      return diffDays <= 30;
-    case 'quarter':
-      return diffDays <= 90;
-    default:
-      return true;
-  }
-};
-
-const calculateSLAStatus = (
-  solicitacao: Solicitacao,
-  warningDays: number,
-  criticalDays: number
-): SLAStatus | null => {
-  const activeStatuses = ['AGUARDANDO_COTACAO', 'EM_COTACAO', 'FORNECEDOR_SELECIONADO', 'PEDIDO_GERADO', 'AGUARDANDO_PAGAMENTO', 'EM_TRANSITO'];
-  if (!activeStatuses.includes(solicitacao.status)) {
-    return null;
-  }
-
-  const prazoDays = parsePrazoToDays(solicitacao.prazoEntrega);
-  const createdDate = new Date(solicitacao.createdAt);
-  const deadline = new Date(createdDate);
-  deadline.setDate(deadline.getDate() + prazoDays);
-  
-  const now = new Date();
-  const daysUntilDeadline = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-
-  if (daysUntilDeadline < 0) return 'overdue';
-  if (daysUntilDeadline <= criticalDays) return 'critical';
-  if (daysUntilDeadline <= warningDays) return 'warning';
-  return 'ok';
-};
-
-// Dark mode aware color configuration
 
 const STATUS_CONFIG = {
   ok: {
@@ -106,11 +58,8 @@ const STATUS_CONFIG = {
 export const SLADistributionChart = forwardRef<HTMLDivElement>((_props, ref) => {
   const { settings } = useSLASettings();
   const [period, setPeriod] = useState<PeriodFilter>('month');
-  
-  // Detect dark mode
   const [isDark, setIsDark] = useState(false);
-  
-  // Listen for theme changes
+
   useEffect(() => {
     const checkTheme = () => {
       setIsDark(document.documentElement.classList.contains('dark'));
@@ -121,27 +70,45 @@ export const SLADistributionChart = forwardRef<HTMLDivElement>((_props, ref) => 
     return () => observer.disconnect();
   }, []);
 
-  const distributionData = useMemo(() => {
-    const counts: Record<SLAStatus, number> = {
-      ok: 0,
-      warning: 0,
-      critical: 0,
-      overdue: 0,
-    };
+  // Fetch real solicitacoes from Supabase
+  const { data: solicitacoes, isLoading } = useQuery({
+    queryKey: ['sla-distribution-solicitacoes', period],
+    queryFn: async () => {
+      let query = supabase
+        .from('solicitacoes')
+        .select('id, status, data_necessidade, created_at')
+        .not('status', 'in', '(concluida,cancelada)');
 
-    const filteredSolicitacoes = solicitacoesMock.filter((sol) =>
-      isWithinPeriod(sol.createdAt, period)
-    );
-
-    filteredSolicitacoes.forEach((sol) => {
-      const status = calculateSLAStatus(
-        sol,
-        settings.warningThresholdDays,
-        settings.criticalThresholdDays
-      );
-      if (status) {
-        counts[status]++;
+      if (period !== 'all') {
+        const now = new Date();
+        const daysBack = period === 'week' ? 7 : period === 'month' ? 30 : 90;
+        const since = new Date(now.getTime() - daysBack * 86400000);
+        query = query.gte('created_at', since.toISOString());
       }
+
+      const { data, error } = await query;
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 30000,
+  });
+
+  const distributionData = useMemo(() => {
+    const counts: Record<SLAStatus, number> = { ok: 0, warning: 0, critical: 0, overdue: 0 };
+
+    (solicitacoes || []).forEach((sol) => {
+      if (!sol.data_necessidade) return;
+      const now = new Date();
+      const deadline = new Date(sol.data_necessidade);
+      const daysUntil = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+      let status: SLAStatus;
+      if (daysUntil < 0) status = 'overdue';
+      else if (daysUntil <= settings.criticalThresholdDays) status = 'critical';
+      else if (daysUntil <= settings.warningThresholdDays) status = 'warning';
+      else status = 'ok';
+
+      counts[status]++;
     });
 
     return Object.entries(counts)
@@ -157,14 +124,14 @@ export const SLADistributionChart = forwardRef<HTMLDivElement>((_props, ref) => 
           textClass: config.textClass,
         };
       });
-  }, [settings.warningThresholdDays, settings.criticalThresholdDays, period, isDark]);
+  }, [solicitacoes, settings.warningThresholdDays, settings.criticalThresholdDays, isDark]);
 
   const total = distributionData.reduce((acc, item) => acc + item.value, 0);
 
   const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload as { name: string; value: number };
-      const percentage = ((data.value / total) * 100).toFixed(1);
+      const percentage = total > 0 ? ((data.value / total) * 100).toFixed(1) : '0';
       return (
         <div className="bg-popover/95 backdrop-blur-sm border border-border rounded-lg p-3 shadow-xl dark:shadow-2xl dark:shadow-black/20 dark:ring-1 dark:ring-white/5">
           <p className="font-medium text-foreground">{data.name}</p>
@@ -176,6 +143,15 @@ export const SLADistributionChart = forwardRef<HTMLDivElement>((_props, ref) => 
     }
     return null;
   };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardHeader><Skeleton className="h-6 w-40" /></CardHeader>
+        <CardContent><Skeleton className="h-[200px]" /></CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
@@ -202,34 +178,38 @@ export const SLADistributionChart = forwardRef<HTMLDivElement>((_props, ref) => 
       </CardHeader>
       <CardContent>
         <div className="flex flex-col lg:flex-row items-center gap-4">
-          {/* Chart */}
           <div className="w-full lg:w-1/2 h-[200px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={distributionData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={50}
-                  outerRadius={80}
-                  paddingAngle={2}
-                  dataKey="value"
-                >
-                  {distributionData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
-            </ResponsiveContainer>
+            {distributionData.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={distributionData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    dataKey="value"
+                  >
+                    {distributionData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip content={<CustomTooltip />} />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
+                Nenhuma solicitação ativa
+              </div>
+            )}
           </div>
 
-          {/* Legend */}
           <div className="w-full lg:w-1/2 space-y-2">
             {distributionData.map((item) => {
               const config = STATUS_CONFIG[item.status];
               const Icon = config.icon;
-              const percentage = ((item.value / total) * 100).toFixed(0);
+              const percentage = total > 0 ? ((item.value / total) * 100).toFixed(0) : '0';
               return (
                 <div
                   key={item.status}
@@ -255,7 +235,6 @@ export const SLADistributionChart = forwardRef<HTMLDivElement>((_props, ref) => 
               );
             })}
             
-            {/* Total */}
             <div className="flex items-center justify-between p-2 pt-3 border-t border-border mt-2">
               <span className="text-sm font-semibold text-foreground">Total Ativos</span>
               <Badge className="text-xs">{total}</Badge>

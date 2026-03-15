@@ -22,8 +22,8 @@ import {
 } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { fornecedoresMock } from '@/data/mockData';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
 
 interface RiskFactor {
   category: string;
@@ -75,6 +75,19 @@ export function SupplierRiskAnalysis() {
   const [selectedSupplier, setSelectedSupplier] = useState<string>('');
   const [analysis, setAnalysis] = useState<RiskAnalysisResponse | null>(null);
 
+  const { data: fornecedores = [] } = useQuery({
+    queryKey: ['supplier-risk-fornecedores'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fornecedores')
+        .select('id, razao_social, nome_fantasia, cnpj, tipo, avaliacao, segmento')
+        .eq('status', 'ativo');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
   const handleAnalyze = async () => {
     if (!selectedSupplier) {
       toast({
@@ -89,22 +102,28 @@ export function SupplierRiskAnalysis() {
     setAnalysis(null);
 
     try {
-      const supplier = fornecedoresMock.find(f => f.id === selectedSupplier);
+      const supplier = fornecedores.find(f => f.id === selectedSupplier);
       if (!supplier) throw new Error('Fornecedor não encontrado');
 
-      // Mock purchase history
-      const purchaseHistory = [
-        { date: '2024-12-01', value: 15000, onTime: true, quality: 4.5 },
-        { date: '2024-11-15', value: 22000, onTime: true, quality: 4.8 },
-        { date: '2024-10-20', value: 18000, onTime: false, quality: 4.2 },
-        { date: '2024-09-10', value: 25000, onTime: true, quality: 4.6 },
-      ];
+      // Fetch real purchase history from pedidos
+      const { data: pedidos } = await supabase
+        .from('pedidos')
+        .select('data_emissao, valor_total, data_previsao, data_entrega')
+        .eq('fornecedor_id', selectedSupplier)
+        .order('data_emissao', { ascending: false })
+        .limit(10);
 
-      // Mock market data
+      const purchaseHistory = (pedidos || []).map(p => ({
+        date: p.data_emissao,
+        value: Number(p.valor_total),
+        onTime: p.data_entrega && p.data_previsao ? p.data_entrega <= p.data_previsao : true,
+        quality: Number(supplier.avaliacao || 4),
+      }));
+
       const marketData = {
         industryAvgDelivery: 92,
         marketGrowth: 5.2,
-        competitorCount: 15,
+        competitorCount: fornecedores.length,
         priceVolatility: 'medium',
       };
 
@@ -112,12 +131,11 @@ export function SupplierRiskAnalysis() {
         body: {
           supplier: {
             id: supplier.id,
-            name: supplier.nomeFantasia,
+            name: supplier.nome_fantasia || supplier.razao_social,
             cnpj: supplier.cnpj,
             type: supplier.tipo,
-            rating: supplier.rating,
-            totalPurchases: supplier.totalMes,
-            ramos: supplier.ramos,
+            rating: supplier.avaliacao,
+            ramos: supplier.segmento,
           },
           purchaseHistory,
           marketData,
@@ -179,9 +197,9 @@ export function SupplierRiskAnalysis() {
                     <SelectValue placeholder="Escolha um fornecedor" />
                   </SelectTrigger>
                   <SelectContent>
-                    {fornecedoresMock.map((f) => (
+                    {fornecedores.map((f) => (
                       <SelectItem key={f.id} value={f.id}>
-                        {f.nomeFantasia} - {f.cnpj}
+                        {f.nome_fantasia || f.razao_social} - {f.cnpj || 'N/A'}
                       </SelectItem>
                     ))}
                   </SelectContent>

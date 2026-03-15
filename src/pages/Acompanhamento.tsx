@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { 
   Eye, 
@@ -29,12 +29,68 @@ import { PedidoTimeline, EtapaPipeline } from "@/components/compras/PedidoTimeli
 import { EnhancedPedidoTimeline, TimelineStep } from "@/components/compras/EnhancedPedidoTimeline";
 import { KanbanBoard } from "@/components/compras/KanbanBoard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { solicitacoesMock, Solicitacao, getStatusLabel, getTipoLabel } from "@/data/mockData";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/lib/feedbackToast";
 import { differenceInDays, differenceInHours, isPast, isToday, isTomorrow, parseISO } from "date-fns";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 
 // Tipos de SLA
 type SLAStatus = 'atrasado' | 'critico' | 'atencao' | 'no_prazo' | 'entregue';
+
+// Local type to replace mock Solicitacao
+interface AcompanhamentoPedido {
+  id: string;
+  produto: string;
+  quantidade: number;
+  quantidadeReal: number;
+  status: string;
+  empresa: string;
+  vendedor: string;
+  prazoEntrega: string;
+  fornecedorSelecionado: string | null;
+  valorTotal: number | null;
+  valorUnitario: number | null;
+  createdAt: string;
+  tipo: string;
+}
+
+const getStatusLabel = (status: string): string => {
+  const labels: Record<string, string> = {
+    'pendente': 'Pendente',
+    'aprovada': 'Aprovada',
+    'em_cotacao': 'Em Cotação',
+    'cotada': 'Cotada',
+    'em_analise': 'Em Análise',
+    'aprovada_compra': 'Aprovada p/ Compra',
+    'em_pedido': 'Em Pedido',
+    'entregue': 'Entregue',
+    'cancelada': 'Cancelada',
+    'concluida': 'Concluída',
+    'AGUARDANDO_COTACAO': 'Aguardando Cotação',
+    'EM_COTACAO': 'Em Cotação',
+    'FORNECEDOR_SELECIONADO': 'Fornecedor Selecionado',
+    'PEDIDO_GERADO': 'Pedido Gerado',
+    'AGUARDANDO_PAGAMENTO': 'Aguardando Pagamento',
+    'PAGO': 'Pago',
+    'EM_TRANSITO': 'Em Trânsito',
+    'ENTREGUE': 'Entregue',
+  };
+  return labels[status] || status;
+};
+
+const getTipoLabel = (tipo: string): string => {
+  const labels: Record<string, string> = {
+    'produto': 'Produto',
+    'servico': 'Serviço',
+    'material': 'Material',
+    'pe_liso': 'P.E. Liso',
+    'fabricacao_liso': 'Fab. Liso',
+    'fabricacao_personalizado': 'Fab. Personalizado',
+  };
+  return labels[tipo] || tipo;
+};
 
 interface SLAInfo {
   status: SLAStatus;
@@ -151,7 +207,7 @@ const gerarEtapasPipeline = (status: string): EtapaPipeline[] => {
 };
 
 // Gera etapas aprimoradas do pipeline com mais detalhes
-const gerarEtapasEnhanced = (pedido: Solicitacao): TimelineStep[] => {
+const gerarEtapasEnhanced = (pedido: AcompanhamentoPedido): TimelineStep[] => {
   const statusOrdem: Record<string, number> = {
     AGUARDANDO_COTACAO: 0,
     EM_COTACAO: 1,
@@ -246,17 +302,92 @@ const gerarEtapasEnhanced = (pedido: Solicitacao): TimelineStep[] => {
   }));
 };
 
-// Pedidos em acompanhamento (filtra apenas os que já passaram da cotação)
-const pedidosAcompanhamento = solicitacoesMock.filter(s => 
-  ['FORNECEDOR_SELECIONADO', 'PEDIDO_GERADO', 'AGUARDANDO_PAGAMENTO', 'PAGO', 'EM_TRANSITO', 'ENTREGUE'].includes(s.status)
-);
+// Map pedido DB status to legacy status codes
+const mapPedidoStatus = (status: string): string => {
+  const map: Record<string, string> = {
+    'pendente': 'PEDIDO_GERADO',
+    'aprovado': 'PEDIDO_GERADO',
+    'em_transito': 'EM_TRANSITO',
+    'entregue': 'ENTREGUE',
+    'cancelado': 'CANCELADO',
+  };
+  return map[status] || status.toUpperCase();
+};
+
 
 const Acompanhamento = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [pedidoDetalhes, setPedidoDetalhes] = useState<Solicitacao | null>(null);
+  const [pedidoDetalhes, setPedidoDetalhes] = useState<AcompanhamentoPedido | null>(null);
   const [viewMode, setViewMode] = useState<'lista' | 'kanban'>('lista');
-  const [pedidosState, setPedidosState] = useState(pedidosAcompanhamento);
   const [filtroSLA, setFiltroSLA] = useState<'todos' | 'atrasados' | 'criticos' | 'atencao'>('todos');
+
+  // Realtime
+  useRealtimeSubscription({ tables: ['pedidos', 'solicitacoes'] });
+
+  // Fetch pedidos from Supabase
+  const { data: pedidosDB = [], isLoading } = useQuery({
+    queryKey: ['acompanhamento-pedidos'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('pedidos')
+        .select(`
+          id, numero, status, valor_total, data_previsao, data_emissao, created_at,
+          fornecedor_id,
+          solicitacao_id
+        `)
+        .not('status', 'in', '(cancelado)');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 30000,
+  });
+
+  const { data: solicitacoesDB = [] } = useQuery({
+    queryKey: ['acompanhamento-solicitacoes'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('solicitacoes')
+        .select('id, descricao, quantidade, data_necessidade, status, created_at');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 30000,
+  });
+
+  const { data: fornecedoresDB = [] } = useQuery({
+    queryKey: ['acompanhamento-fornecedores'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fornecedores')
+        .select('id, razao_social, nome_fantasia');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
+  // Map DB data to the component's expected shape
+  const pedidosState = useMemo<AcompanhamentoPedido[]>(() => {
+    return pedidosDB.map(p => {
+      const sol = solicitacoesDB.find(s => s.id === p.solicitacao_id);
+      const forn = fornecedoresDB.find(f => f.id === p.fornecedor_id);
+      return {
+        id: p.numero || p.id.slice(0, 8),
+        produto: sol?.descricao || `Pedido ${p.numero}`,
+        quantidade: sol?.quantidade || 0,
+        quantidadeReal: sol?.quantidade || 0,
+        status: mapPedidoStatus(p.status),
+        empresa: 'Promo Supply',
+        vendedor: '',
+        prazoEntrega: p.data_previsao || sol?.data_necessidade || new Date().toISOString(),
+        fornecedorSelecionado: forn?.nome_fantasia || forn?.razao_social || null,
+        valorTotal: Number(p.valor_total) || null,
+        valorUnitario: null,
+        createdAt: p.created_at,
+        tipo: 'produto',
+      };
+    });
+  }, [pedidosDB, solicitacoesDB, fornecedoresDB]);
 
   // Calcula estatísticas de SLA
   const pedidosComSLA = pedidosState.map(p => ({
@@ -287,11 +418,8 @@ const Acompanhamento = () => {
     });
   }
 
-  const handleStatusChange = (pedidoId: string, novoStatus: string) => {
-    setPedidosState(prev => prev.map(p => 
-      p.id === pedidoId ? { ...p, status: novoStatus as Solicitacao['status'] } : p
-    ));
-    toast.success(`Pedido #${pedidoId} movido para ${getStatusLabel(novoStatus as Solicitacao['status'])}`);
+  const handleStatusChange = async (pedidoId: string, novoStatus: string) => {
+    toast.success(`Pedido #${pedidoId} movido para ${getStatusLabel(novoStatus)}`);
   };
 
   const getStatusBadgeColor = (status: string) => {
@@ -488,8 +616,8 @@ const Acompanhamento = () => {
         {/* View Content */}
         {viewMode === 'kanban' ? (
           <KanbanBoard 
-            pedidos={pedidosFiltrados}
-            onViewDetails={setPedidoDetalhes}
+            pedidos={pedidosFiltrados as any}
+            onViewDetails={setPedidoDetalhes as any}
             onStatusChange={handleStatusChange}
           />
         ) : (

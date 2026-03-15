@@ -26,35 +26,86 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import { solicitacoesMock, fornecedoresMock, getTipoLabel } from "@/data/mockData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Dados mockados da ordem
-const ordemMock = {
-  numero: "OC-2024-0461",
-  solicitacao: solicitacoesMock[2], // FORNECEDOR_SELECIONADO
-  fornecedor: fornecedoresMock[3], // Estrela Brindes
-  condicaoPagamento: "À vista via PIX",
-  frete: 150,
-  desconto: 0,
-  observacoes: "",
+const getTipoLabel = (tipo: string) => {
+  const map: Record<string, string> = {
+    'produto': 'Produto', 'servico': 'Serviço', 'material': 'Material',
+    'pe_liso': 'P.E. Liso', 'fabricacao_liso': 'Fab. Liso', 'fabricacao_personalizado': 'Fab. Personalizado',
+  };
+  return map[tipo] || tipo;
 };
 
 const GerarOrdem = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const solicitacaoId = searchParams.get("solicitacao") || ordemMock.solicitacao.id;
+  const solicitacaoId = searchParams.get("solicitacao");
 
   const [copiado, setCopiado] = useState<string | null>(null);
   const [mensagemWhatsApp, setMensagemWhatsApp] = useState("");
   const [mensagemEmail, setMensagemEmail] = useState("");
   const [assuntoEmail, setAssuntoEmail] = useState("");
-  const [frete, setFrete] = useState(ordemMock.frete);
-  const [desconto, setDesconto] = useState(ordemMock.desconto);
-  const [observacoes, setObservacoes] = useState(ordemMock.observacoes);
+  const [frete, setFrete] = useState(150);
+  const [desconto, setDesconto] = useState(0);
+  const [observacoes, setObservacoes] = useState("");
 
-  // Busca dados
-  const solicitacao = solicitacoesMock.find(s => s.id === solicitacaoId) || ordemMock.solicitacao;
-  const fornecedor = fornecedoresMock.find(f => f.nomeFantasia === solicitacao.fornecedorSelecionado) || ordemMock.fornecedor;
+  // Fetch solicitacao from Supabase
+  const { data: solicitacaoData } = useQuery({
+    queryKey: ['gerar-ordem-solicitacao', solicitacaoId],
+    queryFn: async () => {
+      if (!solicitacaoId) return null;
+      const { data, error } = await supabase
+        .from('solicitacoes')
+        .select('*')
+        .eq('id', solicitacaoId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!solicitacaoId,
+  });
+
+  // Fetch fornecedores
+  const { data: fornecedoresData = [] } = useQuery({
+    queryKey: ['gerar-ordem-fornecedores'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fornecedores')
+        .select('id, razao_social, nome_fantasia, cnpj, email, telefone, tipo')
+        .eq('status', 'ativo');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
+  // Create a unified data shape
+  const solicitacao = {
+    id: solicitacaoData?.id || 'N/A',
+    produto: solicitacaoData?.descricao || 'Produto',
+    quantidade: solicitacaoData?.quantidade || 0,
+    quantidadeReal: solicitacaoData?.quantidade || 0,
+    tipo: 'produto',
+    empresa: 'Promo Supply',
+    vendedor: '',
+    prazoEntrega: solicitacaoData?.data_necessidade || new Date().toISOString(),
+    valorUnitario: Number(solicitacaoData?.valor_estimado || 0) / Math.max(solicitacaoData?.quantidade || 1, 1),
+    fornecedorSelecionado: '',
+  };
+
+  const fornecedor = fornecedoresData[0] || {
+    id: '',
+    razao_social: 'N/A',
+    nome_fantasia: 'N/A',
+    cnpj: 'N/A',
+    email: 'N/A',
+    telefone: 'N/A',
+    tipo: 'N/A',
+  };
+
+  const ordemNumero = `OC-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`;
 
   // Cálculos financeiros
   const subtotal = (solicitacao.valorUnitario || 12) * solicitacao.quantidadeReal;
@@ -62,11 +113,11 @@ const GerarOrdem = () => {
 
   // Gera mensagens automáticas
   const gerarMensagemWhatsApp = () => {
-    const msg = `Olá ${fornecedor.nomeFantasia}!
+    const msg = `Olá ${fornecedor.nome_fantasia || fornecedor.razao_social}!
 
 Gostaríamos de confirmar o pedido abaixo:
 
-*ORDEM DE COMPRA: ${ordemMock.numero}*
+*ORDEM DE COMPRA: ${ordemNumero}*
 
 📦 *Produto:* ${solicitacao.produto}
 📊 *Quantidade:* ${solicitacao.quantidadeReal} unidades
@@ -76,7 +127,7 @@ ${desconto > 0 ? `🎁 *Desconto:* R$ ${desconto.toFixed(2)}` : ''}
 💵 *TOTAL:* R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
 
 📅 *Prazo de Entrega:* ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
-💳 *Condição:* ${ordemMock.condicaoPagamento}
+💳 *Condição:* À vista via PIX
 ${observacoes ? `\n📝 *Observações:* ${observacoes}` : ''}
 Por favor, confirme o recebimento e disponibilidade.
 
@@ -86,13 +137,13 @@ Equipe de Compras - Promo Supply`;
   };
 
   const gerarMensagemEmail = () => {
-    setAssuntoEmail(`Ordem de Compra ${ordemMock.numero} - ${solicitacao.produto}`);
+    setAssuntoEmail(`Ordem de Compra ${ordemNumero} - ${solicitacao.produto}`);
     const msg = `Prezados,
 
 Segue abaixo os detalhes da Ordem de Compra para confirmação:
 
 ═══════════════════════════════════════════
-ORDEM DE COMPRA: ${ordemMock.numero}
+ORDEM DE COMPRA: ${ordemNumero}
 ═══════════════════════════════════════════
 
 DADOS DO PEDIDO:
@@ -108,7 +159,7 @@ ${desconto > 0 ? `• Desconto: R$ ${desconto.toFixed(2)}` : ''}
 • Total: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
 
 CONDIÇÕES:
-• Pagamento: ${ordemMock.condicaoPagamento}
+• Pagamento: À vista via PIX
 • Prazo de Entrega: ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
 ${observacoes ? `\nOBSERVAÇÕES:\n${observacoes}` : ''}
 DADOS PARA ENTREGA:
@@ -137,7 +188,7 @@ compras@promosupply.com.br`;
   };
 
   const abrirWhatsApp = () => {
-    const telefone = fornecedor.whatsapp.replace(/\D/g, "");
+    const telefone = (fornecedor.telefone || '').replace(/\D/g, "");
     const url = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagemWhatsApp)}`;
     window.open(url, "_blank");
   };
@@ -150,7 +201,7 @@ compras@promosupply.com.br`;
   const finalizarOrdem = () => {
     toast({
       title: "Ordem Gerada!",
-      description: `A ordem ${ordemMock.numero} foi gerada com sucesso.`,
+      description: `A ordem ${ordemNumero} foi gerada com sucesso.`,
     });
     navigate("/acompanhamento");
   };
@@ -173,7 +224,7 @@ compras@promosupply.com.br`;
             </p>
           </div>
           <Badge className="text-lg px-4 py-1 bg-primary/10 text-primary border-primary/20">
-            {ordemMock.numero}
+            {ordemNumero}
           </Badge>
         </div>
 
@@ -230,11 +281,11 @@ compras@promosupply.com.br`;
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div>
                   <p className="text-xs text-muted-foreground">Razão Social</p>
-                  <p className="font-medium text-foreground">{fornecedor.razaoSocial}</p>
+                  <p className="font-medium text-foreground">{fornecedor.razao_social}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Nome Fantasia</p>
-                  <p className="font-medium text-foreground">{fornecedor.nomeFantasia}</p>
+                  <p className="font-medium text-foreground">{fornecedor.nome_fantasia}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">CNPJ</p>
@@ -246,7 +297,7 @@ compras@promosupply.com.br`;
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">WhatsApp</p>
-                  <p className="font-medium text-foreground">{fornecedor.whatsapp}</p>
+                  <p className="font-medium text-foreground">{fornecedor.telefone}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Tipo</p>
@@ -442,7 +493,7 @@ compras@promosupply.com.br`;
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Condição</span>
-                  <span className="font-medium">{ordemMock.condicaoPagamento}</span>
+                  <span className="font-medium">À vista via PIX</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Prazo Entrega</span>

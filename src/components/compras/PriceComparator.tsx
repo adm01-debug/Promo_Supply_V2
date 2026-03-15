@@ -26,8 +26,8 @@ import {
 } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { fornecedoresMock } from '@/data/mockData';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 interface PriceQuote {
@@ -67,6 +67,19 @@ export function PriceComparator() {
   const [quantity, setQuantity] = useState('100');
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
 
+  const { data: fornecedores = [] } = useQuery({
+    queryKey: ['price-comparator-fornecedores'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fornecedores')
+        .select('id, razao_social, nome_fantasia, avaliacao, prazo_medio_entrega, condicoes_pagamento')
+        .eq('status', 'ativo');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
   const handleCompare = async () => {
     if (!productName.trim()) {
       toast({
@@ -84,8 +97,8 @@ export function PriceComparator() {
       // Simulate fetching quotes from multiple suppliers
       const qty = parseInt(quantity) || 100;
       
-      // Generate mock quotes with realistic variation
-      const quotes: PriceQuote[] = fornecedoresMock.slice(0, 6).map((f, index) => {
+      // Generate quotes from real suppliers
+      const quotes: PriceQuote[] = fornecedores.slice(0, 6).map((f, index) => {
         const basePrice = 25 + Math.random() * 50;
         const unitPrice = Number((basePrice * (0.85 + Math.random() * 0.3)).toFixed(2));
         const totalPrice = Number((unitPrice * qty).toFixed(2));
@@ -95,13 +108,13 @@ export function PriceComparator() {
         
         return {
           supplierId: f.id,
-          supplierName: f.nomeFantasia,
+          supplierName: f.nome_fantasia || f.razao_social,
           unitPrice,
           totalPrice,
-          deliveryDays: Math.floor(3 + Math.random() * 12),
-          paymentTerms: ['30 dias', '28/56 dias', 'À vista -5%', '30/60/90 dias'][Math.floor(Math.random() * 4)],
+          deliveryDays: f.prazo_medio_entrega || Math.floor(3 + Math.random() * 12),
+          paymentTerms: f.condicoes_pagamento || ['30 dias', '28/56 dias', 'À vista -5%', '30/60/90 dias'][Math.floor(Math.random() * 4)],
           stock: Math.floor(50 + Math.random() * 500),
-          rating: Number((3.5 + Math.random() * 1.5).toFixed(1)),
+          rating: Number(f.avaliacao || (3.5 + Math.random() * 1.5).toFixed(1)),
           onTimeDelivery: Math.floor(85 + Math.random() * 15),
           savings,
           savingsPercent,
