@@ -70,14 +70,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     let mounted = true;
 
     // Check existing session first
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!mounted) return;
       setSession(session);
       setUser(session?.user ?? null);
+
       if (session?.user) {
-        fetchUserData(session.user.id);
+        await fetchUserData(session.user.id);
       }
-      setLoading(false);
+
+      if (mounted) setLoading(false);
     }).catch((error: unknown) => {
       console.error('Error getting session:', error);
       if (mounted) setLoading(false);
@@ -93,9 +95,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         if (session?.user) {
           // Fire-and-forget via setTimeout to avoid blocking the auth event loop
-          if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          if (event === 'SIGNED_IN') {
+            setLoading(true);
             setTimeout(() => {
-              if (mounted) fetchUserData(session.user.id);
+              if (!mounted) return;
+              fetchUserData(session.user.id).finally(() => {
+                if (mounted) setLoading(false);
+              });
+            }, 0);
+          }
+
+          if (event === 'TOKEN_REFRESHED') {
+            setTimeout(() => {
+              if (mounted) void fetchUserData(session.user.id);
             }, 0);
           }
         } else {

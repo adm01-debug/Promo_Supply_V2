@@ -42,6 +42,15 @@ const openExternalSpotUrl = (rawUrl: string) => {
   }
 };
 
+const extractSpotProductId = (rawValue: string, fallback = '') => {
+  try {
+    const url = new URL(rawValue, 'https://www.spotgifts.com.br');
+    return url.pathname.match(/\/(\d+)\/?$/)?.[1] || url.searchParams.get('prod') || fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 const CatalogoSpot = () => {
   const { loading, searchProducts, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
   const [activeTab, setActiveTab] = useState('catalogo');
@@ -94,9 +103,14 @@ const CatalogoSpot = () => {
     if (mountedRef.current && data) setFinancialDocs(data);
   }, [getFinancialDocs]);
 
-  const handleAddToCart = useCallback(async (ref: string) => {
-    await addToCart(ref, 1, '0', '0');
-    if (mountedRef.current) loadCart();
+  const handleAddToCart = useCallback(async (productId: string) => {
+    if (!productId) {
+      toast.error('Não foi possível identificar o produto SPOT para adicionar ao carrinho');
+      return;
+    }
+
+    await addToCart(productId, 1, '0', '0');
+    if (mountedRef.current) void loadCart();
   }, [addToCart, loadCart]);
 
   const handleRemoveFromCart = useCallback(async (groupId: string) => {
@@ -197,6 +211,7 @@ const CatalogoSpot = () => {
                       const parts = result.text.split(' - ');
                       const ref = parts[0] || '';
                       const name = parts.slice(1).join(' - ') || result.text;
+                      const productId = extractSpotProductId(result.value, ref);
 
                       return (
                         <Card key={i} className="hover:bg-accent/50 transition-colors">
@@ -219,7 +234,7 @@ const CatalogoSpot = () => {
                                 <ExternalLink className="w-3.5 h-3.5 mr-1" />
                                 Ver
                               </Button>
-                              <Button size="sm" onClick={() => handleAddToCart(ref)} disabled={loading}>
+                              <Button size="sm" onClick={() => handleAddToCart(productId)} disabled={loading}>
                                 {loading ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5 mr-1" />}
                                 Adicionar
                               </Button>
