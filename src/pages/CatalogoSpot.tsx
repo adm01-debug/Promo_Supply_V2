@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { useSpotIntegration, SpotOrder, SpotCartItem, SpotFinancialDoc } from '@/hooks/useSpotIntegration';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -14,21 +14,22 @@ import {
   ExternalLink, AlertTriangle, CheckCircle2
 } from 'lucide-react';
 
-const STATUS_COLORS: Record<string, string> = {
-  'Submetida': 'bg-cyan-500',
-  'Em processamento': 'bg-gray-500',
-  'Processada': 'bg-yellow-500',
-  'Aguardando Pagamento': 'bg-orange-500',
-  'Pago': 'bg-emerald-500',
-  'Pendencia Layout': 'bg-purple-500',
-  'Em Separação': 'bg-green-300',
-  'Em Produção': 'bg-green-500',
-  'Expedida': 'bg-green-700',
-  'Anulada': 'bg-red-600',
+// Status badge variants mapped to semantic meaning
+const STATUS_CONFIG: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; label: string }> = {
+  'Submetida': { variant: 'outline', label: 'Submetida' },
+  'Em processamento': { variant: 'secondary', label: 'Em processamento' },
+  'Processada': { variant: 'outline', label: 'Processada' },
+  'Aguardando Pagamento': { variant: 'outline', label: 'Aguardando Pagamento' },
+  'Pago': { variant: 'default', label: 'Pago' },
+  'Pendencia Layout': { variant: 'secondary', label: 'Pendência Layout' },
+  'Em Separação': { variant: 'secondary', label: 'Em Separação' },
+  'Em Produção': { variant: 'default', label: 'Em Produção' },
+  'Expedida': { variant: 'default', label: 'Expedida' },
+  'Anulada': { variant: 'destructive', label: 'Anulada' },
 };
 
 const CatalogoSpot = () => {
-  const spot = useSpotIntegration();
+  const { loading, searchProducts, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
   const [activeTab, setActiveTab] = useState('catalogo');
   const [searchQuery, setSearchQuery] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
@@ -38,54 +39,61 @@ const CatalogoSpot = () => {
   const [financialDocs, setFinancialDocs] = useState<{ documents: SpotFinancialDoc[]; hasOverdue: boolean } | null>(null);
   const [connected, setConnected] = useState(false);
   const [orderYear, setOrderYear] = useState(new Date().getFullYear().toString());
+  const mountedRef = useRef(true);
+
+  // Track mounted state
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
 
   // Test connection on mount
   useEffect(() => {
     let cancelled = false;
-    spot.testConnection().then(data => {
-      if (!cancelled && data?.success) setConnected(true);
+    testConnection().then(data => {
+      if (!cancelled && mountedRef.current && data?.success) setConnected(true);
     });
     return () => { cancelled = true; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [testConnection]);
 
   const handleSearch = useCallback(async () => {
     if (!searchQuery.trim()) return;
-    const results = await spot.searchProducts(searchQuery);
-    setHasSearched(true);
-    if (results) setSearchResults(results);
-  }, [searchQuery, spot]);
-
-  const handleAddToCart = useCallback(async (ref: string) => {
-    await spot.addToCart(ref, 1, '0', '0');
-    loadCart();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [spot]);
+    const results = await searchProducts(searchQuery);
+    if (mountedRef.current) {
+      setHasSearched(true);
+      if (results) setSearchResults(results);
+    }
+  }, [searchQuery, searchProducts]);
 
   const loadCart = useCallback(async () => {
-    const data = await spot.getCart();
-    if (data) setCart(data);
-  }, [spot]);
+    const data = await getCart();
+    if (mountedRef.current && data) setCart(data);
+  }, [getCart]);
 
   const loadOrders = useCallback(async () => {
-    const data = await spot.getOrders(orderYear);
-    if (data) setOrders(data.orders);
-  }, [spot, orderYear]);
+    const data = await getOrders(orderYear);
+    if (mountedRef.current && data) setOrders(data.orders);
+  }, [getOrders, orderYear]);
 
   const loadFinancial = useCallback(async () => {
-    const data = await spot.getFinancialDocs();
-    if (data) setFinancialDocs(data);
-  }, [spot]);
+    const data = await getFinancialDocs();
+    if (mountedRef.current && data) setFinancialDocs(data);
+  }, [getFinancialDocs]);
+
+  const handleAddToCart = useCallback(async (ref: string) => {
+    await addToCart(ref, 1, '0', '0');
+    if (mountedRef.current) loadCart();
+  }, [addToCart, loadCart]);
 
   const handleRemoveFromCart = useCallback(async (groupId: string) => {
-    await spot.removeFromCart(groupId);
-    loadCart();
-  }, [spot, loadCart]);
+    await removeFromCart(groupId);
+    if (mountedRef.current) loadCart();
+  }, [removeFromCart, loadCart]);
 
   const handleReconnect = useCallback(async () => {
-    const d = await spot.testConnection();
-    if (d?.success) setConnected(true);
-  }, [spot]);
+    const d = await testConnection();
+    if (mountedRef.current && d?.success) setConnected(true);
+  }, [testConnection]);
 
   return (
     <MainLayout>
@@ -107,7 +115,7 @@ const CatalogoSpot = () => {
               variant="outline"
               size="sm"
               onClick={handleReconnect}
-              disabled={spot.loading}
+              disabled={loading}
             >
               <Plug className="w-4 h-4 mr-2" />
               Reconectar
@@ -160,8 +168,8 @@ const CatalogoSpot = () => {
                     onKeyDown={e => e.key === 'Enter' && handleSearch()}
                     className="flex-1"
                   />
-                  <Button onClick={handleSearch} disabled={spot.loading || !searchQuery.trim()}>
-                    {spot.loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                  <Button onClick={handleSearch} disabled={loading || !searchQuery.trim()}>
+                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                     <span className="ml-2">Buscar</span>
                   </Button>
                 </div>
@@ -197,8 +205,8 @@ const CatalogoSpot = () => {
                                 <ExternalLink className="w-3.5 h-3.5 mr-1" />
                                 Ver
                               </Button>
-                              <Button size="sm" onClick={() => handleAddToCart(ref)} disabled={spot.loading}>
-                                <ShoppingCart className="w-3.5 h-3.5 mr-1" />
+                              <Button size="sm" onClick={() => handleAddToCart(ref)} disabled={loading}>
+                                {loading ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5 mr-1" />}
                                 Adicionar
                               </Button>
                             </div>
@@ -209,7 +217,7 @@ const CatalogoSpot = () => {
                   </div>
                 )}
 
-                {searchResults.length === 0 && hasSearched && !spot.loading && (
+                {searchResults.length === 0 && hasSearched && !loading && (
                   <div className="text-center py-8 text-muted-foreground">
                     <Package className="w-12 h-12 mx-auto mb-3 opacity-50" />
                     <p>Nenhum produto encontrado para &quot;{searchQuery}&quot;</p>
@@ -233,13 +241,13 @@ const CatalogoSpot = () => {
                     {cart ? `${cart.itemCount} item(s) — Total: R$ ${cart.total.toFixed(2)}` : 'Carregando...'}
                   </CardDescription>
                 </div>
-                <Button variant="outline" size="sm" onClick={loadCart} disabled={spot.loading}>
-                  <RefreshCw className={`w-4 h-4 mr-2 ${spot.loading ? 'animate-spin' : ''}`} />
+                <Button variant="outline" size="sm" onClick={loadCart} disabled={loading}>
+                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                   Atualizar
                 </Button>
               </CardHeader>
               <CardContent>
-                {spot.loading && !cart ? (
+                {loading && !cart ? (
                   <div className="flex items-center justify-center py-12">
                     <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
                   </div>
@@ -269,9 +277,9 @@ const CatalogoSpot = () => {
                               variant="ghost"
                               className="text-destructive hover:text-destructive"
                               onClick={() => handleRemoveFromCart(item.groupId)}
-                              disabled={spot.loading}
+                              disabled={loading}
                             >
-                              <Trash2 className="w-4 h-4" />
+                              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                             </Button>
                           </TableCell>
                         </TableRow>
@@ -326,14 +334,14 @@ const CatalogoSpot = () => {
                       <option key={y} value={y}>{y}</option>
                     ))}
                   </select>
-                  <Button variant="outline" size="sm" onClick={loadOrders} disabled={spot.loading}>
-                    <RefreshCw className={`w-4 h-4 mr-2 ${spot.loading ? 'animate-spin' : ''}`} />
+                  <Button variant="outline" size="sm" onClick={loadOrders} disabled={loading}>
+                    <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                     Sincronizar
                   </Button>
                 </div>
               </CardHeader>
               <CardContent>
-                {spot.loading && orders.length === 0 ? (
+                {loading && orders.length === 0 ? (
                   <div className="flex items-center justify-center py-12">
                     <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
                   </div>
@@ -352,43 +360,43 @@ const CatalogoSpot = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {orders.map(order => (
-                        <TableRow key={order.id}>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <span
-                                className={`w-3 h-3 rounded-full ${STATUS_COLORS[order.status] || 'bg-gray-400'}`}
-                              />
-                              <span className="text-sm">{order.status}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell className="font-mono font-medium">{order.id}</TableCell>
-                          <TableCell className="text-sm text-muted-foreground">{order.reference || '—'}</TableCell>
-                          <TableCell className="text-sm">
-                            {order.date ? new Date(order.date).toLocaleDateString('pt-BR') : '—'}
-                          </TableCell>
-                          <TableCell className="text-right font-medium">
-                            {order.total > 0 ? `R$ ${order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '—'}
-                          </TableCell>
-                          <TableCell className="text-sm">{order.carrier || '—'}</TableCell>
-                          <TableCell>
-                            {order.tracking ? (
-                              <Badge variant="outline" className="font-mono text-xs">{order.tracking}</Badge>
-                            ) : '—'}
-                          </TableCell>
-                          <TableCell>
-                            {order.detailsUrl && (
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => window.open(order.detailsUrl, '_blank')}
-                              >
-                                <ExternalLink className="w-3.5 h-3.5" />
-                              </Button>
-                            )}
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      {orders.map(order => {
+                        const statusCfg = STATUS_CONFIG[order.status] || { variant: 'outline' as const, label: order.status };
+                        return (
+                          <TableRow key={order.id}>
+                            <TableCell>
+                              <Badge variant={statusCfg.variant}>
+                                {statusCfg.label}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="font-mono font-medium">{order.id}</TableCell>
+                            <TableCell className="text-sm text-muted-foreground">{order.reference || '—'}</TableCell>
+                            <TableCell className="text-sm">
+                              {order.date ? new Date(order.date).toLocaleDateString('pt-BR') : '—'}
+                            </TableCell>
+                            <TableCell className="text-right font-medium">
+                              {order.total > 0 ? `R$ ${order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '—'}
+                            </TableCell>
+                            <TableCell className="text-sm">{order.carrier || '—'}</TableCell>
+                            <TableCell>
+                              {order.tracking ? (
+                                <Badge variant="outline" className="font-mono text-xs">{order.tracking}</Badge>
+                              ) : '—'}
+                            </TableCell>
+                            <TableCell>
+                              {order.detailsUrl && (
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => window.open(order.detailsUrl, '_blank')}
+                                >
+                                  <ExternalLink className="w-3.5 h-3.5" />
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
                     </TableBody>
                   </Table>
                 ) : (
@@ -408,11 +416,10 @@ const CatalogoSpot = () => {
               <CardContent className="pt-4">
                 <h4 className="text-sm font-medium mb-3">Legenda de Status</h4>
                 <div className="flex flex-wrap gap-3">
-                  {Object.entries(STATUS_COLORS).map(([status, color]) => (
-                    <div key={status} className="flex items-center gap-1.5">
-                      <span className={`w-2.5 h-2.5 rounded-full ${color}`} />
-                      <span className="text-xs text-muted-foreground">{status}</span>
-                    </div>
+                  {Object.entries(STATUS_CONFIG).map(([status, cfg]) => (
+                    <Badge key={status} variant={cfg.variant} className="text-xs">
+                      {cfg.label}
+                    </Badge>
                   ))}
                 </div>
               </CardContent>
@@ -432,8 +439,8 @@ const CatalogoSpot = () => {
                     Faturas, notas fiscais e status de pagamento
                   </CardDescription>
                 </div>
-                <Button variant="outline" size="sm" onClick={loadFinancial} disabled={spot.loading}>
-                  <RefreshCw className={`w-4 h-4 mr-2 ${spot.loading ? 'animate-spin' : ''}`} />
+                <Button variant="outline" size="sm" onClick={loadFinancial} disabled={loading}>
+                  <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
                   Atualizar
                 </Button>
               </CardHeader>
@@ -445,7 +452,7 @@ const CatalogoSpot = () => {
                   </div>
                 )}
 
-                {spot.loading && !financialDocs ? (
+                {loading && !financialDocs ? (
                   <div className="flex items-center justify-center py-12">
                     <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
                   </div>
