@@ -616,8 +616,8 @@ const Acompanhamento = () => {
         {/* View Content */}
         {viewMode === 'kanban' ? (
           <KanbanBoard 
-            pedidos={pedidosFiltrados}
-            onViewDetails={setPedidoDetalhes}
+            pedidos={pedidosFiltrados as any}
+            onViewDetails={setPedidoDetalhes as any}
             onStatusChange={handleStatusChange}
           />
         ) : (
