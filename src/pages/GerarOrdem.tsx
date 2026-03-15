@@ -297,7 +297,7 @@ compras@promosupply.com.br`;
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">WhatsApp</p>
-                  <p className="font-medium text-foreground">{fornecedor.whatsapp}</p>
+                  <p className="font-medium text-foreground">{fornecedor.telefone}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Tipo</p>
