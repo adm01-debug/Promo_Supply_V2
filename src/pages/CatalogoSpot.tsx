@@ -211,6 +211,7 @@ const CatalogoSpot = () => {
                       const parts = result.text.split(' - ');
                       const ref = parts[0] || '';
                       const name = parts.slice(1).join(' - ') || result.text;
+                      const productId = extractSpotProductId(result.value, ref);
 
                       return (
                         <Card key={i} className="hover:bg-accent/50 transition-colors">
@@ -233,7 +234,7 @@ const CatalogoSpot = () => {
                                 <ExternalLink className="w-3.5 h-3.5 mr-1" />
                                 Ver
                               </Button>
-                              <Button size="sm" onClick={() => handleAddToCart(ref)} disabled={loading}>
+                              <Button size="sm" onClick={() => handleAddToCart(productId)} disabled={loading}>
                                 {loading ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5 mr-1" />}
                                 Adicionar
                               </Button>

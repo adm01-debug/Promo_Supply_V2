@@ -586,29 +586,33 @@ async function handleGetOrders(supabase: ReturnType<typeof getSupabaseAdmin>, ye
   const html = await res.text();
   const orders = parseOrdersFromHTML(html);
 
-  // Cache orders in DB (fire-and-forget, don't block response)
-  for (const order of orders) {
-    supabase
-      .from("spot_pedidos")
-      .upsert(
-        {
-          spot_order_id: order.id as string,
-          status: order.status as string,
-          status_color: order.statusColor as string,
-          referencia_cliente: (order.reference as string) || null,
-          data_pedido: (order.date as string) || null,
-          valor_total: (order.total as number) || 0,
-          transportadora: (order.carrier as string) || null,
-          codigo_rastreamento: (order.tracking as string) || null,
-          detalhes_url: (order.detailsUrl as string) || null,
-          last_synced_at: new Date().toISOString(),
-        },
-        { onConflict: "spot_order_id" }
+  if (orders.length > 0) {
+    const cacheResults = await Promise.allSettled(
+      orders.map((order) =>
+        supabase.from("spot_pedidos").upsert(
+          {
+            spot_order_id: order.id as string,
+            status: order.status as string,
+            status_color: order.statusColor as string,
+            referencia_cliente: (order.reference as string) || null,
+            data_pedido: (order.date as string) || null,
+            valor_total: (order.total as number) || 0,
+            transportadora: (order.carrier as string) || null,
+            codigo_rastreamento: (order.tracking as string) || null,
+            detalhes_url: (order.detailsUrl as string) || null,
+            last_synced_at: new Date().toISOString(),
+          },
+          { onConflict: "spot_order_id" }
+        )
       )
-      .catch((cacheError: unknown) => {
-        const message = cacheError instanceof Error ? cacheError.message : "Erro desconhecido";
+    );
+
+    cacheResults.forEach((result) => {
+      if (result.status === "rejected") {
+        const message = result.reason instanceof Error ? result.reason.message : "Erro desconhecido";
         console.error("Falha ao sincronizar cache de pedidos SPOT:", message);
-      });
+      }
+    });
   }
 
   return { orders, totalPages: parseTotalPages(html) };
