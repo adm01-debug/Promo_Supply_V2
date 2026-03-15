@@ -133,7 +133,10 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
   const loginUrl = `${SPOT_BASE}/${LANG}/area-reservada/login/`;
 
   // GET initial page to obtain PHPSESSID
-  const initRes = await fetch(loginUrl, { redirect: "manual" });
+  const initRes = await fetch(loginUrl, {
+    redirect: "manual",
+    signal: AbortSignal.timeout(SPOT_REQUEST_TIMEOUT_MS),
+  });
   const initCookies = initRes.headers.get("set-cookie") || "";
   const phpSessionMatch = initCookies.match(/PHPSESSID=([^;]+)/);
   let sessionId = phpSessionMatch ? phpSessionMatch[1] : "";
