@@ -203,6 +203,11 @@ export const SolicitacaoCard = ({
           </div>
         )}
 
+        {/* Visual Status Timeline (UX-005) */}
+        <div className="mt-2">
+          <StatusTimeline currentStatus={solicitacao.status.toLowerCase()} compact />
+        </div>
+
         {/* Swipe hint for mobile */}
         <div className="md:hidden text-[10px] text-muted-foreground/60 text-center">
           ← Deslize para ações rápidas →
