@@ -221,6 +221,7 @@ async function spotFetch(
     ...options,
     headers,
     redirect: "manual",
+    signal: AbortSignal.timeout(SPOT_REQUEST_TIMEOUT_MS),
   });
 
   // If redirected to login, re-authenticate
