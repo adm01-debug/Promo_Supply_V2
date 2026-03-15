@@ -33,6 +33,8 @@ import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 
 const ComprasDashboard = () => {
   const { kpis, pipeline, urgentItems, loading } = useDashboardKPIs();
+  const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault } = useDashboardFilters();
+  const [currentFilters, setCurrentFilters] = useState({ category: 'all', supplier: 'all', period: '6m', showComparison: true });
 
   // Realtime: auto-refresh dashboard when data changes
   useRealtimeSubscription({

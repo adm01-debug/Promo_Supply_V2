@@ -903,6 +903,17 @@ const Pedidos = () => {
           onSuccess={() => refetch()}
         />
       )}
+
+      {/* Order Preview Modal */}
+      <OrderPreviewModal
+        pedido={previewPedido}
+        open={!!previewPedido}
+        onOpenChange={(open) => !open && setPreviewPedido(null)}
+        onConfirmSend={previewPedido?.status === 'aprovado' ? () => {
+          handleUpdateStatus(previewPedido.id, 'enviado');
+          setPreviewPedido(null);
+        } : undefined}
+      />
     </MainLayout>
   );
 };
