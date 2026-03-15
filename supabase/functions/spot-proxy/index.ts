@@ -727,61 +727,79 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Método não permitido" }), {
+      status: 405,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const supabase = getSupabaseAdmin();
 
     // Verify authentication BEFORE processing
     await verifyAuth(req, supabase);
 
-    const { action, ...params } = await req.json();
-
-    // Validate action
-    if (!action || typeof action !== "string" || !VALID_ACTIONS.has(action)) {
-      throw new Error(`Ação inválida: ${action}`);
-    }
+    const body = await readJsonBody(req);
+    const action = readRequestAction(body);
 
     let result: unknown;
 
     switch (action) {
       case "search":
-        result = await handleSearch(supabase, params.query);
+        result = await handleSearch(supabase, readRequiredString(body.query, "query", 200));
         break;
       case "catalog":
-        result = await handleCatalog(supabase, params.filters || {});
+        result = await handleCatalog(supabase, readCatalogFilters(body.filters));
         break;
       case "product":
-        result = await handleProductDetail(supabase, params.productId);
+        result = await handleProductDetail(supabase, readRequiredString(body.productId, "productId", 120));
         break;
       case "stock":
-        result = await handleStockCheck(supabase, params.productId, params.quantity, params.opcionais || []);
+        result = await handleStockCheck(
+          supabase,
+          readRequiredString(body.productId, "productId", 120),
+          readPositiveInteger(body.quantity, "quantity"),
+          readStringArray(body.opcionais, "opcionais")
+        );
         break;
       case "addToCart":
-        result = await handleAddToCart(supabase, params.productId, params.quantity, params.opcional0, params.opcional1);
+        result = await handleAddToCart(
+          supabase,
+          readRequiredString(body.productId, "productId", 120),
+          readPositiveInteger(body.quantity, "quantity"),
+          readOptionalString(body.opcional0, "opcional0", 30) ?? "0",
+          readOptionalString(body.opcional1, "opcional1", 30) ?? "0"
+        );
         break;
       case "getCart":
         result = await handleGetCart(supabase);
         break;
       case "removeFromCart":
-        result = await handleRemoveFromCart(supabase, params.groupId);
+        result = await handleRemoveFromCart(supabase, readRequiredString(body.groupId, "groupId", 120));
         break;
       case "updateCartQty":
-        result = await handleUpdateCartQty(supabase, params.groupId, params.quantity);
+        result = await handleUpdateCartQty(
+          supabase,
+          readRequiredString(body.groupId, "groupId", 120),
+          readPositiveInteger(body.quantity, "quantity")
+        );
         break;
       case "orders":
-        result = await handleGetOrders(supabase, params.year, params.page);
+        result = await handleGetOrders(supabase, readOrderYear(body.year), readOrderPage(body.page));
         break;
       case "financial":
         result = await handleGetFinancialDocs(supabase);
         break;
       case "checkout":
-        result = await handleCheckout(supabase, params.addressId);
+        result = await handleCheckout(supabase, readOptionalString(body.addressId, "addressId", 60) ?? "");
         break;
       case "login":
         await loginToSpot(supabase);
         result = { success: true };
         break;
       default:
-        throw new Error(`Ação desconhecida: ${action}`);
+        throw new HttpError(400, `Ação desconhecida: ${action}`);
     }
 
     return new Response(JSON.stringify(result), {
@@ -789,9 +807,8 @@ Deno.serve(async (req) => {
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
+    const status = error instanceof HttpError ? error.status : 500;
     console.error("SPOT proxy error:", msg);
-
-    const status = msg.includes("Não autorizado") || msg.includes("Sem permissão") ? 403 : 500;
 
     return new Response(JSON.stringify({ error: msg }), {
       status,
