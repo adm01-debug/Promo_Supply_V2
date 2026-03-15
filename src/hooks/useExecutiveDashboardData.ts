@@ -23,73 +23,37 @@ const startOfMonth = () => {
 export function useExecutiveDashboardData() {
   const { data: pedidos, isLoading: l1 } = useQuery({
     queryKey: ['exec-pedidos'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('pedidos')
-        .select('id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at'),
     staleTime: 30000,
   });
 
   const { data: solicitacoes, isLoading: l2 } = useQuery({
     queryKey: ['exec-solicitacoes'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('solicitacoes')
-        .select('id, status, valor_estimado, valor_aprovado, created_at, data_conclusao, categoria_id');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('solicitacoes', 'id, status, valor_estimado, valor_aprovado, created_at, data_conclusao, categoria_id'),
     staleTime: 30000,
   });
 
   const { data: fornecedores, isLoading: l3 } = useQuery({
     queryKey: ['exec-fornecedores'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('fornecedores')
-        .select('id, razao_social, status, avaliacao');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('fornecedores', 'id, razao_social, status, avaliacao'),
     staleTime: 60000,
   });
 
   const { data: contracts, isLoading: l4 } = useQuery({
     queryKey: ['exec-contracts'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('contracts')
-        .select('id, status, total_value');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('contracts', 'id, status, total_value'),
     staleTime: 60000,
   });
 
   const { data: workflows, isLoading: l5 } = useQuery({
     queryKey: ['exec-workflows'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('approval_workflows')
-        .select('id, status, prazo_limite');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('approval_workflows', 'id, status, prazo_limite'),
     staleTime: 30000,
   });
 
   const { data: categorias, isLoading: l6 } = useQuery({
     queryKey: ['exec-categorias'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('categorias')
-        .select('id, nome, cor');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('categorias', 'id, nome, cor'),
     staleTime: 120000,
   });
 

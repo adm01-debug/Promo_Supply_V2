@@ -37,74 +37,39 @@ const startOfMonth = () => {
 export function useDashboardKPIs() {
   const { data: solicitacoes, isLoading: loadingSol } = useQuery({
     queryKey: ['dashboard-solicitacoes'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('solicitacoes')
-        .select('id, status, valor_estimado, valor_aprovado, created_at, data_necessidade');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('solicitacoes', 'id, status, valor_estimado, valor_aprovado, created_at, data_necessidade'),
     staleTime: 30000,
   });
 
   const { data: pedidos, isLoading: loadingPed } = useQuery({
     queryKey: ['dashboard-pedidos'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('pedidos')
-        .select('id, status, valor_total, data_emissao, data_previsao, data_entrega');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega'),
     staleTime: 30000,
   });
 
   const { data: pagamentos, isLoading: loadingPag } = useQuery({
     queryKey: ['dashboard-pagamentos'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('pagamentos')
-        .select('id, status, valor, valor_pago, data_vencimento');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('pagamentos', 'id, status, valor, valor_pago, data_vencimento'),
     staleTime: 30000,
   });
 
   const { data: cotacoes, isLoading: loadingCot } = useQuery({
     queryKey: ['dashboard-cotacoes'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('cotacoes')
-        .select('id, status, valor_total, selecionada');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('cotacoes', 'id, status, valor_total, selecionada'),
     staleTime: 30000,
   });
 
   const { data: fornecedores, isLoading: loadingForn } = useQuery({
     queryKey: ['dashboard-fornecedores'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('fornecedores')
-        .select('id, status');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('fornecedores', 'id, status'),
     staleTime: 60000,
   });
 
   const { data: workflows, isLoading: loadingWf } = useQuery({
     queryKey: ['dashboard-workflows'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('approval_workflows')
-        .select('id, status')
-        .eq('status', 'pending');
-      if (error) throw error;
-      return data || [];
-    },
+    queryFn: () => fetchAllRows('approval_workflows', 'id, status', {
+      filters: [{ column: 'status', operator: 'eq', value: 'pending' }],
+    }),
     staleTime: 30000,
   });
 
