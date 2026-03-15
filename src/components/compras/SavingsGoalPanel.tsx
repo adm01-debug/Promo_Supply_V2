@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { 
   Target, 
   Settings, 
@@ -25,11 +25,12 @@ import {
   AlertTitle,
 } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
-import { buyerPerformanceMock } from "@/data/mockData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SavingsGoalConfig {
   metaMensal: number;
-  alertaPercentual: number; // Alert when below this % of goal
+  alertaPercentual: number;
 }
 
 const DEFAULT_CONFIG: SavingsGoalConfig = {
@@ -45,7 +46,6 @@ export const SavingsGoalPanel = () => {
   const [tempConfig, setTempConfig] = useState<SavingsGoalConfig>(DEFAULT_CONFIG);
   const [alertDismissed, setAlertDismissed] = useState(false);
 
-  // Load config from localStorage
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -57,8 +57,31 @@ export const SavingsGoalPanel = () => {
     }
   }, []);
 
-  // Current savings from mock data
-  const economiaAtual = buyerPerformanceMock.economiaGerada;
+  // Real data from Supabase
+  const { data: solicitacoes } = useQuery({
+    queryKey: ['savings-goal-solicitacoes'],
+    queryFn: async () => {
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+      
+      const { data, error } = await supabase
+        .from('solicitacoes')
+        .select('id, valor_estimado, valor_aprovado, created_at')
+        .gte('created_at', startOfMonth.toISOString());
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 30000,
+  });
+
+  const economiaAtual = useMemo(() => {
+    const sols = solicitacoes || [];
+    const totalEstimado = sols.reduce((sum, s) => sum + (Number(s.valor_estimado) || 0), 0);
+    const totalAprovado = sols.reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
+    return totalEstimado > totalAprovado ? totalEstimado - totalAprovado : 0;
+  }, [solicitacoes]);
+
   const progressPercent = Math.min((economiaAtual / config.metaMensal) * 100, 100);
   const isBelowTarget = progressPercent < config.alertaPercentual;
   const isGoalReached = progressPercent >= 100;
@@ -99,7 +122,6 @@ export const SavingsGoalPanel = () => {
           </Button>
         </div>
 
-        {/* Alert when below target */}
         {isBelowTarget && !alertDismissed && !isGoalReached && (
           <Alert variant="destructive" className="mb-4">
             <AlertTriangle className="h-4 w-4" />
@@ -121,7 +143,6 @@ export const SavingsGoalPanel = () => {
           </Alert>
         )}
 
-        {/* Success message when goal reached */}
         {isGoalReached && (
           <Alert className="mb-4 border-emerald-500/50 bg-emerald-500/10">
             <CheckCircle2 className="h-4 w-4 text-emerald-600" />
@@ -132,7 +153,6 @@ export const SavingsGoalPanel = () => {
           </Alert>
         )}
 
-        {/* Progress Section */}
         <div className="space-y-4">
           <div className="flex items-end justify-between">
             <div>
@@ -162,7 +182,6 @@ export const SavingsGoalPanel = () => {
                 statusColor === "emerald" && "[&>div]:bg-emerald-500"
               )}
             />
-            {/* Alert threshold marker */}
             <div 
               className="absolute top-0 h-3 w-0.5 bg-amber-500"
               style={{ left: `${config.alertaPercentual}%` }}
@@ -170,7 +189,6 @@ export const SavingsGoalPanel = () => {
             />
           </div>
 
-          {/* Stats Grid */}
           <div className="grid grid-cols-3 gap-3 pt-2">
             <div className="text-center p-2 rounded-lg bg-muted/30">
               <p className="text-xs text-muted-foreground">Faltam</p>
@@ -190,15 +208,13 @@ export const SavingsGoalPanel = () => {
             </div>
           </div>
 
-          {/* Trend indicator */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
             <TrendingUp className="w-4 h-4 text-emerald-500" />
-            <span>+18% comparado ao mês anterior</span>
+            <span>Dados em tempo real do sistema</span>
           </div>
         </div>
       </Card>
 
-      {/* Settings Modal */}
       <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -245,7 +261,6 @@ export const SavingsGoalPanel = () => {
               </p>
             </div>
 
-            {/* Preview */}
             <div className="p-3 rounded-lg bg-muted/30 space-y-2">
               <p className="text-xs font-medium text-muted-foreground">Prévia</p>
               <div className="relative">
