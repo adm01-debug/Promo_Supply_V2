@@ -320,6 +320,30 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     };
   }, [user, fetchSolicitacoes]);
 
+  // Duplicate solicitação (UX-003)
+  const duplicateSolicitacao = useCallback(async (id: string) => {
+    const original = solicitacoes.find(s => s.id === id);
+    if (!original) {
+      toast.error('Solicitação não encontrada');
+      return null;
+    }
+
+    return createSolicitacao({
+      titulo: `${original.titulo} (Cópia)`,
+      descricao: original.descricao || undefined,
+      tipo: original.tipo,
+      prioridade: original.prioridade,
+      valor_estimado: original.valor_estimado || undefined,
+      quantidade: original.quantidade,
+      unidade: original.unidade || undefined,
+      data_necessidade: undefined, // Reset date
+      departamento: original.departamento || undefined,
+      centro_custo: original.centro_custo || undefined,
+      justificativa: original.justificativa || undefined,
+      categoria_id: original.categoria_id || undefined,
+    });
+  }, [solicitacoes, createSolicitacao]);
+
   return {
     solicitacoes,
     loading,
@@ -331,6 +355,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     deleteSolicitacao,
     bulkDelete,
     bulkUpdateStatus,
+    duplicateSolicitacao,
   };
 }
 

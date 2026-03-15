@@ -21,7 +21,9 @@ import {
   ChevronDown,
   ExternalLink,
   RefreshCw,
-  Trash2
+  Trash2,
+  BarChart3,
+  ClipboardCheck
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -73,6 +75,8 @@ import { ptBR } from "date-fns/locale";
 import { usePedidos, usePedidosKPIs, type Pedido } from "@/hooks/usePedidos";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";
+import { ReceivingModal } from "@/components/compras/ReceivingModal";
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle2 }> = {
   pendente: { label: 'Pendente', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20', icon: Clock },
@@ -92,6 +96,13 @@ const Pedidos = () => {
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [priceHistoryOpen, setPriceHistoryOpen] = useState(false);
+  const [receivingPedido, setReceivingPedido] = useState<Pedido | null>(null);
+  const [receivingItems, setReceivingItems] = useState<Array<{
+    id: string; descricao: string; quantidade: number;
+    quantidade_recebida: number | null; unidade: string | null;
+    valor_unitario: number; valor_total: number;
+  }>>([]);
 
   const isMobile = useIsMobile();
   const { pedidos, loading, refetch, updateStatus, bulkUpdateStatus, bulkDelete } = usePedidos();
@@ -270,6 +281,10 @@ const Pedidos = () => {
             <Button variant="outline" size="sm" onClick={() => refetch()}>
               <RefreshCw className="w-4 h-4 mr-2" />
               Atualizar
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => setPriceHistoryOpen(true)}>
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Histórico Preços
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -598,6 +613,20 @@ const Pedidos = () => {
                                 <Package className="w-4 h-4 mr-2" />
                                 Marcar Entregue
                               </DropdownMenuItem>
+                              <DropdownMenuItem onClick={async (e) => {
+                                e.stopPropagation();
+                                const { data } = await (await import('@/integrations/supabase/client')).supabase
+                                  .from('pedido_itens').select('*').eq('pedido_id', pedido.id);
+                                setReceivingItems((data || []).map((i: any) => ({
+                                  id: i.id, descricao: i.descricao, quantidade: i.quantidade,
+                                  quantidade_recebida: i.quantidade_recebida, unidade: i.unidade,
+                                  valor_unitario: i.valor_unitario, valor_total: i.valor_total,
+                                })));
+                                setReceivingPedido(pedido);
+                              }}>
+                                <ClipboardCheck className="w-4 h-4 mr-2" />
+                                Conferir Recebimento
+                              </DropdownMenuItem>
                               <DropdownMenuSeparator />
                               <DropdownMenuItem>
                                 <Mail className="w-4 h-4 mr-2" />
@@ -855,6 +884,21 @@ const Pedidos = () => {
           isOpen={isTourOpen}
           onComplete={completeTour}
           onSkip={skipTour}
+        />
+      )}
+
+      {/* Price History Modal */}
+      <PriceHistoryModal open={priceHistoryOpen} onOpenChange={setPriceHistoryOpen} />
+
+      {/* Receiving Modal */}
+      {receivingPedido && (
+        <ReceivingModal
+          open={!!receivingPedido}
+          onOpenChange={(open) => !open && setReceivingPedido(null)}
+          pedidoId={receivingPedido.id}
+          pedidoNumero={receivingPedido.numero}
+          items={receivingItems}
+          onSuccess={() => refetch()}
         />
       )}
     </MainLayout>

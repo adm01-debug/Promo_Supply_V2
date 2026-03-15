@@ -98,7 +98,8 @@ const Solicitacoes = () => {
     updateStatus, 
     bulkDelete, 
     bulkUpdateStatus,
-    refetch 
+    refetch,
+    duplicateSolicitacao,
   } = useSolicitacoes({
     search: searchTerm || undefined,
     status: statusFilter !== 'todas' ? mapLegacyStatusToDb(statusFilter) : undefined,
@@ -449,6 +450,7 @@ const Solicitacoes = () => {
                         selected={selectedIds.has(solicitacao.id)}
                         onSelectChange={(selected) => handleSelectItem(solicitacao.id, selected)}
                         onDelete={() => handleSingleDelete(solicitacao.id)}
+                        onDuplicate={() => duplicateSolicitacao(solicitacao.id)}
                       />
                     ))}
                   </div>

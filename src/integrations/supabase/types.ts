@@ -936,10 +936,12 @@ export type Database = {
           estado: string | null
           id: string
           integrado_api: boolean | null
+          limite_credito: number | null
           nome_fantasia: string | null
           observacoes: string | null
           prazo_medio_entrega: number | null
           razao_social: string
+          saldo_comprometido: number | null
           segmento: string | null
           status: string
           telefone: string | null
@@ -962,10 +964,12 @@ export type Database = {
           estado?: string | null
           id?: string
           integrado_api?: boolean | null
+          limite_credito?: number | null
           nome_fantasia?: string | null
           observacoes?: string | null
           prazo_medio_entrega?: number | null
           razao_social: string
+          saldo_comprometido?: number | null
           segmento?: string | null
           status?: string
           telefone?: string | null
@@ -988,10 +992,12 @@ export type Database = {
           estado?: string | null
           id?: string
           integrado_api?: boolean | null
+          limite_credito?: number | null
           nome_fantasia?: string | null
           observacoes?: string | null
           prazo_medio_entrega?: number | null
           razao_social?: string
+          saldo_comprometido?: number | null
           segmento?: string | null
           status?: string
           telefone?: string | null
@@ -2361,6 +2367,10 @@ export type Database = {
           _user_id: string
         }
         Returns: string
+      }
+      recalculate_saldo_comprometido: {
+        Args: { p_fornecedor_id: string }
+        Returns: number
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
     }

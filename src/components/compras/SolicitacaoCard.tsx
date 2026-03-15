@@ -1,4 +1,4 @@
-import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive } from "lucide-react";
+import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ interface SolicitacaoCardProps {
   onApprove?: () => void;
   onReject?: () => void;
   onArchive?: () => void;
+  onDuplicate?: () => void;
 }
 
 const statusActions: Record<string, { 
@@ -71,6 +72,7 @@ export const SolicitacaoCard = ({
   onApprove,
   onReject,
   onArchive,
+  onDuplicate,
 }: SolicitacaoCardProps) => {
   const actions = statusActions[solicitacao.status];
   const statusColor = getStatusColor(solicitacao.status);
@@ -207,6 +209,13 @@ export const SolicitacaoCard = ({
 
         {/* Ações - responsive layout */}
         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+          {onDuplicate && (
+            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="h-8 sm:h-9 text-xs" title="Duplicar">
+              <Copy className="w-3.5 h-3.5 mr-1" />
+              <span className="hidden sm:inline">Duplicar</span>
+            </Button>
+          )}
+
           {actions?.secondary && (
             <Button variant="outline" size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm h-8 sm:h-9">
               <actions.secondary.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
