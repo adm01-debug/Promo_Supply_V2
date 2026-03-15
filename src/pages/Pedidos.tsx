@@ -21,7 +21,9 @@ import {
   ChevronDown,
   ExternalLink,
   RefreshCw,
-  Trash2
+  Trash2,
+  BarChart3,
+  ClipboardCheck
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
