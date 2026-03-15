@@ -206,7 +206,7 @@ const gerarEtapasPipeline = (status: string): EtapaPipeline[] => {
 };
 
 // Gera etapas aprimoradas do pipeline com mais detalhes
-const gerarEtapasEnhanced = (pedido: Solicitacao): TimelineStep[] => {
+const gerarEtapasEnhanced = (pedido: AcompanhamentoPedido): TimelineStep[] => {
   const statusOrdem: Record<string, number> = {
     AGUARDANDO_COTACAO: 0,
     EM_COTACAO: 1,
