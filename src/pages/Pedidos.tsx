@@ -613,8 +613,15 @@ const Pedidos = () => {
                                 <Package className="w-4 h-4 mr-2" />
                                 Marcar Entregue
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={(e) => {
+                              <DropdownMenuItem onClick={async (e) => {
                                 e.stopPropagation();
+                                const { data } = await (await import('@/integrations/supabase/client')).supabase
+                                  .from('pedido_itens').select('*').eq('pedido_id', pedido.id);
+                                setReceivingItems((data || []).map((i: any) => ({
+                                  id: i.id, descricao: i.descricao, quantidade: i.quantidade,
+                                  quantidade_recebida: i.quantidade_recebida, unidade: i.unidade,
+                                  valor_unitario: i.valor_unitario, valor_total: i.valor_total,
+                                })));
                                 setReceivingPedido(pedido);
                               }}>
                                 <ClipboardCheck className="w-4 h-4 mr-2" />
