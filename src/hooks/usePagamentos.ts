@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useMemo, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -25,16 +26,8 @@ export interface Pagamento {
   created_by: string | null;
   created_at: string;
   updated_at: string;
-  // Joined fields
-  fornecedor?: {
-    id: string;
-    razao_social: string;
-    nome_fantasia: string | null;
-  } | null;
-  pedido?: {
-    id: string;
-    numero: string;
-  } | null;
+  fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null; } | null;
+  pedido?: { id: string; numero: string; } | null;
 }
 
 export interface CreatePagamentoInput {
@@ -54,124 +47,100 @@ export interface PagamentoFilters {
   fornecedor_id?: string;
   dateFrom?: string;
   dateTo?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+const VALID_PAGAMENTO_TRANSITIONS: Record<string, string[]> = {
+  pendente: ['aprovado', 'cancelado'],
+  aprovado: ['agendado', 'pago', 'cancelado'],
+  agendado: ['pago', 'cancelado'],
+  pago: ['parcial'],
+  parcial: ['pago'],
+  cancelado: [],
+  atrasado: ['pago', 'cancelado'],
+};
+
+async function fetchPagamentosData(userId: string | undefined, filters?: PagamentoFilters) {
+  if (!userId) return { data: [], totalCount: 0 };
+
+  const page = filters?.page || 1;
+  const pageSize = filters?.pageSize || 50;
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
+  let query = supabase
+    .from('pagamentos')
+    .select(`
+      *,
+      fornecedor:fornecedores(id, razao_social, nome_fantasia),
+      pedido:pedidos(id, numero)
+    `, { count: 'exact' })
+    .order('data_vencimento', { ascending: true })
+    .range(from, to);
+
+  if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
+  if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
+  if (filters?.search) query = query.or(`numero.ilike.%${filters.search}%,numero_nf.ilike.%${filters.search}%`);
+  if (filters?.dateFrom) query = query.gte('data_vencimento', filters.dateFrom);
+  if (filters?.dateTo) query = query.lte('data_vencimento', filters.dateTo);
+
+  const { data, error, count } = await query;
+  if (error) throw error;
+  return { data: (data as Pagamento[]) || [], totalCount: count || 0 };
 }
 
 export function usePagamentos(filters?: PagamentoFilters) {
   const { user } = useAuth();
-  const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchPagamentos = useCallback(async () => {
-    if (!user) {
-      setPagamentos([]);
-      setLoading(false);
-      return;
-    }
+  const queryKey = useMemo(() => [
+    'pagamentos', user?.id,
+    filters?.status, filters?.fornecedor_id, filters?.search,
+    filters?.dateFrom, filters?.dateTo, filters?.page, filters?.pageSize,
+  ], [user?.id, filters]);
 
-    try {
-      setLoading(true);
-      setError(null);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey,
+    queryFn: () => fetchPagamentosData(user?.id, filters),
+    enabled: !!user,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 
-      let query = supabase
-        .from('pagamentos')
-        .select(`
-          *,
-          fornecedor:fornecedores(id, razao_social, nome_fantasia),
-          pedido:pedidos(id, numero)
-        `)
-        .order('data_vencimento', { ascending: true });
+  const pagamentos = data?.data || [];
+  const totalCount = data?.totalCount || 0;
 
-      // Apply filters
-      if (filters?.status && filters.status !== 'todos') {
-        query = query.eq('status', filters.status);
-      }
-      if (filters?.fornecedor_id) {
-        query = query.eq('fornecedor_id', filters.fornecedor_id);
-      }
-      if (filters?.search) {
-        query = query.or(`numero.ilike.%${filters.search}%,numero_nf.ilike.%${filters.search}%`);
-      }
-      if (filters?.dateFrom) {
-        query = query.gte('data_vencimento', filters.dateFrom);
-      }
-      if (filters?.dateTo) {
-        query = query.lte('data_vencimento', filters.dateTo);
-      }
+  const invalidate = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['pagamentos'] });
+  }, [queryClient]);
 
-      const { data, error: fetchError } = await query;
-
-      if (fetchError) throw fetchError;
-
-      setPagamentos((data as Pagamento[]) || []);
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      setError(errorMessage);
-      toast.error('Erro ao carregar pagamentos');
-    } finally {
-      setLoading(false);
-    }
-  }, [user, filters?.status, filters?.fornecedor_id, filters?.search, filters?.dateFrom, filters?.dateTo]);
-
-  // Create new pagamento
   const createPagamento = useCallback(async (input: CreatePagamentoInput) => {
-    if (!user) {
-      toast.error('Você precisa estar logado');
-      return null;
-    }
-
+    if (!user) { toast.error('Você precisa estar logado'); return null; }
     try {
-      // Generate numero
-      const { data: numData } = await supabase.rpc('generate_sequential_number', {
-        prefix: 'PAG',
-        table_name: 'pagamentos'
-      });
-
+      const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'PAG', table_name: 'pagamentos' });
       const numero = numData || `PAG-${Date.now()}`;
-
       const { data, error } = await supabase
         .from('pagamentos')
         .insert({
-          numero,
-          pedido_id: input.pedido_id,
-          fornecedor_id: input.fornecedor_id,
-          valor: input.valor,
-          data_vencimento: input.data_vencimento,
-          forma_pagamento: input.forma_pagamento,
-          numero_nf: input.numero_nf,
-          chave_nf: input.chave_nf,
-          observacoes: input.observacoes,
-          created_by: user.id,
+          numero, pedido_id: input.pedido_id, fornecedor_id: input.fornecedor_id,
+          valor: input.valor, data_vencimento: input.data_vencimento,
+          forma_pagamento: input.forma_pagamento, numero_nf: input.numero_nf,
+          chave_nf: input.chave_nf, observacoes: input.observacoes, created_by: user.id,
         })
-        .select()
-        .single();
-
+        .select().single();
       if (error) throw error;
-
       toast.success('Pagamento registrado com sucesso!');
-      fetchPagamentos();
+      invalidate();
       return data;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      toast.error('Erro ao registrar pagamento: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao registrar pagamento: ' + msg);
       return null;
     }
-  }, [user, fetchPagamentos]);
+  }, [user, invalidate]);
 
-  // Valid status transitions for pagamentos
-  const VALID_PAGAMENTO_TRANSITIONS: Record<string, string[]> = {
-    pendente: ['aprovado', 'cancelado'],
-    aprovado: ['agendado', 'pago', 'cancelado'],
-    agendado: ['pago', 'cancelado'],
-    pago: ['parcial'],
-    parcial: ['pago'],
-    cancelado: [],
-    atrasado: ['pago', 'cancelado'],
-  };
-
-  // Update pagamento with status transition validation
   const updatePagamento = useCallback(async (id: string, updates: Partial<Pagamento>) => {
-    // Validate status transition if status is being changed
     if (updates.status) {
       const current = pagamentos.find(p => p.id === id);
       if (current) {
@@ -182,33 +151,24 @@ export function usePagamentos(filters?: PagamentoFilters) {
         }
       }
     }
-
     try {
-      const { error } = await supabase
-        .from('pagamentos')
-        .update(updates)
-        .eq('id', id);
-
+      const { error } = await supabase.from('pagamentos').update(updates).eq('id', id);
       if (error) throw error;
-
       toast.success('Pagamento atualizado!');
-      fetchPagamentos();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      toast.error('Erro ao atualizar: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao atualizar: ' + msg);
       return false;
     }
-  }, [pagamentos, fetchPagamentos]);
+  }, [pagamentos, invalidate]);
 
-  // Mark as paid
   const markAsPaid = useCallback(async (id: string, valor_pago?: number) => {
     const pagamento = pagamentos.find(p => p.id === id);
     if (!pagamento) return false;
-
     const valorPago = valor_pago || pagamento.valor;
     const isParcial = valorPago < pagamento.valor;
-
     return updatePagamento(id, {
       status: isParcial ? 'parcial' : 'pago',
       valor_pago: valorPago,
@@ -216,190 +176,117 @@ export function usePagamentos(filters?: PagamentoFilters) {
     });
   }, [pagamentos, updatePagamento]);
 
-  // Approve payment
   const approvePagamento = useCallback(async (id: string) => {
     if (!user) return false;
-
     return updatePagamento(id, {
-      status: 'aprovado',
-      aprovador_id: user.id,
+      status: 'aprovado', aprovador_id: user.id,
       data_aprovacao: new Date().toISOString(),
     });
   }, [user, updatePagamento]);
 
-  // Bulk update status
   const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pagamento['status']) => {
     try {
       const updates: Partial<Pagamento> = { status: newStatus };
-      
-      if (newStatus === 'pago') {
-        updates.data_pagamento = new Date().toISOString().split('T')[0];
-      }
+      if (newStatus === 'pago') updates.data_pagamento = new Date().toISOString().split('T')[0];
       if (newStatus === 'aprovado' && user) {
         updates.aprovador_id = user.id;
         updates.data_aprovacao = new Date().toISOString();
       }
-
-      const { error } = await supabase
-        .from('pagamentos')
-        .update(updates)
-        .in('id', ids);
-
+      const { error } = await supabase.from('pagamentos').update(updates).in('id', ids);
       if (error) throw error;
-
       toast.success(`${ids.length} pagamento(s) atualizado(s)!`);
-      fetchPagamentos();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      toast.error('Erro ao atualizar pagamentos: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao atualizar pagamentos: ' + msg);
       return false;
     }
-  }, [user, fetchPagamentos]);
+  }, [user, invalidate]);
 
-  // Delete pagamento
   const deletePagamento = useCallback(async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('pagamentos')
-        .delete()
-        .eq('id', id);
-
+      const { error } = await supabase.from('pagamentos').delete().eq('id', id);
       if (error) throw error;
-
       toast.success('Pagamento excluído!');
-      fetchPagamentos();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      toast.error('Erro ao excluir: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao excluir: ' + msg);
       return false;
     }
-  }, [fetchPagamentos]);
+  }, [invalidate]);
 
-  // Bulk delete
   const bulkDelete = useCallback(async (ids: string[]) => {
     try {
-      const { error } = await supabase
-        .from('pagamentos')
-        .delete()
-        .in('id', ids);
-
+      const { error } = await supabase.from('pagamentos').delete().in('id', ids);
       if (error) throw error;
-
       toast.success(`${ids.length} pagamento(s) excluído(s)!`);
-      fetchPagamentos();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      toast.error('Erro ao excluir pagamentos: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao excluir pagamentos: ' + msg);
       return false;
     }
-  }, [fetchPagamentos]);
-
-  // Initial fetch
-  useEffect(() => {
-    fetchPagamentos();
-  }, [fetchPagamentos]);
+  }, [invalidate]);
 
   // Realtime subscription
   useEffect(() => {
     if (!user) return;
-
     const channel = supabase
       .channel('pagamentos-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'pagamentos'
-        },
-        () => {
-          fetchPagamentos();
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pagamentos' }, () => {
+        invalidate();
+      })
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, fetchPagamentos]);
+    return () => { supabase.removeChannel(channel); };
+  }, [user, invalidate]);
 
   return {
-    pagamentos,
-    loading,
-    error,
-    refetch: fetchPagamentos,
-    createPagamento,
-    updatePagamento,
-    markAsPaid,
-    approvePagamento,
-    bulkUpdateStatus,
-    bulkDelete,
-    deletePagamento,
+    pagamentos, totalCount, loading: isLoading, error: error?.message || null,
+    refetch, createPagamento, updatePagamento, markAsPaid, approvePagamento,
+    bulkUpdateStatus, bulkDelete, deletePagamento,
   };
 }
 
 // Hook for KPIs
 export function usePagamentosKPIs() {
   const { user } = useAuth();
-  const [kpis, setKpis] = useState({
-    total: 0,
-    pendentes: 0,
-    atrasados: 0,
-    pagos: 0,
-    valorPendente: 0,
-    valorPago: 0,
-  });
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user) return;
+  const { data: kpis = { total: 0, pendentes: 0, atrasados: 0, pagos: 0, valorPendente: 0, valorPago: 0 }, isLoading } = useQuery({
+    queryKey: ['pagamentos-kpis', user?.id],
+    queryFn: async () => {
+      let allData: { status: string; valor: number; valor_pago: number | null; data_vencimento: string }[] = [];
+      let from = 0;
+      const pageSize = 1000;
+      let hasMore = true;
 
-    const fetchKPIs = async () => {
-      try {
-        let allData: { status: string; valor: number; valor_pago: number | null; data_vencimento: string }[] = [];
-        let from = 0;
-        const pageSize = 1000;
-        let hasMore = true;
-
-        while (hasMore) {
-          const { data, error } = await supabase
-            .from('pagamentos')
-            .select('status, valor, valor_pago, data_vencimento')
-            .range(from, from + pageSize - 1);
-
-          if (error) throw error;
-          if (!data || data.length === 0) { hasMore = false; break; }
-          allData = [...allData, ...data];
-          if (data.length < pageSize) hasMore = false;
-          from += pageSize;
-        }
-
-        const hoje = new Date().toISOString().split('T')[0];
-        
-        const stats = {
-          total: allData.length,
-          pendentes: allData.filter(p => p.status === 'pendente' || p.status === 'aprovado' || p.status === 'agendado').length,
-          atrasados: allData.filter(p => (p.status === 'pendente' || p.status === 'aprovado') && p.data_vencimento < hoje).length,
-          pagos: allData.filter(p => p.status === 'pago').length,
-          valorPendente: allData.filter(p => p.status !== 'pago' && p.status !== 'cancelado')
-            .reduce((sum, p) => sum + (p.valor - (p.valor_pago || 0)), 0),
-          valorPago: allData.filter(p => p.status === 'pago')
-            .reduce((sum, p) => sum + p.valor, 0),
-        };
-
-        setKpis(stats);
-      } catch (err) {
-        console.error('Error fetching KPIs:', err);
-      } finally {
-        setLoading(false);
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from('pagamentos').select('status, valor, valor_pago, data_vencimento').range(from, from + pageSize - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) { hasMore = false; break; }
+        allData = [...allData, ...data];
+        if (data.length < pageSize) hasMore = false;
+        from += pageSize;
       }
-    };
 
-    fetchKPIs();
-  }, [user]);
+      const hoje = new Date().toISOString().split('T')[0];
+      return {
+        total: allData.length,
+        pendentes: allData.filter(p => p.status === 'pendente' || p.status === 'aprovado' || p.status === 'agendado').length,
+        atrasados: allData.filter(p => (p.status === 'pendente' || p.status === 'aprovado') && p.data_vencimento < hoje).length,
+        pagos: allData.filter(p => p.status === 'pago').length,
+        valorPendente: allData.filter(p => p.status !== 'pago' && p.status !== 'cancelado')
+          .reduce((sum, p) => sum + (p.valor - (p.valor_pago || 0)), 0),
+        valorPago: allData.filter(p => p.status === 'pago').reduce((sum, p) => sum + p.valor, 0),
+      };
+    },
+    enabled: !!user,
+    staleTime: 60_000,
+  });
 
-  return { kpis, loading };
+  return { kpis, loading: isLoading };
 }

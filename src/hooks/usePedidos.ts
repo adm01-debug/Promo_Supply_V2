@@ -1,7 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { useEffect } from 'react';
 
 export interface Pedido {
   id: string;
@@ -25,7 +27,6 @@ export interface Pedido {
   aprovador_id: string | null;
   created_at: string;
   updated_at: string;
-  // Joined fields
   fornecedor?: {
     id: string;
     razao_social: string;
@@ -76,168 +77,144 @@ export interface PedidoFilters {
   fornecedor_id?: string;
   dateFrom?: string;
   dateTo?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = {
+  pendente: ['aprovado', 'cancelado'],
+  aprovado: ['enviado', 'em_transito', 'cancelado'],
+  enviado: ['em_transito', 'entregue', 'cancelado'],
+  em_transito: ['entregue', 'parcial', 'cancelado'],
+  entregue: ['parcial'],
+  parcial: ['entregue'],
+  cancelado: [],
+  concluido: [],
+};
+
+async function fetchPedidosData(userId: string | undefined, filters?: PedidoFilters) {
+  if (!userId) return { data: [], totalCount: 0 };
+
+  const page = filters?.page || 1;
+  const pageSize = filters?.pageSize || 50;
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
+  let query = supabase
+    .from('pedidos')
+    .select(`
+      *,
+      fornecedor:fornecedores(id, razao_social, nome_fantasia),
+      solicitacao:solicitacoes(id, numero, titulo)
+    `, { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (filters?.status && filters.status !== 'todos') {
+    query = query.eq('status', filters.status);
+  }
+  if (filters?.fornecedor_id) {
+    query = query.eq('fornecedor_id', filters.fornecedor_id);
+  }
+  if (filters?.search) {
+    query = query.or(`numero.ilike.%${filters.search}%`);
+  }
+  if (filters?.dateFrom) {
+    query = query.gte('data_emissao', filters.dateFrom);
+  }
+  if (filters?.dateTo) {
+    query = query.lte('data_emissao', filters.dateTo);
+  }
+
+  const { data, error, count } = await query;
+  if (error) throw error;
+
+  return { data: (data as Pedido[]) || [], totalCount: count || 0 };
 }
 
 export function usePedidos(filters?: PedidoFilters) {
   const { user } = useAuth();
-  const [pedidos, setPedidos] = useState<Pedido[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchPedidos = useCallback(async () => {
-    if (!user) {
-      setPedidos([]);
-      setLoading(false);
-      return;
-    }
+  const queryKey = useMemo(() => [
+    'pedidos', user?.id,
+    filters?.status, filters?.fornecedor_id, filters?.search,
+    filters?.dateFrom, filters?.dateTo, filters?.page, filters?.pageSize,
+  ], [user?.id, filters]);
 
-    try {
-      setLoading(true);
-      setError(null);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey,
+    queryFn: () => fetchPedidosData(user?.id, filters),
+    enabled: !!user,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 
-      let query = supabase
-        .from('pedidos')
-        .select(`
-          *,
-          fornecedor:fornecedores(id, razao_social, nome_fantasia),
-          solicitacao:solicitacoes(id, numero, titulo)
-        `)
-        .order('created_at', { ascending: false });
-
-      // Apply filters
-      if (filters?.status && filters.status !== 'todos') {
-        query = query.eq('status', filters.status);
-      }
-      if (filters?.fornecedor_id) {
-        query = query.eq('fornecedor_id', filters.fornecedor_id);
-      }
-      if (filters?.search) {
-        query = query.or(`numero.ilike.%${filters.search}%`);
-      }
-      if (filters?.dateFrom) {
-        query = query.gte('data_emissao', filters.dateFrom);
-      }
-      if (filters?.dateTo) {
-        query = query.lte('data_emissao', filters.dateTo);
-      }
-
-      const { data, error: fetchError } = await query;
-
-      if (fetchError) throw fetchError;
-
-      setPedidos((data as Pedido[]) || []);
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error fetching pedidos:', err);
-      setError(errorMessage);
-      toast.error('Erro ao carregar pedidos');
-    } finally {
-      setLoading(false);
-    }
-  }, [user, filters?.status, filters?.fornecedor_id, filters?.search, filters?.dateFrom, filters?.dateTo]);
+  const pedidos = data?.data || [];
+  const totalCount = data?.totalCount || 0;
 
   // Create new pedido
   const createPedido = useCallback(async (input: CreatePedidoInput) => {
-    if (!user) {
-      toast.error('Você precisa estar logado');
-      return null;
-    }
+    if (!user) { toast.error('Você precisa estar logado'); return null; }
 
     try {
-      // Generate numero
       const { data: numData } = await supabase.rpc('generate_sequential_number', {
-        prefix: 'PED',
-        table_name: 'pedidos'
+        prefix: 'PED', table_name: 'pedidos'
       });
-
       const numero = numData || `PED-${Date.now()}`;
 
       const { data, error } = await supabase
         .from('pedidos')
         .insert({
-          numero,
-          solicitacao_id: input.solicitacao_id,
-          cotacao_id: input.cotacao_id,
-          fornecedor_id: input.fornecedor_id,
-          valor_total: input.valor_total,
-          valor_frete: input.valor_frete || 0,
-          desconto: input.desconto || 0,
-          data_previsao: input.data_previsao,
-          endereco_entrega: input.endereco_entrega,
-          condicao_pagamento: input.condicao_pagamento,
-          observacoes: input.observacoes,
+          numero, solicitacao_id: input.solicitacao_id, cotacao_id: input.cotacao_id,
+          fornecedor_id: input.fornecedor_id, valor_total: input.valor_total,
+          valor_frete: input.valor_frete || 0, desconto: input.desconto || 0,
+          data_previsao: input.data_previsao, endereco_entrega: input.endereco_entrega,
+          condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
           comprador_id: user.id,
         })
-        .select()
-        .single();
+        .select().single();
 
       if (error) throw error;
 
-      // Insert items if provided
       if (input.itens && input.itens.length > 0) {
         const itensToInsert = input.itens.map(item => ({
-          pedido_id: data.id,
-          descricao: item.descricao,
-          quantidade: item.quantidade,
-          unidade: item.unidade || 'un',
-          valor_unitario: item.valor_unitario,
+          pedido_id: data.id, descricao: item.descricao, quantidade: item.quantidade,
+          unidade: item.unidade || 'un', valor_unitario: item.valor_unitario,
           valor_total: item.quantidade * item.valor_unitario,
         }));
-
         await supabase.from('pedido_itens').insert(itensToInsert);
       }
 
       toast.success('Pedido criado com sucesso!');
-      fetchPedidos();
+      queryClient.invalidateQueries({ queryKey: ['pedidos'] });
       return data;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error creating pedido:', err);
-      toast.error('Erro ao criar pedido: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao criar pedido: ' + msg);
       return null;
     }
-  }, [user, fetchPedidos]);
+  }, [user, queryClient]);
 
   // Update pedido
   const updatePedido = useCallback(async (id: string, updates: Partial<Pedido>) => {
     try {
-      const { error } = await supabase
-        .from('pedidos')
-        .update(updates)
-        .eq('id', id);
-
+      const { error } = await supabase.from('pedidos').update(updates).eq('id', id);
       if (error) throw error;
-
       toast.success('Pedido atualizado!');
-      fetchPedidos();
+      queryClient.invalidateQueries({ queryKey: ['pedidos'] });
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error updating pedido:', err);
-      toast.error('Erro ao atualizar: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao atualizar: ' + msg);
       return false;
     }
-  }, [fetchPedidos]);
-
-  // Valid status transitions for pedidos
-  const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = {
-    pendente: ['aprovado', 'cancelado'],
-    aprovado: ['enviado', 'em_transito', 'cancelado'],
-    enviado: ['em_transito', 'entregue', 'cancelado'],
-    em_transito: ['entregue', 'parcial', 'cancelado'],
-    entregue: ['parcial'],
-    parcial: ['entregue'],
-    cancelado: [],
-    concluido: [],
-  };
+  }, [queryClient]);
 
   // Update status with transition validation
   const updateStatus = useCallback(async (id: string, newStatus: Pedido['status']) => {
     const pedido = pedidos.find(p => p.id === id);
-    if (!pedido) {
-      toast.error('Pedido não encontrado');
-      return false;
-    }
+    if (!pedido) { toast.error('Pedido não encontrado'); return false; }
 
     const allowed = VALID_PEDIDO_TRANSITIONS[pedido.status];
     if (allowed && !allowed.includes(newStatus)) {
@@ -246,11 +223,9 @@ export function usePedidos(filters?: PedidoFilters) {
     }
 
     const updates: Partial<Pedido> = { status: newStatus };
-    
     if (newStatus === 'entregue') {
       updates.data_entrega = new Date().toISOString().split('T')[0];
     }
-    
     return updatePedido(id, updates);
   }, [pedidos, updatePedido]);
 
@@ -258,104 +233,67 @@ export function usePedidos(filters?: PedidoFilters) {
   const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pedido['status']) => {
     try {
       const updates: Partial<Pedido> = { status: newStatus };
-      if (newStatus === 'entregue') {
-        updates.data_entrega = new Date().toISOString().split('T')[0];
-      }
-
-      const { error } = await supabase
-        .from('pedidos')
-        .update(updates)
-        .in('id', ids);
-
+      if (newStatus === 'entregue') updates.data_entrega = new Date().toISOString().split('T')[0];
+      const { error } = await supabase.from('pedidos').update(updates).in('id', ids);
       if (error) throw error;
-
       toast.success(`${ids.length} pedido(s) atualizado(s)!`);
-      fetchPedidos();
+      queryClient.invalidateQueries({ queryKey: ['pedidos'] });
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error bulk updating pedidos:', err);
-      toast.error('Erro ao atualizar pedidos: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao atualizar pedidos: ' + msg);
       return false;
     }
-  }, [fetchPedidos]);
+  }, [queryClient]);
 
   // Bulk delete
   const bulkDelete = useCallback(async (ids: string[]) => {
     try {
-      const { error } = await supabase
-        .from('pedidos')
-        .delete()
-        .in('id', ids);
-
+      const { error } = await supabase.from('pedidos').delete().in('id', ids);
       if (error) throw error;
-
       toast.success(`${ids.length} pedido(s) excluído(s)!`);
-      fetchPedidos();
+      queryClient.invalidateQueries({ queryKey: ['pedidos'] });
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error bulk deleting pedidos:', err);
-      toast.error('Erro ao excluir pedidos: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao excluir pedidos: ' + msg);
       return false;
     }
-  }, [fetchPedidos]);
+  }, [queryClient]);
 
   // Delete pedido
   const deletePedido = useCallback(async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('pedidos')
-        .delete()
-        .eq('id', id);
-
+      const { error } = await supabase.from('pedidos').delete().eq('id', id);
       if (error) throw error;
-
       toast.success('Pedido excluído!');
-      fetchPedidos();
+      queryClient.invalidateQueries({ queryKey: ['pedidos'] });
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error deleting pedido:', err);
-      toast.error('Erro ao excluir: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao excluir: ' + msg);
       return false;
     }
-  }, [fetchPedidos]);
-
-  // Initial fetch
-  useEffect(() => {
-    fetchPedidos();
-  }, [fetchPedidos]);
+  }, [queryClient]);
 
   // Realtime subscription
   useEffect(() => {
     if (!user) return;
-
     const channel = supabase
       .channel('pedidos-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'pedidos'
-        },
-        () => {
-          fetchPedidos();
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, () => {
+        queryClient.invalidateQueries({ queryKey: ['pedidos'] });
+      })
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, fetchPedidos]);
+    return () => { supabase.removeChannel(channel); };
+  }, [user, queryClient]);
 
   return {
     pedidos,
-    loading,
-    error,
-    refetch: fetchPedidos,
+    totalCount,
+    loading: isLoading,
+    error: error?.message || null,
+    refetch,
     createPedido,
     updatePedido,
     updateStatus,
@@ -368,56 +306,38 @@ export function usePedidos(filters?: PedidoFilters) {
 // Hook for KPIs
 export function usePedidosKPIs() {
   const { user } = useAuth();
-  const [kpis, setKpis] = useState({
-    total: 0,
-    pendentes: 0,
-    emTransito: 0,
-    entregues: 0,
-    valorTotal: 0,
-  });
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user) return;
+  const { data: kpis = { total: 0, pendentes: 0, emTransito: 0, entregues: 0, valorTotal: 0 }, isLoading } = useQuery({
+    queryKey: ['pedidos-kpis', user?.id],
+    queryFn: async () => {
+      let allData: { status: string; valor_total: number }[] = [];
+      let from = 0;
+      const pageSize = 1000;
+      let hasMore = true;
 
-    const fetchKPIs = async () => {
-      try {
-        let allData: { status: string; valor_total: number }[] = [];
-        let from = 0;
-        const pageSize = 1000;
-        let hasMore = true;
-
-        while (hasMore) {
-          const { data, error } = await supabase
-            .from('pedidos')
-            .select('status, valor_total')
-            .range(from, from + pageSize - 1);
-
-          if (error) throw error;
-          if (!data || data.length === 0) { hasMore = false; break; }
-          allData = [...allData, ...data];
-          if (data.length < pageSize) hasMore = false;
-          from += pageSize;
-        }
-
-        const stats = {
-          total: allData.length,
-          pendentes: allData.filter(p => p.status === 'pendente' || p.status === 'aprovado').length,
-          emTransito: allData.filter(p => p.status === 'em_transito' || p.status === 'enviado').length,
-          entregues: allData.filter(p => p.status === 'entregue').length,
-          valorTotal: allData.reduce((sum, p) => sum + (p.valor_total || 0), 0),
-        };
-
-        setKpis(stats);
-      } catch (err) {
-        console.error('Error fetching KPIs:', err);
-      } finally {
-        setLoading(false);
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from('pedidos')
+          .select('status, valor_total')
+          .range(from, from + pageSize - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) { hasMore = false; break; }
+        allData = [...allData, ...data];
+        if (data.length < pageSize) hasMore = false;
+        from += pageSize;
       }
-    };
 
-    fetchKPIs();
-  }, [user]);
+      return {
+        total: allData.length,
+        pendentes: allData.filter(p => p.status === 'pendente' || p.status === 'aprovado').length,
+        emTransito: allData.filter(p => p.status === 'em_transito' || p.status === 'enviado').length,
+        entregues: allData.filter(p => p.status === 'entregue').length,
+        valorTotal: allData.reduce((sum, p) => sum + (p.valor_total || 0), 0),
+      };
+    },
+    enabled: !!user,
+    staleTime: 60_000,
+  });
 
-  return { kpis, loading };
+  return { kpis, loading: isLoading };
 }

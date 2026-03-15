@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -30,14 +31,8 @@ export interface Solicitacao {
   anexos: Json | null;
   created_at: string;
   updated_at: string;
-  // Joined fields
-  fornecedor?: {
-    razao_social: string;
-    nome_fantasia: string | null;
-  } | null;
-  categoria?: {
-    nome: string;
-  } | null;
+  fornecedor?: { razao_social: string; nome_fantasia: string | null; } | null;
+  categoria?: { nome: string; } | null;
 }
 
 export interface CreateSolicitacaoInput {
@@ -64,158 +59,119 @@ export interface SolicitacaoFilters {
   dateTo?: string;
   valorMin?: number;
   valorMax?: number;
+  page?: number;
+  pageSize?: number;
+}
+
+const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
+  pendente: ['em_cotacao', 'aprovada', 'rejeitada', 'cancelada'],
+  em_cotacao: ['aprovada', 'rejeitada', 'cancelada'],
+  aprovada: ['em_andamento', 'cancelada'],
+  em_andamento: ['concluida', 'cancelada'],
+  rejeitada: ['pendente'],
+  concluida: [],
+  cancelada: [],
+};
+
+async function fetchSolicitacoesData(userId: string | undefined, filters?: SolicitacaoFilters) {
+  if (!userId) return { data: [], totalCount: 0 };
+
+  const page = filters?.page || 1;
+  const pageSize = filters?.pageSize || 100;
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
+  let query = supabase
+    .from('solicitacoes')
+    .select(`
+      *,
+      fornecedor:fornecedores(razao_social, nome_fantasia),
+      categoria:categorias(nome)
+    `, { count: 'exact' })
+    .order('created_at', { ascending: false })
+    .range(from, to);
+
+  if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
+  if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
+  if (filters?.prioridade && filters.prioridade !== 'todas') query = query.eq('prioridade', filters.prioridade);
+  if (filters?.search) query = query.or(`titulo.ilike.%${filters.search}%,numero.ilike.%${filters.search}%,descricao.ilike.%${filters.search}%`);
+  if (filters?.dateFrom) query = query.gte('data_necessidade', filters.dateFrom);
+  if (filters?.dateTo) query = query.lte('data_necessidade', filters.dateTo);
+  if (filters?.valorMin !== undefined) query = query.gte('valor_estimado', filters.valorMin);
+  if (filters?.valorMax !== undefined) query = query.lte('valor_estimado', filters.valorMax);
+
+  const { data, error, count } = await query;
+  if (error) throw error;
+  return { data: (data as Solicitacao[]) || [], totalCount: count || 0 };
 }
 
 export function useSolicitacoes(filters?: SolicitacaoFilters) {
   const { user } = useAuth();
-  const [solicitacoes, setSolicitacoes] = useState<Solicitacao[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchSolicitacoes = useCallback(async () => {
-    if (!user) {
-      setSolicitacoes([]);
-      setLoading(false);
-      return;
-    }
+  const queryKey = useMemo(() => [
+    'solicitacoes', user?.id,
+    filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
+    filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
+    filters?.page, filters?.pageSize,
+  ], [user?.id, filters]);
 
-    try {
-      setLoading(true);
-      setError(null);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey,
+    queryFn: () => fetchSolicitacoesData(user?.id, filters),
+    enabled: !!user,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 
-      let query = supabase
-        .from('solicitacoes')
-        .select(`
-          *,
-          fornecedor:fornecedores(razao_social, nome_fantasia),
-          categoria:categorias(nome)
-        `)
-        .order('created_at', { ascending: false });
+  const solicitacoes = data?.data || [];
+  const totalCount = data?.totalCount || 0;
 
-      // Apply filters
-      if (filters?.status && filters.status !== 'todas') {
-        query = query.eq('status', filters.status);
-      }
-      if (filters?.tipo && filters.tipo !== 'todos') {
-        query = query.eq('tipo', filters.tipo);
-      }
-      if (filters?.prioridade && filters.prioridade !== 'todas') {
-        query = query.eq('prioridade', filters.prioridade);
-      }
-      if (filters?.search) {
-        query = query.or(`titulo.ilike.%${filters.search}%,numero.ilike.%${filters.search}%,descricao.ilike.%${filters.search}%`);
-      }
-      if (filters?.dateFrom) {
-        query = query.gte('data_necessidade', filters.dateFrom);
-      }
-      if (filters?.dateTo) {
-        query = query.lte('data_necessidade', filters.dateTo);
-      }
-      if (filters?.valorMin !== undefined) {
-        query = query.gte('valor_estimado', filters.valorMin);
-      }
-      if (filters?.valorMax !== undefined) {
-        query = query.lte('valor_estimado', filters.valorMax);
-      }
+  const invalidate = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['solicitacoes'] });
+  }, [queryClient]);
 
-      const { data, error: fetchError } = await query;
-
-      if (fetchError) throw fetchError;
-
-      setSolicitacoes((data as Solicitacao[]) || []);
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error fetching solicitacoes:', err);
-      setError(errorMessage);
-      toast.error('Erro ao carregar solicitações');
-    } finally {
-      setLoading(false);
-    }
-  }, [user, filters?.status, filters?.tipo, filters?.prioridade, filters?.search, filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax]);
-
-  // Create new solicitacao
   const createSolicitacao = useCallback(async (input: CreateSolicitacaoInput) => {
-    if (!user) {
-      toast.error('Você precisa estar logado');
-      return null;
-    }
-
+    if (!user) { toast.error('Você precisa estar logado'); return null; }
     try {
-      // Generate numero
-      const { data: numData } = await supabase.rpc('generate_sequential_number', {
-        prefix: 'SOL',
-        table_name: 'solicitacoes'
-      });
-
+      const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'SOL', table_name: 'solicitacoes' });
       const numero = numData || `SOL-${Date.now()}`;
-
       const { data, error } = await supabase
         .from('solicitacoes')
         .insert({
-          numero,
-          titulo: input.titulo,
-          descricao: input.descricao,
-          tipo: input.tipo,
-          prioridade: input.prioridade || 'media',
-          valor_estimado: input.valor_estimado,
-          quantidade: input.quantidade || 1,
-          unidade: input.unidade || 'un',
-          data_necessidade: input.data_necessidade,
-          departamento: input.departamento,
-          centro_custo: input.centro_custo,
-          justificativa: input.justificativa,
-          categoria_id: input.categoria_id,
-          solicitante_id: user.id,
+          numero, titulo: input.titulo, descricao: input.descricao, tipo: input.tipo,
+          prioridade: input.prioridade || 'media', valor_estimado: input.valor_estimado,
+          quantidade: input.quantidade || 1, unidade: input.unidade || 'un',
+          data_necessidade: input.data_necessidade, departamento: input.departamento,
+          centro_custo: input.centro_custo, justificativa: input.justificativa,
+          categoria_id: input.categoria_id, solicitante_id: user.id,
         })
-        .select()
-        .single();
-
+        .select().single();
       if (error) throw error;
-
       toast.success('Solicitação criada com sucesso!');
-      fetchSolicitacoes();
+      invalidate();
       return data;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error creating solicitacao:', err);
-      toast.error('Erro ao criar solicitação: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao criar solicitação: ' + msg);
       return null;
     }
-  }, [user, fetchSolicitacoes]);
+  }, [user, invalidate]);
 
-  // Update solicitacao
   const updateSolicitacao = useCallback(async (id: string, updates: Partial<Solicitacao>) => {
     try {
-      const { error } = await supabase
-        .from('solicitacoes')
-        .update(updates)
-        .eq('id', id);
-
+      const { error } = await supabase.from('solicitacoes').update(updates).eq('id', id);
       if (error) throw error;
-
       toast.success('Solicitação atualizada!');
-      fetchSolicitacoes();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error updating solicitacao:', err);
-      toast.error('Erro ao atualizar: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao atualizar: ' + msg);
       return false;
     }
-  }, [fetchSolicitacoes]);
+  }, [invalidate]);
 
-  // Valid status transitions for solicitacoes
-  const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
-    pendente: ['em_cotacao', 'aprovada', 'rejeitada', 'cancelada'],
-    em_cotacao: ['aprovada', 'rejeitada', 'cancelada'],
-    aprovada: ['em_andamento', 'cancelada'],
-    em_andamento: ['concluida', 'cancelada'],
-    rejeitada: ['pendente'],
-    concluida: [],
-    cancelada: [],
-  };
-
-  // Update status with transition validation
   const updateStatus = useCallback(async (id: string, newStatus: Solicitacao['status']) => {
     const sol = solicitacoes.find(s => s.id === id);
     if (sol) {
@@ -228,106 +184,51 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     return updateSolicitacao(id, { status: newStatus });
   }, [solicitacoes, updateSolicitacao]);
 
-  // Delete solicitacao
   const deleteSolicitacao = useCallback(async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('solicitacoes')
-        .delete()
-        .eq('id', id);
-
+      const { error } = await supabase.from('solicitacoes').delete().eq('id', id);
       if (error) throw error;
-
       toast.success('Solicitação excluída!');
-      fetchSolicitacoes();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error deleting solicitacao:', err);
-      toast.error('Erro ao excluir: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao excluir: ' + msg);
       return false;
     }
-  }, [fetchSolicitacoes]);
+  }, [invalidate]);
 
-  // Bulk delete
   const bulkDelete = useCallback(async (ids: string[]) => {
     try {
-      const { error } = await supabase
-        .from('solicitacoes')
-        .delete()
-        .in('id', ids);
-
+      const { error } = await supabase.from('solicitacoes').delete().in('id', ids);
       if (error) throw error;
-
       toast.success(`${ids.length} solicitação(ões) excluída(s)!`);
-      fetchSolicitacoes();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error bulk deleting:', err);
-      toast.error('Erro ao excluir: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao excluir: ' + msg);
       return false;
     }
-  }, [fetchSolicitacoes]);
+  }, [invalidate]);
 
-  // Bulk status update
   const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Solicitacao['status']) => {
     try {
-      const { error } = await supabase
-        .from('solicitacoes')
-        .update({ status: newStatus })
-        .in('id', ids);
-
+      const { error } = await supabase.from('solicitacoes').update({ status: newStatus }).in('id', ids);
       if (error) throw error;
-
       toast.success(`${ids.length} solicitação(ões) atualizada(s)!`);
-      fetchSolicitacoes();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error bulk updating status:', err);
-      toast.error('Erro ao atualizar: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao atualizar: ' + msg);
       return false;
     }
-  }, [fetchSolicitacoes]);
+  }, [invalidate]);
 
-  // Initial fetch
-  useEffect(() => {
-    fetchSolicitacoes();
-  }, [fetchSolicitacoes]);
-
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-
-    const channel = supabase
-      .channel('solicitacoes-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'solicitacoes'
-        },
-        () => {
-          fetchSolicitacoes();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, fetchSolicitacoes]);
-
-  // Duplicate solicitação (UX-003)
   const duplicateSolicitacao = useCallback(async (id: string) => {
     const original = solicitacoes.find(s => s.id === id);
-    if (!original) {
-      toast.error('Solicitação não encontrada');
-      return null;
-    }
-
+    if (!original) { toast.error('Solicitação não encontrada'); return null; }
     return createSolicitacao({
       titulo: `${original.titulo} (Cópia)`,
       descricao: original.descricao || undefined,
@@ -336,7 +237,6 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       valor_estimado: original.valor_estimado || undefined,
       quantidade: original.quantidade,
       unidade: original.unidade || undefined,
-      data_necessidade: undefined, // Reset date
       departamento: original.departamento || undefined,
       centro_custo: original.centro_custo || undefined,
       justificativa: original.justificativa || undefined,
@@ -344,77 +244,59 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     });
   }, [solicitacoes, createSolicitacao]);
 
+  // Realtime subscription
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel('solicitacoes-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'solicitacoes' }, () => {
+        invalidate();
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [user, invalidate]);
+
   return {
-    solicitacoes,
-    loading,
-    error,
-    refetch: fetchSolicitacoes,
-    createSolicitacao,
-    updateSolicitacao,
-    updateStatus,
-    deleteSolicitacao,
-    bulkDelete,
-    bulkUpdateStatus,
-    duplicateSolicitacao,
+    solicitacoes, totalCount, loading: isLoading, error: error?.message || null,
+    refetch, createSolicitacao, updateSolicitacao, updateStatus,
+    deleteSolicitacao, bulkDelete, bulkUpdateStatus, duplicateSolicitacao,
   };
 }
 
 // Hook for KPIs
 export function useSolicitacoesKPIs() {
   const { user } = useAuth();
-  const [kpis, setKpis] = useState({
-    total: 0,
-    pendentes: 0,
-    emCotacao: 0,
-    aprovadas: 0,
-    concluidas: 0,
-    valorTotal: 0,
-  });
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user) return;
+  const { data: kpis = { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 }, isLoading } = useQuery({
+    queryKey: ['solicitacoes-kpis', user?.id],
+    queryFn: async () => {
+      let allData: { status: string; valor_estimado: number | null }[] = [];
+      let from = 0;
+      const pageSize = 1000;
+      let hasMore = true;
 
-    const fetchKPIs = async () => {
-      try {
-        // Use paginated fetch to bypass 1000-row limit
-        let allData: { status: string; valor_estimado: number | null }[] = [];
-        let from = 0;
-        const pageSize = 1000;
-        let hasMore = true;
-
-        while (hasMore) {
-          const { data, error } = await supabase
-            .from('solicitacoes')
-            .select('status, valor_estimado')
-            .range(from, from + pageSize - 1);
-
-          if (error) throw error;
-          if (!data || data.length === 0) { hasMore = false; break; }
-          allData = [...allData, ...data];
-          if (data.length < pageSize) hasMore = false;
-          from += pageSize;
-        }
-
-        const stats = {
-          total: allData.length,
-          pendentes: allData.filter(s => s.status === 'pendente').length,
-          emCotacao: allData.filter(s => s.status === 'em_cotacao').length,
-          aprovadas: allData.filter(s => s.status === 'aprovada').length,
-          concluidas: allData.filter(s => s.status === 'concluida').length,
-          valorTotal: allData.reduce((sum, s) => sum + (s.valor_estimado || 0), 0),
-        };
-
-        setKpis(stats);
-      } catch (err) {
-        console.error('Error fetching KPIs:', err);
-      } finally {
-        setLoading(false);
+      while (hasMore) {
+        const { data, error } = await supabase
+          .from('solicitacoes').select('status, valor_estimado').range(from, from + pageSize - 1);
+        if (error) throw error;
+        if (!data || data.length === 0) { hasMore = false; break; }
+        allData = [...allData, ...data];
+        if (data.length < pageSize) hasMore = false;
+        from += pageSize;
       }
-    };
 
-    fetchKPIs();
-  }, [user]);
+      return {
+        total: allData.length,
+        pendentes: allData.filter(s => s.status === 'pendente').length,
+        emCotacao: allData.filter(s => s.status === 'em_cotacao').length,
+        aprovadas: allData.filter(s => s.status === 'aprovada').length,
+        concluidas: allData.filter(s => s.status === 'concluida').length,
+        valorTotal: allData.reduce((sum, s) => sum + (s.valor_estimado || 0), 0),
+      };
+    },
+    enabled: !!user,
+    staleTime: 60_000,
+  });
 
-  return { kpis, loading };
+  return { kpis, loading: isLoading };
 }
