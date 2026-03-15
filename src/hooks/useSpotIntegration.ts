@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
@@ -53,7 +53,6 @@ async function callSpotProxy(action: string, params: Record<string, unknown> = {
   });
 
   if (error) {
-    // Extract meaningful message from FunctionsHttpError
     const msg = error.message || 'Erro na comunicação com SPOT';
     throw new Error(msg);
   }
@@ -64,9 +63,12 @@ async function callSpotProxy(action: string, params: Record<string, unknown> = {
 export function useSpotIntegration() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const loadingRef = useRef(false);
 
   const withLoading = useCallback(async <T>(fn: () => Promise<T>): Promise<T | null> => {
+    if (loadingRef.current) return null; // Prevent concurrent requests
     try {
+      loadingRef.current = true;
       setLoading(true);
       setError(null);
       return await fn();
@@ -76,13 +78,15 @@ export function useSpotIntegration() {
       toast.error('Erro SPOT: ' + msg);
       return null;
     } finally {
+      loadingRef.current = false;
       setLoading(false);
     }
   }, []);
 
   const searchProducts = useCallback(async (query: string) => {
     return withLoading(async () => {
-      const data = await callSpotProxy('search', { query });
+      const sanitized = encodeURIComponent(query.trim());
+      const data = await callSpotProxy('search', { query: sanitized });
       return (data?.search || []) as Array<{ line: number; value: string; text: string }>;
     });
   }, [withLoading]);
@@ -96,21 +100,30 @@ export function useSpotIntegration() {
 
   const getProduct = useCallback(async (productId: string) => {
     return withLoading(async () => {
-      const data = await callSpotProxy('product', { productId });
+      const data = await callSpotProxy('product', { productId: encodeURIComponent(productId) });
       return data as SpotProduct;
     });
   }, [withLoading]);
 
   const checkStock = useCallback(async (productId: string, quantity: number, opcionais: string[] = []) => {
     return withLoading(async () => {
-      const data = await callSpotProxy('stock', { productId, quantity, opcionais });
+      const data = await callSpotProxy('stock', {
+        productId: encodeURIComponent(productId),
+        quantity,
+        opcionais: opcionais.map(o => encodeURIComponent(o)),
+      });
       return data as { data: { status: string; label: string }; _status: { success: boolean } };
     });
   }, [withLoading]);
 
   const addToCart = useCallback(async (productId: string, quantity: number, opcional0: string, opcional1 = '0') => {
     return withLoading(async () => {
-      const data = await callSpotProxy('addToCart', { productId, quantity, opcional0, opcional1 });
+      const data = await callSpotProxy('addToCart', {
+        productId: encodeURIComponent(productId),
+        quantity,
+        opcional0: encodeURIComponent(opcional0),
+        opcional1: encodeURIComponent(opcional1),
+      });
       toast.success('Produto adicionado ao carrinho SPOT!');
       return data;
     });
@@ -125,7 +138,7 @@ export function useSpotIntegration() {
 
   const removeFromCart = useCallback(async (groupId: string) => {
     return withLoading(async () => {
-      const data = await callSpotProxy('removeFromCart', { groupId });
+      const data = await callSpotProxy('removeFromCart', { groupId: encodeURIComponent(groupId) });
       toast.success('Item removido do carrinho');
       return data;
     });
@@ -133,7 +146,7 @@ export function useSpotIntegration() {
 
   const updateCartQuantity = useCallback(async (groupId: string, quantity: number) => {
     return withLoading(async () => {
-      return await callSpotProxy('updateCartQty', { groupId, quantity });
+      return await callSpotProxy('updateCartQty', { groupId: encodeURIComponent(groupId), quantity });
     });
   }, [withLoading]);
 
@@ -165,7 +178,8 @@ export function useSpotIntegration() {
     });
   }, [withLoading]);
 
-  return {
+  // Return a stable object reference using useMemo
+  return useMemo(() => ({
     loading,
     error,
     searchProducts,
@@ -180,5 +194,9 @@ export function useSpotIntegration() {
     getFinancialDocs,
     getCheckoutInfo,
     testConnection,
-  };
+  }), [
+    loading, error, searchProducts, browseCatalog, getProduct,
+    checkStock, addToCart, getCart, removeFromCart, updateCartQuantity,
+    getOrders, getFinancialDocs, getCheckoutInfo, testConnection,
+  ]);
 }
