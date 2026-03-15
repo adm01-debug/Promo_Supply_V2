@@ -107,9 +107,22 @@ describe("SLASettingsStore — SLA Configuration", () => {
       expect(useSLASettings.getState().settings.warningThresholdDays).toBe(0);
     });
 
-    it("should handle negative thresholds (no validation)", () => {
+    it("should clamp negative thresholds to zero", () => {
       useSLASettings.getState().updateSettings({ warningThresholdDays: -1 });
-      expect(useSLASettings.getState().settings.warningThresholdDays).toBe(-1);
+      expect(useSLASettings.getState().settings.warningThresholdDays).toBe(0);
+    });
+
+    it("should ensure warning >= critical threshold", () => {
+      useSLASettings.getState().updateSettings({ warningThresholdDays: 1, criticalThresholdDays: 5 });
+      const s = useSLASettings.getState().settings;
+      expect(s.warningThresholdDays).toBeGreaterThanOrEqual(s.criticalThresholdDays);
+    });
+
+    it("should clamp supplierSLAThreshold to 0-100", () => {
+      useSLASettings.getState().updateSettings({ supplierSLAThreshold: 150 });
+      expect(useSLASettings.getState().settings.supplierSLAThreshold).toBe(100);
+      useSLASettings.getState().updateSettings({ supplierSLAThreshold: -10 });
+      expect(useSLASettings.getState().settings.supplierSLAThreshold).toBe(0);
     });
 
     it("should handle empty email recipients array", () => {
