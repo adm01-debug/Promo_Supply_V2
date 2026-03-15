@@ -501,7 +501,7 @@ const CatalogoSpot = () => {
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                onClick={() => window.open(doc.downloadUrl!, '_blank')}
+                                onClick={() => openExternalSpotUrl(doc.downloadUrl!)}
                               >
                                 <FileText className="w-3.5 h-3.5" />
                               </Button>
