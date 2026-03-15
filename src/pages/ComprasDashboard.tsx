@@ -198,11 +198,25 @@ const ComprasDashboard = () => {
             </motion.p>
           </div>
           <motion.div
-            className="w-full sm:w-auto sm:min-w-[320px] lg:min-w-[360px]"
+            className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.4 }}
           >
+            <FilterFavoritesManager
+              favorites={favorites}
+              currentFilters={currentFilters}
+              onSave={saveFavorite}
+              onDelete={deleteFavorite}
+              onSetDefault={setAsDefault}
+              onApply={(filter) => setCurrentFilters({
+                category: filter.category_filter || 'all',
+                supplier: filter.supplier_filter || 'all',
+                period: filter.period_filter || '6m',
+                showComparison: filter.show_comparison ?? true,
+              })}
+              loading={filtersLoading}
+            />
             <PurchaseClimateWidget />
           </motion.div>
         </motion.div>
