@@ -34,6 +34,7 @@ const HistoricoCompras = lazy(() => import("./pages/HistoricoCompras"));
 const Contratos = lazy(() => import("./pages/Contratos"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Seguranca = lazy(() => import("./pages/Seguranca"));
+const CatalogoSpot = lazy(() => import("./pages/CatalogoSpot"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
