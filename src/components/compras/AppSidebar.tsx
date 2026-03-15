@@ -125,6 +125,13 @@ const menuGroups = [
         badge: null
       },
       { 
+        title: "SPOT / Stricker", 
+        icon: Sparkles, 
+        href: "/catalogo-spot",
+        description: "Catálogo integrado",
+        badge: { count: 0, variant: "default" as const }
+      },
+      { 
         title: "Performance", 
         icon: Users, 
         href: "/supplier-performance",
