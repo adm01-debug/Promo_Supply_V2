@@ -5,16 +5,14 @@
    Modular CSS Architecture
    ================================================================= */
 
-@tailwind base;
-
-/* Design tokens + base styles precisam vir APÓS o Tailwind base para
-   garantir compatibilidade com @layer e @apply. */
+/* CSS imports precisam vir antes de qualquer outra regra para evitar
+   erro de build e tela branca no preview. */
 @import './styles/tokens.css';
 @import './styles/base.css';
-
-@tailwind components;
 @import './styles/components.css';
-
-@tailwind utilities;
 @import './styles/utilities.css';
 @import './styles/animations.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
