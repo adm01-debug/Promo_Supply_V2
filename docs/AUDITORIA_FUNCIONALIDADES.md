@@ -271,19 +271,28 @@ A tabela `pagamentos` **não aparece** na lista de tabelas auditadas com RLS. De
 
 ---
 
-## 📈 SCORE GERAL DE COMPLETUDE
+## 📈 SCORE GERAL DE COMPLETUDE (Atualizado: 15/03/2026)
 
 | Dimensão | Score |
 |----------|-------|
-| **Backend (DB + Functions + RLS)** | **95%** — Quase completo, falta storage e realtime |
+| **Backend (DB + Functions + RLS)** | **98%** — Storage bucket criado, realtime configurado, RLS pagamentos ✅ |
 | **CRUD Frontend (hooks)** | **90%** — Completo para entidades core |
 | **UI/UX (componentes)** | **85%** — Completo, faltam qualificação e portal |
-| **Dados Reais vs Mock** | **45%** — Dashboards e analytics ainda em mock |
-| **Testes** | **0%** — Nenhum teste automatizado |
+| **Dados Reais vs Mock** | **55%** — Dashboard operacional migrado para Supabase real ✅ |
+| **Testes** | **5%** — Vitest configurado, setup pronto, testes iniciais passando ✅ |
 | **Integrações Externas** | **0%** — Todas pendentes |
-| **SCORE GERAL** | **~55%** |
+| **SCORE GERAL** | **~60%** |
 
-> ⚠️ **Conclusão**: O sistema tem uma infraestrutura backend robusta e CRUD funcional nas entidades core, mas **os dashboards, relatórios e analytics — que são as telas mais visíveis — exibem dados fictícios**. Isso significa que embora as operações transacionais (criar solicitação, cotação, pedido, etc.) funcionem com persistência real, toda a camada de **business intelligence e tomada de decisão está baseada em dados hardcoded**.
+### ✅ Melhorias Implementadas (15/03/2026)
+- ✅ RLS policies criadas para tabela `pagamentos` (SELECT autenticado + ALL admin/coordinator/finance)
+- ✅ Storage bucket `documents` criado com RLS (upload autenticado, delete admin)
+- ✅ Realtime configurado em `pedidos`, `cotacoes`, `notifications`, `pagamentos` (solicitacoes já estava)
+- ✅ Hook `useDashboardKPIs` criado — Dashboard operacional agora consome dados reais do Supabase
+- ✅ Hook `useExecutiveDashboardData` criado — Dados executivos disponíveis via Supabase
+- ✅ Vitest configurado com jsdom, setup file, e testes passando
+- ✅ ComprasDashboard.tsx migrado de mock para dados reais
+
+> ⚠️ **Pendências restantes**: Dashboard Executivo precisa ser refatorado para usar `useExecutiveDashboardData`, componentes internos (BuyerPerformancePanel, SavingsGoalPanel, CriticalAlertsBar, etc.) ainda usam mock data, Portal do Fornecedor não existe, UI de Qualificação não foi construída.
 
 ---
 
