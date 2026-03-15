@@ -39,7 +39,59 @@ import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 // Tipos de SLA
 type SLAStatus = 'atrasado' | 'critico' | 'atencao' | 'no_prazo' | 'entregue';
 
-interface SLAInfo {
+// Local type to replace mock Solicitacao
+interface AcompanhamentoPedido {
+  id: string;
+  produto: string;
+  quantidade: number;
+  quantidadeReal: number;
+  status: string;
+  empresa: string;
+  vendedor: string;
+  prazoEntrega: string;
+  fornecedorSelecionado: string | null;
+  valorTotal: number | null;
+  valorUnitario: number | null;
+  createdAt: string;
+  tipo: string;
+}
+
+const getStatusLabel = (status: string): string => {
+  const labels: Record<string, string> = {
+    'pendente': 'Pendente',
+    'aprovada': 'Aprovada',
+    'em_cotacao': 'Em Cotação',
+    'cotada': 'Cotada',
+    'em_analise': 'Em Análise',
+    'aprovada_compra': 'Aprovada p/ Compra',
+    'em_pedido': 'Em Pedido',
+    'entregue': 'Entregue',
+    'cancelada': 'Cancelada',
+    'concluida': 'Concluída',
+    'AGUARDANDO_COTACAO': 'Aguardando Cotação',
+    'EM_COTACAO': 'Em Cotação',
+    'FORNECEDOR_SELECIONADO': 'Fornecedor Selecionado',
+    'PEDIDO_GERADO': 'Pedido Gerado',
+    'AGUARDANDO_PAGAMENTO': 'Aguardando Pagamento',
+    'PAGO': 'Pago',
+    'EM_TRANSITO': 'Em Trânsito',
+    'ENTREGUE': 'Entregue',
+  };
+  return labels[status] || status;
+};
+
+const getTipoLabel = (tipo: string): string => {
+  const labels: Record<string, string> = {
+    'produto': 'Produto',
+    'servico': 'Serviço',
+    'material': 'Material',
+    'pe_liso': 'P.E. Liso',
+    'fabricacao_liso': 'Fab. Liso',
+    'fabricacao_personalizado': 'Fab. Personalizado',
+  };
+  return labels[tipo] || tipo;
+};
+
   status: SLAStatus;
   diasRestantes: number;
   horasRestantes?: number;
