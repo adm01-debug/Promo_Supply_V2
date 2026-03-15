@@ -352,19 +352,32 @@ export function useSolicitacoesKPIs() {
 
     const fetchKPIs = async () => {
       try {
-        const { data, error } = await supabase
-          .from('solicitacoes')
-          .select('status, valor_estimado');
+        // Use paginated fetch to bypass 1000-row limit
+        let allData: { status: string; valor_estimado: number | null }[] = [];
+        let from = 0;
+        const pageSize = 1000;
+        let hasMore = true;
 
-        if (error) throw error;
+        while (hasMore) {
+          const { data, error } = await supabase
+            .from('solicitacoes')
+            .select('status, valor_estimado')
+            .range(from, from + pageSize - 1);
+
+          if (error) throw error;
+          if (!data || data.length === 0) { hasMore = false; break; }
+          allData = [...allData, ...data];
+          if (data.length < pageSize) hasMore = false;
+          from += pageSize;
+        }
 
         const stats = {
-          total: data?.length || 0,
-          pendentes: data?.filter(s => s.status === 'pendente').length || 0,
-          emCotacao: data?.filter(s => s.status === 'em_cotacao').length || 0,
-          aprovadas: data?.filter(s => s.status === 'aprovada').length || 0,
-          concluidas: data?.filter(s => s.status === 'concluida').length || 0,
-          valorTotal: data?.reduce((sum, s) => sum + (s.valor_estimado || 0), 0) || 0,
+          total: allData.length,
+          pendentes: allData.filter(s => s.status === 'pendente').length,
+          emCotacao: allData.filter(s => s.status === 'em_cotacao').length,
+          aprovadas: allData.filter(s => s.status === 'aprovada').length,
+          concluidas: allData.filter(s => s.status === 'concluida').length,
+          valorTotal: allData.reduce((sum, s) => sum + (s.valor_estimado || 0), 0),
         };
 
         setKpis(stats);

@@ -382,18 +382,30 @@ export function usePedidosKPIs() {
 
     const fetchKPIs = async () => {
       try {
-        const { data, error } = await supabase
-          .from('pedidos')
-          .select('status, valor_total');
+        let allData: { status: string; valor_total: number }[] = [];
+        let from = 0;
+        const pageSize = 1000;
+        let hasMore = true;
 
-        if (error) throw error;
+        while (hasMore) {
+          const { data, error } = await supabase
+            .from('pedidos')
+            .select('status, valor_total')
+            .range(from, from + pageSize - 1);
+
+          if (error) throw error;
+          if (!data || data.length === 0) { hasMore = false; break; }
+          allData = [...allData, ...data];
+          if (data.length < pageSize) hasMore = false;
+          from += pageSize;
+        }
 
         const stats = {
-          total: data?.length || 0,
-          pendentes: data?.filter(p => p.status === 'pendente' || p.status === 'aprovado').length || 0,
-          emTransito: data?.filter(p => p.status === 'em_transito' || p.status === 'enviado').length || 0,
-          entregues: data?.filter(p => p.status === 'entregue').length || 0,
-          valorTotal: data?.reduce((sum, p) => sum + (p.valor_total || 0), 0) || 0,
+          total: allData.length,
+          pendentes: allData.filter(p => p.status === 'pendente' || p.status === 'aprovado').length,
+          emTransito: allData.filter(p => p.status === 'em_transito' || p.status === 'enviado').length,
+          entregues: allData.filter(p => p.status === 'entregue').length,
+          valorTotal: allData.reduce((sum, p) => sum + (p.valor_total || 0), 0),
         };
 
         setKpis(stats);
