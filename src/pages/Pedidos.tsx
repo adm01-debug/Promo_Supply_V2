@@ -96,6 +96,8 @@ const Pedidos = () => {
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [priceHistoryOpen, setPriceHistoryOpen] = useState(false);
+  const [receivingPedido, setReceivingPedido] = useState<Pedido | null>(null);
 
   const isMobile = useIsMobile();
   const { pedidos, loading, refetch, updateStatus, bulkUpdateStatus, bulkDelete } = usePedidos();
