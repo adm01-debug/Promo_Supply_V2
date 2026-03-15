@@ -219,8 +219,32 @@ export function usePedidos(filters?: PedidoFilters) {
     }
   }, [fetchPedidos]);
 
-  // Update status
+  // Valid status transitions for pedidos
+  const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = {
+    pendente: ['aprovado', 'cancelado'],
+    aprovado: ['enviado', 'em_transito', 'cancelado'],
+    enviado: ['em_transito', 'entregue', 'cancelado'],
+    em_transito: ['entregue', 'parcial', 'cancelado'],
+    entregue: ['parcial'],
+    parcial: ['entregue'],
+    cancelado: [],
+    concluido: [],
+  };
+
+  // Update status with transition validation
   const updateStatus = useCallback(async (id: string, newStatus: Pedido['status']) => {
+    const pedido = pedidos.find(p => p.id === id);
+    if (!pedido) {
+      toast.error('Pedido não encontrado');
+      return false;
+    }
+
+    const allowed = VALID_PEDIDO_TRANSITIONS[pedido.status];
+    if (allowed && !allowed.includes(newStatus)) {
+      toast.error(`Transição inválida: ${pedido.status} → ${newStatus}`);
+      return false;
+    }
+
     const updates: Partial<Pedido> = { status: newStatus };
     
     if (newStatus === 'entregue') {
@@ -228,7 +252,7 @@ export function usePedidos(filters?: PedidoFilters) {
     }
     
     return updatePedido(id, updates);
-  }, [updatePedido]);
+  }, [pedidos, updatePedido]);
 
   // Bulk update status
   const bulkUpdateStatus = useCallback(async (ids: string[], newStatus: Pedido['status']) => {

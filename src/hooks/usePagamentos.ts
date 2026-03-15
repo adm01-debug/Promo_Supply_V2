@@ -158,8 +158,31 @@ export function usePagamentos(filters?: PagamentoFilters) {
     }
   }, [user, fetchPagamentos]);
 
-  // Update pagamento
+  // Valid status transitions for pagamentos
+  const VALID_PAGAMENTO_TRANSITIONS: Record<string, string[]> = {
+    pendente: ['aprovado', 'cancelado'],
+    aprovado: ['agendado', 'pago', 'cancelado'],
+    agendado: ['pago', 'cancelado'],
+    pago: ['parcial'],
+    parcial: ['pago'],
+    cancelado: [],
+    atrasado: ['pago', 'cancelado'],
+  };
+
+  // Update pagamento with status transition validation
   const updatePagamento = useCallback(async (id: string, updates: Partial<Pagamento>) => {
+    // Validate status transition if status is being changed
+    if (updates.status) {
+      const current = pagamentos.find(p => p.id === id);
+      if (current) {
+        const allowed = VALID_PAGAMENTO_TRANSITIONS[current.status];
+        if (allowed && !allowed.includes(updates.status)) {
+          toast.error(`Transição inválida: ${current.status} → ${updates.status}`);
+          return false;
+        }
+      }
+    }
+
     try {
       const { error } = await supabase
         .from('pagamentos')

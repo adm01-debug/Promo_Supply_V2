@@ -204,10 +204,29 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     }
   }, [fetchSolicitacoes]);
 
-  // Update status
+  // Valid status transitions for solicitacoes
+  const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
+    pendente: ['em_cotacao', 'aprovada', 'rejeitada', 'cancelada'],
+    em_cotacao: ['aprovada', 'rejeitada', 'cancelada'],
+    aprovada: ['em_andamento', 'cancelada'],
+    em_andamento: ['concluida', 'cancelada'],
+    rejeitada: ['pendente'],
+    concluida: [],
+    cancelada: [],
+  };
+
+  // Update status with transition validation
   const updateStatus = useCallback(async (id: string, newStatus: Solicitacao['status']) => {
+    const sol = solicitacoes.find(s => s.id === id);
+    if (sol) {
+      const allowed = VALID_SOLICITACAO_TRANSITIONS[sol.status];
+      if (allowed && !allowed.includes(newStatus)) {
+        toast.error(`Transição inválida: ${sol.status} → ${newStatus}`);
+        return false;
+      }
+    }
     return updateSolicitacao(id, { status: newStatus });
-  }, [updateSolicitacao]);
+  }, [solicitacoes, updateSolicitacao]);
 
   // Delete solicitacao
   const deleteSolicitacao = useCallback(async (id: string) => {
