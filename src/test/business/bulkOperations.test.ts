@@ -78,10 +78,11 @@ describe("Bulk Operations — Business Logic", () => {
 
   describe("Action availability by status", () => {
     const getAvailableActions = (statuses: string[]) => {
+      if (statuses.length === 0) return [];
       const actions: string[] = [];
       if (statuses.every(s => s === "pendente")) actions.push("approve", "cancel");
       if (statuses.every(s => ["pendente", "aprovado"].includes(s))) actions.push("delete");
-      if (statuses.length > 0) actions.push("export");
+      actions.push("export");
       return [...new Set(actions)];
     };
 
