@@ -98,7 +98,8 @@ const Solicitacoes = () => {
     updateStatus, 
     bulkDelete, 
     bulkUpdateStatus,
-    refetch 
+    refetch,
+    duplicateSolicitacao,
   } = useSolicitacoes({
     search: searchTerm || undefined,
     status: statusFilter !== 'todas' ? mapLegacyStatusToDb(statusFilter) : undefined,
