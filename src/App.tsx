@@ -230,8 +230,8 @@ const AnimatedRoutes = () => {
   );
 };
 
-const App = forwardRef<HTMLDivElement>((_props, ref) => (
-  <div ref={ref} className="min-h-screen">
+const App = () => (
+  <div className="min-h-screen">
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <QueryClientProvider client={queryClient}>
         <AccessibilityProvider>
@@ -251,8 +251,6 @@ const App = forwardRef<HTMLDivElement>((_props, ref) => (
       </QueryClientProvider>
     </ThemeProvider>
   </div>
-));
-
-App.displayName = "App";
+);
 
 export default App;
