@@ -42,6 +42,15 @@ const openExternalSpotUrl = (rawUrl: string) => {
   }
 };
 
+const extractSpotProductId = (rawValue: string, fallback = '') => {
+  try {
+    const url = new URL(rawValue, 'https://www.spotgifts.com.br');
+    return url.pathname.match(/\/(\d+)\/?$/)?.[1] || url.searchParams.get('prod') || fallback;
+  } catch {
+    return fallback;
+  }
+};
+
 const CatalogoSpot = () => {
   const { loading, searchProducts, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
   const [activeTab, setActiveTab] = useState('catalogo');

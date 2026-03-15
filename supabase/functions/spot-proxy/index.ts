@@ -100,23 +100,32 @@ async function getSpotSession(supabase: ReturnType<typeof getSupabaseAdmin>): Pr
     .select("*")
     .eq("is_valid", true)
     .order("last_used_at", { ascending: false })
-    .limit(1);
+    .limit(10);
 
   if (sessions && sessions.length > 0) {
-    const session = sessions[0];
-    const age = Date.now() - new Date(session.last_used_at).getTime();
+    const [latestSession, ...staleSessions] = sessions;
+
+    if (staleSessions.length > 0) {
+      await supabase
+        .from("spot_sessions")
+        .update({ is_valid: false })
+        .in("id", staleSessions.map((session) => session.id));
+    }
+
+    const age = Date.now() - new Date(latestSession.last_used_at).getTime();
     if (age < 30 * 60 * 1000) {
       await supabase
         .from("spot_sessions")
         .update({ last_used_at: new Date().toISOString() })
-        .eq("id", session.id);
-      return session.session_cookie;
+        .eq("id", latestSession.id);
+      return latestSession.session_cookie;
     }
+
     // Mark expired session as invalid
     await supabase
       .from("spot_sessions")
       .update({ is_valid: false })
-      .eq("id", session.id);
+      .eq("id", latestSession.id);
   }
 
   return await loginToSpot(supabase);
