@@ -38,33 +38,74 @@ const getTipoLabel = (tipo: string) => {
   return map[tipo] || tipo;
 };
 
-// Dados mockados da ordem
-const ordemMock = {
-  numero: "OC-2024-0461",
-  solicitacao: solicitacoesMock[2], // FORNECEDOR_SELECIONADO
-  fornecedor: fornecedoresMock[3], // Estrela Brindes
-  condicaoPagamento: "À vista via PIX",
-  frete: 150,
-  desconto: 0,
-  observacoes: "",
-};
-
 const GerarOrdem = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const solicitacaoId = searchParams.get("solicitacao") || ordemMock.solicitacao.id;
+  const solicitacaoId = searchParams.get("solicitacao");
 
   const [copiado, setCopiado] = useState<string | null>(null);
   const [mensagemWhatsApp, setMensagemWhatsApp] = useState("");
   const [mensagemEmail, setMensagemEmail] = useState("");
   const [assuntoEmail, setAssuntoEmail] = useState("");
-  const [frete, setFrete] = useState(ordemMock.frete);
-  const [desconto, setDesconto] = useState(ordemMock.desconto);
-  const [observacoes, setObservacoes] = useState(ordemMock.observacoes);
+  const [frete, setFrete] = useState(150);
+  const [desconto, setDesconto] = useState(0);
+  const [observacoes, setObservacoes] = useState("");
 
-  // Busca dados
-  const solicitacao = solicitacoesMock.find(s => s.id === solicitacaoId) || ordemMock.solicitacao;
-  const fornecedor = fornecedoresMock.find(f => f.nomeFantasia === solicitacao.fornecedorSelecionado) || ordemMock.fornecedor;
+  // Fetch solicitacao from Supabase
+  const { data: solicitacaoData } = useQuery({
+    queryKey: ['gerar-ordem-solicitacao', solicitacaoId],
+    queryFn: async () => {
+      if (!solicitacaoId) return null;
+      const { data, error } = await supabase
+        .from('solicitacoes')
+        .select('*')
+        .eq('id', solicitacaoId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!solicitacaoId,
+  });
+
+  // Fetch fornecedores
+  const { data: fornecedoresData = [] } = useQuery({
+    queryKey: ['gerar-ordem-fornecedores'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fornecedores')
+        .select('id, razao_social, nome_fantasia, cnpj, email, telefone, tipo')
+        .eq('status', 'ativo');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
+  // Create a unified data shape
+  const solicitacao = {
+    id: solicitacaoData?.id || 'N/A',
+    produto: solicitacaoData?.descricao || 'Produto',
+    quantidade: solicitacaoData?.quantidade || 0,
+    quantidadeReal: solicitacaoData?.quantidade || 0,
+    tipo: 'produto',
+    empresa: 'Promo Supply',
+    vendedor: '',
+    prazoEntrega: solicitacaoData?.data_necessidade || new Date().toISOString(),
+    valorUnitario: Number(solicitacaoData?.valor_estimado || 0) / Math.max(solicitacaoData?.quantidade || 1, 1),
+    fornecedorSelecionado: '',
+  };
+
+  const fornecedor = fornecedoresData[0] || {
+    id: '',
+    razao_social: 'N/A',
+    nome_fantasia: 'N/A',
+    cnpj: 'N/A',
+    email: 'N/A',
+    telefone: 'N/A',
+    tipo: 'N/A',
+  };
+
+  const ordemNumero = `OC-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`;
 
   // Cálculos financeiros
   const subtotal = (solicitacao.valorUnitario || 12) * solicitacao.quantidadeReal;
@@ -72,7 +113,7 @@ const GerarOrdem = () => {
 
   // Gera mensagens automáticas
   const gerarMensagemWhatsApp = () => {
-    const msg = `Olá ${fornecedor.nomeFantasia}!
+    const msg = `Olá ${fornecedor.nome_fantasia || fornecedor.razao_social}!
 
 Gostaríamos de confirmar o pedido abaixo:
 
