@@ -37,37 +37,37 @@ const startOfMonth = () => {
 export function useDashboardKPIs() {
   const { data: solicitacoes, isLoading: loadingSol } = useQuery({
     queryKey: ['dashboard-solicitacoes'],
-    queryFn: () => fetchAllRows('solicitacoes', 'id, status, valor_estimado, valor_aprovado, created_at, data_necessidade'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null }>('solicitacoes', 'id, status, valor_estimado, valor_aprovado, created_at, data_necessidade'),
     staleTime: 30000,
   });
 
   const { data: pedidos, isLoading: loadingPed } = useQuery({
     queryKey: ['dashboard-pedidos'],
-    queryFn: () => fetchAllRows('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega'),
     staleTime: 30000,
   });
 
   const { data: pagamentos, isLoading: loadingPag } = useQuery({
     queryKey: ['dashboard-pagamentos'],
-    queryFn: () => fetchAllRows('pagamentos', 'id, status, valor, valor_pago, data_vencimento'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; valor: number; valor_pago: number | null; data_vencimento: string }>('pagamentos', 'id, status, valor, valor_pago, data_vencimento'),
     staleTime: 30000,
   });
 
   const { data: cotacoes, isLoading: loadingCot } = useQuery({
     queryKey: ['dashboard-cotacoes'],
-    queryFn: () => fetchAllRows('cotacoes', 'id, status, valor_total, selecionada'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; valor_total: number; selecionada: boolean | null }>('cotacoes', 'id, status, valor_total, selecionada'),
     staleTime: 30000,
   });
 
   const { data: fornecedores, isLoading: loadingForn } = useQuery({
     queryKey: ['dashboard-fornecedores'],
-    queryFn: () => fetchAllRows('fornecedores', 'id, status'),
+    queryFn: () => fetchAllRows<{ id: string; status: string }>('fornecedores', 'id, status'),
     staleTime: 60000,
   });
 
   const { data: workflows, isLoading: loadingWf } = useQuery({
     queryKey: ['dashboard-workflows'],
-    queryFn: () => fetchAllRows('approval_workflows', 'id, status', {
+    queryFn: () => fetchAllRows<{ id: string; status: string }>('approval_workflows', 'id, status', {
       filters: [{ column: 'status', operator: 'eq', value: 'pending' }],
     }),
     staleTime: 30000,

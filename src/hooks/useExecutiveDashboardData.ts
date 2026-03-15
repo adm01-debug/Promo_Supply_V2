@@ -23,37 +23,37 @@ const startOfMonth = () => {
 export function useExecutiveDashboardData() {
   const { data: pedidos, isLoading: l1 } = useQuery({
     queryKey: ['exec-pedidos'],
-    queryFn: () => fetchAllRows('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at'),
     staleTime: 30000,
   });
 
   const { data: solicitacoes, isLoading: l2 } = useQuery({
     queryKey: ['exec-solicitacoes'],
-    queryFn: () => fetchAllRows('solicitacoes', 'id, status, valor_estimado, valor_aprovado, created_at, data_conclusao, categoria_id'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_conclusao: string | null; categoria_id: string | null }>('solicitacoes', 'id, status, valor_estimado, valor_aprovado, created_at, data_conclusao, categoria_id'),
     staleTime: 30000,
   });
 
   const { data: fornecedores, isLoading: l3 } = useQuery({
     queryKey: ['exec-fornecedores'],
-    queryFn: () => fetchAllRows('fornecedores', 'id, razao_social, status, avaliacao'),
+    queryFn: () => fetchAllRows<{ id: string; razao_social: string; status: string; avaliacao: number | null }>('fornecedores', 'id, razao_social, status, avaliacao'),
     staleTime: 60000,
   });
 
   const { data: contracts, isLoading: l4 } = useQuery({
     queryKey: ['exec-contracts'],
-    queryFn: () => fetchAllRows('contracts', 'id, status, total_value'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; total_value: number }>('contracts', 'id, status, total_value'),
     staleTime: 60000,
   });
 
   const { data: workflows, isLoading: l5 } = useQuery({
     queryKey: ['exec-workflows'],
-    queryFn: () => fetchAllRows('approval_workflows', 'id, status, prazo_limite'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; prazo_limite: string | null }>('approval_workflows', 'id, status, prazo_limite'),
     staleTime: 30000,
   });
 
   const { data: categorias, isLoading: l6 } = useQuery({
     queryKey: ['exec-categorias'],
-    queryFn: () => fetchAllRows('categorias', 'id, nome, cor'),
+    queryFn: () => fetchAllRows<{ id: string; nome: string; cor: string | null }>('categorias', 'id, nome, cor'),
     staleTime: 120000,
   });
 
