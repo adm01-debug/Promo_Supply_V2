@@ -8,6 +8,7 @@ const corsHeaders = {
 
 const SPOT_BASE = "https://www.spotgifts.com.br";
 const LANG = "pt";
+const SPOT_REQUEST_TIMEOUT_MS = 15000;
 type SpotAction =
   | "search"
   | "catalog"
