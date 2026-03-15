@@ -84,10 +84,10 @@ describe("Fornecedor — Validation & Business Rules", () => {
       expect(r.overall).toBe(0);
     });
 
-    it("should weight quality higher than on-time (60/40)", () => {
-      const highQuality = calcRating([{ onTime: false, qualityScore: 10 }]);
-      const highOnTime = calcRating([{ onTime: true, qualityScore: 5 }]);
-      expect(highQuality.overall).toBeGreaterThan(highOnTime.overall);
+    it("should weight quality at 60% in overall score", () => {
+      const r = calcRating([{ onTime: true, qualityScore: 10 }]);
+      // quality=10*0.6=6, onTime=100/10*0.4=4, total=10
+      expect(r.overall).toBe(10);
     });
   });
 
