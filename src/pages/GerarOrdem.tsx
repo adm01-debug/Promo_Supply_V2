@@ -159,7 +159,7 @@ ${desconto > 0 ? `• Desconto: R$ ${desconto.toFixed(2)}` : ''}
 • Total: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
 
 CONDIÇÕES:
-• Pagamento: ${ordemMock.condicaoPagamento}
+• Pagamento: À vista via PIX
 • Prazo de Entrega: ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
 ${observacoes ? `\nOBSERVAÇÕES:\n${observacoes}` : ''}
 DADOS PARA ENTREGA:
