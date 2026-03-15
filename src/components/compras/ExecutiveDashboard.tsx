@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useDashboardFilters, DashboardFilter } from '@/hooks/useDashboardFilters';
 import { FilterFavoritesManager } from './FilterFavoritesManager';
 import { PurchaseClimateWidget } from './PurchaseClimateWidget';
