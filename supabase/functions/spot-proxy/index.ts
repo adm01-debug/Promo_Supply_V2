@@ -50,18 +50,18 @@ function getSupabaseAdmin() {
 async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
   const authHeader = req.headers.get("authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new Error("Não autorizado: token ausente");
+    throw new HttpError(403, "Não autorizado: token ausente");
   }
 
   const token = authHeader.slice("Bearer ".length).trim();
   if (!token) {
-    throw new Error("Não autorizado: token inválido");
+    throw new HttpError(403, "Não autorizado: token inválido");
   }
 
   const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
 
   if (error || !user) {
-    throw new Error("Não autorizado: token inválido");
+    throw new HttpError(403, "Não autorizado: token inválido");
   }
 
   // Verify user has at least one allowed role
@@ -72,7 +72,7 @@ async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupa
     .in("role", [...ALLOWED_ROLES]);
 
   if (roleError || !roles || roles.length === 0) {
-    throw new Error("Sem permissão para acessar integração SPOT");
+    throw new HttpError(403, "Sem permissão para acessar integração SPOT");
   }
 
   return user.id;
