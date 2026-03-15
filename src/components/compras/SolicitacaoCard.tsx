@@ -72,6 +72,7 @@ export const SolicitacaoCard = ({
   onApprove,
   onReject,
   onArchive,
+  onDuplicate,
 }: SolicitacaoCardProps) => {
   const actions = statusActions[solicitacao.status];
   const statusColor = getStatusColor(solicitacao.status);
