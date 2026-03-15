@@ -308,10 +308,77 @@ const pedidosAcompanhamento = solicitacoesMock.filter(s =>
 
 const Acompanhamento = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [pedidoDetalhes, setPedidoDetalhes] = useState<Solicitacao | null>(null);
+  const [pedidoDetalhes, setPedidoDetalhes] = useState<AcompanhamentoPedido | null>(null);
   const [viewMode, setViewMode] = useState<'lista' | 'kanban'>('lista');
-  const [pedidosState, setPedidosState] = useState(pedidosAcompanhamento);
   const [filtroSLA, setFiltroSLA] = useState<'todos' | 'atrasados' | 'criticos' | 'atencao'>('todos');
+
+  // Realtime
+  useRealtimeSubscription({ tables: ['pedidos', 'solicitacoes'] });
+
+  // Fetch pedidos from Supabase
+  const { data: pedidosDB = [], isLoading } = useQuery({
+    queryKey: ['acompanhamento-pedidos'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('pedidos')
+        .select(`
+          id, numero, status, valor_total, data_previsao, data_emissao, created_at,
+          fornecedor_id,
+          solicitacao_id
+        `)
+        .not('status', 'in', '(cancelado)');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 30000,
+  });
+
+  const { data: solicitacoesDB = [] } = useQuery({
+    queryKey: ['acompanhamento-solicitacoes'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('solicitacoes')
+        .select('id, descricao, quantidade, data_necessidade, status, created_at');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 30000,
+  });
+
+  const { data: fornecedoresDB = [] } = useQuery({
+    queryKey: ['acompanhamento-fornecedores'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fornecedores')
+        .select('id, razao_social, nome_fantasia');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
+  // Map DB data to the component's expected shape
+  const pedidosState = useMemo<AcompanhamentoPedido[]>(() => {
+    return pedidosDB.map(p => {
+      const sol = solicitacoesDB.find(s => s.id === p.solicitacao_id);
+      const forn = fornecedoresDB.find(f => f.id === p.fornecedor_id);
+      return {
+        id: p.numero || p.id.slice(0, 8),
+        produto: sol?.descricao || `Pedido ${p.numero}`,
+        quantidade: sol?.quantidade || 0,
+        quantidadeReal: sol?.quantidade || 0,
+        status: mapPedidoStatus(p.status),
+        empresa: 'Promo Supply',
+        vendedor: '',
+        prazoEntrega: p.data_previsao || sol?.data_necessidade || new Date().toISOString(),
+        fornecedorSelecionado: forn?.nome_fantasia || forn?.razao_social || null,
+        valorTotal: Number(p.valor_total) || null,
+        valorUnitario: null,
+        createdAt: p.created_at,
+        tipo: 'produto',
+      };
+    });
+  }, [pedidosDB, solicitacoesDB, fornecedoresDB]);
 
   // Calcula estatísticas de SLA
   const pedidosComSLA = pedidosState.map(p => ({
