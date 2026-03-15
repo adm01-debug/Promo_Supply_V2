@@ -78,6 +78,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";
 import { ReceivingModal } from "@/components/compras/ReceivingModal";
 import { OrderPreviewModal } from "@/components/compras/OrderPreviewModal";
+import { exportToCSV, pedidoColumns } from "@/lib/exportData";
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle2 }> = {
   pendente: { label: 'Pendente', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20', icon: Clock },
@@ -227,11 +228,23 @@ const Pedidos = () => {
   };
 
   const handleExportPDF = () => {
-    toast.info("Exportação PDF será implementada na próxima tarefa");
+    const exportData = filteredPedidos.map(p => ({
+      numero: p.numero,
+      status: statusConfig[p.status]?.label || p.status,
+      fornecedor: p.fornecedor?.razao_social || '',
+      valor_total: p.valor_total,
+      data_emissao: p.data_emissao,
+      data_previsao: p.data_previsao,
+      data_entrega: p.data_entrega,
+      condicao_pagamento: p.condicao_pagamento,
+      observacoes: p.observacoes,
+    }));
+    exportToCSV(exportData, pedidoColumns, 'pedidos');
+    toast.success(`${exportData.length} pedido(s) exportado(s) com sucesso`);
   };
 
   const handleExportExcel = () => {
-    toast.info("Exportação Excel será implementada na próxima tarefa");
+    handleExportPDF(); // CSV with BOM is Excel-compatible
   };
 
   const getPrazoStatus = (prazo: string | null) => {
