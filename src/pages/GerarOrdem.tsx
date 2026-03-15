@@ -117,7 +117,7 @@ const GerarOrdem = () => {
 
 Gostaríamos de confirmar o pedido abaixo:
 
-*ORDEM DE COMPRA: ${ordemMock.numero}*
+*ORDEM DE COMPRA: ${ordemNumero}*
 
 📦 *Produto:* ${solicitacao.produto}
 📊 *Quantidade:* ${solicitacao.quantidadeReal} unidades
