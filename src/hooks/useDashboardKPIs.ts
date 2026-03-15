@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
 import { useMemo } from 'react';
+import { fetchAllRows } from '@/lib/paginatedFetch';
 
 export interface DashboardKPIs {
   aguardandoCotacao: number;
