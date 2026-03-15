@@ -10,6 +10,7 @@ import { KeyboardShortcutsDialog } from "@/components/compras/KeyboardShortcutsD
 import { CommandPalette, useCommandPalette } from "@/components/compras/CommandPalette";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useGlobalUndo } from "@/hooks/useGlobalUndo";
+import { useSessionIdleTimeout } from "@/hooks/useSessionIdleTimeout";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
