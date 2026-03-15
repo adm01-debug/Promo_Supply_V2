@@ -165,16 +165,19 @@ export function useDashboardKPIs() {
     };
   }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows]);
 
-  const pipeline = useMemo<PipelineData[]>(() => {
+  const pipeline = useMemo<PipelineData>(() => {
     const sol = solicitacoes || [];
-    return [
-      { name: 'Pendente', value: sol.filter(s => s.status === 'pendente').length, color: 'hsl(var(--muted-foreground))' },
-      { name: 'Em Cotação', value: sol.filter(s => s.status === 'em_cotacao').length, color: 'hsl(var(--primary))' },
-      { name: 'Cotada', value: sol.filter(s => s.status === 'cotada').length, color: 'hsl(var(--accent))' },
-      { name: 'Aprovada', value: sol.filter(s => s.status === 'aprovada').length, color: 'hsl(var(--chart-2))' },
-      { name: 'Concluída', value: sol.filter(s => s.status === 'concluida').length, color: 'hsl(var(--chart-4))' },
-    ];
-  }, [solicitacoes]);
+    const ped = pedidos || [];
+    const pag = pagamentos || [];
+    return {
+      solicitacao: sol.filter(s => s.status === 'pendente' || s.status === 'em_cotacao').length,
+      cotacao: sol.filter(s => s.status === 'cotada').length,
+      pedido: ped.filter(p => p.status === 'pendente' || p.status === 'aprovado').length,
+      pagamento: pag.filter(p => p.status === 'pendente' || p.status === 'processando').length,
+      transito: ped.filter(p => p.status === 'enviado').length,
+      entregue: ped.filter(p => p.status === 'entregue').length,
+    };
+  }, [solicitacoes, pedidos, pagamentos]);
 
   const urgentItems = useMemo(() => {
     const sol = solicitacoes || [];
