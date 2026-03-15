@@ -161,9 +161,9 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     }
   } else if (status === 200) {
     // 200 means the login page was returned — check for error indicators
-    const body = await loginRes.text();
-    if (body.includes("erro") || body.includes("incorret") || body.includes("inválid")) {
-      throw new Error("Credenciais SPOT inválidas");
+    const body = (await loginRes.text()).toLowerCase();
+    if (body.includes("erro") || body.includes("incorret") || body.includes("inválid") || body.includes("invalid")) {
+      throw new HttpError(403, "Credenciais SPOT inválidas");
     }
   } else {
     throw new Error(`SPOT login falhou com status ${status}`);
