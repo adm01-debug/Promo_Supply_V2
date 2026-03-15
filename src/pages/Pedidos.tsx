@@ -228,7 +228,7 @@ const Pedidos = () => {
   };
 
   const handleExportPDF = () => {
-    const exportData = filteredAndSortedPedidos.map(p => ({
+    const exportData = filteredPedidos.map(p => ({
       numero: p.numero,
       status: statusConfig[p.status]?.label || p.status,
       fornecedor: p.fornecedor?.razao_social || '',
