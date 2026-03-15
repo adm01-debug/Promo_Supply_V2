@@ -285,7 +285,7 @@ compras@promosupply.com.br`;
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Nome Fantasia</p>
-                  <p className="font-medium text-foreground">{fornecedor.nomeFantasia}</p>
+                  <p className="font-medium text-foreground">{fornecedor.nome_fantasia}</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">CNPJ</p>
