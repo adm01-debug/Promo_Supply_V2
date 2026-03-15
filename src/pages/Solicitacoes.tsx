@@ -231,15 +231,15 @@ const Solicitacoes = () => {
     const ids = itemIds || Array.from(selectedIds);
     const selectedItems = filteredSolicitacoes.filter(s => ids.includes(s.id));
     const exportData = selectedItems.map(s => ({
-      numero: s.numero || '',
-      titulo: s.produto || s.titulo || '',
+      numero: s.itemNumber || s.id.slice(0, 8),
+      titulo: s.produto || '',
       status: s.status,
-      prioridade: s.prioridade || '',
+      prioridade: '',
       tipo: s.tipo || '',
       valor_estimado: s.valorTotal || 0,
       quantidade: s.quantidade || 1,
-      departamento: s.departamento || '',
-      data_necessidade: s.dataNecessidade || '',
+      departamento: s.empresa || '',
+      data_necessidade: s.prazoEntrega || '',
       created_at: s.createdAt || '',
     }));
     exportToCSV(exportData, solicitacaoColumns, 'solicitacoes');
