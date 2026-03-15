@@ -52,7 +52,8 @@ import {
   ResponsiveContainer,
   Legend,
   ComposedChart
-} from 'recharts';
+import { useExecutiveDashboardData } from '@/hooks/useExecutiveDashboardData';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 
 // Current period data
 const currentPeriodMetrics = {
