@@ -1,4 +1,5 @@
 import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy } from "lucide-react";
+import { StatusTimeline } from "@/components/compras/StatusTimeline";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -201,6 +202,11 @@ export const SolicitacaoCard = ({
             </span>
           </div>
         )}
+
+        {/* Visual Status Timeline (UX-005) */}
+        <div className="mt-2">
+          <StatusTimeline currentStatus={solicitacao.status.toLowerCase()} compact />
+        </div>
 
         {/* Swipe hint for mobile */}
         <div className="md:hidden text-[10px] text-muted-foreground/60 text-center">
