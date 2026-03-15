@@ -48,6 +48,9 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
   // Initialize global undo (Ctrl+Z)
   useGlobalUndo();
   
+  // Session idle timeout (30 min)
+  useSessionIdleTimeout();
+  
   // Command Palette
   const { open: commandPaletteOpen, setOpen: setCommandPaletteOpen } = useCommandPalette();
   
