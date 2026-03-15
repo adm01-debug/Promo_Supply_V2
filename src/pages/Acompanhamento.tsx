@@ -302,10 +302,18 @@ const gerarEtapasEnhanced = (pedido: AcompanhamentoPedido): TimelineStep[] => {
   }));
 };
 
-// Pedidos em acompanhamento (filtra apenas os que já passaram da cotação)
-const pedidosAcompanhamento = solicitacoesMock.filter(s => 
-  ['FORNECEDOR_SELECIONADO', 'PEDIDO_GERADO', 'AGUARDANDO_PAGAMENTO', 'PAGO', 'EM_TRANSITO', 'ENTREGUE'].includes(s.status)
-);
+// Map pedido DB status to legacy status codes
+const mapPedidoStatus = (status: string): string => {
+  const map: Record<string, string> = {
+    'pendente': 'PEDIDO_GERADO',
+    'aprovado': 'PEDIDO_GERADO',
+    'em_transito': 'EM_TRANSITO',
+    'entregue': 'ENTREGUE',
+    'cancelado': 'CANCELADO',
+  };
+  return map[status] || status.toUpperCase();
+};
+
 
 const Acompanhamento = () => {
   const [searchTerm, setSearchTerm] = useState("");
