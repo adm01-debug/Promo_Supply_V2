@@ -19,9 +19,12 @@ export interface DashboardKPIs {
 }
 
 export interface PipelineData {
-  name: string;
-  value: number;
-  color: string;
+  solicitacao: number;
+  cotacao: number;
+  pedido: number;
+  pagamento: number;
+  transito: number;
+  entregue: number;
 }
 
 const startOfMonth = () => {
