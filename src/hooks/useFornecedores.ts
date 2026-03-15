@@ -101,10 +101,41 @@ export function useFornecedores(filters?: FornecedorFilters) {
     }
   }, [user, filters?.tipo, filters?.status, filters?.search]);
 
+  // CNPJ validation helper
+  const validateCNPJ = useCallback((cnpj: string): boolean => {
+    const clean = cnpj.replace(/\D/g, '');
+    if (clean.length !== 14) return false;
+    if (/^(\d)\1+$/.test(clean)) return false;
+    const calc = (str: string, weights: number[]) =>
+      str.split('').reduce((sum, d, i) => sum + parseInt(d) * weights[i], 0);
+    const w1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    const w2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+    const d1 = calc(clean.slice(0, 12), w1) % 11;
+    const check1 = d1 < 2 ? 0 : 11 - d1;
+    if (parseInt(clean[12]) !== check1) return false;
+    const d2 = calc(clean.slice(0, 13), w2) % 11;
+    const check2 = d2 < 2 ? 0 : 11 - d2;
+    return parseInt(clean[13]) === check2;
+  }, []);
+
   // Create new fornecedor
   const createFornecedor = useCallback(async (input: CreateFornecedorInput) => {
     if (!user) {
       toast.error('Você precisa estar logado');
+      return null;
+    }
+
+    // Validate CNPJ if provided
+    if (input.cnpj && input.cnpj.trim().length > 0) {
+      if (!validateCNPJ(input.cnpj)) {
+        toast.error('CNPJ inválido. Verifique os dígitos verificadores.');
+        return null;
+      }
+    }
+
+    // Validate email if provided
+    if (input.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
+      toast.error('Email inválido.');
       return null;
     }
 

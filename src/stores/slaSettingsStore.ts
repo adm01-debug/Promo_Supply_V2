@@ -45,9 +45,20 @@ export const useSLASettings = create<SLASettingsStore>()(
     (set) => ({
       settings: DEFAULT_SETTINGS,
       updateSettings: (newSettings) =>
-        set((state) => ({
-          settings: { ...state.settings, ...newSettings },
-        })),
+        set((state) => {
+          const merged = { ...state.settings, ...newSettings };
+          // Validate: thresholds must be positive
+          if (merged.warningThresholdDays < 0) merged.warningThresholdDays = 0;
+          if (merged.criticalThresholdDays < 0) merged.criticalThresholdDays = 0;
+          if (merged.checkIntervalMinutes < 1) merged.checkIntervalMinutes = 1;
+          if (merged.supplierSLAThreshold < 0) merged.supplierSLAThreshold = 0;
+          if (merged.supplierSLAThreshold > 100) merged.supplierSLAThreshold = 100;
+          // Warning must be >= critical
+          if (merged.warningThresholdDays < merged.criticalThresholdDays) {
+            merged.warningThresholdDays = merged.criticalThresholdDays;
+          }
+          return { settings: merged };
+        }),
       updateSupplierConfig: (supplierId, config) =>
         set((state) => {
           const existingIndex = state.settings.supplierAlertConfigs.findIndex(

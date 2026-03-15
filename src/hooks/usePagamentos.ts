@@ -158,8 +158,31 @@ export function usePagamentos(filters?: PagamentoFilters) {
     }
   }, [user, fetchPagamentos]);
 
-  // Update pagamento
+  // Valid status transitions for pagamentos
+  const VALID_PAGAMENTO_TRANSITIONS: Record<string, string[]> = {
+    pendente: ['aprovado', 'cancelado'],
+    aprovado: ['agendado', 'pago', 'cancelado'],
+    agendado: ['pago', 'cancelado'],
+    pago: ['parcial'],
+    parcial: ['pago'],
+    cancelado: [],
+    atrasado: ['pago', 'cancelado'],
+  };
+
+  // Update pagamento with status transition validation
   const updatePagamento = useCallback(async (id: string, updates: Partial<Pagamento>) => {
+    // Validate status transition if status is being changed
+    if (updates.status) {
+      const current = pagamentos.find(p => p.id === id);
+      if (current) {
+        const allowed = VALID_PAGAMENTO_TRANSITIONS[current.status];
+        if (allowed && !allowed.includes(updates.status)) {
+          toast.error(`Transição inválida: ${current.status} → ${updates.status}`);
+          return false;
+        }
+      }
+    }
+
     try {
       const { error } = await supabase
         .from('pagamentos')
@@ -176,7 +199,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
-  }, [fetchPagamentos]);
+  }, [pagamentos, fetchPagamentos]);
 
   // Mark as paid
   const markAsPaid = useCallback(async (id: string, valor_pago?: number) => {
@@ -336,23 +359,35 @@ export function usePagamentosKPIs() {
 
     const fetchKPIs = async () => {
       try {
-        const { data, error } = await supabase
-          .from('pagamentos')
-          .select('status, valor, valor_pago, data_vencimento');
+        let allData: { status: string; valor: number; valor_pago: number | null; data_vencimento: string }[] = [];
+        let from = 0;
+        const pageSize = 1000;
+        let hasMore = true;
 
-        if (error) throw error;
+        while (hasMore) {
+          const { data, error } = await supabase
+            .from('pagamentos')
+            .select('status, valor, valor_pago, data_vencimento')
+            .range(from, from + pageSize - 1);
+
+          if (error) throw error;
+          if (!data || data.length === 0) { hasMore = false; break; }
+          allData = [...allData, ...data];
+          if (data.length < pageSize) hasMore = false;
+          from += pageSize;
+        }
 
         const hoje = new Date().toISOString().split('T')[0];
         
         const stats = {
-          total: data?.length || 0,
-          pendentes: data?.filter(p => p.status === 'pendente' || p.status === 'aprovado' || p.status === 'agendado').length || 0,
-          atrasados: data?.filter(p => (p.status === 'pendente' || p.status === 'aprovado') && p.data_vencimento < hoje).length || 0,
-          pagos: data?.filter(p => p.status === 'pago').length || 0,
-          valorPendente: data?.filter(p => p.status !== 'pago' && p.status !== 'cancelado')
-            .reduce((sum, p) => sum + (p.valor - (p.valor_pago || 0)), 0) || 0,
-          valorPago: data?.filter(p => p.status === 'pago')
-            .reduce((sum, p) => sum + p.valor, 0) || 0,
+          total: allData.length,
+          pendentes: allData.filter(p => p.status === 'pendente' || p.status === 'aprovado' || p.status === 'agendado').length,
+          atrasados: allData.filter(p => (p.status === 'pendente' || p.status === 'aprovado') && p.data_vencimento < hoje).length,
+          pagos: allData.filter(p => p.status === 'pago').length,
+          valorPendente: allData.filter(p => p.status !== 'pago' && p.status !== 'cancelado')
+            .reduce((sum, p) => sum + (p.valor - (p.valor_pago || 0)), 0),
+          valorPago: allData.filter(p => p.status === 'pago')
+            .reduce((sum, p) => sum + p.valor, 0),
         };
 
         setKpis(stats);
