@@ -67,6 +67,19 @@ export function PriceComparator() {
   const [quantity, setQuantity] = useState('100');
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
 
+  const { data: fornecedores = [] } = useQuery({
+    queryKey: ['price-comparator-fornecedores'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fornecedores')
+        .select('id, razao_social, nome_fantasia, avaliacao, prazo_medio_entrega, condicoes_pagamento')
+        .eq('status', 'ativo');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
   const handleCompare = async () => {
     if (!productName.trim()) {
       toast({
