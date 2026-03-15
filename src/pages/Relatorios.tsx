@@ -362,7 +362,9 @@ const Relatorios = () => {
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <p className="text-xs sm:text-sm text-muted-foreground truncate">Fornecedores</p>
-                <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{fornecedoresMock.length}</p>
+                <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">
+                  {performanceFornecedores.length}
+                </p>
                 <div className="hidden sm:flex items-center gap-1 mt-2 text-muted-foreground text-xs sm:text-sm">
                   <Building2 className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span>{performanceFornecedores.filter(f => f.rating >= 4).length} ★≥4</span>
