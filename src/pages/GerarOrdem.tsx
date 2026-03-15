@@ -224,7 +224,7 @@ compras@promosupply.com.br`;
             </p>
           </div>
           <Badge className="text-lg px-4 py-1 bg-primary/10 text-primary border-primary/20">
-            {ordemMock.numero}
+            {ordemNumero}
           </Badge>
         </div>
 
