@@ -77,6 +77,7 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";
 import { ReceivingModal } from "@/components/compras/ReceivingModal";
+import { OrderPreviewModal } from "@/components/compras/OrderPreviewModal";
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle2 }> = {
   pendente: { label: 'Pendente', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20', icon: Clock },
@@ -98,6 +99,7 @@ const Pedidos = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [priceHistoryOpen, setPriceHistoryOpen] = useState(false);
   const [receivingPedido, setReceivingPedido] = useState<Pedido | null>(null);
+  const [previewPedido, setPreviewPedido] = useState<Pedido | null>(null);
   const [receivingItems, setReceivingItems] = useState<Array<{
     id: string; descricao: string; quantidade: number;
     quantidade_recebida: number | null; unidade: string | null;
@@ -901,6 +903,17 @@ const Pedidos = () => {
           onSuccess={() => refetch()}
         />
       )}
+
+      {/* Order Preview Modal */}
+      <OrderPreviewModal
+        pedido={previewPedido}
+        open={!!previewPedido}
+        onOpenChange={(open) => !open && setPreviewPedido(null)}
+        onConfirmSend={previewPedido?.status === 'aprovado' ? () => {
+          handleUpdateStatus(previewPedido.id, 'enviado');
+          setPreviewPedido(null);
+        } : undefined}
+      />
     </MainLayout>
   );
 };

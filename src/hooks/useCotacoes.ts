@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useMemo, useEffect } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -29,17 +30,8 @@ export interface Cotacao {
   data_avaliacao: string | null;
   created_at: string;
   updated_at: string;
-  // Joined fields
-  fornecedor?: {
-    id: string;
-    razao_social: string;
-    nome_fantasia: string | null;
-  } | null;
-  solicitacao?: {
-    id: string;
-    numero: string;
-    titulo: string;
-  } | null;
+  fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null; } | null;
+  solicitacao?: { id: string; numero: string; titulo: string; } | null;
 }
 
 export interface CreateCotacaoInput {
@@ -61,72 +53,51 @@ export interface CotacaoFilters {
   status?: string;
 }
 
+async function fetchCotacoesData(userId: string | undefined, filters?: CotacaoFilters) {
+  if (!userId) return [];
+
+  let query = supabase
+    .from('cotacoes')
+    .select(`
+      *,
+      fornecedor:fornecedores(id, razao_social, nome_fantasia),
+      solicitacao:solicitacoes(id, numero, titulo)
+    `)
+    .order('score_total', { ascending: false });
+
+  if (filters?.solicitacao_id) query = query.eq('solicitacao_id', filters.solicitacao_id);
+  if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
+  if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return (data as Cotacao[]) || [];
+}
+
 export function useCotacoes(filters?: CotacaoFilters) {
   const { user } = useAuth();
-  const [cotacoes, setCotacoes] = useState<Cotacao[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchCotacoes = useCallback(async () => {
-    if (!user) {
-      setCotacoes([]);
-      setLoading(false);
-      return;
-    }
+  const queryKey = useMemo(() => [
+    'cotacoes', user?.id, filters?.solicitacao_id, filters?.fornecedor_id, filters?.status,
+  ], [user?.id, filters]);
 
-    try {
-      setLoading(true);
-      setError(null);
+  const { data: cotacoes = [], isLoading, error, refetch } = useQuery({
+    queryKey,
+    queryFn: () => fetchCotacoesData(user?.id, filters),
+    enabled: !!user,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
 
-      let query = supabase
-        .from('cotacoes')
-        .select(`
-          *,
-          fornecedor:fornecedores(id, razao_social, nome_fantasia),
-          solicitacao:solicitacoes(id, numero, titulo)
-        `)
-        .order('score_total', { ascending: false });
+  const invalidate = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['cotacoes'] });
+  }, [queryClient]);
 
-      // Apply filters
-      if (filters?.solicitacao_id) {
-        query = query.eq('solicitacao_id', filters.solicitacao_id);
-      }
-      if (filters?.fornecedor_id) {
-        query = query.eq('fornecedor_id', filters.fornecedor_id);
-      }
-      if (filters?.status && filters.status !== 'todos') {
-        query = query.eq('status', filters.status);
-      }
-
-      const { data, error: fetchError } = await query;
-
-      if (fetchError) throw fetchError;
-
-      setCotacoes((data as Cotacao[]) || []);
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error fetching cotacoes:', err);
-      setError(errorMessage);
-      toast.error('Erro ao carregar cotações');
-    } finally {
-      setLoading(false);
-    }
-  }, [user, filters?.solicitacao_id, filters?.fornecedor_id, filters?.status]);
-
-  // Create new cotacao
   const createCotacao = useCallback(async (input: CreateCotacaoInput) => {
-    if (!user) {
-      toast.error('Você precisa estar logado');
-      return null;
-    }
-
+    if (!user) { toast.error('Você precisa estar logado'); return null; }
     try {
-      // Generate numero
-      const { data: numData } = await supabase.rpc('generate_sequential_number', {
-        prefix: 'COT',
-        table_name: 'cotacoes'
-      });
-
+      const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'COT', table_name: 'cotacoes' });
       const numero = numData || `COT-${Date.now()}`;
       const quantidade = input.quantidade || 1;
       const valorTotal = (input.valor_unitario * quantidade) + (input.valor_frete || 0);
@@ -134,145 +105,84 @@ export function useCotacoes(filters?: CotacaoFilters) {
       const { data, error } = await supabase
         .from('cotacoes')
         .insert({
-          numero,
-          solicitacao_id: input.solicitacao_id,
-          fornecedor_id: input.fornecedor_id,
-          valor_unitario: input.valor_unitario,
-          quantidade,
-          valor_total: valorTotal,
-          valor_frete: input.valor_frete || 0,
-          desconto_percentual: input.desconto_percentual || 0,
-          prazo_entrega: input.prazo_entrega || 7,
-          validade_proposta: input.validade_proposta,
-          condicao_pagamento: input.condicao_pagamento,
-          observacoes: input.observacoes,
+          numero, solicitacao_id: input.solicitacao_id, fornecedor_id: input.fornecedor_id,
+          valor_unitario: input.valor_unitario, quantidade, valor_total: valorTotal,
+          valor_frete: input.valor_frete || 0, desconto_percentual: input.desconto_percentual || 0,
+          prazo_entrega: input.prazo_entrega || 7, validade_proposta: input.validade_proposta,
+          condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
         })
-        .select()
-        .single();
-
+        .select().single();
       if (error) throw error;
-
       toast.success('Cotação adicionada com sucesso!');
-      fetchCotacoes();
+      invalidate();
       return data;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error creating cotacao:', err);
-      toast.error('Erro ao adicionar cotação: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao adicionar cotação: ' + msg);
       return null;
     }
-  }, [user, fetchCotacoes]);
+  }, [user, invalidate]);
 
-  // Update cotacao
   const updateCotacao = useCallback(async (id: string, updates: Partial<Cotacao>) => {
     try {
-      const { error } = await supabase
-        .from('cotacoes')
-        .update(updates)
-        .eq('id', id);
-
+      const { error } = await supabase.from('cotacoes').update(updates).eq('id', id);
       if (error) throw error;
-
       toast.success('Cotação atualizada!');
-      fetchCotacoes();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error updating cotacao:', err);
-      toast.error('Erro ao atualizar: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao atualizar: ' + msg);
       return false;
     }
-  }, [fetchCotacoes]);
+  }, [invalidate]);
 
-  // Select cotacao
   const selectCotacao = useCallback(async (id: string) => {
     try {
-      // First, unselect all cotacoes for the same solicitacao
       const cotacao = cotacoes.find(c => c.id === id);
       if (cotacao?.solicitacao_id) {
-        await supabase
-          .from('cotacoes')
-          .update({ selecionada: false })
-          .eq('solicitacao_id', cotacao.solicitacao_id);
+        await supabase.from('cotacoes').update({ selecionada: false }).eq('solicitacao_id', cotacao.solicitacao_id);
       }
-
-      // Then select the chosen one
-      const { error } = await supabase
-        .from('cotacoes')
-        .update({ selecionada: true, status: 'aprovada' })
-        .eq('id', id);
-
+      const { error } = await supabase.from('cotacoes').update({ selecionada: true, status: 'aprovada' }).eq('id', id);
       if (error) throw error;
-
       toast.success('Fornecedor selecionado!');
-      fetchCotacoes();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error selecting cotacao:', err);
-      toast.error('Erro ao selecionar: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao selecionar: ' + msg);
       return false;
     }
-  }, [cotacoes, fetchCotacoes]);
+  }, [cotacoes, invalidate]);
 
-  // Delete cotacao
   const deleteCotacao = useCallback(async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('cotacoes')
-        .delete()
-        .eq('id', id);
-
+      const { error } = await supabase.from('cotacoes').delete().eq('id', id);
       if (error) throw error;
-
       toast.success('Cotação excluída!');
-      fetchCotacoes();
+      invalidate();
       return true;
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error deleting cotacao:', err);
-      toast.error('Erro ao excluir: ' + errorMessage);
+      const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      toast.error('Erro ao excluir: ' + msg);
       return false;
     }
-  }, [fetchCotacoes]);
-
-  // Initial fetch
-  useEffect(() => {
-    fetchCotacoes();
-  }, [fetchCotacoes]);
+  }, [invalidate]);
 
   // Realtime subscription
   useEffect(() => {
     if (!user) return;
-
     const channel = supabase
       .channel('cotacoes-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'cotacoes'
-        },
-        () => {
-          fetchCotacoes();
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'cotacoes' }, () => {
+        invalidate();
+      })
       .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, fetchCotacoes]);
+    return () => { supabase.removeChannel(channel); };
+  }, [user, invalidate]);
 
   return {
-    cotacoes,
-    loading,
-    error,
-    refetch: fetchCotacoes,
-    createCotacao,
-    updateCotacao,
-    selectCotacao,
-    deleteCotacao,
+    cotacoes, loading: isLoading, error: error?.message || null,
+    refetch, createCotacao, updateCotacao, selectCotacao, deleteCotacao,
   };
 }
