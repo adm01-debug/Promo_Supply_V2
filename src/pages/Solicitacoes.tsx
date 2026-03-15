@@ -230,7 +230,20 @@ const Solicitacoes = () => {
   const handleBulkExport = useCallback((format: 'pdf' | 'excel', itemIds?: string[]) => {
     const ids = itemIds || Array.from(selectedIds);
     const selectedItems = filteredSolicitacoes.filter(s => ids.includes(s.id));
-    toast.success(`Exportando ${selectedItems.length} solicitação(ões) para ${format.toUpperCase()}`);
+    const exportData = selectedItems.map(s => ({
+      numero: s.numero || '',
+      titulo: s.produto || s.titulo || '',
+      status: s.status,
+      prioridade: s.prioridade || '',
+      tipo: s.tipo || '',
+      valor_estimado: s.valorTotal || 0,
+      quantidade: s.quantidade || 1,
+      departamento: s.departamento || '',
+      data_necessidade: s.dataNecessidade || '',
+      created_at: s.createdAt || '',
+    }));
+    exportToCSV(exportData, solicitacaoColumns, 'solicitacoes');
+    toast.success(`${exportData.length} solicitação(ões) exportada(s)`);
   }, [filteredSolicitacoes, selectedIds]);
 
   // Bulk operations hook
