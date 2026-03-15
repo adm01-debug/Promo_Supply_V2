@@ -47,37 +47,32 @@ function getSupabaseAdmin() {
   return createClient(url, key);
 }
 
-function getSupabaseAuthClient(authHeader: string) {
-  const url = Deno.env.get("SUPABASE_URL")!;
-  const key = Deno.env.get("SUPABASE_ANON_KEY")!;
-  return createClient(url, key, {
-    global: {
-      headers: {
-        Authorization: authHeader,
-      },
-    },
-  });
-}
-
 /** Verify the caller is an authenticated user with appropriate role */
 async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
   const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new HttpError(403, "Não autorizado: token ausente");
+    throw new HttpError(401, "Não autorizado: token ausente");
   }
 
   const token = authHeader.slice("Bearer ".length).trim();
   if (!token) {
-    throw new HttpError(403, "Não autorizado: token inválido");
+    throw new HttpError(401, "Não autorizado: token inválido");
   }
 
-  const authClient = getSupabaseAuthClient(authHeader);
-  const { data, error } = await authClient.auth.getClaims(token);
-  const userId = data?.claims?.sub;
+  // SECURITY: Explicit token validation required when verify_jwt=false
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const authClient = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: authHeader } },
+  });
 
-  if (error || !userId || typeof userId !== "string") {
-    throw new HttpError(403, "Não autorizado: token inválido");
+  const { data: { user }, error } = await authClient.auth.getUser(token);
+
+  if (error || !user) {
+    throw new HttpError(401, "Não autorizado: token inválido");
   }
+
+  const userId = user.id;
 
   // Verify user has at least one allowed role
   const { data: roles, error: roleError } = await supabaseAdmin

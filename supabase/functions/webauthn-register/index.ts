@@ -5,7 +5,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-// Base64URL encoding/decoding helpers
 function base64UrlEncode(buffer: Uint8Array | ArrayBuffer): string {
   const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
   let binary = '';
@@ -26,12 +25,34 @@ function base64UrlDecode(str: string): Uint8Array {
   return bytes;
 }
 
+/** Verify auth and return the authenticated user ID */
+async function verifyAuthUser(req: Request): Promise<string> {
+  const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    throw new Error("Não autorizado: token ausente");
+  }
+  const token = authHeader.slice(7).trim();
+  if (!token) throw new Error("Não autorizado: token inválido");
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: authHeader } },
+  });
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) throw new Error("Não autorizado: token inválido");
+  return user.id;
+}
+
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // SECURITY: Validate the caller's identity
+    const authenticatedUserId = await verifyAuthUser(req);
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -39,24 +60,28 @@ Deno.serve(async (req) => {
     const { action, userId, email, credential, credentialName } = await req.json();
     console.log(`WebAuthn register action: ${action}`);
 
+    // SECURITY: Ensure the userId from the body matches the authenticated user
+    if (userId && userId !== authenticatedUserId) {
+      throw new Error("Não autorizado: userId não corresponde ao usuário autenticado");
+    }
+    const safeUserId = authenticatedUserId;
+
     const rpName = 'Sistema de Compras';
     const rpId = new URL(req.headers.get('origin') || 'https://localhost').hostname;
 
     if (action === 'start') {
-      // Generate registration challenge
       const challengeBytes = new Uint8Array(32);
       crypto.getRandomValues(challengeBytes);
       const challenge = base64UrlEncode(challengeBytes);
 
-      // Store challenge in database
       const { error: challengeError } = await supabase
         .from('webauthn_challenges')
         .insert({
-          user_id: userId || null,
+          user_id: safeUserId,
           email: email,
           challenge: challenge,
           type: 'registration',
-          expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(), // 5 minutes
+          expires_at: new Date(Date.now() + 5 * 60 * 1000).toISOString(),
         });
 
       if (challengeError) {
@@ -64,24 +89,20 @@ Deno.serve(async (req) => {
         throw new Error('Failed to create registration challenge');
       }
 
-      // Get existing credentials for this user to exclude
-      let excludeCredentials: any[] = [];
-      if (userId) {
-        const { data: existingCreds } = await supabase
-          .from('webauthn_credentials')
-          .select('credential_id, transports')
-          .eq('user_id', userId);
+      let excludeCredentials: Array<{ id: string; type: string; transports: string[] }> = [];
+      const { data: existingCreds } = await supabase
+        .from('webauthn_credentials')
+        .select('credential_id, transports')
+        .eq('user_id', safeUserId);
 
-        if (existingCreds) {
-          excludeCredentials = existingCreds.map((cred) => ({
-            id: cred.credential_id,
-            type: 'public-key',
-            transports: cred.transports || ['internal'],
-          }));
-        }
+      if (existingCreds) {
+        excludeCredentials = existingCreds.map((cred) => ({
+          id: cred.credential_id,
+          type: 'public-key',
+          transports: cred.transports || ['internal'],
+        }));
       }
 
-      // Return registration options
       const options = {
         challenge: challenge,
         rp: {
@@ -89,13 +110,13 @@ Deno.serve(async (req) => {
           id: rpId,
         },
         user: {
-          id: userId ? base64UrlEncode(new TextEncoder().encode(userId)) : base64UrlEncode(new TextEncoder().encode(email)),
+          id: base64UrlEncode(new TextEncoder().encode(safeUserId)),
           name: email,
           displayName: email.split('@')[0],
         },
         pubKeyCredParams: [
-          { alg: -7, type: 'public-key' },   // ES256
-          { alg: -257, type: 'public-key' }, // RS256
+          { alg: -7, type: 'public-key' },
+          { alg: -257, type: 'public-key' },
         ],
         excludeCredentials,
         authenticatorSelection: {
@@ -116,7 +137,6 @@ Deno.serve(async (req) => {
     }
 
     if (action === 'finish') {
-      // Verify the challenge exists and hasn't expired
       const { data: challengeData, error: challengeError } = await supabase
         .from('webauthn_challenges')
         .select('*')
@@ -132,14 +152,9 @@ Deno.serve(async (req) => {
         throw new Error('Registration challenge expired or not found');
       }
 
-      // Parse the credential
-      const { id: credentialId, rawId, response: credResponse, type, authenticatorAttachment } = credential;
+      const { id: credentialId, response: credResponse, authenticatorAttachment } = credential;
 
-      // Extract public key from attestation response
-      const attestationObject = base64UrlDecode(credResponse.attestationObject);
       const clientDataJSON = base64UrlDecode(credResponse.clientDataJSON);
-
-      // Verify clientDataJSON
       const clientData = JSON.parse(new TextDecoder().decode(clientDataJSON));
       if (clientData.challenge !== challengeData.challenge) {
         throw new Error('Challenge mismatch');
@@ -148,13 +163,13 @@ Deno.serve(async (req) => {
         throw new Error('Invalid credential type');
       }
 
-      // Store the credential
+      // SECURITY: Store credential for the authenticated user only
       const { error: credError } = await supabase
         .from('webauthn_credentials')
         .insert({
-          user_id: userId,
+          user_id: safeUserId,
           credential_id: credentialId,
-          public_key: credResponse.attestationObject, // Store the full attestation for verification
+          public_key: credResponse.attestationObject,
           counter: 0,
           device_type: authenticatorAttachment || 'platform',
           transports: credResponse.transports || ['internal'],
@@ -166,13 +181,12 @@ Deno.serve(async (req) => {
         throw new Error('Failed to store credential');
       }
 
-      // Clean up the challenge
       await supabase
         .from('webauthn_challenges')
         .delete()
         .eq('id', challengeData.id);
 
-      console.log('Passkey registered successfully for user:', userId);
+      console.log('Passkey registered successfully for user:', safeUserId);
 
       return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -183,9 +197,10 @@ Deno.serve(async (req) => {
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('WebAuthn register error:', error);
+    const status = errorMessage.includes("Não autorizado") ? 401 : 400;
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
