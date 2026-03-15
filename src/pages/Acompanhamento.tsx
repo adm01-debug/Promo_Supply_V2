@@ -92,6 +92,7 @@ const getTipoLabel = (tipo: string): string => {
   return labels[tipo] || tipo;
 };
 
+interface SLAInfo {
   status: SLAStatus;
   diasRestantes: number;
   horasRestantes?: number;
