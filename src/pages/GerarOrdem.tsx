@@ -26,7 +26,17 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/hooks/use-toast";
-import { solicitacoesMock, fornecedoresMock, getTipoLabel } from "@/data/mockData";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const getTipoLabel = (tipo: string) => {
+  const map: Record<string, string> = {
+    'produto': 'Produto', 'servico': 'Serviço', 'material': 'Material',
+    'pe_liso': 'P.E. Liso', 'fabricacao_liso': 'Fab. Liso', 'fabricacao_personalizado': 'Fab. Personalizado',
+  };
+  return map[tipo] || tipo;
+};
 
 // Dados mockados da ordem
 const ordemMock = {
