@@ -47,7 +47,8 @@ import {
   TooltipProps
 } from "recharts";
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
-import { solicitacoesMock, fornecedoresMock } from "@/data/mockData";
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 // Dados mock para gráficos
 const volumeMensal = [
