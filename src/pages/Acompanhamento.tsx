@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { 
   Eye, 
@@ -29,9 +29,12 @@ import { PedidoTimeline, EtapaPipeline } from "@/components/compras/PedidoTimeli
 import { EnhancedPedidoTimeline, TimelineStep } from "@/components/compras/EnhancedPedidoTimeline";
 import { KanbanBoard } from "@/components/compras/KanbanBoard";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { solicitacoesMock, Solicitacao, getStatusLabel, getTipoLabel } from "@/data/mockData";
+import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "@/lib/feedbackToast";
 import { differenceInDays, differenceInHours, isPast, isToday, isTomorrow, parseISO } from "date-fns";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 
 // Tipos de SLA
 type SLAStatus = 'atrasado' | 'critico' | 'atencao' | 'no_prazo' | 'entregue';
