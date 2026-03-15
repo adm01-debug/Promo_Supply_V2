@@ -680,7 +680,7 @@ function parseFinancialDocsFromHTML(html: string): Record<string, unknown> {
     const downloadMatch = row.match(/download\.php\?id=(\d+)/);
     const downloadId = downloadMatch ? downloadMatch[1] : null;
 
-    if (values.length >= 4) {
+    if (values.length >= 5) {
       docs.push({
         docNumber: values[0] || "",
         orderNumber: values[1] || "",
