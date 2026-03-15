@@ -214,7 +214,7 @@ const CatalogoSpot = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => window.open(`https://www.spotgifts.com.br${result.value}`, '_blank')}
+                                onClick={() => openExternalSpotUrl(result.value)}
                               >
                                 <ExternalLink className="w-3.5 h-3.5 mr-1" />
                                 Ver
