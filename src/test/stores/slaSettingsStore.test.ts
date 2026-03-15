@@ -108,7 +108,8 @@ describe("SLASettingsStore — SLA Configuration", () => {
     });
 
     it("should clamp negative thresholds to zero", () => {
-      useSLASettings.getState().updateSettings({ warningThresholdDays: -1 });
+      useSLASettings.getState().resetToDefaults();
+      useSLASettings.getState().updateSettings({ criticalThresholdDays: 0, warningThresholdDays: -1 });
       expect(useSLASettings.getState().settings.warningThresholdDays).toBe(0);
     });
 
