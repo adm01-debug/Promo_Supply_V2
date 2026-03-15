@@ -188,7 +188,7 @@ compras@promosupply.com.br`;
   };
 
   const abrirWhatsApp = () => {
-    const telefone = fornecedor.whatsapp.replace(/\D/g, "");
+    const telefone = (fornecedor.telefone || '').replace(/\D/g, "");
     const url = `https://wa.me/55${telefone}?text=${encodeURIComponent(mensagemWhatsApp)}`;
     window.open(url, "_blank");
   };
