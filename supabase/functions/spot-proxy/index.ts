@@ -61,7 +61,7 @@ function getSupabaseAuthClient(authHeader: string) {
 
 /** Verify the caller is an authenticated user with appropriate role */
 async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
-  const authHeader = req.headers.get("authorization");
+  const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new HttpError(403, "Não autorizado: token ausente");
   }
@@ -71,9 +71,11 @@ async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupa
     throw new HttpError(403, "Não autorizado: token inválido");
   }
 
-  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+  const authClient = getSupabaseAuthClient(authHeader);
+  const { data, error } = await authClient.auth.getClaims(token);
+  const userId = data?.claims?.sub;
 
-  if (error || !user) {
+  if (error || !userId || typeof userId !== "string") {
     throw new HttpError(403, "Não autorizado: token inválido");
   }
 
@@ -81,14 +83,14 @@ async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupa
   const { data: roles, error: roleError } = await supabaseAdmin
     .from("user_roles")
     .select("role")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .in("role", [...ALLOWED_ROLES]);
 
   if (roleError || !roles || roles.length === 0) {
     throw new HttpError(403, "Sem permissão para acessar integração SPOT");
   }
 
-  return user.id;
+  return userId;
 }
 
 // Get or create a valid SPOT session
