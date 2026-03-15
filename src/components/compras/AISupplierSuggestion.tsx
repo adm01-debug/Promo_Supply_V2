@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { fornecedoresMock } from '@/data/mockData';
+import { useQuery } from '@tanstack/react-query';
 
 const categorias = [
   'Embalagens',
