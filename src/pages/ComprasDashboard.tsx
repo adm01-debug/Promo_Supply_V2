@@ -23,27 +23,27 @@ import { DraggableDashboard } from "@/components/compras/DraggableDashboard";
 import { DemandPredictionPanel } from "@/components/compras/DemandPredictionPanel";
 import { RiskHeatMap } from "@/components/compras/RiskHeatMap";
 import { PageTransition } from "@/components/animations/MotionComponents";
-import { kpisMock, pipelineMock, itensUrgentesMock, buyerPerformanceMock, kpiSparklineData } from "@/data/mockData";
+import { useDashboardKPIs } from "@/hooks/useDashboardKPIs";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ComprasDashboard = () => {
-  const getPreviousValue = (data?: number[]) => {
-    if (!data || data.length < 2) return undefined;
-    return data[data.length - 2];
-  };
+  const { kpis, pipeline, urgentItems, loading } = useDashboardKPIs();
 
   const getWidgetComponent = (widgetId: string, index: number = 0) => {
+    if (loading && ['kpi-aguardando', 'kpi-volume', 'kpi-economia', 'kpi-sla'].includes(widgetId)) {
+      return <Skeleton className="h-32 w-full rounded-xl" />;
+    }
+
     switch (widgetId) {
       case 'kpi-aguardando':
         return (
           <EnhancedKpiCard
             title="Aguard. Cotação"
-            value={kpisMock.aguardandoCotacao}
-            previousValue={getPreviousValue(kpiSparklineData.aguardandoCotacao)}
+            value={kpis.aguardandoCotacao}
             icon={ClipboardList}
             color="emerald"
-            sparklineData={kpiSparklineData.aguardandoCotacao}
             format="number"
             variant="default"
           />
@@ -52,12 +52,10 @@ const ComprasDashboard = () => {
         return (
           <EnhancedKpiCard
             title="Volume Mês"
-            value={kpisMock.volumeMes}
-            previousValue={getPreviousValue(kpiSparklineData.volumeMes)}
+            value={kpis.volumeMes}
             icon={TrendingUp}
             color="cyan"
             subtitle="Total em compras"
-            sparklineData={kpiSparklineData.volumeMes}
             format="currency"
             variant="default"
           />
@@ -66,12 +64,10 @@ const ComprasDashboard = () => {
         return (
           <EnhancedKpiCard
             title="Economia Gerada"
-            value={buyerPerformanceMock.economiaGerada}
-            previousValue={getPreviousValue(kpiSparklineData.economia)}
+            value={kpis.economiaGerada}
             icon={PiggyBank}
             color="emerald"
-            subtitle={`${buyerPerformanceMock.economiaPercentual}% do volume`}
-            sparklineData={kpiSparklineData.economia}
+            subtitle={`${kpis.economiaPercentual}% do volume`}
             format="currency"
             variant="default"
           />
@@ -80,12 +76,10 @@ const ComprasDashboard = () => {
         return (
           <EnhancedKpiCard
             title="Taxa Entrega"
-            value={kpisMock.taxaEntrega}
-            previousValue={getPreviousValue(kpiSparklineData.taxaEntrega)}
+            value={kpis.taxaEntrega}
             icon={BarChart3}
             color="teal"
             subtitle="No prazo"
-            sparklineData={kpiSparklineData.taxaEntrega}
             format="percent"
             variant="default"
           />
@@ -99,7 +93,7 @@ const ComprasDashboard = () => {
               <BarChart3 className="w-5 h-5 text-primary" />
               Pipeline Visual
             </h2>
-            <PipelineChart data={pipelineMock} />
+            <PipelineChart data={pipeline} />
           </Card>
         );
       case 'supplier-alerts':
@@ -118,11 +112,24 @@ const ComprasDashboard = () => {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
                 <Clock className="w-5 h-5 text-destructive" />
-                Itens Urgentes
+                Itens Urgentes ({urgentItems.length})
               </h2>
               <Link to="/solicitacoes" className="text-sm text-primary hover:underline">Ver Todos</Link>
             </div>
-            <UrgentItemsList items={itensUrgentesMock} />
+            {urgentItems.length > 0 ? (
+              <div className="space-y-2">
+                {urgentItems.map(item => (
+                  <div key={item.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+                    <span className="text-sm font-medium text-foreground truncate">{item.status}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : '—'}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-4">Nenhum item urgente</p>
+            )}
           </Card>
         );
       case 'demand-prediction':
@@ -147,7 +154,6 @@ const ComprasDashboard = () => {
   return (
     <MainLayout>
       <PageTransition className="space-y-4">
-        {/* Critical Alerts */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -156,7 +162,6 @@ const ComprasDashboard = () => {
           <CriticalAlertsBar />
         </motion.div>
         
-        {/* Page Title + Climate Widget */}
         <motion.div 
           className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           initial={{ opacity: 0 }}
@@ -191,7 +196,6 @@ const ComprasDashboard = () => {
           </motion.div>
         </motion.div>
 
-        {/* Draggable Dashboard with Widgets */}
         <DraggableDashboard
           renderWidget={getWidgetComponent}
           getGridClasses={getGridClasses}
