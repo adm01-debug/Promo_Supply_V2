@@ -26,6 +26,8 @@ import { PageTransition } from "@/components/animations/MotionComponents";
 import { useDashboardKPIs } from "@/hooks/useDashboardKPIs";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { cn } from "@/lib/utils";
+import { FilterFavoritesManager } from "@/components/compras/FilterFavoritesManager";
+import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 
