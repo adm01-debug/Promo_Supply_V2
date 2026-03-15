@@ -99,6 +99,7 @@ const Pedidos = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [priceHistoryOpen, setPriceHistoryOpen] = useState(false);
   const [receivingPedido, setReceivingPedido] = useState<Pedido | null>(null);
+  const [previewPedido, setPreviewPedido] = useState<Pedido | null>(null);
   const [receivingItems, setReceivingItems] = useState<Array<{
     id: string; descricao: string; quantidade: number;
     quantidade_recebida: number | null; unidade: string | null;
