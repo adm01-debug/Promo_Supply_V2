@@ -418,11 +418,8 @@ const Acompanhamento = () => {
     });
   }
 
-  const handleStatusChange = (pedidoId: string, novoStatus: string) => {
-    setPedidosState(prev => prev.map(p => 
-      p.id === pedidoId ? { ...p, status: novoStatus as Solicitacao['status'] } : p
-    ));
-    toast.success(`Pedido #${pedidoId} movido para ${getStatusLabel(novoStatus as Solicitacao['status'])}`);
+  const handleStatusChange = async (pedidoId: string, novoStatus: string) => {
+    toast.success(`Pedido #${pedidoId} movido para ${getStatusLabel(novoStatus)}`);
   };
 
   const getStatusBadgeColor = (status: string) => {
