@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Copy, CheckCircle2, Upload, QrCode, FileText, Building2 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import type { Pagamento } from "@/data/mockData";
+import type { Pagamento } from "@/types/legacyTypes";
 
 interface PagamentoModalProps {
   pagamento: Pagamento | null;

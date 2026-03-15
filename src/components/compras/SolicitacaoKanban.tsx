@@ -30,7 +30,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Solicitacao, getTipoLabel } from "@/data/mockData";
+import { Solicitacao, getTipoLabel } from "@/types/legacyTypes";
 import { toast } from "@/lib/feedbackToast";
 
 interface SolicitacaoKanbanProps {
