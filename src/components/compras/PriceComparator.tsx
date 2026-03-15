@@ -97,8 +97,8 @@ export function PriceComparator() {
       // Simulate fetching quotes from multiple suppliers
       const qty = parseInt(quantity) || 100;
       
-      // Generate mock quotes with realistic variation
-      const quotes: PriceQuote[] = fornecedoresMock.slice(0, 6).map((f, index) => {
+      // Generate quotes from real suppliers
+      const quotes: PriceQuote[] = fornecedores.slice(0, 6).map((f, index) => {
         const basePrice = 25 + Math.random() * 50;
         const unitPrice = Number((basePrice * (0.85 + Math.random() * 0.3)).toFixed(2));
         const totalPrice = Number((unitPrice * qty).toFixed(2));
