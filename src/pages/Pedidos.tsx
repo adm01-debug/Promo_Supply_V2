@@ -277,6 +277,10 @@ const Pedidos = () => {
               <RefreshCw className="w-4 h-4 mr-2" />
               Atualizar
             </Button>
+            <Button variant="outline" size="sm" onClick={() => setPriceHistoryOpen(true)}>
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Histórico Preços
+            </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
