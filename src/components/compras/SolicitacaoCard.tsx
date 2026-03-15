@@ -21,6 +21,7 @@ interface SolicitacaoCardProps {
   onApprove?: () => void;
   onReject?: () => void;
   onArchive?: () => void;
+  onDuplicate?: () => void;
 }
 
 const statusActions: Record<string, { 
