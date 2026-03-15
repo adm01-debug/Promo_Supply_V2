@@ -2,13 +2,14 @@
 
 /* =================================================================
    PROMO SUPPLY - DESIGN SYSTEM
-   Modular CSS Architecture — tokens BEFORE tailwind directives
+   Modular CSS Architecture
    ================================================================= */
+
+@tailwind base;
 
 @import './styles/tokens.css';
 @import './styles/base.css';
 
-@tailwind base;
 @tailwind components;
 
 @import './styles/components.css';
