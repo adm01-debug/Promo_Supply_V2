@@ -2018,6 +2018,84 @@ export type Database = {
           },
         ]
       }
+      spot_pedidos: {
+        Row: {
+          codigo_rastreamento: string | null
+          created_at: string
+          data_pedido: string | null
+          detalhes_url: string | null
+          id: string
+          itens: Json | null
+          last_synced_at: string
+          referencia_cliente: string | null
+          spot_order_id: string
+          status: string
+          status_color: string | null
+          transportadora: string | null
+          updated_at: string
+          valor_total: number | null
+        }
+        Insert: {
+          codigo_rastreamento?: string | null
+          created_at?: string
+          data_pedido?: string | null
+          detalhes_url?: string | null
+          id?: string
+          itens?: Json | null
+          last_synced_at?: string
+          referencia_cliente?: string | null
+          spot_order_id: string
+          status?: string
+          status_color?: string | null
+          transportadora?: string | null
+          updated_at?: string
+          valor_total?: number | null
+        }
+        Update: {
+          codigo_rastreamento?: string | null
+          created_at?: string
+          data_pedido?: string | null
+          detalhes_url?: string | null
+          id?: string
+          itens?: Json | null
+          last_synced_at?: string
+          referencia_cliente?: string | null
+          spot_order_id?: string
+          status?: string
+          status_color?: string | null
+          transportadora?: string | null
+          updated_at?: string
+          valor_total?: number | null
+        }
+        Relationships: []
+      }
+      spot_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          is_valid: boolean
+          last_used_at: string
+          metadata: Json | null
+          session_cookie: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_valid?: boolean
+          last_used_at?: string
+          metadata?: Json | null
+          session_cookie: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_valid?: boolean
+          last_used_at?: string
+          metadata?: Json | null
+          session_cookie?: string
+        }
+        Relationships: []
+      }
       supplier_documents: {
         Row: {
           created_at: string
