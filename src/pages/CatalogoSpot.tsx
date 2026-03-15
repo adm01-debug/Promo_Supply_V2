@@ -402,7 +402,7 @@ const CatalogoSpot = () => {
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  onClick={() => window.open(order.detailsUrl, '_blank')}
+                                  onClick={() => openExternalSpotUrl(order.detailsUrl)}
                                 >
                                   <ExternalLink className="w-3.5 h-3.5" />
                                 </Button>
