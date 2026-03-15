@@ -493,7 +493,7 @@ compras@promosupply.com.br`;
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Condição</span>
-                  <span className="font-medium">{ordemMock.condicaoPagamento}</span>
+                  <span className="font-medium">À vista via PIX</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Prazo Entrega</span>
