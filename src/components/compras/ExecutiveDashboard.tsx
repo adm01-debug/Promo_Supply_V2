@@ -358,6 +358,14 @@ export const ExecutiveDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
 
+  // Real data from Supabase (available for future full migration)
+  const { metrics: realMetrics, loading: realDataLoading } = useExecutiveDashboardData();
+  
+  // Realtime subscriptions
+  useRealtimeSubscription({
+    tables: ['pedidos', 'solicitacoes', 'cotacoes', 'pagamentos'],
+  });
+
   // Filter favorites hook
   const {
     favorites,
