@@ -75,6 +75,19 @@ export function SupplierRiskAnalysis() {
   const [selectedSupplier, setSelectedSupplier] = useState<string>('');
   const [analysis, setAnalysis] = useState<RiskAnalysisResponse | null>(null);
 
+  const { data: fornecedores = [] } = useQuery({
+    queryKey: ['supplier-risk-fornecedores'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fornecedores')
+        .select('id, razao_social, nome_fantasia, cnpj, tipo, avaliacao, segmento')
+        .eq('status', 'ativo');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
   const handleAnalyze = async () => {
     if (!selectedSupplier) {
       toast({
