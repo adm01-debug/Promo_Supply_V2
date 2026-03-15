@@ -450,6 +450,7 @@ const Solicitacoes = () => {
                         selected={selectedIds.has(solicitacao.id)}
                         onSelectChange={(selected) => handleSelectItem(solicitacao.id, selected)}
                         onDelete={() => handleSingleDelete(solicitacao.id)}
+                        onDuplicate={() => duplicateSolicitacao(solicitacao.id)}
                       />
                     ))}
                   </div>
