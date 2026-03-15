@@ -8,13 +8,37 @@ const corsHeaders = {
 
 const SPOT_BASE = "https://www.spotgifts.com.br";
 const LANG = "pt";
-const VALID_ACTIONS = new Set([
+type SpotAction =
+  | "search"
+  | "catalog"
+  | "product"
+  | "stock"
+  | "addToCart"
+  | "getCart"
+  | "removeFromCart"
+  | "updateCartQty"
+  | "orders"
+  | "financial"
+  | "checkout"
+  | "login";
+
+const VALID_ACTIONS: ReadonlySet<SpotAction> = new Set([
   "search", "catalog", "product", "stock", "addToCart",
   "getCart", "removeFromCart", "updateCartQty", "orders",
   "financial", "checkout", "login",
 ]);
 
 const ALLOWED_ROLES = ["admin", "coordinator", "buyer"] as const;
+
+class HttpError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "HttpError";
+    this.status = status;
+  }
+}
 
 function getSupabaseAdmin() {
   const url = Deno.env.get("SUPABASE_URL")!;
@@ -26,18 +50,18 @@ function getSupabaseAdmin() {
 async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
   const authHeader = req.headers.get("authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new Error("Não autorizado: token ausente");
+    throw new HttpError(403, "Não autorizado: token ausente");
   }
 
   const token = authHeader.slice("Bearer ".length).trim();
   if (!token) {
-    throw new Error("Não autorizado: token inválido");
+    throw new HttpError(403, "Não autorizado: token inválido");
   }
 
   const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
 
   if (error || !user) {
-    throw new Error("Não autorizado: token inválido");
+    throw new HttpError(403, "Não autorizado: token inválido");
   }
 
   // Verify user has at least one allowed role
@@ -48,7 +72,7 @@ async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupa
     .in("role", [...ALLOWED_ROLES]);
 
   if (roleError || !roles || roles.length === 0) {
-    throw new Error("Sem permissão para acessar integração SPOT");
+    throw new HttpError(403, "Sem permissão para acessar integração SPOT");
   }
 
   return user.id;
@@ -137,9 +161,9 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     }
   } else if (status === 200) {
     // 200 means the login page was returned — check for error indicators
-    const body = await loginRes.text();
-    if (body.includes("erro") || body.includes("incorret") || body.includes("inválid")) {
-      throw new Error("Credenciais SPOT inválidas");
+    const body = (await loginRes.text()).toLowerCase();
+    if (body.includes("erro") || body.includes("incorret") || body.includes("inválid") || body.includes("invalid")) {
+      throw new HttpError(403, "Credenciais SPOT inválidas");
     }
   } else {
     throw new Error(`SPOT login falhou com status ${status}`);
@@ -198,6 +222,109 @@ async function spotFetch(
   }
 
   return res;
+}
+
+function assertObject(value: unknown, fieldName: string): Record<string, unknown> {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new HttpError(400, `Parâmetro '${fieldName}' inválido`);
+  }
+
+  return value as Record<string, unknown>;
+}
+
+function readRequiredString(value: unknown, fieldName: string, maxLength = 200): string {
+  if (typeof value !== "string") {
+    throw new HttpError(400, `Parâmetro '${fieldName}' é obrigatório`);
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    throw new HttpError(400, `Parâmetro '${fieldName}' é obrigatório`);
+  }
+
+  return trimmed.slice(0, maxLength);
+}
+
+function readOptionalString(value: unknown, fieldName: string, maxLength = 200): string | undefined {
+  if (value === undefined || value === null || value === "") return undefined;
+  return readRequiredString(value, fieldName, maxLength);
+}
+
+function readPositiveInteger(value: unknown, fieldName: string): number {
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 1) {
+    throw new HttpError(400, `Parâmetro '${fieldName}' deve ser um inteiro >= 1`);
+  }
+
+  return value;
+}
+
+function readStringArray(value: unknown, fieldName: string, maxItems = 20, maxLength = 50): string[] {
+  if (value === undefined || value === null) return [];
+  if (!Array.isArray(value)) {
+    throw new HttpError(400, `Parâmetro '${fieldName}' deve ser uma lista`);
+  }
+
+  if (value.length > maxItems) {
+    throw new HttpError(400, `Parâmetro '${fieldName}' excede limite de itens`);
+  }
+
+  return value.map((item, index) => readRequiredString(item, `${fieldName}[${index}]`, maxLength));
+}
+
+function readCatalogFilters(value: unknown): Record<string, string> {
+  if (value === undefined || value === null) return {};
+
+  const filtersObject = assertObject(value, "filters");
+  const filters: Record<string, string> = {};
+
+  for (const [key, filterValue] of Object.entries(filtersObject)) {
+    if (typeof filterValue !== "string") continue;
+
+    const sanitizedKey = key.trim().slice(0, 50);
+    const sanitizedValue = filterValue.trim().slice(0, 120);
+    if (sanitizedKey && sanitizedValue) {
+      filters[sanitizedKey] = sanitizedValue;
+    }
+  }
+
+  return filters;
+}
+
+function readOrderYear(value: unknown): string | undefined {
+  const year = readOptionalString(value, "year", 4);
+  if (!year) return undefined;
+  if (!/^\d{4}$/.test(year)) {
+    throw new HttpError(400, "Parâmetro 'year' inválido");
+  }
+  return year;
+}
+
+function readOrderPage(value: unknown): string | undefined {
+  const page = readOptionalString(value, "page", 4);
+  if (!page) return undefined;
+  if (!/^\d{1,4}$/.test(page)) {
+    throw new HttpError(400, "Parâmetro 'page' inválido");
+  }
+  return page;
+}
+
+function readRequestAction(body: Record<string, unknown>): SpotAction {
+  const actionValue = body.action;
+
+  if (typeof actionValue !== "string" || !VALID_ACTIONS.has(actionValue as SpotAction)) {
+    throw new HttpError(400, `Ação inválida: ${String(actionValue)}`);
+  }
+
+  return actionValue as SpotAction;
+}
+
+async function readJsonBody(req: Request): Promise<Record<string, unknown>> {
+  try {
+    const body = await req.json();
+    return assertObject(body, "body");
+  } catch {
+    throw new HttpError(400, "Payload JSON inválido");
+  }
 }
 
 // HANDLERS
@@ -448,7 +575,10 @@ async function handleGetOrders(supabase: ReturnType<typeof getSupabaseAdmin>, ye
         },
         { onConflict: "spot_order_id" }
       )
-      .then(() => {});
+      .catch((cacheError: unknown) => {
+        const message = cacheError instanceof Error ? cacheError.message : "Erro desconhecido";
+        console.error("Falha ao sincronizar cache de pedidos SPOT:", message);
+      });
   }
 
   return { orders, totalPages: parseTotalPages(html) };
@@ -550,7 +680,7 @@ function parseFinancialDocsFromHTML(html: string): Record<string, unknown> {
     const downloadMatch = row.match(/download\.php\?id=(\d+)/);
     const downloadId = downloadMatch ? downloadMatch[1] : null;
 
-    if (values.length >= 4) {
+    if (values.length >= 5) {
       docs.push({
         docNumber: values[0] || "",
         orderNumber: values[1] || "",
@@ -597,61 +727,79 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Método não permitido" }), {
+      status: 405,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const supabase = getSupabaseAdmin();
 
     // Verify authentication BEFORE processing
     await verifyAuth(req, supabase);
 
-    const { action, ...params } = await req.json();
-
-    // Validate action
-    if (!action || typeof action !== "string" || !VALID_ACTIONS.has(action)) {
-      throw new Error(`Ação inválida: ${action}`);
-    }
+    const body = await readJsonBody(req);
+    const action = readRequestAction(body);
 
     let result: unknown;
 
     switch (action) {
       case "search":
-        result = await handleSearch(supabase, params.query);
+        result = await handleSearch(supabase, readRequiredString(body.query, "query", 200));
         break;
       case "catalog":
-        result = await handleCatalog(supabase, params.filters || {});
+        result = await handleCatalog(supabase, readCatalogFilters(body.filters));
         break;
       case "product":
-        result = await handleProductDetail(supabase, params.productId);
+        result = await handleProductDetail(supabase, readRequiredString(body.productId, "productId", 120));
         break;
       case "stock":
-        result = await handleStockCheck(supabase, params.productId, params.quantity, params.opcionais || []);
+        result = await handleStockCheck(
+          supabase,
+          readRequiredString(body.productId, "productId", 120),
+          readPositiveInteger(body.quantity, "quantity"),
+          readStringArray(body.opcionais, "opcionais")
+        );
         break;
       case "addToCart":
-        result = await handleAddToCart(supabase, params.productId, params.quantity, params.opcional0, params.opcional1);
+        result = await handleAddToCart(
+          supabase,
+          readRequiredString(body.productId, "productId", 120),
+          readPositiveInteger(body.quantity, "quantity"),
+          readOptionalString(body.opcional0, "opcional0", 30) ?? "0",
+          readOptionalString(body.opcional1, "opcional1", 30) ?? "0"
+        );
         break;
       case "getCart":
         result = await handleGetCart(supabase);
         break;
       case "removeFromCart":
-        result = await handleRemoveFromCart(supabase, params.groupId);
+        result = await handleRemoveFromCart(supabase, readRequiredString(body.groupId, "groupId", 120));
         break;
       case "updateCartQty":
-        result = await handleUpdateCartQty(supabase, params.groupId, params.quantity);
+        result = await handleUpdateCartQty(
+          supabase,
+          readRequiredString(body.groupId, "groupId", 120),
+          readPositiveInteger(body.quantity, "quantity")
+        );
         break;
       case "orders":
-        result = await handleGetOrders(supabase, params.year, params.page);
+        result = await handleGetOrders(supabase, readOrderYear(body.year), readOrderPage(body.page));
         break;
       case "financial":
         result = await handleGetFinancialDocs(supabase);
         break;
       case "checkout":
-        result = await handleCheckout(supabase, params.addressId);
+        result = await handleCheckout(supabase, readOptionalString(body.addressId, "addressId", 60) ?? "");
         break;
       case "login":
         await loginToSpot(supabase);
         result = { success: true };
         break;
       default:
-        throw new Error(`Ação desconhecida: ${action}`);
+        throw new HttpError(400, `Ação desconhecida: ${action}`);
     }
 
     return new Response(JSON.stringify(result), {
@@ -659,9 +807,8 @@ Deno.serve(async (req) => {
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
+    const status = error instanceof HttpError ? error.status : 500;
     console.error("SPOT proxy error:", msg);
-
-    const status = msg.includes("Não autorizado") || msg.includes("Sem permissão") ? 403 : 500;
 
     return new Response(JSON.stringify({ error: msg }), {
       status,

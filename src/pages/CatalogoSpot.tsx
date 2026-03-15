@@ -28,6 +28,20 @@ const STATUS_CONFIG: Record<string, { variant: 'default' | 'secondary' | 'destru
   'Anulada': { variant: 'destructive', label: 'Anulada' },
 };
 
+const openExternalSpotUrl = (rawUrl: string) => {
+  try {
+    const url = new URL(rawUrl, 'https://www.spotgifts.com.br');
+    if (url.hostname !== 'www.spotgifts.com.br' && url.hostname !== 'spotgifts.com.br') {
+      toast.error('URL externa inválida bloqueada por segurança');
+      return;
+    }
+
+    window.open(url.toString(), '_blank', 'noopener,noreferrer');
+  } catch {
+    toast.error('Não foi possível abrir o link');
+  }
+};
+
 const CatalogoSpot = () => {
   const { loading, searchProducts, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
   const [activeTab, setActiveTab] = useState('catalogo');
@@ -200,7 +214,7 @@ const CatalogoSpot = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                onClick={() => window.open(`https://www.spotgifts.com.br${result.value}`, '_blank')}
+                                onClick={() => openExternalSpotUrl(result.value)}
                               >
                                 <ExternalLink className="w-3.5 h-3.5 mr-1" />
                                 Ver
@@ -388,7 +402,7 @@ const CatalogoSpot = () => {
                                 <Button
                                   size="sm"
                                   variant="ghost"
-                                  onClick={() => window.open(order.detailsUrl, '_blank')}
+                                  onClick={() => openExternalSpotUrl(order.detailsUrl)}
                                 >
                                   <ExternalLink className="w-3.5 h-3.5" />
                                 </Button>
@@ -487,7 +501,7 @@ const CatalogoSpot = () => {
                               <Button
                                 size="sm"
                                 variant="ghost"
-                                onClick={() => window.open(doc.downloadUrl!, '_blank')}
+                                onClick={() => openExternalSpotUrl(doc.downloadUrl!)}
                               >
                                 <FileText className="w-3.5 h-3.5" />
                               </Button>
