@@ -72,6 +72,19 @@ export function AISupplierSuggestion() {
   const [budget, setBudget] = useState('');
   const [suggestions, setSuggestions] = useState<AISuggestionResponse | null>(null);
 
+  const { data: fornecedores = [] } = useQuery({
+    queryKey: ['ai-suggestion-fornecedores'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fornecedores')
+        .select('id, razao_social, nome_fantasia, tipo, avaliacao, segmento, integrado_api')
+        .eq('status', 'ativo');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
   const handleGetSuggestions = async () => {
     if (!productDescription.trim()) {
       toast({
