@@ -5,7 +5,10 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SupplierScore {
   id: string;
@@ -18,84 +21,26 @@ interface SupplierScore {
   totalOrders: number;
 }
 
-// Weights for score calculation
 const WEIGHTS = {
   sla: 0.4,
   delivery: 0.35,
   quality: 0.25,
 };
 
-type PeriodDays = 7 | 30 | 90;
-
-// Generate mock supplier ranking data based on period
-const generateSupplierRankingData = (periodDays: PeriodDays): SupplierScore[] => {
-  const suppliers = [
-    { id: 'xbz', name: 'XBZ Brindes' },
-    { id: 'tech', name: 'Tech Brindes' },
-    { id: 'stricker', name: 'Stricker / Spot Gifts' },
-    { id: 'premium', name: 'Premium Gifts' },
-    { id: 'asia', name: 'Asia Import' },
-    { id: 'eco', name: 'Eco Brindes' },
-    { id: 'somarcas', name: 'Só Marcas' },
-  ];
-
-  // Use period as seed for slightly different data per period
-  const periodSeed = periodDays / 100;
-
-  return suppliers.map((supplier, idx) => {
-    // Generate consistent but varying scores based on supplier index and period
-    const baseVariation = (idx * 7 + periodDays) % 20;
-    const slaScore = 70 + baseVariation + Math.sin(idx + periodSeed) * 10;
-    const deliveryScore = 65 + baseVariation + Math.cos(idx + periodSeed) * 12;
-    const qualityScore = 75 + (baseVariation * 0.8) + Math.sin(idx * 2 + periodSeed) * 8;
-    
-    const overallScore = 
-      slaScore * WEIGHTS.sla + 
-      deliveryScore * WEIGHTS.delivery + 
-      qualityScore * WEIGHTS.quality;
-    
-    // Different trends based on period
-    const trendValue = Math.sin(idx + periodDays / 10);
-    const trend: 'up' | 'down' | 'stable' = 
-      trendValue > 0.3 ? 'up' : trendValue < -0.3 ? 'down' : 'stable';
-
-    // More orders for longer periods
-    const orderMultiplier = periodDays / 30;
-
-    return {
-      id: supplier.id,
-      name: supplier.name,
-      slaScore: Math.round(Math.min(100, Math.max(60, slaScore)) * 10) / 10,
-      deliveryScore: Math.round(Math.min(100, Math.max(60, deliveryScore)) * 10) / 10,
-      qualityScore: Math.round(Math.min(100, Math.max(60, qualityScore)) * 10) / 10,
-      overallScore: Math.round(Math.min(100, Math.max(60, overallScore)) * 10) / 10,
-      trend,
-      totalOrders: Math.floor((15 + idx * 5) * orderMultiplier),
-    };
-  }).sort((a, b) => b.overallScore - a.overallScore);
-};
-
 const getRankIcon = (position: number) => {
   switch (position) {
-    case 0:
-      return <Trophy className="h-5 w-5 text-yellow-500" />;
-    case 1:
-      return <Medal className="h-5 w-5 text-gray-400" />;
-    case 2:
-      return <Medal className="h-5 w-5 text-amber-600" />;
-    default:
-      return <span className="text-sm font-bold text-muted-foreground w-5 text-center">{position + 1}</span>;
+    case 0: return <Trophy className="h-5 w-5 text-yellow-500" />;
+    case 1: return <Medal className="h-5 w-5 text-gray-400" />;
+    case 2: return <Medal className="h-5 w-5 text-amber-600" />;
+    default: return <span className="text-sm font-bold text-muted-foreground w-5 text-center">{position + 1}</span>;
   }
 };
 
 const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
   switch (trend) {
-    case 'up':
-      return <TrendingUp className="h-4 w-4 text-success" />;
-    case 'down':
-      return <TrendingDown className="h-4 w-4 text-destructive" />;
-    default:
-      return <span className="text-xs text-muted-foreground">—</span>;
+    case 'up': return <TrendingUp className="h-4 w-4 text-success" />;
+    case 'down': return <TrendingDown className="h-4 w-4 text-destructive" />;
+    default: return <span className="text-xs text-muted-foreground">—</span>;
   }
 };
 
@@ -104,13 +49,6 @@ const getScoreColor = (score: number) => {
   if (score >= 80) return 'text-primary';
   if (score >= 70) return 'text-warning';
   return 'text-destructive';
-};
-
-const getProgressColor = (score: number) => {
-  if (score >= 90) return 'bg-success';
-  if (score >= 80) return 'bg-primary';
-  if (score >= 70) return 'bg-warning';
-  return 'bg-destructive';
 };
 
 interface SupplierRankItemProps {
@@ -133,22 +71,14 @@ const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: Supplier
       onClick={onToggle}
     >
       <div className="flex items-center gap-3">
-        <div className="flex items-center justify-center w-6">
-          {getRankIcon(position)}
-        </div>
-        
+        <div className="flex items-center justify-center w-6">{getRankIcon(position)}</div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <span className="font-medium text-sm truncate">{supplier.name}</span>
             {getTrendIcon(supplier.trend)}
           </div>
-          <div className="flex items-center gap-2 mt-1">
-            <span className="text-xs text-muted-foreground">
-              {supplier.totalOrders} pedidos
-            </span>
-          </div>
+          <span className="text-xs text-muted-foreground">{supplier.totalOrders} pedidos</span>
         </div>
-
         <div className="text-right">
           <span className={cn("text-xl font-bold", getScoreColor(supplier.overallScore))}>
             {supplier.overallScore.toFixed(1)}
@@ -160,80 +90,31 @@ const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: Supplier
       {isExpanded && (
         <div className="mt-3 pt-3 border-t border-border space-y-2">
           <div className="grid grid-cols-3 gap-2 text-xs">
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger className="w-full text-left cursor-help">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <CheckCircle className="h-3 w-3" />
-                      <span>SLA ({(WEIGHTS.sla * 100).toFixed(0)}%)</span>
+            {[
+              { icon: CheckCircle, label: 'SLA', weight: WEIGHTS.sla, score: supplier.slaScore },
+              { icon: Clock, label: 'Prazo', weight: WEIGHTS.delivery, score: supplier.deliveryScore },
+              { icon: Star, label: 'Qualidade', weight: WEIGHTS.quality, score: supplier.qualityScore },
+            ].map(({ icon: Icon, label, weight, score }) => (
+              <TooltipProvider key={label}>
+                <Tooltip>
+                  <TooltipTrigger className="w-full text-left cursor-help">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <Icon className="h-3 w-3" />
+                        <span>{label} ({(weight * 100).toFixed(0)}%)</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Progress value={score} className="h-1.5 flex-1" />
+                        <span className={cn("font-medium", getScoreColor(score))}>
+                          {score.toFixed(1)}
+                        </span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Progress 
-                        value={supplier.slaScore} 
-                        className="h-1.5 flex-1"
-                      />
-                      <span className={cn("font-medium", getScoreColor(supplier.slaScore))}>
-                        {supplier.slaScore.toFixed(1)}
-                      </span>
-                    </div>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Cumprimento de SLA acordado</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger className="w-full text-left cursor-help">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Clock className="h-3 w-3" />
-                      <span>Prazo ({(WEIGHTS.delivery * 100).toFixed(0)}%)</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Progress 
-                        value={supplier.deliveryScore} 
-                        className="h-1.5 flex-1"
-                      />
-                      <span className={cn("font-medium", getScoreColor(supplier.deliveryScore))}>
-                        {supplier.deliveryScore.toFixed(1)}
-                      </span>
-                    </div>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Entrega dentro do prazo</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger className="w-full text-left cursor-help">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-1 text-muted-foreground">
-                      <Star className="h-3 w-3" />
-                      <span>Qualidade ({(WEIGHTS.quality * 100).toFixed(0)}%)</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Progress 
-                        value={supplier.qualityScore} 
-                        className="h-1.5 flex-1"
-                      />
-                      <span className={cn("font-medium", getScoreColor(supplier.qualityScore))}>
-                        {supplier.qualityScore.toFixed(1)}
-                      </span>
-                    </div>
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Qualidade dos produtos entregues</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+                  </TooltipTrigger>
+                  <TooltipContent><p>{label} do fornecedor</p></TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            ))}
           </div>
         </div>
       )}
@@ -243,18 +124,87 @@ const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: Supplier
 
 export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [periodDays, setPeriodDays] = useState<PeriodDays>(30);
-  
-  const supplierData = useMemo(() => generateSupplierRankingData(periodDays), [periodDays]);
+  const [periodDays, setPeriodDays] = useState<number>(30);
+
+  const { data: fornecedores, isLoading } = useQuery({
+    queryKey: ['supplier-ranking', periodDays],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('fornecedores')
+        .select('id, razao_social, avaliacao, status')
+        .eq('status', 'ativo');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
+  const { data: pedidos } = useQuery({
+    queryKey: ['supplier-ranking-pedidos', periodDays],
+    queryFn: async () => {
+      const since = new Date();
+      since.setDate(since.getDate() - periodDays);
+      const { data, error } = await supabase
+        .from('pedidos')
+        .select('id, fornecedor_id, status, data_previsao, data_entrega')
+        .gte('data_emissao', since.toISOString().split('T')[0]);
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 30000,
+  });
+
+  const supplierData = useMemo<SupplierScore[]>(() => {
+    const forn = fornecedores || [];
+    const peds = pedidos || [];
+
+    return forn.map(f => {
+      const supplierPeds = peds.filter(p => p.fornecedor_id === f.id);
+      const totalOrders = supplierPeds.length;
+      
+      const delivered = supplierPeds.filter(p => p.status === 'entregue');
+      const onTime = delivered.filter(p => 
+        p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao
+      ).length;
+      
+      const deliveryScore = delivered.length > 0 ? (onTime / delivered.length) * 100 : 80;
+      const qualityScore = Number(f.avaliacao || 0) * 20; // 1-5 scale to 0-100
+      const slaScore = totalOrders > 0 ? Math.min(100, deliveryScore + 5) : 75;
+      
+      const overallScore = slaScore * WEIGHTS.sla + deliveryScore * WEIGHTS.delivery + qualityScore * WEIGHTS.quality;
+      
+      // Simple trend based on recent delivery performance
+      const trend: 'up' | 'down' | 'stable' = 
+        deliveryScore >= 90 ? 'up' : deliveryScore < 70 ? 'down' : 'stable';
+
+      return {
+        id: f.id,
+        name: f.razao_social,
+        slaScore: Math.round(Math.min(100, slaScore) * 10) / 10,
+        deliveryScore: Math.round(Math.min(100, deliveryScore) * 10) / 10,
+        qualityScore: Math.round(Math.min(100, qualityScore) * 10) / 10,
+        overallScore: Math.round(Math.min(100, overallScore) * 10) / 10,
+        trend,
+        totalOrders,
+      };
+    }).sort((a, b) => b.overallScore - a.overallScore);
+  }, [fornecedores, pedidos]);
+
+  if (isLoading) {
+    return (
+      <Card ref={ref}>
+        <CardHeader><Skeleton className="h-6 w-32" /></CardHeader>
+        <CardContent className="space-y-3">
+          {[1,2,3].map(i => <Skeleton key={i} className="h-16" />)}
+        </CardContent>
+      </Card>
+    );
+  }
 
   const topPerformer = supplierData[0];
-  const avgScore = supplierData.reduce((sum, s) => sum + s.overallScore, 0) / supplierData.length;
-
-  const periodLabels: Record<PeriodDays, string> = {
-    7: 'Últimos 7 dias',
-    30: 'Últimos 30 dias',
-    90: 'Últimos 90 dias',
-  };
+  const avgScore = supplierData.length > 0 
+    ? supplierData.reduce((sum, s) => sum + s.overallScore, 0) / supplierData.length 
+    : 0;
 
   return (
     <Card ref={ref}>
@@ -265,10 +215,7 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
             Ranking
           </CardTitle>
           <div className="flex items-center gap-2">
-            <Select
-              value={periodDays.toString()}
-              onValueChange={(value) => setPeriodDays(Number(value) as PeriodDays)}
-            >
+            <Select value={periodDays.toString()} onValueChange={(v) => setPeriodDays(Number(v))}>
               <SelectTrigger className="h-8 w-[130px] text-xs">
                 <Calendar className="h-3 w-3 mr-1" />
                 <SelectValue />
@@ -282,16 +229,14 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Badge variant="outline" className="gap-1 cursor-help">
-                    <Info className="h-3 w-3" />
-                  </Badge>
+                  <Badge variant="outline" className="gap-1 cursor-help"><Info className="h-3 w-3" /></Badge>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs">
-                  <p className="font-medium mb-1">Pesos da pontuação:</p>
+                  <p className="font-medium mb-1">Pesos:</p>
                   <ul className="text-xs space-y-1">
-                    <li>• SLA: {(WEIGHTS.sla * 100).toFixed(0)}%</li>
-                    <li>• Prazo de Entrega: {(WEIGHTS.delivery * 100).toFixed(0)}%</li>
-                    <li>• Qualidade: {(WEIGHTS.quality * 100).toFixed(0)}%</li>
+                    <li>• SLA: {(WEIGHTS.sla * 100)}%</li>
+                    <li>• Prazo: {(WEIGHTS.delivery * 100)}%</li>
+                    <li>• Qualidade: {(WEIGHTS.quality * 100)}%</li>
                   </ul>
                 </TooltipContent>
               </Tooltip>
@@ -300,34 +245,39 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/* Summary Stats */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-            <p className="text-xs text-muted-foreground">Melhor Fornecedor</p>
-            <p className="font-semibold text-sm truncate">{topPerformer.name}</p>
-            <p className="text-lg font-bold text-yellow-600">{topPerformer.overallScore.toFixed(1)} pts</p>
-          </div>
-          <div className="p-3 rounded-lg bg-muted/50 border border-border">
-            <p className="text-xs text-muted-foreground">Média Geral</p>
-            <p className="font-semibold text-sm">{supplierData.length} fornecedores</p>
-            <p className={cn("text-lg font-bold", getScoreColor(avgScore))}>
-              {avgScore.toFixed(1)} pts
-            </p>
-          </div>
-        </div>
-
-        {/* Ranking List */}
-        <div className="space-y-2">
-          {supplierData.map((supplier, index) => (
-            <SupplierRankItem
-              key={supplier.id}
-              supplier={supplier}
-              position={index}
-              isExpanded={expandedId === supplier.id}
-              onToggle={() => setExpandedId(expandedId === supplier.id ? null : supplier.id)}
-            />
-          ))}
-        </div>
+        {supplierData.length > 0 ? (
+          <>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+                <p className="text-xs text-muted-foreground">Melhor Fornecedor</p>
+                <p className="font-semibold text-sm truncate">{topPerformer?.name}</p>
+                <p className="text-lg font-bold text-yellow-600">{topPerformer?.overallScore.toFixed(1)} pts</p>
+              </div>
+              <div className="p-3 rounded-lg bg-muted/50 border border-border">
+                <p className="text-xs text-muted-foreground">Média Geral</p>
+                <p className="font-semibold text-sm">{supplierData.length} fornecedores</p>
+                <p className={cn("text-lg font-bold", getScoreColor(avgScore))}>
+                  {avgScore.toFixed(1)} pts
+                </p>
+              </div>
+            </div>
+            <div className="space-y-2">
+              {supplierData.map((supplier, index) => (
+                <SupplierRankItem
+                  key={supplier.id}
+                  supplier={supplier}
+                  position={index}
+                  isExpanded={expandedId === supplier.id}
+                  onToggle={() => setExpandedId(expandedId === supplier.id ? null : supplier.id)}
+                />
+              ))}
+            </div>
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground text-center py-8">
+            Nenhum fornecedor ativo encontrado
+          </p>
+        )}
       </CardContent>
     </Card>
   );

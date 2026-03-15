@@ -27,9 +27,15 @@ import { useDashboardKPIs } from "@/hooks/useDashboardKPIs";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 
 const ComprasDashboard = () => {
   const { kpis, pipeline, urgentItems, loading } = useDashboardKPIs();
+
+  // Realtime: auto-refresh dashboard when data changes
+  useRealtimeSubscription({
+    tables: ['solicitacoes', 'pedidos', 'cotacoes', 'pagamentos', 'notifications'],
+  });
 
   const getWidgetComponent = (widgetId: string, index: number = 0) => {
     if (loading && ['kpi-aguardando', 'kpi-volume', 'kpi-economia', 'kpi-sla'].includes(widgetId)) {

@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useDashboardFilters, DashboardFilter } from '@/hooks/useDashboardFilters';
 import { FilterFavoritesManager } from './FilterFavoritesManager';
 import { PurchaseClimateWidget } from './PurchaseClimateWidget';
@@ -52,6 +53,8 @@ import {
   Legend,
   ComposedChart
 } from 'recharts';
+import { useExecutiveDashboardData } from '@/hooks/useExecutiveDashboardData';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 
 // Current period data
 const currentPeriodMetrics = {
@@ -354,6 +357,14 @@ export const ExecutiveDashboard = () => {
   const [showComparison, setShowComparison] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
+
+  // Real data from Supabase (available for future full migration)
+  const { metrics: realMetrics, loading: realDataLoading } = useExecutiveDashboardData();
+  
+  // Realtime subscriptions
+  useRealtimeSubscription({
+    tables: ['pedidos', 'solicitacoes', 'cotacoes', 'pagamentos'],
+  });
 
   // Filter favorites hook
   const {

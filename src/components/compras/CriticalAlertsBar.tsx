@@ -1,63 +1,76 @@
-import { useMemo, forwardRef } from 'react';
+import { useMemo, forwardRef, useState } from 'react';
 import { AlertTriangle, AlertCircle, X, ChevronRight } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Link } from 'react-router-dom';
-import { solicitacoesMock, Solicitacao } from '@/data/mockData';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import { useSLASettings } from '@/stores/slaSettingsStore';
-import { useState } from 'react';
-
-const parsePrazoToDays = (prazo: string): number => {
-  const match = prazo.match(/(\d+)/);
-  return match ? parseInt(match[1], 10) : 14;
-};
-
-const calculateSLAStatus = (
-  solicitacao: Solicitacao,
-  criticalDays: number
-): 'critical' | 'overdue' | null => {
-  const activeStatuses = ['AGUARDANDO_COTACAO', 'EM_COTACAO', 'FORNECEDOR_SELECIONADO', 'PEDIDO_GERADO', 'AGUARDANDO_PAGAMENTO', 'EM_TRANSITO'];
-  if (!activeStatuses.includes(solicitacao.status)) {
-    return null;
-  }
-
-  const prazoDays = parsePrazoToDays(solicitacao.prazoEntrega);
-  const createdDate = new Date(solicitacao.createdAt);
-  const deadline = new Date(createdDate);
-  deadline.setDate(deadline.getDate() + prazoDays);
-  
-  const now = new Date();
-  const daysUntilDeadline = Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-
-  if (daysUntilDeadline < 0) return 'overdue';
-  if (daysUntilDeadline <= criticalDays) return 'critical';
-  return null;
-};
 
 export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
   const { settings } = useSLASettings();
   const [dismissed, setDismissed] = useState(false);
+
+  const { data: solicitacoes } = useQuery({
+    queryKey: ['critical-alerts-solicitacoes'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('solicitacoes')
+        .select('id, numero, status, data_necessidade, created_at')
+        .not('status', 'in', '(concluida,cancelada)');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 30000,
+  });
+
+  const { data: pedidos } = useQuery({
+    queryKey: ['critical-alerts-pedidos'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('pedidos')
+        .select('id, numero, status, data_previsao')
+        .not('status', 'in', '(entregue,cancelado)');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 30000,
+  });
 
   const alerts = useMemo(() => {
     let criticalCount = 0;
     let overdueCount = 0;
     const criticalItems: string[] = [];
     const overdueItems: string[] = [];
+    const now = new Date();
+    const nowDate = now.toISOString().split('T')[0];
 
-    solicitacoesMock.forEach((sol) => {
-      const status = calculateSLAStatus(sol, settings.criticalThresholdDays);
-      if (status === 'critical') {
-        criticalCount++;
-        if (criticalItems.length < 3) criticalItems.push(sol.itemNumber);
-      } else if (status === 'overdue') {
+    // Check solicitacoes near deadline
+    (solicitacoes || []).forEach((sol) => {
+      if (!sol.data_necessidade) return;
+      const daysUntil = Math.ceil(
+        (new Date(sol.data_necessidade).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+      );
+      if (daysUntil < 0) {
         overdueCount++;
-        if (overdueItems.length < 3) overdueItems.push(sol.itemNumber);
+        if (overdueItems.length < 3) overdueItems.push(sol.numero || sol.id);
+      } else if (daysUntil <= settings.criticalThresholdDays) {
+        criticalCount++;
+        if (criticalItems.length < 3) criticalItems.push(sol.numero || sol.id);
+      }
+    });
+
+    // Check overdue pedidos
+    (pedidos || []).forEach((ped) => {
+      if (ped.data_previsao && ped.data_previsao < nowDate) {
+        overdueCount++;
+        if (overdueItems.length < 3) overdueItems.push(ped.numero);
       }
     });
 
     return { criticalCount, overdueCount, criticalItems, overdueItems };
-  }, [settings.criticalThresholdDays]);
+  }, [solicitacoes, pedidos, settings.criticalThresholdDays]);
 
   const hasAlerts = alerts.criticalCount > 0 || alerts.overdueCount > 0;
 
@@ -65,6 +78,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
 
   return (
     <Alert 
+      ref={ref}
       variant="destructive" 
       className="relative border-destructive/50 bg-destructive/10 animate-pulse-slow"
     >

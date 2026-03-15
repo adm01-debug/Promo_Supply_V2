@@ -271,28 +271,40 @@ A tabela `pagamentos` **não aparece** na lista de tabelas auditadas com RLS. De
 
 ---
 
-## 📈 SCORE GERAL DE COMPLETUDE (Atualizado: 15/03/2026)
+## 📈 SCORE GERAL DE COMPLETUDE (Atualizado: 15/03/2026 - Fase 2)
 
 | Dimensão | Score |
 |----------|-------|
-| **Backend (DB + Functions + RLS)** | **98%** — Storage bucket criado, realtime configurado, RLS pagamentos ✅ |
-| **CRUD Frontend (hooks)** | **90%** — Completo para entidades core |
+| **Backend (DB + Functions + RLS)** | **98%** — Storage bucket, realtime, RLS completos ✅ |
+| **CRUD Frontend (hooks)** | **92%** — Completo para entidades core + file upload ✅ |
 | **UI/UX (componentes)** | **85%** — Completo, faltam qualificação e portal |
-| **Dados Reais vs Mock** | **55%** — Dashboard operacional migrado para Supabase real ✅ |
+| **Dados Reais vs Mock** | **78%** — 6 componentes migrados para Supabase real ✅ |
 | **Testes** | **5%** — Vitest configurado, setup pronto, testes iniciais passando ✅ |
+| **Realtime** | **90%** — Subscriptions ativas em Dashboard + 5 tabelas ✅ |
 | **Integrações Externas** | **0%** — Todas pendentes |
-| **SCORE GERAL** | **~60%** |
+| **SCORE GERAL** | **~72%** |
 
-### ✅ Melhorias Implementadas (15/03/2026)
-- ✅ RLS policies criadas para tabela `pagamentos` (SELECT autenticado + ALL admin/coordinator/finance)
-- ✅ Storage bucket `documents` criado com RLS (upload autenticado, delete admin)
-- ✅ Realtime configurado em `pedidos`, `cotacoes`, `notifications`, `pagamentos` (solicitacoes já estava)
-- ✅ Hook `useDashboardKPIs` criado — Dashboard operacional agora consome dados reais do Supabase
-- ✅ Hook `useExecutiveDashboardData` criado — Dados executivos disponíveis via Supabase
-- ✅ Vitest configurado com jsdom, setup file, e testes passando
+### ✅ Melhorias Implementadas - Fase 1 (15/03/2026)
+- ✅ RLS policies criadas para tabela `pagamentos`
+- ✅ Storage bucket `documents` criado com RLS
+- ✅ Realtime configurado em `pedidos`, `cotacoes`, `notifications`, `pagamentos`
+- ✅ Hook `useDashboardKPIs` criado — Dashboard operacional com dados reais
+- ✅ Hook `useExecutiveDashboardData` criado — Dados executivos via Supabase
+- ✅ Vitest configurado com jsdom + testes passando
 - ✅ ComprasDashboard.tsx migrado de mock para dados reais
 
-> ⚠️ **Pendências restantes**: Dashboard Executivo precisa ser refatorado para usar `useExecutiveDashboardData`, componentes internos (BuyerPerformancePanel, SavingsGoalPanel, CriticalAlertsBar, etc.) ainda usam mock data, Portal do Fornecedor não existe, UI de Qualificação não foi construída.
+### ✅ Melhorias Implementadas - Fase 2 (15/03/2026)
+- ✅ `CriticalAlertsBar` — Migrado de `solicitacoesMock` para queries reais (solicitacoes + pedidos)
+- ✅ `BuyerPerformancePanel` — Migrado de `buyerPerformanceMock` para queries reais (cotacoes + solicitacoes)
+- ✅ `SavingsGoalPanel` — Migrado de `buyerPerformanceMock` para query real de solicitacoes do mês
+- ✅ `SupplierRankingPanel` — Migrado de mock gerado para dados reais (fornecedores + pedidos)
+- ✅ `SupplierAlertsPanel` — Migrado de mock local para dados reais (fornecedores + pedidos)
+- ✅ `ExecutiveDashboard` — Hook `useExecutiveDashboardData` injetado + realtime ativo
+- ✅ `useFileUpload` — Hook criado para upload de arquivos ao bucket `documents`
+- ✅ `useRealtimeSubscription` — Hook genérico para subscriptions com auto-invalidação de cache
+- ✅ ComprasDashboard agora tem realtime em 5 tabelas críticas
+
+> ⚠️ **Pendências restantes**: ExecutiveDashboard ainda usa mock data para gráficos/trends (hook injetado mas dados inline não substituídos nos charts), Portal do Fornecedor não existe, UI de Qualificação não foi construída, integrações externas (Bitrix24, Banco Inter, Lalamove) pendentes.
 
 ---
 
