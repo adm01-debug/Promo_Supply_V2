@@ -223,7 +223,7 @@ const AnimatedRoutes = () => {
             </ProtectedRoute>
           } />
           <Route path="/catalogo-spot" element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}>
               <ModuleErrorBoundary module="fornecedores">
                 <CatalogoSpot />
               </ModuleErrorBoundary>
