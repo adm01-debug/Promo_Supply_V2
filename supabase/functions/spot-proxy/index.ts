@@ -47,6 +47,18 @@ function getSupabaseAdmin() {
   return createClient(url, key);
 }
 
+function getSupabaseAuthClient(authHeader: string) {
+  const url = Deno.env.get("SUPABASE_URL")!;
+  const key = Deno.env.get("SUPABASE_ANON_KEY")!;
+  return createClient(url, key, {
+    global: {
+      headers: {
+        Authorization: authHeader,
+      },
+    },
+  });
+}
+
 /** Verify the caller is an authenticated user with appropriate role */
 async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
   const authHeader = req.headers.get("authorization");
