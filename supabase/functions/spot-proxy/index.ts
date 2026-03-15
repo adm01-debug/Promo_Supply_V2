@@ -575,7 +575,10 @@ async function handleGetOrders(supabase: ReturnType<typeof getSupabaseAdmin>, ye
         },
         { onConflict: "spot_order_id" }
       )
-      .then(() => {});
+      .catch((cacheError: unknown) => {
+        const message = cacheError instanceof Error ? cacheError.message : "Erro desconhecido";
+        console.error("Falha ao sincronizar cache de pedidos SPOT:", message);
+      });
   }
 
   return { orders, totalPages: parseTotalPages(html) };
