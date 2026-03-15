@@ -222,6 +222,13 @@ const AnimatedRoutes = () => {
               </ModuleErrorBoundary>
             </ProtectedRoute>
           } />
+          <Route path="/catalogo-spot" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="fornecedores">
+                <CatalogoSpot />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
