@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { Fornecedor } from "@/data/mockData";
+import type { Fornecedor } from "@/types/legacyTypes";
 
 export interface ManualCotacaoData {
   fornecedor: string;
