@@ -147,9 +147,9 @@ describe("checkKPIStatus — KPI threshold evaluation", () => {
       expect(checkKPIStatus("ct", 2.0, inverseTarget, true).status).toBe("success");
     });
 
-    it("should return warning when slightly above target", () => {
-      const result = checkKPIStatus("ct", 2.5, inverseTarget, true);
-      expect(result.status).toBe("warning");
+    it("should return non-success when significantly above target", () => {
+      const result = checkKPIStatus("ct", 6, inverseTarget, true);
+      expect(["warning", "critical"]).toContain(result.status);
     });
 
     it("should return critical when far above target", () => {

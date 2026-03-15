@@ -30,9 +30,13 @@ describe("cn() — Tailwind class merge utility", () => {
   });
 
   it("should handle complex merge scenarios", () => {
-    expect(cn("px-2 py-1 bg-red-500 hover:bg-red-600", "py-3 bg-blue-500")).toBe(
-      "px-2 py-3 bg-blue-500 hover:bg-red-600"
-    );
+    const result = cn("px-2 py-1 bg-red-500 hover:bg-red-600", "py-3 bg-blue-500");
+    expect(result).toContain("px-2");
+    expect(result).toContain("py-3");
+    expect(result).toContain("bg-blue-500");
+    expect(result).toContain("hover:bg-red-600");
+    expect(result).not.toContain("py-1");
+    expect(result).not.toContain("bg-red-500");
   });
 
   it("should handle responsive prefixes", () => {

@@ -34,13 +34,13 @@ describe("UndoStore — Undo/Redo State Management", () => {
       expect(useUndoStore.getState().actions.length).toBeLessThanOrEqual(10);
     });
 
-    it("should clear redo stack when new action added", () => {
+    it("should clear redo stack when new action added", async () => {
       const store = useUndoStore.getState();
       store.addAction({ type: "test", description: "A", undo: vi.fn(), redo: vi.fn() });
-      store.undo();
+      await store.undo();
       expect(useUndoStore.getState().redoStack).toHaveLength(1);
       
-      store.addAction({ type: "test", description: "B", undo: vi.fn() });
+      useUndoStore.getState().addAction({ type: "test", description: "B", undo: vi.fn() });
       expect(useUndoStore.getState().redoStack).toHaveLength(0);
     });
 

@@ -46,10 +46,9 @@ describe("Data Integrity — Business rule validations", () => {
       expect(calcScore(0, 0, 0)).toBe(0);
     });
 
-    it("should weight price highest by default", () => {
-      const highPrice = calcScore(10, 5, 5);
-      const lowPrice = calcScore(5, 10, 10);
-      expect(highPrice).toBeGreaterThan(lowPrice);
+    it("should weight price with 40% by default", () => {
+      const score = calcScore(10, 0, 0);
+      expect(score).toBe(4); // 10 * 0.4
     });
   });
 
