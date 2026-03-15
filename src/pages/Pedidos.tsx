@@ -75,6 +75,8 @@ import { ptBR } from "date-fns/locale";
 import { usePedidos, usePedidosKPIs, type Pedido } from "@/hooks/usePedidos";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";
+import { ReceivingModal } from "@/components/compras/ReceivingModal";
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle2 }> = {
   pendente: { label: 'Pendente', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20', icon: Clock },
