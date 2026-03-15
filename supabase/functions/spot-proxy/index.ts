@@ -176,7 +176,7 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     const location = loginRes.headers.get("location") || "";
     // If redirected back to login, credentials are wrong
     if (location.includes("login")) {
-      throw new Error("Credenciais SPOT inválidas — login rejeitado");
+      throw new HttpError(403, "Credenciais SPOT inválidas — login rejeitado");
     }
   } else if (status === 200) {
     // 200 means the login page was returned — check for error indicators
