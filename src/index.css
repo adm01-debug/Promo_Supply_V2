@@ -7,14 +7,14 @@
 
 @tailwind base;
 
+/* Design tokens + base styles precisam vir APÓS o Tailwind base para
+   garantir compatibilidade com @layer e @apply. */
 @import './styles/tokens.css';
 @import './styles/base.css';
 
 @tailwind components;
-
 @import './styles/components.css';
 
 @tailwind utilities;
-
 @import './styles/utilities.css';
 @import './styles/animations.css';
