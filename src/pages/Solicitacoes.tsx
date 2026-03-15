@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo } from "react";
+import { exportToCSV, solicitacaoColumns } from "@/lib/exportData";
 import { 
   ClipboardList,
   LayoutGrid,
