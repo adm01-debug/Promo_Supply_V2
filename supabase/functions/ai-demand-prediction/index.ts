@@ -1,16 +1,37 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-serve(async (req) => {
+async function verifyAuthUser(req: Request): Promise<string> {
+  const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    throw new Error("Não autorizado: token ausente");
+  }
+  const token = authHeader.slice(7).trim();
+  if (!token) throw new Error("Não autorizado: token inválido");
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: authHeader } },
+  });
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) throw new Error("Não autorizado: token inválido");
+  return user.id;
+}
+
+Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // SECURITY: Validate user authentication
+    await verifyAuthUser(req);
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
@@ -117,8 +138,8 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
       } else {
         predictions = JSON.parse(content);
       }
-    } catch (parseError) {
-      console.error("Error parsing AI response:", parseError);
+    } catch (_parseError) {
+      console.error("Error parsing AI response:", _parseError);
       predictions = {
         predictions: [],
         seasonalPatterns: [],
@@ -136,8 +157,9 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
   } catch (error: unknown) {
     console.error("Error in ai-demand-prediction:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(JSON.stringify({ error: errorMessage }), {
-      status: 500,
+      status,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

@@ -1,4 +1,3 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -14,13 +13,30 @@ interface PushPayload {
   data?: Record<string, unknown>;
   action_url?: string;
   action_label?: string;
-  user_ids?: string[];  // Specific users or empty for all
+  user_ids?: string[];
 }
 
-// Simple JWT-like encoding for VAPID auth
 function base64UrlEncode(input: Uint8Array): string {
   const base64 = btoa(String.fromCharCode(...input));
   return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function verifyAuthUser(req: Request): Promise<string> {
+  const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    throw new Error("Não autorizado: token ausente");
+  }
+  const token = authHeader.slice(7).trim();
+  if (!token) throw new Error("Não autorizado: token inválido");
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    global: { headers: { Authorization: authHeader } },
+  });
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) throw new Error("Não autorizado: token inválido");
+  return user.id;
 }
 
 async function generateVapidAuth(endpoint: string, vapidPublicKey: string, vapidPrivateKey: string): Promise<{ authorization: string; cryptoKey: string }> {
@@ -30,7 +46,7 @@ async function generateVapidAuth(endpoint: string, vapidPublicKey: string, vapid
   const header = { typ: 'JWT', alg: 'ES256' };
   const payload = {
     aud: audience,
-    exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60, // 12 hours
+    exp: Math.floor(Date.now() / 1000) + 12 * 60 * 60,
     sub: 'mailto:admin@sistema-compras.com'
   };
 
@@ -38,7 +54,6 @@ async function generateVapidAuth(endpoint: string, vapidPublicKey: string, vapid
   const payloadB64 = base64UrlEncode(new TextEncoder().encode(JSON.stringify(payload)));
   const unsignedToken = `${headerB64}.${payloadB64}`;
 
-  // Import the private key for signing
   const privateKeyData = Uint8Array.from(atob(vapidPrivateKey.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
   
   const cryptoKey = await crypto.subtle.importKey(
@@ -67,14 +82,11 @@ async function generateVapidAuth(endpoint: string, vapidPublicKey: string, vapid
 async function sendPushToSubscription(
   subscription: { endpoint: string; p256dh: string; auth: string },
   payload: { title: string; body: string; icon?: string; tag?: string; data?: Record<string, unknown> },
-  vapidPublicKey: string,
-  vapidPrivateKey: string
+  _vapidPublicKey: string,
+  _vapidPrivateKey: string
 ): Promise<boolean> {
   try {
     const payloadString = JSON.stringify(payload);
-    
-    // For simplicity, we'll send using a basic approach
-    // In production, you'd want to use proper encryption with the p256dh and auth keys
     
     const response = await fetch(subscription.endpoint, {
       method: 'POST',
@@ -98,13 +110,15 @@ async function sendPushToSubscription(
   }
 }
 
-serve(async (req) => {
-  // Handle CORS preflight requests
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // SECURITY: Validate user authentication
+    await verifyAuthUser(req);
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const vapidPublicKey = Deno.env.get('VAPID_PUBLIC_KEY');
@@ -125,7 +139,6 @@ serve(async (req) => {
 
     const { title, message, type, priority, data, action_url, action_label, user_ids } = body;
 
-    // Get target users' push subscriptions
     let query = supabase.from('push_subscriptions').select('*');
     
     if (user_ids && user_ids.length > 0) {
@@ -141,7 +154,6 @@ serve(async (req) => {
 
     console.log(`Found ${subscriptions?.length || 0} subscriptions to notify`);
 
-    // Create notification records in database for each user
     const uniqueUserIds = [...new Set((subscriptions || []).map(s => s.user_id))];
     
     for (const userId of uniqueUserIds) {
@@ -162,7 +174,6 @@ serve(async (req) => {
       }
     }
 
-    // Send push notifications
     const pushPayload = {
       title,
       body: message,
@@ -193,7 +204,6 @@ serve(async (req) => {
       } else {
         failedCount++;
         
-        // Remove invalid subscriptions
         if (failedCount > 3) {
           await supabase.from('push_subscriptions').delete().eq('id', sub.id);
           console.log(`Removed invalid subscription ${sub.id}`);
@@ -215,9 +225,10 @@ serve(async (req) => {
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('Error in send-push-notification:', error);
+    const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });
