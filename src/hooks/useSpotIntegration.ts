@@ -85,8 +85,7 @@ export function useSpotIntegration() {
 
   const searchProducts = useCallback(async (query: string) => {
     return withLoading(async () => {
-      const sanitized = encodeURIComponent(query.trim());
-      const data = await callSpotProxy('search', { query: sanitized });
+      const data = await callSpotProxy('search', { query: query.trim() });
       return (data?.search || []) as Array<{ line: number; value: string; text: string }>;
     });
   }, [withLoading]);
@@ -100,7 +99,7 @@ export function useSpotIntegration() {
 
   const getProduct = useCallback(async (productId: string) => {
     return withLoading(async () => {
-      const data = await callSpotProxy('product', { productId: encodeURIComponent(productId) });
+      const data = await callSpotProxy('product', { productId });
       return data as SpotProduct;
     });
   }, [withLoading]);
@@ -108,9 +107,9 @@ export function useSpotIntegration() {
   const checkStock = useCallback(async (productId: string, quantity: number, opcionais: string[] = []) => {
     return withLoading(async () => {
       const data = await callSpotProxy('stock', {
-        productId: encodeURIComponent(productId),
+        productId,
         quantity,
-        opcionais: opcionais.map(o => encodeURIComponent(o)),
+        opcionais,
       });
       return data as { data: { status: string; label: string }; _status: { success: boolean } };
     });
@@ -119,10 +118,10 @@ export function useSpotIntegration() {
   const addToCart = useCallback(async (productId: string, quantity: number, opcional0: string, opcional1 = '0') => {
     return withLoading(async () => {
       const data = await callSpotProxy('addToCart', {
-        productId: encodeURIComponent(productId),
+        productId,
         quantity,
-        opcional0: encodeURIComponent(opcional0),
-        opcional1: encodeURIComponent(opcional1),
+        opcional0,
+        opcional1,
       });
       toast.success('Produto adicionado ao carrinho SPOT!');
       return data;
@@ -138,7 +137,7 @@ export function useSpotIntegration() {
 
   const removeFromCart = useCallback(async (groupId: string) => {
     return withLoading(async () => {
-      const data = await callSpotProxy('removeFromCart', { groupId: encodeURIComponent(groupId) });
+      const data = await callSpotProxy('removeFromCart', { groupId });
       toast.success('Item removido do carrinho');
       return data;
     });
@@ -146,7 +145,7 @@ export function useSpotIntegration() {
 
   const updateCartQuantity = useCallback(async (groupId: string, quantity: number) => {
     return withLoading(async () => {
-      return await callSpotProxy('updateCartQty', { groupId: encodeURIComponent(groupId), quantity });
+      return await callSpotProxy('updateCartQty', { groupId, quantity });
     });
   }, [withLoading]);
 

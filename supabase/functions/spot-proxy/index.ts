@@ -14,6 +14,8 @@ const VALID_ACTIONS = new Set([
   "financial", "checkout", "login",
 ]);
 
+const ALLOWED_ROLES = ["admin", "coordinator", "buyer"] as const;
+
 function getSupabaseAdmin() {
   const url = Deno.env.get("SUPABASE_URL")!;
   const key = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -23,26 +25,29 @@ function getSupabaseAdmin() {
 /** Verify the caller is an authenticated user with appropriate role */
 async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
   const authHeader = req.headers.get("authorization");
-  if (!authHeader) {
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw new Error("Não autorizado: token ausente");
   }
 
-  const token = authHeader.replace("Bearer ", "");
+  const token = authHeader.slice("Bearer ".length).trim();
+  if (!token) {
+    throw new Error("Não autorizado: token inválido");
+  }
+
   const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
 
   if (error || !user) {
     throw new Error("Não autorizado: token inválido");
   }
 
-  // Verify user has appropriate role (admin, coordinator, or buyer)
-  const { data: roles } = await supabaseAdmin
+  // Verify user has at least one allowed role
+  const { data: roles, error: roleError } = await supabaseAdmin
     .from("user_roles")
     .select("role")
     .eq("user_id", user.id)
-    .limit(1);
+    .in("role", [...ALLOWED_ROLES]);
 
-  const userRole = roles?.[0]?.role;
-  if (!userRole || !["admin", "coordinator", "buyer"].includes(userRole)) {
+  if (roleError || !roles || roles.length === 0) {
     throw new Error("Sem permissão para acessar integração SPOT");
   }
 
