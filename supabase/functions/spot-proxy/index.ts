@@ -8,13 +8,37 @@ const corsHeaders = {
 
 const SPOT_BASE = "https://www.spotgifts.com.br";
 const LANG = "pt";
-const VALID_ACTIONS = new Set([
+type SpotAction =
+  | "search"
+  | "catalog"
+  | "product"
+  | "stock"
+  | "addToCart"
+  | "getCart"
+  | "removeFromCart"
+  | "updateCartQty"
+  | "orders"
+  | "financial"
+  | "checkout"
+  | "login";
+
+const VALID_ACTIONS: ReadonlySet<SpotAction> = new Set([
   "search", "catalog", "product", "stock", "addToCart",
   "getCart", "removeFromCart", "updateCartQty", "orders",
   "financial", "checkout", "login",
 ]);
 
 const ALLOWED_ROLES = ["admin", "coordinator", "buyer"] as const;
+
+class HttpError extends Error {
+  status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "HttpError";
+    this.status = status;
+  }
+}
 
 function getSupabaseAdmin() {
   const url = Deno.env.get("SUPABASE_URL")!;
