@@ -137,7 +137,7 @@ Equipe de Compras - Promo Supply`;
   };
 
   const gerarMensagemEmail = () => {
-    setAssuntoEmail(`Ordem de Compra ${ordemMock.numero} - ${solicitacao.produto}`);
+    setAssuntoEmail(`Ordem de Compra ${ordemNumero} - ${solicitacao.produto}`);
     const msg = `Prezados,
 
 Segue abaixo os detalhes da Ordem de Compra para confirmação:
