@@ -890,15 +890,7 @@ const Pedidos = () => {
           onOpenChange={(open) => !open && setReceivingPedido(null)}
           pedidoId={receivingPedido.id}
           pedidoNumero={receivingPedido.numero}
-          items={receivingPedido.itens?.map(item => ({
-            id: item.id,
-            descricao: item.descricao,
-            quantidade: item.quantidade,
-            quantidade_recebida: item.quantidade_recebida,
-            unidade: item.unidade,
-            valor_unitario: item.valor_unitario,
-            valor_total: item.valor_total,
-          })) || []}
+          items={receivingItems}
           onSuccess={() => refetch()}
         />
       )}
