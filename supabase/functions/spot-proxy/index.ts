@@ -159,6 +159,7 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     },
     body: formData.toString(),
     redirect: "manual",
+    signal: AbortSignal.timeout(SPOT_REQUEST_TIMEOUT_MS),
   });
 
   // Check for new session cookie
