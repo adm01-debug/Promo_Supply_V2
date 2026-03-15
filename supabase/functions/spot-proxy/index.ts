@@ -8,6 +8,11 @@ const corsHeaders = {
 
 const SPOT_BASE = "https://www.spotgifts.com.br";
 const LANG = "pt";
+const VALID_ACTIONS = new Set([
+  "search", "catalog", "product", "stock", "addToCart",
+  "getCart", "removeFromCart", "updateCartQty", "orders",
+  "financial", "checkout", "login",
+]);
 
 function getSupabaseAdmin() {
   const url = Deno.env.get("SUPABASE_URL")!;
@@ -15,9 +20,37 @@ function getSupabaseAdmin() {
   return createClient(url, key);
 }
 
+/** Verify the caller is an authenticated user with appropriate role */
+async function verifyAuth(req: Request, supabaseAdmin: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader) {
+    throw new Error("Não autorizado: token ausente");
+  }
+
+  const token = authHeader.replace("Bearer ", "");
+  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+
+  if (error || !user) {
+    throw new Error("Não autorizado: token inválido");
+  }
+
+  // Verify user has appropriate role (admin, coordinator, or buyer)
+  const { data: roles } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", user.id)
+    .limit(1);
+
+  const userRole = roles?.[0]?.role;
+  if (!userRole || !["admin", "coordinator", "buyer"].includes(userRole)) {
+    throw new Error("Sem permissão para acessar integração SPOT");
+  }
+
+  return user.id;
+}
+
 // Get or create a valid SPOT session
 async function getSpotSession(supabase: ReturnType<typeof getSupabaseAdmin>): Promise<string> {
-  // Try to get existing valid session
   const { data: sessions } = await supabase
     .from("spot_sessions")
     .select("*")
@@ -27,24 +60,21 @@ async function getSpotSession(supabase: ReturnType<typeof getSupabaseAdmin>): Pr
 
   if (sessions && sessions.length > 0) {
     const session = sessions[0];
-    // Check if session is less than 30 minutes old
     const age = Date.now() - new Date(session.last_used_at).getTime();
     if (age < 30 * 60 * 1000) {
-      // Update last_used_at
       await supabase
         .from("spot_sessions")
         .update({ last_used_at: new Date().toISOString() })
         .eq("id", session.id);
       return session.session_cookie;
     }
-    // Mark old session as invalid
+    // Mark expired session as invalid
     await supabase
       .from("spot_sessions")
       .update({ is_valid: false })
       .eq("id", session.id);
   }
 
-  // Login to SPOT
   return await loginToSpot(supabase);
 }
 
@@ -53,16 +83,20 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
   const password = Deno.env.get("SPOT_PASSWORD");
 
   if (!username || !password) {
-    throw new Error("SPOT credentials not configured");
+    throw new Error("Credenciais SPOT não configuradas no backend");
   }
 
   const loginUrl = `${SPOT_BASE}/${LANG}/area-reservada/login/`;
 
-  // First GET to get initial PHPSESSID
+  // GET initial page to obtain PHPSESSID
   const initRes = await fetch(loginUrl, { redirect: "manual" });
   const initCookies = initRes.headers.get("set-cookie") || "";
   const phpSessionMatch = initCookies.match(/PHPSESSID=([^;]+)/);
   let sessionId = phpSessionMatch ? phpSessionMatch[1] : "";
+
+  if (!sessionId) {
+    throw new Error("Não foi possível obter sessão inicial do SPOT");
+  }
 
   // POST login
   const formData = new URLSearchParams();
@@ -87,13 +121,32 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     sessionId = newSession[1];
   }
 
-  // Verify login was successful (should be 302 redirect)
   const status = loginRes.status;
-  if (status !== 302 && status !== 301 && status !== 200) {
-    throw new Error(`SPOT login failed with status ${status}`);
+
+  // A 302/301 redirect is the expected success response
+  if (status === 302 || status === 301) {
+    const location = loginRes.headers.get("location") || "";
+    // If redirected back to login, credentials are wrong
+    if (location.includes("login")) {
+      throw new Error("Credenciais SPOT inválidas — login rejeitado");
+    }
+  } else if (status === 200) {
+    // 200 means the login page was returned — check for error indicators
+    const body = await loginRes.text();
+    if (body.includes("erro") || body.includes("incorret") || body.includes("inválid")) {
+      throw new Error("Credenciais SPOT inválidas");
+    }
+  } else {
+    throw new Error(`SPOT login falhou com status ${status}`);
   }
 
-  // Store session
+  // Invalidate all old sessions before storing new one
+  await supabase
+    .from("spot_sessions")
+    .update({ is_valid: false })
+    .eq("is_valid", true);
+
+  // Store new session
   const cookie = `PHPSESSID=${sessionId}`;
   await supabase.from("spot_sessions").insert({
     session_cookie: cookie,
@@ -125,13 +178,12 @@ async function spotFetch(
   // If redirected to login, re-authenticate
   const location = res.headers.get("location") || "";
   if (location.includes("login") || location.includes("area-reservada")) {
-    // Invalidate current session
+    // Invalidate all sessions
     await supabase
       .from("spot_sessions")
       .update({ is_valid: false })
-      .neq("id", "00000000-0000-0000-0000-000000000000");
+      .eq("is_valid", true);
 
-    // Re-login and retry
     const newCookie = await loginToSpot(supabase);
     return fetch(url, {
       ...options,
@@ -146,10 +198,13 @@ async function spotFetch(
 // HANDLERS
 
 async function handleSearch(supabase: ReturnType<typeof getSupabaseAdmin>, query: string) {
-  const url = `${SPOT_BASE}/${LANG}/catalogo/ajax/pesquisar.php?ajax=1&q=${encodeURIComponent(query)}`;
+  if (!query || typeof query !== "string" || query.trim().length === 0) {
+    throw new Error("Parâmetro 'query' é obrigatório para pesquisa");
+  }
+  const sanitized = query.trim().substring(0, 200);
+  const url = `${SPOT_BASE}/${LANG}/catalogo/ajax/pesquisar.php?ajax=1&q=${encodeURIComponent(sanitized)}`;
   const res = await spotFetch(supabase, url);
-  const data = await res.json();
-  return data;
+  return await res.json();
 }
 
 async function handleCatalog(supabase: ReturnType<typeof getSupabaseAdmin>, params: Record<string, string>) {
@@ -157,15 +212,12 @@ async function handleCatalog(supabase: ReturnType<typeof getSupabaseAdmin>, para
   const url = `${SPOT_BASE}/${LANG}/catalogo/?${searchParams.toString()}`;
   const res = await spotFetch(supabase, url);
   const html = await res.text();
-
-  // Parse product cards from HTML
   const products = parseProductsFromHTML(html);
   return { products, total: products.length };
 }
 
 function parseProductsFromHTML(html: string): Array<Record<string, unknown>> {
   const products: Array<Record<string, unknown>> = [];
-  // Match product blocks — simplified regex-based parser
   const productPattern = /data-prod="(\d+)".*?data-iderp="(\d+)".*?<img[^>]*src="([^"]*)".*?class="product-name"[^>]*>([^<]*)</gs;
 
   let match;
@@ -178,7 +230,6 @@ function parseProductsFromHTML(html: string): Array<Record<string, unknown>> {
     });
   }
 
-  // Fallback: try to extract from a simpler pattern if above fails
   if (products.length === 0) {
     const simplePattern = /href="\/pt\/catalogo\/([^/]+)\/(\d+)\/"[^>]*>.*?<img[^>]*src="([^"]*)"[^>]*alt="([^"]*)"/gs;
     while ((match = simplePattern.exec(html)) !== null) {
@@ -196,57 +247,50 @@ function parseProductsFromHTML(html: string): Array<Record<string, unknown>> {
 }
 
 async function handleProductDetail(supabase: ReturnType<typeof getSupabaseAdmin>, productId: string) {
-  // Try to find product URL first
+  if (!productId || typeof productId !== "string") {
+    throw new Error("Parâmetro 'productId' é obrigatório");
+  }
+
   const searchRes = await handleSearch(supabase, productId);
   let productUrl = "";
 
   if (searchRes.search && searchRes.search.length > 0) {
     productUrl = `${SPOT_BASE}${searchRes.search[0].value}`;
   } else {
-    productUrl = `${SPOT_BASE}/${LANG}/catalogo/produto/${productId}/`;
+    productUrl = `${SPOT_BASE}/${LANG}/catalogo/produto/${encodeURIComponent(productId)}/`;
   }
 
   const res = await spotFetch(supabase, productUrl);
   const html = await res.text();
-
-  // Extract product details from HTML
-  const detail = parseProductDetailFromHTML(html, productId);
-  return detail;
+  return parseProductDetailFromHTML(html, productId);
 }
 
 function parseProductDetailFromHTML(html: string, productId: string): Record<string, unknown> {
   const detail: Record<string, unknown> = { id: productId };
 
-  // Extract product name
   const nameMatch = html.match(/<h1[^>]*class="[^"]*product-name[^"]*"[^>]*>([\s\S]*?)<\/h1>/i)
     || html.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i);
   if (nameMatch) detail.name = nameMatch[1].replace(/<[^>]+>/g, "").trim();
 
-  // Extract reference
   const refMatch = html.match(/data-iderp="(\d+)"/);
   if (refMatch) detail.ref = refMatch[1];
 
-  // Extract price (if visible)
   const priceMatch = html.match(/data-original="([\d.]+)"/);
   if (priceMatch) detail.price = parseFloat(priceMatch[1]);
 
-  // Extract stock info
   const stockMatch = html.match(/data-stock-total="(\d+)"/);
   if (stockMatch) detail.stock = parseInt(stockMatch[1]);
 
   const stockActualMatch = html.match(/data-stock-actual="(\d+)"/);
   if (stockActualMatch) detail.stockActual = parseInt(stockActualMatch[1]);
 
-  // Extract step
   const stepMatch = html.match(/data-step="(\d+)"/);
   if (stepMatch) detail.step = parseInt(stepMatch[1]);
 
-  // Extract main image
   const imgMatch = html.match(/<img[^>]*class="[^"]*product-image[^"]*"[^>]*src="([^"]*)"/i)
     || html.match(/<img[^>]*id="[^"]*main[^"]*"[^>]*src="([^"]*)"/i);
   if (imgMatch) detail.image = imgMatch[1].startsWith("http") ? imgMatch[1] : `${SPOT_BASE}${imgMatch[1]}`;
 
-  // Extract colors/variants
   const colors: Array<{id: string; name: string; hex: string}> = [];
   const colorPattern = /data-cor-id="(\d+)"[^>]*data-cor-hex="([^"]*)"[^>]*title="([^"]*)"/g;
   let colorMatch;
@@ -264,6 +308,9 @@ async function handleStockCheck(
   quantity: number,
   opcionais: string[]
 ) {
+  if (!productId) throw new Error("Parâmetro 'productId' é obrigatório");
+  if (!quantity || quantity < 1) throw new Error("Quantidade deve ser >= 1");
+
   const url = `${SPOT_BASE}/${LANG}/catalogo/catalogo.ajax.php`;
   const formData = new URLSearchParams();
   formData.append("method", "getSemaforo");
@@ -289,9 +336,12 @@ async function handleAddToCart(
   opcional0: string,
   opcional1: string
 ) {
-  const url = `${SPOT_BASE}/${LANG}/produto/ajax/adicionaCarrinho.php?prod=${productId}&ajax=1&todos=0`;
+  if (!productId) throw new Error("Parâmetro 'productId' é obrigatório");
+  if (!quantity || quantity < 1) throw new Error("Quantidade deve ser >= 1");
+
+  const url = `${SPOT_BASE}/${LANG}/produto/ajax/adicionaCarrinho.php?prod=${encodeURIComponent(productId)}&ajax=1&todos=0`;
   const formData = new URLSearchParams();
-  formData.append("opcional[0]", opcional0);
+  formData.append("opcional[0]", opcional0 || "0");
   formData.append("opcional[1]", opcional1 || "0");
   formData.append("qtd", quantity.toString());
 
@@ -301,7 +351,8 @@ async function handleAddToCart(
     body: formData.toString(),
   });
 
-  return await res.json();
+  const data = await res.json();
+  return { success: true, ...data };
 }
 
 async function handleGetCart(supabase: ReturnType<typeof getSupabaseAdmin>) {
@@ -314,7 +365,6 @@ async function handleGetCart(supabase: ReturnType<typeof getSupabaseAdmin>) {
 function parseCartFromHTML(html: string): Record<string, unknown> {
   const items: Array<Record<string, unknown>> = [];
 
-  // Parse cart items
   const itemPattern = /data-compra="(\d+)"[\s\S]*?data-ref-composta="([^"]*)"[\s\S]*?data-original="([\d.]+)"[\s\S]*?data-stock-atual-mult="(\d+)"/g;
   let match;
   while ((match = itemPattern.exec(html)) !== null) {
@@ -326,11 +376,9 @@ function parseCartFromHTML(html: string): Record<string, unknown> {
     });
   }
 
-  // Parse totals
   const totalMatch = html.match(/id="dtotal"[^>]*>([\s\S]*?)<\/span>/i);
   const total = totalMatch ? totalMatch[1].replace(/[^\d.,]/g, "").replace(",", ".") : "0";
 
-  // Parse cart hash
   const hashMatch = html.match(/name="carrinho_hash"\s+value="([^"]*)"/);
 
   return {
@@ -342,13 +390,17 @@ function parseCartFromHTML(html: string): Record<string, unknown> {
 }
 
 async function handleRemoveFromCart(supabase: ReturnType<typeof getSupabaseAdmin>, groupId: string) {
-  const url = `${SPOT_BASE}/${LANG}/calculos/ajax/actualizarGrupoProduto.php?action=del&id=${groupId}`;
+  if (!groupId) throw new Error("Parâmetro 'groupId' é obrigatório");
+  const url = `${SPOT_BASE}/${LANG}/calculos/ajax/actualizarGrupoProduto.php?action=del&id=${encodeURIComponent(groupId)}`;
   const res = await spotFetch(supabase, url);
   return { success: res.status === 200 || res.status === 302 };
 }
 
 async function handleUpdateCartQty(supabase: ReturnType<typeof getSupabaseAdmin>, groupId: string, quantity: number) {
-  const url = `${SPOT_BASE}/${LANG}/calculos/ajax/actualizarGrupoProduto.php?id=${groupId}`;
+  if (!groupId) throw new Error("Parâmetro 'groupId' é obrigatório");
+  if (!quantity || quantity < 1) throw new Error("Quantidade deve ser >= 1");
+
+  const url = `${SPOT_BASE}/${LANG}/calculos/ajax/actualizarGrupoProduto.php?id=${encodeURIComponent(groupId)}`;
   const formData = new URLSearchParams();
   formData.append("qtd", quantity.toString());
 
@@ -372,25 +424,26 @@ async function handleGetOrders(supabase: ReturnType<typeof getSupabaseAdmin>, ye
   const html = await res.text();
   const orders = parseOrdersFromHTML(html);
 
-  // Cache orders in DB
+  // Cache orders in DB (fire-and-forget, don't block response)
   for (const order of orders) {
-    await supabase
+    supabase
       .from("spot_pedidos")
       .upsert(
         {
           spot_order_id: order.id as string,
           status: order.status as string,
           status_color: order.statusColor as string,
-          referencia_cliente: order.reference as string || null,
-          data_pedido: order.date as string || null,
-          valor_total: order.total as number || 0,
-          transportadora: order.carrier as string || null,
-          codigo_rastreamento: order.tracking as string || null,
-          detalhes_url: order.detailsUrl as string || null,
+          referencia_cliente: (order.reference as string) || null,
+          data_pedido: (order.date as string) || null,
+          valor_total: (order.total as number) || 0,
+          transportadora: (order.carrier as string) || null,
+          codigo_rastreamento: (order.tracking as string) || null,
+          detalhes_url: (order.detailsUrl as string) || null,
           last_synced_at: new Date().toISOString(),
         },
         { onConflict: "spot_order_id" }
-      );
+      )
+      .then(() => {});
   }
 
   return { orders, totalPages: parseTotalPages(html) };
@@ -399,7 +452,6 @@ async function handleGetOrders(supabase: ReturnType<typeof getSupabaseAdmin>, ye
 function parseOrdersFromHTML(html: string): Array<Record<string, unknown>> {
   const orders: Array<Record<string, unknown>> = [];
 
-  // Status color mapping
   const statusColors: Record<string, string> = {
     "#00B3B2": "Submetida",
     "#808080": "Em processamento",
@@ -413,42 +465,33 @@ function parseOrdersFromHTML(html: string): Array<Record<string, unknown>> {
     "#DC0000": "Anulada",
   };
 
-  // Parse table rows — each <tr> contains order data
   const rowPattern = /<tr[^>]*class="[^"]*tr[^"]*"[^>]*>([\s\S]*?)<\/tr>/gi;
   let rowMatch;
   while ((rowMatch = rowPattern.exec(html)) !== null) {
     const row = rowMatch[1];
 
-    // Extract status color from span style
     const colorMatch = row.match(/background-color:\s*(#[0-9A-Fa-f]{6})/);
     const statusColor = colorMatch ? colorMatch[1] : "";
     const status = statusColors[statusColor] || "Desconhecido";
 
-    // Extract order number
     const numMatch = row.match(/<td[^>]*>(\d{5,})<\/td>/);
     const orderId = numMatch ? numMatch[1] : "";
 
-    // Extract reference
     const refMatch = row.match(/<td[^>]*class="[^"]*ref[^"]*"[^>]*>([\s\S]*?)<\/td>/i);
     const reference = refMatch ? refMatch[1].replace(/<[^>]+>/g, "").trim() : "";
 
-    // Extract date
     const dateMatch = row.match(/(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2})/);
     const date = dateMatch ? dateMatch[1] : "";
 
-    // Extract total
     const totalMatch = row.match(/R\$\s*([\d.,]+)/);
     const total = totalMatch ? parseFloat(totalMatch[1].replace(".", "").replace(",", ".")) : 0;
 
-    // Extract details URL
     const detailsMatch = row.match(/href="([^"]*encomenda_id=\d+[^"]*)"/);
     const detailsUrl = detailsMatch ? detailsMatch[1] : "";
 
-    // Extract tracking
     const trackingMatch = row.match(/tracking[^>]*>([\s\S]*?)<\/td>/i);
     const tracking = trackingMatch ? trackingMatch[1].replace(/<[^>]+>/g, "").trim() : "";
 
-    // Extract carrier
     const carrierMatch = row.match(/transportadora[^>]*>([\s\S]*?)<\/td>/i);
     const carrier = carrierMatch ? carrierMatch[1].replace(/<[^>]+>/g, "").trim() : "";
 
@@ -499,7 +542,6 @@ function parseFinancialDocsFromHTML(html: string): Record<string, unknown> {
     const cells = row.match(/<td[^>]*>([\s\S]*?)<\/td>/gi) || [];
     const values = cells.map(c => c.replace(/<[^>]+>/g, "").trim());
 
-    // Extract download link
     const downloadMatch = row.match(/download\.php\?id=(\d+)/);
     const downloadId = downloadMatch ? downloadMatch[1] : null;
 
@@ -521,16 +563,13 @@ function parseFinancialDocsFromHTML(html: string): Record<string, unknown> {
 }
 
 async function handleCheckout(supabase: ReturnType<typeof getSupabaseAdmin>, addressId: string) {
-  // Step 1: Go to destino page
   const destinoUrl = `${SPOT_BASE}/${LANG}/loja/destino/`;
   const destinoRes = await spotFetch(supabase, destinoUrl);
   const destinoHtml = await destinoRes.text();
 
-  // Extract hash
   const hashMatch = destinoHtml.match(/name="carrinho_hash"\s+value="([^"]*)"/);
   const hash = hashMatch ? hashMatch[1] : "";
 
-  // Extract available addresses
   const addresses: Array<{id: string; label: string}> = [];
   const addrPattern = /<option\s+value="(\d+)"[^>]*>([\s\S]*?)<\/option>/g;
   let addrMatch;
@@ -555,7 +594,16 @@ Deno.serve(async (req) => {
 
   try {
     const supabase = getSupabaseAdmin();
+
+    // Verify authentication BEFORE processing
+    await verifyAuth(req, supabase);
+
     const { action, ...params } = await req.json();
+
+    // Validate action
+    if (!action || typeof action !== "string" || !VALID_ACTIONS.has(action)) {
+      throw new Error(`Ação inválida: ${action}`);
+    }
 
     let result: unknown;
 
@@ -598,17 +646,20 @@ Deno.serve(async (req) => {
         result = { success: true };
         break;
       default:
-        throw new Error(`Unknown action: ${action}`);
+        throw new Error(`Ação desconhecida: ${action}`);
     }
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
-    const msg = error instanceof Error ? error.message : "Unknown error";
+    const msg = error instanceof Error ? error.message : "Erro desconhecido";
     console.error("SPOT proxy error:", msg);
+
+    const status = msg.includes("Não autorizado") || msg.includes("Sem permissão") ? 403 : 500;
+
     return new Response(JSON.stringify({ error: msg }), {
-      status: 500,
+      status,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

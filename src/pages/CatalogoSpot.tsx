@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { useSpotIntegration, SpotOrder, SpotCartItem, SpotFinancialDoc } from '@/hooks/useSpotIntegration';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -11,10 +11,9 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import {
   Search, ShoppingCart, Package, FileText, CreditCard, Loader2, Plug, Trash2, RefreshCw,
-  ExternalLink, AlertTriangle, CheckCircle2, Clock, Truck
+  ExternalLink, AlertTriangle, CheckCircle2
 } from 'lucide-react';
 
-// Status color map for SPOT orders
 const STATUS_COLORS: Record<string, string> = {
   'Submetida': 'bg-cyan-500',
   'Em processamento': 'bg-gray-500',
@@ -32,6 +31,7 @@ const CatalogoSpot = () => {
   const spot = useSpotIntegration();
   const [activeTab, setActiveTab] = useState('catalogo');
   const [searchQuery, setSearchQuery] = useState('');
+  const [hasSearched, setHasSearched] = useState(false);
   const [searchResults, setSearchResults] = useState<Array<{ line: number; value: string; text: string }>>([]);
   const [cart, setCart] = useState<{ items: SpotCartItem[]; total: number; itemCount: number } | null>(null);
   const [orders, setOrders] = useState<SpotOrder[]>([]);
@@ -41,41 +41,51 @@ const CatalogoSpot = () => {
 
   // Test connection on mount
   useEffect(() => {
+    let cancelled = false;
     spot.testConnection().then(data => {
-      if (data?.success) setConnected(true);
+      if (!cancelled && data?.success) setConnected(true);
     });
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     if (!searchQuery.trim()) return;
     const results = await spot.searchProducts(searchQuery);
+    setHasSearched(true);
     if (results) setSearchResults(results);
-  };
+  }, [searchQuery, spot]);
 
-  const handleAddToCart = async (ref: string) => {
+  const handleAddToCart = useCallback(async (ref: string) => {
     await spot.addToCart(ref, 1, '0', '0');
     loadCart();
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [spot]);
 
-  const loadCart = async () => {
+  const loadCart = useCallback(async () => {
     const data = await spot.getCart();
     if (data) setCart(data);
-  };
+  }, [spot]);
 
-  const loadOrders = async () => {
+  const loadOrders = useCallback(async () => {
     const data = await spot.getOrders(orderYear);
     if (data) setOrders(data.orders);
-  };
+  }, [spot, orderYear]);
 
-  const loadFinancial = async () => {
+  const loadFinancial = useCallback(async () => {
     const data = await spot.getFinancialDocs();
     if (data) setFinancialDocs(data);
-  };
+  }, [spot]);
 
-  const handleRemoveFromCart = async (groupId: string) => {
+  const handleRemoveFromCart = useCallback(async (groupId: string) => {
     await spot.removeFromCart(groupId);
     loadCart();
-  };
+  }, [spot, loadCart]);
+
+  const handleReconnect = useCallback(async () => {
+    const d = await spot.testConnection();
+    if (d?.success) setConnected(true);
+  }, [spot]);
 
   return (
     <MainLayout>
@@ -96,7 +106,7 @@ const CatalogoSpot = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => spot.testConnection().then(d => d?.success && setConnected(true))}
+              onClick={handleReconnect}
               disabled={spot.loading}
             >
               <Plug className="w-4 h-4 mr-2" />
@@ -150,7 +160,7 @@ const CatalogoSpot = () => {
                     onKeyDown={e => e.key === 'Enter' && handleSearch()}
                     className="flex-1"
                   />
-                  <Button onClick={handleSearch} disabled={spot.loading}>
+                  <Button onClick={handleSearch} disabled={spot.loading || !searchQuery.trim()}>
                     {spot.loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                     <span className="ml-2">Buscar</span>
                   </Button>
@@ -187,7 +197,7 @@ const CatalogoSpot = () => {
                                 <ExternalLink className="w-3.5 h-3.5 mr-1" />
                                 Ver
                               </Button>
-                              <Button size="sm" onClick={() => handleAddToCart(ref)}>
+                              <Button size="sm" onClick={() => handleAddToCart(ref)} disabled={spot.loading}>
                                 <ShoppingCart className="w-3.5 h-3.5 mr-1" />
                                 Adicionar
                               </Button>
@@ -199,10 +209,10 @@ const CatalogoSpot = () => {
                   </div>
                 )}
 
-                {searchResults.length === 0 && searchQuery && !spot.loading && (
+                {searchResults.length === 0 && hasSearched && !spot.loading && (
                   <div className="text-center py-8 text-muted-foreground">
                     <Package className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                    <p>Nenhum produto encontrado para "{searchQuery}"</p>
+                    <p>Nenhum produto encontrado para &quot;{searchQuery}&quot;</p>
                     <p className="text-sm mt-1">Tente buscar por referência (ex: 81198) ou nome</p>
                   </div>
                 )}
@@ -259,6 +269,7 @@ const CatalogoSpot = () => {
                               variant="ghost"
                               className="text-destructive hover:text-destructive"
                               onClick={() => handleRemoveFromCart(item.groupId)}
+                              disabled={spot.loading}
                             >
                               <Trash2 className="w-4 h-4" />
                             </Button>
@@ -302,13 +313,13 @@ const CatalogoSpot = () => {
                     Pedidos SPOT
                   </CardTitle>
                   <CardDescription>
-                    Acompanhamento de todos os pedidos da conta brasilmarcas
+                    Acompanhamento de todos os pedidos da conta
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
                   <select
                     value={orderYear}
-                    onChange={e => { setOrderYear(e.target.value); }}
+                    onChange={e => setOrderYear(e.target.value)}
                     className="h-9 rounded-md border border-input bg-background px-3 text-sm"
                   >
                     {[2026, 2025, 2024].map(y => (

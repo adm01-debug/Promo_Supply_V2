@@ -52,7 +52,11 @@ async function callSpotProxy(action: string, params: Record<string, unknown> = {
     body: { action, ...params },
   });
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    // Extract meaningful message from FunctionsHttpError
+    const msg = error.message || 'Erro na comunicação com SPOT';
+    throw new Error(msg);
+  }
   if (data?.error) throw new Error(data.error);
   return data;
 }
@@ -76,7 +80,6 @@ export function useSpotIntegration() {
     }
   }, []);
 
-  // Search products
   const searchProducts = useCallback(async (query: string) => {
     return withLoading(async () => {
       const data = await callSpotProxy('search', { query });
@@ -84,7 +87,6 @@ export function useSpotIntegration() {
     });
   }, [withLoading]);
 
-  // Browse catalog
   const browseCatalog = useCallback(async (filters: Record<string, string> = {}) => {
     return withLoading(async () => {
       const data = await callSpotProxy('catalog', { filters });
@@ -92,7 +94,6 @@ export function useSpotIntegration() {
     });
   }, [withLoading]);
 
-  // Get product detail
   const getProduct = useCallback(async (productId: string) => {
     return withLoading(async () => {
       const data = await callSpotProxy('product', { productId });
@@ -100,7 +101,6 @@ export function useSpotIntegration() {
     });
   }, [withLoading]);
 
-  // Check stock (semáforo)
   const checkStock = useCallback(async (productId: string, quantity: number, opcionais: string[] = []) => {
     return withLoading(async () => {
       const data = await callSpotProxy('stock', { productId, quantity, opcionais });
@@ -108,18 +108,14 @@ export function useSpotIntegration() {
     });
   }, [withLoading]);
 
-  // Add to cart
   const addToCart = useCallback(async (productId: string, quantity: number, opcional0: string, opcional1 = '0') => {
     return withLoading(async () => {
       const data = await callSpotProxy('addToCart', { productId, quantity, opcional0, opcional1 });
-      if (data?.success) {
-        toast.success('Produto adicionado ao carrinho SPOT!');
-      }
+      toast.success('Produto adicionado ao carrinho SPOT!');
       return data;
     });
   }, [withLoading]);
 
-  // Get cart
   const getCart = useCallback(async () => {
     return withLoading(async () => {
       const data = await callSpotProxy('getCart');
@@ -127,23 +123,20 @@ export function useSpotIntegration() {
     });
   }, [withLoading]);
 
-  // Remove from cart
   const removeFromCart = useCallback(async (groupId: string) => {
     return withLoading(async () => {
       const data = await callSpotProxy('removeFromCart', { groupId });
-      if (data?.success) toast.success('Item removido do carrinho');
+      toast.success('Item removido do carrinho');
       return data;
     });
   }, [withLoading]);
 
-  // Update cart quantity
   const updateCartQuantity = useCallback(async (groupId: string, quantity: number) => {
     return withLoading(async () => {
       return await callSpotProxy('updateCartQty', { groupId, quantity });
     });
   }, [withLoading]);
 
-  // Get orders
   const getOrders = useCallback(async (year?: string, page?: string) => {
     return withLoading(async () => {
       const data = await callSpotProxy('orders', { year, page });
@@ -151,7 +144,6 @@ export function useSpotIntegration() {
     });
   }, [withLoading]);
 
-  // Get financial docs
   const getFinancialDocs = useCallback(async () => {
     return withLoading(async () => {
       const data = await callSpotProxy('financial');
@@ -159,14 +151,12 @@ export function useSpotIntegration() {
     });
   }, [withLoading]);
 
-  // Checkout info
   const getCheckoutInfo = useCallback(async (addressId?: string) => {
     return withLoading(async () => {
       return await callSpotProxy('checkout', { addressId });
     });
   }, [withLoading]);
 
-  // Test connection
   const testConnection = useCallback(async () => {
     return withLoading(async () => {
       const data = await callSpotProxy('login');
