@@ -5,6 +5,7 @@ import { fetchAllRows } from '@/lib/paginatedFetch';
 export interface ExecutiveMetrics {
   totalSpend: { value: number; target: number };
   savings: { value: number; target: number };
+  savingsPercent: number;
   ordersThisMonth: { value: number; target: number };
   avgCycleTime: { value: number; target: number };
   supplierCount: { value: number; target: number };
@@ -70,6 +71,7 @@ export function useExecutiveDashboardData() {
     const totalEstimado = sol.reduce((sum, s) => sum + (Number(s.valor_estimado) || 0), 0);
     const totalAprovado = sol.reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
     const savings = totalEstimado > totalAprovado ? totalEstimado - totalAprovado : 0;
+    const savingsPercent = totalEstimado > 0 ? (savings / totalEstimado) * 100 : 0;
 
     const ordersThisMonth = ped.filter(p => p.data_emissao >= monthStart.split('T')[0]).length;
 
@@ -107,6 +109,7 @@ export function useExecutiveDashboardData() {
     return {
       totalSpend: { value: totalSpend, target: totalSpend * 1.02 },
       savings: { value: savings, target: savings * 0.8 },
+      savingsPercent: Math.round(savingsPercent * 10) / 10,
       ordersThisMonth: { value: ordersThisMonth, target: Math.max(ordersThisMonth, 10) },
       avgCycleTime: { value: Math.round(avgCycleTime * 10) / 10, target: 5.0 },
       supplierCount: { value: activeSuppliers, target: 50 },

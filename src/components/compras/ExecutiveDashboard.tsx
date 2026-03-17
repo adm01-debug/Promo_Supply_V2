@@ -358,8 +358,65 @@ export const ExecutiveDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
 
-  // Real data from Supabase (available for future full migration)
-  const { metrics: realMetrics, loading: realDataLoading } = useExecutiveDashboardData();
+  // Real data from Supabase
+  const { metrics: realMetrics, spendByCategory: realSpendByCategory, topSuppliers: realTopSuppliers, loading: realDataLoading } = useExecutiveDashboardData();
+
+  // Use real data when available, fall back to mock data
+  const activeMetrics = useMemo(() => {
+    if (realDataLoading) return { ...executiveMetrics, savingsPercent: 10.0 };
+    const rm = realMetrics;
+    return {
+      totalSpend: { 
+        value: rm.totalSpend.value || executiveMetrics.totalSpend.value, 
+        previousValue: executiveMetrics.totalSpend.previousValue,
+        change: rm.totalSpend.value > 0 ? calculateChange(rm.totalSpend.value, executiveMetrics.totalSpend.previousValue) : executiveMetrics.totalSpend.change,
+        target: rm.totalSpend.target || executiveMetrics.totalSpend.target
+      },
+      savings: { 
+        value: rm.savings.value || executiveMetrics.savings.value, 
+        previousValue: executiveMetrics.savings.previousValue,
+        change: rm.savings.value > 0 ? calculateChange(rm.savings.value, executiveMetrics.savings.previousValue) : executiveMetrics.savings.change,
+        target: rm.savings.target || executiveMetrics.savings.target
+      },
+      savingsPercent: rm.savingsPercent,
+      ordersThisMonth: { 
+        value: rm.ordersThisMonth.value || executiveMetrics.ordersThisMonth.value, 
+        previousValue: executiveMetrics.ordersThisMonth.previousValue,
+        change: rm.ordersThisMonth.value > 0 ? calculateChange(rm.ordersThisMonth.value, executiveMetrics.ordersThisMonth.previousValue) : executiveMetrics.ordersThisMonth.change,
+        target: rm.ordersThisMonth.target || executiveMetrics.ordersThisMonth.target
+      },
+      avgCycleTime: { 
+        value: rm.avgCycleTime.value || executiveMetrics.avgCycleTime.value, 
+        previousValue: executiveMetrics.avgCycleTime.previousValue,
+        change: rm.avgCycleTime.value > 0 ? calculateChange(rm.avgCycleTime.value, executiveMetrics.avgCycleTime.previousValue) : executiveMetrics.avgCycleTime.change,
+        target: rm.avgCycleTime.target || executiveMetrics.avgCycleTime.target
+      },
+      supplierCount: { 
+        value: rm.supplierCount.value || executiveMetrics.supplierCount.value, 
+        previousValue: executiveMetrics.supplierCount.previousValue,
+        change: rm.supplierCount.value > 0 ? calculateChange(rm.supplierCount.value, executiveMetrics.supplierCount.previousValue) : executiveMetrics.supplierCount.change,
+        target: rm.supplierCount.target || executiveMetrics.supplierCount.target
+      },
+      pendingApprovals: { 
+        value: rm.pendingApprovals.value, 
+        previousValue: executiveMetrics.pendingApprovals.previousValue,
+        change: calculateChange(rm.pendingApprovals.value || 1, executiveMetrics.pendingApprovals.previousValue || 1),
+        urgent: rm.pendingApprovals.urgent
+      },
+      overdueOrders: { 
+        value: rm.overdueOrders.value, 
+        previousValue: executiveMetrics.overdueOrders.previousValue,
+        change: calculateChange(rm.overdueOrders.value || 1, executiveMetrics.overdueOrders.previousValue || 1),
+        critical: rm.overdueOrders.critical
+      },
+      contractCompliance: { 
+        value: rm.contractCompliance.value || executiveMetrics.contractCompliance.value, 
+        previousValue: executiveMetrics.contractCompliance.previousValue,
+        change: rm.contractCompliance.value > 0 ? calculateChange(rm.contractCompliance.value, executiveMetrics.contractCompliance.previousValue) : executiveMetrics.contractCompliance.change,
+        target: rm.contractCompliance.target || executiveMetrics.contractCompliance.target
+      }
+    };
+  }, [realMetrics, realDataLoading]);
   
   // Realtime subscriptions
   useRealtimeSubscription({
@@ -695,7 +752,7 @@ export const ExecutiveDashboard = () => {
       )}
 
       {/* Critical Alerts Banner */}
-      {(executiveMetrics.pendingApprovals.urgent > 0 || executiveMetrics.overdueOrders.critical > 0) && (
+      {(activeMetrics.pendingApprovals.urgent > 0 || activeMetrics.overdueOrders.critical > 0) && (
         <Card className="border-destructive bg-destructive/5">
           <CardContent className="p-4">
             <div className="flex items-center gap-4">
@@ -703,7 +760,7 @@ export const ExecutiveDashboard = () => {
               <div className="flex-1">
                 <p className="font-medium text-destructive">Atenção Requerida</p>
                 <p className="text-sm text-muted-foreground">
-                  {executiveMetrics.pendingApprovals.urgent} aprovações urgentes e {executiveMetrics.overdueOrders.critical} pedidos críticos aguardando ação
+                  {activeMetrics.pendingApprovals.urgent} aprovações urgentes e {activeMetrics.overdueOrders.critical} pedidos críticos aguardando ação
                 </p>
               </div>
               <Button variant="destructive" size="sm" onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}>
@@ -722,10 +779,10 @@ export const ExecutiveDashboard = () => {
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
           <MetricCard
             title="Spend Total"
-            value={executiveMetrics.totalSpend.value}
-            previousValue={executiveMetrics.totalSpend.previousValue}
-            change={executiveMetrics.totalSpend.change}
-            target={executiveMetrics.totalSpend.target}
+            value={activeMetrics.totalSpend.value}
+            previousValue={activeMetrics.totalSpend.previousValue}
+            change={activeMetrics.totalSpend.change}
+            target={activeMetrics.totalSpend.target}
             icon={DollarSign}
             format="currency"
             showComparison={showComparison}
@@ -733,10 +790,10 @@ export const ExecutiveDashboard = () => {
           />
           <MetricCard
             title="Economia Realizada"
-            value={executiveMetrics.savings.value}
-            previousValue={executiveMetrics.savings.previousValue}
-            change={executiveMetrics.savings.change}
-            target={executiveMetrics.savings.target}
+            value={activeMetrics.savings.value}
+            previousValue={activeMetrics.savings.previousValue}
+            change={activeMetrics.savings.change}
+            target={activeMetrics.savings.target}
             icon={TrendingUp}
             format="currency"
             showComparison={showComparison}
@@ -744,20 +801,20 @@ export const ExecutiveDashboard = () => {
           />
           <MetricCard
             title="Pedidos no Mês"
-            value={executiveMetrics.ordersThisMonth.value}
-            previousValue={executiveMetrics.ordersThisMonth.previousValue}
-            change={executiveMetrics.ordersThisMonth.change}
-            target={executiveMetrics.ordersThisMonth.target}
+            value={activeMetrics.ordersThisMonth.value}
+            previousValue={activeMetrics.ordersThisMonth.previousValue}
+            change={activeMetrics.ordersThisMonth.change}
+            target={activeMetrics.ordersThisMonth.target}
             icon={ShoppingCart}
             showComparison={showComparison}
             trendData={trendDataSets.orders}
           />
           <MetricCard
             title="Tempo Médio Ciclo"
-            value={executiveMetrics.avgCycleTime.value}
-            previousValue={executiveMetrics.avgCycleTime.previousValue}
-            change={executiveMetrics.avgCycleTime.change}
-            target={executiveMetrics.avgCycleTime.target}
+            value={activeMetrics.avgCycleTime.value}
+            previousValue={activeMetrics.avgCycleTime.previousValue}
+            change={activeMetrics.avgCycleTime.change}
+            target={activeMetrics.avgCycleTime.target}
             icon={Clock}
             format="days"
             showComparison={showComparison}
@@ -768,23 +825,33 @@ export const ExecutiveDashboard = () => {
       </div>
 
       {/* Secondary KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <MetricCard
+          title="Saving %"
+          value={activeMetrics.savingsPercent}
+          change={activeMetrics.savingsPercent > 10 ? activeMetrics.savingsPercent - 10 : 0}
+          target={15}
+          icon={Zap}
+          format="percent"
+          showComparison={showComparison}
+          trendData={trendDataSets.savings.map((s, i) => (trendDataSets.spend[i] > 0 ? (s / trendDataSets.spend[i]) * 100 : 0))}
+        />
         <MetricCard
           title="Base de Fornecedores"
-          value={executiveMetrics.supplierCount.value}
-          previousValue={executiveMetrics.supplierCount.previousValue}
-          change={executiveMetrics.supplierCount.change}
-          target={executiveMetrics.supplierCount.target}
+          value={activeMetrics.supplierCount.value}
+          previousValue={activeMetrics.supplierCount.previousValue}
+          change={activeMetrics.supplierCount.change}
+          target={activeMetrics.supplierCount.target}
           icon={Users}
           showComparison={showComparison}
           trendData={trendDataSets.suppliers}
         />
         <MetricCard
           title="Aprovações Pendentes"
-          value={executiveMetrics.pendingApprovals.value}
-          previousValue={executiveMetrics.pendingApprovals.previousValue}
-          change={executiveMetrics.pendingApprovals.change}
-          urgent={executiveMetrics.pendingApprovals.urgent}
+          value={activeMetrics.pendingApprovals.value}
+          previousValue={activeMetrics.pendingApprovals.previousValue}
+          change={activeMetrics.pendingApprovals.change}
+          urgent={activeMetrics.pendingApprovals.urgent}
           icon={CheckCircle2}
           onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}
           showComparison={showComparison}
@@ -793,10 +860,10 @@ export const ExecutiveDashboard = () => {
         />
         <MetricCard
           title="Pedidos Atrasados"
-          value={executiveMetrics.overdueOrders.value}
-          previousValue={executiveMetrics.overdueOrders.previousValue}
-          change={executiveMetrics.overdueOrders.change}
-          critical={executiveMetrics.overdueOrders.critical}
+          value={activeMetrics.overdueOrders.value}
+          previousValue={activeMetrics.overdueOrders.previousValue}
+          change={activeMetrics.overdueOrders.change}
+          critical={activeMetrics.overdueOrders.critical}
           icon={XCircle}
           showComparison={showComparison}
           invertChange={true}
@@ -804,10 +871,10 @@ export const ExecutiveDashboard = () => {
         />
         <MetricCard
           title="Compliance Contratos"
-          value={executiveMetrics.contractCompliance.value}
-          previousValue={executiveMetrics.contractCompliance.previousValue}
-          change={executiveMetrics.contractCompliance.change}
-          target={executiveMetrics.contractCompliance.target}
+          value={activeMetrics.contractCompliance.value}
+          previousValue={activeMetrics.contractCompliance.previousValue}
+          change={activeMetrics.contractCompliance.change}
+          target={activeMetrics.contractCompliance.target}
           icon={Target}
           format="percent"
           showComparison={showComparison}
