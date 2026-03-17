@@ -9,7 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import { ThemeProvider } from "next-themes";
 import { PageLoader } from "@/components/PageLoader";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { AccessibilityProvider } from "@/components/accessibility/AdvancedAccessibility";
