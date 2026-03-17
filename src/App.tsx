@@ -32,6 +32,7 @@ const DashboardExecutivo = lazy(() => import("./pages/DashboardExecutivo"));
 const BuyerPerformanceDashboard = lazy(() => import("./pages/BuyerPerformanceDashboard"));
 const HistoricoCompras = lazy(() => import("./pages/HistoricoCompras"));
 const Contratos = lazy(() => import("./pages/Contratos"));
+const ComplianceDashboard = lazy(() => import("./pages/ComplianceDashboard"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Seguranca = lazy(() => import("./pages/Seguranca"));
 const CatalogoSpot = lazy(() => import("./pages/CatalogoSpot"));
