@@ -85,7 +85,7 @@ export function useDashboardKPIs() {
 
     const aguardandoCotacao = sol.filter(s => s.status === 'pendente' || s.status === 'em_cotacao').length;
     const aguardandoPagamento = pag.filter(p => p.status === 'pendente').length;
-    const emTransito = ped.filter(p => p.status === 'enviado').length;
+    const emTransito = ped.filter(p => p.status === 'enviado' || p.status === 'em_transito').length;
     const finalizados = ped.filter(p => p.status === 'entregue').length;
 
     const volumeMes = ped
@@ -136,10 +136,10 @@ export function useDashboardKPIs() {
     const pag = pagamentos || [];
     return {
       solicitacao: sol.filter(s => s.status === 'pendente' || s.status === 'em_cotacao').length,
-      cotacao: sol.filter(s => s.status === 'cotada').length,
+      cotacao: sol.filter(s => s.status === 'em_cotacao' || s.status === 'aprovada').length,
       pedido: ped.filter(p => p.status === 'pendente' || p.status === 'aprovado').length,
-      pagamento: pag.filter(p => p.status === 'pendente' || p.status === 'processando').length,
-      transito: ped.filter(p => p.status === 'enviado').length,
+      pagamento: pag.filter(p => p.status === 'pendente' || p.status === 'aprovado' || p.status === 'agendado').length,
+      transito: ped.filter(p => p.status === 'enviado' || p.status === 'em_transito').length,
       entregue: ped.filter(p => p.status === 'entregue').length,
     };
   }, [solicitacoes, pedidos, pagamentos]);
