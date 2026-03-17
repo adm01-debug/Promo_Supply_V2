@@ -441,9 +441,13 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
     <aside 
       data-tour="sidebar"
       className={cn(
-        "fixed left-0 top-0 z-40 h-screen bg-card border-r border-border transition-all duration-300 flex flex-col",
+        "fixed left-0 top-0 z-40 h-screen border-r border-border transition-all duration-300 flex flex-col",
+        "bg-card dark:bg-[hsl(228,30%,7%)]",
         collapsed ? "w-16" : "w-64"
       )}
+      style={{
+        borderRight: '1px solid hsl(var(--border) / 0.6)',
+      }}
     >
       {/* Header */}
       <div className="h-16 border-b border-border flex items-center justify-between px-4 shrink-0">
