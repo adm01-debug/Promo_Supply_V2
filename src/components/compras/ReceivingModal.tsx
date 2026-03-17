@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { Package, Check, AlertCircle, Loader2 } from "lucide-react";
+import { Package, Check, AlertCircle, Loader2, RefreshCw } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -64,6 +64,14 @@ export function ReceivingModal({
   const isComplete = items.every((item) => (receivedQuantities[item.id] || 0) >= item.quantidade);
   const isPartial = totalReceived > 0 && !isComplete;
 
+  const [generateComplementary, setGenerateComplementary] = useState(true);
+
+  const pendingItems = items.filter((item) => {
+    const received = receivedQuantities[item.id] || 0;
+    return received < item.quantidade;
+  });
+  const hasPending = isPartial && pendingItems.length > 0;
+
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
@@ -88,6 +96,65 @@ export function ReceivingModal({
           .eq("id", pedidoId);
       }
 
+      // Auto-generate complementary order for remaining balance
+      if (isPartial && generateComplementary && pendingItems.length > 0) {
+        // Fetch original pedido data
+        const { data: originalPedido } = await supabase
+          .from("pedidos")
+          .select("fornecedor_id, solicitacao_id, cotacao_id, condicao_pagamento, endereco_entrega, observacoes")
+          .eq("id", pedidoId)
+          .single();
+
+        if (originalPedido) {
+          const complementaryItems = pendingItems.map((item) => {
+            const received = receivedQuantities[item.id] || 0;
+            const remaining = item.quantidade - received;
+            return {
+              descricao: item.descricao,
+              quantidade: remaining,
+              unidade: item.unidade || "un",
+              valor_unitario: item.valor_unitario,
+              valor_total: remaining * item.valor_unitario,
+            };
+          });
+
+          const complementaryTotal = complementaryItems.reduce((s, i) => s + i.valor_total, 0);
+
+          // Generate number
+          const { data: numData } = await supabase.rpc("generate_sequential_number", {
+            prefix: "PED",
+            table_name: "pedidos",
+          });
+          const numero = numData || `PED-${Date.now()}`;
+
+          const { data: newPedido, error: pedError } = await supabase
+            .from("pedidos")
+            .insert({
+              numero,
+              fornecedor_id: originalPedido.fornecedor_id,
+              solicitacao_id: originalPedido.solicitacao_id,
+              cotacao_id: originalPedido.cotacao_id,
+              valor_total: complementaryTotal,
+              condicao_pagamento: originalPedido.condicao_pagamento,
+              endereco_entrega: originalPedido.endereco_entrega,
+              observacoes: `Pedido complementar ref. ${pedidoNumero} — saldo de recebimento parcial`,
+              data_previsao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
+            })
+            .select("id")
+            .single();
+
+          if (!pedError && newPedido) {
+            await supabase.from("pedido_itens").insert(
+              complementaryItems.map((item) => ({
+                pedido_id: newPedido.id,
+                ...item,
+              }))
+            );
+            toast.info(`Pedido complementar ${numero} criado com ${complementaryItems.length} item(ns) pendente(s)`);
+          }
+        }
+      }
+
       toast.success(
         isComplete
           ? "Recebimento completo registrado!"
@@ -101,7 +168,7 @@ export function ReceivingModal({
     } finally {
       setSaving(false);
     }
-  }, [items, receivedQuantities, isComplete, isPartial, pedidoId, onSuccess, onOpenChange]);
+  }, [items, receivedQuantities, isComplete, isPartial, pedidoId, pedidoNumero, generateComplementary, pendingItems, onSuccess, onOpenChange]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -190,6 +257,33 @@ export function ReceivingModal({
               );
             })}
           </div>
+
+          {/* Complementary order option */}
+          {hasPending && (
+            <div className="p-3 rounded-lg border border-primary/20 bg-primary/5">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={generateComplementary}
+                  onChange={(e) => setGenerateComplementary(e.target.checked)}
+                  className="mt-0.5 rounded border-border"
+                />
+                <div>
+                  <p className="text-sm font-medium text-foreground flex items-center gap-1.5">
+                    <RefreshCw className="w-3.5 h-3.5 text-primary" />
+                    Gerar pedido complementar para saldo pendente
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {pendingItems.length} item(ns) com saldo:{" "}
+                    {pendingItems.map((item) => {
+                      const remaining = item.quantidade - (receivedQuantities[item.id] || 0);
+                      return `${item.descricao} (${remaining} ${item.unidade || "un"})`;
+                    }).join(", ")}
+                  </p>
+                </div>
+              </label>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="gap-2">
