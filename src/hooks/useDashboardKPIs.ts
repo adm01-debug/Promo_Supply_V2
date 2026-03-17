@@ -85,7 +85,7 @@ export function useDashboardKPIs() {
 
     const aguardandoCotacao = sol.filter(s => s.status === 'pendente' || s.status === 'em_cotacao').length;
     const aguardandoPagamento = pag.filter(p => p.status === 'pendente').length;
-    const emTransito = ped.filter(p => p.status === 'enviado').length;
+    const emTransito = ped.filter(p => p.status === 'enviado' || p.status === 'em_transito').length;
     const finalizados = ped.filter(p => p.status === 'entregue').length;
 
     const volumeMes = ped
