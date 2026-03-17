@@ -144,6 +144,13 @@ const menuGroups = [
         description: "Centros de custo",
         badge: null
       },
+      { 
+        title: "Docs Fiscais", 
+        icon: FileCheck, 
+        href: "/documentos-fiscais",
+        description: "NF-e e conciliação",
+        badge: null
+      },
     ]
   },
   {
