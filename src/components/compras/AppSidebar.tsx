@@ -23,7 +23,11 @@ import {
   HelpCircle,
   Sparkles,
   ShieldCheck,
-  Wallet
+  Wallet,
+  Brain,
+  Columns3,
+  FileCheck,
+  RefreshCw
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -71,6 +75,13 @@ const menuGroups = [
         badge: { count: 5, variant: "default" as const }
       },
       { 
+        title: "Kanban Workflow", 
+        icon: Columns3, 
+        href: "/kanban",
+        description: "Visão visual do fluxo",
+        badge: null
+      },
+      { 
         title: "Cotações", 
         icon: Search, 
         href: "/cotacao",
@@ -78,10 +89,24 @@ const menuGroups = [
         badge: { count: 3, variant: "warning" as const }
       },
       { 
+        title: "Negociação IA", 
+        icon: Brain, 
+        href: "/negociacao-ia",
+        description: "Estratégias com IA",
+        badge: null
+      },
+      { 
         title: "Pedidos", 
         icon: FileText, 
         href: "/pedidos",
         description: "Ordens de compra",
+        badge: null
+      },
+      { 
+        title: "Recompra", 
+        icon: RefreshCw, 
+        href: "/recompra-inteligente",
+        description: "Sugestões automáticas",
         badge: null
       },
       { 
@@ -117,6 +142,13 @@ const menuGroups = [
         icon: Wallet, 
         href: "/orcamentos",
         description: "Centros de custo",
+        badge: null
+      },
+      { 
+        title: "Docs Fiscais", 
+        icon: FileCheck, 
+        href: "/documentos-fiscais",
+        description: "NF-e e conciliação",
         badge: null
       },
     ]

@@ -37,6 +37,10 @@ const Seguranca = lazy(() => import("./pages/Seguranca"));
 const CatalogoSpot = lazy(() => import("./pages/CatalogoSpot"));
 const QualificacaoFornecedores = lazy(() => import("./pages/QualificacaoFornecedores"));
 const Orcamentos = lazy(() => import("./pages/Orcamentos"));
+const NegociacaoIA = lazy(() => import("./pages/NegociacaoIA"));
+const KanbanWorkflow = lazy(() => import("./pages/KanbanWorkflow"));
+const DocumentosFiscais = lazy(() => import("./pages/DocumentosFiscais"));
+const RecompraInteligente = lazy(() => import("./pages/RecompraInteligente"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -242,6 +246,34 @@ const AnimatedRoutes = () => {
             <ProtectedRoute requiredRole={['admin', 'coordinator', 'finance']}>
               <ModuleErrorBoundary module="default">
                 <Orcamentos />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/negociacao-ia" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}>
+              <ModuleErrorBoundary module="cotacoes">
+                <NegociacaoIA />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/kanban" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="solicitacoes">
+                <KanbanWorkflow />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/documentos-fiscais" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer', 'finance']}>
+              <ModuleErrorBoundary module="default">
+                <DocumentosFiscais />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/recompra-inteligente" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}>
+              <ModuleErrorBoundary module="pedidos">
+                <RecompraInteligente />
               </ModuleErrorBoundary>
             </ProtectedRoute>
           } />
