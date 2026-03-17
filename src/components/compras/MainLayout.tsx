@@ -297,4 +297,5 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       )}
     </div>
   );
-};
+});
+MainLayout.displayName = 'MainLayout';

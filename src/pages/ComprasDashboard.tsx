@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, lazy, Suspense, useCallback, memo } from "react";
 import { 
   ClipboardList, 
   Clock, 
@@ -7,42 +7,48 @@ import {
   PiggyBank
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { EnhancedKpiCard } from "@/components/compras/EnhancedKpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
 import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
-import { SLADistributionChart } from "@/components/compras/SLADistributionChart";
 import { CriticalAlertsBar } from "@/components/compras/CriticalAlertsBar";
-import { SupplierAlertsPanel } from "@/components/compras/SupplierAlertsPanel";
-import { SupplierRankingPanel } from "@/components/compras/SupplierRankingPanel";
-import { BuyerPerformancePanel } from "@/components/compras/BuyerPerformancePanel";
-import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
 import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidget";
-import { DeliveryCalendar } from "@/components/compras/DeliveryCalendar";
 import { DraggableDashboard } from "@/components/compras/DraggableDashboard";
-import { DemandPredictionPanel } from "@/components/compras/DemandPredictionPanel";
-import { RiskHeatMap } from "@/components/compras/RiskHeatMap";
-import { PageTransition } from "@/components/animations/MotionComponents";
 import { useDashboardKPIs } from "@/hooks/useDashboardKPIs";
 import { MainLayout } from "@/components/compras/MainLayout";
-import { cn } from "@/lib/utils";
 import { FilterFavoritesManager } from "@/components/compras/FilterFavoritesManager";
 import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
+
+// Lazy load heavy panels that are below the fold
+const SLADistributionChart = lazy(() => import("@/components/compras/SLADistributionChart").then(m => ({ default: m.SLADistributionChart || m.default })));
+const SupplierAlertsPanel = lazy(() => import("@/components/compras/SupplierAlertsPanel").then(m => ({ default: m.SupplierAlertsPanel || m.default })));
+const SupplierRankingPanel = lazy(() => import("@/components/compras/SupplierRankingPanel").then(m => ({ default: m.SupplierRankingPanel || m.default })));
+const BuyerPerformancePanel = lazy(() => import("@/components/compras/BuyerPerformancePanel").then(m => ({ default: m.BuyerPerformancePanel || m.default })));
+const SavingsGoalPanel = lazy(() => import("@/components/compras/SavingsGoalPanel").then(m => ({ default: m.SavingsGoalPanel || m.default })));
+const DeliveryCalendar = lazy(() => import("@/components/compras/DeliveryCalendar").then(m => ({ default: m.DeliveryCalendar || m.default })));
+const DemandPredictionPanel = lazy(() => import("@/components/compras/DemandPredictionPanel").then(m => ({ default: m.DemandPredictionPanel || m.default })));
+const RiskHeatMap = lazy(() => import("@/components/compras/RiskHeatMap").then(m => ({ default: m.RiskHeatMap || m.default })));
+
+const LazyPanel = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+    {children}
+  </Suspense>
+);
 
 const ComprasDashboard = () => {
   const { kpis, pipeline, urgentItems, loading } = useDashboardKPIs();
   const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault } = useDashboardFilters();
   const [currentFilters, setCurrentFilters] = useState({ category: 'all', supplier: 'all', period: '6m', showComparison: true });
 
-  // Realtime: auto-refresh dashboard when data changes
+  // Realtime with debounce to avoid excessive re-renders
   useRealtimeSubscription({
     tables: ['solicitacoes', 'pedidos', 'cotacoes', 'pagamentos', 'notifications'],
+    debounceMs: 2000,
   });
 
-  const getWidgetComponent = (widgetId: string, index: number = 0) => {
+  const getWidgetComponent = useCallback((widgetId: string, index: number = 0) => {
     if (loading && ['kpi-aguardando', 'kpi-volume', 'kpi-economia', 'kpi-sla'].includes(widgetId)) {
       return <Skeleton className="h-32 w-full rounded-xl" />;
     }
@@ -96,7 +102,7 @@ const ComprasDashboard = () => {
           />
         );
       case 'chart-sla':
-        return <SLADistributionChart />;
+        return <LazyPanel><SLADistributionChart /></LazyPanel>;
       case 'chart-pipeline':
         return (
           <Card className="p-6 h-full">
@@ -108,15 +114,15 @@ const ComprasDashboard = () => {
           </Card>
         );
       case 'supplier-alerts':
-        return <SupplierAlertsPanel />;
+        return <LazyPanel><SupplierAlertsPanel /></LazyPanel>;
       case 'supplier-ranking':
-        return <SupplierRankingPanel />;
+        return <LazyPanel><SupplierRankingPanel /></LazyPanel>;
       case 'buyer-performance':
-        return <BuyerPerformancePanel />;
+        return <LazyPanel><BuyerPerformancePanel /></LazyPanel>;
       case 'savings-goal':
-        return <SavingsGoalPanel />;
+        return <LazyPanel><SavingsGoalPanel /></LazyPanel>;
       case 'delivery-calendar':
-        return <DeliveryCalendar />;
+        return <LazyPanel><DeliveryCalendar /></LazyPanel>;
       case 'urgent-items':
         return (
           <Card className="p-6 h-full">
@@ -144,15 +150,15 @@ const ComprasDashboard = () => {
           </Card>
         );
       case 'demand-prediction':
-        return <DemandPredictionPanel />;
+        return <LazyPanel><DemandPredictionPanel /></LazyPanel>;
       case 'risk-heatmap':
-        return <RiskHeatMap />;
+        return <LazyPanel><RiskHeatMap /></LazyPanel>;
       default:
         return null;
     }
-  };
+  }, [loading, kpis, pipeline, urgentItems]);
 
-  const getGridClasses = (size: string) => {
+  const getGridClasses = useCallback((size: string) => {
     switch (size) {
       case 'small': return 'col-span-1';
       case 'medium': return 'col-span-1 lg:col-span-1';
@@ -160,49 +166,21 @@ const ComprasDashboard = () => {
       case 'full': return 'col-span-full';
       default: return 'col-span-1';
     }
-  };
+  }, []);
 
   return (
     <MainLayout>
-      <PageTransition className="space-y-4">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <CriticalAlertsBar />
-        </motion.div>
+      <div className="space-y-4 animate-fade-in">
+        <CriticalAlertsBar />
         
-        <motion.div 
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1, duration: 0.4 }}
-        >
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <motion.h1 
-              className="text-2xl font-bold text-foreground"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-            >
-              Dashboard
-            </motion.h1>
-            <motion.p 
-              className="text-sm text-muted-foreground"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.4 }}
-            >
+            <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+            <p className="text-sm text-muted-foreground">
               Visão geral do sistema de compras
-            </motion.p>
+            </p>
           </div>
-          <motion.div
-            className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3, duration: 0.4 }}
-          >
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
             <FilterFavoritesManager
               favorites={favorites}
               currentFilters={currentFilters}
@@ -218,14 +196,14 @@ const ComprasDashboard = () => {
               loading={filtersLoading}
             />
             <PurchaseClimateWidget />
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         <DraggableDashboard
           renderWidget={getWidgetComponent}
           getGridClasses={getGridClasses}
         />
-      </PageTransition>
+      </div>
     </MainLayout>
   );
 };
