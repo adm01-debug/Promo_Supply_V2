@@ -779,10 +779,10 @@ export const ExecutiveDashboard = () => {
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
           <MetricCard
             title="Spend Total"
-            value={executiveMetrics.totalSpend.value}
-            previousValue={executiveMetrics.totalSpend.previousValue}
-            change={executiveMetrics.totalSpend.change}
-            target={executiveMetrics.totalSpend.target}
+            value={activeMetrics.totalSpend.value}
+            previousValue={activeMetrics.totalSpend.previousValue}
+            change={activeMetrics.totalSpend.change}
+            target={activeMetrics.totalSpend.target}
             icon={DollarSign}
             format="currency"
             showComparison={showComparison}
@@ -790,10 +790,10 @@ export const ExecutiveDashboard = () => {
           />
           <MetricCard
             title="Economia Realizada"
-            value={executiveMetrics.savings.value}
-            previousValue={executiveMetrics.savings.previousValue}
-            change={executiveMetrics.savings.change}
-            target={executiveMetrics.savings.target}
+            value={activeMetrics.savings.value}
+            previousValue={activeMetrics.savings.previousValue}
+            change={activeMetrics.savings.change}
+            target={activeMetrics.savings.target}
             icon={TrendingUp}
             format="currency"
             showComparison={showComparison}
