@@ -82,8 +82,16 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
         end_date: new Date(contract.end_date),
         total_value: Number(contract.total_value),
         payment_terms: contract.payment_terms || "",
-        renewal_type: contract.renewal_type,
-        renewal_notice_days: contract.renewal_notice_days,
+        renewal_type: contract.renewal_type || "manual",
+        renewal_notice_days: contract.renewal_notice_days || 30,
+        sla_delivery_days: contract.sla_delivery_days ?? 30,
+        penalty_rate_per_day: contract.penalty_rate_per_day ?? 0.5,
+        penalty_cap_percent: contract.penalty_cap_percent ?? 20,
+        min_quality_score: contract.min_quality_score ?? 3.0,
+        quality_penalty_percent: contract.quality_penalty_percent ?? 10,
+        return_policy: contract.return_policy || "Itens fora do padrão serão devolvidos com nota de devolução e desconto aplicado no próximo pagamento.",
+        min_supplier_score: contract.min_supplier_score ?? 3.0,
+        auto_block_below_score: contract.auto_block_below_score ?? true,
       });
       // Fetch items
       fetchContractItems(contract.id);
