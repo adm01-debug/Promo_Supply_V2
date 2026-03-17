@@ -5,49 +5,6 @@ import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { VitePWA } from "vite-plugin-pwa";
 
-const getManualChunk = (id: string) => {
-  if (!id.includes("node_modules")) return undefined;
-
-  if (
-    id.includes("react") ||
-    id.includes("scheduler") ||
-    id.includes("react-router")
-  ) {
-    return "vendor-react";
-  }
-
-  if (id.includes("@tanstack/react-query")) return "vendor-query";
-  if (id.includes("@supabase/")) return "vendor-supabase";
-  if (id.includes("framer-motion")) return "vendor-motion";
-  if (id.includes("recharts")) return "vendor-charts";
-  if (id.includes("@dnd-kit/")) return "vendor-dnd";
-
-  if (
-    id.includes("react-hook-form") ||
-    id.includes("@hookform/resolvers") ||
-    id.includes("zod")
-  ) {
-    return "vendor-forms";
-  }
-
-  if (id.includes("@radix-ui/")) return "vendor-ui";
-
-  if (
-    id.includes("date-fns") ||
-    id.includes("clsx") ||
-    id.includes("tailwind-merge") ||
-    id.includes("class-variance-authority") ||
-    id.includes("fuse.js") ||
-    id.includes("lucide-react") ||
-    id.includes("next-themes") ||
-    id.includes("sonner") ||
-    id.includes("zustand")
-  ) {
-    return "vendor-utils";
-  }
-
-  return "vendor";
-};
 
 const handleRollupWarning = (
   warning: RollupLog,
