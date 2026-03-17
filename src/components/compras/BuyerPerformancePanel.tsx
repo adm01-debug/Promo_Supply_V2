@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from "react";
+import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { PiggyBank, TrendingDown, Award, ArrowUp } from "lucide-react";
@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export const BuyerPerformancePanel = forwardRef<HTMLDivElement>((_props, ref) => {
+export const BuyerPerformancePanel = () => {
   const { data: cotacoes, isLoading } = useQuery({
     queryKey: ['buyer-performance-cotacoes'],
     queryFn: async () => {
@@ -76,7 +76,7 @@ export const BuyerPerformancePanel = forwardRef<HTMLDivElement>((_props, ref) =>
 
   if (isLoading) {
     return (
-      <Card ref={ref} className="p-6">
+      <Card className="p-6">
         <Skeleton className="h-6 w-48 mb-4" />
         <div className="grid grid-cols-2 gap-4 mb-6">
           <Skeleton className="h-24" />
@@ -89,7 +89,7 @@ export const BuyerPerformancePanel = forwardRef<HTMLDivElement>((_props, ref) =>
   }
 
   return (
-    <Card ref={ref} className="p-6">
+    <Card className="p-6">
       <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
         <Award className="w-5 h-5 text-amber-500" />
         Performance do Comprador
@@ -168,5 +168,4 @@ export const BuyerPerformancePanel = forwardRef<HTMLDivElement>((_props, ref) =>
       </div>
     </Card>
   );
-});
-BuyerPerformancePanel.displayName = 'BuyerPerformancePanel';
+};
