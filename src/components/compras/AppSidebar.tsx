@@ -141,6 +141,13 @@ const menuGroups = [
         badge: null
       },
       { 
+        title: "Qualificação", 
+        icon: ShieldCheck, 
+        href: "/qualificacao-fornecedores",
+        description: "Homologação",
+        badge: null
+      },
+      { 
         title: "Histórico", 
         icon: ShoppingCart, 
         href: "/historico-compras",
