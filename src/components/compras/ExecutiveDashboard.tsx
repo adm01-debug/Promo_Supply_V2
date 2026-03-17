@@ -752,7 +752,7 @@ export const ExecutiveDashboard = () => {
       )}
 
       {/* Critical Alerts Banner */}
-      {(executiveMetrics.pendingApprovals.urgent > 0 || executiveMetrics.overdueOrders.critical > 0) && (
+      {(activeMetrics.pendingApprovals.urgent > 0 || activeMetrics.overdueOrders.critical > 0) && (
         <Card className="border-destructive bg-destructive/5">
           <CardContent className="p-4">
             <div className="flex items-center gap-4">
@@ -760,7 +760,7 @@ export const ExecutiveDashboard = () => {
               <div className="flex-1">
                 <p className="font-medium text-destructive">Atenção Requerida</p>
                 <p className="text-sm text-muted-foreground">
-                  {executiveMetrics.pendingApprovals.urgent} aprovações urgentes e {executiveMetrics.overdueOrders.critical} pedidos críticos aguardando ação
+                  {activeMetrics.pendingApprovals.urgent} aprovações urgentes e {activeMetrics.overdueOrders.critical} pedidos críticos aguardando ação
                 </p>
               </div>
               <Button variant="destructive" size="sm" onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}>
