@@ -1,8 +1,9 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { fetchAllRows } from '@/lib/paginatedFetch';
 import type { Json } from '@/integrations/supabase/types';
 
 export interface Solicitacao {
