@@ -43,9 +43,9 @@ const mapDbStatusToLegacy = (status: Solicitacao['status']): MockSolicitacao['st
     'em_cotacao': 'EM_COTACAO',
     'aprovada': 'FORNECEDOR_SELECIONADO',
     'em_andamento': 'AGUARDANDO_PAGAMENTO',
-    'concluida': 'PAGO',
-    'rejeitada': 'ENTREGUE', // Map rejeitada to a valid status for display
-    'cancelada': 'ENTREGUE', // Map cancelada to a valid status for display
+    'concluida': 'ENTREGUE',
+    'rejeitada': 'AGUARDANDO_COTACAO',
+    'cancelada': 'AGUARDANDO_COTACAO',
   };
   return mapping[status] || 'AGUARDANDO_COTACAO';
 };

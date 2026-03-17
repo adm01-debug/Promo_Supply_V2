@@ -1,9 +1,8 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 interface AlertResult {
@@ -12,9 +11,29 @@ interface AlertResult {
   pending_approvals: number;
   overdue_payments: number;
   notifications_sent: number;
+  notifications_skipped: number;
 }
 
-serve(async (req) => {
+async function insertIfNotDuplicate(
+  supabase: ReturnType<typeof createClient>,
+  notif: { user_id: string; type: string; title: string; message: string; priority: string; data?: Record<string, unknown>; action_url?: string; action_label?: string },
+  today: string
+): Promise<boolean> {
+  const { data: existing } = await supabase
+    .from('notifications')
+    .select('id')
+    .eq('user_id', notif.user_id)
+    .eq('title', notif.title)
+    .gte('created_at', today)
+    .limit(1);
+
+  if (existing && existing.length > 0) return false;
+
+  const { error } = await supabase.from('notifications').insert(notif);
+  return !error;
+}
+
+Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -37,6 +56,7 @@ serve(async (req) => {
       pending_approvals: 0,
       overdue_payments: 0,
       notifications_sent: 0,
+      notifications_skipped: 0,
     };
 
     // 1. Check for orders with SLA warnings (2 days or less)
@@ -53,21 +73,20 @@ serve(async (req) => {
       result.sla_warnings = ordersWarning?.length || 0;
       console.log(`Found ${result.sla_warnings} orders with SLA warnings`);
 
-      // Create notifications for SLA warnings
       for (const order of ordersWarning || []) {
         if (order.comprador_id) {
-          const { error } = await supabase.from('notifications').insert({
+          const sent = await insertIfNotDuplicate(supabase, {
             user_id: order.comprador_id,
             type: 'sla_warning',
-            title: 'Alerta de SLA',
+            title: `Alerta SLA: ${order.numero}`,
             message: `Pedido ${order.numero} vence em breve (${new Date(order.data_previsao!).toLocaleDateString('pt-BR')})`,
             priority: 'high',
             data: { pedido_id: order.id, pedido_numero: order.numero },
             action_url: `/pedidos?id=${order.id}`,
             action_label: 'Ver Pedido',
-          });
-
-          if (!error) result.notifications_sent++;
+          }, today);
+          if (sent) result.notifications_sent++;
+          else result.notifications_skipped++;
         }
       }
     }
@@ -88,18 +107,18 @@ serve(async (req) => {
       for (const order of ordersCritical || []) {
         if (order.comprador_id) {
           const isOverdue = new Date(order.data_previsao!) < new Date(today);
-          const { error } = await supabase.from('notifications').insert({
+          const sent = await insertIfNotDuplicate(supabase, {
             user_id: order.comprador_id,
             type: isOverdue ? 'sla_overdue' : 'sla_critical',
-            title: isOverdue ? 'SLA Vencido!' : 'SLA Crítico',
+            title: isOverdue ? `SLA Vencido: ${order.numero}` : `SLA Crítico: ${order.numero}`,
             message: `Pedido ${order.numero} ${isOverdue ? 'está atrasado' : 'vence hoje'}!`,
             priority: 'critical',
             data: { pedido_id: order.id, pedido_numero: order.numero },
             action_url: `/pedidos?id=${order.id}`,
             action_label: 'Ver Pedido',
-          });
-
-          if (!error) result.notifications_sent++;
+          }, today);
+          if (sent) result.notifications_sent++;
+          else result.notifications_skipped++;
         }
       }
     }
@@ -118,29 +137,27 @@ serve(async (req) => {
       result.pending_approvals = pendingApprovals?.length || 0;
       console.log(`Found ${result.pending_approvals} pending approvals`);
 
-      // Get all users with approval permissions (admins and coordinators)
       const { data: approvers } = await supabase
         .from('user_roles')
         .select('user_id')
         .in('role', ['admin', 'coordinator']);
 
-      const approverIds = approvers?.map(a => a.user_id) || [];
+      const approverIds = [...new Set((approvers || []).map(a => a.user_id))];
 
-      // Send notification to approvers about pending items
       if (result.pending_approvals > 0 && approverIds.length > 0) {
         for (const approverId of approverIds) {
-          const { error } = await supabase.from('notifications').insert({
+          const sent = await insertIfNotDuplicate(supabase, {
             user_id: approverId,
             type: 'order_created',
-            title: 'Aprovações Pendentes',
+            title: `${result.pending_approvals} Aprovações Pendentes`,
             message: `Existem ${result.pending_approvals} solicitações aguardando aprovação`,
             priority: 'medium',
             data: { count: result.pending_approvals },
             action_url: '/aprovacoes',
             action_label: 'Ver Aprovações',
-          });
-
-          if (!error) result.notifications_sent++;
+          }, today);
+          if (sent) result.notifications_sent++;
+          else result.notifications_skipped++;
         }
       }
     }
@@ -158,26 +175,27 @@ serve(async (req) => {
       result.overdue_payments = overduePayments?.length || 0;
       console.log(`Found ${result.overdue_payments} overdue payments`);
 
-      for (const payment of overduePayments || []) {
-        // Notify finance team
-        const { data: financeUsers } = await supabase
-          .from('user_roles')
-          .select('user_id')
-          .eq('role', 'finance');
+      const { data: financeUsers } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .in('role', ['admin', 'finance']);
 
-        for (const user of financeUsers || []) {
-          const { error } = await supabase.from('notifications').insert({
-            user_id: user.user_id,
+      const financeIds = [...new Set((financeUsers || []).map(u => u.user_id))];
+
+      for (const payment of overduePayments || []) {
+        for (const userId of financeIds) {
+          const sent = await insertIfNotDuplicate(supabase, {
+            user_id: userId,
             type: 'payment_overdue',
-            title: 'Pagamento Vencido',
-            message: `Pagamento ${payment.numero} de ${payment.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} está vencido`,
+            title: `Pagamento Vencido: ${payment.numero}`,
+            message: `Pagamento ${payment.numero} de R$ ${Number(payment.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} está vencido`,
             priority: 'critical',
             data: { pagamento_id: payment.id, pagamento_numero: payment.numero },
             action_url: '/pagamentos',
             action_label: 'Ver Pagamento',
-          });
-
-          if (!error) result.notifications_sent++;
+          }, today);
+          if (sent) result.notifications_sent++;
+          else result.notifications_skipped++;
         }
       }
     }
