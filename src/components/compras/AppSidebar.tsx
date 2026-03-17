@@ -21,7 +21,9 @@ import {
   FileSignature,
   Shield,
   HelpCircle,
-  Sparkles
+  Sparkles,
+  ShieldCheck,
+  Wallet
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
