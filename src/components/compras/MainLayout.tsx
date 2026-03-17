@@ -109,7 +109,7 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
         sidebarCollapsed ? "md:ml-16" : "md:ml-64"
       )}>
         {/* Top Header */}
-        <header className="sticky top-0 z-20 h-14 md:h-16 border-b border-border bg-card/95 backdrop-blur-md supports-[backdrop-filter]:bg-card/80">
+        <header className="sticky top-0 z-20 h-14 md:h-16 border-b border-border/50 bg-card/90 backdrop-blur-xl dark:bg-[hsl(228,28%,6%,0.85)] dark:border-border/30 dark:shadow-[0_4px_24px_hsl(0,0%,0%,0.3)]">
           <div className="h-full px-3 md:px-4 flex items-center justify-between gap-2 md:gap-4">
             {/* Mobile Menu Button */}
             <Button

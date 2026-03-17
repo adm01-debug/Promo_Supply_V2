@@ -56,15 +56,20 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: {
   delay: number;
 }) => (
   <div 
-    className="flex items-start gap-3 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 animate-fade-in"
-    style={{ animationDelay: `${delay}ms` }}
+    className="flex items-start gap-3 p-4 rounded-xl border animate-fade-in"
+    style={{ 
+      animationDelay: `${delay}ms`,
+      background: 'linear-gradient(135deg, hsl(265 90% 66% / 0.08) 0%, hsl(0 0% 100% / 0.03) 100%)',
+      borderColor: 'hsl(265 90% 66% / 0.15)',
+      backdropFilter: 'blur(12px)',
+    }}
   >
-    <div className="p-2 rounded-lg bg-white/20">
+    <div className="p-2 rounded-lg" style={{ background: 'hsl(265 90% 66% / 0.2)' }}>
       <Icon className="w-5 h-5 text-white" />
     </div>
     <div>
       <h3 className="font-semibold text-white text-sm">{title}</h3>
-      <p className="text-white/70 text-xs mt-0.5">{description}</p>
+      <p className="text-white/60 text-xs mt-0.5">{description}</p>
     </div>
   </div>
 );
@@ -217,20 +222,25 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex relative overflow-hidden">
+    <div className="min-h-screen flex relative overflow-hidden bg-background">
       {/* Animated Background Shapes */}
       <FloatingShape className="w-96 h-96 -top-48 -left-48" delay={0} />
       <FloatingShape className="w-64 h-64 top-1/2 -right-32" delay={2} />
       <FloatingShape className="w-80 h-80 -bottom-40 left-1/4" delay={4} />
       
       {/* Left Panel - Branding & Features */}
-      <div className="hidden lg:flex lg:w-1/2 xl:w-[55%] bg-gradient-to-br from-primary via-primary/90 to-primary/80 relative p-12 flex-col justify-between">
-        {/* Decorative Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }} />
-        </div>
+      <div className="hidden lg:flex lg:w-1/2 xl:w-[55%] relative p-12 flex-col justify-between overflow-hidden" style={{
+        background: 'linear-gradient(145deg, hsl(265 90% 20%) 0%, hsl(228 28% 6%) 50%, hsl(265 60% 12%) 100%)',
+      }}>
+        {/* Animated grid pattern */}
+        <div className="absolute inset-0 opacity-[0.07]" style={{
+          backgroundImage: `linear-gradient(hsl(265 90% 66% / 0.3) 1px, transparent 1px), linear-gradient(90deg, hsl(265 90% 66% / 0.3) 1px, transparent 1px)`,
+          backgroundSize: '60px 60px',
+        }} />
+        {/* Radial glow */}
+        <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] rounded-full opacity-20" style={{
+          background: 'radial-gradient(circle, hsl(265 90% 66% / 0.6) 0%, transparent 70%)',
+        }} />
 
         {/* Logo & Title */}
         <div className="relative z-10">
@@ -287,7 +297,9 @@ const Auth = () => {
       </div>
 
       {/* Right Panel - Auth Form */}
-      <div className="flex-1 flex items-center justify-center p-6 md:p-12 bg-background relative">
+      <div className="flex-1 flex items-center justify-center p-6 md:p-12 bg-background relative" style={{
+        background: 'linear-gradient(180deg, hsl(var(--background)) 0%, hsl(228 28% 8%) 100%)',
+      }}>
         {/* Theme Toggle */}
         <div className="absolute top-4 right-4 z-20">
           <ThemeToggle />
@@ -304,9 +316,13 @@ const Auth = () => {
         </div>
         
         <div className="w-full max-w-md">
-          <Card className="border-border/50 shadow-2xl backdrop-blur-sm bg-card/95 overflow-hidden">
-            {/* Gradient top border */}
-            <div className="h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60" />
+          <Card className="border-border/40 shadow-2xl backdrop-blur-xl bg-card/90 overflow-hidden relative" style={{
+            boxShadow: '0 0 0 1px hsl(265 90% 66% / 0.1), 0 24px 48px hsl(0 0% 0% / 0.4), 0 0 80px hsl(265 90% 66% / 0.08)',
+          }}>
+            {/* Gradient top border — neon accent */}
+            <div className="h-[2px]" style={{
+              background: 'linear-gradient(90deg, hsl(265 90% 66%) 0%, hsl(195 95% 52%) 50%, hsl(265 90% 66%) 100%)',
+            }} />
             
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <div className="p-6 pb-4">
