@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/select";
 import { OnboardingTour, solicitacoesTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import type { Solicitacao as MockSolicitacao } from "@/types/legacyTypes";
 
 // Map DB status to legacy status for UI compatibility
