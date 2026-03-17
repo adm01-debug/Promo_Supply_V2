@@ -719,10 +719,81 @@ export type Database = {
           },
         ]
       }
+      contract_penalties: {
+        Row: {
+          applied_to_payment: boolean | null
+          contract_id: string
+          created_at: string
+          days_late: number | null
+          description: string
+          id: string
+          pagamento_id: string | null
+          pedido_id: string | null
+          penalty_percent: number | null
+          penalty_type: string
+          penalty_value: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          applied_to_payment?: boolean | null
+          contract_id: string
+          created_at?: string
+          days_late?: number | null
+          description: string
+          id?: string
+          pagamento_id?: string | null
+          pedido_id?: string | null
+          penalty_percent?: number | null
+          penalty_type?: string
+          penalty_value?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          applied_to_payment?: boolean | null
+          contract_id?: string
+          created_at?: string
+          days_late?: number | null
+          description?: string
+          id?: string
+          pagamento_id?: string | null
+          pedido_id?: string | null
+          penalty_percent?: number | null
+          penalty_type?: string
+          penalty_value?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contract_penalties_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_penalties_pagamento_id_fkey"
+            columns: ["pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "pagamentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contract_penalties_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contracts: {
         Row: {
           approved_at: string | null
           approved_by: string | null
+          auto_block_below_score: boolean | null
           contract_number: string
           contract_type: string
           created_at: string
@@ -730,9 +801,17 @@ export type Database = {
           description: string | null
           end_date: string
           id: string
+          min_quality_score: number | null
+          min_supplier_score: number | null
           payment_terms: string | null
+          penalty_cap_percent: number | null
+          penalty_clauses: Json | null
+          penalty_rate_per_day: number | null
+          quality_penalty_percent: number | null
           renewal_notice_days: number | null
           renewal_type: string | null
+          return_policy: string | null
+          sla_delivery_days: number | null
           start_date: string
           status: string
           supplier_id: string
@@ -744,6 +823,7 @@ export type Database = {
         Insert: {
           approved_at?: string | null
           approved_by?: string | null
+          auto_block_below_score?: boolean | null
           contract_number: string
           contract_type?: string
           created_at?: string
@@ -751,9 +831,17 @@ export type Database = {
           description?: string | null
           end_date: string
           id?: string
+          min_quality_score?: number | null
+          min_supplier_score?: number | null
           payment_terms?: string | null
+          penalty_cap_percent?: number | null
+          penalty_clauses?: Json | null
+          penalty_rate_per_day?: number | null
+          quality_penalty_percent?: number | null
           renewal_notice_days?: number | null
           renewal_type?: string | null
+          return_policy?: string | null
+          sla_delivery_days?: number | null
           start_date: string
           status?: string
           supplier_id: string
@@ -765,6 +853,7 @@ export type Database = {
         Update: {
           approved_at?: string | null
           approved_by?: string | null
+          auto_block_below_score?: boolean | null
           contract_number?: string
           contract_type?: string
           created_at?: string
@@ -772,9 +861,17 @@ export type Database = {
           description?: string | null
           end_date?: string
           id?: string
+          min_quality_score?: number | null
+          min_supplier_score?: number | null
           payment_terms?: string | null
+          penalty_cap_percent?: number | null
+          penalty_clauses?: Json | null
+          penalty_rate_per_day?: number | null
+          quality_penalty_percent?: number | null
           renewal_notice_days?: number | null
           renewal_type?: string | null
+          return_policy?: string | null
+          sla_delivery_days?: number | null
           start_date?: string
           status?: string
           supplier_id?: string

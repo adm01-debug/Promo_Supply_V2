@@ -22,7 +22,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, Plus, Trash2 } from "lucide-react";
+import { CalendarIcon, Plus, Trash2, ShieldAlert, AlertTriangle } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -54,6 +54,15 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
     payment_terms: "",
     renewal_type: "manual",
     renewal_notice_days: 30,
+    // SLA & Penalty
+    sla_delivery_days: 30,
+    penalty_rate_per_day: 0.5,
+    penalty_cap_percent: 20,
+    min_quality_score: 3.0,
+    quality_penalty_percent: 10,
+    return_policy: "Itens fora do padrão serão devolvidos com nota de devolução e desconto aplicado no próximo pagamento.",
+    min_supplier_score: 3.0,
+    auto_block_below_score: true,
   });
 
   const [items, setItems] = useState<ContractItem[]>([]);
@@ -73,8 +82,16 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
         end_date: new Date(contract.end_date),
         total_value: Number(contract.total_value),
         payment_terms: contract.payment_terms || "",
-        renewal_type: contract.renewal_type,
-        renewal_notice_days: contract.renewal_notice_days,
+        renewal_type: contract.renewal_type || "manual",
+        renewal_notice_days: contract.renewal_notice_days || 30,
+        sla_delivery_days: contract.sla_delivery_days ?? 30,
+        penalty_rate_per_day: contract.penalty_rate_per_day ?? 0.5,
+        penalty_cap_percent: contract.penalty_cap_percent ?? 20,
+        min_quality_score: contract.min_quality_score ?? 3.0,
+        quality_penalty_percent: contract.quality_penalty_percent ?? 10,
+        return_policy: contract.return_policy || "Itens fora do padrão serão devolvidos com nota de devolução e desconto aplicado no próximo pagamento.",
+        min_supplier_score: contract.min_supplier_score ?? 3.0,
+        auto_block_below_score: contract.auto_block_below_score ?? true,
       });
       // Fetch items
       fetchContractItems(contract.id);
@@ -109,6 +126,14 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
       payment_terms: "",
       renewal_type: "manual",
       renewal_notice_days: 30,
+      sla_delivery_days: 30,
+      penalty_rate_per_day: 0.5,
+      penalty_cap_percent: 20,
+      min_quality_score: 3.0,
+      quality_penalty_percent: 10,
+      return_policy: "Itens fora do padrão serão devolvidos com nota de devolução e desconto aplicado no próximo pagamento.",
+      min_supplier_score: 3.0,
+      auto_block_below_score: true,
     });
     setItems([]);
   };
@@ -171,6 +196,14 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
         payment_terms: formData.payment_terms || null,
         renewal_type: formData.renewal_type,
         renewal_notice_days: formData.renewal_notice_days,
+        sla_delivery_days: formData.sla_delivery_days,
+        penalty_rate_per_day: formData.penalty_rate_per_day,
+        penalty_cap_percent: formData.penalty_cap_percent,
+        min_quality_score: formData.min_quality_score,
+        quality_penalty_percent: formData.quality_penalty_percent,
+        return_policy: formData.return_policy,
+        min_supplier_score: formData.min_supplier_score,
+        auto_block_below_score: formData.auto_block_below_score,
       };
 
       if (isEditing) {
@@ -440,6 +473,107 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
                 type="number"
                 value={formData.renewal_notice_days}
                 onChange={(e) => setFormData(prev => ({ ...prev, renewal_notice_days: parseInt(e.target.value) || 30 }))}
+              />
+            </div>
+          </div>
+
+          {/* SLA & Penalties Section */}
+          <div className="space-y-4 p-4 border-2 border-destructive/30 rounded-lg bg-destructive/5">
+            <div className="flex items-center gap-2">
+              <ShieldAlert className="w-5 h-5 text-destructive" />
+              <Label className="text-base font-semibold text-destructive">Cláusulas de SLA e Penalidades</Label>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="sla_delivery_days">Prazo Máximo Entrega (dias)</Label>
+                <Input
+                  id="sla_delivery_days"
+                  type="number"
+                  value={formData.sla_delivery_days}
+                  onChange={(e) => setFormData(prev => ({ ...prev, sla_delivery_days: parseInt(e.target.value) || 30 }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="penalty_rate_per_day">Multa por Dia Atraso (%)</Label>
+                <Input
+                  id="penalty_rate_per_day"
+                  type="number"
+                  step="0.1"
+                  value={formData.penalty_rate_per_day}
+                  onChange={(e) => setFormData(prev => ({ ...prev, penalty_rate_per_day: parseFloat(e.target.value) || 0.5 }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="penalty_cap_percent">Teto da Multa (%)</Label>
+                <Input
+                  id="penalty_cap_percent"
+                  type="number"
+                  value={formData.penalty_cap_percent}
+                  onChange={(e) => setFormData(prev => ({ ...prev, penalty_cap_percent: parseFloat(e.target.value) || 20 }))}
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="min_quality_score">Score Mín. Qualidade (1-5)</Label>
+                <Input
+                  id="min_quality_score"
+                  type="number"
+                  step="0.1"
+                  min="1"
+                  max="5"
+                  value={formData.min_quality_score}
+                  onChange={(e) => setFormData(prev => ({ ...prev, min_quality_score: parseFloat(e.target.value) || 3.0 }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="quality_penalty_percent">Multa Qualidade (%)</Label>
+                <Input
+                  id="quality_penalty_percent"
+                  type="number"
+                  value={formData.quality_penalty_percent}
+                  onChange={(e) => setFormData(prev => ({ ...prev, quality_penalty_percent: parseFloat(e.target.value) || 10 }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="min_supplier_score">Score Mín. Fornecedor (1-5)</Label>
+                <Input
+                  id="min_supplier_score"
+                  type="number"
+                  step="0.1"
+                  min="1"
+                  max="5"
+                  value={formData.min_supplier_score}
+                  onChange={(e) => setFormData(prev => ({ ...prev, min_supplier_score: parseFloat(e.target.value) || 3.0 }))}
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
+              <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
+              <div className="flex-1">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.auto_block_below_score}
+                    onChange={(e) => setFormData(prev => ({ ...prev, auto_block_below_score: e.target.checked }))}
+                    className="rounded"
+                  />
+                  <span className="text-sm font-medium">Bloquear fornecedor automaticamente se score cair abaixo do mínimo</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="return_policy">Política de Devolução</Label>
+              <Textarea
+                id="return_policy"
+                value={formData.return_policy}
+                onChange={(e) => setFormData(prev => ({ ...prev, return_policy: e.target.value }))}
+                rows={2}
+                placeholder="Descreva a política de devolução..."
               />
             </div>
           </div>
