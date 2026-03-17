@@ -257,6 +257,33 @@ export function ReceivingModal({
               );
             })}
           </div>
+
+          {/* Complementary order option */}
+          {hasPending && (
+            <div className="p-3 rounded-lg border border-primary/20 bg-primary/5">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={generateComplementary}
+                  onChange={(e) => setGenerateComplementary(e.target.checked)}
+                  className="mt-0.5 rounded border-border"
+                />
+                <div>
+                  <p className="text-sm font-medium text-foreground flex items-center gap-1.5">
+                    <RefreshCw className="w-3.5 h-3.5 text-primary" />
+                    Gerar pedido complementar para saldo pendente
+                  </p>
+                  <p className="text-xs text-muted-foreground mt-0.5">
+                    {pendingItems.length} item(ns) com saldo:{" "}
+                    {pendingItems.map((item) => {
+                      const remaining = item.quantidade - (receivedQuantities[item.id] || 0);
+                      return `${item.descricao} (${remaining} ${item.unidade || "un"})`;
+                    }).join(", ")}
+                  </p>
+                </div>
+              </label>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="gap-2">
