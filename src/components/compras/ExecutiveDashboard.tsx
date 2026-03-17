@@ -363,7 +363,7 @@ export const ExecutiveDashboard = () => {
 
   // Use real data when available, fall back to mock data
   const activeMetrics = useMemo(() => {
-    if (realDataLoading) return executiveMetrics;
+    if (realDataLoading) return { ...executiveMetrics, savingsPercent: 10.0 };
     const rm = realMetrics;
     return {
       totalSpend: { 
