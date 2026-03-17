@@ -450,7 +450,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
       }}
     >
       {/* Header */}
-      <div className="h-16 border-b border-border flex items-center justify-between px-4 shrink-0">
+      <div className="h-16 border-b border-border/60 flex items-center justify-between px-4 shrink-0">
         <AnimatePresence mode="wait">
           {!collapsed ? (
             <motion.div 

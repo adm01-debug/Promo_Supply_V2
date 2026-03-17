@@ -56,15 +56,20 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: {
   delay: number;
 }) => (
   <div 
-    className="flex items-start gap-3 p-4 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 animate-fade-in"
-    style={{ animationDelay: `${delay}ms` }}
+    className="flex items-start gap-3 p-4 rounded-xl border animate-fade-in"
+    style={{ 
+      animationDelay: `${delay}ms`,
+      background: 'linear-gradient(135deg, hsl(265 90% 66% / 0.08) 0%, hsl(0 0% 100% / 0.03) 100%)',
+      borderColor: 'hsl(265 90% 66% / 0.15)',
+      backdropFilter: 'blur(12px)',
+    }}
   >
-    <div className="p-2 rounded-lg bg-white/20">
+    <div className="p-2 rounded-lg" style={{ background: 'hsl(265 90% 66% / 0.2)' }}>
       <Icon className="w-5 h-5 text-white" />
     </div>
     <div>
       <h3 className="font-semibold text-white text-sm">{title}</h3>
-      <p className="text-white/70 text-xs mt-0.5">{description}</p>
+      <p className="text-white/60 text-xs mt-0.5">{description}</p>
     </div>
   </div>
 );
