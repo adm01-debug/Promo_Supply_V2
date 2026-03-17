@@ -20,6 +20,39 @@ export interface Contract {
   created_by?: string | null;
   approved_by?: string | null;
   approved_at?: string | null;
+  // SLA & Penalty fields
+  sla_delivery_days?: number | null;
+  penalty_rate_per_day?: number | null;
+  penalty_cap_percent?: number | null;
+  min_quality_score?: number | null;
+  quality_penalty_percent?: number | null;
+  return_policy?: string | null;
+  min_supplier_score?: number | null;
+  auto_block_below_score?: boolean | null;
+  penalty_clauses?: PenaltyClause[] | null;
+}
+
+export interface PenaltyClause {
+  id: string;
+  type: 'delivery_delay' | 'quality_defect' | 'custom';
+  title: string;
+  description: string;
+}
+
+export interface ContractPenalty {
+  id: string;
+  contract_id: string;
+  pedido_id: string | null;
+  penalty_type: string;
+  description: string;
+  days_late: number;
+  penalty_percent: number;
+  penalty_value: number;
+  applied_to_payment: boolean;
+  pagamento_id: string | null;
+  status: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface ContractItem {
