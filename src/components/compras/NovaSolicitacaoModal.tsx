@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { useImageCompression } from "@/hooks/useImageCompression";
 import { formatBytes } from "@/lib/imageCompression";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import {
   Dialog,
   DialogContent,
@@ -83,6 +85,7 @@ interface NovaSolicitacaoModalProps {
 }
 
 export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<NovaSolicitacaoData>(initialFormData);
@@ -133,16 +136,54 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   };
 
   const handleSubmit = async () => {
+    if (!user) {
+      toast.error('Você precisa estar logado');
+      return;
+    }
     setIsSubmitting(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Generate sequential number from database
+      const { data: numData } = await supabase.rpc('generate_sequential_number', {
+        prefix: 'SOL',
+        table_name: 'solicitacoes',
+      });
+      const numero = numData || `SOL-${Date.now()}`;
+
+      // Map tipo to DB format
+      const tipoMap: Record<string, string> = {
+        PE_LISO: 'material',
+        FAB_LISO: 'material',
+        FAB_PERSONALIZADO: 'servico',
+      };
+
+      // Map prioridade
+      const prioridadeMap: Record<string, string> = {
+        baixa: 'baixa',
+        normal: 'media',
+        alta: 'alta',
+        urgente: 'urgente',
+      };
+
+      const { data, error } = await supabase
+        .from('solicitacoes')
+        .insert({
+          numero,
+          titulo: formData.produto,
+          descricao: formData.observacoes || `${formData.tipo} — Empresa: ${formData.empresa}, Vendedor: ${formData.vendedor}`,
+          tipo: tipoMap[formData.tipo] || 'material',
+          prioridade: prioridadeMap[formData.prioridade] || 'media',
+          quantidade: formData.quantidade,
+          data_necessidade: formData.prazoEntrega || null,
+          solicitante_id: user.id,
+          departamento: formData.empresa,
+        })
+        .select('numero')
+        .single();
+
+      if (error) throw error;
       
-      // Generate a mock order number
-      const orderNumber = `SOL-${Date.now().toString().slice(-6)}`;
-      
-      toast.success(`Solicitação ${orderNumber} criada com sucesso!`, {
+      toast.success(`Solicitação ${data.numero} criada com sucesso!`, {
         description: `${formData.produto} - ${formData.quantidade} unidades`,
       });
       
@@ -152,10 +193,9 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
       setOpen(false);
       onSuccess?.();
       
-    } catch (error) {
-      toast.error('Erro ao criar solicitação', {
-        description: 'Tente novamente em alguns instantes',
-      });
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Erro desconhecido';
+      toast.error('Erro ao criar solicitação: ' + msg);
     } finally {
       setIsSubmitting(false);
     }
