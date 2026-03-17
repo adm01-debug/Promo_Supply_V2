@@ -150,7 +150,7 @@ const Pedidos = () => {
   // Bulk operations
   const { executeAction, convertToBulkItems } = useBulkOperations({
     onDelete: bulkDelete,
-    onUpdateStatus: bulkUpdateStatus,
+    onUpdateStatus: bulkUpdateStatus as (ids: string[], status: string) => Promise<boolean>,
   });
 
   // Bulk actions configuration
