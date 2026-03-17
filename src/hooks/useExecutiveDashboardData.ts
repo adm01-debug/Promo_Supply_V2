@@ -109,6 +109,7 @@ export function useExecutiveDashboardData() {
     return {
       totalSpend: { value: totalSpend, target: totalSpend * 1.02 },
       savings: { value: savings, target: savings * 0.8 },
+      savingsPercent: Math.round(savingsPercent * 10) / 10,
       ordersThisMonth: { value: ordersThisMonth, target: Math.max(ordersThisMonth, 10) },
       avgCycleTime: { value: Math.round(avgCycleTime * 10) / 10, target: 5.0 },
       supplierCount: { value: activeSuppliers, target: 50 },
