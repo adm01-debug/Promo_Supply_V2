@@ -244,17 +244,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     });
   }, [solicitacoes, createSolicitacao]);
 
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('solicitacoes-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'solicitacoes' }, () => {
-        invalidate();
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, invalidate]);
+  // Realtime handled by useRealtimeSubscription in pages that use this hook
 
   return {
     solicitacoes, totalCount, loading: isLoading, error: error?.message || null,
