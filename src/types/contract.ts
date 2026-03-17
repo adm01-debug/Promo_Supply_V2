@@ -31,6 +31,7 @@ export interface Contract {
   auto_block_below_score?: boolean | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   penalty_clauses?: any;
+}
 
 export interface PenaltyClause {
   id: string;
