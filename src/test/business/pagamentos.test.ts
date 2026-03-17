@@ -3,13 +3,13 @@ import { describe, it, expect } from "vitest";
 describe("Pagamentos — Business Logic", () => {
   describe("Payment status transitions", () => {
     const validTransitions: Record<string, string[]> = {
-      pendente: ["aprovado", "cancelado"],
-      aprovado: ["agendado", "pago", "cancelado"],
-      agendado: ["pago", "cancelado"],
+      pendente: ["aprovado", "cancelado", "atrasado"],
+      aprovado: ["agendado", "pago", "cancelado", "atrasado"],
+      agendado: ["pago", "cancelado", "atrasado"],
       pago: ["parcial"],
       parcial: ["pago"],
       cancelado: [],
-      atrasado: ["pago", "cancelado"],
+      atrasado: ["pago", "cancelado", "aprovado"],
     };
 
     const isValid = (from: string, to: string) => validTransitions[from]?.includes(to) ?? false;
