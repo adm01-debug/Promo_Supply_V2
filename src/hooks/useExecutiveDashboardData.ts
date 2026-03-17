@@ -5,6 +5,7 @@ import { fetchAllRows } from '@/lib/paginatedFetch';
 export interface ExecutiveMetrics {
   totalSpend: { value: number; target: number };
   savings: { value: number; target: number };
+  savingsPercent: number;
   ordersThisMonth: { value: number; target: number };
   avgCycleTime: { value: number; target: number };
   supplierCount: { value: number; target: number };
