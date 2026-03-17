@@ -962,6 +962,90 @@ export type Database = {
         }
         Relationships: []
       }
+      fiscal_documents: {
+        Row: {
+          chave_acesso: string | null
+          created_at: string
+          data_emissao: string | null
+          fornecedor_id: string | null
+          id: string
+          numero_nf: string
+          pdf_url: string | null
+          pedido_id: string | null
+          reconciliation_notes: string | null
+          reconciliation_status: string | null
+          serie: string | null
+          status: string
+          updated_at: string
+          uploaded_by: string | null
+          valor_desconto: number | null
+          valor_frete: number | null
+          valor_impostos: number | null
+          valor_produtos: number | null
+          valor_total: number
+          xml_url: string | null
+        }
+        Insert: {
+          chave_acesso?: string | null
+          created_at?: string
+          data_emissao?: string | null
+          fornecedor_id?: string | null
+          id?: string
+          numero_nf: string
+          pdf_url?: string | null
+          pedido_id?: string | null
+          reconciliation_notes?: string | null
+          reconciliation_status?: string | null
+          serie?: string | null
+          status?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          valor_desconto?: number | null
+          valor_frete?: number | null
+          valor_impostos?: number | null
+          valor_produtos?: number | null
+          valor_total?: number
+          xml_url?: string | null
+        }
+        Update: {
+          chave_acesso?: string | null
+          created_at?: string
+          data_emissao?: string | null
+          fornecedor_id?: string | null
+          id?: string
+          numero_nf?: string
+          pdf_url?: string | null
+          pedido_id?: string | null
+          reconciliation_notes?: string | null
+          reconciliation_status?: string | null
+          serie?: string | null
+          status?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          valor_desconto?: number | null
+          valor_frete?: number | null
+          valor_impostos?: number | null
+          valor_produtos?: number | null
+          valor_total?: number
+          xml_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_documents_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_documents_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       fornecedores: {
         Row: {
           api_endpoint: string | null
@@ -1192,6 +1276,60 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      negotiation_analyses: {
+        Row: {
+          analise_texto: string | null
+          cotacao_id: string | null
+          created_at: string
+          created_by: string | null
+          economia_estimada: number | null
+          id: string
+          modelo_ia: string | null
+          score_negociacao: number | null
+          solicitacao_id: string | null
+          sugestoes: Json | null
+        }
+        Insert: {
+          analise_texto?: string | null
+          cotacao_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          economia_estimada?: number | null
+          id?: string
+          modelo_ia?: string | null
+          score_negociacao?: number | null
+          solicitacao_id?: string | null
+          sugestoes?: Json | null
+        }
+        Update: {
+          analise_texto?: string | null
+          cotacao_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          economia_estimada?: number | null
+          id?: string
+          modelo_ia?: string | null
+          score_negociacao?: number | null
+          solicitacao_id?: string | null
+          sugestoes?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "negotiation_analyses_cotacao_id_fkey"
+            columns: ["cotacao_id"]
+            isOneToOne: false
+            referencedRelation: "cotacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "negotiation_analyses_solicitacao_id_fkey"
+            columns: ["solicitacao_id"]
+            isOneToOne: false
+            referencedRelation: "solicitacoes"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notification_preferences: {
         Row: {
@@ -1892,6 +2030,76 @@ export type Database = {
           window_start?: string
         }
         Relationships: []
+      }
+      repurchase_suggestions: {
+        Row: {
+          confianca_score: number | null
+          created_at: string
+          descartado_motivo: string | null
+          fornecedor_id: string | null
+          frequencia_dias: number | null
+          id: string
+          preco_estimado: number | null
+          produto_id: string | null
+          proxima_compra_estimada: string | null
+          quantidade_sugerida: number
+          status: string
+          ultimo_pedido_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          confianca_score?: number | null
+          created_at?: string
+          descartado_motivo?: string | null
+          fornecedor_id?: string | null
+          frequencia_dias?: number | null
+          id?: string
+          preco_estimado?: number | null
+          produto_id?: string | null
+          proxima_compra_estimada?: string | null
+          quantidade_sugerida?: number
+          status?: string
+          ultimo_pedido_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          confianca_score?: number | null
+          created_at?: string
+          descartado_motivo?: string | null
+          fornecedor_id?: string | null
+          frequencia_dias?: number | null
+          id?: string
+          preco_estimado?: number | null
+          produto_id?: string | null
+          proxima_compra_estimada?: string | null
+          quantidade_sugerida?: number
+          status?: string
+          ultimo_pedido_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "repurchase_suggestions_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repurchase_suggestions_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repurchase_suggestions_ultimo_pedido_id_fkey"
+            columns: ["ultimo_pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       role_permissions: {
         Row: {
