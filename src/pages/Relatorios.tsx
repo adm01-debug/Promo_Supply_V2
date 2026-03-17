@@ -9,11 +9,7 @@ import {
   Download,
   PieChart as PieChartIcon,
   ArrowUpRight,
-  ArrowDownRight,
   Star,
-  Filter,
-  Loader2,
-  FileSpreadsheet,
 } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
