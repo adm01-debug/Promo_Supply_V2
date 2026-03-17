@@ -292,7 +292,9 @@ const Auth = () => {
       </div>
 
       {/* Right Panel - Auth Form */}
-      <div className="flex-1 flex items-center justify-center p-6 md:p-12 bg-background relative">
+      <div className="flex-1 flex items-center justify-center p-6 md:p-12 bg-background relative" style={{
+        background: 'linear-gradient(180deg, hsl(var(--background)) 0%, hsl(228 28% 8%) 100%)',
+      }}>
         {/* Theme Toggle */}
         <div className="absolute top-4 right-4 z-20">
           <ThemeToggle />
