@@ -126,6 +126,14 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
       payment_terms: "",
       renewal_type: "manual",
       renewal_notice_days: 30,
+      sla_delivery_days: 30,
+      penalty_rate_per_day: 0.5,
+      penalty_cap_percent: 20,
+      min_quality_score: 3.0,
+      quality_penalty_percent: 10,
+      return_policy: "Itens fora do padrão serão devolvidos com nota de devolução e desconto aplicado no próximo pagamento.",
+      min_supplier_score: 3.0,
+      auto_block_below_score: true,
     });
     setItems([]);
   };
