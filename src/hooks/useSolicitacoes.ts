@@ -254,27 +254,17 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   };
 }
 
-// Hook for KPIs
+// Hook for KPIs — uses optimized paginatedFetch
 export function useSolicitacoesKPIs() {
   const { user } = useAuth();
 
   const { data: kpis = { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 }, isLoading } = useQuery({
     queryKey: ['solicitacoes-kpis', user?.id],
     queryFn: async () => {
-      let allData: { status: string; valor_estimado: number | null }[] = [];
-      let from = 0;
-      const pageSize = 1000;
-      let hasMore = true;
-
-      while (hasMore) {
-        const { data, error } = await supabase
-          .from('solicitacoes').select('status, valor_estimado').range(from, from + pageSize - 1);
-        if (error) throw error;
-        if (!data || data.length === 0) { hasMore = false; break; }
-        allData = [...allData, ...data];
-        if (data.length < pageSize) hasMore = false;
-        from += pageSize;
-      }
+      const allData = await fetchAllRows<{ status: string; valor_estimado: number | null }>(
+        'solicitacoes',
+        'status, valor_estimado'
+      );
 
       return {
         total: allData.length,
