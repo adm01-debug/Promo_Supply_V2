@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, memo } from "react";
 import { useLocation } from "react-router-dom";
 import { AppSidebar } from "@/components/compras/AppSidebar";
 import { RealNotificationCenter } from "@/components/compras/RealNotificationCenter";
@@ -36,7 +36,7 @@ interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-export const MainLayout = ({ children }: MainLayoutProps) => {
+export const MainLayout = memo(({ children }: MainLayoutProps) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -297,4 +297,5 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
       )}
     </div>
   );
-};
+});
+MainLayout.displayName = 'MainLayout';
