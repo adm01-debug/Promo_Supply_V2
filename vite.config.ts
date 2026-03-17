@@ -146,7 +146,6 @@ export default defineConfig(({ mode }) => ({
       onwarn: handleRollupWarning,
       output: {
         chunkFileNames: "assets/[name]-[hash].js",
-        chunkFileNames: "assets/[name]-[hash].js",
         entryFileNames: "assets/[name]-[hash].js",
         assetFileNames: "assets/[name]-[hash][extname]",
       },
