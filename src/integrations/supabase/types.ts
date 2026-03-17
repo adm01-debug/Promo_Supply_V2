@@ -3013,19 +3013,14 @@ export type Database = {
     Views: {
       supplier_compliance_summary: {
         Row: {
-          active_bonifications: number | null
           avaliacao: number | null
           avg_quality_score: number | null
+          bonus_count: number | null
           fornecedor_id: string | null
-          late_deliveries: number | null
-          on_time_deliveries: number | null
-          on_time_rate: number | null
           penalty_count: number | null
           razao_social: string | null
-          rejected_count: number | null
-          supplier_status: string | null
-          total_deliveries: number | null
-          total_inspections: number | null
+          status: string | null
+          total_bonus_value: number | null
           total_penalty_value: number | null
         }
         Relationships: []
