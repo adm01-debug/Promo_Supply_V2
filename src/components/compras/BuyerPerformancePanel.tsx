@@ -89,7 +89,7 @@ export const BuyerPerformancePanel = () => {
   }
 
   return (
-    <Card ref={ref} className="p-6">
+    <Card className="p-6">
       <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
         <Award className="w-5 h-5 text-amber-500" />
         Performance do Comprador
