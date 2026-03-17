@@ -23,7 +23,11 @@ import {
   HelpCircle,
   Sparkles,
   ShieldCheck,
-  Wallet
+  Wallet,
+  Brain,
+  Columns3,
+  FileCheck,
+  RefreshCw
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
