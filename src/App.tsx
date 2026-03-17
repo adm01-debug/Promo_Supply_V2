@@ -44,7 +44,17 @@ const DocumentosFiscais = lazy(() => import("./pages/DocumentosFiscais"));
 const RecompraInteligente = lazy(() => import("./pages/RecompraInteligente"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      gcTime: 5 * 60_000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+    },
+  },
+});
 
 // Page transition variants
 const pageVariants = {
