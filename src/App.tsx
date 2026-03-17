@@ -249,6 +249,34 @@ const AnimatedRoutes = () => {
               </ModuleErrorBoundary>
             </ProtectedRoute>
           } />
+          <Route path="/negociacao-ia" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}>
+              <ModuleErrorBoundary module="cotacoes">
+                <NegociacaoIA />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/kanban" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="solicitacoes">
+                <KanbanWorkflow />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/documentos-fiscais" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer', 'finance']}>
+              <ModuleErrorBoundary module="default">
+                <DocumentosFiscais />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/recompra-inteligente" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}>
+              <ModuleErrorBoundary module="pedidos">
+                <RecompraInteligente />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
