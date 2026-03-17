@@ -1,22 +1,19 @@
-import { useState } from "react";
-import { 
-  BarChart3, 
-  TrendingUp, 
-  TrendingDown,
+import { useState, useMemo } from "react";
+import {
+  BarChart3,
+  TrendingUp,
   DollarSign,
   Package,
   Building2,
   Calendar,
   Download,
-  Filter,
   PieChart as PieChartIcon,
   ArrowUpRight,
   ArrowDownRight,
   Star,
-  Scale,
-  Check,
-  Clock,
-  Boxes
+  Filter,
+  Loader2,
+  FileSpreadsheet,
 } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
@@ -25,228 +22,255 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { Skeleton } from "@/components/ui/skeleton";
 import { SLABySupplierAnalysis } from "@/components/compras/SLABySupplierAnalysis";
 import { AdvancedProcurementKPIs } from "@/components/compras/AdvancedProcurementKPIs";
 import { DemandPredictionPanel } from "@/components/compras/DemandPredictionPanel";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
-  LineChart,
-  Line,
   PieChart,
   Pie,
   Cell,
   Legend,
   Area,
   AreaChart,
-  TooltipProps
+  TooltipProps,
 } from "recharts";
-import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import type { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { exportToCSV } from "@/lib/exportData";
+import { toast } from "sonner";
+import { subMonths, format, startOfMonth, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-// Dados mock para gráficos
-const volumeMensal = [
-  { mes: "Jul", volume: 45000, pedidos: 28 },
-  { mes: "Ago", volume: 52000, pedidos: 35 },
-  { mes: "Set", volume: 48000, pedidos: 31 },
-  { mes: "Out", volume: 61000, pedidos: 42 },
-  { mes: "Nov", volume: 78000, pedidos: 56 },
-  { mes: "Dez", volume: 92000, pedidos: 68 },
-];
+const PERIOD_MAP: Record<string, number> = { "1m": 1, "3m": 3, "6m": 6, "12m": 12 };
+const PIE_COLORS = ["hsl(var(--primary))", "#8b5cf6", "#10b981", "#f59e0b", "#ef4444", "#06b6d4", "#ec4899"];
 
-const economiaGerada = [
-  { mes: "Jul", economia: 3200, percentual: 6.8 },
-  { mes: "Ago", economia: 4100, percentual: 7.3 },
-  { mes: "Set", economia: 3800, percentual: 7.1 },
-  { mes: "Out", economia: 5200, percentual: 7.9 },
-  { mes: "Nov", economia: 6800, percentual: 8.2 },
-  { mes: "Dez", economia: 8500, percentual: 8.5 },
-];
+// ── Helpers ──
+const getDateRange = (periodo: string) => {
+  const months = PERIOD_MAP[periodo] || 6;
+  return subMonths(new Date(), months).toISOString();
+};
 
-const distribuicaoTipo = [
-  { name: "P.E. Liso", value: 45, color: "#3b82f6" },
-  { name: "Fab. Liso", value: 30, color: "#8b5cf6" },
-  { name: "Fab. Personalizado", value: 25, color: "#10b981" },
-];
+const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
+      <p className="font-medium text-foreground text-sm">{label}</p>
+      {payload.map((entry, i) => (
+        <p key={i} className="text-sm" style={{ color: entry.color }}>
+          {entry.name}: {typeof entry.value === "number"
+            ? entry.value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+            : entry.value}
+        </p>
+      ))}
+    </div>
+  );
+};
 
-const distribuicaoStatus = [
-  { name: "Entregue", value: 156, color: "#10b981" },
-  { name: "Em Trânsito", value: 12, color: "#8b5cf6" },
-  { name: "Pagamento", value: 8, color: "#f59e0b" },
-  { name: "Cotação", value: 15, color: "#3b82f6" },
-];
-
-const performanceFornecedores = [
-  { 
-    nome: "XBZ Brindes", 
-    pedidos: 42, 
-    volumeTotal: 128500, 
-    prazoMedio: 2.1,
-    taxaEntrega: 98,
-    rating: 5,
-    economia: 12500
-  },
-  { 
-    nome: "Tech Brindes", 
-    pedidos: 35, 
-    volumeTotal: 98000, 
-    prazoMedio: 2.4,
-    taxaEntrega: 96,
-    rating: 4,
-    economia: 8200
-  },
-  { 
-    nome: "Stricker / Spot Gifts", 
-    pedidos: 31, 
-    volumeTotal: 76500, 
-    prazoMedio: 2.8,
-    taxaEntrega: 97,
-    rating: 4,
-    economia: 6800
-  },
-  { 
-    nome: "Premium Gifts", 
-    pedidos: 28, 
-    volumeTotal: 89000, 
-    prazoMedio: 3.2,
-    taxaEntrega: 99,
-    rating: 5,
-    economia: 9100
-  },
-  { 
-    nome: "Asia Import", 
-    pedidos: 26, 
-    volumeTotal: 54000, 
-    prazoMedio: 4.5,
-    taxaEntrega: 94,
-    rating: 4,
-    economia: 5400
-  },
-  { 
-    nome: "Eco Brindes", 
-    pedidos: 22, 
-    volumeTotal: 42000, 
-    prazoMedio: 3.8,
-    taxaEntrega: 95,
-    rating: 5,
-    economia: 4200
-  },
-];
-
-const topProdutos = [
-  { produto: "Mochila Executiva", quantidade: 2500, valor: 125000 },
-  { produto: "Caneta Metal", quantidade: 8500, valor: 42500 },
-  { produto: "Squeeze 500ml", quantidade: 4200, valor: 50400 },
-  { produto: "Carregador Portátil", quantidade: 1200, valor: 66000 },
-  { produto: "Caderno A5", quantidade: 3500, valor: 52500 },
-];
-
-// Comparativo de preços entre fornecedores
-const comparativoPrecos = [
-  {
-    produto: "Mochila Executiva",
-    categoria: "Bolsas",
-    fornecedores: [
-      { nome: "XBZ Brindes", preco: 45.00, prazo: 2, estoque: 1500, melhorPreco: true },
-      { nome: "Asia Import", preco: 48.50, prazo: 5, estoque: 800, melhorPreco: false },
-      { nome: "Só Marcas", preco: 52.00, prazo: 3, estoque: 1200, melhorPreco: false },
-    ]
-  },
-  {
-    produto: "Caneta Metal Premium",
-    categoria: "Escritório",
-    fornecedores: [
-      { nome: "Stricker / Spot Gifts", preco: 4.50, prazo: 3, estoque: 5000, melhorPreco: true },
-      { nome: "XBZ Brindes", preco: 4.80, prazo: 2, estoque: 3000, melhorPreco: false },
-      { nome: "Asia Import", preco: 5.20, prazo: 5, estoque: 8000, melhorPreco: false },
-    ]
-  },
-  {
-    produto: "Squeeze 500ml",
-    categoria: "Utilidades",
-    fornecedores: [
-      { nome: "Asia Import", preco: 11.00, prazo: 5, estoque: 4000, melhorPreco: true },
-      { nome: "Eco Brindes", preco: 12.50, prazo: 4, estoque: 2000, melhorPreco: false },
-      { nome: "XBZ Brindes", preco: 13.00, prazo: 2, estoque: 1500, melhorPreco: false },
-    ]
-  },
-  {
-    produto: "Carregador Portátil 10000mAh",
-    categoria: "Eletrônicos",
-    fornecedores: [
-      { nome: "Tech Brindes", preco: 52.00, prazo: 3, estoque: 800, melhorPreco: true },
-      { nome: "XBZ Brindes", preco: 58.00, prazo: 2, estoque: 500, melhorPreco: false },
-      { nome: "Asia Import", preco: 55.00, prazo: 6, estoque: 1200, melhorPreco: false },
-    ]
-  },
-  {
-    produto: "Camiseta Polo",
-    categoria: "Têxtil",
-    fornecedores: [
-      { nome: "Estrela Brindes", preco: 38.00, prazo: 7, estoque: 2000, melhorPreco: true },
-      { nome: "Só Marcas", preco: 42.00, prazo: 5, estoque: 1500, melhorPreco: false },
-      { nome: "Premium Gifts", preco: 45.00, prazo: 4, estoque: 800, melhorPreco: false },
-    ]
-  },
-  {
-    produto: "Boné Trucker",
-    categoria: "Têxtil",
-    fornecedores: [
-      { nome: "Estrela Brindes", preco: 16.50, prazo: 5, estoque: 3000, melhorPreco: true },
-      { nome: "Só Marcas", preco: 18.00, prazo: 4, estoque: 2500, melhorPreco: false },
-      { nome: "XBZ Brindes", preco: 19.50, prazo: 2, estoque: 1000, melhorPreco: false },
-    ]
-  },
-];
-
-const comparativoBarChart = [
-  { produto: "Mochila", XBZ: 45, Asia: 48.5, SoMarcas: 52 },
-  { produto: "Caneta", Stricker: 4.5, XBZ: 4.8, Asia: 5.2 },
-  { produto: "Squeeze", Asia: 11, Eco: 12.5, XBZ: 13 },
-  { produto: "Carregador", Tech: 52, XBZ: 58, Asia: 55 },
-  { produto: "Camiseta", Estrela: 38, SoMarcas: 42, Premium: 45 },
-];
-
+// ── Component ──
 const Relatorios = () => {
   const [periodo, setPeriodo] = useState("6m");
   const [activeTab, setActiveTab] = useState("geral");
+  const dateFrom = useMemo(() => getDateRange(periodo), [periodo]);
 
-  // KPIs calculados
-  const totalVolume = volumeMensal.reduce((acc, m) => acc + m.volume, 0);
-  const totalPedidos = volumeMensal.reduce((acc, m) => acc + m.pedidos, 0);
-  const totalEconomia = economiaGerada.reduce((acc, m) => acc + m.economia, 0);
-  const mediaEconomia = economiaGerada.reduce((acc, m) => acc + m.percentual, 0) / economiaGerada.length;
+  // ── Pedidos ──
+  const { data: pedidos, isLoading: loadingPedidos } = useQuery({
+    queryKey: ["report-pedidos", periodo],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("pedidos")
+        .select("id, numero, status, valor_total, data_emissao, fornecedor_id, data_previsao, data_entrega")
+        .gte("created_at", dateFrom)
+        .order("data_emissao", { ascending: true });
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 120000,
+  });
 
-  interface PayloadEntry {
-    color: string;
-    name: string;
-    dataKey: string;
-    value: number;
-  }
+  // ── Fornecedores ──
+  const { data: fornecedores } = useQuery({
+    queryKey: ["report-fornecedores"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("fornecedores")
+        .select("id, razao_social, nome_fantasia, avaliacao, status")
+        .eq("status", "ativo");
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 300000,
+  });
 
-  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
-          <p className="font-medium text-foreground">{label}</p>
-          {(payload as PayloadEntry[]).map((entry, index: number) => (
-            <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: {entry.name.includes("R$") || entry.dataKey === "volume" || entry.dataKey === "economia" 
-                ? `R$ ${entry.value.toLocaleString('pt-BR')}` 
-                : entry.value}
-            </p>
-          ))}
-        </div>
-      );
+  // ── Cotações (economia) ──
+  const { data: cotacoes } = useQuery({
+    queryKey: ["report-cotacoes", periodo],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("cotacoes")
+        .select("id, valor_total, selecionada, desconto_percentual, solicitacao_id, created_at")
+        .gte("created_at", dateFrom);
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 120000,
+  });
+
+  // ── Solicitações (valor_estimado vs valor_aprovado) ──
+  const { data: solicitacoes } = useQuery({
+    queryKey: ["report-solicitacoes", periodo],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("solicitacoes")
+        .select("id, valor_estimado, valor_aprovado, status, created_at, tipo")
+        .gte("created_at", dateFrom);
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 120000,
+  });
+
+  // ── Computed Data ──
+  const stats = useMemo(() => {
+    const peds = pedidos || [];
+    const cots = cotacoes || [];
+    const sols = solicitacoes || [];
+    const forns = fornecedores || [];
+
+    const totalVolume = peds.reduce((s, p) => s + Number(p.valor_total || 0), 0);
+    const totalPedidos = peds.length;
+
+    // Economia from estimado vs aprovado
+    const totalEstimado = sols.reduce((s, sol) => s + (Number(sol.valor_estimado) || 0), 0);
+    const totalAprovado = sols.reduce((s, sol) => s + (Number(sol.valor_aprovado) || 0), 0);
+    const economiaTotal = totalEstimado > totalAprovado ? totalEstimado - totalAprovado : 0;
+    const economiaPct = totalEstimado > 0 ? (economiaTotal / totalEstimado) * 100 : 0;
+
+    const fornAtivos = forns.length;
+    const fornBemAvaliados = forns.filter(f => (f.avaliacao || 0) >= 4).length;
+
+    // Monthly volume chart
+    const monthlyMap = new Map<string, { volume: number; pedidos: number }>();
+    peds.forEach(p => {
+      const key = format(parseISO(p.data_emissao), "MMM/yy", { locale: ptBR });
+      const existing = monthlyMap.get(key) || { volume: 0, pedidos: 0 };
+      existing.volume += Number(p.valor_total || 0);
+      existing.pedidos += 1;
+      monthlyMap.set(key, existing);
+    });
+    const volumeMensal = Array.from(monthlyMap, ([mes, d]) => ({ mes, volume: d.volume, pedidos: d.pedidos }));
+
+    // Monthly savings
+    const savingsMap = new Map<string, { economia: number; count: number }>();
+    sols.forEach(s => {
+      if (!s.valor_estimado || !s.valor_aprovado) return;
+      const est = Number(s.valor_estimado);
+      const apr = Number(s.valor_aprovado);
+      if (est <= apr) return;
+      const key = format(parseISO(s.created_at), "MMM/yy", { locale: ptBR });
+      const existing = savingsMap.get(key) || { economia: 0, count: 0 };
+      existing.economia += est - apr;
+      existing.count += 1;
+      savingsMap.set(key, existing);
+    });
+    const economiaMensal = Array.from(savingsMap, ([mes, d]) => ({ mes, economia: d.economia }));
+
+    // Status distribution (pedidos)
+    const statusMap = new Map<string, number>();
+    peds.forEach(p => statusMap.set(p.status, (statusMap.get(p.status) || 0) + 1));
+    const STATUS_LABELS: Record<string, string> = {
+      pendente: "Pendente", aprovado: "Aprovado", enviado: "Enviado",
+      em_transito: "Em Trânsito", entregue: "Entregue", cancelado: "Cancelado", parcial: "Parcial",
+    };
+    const distribuicaoStatus = Array.from(statusMap, ([name, value]) => ({
+      name: STATUS_LABELS[name] || name, value,
+    }));
+
+    // Tipo distribution (solicitações)
+    const tipoMap = new Map<string, number>();
+    sols.forEach(s => tipoMap.set(s.tipo || "outro", (tipoMap.get(s.tipo || "outro") || 0) + 1));
+    const TIPO_LABELS: Record<string, string> = {
+      material: "Material", servico: "Serviço", emergencia: "Emergência",
+    };
+    const distribuicaoTipo = Array.from(tipoMap, ([name, value]) => ({
+      name: TIPO_LABELS[name] || name, value,
+    }));
+
+    // Supplier performance
+    const supplierPedidos = new Map<string, { pedidos: number; volumeTotal: number; onTime: number; total: number }>();
+    peds.forEach(p => {
+      const existing = supplierPedidos.get(p.fornecedor_id) || { pedidos: 0, volumeTotal: 0, onTime: 0, total: 0 };
+      existing.pedidos += 1;
+      existing.volumeTotal += Number(p.valor_total || 0);
+      if (p.status === "entregue") {
+        existing.total += 1;
+        if (p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao) {
+          existing.onTime += 1;
+        }
+      }
+      supplierPedidos.set(p.fornecedor_id, existing);
+    });
+
+    const fornecedorPerformance = forns
+      .map(f => {
+        const sp = supplierPedidos.get(f.id) || { pedidos: 0, volumeTotal: 0, onTime: 0, total: 0 };
+        return {
+          nome: f.nome_fantasia || f.razao_social,
+          pedidos: sp.pedidos,
+          volumeTotal: sp.volumeTotal,
+          taxaEntrega: sp.total > 0 ? Math.round((sp.onTime / sp.total) * 100) : 0,
+          rating: Number(f.avaliacao || 0),
+        };
+      })
+      .filter(f => f.pedidos > 0)
+      .sort((a, b) => b.volumeTotal - a.volumeTotal)
+      .slice(0, 10);
+
+    return {
+      totalVolume, totalPedidos, economiaTotal, economiaPct,
+      fornAtivos, fornBemAvaliados,
+      volumeMensal, economiaMensal, distribuicaoStatus, distribuicaoTipo,
+      fornecedorPerformance,
+    };
+  }, [pedidos, cotacoes, solicitacoes, fornecedores]);
+
+  // ── Export Handler ──
+  const handleExport = () => {
+    if (!pedidos?.length) {
+      toast.error("Sem dados para exportar");
+      return;
     }
-    return null;
+    const fornMap = new Map(fornecedores?.map(f => [f.id, f.nome_fantasia || f.razao_social]) || []);
+    const exportData = pedidos.map(p => ({
+      numero: p.numero,
+      status: p.status,
+      fornecedor: fornMap.get(p.fornecedor_id) || p.fornecedor_id,
+      valor_total: p.valor_total,
+      data_emissao: p.data_emissao,
+      data_previsao: p.data_previsao || "",
+      data_entrega: p.data_entrega || "",
+    }));
+    exportToCSV(exportData, [
+      { key: "numero", label: "Número" },
+      { key: "status", label: "Status" },
+      { key: "fornecedor", label: "Fornecedor" },
+      { key: "valor_total", label: "Valor Total", formatter: (v) => `R$ ${Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}` },
+      { key: "data_emissao", label: "Data Emissão" },
+      { key: "data_previsao", label: "Previsão" },
+      { key: "data_entrega", label: "Entrega" },
+    ], `relatorio_pedidos_${periodo}`);
+    toast.success("Relatório exportado com sucesso!");
   };
+
+  const isLoading = loadingPedidos;
 
   return (
     <MainLayout>
@@ -262,7 +286,6 @@ const Relatorios = () => {
               Análise de performance, volume de compras e economia gerada
             </p>
           </div>
-
           <div className="flex items-center gap-3">
             <Select value={periodo} onValueChange={setPeriodo}>
               <SelectTrigger className="w-40">
@@ -276,9 +299,9 @@ const Relatorios = () => {
                 <SelectItem value="12m">Último ano</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2" onClick={handleExport} disabled={isLoading}>
               <Download className="w-4 h-4" />
-              Exportar
+              Exportar CSV
             </Button>
           </div>
         </div>
@@ -305,482 +328,270 @@ const Relatorios = () => {
           </TabsContent>
 
           <TabsContent value="geral" className="mt-6 space-y-6">
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-          <Card className="p-3 sm:p-5">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm text-muted-foreground truncate">Volume Total</p>
-                <p className="text-lg sm:text-2xl font-bold text-foreground mt-1 truncate">
-                  R$ {(totalVolume / 1000).toFixed(0)}K
-                </p>
-                <div className="hidden sm:flex items-center gap-1 mt-2 text-success text-xs sm:text-sm">
-                  <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span>+18%</span>
-                </div>
+            {/* KPI Cards */}
+            {isLoading ? (
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {[1,2,3,4].map(i => <Skeleton key={i} className="h-28" />)}
               </div>
-              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-3 sm:p-5">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm text-muted-foreground truncate">Total Pedidos</p>
-                <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{totalPedidos}</p>
-                <div className="hidden sm:flex items-center gap-1 mt-2 text-success text-xs sm:text-sm">
-                  <ArrowUpRight className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span>+24%</span>
-                </div>
-              </div>
-              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
-                <Package className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-3 sm:p-5">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm text-muted-foreground truncate">Economia</p>
-                <p className="text-lg sm:text-2xl font-bold text-foreground mt-1 truncate">
-                  R$ {(totalEconomia / 1000).toFixed(0)}K
-                </p>
-                <div className="hidden sm:flex items-center gap-1 mt-2 text-success text-xs sm:text-sm">
-                  <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span>{mediaEconomia.toFixed(1)}%</span>
-                </div>
-              </div>
-              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-success/10 flex items-center justify-center shrink-0">
-                <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-success" />
-              </div>
-            </div>
-          </Card>
-
-          <Card className="p-3 sm:p-5">
-            <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0 flex-1">
-                <p className="text-xs sm:text-sm text-muted-foreground truncate">Fornecedores</p>
-                <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">
-                  {performanceFornecedores.length}
-                </p>
-                <div className="hidden sm:flex items-center gap-1 mt-2 text-muted-foreground text-xs sm:text-sm">
-                  <Building2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                  <span>{performanceFornecedores.filter(f => f.rating >= 4).length} ★≥4</span>
-                </div>
-              </div>
-              <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
-                <Building2 className="w-4 h-4 sm:w-6 sm:h-6 text-purple-500" />
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Gráficos Principais */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Volume de Compras */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="font-semibold text-foreground">Volume de Compras</h3>
-                <p className="text-sm text-muted-foreground">Evolução mensal do volume</p>
-              </div>
-              <Badge variant="outline">Mensal</Badge>
-            </div>
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={volumeMensal}>
-                  <defs>
-                    <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="mes" className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                  <YAxis className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(v) => `${(v/1000)}k`} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Area 
-                    type="monotone" 
-                    dataKey="volume" 
-                    stroke="hsl(var(--primary))" 
-                    strokeWidth={2}
-                    fill="url(#colorVolume)" 
-                    name="Volume (R$)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-
-          {/* Economia Gerada */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="font-semibold text-foreground">Economia Gerada</h3>
-                <p className="text-sm text-muted-foreground">Economia através de cotações competitivas</p>
-              </div>
-              <Badge variant="outline" className="bg-success/10 text-success border-success/20">
-                +{mediaEconomia.toFixed(1)}%
-              </Badge>
-            </div>
-            <div className="h-72">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={economiaGerada}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                  <XAxis dataKey="mes" className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                  <YAxis className="text-xs" tick={{ fill: 'hsl(var(--muted-foreground))' }} tickFormatter={(v) => `${(v/1000)}k`} />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar 
-                    dataKey="economia" 
-                    fill="hsl(var(--success))" 
-                    radius={[4, 4, 0, 0]}
-                    name="Economia (R$)"
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-        </div>
-
-        {/* Distribuições */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Por Tipo */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="font-semibold text-foreground">Distribuição por Tipo</h3>
-                <p className="text-sm text-muted-foreground">Pedidos por tipo de compra</p>
-              </div>
-              <PieChartIcon className="w-5 h-5 text-muted-foreground" />
-            </div>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={distribuicaoTipo}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={90}
-                    paddingAngle={4}
-                    dataKey="value"
-                  >
-                    {distribuicaoTipo.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend 
-                    verticalAlign="bottom" 
-                    formatter={(value) => <span className="text-sm text-foreground">{value}</span>}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-
-          {/* Por Status */}
-          <Card className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="font-semibold text-foreground">Distribuição por Status</h3>
-                <p className="text-sm text-muted-foreground">Pedidos por estágio do pipeline</p>
-              </div>
-              <PieChartIcon className="w-5 h-5 text-muted-foreground" />
-            </div>
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={distribuicaoStatus}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={90}
-                    paddingAngle={4}
-                    dataKey="value"
-                  >
-                    {distribuicaoStatus.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                  <Legend 
-                    verticalAlign="bottom" 
-                    formatter={(value) => <span className="text-sm text-foreground">{value}</span>}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </Card>
-        </div>
-
-        {/* SLA Analysis by Supplier */}
-        <SLABySupplierAnalysis />
-
-        {/* Performance de Fornecedores */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="font-semibold text-foreground">Performance de Fornecedores</h3>
-              <p className="text-sm text-muted-foreground">Ranking por volume, prazo e economia</p>
-            </div>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Filter className="w-4 h-4" />
-              Filtrar
-            </Button>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Fornecedor</th>
-                  <th className="text-center py-3 px-4 text-sm font-medium text-muted-foreground">Pedidos</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">Volume Total</th>
-                  <th className="text-center py-3 px-4 text-sm font-medium text-muted-foreground">Prazo Médio</th>
-                  <th className="text-center py-3 px-4 text-sm font-medium text-muted-foreground">Taxa Entrega</th>
-                  <th className="text-center py-3 px-4 text-sm font-medium text-muted-foreground">Rating</th>
-                  <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">Economia</th>
-                </tr>
-              </thead>
-              <tbody>
-                {performanceFornecedores.map((fornecedor, index) => (
-                  <tr key={fornecedor.nome} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white ${
-                          index === 0 ? 'bg-yellow-500' : 
-                          index === 1 ? 'bg-gray-400' : 
-                          index === 2 ? 'bg-amber-600' : 'bg-muted-foreground/30'
-                        }`}>
-                          {index + 1}
-                        </div>
-                        <span className="font-medium text-foreground">{fornecedor.nome}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4 text-center">
-                      <Badge variant="secondary">{fornecedor.pedidos}</Badge>
-                    </td>
-                    <td className="py-4 px-4 text-right font-medium text-foreground">
-                      R$ {fornecedor.volumeTotal.toLocaleString('pt-BR')}
-                    </td>
-                    <td className="py-4 px-4 text-center">
-                      <span className={`font-medium ${fornecedor.prazoMedio <= 3 ? 'text-success' : 'text-orange-500'}`}>
-                        {fornecedor.prazoMedio} dias
-                      </span>
-                    </td>
-                    <td className="py-4 px-4">
-                      <div className="flex items-center gap-2">
-                        <Progress value={fornecedor.taxaEntrega} className="h-2 flex-1" />
-                        <span className="text-sm font-medium text-foreground w-12 text-right">
-                          {fornecedor.taxaEntrega}%
-                        </span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-4 text-center">
-                      <div className="flex items-center justify-center gap-1">
-                        {Array.from({ length: fornecedor.rating }).map((_, i) => (
-                          <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                        ))}
-                      </div>
-                    </td>
-                    <td className="py-4 px-4 text-right">
-                      <span className="font-medium text-success">
-                        R$ {fornecedor.economia.toLocaleString('pt-BR')}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-
-        {/* Top Produtos */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="font-semibold text-foreground">Top Produtos</h3>
-              <p className="text-sm text-muted-foreground">Produtos mais comprados no período</p>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            {topProdutos.map((produto, index) => (
-              <div key={produto.produto} className="flex items-center gap-4">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
-                  index === 0 ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
-                }`}>
-                  {index + 1}
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-medium text-foreground">{produto.produto}</span>
-                    <span className="text-sm text-muted-foreground">{produto.quantidade.toLocaleString('pt-BR')} un</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Progress value={(produto.valor / topProdutos[0].valor) * 100} className="h-2 flex-1" />
-                    <span className="text-sm font-medium text-foreground w-24 text-right">
-                      R$ {produto.valor.toLocaleString('pt-BR')}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        {/* Comparativo de Preços */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="font-semibold text-foreground flex items-center gap-2">
-                <Scale className="w-5 h-5 text-primary" />
-                Comparativo de Preços entre Fornecedores
-              </h3>
-              <p className="text-sm text-muted-foreground">Compare preços do mesmo produto em diferentes fornecedores</p>
-            </div>
-            <Button variant="outline" size="sm" className="gap-2">
-              <Filter className="w-4 h-4" />
-              Filtrar categoria
-            </Button>
-          </div>
-
-          <div className="space-y-6">
-            {comparativoPrecos.map((item) => {
-              const menorPreco = Math.min(...item.fornecedores.map(f => f.preco));
-              const maiorPreco = Math.max(...item.fornecedores.map(f => f.preco));
-              const economiaMaxima = ((maiorPreco - menorPreco) / maiorPreco * 100).toFixed(1);
-
-              return (
-                <div key={item.produto} className="border border-border rounded-lg p-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <div>
-                      <h4 className="font-medium text-foreground">{item.produto}</h4>
-                      <Badge variant="outline" className="mt-1 text-xs">{item.categoria}</Badge>
+            ) : (
+              <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+                <Card className="p-3 sm:p-5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground">Volume Total</p>
+                      <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">
+                        R$ {(stats.totalVolume / 1000).toFixed(0)}K
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">{stats.totalPedidos} pedidos</p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-xs text-muted-foreground">Economia potencial</p>
-                      <p className="text-lg font-bold text-success">até {economiaMaxima}%</p>
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
+                      <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
                     </div>
                   </div>
+                </Card>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    {item.fornecedores.map((fornecedor, idx) => (
-                      <div 
-                        key={fornecedor.nome}
-                        className={`relative p-4 rounded-lg border transition-all ${
-                          fornecedor.melhorPreco 
-                            ? 'border-success bg-success/5 ring-1 ring-success/20' 
-                            : 'border-border bg-muted/30'
-                        }`}
-                      >
-                        {fornecedor.melhorPreco && (
-                          <div className="absolute -top-2 -right-2">
-                            <Badge className="bg-success text-success-foreground text-xs gap-1">
-                              <Check className="w-3 h-3" />
-                              Melhor preço
-                            </Badge>
-                          </div>
-                        )}
-                        
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                            idx === 0 ? 'bg-yellow-500/20 text-yellow-600' :
-                            idx === 1 ? 'bg-gray-200 text-gray-600' :
-                            'bg-amber-600/20 text-amber-700'
-                          }`}>
-                            {idx + 1}º
-                          </div>
-                          <span className="font-medium text-foreground text-sm">{fornecedor.nome}</span>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <DollarSign className="w-3 h-3" />
-                              Preço unitário
-                            </span>
-                            <span className={`font-bold ${fornecedor.melhorPreco ? 'text-success' : 'text-foreground'}`}>
-                              R$ {fornecedor.preco.toFixed(2)}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              Prazo
-                            </span>
-                            <span className="text-sm text-foreground">{fornecedor.prazo} dias</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Boxes className="w-3 h-3" />
-                              Estoque
-                            </span>
-                            <span className="text-sm text-foreground">{fornecedor.estoque.toLocaleString('pt-BR')} un</span>
-                          </div>
-                        </div>
-
-                        {!fornecedor.melhorPreco && (
-                          <div className="mt-3 pt-3 border-t border-border">
-                            <p className="text-xs text-muted-foreground">
-                              +R$ {(fornecedor.preco - menorPreco).toFixed(2)} vs melhor preço
-                              <span className="text-orange-500 ml-1">
-                                (+{((fornecedor.preco - menorPreco) / menorPreco * 100).toFixed(1)}%)
-                              </span>
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                <Card className="p-3 sm:p-5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground">Total Pedidos</p>
+                      <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{stats.totalPedidos}</p>
+                      <p className="text-xs text-muted-foreground mt-1">no período</p>
+                    </div>
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
+                      <Package className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
+                    </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
+                </Card>
 
-        {/* Gráfico Comparativo de Preços */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="font-semibold text-foreground">Comparativo Visual de Preços</h3>
-              <p className="text-sm text-muted-foreground">Preços por produto e fornecedor</p>
+                <Card className="p-3 sm:p-5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground">Economia</p>
+                      <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">
+                        R$ {(stats.economiaTotal / 1000).toFixed(0)}K
+                      </p>
+                      <div className="flex items-center gap-1 mt-1 text-emerald-600 text-xs">
+                        <ArrowUpRight className="w-3 h-3" />
+                        <span>{stats.economiaPct.toFixed(1)}%</span>
+                      </div>
+                    </div>
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+                      <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-emerald-500" />
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-3 sm:p-5">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs sm:text-sm text-muted-foreground">Fornecedores</p>
+                      <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{stats.fornAtivos}</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {stats.fornBemAvaliados} ★≥4
+                      </p>
+                    </div>
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
+                      <Building2 className="w-4 h-4 sm:w-6 sm:h-6 text-purple-500" />
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            )}
+
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Volume de Compras */}
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="font-semibold text-foreground">Volume de Compras</h3>
+                    <p className="text-sm text-muted-foreground">Evolução mensal do volume</p>
+                  </div>
+                  <Badge variant="outline">Mensal</Badge>
+                </div>
+                <div className="h-72">
+                  {stats.volumeMensal.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={stats.volumeMensal}>
+                        <defs>
+                          <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                        <XAxis dataKey="mes" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                        <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Area type="monotone" dataKey="volume" stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#colorVolume)" name="Volume (R$)" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+                      Sem dados de pedidos no período
+                    </div>
+                  )}
+                </div>
+              </Card>
+
+              {/* Economia Mensal */}
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="font-semibold text-foreground">Economia Gerada</h3>
+                    <p className="text-sm text-muted-foreground">Economia por cotações competitivas</p>
+                  </div>
+                  <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+                    {stats.economiaPct.toFixed(1)}%
+                  </Badge>
+                </div>
+                <div className="h-72">
+                  {stats.economiaMensal.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={stats.economiaMensal}>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
+                        <XAxis dataKey="mes" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
+                        <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Bar dataKey="economia" fill="#10b981" radius={[4, 4, 0, 0]} name="Economia (R$)" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+                      Sem dados de economia no período
+                    </div>
+                  )}
+                </div>
+              </Card>
             </div>
-          </div>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={comparativoBarChart} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-                <XAxis type="number" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} tickFormatter={(v) => `R$ ${v}`} />
-                <YAxis dataKey="produto" type="category" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} width={80} />
-                <Tooltip 
-                  formatter={(value: number) => `R$ ${value.toFixed(2)}`}
-                  contentStyle={{ 
-                    backgroundColor: 'hsl(var(--popover))', 
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Legend />
-                <Bar dataKey="XBZ" fill="#3b82f6" name="XBZ Brindes" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="Asia" fill="#10b981" name="Asia Import" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="Stricker" fill="#8b5cf6" name="Stricker" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="Tech" fill="#f59e0b" name="Tech Brindes" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="Eco" fill="#06b6d4" name="Eco Brindes" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="SoMarcas" fill="#ec4899" name="Só Marcas" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="Premium" fill="#84cc16" name="Premium Gifts" radius={[0, 4, 4, 0]} />
-                <Bar dataKey="Estrela" fill="#f97316" name="Estrela Brindes" radius={[0, 4, 4, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+
+            {/* Distributions */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="font-semibold text-foreground">Distribuição por Tipo</h3>
+                    <p className="text-sm text-muted-foreground">Solicitações por tipo de compra</p>
+                  </div>
+                  <PieChartIcon className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <div className="h-64">
+                  {stats.distribuicaoTipo.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={stats.distribuicaoTipo} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={4} dataKey="value">
+                          {stats.distribuicaoTipo.map((_, i) => (
+                            <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend verticalAlign="bottom" formatter={(v) => <span className="text-sm text-foreground">{v}</span>} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Sem dados</div>
+                  )}
+                </div>
+              </Card>
+
+              <Card className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="font-semibold text-foreground">Distribuição por Status</h3>
+                    <p className="text-sm text-muted-foreground">Pedidos por estágio do pipeline</p>
+                  </div>
+                  <PieChartIcon className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <div className="h-64">
+                  {stats.distribuicaoStatus.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={stats.distribuicaoStatus} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={4} dataKey="value">
+                          {stats.distribuicaoStatus.map((_, i) => (
+                            <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                        <Legend verticalAlign="bottom" formatter={(v) => <span className="text-sm text-foreground">{v}</span>} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Sem dados</div>
+                  )}
+                </div>
+              </Card>
+            </div>
+
+            {/* SLA Analysis */}
+            <SLABySupplierAnalysis />
+
+            {/* Supplier Performance Table */}
+            <Card className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="font-semibold text-foreground">Performance de Fornecedores</h3>
+                  <p className="text-sm text-muted-foreground">Ranking por volume e entrega no período</p>
+                </div>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-border">
+                      <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Fornecedor</th>
+                      <th className="text-center py-3 px-4 text-sm font-medium text-muted-foreground">Pedidos</th>
+                      <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">Volume Total</th>
+                      <th className="text-center py-3 px-4 text-sm font-medium text-muted-foreground">Taxa Entrega</th>
+                      <th className="text-center py-3 px-4 text-sm font-medium text-muted-foreground">Rating</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {stats.fornecedorPerformance.length > 0 ? (
+                      stats.fornecedorPerformance.map((f, idx) => (
+                        <tr key={f.nome} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
+                          <td className="py-4 px-4">
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white ${
+                                idx === 0 ? "bg-yellow-500" : idx === 1 ? "bg-gray-400" : idx === 2 ? "bg-amber-600" : "bg-muted-foreground/30"
+                              }`}>
+                                {idx + 1}
+                              </div>
+                              <span className="font-medium text-foreground">{f.nome}</span>
+                            </div>
+                          </td>
+                          <td className="py-4 px-4 text-center">
+                            <Badge variant="secondary">{f.pedidos}</Badge>
+                          </td>
+                          <td className="py-4 px-4 text-right font-medium text-foreground">
+                            R$ {f.volumeTotal.toLocaleString("pt-BR")}
+                          </td>
+                          <td className="py-4 px-4">
+                            <div className="flex items-center gap-2">
+                              <Progress value={f.taxaEntrega} className="h-2 flex-1" />
+                              <span className="text-sm font-medium text-foreground w-12 text-right">{f.taxaEntrega}%</span>
+                            </div>
+                          </td>
+                          <td className="py-4 px-4 text-center">
+                            <div className="flex items-center justify-center gap-0.5">
+                              {Array.from({ length: Math.round(f.rating) }).map((_, i) => (
+                                <Star key={i} className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                              ))}
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={5} className="py-8 text-center text-muted-foreground text-sm">
+                          Sem dados de fornecedores no período
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
           </TabsContent>
 
-          {/* Tab: Previsão IA */}
           <TabsContent value="previsao" className="mt-6">
             <DemandPredictionPanel />
           </TabsContent>
