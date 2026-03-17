@@ -37,6 +37,10 @@ const Seguranca = lazy(() => import("./pages/Seguranca"));
 const CatalogoSpot = lazy(() => import("./pages/CatalogoSpot"));
 const QualificacaoFornecedores = lazy(() => import("./pages/QualificacaoFornecedores"));
 const Orcamentos = lazy(() => import("./pages/Orcamentos"));
+const NegociacaoIA = lazy(() => import("./pages/NegociacaoIA"));
+const KanbanWorkflow = lazy(() => import("./pages/KanbanWorkflow"));
+const DocumentosFiscais = lazy(() => import("./pages/DocumentosFiscais"));
+const RecompraInteligente = lazy(() => import("./pages/RecompraInteligente"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
