@@ -65,23 +65,21 @@ const pageVariants = {
   },
 };
 
-// Animated Routes Component
+// Optimized Routes — removed AnimatePresence exit to avoid double-renders
 const AnimatedRoutes = () => {
   const location = useLocation();
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={location.pathname}
-        variants={pageVariants}
-        initial="initial"
-        animate="enter"
-        exit="exit"
-        className="w-full min-h-screen"
-      >
-        <Routes location={location}>
-          {/* Public route */}
-          <Route path="/auth" element={<Auth />} />
+    <motion.div
+      key={location.pathname}
+      variants={pageVariants}
+      initial="initial"
+      animate="enter"
+      className="w-full min-h-screen"
+    >
+      <Routes location={location}>
+        {/* Public route */}
+        <Route path="/auth" element={<Auth />} />
           
           {/* Protected routes with Module Error Boundaries */}
           <Route path="/" element={
