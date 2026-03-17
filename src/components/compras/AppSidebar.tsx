@@ -21,7 +21,9 @@ import {
   FileSignature,
   Shield,
   HelpCircle,
-  Sparkles
+  Sparkles,
+  ShieldCheck,
+  Wallet
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -110,6 +112,13 @@ const menuGroups = [
         description: "Gestão contratos",
         badge: null
       },
+      { 
+        title: "Orçamentos", 
+        icon: Wallet, 
+        href: "/orcamentos",
+        description: "Centros de custo",
+        badge: null
+      },
     ]
   },
   {
@@ -136,6 +145,13 @@ const menuGroups = [
         icon: Users, 
         href: "/supplier-performance",
         description: "Scorecard e riscos",
+        badge: null
+      },
+      { 
+        title: "Qualificação", 
+        icon: ShieldCheck, 
+        href: "/qualificacao-fornecedores",
+        description: "Homologação",
         badge: null
       },
       { 

@@ -920,6 +920,48 @@ export type Database = {
         }
         Relationships: []
       }
+      department_budgets: {
+        Row: {
+          ano: number
+          centro_custo: string
+          created_at: string
+          created_by: string | null
+          departamento: string
+          id: string
+          mes: number | null
+          updated_at: string
+          valor_comprometido: number
+          valor_total: number
+          valor_utilizado: number
+        }
+        Insert: {
+          ano?: number
+          centro_custo: string
+          created_at?: string
+          created_by?: string | null
+          departamento: string
+          id?: string
+          mes?: number | null
+          updated_at?: string
+          valor_comprometido?: number
+          valor_total?: number
+          valor_utilizado?: number
+        }
+        Update: {
+          ano?: number
+          centro_custo?: string
+          created_at?: string
+          created_by?: string | null
+          departamento?: string
+          id?: string
+          mes?: number | null
+          updated_at?: string
+          valor_comprometido?: number
+          valor_total?: number
+          valor_utilizado?: number
+        }
+        Relationships: []
+      }
       fornecedores: {
         Row: {
           api_endpoint: string | null
@@ -2379,6 +2421,10 @@ export type Database = {
       calculate_supplier_qualification_score: {
         Args: { p_fornecedor_id: string }
         Returns: number
+      }
+      check_budget_availability: {
+        Args: { p_centro_custo: string; p_valor: number }
+        Returns: Json
       }
       check_escalation: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }

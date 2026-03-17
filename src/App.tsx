@@ -35,6 +35,8 @@ const Contratos = lazy(() => import("./pages/Contratos"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Seguranca = lazy(() => import("./pages/Seguranca"));
 const CatalogoSpot = lazy(() => import("./pages/CatalogoSpot"));
+const QualificacaoFornecedores = lazy(() => import("./pages/QualificacaoFornecedores"));
+const Orcamentos = lazy(() => import("./pages/Orcamentos"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient();
@@ -226,6 +228,20 @@ const AnimatedRoutes = () => {
             <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}>
               <ModuleErrorBoundary module="fornecedores">
                 <CatalogoSpot />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/qualificacao-fornecedores" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator']}>
+              <ModuleErrorBoundary module="fornecedores">
+                <QualificacaoFornecedores />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/orcamentos" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator', 'finance']}>
+              <ModuleErrorBoundary module="default">
+                <Orcamentos />
               </ModuleErrorBoundary>
             </ProtectedRoute>
           } />
