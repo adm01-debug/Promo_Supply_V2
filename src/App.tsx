@@ -231,6 +231,20 @@ const AnimatedRoutes = () => {
               </ModuleErrorBoundary>
             </ProtectedRoute>
           } />
+          <Route path="/qualificacao-fornecedores" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator']}>
+              <ModuleErrorBoundary module="fornecedores">
+                <QualificacaoFornecedores />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/orcamentos" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator', 'finance']}>
+              <ModuleErrorBoundary module="default">
+                <Orcamentos />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
