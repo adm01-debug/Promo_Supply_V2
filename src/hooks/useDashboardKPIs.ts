@@ -107,9 +107,9 @@ export function useDashboardKPIs() {
       : 100;
 
     const totalEstimado = sol.reduce((sum, s) => sum + (Number(s.valor_estimado) || 0), 0);
-    const totalAprovado = sol.reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
-    const economiaGerada = totalEstimado > 0 ? totalEstimado - totalAprovado : 0;
-    const economiaPercentual = totalEstimado > 0 
+    const totalAprovado = sol.filter(s => s.valor_aprovado != null).reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
+    const economiaGerada = totalEstimado > 0 && totalAprovado > 0 ? Math.max(0, totalEstimado - totalAprovado) : 0;
+    const economiaPercentual = totalEstimado > 0 && economiaGerada > 0
       ? Math.round((economiaGerada / totalEstimado) * 1000) / 10 
       : 0;
 
