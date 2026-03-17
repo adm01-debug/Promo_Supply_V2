@@ -196,6 +196,14 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
         payment_terms: formData.payment_terms || null,
         renewal_type: formData.renewal_type,
         renewal_notice_days: formData.renewal_notice_days,
+        sla_delivery_days: formData.sla_delivery_days,
+        penalty_rate_per_day: formData.penalty_rate_per_day,
+        penalty_cap_percent: formData.penalty_cap_percent,
+        min_quality_score: formData.min_quality_score,
+        quality_penalty_percent: formData.quality_penalty_percent,
+        return_policy: formData.return_policy,
+        min_supplier_score: formData.min_supplier_score,
+        auto_block_below_score: formData.auto_block_below_score,
       };
 
       if (isEditing) {
