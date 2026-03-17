@@ -311,9 +311,13 @@ const Auth = () => {
         </div>
         
         <div className="w-full max-w-md">
-          <Card className="border-border/50 shadow-2xl backdrop-blur-sm bg-card/95 overflow-hidden">
-            {/* Gradient top border */}
-            <div className="h-1 bg-gradient-to-r from-primary via-primary/80 to-primary/60" />
+          <Card className="border-border/40 shadow-2xl backdrop-blur-xl bg-card/90 overflow-hidden relative" style={{
+            boxShadow: '0 0 0 1px hsl(265 90% 66% / 0.1), 0 24px 48px hsl(0 0% 0% / 0.4), 0 0 80px hsl(265 90% 66% / 0.08)',
+          }}>
+            {/* Gradient top border — neon accent */}
+            <div className="h-[2px]" style={{
+              background: 'linear-gradient(90deg, hsl(265 90% 66%) 0%, hsl(195 95% 52%) 50%, hsl(265 90% 66%) 100%)',
+            }} />
             
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <div className="p-6 pb-4">
