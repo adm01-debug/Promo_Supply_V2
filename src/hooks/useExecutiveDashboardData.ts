@@ -71,6 +71,7 @@ export function useExecutiveDashboardData() {
     const totalEstimado = sol.reduce((sum, s) => sum + (Number(s.valor_estimado) || 0), 0);
     const totalAprovado = sol.reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
     const savings = totalEstimado > totalAprovado ? totalEstimado - totalAprovado : 0;
+    const savingsPercent = totalEstimado > 0 ? (savings / totalEstimado) * 100 : 0;
 
     const ordersThisMonth = ped.filter(p => p.data_emissao >= monthStart.split('T')[0]).length;
 
