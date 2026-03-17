@@ -168,5 +168,4 @@ export const BuyerPerformancePanel = () => {
       </div>
     </Card>
   );
-});
-BuyerPerformancePanel.displayName = 'BuyerPerformancePanel';
+};
