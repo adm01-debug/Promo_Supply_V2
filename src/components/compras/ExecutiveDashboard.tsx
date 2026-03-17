@@ -358,8 +358,65 @@ export const ExecutiveDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
 
-  // Real data from Supabase (available for future full migration)
-  const { metrics: realMetrics, loading: realDataLoading } = useExecutiveDashboardData();
+  // Real data from Supabase
+  const { metrics: realMetrics, spendByCategory: realSpendByCategory, topSuppliers: realTopSuppliers, loading: realDataLoading } = useExecutiveDashboardData();
+
+  // Use real data when available, fall back to mock data
+  const activeMetrics = useMemo(() => {
+    if (realDataLoading) return executiveMetrics;
+    const rm = realMetrics;
+    return {
+      totalSpend: { 
+        value: rm.totalSpend.value || executiveMetrics.totalSpend.value, 
+        previousValue: executiveMetrics.totalSpend.previousValue,
+        change: rm.totalSpend.value > 0 ? calculateChange(rm.totalSpend.value, executiveMetrics.totalSpend.previousValue) : executiveMetrics.totalSpend.change,
+        target: rm.totalSpend.target || executiveMetrics.totalSpend.target
+      },
+      savings: { 
+        value: rm.savings.value || executiveMetrics.savings.value, 
+        previousValue: executiveMetrics.savings.previousValue,
+        change: rm.savings.value > 0 ? calculateChange(rm.savings.value, executiveMetrics.savings.previousValue) : executiveMetrics.savings.change,
+        target: rm.savings.target || executiveMetrics.savings.target
+      },
+      savingsPercent: rm.savingsPercent,
+      ordersThisMonth: { 
+        value: rm.ordersThisMonth.value || executiveMetrics.ordersThisMonth.value, 
+        previousValue: executiveMetrics.ordersThisMonth.previousValue,
+        change: rm.ordersThisMonth.value > 0 ? calculateChange(rm.ordersThisMonth.value, executiveMetrics.ordersThisMonth.previousValue) : executiveMetrics.ordersThisMonth.change,
+        target: rm.ordersThisMonth.target || executiveMetrics.ordersThisMonth.target
+      },
+      avgCycleTime: { 
+        value: rm.avgCycleTime.value || executiveMetrics.avgCycleTime.value, 
+        previousValue: executiveMetrics.avgCycleTime.previousValue,
+        change: rm.avgCycleTime.value > 0 ? calculateChange(rm.avgCycleTime.value, executiveMetrics.avgCycleTime.previousValue) : executiveMetrics.avgCycleTime.change,
+        target: rm.avgCycleTime.target || executiveMetrics.avgCycleTime.target
+      },
+      supplierCount: { 
+        value: rm.supplierCount.value || executiveMetrics.supplierCount.value, 
+        previousValue: executiveMetrics.supplierCount.previousValue,
+        change: rm.supplierCount.value > 0 ? calculateChange(rm.supplierCount.value, executiveMetrics.supplierCount.previousValue) : executiveMetrics.supplierCount.change,
+        target: rm.supplierCount.target || executiveMetrics.supplierCount.target
+      },
+      pendingApprovals: { 
+        value: rm.pendingApprovals.value, 
+        previousValue: executiveMetrics.pendingApprovals.previousValue,
+        change: calculateChange(rm.pendingApprovals.value || 1, executiveMetrics.pendingApprovals.previousValue || 1),
+        urgent: rm.pendingApprovals.urgent
+      },
+      overdueOrders: { 
+        value: rm.overdueOrders.value, 
+        previousValue: executiveMetrics.overdueOrders.previousValue,
+        change: calculateChange(rm.overdueOrders.value || 1, executiveMetrics.overdueOrders.previousValue || 1),
+        critical: rm.overdueOrders.critical
+      },
+      contractCompliance: { 
+        value: rm.contractCompliance.value || executiveMetrics.contractCompliance.value, 
+        previousValue: executiveMetrics.contractCompliance.previousValue,
+        change: rm.contractCompliance.value > 0 ? calculateChange(rm.contractCompliance.value, executiveMetrics.contractCompliance.previousValue) : executiveMetrics.contractCompliance.change,
+        target: rm.contractCompliance.target || executiveMetrics.contractCompliance.target
+      }
+    };
+  }, [realMetrics, realDataLoading]);
   
   // Realtime subscriptions
   useRealtimeSubscription({
