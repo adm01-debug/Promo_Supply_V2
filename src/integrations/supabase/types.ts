@@ -591,6 +591,13 @@ export type Database = {
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "contact_notes_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
         ]
       }
       contract_documents: {
@@ -970,6 +977,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "cotacoes_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
             foreignKeyName: "cotacoes_solicitacao_id_fkey"
             columns: ["solicitacao_id"]
             isOneToOne: false
@@ -1133,6 +1147,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fiscal_documents_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
           },
           {
             foreignKeyName: "fiscal_documents_pedido_id_fkey"
@@ -1629,6 +1650,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "pagamentos_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
             foreignKeyName: "pagamentos_pedido_id_fkey"
             columns: ["pedido_id"]
             isOneToOne: false
@@ -1856,6 +1884,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
           },
           {
             foreignKeyName: "pedidos_solicitacao_id_fkey"
@@ -2101,6 +2136,13 @@ export type Database = {
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "qualification_history_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
         ]
       }
       qualification_requirements: {
@@ -2258,6 +2300,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "receiving_checklists_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
             foreignKeyName: "receiving_checklists_pedido_id_fkey"
             columns: ["pedido_id"]
             isOneToOne: false
@@ -2319,6 +2368,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repurchase_suggestions_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
           },
           {
             foreignKeyName: "repurchase_suggestions_produto_id_fkey"
@@ -2501,6 +2557,13 @@ export type Database = {
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "solicitacoes_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
         ]
       }
       spot_pedidos: {
@@ -2648,6 +2711,13 @@ export type Database = {
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "supplier_bonifications_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
         ]
       }
       supplier_documents: {
@@ -2712,6 +2782,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_documents_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
           },
           {
             foreignKeyName: "supplier_documents_requirement_id_fkey"
@@ -2790,6 +2867,13 @@ export type Database = {
             isOneToOne: true
             referencedRelation: "fornecedores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_qualification_scores_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: true
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
           },
         ]
       }
@@ -2927,7 +3011,25 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      supplier_compliance_summary: {
+        Row: {
+          active_bonifications: number | null
+          avaliacao: number | null
+          avg_quality_score: number | null
+          fornecedor_id: string | null
+          late_deliveries: number | null
+          on_time_deliveries: number | null
+          on_time_rate: number | null
+          penalty_count: number | null
+          razao_social: string | null
+          rejected_count: number | null
+          supplier_status: string | null
+          total_deliveries: number | null
+          total_inspections: number | null
+          total_penalty_value: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       calculate_supplier_qualification_score: {
