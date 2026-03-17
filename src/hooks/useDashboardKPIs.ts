@@ -136,9 +136,9 @@ export function useDashboardKPIs() {
     const pag = pagamentos || [];
     return {
       solicitacao: sol.filter(s => s.status === 'pendente' || s.status === 'em_cotacao').length,
-      cotacao: sol.filter(s => s.status === 'cotada').length,
+      cotacao: sol.filter(s => s.status === 'em_cotacao' || s.status === 'aprovada').length,
       pedido: ped.filter(p => p.status === 'pendente' || p.status === 'aprovado').length,
-      pagamento: pag.filter(p => p.status === 'pendente' || p.status === 'processando').length,
+      pagamento: pag.filter(p => p.status === 'pendente' || p.status === 'aprovado' || p.status === 'agendado').length,
       transito: ped.filter(p => p.status === 'enviado').length,
       entregue: ped.filter(p => p.status === 'entregue').length,
     };
