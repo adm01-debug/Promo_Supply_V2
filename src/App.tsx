@@ -283,7 +283,6 @@ const AnimatedRoutes = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
-    </AnimatePresence>
   );
 };
 
