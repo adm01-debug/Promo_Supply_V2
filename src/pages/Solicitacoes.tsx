@@ -107,6 +107,13 @@ const Solicitacoes = () => {
     status: statusFilter !== 'todas' ? mapLegacyStatusToDb(statusFilter) : undefined,
   });
 
+  // Realtime subscription with debounce
+  useRealtimeSubscription({
+    tables: ['solicitacoes'],
+    queryKeysToInvalidate: [['solicitacoes']],
+    debounceMs: 1500,
+  });
+
   // Adapt and filter solicitacoes
   const adaptedSolicitacoes = useMemo(() => {
     return solicitacoes.map(adaptToLegacyFormat);
