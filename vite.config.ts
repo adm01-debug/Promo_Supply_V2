@@ -49,7 +49,10 @@ const getManualChunk = (id: string) => {
   return "vendor";
 };
 
-const handleRollupWarning = (warning: { code?: string; exporter?: string; id?: string }, warn: (warning: unknown) => void) => {
+const handleRollupWarning = (
+  warning: RollupLog,
+  warn: (warning: RollupLog | string | (() => RollupLog | string)) => void,
+) => {
   const isKnownSupabaseWrapperWarning =
     warning.code === "MISSING_EXPORT" &&
     typeof warning.exporter === "string" &&
@@ -57,9 +60,7 @@ const handleRollupWarning = (warning: { code?: string; exporter?: string; id?: s
     typeof warning.id === "string" &&
     warning.id.includes("@supabase/supabase-js/dist/esm/wrapper.mjs");
 
-  if (isKnownSupabaseWrapperWarning) {
-    return;
-  }
+  if (isKnownSupabaseWrapperWarning) return;
 
   warn(warning);
 };
