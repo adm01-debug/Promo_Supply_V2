@@ -48,7 +48,7 @@ const getManualChunk = (id: string) => {
   return "vendor";
 };
 
-const handleRollupWarning: Rollup.WarningHandler = (warning, warn) => {
+const handleRollupWarning = (warning: { code?: string; exporter?: string; id?: string }, warn: (warning: unknown) => void) => {
   const isKnownSupabaseWrapperWarning =
     warning.code === "MISSING_EXPORT" &&
     typeof warning.exporter === "string" &&
