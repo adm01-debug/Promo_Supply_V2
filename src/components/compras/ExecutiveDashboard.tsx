@@ -825,23 +825,33 @@ export const ExecutiveDashboard = () => {
       </div>
 
       {/* Secondary KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <MetricCard
+          title="Saving %"
+          value={activeMetrics.savingsPercent}
+          change={activeMetrics.savingsPercent > 10 ? activeMetrics.savingsPercent - 10 : 0}
+          target={15}
+          icon={Zap}
+          format="percent"
+          showComparison={showComparison}
+          trendData={trendDataSets.savings.map((s, i) => (trendDataSets.spend[i] > 0 ? (s / trendDataSets.spend[i]) * 100 : 0))}
+        />
         <MetricCard
           title="Base de Fornecedores"
-          value={executiveMetrics.supplierCount.value}
-          previousValue={executiveMetrics.supplierCount.previousValue}
-          change={executiveMetrics.supplierCount.change}
-          target={executiveMetrics.supplierCount.target}
+          value={activeMetrics.supplierCount.value}
+          previousValue={activeMetrics.supplierCount.previousValue}
+          change={activeMetrics.supplierCount.change}
+          target={activeMetrics.supplierCount.target}
           icon={Users}
           showComparison={showComparison}
           trendData={trendDataSets.suppliers}
         />
         <MetricCard
           title="Aprovações Pendentes"
-          value={executiveMetrics.pendingApprovals.value}
-          previousValue={executiveMetrics.pendingApprovals.previousValue}
-          change={executiveMetrics.pendingApprovals.change}
-          urgent={executiveMetrics.pendingApprovals.urgent}
+          value={activeMetrics.pendingApprovals.value}
+          previousValue={activeMetrics.pendingApprovals.previousValue}
+          change={activeMetrics.pendingApprovals.change}
+          urgent={activeMetrics.pendingApprovals.urgent}
           icon={CheckCircle2}
           onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}
           showComparison={showComparison}
@@ -850,10 +860,10 @@ export const ExecutiveDashboard = () => {
         />
         <MetricCard
           title="Pedidos Atrasados"
-          value={executiveMetrics.overdueOrders.value}
-          previousValue={executiveMetrics.overdueOrders.previousValue}
-          change={executiveMetrics.overdueOrders.change}
-          critical={executiveMetrics.overdueOrders.critical}
+          value={activeMetrics.overdueOrders.value}
+          previousValue={activeMetrics.overdueOrders.previousValue}
+          change={activeMetrics.overdueOrders.change}
+          critical={activeMetrics.overdueOrders.critical}
           icon={XCircle}
           showComparison={showComparison}
           invertChange={true}
@@ -861,10 +871,10 @@ export const ExecutiveDashboard = () => {
         />
         <MetricCard
           title="Compliance Contratos"
-          value={executiveMetrics.contractCompliance.value}
-          previousValue={executiveMetrics.contractCompliance.previousValue}
-          change={executiveMetrics.contractCompliance.change}
-          target={executiveMetrics.contractCompliance.target}
+          value={activeMetrics.contractCompliance.value}
+          previousValue={activeMetrics.contractCompliance.previousValue}
+          change={activeMetrics.contractCompliance.change}
+          target={activeMetrics.contractCompliance.target}
           icon={Target}
           format="percent"
           showComparison={showComparison}
