@@ -9,6 +9,21 @@ export default defineConfig({
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    testTimeout: 10_000,
+    pool: 'forks',
+    isolate: true,
+    css: false,
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/test/**',
+        'src/integrations/**',
+        'src/vite-env.d.ts',
+        'src/main.tsx',
+        'src/components/ui/**',
+      ],
+    },
   },
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },
