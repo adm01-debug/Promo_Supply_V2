@@ -82,6 +82,8 @@ const RecompraInteligente = () => {
       }
 
       if (newSuggestions.length > 0) {
+        // Remove existing pending suggestions to avoid duplicates
+        await supabase.from("repurchase_suggestions").delete().eq("status", "sugerido");
         const { error } = await supabase.from("repurchase_suggestions").insert(newSuggestions);
         if (error) throw error;
       }

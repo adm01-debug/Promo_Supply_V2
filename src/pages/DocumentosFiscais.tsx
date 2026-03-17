@@ -35,7 +35,7 @@ const DocumentosFiscais = () => {
       const { data, error } = await supabase
         .from("pedidos")
         .select("id, numero, valor_total, fornecedor_id, status")
-        .in("status", ["confirmado", "em_transito", "entregue"])
+        .in("status", ["aprovado", "enviado", "em_transito", "entregue"])
         .limit(200);
       if (error) throw error;
       return data;
@@ -67,6 +67,7 @@ const DocumentosFiscais = () => {
       const vFrete = parseFloat(getTag("vFrete")) || 0;
       const vDesc = parseFloat(getTag("vDesc")) || 0;
 
+      const { data: { user } } = await supabase.auth.getUser();
       const { error } = await supabase.from("fiscal_documents").insert({
         numero_nf: nNF || `NF-${Date.now()}`,
         serie,
@@ -77,6 +78,7 @@ const DocumentosFiscais = () => {
         valor_frete: vFrete,
         valor_desconto: vDesc,
         status: "validada",
+        uploaded_by: user?.id || null,
       });
 
       if (error) throw error;
