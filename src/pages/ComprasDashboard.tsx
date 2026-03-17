@@ -22,14 +22,14 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 
 // Lazy load heavy panels that are below the fold
-const SLADistributionChart = lazy(() => import("@/components/compras/SLADistributionChart").then(m => ({ default: m.SLADistributionChart || m.default })));
-const SupplierAlertsPanel = lazy(() => import("@/components/compras/SupplierAlertsPanel").then(m => ({ default: m.SupplierAlertsPanel || m.default })));
-const SupplierRankingPanel = lazy(() => import("@/components/compras/SupplierRankingPanel").then(m => ({ default: m.SupplierRankingPanel || m.default })));
-const BuyerPerformancePanel = lazy(() => import("@/components/compras/BuyerPerformancePanel").then(m => ({ default: m.BuyerPerformancePanel || m.default })));
-const SavingsGoalPanel = lazy(() => import("@/components/compras/SavingsGoalPanel").then(m => ({ default: m.SavingsGoalPanel || m.default })));
-const DeliveryCalendar = lazy(() => import("@/components/compras/DeliveryCalendar").then(m => ({ default: m.DeliveryCalendar || m.default })));
-const DemandPredictionPanel = lazy(() => import("@/components/compras/DemandPredictionPanel").then(m => ({ default: m.DemandPredictionPanel || m.default })));
-const RiskHeatMap = lazy(() => import("@/components/compras/RiskHeatMap").then(m => ({ default: m.RiskHeatMap || m.default })));
+const SLADistributionChart = lazy(() => import("@/components/compras/SLADistributionChart").then(m => ({ default: m.SLADistributionChart })));
+const SupplierAlertsPanel = lazy(() => import("@/components/compras/SupplierAlertsPanel").then(m => ({ default: m.SupplierAlertsPanel })));
+const SupplierRankingPanel = lazy(() => import("@/components/compras/SupplierRankingPanel").then(m => ({ default: m.SupplierRankingPanel })));
+const BuyerPerformancePanel = lazy(() => import("@/components/compras/BuyerPerformancePanel").then(m => ({ default: m.BuyerPerformancePanel })));
+const SavingsGoalPanel = lazy(() => import("@/components/compras/SavingsGoalPanel").then(m => ({ default: m.SavingsGoalPanel })));
+const DeliveryCalendar = lazy(() => import("@/components/compras/DeliveryCalendar").then(m => ({ default: m.DeliveryCalendar })));
+const DemandPredictionPanel = lazy(() => import("@/components/compras/DemandPredictionPanel").then(m => ({ default: m.DemandPredictionPanel })));
+const RiskHeatMap = lazy(() => import("@/components/compras/RiskHeatMap").then(m => ({ default: m.RiskHeatMap })));
 
 const LazyPanel = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
