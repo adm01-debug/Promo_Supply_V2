@@ -139,7 +139,7 @@ export function useDashboardKPIs() {
       cotacao: sol.filter(s => s.status === 'em_cotacao' || s.status === 'aprovada').length,
       pedido: ped.filter(p => p.status === 'pendente' || p.status === 'aprovado').length,
       pagamento: pag.filter(p => p.status === 'pendente' || p.status === 'aprovado' || p.status === 'agendado').length,
-      transito: ped.filter(p => p.status === 'enviado').length,
+      transito: ped.filter(p => p.status === 'enviado' || p.status === 'em_transito').length,
       entregue: ped.filter(p => p.status === 'entregue').length,
     };
   }, [solicitacoes, pedidos, pagamentos]);
