@@ -85,6 +85,7 @@ interface NovaSolicitacaoModalProps {
 }
 
 export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<NovaSolicitacaoData>(initialFormData);
