@@ -801,20 +801,20 @@ export const ExecutiveDashboard = () => {
           />
           <MetricCard
             title="Pedidos no Mês"
-            value={executiveMetrics.ordersThisMonth.value}
-            previousValue={executiveMetrics.ordersThisMonth.previousValue}
-            change={executiveMetrics.ordersThisMonth.change}
-            target={executiveMetrics.ordersThisMonth.target}
+            value={activeMetrics.ordersThisMonth.value}
+            previousValue={activeMetrics.ordersThisMonth.previousValue}
+            change={activeMetrics.ordersThisMonth.change}
+            target={activeMetrics.ordersThisMonth.target}
             icon={ShoppingCart}
             showComparison={showComparison}
             trendData={trendDataSets.orders}
           />
           <MetricCard
             title="Tempo Médio Ciclo"
-            value={executiveMetrics.avgCycleTime.value}
-            previousValue={executiveMetrics.avgCycleTime.previousValue}
-            change={executiveMetrics.avgCycleTime.change}
-            target={executiveMetrics.avgCycleTime.target}
+            value={activeMetrics.avgCycleTime.value}
+            previousValue={activeMetrics.avgCycleTime.previousValue}
+            change={activeMetrics.avgCycleTime.change}
+            target={activeMetrics.avgCycleTime.target}
             icon={Clock}
             format="days"
             showComparison={showComparison}
