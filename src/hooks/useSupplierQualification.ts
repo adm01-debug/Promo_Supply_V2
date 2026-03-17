@@ -60,7 +60,7 @@ export const useSupplierQualification = () => {
     mutationFn: async ({ docId, status, notes }: { docId: string; status: string; notes?: string }) => {
       const { error } = await supabase
         .from('supplier_documents')
-        .update({ status, review_notes: notes, reviewed_at: new Date().toISOString() })
+        .update({ status, rejection_reason: notes, reviewed_at: new Date().toISOString() })
         .eq('id', docId);
       if (error) throw error;
     },
