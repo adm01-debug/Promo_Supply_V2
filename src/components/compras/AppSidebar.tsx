@@ -112,6 +112,13 @@ const menuGroups = [
         description: "Gestão contratos",
         badge: null
       },
+      { 
+        title: "Orçamentos", 
+        icon: Wallet, 
+        href: "/orcamentos",
+        description: "Centros de custo",
+        badge: null
+      },
     ]
   },
   {
