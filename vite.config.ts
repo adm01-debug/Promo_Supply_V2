@@ -1,8 +1,67 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Rollup } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
 import { VitePWA } from "vite-plugin-pwa";
+
+const getManualChunk = (id: string) => {
+  if (!id.includes("node_modules")) return undefined;
+
+  if (
+    id.includes("react") ||
+    id.includes("scheduler") ||
+    id.includes("react-router")
+  ) {
+    return "vendor-react";
+  }
+
+  if (id.includes("@tanstack/react-query")) return "vendor-query";
+  if (id.includes("@supabase/")) return "vendor-supabase";
+  if (id.includes("framer-motion")) return "vendor-motion";
+  if (id.includes("recharts")) return "vendor-charts";
+  if (id.includes("@dnd-kit/")) return "vendor-dnd";
+
+  if (
+    id.includes("react-hook-form") ||
+    id.includes("@hookform/resolvers") ||
+    id.includes("zod")
+  ) {
+    return "vendor-forms";
+  }
+
+  if (id.includes("@radix-ui/")) return "vendor-ui";
+
+  if (
+    id.includes("date-fns") ||
+    id.includes("clsx") ||
+    id.includes("tailwind-merge") ||
+    id.includes("class-variance-authority") ||
+    id.includes("fuse.js") ||
+    id.includes("lucide-react") ||
+    id.includes("next-themes") ||
+    id.includes("sonner") ||
+    id.includes("zustand")
+  ) {
+    return "vendor-utils";
+  }
+
+  return "vendor";
+};
+
+const handleRollupWarning: Rollup.WarningHandler = (warning, warn) => {
+  const isKnownSupabaseWrapperWarning =
+    warning.code === "MISSING_EXPORT" &&
+    typeof warning.exporter === "string" &&
+    warning.exporter.includes("@supabase/supabase-js/dist/module/index.js") &&
+    typeof warning.id === "string" &&
+    warning.id.includes("@supabase/supabase-js/dist/esm/wrapper.mjs");
+
+  if (isKnownSupabaseWrapperWarning) {
+    return;
+  }
+
+  warn(warning);
+};
 
 export default defineConfig(({ mode }) => ({
   server: {
@@ -101,7 +160,7 @@ export default defineConfig(({ mode }) => ({
             },
           },
           {
-            urlPattern: ({ request }) => request.mode === 'navigate',
+            urlPattern: ({ request }) => request.mode === "navigate",
             handler: "NetworkFirst",
             options: {
               cacheName: "pages-cache",
@@ -117,32 +176,20 @@ export default defineConfig(({ mode }) => ({
     }),
   ].filter(Boolean),
   build: {
-    target: 'es2020',
+    target: "es2020",
     cssMinify: true,
-    minify: 'esbuild',
+    minify: "esbuild",
     sourcemap: false,
     cssCodeSplit: true,
     chunkSizeWarningLimit: 600,
     reportCompressedSize: false,
     rollupOptions: {
+      onwarn: handleRollupWarning,
       output: {
-        manualChunks: {
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
-          'vendor-query': ['@tanstack/react-query'],
-          'vendor-ui-core': ['@radix-ui/react-dialog', '@radix-ui/react-popover', '@radix-ui/react-tooltip'],
-          'vendor-ui-forms': ['@radix-ui/react-select', '@radix-ui/react-dropdown-menu', '@radix-ui/react-checkbox', '@radix-ui/react-switch'],
-          'vendor-ui-layout': ['@radix-ui/react-tabs', '@radix-ui/react-accordion', '@radix-ui/react-collapsible', '@radix-ui/react-scroll-area'],
-          'vendor-charts': ['recharts'],
-          'vendor-motion': ['framer-motion'],
-          'vendor-supabase': ['@supabase/supabase-js'],
-          'vendor-dnd': ['@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities'],
-          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
-          'vendor-utils': ['date-fns', 'clsx', 'tailwind-merge', 'class-variance-authority', 'fuse.js'],
-        },
-        // Stable chunk hashing for better caching
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js',
-        assetFileNames: 'assets/[name]-[hash][extname]',
+        manualChunks: getManualChunk,
+        chunkFileNames: "assets/[name]-[hash].js",
+        entryFileNames: "assets/[name]-[hash].js",
+        assetFileNames: "assets/[name]-[hash][extname]",
       },
       treeshake: {
         moduleSideEffects: false,
@@ -156,18 +203,17 @@ export default defineConfig(({ mode }) => ({
     },
     dedupe: ["react", "react-dom", "react/jsx-runtime"],
   },
-  // Optimize dependency pre-bundling
   optimizeDeps: {
     include: [
-      'react',
-      'react-dom',
-      'react-router-dom',
-      '@tanstack/react-query',
-      '@supabase/supabase-js',
-      'zustand',
-      'sonner',
-      'lucide-react',
+      "react",
+      "react-dom",
+      "react-router-dom",
+      "@tanstack/react-query",
+      "@supabase/supabase-js",
+      "zustand",
+      "sonner",
+      "lucide-react",
     ],
-    exclude: ['lovable-tagger'],
+    exclude: ["lovable-tagger"],
   },
 }));
