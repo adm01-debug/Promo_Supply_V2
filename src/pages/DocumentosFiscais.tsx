@@ -35,7 +35,7 @@ const DocumentosFiscais = () => {
       const { data, error } = await supabase
         .from("pedidos")
         .select("id, numero, valor_total, fornecedor_id, status")
-        .in("status", ["confirmado", "em_transito", "entregue"])
+        .in("status", ["aprovado", "enviado", "em_transito", "entregue"])
         .limit(200);
       if (error) throw error;
       return data;
