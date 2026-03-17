@@ -215,6 +215,13 @@ const AnimatedRoutes = () => {
               </ModuleErrorBoundary>
             </ProtectedRoute>
           } />
+          <Route path="/compliance" element={
+            <ProtectedRoute requiredRole={['admin', 'coordinator']}>
+              <ModuleErrorBoundary module="fornecedores">
+                <ComplianceDashboard />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
           <Route path="/auditoria" element={
             <ProtectedRoute requiredRole="admin">
               <ModuleErrorBoundary module="relatorios">
