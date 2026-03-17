@@ -16,6 +16,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
+    <!-- Preload critical fonts to avoid FOUT -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" as="style" />
+
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
@@ -24,6 +27,11 @@
     <meta name="apple-mobile-web-app-title" content="Promo Supply" />
     <link rel="apple-touch-icon" href="/pwa-192x192.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
 
     <!-- Open Graph -->
     <meta property="og:title" content="Promo Supply - Gestão de Compras" />
@@ -53,6 +61,13 @@
       }
     }
     </script>
+
+    <!-- Inline critical CSS to prevent white flash -->
+    <style>
+      body { margin: 0; background: #0f172a; }
+      @media (prefers-color-scheme: light) { body { background: #ffffff; } }
+      #root { min-height: 100vh; }
+    </style>
   </head>
 
   <body>
