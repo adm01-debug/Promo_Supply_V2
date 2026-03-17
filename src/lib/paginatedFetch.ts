@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 /**
  * Fetch all rows from a Supabase table, bypassing the 1000-row default limit.
  * Uses cursor-based pagination with .range() to fetch in batches.
+ * Optimized: pre-allocates array and avoids spread operator in loop.
  */
 export async function fetchAllRows<T = Record<string, unknown>>(
   table: string,
@@ -13,7 +14,7 @@ export async function fetchAllRows<T = Record<string, unknown>>(
   }
 ): Promise<T[]> {
   const pageSize = options?.pageSize || 1000;
-  let allData: T[] = [];
+  const allData: T[] = [];
   let from = 0;
   let hasMore = true;
 
@@ -33,7 +34,12 @@ export async function fetchAllRows<T = Record<string, unknown>>(
       hasMore = false;
       break;
     }
-    allData = [...allData, ...(data as T[])];
+
+    // Push items directly instead of spread to avoid stack overflow on large sets
+    for (let i = 0; i < data.length; i++) {
+      allData.push(data[i] as T);
+    }
+
     if (data.length < pageSize) hasMore = false;
     from += pageSize;
   }
