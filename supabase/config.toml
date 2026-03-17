@@ -26,3 +26,18 @@ verify_jwt = false
 
 [functions.spot-proxy]
 verify_jwt = false
+
+[functions.ai-negotiation]
+verify_jwt = false
+
+[functions.check-cotacao-followup]
+verify_jwt = false
+
+[functions.check-expiry-alerts]
+verify_jwt = false
+
+[functions.generate-contract-pdf]
+verify_jwt = false
+
+[functions.weekly-report]
+verify_jwt = false
