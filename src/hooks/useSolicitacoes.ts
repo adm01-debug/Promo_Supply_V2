@@ -1,8 +1,9 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { fetchAllRows } from '@/lib/paginatedFetch';
 import type { Json } from '@/integrations/supabase/types';
 
 export interface Solicitacao {
@@ -244,17 +245,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     });
   }, [solicitacoes, createSolicitacao]);
 
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('solicitacoes-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'solicitacoes' }, () => {
-        invalidate();
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, invalidate]);
+  // Realtime handled by useRealtimeSubscription in pages that use this hook
 
   return {
     solicitacoes, totalCount, loading: isLoading, error: error?.message || null,
@@ -263,27 +254,17 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   };
 }
 
-// Hook for KPIs
+// Hook for KPIs — uses optimized paginatedFetch
 export function useSolicitacoesKPIs() {
   const { user } = useAuth();
 
   const { data: kpis = { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 }, isLoading } = useQuery({
     queryKey: ['solicitacoes-kpis', user?.id],
     queryFn: async () => {
-      let allData: { status: string; valor_estimado: number | null }[] = [];
-      let from = 0;
-      const pageSize = 1000;
-      let hasMore = true;
-
-      while (hasMore) {
-        const { data, error } = await supabase
-          .from('solicitacoes').select('status, valor_estimado').range(from, from + pageSize - 1);
-        if (error) throw error;
-        if (!data || data.length === 0) { hasMore = false; break; }
-        allData = [...allData, ...data];
-        if (data.length < pageSize) hasMore = false;
-        from += pageSize;
-      }
+      const allData = await fetchAllRows<{ status: string; valor_estimado: number | null }>(
+        'solicitacoes',
+        'status, valor_estimado'
+      );
 
       return {
         total: allData.length,

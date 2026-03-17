@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import type { RealtimeChannel } from '@supabase/supabase-js';
@@ -12,11 +12,13 @@ interface RealtimeOptions {
   onUpdate?: (payload: any) => void;
   onDelete?: (payload: any) => void;
   enabled?: boolean;
+  /** Debounce interval in ms (default 1000) to batch rapid changes */
+  debounceMs?: number;
 }
 
 /**
  * Hook to subscribe to realtime changes on Supabase tables.
- * Automatically invalidates related React Query cache keys.
+ * Debounces invalidations to prevent excessive re-renders from rapid DB changes.
  */
 export function useRealtimeSubscription({
   tables,
@@ -25,14 +27,39 @@ export function useRealtimeSubscription({
   onUpdate,
   onDelete,
   enabled = true,
+  debounceMs = 1000,
 }: RealtimeOptions) {
   const queryClient = useQueryClient();
   const channelRef = useRef<RealtimeChannel | null>(null);
+  const pendingTablesRef = useRef<Set<string>>(new Set());
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const flushInvalidations = useCallback(() => {
+    const tables = pendingTablesRef.current;
+    if (tables.size === 0) return;
+
+    if (queryKeysToInvalidate) {
+      queryKeysToInvalidate.forEach(key => {
+        queryClient.invalidateQueries({ queryKey: key });
+      });
+    } else {
+      tables.forEach(table => {
+        queryClient.invalidateQueries({
+          predicate: (query) => {
+            const key = query.queryKey[0];
+            return typeof key === 'string' && key.includes(table);
+          },
+        });
+      });
+    }
+
+    pendingTablesRef.current = new Set();
+  }, [queryClient, queryKeysToInvalidate]);
 
   useEffect(() => {
     if (!enabled || tables.length === 0) return;
 
-    const channelName = `realtime-${tables.join('-')}-${Date.now()}`;
+    const channelName = `realtime-${tables.join('-')}`;
     let channel = supabase.channel(channelName);
 
     tables.forEach(table => {
@@ -40,22 +67,14 @@ export function useRealtimeSubscription({
         'postgres_changes',
         { event: '*', schema: 'public', table },
         (payload) => {
-          // Invalidate query cache
-          if (queryKeysToInvalidate) {
-            queryKeysToInvalidate.forEach(key => {
-              queryClient.invalidateQueries({ queryKey: key });
-            });
-          } else {
-            // Auto-invalidate based on table name
-            queryClient.invalidateQueries({ 
-              predicate: (query) => {
-                const key = query.queryKey[0];
-                return typeof key === 'string' && key.includes(table);
-              }
-            });
-          }
+          // Queue table for batch invalidation
+          pendingTablesRef.current.add(table);
 
-          // Fire callbacks
+          // Debounce: reset timer on each event
+          if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+          debounceTimerRef.current = setTimeout(flushInvalidations, debounceMs);
+
+          // Fire callbacks immediately
           if (payload.eventType === 'INSERT' && onInsert) onInsert(payload);
           if (payload.eventType === 'UPDATE' && onUpdate) onUpdate(payload);
           if (payload.eventType === 'DELETE' && onDelete) onDelete(payload);
@@ -67,10 +86,11 @@ export function useRealtimeSubscription({
     channelRef.current = channel;
 
     return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
       if (channelRef.current) {
         supabase.removeChannel(channelRef.current);
         channelRef.current = null;
       }
     };
-  }, [enabled, tables.join(',')]);
+  }, [enabled, tables.join(','), debounceMs]);
 }

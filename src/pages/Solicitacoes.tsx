@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/select";
 import { OnboardingTour, solicitacoesTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
+import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import type { Solicitacao as MockSolicitacao } from "@/types/legacyTypes";
 
 // Map DB status to legacy status for UI compatibility
@@ -104,6 +105,13 @@ const Solicitacoes = () => {
   } = useSolicitacoes({
     search: searchTerm || undefined,
     status: statusFilter !== 'todas' ? mapLegacyStatusToDb(statusFilter) : undefined,
+  });
+
+  // Realtime subscription with debounce
+  useRealtimeSubscription({
+    tables: ['solicitacoes'],
+    queryKeysToInvalidate: [['solicitacoes']],
+    debounceMs: 1500,
   });
 
   // Adapt and filter solicitacoes

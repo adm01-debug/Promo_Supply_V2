@@ -9,7 +9,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import { ThemeProvider } from "next-themes";
 import { PageLoader } from "@/components/PageLoader";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { AccessibilityProvider } from "@/components/accessibility/AdvancedAccessibility";
@@ -44,49 +44,42 @@ const DocumentosFiscais = lazy(() => import("./pages/DocumentosFiscais"));
 const RecompraInteligente = lazy(() => import("./pages/RecompraInteligente"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
-const queryClient = new QueryClient();
-
-// Page transition variants
-const pageVariants = {
-  initial: {
-    opacity: 0,
-    y: 8,
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 30_000,
+      gcTime: 5 * 60_000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+    },
   },
+});
+
+// Lightweight page transition — no exit animation to avoid double-render
+const pageVariants = {
+  initial: { opacity: 0 },
   enter: {
     opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.25,
-      ease: [0.25, 0.46, 0.45, 0.94] as const,
-    },
-  },
-  exit: {
-    opacity: 0,
-    y: -8,
-    transition: {
-      duration: 0.15,
-      ease: [0.25, 0.46, 0.45, 0.94] as const,
-    },
+    transition: { duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] as const },
   },
 };
 
-// Animated Routes Component
+// Optimized Routes — removed AnimatePresence exit to avoid double-renders
 const AnimatedRoutes = () => {
   const location = useLocation();
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={location.pathname}
-        variants={pageVariants}
-        initial="initial"
-        animate="enter"
-        exit="exit"
-        className="w-full min-h-screen"
-      >
-        <Routes location={location}>
-          {/* Public route */}
-          <Route path="/auth" element={<Auth />} />
+    <motion.div
+      key={location.pathname}
+      variants={pageVariants}
+      initial="initial"
+      animate="enter"
+      className="w-full min-h-screen"
+    >
+      <Routes location={location}>
+        {/* Public route */}
+        <Route path="/auth" element={<Auth />} />
           
           {/* Protected routes with Module Error Boundaries */}
           <Route path="/" element={
@@ -290,7 +283,6 @@ const AnimatedRoutes = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
-    </AnimatePresence>
   );
 };
 
