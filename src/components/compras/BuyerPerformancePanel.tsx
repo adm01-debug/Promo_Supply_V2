@@ -76,7 +76,7 @@ export const BuyerPerformancePanel = () => {
 
   if (isLoading) {
     return (
-      <Card ref={ref} className="p-6">
+      <Card className="p-6">
         <Skeleton className="h-6 w-48 mb-4" />
         <div className="grid grid-cols-2 gap-4 mb-6">
           <Skeleton className="h-24" />
