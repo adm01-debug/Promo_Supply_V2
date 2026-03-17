@@ -1,4 +1,4 @@
-import { forwardRef, useMemo } from "react";
+import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { PiggyBank, TrendingDown, Award, ArrowUp } from "lucide-react";
@@ -6,7 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
-export const BuyerPerformancePanel = forwardRef<HTMLDivElement>((_props, ref) => {
+export const BuyerPerformancePanel = () => {
   const { data: cotacoes, isLoading } = useQuery({
     queryKey: ['buyer-performance-cotacoes'],
     queryFn: async () => {
