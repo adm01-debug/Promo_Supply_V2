@@ -138,6 +138,13 @@ const menuGroups = [
         badge: null
       },
       { 
+        title: "Compliance", 
+        icon: ShieldCheck, 
+        href: "/compliance",
+        description: "Conformidade contratual",
+        badge: null
+      },
+      { 
         title: "Orçamentos", 
         icon: Wallet, 
         href: "/orcamentos",
