@@ -1866,6 +1866,59 @@ export type Database = {
           },
         ]
       }
+      penalty_escalation_config: {
+        Row: {
+          action_type: string
+          block_days: number | null
+          contract_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          level: number
+          max_infractions: number | null
+          min_infractions: number
+          penalty_multiplier: number
+          updated_at: string
+        }
+        Insert: {
+          action_type?: string
+          block_days?: number | null
+          contract_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          level?: number
+          max_infractions?: number | null
+          min_infractions?: number
+          penalty_multiplier?: number
+          updated_at?: string
+        }
+        Update: {
+          action_type?: string
+          block_days?: number | null
+          contract_id?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          level?: number
+          max_infractions?: number | null
+          min_infractions?: number
+          penalty_multiplier?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "penalty_escalation_config_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       permissions: {
         Row: {
           action: string
@@ -2127,6 +2180,91 @@ export type Database = {
           window_start?: string
         }
         Relationships: []
+      }
+      receiving_checklists: {
+        Row: {
+          conformity_score: number
+          contract_id: string | null
+          created_at: string
+          defects_found: string | null
+          documentation_score: number
+          fornecedor_id: string
+          id: string
+          inspection_date: string
+          inspector_id: string | null
+          notes: string | null
+          overall_score: number
+          packaging_score: number
+          pedido_id: string
+          photos_urls: Json | null
+          quantity_score: number
+          rejection_reason: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          conformity_score?: number
+          contract_id?: string | null
+          created_at?: string
+          defects_found?: string | null
+          documentation_score?: number
+          fornecedor_id: string
+          id?: string
+          inspection_date?: string
+          inspector_id?: string | null
+          notes?: string | null
+          overall_score?: number
+          packaging_score?: number
+          pedido_id: string
+          photos_urls?: Json | null
+          quantity_score?: number
+          rejection_reason?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          conformity_score?: number
+          contract_id?: string | null
+          created_at?: string
+          defects_found?: string | null
+          documentation_score?: number
+          fornecedor_id?: string
+          id?: string
+          inspection_date?: string
+          inspector_id?: string | null
+          notes?: string | null
+          overall_score?: number
+          packaging_score?: number
+          pedido_id?: string
+          photos_urls?: Json | null
+          quantity_score?: number
+          rejection_reason?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "receiving_checklists_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "receiving_checklists_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "receiving_checklists_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       repurchase_suggestions: {
         Row: {
@@ -2442,6 +2580,75 @@ export type Database = {
           session_cookie?: string
         }
         Relationships: []
+      }
+      supplier_bonifications: {
+        Row: {
+          bonification_type: string
+          compliance_rate: number | null
+          contract_id: string | null
+          created_at: string
+          fornecedor_id: string
+          granted_by: string | null
+          id: string
+          is_active: boolean
+          on_time_deliveries: number | null
+          period_end: string | null
+          period_start: string
+          reason: string
+          total_deliveries: number | null
+          updated_at: string
+          value_percent: number | null
+        }
+        Insert: {
+          bonification_type?: string
+          compliance_rate?: number | null
+          contract_id?: string | null
+          created_at?: string
+          fornecedor_id: string
+          granted_by?: string | null
+          id?: string
+          is_active?: boolean
+          on_time_deliveries?: number | null
+          period_end?: string | null
+          period_start?: string
+          reason: string
+          total_deliveries?: number | null
+          updated_at?: string
+          value_percent?: number | null
+        }
+        Update: {
+          bonification_type?: string
+          compliance_rate?: number | null
+          contract_id?: string | null
+          created_at?: string
+          fornecedor_id?: string
+          granted_by?: string | null
+          id?: string
+          is_active?: boolean
+          on_time_deliveries?: number | null
+          period_end?: string | null
+          period_start?: string
+          reason?: string
+          total_deliveries?: number | null
+          updated_at?: string
+          value_percent?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_bonifications_contract_id_fkey"
+            columns: ["contract_id"]
+            isOneToOne: false
+            referencedRelation: "contracts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_bonifications_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       supplier_documents: {
         Row: {
