@@ -117,6 +117,13 @@ const menuGroups = [
         description: "Timeline de pedidos",
         badge: null
       },
+      { 
+        title: "Devoluções", 
+        icon: RotateCcw, 
+        href: "/devolucoes",
+        description: "RMA e créditos",
+        badge: null
+      },
     ]
   },
   {

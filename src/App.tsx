@@ -279,6 +279,13 @@ const AnimatedRoutes = () => {
               </ModuleErrorBoundary>
             </ProtectedRoute>
           } />
+          <Route path="/devolucoes" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="pedidos">
+                <Devolucoes />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
           
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
