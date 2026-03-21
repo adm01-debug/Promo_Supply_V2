@@ -42,6 +42,7 @@ const NegociacaoIA = lazy(() => import("./pages/NegociacaoIA"));
 const KanbanWorkflow = lazy(() => import("./pages/KanbanWorkflow"));
 const DocumentosFiscais = lazy(() => import("./pages/DocumentosFiscais"));
 const RecompraInteligente = lazy(() => import("./pages/RecompraInteligente"));
+const Devolucoes = lazy(() => import("./pages/Devolucoes"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
@@ -275,6 +276,13 @@ const AnimatedRoutes = () => {
             <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}>
               <ModuleErrorBoundary module="pedidos">
                 <RecompraInteligente />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          <Route path="/devolucoes" element={
+            <ProtectedRoute>
+              <ModuleErrorBoundary module="pedidos">
+                <Devolucoes />
               </ModuleErrorBoundary>
             </ProtectedRoute>
           } />

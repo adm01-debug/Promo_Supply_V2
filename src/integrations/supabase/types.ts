@@ -992,6 +992,89 @@ export type Database = {
           },
         ]
       }
+      creditos_fornecedor: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data_emissao: string
+          data_validade: string | null
+          descricao: string | null
+          devolucao_id: string | null
+          fornecedor_id: string
+          id: string
+          saldo: number
+          status: string
+          tipo: string
+          updated_at: string
+          utilizado_em_pagamento_id: string | null
+          valor: number
+          valor_utilizado: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data_emissao?: string
+          data_validade?: string | null
+          descricao?: string | null
+          devolucao_id?: string | null
+          fornecedor_id: string
+          id?: string
+          saldo?: number
+          status?: string
+          tipo?: string
+          updated_at?: string
+          utilizado_em_pagamento_id?: string | null
+          valor?: number
+          valor_utilizado?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data_emissao?: string
+          data_validade?: string | null
+          descricao?: string | null
+          devolucao_id?: string | null
+          fornecedor_id?: string
+          id?: string
+          saldo?: number
+          status?: string
+          tipo?: string
+          updated_at?: string
+          utilizado_em_pagamento_id?: string | null
+          valor?: number
+          valor_utilizado?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "creditos_fornecedor_devolucao_id_fkey"
+            columns: ["devolucao_id"]
+            isOneToOne: false
+            referencedRelation: "devolucoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creditos_fornecedor_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "creditos_fornecedor_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "creditos_fornecedor_utilizado_em_pagamento_id_fkey"
+            columns: ["utilizado_em_pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "pagamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dashboard_filter_favorites: {
         Row: {
           category_filter: string | null
@@ -1072,6 +1155,163 @@ export type Database = {
           valor_utilizado?: number
         }
         Relationships: []
+      }
+      devolucao_itens: {
+        Row: {
+          created_at: string
+          descricao: string
+          devolucao_id: string
+          estado_item: string | null
+          fotos: Json | null
+          id: string
+          motivo: string
+          pedido_item_id: string | null
+          quantidade: number
+          quantidade_aceita: number | null
+          valor_total: number
+          valor_unitario: number
+        }
+        Insert: {
+          created_at?: string
+          descricao: string
+          devolucao_id: string
+          estado_item?: string | null
+          fotos?: Json | null
+          id?: string
+          motivo?: string
+          pedido_item_id?: string | null
+          quantidade?: number
+          quantidade_aceita?: number | null
+          valor_total?: number
+          valor_unitario?: number
+        }
+        Update: {
+          created_at?: string
+          descricao?: string
+          devolucao_id?: string
+          estado_item?: string | null
+          fotos?: Json | null
+          id?: string
+          motivo?: string
+          pedido_item_id?: string | null
+          quantidade?: number
+          quantidade_aceita?: number | null
+          valor_total?: number
+          valor_unitario?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devolucao_itens_devolucao_id_fkey"
+            columns: ["devolucao_id"]
+            isOneToOne: false
+            referencedRelation: "devolucoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "devolucao_itens_pedido_item_id_fkey"
+            columns: ["pedido_item_id"]
+            isOneToOne: false
+            referencedRelation: "pedido_itens"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      devolucoes: {
+        Row: {
+          aprovador_id: string | null
+          codigo_rastreamento: string | null
+          created_at: string
+          data_aprovacao: string | null
+          data_envio: string | null
+          data_recebimento_fornecedor: string | null
+          data_solicitacao: string
+          fornecedor_id: string | null
+          id: string
+          motivo: string
+          motivo_detalhe: string | null
+          nf_devolucao: string | null
+          numero: string
+          observacoes: string | null
+          pedido_id: string | null
+          resolucao: string | null
+          solicitante_id: string | null
+          status: string
+          tipo: string
+          transportadora: string | null
+          updated_at: string
+          valor_total: number
+        }
+        Insert: {
+          aprovador_id?: string | null
+          codigo_rastreamento?: string | null
+          created_at?: string
+          data_aprovacao?: string | null
+          data_envio?: string | null
+          data_recebimento_fornecedor?: string | null
+          data_solicitacao?: string
+          fornecedor_id?: string | null
+          id?: string
+          motivo?: string
+          motivo_detalhe?: string | null
+          nf_devolucao?: string | null
+          numero: string
+          observacoes?: string | null
+          pedido_id?: string | null
+          resolucao?: string | null
+          solicitante_id?: string | null
+          status?: string
+          tipo?: string
+          transportadora?: string | null
+          updated_at?: string
+          valor_total?: number
+        }
+        Update: {
+          aprovador_id?: string | null
+          codigo_rastreamento?: string | null
+          created_at?: string
+          data_aprovacao?: string | null
+          data_envio?: string | null
+          data_recebimento_fornecedor?: string | null
+          data_solicitacao?: string
+          fornecedor_id?: string | null
+          id?: string
+          motivo?: string
+          motivo_detalhe?: string | null
+          nf_devolucao?: string | null
+          numero?: string
+          observacoes?: string | null
+          pedido_id?: string | null
+          resolucao?: string | null
+          solicitante_id?: string | null
+          status?: string
+          tipo?: string
+          transportadora?: string | null
+          updated_at?: string
+          valor_total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "devolucoes_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "devolucoes_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "devolucoes_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       fiscal_documents: {
         Row: {

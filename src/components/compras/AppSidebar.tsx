@@ -27,7 +27,8 @@ import {
   Brain,
   Columns3,
   FileCheck,
-  RefreshCw
+  RefreshCw,
+  RotateCcw
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
@@ -114,6 +115,13 @@ const menuGroups = [
         icon: Truck, 
         href: "/acompanhamento",
         description: "Timeline de pedidos",
+        badge: null
+      },
+      { 
+        title: "Devoluções", 
+        icon: RotateCcw, 
+        href: "/devolucoes",
+        description: "RMA e créditos",
         badge: null
       },
     ]
