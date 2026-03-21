@@ -247,8 +247,8 @@ function DevolucaoDetailModal({ devolucao, open, onClose }: { devolucao: import(
   const status = STATUS_MAP[devolucao.status];
   const StatusIcon = status?.icon || Clock;
 
-  const nextActions: { label: string; status: string; variant: "default" | "outline" | "destructive" }[] = [];
-  const transitions: Record<string, { label: string; variant: "default" | "outline" | "destructive" }[]> = {
+  type ActionDef = { label: string; status: string; variant: "default" | "outline" | "destructive" };
+  const transitions: Record<string, ActionDef[]> = {
     solicitada: [{ label: "Aprovar", status: "aprovada", variant: "default" }, { label: "Rejeitar", status: "rejeitada", variant: "destructive" }],
     aprovada: [{ label: "Marcar em Trânsito", status: "em_transito", variant: "default" }],
     em_transito: [{ label: "Confirmar Recebimento", status: "recebida_fornecedor", variant: "default" }],
