@@ -54,6 +54,9 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   // Session idle timeout (30 min)
   useSessionIdleTimeout();
   
+  // Scroll restoration across navigation
+  useScrollRestoration();
+  
   // Command Palette
   const { open: commandPaletteOpen, setOpen: setCommandPaletteOpen } = useCommandPalette();
   
