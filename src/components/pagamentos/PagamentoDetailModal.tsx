@@ -350,6 +350,10 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                 </a>
               </Button>
             )}
+            {/* Three-Way Match */}
+            {(pagamento.pedido_id || pagamento.numero_nf) && (
+              <ThreeWayMatchPanel pagamento={pagamento} />
+            )}
           </TabsContent>
 
           {/* Tab Histórico */}
