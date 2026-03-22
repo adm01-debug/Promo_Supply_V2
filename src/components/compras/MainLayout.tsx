@@ -11,6 +11,7 @@ import { CommandPalette, useCommandPalette } from "@/components/compras/CommandP
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useGlobalUndo } from "@/hooks/useGlobalUndo";
 import { useSessionIdleTimeout } from "@/hooks/useSessionIdleTimeout";
+import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
@@ -25,6 +26,8 @@ import { CelebrationOverlay } from "@/components/ui/celebration";
 import { UndoToastContainer } from "@/components/ui/undo-toast";
 import { UndoIndicator, FloatingUndoIndicator } from "@/components/ui/undo-indicator";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { SmartBackButton } from "@/components/navigation/SmartBackButton";
+import { NavigationProgressBar } from "@/components/navigation/NavigationProgressBar";
 import { cn } from "@/lib/utils";
 import { Menu, X, Keyboard, HelpCircle, Command, Settings2, Accessibility } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -51,6 +54,9 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   // Session idle timeout (30 min)
   useSessionIdleTimeout();
   
+  // Scroll restoration across navigation
+  useScrollRestoration();
+  
   // Command Palette
   const { open: commandPaletteOpen, setOpen: setCommandPaletteOpen } = useCommandPalette();
   
@@ -67,6 +73,9 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background pb-16 md:pb-0">
+      {/* Navigation Progress Bar */}
+      <NavigationProgressBar />
+      
       {/* Skip Links for accessibility */}
       <SkipLinks />
       
@@ -122,6 +131,9 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
+
+            {/* Smart Back Button */}
+            <SmartBackButton className="hidden md:flex" />
 
             {/* Advanced Search - responsive */}
             <div className="flex flex-1 max-w-xl" data-tour="global-search">
@@ -262,7 +274,10 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
           className="min-h-[calc(100vh-4rem)]"
         >
           <main id="main-content" className="p-4 md:p-6 animate-fade-in" tabIndex={-1}>
-            <Breadcrumbs className="mb-4" />
+            <div className="flex items-center gap-2 mb-4">
+              <SmartBackButton className="md:hidden" />
+              <Breadcrumbs className="flex-1" />
+            </div>
             {children}
           </main>
         </MobileRefreshWrapper>
