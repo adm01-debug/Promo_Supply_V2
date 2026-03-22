@@ -3,7 +3,6 @@ import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
@@ -11,57 +10,36 @@ import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
 import { useBulkOperations, pagamentosStatusOptions } from "@/hooks/useBulkOperations";
 import { BulkAction, BulkItem } from "@/components/compras/BulkOperationsPreview";
+import { Progress } from "@/components/ui/progress";
+import { PagamentoAdvancedKPIs } from "@/components/pagamentos/PagamentoAdvancedKPIs";
+import { PagamentoAdvancedFilters, applyAdvancedFilters, INITIAL_FILTERS, type PagamentoFiltersState } from "@/components/pagamentos/PagamentoAdvancedFilters";
+import { PagamentoDetailModal } from "@/components/pagamentos/PagamentoDetailModal";
+import { PagamentoMobileCard } from "@/components/pagamentos/PagamentoMobileCard";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { 
-  CreditCard, 
-  Search, 
-  QrCode, 
-  FileText, 
-  Clock, 
-  CheckCircle2, 
-  AlertTriangle,
-  Building2,
-  Calendar,
-  DollarSign,
-  RefreshCw,
-  Eye,
-  MoreHorizontal,
-  Trash2
+import {
+  CreditCard, QrCode, FileText, Clock, CheckCircle2, AlertTriangle,
+  Building2, Calendar, DollarSign, RefreshCw, Eye, MoreHorizontal,
+  Trash2, CalendarClock, Banknote
 } from "lucide-react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { PagamentoMobileCard } from "@/components/pagamentos/PagamentoMobileCard";
+  Tooltip, TooltipContent, TooltipTrigger, TooltipProvider,
+} from "@/components/ui/tooltip";
 import { usePagamentos, usePagamentosKPIs, type Pagamento } from "@/hooks/usePagamentos";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/lib/feedbackToast";
 import { format, differenceInDays } from "date-fns";
+import { cn } from "@/lib/utils";
 
 const Pagamentos = () => {
-  const [busca, setBusca] = useState("");
+  const [filters, setFilters] = useState<PagamentoFiltersState>(INITIAL_FILTERS);
   const [pagamentoSelecionado, setPagamentoSelecionado] = useState<Pagamento | null>(null);
-  const [modalPagamento, setModalPagamento] = useState(false);
-  const [comprovante, setComprovante] = useState("");
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState("pendentes");
 
@@ -69,30 +47,18 @@ const Pagamentos = () => {
   const { pagamentos, loading, refetch, markAsPaid, approvePagamento, bulkUpdateStatus, bulkDelete } = usePagamentos();
   const { kpis } = usePagamentosKPIs();
 
-  const pagamentosPendentes = useMemo(() => 
-    pagamentos.filter(p => ['pendente', 'aprovado'].includes(p.status)),
+  // Split by tab
+  const pagamentosPendentes = useMemo(() =>
+    pagamentos.filter(p => ['pendente', 'aprovado', 'agendado', 'parcial', 'atrasado'].includes(p.status)),
     [pagamentos]
   );
-
-  const pagamentosPagos = useMemo(() => 
+  const pagamentosPagos = useMemo(() =>
     pagamentos.filter(p => p.status === 'pago'),
     [pagamentos]
   );
 
-  // Get current list based on active tab
   const currentList = activeTab === 'pendentes' ? pagamentosPendentes : pagamentosPagos;
-
-  const filtrarPagamentos = (lista: Pagamento[]) => {
-    if (!busca) return lista;
-    const termoBusca = busca.toLowerCase();
-    return lista.filter(p => 
-      p.numero.toLowerCase().includes(termoBusca) ||
-      p.fornecedor?.razao_social?.toLowerCase().includes(termoBusca) ||
-      p.numero_nf?.toLowerCase().includes(termoBusca)
-    );
-  };
-
-  const filteredPagamentos = filtrarPagamentos(currentList);
+  const filteredPagamentos = useMemo(() => applyAdvancedFilters(currentList, filters), [currentList, filters]);
 
   // Bulk operations
   const { executeAction, convertToBulkItems } = useBulkOperations({
@@ -100,125 +66,87 @@ const Pagamentos = () => {
     onUpdateStatus: bulkUpdateStatus as (ids: string[], status: string) => Promise<boolean>,
   });
 
-  // Bulk actions configuration
   const bulkActions: BulkAction[] = [
     { id: 'approve', label: 'Aprovar', icon: CheckCircle2, variant: 'default', targetStatus: 'aprovado' },
     { id: 'mark-paid', label: 'Marcar Pago', icon: CreditCard, variant: 'default', targetStatus: 'pago' },
+    { id: 'schedule', label: 'Agendar', icon: CalendarClock, variant: 'default', targetStatus: 'agendado' },
     { id: 'change-status', label: 'Alterar Status', icon: RefreshCw },
     { id: 'delete', label: 'Excluir', icon: Trash2, variant: 'destructive', requiresConfirmation: true },
   ];
 
-  // Handle bulk action execution
-  const handleBulkAction = useCallback(async (
-    action: BulkAction, 
-    itemIds: string[], 
-    options?: { targetStatus?: string }
-  ) => {
+  const handleBulkAction = useCallback(async (action: BulkAction, itemIds: string[], options?: { targetStatus?: string }) => {
     const success = await executeAction(action, itemIds, options);
-    if (success) {
-      setSelectedIds([]);
-    }
+    if (success) setSelectedIds([]);
     return success;
   }, [executeAction]);
 
-  // Convert pagamentos to bulk items
   const selectedBulkItems: BulkItem[] = useMemo(() => {
-    const selectedPagamentos = pagamentos.filter(p => selectedIds.includes(p.id));
-    return convertToBulkItems(selectedPagamentos, (pagamento) => ({
-      title: pagamento.numero,
-      subtitle: pagamento.fornecedor?.razao_social || 'Fornecedor',
-      status: pagamento.status,
-      value: pagamento.valor,
+    const selected = pagamentos.filter(p => selectedIds.includes(p.id));
+    return convertToBulkItems(selected, (p) => ({
+      title: p.numero, subtitle: p.fornecedor?.razao_social || 'Fornecedor',
+      status: p.status, value: p.valor,
     }));
   }, [pagamentos, selectedIds, convertToBulkItems]);
 
-  // Selection handlers
   const handleSelectAll = useCallback(() => {
-    if (selectedIds.length === filteredPagamentos.length) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(filteredPagamentos.map(p => p.id));
-    }
-  }, [selectedIds.length, filteredPagamentos]);
+    setSelectedIds(prev =>
+      prev.length === filteredPagamentos.length ? [] : filteredPagamentos.map(p => p.id)
+    );
+  }, [filteredPagamentos]);
 
   const handleSelectOne = useCallback((id: string) => {
-    setSelectedIds(prev => 
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   }, []);
 
-  // Clear selection when changing tabs
-  const handleTabChange = (value: string) => {
-    setActiveTab(value);
-    setSelectedIds([]);
-  };
+  const handleTabChange = (value: string) => { setActiveTab(value); setSelectedIds([]); };
 
   const handlePagar = (pagamento: Pagamento) => {
     setPagamentoSelecionado(pagamento);
-    setComprovante("");
-    setModalPagamento(true);
+    setModalOpen(true);
   };
 
-  const handleConfirmarPagamento = async () => {
-    if (!pagamentoSelecionado) return;
-    
-    setIsProcessing(true);
-    try {
-      const success = await markAsPaid(pagamentoSelecionado.id);
-      if (success) {
-        toast.success("Pagamento confirmado com sucesso!");
-        setModalPagamento(false);
-      }
-    } finally {
-      setIsProcessing(false);
-    }
+  const handleConfirmarPagamento = async (id: string, valorParcial?: number) => {
+    const success = await markAsPaid(id, valorParcial);
+    if (success) toast.success(valorParcial ? "Pagamento parcial registrado!" : "Pagamento confirmado!");
+    return success;
   };
 
   const handleAprovar = async (pagamento: Pagamento) => {
     const success = await approvePagamento(pagamento.id);
-    if (success) {
-      toast.success("Pagamento aprovado!");
-    }
+    if (success) toast.success("Pagamento aprovado!");
   };
 
-  const getVencimentoStatus = (vencimento: string, status: string) => {
-    if (status === 'pago') {
-      return { label: "Pago", variant: "success" as const, icon: CheckCircle2, color: "text-green-600" };
-    }
-    
-    const dias = differenceInDays(new Date(vencimento), new Date());
-    
-    if (dias < 0) return { label: "Vencido", variant: "destructive" as const, icon: AlertTriangle, color: "text-destructive" };
-    if (dias === 0) return { label: "Vence Hoje", variant: "destructive" as const, icon: AlertTriangle, color: "text-destructive" };
-    if (dias <= 2) return { label: `${dias}d restante${dias > 1 ? 's' : ''}`, variant: "warning" as const, icon: Clock, color: "text-orange-500" };
-    return { label: `${dias}d restantes`, variant: "secondary" as const, icon: Calendar, color: "text-muted-foreground" };
+  const getVencimentoInfo = (venc: string, status: string) => {
+    if (status === 'pago') return { label: "Pago", color: "text-emerald-600", bg: "bg-emerald-500/10", icon: CheckCircle2 };
+    const dias = differenceInDays(new Date(venc), new Date());
+    if (dias < 0) return { label: `${Math.abs(dias)}d vencido`, color: "text-red-600", bg: "bg-red-500/10", icon: AlertTriangle };
+    if (dias === 0) return { label: "Vence Hoje", color: "text-red-600", bg: "bg-red-500/10", icon: AlertTriangle };
+    if (dias <= 3) return { label: `${dias}d restante${dias > 1 ? 's' : ''}`, color: "text-orange-500", bg: "bg-orange-500/10", icon: Clock };
+    return { label: `${dias}d`, color: "text-muted-foreground", bg: "bg-muted", icon: Calendar };
   };
 
-  const getStatusBadge = (status: string) => {
-    const configs: Record<string, { label: string; color: string }> = {
-      pendente: { label: 'Pendente', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20' },
-      aprovado: { label: 'Aprovado', color: 'bg-blue-500/10 text-blue-600 border-blue-500/20' },
-      pago: { label: 'Pago', color: 'bg-green-500/10 text-green-600 border-green-500/20' },
-      cancelado: { label: 'Cancelado', color: 'bg-red-500/10 text-red-600 border-red-500/20' },
+  const getStatusConfig = (status: string) => {
+    const map: Record<string, { label: string; className: string }> = {
+      pendente: { label: 'Pendente', className: 'bg-amber-500/10 text-amber-600 border-amber-500/20' },
+      aprovado: { label: 'Aprovado', className: 'bg-blue-500/10 text-blue-600 border-blue-500/20' },
+      agendado: { label: 'Agendado', className: 'bg-purple-500/10 text-purple-600 border-purple-500/20' },
+      pago: { label: 'Pago', className: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' },
+      parcial: { label: 'Parcial', className: 'bg-cyan-500/10 text-cyan-600 border-cyan-500/20' },
+      cancelado: { label: 'Cancelado', className: 'bg-red-500/10 text-red-600 border-red-500/20' },
+      atrasado: { label: 'Atrasado', className: 'bg-red-500/10 text-red-600 border-red-500/20' },
     };
-    return configs[status] || configs.pendente;
+    return map[status] || map.pendente;
   };
+
+  const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   if (loading) {
     return (
       <MainLayout>
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
-            <div className="space-y-2">
-              <div className="h-8 w-48 bg-muted animate-pulse rounded" />
-              <div className="h-4 w-64 bg-muted animate-pulse rounded" />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-            <KPICardSkeleton />
-            <KPICardSkeleton />
-            <KPICardSkeleton />
-            <KPICardSkeleton />
+          <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+            {Array.from({ length: 6 }).map((_, i) => <KPICardSkeleton key={i} />)}
           </div>
           <TableSkeleton rows={6} columns={7} />
         </div>
@@ -226,17 +154,170 @@ const Pagamentos = () => {
     );
   }
 
+  const renderTable = (list: Pagamento[], showCheckbox: boolean) => (
+    <TooltipProvider>
+      <Card>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              {showCheckbox && (
+                <TableHead className="w-10">
+                  <Checkbox
+                    checked={selectedIds.length === list.length && list.length > 0}
+                    onCheckedChange={handleSelectAll}
+                  />
+                </TableHead>
+              )}
+              <TableHead>Número</TableHead>
+              <TableHead>Fornecedor</TableHead>
+              <TableHead>NF</TableHead>
+              <TableHead>Forma</TableHead>
+              <TableHead>Vencimento</TableHead>
+              <TableHead className="text-right">Valor</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {list.map((p) => {
+              const vencInfo = getVencimentoInfo(p.data_vencimento, p.status);
+              const VencIcon = vencInfo.icon;
+              const statusCfg = getStatusConfig(p.status);
+              const isSelected = selectedIds.includes(p.id);
+              const hasParcial = p.status === 'parcial' || (p.valor_pago || 0) > 0;
+              const pctPago = ((p.valor_pago || 0) / p.valor) * 100;
+
+              return (
+                <TableRow key={p.id} className={cn(isSelected && 'bg-primary/5', "cursor-pointer")} onClick={() => handlePagar(p)}>
+                  {showCheckbox && (
+                    <TableCell onClick={(e) => e.stopPropagation()}>
+                      <Checkbox checked={isSelected} onCheckedChange={() => handleSelectOne(p.id)} />
+                    </TableCell>
+                  )}
+                  <TableCell>
+                    <span className="font-mono font-medium text-sm">{p.numero}</span>
+                    <div className="mt-0.5">
+                      <Badge variant="outline" className={cn("text-xs", statusCfg.className)}>{statusCfg.label}</Badge>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex items-center gap-1.5 text-sm">
+                      <Building2 className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                      <span className="truncate max-w-[180px]">{p.fornecedor?.razao_social || '-'}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-sm">{p.numero_nf || '-'}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="gap-1 text-xs">
+                      {p.forma_pagamento === "pix" ? <QrCode className="h-3 w-3" /> : <FileText className="h-3 w-3" />}
+                      {p.forma_pagamento?.toUpperCase() || 'N/D'}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <div className={cn("flex items-center gap-1.5 text-xs font-medium", vencInfo.color)}>
+                      <VencIcon className="h-3.5 w-3.5" />
+                      {vencInfo.label}
+                    </div>
+                    <p className="text-xs text-muted-foreground">{format(new Date(p.data_vencimento), 'dd/MM/yyyy')}</p>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <span className="font-bold text-sm">{fmt(p.valor)}</span>
+                          {hasParcial && (
+                            <div className="mt-1">
+                              <Progress value={pctPago} className="h-1.5" />
+                              <p className="text-[10px] text-muted-foreground mt-0.5">
+                                {fmt(p.valor_pago || 0)} / {fmt(p.valor)}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <div className="text-xs space-y-1">
+                          <p>Valor total: {fmt(p.valor)}</p>
+                          <p>Pago: {fmt(p.valor_pago || 0)}</p>
+                          <p>Restante: {fmt(p.valor - (p.valor_pago || 0))}</p>
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-7 w-7">
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handlePagar(p)}>
+                          <Eye className="w-4 h-4 mr-2" />
+                          Ver Detalhes
+                        </DropdownMenuItem>
+                        {!['pago', 'cancelado'].includes(p.status) && (
+                          <>
+                            <DropdownMenuItem onClick={() => handlePagar(p)}>
+                              <CreditCard className="w-4 h-4 mr-2" />
+                              Registrar Pagamento
+                            </DropdownMenuItem>
+                            {p.status === 'pendente' && (
+                              <DropdownMenuItem onClick={() => handleAprovar(p)}>
+                                <CheckCircle2 className="w-4 h-4 mr-2" />
+                                Aprovar
+                              </DropdownMenuItem>
+                            )}
+                          </>
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+            {list.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={showCheckbox ? 8 : 7} className="text-center py-8">
+                  <IllustratedEmptyState
+                    type="payments"
+                    title="Nenhum pagamento encontrado"
+                    description="Ajuste os filtros ou aguarde novos pagamentos"
+                    size="sm"
+                  />
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </Card>
+    </TooltipProvider>
+  );
+
+  const renderMobile = (list: Pagamento[]) => (
+    <div className="space-y-3">
+      {list.length === 0 ? (
+        <Card className="p-8">
+          <IllustratedEmptyState type="payments" title="Nenhum pagamento encontrado" description="Ajuste os filtros" size="sm" />
+        </Card>
+      ) : (
+        list.map((p) => (
+          <PagamentoMobileCard key={p.id} pagamento={p} onPagar={handlePagar} onAprovar={handleAprovar} onView={handlePagar} />
+        ))
+      )}
+    </div>
+  );
+
   return (
     <MainLayout>
-      <div className="space-y-6">
+      <div className="space-y-4">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
           <div>
             <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
               <CreditCard className="h-6 w-6 text-primary" />
-              Pagamentos
+              Contas a Pagar
             </h1>
-            <p className="text-sm text-muted-foreground">Gestão financeira de compras</p>
+            <p className="text-sm text-muted-foreground">Gestão financeira completa de pagamentos</p>
           </div>
           <Button variant="outline" size="sm" onClick={() => refetch()}>
             <RefreshCw className="w-4 h-4 mr-2" />
@@ -244,409 +325,50 @@ const Pagamentos = () => {
           </Button>
         </div>
 
-        {/* KPIs */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-900/30">
-                <Clock className="h-5 w-5 text-orange-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Pendentes</p>
-                <p className="text-xl font-bold">{kpis.pendentes}</p>
-              </div>
-            </div>
-          </Card>
-          
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-red-100 dark:bg-red-900/30">
-                <AlertTriangle className="h-5 w-5 text-red-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Vencidos</p>
-                <p className="text-xl font-bold text-red-600">{kpis.atrasados}</p>
-              </div>
-            </div>
-          </Card>
+        {/* Advanced KPIs */}
+        <PagamentoAdvancedKPIs pagamentos={pagamentos} />
 
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-yellow-100 dark:bg-yellow-900/30">
-                <DollarSign className="h-5 w-5 text-yellow-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Total Pendente</p>
-                <p className="text-xl font-bold text-yellow-600">
-                  {kpis.valorPendente.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                </p>
-              </div>
-            </div>
-          </Card>
-          
-          <Card className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
-                <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Pago (Mês)</p>
-                <p className="text-xl font-bold text-emerald-600">
-                  {kpis.valorPago.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                </p>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        {/* Filtros */}
-        <Card className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input 
-                placeholder="Buscar por número, fornecedor ou NF..." 
-                className="pl-10"
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-              />
-            </div>
-          </div>
-        </Card>
+        {/* Advanced Filters */}
+        <PagamentoAdvancedFilters pagamentos={pagamentos} filters={filters} onFiltersChange={setFilters} />
 
         {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-4">
+        <Tabs value={activeTab} onValueChange={handleTabChange} className="space-y-3">
           <TabsList className="w-full grid grid-cols-2 h-auto p-1">
-            <TabsTrigger value="pendentes" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2">
-              <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <TabsTrigger value="pendentes" className="gap-1.5 text-xs sm:text-sm py-2">
+              <Clock className="h-3.5 w-3.5" />
               Pendentes ({pagamentosPendentes.length})
             </TabsTrigger>
-            <TabsTrigger value="pagos" className="gap-1 sm:gap-2 text-xs sm:text-sm py-2">
-              <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            <TabsTrigger value="pagos" className="gap-1.5 text-xs sm:text-sm py-2">
+              <CheckCircle2 className="h-3.5 w-3.5" />
               Pagos ({pagamentosPagos.length})
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="pendentes">
-            {isMobile ? (
-              /* Mobile View */
-              <div className="space-y-3">
-                {filtrarPagamentos(pagamentosPendentes).length === 0 ? (
-                  <Card className="p-8">
-                    <IllustratedEmptyState
-                      type="payments"
-                      title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento pendente"}
-                      description={busca ? "Tente ajustar os termos da busca" : "Todos os pagamentos estão em dia!"}
-                      size="sm"
-                    />
-                  </Card>
-                ) : (
-                  filtrarPagamentos(pagamentosPendentes).map((pagamento) => (
-                    <PagamentoMobileCard
-                      key={pagamento.id}
-                      pagamento={pagamento}
-                      onPagar={handlePagar}
-                      onAprovar={handleAprovar}
-                    />
-                  ))
-                )}
-              </div>
-            ) : (
-              /* Desktop Table */
-              <Card>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-12">
-                        <Checkbox
-                          checked={selectedIds.length === filtrarPagamentos(pagamentosPendentes).length && filtrarPagamentos(pagamentosPendentes).length > 0}
-                          onCheckedChange={handleSelectAll}
-                          aria-label="Selecionar todos"
-                        />
-                      </TableHead>
-                      <TableHead>Número</TableHead>
-                      <TableHead>Fornecedor</TableHead>
-                      <TableHead>NF</TableHead>
-                      <TableHead>Forma Pgto</TableHead>
-                      <TableHead>Vencimento</TableHead>
-                      <TableHead className="text-right">Valor</TableHead>
-                      <TableHead className="text-right">Ações</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filtrarPagamentos(pagamentosPendentes).map((pagamento) => {
-                      const vencStatus = getVencimentoStatus(pagamento.data_vencimento, pagamento.status);
-                      const VencIcon = vencStatus.icon;
-                      const statusBadge = getStatusBadge(pagamento.status);
-                      const isSelected = selectedIds.includes(pagamento.id);
-                      
-                      return (
-                        <TableRow key={pagamento.id} className={isSelected ? 'bg-primary/5' : ''}>
-                          <TableCell>
-                            <Checkbox
-                              checked={isSelected}
-                              onCheckedChange={() => handleSelectOne(pagamento.id)}
-                              aria-label={`Selecionar ${pagamento.numero}`}
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <span className="font-mono font-medium">{pagamento.numero}</span>
-                            <div className="mt-1">
-                              <Badge variant="outline" className={statusBadge.color}>
-                                {statusBadge.label}
-                              </Badge>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Building2 className="h-4 w-4 text-muted-foreground" />
-                              {pagamento.fornecedor?.razao_social || 'Fornecedor não encontrado'}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {pagamento.numero_nf || '-'}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={pagamento.forma_pagamento === "pix" ? "default" : "secondary"} className="gap-1">
-                              {pagamento.forma_pagamento === "pix" ? (
-                                <QrCode className="h-3 w-3" />
-                              ) : (
-                                <FileText className="h-3 w-3" />
-                              )}
-                              {pagamento.forma_pagamento?.toUpperCase() || 'N/D'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Badge 
-                                variant={vencStatus.variant === "warning" ? "outline" : vencStatus.variant === "success" ? "default" : vencStatus.variant}
-                                className={vencStatus.variant === "warning" ? "border-orange-500 text-orange-600" : vencStatus.variant === "success" ? "bg-green-600" : ""}
-                              >
-                                <VencIcon className="h-3 w-3 mr-1" />
-                                {vencStatus.label}
-                              </Badge>
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {format(new Date(pagamento.data_vencimento), 'dd/MM/yyyy')}
-                            </p>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <span className="font-bold">
-                              {pagamento.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
-                                  <MoreHorizontal className="w-4 h-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => handlePagar(pagamento)}>
-                                  <CreditCard className="w-4 h-4 mr-2" />
-                                  Registrar Pagamento
-                                </DropdownMenuItem>
-                                {pagamento.status === 'pendente' && (
-                                  <DropdownMenuItem onClick={() => handleAprovar(pagamento)}>
-                                    <CheckCircle2 className="w-4 h-4 mr-2" />
-                                    Aprovar
-                                  </DropdownMenuItem>
-                                )}
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                  <Eye className="w-4 h-4 mr-2" />
-                                  Ver Detalhes
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                    {filtrarPagamentos(pagamentosPendentes).length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={8} className="text-center py-8">
-                          <IllustratedEmptyState
-                            type="payments"
-                            title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento pendente"}
-                            description={busca ? "Tente ajustar os termos da busca" : "Todos os pagamentos estão em dia!"}
-                            size="sm"
-                          />
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </Card>
-            )}
+            {isMobile ? renderMobile(filteredPagamentos) : renderTable(filteredPagamentos, true)}
           </TabsContent>
 
           <TabsContent value="pagos">
-            {isMobile ? (
-              /* Mobile View */
-              <div className="space-y-3">
-                {filtrarPagamentos(pagamentosPagos).length === 0 ? (
-                  <Card className="p-8">
-                    <IllustratedEmptyState
-                      type="payments"
-                      title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento confirmado"}
-                      description={busca ? "Tente ajustar os termos da busca" : "Os pagamentos confirmados aparecerão aqui"}
-                      size="sm"
-                    />
-                  </Card>
-                ) : (
-                  filtrarPagamentos(pagamentosPagos).map((pagamento) => (
-                    <PagamentoMobileCard
-                      key={pagamento.id}
-                      pagamento={pagamento}
-                      onPagar={handlePagar}
-                    />
-                  ))
-                )}
-              </div>
-            ) : (
-              /* Desktop Table */
-              <Card>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Número</TableHead>
-                      <TableHead>Fornecedor</TableHead>
-                      <TableHead>NF</TableHead>
-                      <TableHead>Forma Pgto</TableHead>
-                      <TableHead>Data Pagamento</TableHead>
-                      <TableHead className="text-right">Valor</TableHead>
-                      <TableHead className="text-right">Status</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filtrarPagamentos(pagamentosPagos).map((pagamento) => (
-                      <TableRow key={pagamento.id}>
-                        <TableCell>
-                          <span className="font-mono font-medium">{pagamento.numero}</span>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Building2 className="h-4 w-4 text-muted-foreground" />
-                            {pagamento.fornecedor?.razao_social || 'Fornecedor não encontrado'}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          {pagamento.numero_nf || '-'}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="gap-1">
-                            {pagamento.forma_pagamento === "pix" ? (
-                              <QrCode className="h-3 w-3" />
-                            ) : (
-                              <FileText className="h-3 w-3" />
-                            )}
-                            {pagamento.forma_pagamento?.toUpperCase() || 'N/D'}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {pagamento.data_pagamento 
-                            ? format(new Date(pagamento.data_pagamento), 'dd/MM/yyyy')
-                            : '-'}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <span className="font-bold">
-                            {pagamento.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                          </span>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <Badge variant="default" className="bg-emerald-600 gap-1">
-                            <CheckCircle2 className="h-3 w-3" />
-                            Pago
-                          </Badge>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                    {filtrarPagamentos(pagamentosPagos).length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={7} className="text-center py-8">
-                          <IllustratedEmptyState
-                            type="payments"
-                            title={busca ? "Nenhum pagamento encontrado" : "Nenhum pagamento confirmado"}
-                            description={busca ? "Tente ajustar os termos da busca" : "Os pagamentos confirmados aparecerão aqui"}
-                            size="sm"
-                          />
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </Card>
-            )}
+            {isMobile ? renderMobile(filteredPagamentos) : renderTable(filteredPagamentos, false)}
           </TabsContent>
         </Tabs>
 
-        {/* Resumo */}
+        {/* Summary footer */}
         <div className="flex items-center justify-between text-sm text-muted-foreground">
-          <p>Total: {pagamentos.length} pagamentos</p>
-          <p>
-            Valor total: {pagamentos.reduce((acc, p) => acc + p.valor, 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-          </p>
+          <p>{filteredPagamentos.length} de {currentList.length} pagamentos</p>
+          <p>Total filtrado: {fmt(filteredPagamentos.reduce((s, p) => s + p.valor, 0))}</p>
         </div>
       </div>
 
-      {/* Modal de Pagamento */}
-      <Dialog open={modalPagamento} onOpenChange={setModalPagamento}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-primary" />
-              Registrar Pagamento
-            </DialogTitle>
-          </DialogHeader>
+      {/* Detail Modal */}
+      <PagamentoDetailModal
+        pagamento={pagamentoSelecionado}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onConfirmarPagamento={handleConfirmarPagamento}
+      />
 
-          {pagamentoSelecionado && (
-            <div className="space-y-4">
-              <div className="p-4 rounded-lg bg-muted/50">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-muted-foreground">Pagamento</span>
-                  <span className="font-mono font-medium">{pagamentoSelecionado.numero}</span>
-                </div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-muted-foreground">Fornecedor</span>
-                  <span className="font-medium">{pagamentoSelecionado.fornecedor?.razao_social}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-muted-foreground">Valor</span>
-                  <span className="text-xl font-bold text-primary">
-                    {pagamentoSelecionado.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                  </span>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="comprovante">URL do Comprovante (opcional)</Label>
-                <Input
-                  id="comprovante"
-                  placeholder="https://..."
-                  value={comprovante}
-                  onChange={(e) => setComprovante(e.target.value)}
-                />
-              </div>
-            </div>
-          )}
-
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setModalPagamento(false)}>
-              Cancelar
-            </Button>
-            <Button 
-              onClick={handleConfirmarPagamento}
-              disabled={isProcessing}
-            >
-              {isProcessing ? 'Processando...' : 'Confirmar Pagamento'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
-      {/* Bulk Actions Bar */}
+      {/* Bulk Actions */}
       <EnhancedBulkActionsBar
         entityType="pagamentos"
         selectedItems={selectedBulkItems}
