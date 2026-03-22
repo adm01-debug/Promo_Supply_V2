@@ -51,8 +51,18 @@ const Pagamentos = () => {
   const [showDashboard, setShowDashboard] = useState(true);
 
   const isMobile = useIsMobile();
-  const { pagamentos, loading, refetch, markAsPaid, approvePagamento, bulkUpdateStatus, bulkDelete } = usePagamentos();
+  const { pagamentos, loading, refetch, markAsPaid, approvePagamento, bulkUpdateStatus, bulkDelete, updatePagamento } = usePagamentos();
   const { kpis } = usePagamentosKPIs();
+
+  const handleSchedule = useCallback(async (ids: string[], date: string) => {
+    const success = await bulkUpdateStatus(ids, 'agendado');
+    return success;
+  }, [bulkUpdateStatus]);
+
+  const selectedForSchedule = useMemo(() =>
+    pagamentos.filter(p => selectedIds.includes(p.id) && ['pendente', 'aprovado'].includes(p.status)),
+    [pagamentos, selectedIds]
+  );
 
   // Split by tab
   const pagamentosPendentes = useMemo(() =>
