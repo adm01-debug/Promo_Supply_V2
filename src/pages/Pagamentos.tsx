@@ -336,14 +336,33 @@ const Pagamentos = () => {
             </h1>
             <p className="text-sm text-muted-foreground">Gestão financeira completa de pagamentos</p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Atualizar
-          </Button>
+          <div className="flex gap-2">
+            <PagamentoExportPanel pagamentos={filteredPagamentos} />
+            {selectedForSchedule.length > 0 && (
+              <Button variant="outline" size="sm" className="gap-2" onClick={() => setScheduleModalOpen(true)}>
+                <CalendarClock className="h-4 w-4" />
+                Agendar ({selectedForSchedule.length})
+              </Button>
+            )}
+            <Button variant="outline" size="sm" onClick={() => setShowDashboard(!showDashboard)}>
+              <BarChart3 className="w-4 h-4 mr-2" />
+              {showDashboard ? 'Ocultar' : 'Dashboard'}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => refetch()}>
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Atualizar
+            </Button>
+          </div>
         </div>
+
+        {/* Notifications Widget */}
+        <PagamentoNotificationsWidget pagamentos={pagamentos} />
 
         {/* Advanced KPIs */}
         <PagamentoAdvancedKPIs pagamentos={pagamentos} />
+
+        {/* Financial Dashboard (collapsible) */}
+        {showDashboard && <PagamentoFinancialDashboard pagamentos={pagamentos} />}
 
         {/* Advanced Filters */}
         <PagamentoAdvancedFilters pagamentos={pagamentos} filters={filters} onFiltersChange={setFilters} />
@@ -383,6 +402,14 @@ const Pagamentos = () => {
         open={modalOpen}
         onOpenChange={setModalOpen}
         onConfirmarPagamento={handleConfirmarPagamento}
+      />
+
+      {/* Schedule Modal */}
+      <PagamentoScheduleModal
+        pagamentos={selectedForSchedule}
+        open={scheduleModalOpen}
+        onOpenChange={setScheduleModalOpen}
+        onSchedule={handleSchedule}
       />
 
       {/* Bulk Actions */}
