@@ -45,8 +45,10 @@ const Pagamentos = () => {
   const [filters, setFilters] = useState<PagamentoFiltersState>(INITIAL_FILTERS);
   const [pagamentoSelecionado, setPagamentoSelecionado] = useState<Pagamento | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState("pendentes");
+  const [showDashboard, setShowDashboard] = useState(true);
 
   const isMobile = useIsMobile();
   const { pagamentos, loading, refetch, markAsPaid, approvePagamento, bulkUpdateStatus, bulkDelete } = usePagamentos();
