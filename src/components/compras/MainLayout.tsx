@@ -132,6 +132,9 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </Button>
 
+            {/* Smart Back Button */}
+            <SmartBackButton className="hidden md:flex" />
+
             {/* Advanced Search - responsive */}
             <div className="flex flex-1 max-w-xl" data-tour="global-search">
               <AdvancedSearch />
