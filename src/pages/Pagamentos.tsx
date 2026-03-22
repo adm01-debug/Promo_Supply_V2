@@ -15,13 +15,17 @@ import { PagamentoAdvancedKPIs } from "@/components/pagamentos/PagamentoAdvanced
 import { PagamentoAdvancedFilters, applyAdvancedFilters, INITIAL_FILTERS, type PagamentoFiltersState } from "@/components/pagamentos/PagamentoAdvancedFilters";
 import { PagamentoDetailModal } from "@/components/pagamentos/PagamentoDetailModal";
 import { PagamentoMobileCard } from "@/components/pagamentos/PagamentoMobileCard";
+import { PagamentoFinancialDashboard } from "@/components/pagamentos/PagamentoFinancialDashboard";
+import { PagamentoScheduleModal } from "@/components/pagamentos/PagamentoScheduleModal";
+import { PagamentoNotificationsWidget } from "@/components/pagamentos/PagamentoNotificationsWidget";
+import { PagamentoExportPanel } from "@/components/pagamentos/PagamentoExportPanel";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
   CreditCard, QrCode, FileText, Clock, CheckCircle2, AlertTriangle,
   Building2, Calendar, DollarSign, RefreshCw, Eye, MoreHorizontal,
-  Trash2, CalendarClock, Banknote
+  Trash2, CalendarClock, Banknote, BarChart3
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -30,6 +34,7 @@ import {
 import {
   Tooltip, TooltipContent, TooltipTrigger, TooltipProvider,
 } from "@/components/ui/tooltip";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { usePagamentos, usePagamentosKPIs, type Pagamento } from "@/hooks/usePagamentos";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/lib/feedbackToast";
