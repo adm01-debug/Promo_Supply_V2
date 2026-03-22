@@ -29,7 +29,7 @@ export const SupplierAlertsPanel = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('fornecedores')
-        .select('id, razao_social, status')
+        .select('id, razao_social, status, limite_credito, saldo_comprometido')
         .eq('status', 'ativo');
       if (error) throw error;
       return data || [];
@@ -80,15 +80,36 @@ export const SupplierAlertsPanel = () => {
     (s) => s.slaCompliance < settings.supplierSLAThreshold
   );
 
+  // GAP-008: Credit limit alerts
+  const creditAlerts = useMemo(() => {
+    const forn = fornecedores || [];
+    return forn
+      .filter(f => f.limite_credito && f.saldo_comprometido && f.saldo_comprometido >= f.limite_credito * 0.8)
+      .map(f => {
+        const pct = f.limite_credito ? Math.round((f.saldo_comprometido! / f.limite_credito) * 100) : 0;
+        const exceeded = pct >= 100;
+        return {
+          id: `credit-${f.id}`,
+          supplierName: f.razao_social,
+          type: exceeded ? 'critical' as const : 'warning' as const,
+          message: exceeded
+            ? `Limite de crédito excedido: R$ ${f.saldo_comprometido?.toLocaleString('pt-BR')} / R$ ${f.limite_credito?.toLocaleString('pt-BR')} (${pct}%)`
+            : `Próximo do limite: R$ ${f.saldo_comprometido?.toLocaleString('pt-BR')} / R$ ${f.limite_credito?.toLocaleString('pt-BR')} (${pct}%)`,
+          slaCompliance: 100 - pct,
+        };
+      });
+  }, [fornecedores]);
+
   const alerts = useMemo(() => {
-    return underperformingSuppliers.map(s => ({
+    const slaAlerts = underperformingSuppliers.map(s => ({
       id: s.id,
       supplierName: s.name,
       type: s.slaCompliance < 70 ? 'critical' as const : 'warning' as const,
       message: `SLA em ${s.slaCompliance}% — ${s.totalDeliveries - s.onTime} entregas fora do prazo`,
       slaCompliance: s.slaCompliance,
     }));
-  }, [underperformingSuppliers]);
+    return [...creditAlerts, ...slaAlerts];
+  }, [underperformingSuppliers, creditAlerts]);
 
   if (!settings.enableSupplierAlerts) return null;
 
