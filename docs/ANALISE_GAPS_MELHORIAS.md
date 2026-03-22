@@ -457,32 +457,33 @@ const fetchSolicitacoes = async (page: number, pageSize: number) => {
 
 ## 7. 🎯 Roadmap Sugerido
 
-### Sprint 1-2 (Curto Prazo - Quick Wins)
-- [ ] GAP-004: Implementar alerta de cotação expirando
-- [ ] GAP-007: Criar KPI de Saving no dashboard
-- [ ] AUTO-002: Cron para verificar cotações próximas do vencimento
-- [ ] AUTO-006: Cron para alertas de pagamento
-- [ ] AUTO-007: Cron para marcar pagamentos atrasados
+### Sprint 1-2 (Curto Prazo - Quick Wins) ✅ CONCLUÍDO
+- [x] GAP-004: Alerta cotação expirando (edge fn `check-expiry-alerts`)
+- [x] GAP-007: KPI Saving no dashboard executivo
+- [x] AUTO-002: Cron cotações vencimento (edge fn `check-expiry-alerts`)
+- [x] AUTO-006: Cron alertas pagamento (edge fn `check-expiry-alerts`)
+- [x] AUTO-007: Marcar pagamentos atrasados (edge fn `check-expiry-alerts`)
 
-### Sprint 3-4 (Médio Prazo)
-- [ ] GAP-001: Transições automáticas de status
-- [ ] GAP-002: Criação automática de pagamento
-- [ ] PERF-001: Paginação server-side
-- [ ] UX-003: Botão de duplicar solicitação
-- [ ] UX-005: Timeline visual de status
+### Sprint 3-4 (Médio Prazo) ✅ CONCLUÍDO
+- [x] GAP-001: Transições automáticas (triggers DB)
+- [x] GAP-002: Criação automática pagamento (trigger `auto_create_pagamento_on_delivery`)
+- [x] PERF-001: Paginação server-side (hooks com range queries)
+- [x] UX-003: Botão duplicar solicitação (`duplicateSolicitacao`)
+- [x] UX-005: Timeline visual de status (`StatusTimeline`, `PedidoTimeline`)
 
-### Sprint 5-8 (Longo Prazo)
-- [ ] FEAT-002: Integração WhatsApp
-- [ ] FEAT-004: Catálogo de produtos
-- [ ] GAP-005: Histórico de preços
-- [ ] GAP-006: Recebimento parcial por item
-- [ ] FEAT-005: Contratos recorrentes
+### Sprint 5-8 (Longo Prazo) ✅ CONCLUÍDO
+- [x] GAP-005: Histórico de preços (`PriceHistoryModal`)
+- [x] GAP-006: Recebimento parcial (`ReceivingModal`)
+- [x] FEAT-005: Contratos com penalidades e SLA (módulo Contratos)
+- [ ] FEAT-002: Integração WhatsApp (backlog - requer API externa)
+- [ ] FEAT-004: Catálogo de produtos (backlog)
 
 ### Backlog (Futuro)
-- [ ] FEAT-001: Portal do Fornecedor
-- [ ] FEAT-003: Módulo de Licitações
-- [ ] FEAT-007: Qualificação de Fornecedores
-- [ ] GAP-003: Validação de Budget/Orçamento
+- [x] GAP-003: Validação Budget (`check_budget_availability` function)
+- [x] GAP-008: Alerta limite crédito fornecedor (SupplierAlertsPanel)
+- [x] FEAT-007: Qualificação de Fornecedores (módulo completo)
+- [ ] FEAT-001: Portal do Fornecedor (futuro)
+- [ ] FEAT-003: Módulo de Licitações (futuro)
 
 ---
 
