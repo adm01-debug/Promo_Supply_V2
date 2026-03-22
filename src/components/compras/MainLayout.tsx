@@ -73,6 +73,9 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
 
   return (
     <div className="min-h-screen bg-background pb-16 md:pb-0">
+      {/* Navigation Progress Bar */}
+      <NavigationProgressBar />
+      
       {/* Skip Links for accessibility */}
       <SkipLinks />
       
