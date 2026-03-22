@@ -1986,6 +1986,47 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_history: {
+        Row: {
+          comprovante_url: string | null
+          created_at: string
+          data_pagamento: string
+          id: string
+          observacoes: string | null
+          pagamento_id: string
+          registrado_por: string | null
+          valor_parcela: number
+        }
+        Insert: {
+          comprovante_url?: string | null
+          created_at?: string
+          data_pagamento?: string
+          id?: string
+          observacoes?: string | null
+          pagamento_id: string
+          registrado_por?: string | null
+          valor_parcela?: number
+        }
+        Update: {
+          comprovante_url?: string | null
+          created_at?: string
+          data_pagamento?: string
+          id?: string
+          observacoes?: string | null
+          pagamento_id?: string
+          registrado_por?: string | null
+          valor_parcela?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_history_pagamento_id_fkey"
+            columns: ["pagamento_id"]
+            isOneToOne: false
+            referencedRelation: "pagamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pedido_itens: {
         Row: {
           created_at: string
