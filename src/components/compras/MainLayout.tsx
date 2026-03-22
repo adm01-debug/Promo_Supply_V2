@@ -11,6 +11,7 @@ import { CommandPalette, useCommandPalette } from "@/components/compras/CommandP
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useGlobalUndo } from "@/hooks/useGlobalUndo";
 import { useSessionIdleTimeout } from "@/hooks/useSessionIdleTimeout";
+import { useScrollRestoration } from "@/hooks/useScrollRestoration";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
@@ -25,6 +26,8 @@ import { CelebrationOverlay } from "@/components/ui/celebration";
 import { UndoToastContainer } from "@/components/ui/undo-toast";
 import { UndoIndicator, FloatingUndoIndicator } from "@/components/ui/undo-indicator";
 import { OfflineIndicator } from "@/components/OfflineIndicator";
+import { SmartBackButton } from "@/components/navigation/SmartBackButton";
+import { NavigationProgressBar } from "@/components/navigation/NavigationProgressBar";
 import { cn } from "@/lib/utils";
 import { Menu, X, Keyboard, HelpCircle, Command, Settings2, Accessibility } from "lucide-react";
 import { Button } from "@/components/ui/button";
