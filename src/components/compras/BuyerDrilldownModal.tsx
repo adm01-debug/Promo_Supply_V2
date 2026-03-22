@@ -17,13 +17,33 @@ import type { TooltipProps } from 'recharts';
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import type { BuyerData } from "@/hooks/useBuyerPerformanceData";
 
+interface LegacyComprador {
+  nome: string;
+  economia: number;
+  percentual: number;
+  cotacoes: number;
+  melhorPreco: number;
+  tendencia: string;
+  avatar: string;
+}
+
 interface BuyerDrilldownModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  buyer: BuyerData | null;
+  buyer?: BuyerData | null;
+  comprador?: LegacyComprador | null;
 }
 
-export const BuyerDrilldownModal = ({ open, onOpenChange, buyer }: BuyerDrilldownModalProps) => {
+function legacyToBuyer(c: LegacyComprador): BuyerData {
+  return {
+    id: c.nome, nome: c.nome, avatar: c.avatar, cargo: '', departamento: '', dataAdmissao: '',
+    performance: { economiaMes: c.economia, economiaAno: c.economia, descontoMedio: c.percentual, melhorPrecoRate: c.melhorPreco, cotacoesRealizadas: c.cotacoes, tempoMedioNegociacao: 0, taxaSucesso: 0, fornecedoresAtivos: 0 },
+    historico: [], categorias: [], fornecedores: [], ultimasNegociacoes: [], radar: [],
+  };
+}
+
+export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comprador }: BuyerDrilldownModalProps) => {
+  const buyer = buyerProp || (comprador ? legacyToBuyer(comprador) : null);
   if (!buyer) return null;
 
   const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
