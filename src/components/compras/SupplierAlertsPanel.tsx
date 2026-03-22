@@ -29,7 +29,7 @@ export const SupplierAlertsPanel = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('fornecedores')
-        .select('id, razao_social, status')
+        .select('id, razao_social, status, limite_credito, saldo_comprometido')
         .eq('status', 'ativo');
       if (error) throw error;
       return data || [];
