@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
+import { ThreeWayMatchPanel } from "@/components/pagamentos/ThreeWayMatchPanel";
 import {
   CreditCard, Upload, CheckCircle2, Building2, Copy, Calendar,
   FileText, QrCode, DollarSign, Clock, AlertTriangle, Banknote, Image
@@ -348,6 +349,10 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                   Ver Comprovante
                 </a>
               </Button>
+            )}
+            {/* Three-Way Match */}
+            {(pagamento.pedido_id || pagamento.numero_nf) && (
+              <ThreeWayMatchPanel pagamento={pagamento} />
             )}
           </TabsContent>
 

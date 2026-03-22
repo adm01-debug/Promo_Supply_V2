@@ -15,13 +15,17 @@ import { PagamentoAdvancedKPIs } from "@/components/pagamentos/PagamentoAdvanced
 import { PagamentoAdvancedFilters, applyAdvancedFilters, INITIAL_FILTERS, type PagamentoFiltersState } from "@/components/pagamentos/PagamentoAdvancedFilters";
 import { PagamentoDetailModal } from "@/components/pagamentos/PagamentoDetailModal";
 import { PagamentoMobileCard } from "@/components/pagamentos/PagamentoMobileCard";
+import { PagamentoFinancialDashboard } from "@/components/pagamentos/PagamentoFinancialDashboard";
+import { PagamentoScheduleModal } from "@/components/pagamentos/PagamentoScheduleModal";
+import { PagamentoNotificationsWidget } from "@/components/pagamentos/PagamentoNotificationsWidget";
+import { PagamentoExportPanel } from "@/components/pagamentos/PagamentoExportPanel";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
   CreditCard, QrCode, FileText, Clock, CheckCircle2, AlertTriangle,
   Building2, Calendar, DollarSign, RefreshCw, Eye, MoreHorizontal,
-  Trash2, CalendarClock, Banknote
+  Trash2, CalendarClock, Banknote, BarChart3
 } from "lucide-react";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -30,6 +34,7 @@ import {
 import {
   Tooltip, TooltipContent, TooltipTrigger, TooltipProvider,
 } from "@/components/ui/tooltip";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { usePagamentos, usePagamentosKPIs, type Pagamento } from "@/hooks/usePagamentos";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/lib/feedbackToast";
@@ -40,12 +45,24 @@ const Pagamentos = () => {
   const [filters, setFilters] = useState<PagamentoFiltersState>(INITIAL_FILTERS);
   const [pagamentoSelecionado, setPagamentoSelecionado] = useState<Pagamento | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [scheduleModalOpen, setScheduleModalOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState("pendentes");
+  const [showDashboard, setShowDashboard] = useState(true);
 
   const isMobile = useIsMobile();
-  const { pagamentos, loading, refetch, markAsPaid, approvePagamento, bulkUpdateStatus, bulkDelete } = usePagamentos();
+  const { pagamentos, loading, refetch, markAsPaid, approvePagamento, bulkUpdateStatus, bulkDelete, updatePagamento } = usePagamentos();
   const { kpis } = usePagamentosKPIs();
+
+  const handleSchedule = useCallback(async (ids: string[], date: string) => {
+    const success = await bulkUpdateStatus(ids, 'agendado');
+    return success;
+  }, [bulkUpdateStatus]);
+
+  const selectedForSchedule = useMemo(() =>
+    pagamentos.filter(p => selectedIds.includes(p.id) && ['pendente', 'aprovado'].includes(p.status)),
+    [pagamentos, selectedIds]
+  );
 
   // Split by tab
   const pagamentosPendentes = useMemo(() =>
@@ -319,14 +336,33 @@ const Pagamentos = () => {
             </h1>
             <p className="text-sm text-muted-foreground">Gestão financeira completa de pagamentos</p>
           </div>
-          <Button variant="outline" size="sm" onClick={() => refetch()}>
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Atualizar
-          </Button>
+          <div className="flex gap-2">
+            <PagamentoExportPanel pagamentos={filteredPagamentos} />
+            {selectedForSchedule.length > 0 && (
+              <Button variant="outline" size="sm" className="gap-2" onClick={() => setScheduleModalOpen(true)}>
+                <CalendarClock className="h-4 w-4" />
+                Agendar ({selectedForSchedule.length})
+              </Button>
+            )}
+            <Button variant="outline" size="sm" onClick={() => setShowDashboard(!showDashboard)}>
+              <BarChart3 className="w-4 h-4 mr-2" />
+              {showDashboard ? 'Ocultar' : 'Dashboard'}
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => refetch()}>
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Atualizar
+            </Button>
+          </div>
         </div>
+
+        {/* Notifications Widget */}
+        <PagamentoNotificationsWidget pagamentos={pagamentos} />
 
         {/* Advanced KPIs */}
         <PagamentoAdvancedKPIs pagamentos={pagamentos} />
+
+        {/* Financial Dashboard (collapsible) */}
+        {showDashboard && <PagamentoFinancialDashboard pagamentos={pagamentos} />}
 
         {/* Advanced Filters */}
         <PagamentoAdvancedFilters pagamentos={pagamentos} filters={filters} onFiltersChange={setFilters} />
@@ -366,6 +402,14 @@ const Pagamentos = () => {
         open={modalOpen}
         onOpenChange={setModalOpen}
         onConfirmarPagamento={handleConfirmarPagamento}
+      />
+
+      {/* Schedule Modal */}
+      <PagamentoScheduleModal
+        pagamentos={selectedForSchedule}
+        open={scheduleModalOpen}
+        onOpenChange={setScheduleModalOpen}
+        onSchedule={handleSchedule}
       />
 
       {/* Bulk Actions */}
