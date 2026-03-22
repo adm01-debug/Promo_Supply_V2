@@ -274,7 +274,10 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
           className="min-h-[calc(100vh-4rem)]"
         >
           <main id="main-content" className="p-4 md:p-6 animate-fade-in" tabIndex={-1}>
-            <Breadcrumbs className="mb-4" />
+            <div className="flex items-center gap-2 mb-4">
+              <SmartBackButton className="md:hidden" />
+              <Breadcrumbs className="flex-1" />
+            </div>
             {children}
           </main>
         </MobileRefreshWrapper>
