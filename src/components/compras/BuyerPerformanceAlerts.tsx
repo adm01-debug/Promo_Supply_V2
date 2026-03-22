@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
-import { Bell, BellRing, AlertTriangle, AlertCircle, CheckCircle2, User, X, Trash2 } from "lucide-react";
+import { Bell, BellRing, AlertTriangle, AlertCircle, CheckCircle2, User, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
+  Popover, PopoverContent, PopoverTrigger
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -16,45 +14,15 @@ import {
   getMetricLabel,
   formatMetricValue
 } from "@/stores/buyerAlertsStore";
+import { useBuyerPerformanceData } from "@/hooks/useBuyerPerformanceData";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-// Mock buyer data for checking performance
-const buyersPerformanceData = [
-  {
-    id: "ana-silva",
-    nome: "Ana Silva",
-    performance: { economiaMes: 8750, descontoMedio: 12.3, cotacoesRealizadas: 45 },
-    meta: { economiaMensal: 10000, descontoMedio: 12, cotacoesMinimas: 40 }
-  },
-  {
-    id: "carlos-souza",
-    nome: "Carlos Souza",
-    performance: { economiaMes: 6200, descontoMedio: 10.5, cotacoesRealizadas: 38 },
-    meta: { economiaMensal: 8000, descontoMedio: 10, cotacoesMinimas: 35 }
-  },
-  {
-    id: "maria-santos",
-    nome: "Maria Santos",
-    performance: { economiaMes: 5800, descontoMedio: 9.8, cotacoesRealizadas: 42 },
-    meta: { economiaMensal: 6000, descontoMedio: 8, cotacoesMinimas: 30 }
-  },
-  {
-    id: "pedro-lima",
-    nome: "Pedro Lima",
-    performance: { economiaMes: 4500, descontoMedio: 8.2, cotacoesRealizadas: 30 },
-    meta: { economiaMensal: 7000, descontoMedio: 9, cotacoesMinimas: 32 }
-  }
-];
-
 const AlertIcon = ({ type }: { type: BuyerAlert['type'] }) => {
   switch (type) {
-    case 'critical':
-      return <AlertCircle className="w-4 h-4 text-destructive" />;
-    case 'warning':
-      return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
-    case 'success':
-      return <CheckCircle2 className="w-4 h-4 text-green-500" />;
+    case 'critical': return <AlertCircle className="w-4 h-4 text-destructive" />;
+    case 'warning': return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
+    case 'success': return <CheckCircle2 className="w-4 h-4 text-green-500" />;
   }
 };
 
@@ -69,107 +37,57 @@ const getAlertBgClass = (type: BuyerAlert['type'], read: boolean) => {
 
 export const BuyerPerformanceAlerts = () => {
   const { targets, alerts, addAlert, markAlertAsRead, markAllAlertsAsRead, clearAlerts, getUnreadCount } = useBuyerAlertsStore();
+  const { buyers } = useBuyerPerformanceData(6);
   const [open, setOpen] = useState(false);
   const unreadCount = getUnreadCount();
 
-  // Check performance and generate alerts on mount and periodically
+  // Check performance using REAL data
   useEffect(() => {
+    if (buyers.length === 0) return;
+
     const checkAllBuyers = () => {
-      buyersPerformanceData.forEach(buyer => {
+      buyers.forEach(buyer => {
         const target = targets.find(t => t.buyerId === buyer.id);
         if (!target || !target.enabled) return;
 
-        // Check economia
-        const economiaCheck = checkBuyerPerformance(
-          buyer.id,
-          buyer.nome,
-          buyer.performance.economiaMes,
-          target.economiaMensal,
-          'economia',
-          target
-        );
-        if (economiaCheck.shouldAlert) {
-          addAlert({
-            buyerId: buyer.id,
-            buyerName: buyer.nome,
-            metric: 'economia',
-            metricLabel: getMetricLabel('economia'),
-            type: economiaCheck.status as 'warning' | 'critical',
-            message: `${buyer.nome} está ${economiaCheck.status === 'critical' ? 'muito abaixo' : 'abaixo'} da meta de economia`,
-            currentValue: buyer.performance.economiaMes,
-            targetValue: target.economiaMensal,
-            percentage: economiaCheck.percentage
-          });
-        }
+        const metrics: Array<{ metric: 'economia' | 'desconto' | 'cotacoes'; current: number; targetVal: number }> = [
+          { metric: 'economia', current: buyer.performance.economiaMes, targetVal: target.economiaMensal },
+          { metric: 'desconto', current: buyer.performance.descontoMedio, targetVal: target.descontoMedio },
+          { metric: 'cotacoes', current: buyer.performance.cotacoesRealizadas, targetVal: target.cotacoesMinimas },
+        ];
 
-        // Check desconto
-        const descontoCheck = checkBuyerPerformance(
-          buyer.id,
-          buyer.nome,
-          buyer.performance.descontoMedio,
-          target.descontoMedio,
-          'desconto',
-          target
-        );
-        if (descontoCheck.shouldAlert) {
-          addAlert({
-            buyerId: buyer.id,
-            buyerName: buyer.nome,
-            metric: 'desconto',
-            metricLabel: getMetricLabel('desconto'),
-            type: descontoCheck.status as 'warning' | 'critical',
-            message: `${buyer.nome} está ${descontoCheck.status === 'critical' ? 'muito abaixo' : 'abaixo'} da meta de desconto`,
-            currentValue: buyer.performance.descontoMedio,
-            targetValue: target.descontoMedio,
-            percentage: descontoCheck.percentage
-          });
-        }
-
-        // Check cotacoes
-        const cotacoesCheck = checkBuyerPerformance(
-          buyer.id,
-          buyer.nome,
-          buyer.performance.cotacoesRealizadas,
-          target.cotacoesMinimas,
-          'cotacoes',
-          target
-        );
-        if (cotacoesCheck.shouldAlert) {
-          addAlert({
-            buyerId: buyer.id,
-            buyerName: buyer.nome,
-            metric: 'cotacoes',
-            metricLabel: getMetricLabel('cotacoes'),
-            type: cotacoesCheck.status as 'warning' | 'critical',
-            message: `${buyer.nome} está ${cotacoesCheck.status === 'critical' ? 'muito abaixo' : 'abaixo'} da meta de cotações`,
-            currentValue: buyer.performance.cotacoesRealizadas,
-            targetValue: target.cotacoesMinimas,
-            percentage: cotacoesCheck.percentage
-          });
-        }
+        metrics.forEach(({ metric, current, targetVal }) => {
+          const check = checkBuyerPerformance(buyer.id, buyer.nome, current, targetVal, metric, target);
+          if (check.shouldAlert) {
+            addAlert({
+              buyerId: buyer.id,
+              buyerName: buyer.nome,
+              metric,
+              metricLabel: getMetricLabel(metric),
+              type: check.status as 'warning' | 'critical',
+              message: `${buyer.nome} está ${check.status === 'critical' ? 'muito abaixo' : 'abaixo'} da meta de ${getMetricLabel(metric).toLowerCase()}`,
+              currentValue: current,
+              targetValue: targetVal,
+              percentage: check.percentage
+            });
+          }
+        });
       });
     };
 
     checkAllBuyers();
-    const interval = setInterval(checkAllBuyers, 300000); // Check every 5 minutes
+    const interval = setInterval(checkAllBuyers, 300000);
     return () => clearInterval(interval);
-  }, [targets, addAlert]);
+  }, [targets, addAlert, buyers]);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="relative">
-          {unreadCount > 0 ? (
-            <BellRing className="w-4 h-4 text-yellow-500" />
-          ) : (
-            <Bell className="w-4 h-4" />
-          )}
+          {unreadCount > 0 ? <BellRing className="w-4 h-4 text-yellow-500" /> : <Bell className="w-4 h-4" />}
           <span className="ml-2 hidden sm:inline">Alertas</span>
           {unreadCount > 0 && (
-            <Badge 
-              variant="destructive" 
-              className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs"
-            >
+            <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
               {unreadCount > 9 ? '9+' : unreadCount}
             </Badge>
           )}
@@ -213,39 +131,20 @@ export const BuyerPerformanceAlerts = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <User className="w-3 h-3 text-muted-foreground" />
-                        <span className="text-xs font-medium text-muted-foreground">
-                          {alert.buyerName}
-                        </span>
-                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                          {alert.metricLabel}
-                        </Badge>
+                        <span className="text-xs font-medium text-muted-foreground">{alert.buyerName}</span>
+                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">{alert.metricLabel}</Badge>
                       </div>
-                      <p className="text-sm font-medium text-foreground">
-                        {alert.message}
-                      </p>
+                      <p className="text-sm font-medium text-foreground">{alert.message}</p>
                       <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                        <span>
-                          Atual: <strong className={alert.type === 'critical' ? 'text-destructive' : 'text-yellow-600'}>
-                            {formatMetricValue(alert.metric, alert.currentValue)}
-                          </strong>
-                        </span>
-                        <span>
-                          Meta: <strong>{formatMetricValue(alert.metric, alert.targetValue)}</strong>
-                        </span>
-                        <span>
-                          ({alert.percentage.toFixed(0)}%)
-                        </span>
+                        <span>Atual: <strong className={alert.type === 'critical' ? 'text-destructive' : 'text-yellow-600'}>{formatMetricValue(alert.metric, alert.currentValue)}</strong></span>
+                        <span>Meta: <strong>{formatMetricValue(alert.metric, alert.targetValue)}</strong></span>
+                        <span>({alert.percentage.toFixed(0)}%)</span>
                       </div>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {formatDistanceToNow(new Date(alert.timestamp), { 
-                          addSuffix: true, 
-                          locale: ptBR 
-                        })}
+                        {formatDistanceToNow(new Date(alert.timestamp), { addSuffix: true, locale: ptBR })}
                       </p>
                     </div>
-                    {!alert.read && (
-                      <div className="w-2 h-2 rounded-full bg-primary shrink-0" />
-                    )}
+                    {!alert.read && <div className="w-2 h-2 rounded-full bg-primary shrink-0" />}
                   </div>
                 </div>
               ))}
