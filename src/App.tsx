@@ -43,6 +43,7 @@ const KanbanWorkflow = lazy(() => import("./pages/KanbanWorkflow"));
 const DocumentosFiscais = lazy(() => import("./pages/DocumentosFiscais"));
 const RecompraInteligente = lazy(() => import("./pages/RecompraInteligente"));
 const Devolucoes = lazy(() => import("./pages/Devolucoes"));
+const AdminTelemetria = lazy(() => import("./pages/AdminTelemetria"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 
 const queryClient = new QueryClient({
