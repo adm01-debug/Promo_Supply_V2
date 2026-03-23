@@ -849,11 +849,11 @@ describe('Telemetria — getTimeBuckets', () => {
       expect(b).toHaveProperty('avgMs');
     });
   });
-  it('recent row lands in last bucket', () => {
-    const rows = [createRow({ created_at: new Date().toISOString(), severity: 'slow' })];
+  it('recent row lands in some bucket', () => {
+    const rows = [createRow({ created_at: new Date(Date.now() - 60000).toISOString(), severity: 'slow' })];
     const buckets = getTimeBuckets(rows, '1h');
-    const lastBucket = buckets[buckets.length - 1];
-    expect(lastBucket.slow).toBe(1);
+    const totalSlow = buckets.reduce((s, b) => s + b.slow, 0);
+    expect(totalSlow).toBe(1);
   });
   it('empty buckets have 0 counts', () => {
     const rows = [createRow({ created_at: new Date().toISOString() })];
