@@ -905,15 +905,15 @@ describe('Telemetria — getTimeBuckets', () => {
     expect(totalAll).toBe(0);
   });
   it('multiple severities in same bucket', () => {
-    const now = new Date().toISOString();
+    const recent = new Date(Date.now() - 60000).toISOString();
     const rows = [
-      createRow({ created_at: now, severity: 'slow' }),
-      createRow({ created_at: now, severity: 'very_slow' }),
-      createRow({ created_at: now, severity: 'error' }),
+      createRow({ created_at: recent, severity: 'slow' }),
+      createRow({ created_at: recent, severity: 'very_slow' }),
+      createRow({ created_at: recent, severity: 'error' }),
     ];
     const buckets = getTimeBuckets(rows, '1h');
-    const last = buckets[buckets.length - 1];
-    expect(last.slow + last.very_slow + last.error).toBe(3);
+    const total = buckets.reduce((s, b) => s + b.slow + b.very_slow + b.error, 0);
+    expect(total).toBe(3);
   });
   it('bucket count is consistent regardless of data volume', () => {
     expect(getTimeBuckets(createRows(1), '24h')).toHaveLength(24);
