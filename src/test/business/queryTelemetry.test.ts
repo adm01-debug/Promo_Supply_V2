@@ -1281,8 +1281,9 @@ describe('Telemetria — Combined Scenarios & Stress', () => {
   });
 
   it('time buckets with 500 recent rows', () => {
-    const now = new Date().toISOString();
-    const rows = createRows(500, { created_at: now, severity: 'slow' });
+    // Use a timestamp slightly in the past to ensure it falls within the last bucket
+    const recent = new Date(Date.now() - 60000).toISOString();
+    const rows = createRows(500, { created_at: recent, severity: 'slow' });
     const buckets = getTimeBuckets(rows, '1h');
     expect(buckets).toHaveLength(12);
     const total = buckets.reduce((s, b) => s + b.slow, 0);
