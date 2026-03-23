@@ -288,6 +288,14 @@ const AnimatedRoutes = () => {
             </ProtectedRoute>
           } />
           
+          <Route path="/admin/telemetria" element={
+            <ProtectedRoute requiredRole="admin">
+              <ModuleErrorBoundary module="default">
+                <AdminTelemetria />
+              </ModuleErrorBoundary>
+            </ProtectedRoute>
+          } />
+          
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
         </Routes>
