@@ -892,8 +892,8 @@ describe('Telemetria — getTimeBuckets', () => {
     });
   });
   it('total across buckets equals total rows (for recent data)', () => {
-    const now = new Date().toISOString();
-    const rows = createRows(10, { created_at: now, severity: 'slow' });
+    const recent = new Date(Date.now() - 60000).toISOString();
+    const rows = createRows(10, { created_at: recent, severity: 'slow' });
     const buckets = getTimeBuckets(rows, '1h');
     const totalSlow = buckets.reduce((s, b) => s + b.slow, 0);
     expect(totalSlow).toBe(10);
