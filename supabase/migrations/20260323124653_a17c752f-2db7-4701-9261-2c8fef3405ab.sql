@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_query_telemetry_table ON public.query_telemetry (table_name);
