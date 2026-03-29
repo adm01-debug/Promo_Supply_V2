@@ -1,6 +1,5 @@
 import { lazy } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 
@@ -36,25 +35,9 @@ const Devolucoes = lazy(() => import("@/pages/Devolucoes"));
 const AdminTelemetria = lazy(() => import("@/pages/AdminTelemetria"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
-const pageVariants = {
-  initial: { opacity: 0 },
-  enter: {
-    opacity: 1,
-    transition: { duration: 0.15, ease: [0.25, 0.46, 0.45, 0.94] as const },
-  },
-};
-
 export const AnimatedRoutes = () => {
-  const location = useLocation();
-
   return (
-    <motion.div
-      key={location.pathname}
-      variants={pageVariants}
-      initial="initial"
-      animate="enter"
-      className="w-full min-h-screen"
-    >
+    <div className="w-full min-h-screen">
       <Routes location={location}>
         <Route path="/auth" element={<Auth />} />
 
@@ -151,6 +134,6 @@ export const AnimatedRoutes = () => {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </motion.div>
+    </div>
   );
 };

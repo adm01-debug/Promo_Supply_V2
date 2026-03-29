@@ -1,5 +1,5 @@
-import { useState, useCallback, memo } from "react";
-import { useLocation } from "react-router-dom";
+import { useState, useCallback, memo, useRef, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { AppSidebar } from "@/components/compras/AppSidebar";
 import { AdvancedSearch } from "@/components/compras/AdvancedSearch";
 import { KeyboardShortcutsDialog } from "@/components/compras/KeyboardShortcutsDialog";
@@ -23,12 +23,53 @@ import { NavigationProgressBar } from "@/components/navigation/NavigationProgres
 import { HeaderActions } from "@/components/layout/HeaderActions";
 import { SupplierChat } from "@/components/compras/SupplierChat";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface MainLayoutProps {
   children: React.ReactNode;
+}
+
+// Hook for swipe-back navigation
+function useSwipeBack() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  useEffect(() => {
+    const isHome = location.pathname === '/' || location.pathname === '/compras';
+    if (isHome) return;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      // Only trigger from left edge (first 30px)
+      if (e.touches[0].clientX < 30) {
+        touchStartX.current = e.touches[0].clientX;
+        touchStartY.current = e.touches[0].clientY;
+      }
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (touchStartX.current === null || touchStartY.current === null) return;
+      const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+      const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
+      
+      // Swipe right from edge with more horizontal than vertical movement
+      if (deltaX > 80 && deltaX > deltaY * 1.5) {
+        navigate(-1);
+      }
+      touchStartX.current = null;
+      touchStartY.current = null;
+    };
+
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchend', handleTouchEnd, { passive: true });
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [location.pathname, navigate]);
 }
 
 export const MainLayout = memo(({ children }: MainLayoutProps) => {
@@ -41,10 +82,12 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   useGlobalUndo();
   useSessionIdleTimeout();
   useScrollRestoration();
+  useSwipeBack();
 
   const { open: commandPaletteOpen, setOpen: setCommandPaletteOpen } = useCommandPalette();
 
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
+  const isHome = location.pathname === '/' || location.pathname === '/compras';
   const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, restart: restartTour, isLoading: isTourLoading } = useTourPreferences('dashboard');
 
   const handleRefresh = useCallback(async () => {
@@ -78,20 +121,39 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       </div>
 
       {/* Main Content */}
-      <div className={cn("transition-all duration-300", sidebarCollapsed ? "md:ml-16" : "md:ml-64")}>
+      <div className={cn("transition-all duration-300", sidebarCollapsed ? "md:ml-16" : "md:ml-60")}>
         <header className="sticky top-0 z-20 h-14 md:h-16 border-b border-border/50 bg-card/90 backdrop-blur-xl dark:bg-[hsl(228,28%,6%,0.85)] dark:border-border/30 dark:shadow-[0_4px_24px_hsl(0,0%,0%,0.3)]">
           <div className="h-full px-3 md:px-4 flex items-center justify-between gap-2 md:gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden shrink-0 h-9 w-9"
-              aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
-              aria-expanded={mobileMenuOpen}
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </Button>
+            {/* Mobile: hamburger OR back button */}
+            <div className="md:hidden shrink-0 flex items-center">
+              {isHome ? (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="h-9 w-9"
+                  aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+                  aria-expanded={mobileMenuOpen}
+                >
+                  {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                </Button>
+              ) : (
+                <div className="flex items-center gap-1">
+                  <SmartBackButton className="flex" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    className="h-8 w-8 text-muted-foreground"
+                    aria-label="Abrir menu"
+                  >
+                    <Menu className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
+            </div>
 
+            {/* Desktop: back button */}
             <SmartBackButton className="hidden md:flex" />
 
             <div className="flex flex-1 max-w-xl" data-tour="global-search">
@@ -107,10 +169,13 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
 
         <MobileRefreshWrapper onRefresh={handleRefresh} className="min-h-[calc(100vh-4rem)]">
           <main id="main-content" className="p-4 md:p-6 animate-fade-in" tabIndex={-1}>
-            <div className="flex items-center gap-2 mb-4">
-              <SmartBackButton className="md:hidden" />
-              <Breadcrumbs className="flex-1" />
-            </div>
+            {/* Breadcrumbs — always visible on non-home pages */}
+            {!isHome && (
+              <div className="mb-4">
+                <Breadcrumbs className="hidden md:flex" />
+                <Breadcrumbs variant="compact" className="md:hidden" />
+              </div>
+            )}
             {children}
           </main>
         </MobileRefreshWrapper>

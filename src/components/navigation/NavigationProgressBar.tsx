@@ -1,49 +1,39 @@
-import { useEffect, useState } from 'react';
-import { useNavigation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useEffect, useState, useTransition } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export function NavigationProgressBar() {
   const [isNavigating, setIsNavigating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const location = useLocation();
 
-  // Listen for Suspense-based loading via a simple route-change detector
   useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
+    // Brief progress bar on route change
+    setIsNavigating(true);
+    setProgress(30);
 
-    const observer = new MutationObserver(() => {
-      // Detect when PageLoader is mounted (Suspense fallback)
-      const loader = document.querySelector('[data-page-loader]');
-      if (loader) {
-        setIsNavigating(true);
-      } else {
-        timeout = setTimeout(() => setIsNavigating(false), 300);
-      }
-    });
+    const t1 = setTimeout(() => setProgress(70), 100);
+    const t2 = setTimeout(() => setProgress(100), 250);
+    const t3 = setTimeout(() => {
+      setIsNavigating(false);
+      setProgress(0);
+    }, 400);
 
-    observer.observe(document.body, { childList: true, subtree: true });
     return () => {
-      observer.disconnect();
-      clearTimeout(timeout);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
     };
-  }, []);
+  }, [location.pathname]);
+
+  if (!isNavigating) return null;
 
   return (
-    <AnimatePresence>
-      {isNavigating && (
-        <motion.div
-          className="fixed top-0 left-0 right-0 z-[60] h-0.5"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        >
-          <motion.div
-            className="h-full bg-primary"
-            initial={{ width: '0%' }}
-            animate={{ width: '90%' }}
-            transition={{ duration: 2, ease: 'easeOut' }}
-          />
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className="fixed top-0 left-0 right-0 z-[60] h-0.5">
+      <div
+        className="h-full bg-primary transition-[width] duration-200 ease-out"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
   );
 }
 

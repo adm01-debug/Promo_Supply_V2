@@ -51,6 +51,9 @@ export function useKeyboardShortcuts() {
         }, 100);
       }},
 
+      // Back navigation
+      { key: "Backspace", alt: true, description: "Voltar", action: () => navigate(-1) },
+
       // Help
       { key: "?", shift: true, description: "Mostrar atalhos", action: () => {
         const event = new CustomEvent('show-keyboard-shortcuts');
@@ -103,6 +106,9 @@ export const shortcutsList = [
     { keys: "Ctrl/⌘ + Shift + P", description: "Novo Pedido" },
     { keys: "Ctrl/⌘ + Shift + F", description: "Novo Fornecedor" },
     { keys: "Ctrl/⌘ + Shift + C", description: "Novo Contrato" },
+  ]},
+  { category: "Navegação", items: [
+    { keys: "Alt + Backspace", description: "Voltar" },
   ]},
   { category: "Ajuda", items: [
     { keys: "Shift + ?", description: "Mostrar atalhos" },
