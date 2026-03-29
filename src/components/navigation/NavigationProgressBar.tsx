@@ -1,5 +1,6 @@
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export function NavigationProgressBar() {
   const [isNavigating, setIsNavigating] = useState(false);
@@ -7,16 +8,15 @@ export function NavigationProgressBar() {
   const location = useLocation();
 
   useEffect(() => {
-    // Brief progress bar on route change
     setIsNavigating(true);
     setProgress(30);
 
-    const t1 = setTimeout(() => setProgress(70), 100);
-    const t2 = setTimeout(() => setProgress(100), 250);
+    const t1 = setTimeout(() => setProgress(70), 80);
+    const t2 = setTimeout(() => setProgress(100), 200);
     const t3 = setTimeout(() => {
       setIsNavigating(false);
       setProgress(0);
-    }, 400);
+    }, 350);
 
     return () => {
       clearTimeout(t1);
@@ -25,15 +25,24 @@ export function NavigationProgressBar() {
     };
   }, [location.pathname]);
 
-  if (!isNavigating) return null;
-
   return (
-    <div className="fixed top-0 left-0 right-0 z-[60] h-0.5">
-      <div
-        className="h-full bg-primary transition-[width] duration-200 ease-out"
-        style={{ width: `${progress}%` }}
-      />
-    </div>
+    <AnimatePresence>
+      {isNavigating && (
+        <motion.div
+          className="fixed top-0 left-0 right-0 z-[60] h-[2px]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.1 }}
+        >
+          <motion.div
+            className="h-full bg-gradient-to-r from-primary via-primary to-primary/60 shadow-[0_0_8px_hsl(var(--primary)/0.4)]"
+            style={{ width: `${progress}%` }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
+          />
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
