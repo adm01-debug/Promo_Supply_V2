@@ -107,6 +107,9 @@ export const shortcutsList = [
     { keys: "Ctrl/⌘ + Shift + F", description: "Novo Fornecedor" },
     { keys: "Ctrl/⌘ + Shift + C", description: "Novo Contrato" },
   ]},
+  { category: "Navegação", items: [
+    { keys: "Alt + Backspace", description: "Voltar" },
+  ]},
   { category: "Ajuda", items: [
     { keys: "Shift + ?", description: "Mostrar atalhos" },
   ]},
