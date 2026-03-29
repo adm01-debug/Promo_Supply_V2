@@ -1,6 +1,5 @@
 import { lazy } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import { Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 
