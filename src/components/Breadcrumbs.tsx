@@ -44,9 +44,20 @@ const routeConfig: Record<string, { label: string; icon?: LucideIcon; descriptio
   'buyer-performance': { label: 'Desempenho Compradores', icon: Users, description: 'Métricas de compradores' },
   'historico-compras': { label: 'Histórico', icon: History, description: 'Histórico de compras' },
   'contratos': { label: 'Contratos', icon: FileText, description: 'Gestão de contratos' },
+  'compliance': { label: 'Compliance', icon: Shield, description: 'Conformidade e governança' },
   'auditoria': { label: 'Auditoria', icon: Shield, description: 'Logs de auditoria' },
   'seguranca': { label: 'Segurança', icon: Shield, description: 'Configurações de segurança' },
   'auth': { label: 'Autenticação', icon: Shield, description: 'Login do sistema' },
+  'catalogo-spot': { label: 'Catálogo SPOT', icon: ShoppingCart, description: 'Catálogo de fornecedores SPOT' },
+  'qualificacao-fornecedores': { label: 'Qualificação', icon: Users, description: 'Qualificação de fornecedores' },
+  'orcamentos': { label: 'Orçamentos', icon: CreditCard, description: 'Gestão de orçamentos' },
+  'negociacao-ia': { label: 'Negociação IA', icon: ShoppingCart, description: 'Negociação assistida por IA' },
+  'kanban': { label: 'Kanban', icon: ClipboardList, description: 'Workflow visual de solicitações' },
+  'documentos-fiscais': { label: 'Docs Fiscais', icon: FileText, description: 'Documentos fiscais e NFs' },
+  'recompra-inteligente': { label: 'Recompra', icon: ShoppingCart, description: 'Recompra inteligente automática' },
+  'devolucoes': { label: 'Devoluções', icon: Package, description: 'Gestão de devoluções (RMA)' },
+  'admin': { label: 'Admin', icon: Settings, description: 'Administração do sistema' },
+  'telemetria': { label: 'Telemetria', icon: BarChart3, description: 'Métricas de telemetria' },
 };
 
 interface BreadcrumbsProps {
