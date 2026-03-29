@@ -6,7 +6,7 @@ import {
   CreditCard, 
   Factory,
   ChevronLeft,
-  ChevronDown,
+  ChevronRight,
   Menu,
   Package,
   Truck,
@@ -33,604 +33,296 @@ import {
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { useState, useEffect, useCallback, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect } from "react";
 import { PrefetchLink } from "@/components/PrefetchLink";
 
-// Grouped menu structure for better UX
-const menuGroups = [
+interface NavItemDef {
+  title: string;
+  icon: React.ElementType;
+  href: string;
+  badge?: number;
+}
+
+interface NavSection {
+  id: string;
+  label: string;
+  items: NavItemDef[];
+}
+
+const sections: NavSection[] = [
   {
     id: "overview",
-    title: "Visão Geral",
-    icon: LayoutDashboard,
+    label: "Visão Geral",
     items: [
-      { 
-        title: "Dashboard", 
-        icon: LayoutDashboard, 
-        href: "/",
-        description: "Visão geral",
-        badge: null
-      },
-      { 
-        title: "Executivo", 
-        icon: TrendingUp, 
-        href: "/dashboard-executivo",
-        description: "Visão consolidada",
-        badge: null
-      },
-    ]
+      { title: "Dashboard", icon: LayoutDashboard, href: "/" },
+      { title: "Executivo", icon: TrendingUp, href: "/dashboard-executivo" },
+    ],
   },
   {
     id: "operations",
-    title: "Operações",
-    icon: ClipboardList,
+    label: "Operações",
     items: [
-      { 
-        title: "Solicitações", 
-        icon: ClipboardList, 
-        href: "/solicitacoes",
-        description: "Lista de pedidos",
-        badge: { count: 5, variant: "default" as const }
-      },
-      { 
-        title: "Kanban Workflow", 
-        icon: Columns3, 
-        href: "/kanban",
-        description: "Visão visual do fluxo",
-        badge: null
-      },
-      { 
-        title: "Cotações", 
-        icon: Search, 
-        href: "/cotacao",
-        description: "Cotar fornecedores",
-        badge: { count: 3, variant: "warning" as const }
-      },
-      { 
-        title: "Negociação IA", 
-        icon: Brain, 
-        href: "/negociacao-ia",
-        description: "Estratégias com IA",
-        badge: null
-      },
-      { 
-        title: "Pedidos", 
-        icon: FileText, 
-        href: "/pedidos",
-        description: "Ordens de compra",
-        badge: null
-      },
-      { 
-        title: "Recompra", 
-        icon: RefreshCw, 
-        href: "/recompra-inteligente",
-        description: "Sugestões automáticas",
-        badge: null
-      },
-      { 
-        title: "Acompanhamento", 
-        icon: Truck, 
-        href: "/acompanhamento",
-        description: "Timeline de pedidos",
-        badge: null
-      },
-      { 
-        title: "Devoluções", 
-        icon: RotateCcw, 
-        href: "/devolucoes",
-        description: "RMA e créditos",
-        badge: null
-      },
-    ]
+      { title: "Solicitações", icon: ClipboardList, href: "/solicitacoes", badge: 5 },
+      { title: "Kanban", icon: Columns3, href: "/kanban" },
+      { title: "Cotações", icon: Search, href: "/cotacao", badge: 3 },
+      { title: "Negociação IA", icon: Brain, href: "/negociacao-ia" },
+      { title: "Pedidos", icon: FileText, href: "/pedidos" },
+      { title: "Recompra", icon: RefreshCw, href: "/recompra-inteligente" },
+      { title: "Acompanhamento", icon: Truck, href: "/acompanhamento" },
+      { title: "Devoluções", icon: RotateCcw, href: "/devolucoes" },
+    ],
   },
   {
     id: "finance",
-    title: "Financeiro",
-    icon: CreditCard,
+    label: "Financeiro",
     items: [
-      { 
-        title: "Pagamentos", 
-        icon: CreditCard, 
-        href: "/pagamentos",
-        description: "Financeiro",
-        badge: { count: 2, variant: "destructive" as const }
-      },
-      { 
-        title: "Contratos", 
-        icon: FileSignature, 
-        href: "/contratos",
-        description: "Gestão contratos",
-        badge: null
-      },
-      { 
-        title: "Compliance", 
-        icon: ShieldCheck, 
-        href: "/compliance",
-        description: "Conformidade contratual",
-        badge: null
-      },
-      { 
-        title: "Orçamentos", 
-        icon: Wallet, 
-        href: "/orcamentos",
-        description: "Centros de custo",
-        badge: null
-      },
-      { 
-        title: "Docs Fiscais", 
-        icon: FileCheck, 
-        href: "/documentos-fiscais",
-        description: "NF-e e conciliação",
-        badge: null
-      },
-    ]
+      { title: "Pagamentos", icon: CreditCard, href: "/pagamentos", badge: 2 },
+      { title: "Contratos", icon: FileSignature, href: "/contratos" },
+      { title: "Compliance", icon: ShieldCheck, href: "/compliance" },
+      { title: "Orçamentos", icon: Wallet, href: "/orcamentos" },
+      { title: "Docs Fiscais", icon: FileCheck, href: "/documentos-fiscais" },
+    ],
   },
   {
     id: "suppliers",
-    title: "Fornecedores",
-    icon: Factory,
+    label: "Fornecedores",
     items: [
-      { 
-        title: "Cadastros", 
-        icon: Factory, 
-        href: "/fornecedores",
-        description: "Cadastros",
-        badge: null
-      },
-      { 
-        title: "SPOT / Stricker", 
-        icon: Sparkles, 
-        href: "/catalogo-spot",
-        description: "Catálogo integrado",
-        badge: { count: 0, variant: "default" as const }
-      },
-      { 
-        title: "Performance", 
-        icon: Users, 
-        href: "/supplier-performance",
-        description: "Scorecard e riscos",
-        badge: null
-      },
-      { 
-        title: "Qualificação", 
-        icon: ShieldCheck, 
-        href: "/qualificacao-fornecedores",
-        description: "Homologação",
-        badge: null
-      },
-      { 
-        title: "Histórico", 
-        icon: ShoppingCart, 
-        href: "/historico-compras",
-        description: "Produto/Fornecedor",
-        badge: null
-      },
-    ]
+      { title: "Cadastros", icon: Factory, href: "/fornecedores" },
+      { title: "SPOT / Stricker", icon: Sparkles, href: "/catalogo-spot" },
+      { title: "Performance", icon: Users, href: "/supplier-performance" },
+      { title: "Qualificação", icon: ShieldCheck, href: "/qualificacao-fornecedores" },
+      { title: "Histórico", icon: ShoppingCart, href: "/historico-compras" },
+    ],
   },
   {
     id: "analytics",
-    title: "Analytics",
-    icon: BarChart3,
+    label: "Analytics",
     items: [
-      { 
-        title: "Relatórios", 
-        icon: BarChart3, 
-        href: "/relatorios",
-        description: "Analytics",
-        badge: null
-      },
-      { 
-        title: "Negociações", 
-        icon: PiggyBank, 
-        href: "/relatorios/negociacoes",
-        description: "Performance comprador",
-        badge: null
-      },
-      { 
-        title: "Compradores", 
-        icon: Award, 
-        href: "/buyer-performance",
-        description: "Dashboard individual",
-        badge: null
-      },
-    ]
+      { title: "Relatórios", icon: BarChart3, href: "/relatorios" },
+      { title: "Negociações", icon: PiggyBank, href: "/relatorios/negociacoes" },
+      { title: "Compradores", icon: Award, href: "/buyer-performance" },
+    ],
   },
   {
     id: "admin",
-    title: "Administração",
-    icon: Shield,
+    label: "Admin",
     items: [
-      { 
-        title: "Aprovações", 
-        icon: ClipboardCheck, 
-        href: "/aprovacoes",
-        description: "Workflow aprovação",
-        badge: { count: 4, variant: "warning" as const }
-      },
-      { 
-        title: "Auditoria", 
-        icon: History, 
-        href: "/auditoria",
-        description: "Trilha de ações",
-        badge: null
-      },
-      { 
-        title: "Segurança", 
-        icon: Shield, 
-        href: "/seguranca",
-        description: "MFA e controles",
-        badge: null
-      },
-    ]
+      { title: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badge: 4 },
+      { title: "Auditoria", icon: History, href: "/auditoria" },
+      { title: "Segurança", icon: Shield, href: "/seguranca" },
+    ],
   },
 ];
 
-interface AppSidebarProps {
-  collapsed: boolean;
-  onToggle: () => void;
+function isItemActive(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
 }
 
-// Animated Badge Component
-const AnimatedBadge = ({ 
-  count, 
-  variant,
-  size = "default"
-}: { 
-  count: number; 
-  variant: "default" | "warning" | "destructive";
-  size?: "default" | "small";
-}) => {
-  const variants = {
-    default: "bg-primary text-primary-foreground",
-    warning: "bg-kpi-warning text-kpi-warning-foreground",
-    destructive: "bg-kpi-danger text-kpi-danger-foreground",
-  };
-
-  const sizeClasses = size === "small" 
-    ? "h-4 min-w-4 text-[9px] px-1"
-    : "h-5 min-w-5 text-[10px] px-1.5";
-
-  return (
-    <motion.span 
-      initial={{ scale: 0 }}
-      animate={{ scale: 1 }}
-      className={cn(
-        "flex items-center justify-center rounded-full font-medium",
-        sizeClasses,
-        variants[variant]
-      )}
-    >
-      <motion.span
-        key={count}
-        initial={{ y: -10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: 10, opacity: 0 }}
-      >
-        {count}
-      </motion.span>
-    </motion.span>
-  );
-};
-
-// Active Section Indicator
-const ActiveIndicator = ({ isActive }: { isActive: boolean }) => (
-  <AnimatePresence>
-    {isActive && (
-      <motion.div
-        layoutId="activeSection"
-        initial={{ opacity: 0, x: -4 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -4 }}
-        className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full"
-      />
-    )}
-  </AnimatePresence>
+/* ─── Badge ─── */
+const CountBadge = ({ count }: { count: number }) => (
+  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary/15 text-primary text-[10px] font-semibold tabular-nums">
+    {count}
+  </span>
 );
 
-// Nav Item with enhanced UX
-const NavItem = ({ 
-  item, 
-  isActive, 
-  collapsed 
-}: { 
-  item: typeof menuGroups[0]['items'][0]; 
-  isActive: boolean;
+/* ─── Single Nav Item ─── */
+const SidebarItem = ({
+  item,
+  active,
+  collapsed,
+}: {
+  item: NavItemDef;
+  active: boolean;
   collapsed: boolean;
 }) => {
+  const Icon = item.icon;
+
+  const content = (
+    <PrefetchLink
+      to={item.href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors",
+        collapsed && "justify-center px-0",
+        active
+          ? "bg-primary/10 text-primary"
+          : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+      )}
+    >
+      {/* Left accent bar */}
+      {active && (
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-primary" />
+      )}
+
+      <Icon
+        className={cn(
+          "h-[18px] w-[18px] shrink-0 transition-colors",
+          active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+        )}
+      />
+
+      {!collapsed && (
+        <>
+          <span className="truncate">{item.title}</span>
+          {item.badge != null && item.badge > 0 && <CountBadge count={item.badge} />}
+        </>
+      )}
+
+      {/* Collapsed badge dot */}
+      {collapsed && item.badge != null && item.badge > 0 && (
+        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-primary ring-2 ring-sidebar-background" />
+      )}
+    </PrefetchLink>
+  );
+
   if (collapsed) {
     return (
       <Tooltip delayDuration={0}>
-        <TooltipTrigger asChild>
-          <PrefetchLink
-            to={item.href}
-            className={cn(
-              "flex items-center justify-center w-full h-10 rounded-lg transition-all duration-200 relative group",
-              isActive 
-                ? "bg-primary text-primary-foreground shadow-glow-sm" 
-                : "text-muted-foreground hover:bg-accent hover:text-foreground"
-            )}
-            aria-current={isActive ? "page" : undefined}
-          >
-            <item.icon className={cn(
-              "w-5 h-5 transition-transform",
-              !isActive && "group-hover:scale-110"
-            )} />
-            {item.badge && (
-              <span className="absolute -top-1 -right-1">
-                <AnimatedBadge count={item.badge.count} variant={item.badge.variant} size="small" />
-              </span>
-            )}
-          </PrefetchLink>
-        </TooltipTrigger>
-        <TooltipContent side="right" className="flex items-center gap-2">
-          <span className="font-medium">{item.title}</span>
-          {item.description && (
-            <span className="text-muted-foreground text-xs">• {item.description}</span>
-          )}
-          {item.badge && (
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 ml-1">
-              {item.badge.count} pendente{item.badge.count > 1 ? 's' : ''}
-            </Badge>
+        <TooltipTrigger asChild>{content}</TooltipTrigger>
+        <TooltipContent side="right" className="text-xs font-medium">
+          {item.title}
+          {item.badge != null && item.badge > 0 && (
+            <span className="ml-1.5 text-primary">({item.badge})</span>
           )}
         </TooltipContent>
       </Tooltip>
     );
   }
 
-  return (
-    <PrefetchLink
-      to={item.href}
-      className={cn(
-        "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 group ml-2 relative",
-        isActive 
-          ? "bg-primary text-primary-foreground shadow-glow-sm" 
-          : "text-muted-foreground hover:bg-accent hover:text-foreground"
-      )}
-      aria-current={isActive ? "page" : undefined}
-    >
-      <ActiveIndicator isActive={isActive} />
-      <item.icon className={cn(
-        "w-4 h-4 shrink-0 transition-transform",
-        !isActive && "group-hover:scale-110",
-        isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"
-      )} />
-      <div className="flex-1 min-w-0 flex items-center justify-between">
-        <span className="text-sm font-medium truncate">{item.title}</span>
-        {item.badge && (
-          <AnimatedBadge count={item.badge.count} variant={item.badge.variant} />
-        )}
-      </div>
-    </PrefetchLink>
-  );
+  return content;
 };
 
+/* ─── Section ─── */
+const SidebarSection = ({
+  section,
+  pathname,
+  collapsed,
+}: {
+  section: NavSection;
+  pathname: string;
+  collapsed: boolean;
+}) => (
+  <div className="space-y-0.5">
+    {/* Section label — hidden when collapsed */}
+    {!collapsed && (
+      <p className="px-3 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 select-none">
+        {section.label}
+      </p>
+    )}
+    {collapsed && <div className="my-1.5 mx-2 h-px bg-border/40" />}
+
+    {section.items.map((item) => (
+      <SidebarItem
+        key={item.href}
+        item={item}
+        active={isItemActive(pathname, item.href)}
+        collapsed={collapsed}
+      />
+    ))}
+  </div>
+);
+
+/* ─── Main Sidebar ─── */
+interface AppSidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
+
 export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
-  const location = useLocation();
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(
-    menuGroups.map(g => g.id)
-  );
-  
-  // Auto-expand group containing active item
-  useEffect(() => {
-    const activeGroup = menuGroups.find(group => 
-      group.items.some(item => 
-        location.pathname === item.href || 
-        (item.href !== "/" && location.pathname.startsWith(item.href))
-      )
-    );
-    if (activeGroup && !expandedGroups.includes(activeGroup.id)) {
-      setExpandedGroups(prev => [...prev, activeGroup.id]);
-    }
-  }, [location.pathname]);
-
-  const toggleGroup = (groupId: string) => {
-    setExpandedGroups(prev => 
-      prev.includes(groupId) 
-        ? prev.filter(id => id !== groupId)
-        : [...prev, groupId]
-    );
-  };
-
-  const isGroupActive = (items: typeof menuGroups[0]['items']) => {
-    return items.some(item => 
-      location.pathname === item.href || 
-      (item.href !== "/" && location.pathname.startsWith(item.href))
-    );
-  };
-
-  const getGroupBadgeCount = (items: typeof menuGroups[0]['items']) => {
-    return items.reduce((acc, item) => acc + (item.badge?.count || 0), 0);
-  };
+  const { pathname } = useLocation();
 
   return (
-    <aside 
+    <aside
       data-tour="sidebar"
       className={cn(
-        "fixed left-0 top-0 z-40 h-screen border-r border-border transition-all duration-300 flex flex-col",
-        "bg-card dark:bg-[hsl(228,30%,7%)]",
-        collapsed ? "w-16" : "w-64"
+        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/50 bg-sidebar-background transition-[width] duration-300",
+        collapsed ? "w-[60px]" : "w-60"
       )}
-      style={{
-        borderRight: '1px solid hsl(var(--border) / 0.6)',
-      }}
     >
-      {/* Header */}
-      <div className="h-16 border-b border-border/60 flex items-center justify-between px-4 shrink-0">
-        <AnimatePresence mode="wait">
-          {!collapsed ? (
-            <motion.div 
-              key="expanded"
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -10 }}
-              className="flex items-center gap-3"
-            >
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center shadow-glow-sm">
-                <Package className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <h1 className="text-2xl font-bold text-foreground tracking-tight">Promo Supply</h1>
-            </motion.div>
-          ) : (
-            <Tooltip delayDuration={0}>
-              <TooltipTrigger asChild>
-                <motion.div 
-                  key="collapsed"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="w-9 h-9 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center mx-auto shadow-glow-sm cursor-pointer"
-                >
-                  <Package className="w-5 h-5 text-primary-foreground" />
-                </motion.div>
-              </TooltipTrigger>
-              <TooltipContent side="right">
-                <p className="font-medium">Promo Supply</p>
-                <p className="text-xs text-muted-foreground">Gestão de Compras</p>
-              </TooltipContent>
-            </Tooltip>
-          )}
-        </AnimatePresence>
+      {/* ── Header ── */}
+      <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-border/40 px-3">
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-glow">
+          <Package className="h-4 w-4 text-primary-foreground" />
+        </div>
+        {!collapsed && (
+          <span className="text-sm font-bold tracking-tight text-foreground">
+            Promo Supply
+          </span>
+        )}
       </div>
 
-      {/* Toggle Button */}
+      {/* ── Toggle ── */}
       <Button
         variant="ghost"
         size="icon"
         onClick={onToggle}
-        className="absolute -right-3 top-20 w-6 h-6 rounded-full border border-border bg-card shadow-md hover:bg-accent hover:shadow-lg transition-all z-50"
+        className="absolute -right-3 top-[52px] z-50 h-6 w-6 rounded-full border border-border/60 bg-sidebar-background shadow-sm hover:bg-accent"
         aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
       >
-        <ChevronLeft className={cn(
-          "w-3 h-3 transition-transform duration-300",
-          collapsed && "rotate-180"
-        )} />
+        {collapsed ? (
+          <ChevronRight className="h-3 w-3" />
+        ) : (
+          <ChevronLeft className="h-3 w-3" />
+        )}
       </Button>
 
-      {/* Navigation */}
-      <nav className="flex-1 p-2 space-y-1 overflow-y-auto scrollbar-thin" role="navigation" aria-label="Menu principal">
-        {menuGroups.map((group) => {
-          const isActive = isGroupActive(group.items);
-          const isExpanded = expandedGroups.includes(group.id);
-          const groupBadgeCount = getGroupBadgeCount(group.items);
-
-          if (collapsed) {
-            return (
-              <div key={group.id} className="space-y-1 relative">
-                {/* Group indicator for collapsed state */}
-                {isActive && (
-                  <motion.div 
-                    layoutId="activeGroup"
-                    className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary rounded-r-full"
-                  />
-                )}
-                {group.items.map((item) => {
-                  const isItemActive = location.pathname === item.href || 
-                    (item.href !== "/" && location.pathname.startsWith(item.href));
-                  return <NavItem key={item.href} item={item} isActive={isItemActive} collapsed />;
-                })}
-                <div className="h-px bg-border/50 my-2" />
-              </div>
-            );
-          }
-
-          return (
-            <Collapsible
-              key={group.id}
-              open={isExpanded}
-              onOpenChange={() => toggleGroup(group.id)}
-            >
-              <CollapsibleTrigger asChild>
-                <button
-                  className={cn(
-                    "flex items-center gap-2 w-full px-3 py-2 text-xs font-semibold uppercase tracking-wider rounded-md transition-all relative group",
-                    isActive 
-                      ? "text-primary bg-primary/5" 
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                  )}
-                >
-                  {/* Active group indicator */}
-                  {isActive && (
-                    <motion.div 
-                      layoutId="activeGroupExpanded"
-                      className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-4 bg-primary rounded-r-full"
-                    />
-                  )}
-                  <motion.div
-                    animate={{ rotate: isExpanded ? 0 : -90 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <ChevronDown className="w-3 h-3" />
-                  </motion.div>
-                  <group.icon className="w-3.5 h-3.5" />
-                  <span className="flex-1 text-left">{group.title}</span>
-                  {groupBadgeCount > 0 && !isExpanded && (
-                    <AnimatedBadge 
-                      count={groupBadgeCount} 
-                      variant={group.items.some(i => i.badge?.variant === 'destructive') ? 'destructive' : 'warning'} 
-                      size="small" 
-                    />
-                  )}
-                </button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="space-y-0.5 mt-1">
-                <AnimatePresence>
-                  {isExpanded && group.items.map((item, index) => {
-                    const isItemActive = location.pathname === item.href || 
-                      (item.href !== "/" && location.pathname.startsWith(item.href));
-                    
-                    return (
-                      <motion.div
-                        key={item.href}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -10 }}
-                        transition={{ delay: index * 0.03 }}
-                      >
-                        <NavItem item={item} isActive={isItemActive} collapsed={false} />
-                      </motion.div>
-                    );
-                  })}
-                </AnimatePresence>
-              </CollapsibleContent>
-            </Collapsible>
-          );
-        })}
+      {/* ── Navigation ── */}
+      <nav
+        className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-2 scrollbar-thin"
+        role="navigation"
+        aria-label="Menu principal"
+      >
+        {sections.map((section) => (
+          <SidebarSection
+            key={section.id}
+            section={section}
+            pathname={pathname}
+            collapsed={collapsed}
+          />
+        ))}
       </nav>
 
-      {/* Footer */}
-      <AnimatePresence>
-        {!collapsed && (
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="p-3 border-t border-border shrink-0 space-y-2"
+      {/* ── Footer ── */}
+      {!collapsed && (
+        <div className="shrink-0 border-t border-border/40 p-2">
+          <PrefetchLink
+            to="#"
+            className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
           >
-            <Button variant="ghost" size="sm" className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground">
-              <HelpCircle className="w-4 h-4" />
+            <HelpCircle className="h-4 w-4" />
+            Ajuda & Suporte
+          </PrefetchLink>
+        </div>
+      )}
+
+      {collapsed && (
+        <div className="shrink-0 border-t border-border/40 p-2">
+          <Tooltip delayDuration={0}>
+            <TooltipTrigger asChild>
+              <PrefetchLink
+                to="#"
+                className="flex items-center justify-center rounded-lg py-2 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+              >
+                <HelpCircle className="h-[18px] w-[18px]" />
+              </PrefetchLink>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="text-xs font-medium">
               Ajuda & Suporte
-            </Button>
-            <div className="px-3 py-2 rounded-lg bg-muted/50 border border-border/50">
-              <p className="text-xs text-muted-foreground">Promo Supply v2.0</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-kpi-success animate-pulse" />
-                Online • Atualizado
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      )}
     </aside>
   );
 };
 
-// Mobile trigger with notification indicator
-export const MobileSidebarTrigger = ({ 
+/* ─── Mobile Trigger ─── */
+export const MobileSidebarTrigger = ({
   onClick,
-  hasNotifications = false
-}: { 
+  hasNotifications = false,
+}: {
   onClick: () => void;
   hasNotifications?: boolean;
 }) => (
@@ -641,9 +333,9 @@ export const MobileSidebarTrigger = ({
     className="md:hidden relative"
     aria-label="Abrir menu de navegação"
   >
-    <Menu className="w-5 h-5" />
+    <Menu className="h-5 w-5" />
     {hasNotifications && (
-      <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-kpi-danger" />
+      <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-primary" />
     )}
   </Button>
 );
