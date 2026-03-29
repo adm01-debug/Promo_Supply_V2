@@ -38,7 +38,7 @@ const NotFound = lazy(() => import("@/pages/NotFound"));
 export const AnimatedRoutes = () => {
   return (
     <div className="w-full min-h-screen">
-      <Routes location={location}>
+      <Routes>
         <Route path="/auth" element={<Auth />} />
 
         <Route path="/" element={

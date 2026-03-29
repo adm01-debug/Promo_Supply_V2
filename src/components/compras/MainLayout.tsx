@@ -23,15 +23,16 @@ import { NavigationProgressBar } from "@/components/navigation/NavigationProgres
 import { HeaderActions } from "@/components/layout/HeaderActions";
 import { SupplierChat } from "@/components/compras/SupplierChat";
 import { cn } from "@/lib/utils";
-import { Menu, X, ArrowLeft } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useQueryClient } from "@tanstack/react-query";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-// Hook for swipe-back navigation
+// Hook for swipe-back navigation on mobile
 function useSwipeBack() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -43,7 +44,6 @@ function useSwipeBack() {
     if (isHome) return;
 
     const handleTouchStart = (e: TouchEvent) => {
-      // Only trigger from left edge (first 30px)
       if (e.touches[0].clientX < 30) {
         touchStartX.current = e.touches[0].clientX;
         touchStartY.current = e.touches[0].clientY;
@@ -55,7 +55,6 @@ function useSwipeBack() {
       const deltaX = e.changedTouches[0].clientX - touchStartX.current;
       const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY.current);
       
-      // Swipe right from edge with more horizontal than vertical movement
       if (deltaX > 80 && deltaX > deltaY * 1.5) {
         navigate(-1);
       }
@@ -95,6 +94,11 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
     await new Promise(resolve => setTimeout(resolve, 500));
   }, [queryClient]);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
   return (
     <div className="min-h-screen bg-background pb-16 md:pb-0">
       <NavigationProgressBar />
@@ -108,58 +112,73 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       </div>
 
       {/* Mobile Sidebar Overlay */}
-      {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setMobileMenuOpen(false)} />
-      )}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            className="fixed inset-0 bg-black/50 z-30 md:hidden"
+            onClick={() => setMobileMenuOpen(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Mobile Sidebar */}
       <div className={cn(
-        "fixed left-0 top-0 z-40 h-screen w-64 bg-card border-r border-border transform transition-transform duration-300 md:hidden",
+        "fixed left-0 top-0 z-40 h-screen w-64 bg-card border-r border-border transform transition-transform duration-300 ease-out md:hidden",
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <AppSidebar collapsed={false} onToggle={() => setMobileMenuOpen(false)} />
       </div>
 
       {/* Main Content */}
-      <div className={cn("transition-all duration-300", sidebarCollapsed ? "md:ml-16" : "md:ml-60")}>
-        <header className="sticky top-0 z-20 h-14 md:h-16 border-b border-border/50 bg-card/90 backdrop-blur-xl dark:bg-[hsl(228,28%,6%,0.85)] dark:border-border/30 dark:shadow-[0_4px_24px_hsl(0,0%,0%,0.3)]">
-          <div className="h-full px-3 md:px-4 flex items-center justify-between gap-2 md:gap-4">
-            {/* Mobile: hamburger OR back button */}
-            <div className="md:hidden shrink-0 flex items-center">
-              {isHome ? (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="h-9 w-9"
-                  aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
-                  aria-expanded={mobileMenuOpen}
-                >
-                  {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                </Button>
-              ) : (
-                <div className="flex items-center gap-1">
-                  <SmartBackButton className="flex" />
+      <div className={cn("transition-all duration-300", sidebarCollapsed ? "md:ml-[60px]" : "md:ml-60")}>
+        {/* Sticky Header */}
+        <header className="sticky top-0 z-20 h-14 md:h-14 border-b border-border/40 bg-card/95 backdrop-blur-xl dark:bg-[hsl(228,28%,6%,0.9)] dark:border-border/20">
+          <div className="h-full px-3 md:px-4 flex items-center justify-between gap-2 md:gap-3">
+            {/* LEFT: Mobile nav controls + Desktop back button */}
+            <div className="flex items-center gap-1 shrink-0">
+              {/* Mobile: hamburger or back+hamburger */}
+              <div className="md:hidden flex items-center">
+                {isHome ? (
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="h-8 w-8 text-muted-foreground"
-                    aria-label="Abrir menu"
+                    className="h-9 w-9"
+                    aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+                    aria-expanded={mobileMenuOpen}
                   >
-                    <Menu className="w-4 h-4" />
+                    {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                   </Button>
-                </div>
-              )}
+                ) : (
+                  <div className="flex items-center">
+                    <SmartBackButton compact className="flex" />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                      className="h-8 w-8 text-muted-foreground"
+                      aria-label="Abrir menu"
+                    >
+                      <Menu className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop: contextual back button */}
+              <SmartBackButton className="hidden md:flex" />
             </div>
 
-            {/* Desktop: back button */}
-            <SmartBackButton className="hidden md:flex" />
-
+            {/* CENTER: Search */}
             <div className="flex flex-1 max-w-xl" data-tour="global-search">
               <AdvancedSearch />
             </div>
 
+            {/* RIGHT: Actions */}
             <HeaderActions
               onOpenCommandPalette={() => setCommandPaletteOpen(true)}
               onRestartTour={restartTour}
@@ -167,16 +186,31 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
           </div>
         </header>
 
-        <MobileRefreshWrapper onRefresh={handleRefresh} className="min-h-[calc(100vh-4rem)]">
-          <main id="main-content" className="p-4 md:p-6 animate-fade-in" tabIndex={-1}>
-            {/* Breadcrumbs — always visible on non-home pages */}
+        {/* Page content with animated transitions */}
+        <MobileRefreshWrapper onRefresh={handleRefresh} className="min-h-[calc(100vh-3.5rem)]">
+          <main id="main-content" className="p-4 md:p-6" tabIndex={-1}>
+            {/* Breadcrumbs */}
             {!isHome && (
-              <div className="mb-4">
+              <motion.div
+                className="mb-3"
+                initial={{ opacity: 0, y: -4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: 0.05 }}
+              >
                 <Breadcrumbs className="hidden md:flex" />
                 <Breadcrumbs variant="compact" className="md:hidden" />
-              </div>
+              </motion.div>
             )}
-            {children}
+
+            {/* Page content with fade-in */}
+            <motion.div
+              key={location.pathname}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.15 }}
+            >
+              {children}
+            </motion.div>
           </main>
         </MobileRefreshWrapper>
       </div>
