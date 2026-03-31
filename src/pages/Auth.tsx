@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Package, Mail, Lock, User, Loader2, Fingerprint, AlertTriangle, ShoppingBag, TrendingUp, Shield, Sparkles } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -135,10 +136,28 @@ const Auth = () => {
     }
 
     setIsSubmitting(true);
+    
+    // Check if IP is blocked before attempting login
+    const userAgent = navigator.userAgent;
+    
     const { error } = await signIn(loginEmail, loginPassword);
     setIsSubmitting(false);
 
+    // Log the login attempt (IP-based rate limiting handled server-side)
+    const logAttempt = (success: boolean, failureReason?: string) => {
+      supabase.rpc('log_login_attempt', {
+        _email: loginEmail,
+        _ip_address: '',
+        _user_agent: userAgent,
+        _success: success,
+        _failure_reason: failureReason ?? null,
+      }).then(({ error: logError }) => {
+        if (logError) console.error('Failed to log login attempt:', logError);
+      });
+    };
+
     if (error) {
+      logAttempt(false, error.message);
       const lockoutResult = await recordFailedAttempt(loginEmail);
       
       if (lockoutResult.locked) {
@@ -153,6 +172,7 @@ const Auth = () => {
         setRemainingAttempts(lockoutResult.remainingAttempts ?? null);
       }
     } else {
+      logAttempt(true);
       await clearLockout(loginEmail);
       setRemainingAttempts(null);
       toast.success('Login realizado com sucesso!');
