@@ -136,10 +136,26 @@ const Auth = () => {
     }
 
     setIsSubmitting(true);
+    
+    // Check if IP is blocked before attempting login
+    const userAgent = navigator.userAgent;
+    
     const { error } = await signIn(loginEmail, loginPassword);
     setIsSubmitting(false);
 
+    // Log the login attempt (IP-based rate limiting handled server-side)
+    const logAttempt = (success: boolean, failureReason?: string) => {
+      supabase.rpc('log_login_attempt', {
+        _email: loginEmail,
+        _ip_address: '', // Server-side RPC captures actual IP
+        _user_agent: userAgent,
+        _success: success,
+        _failure_reason: failureReason ?? null,
+      }).catch(console.error);
+    };
+
     if (error) {
+      logAttempt(false, error.message);
       const lockoutResult = await recordFailedAttempt(loginEmail);
       
       if (lockoutResult.locked) {
@@ -154,6 +170,7 @@ const Auth = () => {
         setRemainingAttempts(lockoutResult.remainingAttempts ?? null);
       }
     } else {
+      logAttempt(true);
       await clearLockout(loginEmail);
       setRemainingAttempts(null);
       toast.success('Login realizado com sucesso!');
