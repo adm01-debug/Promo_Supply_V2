@@ -37,6 +37,7 @@ const parentRoutes: Record<string, string> = {
   '/documentos-fiscais': '/pagamentos',
   '/recompra-inteligente': '/pedidos',
   '/devolucoes': '/pedidos',
+  '/catalogo-produtos': '/',
   '/admin/telemetria': '/',
 };
 
