@@ -259,11 +259,11 @@ interface PriorityIndicatorProps {
 }
 
 const priorityConfigs: Record<PriorityLevel, { label: string; color: string; bars: number }> = {
-  low: { label: "Baixa", color: "bg-green-500", bars: 1 },
-  medium: { label: "Média", color: "bg-amber-500", bars: 2 },
-  high: { label: "Alta", color: "bg-orange-500", bars: 3 },
-  urgent: { label: "Urgente", color: "bg-red-500", bars: 4 },
-  critical: { label: "Crítica", color: "bg-red-600", bars: 4 },
+  low: { label: "Baixa", color: "bg-success", bars: 1 },
+  medium: { label: "Média", color: "bg-warning", bars: 2 },
+  high: { label: "Alta", color: "bg-warning", bars: 3 },
+  urgent: { label: "Urgente", color: "bg-destructive", bars: 4 },
+  critical: { label: "Crítica", color: "bg-destructive", bars: 4 },
 };
 
 export const PriorityIndicator = ({
