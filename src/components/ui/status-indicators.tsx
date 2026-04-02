@@ -606,7 +606,7 @@ export function RatingStars({
                 iconSizes[size],
                 "transition-colors duration-200",
                 isFilled
-                  ? "text-amber-400 fill-amber-400"
+                  ? "text-warning fill-warning"
                   : "text-muted-foreground/30"
               )}
             />
