@@ -148,8 +148,8 @@ const calcularSLA = (prazoEntrega: string, statusPedido: string): SLAInfo => {
       status: 'critico',
       diasRestantes: 1,
       label: 'Vence AMANHÃ',
-      color: 'text-orange-500',
-      bgColor: 'bg-orange-500/10',
+      color: 'text-warning',
+      bgColor: 'bg-warning/10',
       icon: AlertTriangle
     };
   }
@@ -159,8 +159,8 @@ const calcularSLA = (prazoEntrega: string, statusPedido: string): SLAInfo => {
       status: 'atencao',
       diasRestantes,
       label: `${diasRestantes} dias restantes`,
-      color: 'text-yellow-500',
-      bgColor: 'bg-yellow-500/10',
+      color: 'text-warning',
+      bgColor: 'bg-warning/10',
       icon: Timer
     };
   }
@@ -424,9 +424,9 @@ const Acompanhamento = () => {
 
   const getStatusBadgeColor = (status: string) => {
     const colors: Record<string, string> = {
-      FORNECEDOR_SELECIONADO: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+      FORNECEDOR_SELECIONADO: "bg-info/10 text-info border-blue-500/20",
       PEDIDO_GERADO: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
-      AGUARDANDO_PAGAMENTO: "bg-orange-500/10 text-orange-500 border-orange-500/20",
+      AGUARDANDO_PAGAMENTO: "bg-warning/10 text-warning border-orange-500/20",
       PAGO: "bg-cyan-500/10 text-cyan-500 border-cyan-500/20",
       EM_TRANSITO: "bg-purple-500/10 text-purple-500 border-purple-500/20",
       ENTREGUE: "bg-success/10 text-success border-success/20",
@@ -491,11 +491,11 @@ const Acompanhamento = () => {
             onClick={() => setFiltroSLA(filtroSLA === 'criticos' ? 'todos' : 'criticos')}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-orange-500/10 flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-orange-500" />
+              <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-warning" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-orange-500">{criticos.length}</p>
+                <p className="text-2xl font-bold text-warning">{criticos.length}</p>
                 <p className="text-xs text-muted-foreground">Críticos</p>
               </div>
             </div>
@@ -505,11 +505,11 @@ const Acompanhamento = () => {
             onClick={() => setFiltroSLA(filtroSLA === 'atencao' ? 'todos' : 'atencao')}
           >
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-yellow-500/10 flex items-center justify-center">
-                <Timer className="w-5 h-5 text-yellow-500" />
+              <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+                <Timer className="w-5 h-5 text-warning" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-yellow-600">{emAtencao.length}</p>
+                <p className="text-2xl font-bold text-warning">{emAtencao.length}</p>
                 <p className="text-xs text-muted-foreground">Atenção</p>
               </div>
             </div>
@@ -697,7 +697,7 @@ const Acompanhamento = () => {
                             <Calendar className="w-4 h-4" />
                             <span>Entrega: {new Date(pedido.prazoEntrega).toLocaleDateString('pt-BR')}</span>
                             {!isUrgent && pedido.sla.status === 'atencao' && (
-                              <Badge variant="outline" className="text-yellow-500 border-yellow-500/50 text-xs">
+                              <Badge variant="outline" className="text-warning border-yellow-500/50 text-xs">
                                 <Timer className="w-3 h-3 mr-1" />
                                 Atenção
                               </Badge>
@@ -743,8 +743,8 @@ const Acompanhamento = () => {
                               value={Math.max(0, Math.min(100, (pedido.sla.diasRestantes / 7) * 100))} 
                               className={`h-2 ${
                                 pedido.sla.status === 'atrasado' ? '[&>div]:bg-destructive' :
-                                pedido.sla.status === 'critico' ? '[&>div]:bg-orange-500' :
-                                pedido.sla.status === 'atencao' ? '[&>div]:bg-yellow-500' :
+                                pedido.sla.status === 'critico' ? '[&>div]:bg-warning' :
+                                pedido.sla.status === 'atencao' ? '[&>div]:bg-warning' :
                                 '[&>div]:bg-success'
                               }`}
                             />

@@ -48,9 +48,9 @@ interface EscalationRule {
 }
 
 const actionTypeLabels: Record<string, { label: string; color: string; icon: typeof AlertTriangle }> = {
-  warning: { label: "Advertência", color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400", icon: AlertTriangle },
-  standard_fine: { label: "Multa Padrão", color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400", icon: ShieldAlert },
-  double_fine: { label: "Multa Dobrada", color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", icon: ShieldAlert },
+  warning: { label: "Advertência", color: "bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning", icon: AlertTriangle },
+  standard_fine: { label: "Multa Padrão", color: "bg-warning/10 text-orange-800 dark:bg-orange-900/30 dark:text-warning", icon: ShieldAlert },
+  double_fine: { label: "Multa Dobrada", color: "bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive", icon: ShieldAlert },
   temp_block: { label: "Bloq. Temporário", color: "bg-red-200 text-red-900 dark:bg-red-900/50 dark:text-red-300", icon: Ban },
   permanent_block: { label: "Bloq. Permanente", color: "bg-destructive text-destructive-foreground", icon: XCircle },
 };
@@ -98,10 +98,10 @@ export default function ComplianceDashboard() {
 
   const getComplianceStatus = (item: ComplianceData) => {
     if (item.supplier_status === 'bloqueado') return { label: "Bloqueado", color: "bg-destructive text-destructive-foreground", icon: Ban };
-    if (item.penalty_count >= 3) return { label: "Crítico", color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", icon: XCircle };
-    if (item.penalty_count >= 1 || item.late_deliveries > 0) return { label: "Em Risco", color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400", icon: AlertTriangle };
-    if (item.on_time_rate >= 95) return { label: "Excelente", color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400", icon: CheckCircle2 };
-    return { label: "Regular", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400", icon: Clock };
+    if (item.penalty_count >= 3) return { label: "Crítico", color: "bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive", icon: XCircle };
+    if (item.penalty_count >= 1 || item.late_deliveries > 0) return { label: "Em Risco", color: "bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning", icon: AlertTriangle };
+    if (item.on_time_rate >= 95) return { label: "Excelente", color: "bg-success/10 text-emerald-800 dark:bg-emerald-900/30 dark:text-success", icon: CheckCircle2 };
+    return { label: "Regular", color: "bg-info/10 text-blue-800 dark:bg-blue-900/30 dark:text-info", icon: Clock };
   };
 
   return (
@@ -138,10 +138,10 @@ export default function ComplianceDashboard() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs text-muted-foreground">Em Conformidade</p>
-                  <p className="text-2xl font-bold text-emerald-600">{compliant.length}</p>
+                  <p className="text-2xl font-bold text-success">{compliant.length}</p>
                 </div>
-                <div className="w-12 h-12 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-                  <CheckCircle2 className="w-6 h-6 text-emerald-600" />
+                <div className="w-12 h-12 rounded-lg bg-success/10 dark:bg-emerald-900/30 flex items-center justify-center">
+                  <CheckCircle2 className="w-6 h-6 text-success" />
                 </div>
               </div>
             </CardContent>
@@ -237,7 +237,7 @@ export default function ComplianceDashboard() {
                               <p className="font-medium">{item.razao_social}</p>
                               <div className="flex items-center gap-1 mt-1">
                                 {Array.from({ length: 5 }).map((_, i) => (
-                                  <Star key={i} className={`w-3 h-3 ${i < (item.avaliacao || 0) ? 'text-amber-500 fill-amber-500' : 'text-muted'}`} />
+                                  <Star key={i} className={`w-3 h-3 ${i < (item.avaliacao || 0) ? 'text-warning fill-amber-500' : 'text-muted'}`} />
                                 ))}
                               </div>
                             </div>
@@ -258,14 +258,14 @@ export default function ComplianceDashboard() {
                           </TableCell>
                           <TableCell className="text-center">
                             <div className="space-y-1">
-                              <span className={`text-sm font-bold ${item.on_time_rate >= 90 ? 'text-emerald-600' : item.on_time_rate >= 70 ? 'text-amber-600' : 'text-destructive'}`}>
+                              <span className={`text-sm font-bold ${item.on_time_rate >= 90 ? 'text-success' : item.on_time_rate >= 70 ? 'text-warning' : 'text-destructive'}`}>
                                 {item.on_time_rate}%
                               </span>
                               <Progress value={item.on_time_rate} className="h-1.5" />
                             </div>
                           </TableCell>
                           <TableCell className="text-center">
-                            <span className={`text-sm font-bold ${Number(item.avg_quality_score) >= 4 ? 'text-emerald-600' : Number(item.avg_quality_score) >= 3 ? 'text-amber-600' : 'text-destructive'}`}>
+                            <span className={`text-sm font-bold ${Number(item.avg_quality_score) >= 4 ? 'text-success' : Number(item.avg_quality_score) >= 3 ? 'text-warning' : 'text-destructive'}`}>
                               {Number(item.avg_quality_score).toFixed(1)}/5
                             </span>
                             {item.rejected_count > 0 && (
@@ -276,7 +276,7 @@ export default function ComplianceDashboard() {
                             {item.penalty_count > 0 ? (
                               <Badge variant="destructive">{item.penalty_count}</Badge>
                             ) : (
-                              <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">0</Badge>
+                              <Badge className="bg-success/10 text-emerald-800 dark:bg-emerald-900/30 dark:text-success">0</Badge>
                             )}
                           </TableCell>
                           <TableCell className="text-right font-bold text-destructive">
@@ -354,7 +354,7 @@ export default function ComplianceDashboard() {
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Award className="w-5 h-5 text-amber-500" />
+                  <Award className="w-5 h-5 text-warning" />
                   Fornecedores Elegíveis para Bonificação
                 </CardTitle>
               </CardHeader>
@@ -376,19 +376,19 @@ export default function ComplianceDashboard() {
                         <TableRow key={item.fornecedor_id}>
                           <TableCell className="font-medium">{item.razao_social}</TableCell>
                           <TableCell className="text-center">
-                            <span className={`font-bold ${item.on_time_rate >= 95 ? 'text-emerald-600' : 'text-amber-600'}`}>
+                            <span className={`font-bold ${item.on_time_rate >= 95 ? 'text-success' : 'text-warning'}`}>
                               {item.on_time_rate}%
                             </span>
                           </TableCell>
                           <TableCell className="text-center">
-                            <span className={`font-bold ${Number(item.avg_quality_score) >= 4 ? 'text-emerald-600' : 'text-amber-600'}`}>
+                            <span className={`font-bold ${Number(item.avg_quality_score) >= 4 ? 'text-success' : 'text-warning'}`}>
                               {Number(item.avg_quality_score).toFixed(1)}/5
                             </span>
                           </TableCell>
                           <TableCell className="text-center">{item.penalty_count}</TableCell>
                           <TableCell className="text-center">
                             {eligible ? (
-                              <Badge className="bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                              <Badge className="bg-success/10 text-emerald-800 dark:bg-emerald-900/30 dark:text-success">
                                 <Award className="w-3 h-3 mr-1" />
                                 Elegível
                               </Badge>

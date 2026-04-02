@@ -97,10 +97,10 @@ const fuseOptions = {
 const categoryConfig: Record<SearchCategory, { label: string; icon: React.ElementType; color: string }> = {
   all: { label: 'Todos', icon: Search, color: 'text-foreground' },
   pages: { label: 'Páginas', icon: LayoutDashboard, color: 'text-primary' },
-  solicitacoes: { label: 'Solicitações', icon: FileText, color: 'text-amber-500' },
-  pedidos: { label: 'Pedidos', icon: ShoppingCart, color: 'text-green-500' },
-  fornecedores: { label: 'Fornecedores', icon: Building2, color: 'text-blue-500' },
-  pagamentos: { label: 'Pagamentos', icon: CreditCard, color: 'text-orange-500' },
+  solicitacoes: { label: 'Solicitações', icon: FileText, color: 'text-warning' },
+  pedidos: { label: 'Pedidos', icon: ShoppingCart, color: 'text-success' },
+  fornecedores: { label: 'Fornecedores', icon: Building2, color: 'text-info' },
+  pagamentos: { label: 'Pagamentos', icon: CreditCard, color: 'text-warning' },
   contratos: { label: 'Contratos', icon: FileSignature, color: 'text-purple-500' },
 };
 
@@ -1042,10 +1042,10 @@ export function AdvancedSearch() {
                                     <div className={cn(
                                       "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
                                       type === 'pages' && "bg-primary/10",
-                                      type === 'solicitacoes' && "bg-amber-500/10",
-                                      type === 'pedidos' && "bg-green-500/10",
-                                      type === 'fornecedores' && "bg-blue-500/10",
-                                      type === 'pagamentos' && "bg-orange-500/10",
+                                      type === 'solicitacoes' && "bg-warning/10",
+                                      type === 'pedidos' && "bg-success/10",
+                                      type === 'fornecedores' && "bg-info/10",
+                                      type === 'pagamentos' && "bg-warning/10",
                                       type === 'contratos' && "bg-purple-500/10",
                                     )}>
                                       <Icon className={cn("w-5 h-5", config.color)} />

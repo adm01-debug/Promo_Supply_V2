@@ -159,7 +159,7 @@ const RecompraInteligente = () => {
           </Card>
           <Card>
             <CardContent className="p-4 flex items-center gap-3">
-              <Calendar className="h-8 w-8 text-orange-500" />
+              <Calendar className="h-8 w-8 text-warning" />
               <div>
                 <p className="text-2xl font-bold">
                   {suggestions?.filter(s => {
@@ -173,7 +173,7 @@ const RecompraInteligente = () => {
           </Card>
           <Card>
             <CardContent className="p-4 flex items-center gap-3">
-              <TrendingUp className="h-8 w-8 text-green-500" />
+              <TrendingUp className="h-8 w-8 text-success" />
               <div>
                 <p className="text-2xl font-bold">
                   R$ {(suggestions?.reduce((a, s) => a + Number(s.preco_estimado || 0), 0) || 0).toLocaleString("pt-BR")}
@@ -207,7 +207,7 @@ const RecompraInteligente = () => {
                 {suggestions?.map(s => {
                   const isOverdue = s.proxima_compra_estimada && new Date(s.proxima_compra_estimada) <= new Date();
                   return (
-                    <TableRow key={s.id} className={isOverdue ? "bg-red-500/5" : ""}>
+                    <TableRow key={s.id} className={isOverdue ? "bg-destructive/5" : ""}>
                       <TableCell className="font-medium">{(s as any).produto?.nome || "Produto"}</TableCell>
                       <TableCell className="text-sm">{(s as any).fornecedor?.razao_social || "-"}</TableCell>
                       <TableCell className="text-center">{s.quantidade_sugerida}</TableCell>

@@ -21,12 +21,12 @@ const statusLabels: Record<string, string> = {
 };
 
 const statusColors: Record<string, string> = {
-  pendente: 'bg-yellow-500',
-  aprovado: 'bg-blue-500',
-  em_transito: 'bg-orange-500',
-  entregue: 'bg-green-500',
-  recebido: 'bg-emerald-500',
-  cancelado: 'bg-red-500',
+  pendente: 'bg-warning',
+  aprovado: 'bg-info',
+  em_transito: 'bg-warning',
+  entregue: 'bg-success',
+  recebido: 'bg-success',
+  cancelado: 'bg-destructive',
 };
 
 export const HistoricoComprasModal = ({ open, onOpenChange, fornecedor }: HistoricoComprasModalProps) => {
@@ -122,7 +122,7 @@ export const HistoricoComprasModal = ({ open, onOpenChange, fornecedor }: Histor
                         {(pedido.valor_total || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                       </TableCell>
                       <TableCell>
-                        <Badge className={`${statusColors[pedido.status] || 'bg-gray-500'} text-white text-xs`}>
+                        <Badge className={`${statusColors[pedido.status] || 'bg-muted/500'} text-primary-foreground text-xs`}>
                           {statusLabels[pedido.status] || pedido.status}
                         </Badge>
                       </TableCell>

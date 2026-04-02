@@ -134,23 +134,23 @@ const Pagamentos = () => {
   };
 
   const getVencimentoInfo = (venc: string, status: string) => {
-    if (status === 'pago') return { label: "Pago", color: "text-emerald-600", bg: "bg-emerald-500/10", icon: CheckCircle2 };
+    if (status === 'pago') return { label: "Pago", color: "text-success", bg: "bg-success/10", icon: CheckCircle2 };
     const dias = differenceInDays(new Date(venc), new Date());
-    if (dias < 0) return { label: `${Math.abs(dias)}d vencido`, color: "text-red-600", bg: "bg-red-500/10", icon: AlertTriangle };
-    if (dias === 0) return { label: "Vence Hoje", color: "text-red-600", bg: "bg-red-500/10", icon: AlertTriangle };
-    if (dias <= 3) return { label: `${dias}d restante${dias > 1 ? 's' : ''}`, color: "text-orange-500", bg: "bg-orange-500/10", icon: Clock };
+    if (dias < 0) return { label: `${Math.abs(dias)}d vencido`, color: "text-destructive", bg: "bg-destructive/10", icon: AlertTriangle };
+    if (dias === 0) return { label: "Vence Hoje", color: "text-destructive", bg: "bg-destructive/10", icon: AlertTriangle };
+    if (dias <= 3) return { label: `${dias}d restante${dias > 1 ? 's' : ''}`, color: "text-warning", bg: "bg-warning/10", icon: Clock };
     return { label: `${dias}d`, color: "text-muted-foreground", bg: "bg-muted", icon: Calendar };
   };
 
   const getStatusConfig = (status: string) => {
     const map: Record<string, { label: string; className: string }> = {
-      pendente: { label: 'Pendente', className: 'bg-amber-500/10 text-amber-600 border-amber-500/20' },
-      aprovado: { label: 'Aprovado', className: 'bg-blue-500/10 text-blue-600 border-blue-500/20' },
+      pendente: { label: 'Pendente', className: 'bg-warning/10 text-warning border-amber-500/20' },
+      aprovado: { label: 'Aprovado', className: 'bg-info/10 text-info border-blue-500/20' },
       agendado: { label: 'Agendado', className: 'bg-purple-500/10 text-purple-600 border-purple-500/20' },
-      pago: { label: 'Pago', className: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' },
+      pago: { label: 'Pago', className: 'bg-success/10 text-success border-emerald-500/20' },
       parcial: { label: 'Parcial', className: 'bg-cyan-500/10 text-cyan-600 border-cyan-500/20' },
-      cancelado: { label: 'Cancelado', className: 'bg-red-500/10 text-red-600 border-red-500/20' },
-      atrasado: { label: 'Atrasado', className: 'bg-red-500/10 text-red-600 border-red-500/20' },
+      cancelado: { label: 'Cancelado', className: 'bg-destructive/10 text-destructive border-red-500/20' },
+      atrasado: { label: 'Atrasado', className: 'bg-destructive/10 text-destructive border-red-500/20' },
     };
     return map[status] || map.pendente;
   };

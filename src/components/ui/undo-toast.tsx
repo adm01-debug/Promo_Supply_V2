@@ -57,8 +57,8 @@ const typeConfig: Record<ToastType, {
   success: {
     icon: CheckCircle2,
     bgClass: "bg-card",
-    iconBgClass: "bg-green-500/10 text-green-500",
-    progressClass: "bg-green-500",
+    iconBgClass: "bg-success/10 text-success",
+    progressClass: "bg-success",
     borderClass: "border-green-500/20"
   },
   error: {

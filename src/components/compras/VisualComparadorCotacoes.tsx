@@ -288,7 +288,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                           {score?.score}pts
                         </Badge>
                         {cotacao.id === analysis.bestOverall && (
-                          <Trophy className="w-4 h-4 text-yellow-500" />
+                          <Trophy className="w-4 h-4 text-warning" />
                         )}
                       </div>
                     </motion.button>
@@ -405,7 +405,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                       <Card className="h-full">
                         <CardHeader className="pb-2">
                           <CardTitle className="text-lg flex items-center gap-2">
-                            <DollarSign className="w-5 h-5 text-emerald-500" />
+                            <DollarSign className="w-5 h-5 text-success" />
                             Comparativo de Valores
                           </CardTitle>
                         </CardHeader>
@@ -500,7 +500,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                         <Card>
                           <CardHeader className="pb-2">
                             <CardTitle className="text-lg flex items-center gap-2">
-                              <Star className="w-5 h-5 text-yellow-500" />
+                              <Star className="w-5 h-5 text-warning" />
                               Pontuação Geral
                             </CardTitle>
                           </CardHeader>
@@ -557,8 +557,8 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                                         <div className="flex items-center gap-2">
                                           <span className={cn(
                                             "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold",
-                                            index === 0 ? "bg-yellow-500 text-yellow-950" :
-                                            index === 1 ? "bg-gray-300 text-gray-700" :
+                                            index === 0 ? "bg-warning text-yellow-950" :
+                                            index === 1 ? "bg-gray-300 text-foreground" :
                                             index === 2 ? "bg-orange-400 text-orange-950" :
                                             "bg-muted text-muted-foreground"
                                           )}>
@@ -613,7 +613,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                               <tbody>
                                 <tr className="border-b">
                                   <td className="p-3 flex items-center gap-2">
-                                    <Star className="w-4 h-4 text-yellow-500" />
+                                    <Star className="w-4 h-4 text-warning" />
                                     Pontuação
                                   </td>
                                   {selectedCotacoes.map(c => (
@@ -626,22 +626,22 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                                 </tr>
                                 <tr className="border-b bg-muted/30">
                                   <td className="p-3 flex items-center gap-2">
-                                    <DollarSign className="w-4 h-4 text-emerald-500" />
+                                    <DollarSign className="w-4 h-4 text-success" />
                                     Valor Total
                                   </td>
                                   {selectedCotacoes.map(c => (
                                     <td key={c.id} className={cn(
                                       "p-3 text-center font-semibold",
-                                      c.id === analysis.bestPrice && "text-emerald-500"
+                                      c.id === analysis.bestPrice && "text-success"
                                     )}>
                                       R$ {c.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                                      {c.id === analysis.bestPrice && <Trophy className="w-4 h-4 inline ml-1 text-yellow-500" />}
+                                      {c.id === analysis.bestPrice && <Trophy className="w-4 h-4 inline ml-1 text-warning" />}
                                     </td>
                                   ))}
                                 </tr>
                                 <tr className="border-b">
                                   <td className="p-3 flex items-center gap-2">
-                                    <Package className="w-4 h-4 text-blue-500" />
+                                    <Package className="w-4 h-4 text-info" />
                                     Valor Unitário
                                   </td>
                                   {selectedCotacoes.map(c => (
@@ -658,22 +658,22 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                                   {selectedCotacoes.map(c => (
                                     <td key={c.id} className={cn(
                                       "p-3 text-center font-semibold",
-                                      c.id === analysis.bestDelivery && "text-emerald-500"
+                                      c.id === analysis.bestDelivery && "text-success"
                                     )}>
                                       {c.prazoEntrega} dias
-                                      {c.id === analysis.bestDelivery && <Trophy className="w-4 h-4 inline ml-1 text-yellow-500" />}
+                                      {c.id === analysis.bestDelivery && <Trophy className="w-4 h-4 inline ml-1 text-warning" />}
                                     </td>
                                   ))}
                                 </tr>
                                 <tr className="border-b">
                                   <td className="p-3 flex items-center gap-2">
-                                    <Truck className="w-4 h-4 text-orange-500" />
+                                    <Truck className="w-4 h-4 text-warning" />
                                     Frete
                                   </td>
                                   {selectedCotacoes.map(c => (
                                     <td key={c.id} className={cn(
                                       "p-3 text-center",
-                                      c.frete === 0 && "text-emerald-500"
+                                      c.frete === 0 && "text-success"
                                     )}>
                                       {c.frete === 0 ? 'Grátis' : `R$ ${c.frete.toFixed(2)}`}
                                     </td>
@@ -687,7 +687,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                                   {selectedCotacoes.map(c => (
                                     <td key={c.id} className={cn(
                                       "p-3 text-center",
-                                      c.quantidadeDisponivel >= quantidade ? "text-emerald-500" : "text-orange-500"
+                                      c.quantidadeDisponivel >= quantidade ? "text-success" : "text-warning"
                                     )}>
                                       {c.quantidadeDisponivel.toLocaleString('pt-BR')} un
                                       {c.quantidadeDisponivel >= quantidade 

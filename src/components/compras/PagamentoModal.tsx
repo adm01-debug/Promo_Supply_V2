@@ -60,9 +60,9 @@ export const PagamentoModal = ({ pagamento, open, onOpenChange, onConfirmarPagam
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {pagamento.metodo === "PIX" ? (
-              <QrCode className="h-5 w-5 text-emerald-500" />
+              <QrCode className="h-5 w-5 text-success" />
             ) : (
-              <FileText className="h-5 w-5 text-blue-500" />
+              <FileText className="h-5 w-5 text-info" />
             )}
             Pagamento via {pagamento.metodo}
           </DialogTitle>
@@ -143,7 +143,7 @@ export const PagamentoModal = ({ pagamento, open, onOpenChange, onConfirmarPagam
                 </div>
               ) : (
                 <div className="space-y-4">
-                  <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                  <div className="bg-info/5 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                     <p className="text-sm text-blue-700 dark:text-blue-300 mb-2 font-medium">Linha Digitável</p>
                     <p className="font-mono text-xs break-all text-blue-900 dark:text-blue-100">
                       {boletoLinhaDigitavel}
@@ -183,7 +183,7 @@ export const PagamentoModal = ({ pagamento, open, onOpenChange, onConfirmarPagam
             <>
               {/* Confirmação de Comprovante */}
               <div className="space-y-4">
-                <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
+                <div className="bg-success/5 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
                   <p className="text-sm text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
                     <CheckCircle2 className="h-4 w-4" />
                     Confirme o pagamento informando o código do comprovante
@@ -220,7 +220,7 @@ export const PagamentoModal = ({ pagamento, open, onOpenChange, onConfirmarPagam
                 <Button variant="outline" className="flex-1" onClick={() => setEtapa("pagamento")}>
                   Voltar
                 </Button>
-                <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700" onClick={handleConfirmar}>
+                <Button className="flex-1 bg-success hover:bg-emerald-700" onClick={handleConfirmar}>
                   <CheckCircle2 className="h-4 w-4 mr-2" />
                   Confirmar Pagamento
                 </Button>

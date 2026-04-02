@@ -36,8 +36,8 @@ const getVencimentoStatus = (vencimento: string, status: string) => {
       label: "Pago", 
       variant: "success" as const, 
       icon: CheckCircle2, 
-      color: "text-emerald-600 dark:text-emerald-400", 
-      bgColor: "bg-emerald-500/10",
+      color: "text-success dark:text-success", 
+      bgColor: "bg-success/10",
       borderColor: "border-l-emerald-500"
     };
   }
@@ -48,24 +48,24 @@ const getVencimentoStatus = (vencimento: string, status: string) => {
     label: "Vencido", 
     variant: "destructive" as const, 
     icon: AlertTriangle, 
-    color: "text-red-600 dark:text-red-400", 
-    bgColor: "bg-red-500/10",
+    color: "text-destructive dark:text-destructive", 
+    bgColor: "bg-destructive/10",
     borderColor: "border-l-red-500"
   };
   if (dias === 0) return { 
     label: "Vence Hoje", 
     variant: "destructive" as const, 
     icon: AlertTriangle, 
-    color: "text-red-600 dark:text-red-400", 
-    bgColor: "bg-red-500/10",
+    color: "text-destructive dark:text-destructive", 
+    bgColor: "bg-destructive/10",
     borderColor: "border-l-red-500"
   };
   if (dias <= 2) return { 
     label: `${dias}d restante${dias > 1 ? 's' : ''}`, 
     variant: "warning" as const, 
     icon: Clock, 
-    color: "text-orange-500", 
-    bgColor: "bg-orange-500/10",
+    color: "text-warning", 
+    bgColor: "bg-warning/10",
     borderColor: "border-l-orange-500"
   };
   return { 
@@ -86,25 +86,25 @@ const statusConfig: Record<string, {
 }> = {
   pendente: { 
     label: 'Pendente', 
-    color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+    color: 'bg-warning/10 text-warning dark:text-warning border-amber-500/20',
     icon: Clock,
     gradient: 'from-amber-500/5'
   },
   aprovado: { 
     label: 'Aprovado', 
-    color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
+    color: 'bg-info/10 text-info dark:text-info border-blue-500/20',
     icon: CheckCircle2,
     gradient: 'from-blue-500/5'
   },
   pago: { 
     label: 'Pago', 
-    color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+    color: 'bg-success/10 text-success dark:text-success border-emerald-500/20',
     icon: CheckCircle2,
     gradient: 'from-emerald-500/5'
   },
   cancelado: { 
     label: 'Cancelado', 
-    color: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20',
+    color: 'bg-destructive/10 text-destructive dark:text-destructive border-red-500/20',
     icon: AlertTriangle,
     gradient: 'from-red-500/5'
   },
@@ -113,8 +113,8 @@ const statusConfig: Record<string, {
 const getFormaPagamentoConfig = (forma: string | null) => {
   const configs: Record<string, { icon: typeof QrCode; label: string; color: string }> = {
     pix: { icon: QrCode, label: 'PIX', color: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/20' },
-    boleto: { icon: FileText, label: 'Boleto', color: 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-500/20' },
-    transferencia: { icon: Banknote, label: 'Transferência', color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20' },
+    boleto: { icon: FileText, label: 'Boleto', color: 'bg-muted/500/10 text-muted-foreground dark:text-muted-foreground border-slate-500/20' },
+    transferencia: { icon: Banknote, label: 'Transferência', color: 'bg-info/10 text-info dark:text-info border-blue-500/20' },
     cartao: { icon: CreditCard, label: 'Cartão', color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20' },
   };
   return configs[forma || ''] || { icon: Wallet, label: forma?.toUpperCase() || 'N/D', color: 'bg-muted text-muted-foreground' };
@@ -210,15 +210,15 @@ export const PagamentoMobileCard = ({
             </div>
             <div className={cn(
               "flex items-center gap-1.5 px-3 py-2 rounded-lg",
-              isPago ? "bg-emerald-500/10" : "bg-primary/10"
+              isPago ? "bg-success/10" : "bg-primary/10"
             )}>
               <TrendingUp className={cn(
                 "w-4 h-4",
-                isPago ? "text-emerald-500" : "text-primary"
+                isPago ? "text-success" : "text-primary"
               )} />
               <span className={cn(
                 "font-bold text-lg",
-                isPago ? "text-emerald-600 dark:text-emerald-400" : "text-primary"
+                isPago ? "text-success dark:text-success" : "text-primary"
               )}>
                 {pagamento.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
               </span>

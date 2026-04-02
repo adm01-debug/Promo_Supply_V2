@@ -81,12 +81,12 @@ import { OrderPreviewModal } from "@/components/compras/OrderPreviewModal";
 import { exportToCSV, pedidoColumns } from "@/lib/exportData";
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle2 }> = {
-  pendente: { label: 'Pendente', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20', icon: Clock },
-  aprovado: { label: 'Aprovado', color: 'bg-blue-500/10 text-blue-600 border-blue-500/20', icon: CheckCircle2 },
+  pendente: { label: 'Pendente', color: 'bg-warning/10 text-warning border-yellow-500/20', icon: Clock },
+  aprovado: { label: 'Aprovado', color: 'bg-info/10 text-info border-blue-500/20', icon: CheckCircle2 },
   enviado: { label: 'Enviado', color: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20', icon: FileText },
   em_transito: { label: 'Em Trânsito', color: 'bg-purple-500/10 text-purple-600 border-purple-500/20', icon: Truck },
-  entregue: { label: 'Entregue', color: 'bg-green-500/10 text-green-600 border-green-500/20', icon: CheckCircle2 },
-  cancelado: { label: 'Cancelado', color: 'bg-red-500/10 text-red-600 border-red-500/20', icon: X },
+  entregue: { label: 'Entregue', color: 'bg-success/10 text-success border-green-500/20', icon: CheckCircle2 },
+  cancelado: { label: 'Cancelado', color: 'bg-destructive/10 text-destructive border-red-500/20', icon: X },
 };
 
 const Pedidos = () => {
@@ -252,7 +252,7 @@ const Pedidos = () => {
     const dias = differenceInDays(new Date(prazo), new Date());
     if (dias < 0) return { label: 'Atrasado', color: 'text-destructive', urgent: true };
     if (dias === 0) return { label: 'Hoje', color: 'text-destructive', urgent: true };
-    if (dias <= 2) return { label: `${dias}d`, color: 'text-orange-500', urgent: true };
+    if (dias <= 2) return { label: `${dias}d`, color: 'text-warning', urgent: true };
     return { label: `${dias}d`, color: 'text-muted-foreground', urgent: false };
   };
 
@@ -339,11 +339,11 @@ const Pedidos = () => {
 
           <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-yellow-500/10">
-                <Clock className="w-5 h-5 text-yellow-500" />
+              <div className="p-2 rounded-lg bg-warning/10">
+                <Clock className="w-5 h-5 text-warning" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-yellow-600">{kpis.pendentes}</p>
+                <p className="text-2xl font-bold text-warning">{kpis.pendentes}</p>
                 <p className="text-xs text-muted-foreground">Pendentes</p>
               </div>
             </div>
@@ -363,11 +363,11 @@ const Pedidos = () => {
 
           <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-green-500/10">
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
+              <div className="p-2 rounded-lg bg-success/10">
+                <CheckCircle2 className="w-5 h-5 text-success" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-600">{kpis.entregues}</p>
+                <p className="text-2xl font-bold text-success">{kpis.entregues}</p>
                 <p className="text-xs text-muted-foreground">Entregues</p>
               </div>
             </div>
@@ -375,11 +375,11 @@ const Pedidos = () => {
 
           <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-emerald-500/10">
-                <DollarSign className="w-5 h-5 text-emerald-500" />
+              <div className="p-2 rounded-lg bg-success/10">
+                <DollarSign className="w-5 h-5 text-success" />
               </div>
               <div>
-                <p className="text-lg font-bold text-emerald-600">
+                <p className="text-lg font-bold text-success">
                   R$ {(kpis.valorTotal / 1000).toFixed(1)}K
                 </p>
                 <p className="text-xs text-muted-foreground">Valor Total</p>
@@ -759,7 +759,7 @@ const Pedidos = () => {
                       {selectedPedido.data_entrega && (
                         <div>
                           <p className="text-xs text-muted-foreground">Data de Entrega</p>
-                          <p className="font-medium text-green-600">
+                          <p className="font-medium text-success">
                             {format(new Date(selectedPedido.data_entrega), "dd/MM/yyyy", { locale: ptBR })}
                           </p>
                         </div>
@@ -800,7 +800,7 @@ const Pedidos = () => {
                         </span>
                       </div>
                       {(selectedPedido.desconto || 0) > 0 && (
-                        <div className="flex justify-between text-green-600">
+                        <div className="flex justify-between text-success">
                           <span>Desconto</span>
                           <span className="font-medium">
                             - {(selectedPedido.desconto || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
@@ -838,7 +838,7 @@ const Pedidos = () => {
                       ].map((step, idx) => (
                         <div key={idx} className="flex items-start gap-3">
                           <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
-                            step.completed ? 'bg-green-500 text-white' : 'bg-muted text-muted-foreground'
+                            step.completed ? 'bg-success text-primary-foreground' : 'bg-muted text-muted-foreground'
                           }`}>
                             {step.completed ? <CheckCircle2 className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
                           </div>

@@ -68,7 +68,7 @@ export function SwipeableListItem({
       id: 'edit',
       icon: <Edit className="w-5 h-5" />,
       label: 'Editar',
-      color: 'bg-blue-500',
+      color: 'bg-info',
       onClick: onEdit,
     });
   }
@@ -160,7 +160,7 @@ export function SwipeableListItem({
               <motion.button
                 key={action.id}
                 className={cn(
-                  'flex flex-col items-center justify-center text-white px-4 min-w-[80px]',
+                  'flex flex-col items-center justify-center text-primary-foreground px-4 min-w-[80px]',
                   action.color
                 )}
                 onClick={() => handleActionClick(action)}
@@ -188,7 +188,7 @@ export function SwipeableListItem({
               <motion.button
                 key={action.id}
                 className={cn(
-                  'flex flex-col items-center justify-center text-white px-4 min-w-[80px]',
+                  'flex flex-col items-center justify-center text-primary-foreground px-4 min-w-[80px]',
                   action.color
                 )}
                 onClick={() => handleActionClick(action)}
@@ -214,16 +214,16 @@ export function SwipeableListItem({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <span className="text-white font-medium">Confirmar exclusão?</span>
+            <span className="text-primary-foreground font-medium">Confirmar exclusão?</span>
             <motion.button
-              className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white"
+              className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-primary-foreground"
               onClick={handleConfirmDelete}
               whileTap={{ scale: 0.9 }}
             >
               <Check className="w-5 h-5" />
             </motion.button>
             <motion.button
-              className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white"
+              className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-primary-foreground"
               onClick={handleCancelDelete}
               whileTap={{ scale: 0.9 }}
             >

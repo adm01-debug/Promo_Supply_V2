@@ -121,7 +121,7 @@ export const OrderPreviewModal = ({ pedido, open, onOpenChange, onConfirmSend }:
               {pedido.desconto > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Desconto:</span>
-                  <span className="text-green-600">-{formatCurrency(pedido.desconto)}</span>
+                  <span className="text-success">-{formatCurrency(pedido.desconto)}</span>
                 </div>
               )}
               <Separator />

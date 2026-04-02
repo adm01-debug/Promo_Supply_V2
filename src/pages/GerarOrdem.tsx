@@ -366,7 +366,7 @@ compras@promosupply.com.br`;
                   <Button 
                     onClick={abrirWhatsApp} 
                     disabled={!mensagemWhatsApp}
-                    className="w-full gap-2 bg-green-600 hover:bg-green-700"
+                    className="w-full gap-2 bg-success hover:bg-green-700"
                   >
                     <Send className="w-4 h-4" />
                     Enviar via WhatsApp

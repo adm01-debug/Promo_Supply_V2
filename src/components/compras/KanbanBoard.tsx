@@ -29,13 +29,13 @@ const colunas: KanbanColumn[] = [
   { 
     id: 'processamento', 
     title: 'Processamento', 
-    color: 'bg-blue-500',
+    color: 'bg-info',
     statuses: ['FORNECEDOR_SELECIONADO', 'PEDIDO_GERADO']
   },
   { 
     id: 'pagamento', 
     title: 'Aguard. Pagamento', 
-    color: 'bg-orange-500',
+    color: 'bg-warning',
     statuses: ['AGUARDANDO_PAGAMENTO']
   },
   { 
@@ -47,7 +47,7 @@ const colunas: KanbanColumn[] = [
   { 
     id: 'entregue', 
     title: 'Entregue', 
-    color: 'bg-green-500',
+    color: 'bg-success',
     statuses: ['ENTREGUE']
   },
 ];
@@ -93,12 +93,12 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
 
   const getStatusBadgeColor = (status: string) => {
     const colors: Record<string, string> = {
-      FORNECEDOR_SELECIONADO: "bg-blue-500/10 text-blue-500 border-blue-500/20",
+      FORNECEDOR_SELECIONADO: "bg-info/10 text-info border-blue-500/20",
       PEDIDO_GERADO: "bg-indigo-500/10 text-indigo-500 border-indigo-500/20",
-      AGUARDANDO_PAGAMENTO: "bg-orange-500/10 text-orange-500 border-orange-500/20",
+      AGUARDANDO_PAGAMENTO: "bg-warning/10 text-warning border-orange-500/20",
       PAGO: "bg-cyan-500/10 text-cyan-500 border-cyan-500/20",
       EM_TRANSITO: "bg-purple-500/10 text-purple-500 border-purple-500/20",
-      ENTREGUE: "bg-green-500/10 text-green-500 border-green-500/20",
+      ENTREGUE: "bg-success/10 text-success border-green-500/20",
     };
     return colors[status] || "bg-muted text-muted-foreground";
   };

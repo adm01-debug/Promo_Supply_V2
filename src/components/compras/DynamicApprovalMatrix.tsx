@@ -286,7 +286,7 @@ export const DynamicApprovalMatrix = () => {
                     <TableCell>
                       {rule.escalacao_automatica ? (
                         <div className="flex items-center gap-1">
-                          <AlertTriangle className="w-3 h-3 text-amber-500" />
+                          <AlertTriangle className="w-3 h-3 text-warning" />
                           <span className="text-xs">{getUserName(rule.escalacao_para || '')}</span>
                         </div>
                       ) : (
@@ -351,7 +351,7 @@ export const DynamicApprovalMatrix = () => {
                   <div className={cn(
                     "p-4 rounded-xl border-2 text-center min-w-[160px] transition-all hover:shadow-md",
                     rule.aprovadores.length === 0 
-                      ? "border-emerald-500/50 bg-emerald-500/10" 
+                      ? "border-emerald-500/50 bg-success/10" 
                       : "border-primary/50 bg-primary/10"
                   )}>
                     <div className="flex items-center justify-center gap-1 mb-2">
@@ -380,7 +380,7 @@ export const DynamicApprovalMatrix = () => {
                     
                     {rule.escalacao_automatica && (
                       <div className="mt-2 pt-2 border-t border-dashed border-amber-500/50">
-                        <p className="text-[10px] text-amber-600 flex items-center justify-center gap-1">
+                        <p className="text-[10px] text-warning flex items-center justify-center gap-1">
                           <AlertTriangle className="w-3 h-3" />
                           Escala para {getUserName(rule.escalacao_para || '')}
                         </p>

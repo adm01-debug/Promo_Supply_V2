@@ -203,7 +203,7 @@ const Fornecedores = () => {
 
   const getTipoBadgeColor = (tipo: LegacyFornecedor["tipo"]) => {
     const colors = { 
-      IMPORTADORA: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+      IMPORTADORA: "bg-info/20 text-info border-blue-500/30",
       FABRICANTE: "bg-purple-500/20 text-purple-400 border-purple-500/30",
       DISTRIBUIDORA: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30"
     };
@@ -276,8 +276,8 @@ const Fornecedores = () => {
 
           <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-emerald-500/20">
-                <Plug className="w-5 h-5 text-emerald-500" />
+              <div className="p-2 rounded-lg bg-success/20">
+                <Plug className="w-5 h-5 text-success" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">APIs Integradas</p>
@@ -288,8 +288,8 @@ const Fornecedores = () => {
 
           <Card className="p-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-amber-500/20">
-                <TrendingUp className="w-5 h-5 text-amber-500" />
+              <div className="p-2 rounded-lg bg-warning/20">
+                <TrendingUp className="w-5 h-5 text-warning" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Avaliação Média</p>
@@ -434,7 +434,7 @@ const Fornecedores = () => {
                               className="h-8 w-8"
                               onClick={() => window.open(`https://wa.me/55${fornecedor.whatsapp.replace(/\D/g, '')}`)}
                             >
-                              <MessageCircle className="w-4 h-4 text-emerald-500" />
+                              <MessageCircle className="w-4 h-4 text-success" />
                             </Button>
                           )}
                         </div>
@@ -444,14 +444,14 @@ const Fornecedores = () => {
                           {[...Array(5)].map((_, i) => (
                             <Star 
                               key={i} 
-                              className={`w-4 h-4 ${i < fornecedor.rating ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground/30'}`} 
+                              className={`w-4 h-4 ${i < fornecedor.rating ? 'text-warning fill-amber-400' : 'text-muted-foreground/30'}`} 
                             />
                           ))}
                         </div>
                       </TableCell>
                       <TableCell className="text-center">
                         {fornecedor.apiIntegrada ? (
-                          <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                          <Badge className="bg-success/20 text-success border-emerald-500/30">
                             <Plug className="w-3 h-3 mr-1" />
                             Ativa
                           </Badge>

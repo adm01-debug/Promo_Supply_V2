@@ -52,11 +52,11 @@ export const BuscaAutomatica = ({ status, resultados }: BuscaAutomaticaProps) =>
             key={f.nome}
             className={cn(
               "flex items-center gap-3 p-3 rounded-lg border border-border bg-card transition-all",
-              index < 2 && "border-green-500/30 bg-green-500/5"
+              index < 2 && "border-green-500/30 bg-success/5"
             )}
           >
             {index < 2 ? (
-              <Check className="w-5 h-5 text-green-500" />
+              <Check className="w-5 h-5 text-success" />
             ) : index === 2 ? (
               <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
             ) : (
@@ -64,7 +64,7 @@ export const BuscaAutomatica = ({ status, resultados }: BuscaAutomaticaProps) =>
             )}
             <span className="flex-1 text-sm font-medium text-foreground">{f.nome}</span>
             {index < 2 && (
-              <span className="text-xs text-green-600">Encontrado</span>
+              <span className="text-xs text-success">Encontrado</span>
             )}
             {index === 2 && (
               <span className="text-xs text-muted-foreground">Buscando...</span>
@@ -79,19 +79,19 @@ export const BuscaAutomatica = ({ status, resultados }: BuscaAutomaticaProps) =>
             className={cn(
               "flex items-center gap-3 p-3 rounded-lg border transition-all",
               r.status === 'encontrado' 
-                ? "border-green-500/30 bg-green-500/5" 
-                : "border-red-500/30 bg-red-500/5"
+                ? "border-green-500/30 bg-success/5" 
+                : "border-red-500/30 bg-destructive/5"
             )}
           >
             {r.status === 'encontrado' ? (
-              <Check className="w-5 h-5 text-green-500" />
+              <Check className="w-5 h-5 text-success" />
             ) : (
-              <X className="w-5 h-5 text-red-500" />
+              <X className="w-5 h-5 text-destructive" />
             )}
             <span className="flex-1 text-sm font-medium text-foreground">{r.fornecedor}</span>
             {r.status === 'encontrado' ? (
               <div className="flex items-center gap-4 text-xs">
-                <span className="text-green-600 font-semibold">
+                <span className="text-success font-semibold">
                   R$ {r.valorUnitario?.toFixed(2)}
                 </span>
                 <span className="text-muted-foreground">
@@ -99,7 +99,7 @@ export const BuscaAutomatica = ({ status, resultados }: BuscaAutomaticaProps) =>
                 </span>
               </div>
             ) : (
-              <span className="text-xs text-red-500">Não encontrado</span>
+              <span className="text-xs text-destructive">Não encontrado</span>
             )}
           </div>
         ))

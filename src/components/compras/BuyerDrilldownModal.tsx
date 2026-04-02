@@ -85,13 +85,13 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
           <Card className="p-3 border-emerald-500/20">
             <div className="text-xs text-muted-foreground mb-1">Economia Total</div>
-            <div className="text-lg font-bold text-emerald-600">
+            <div className="text-lg font-bold text-success">
               R$ {buyer.performance.economiaAno.toLocaleString('pt-BR')}
             </div>
           </Card>
           <Card className="p-3 border-blue-500/20">
             <div className="text-xs text-muted-foreground mb-1">Desconto Médio</div>
-            <div className="text-lg font-bold text-blue-600">{buyer.performance.descontoMedio}%</div>
+            <div className="text-lg font-bold text-info">{buyer.performance.descontoMedio}%</div>
           </Card>
           <Card className="p-3 border-purple-500/20">
             <div className="text-xs text-muted-foreground mb-1">Cotações</div>
@@ -99,7 +99,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
           </Card>
           <Card className="p-3 border-amber-500/20">
             <div className="text-xs text-muted-foreground mb-1">Taxa Melhor Preço</div>
-            <div className="text-lg font-bold text-amber-600">{buyer.performance.melhorPrecoRate}%</div>
+            <div className="text-lg font-bold text-warning">{buyer.performance.melhorPrecoRate}%</div>
           </Card>
         </div>
 
@@ -128,10 +128,10 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
                       </div>
                       <div className="text-right">
                         <div className="mt-1">
-                          <span className="text-lg font-bold text-emerald-600">
+                          <span className="text-lg font-bold text-success">
                             R$ {neg.economia.toLocaleString('pt-BR')}
                           </span>
-                          <span className="text-xs text-emerald-600 ml-2">
+                          <span className="text-xs text-success ml-2">
                             ({neg.percentual}%)
                           </span>
                         </div>
@@ -175,7 +175,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
               {buyer.historico.slice(-3).map((mes, index) => (
                 <Card key={index} className="p-3">
                   <div className="text-xs text-muted-foreground">{mes.mes}</div>
-                  <div className="text-lg font-bold text-emerald-600">
+                  <div className="text-lg font-bold text-success">
                     R$ {mes.economia.toLocaleString('pt-BR')}
                   </div>
                   <div className="text-xs text-muted-foreground">{mes.cotacoes} cotações</div>
@@ -201,7 +201,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
                         <div className="flex items-center gap-3">
                           <span className="text-xs text-muted-foreground">{fornecedor.pedidos} pedidos</span>
                           {fornecedor.desconto > 0 && (
-                            <span className="font-bold text-emerald-600">{fornecedor.desconto}%</span>
+                            <span className="font-bold text-success">{fornecedor.desconto}%</span>
                           )}
                         </div>
                       </div>

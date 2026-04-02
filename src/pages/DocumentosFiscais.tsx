@@ -147,10 +147,10 @@ const DocumentosFiscais = () => {
 
         <div className="grid gap-4 md:grid-cols-4">
           {[
-            { label: "Total NF-e", value: stats.total, icon: FileText, color: "text-blue-500" },
-            { label: "Conciliadas", value: stats.matched, icon: CheckCircle, color: "text-green-500" },
-            { label: "Divergentes", value: stats.unmatched, icon: XCircle, color: "text-red-500" },
-            { label: "Pendentes", value: stats.pending, icon: Clock, color: "text-yellow-500" },
+            { label: "Total NF-e", value: stats.total, icon: FileText, color: "text-info" },
+            { label: "Conciliadas", value: stats.matched, icon: CheckCircle, color: "text-success" },
+            { label: "Divergentes", value: stats.unmatched, icon: XCircle, color: "text-destructive" },
+            { label: "Pendentes", value: stats.pending, icon: Clock, color: "text-warning" },
           ].map(s => (
             <Card key={s.label}>
               <CardContent className="p-4 flex items-center gap-3">

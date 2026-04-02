@@ -90,8 +90,8 @@ export function QualityChecklistModal({
   }, [pedidoId, fornecedorId, contractId, scores, notes, defects, status, rejectionReason, onSuccess, onOpenChange]);
 
   const getScoreColor = (score: number) => {
-    if (score >= 4) return "text-emerald-600";
-    if (score >= 3) return "text-amber-600";
+    if (score >= 4) return "text-success";
+    if (score >= 3) return "text-warning";
     return "text-destructive";
   };
 
@@ -136,7 +136,7 @@ export function QualityChecklistModal({
                         {Array.from({ length: 5 }).map((_, i) => (
                           <Star
                             key={i}
-                            className={`w-4 h-4 ${i < score ? 'text-amber-500 fill-amber-500' : 'text-muted'}`}
+                            className={`w-4 h-4 ${i < score ? 'text-warning fill-amber-500' : 'text-muted'}`}
                           />
                         ))}
                         <span className={`ml-2 font-bold ${getScoreColor(score)}`}>{score}</span>
@@ -185,7 +185,7 @@ export function QualityChecklistModal({
               <Button
                 type="button"
                 variant={status === "approved" ? "default" : "outline"}
-                className={status === "approved" ? "bg-emerald-600 hover:bg-emerald-700" : ""}
+                className={status === "approved" ? "bg-success hover:bg-emerald-700" : ""}
                 onClick={() => setStatus("approved")}
               >
                 <CheckCircle2 className="w-4 h-4 mr-1" />
@@ -194,7 +194,7 @@ export function QualityChecklistModal({
               <Button
                 type="button"
                 variant={status === "conditional" ? "default" : "outline"}
-                className={status === "conditional" ? "bg-amber-600 hover:bg-amber-700" : ""}
+                className={status === "conditional" ? "bg-warning hover:bg-amber-700" : ""}
                 onClick={() => setStatus("conditional")}
               >
                 <AlertTriangle className="w-4 h-4 mr-1" />

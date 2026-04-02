@@ -35,11 +35,11 @@ interface ClimateIndicator {
 
 const getClimateConfig = (level: ClimateLevel) => {
   const configs = {
-    excellent: { label: 'Excelente', color: 'text-emerald-500', bgColor: 'bg-emerald-500/10', borderColor: 'border-emerald-500/30', icon: Sun, emoji: '☀️', message: 'Operações fluindo perfeitamente!' },
-    good: { label: 'Bom', color: 'text-green-500', bgColor: 'bg-green-500/10', borderColor: 'border-green-500/30', icon: CloudSun, emoji: '🌤️', message: 'Clima favorável para compras' },
-    moderate: { label: 'Moderado', color: 'text-yellow-500', bgColor: 'bg-yellow-500/10', borderColor: 'border-yellow-500/30', icon: Wind, emoji: '🌥️', message: 'Alguns pontos de atenção' },
-    warning: { label: 'Atenção', color: 'text-orange-500', bgColor: 'bg-orange-500/10', borderColor: 'border-orange-500/30', icon: CloudRain, emoji: '🌧️', message: 'Requer ação imediata' },
-    critical: { label: 'Crítico', color: 'text-red-500', bgColor: 'bg-red-500/10', borderColor: 'border-red-500/30', icon: AlertTriangle, emoji: '⛈️', message: 'Situação crítica - agir agora!' },
+    excellent: { label: 'Excelente', color: 'text-success', bgColor: 'bg-success/10', borderColor: 'border-emerald-500/30', icon: Sun, emoji: '☀️', message: 'Operações fluindo perfeitamente!' },
+    good: { label: 'Bom', color: 'text-success', bgColor: 'bg-success/10', borderColor: 'border-green-500/30', icon: CloudSun, emoji: '🌤️', message: 'Clima favorável para compras' },
+    moderate: { label: 'Moderado', color: 'text-warning', bgColor: 'bg-warning/10', borderColor: 'border-yellow-500/30', icon: Wind, emoji: '🌥️', message: 'Alguns pontos de atenção' },
+    warning: { label: 'Atenção', color: 'text-warning', bgColor: 'bg-warning/10', borderColor: 'border-orange-500/30', icon: CloudRain, emoji: '🌧️', message: 'Requer ação imediata' },
+    critical: { label: 'Crítico', color: 'text-destructive', bgColor: 'bg-destructive/10', borderColor: 'border-red-500/30', icon: AlertTriangle, emoji: '⛈️', message: 'Situação crítica - agir agora!' },
   };
   return configs[level];
 };
@@ -170,8 +170,8 @@ export const PurchaseClimateWidget = forwardRef<HTMLDivElement>((_props, ref) =>
               <span className="text-muted-foreground text-sm">/100</span>
               <div className={cn(
                 "flex items-center gap-1 ml-2 text-sm",
-                climateData.trend === 'up' && "text-emerald-500",
-                climateData.trend === 'down' && "text-red-500",
+                climateData.trend === 'up' && "text-success",
+                climateData.trend === 'down' && "text-destructive",
                 climateData.trend === 'stable' && "text-muted-foreground"
               )}>
                 {climateData.trend === 'up' ? <TrendingUp className="w-4 h-4" /> : climateData.trend === 'down' ? <TrendingDown className="w-4 h-4" /> : null}
@@ -224,7 +224,7 @@ export const PurchaseClimateWidget = forwardRef<HTMLDivElement>((_props, ref) =>
                     .slice(0, 3)
                     .map((ind, idx) => (
                       <li key={idx} className="flex items-center gap-1">
-                        <span className="w-1 h-1 rounded-full bg-orange-500" />
+                        <span className="w-1 h-1 rounded-full bg-warning" />
                         Revisar {ind.name.toLowerCase()}: {ind.description.toLowerCase()}
                       </li>
                     ))}

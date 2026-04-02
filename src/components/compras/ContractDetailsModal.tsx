@@ -47,17 +47,17 @@ interface ContractDetailsModalProps {
 
 const statusConfig: Record<string, StatusConfig> = {
   draft: { label: "Rascunho", color: "bg-muted text-muted-foreground", icon: FileText },
-  pending_approval: { label: "Aguard. Aprovação", color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400", icon: Clock },
-  active: { label: "Ativo", color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400", icon: CheckCircle2 },
-  expired: { label: "Expirado", color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", icon: XCircle },
-  cancelled: { label: "Cancelado", color: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400", icon: XCircle },
-  renewed: { label: "Renovado", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400", icon: RefreshCw },
+  pending_approval: { label: "Aguard. Aprovação", color: "bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning", icon: Clock },
+  active: { label: "Ativo", color: "bg-success/10 text-emerald-800 dark:bg-emerald-900/30 dark:text-success", icon: CheckCircle2 },
+  expired: { label: "Expirado", color: "bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive", icon: XCircle },
+  cancelled: { label: "Cancelado", color: "bg-muted text-gray-800 dark:bg-gray-900/30 dark:text-muted-foreground", icon: XCircle },
+  renewed: { label: "Renovado", color: "bg-info/10 text-blue-800 dark:bg-blue-900/30 dark:text-info", icon: RefreshCw },
 };
 
 const typeConfig: Record<string, TypeConfig> = {
   service: { label: "Serviço", color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400" },
-  supply: { label: "Fornecimento", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
-  framework: { label: "Acordo-Quadro", color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400" },
+  supply: { label: "Fornecimento", color: "bg-info/10 text-blue-800 dark:bg-blue-900/30 dark:text-info" },
+  framework: { label: "Acordo-Quadro", color: "bg-warning/10 text-orange-800 dark:bg-orange-900/30 dark:text-warning" },
 };
 
 export function ContractDetailsModal({ open, onOpenChange, contract }: ContractDetailsModalProps) {
@@ -150,7 +150,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
                 </Badge>
                 <Badge className={type.color}>{type.label}</Badge>
                 {contract.status === 'active' && daysRemaining <= 30 && (
-                  <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 flex items-center gap-1">
+                  <Badge className="bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning flex items-center gap-1">
                     <AlertTriangle className="w-3 h-3" />
                     {daysRemaining < 0 ? `Expirado há ${Math.abs(daysRemaining)} dias` : `Expira em ${daysRemaining} dias`}
                   </Badge>
@@ -304,7 +304,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
               <Card className="border-amber-300 dark:border-amber-700">
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-600" />
+                    <AlertTriangle className="w-4 h-4 text-warning" />
                     Qualidade & Devolução
                   </CardTitle>
                 </CardHeader>
@@ -367,8 +367,8 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
             <TabsContent value="penalties">
               {penalties.length === 0 ? (
                 <div className="text-center py-8">
-                  <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-                  <p className="font-medium text-emerald-700 dark:text-emerald-400">Nenhuma penalidade aplicada</p>
+                  <CheckCircle2 className="w-12 h-12 text-success mx-auto mb-3" />
+                  <p className="font-medium text-emerald-700 dark:text-success">Nenhuma penalidade aplicada</p>
                   <p className="text-sm text-muted-foreground mt-1">O fornecedor está em conformidade com o contrato.</p>
                 </div>
               ) : (

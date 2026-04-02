@@ -23,15 +23,15 @@ import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 
 const typeConfig: Record<string, { label: string; icon: string; color: string }> = {
-  sla_warning: { label: 'Alerta SLA', icon: '⚠️', color: 'text-yellow-500' },
-  sla_critical: { label: 'SLA Crítico', icon: '🔴', color: 'text-red-500' },
-  sla_overdue: { label: 'SLA Vencido', icon: '⏰', color: 'text-red-600' },
-  order_created: { label: 'Novo Pedido', icon: '📦', color: 'text-blue-500' },
-  order_approved: { label: 'Aprovado', icon: '✅', color: 'text-green-500' },
-  order_rejected: { label: 'Rejeitado', icon: '❌', color: 'text-red-500' },
-  order_delivered: { label: 'Entregue', icon: '🚚', color: 'text-emerald-500' },
-  payment_pending: { label: 'Pagamento', icon: '💳', color: 'text-orange-500' },
-  payment_overdue: { label: 'Pag. Atrasado', icon: '💸', color: 'text-red-500' },
+  sla_warning: { label: 'Alerta SLA', icon: '⚠️', color: 'text-warning' },
+  sla_critical: { label: 'SLA Crítico', icon: '🔴', color: 'text-destructive' },
+  sla_overdue: { label: 'SLA Vencido', icon: '⏰', color: 'text-destructive' },
+  order_created: { label: 'Novo Pedido', icon: '📦', color: 'text-info' },
+  order_approved: { label: 'Aprovado', icon: '✅', color: 'text-success' },
+  order_rejected: { label: 'Rejeitado', icon: '❌', color: 'text-destructive' },
+  order_delivered: { label: 'Entregue', icon: '🚚', color: 'text-success' },
+  payment_pending: { label: 'Pagamento', icon: '💳', color: 'text-warning' },
+  payment_overdue: { label: 'Pag. Atrasado', icon: '💸', color: 'text-destructive' },
   supplier_alert: { label: 'Fornecedor', icon: '🏭', color: 'text-purple-500' },
   price_alert: { label: 'Preço', icon: '📈', color: 'text-cyan-500' },
   system: { label: 'Sistema', icon: 'ℹ️', color: 'text-muted-foreground' },
@@ -39,9 +39,9 @@ const typeConfig: Record<string, { label: string; icon: string; color: string }>
 
 const priorityConfig: Record<string, { label: string; className: string }> = {
   low: { label: 'Baixa', className: 'bg-muted text-muted-foreground' },
-  medium: { label: 'Média', className: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' },
-  high: { label: 'Alta', className: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' },
-  critical: { label: 'Crítica', className: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' },
+  medium: { label: 'Média', className: 'bg-info/10 text-blue-800 dark:bg-blue-900/30 dark:text-info' },
+  high: { label: 'Alta', className: 'bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning' },
+  critical: { label: 'Crítica', className: 'bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive' },
 };
 
 interface NotificationItemProps {
@@ -239,7 +239,7 @@ export function RealNotificationCenter() {
                 <div className="space-y-3">
                   <h4 className="text-sm font-medium">Notificações do Navegador</h4>
                   {permissionStatus === 'granted' ? (
-                    <div className="flex items-center gap-2 text-sm text-green-600">
+                    <div className="flex items-center gap-2 text-sm text-success">
                       <Check className="h-4 w-4" />
                       Notificações push ativadas
                     </div>

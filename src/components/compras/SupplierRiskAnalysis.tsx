@@ -50,22 +50,22 @@ interface RiskAnalysisResponse {
 }
 
 const riskLevelConfig = {
-  low: { label: 'Baixo', color: 'bg-emerald-500', textColor: 'text-emerald-500', bgLight: 'bg-emerald-100 dark:bg-emerald-900/30' },
-  medium: { label: 'Médio', color: 'bg-amber-500', textColor: 'text-amber-500', bgLight: 'bg-amber-100 dark:bg-amber-900/30' },
-  high: { label: 'Alto', color: 'bg-orange-500', textColor: 'text-orange-500', bgLight: 'bg-orange-100 dark:bg-orange-900/30' },
-  critical: { label: 'Crítico', color: 'bg-red-500', textColor: 'text-red-500', bgLight: 'bg-red-100 dark:bg-red-900/30' },
+  low: { label: 'Baixo', color: 'bg-success', textColor: 'text-success', bgLight: 'bg-success/10 dark:bg-emerald-900/30' },
+  medium: { label: 'Médio', color: 'bg-warning', textColor: 'text-warning', bgLight: 'bg-warning/10 dark:bg-amber-900/30' },
+  high: { label: 'Alto', color: 'bg-warning', textColor: 'text-warning', bgLight: 'bg-warning/10 dark:bg-orange-900/30' },
+  critical: { label: 'Crítico', color: 'bg-destructive', textColor: 'text-destructive', bgLight: 'bg-destructive/10 dark:bg-red-900/30' },
 };
 
 const statusConfig = {
-  healthy: { icon: CheckCircle2, color: 'text-emerald-500' },
-  warning: { icon: AlertTriangle, color: 'text-amber-500' },
-  critical: { icon: XCircle, color: 'text-red-500' },
+  healthy: { icon: CheckCircle2, color: 'text-success' },
+  warning: { icon: AlertTriangle, color: 'text-warning' },
+  critical: { icon: XCircle, color: 'text-destructive' },
 };
 
 const priorityConfig = {
-  high: { label: 'Alta', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' },
-  medium: { label: 'Média', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' },
-  low: { label: 'Baixa', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' },
+  high: { label: 'Alta', color: 'bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive' },
+  medium: { label: 'Média', color: 'bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning' },
+  low: { label: 'Baixa', color: 'bg-success/10 text-emerald-800 dark:bg-emerald-900/30 dark:text-success' },
 };
 
 export function SupplierRiskAnalysis() {
@@ -247,7 +247,7 @@ export function SupplierRiskAnalysis() {
                     <CardContent className="pt-6 text-center">
                       <div className="text-4xl font-bold mb-2">{analysis.overallScore}</div>
                       <p className="text-sm text-muted-foreground">Score de Risco</p>
-                      <Badge className={cn("mt-2", riskConfig?.color, "text-white")}>
+                      <Badge className={cn("mt-2", riskConfig?.color, "text-primary-foreground")}>
                         Risco {riskConfig?.label}
                       </Badge>
                     </CardContent>
@@ -312,7 +312,7 @@ export function SupplierRiskAnalysis() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <TrendingUp className="h-4 w-4 text-emerald-500" />
+                          <TrendingUp className="h-4 w-4 text-success" />
                           Pontos Fortes
                         </CardTitle>
                       </CardHeader>
@@ -320,7 +320,7 @@ export function SupplierRiskAnalysis() {
                         <ul className="space-y-1">
                           {analysis.strengths.map((s, i) => (
                             <li key={i} className="flex items-start gap-2 text-sm">
-                              <CheckCircle2 className="h-3 w-3 text-emerald-500 mt-0.5 flex-shrink-0" />
+                              <CheckCircle2 className="h-3 w-3 text-success mt-0.5 flex-shrink-0" />
                               {s}
                             </li>
                           ))}
@@ -334,7 +334,7 @@ export function SupplierRiskAnalysis() {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-sm flex items-center gap-2">
-                          <TrendingDown className="h-4 w-4 text-red-500" />
+                          <TrendingDown className="h-4 w-4 text-destructive" />
                           Pontos de Atenção
                         </CardTitle>
                       </CardHeader>
@@ -342,7 +342,7 @@ export function SupplierRiskAnalysis() {
                         <ul className="space-y-1">
                           {analysis.weaknesses.map((w, i) => (
                             <li key={i} className="flex items-start gap-2 text-sm">
-                              <AlertCircle className="h-3 w-3 text-red-500 mt-0.5 flex-shrink-0" />
+                              <AlertCircle className="h-3 w-3 text-destructive mt-0.5 flex-shrink-0" />
                               {w}
                             </li>
                           ))}
@@ -356,7 +356,7 @@ export function SupplierRiskAnalysis() {
                 {analysis.actionItems?.length > 0 && (
                   <div>
                     <h4 className="font-semibold mb-3 flex items-center gap-2">
-                      <Lightbulb className="h-4 w-4 text-amber-500" />
+                      <Lightbulb className="h-4 w-4 text-warning" />
                       Plano de Ação
                     </h4>
                     <div className="space-y-2">

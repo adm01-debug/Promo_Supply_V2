@@ -139,7 +139,7 @@ export const KPITargetsConfig = () => {
                       <div className="space-y-2">
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Label className="text-xs text-amber-500 flex items-center gap-1 cursor-help">
+                            <Label className="text-xs text-warning flex items-center gap-1 cursor-help">
                               <AlertTriangle className="w-3 h-3" />
                               Limite Warning (%)
                             </Label>
@@ -167,7 +167,7 @@ export const KPITargetsConfig = () => {
                       <div className="space-y-2">
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Label className="text-xs text-red-500 flex items-center gap-1 cursor-help">
+                            <Label className="text-xs text-destructive flex items-center gap-1 cursor-help">
                               <AlertTriangle className="w-3 h-3" />
                               Limite Critical (%)
                             </Label>

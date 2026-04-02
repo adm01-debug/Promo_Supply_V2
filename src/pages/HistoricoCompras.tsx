@@ -72,7 +72,7 @@ const QualityStars = ({ rating }: { rating: number }) => (
     {[1, 2, 3, 4, 5].map((star) => (
       <Star
         key={star}
-        className={`w-3 h-3 ${star <= rating ? "fill-yellow-500 text-yellow-500" : "text-muted-foreground/30"}`}
+        className={`w-3 h-3 ${star <= rating ? "fill-yellow-500 text-warning" : "text-muted-foreground/30"}`}
       />
     ))}
     <span className="text-xs text-muted-foreground ml-1">({rating.toFixed(1)})</span>
@@ -82,7 +82,7 @@ const QualityStars = ({ rating }: { rating: number }) => (
 const DeliveryBadge = ({ onTime }: { onTime: boolean }) => (
   <Badge
     variant={onTime ? "default" : "secondary"}
-    className={`text-xs ${onTime ? "bg-green-500/10 text-green-600 border-green-500/20" : "bg-yellow-500/10 text-yellow-600 border-yellow-500/20"}`}
+    className={`text-xs ${onTime ? "bg-success/10 text-success border-green-500/20" : "bg-warning/10 text-warning border-yellow-500/20"}`}
   >
     {onTime ? <CheckCircle2 className="w-3 h-3 mr-1" /> : <AlertTriangle className="w-3 h-3 mr-1" />}
     {onTime ? "No prazo" : "Atrasado"}
@@ -91,10 +91,10 @@ const DeliveryBadge = ({ onTime }: { onTime: boolean }) => (
 
 const StatusBadge = ({ status }: { status: PurchaseRecord["status"] }) => {
   const config = {
-    pending: { label: "Pendente", color: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20" },
-    shipped: { label: "Enviado", color: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
-    delivered: { label: "Entregue", color: "bg-green-500/10 text-green-600 border-green-500/20" },
-    returned: { label: "Devolvido", color: "bg-red-500/10 text-red-600 border-red-500/20" },
+    pending: { label: "Pendente", color: "bg-warning/10 text-warning border-yellow-500/20" },
+    shipped: { label: "Enviado", color: "bg-info/10 text-info border-blue-500/20" },
+    delivered: { label: "Entregue", color: "bg-success/10 text-success border-green-500/20" },
+    returned: { label: "Devolvido", color: "bg-destructive/10 text-destructive border-red-500/20" },
   };
   return <Badge variant="outline" className={`text-xs ${config[status].color}`}>{config[status].label}</Badge>;
 };
@@ -469,7 +469,7 @@ const HistoricoCompras = () => {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+            <Badge variant="outline" className="bg-success/10 text-success border-emerald-500/20">
               <CheckCircle2 className="w-3 h-3 mr-1" />
               Dados Reais
             </Badge>
@@ -490,7 +490,7 @@ const HistoricoCompras = () => {
             <p className="text-2xl font-bold text-foreground">{summaryStats.totalProducts}</p>
           </Card>
           <Card className="p-4">
-            <div className="flex items-center gap-2 text-blue-600 mb-1">
+            <div className="flex items-center gap-2 text-info mb-1">
               <Building2 className="w-4 h-4" />
               <span className="text-xs font-medium">Fornecedores</span>
             </div>
@@ -504,21 +504,21 @@ const HistoricoCompras = () => {
             <p className="text-2xl font-bold text-foreground">{summaryStats.totalOrders}</p>
           </Card>
           <Card className="p-4">
-            <div className="flex items-center gap-2 text-emerald-600 mb-1">
+            <div className="flex items-center gap-2 text-success mb-1">
               <DollarSign className="w-4 h-4" />
               <span className="text-xs font-medium">Total Gasto</span>
             </div>
             <p className="text-xl font-bold text-foreground">R$ {summaryStats.totalSpent.toLocaleString("pt-BR")}</p>
           </Card>
           <Card className="p-4">
-            <div className="flex items-center gap-2 text-amber-600 mb-1">
+            <div className="flex items-center gap-2 text-warning mb-1">
               <Percent className="w-4 h-4" />
               <span className="text-xs font-medium">Desconto Médio</span>
             </div>
             <p className="text-2xl font-bold text-foreground">{summaryStats.avgDiscount.toFixed(1)}%</p>
           </Card>
           <Card className="p-4">
-            <div className="flex items-center gap-2 text-green-600 mb-1">
+            <div className="flex items-center gap-2 text-success mb-1">
               <Truck className="w-4 h-4" />
               <span className="text-xs font-medium">No Prazo</span>
             </div>
@@ -669,8 +669,8 @@ const HistoricoCompras = () => {
                         <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
                           <div><span className="text-muted-foreground">Compras:</span> <span className="font-medium">{product.totalPurchases}</span></div>
                           <div><span className="text-muted-foreground">Total:</span> <span className="font-medium">R$ {product.totalSpent.toLocaleString("pt-BR")}</span></div>
-                          <div><span className="text-muted-foreground">Min:</span> <span className="font-medium text-green-600">R$ {product.minPrice.toFixed(2)}</span></div>
-                          <div><span className="text-muted-foreground">Max:</span> <span className="font-medium text-red-600">R$ {product.maxPrice.toFixed(2)}</span></div>
+                          <div><span className="text-muted-foreground">Min:</span> <span className="font-medium text-success">R$ {product.minPrice.toFixed(2)}</span></div>
+                          <div><span className="text-muted-foreground">Max:</span> <span className="font-medium text-destructive">R$ {product.maxPrice.toFixed(2)}</span></div>
                         </div>
                       </div>
                     ))}
@@ -693,13 +693,13 @@ const HistoricoCompras = () => {
                         <p className="text-xs text-muted-foreground">Preço Médio</p>
                         <p className="text-lg font-bold text-foreground">R$ {selectedProduct.avgPrice.toFixed(2)}</p>
                       </div>
-                      <div className="p-3 rounded-lg bg-green-500/10">
-                        <p className="text-xs text-green-600">Menor Preço</p>
-                        <p className="text-lg font-bold text-green-600">R$ {selectedProduct.minPrice.toFixed(2)}</p>
+                      <div className="p-3 rounded-lg bg-success/10">
+                        <p className="text-xs text-success">Menor Preço</p>
+                        <p className="text-lg font-bold text-success">R$ {selectedProduct.minPrice.toFixed(2)}</p>
                       </div>
-                      <div className="p-3 rounded-lg bg-red-500/10">
-                        <p className="text-xs text-red-600">Maior Preço</p>
-                        <p className="text-lg font-bold text-red-600">R$ {selectedProduct.maxPrice.toFixed(2)}</p>
+                      <div className="p-3 rounded-lg bg-destructive/10">
+                        <p className="text-xs text-destructive">Maior Preço</p>
+                        <p className="text-lg font-bold text-destructive">R$ {selectedProduct.maxPrice.toFixed(2)}</p>
                       </div>
                       <div className="p-3 rounded-lg bg-muted/50">
                         <p className="text-xs text-muted-foreground">Qtd. Total</p>
@@ -746,7 +746,7 @@ const HistoricoCompras = () => {
                                 <TableCell className="text-xs">{record.supplierName}</TableCell>
                                 <TableCell className="text-xs text-right">{record.quantity}</TableCell>
                                 <TableCell className="text-xs text-right">R$ {record.unitPrice.toFixed(2)}</TableCell>
-                                <TableCell className="text-xs text-right text-green-600">{record.discount}%</TableCell>
+                                <TableCell className="text-xs text-right text-success">{record.discount}%</TableCell>
                                 <TableCell className="text-xs">{record.status === "delivered" && <DeliveryBadge onTime={record.deliveredOnTime || false} />}</TableCell>
                                 <TableCell className="text-xs"><StatusBadge status={record.status} /></TableCell>
                               </TableRow>
@@ -785,14 +785,14 @@ const HistoricoCompras = () => {
                             <p className="font-medium text-foreground truncate">{supplier.name}</p>
                             <p className="text-xs text-muted-foreground">{supplier.cnpj}</p>
                           </div>
-                          <Badge variant={supplier.onTimeRate >= 80 ? "default" : "secondary"} className={`shrink-0 text-xs ${supplier.onTimeRate >= 80 ? "bg-green-500/10 text-green-600" : "bg-yellow-500/10 text-yellow-600"}`}>
+                          <Badge variant={supplier.onTimeRate >= 80 ? "default" : "secondary"} className={`shrink-0 text-xs ${supplier.onTimeRate >= 80 ? "bg-success/10 text-success" : "bg-warning/10 text-warning"}`}>
                             {supplier.onTimeRate}% SLA
                           </Badge>
                         </div>
                         <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
                           <div><span className="text-muted-foreground">Pedidos:</span> <span className="ml-1 font-medium">{supplier.totalOrders}</span></div>
                           <div><span className="text-muted-foreground">Total:</span> <span className="ml-1 font-medium">R$ {supplier.totalSpent.toLocaleString("pt-BR")}</span></div>
-                          <div><span className="text-muted-foreground">Desconto médio:</span> <span className="ml-1 font-medium text-green-600">{supplier.averageDiscount.toFixed(1)}%</span></div>
+                          <div><span className="text-muted-foreground">Desconto médio:</span> <span className="ml-1 font-medium text-success">{supplier.averageDiscount.toFixed(1)}%</span></div>
                           <div><QualityStars rating={supplier.qualityScore} /></div>
                         </div>
                       </div>
@@ -820,13 +820,13 @@ const HistoricoCompras = () => {
                         <p className="text-xs text-muted-foreground">Valor Médio</p>
                         <p className="text-lg font-bold text-foreground">R$ {selectedSupplier.averageOrderValue.toLocaleString("pt-BR")}</p>
                       </div>
-                      <div className={`p-3 rounded-lg ${selectedSupplier.onTimeRate >= 80 ? "bg-green-500/10" : "bg-yellow-500/10"}`}>
-                        <p className={`text-xs ${selectedSupplier.onTimeRate >= 80 ? "text-green-600" : "text-yellow-600"}`}>Taxa SLA</p>
-                        <p className={`text-lg font-bold ${selectedSupplier.onTimeRate >= 80 ? "text-green-600" : "text-yellow-600"}`}>{selectedSupplier.onTimeRate}%</p>
+                      <div className={`p-3 rounded-lg ${selectedSupplier.onTimeRate >= 80 ? "bg-success/10" : "bg-warning/10"}`}>
+                        <p className={`text-xs ${selectedSupplier.onTimeRate >= 80 ? "text-success" : "text-warning"}`}>Taxa SLA</p>
+                        <p className={`text-lg font-bold ${selectedSupplier.onTimeRate >= 80 ? "text-success" : "text-warning"}`}>{selectedSupplier.onTimeRate}%</p>
                       </div>
-                      <div className="p-3 rounded-lg bg-emerald-500/10">
-                        <p className="text-xs text-emerald-600">Melhor Desconto</p>
-                        <p className="text-lg font-bold text-emerald-600">{selectedSupplier.bestDiscount}%</p>
+                      <div className="p-3 rounded-lg bg-success/10">
+                        <p className="text-xs text-success">Melhor Desconto</p>
+                        <p className="text-lg font-bold text-success">{selectedSupplier.bestDiscount}%</p>
                       </div>
                     </div>
                     <div className="grid grid-cols-3 gap-4">
@@ -835,11 +835,11 @@ const HistoricoCompras = () => {
                         <p className="text-xl font-bold text-foreground">{selectedSupplier.productCount}</p>
                       </div>
                       <div className="p-4 rounded-lg border border-border">
-                        <div className="flex items-center gap-2 text-red-600 mb-2"><XCircle className="w-4 h-4" /><span className="text-xs font-medium">Taxa Devolução</span></div>
+                        <div className="flex items-center gap-2 text-destructive mb-2"><XCircle className="w-4 h-4" /><span className="text-xs font-medium">Taxa Devolução</span></div>
                         <p className="text-xl font-bold text-foreground">{selectedSupplier.returnRate}%</p>
                       </div>
                       <div className="p-4 rounded-lg border border-border">
-                        <div className="flex items-center gap-2 text-blue-600 mb-2"><ShoppingCart className="w-4 h-4" /><span className="text-xs font-medium">Total Pedidos</span></div>
+                        <div className="flex items-center gap-2 text-info mb-2"><ShoppingCart className="w-4 h-4" /><span className="text-xs font-medium">Total Pedidos</span></div>
                         <p className="text-xl font-bold text-foreground">{selectedSupplier.totalOrders}</p>
                       </div>
                     </div>
@@ -879,7 +879,7 @@ const HistoricoCompras = () => {
                                 <TableCell className="text-xs max-w-[150px] truncate">{record.productName}</TableCell>
                                 <TableCell className="text-xs text-right">{record.quantity}</TableCell>
                                 <TableCell className="text-xs text-right">R$ {record.totalPrice.toLocaleString("pt-BR")}</TableCell>
-                                <TableCell className="text-xs text-right text-green-600">{record.discount}%</TableCell>
+                                <TableCell className="text-xs text-right text-success">{record.discount}%</TableCell>
                                 <TableCell className="text-xs">{record.status === "delivered" && <DeliveryBadge onTime={record.deliveredOnTime || false} />}</TableCell>
                                 <TableCell className="text-xs">{(record.qualityRating || 0) > 0 && <QualityStars rating={record.qualityRating!} />}</TableCell>
                               </TableRow>
@@ -920,7 +920,7 @@ const HistoricoCompras = () => {
                   )}
                 </div>
                 {comparisonEnabled && !dateRange?.from && (
-                  <p className="text-xs text-amber-600">Selecione um período nos filtros avançados para habilitar comparação</p>
+                  <p className="text-xs text-warning">Selecione um período nos filtros avançados para habilitar comparação</p>
                 )}
                 {comparisonEnabled && getComparisonDateRange && (
                   <div className="flex items-center gap-4 text-xs">
@@ -952,7 +952,7 @@ const HistoricoCompras = () => {
                         <div className="flex items-baseline gap-2">
                           <span className="text-lg font-bold">{item.fmt(item.current)}</span>
                           {item.comp > 0 && (
-                            <Badge variant={isUp ? "default" : "secondary"} className={`text-[10px] ${isUp ? "bg-green-500/10 text-green-600" : "bg-red-500/10 text-red-600"}`}>
+                            <Badge variant={isUp ? "default" : "secondary"} className={`text-[10px] ${isUp ? "bg-success/10 text-success" : "bg-destructive/10 text-destructive"}`}>
                               {isUp ? <ArrowUpRight className="w-3 h-3 mr-0.5" /> : <ArrowDownRight className="w-3 h-3 mr-0.5" />}
                               {Math.abs(pctChange).toFixed(1)}%
                             </Badge>
@@ -1003,7 +1003,7 @@ const HistoricoCompras = () => {
                   <p className="text-xs text-muted-foreground mt-1">Regressão linear com projeção de 3 meses</p>
                 </div>
                 {chartData.forecastMetrics && (
-                  <Badge variant="outline" className={cn("text-xs", chartData.forecastMetrics.confidence === "high" ? "bg-green-500/10 text-green-600" : chartData.forecastMetrics.confidence === "medium" ? "bg-yellow-500/10 text-yellow-600" : "bg-red-500/10 text-red-600")}>
+                  <Badge variant="outline" className={cn("text-xs", chartData.forecastMetrics.confidence === "high" ? "bg-success/10 text-success" : chartData.forecastMetrics.confidence === "medium" ? "bg-warning/10 text-warning" : "bg-destructive/10 text-destructive")}>
                     Confiança: {chartData.forecastMetrics.confidence === "high" ? "Alta" : chartData.forecastMetrics.confidence === "medium" ? "Média" : "Baixa"}
                   </Badge>
                 )}
@@ -1018,7 +1018,7 @@ const HistoricoCompras = () => {
                       </div>
                       <div className="p-3 rounded-lg bg-muted/50">
                         <p className="text-xs text-muted-foreground">Variação no Período</p>
-                        <p className={`text-lg font-bold ${chartData.forecastMetrics.priceChange > 0 ? "text-red-600" : chartData.forecastMetrics.priceChange < 0 ? "text-green-600" : "text-foreground"}`}>
+                        <p className={`text-lg font-bold ${chartData.forecastMetrics.priceChange > 0 ? "text-destructive" : chartData.forecastMetrics.priceChange < 0 ? "text-success" : "text-foreground"}`}>
                           {chartData.forecastMetrics.priceChange > 0 ? "+" : ""}{chartData.forecastMetrics.priceChange.toFixed(1)}%
                         </p>
                       </div>
@@ -1043,7 +1043,7 @@ const HistoricoCompras = () => {
                         return (
                           <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
                             <p className="font-medium text-foreground">{label}</p>
-                            {data.avgPrice !== null && <p className="text-sm text-emerald-600">Preço Real: R$ {data.avgPrice.toFixed(2)}</p>}
+                            {data.avgPrice !== null && <p className="text-sm text-success">Preço Real: R$ {data.avgPrice.toFixed(2)}</p>}
                             <p className="text-sm text-primary">{data.type === "forecast" ? "Previsão" : "Tendência"}: R$ {data.forecast.toFixed(2)}</p>
                             {data.type === "forecast" && <p className="text-xs text-muted-foreground mt-1">* Valor projetado</p>}
                           </div>
@@ -1089,7 +1089,7 @@ const HistoricoCompras = () => {
               </Card>
 
               <Card className="p-6">
-                <h3 className="font-semibold text-foreground flex items-center gap-2 mb-4"><Building2 className="w-4 h-4 text-amber-600" />Volume por Fornecedor</h3>
+                <h3 className="font-semibold text-foreground flex items-center gap-2 mb-4"><Building2 className="w-4 h-4 text-warning" />Volume por Fornecedor</h3>
                 {chartData.bySupplier.length > 0 ? (
                   <ResponsiveContainer width="100%" height={280}>
                     <BarChart data={chartData.bySupplier} layout="vertical" onClick={(e) => e?.activePayload && handleDrilldown("supplier", e.activePayload[0].payload)}>
@@ -1134,7 +1134,7 @@ const HistoricoCompras = () => {
                           <TableCell className="text-sm text-right">{supplier.quantity.toLocaleString("pt-BR")}</TableCell>
                           <TableCell className="text-sm text-right font-medium">R$ {supplier.value.toLocaleString("pt-BR")}</TableCell>
                           <TableCell className="text-sm text-right">R$ {(supplier.orders > 0 ? supplier.value / supplier.orders : 0).toLocaleString("pt-BR", { maximumFractionDigits: 0 })}</TableCell>
-                          <TableCell className="text-sm text-right text-green-600">{supplier.avgDiscount.toFixed(1)}%</TableCell>
+                          <TableCell className="text-sm text-right text-success">{supplier.avgDiscount.toFixed(1)}%</TableCell>
                           <TableCell className="text-sm">
                             <div className="flex items-center gap-2">
                               <Progress value={share} className="h-2 w-16" />
@@ -1189,7 +1189,7 @@ const HistoricoCompras = () => {
                         <TableCell className="text-xs text-right">{record.quantity}</TableCell>
                         <TableCell className="text-xs text-right">R$ {record.unitPrice.toFixed(2)}</TableCell>
                         <TableCell className="text-xs text-right font-medium">R$ {record.totalPrice.toLocaleString("pt-BR")}</TableCell>
-                        <TableCell className="text-xs text-right text-green-600">{record.discount}%</TableCell>
+                        <TableCell className="text-xs text-right text-success">{record.discount}%</TableCell>
                         <TableCell className="text-xs">{format(parseISO(record.purchaseDate), "dd/MM/yy", { locale: ptBR })}</TableCell>
                         <TableCell className="text-xs">{record.status === "delivered" && <DeliveryBadge onTime={record.deliveredOnTime || false} />}</TableCell>
                         <TableCell className="text-xs">{(record.qualityRating || 0) > 0 && <QualityStars rating={record.qualityRating!} />}</TableCell>

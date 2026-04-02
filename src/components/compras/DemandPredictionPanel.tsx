@@ -61,15 +61,15 @@ const trendIcons = {
 };
 
 const trendColors = {
-  up: 'text-emerald-500',
-  down: 'text-red-500',
-  stable: 'text-amber-500',
+  up: 'text-success',
+  down: 'text-destructive',
+  stable: 'text-warning',
 };
 
 const impactColors = {
-  high: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
-  medium: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
-  low: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400',
+  high: 'bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive',
+  medium: 'bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning',
+  low: 'bg-success/10 text-emerald-800 dark:bg-emerald-900/30 dark:text-success',
 };
 
 export function DemandPredictionPanel() {
@@ -306,7 +306,7 @@ export function DemandPredictionPanel() {
                 {prediction.riskFactors?.length > 0 && (
                   <div>
                     <h4 className="font-semibold mb-3 flex items-center gap-2">
-                      <AlertTriangle className="h-4 w-4 text-amber-500" />
+                      <AlertTriangle className="h-4 w-4 text-warning" />
                       Fatores de Risco
                     </h4>
                     <div className="space-y-2">
@@ -335,7 +335,7 @@ export function DemandPredictionPanel() {
                 {prediction.recommendations?.length > 0 && (
                   <div>
                     <h4 className="font-semibold mb-3 flex items-center gap-2">
-                      <Lightbulb className="h-4 w-4 text-amber-500" />
+                      <Lightbulb className="h-4 w-4 text-warning" />
                       Recomendações
                     </h4>
                     <ul className="space-y-2">

@@ -368,8 +368,8 @@ export const PageHeaderStats = ({
               {stat.trend && (
                 <div className={cn(
                   "flex items-center gap-1 mt-2 text-xs font-medium",
-                  stat.trend.direction === "up" && "text-emerald-600 dark:text-emerald-400",
-                  stat.trend.direction === "down" && "text-red-600 dark:text-red-400",
+                  stat.trend.direction === "up" && "text-success dark:text-success",
+                  stat.trend.direction === "down" && "text-destructive dark:text-destructive",
                   stat.trend.direction === "neutral" && "text-muted-foreground"
                 )}>
                   <TrendIcon className="w-3 h-3" />
@@ -469,8 +469,8 @@ export const PageHeaderStats = ({
                 {stat.trend && (
                   <span className={cn(
                     "flex items-center gap-0.5 text-[10px] sm:text-xs font-medium px-1 sm:px-1.5 py-0.5 rounded shrink-0",
-                    stat.trend.direction === "up" && "text-emerald-600 dark:text-emerald-400 bg-emerald-500/10",
-                    stat.trend.direction === "down" && "text-red-600 dark:text-red-400 bg-red-500/10",
+                    stat.trend.direction === "up" && "text-success dark:text-success bg-success/10",
+                    stat.trend.direction === "down" && "text-destructive dark:text-destructive bg-destructive/10",
                     stat.trend.direction === "neutral" && "text-muted-foreground bg-muted"
                   )}>
                     <TrendIcon className="w-2.5 h-2.5" />
@@ -505,9 +505,9 @@ export const PageHeaderQuickActions = ({ actions }: { actions: QuickAction[] }) 
   const variantStyles = {
     default: "bg-muted hover:bg-muted/80 text-foreground",
     primary: "bg-primary/10 hover:bg-primary/20 text-primary",
-    success: "bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400",
-    warning: "bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400",
-    destructive: "bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400",
+    success: "bg-success/10 hover:bg-success/20 text-success dark:text-success",
+    warning: "bg-warning/10 hover:bg-warning/20 text-warning dark:text-warning",
+    destructive: "bg-destructive/10 hover:bg-destructive/20 text-destructive dark:text-destructive",
   };
 
   return (

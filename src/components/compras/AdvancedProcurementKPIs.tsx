@@ -134,7 +134,7 @@ const TrendBadge = ({ current, previous }: { current: number; previous: number }
   const diff = ((current - previous) / previous) * 100;
   if (diff > 0) {
     return (
-      <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
+      <Badge className="bg-success/10 text-success border-emerald-500/20">
         <ArrowUpRight className="w-3 h-3 mr-1" />
         +{diff.toFixed(1)}%
       </Badge>
@@ -142,7 +142,7 @@ const TrendBadge = ({ current, previous }: { current: number; previous: number }
   }
   if (diff < 0) {
     return (
-      <Badge className="bg-red-500/10 text-red-500 border-red-500/20">
+      <Badge className="bg-destructive/10 text-destructive border-red-500/20">
         <ArrowDownRight className="w-3 h-3 mr-1" />
         {diff.toFixed(1)}%
       </Badge>
@@ -217,8 +217,8 @@ export const AdvancedProcurementKPIs = () => {
     return (
       <div className={cn(
         "absolute top-2 right-2 w-2 h-2 rounded-full animate-pulse",
-        status === 'critical' && "bg-red-500",
-        status === 'warning' && "bg-amber-500"
+        status === 'critical' && "bg-destructive",
+        status === 'warning' && "bg-warning"
       )} />
     );
   };
@@ -256,8 +256,8 @@ export const AdvancedProcurementKPIs = () => {
           {getKPIStatusIndicator('procurement_roi', kpiData.procurementROI.current, false)}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-emerald-500" />
+              <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
+                <TrendingUp className="w-5 h-5 text-success" />
               </div>
               <span className="text-sm font-medium text-muted-foreground">ROI Procurement</span>
             </div>
@@ -281,21 +281,21 @@ export const AdvancedProcurementKPIs = () => {
           {getKPIStatusIndicator('maverick_spend', kpiData.maverickSpend.percentage, true)}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-amber-500" />
+              <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-warning" />
               </div>
               <span className="text-sm font-medium text-muted-foreground">Maverick Spend</span>
             </div>
-            <Badge className="bg-amber-500/10 text-amber-500 border-amber-500/20">
+            <Badge className="bg-warning/10 text-warning border-amber-500/20">
               Meta: {targets.find(t => t.id === 'maverick_spend')?.target || kpiData.maverickSpend.target}%
             </Badge>
           </div>
-          <p className="text-3xl font-bold text-amber-500">{kpiData.maverickSpend.percentage}%</p>
+          <p className="text-3xl font-bold text-warning">{kpiData.maverickSpend.percentage}%</p>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-xs text-muted-foreground">R$ {kpiData.maverickSpend.maverick.toLocaleString('pt-BR')}</span>
             <Progress 
               value={kpiData.maverickSpend.percentage} 
-              className="h-1.5 flex-1 [&>div]:bg-amber-500"
+              className="h-1.5 flex-1 [&>div]:bg-warning"
             />
           </div>
           <p className="text-xs text-muted-foreground mt-2">
@@ -326,10 +326,10 @@ export const AdvancedProcurementKPIs = () => {
             />
           </div>
           <div className="flex gap-2 mt-2">
-            <Badge variant="outline" className="text-[10px] border-amber-500/30 text-amber-500">
+            <Badge variant="outline" className="text-[10px] border-amber-500/30 text-warning">
               {kpiData.contractCompliance.expiring} expirando
             </Badge>
-            <Badge variant="outline" className="text-[10px] border-red-500/30 text-red-500">
+            <Badge variant="outline" className="text-[10px] border-red-500/30 text-destructive">
               {kpiData.contractCompliance.expired} expirados
             </Badge>
           </div>
@@ -340,8 +340,8 @@ export const AdvancedProcurementKPIs = () => {
           {getKPIStatusIndicator('cost_avoidance', kpiData.costAvoidance.total, false)}
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-emerald-500" />
+              <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-success" />
               </div>
               <span className="text-sm font-medium text-muted-foreground">Cost Avoidance</span>
             </div>
@@ -349,7 +349,7 @@ export const AdvancedProcurementKPIs = () => {
               Meta: R$ {((targets.find(t => t.id === 'cost_avoidance')?.target || 150000) / 1000).toFixed(0)}k
             </Badge>
           </div>
-          <p className="text-3xl font-bold text-emerald-500">
+          <p className="text-3xl font-bold text-success">
             R$ {(kpiData.costAvoidance.total / 1000).toFixed(0)}k
           </p>
           <div className="mt-3 space-y-1">
@@ -381,7 +381,7 @@ export const AdvancedProcurementKPIs = () => {
           <div className="flex items-end gap-2">
             <p className="text-2xl font-bold text-foreground">{kpiData.poCycleTime.current}</p>
             <p className="text-sm text-muted-foreground mb-0.5">dias</p>
-            <Badge className="ml-auto bg-emerald-500/10 text-emerald-500 text-[10px]">
+            <Badge className="ml-auto bg-success/10 text-success text-[10px]">
               Meta: {targets.find(t => t.id === 'po_cycle_time')?.target || kpiData.poCycleTime.target}d
             </Badge>
           </div>
@@ -469,12 +469,12 @@ export const AdvancedProcurementKPIs = () => {
             className="h-2 mt-3"
           />
           <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
-            <div className="p-2 rounded bg-emerald-500/10 text-center">
-              <p className="font-bold text-emerald-500">{kpiData.firstTimeMatchRate.matched}</p>
+            <div className="p-2 rounded bg-success/10 text-center">
+              <p className="font-bold text-success">{kpiData.firstTimeMatchRate.matched}</p>
               <p className="text-muted-foreground">Matched</p>
             </div>
-            <div className="p-2 rounded bg-red-500/10 text-center">
-              <p className="font-bold text-red-500">{kpiData.firstTimeMatchRate.exceptions}</p>
+            <div className="p-2 rounded bg-destructive/10 text-center">
+              <p className="font-bold text-destructive">{kpiData.firstTimeMatchRate.exceptions}</p>
               <p className="text-muted-foreground">Exceções</p>
             </div>
           </div>
@@ -486,7 +486,7 @@ export const AdvancedProcurementKPIs = () => {
         {/* Maverick Spend by Category */}
         <Card className="p-6">
           <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-amber-500" />
+            <AlertTriangle className="w-5 h-5 text-warning" />
             Maverick Spend por Categoria
           </h3>
           <div className="h-64">
@@ -512,7 +512,7 @@ export const AdvancedProcurementKPIs = () => {
         {/* Savings Realization */}
         <Card className="p-6">
           <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-emerald-500" />
+            <TrendingUp className="w-5 h-5 text-success" />
             Savings Realization
           </h3>
           <div className="flex items-center gap-4 mb-4">
@@ -524,15 +524,15 @@ export const AdvancedProcurementKPIs = () => {
             </div>
             <div>
               <p className="text-xs text-muted-foreground">Realizado</p>
-              <p className="text-lg font-bold text-emerald-500">
+              <p className="text-lg font-bold text-success">
                 R$ {(kpiData.savingsRealization.realized / 1000).toFixed(0)}k
               </p>
             </div>
             <Badge className={cn(
               "ml-auto",
               kpiData.savingsRealization.percentage >= 80 
-                ? "bg-emerald-500/10 text-emerald-500" 
-                : "bg-amber-500/10 text-amber-500"
+                ? "bg-success/10 text-success" 
+                : "bg-warning/10 text-warning"
             )}>
               {kpiData.savingsRealization.percentage}% realizado
             </Badge>

@@ -320,7 +320,7 @@ const MetricCard = ({
               <Calendar className="h-3 w-3" />
               <span>Anterior: {formatValue(previousValue)}</span>
               {change !== undefined && (
-                <span className={isGoodChange ? 'text-green-600' : isBadChange ? 'text-red-600' : ''}>
+                <span className={isGoodChange ? 'text-success' : isBadChange ? 'text-destructive' : ''}>
                   ({change > 0 ? '+' : ''}{change.toFixed(1)}%)
                 </span>
               )}
@@ -331,7 +331,7 @@ const MetricCard = ({
             <div className="space-y-1">
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>Meta: {formatValue(target)}</span>
-                <span className={isAboveTarget ? 'text-green-600' : 'text-amber-600'}>
+                <span className={isAboveTarget ? 'text-success' : 'text-warning'}>
                   {targetProgress?.toFixed(0)}%
                 </span>
               </div>
@@ -741,7 +741,7 @@ export const ExecutiveDashboard = () => {
                 </div>
                 <div className="text-center">
                   <p className="text-xs text-muted-foreground">Variação</p>
-                  <p className={`font-bold text-lg ${filteredMetrics.spendChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <p className={`font-bold text-lg ${filteredMetrics.spendChange >= 0 ? 'text-success' : 'text-destructive'}`}>
                     {filteredMetrics.spendChange >= 0 ? '+' : ''}{filteredMetrics.spendChange.toFixed(1)}%
                   </p>
                 </div>
@@ -1049,12 +1049,12 @@ export const ExecutiveDashboard = () => {
                     <div className="text-right">
                       <p className="font-medium">{formatCurrency(supplier.spend)}</p>
                       {showComparison ? (
-                        <p className={`text-xs flex items-center justify-end gap-1 ${spendChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <p className={`text-xs flex items-center justify-end gap-1 ${spendChange > 0 ? 'text-success' : 'text-destructive'}`}>
                           {spendChange > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
                           {Math.abs(spendChange).toFixed(1)}% vs anterior
                         </p>
                       ) : (
-                        <p className="text-sm text-green-600">+{formatCurrency(supplier.savings)}</p>
+                        <p className="text-sm text-success">+{formatCurrency(supplier.savings)}</p>
                       )}
                     </div>
                     <Badge variant={supplier.compliance >= 90 ? 'default' : supplier.compliance >= 85 ? 'secondary' : 'destructive'}>
@@ -1096,7 +1096,7 @@ export const ExecutiveDashboard = () => {
                       <p className="text-sm text-muted-foreground">
                         {buyer.orders} pedidos 
                         {showComparison && (
-                          <span className={ordersChange > 0 ? 'text-green-600' : 'text-red-600'}>
+                          <span className={ordersChange > 0 ? 'text-success' : 'text-destructive'}>
                             {' '}({ordersChange > 0 ? '+' : ''}{ordersChange.toFixed(0)}%)
                           </span>
                         )}
@@ -1104,9 +1104,9 @@ export const ExecutiveDashboard = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-medium text-green-600">{formatCurrency(buyer.savings)}</p>
+                      <p className="font-medium text-success">{formatCurrency(buyer.savings)}</p>
                       {showComparison ? (
-                        <p className={`text-xs flex items-center justify-end gap-1 ${savingsChange > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        <p className={`text-xs flex items-center justify-end gap-1 ${savingsChange > 0 ? 'text-success' : 'text-destructive'}`}>
                           {savingsChange > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
                           {Math.abs(savingsChange).toFixed(1)}%
                         </p>
@@ -1142,7 +1142,7 @@ export const ExecutiveDashboard = () => {
                 key={item.id}
                 className={`p-4 rounded-lg border ${
                   item.priority === 'critical' ? 'border-destructive bg-destructive/5' :
-                  item.priority === 'high' ? 'border-amber-500 bg-amber-500/5' :
+                  item.priority === 'high' ? 'border-amber-500 bg-warning/5' :
                   'border-border'
                 }`}
               >
@@ -1209,7 +1209,7 @@ export const ExecutiveDashboard = () => {
                   </div>
                   <div className="p-4 rounded-lg bg-muted">
                     <p className="text-sm text-muted-foreground">Economia Gerada</p>
-                    <p className="text-xl font-bold text-green-600">{formatCurrency(drillDown.data.savings)}</p>
+                    <p className="text-xl font-bold text-success">{formatCurrency(drillDown.data.savings)}</p>
                   </div>
                   <div className="p-4 rounded-lg bg-muted">
                     <p className="text-sm text-muted-foreground">Pedidos</p>
@@ -1232,7 +1232,7 @@ export const ExecutiveDashboard = () => {
                   </div>
                   <div className="p-4 rounded-lg bg-muted">
                     <p className="text-sm text-muted-foreground">Economia Gerada</p>
-                    <p className="text-xl font-bold text-green-600">{formatCurrency(drillDown.data.savings)}</p>
+                    <p className="text-xl font-bold text-success">{formatCurrency(drillDown.data.savings)}</p>
                   </div>
                   <div className="p-4 rounded-lg bg-muted">
                     <p className="text-sm text-muted-foreground">Tempo Médio</p>
@@ -1253,7 +1253,7 @@ export const ExecutiveDashboard = () => {
                     key={item.id}
                     className={`p-4 rounded-lg border ${
                       item.priority === 'critical' ? 'border-destructive bg-destructive/5' :
-                      item.priority === 'high' ? 'border-amber-500 bg-amber-500/5' :
+                      item.priority === 'high' ? 'border-amber-500 bg-warning/5' :
                       'border-border'
                     }`}
                   >

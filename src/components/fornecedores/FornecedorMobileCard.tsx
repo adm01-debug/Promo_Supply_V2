@@ -44,7 +44,7 @@ const getTipoConfig = (tipo: FornecedorCardData['tipo']) => {
   const configs = { 
     IMPORTADORA: { 
       label: 'Importadora', 
-      color: 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/30',
+      color: 'bg-info/15 text-info dark:text-info border-blue-500/30',
       borderColor: 'border-l-blue-500',
       gradient: 'from-blue-500/5'
     },
@@ -65,10 +65,10 @@ const getTipoConfig = (tipo: FornecedorCardData['tipo']) => {
 };
 
 const getRatingColor = (rating: number) => {
-  if (rating >= 4.5) return 'text-emerald-500';
-  if (rating >= 4) return 'text-amber-500';
-  if (rating >= 3) return 'text-orange-500';
-  return 'text-red-500';
+  if (rating >= 4.5) return 'text-success';
+  if (rating >= 4) return 'text-warning';
+  if (rating >= 3) return 'text-warning';
+  return 'text-destructive';
 };
 
 export function FornecedorMobileCard({ 
@@ -98,7 +98,7 @@ export function FornecedorMobileCard({
       id: 'edit',
       icon: <Edit className="w-5 h-5" />,
       label: 'Editar',
-      color: 'bg-blue-500',
+      color: 'bg-info',
       onClick: onEdit,
     });
   }
@@ -132,7 +132,7 @@ export function FornecedorMobileCard({
                   <div className="flex items-center gap-2">
                     <p className="font-semibold text-foreground truncate">{fornecedor.nomeFantasia}</p>
                     {fornecedor.apiIntegrada && (
-                      <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30 shrink-0 gap-1">
+                      <Badge className="bg-success/15 text-success dark:text-success border-emerald-500/30 shrink-0 gap-1">
                         <Plug className="w-3 h-3" />
                         <span className="text-[10px] font-medium">API</span>
                       </Badge>
@@ -174,7 +174,7 @@ export function FornecedorMobileCard({
                         className={cn(
                           "w-4 h-4 transition-all",
                           i < fornecedor.rating 
-                            ? 'text-amber-400 fill-amber-400 drop-shadow-sm' 
+                            ? 'text-warning fill-amber-400 drop-shadow-sm' 
                             : 'text-muted-foreground/20'
                         )} 
                       />
@@ -185,7 +185,7 @@ export function FornecedorMobileCard({
                   {fornecedor.rating.toFixed(1)}
                 </span>
                 {fornecedor.rating >= 4.5 && (
-                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <Sparkles className="w-4 h-4 text-warning" />
                 )}
               </div>
             </div>
@@ -217,10 +217,10 @@ export function FornecedorMobileCard({
                   <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="h-9 w-9 rounded-lg hover:bg-emerald-500/10"
+                    className="h-9 w-9 rounded-lg hover:bg-success/10"
                     onClick={() => window.open(`https://wa.me/55${fornecedor.whatsapp.replace(/\D/g, '')}`)}
                   >
-                    <MessageCircle className="w-4 h-4 text-emerald-500" />
+                    <MessageCircle className="w-4 h-4 text-success" />
                   </Button>
                 )}
                 {onHistory && (
@@ -259,7 +259,7 @@ export function FornecedorMobileCard({
                   <Button 
                     variant="outline" 
                     size="sm" 
-                    className="w-full h-10 font-medium gap-2 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10"
+                    className="w-full h-10 font-medium gap-2 border-emerald-500/30 text-success dark:text-success hover:bg-success/10"
                     onClick={() => window.open(`https://wa.me/55${fornecedor.whatsapp.replace(/\D/g, '')}`)}
                   >
                     <MessageCircle className="w-4 h-4" />

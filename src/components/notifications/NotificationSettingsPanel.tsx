@@ -73,7 +73,7 @@ export const NotificationSettingsPanel = () => {
   const getPermissionBadge = () => {
     switch (permissionStatus) {
       case 'granted':
-        return <Badge className="bg-green-500/10 text-green-600 border-green-500/20">Ativas</Badge>;
+        return <Badge className="bg-success/10 text-success border-green-500/20">Ativas</Badge>;
       case 'denied':
         return <Badge variant="destructive">Bloqueadas</Badge>;
       default:

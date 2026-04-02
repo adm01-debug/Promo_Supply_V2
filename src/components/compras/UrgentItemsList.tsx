@@ -17,24 +17,24 @@ interface UrgentItemsListProps {
 const urgenciaConfig = {
   critico: {
     icon: AlertCircle,
-    bg: 'bg-red-500/10',
+    bg: 'bg-destructive/10',
     border: 'border-red-500/30',
-    text: 'text-red-500',
-    badge: 'bg-red-500',
+    text: 'text-destructive',
+    badge: 'bg-destructive',
   },
   alto: {
     icon: AlertTriangle,
-    bg: 'bg-yellow-500/10',
+    bg: 'bg-warning/10',
     border: 'border-yellow-500/30',
-    text: 'text-yellow-500',
-    badge: 'bg-yellow-500',
+    text: 'text-warning',
+    badge: 'bg-warning',
   },
   medio: {
     icon: Clock,
-    bg: 'bg-orange-500/10',
+    bg: 'bg-warning/10',
     border: 'border-orange-500/30',
-    text: 'text-orange-500',
-    badge: 'bg-orange-500',
+    text: 'text-warning',
+    badge: 'bg-warning',
   },
 };
 
@@ -74,7 +74,7 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
             
             <div className="flex items-center gap-3">
               <span className={cn(
-                "px-2 py-1 rounded text-xs font-semibold text-white",
+                "px-2 py-1 rounded text-xs font-semibold text-primary-foreground",
                 config.badge
               )}>
                 Vence: {item.vencimento}

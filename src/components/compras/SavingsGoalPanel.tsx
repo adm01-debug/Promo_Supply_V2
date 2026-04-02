@@ -144,10 +144,10 @@ export const SavingsGoalPanel = () => {
         )}
 
         {isGoalReached && (
-          <Alert className="mb-4 border-emerald-500/50 bg-emerald-500/10">
-            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-            <AlertTitle className="text-emerald-600">Meta Atingida!</AlertTitle>
-            <AlertDescription className="text-emerald-600/80">
+          <Alert className="mb-4 border-emerald-500/50 bg-success/10">
+            <CheckCircle2 className="h-4 w-4 text-success" />
+            <AlertTitle className="text-success">Meta Atingida!</AlertTitle>
+            <AlertDescription className="text-success/80">
               Parabéns! A meta de economia mensal foi alcançada.
             </AlertDescription>
           </Alert>
@@ -165,9 +165,9 @@ export const SavingsGoalPanel = () => {
             </div>
             <div className={cn(
               "text-2xl font-bold",
-              statusColor === "emerald" && "text-emerald-600",
-              statusColor === "red" && "text-red-500",
-              statusColor === "blue" && "text-blue-600"
+              statusColor === "emerald" && "text-success",
+              statusColor === "red" && "text-destructive",
+              statusColor === "blue" && "text-info"
             )}>
               {progressPercent.toFixed(1)}%
             </div>
@@ -178,12 +178,12 @@ export const SavingsGoalPanel = () => {
               value={progressPercent} 
               className={cn(
                 "h-3",
-                statusColor === "red" && "[&>div]:bg-red-500",
-                statusColor === "emerald" && "[&>div]:bg-emerald-500"
+                statusColor === "red" && "[&>div]:bg-destructive",
+                statusColor === "emerald" && "[&>div]:bg-success"
               )}
             />
             <div 
-              className="absolute top-0 h-3 w-0.5 bg-amber-500"
+              className="absolute top-0 h-3 w-0.5 bg-warning"
               style={{ left: `${config.alertaPercentual}%` }}
               title={`Limite de alerta: ${config.alertaPercentual}%`}
             />
@@ -209,7 +209,7 @@ export const SavingsGoalPanel = () => {
           </div>
 
           <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2">
-            <TrendingUp className="w-4 h-4 text-emerald-500" />
+            <TrendingUp className="w-4 h-4 text-success" />
             <span>Dados em tempo real do sistema</span>
           </div>
         </div>
@@ -269,7 +269,7 @@ export const SavingsGoalPanel = () => {
                   className="h-2"
                 />
                 <div 
-                  className="absolute top-0 h-2 w-0.5 bg-amber-500"
+                  className="absolute top-0 h-2 w-0.5 bg-warning"
                   style={{ left: `${tempConfig.alertaPercentual}%` }}
                 />
               </div>

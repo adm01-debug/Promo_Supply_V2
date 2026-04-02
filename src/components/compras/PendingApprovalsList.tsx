@@ -253,23 +253,23 @@ export const PendingApprovalsList = () => {
     if (diffHours < 0) {
       return { 
         status: "overdue", 
-        color: "text-red-500", 
-        bgColor: "bg-red-500",
+        color: "text-destructive", 
+        bgColor: "bg-destructive",
         label: `Atrasado ${Math.abs(Math.round(diffHours))}h`
       };
     }
     if (diffHours <= 4) {
       return { 
         status: "critical", 
-        color: "text-amber-500", 
-        bgColor: "bg-amber-500",
+        color: "text-warning", 
+        bgColor: "bg-warning",
         label: `${Math.round(diffHours)}h restantes`
       };
     }
     return { 
       status: "normal", 
-      color: "text-blue-500", 
-      bgColor: "bg-blue-500",
+      color: "text-info", 
+      bgColor: "bg-info",
       label: `${Math.round(diffHours)}h restantes`
     };
   };
@@ -365,7 +365,7 @@ export const PendingApprovalsList = () => {
               </Badge>
             )}
             {overdueCount > 0 && (
-              <Badge variant="outline" className="text-xs border-red-500 text-red-500">
+              <Badge variant="outline" className="text-xs border-red-500 text-destructive">
                 <Timer className="w-3 h-3 mr-1" />
                 {overdueCount} atrasada(s)
               </Badge>
@@ -443,7 +443,7 @@ export const PendingApprovalsList = () => {
       {/* List */}
       {filteredApprovals.length === 0 ? (
         <div className="text-center py-12 text-muted-foreground">
-          <Check className="w-16 h-16 mx-auto mb-4 text-emerald-500" />
+          <Check className="w-16 h-16 mx-auto mb-4 text-success" />
           <p className="text-lg font-medium">Nenhuma aprovação pendente</p>
           <p className="text-sm">
             {searchTerm || filterStatus !== 'all' 
@@ -463,8 +463,8 @@ export const PendingApprovalsList = () => {
                 className={cn(
                   "p-4 rounded-xl border transition-all hover:shadow-md",
                   approval.escalado && "border-purple-500/50 bg-purple-500/5",
-                  approval.urgente && !approval.escalado && "border-amber-500/50 bg-amber-500/5",
-                  timeStatus.status === 'overdue' && "border-red-500/50 bg-red-500/5",
+                  approval.urgente && !approval.escalado && "border-amber-500/50 bg-warning/5",
+                  timeStatus.status === 'overdue' && "border-red-500/50 bg-destructive/5",
                   !approval.escalado && !approval.urgente && timeStatus.status !== 'overdue' && "border-border bg-card"
                 )}
               >
@@ -521,7 +521,7 @@ export const PendingApprovalsList = () => {
                           Etapa {approval.etapa_atual} de {approval.total_etapas}
                         </span>
                         {approval.aprovadores_anteriores.length > 0 && (
-                          <span className="text-xs text-emerald-600">
+                          <span className="text-xs text-success">
                             ✓ {approval.aprovadores_anteriores.join(' → ')}
                           </span>
                         )}
@@ -532,7 +532,7 @@ export const PendingApprovalsList = () => {
                             key={i}
                             className={cn(
                               "h-2 flex-1 rounded-full transition-all",
-                              i < approval.etapa_atual - 1 && "bg-emerald-500",
+                              i < approval.etapa_atual - 1 && "bg-success",
                               i === approval.etapa_atual - 1 && "bg-primary animate-pulse",
                               i > approval.etapa_atual - 1 && "bg-muted"
                             )}
@@ -547,8 +547,8 @@ export const PendingApprovalsList = () => {
                         value={timeProgress} 
                         className={cn(
                           "h-1.5",
-                          timeStatus.status === "overdue" && "[&>div]:bg-red-500",
-                          timeStatus.status === "critical" && "[&>div]:bg-amber-500"
+                          timeStatus.status === "overdue" && "[&>div]:bg-destructive",
+                          timeStatus.status === "critical" && "[&>div]:bg-warning"
                         )} 
                       />
                     </div>
@@ -558,7 +558,7 @@ export const PendingApprovalsList = () => {
                   <div className="flex lg:flex-col gap-2 lg:min-w-[140px]">
                     <Button 
                       size="sm" 
-                      className="flex-1 lg:flex-none bg-emerald-600 hover:bg-emerald-700"
+                      className="flex-1 lg:flex-none bg-success hover:bg-emerald-700"
                       onClick={() => handleApprove(approval)}
                       disabled={loading}
                     >
@@ -568,7 +568,7 @@ export const PendingApprovalsList = () => {
                     <Button 
                       size="sm" 
                       variant="outline"
-                      className="flex-1 lg:flex-none border-red-500/50 text-red-500 hover:bg-red-500/10"
+                      className="flex-1 lg:flex-none border-red-500/50 text-destructive hover:bg-destructive/10"
                       onClick={() => {
                         setSelectedApproval(approval);
                         setRejectModalOpen(true);
@@ -610,7 +610,7 @@ export const PendingApprovalsList = () => {
       <Dialog open={rejectModalOpen} onOpenChange={setRejectModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-red-500 flex items-center gap-2">
+            <DialogTitle className="text-destructive flex items-center gap-2">
               <X className="w-5 h-5" />
               Rejeitar Solicitação
             </DialogTitle>
@@ -698,7 +698,7 @@ export const PendingApprovalsList = () => {
                   <div className="space-y-1">
                     {selectedApproval.aprovadores_anteriores.map((ap, i) => (
                       <div key={i} className="flex items-center gap-2 text-sm">
-                        <Check className="w-4 h-4 text-emerald-500" />
+                        <Check className="w-4 h-4 text-success" />
                         <span>{ap}</span>
                       </div>
                     ))}

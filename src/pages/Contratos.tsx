@@ -49,17 +49,17 @@ import type { Contract, StatusConfig, TypeConfig } from "@/types/contract";
 
 const statusConfig: Record<string, StatusConfig> = {
   draft: { label: "Rascunho", color: "bg-muted text-muted-foreground", icon: FileText },
-  pending_approval: { label: "Aguard. Aprovação", color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400", icon: Clock },
-  active: { label: "Ativo", color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400", icon: CheckCircle2 },
-  expired: { label: "Expirado", color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400", icon: XCircle },
-  cancelled: { label: "Cancelado", color: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400", icon: XCircle },
-  renewed: { label: "Renovado", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400", icon: RefreshCw },
+  pending_approval: { label: "Aguard. Aprovação", color: "bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning", icon: Clock },
+  active: { label: "Ativo", color: "bg-success/10 text-emerald-800 dark:bg-emerald-900/30 dark:text-success", icon: CheckCircle2 },
+  expired: { label: "Expirado", color: "bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive", icon: XCircle },
+  cancelled: { label: "Cancelado", color: "bg-muted text-gray-800 dark:bg-gray-900/30 dark:text-muted-foreground", icon: XCircle },
+  renewed: { label: "Renovado", color: "bg-info/10 text-blue-800 dark:bg-blue-900/30 dark:text-info", icon: RefreshCw },
 };
 
 const typeConfig: Record<string, TypeConfig> = {
   service: { label: "Serviço", color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400" },
-  supply: { label: "Fornecimento", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400" },
-  framework: { label: "Acordo-Quadro", color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400" },
+  supply: { label: "Fornecimento", color: "bg-info/10 text-blue-800 dark:bg-blue-900/30 dark:text-info" },
+  framework: { label: "Acordo-Quadro", color: "bg-warning/10 text-orange-800 dark:bg-orange-900/30 dark:text-warning" },
 };
 
 export default function Contratos() {
@@ -117,9 +117,9 @@ export default function Contratos() {
     if (days < 0) {
       return <Badge variant="destructive" className="text-xs">Expirado há {Math.abs(days)} dias</Badge>;
     } else if (days <= 30) {
-      return <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 text-xs">Expira em {days} dias</Badge>;
+      return <Badge className="bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning text-xs">Expira em {days} dias</Badge>;
     } else if (days <= 90) {
-      return <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400 text-xs">Expira em {days} dias</Badge>;
+      return <Badge className="bg-info/10 text-blue-800 dark:bg-blue-900/30 dark:text-info text-xs">Expira em {days} dias</Badge>;
     }
     return null;
   };
@@ -192,10 +192,10 @@ export default function Contratos() {
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
                   <p className="text-xs sm:text-sm text-muted-foreground truncate">Ativos</p>
-                  <p className="text-xl sm:text-2xl font-bold text-emerald-600">{activeContracts.length}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-success">{activeContracts.length}</p>
                 </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-success/10 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
+                  <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-success" />
                 </div>
               </div>
             </CardContent>
@@ -206,10 +206,10 @@ export default function Contratos() {
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0">
                   <p className="text-xs sm:text-sm text-muted-foreground truncate">A Vencer</p>
-                  <p className="text-xl sm:text-2xl font-bold text-amber-600">{expiringContracts.length}</p>
+                  <p className="text-xl sm:text-2xl font-bold text-warning">{expiringContracts.length}</p>
                 </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
-                  <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-warning/10 dark:bg-amber-900/30 flex items-center justify-center shrink-0">
+                  <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-warning" />
                 </div>
               </div>
             </CardContent>
@@ -224,8 +224,8 @@ export default function Contratos() {
                     {totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </p>
                 </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
-                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-info/10 dark:bg-blue-900/30 flex items-center justify-center shrink-0">
+                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-info" />
                 </div>
               </div>
             </CardContent>
@@ -276,15 +276,15 @@ export default function Contratos() {
 
         {/* Alerts for expiring contracts */}
         {expiringContracts.length > 0 && (
-          <Card className="border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/10">
+          <Card className="border-amber-200 dark:border-amber-800 bg-warning/5 dark:bg-amber-900/10">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-amber-600 mt-0.5" />
+                <AlertTriangle className="w-5 h-5 text-warning mt-0.5" />
                 <div>
-                  <h3 className="font-semibold text-amber-800 dark:text-amber-400">
+                  <h3 className="font-semibold text-amber-800 dark:text-warning">
                     Atenção: {expiringContracts.length} contrato(s) a vencer
                   </h3>
-                  <p className="text-sm text-amber-700 dark:text-amber-500">
+                  <p className="text-sm text-amber-700 dark:text-warning">
                     {expiringContracts.map(c => c.title).join(', ')}
                   </p>
                 </div>

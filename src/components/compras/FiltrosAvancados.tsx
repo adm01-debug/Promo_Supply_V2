@@ -84,10 +84,10 @@ const tiposOptions = [
 ];
 
 const prioridadesOptions = [
-  { value: 'baixa', label: 'Baixa', color: 'bg-slate-500' },
-  { value: 'normal', label: 'Normal', color: 'bg-blue-500' },
-  { value: 'alta', label: 'Alta', color: 'bg-orange-500' },
-  { value: 'urgente', label: 'Urgente', color: 'bg-red-500' },
+  { value: 'baixa', label: 'Baixa', color: 'bg-muted/500' },
+  { value: 'normal', label: 'Normal', color: 'bg-info' },
+  { value: 'alta', label: 'Alta', color: 'bg-warning' },
+  { value: 'urgente', label: 'Urgente', color: 'bg-destructive' },
 ];
 
 interface FiltrosAvancadosProps {

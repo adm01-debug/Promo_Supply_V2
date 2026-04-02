@@ -79,15 +79,15 @@ const mockSignatureRequests: SignatureRequest[] = [
 ];
 
 const statusConfig = {
-  pending: { label: 'Pendente', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400', icon: Pen },
-  signed: { label: 'Assinado', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', icon: Check },
-  rejected: { label: 'Rejeitado', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', icon: X },
+  pending: { label: 'Pendente', color: 'bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning', icon: Pen },
+  signed: { label: 'Assinado', color: 'bg-success/10 text-emerald-800 dark:bg-emerald-900/30 dark:text-success', icon: Check },
+  rejected: { label: 'Rejeitado', color: 'bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive', icon: X },
   expired: { label: 'Expirado', color: 'bg-muted text-muted-foreground', icon: Calendar },
 };
 
 const documentTypeConfig = {
   contract: { label: 'Contrato', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400' },
-  order: { label: 'Pedido', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400' },
+  order: { label: 'Pedido', color: 'bg-info/10 text-blue-800 dark:bg-blue-900/30 dark:text-info' },
   quote: { label: 'Cotação', color: 'bg-cyan-100 text-cyan-800 dark:bg-cyan-900/30 dark:text-cyan-400' },
   other: { label: 'Outro', color: 'bg-muted text-muted-foreground' },
 };
@@ -305,7 +305,7 @@ export function DigitalSignature() {
                               </span>
                             </div>
                             {request.signedAt && (
-                              <p className="text-xs text-emerald-600 mt-1">
+                              <p className="text-xs text-success mt-1">
                                 Assinado em {new Date(request.signedAt).toLocaleDateString('pt-BR')} às{' '}
                                 {new Date(request.signedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                               </p>

@@ -296,7 +296,7 @@ const Cotacao = () => {
           <Card className="p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-foreground flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
+                <Trophy className="w-5 h-5 text-warning" />
                 Cotações Cadastradas ({adaptedCotacoes.length})
               </h3>
             </div>
@@ -347,7 +347,7 @@ const Cotacao = () => {
           <Card className="p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-foreground flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-yellow-500" />
+                <Trophy className="w-5 h-5 text-warning" />
                 Cotações via API ({cotacoesAPI.length})
               </h3>
               
@@ -378,7 +378,7 @@ const Cotacao = () => {
         <Card className="p-5" data-tour="cotacao-manual">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-foreground flex items-center gap-2">
-              <Clock className="w-5 h-5 text-blue-500" />
+              <Clock className="w-5 h-5 text-info" />
               Cotação Manual
             </h3>
             <Button variant="outline" onClick={() => setShowManualModal(true)}>
@@ -413,7 +413,7 @@ const Cotacao = () => {
             <Button variant="outline" onClick={() => setFornecedorSelecionado(null)}>
               Cancelar Seleção
             </Button>
-            <Button asChild className="bg-green-600 hover:bg-green-700">
+            <Button asChild className="bg-success hover:bg-green-700">
               <Link to={`/gerar-ordem?solicitacao=${solicitacao.id}&cotacao=${fornecedorSelecionado}`}>
                 <Check className="w-4 h-4 mr-2" />
                 Gerar Pedido

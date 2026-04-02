@@ -281,7 +281,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                   {uploading ? (
                     <p className="text-sm text-muted-foreground animate-pulse">Enviando...</p>
                   ) : pagamento.comprovante_url ? (
-                    <div className="flex items-center gap-2 justify-center text-emerald-600">
+                    <div className="flex items-center gap-2 justify-center text-success">
                       <CheckCircle2 className="h-4 w-4" />
                       <span className="text-sm">Comprovante anexado</span>
                     </div>
@@ -369,7 +369,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                       <p className="text-xs text-muted-foreground">{format(new Date(h.created_at), 'dd/MM/yyyy HH:mm')}</p>
                     </div>
                     {h.valor_parcela > 0 && (
-                      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600">
+                      <Badge variant="outline" className="bg-success/10 text-success">
                         {fmt(h.valor_parcela)}
                       </Badge>
                     )}
@@ -382,7 +382,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
           {/* Tab Créditos */}
           {!isPago && totalCreditos > 0 && (
             <TabsContent value="creditos" className="space-y-3">
-              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+              <div className="p-3 bg-success/5 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
                 <p className="text-sm text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
                   <DollarSign className="h-4 w-4" />
                   {fmt(totalCreditos)} em créditos disponíveis para este fornecedor
@@ -396,7 +396,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                       <p className="text-xs text-muted-foreground">{c.descricao || `Emitido em ${format(new Date(c.data_emissao), 'dd/MM/yyyy')}`}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-emerald-600">{fmt(c.saldo)}</p>
+                      <p className="font-bold text-success">{fmt(c.saldo)}</p>
                       <Button size="sm" variant="outline" className="mt-1" onClick={() => handleApplyCredit(c.id, c.saldo)}>
                         Aplicar
                       </Button>

@@ -373,11 +373,11 @@ export const SLABySupplierAnalysis = () => {
                   <div
                     className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold ${
                       index === 0
-                        ? 'bg-yellow-500 text-white'
+                        ? 'bg-warning text-primary-foreground'
                         : index === 1
-                        ? 'bg-gray-400 text-white'
+                        ? 'bg-gray-400 text-primary-foreground'
                         : index === 2
-                        ? 'bg-amber-600 text-white'
+                        ? 'bg-warning text-primary-foreground'
                         : 'bg-muted text-muted-foreground'
                     }`}
                   >

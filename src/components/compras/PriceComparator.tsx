@@ -246,9 +246,9 @@ export function PriceComparator() {
               <div className="space-y-6 pr-4">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <Card className="bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800">
+                  <Card className="bg-success/5 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800">
                     <CardContent className="pt-4">
-                      <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 mb-1">
+                      <div className="flex items-center gap-2 text-success dark:text-success mb-1">
                         <TrendingDown className="h-4 w-4" />
                         <span className="text-xs font-medium">Melhor Preço</span>
                       </div>
@@ -259,9 +259,9 @@ export function PriceComparator() {
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+                  <Card className="bg-info/5 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
                     <CardContent className="pt-4">
-                      <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 mb-1">
+                      <div className="flex items-center gap-2 text-info dark:text-info mb-1">
                         <Truck className="h-4 w-4" />
                         <span className="text-xs font-medium">Entrega Mais Rápida</span>
                       </div>
@@ -355,7 +355,7 @@ export function PriceComparator() {
                             <TableCell className="text-right font-semibold">
                               R$ {quote.totalPrice.toLocaleString('pt-BR')}
                               {quote.savingsPercent > 0 && (
-                                <span className="text-xs text-emerald-500 block">
+                                <span className="text-xs text-success block">
                                   -{quote.savingsPercent}%
                                 </span>
                               )}
@@ -369,7 +369,7 @@ export function PriceComparator() {
                             <TableCell className="text-sm">{quote.paymentTerms}</TableCell>
                             <TableCell className="text-center">
                               <div className="flex items-center justify-center gap-1">
-                                <Star className="h-3 w-3 text-amber-500 fill-amber-500" />
+                                <Star className="h-3 w-3 text-warning fill-amber-500" />
                                 {quote.rating}
                               </div>
                             </TableCell>
