@@ -28,7 +28,8 @@ import {
   Columns3,
   FileCheck,
   RefreshCw,
-  RotateCcw
+  RotateCcw,
+  Gavel
 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
