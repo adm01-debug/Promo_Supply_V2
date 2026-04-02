@@ -362,7 +362,7 @@ export const ProgressStatus = ({
     success: "bg-success",
     warning: "bg-warning",
     destructive: "bg-destructive",
-    gradient: "bg-gradient-to-r from-primary via-purple-500 to-pink-500",
+    gradient: "bg-gradient-to-r from-primary via-primary/70 to-primary/50",
   };
 
   const barHeight = {
