@@ -178,6 +178,37 @@ const HighlightedText = React.memo(({
   return <>{result}</>;
 });
 
+// Natural language intent parser
+interface NLIntent {
+  category: SearchCategory;
+  statusFilter?: string;
+  description: string;
+  redirectPath?: string;
+}
+
+function parseNaturalLanguageIntent(query: string): NLIntent | null {
+  const q = query.toLowerCase().trim();
+
+  const patterns: { test: RegExp; result: NLIntent }[] = [
+    { test: /pedidos?\s+(atrasad|pendente|em.atraso)/i, result: { category: 'pedidos', statusFilter: 'pendente', description: 'Pedidos atrasados/pendentes', redirectPath: '/pedidos?status=pendente' } },
+    { test: /pedidos?\s+entreg/i, result: { category: 'pedidos', statusFilter: 'entregue', description: 'Pedidos entregues', redirectPath: '/pedidos?status=entregue' } },
+    { test: /pagamentos?\s+(pendente|atrasad|vencid)/i, result: { category: 'pagamentos', statusFilter: 'pendente', description: 'Pagamentos pendentes', redirectPath: '/pagamentos?status=pendente' } },
+    { test: /pagamentos?\s+pag[oa]/i, result: { category: 'pagamentos', statusFilter: 'pago', description: 'Pagamentos realizados', redirectPath: '/pagamentos?status=pago' } },
+    { test: /fornecedor.*(melhor|top|rank)/i, result: { category: 'fornecedores', description: 'Ranking de fornecedores', redirectPath: '/supplier-performance' } },
+    { test: /solicit.*(urgent|alta.priorid)/i, result: { category: 'solicitacoes', statusFilter: 'urgente', description: 'Solicitações urgentes', redirectPath: '/solicitacoes?prioridade=urgente' } },
+    { test: /cotac.*(pendente|aberta)/i, result: { category: 'all', description: 'Cotações pendentes', redirectPath: '/cotacao?status=pendente' } },
+    { test: /contrat.*(venc|expir)/i, result: { category: 'contratos', description: 'Contratos vencendo', redirectPath: '/contratos?status=expiring' } },
+    { test: /relat[oó]rio|dashboard|resumo/i, result: { category: 'pages', description: 'Relatórios e dashboards', redirectPath: '/relatorios' } },
+    { test: /aprovaç|aprovac|aprovar/i, result: { category: 'pages', description: 'Aprovações pendentes', redirectPath: '/aprovacoes' } },
+    { test: /cat[aá]logo|produto/i, result: { category: 'pages', description: 'Catálogo de produtos', redirectPath: '/catalogo-produtos' } },
+  ];
+
+  for (const { test, result } of patterns) {
+    if (test.test(q)) return result;
+  }
+  return null;
+}
+
 // Quick actions
 const quickActions = [
   { id: 'nova-solicitacao', label: 'Nova Solicitação', icon: FileText, action: '/solicitacoes?action=new' },
