@@ -968,7 +968,7 @@ export function StepStatus({
                 animate={{ scale: 1 }}
                 transition={{ delay: index * 0.1, type: "spring" }}
                 className={cn(
-                  "rounded-full flex items-center justify-center font-medium text-white relative z-10",
+                  "rounded-full flex items-center justify-center font-medium text-primary-foreground relative z-10",
                   dotSizes[size],
                   styles.bg,
                   step.status === 'current' && "ring-4 ring-primary/20"

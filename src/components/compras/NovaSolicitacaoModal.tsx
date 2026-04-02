@@ -535,7 +535,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                         {formatBytes(file.size)}
                       </span>
                       {file.type === 'image/webp' && (
-                        <Check className="w-3 h-3 text-green-500" />
+                        <Check className="w-3 h-3 text-success" />
                       )}
                       <button 
                         onClick={() => removeFile(index)}
