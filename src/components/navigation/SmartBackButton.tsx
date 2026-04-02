@@ -52,6 +52,7 @@ const routeLabels: Record<string, string> = {
   '/relatorios': 'Relatórios',
   '/acompanhamento': 'Acompanhamento',
   '/contratos': 'Contratos',
+  '/licitacoes': 'Licitações',
   '/compliance': 'Compliance',
   '/dashboard-executivo': 'Executivo',
   '/kanban': 'Kanban',
