@@ -946,12 +946,30 @@ export function AdvancedSearch() {
                       exit={{ opacity: 0, y: -10 }}
                       className="flex flex-col items-center justify-center py-12"
                     >
+                      {(() => {
+                        const nlIntent = parseNaturalLanguageIntent(query);
+                        if (nlIntent?.redirectPath) {
+                          return (
+                            <button
+                              onClick={() => { setOpen(false); navigate(nlIntent.redirectPath!); }}
+                              className="w-full max-w-xs flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 transition-colors text-left mb-4"
+                            >
+                              <Sparkles className="w-5 h-5 text-primary shrink-0" />
+                              <div>
+                                <p className="text-sm font-medium">{nlIntent.description}</p>
+                                <p className="text-xs text-muted-foreground">Clique para navegar</p>
+                              </div>
+                            </button>
+                          );
+                        }
+                        return null;
+                      })()}
                       <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
                         <Search className="w-8 h-8 text-muted-foreground" />
                       </div>
                       <p className="text-sm font-medium mb-1">Nenhum resultado encontrado</p>
                       <p className="text-xs text-muted-foreground text-center max-w-[240px]">
-                        Tente buscar por outro termo ou categoria
+                        Tente buscar por outro termo ou use linguagem natural como &quot;pedidos atrasados&quot;
                       </p>
                     </motion.div>
                   ) : (
