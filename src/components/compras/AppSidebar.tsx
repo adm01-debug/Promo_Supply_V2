@@ -81,6 +81,7 @@ const sections: NavSection[] = [
     items: [
       { title: "Pagamentos", icon: CreditCard, href: "/pagamentos", badge: 2 },
       { title: "Contratos", icon: FileSignature, href: "/contratos" },
+      { title: "Licitações", icon: Gavel, href: "/licitacoes" },
       { title: "Compliance", icon: ShieldCheck, href: "/compliance" },
       { title: "Orçamentos", icon: Wallet, href: "/orcamentos" },
       { title: "Docs Fiscais", icon: FileCheck, href: "/documentos-fiscais" },
