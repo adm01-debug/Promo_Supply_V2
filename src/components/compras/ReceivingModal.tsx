@@ -192,13 +192,13 @@ export function ReceivingModal({
             <Progress value={receivingProgress} className="h-2" />
             <div className="flex gap-2">
               {isComplete && (
-                <Badge className="bg-success/10 text-success border-green-500/20">
+                <Badge className="bg-success/10 text-success border-success/20">
                   <Check className="w-3 h-3 mr-1" />
                   Completo
                 </Badge>
               )}
               {isPartial && (
-                <Badge className="bg-warning/10 text-warning border-orange-500/20">
+                <Badge className="bg-warning/10 text-warning border-warning/20">
                   <AlertCircle className="w-3 h-3 mr-1" />
                   Parcial
                 </Badge>
@@ -217,9 +217,9 @@ export function ReceivingModal({
                   key={item.id}
                   className={`p-3 rounded-lg border ${
                     itemComplete
-                      ? "border-green-500/30 bg-success/5"
+                      ? "border-success/30 bg-success/5"
                       : received > 0
-                      ? "border-orange-500/30 bg-warning/5"
+                      ? "border-warning/30 bg-warning/5"
                       : "border-border bg-card"
                   }`}
                 >

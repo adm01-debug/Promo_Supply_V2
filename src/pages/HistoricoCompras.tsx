@@ -72,7 +72,7 @@ const QualityStars = ({ rating }: { rating: number }) => (
     {[1, 2, 3, 4, 5].map((star) => (
       <Star
         key={star}
-        className={`w-3 h-3 ${star <= rating ? "fill-yellow-500 text-warning" : "text-muted-foreground/30"}`}
+        className={`w-3 h-3 ${star <= rating ? "fill-warning text-warning" : "text-muted-foreground/30"}`}
       />
     ))}
     <span className="text-xs text-muted-foreground ml-1">({rating.toFixed(1)})</span>
@@ -82,7 +82,7 @@ const QualityStars = ({ rating }: { rating: number }) => (
 const DeliveryBadge = ({ onTime }: { onTime: boolean }) => (
   <Badge
     variant={onTime ? "default" : "secondary"}
-    className={`text-xs ${onTime ? "bg-success/10 text-success border-green-500/20" : "bg-warning/10 text-warning border-yellow-500/20"}`}
+    className={`text-xs ${onTime ? "bg-success/10 text-success border-success/20" : "bg-warning/10 text-warning border-warning/20"}`}
   >
     {onTime ? <CheckCircle2 className="w-3 h-3 mr-1" /> : <AlertTriangle className="w-3 h-3 mr-1" />}
     {onTime ? "No prazo" : "Atrasado"}
@@ -91,10 +91,10 @@ const DeliveryBadge = ({ onTime }: { onTime: boolean }) => (
 
 const StatusBadge = ({ status }: { status: PurchaseRecord["status"] }) => {
   const config = {
-    pending: { label: "Pendente", color: "bg-warning/10 text-warning border-yellow-500/20" },
-    shipped: { label: "Enviado", color: "bg-info/10 text-info border-blue-500/20" },
-    delivered: { label: "Entregue", color: "bg-success/10 text-success border-green-500/20" },
-    returned: { label: "Devolvido", color: "bg-destructive/10 text-destructive border-red-500/20" },
+    pending: { label: "Pendente", color: "bg-warning/10 text-warning border-warning/20" },
+    shipped: { label: "Enviado", color: "bg-info/10 text-info border-info/20" },
+    delivered: { label: "Entregue", color: "bg-success/10 text-success border-success/20" },
+    returned: { label: "Devolvido", color: "bg-destructive/10 text-destructive border-destructive/20" },
   };
   return <Badge variant="outline" className={`text-xs ${config[status].color}`}>{config[status].label}</Badge>;
 };

@@ -58,6 +58,7 @@ const routeConfig: Record<string, { label: string; icon?: LucideIcon; descriptio
   'devolucoes': { label: 'Devoluções', icon: Package, description: 'Gestão de devoluções (RMA)' },
   'catalogo-produtos': { label: 'Catálogo de Produtos', icon: Package, description: 'Produtos com preços de referência' },
   'licitacoes': { label: 'Licitações', icon: FileCheck, description: 'Processos licitatórios' },
+  'recebimento': { label: 'Recebimento', icon: Package, description: 'Conferência de entregas offline' },
   'admin': { label: 'Admin', icon: Settings, description: 'Administração do sistema' },
   'telemetria': { label: 'Telemetria', icon: BarChart3, description: 'Métricas de telemetria' },
 };
