@@ -218,7 +218,7 @@ const CatalogoProdutos = () => {
                       <span className="text-muted-foreground">Variação:</span>
                       <span className={cn(
                         "text-xs font-medium flex items-center gap-0.5",
-                        variation > 0 ? "text-destructive" : "text-green-600"
+                        variation > 0 ? "text-destructive" : "text-kpi-success"
                       )}>
                         {variation > 0 ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                         {Math.abs(variation).toFixed(1)}%
