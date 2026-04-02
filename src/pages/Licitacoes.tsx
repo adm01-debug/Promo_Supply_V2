@@ -93,12 +93,12 @@ export default function Licitacoes() {
       <PageHeader
         title="Licitações"
         description="Gerenciamento de processos licitatórios e propostas"
-        icon={<Gavel className="h-6 w-6" />}
-        actions={
-          <Button onClick={() => setCreateOpen(true)}>
-            <Plus className="w-4 h-4 mr-2" /> Nova Licitação
-          </Button>
-        }
+        icon={Gavel}
+        actions={[{
+          label: 'Nova Licitação',
+          icon: Plus,
+          onClick: () => setCreateOpen(true),
+        }]}
       />
 
       {/* KPIs */}
