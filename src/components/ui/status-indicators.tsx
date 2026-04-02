@@ -317,11 +317,11 @@ export const PriorityIndicator = ({
         <span className={cn(
           "font-medium",
           size === "sm" ? "text-[10px]" : size === "lg" ? "text-sm" : "text-xs",
-          priority === "critical" && "text-red-600 dark:text-red-400",
-          priority === "urgent" && "text-red-500 dark:text-red-400",
-          priority === "high" && "text-orange-500 dark:text-orange-400",
-          priority === "medium" && "text-amber-500 dark:text-amber-400",
-          priority === "low" && "text-green-500 dark:text-green-400"
+          priority === "critical" && "text-destructive",
+          priority === "urgent" && "text-destructive",
+          priority === "high" && "text-warning",
+          priority === "medium" && "text-warning",
+          priority === "low" && "text-success"
         )}>
           {config.label}
         </span>
