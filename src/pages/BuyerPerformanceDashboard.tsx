@@ -679,7 +679,7 @@ const BuyerPerformanceDashboard = () => {
                             {new Date(neg.data).toLocaleDateString('pt-BR')}
                           </td>
                           <td className="py-3 px-4 text-right">
-                            <Badge variant="outline" className="text-info border-blue-200">
+                            <Badge variant="outline" className="text-info border-info/20">
                               <ArrowDownRight className="w-3 h-3 mr-1" />
                               {neg.percentual}%
                             </Badge>

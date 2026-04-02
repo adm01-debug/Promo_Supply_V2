@@ -372,7 +372,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                           <div className="space-y-1">
                             <p className="font-semibold">{cotacao.fornecedor}</p>
                             {cotacao.id === analysis.bestOverall && (
-                              <Badge className="bg-warning text-yellow-950">
+                              <Badge className="bg-warning text-foreground">
                                 <Trophy className="w-3 h-3 mr-1" />
                                 Recomendado
                               </Badge>

@@ -236,7 +236,7 @@ export const SolicitacaoCard = ({
               asChild={!!actions.primary.href}
               className={cn(
                 "flex-1 sm:flex-none text-xs sm:text-sm h-8 sm:h-9",
-                solicitacao.status === 'AGUARDANDO_COTACAO' && "bg-success hover:bg-emerald-700",
+                solicitacao.status === 'AGUARDANDO_COTACAO' && "bg-success hover:bg-success/80",
                 solicitacao.status === 'EM_COTACAO' && "bg-yellow-600 hover:bg-yellow-700",
                 solicitacao.status === 'FORNECEDOR_SELECIONADO' && "bg-info hover:bg-blue-700",
                 solicitacao.status === 'AGUARDANDO_PAGAMENTO' && "bg-warning hover:bg-orange-700",

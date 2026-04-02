@@ -402,7 +402,7 @@ export const SLABySupplierAnalysis = () => {
                           key={i}
                           className={`h-3 w-3 ${
                             i < Math.round(supplier.slaCompliance / 20)
-                              ? 'fill-yellow-400 text-yellow-400'
+                              ? 'fill-yellow-400 text-warning'
                               : 'text-muted'
                           }`}
                         />

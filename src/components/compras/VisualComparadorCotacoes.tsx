@@ -557,7 +557,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                                         <div className="flex items-center gap-2">
                                           <span className={cn(
                                             "w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold",
-                                            index === 0 ? "bg-warning text-yellow-950" :
+                                            index === 0 ? "bg-warning text-foreground" :
                                             index === 1 ? "bg-gray-300 text-foreground" :
                                             index === 2 ? "bg-orange-400 text-orange-950" :
                                             "bg-muted text-muted-foreground"

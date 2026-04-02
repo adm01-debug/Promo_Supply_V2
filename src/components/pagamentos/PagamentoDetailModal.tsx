@@ -382,8 +382,8 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
           {/* Tab Créditos */}
           {!isPago && totalCreditos > 0 && (
             <TabsContent value="creditos" className="space-y-3">
-              <div className="p-3 bg-success/5 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
-                <p className="text-sm text-emerald-700 dark:text-emerald-300 flex items-center gap-2">
+              <div className="p-3 bg-success/5 dark:bg-success/10 border border-success/20 dark:border-success/30 rounded-lg">
+                <p className="text-sm text-success dark:text-success flex items-center gap-2">
                   <DollarSign className="h-4 w-4" />
                   {fmt(totalCreditos)} em créditos disponíveis para este fornecedor
                 </p>

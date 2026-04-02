@@ -569,7 +569,7 @@ const Relatorios = () => {
                           <td className="py-4 px-4 text-center">
                             <div className="flex items-center justify-center gap-0.5">
                               {Array.from({ length: Math.round(f.rating) }).map((_, i) => (
-                                <Star key={i} className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                                <Star key={i} className="w-3.5 h-3.5 fill-yellow-400 text-warning" />
                               ))}
                             </div>
                           </td>

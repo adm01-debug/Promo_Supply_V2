@@ -57,9 +57,9 @@ interface AISuggestionResponse {
 }
 
 const riskConfig = {
-  low: { label: 'Baixo', color: 'bg-success/10 text-emerald-800 dark:bg-emerald-900/30 dark:text-success', icon: CheckCircle2 },
-  medium: { label: 'Médio', color: 'bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning', icon: AlertTriangle },
-  high: { label: 'Alto', color: 'bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive', icon: AlertTriangle },
+  low: { label: 'Baixo', color: 'bg-success/10 text-success dark:bg-success/15 dark:text-success', icon: CheckCircle2 },
+  medium: { label: 'Médio', color: 'bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning', icon: AlertTriangle },
+  high: { label: 'Alto', color: 'bg-destructive/10 text-destructive dark:bg-destructive/15 dark:text-destructive', icon: AlertTriangle },
 };
 
 export function AISupplierSuggestion() {

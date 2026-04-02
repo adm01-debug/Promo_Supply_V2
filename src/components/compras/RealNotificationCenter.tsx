@@ -39,9 +39,9 @@ const typeConfig: Record<string, { label: string; icon: string; color: string }>
 
 const priorityConfig: Record<string, { label: string; className: string }> = {
   low: { label: 'Baixa', className: 'bg-muted text-muted-foreground' },
-  medium: { label: 'Média', className: 'bg-info/10 text-blue-800 dark:bg-blue-900/30 dark:text-info' },
-  high: { label: 'Alta', className: 'bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning' },
-  critical: { label: 'Crítica', className: 'bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive' },
+  medium: { label: 'Média', className: 'bg-info/10 text-info dark:bg-info/15 dark:text-info' },
+  high: { label: 'Alta', className: 'bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning' },
+  critical: { label: 'Crítica', className: 'bg-destructive/10 text-destructive dark:bg-destructive/15 dark:text-destructive' },
 };
 
 interface NotificationItemProps {

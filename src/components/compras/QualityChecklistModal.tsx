@@ -185,7 +185,7 @@ export function QualityChecklistModal({
               <Button
                 type="button"
                 variant={status === "approved" ? "default" : "outline"}
-                className={status === "approved" ? "bg-success hover:bg-emerald-700" : ""}
+                className={status === "approved" ? "bg-success hover:bg-success/80" : ""}
                 onClick={() => setStatus("approved")}
               >
                 <CheckCircle2 className="w-4 h-4 mr-1" />

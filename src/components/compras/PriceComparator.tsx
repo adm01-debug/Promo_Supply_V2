@@ -246,7 +246,7 @@ export function PriceComparator() {
               <div className="space-y-6 pr-4">
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <Card className="bg-success/5 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800">
+                  <Card className="bg-success/5 dark:bg-success/15 border-success/20 dark:border-success/30">
                     <CardContent className="pt-4">
                       <div className="flex items-center gap-2 text-success dark:text-success mb-1">
                         <TrendingDown className="h-4 w-4" />
@@ -259,7 +259,7 @@ export function PriceComparator() {
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-info/5 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
+                  <Card className="bg-info/5 dark:bg-blue-900/20 border-info/20 dark:border-info/30">
                     <CardContent className="pt-4">
                       <div className="flex items-center gap-2 text-info dark:text-info mb-1">
                         <Truck className="h-4 w-4" />

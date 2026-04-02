@@ -558,7 +558,7 @@ export const PendingApprovalsList = () => {
                   <div className="flex lg:flex-col gap-2 lg:min-w-[140px]">
                     <Button 
                       size="sm" 
-                      className="flex-1 lg:flex-none bg-success hover:bg-emerald-700"
+                      className="flex-1 lg:flex-none bg-success hover:bg-success/80"
                       onClick={() => handleApprove(approval)}
                       disabled={loading}
                     >

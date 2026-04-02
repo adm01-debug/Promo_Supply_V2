@@ -50,10 +50,10 @@ interface RiskAnalysisResponse {
 }
 
 const riskLevelConfig = {
-  low: { label: 'Baixo', color: 'bg-success', textColor: 'text-success', bgLight: 'bg-success/10 dark:bg-emerald-900/30' },
-  medium: { label: 'Médio', color: 'bg-warning', textColor: 'text-warning', bgLight: 'bg-warning/10 dark:bg-amber-900/30' },
-  high: { label: 'Alto', color: 'bg-warning', textColor: 'text-warning', bgLight: 'bg-warning/10 dark:bg-orange-900/30' },
-  critical: { label: 'Crítico', color: 'bg-destructive', textColor: 'text-destructive', bgLight: 'bg-destructive/10 dark:bg-red-900/30' },
+  low: { label: 'Baixo', color: 'bg-success', textColor: 'text-success', bgLight: 'bg-success/10 dark:bg-success/15' },
+  medium: { label: 'Médio', color: 'bg-warning', textColor: 'text-warning', bgLight: 'bg-warning/10 dark:bg-warning/15' },
+  high: { label: 'Alto', color: 'bg-warning', textColor: 'text-warning', bgLight: 'bg-warning/10 dark:bg-warning/15' },
+  critical: { label: 'Crítico', color: 'bg-destructive', textColor: 'text-destructive', bgLight: 'bg-destructive/10 dark:bg-destructive/15' },
 };
 
 const statusConfig = {
@@ -63,9 +63,9 @@ const statusConfig = {
 };
 
 const priorityConfig = {
-  high: { label: 'Alta', color: 'bg-destructive/10 text-red-800 dark:bg-red-900/30 dark:text-destructive' },
-  medium: { label: 'Média', color: 'bg-warning/10 text-amber-800 dark:bg-amber-900/30 dark:text-warning' },
-  low: { label: 'Baixa', color: 'bg-success/10 text-emerald-800 dark:bg-emerald-900/30 dark:text-success' },
+  high: { label: 'Alta', color: 'bg-destructive/10 text-destructive dark:bg-destructive/15 dark:text-destructive' },
+  medium: { label: 'Média', color: 'bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning' },
+  low: { label: 'Baixa', color: 'bg-success/10 text-success dark:bg-success/15 dark:text-success' },
 };
 
 export function SupplierRiskAnalysis() {
