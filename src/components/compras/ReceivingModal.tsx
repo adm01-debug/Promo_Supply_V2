@@ -192,7 +192,7 @@ export function ReceivingModal({
             <Progress value={receivingProgress} className="h-2" />
             <div className="flex gap-2">
               {isComplete && (
-                <Badge className="bg-success/10 text-success border-green-500/20">
+                <Badge className="bg-success/10 text-success border-success/20">
                   <Check className="w-3 h-3 mr-1" />
                   Completo
                 </Badge>
