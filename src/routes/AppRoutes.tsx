@@ -34,6 +34,7 @@ const RecompraInteligente = lazy(() => import("@/pages/RecompraInteligente"));
 const Devolucoes = lazy(() => import("@/pages/Devolucoes"));
 const CatalogoProdutos = lazy(() => import("@/pages/CatalogoProdutos"));
 const Licitacoes = lazy(() => import("@/pages/Licitacoes"));
+const RecebimentoOffline = lazy(() => import("@/pages/RecebimentoOffline"));
 const AdminTelemetria = lazy(() => import("@/pages/AdminTelemetria"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
