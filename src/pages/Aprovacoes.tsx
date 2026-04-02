@@ -211,19 +211,19 @@ const Aprovacoes = () => {
         <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-5">
           <Card className="p-3 sm:p-4 border-amber-500/20">
             <p className="text-xs text-muted-foreground truncate">Pendentes</p>
-            <p className="text-xl sm:text-2xl font-bold text-amber-600">{approvalStats.pendentes}</p>
+            <p className="text-xl sm:text-2xl font-bold text-warning">{approvalStats.pendentes}</p>
           </Card>
           <Card className="p-3 sm:p-4 border-emerald-500/20">
             <p className="text-xs text-muted-foreground truncate">Aprovadas</p>
-            <p className="text-xl sm:text-2xl font-bold text-emerald-600">{approvalStats.aprovadasMes}</p>
+            <p className="text-xl sm:text-2xl font-bold text-success">{approvalStats.aprovadasMes}</p>
           </Card>
           <Card className="p-3 sm:p-4 border-red-500/20">
             <p className="text-xs text-muted-foreground truncate">Rejeitadas</p>
-            <p className="text-xl sm:text-2xl font-bold text-red-500">{approvalStats.rejeitadasMes}</p>
+            <p className="text-xl sm:text-2xl font-bold text-destructive">{approvalStats.rejeitadasMes}</p>
           </Card>
           <Card className="p-3 sm:p-4 border-blue-500/20">
             <p className="text-xs text-muted-foreground truncate">Tempo Médio</p>
-            <p className="text-xl sm:text-2xl font-bold text-blue-600">{approvalStats.tempoMedioAprovacao}</p>
+            <p className="text-xl sm:text-2xl font-bold text-info">{approvalStats.tempoMedioAprovacao}</p>
           </Card>
           <Card className="p-3 sm:p-4 border-purple-500/20 col-span-2 md:col-span-1">
             <p className="text-xs text-muted-foreground truncate">Escalações</p>
@@ -342,7 +342,7 @@ const Aprovacoes = () => {
                     <p className="text-xs text-muted-foreground">Taxa de Aprovação</p>
                   </div>
                 </div>
-                <div className="mt-2 flex items-center gap-1 text-xs text-green-500">
+                <div className="mt-2 flex items-center gap-1 text-xs text-success">
                   <ArrowUpRight className="w-3 h-3" />
                   +2.3% vs período anterior
                 </div>
@@ -350,15 +350,15 @@ const Aprovacoes = () => {
 
               <Card className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-blue-500/10">
-                    <Timer className="w-5 h-5 text-blue-500" />
+                  <div className="p-2 rounded-lg bg-info/10">
+                    <Timer className="w-5 h-5 text-info" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">{metricas.tempoMedioGeral.toFixed(1)}h</p>
                     <p className="text-xs text-muted-foreground">Tempo Médio</p>
                   </div>
                 </div>
-                <div className="mt-2 flex items-center gap-1 text-xs text-green-500">
+                <div className="mt-2 flex items-center gap-1 text-xs text-success">
                   <TrendingDown className="w-3 h-3" />
                   -0.8h vs período anterior
                 </div>
@@ -366,8 +366,8 @@ const Aprovacoes = () => {
 
               <Card className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-green-500/10">
-                    <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  <div className="p-2 rounded-lg bg-success/10">
+                    <CheckCircle2 className="w-5 h-5 text-success" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">{metricas.totalAprovadas}</p>
@@ -378,8 +378,8 @@ const Aprovacoes = () => {
 
               <Card className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-red-500/10">
-                    <XCircle className="w-5 h-5 text-red-500" />
+                  <div className="p-2 rounded-lg bg-destructive/10">
+                    <XCircle className="w-5 h-5 text-destructive" />
                   </div>
                   <div>
                     <p className="text-2xl font-bold text-foreground">{metricas.totalRejeitadas}</p>
@@ -466,7 +466,7 @@ const Aprovacoes = () => {
               {/* Análise de Gargalos */}
               <Card className="p-6">
                 <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-orange-500" />
+                  <AlertTriangle className="w-4 h-4 text-warning" />
                   Análise de Gargalos
                 </h3>
                 <div className="space-y-4">
@@ -484,14 +484,14 @@ const Aprovacoes = () => {
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground mt-4">
-                  Principal gargalo: <span className="text-orange-500 font-medium">Aguardando Aprovador</span> representa 42% do tempo total
+                  Principal gargalo: <span className="text-warning font-medium">Aguardando Aprovador</span> representa 42% do tempo total
                 </p>
               </Card>
 
               {/* Tempo por Faixa de Valor */}
               <Card className="p-6">
                 <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-blue-500" />
+                  <Clock className="w-4 h-4 text-info" />
                   Tempo por Faixa de Valor
                 </h3>
                 <ResponsiveContainer width="100%" height={220}>
@@ -532,7 +532,7 @@ const Aprovacoes = () => {
                       <div className="space-y-2">
                         <div className="flex justify-between text-xs">
                           <span className="text-muted-foreground">Taxa de Aprovação</span>
-                          <span className="font-medium text-green-500">{taxaAprov.toFixed(0)}%</span>
+                          <span className="font-medium text-success">{taxaAprov.toFixed(0)}%</span>
                         </div>
                         <Progress value={taxaAprov} className="h-1.5" />
                         <div className="flex justify-between text-xs">

@@ -353,8 +353,8 @@ const Relatorios = () => {
                       <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{stats.totalPedidos}</p>
                       <p className="text-xs text-muted-foreground mt-1">no período</p>
                     </div>
-                    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
-                      <Package className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-info/10 flex items-center justify-center shrink-0">
+                      <Package className="w-4 h-4 sm:w-6 sm:h-6 text-info" />
                     </div>
                   </div>
                 </Card>
@@ -366,13 +366,13 @@ const Relatorios = () => {
                       <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">
                         R$ {(stats.economiaTotal / 1000).toFixed(0)}K
                       </p>
-                      <div className="flex items-center gap-1 mt-1 text-emerald-600 text-xs">
+                      <div className="flex items-center gap-1 mt-1 text-success text-xs">
                         <ArrowUpRight className="w-3 h-3" />
                         <span>{stats.economiaPct.toFixed(1)}%</span>
                       </div>
                     </div>
-                    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
-                      <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-emerald-500" />
+                    <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-success/10 flex items-center justify-center shrink-0">
+                      <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-success" />
                     </div>
                   </div>
                 </Card>
@@ -437,7 +437,7 @@ const Relatorios = () => {
                     <h3 className="font-semibold text-foreground">Economia Gerada</h3>
                     <p className="text-sm text-muted-foreground">Economia por cotações competitivas</p>
                   </div>
-                  <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+                  <Badge variant="outline" className="bg-success/10 text-success border-emerald-500/20">
                     {stats.economiaPct.toFixed(1)}%
                   </Badge>
                 </div>
@@ -546,8 +546,8 @@ const Relatorios = () => {
                         <tr key={f.nome} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
                           <td className="py-4 px-4">
                             <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-white ${
-                                idx === 0 ? "bg-yellow-500" : idx === 1 ? "bg-gray-400" : idx === 2 ? "bg-amber-600" : "bg-muted-foreground/30"
+                              <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-primary-foreground ${
+                                idx === 0 ? "bg-warning" : idx === 1 ? "bg-gray-400" : idx === 2 ? "bg-warning" : "bg-muted-foreground/30"
                               }`}>
                                 {idx + 1}
                               </div>
@@ -569,7 +569,7 @@ const Relatorios = () => {
                           <td className="py-4 px-4 text-center">
                             <div className="flex items-center justify-center gap-0.5">
                               {Array.from({ length: Math.round(f.rating) }).map((_, i) => (
-                                <Star key={i} className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+                                <Star key={i} className="w-3.5 h-3.5 fill-yellow-400 text-warning" />
                               ))}
                             </div>
                           </td>

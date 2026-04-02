@@ -101,7 +101,7 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
         <Card className="p-3">
           <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-orange-500/10"><Clock className="h-4 w-4 text-orange-600" /></div>
+            <div className="p-1.5 rounded-md bg-warning/10"><Clock className="h-4 w-4 text-warning" /></div>
             <span className="text-xs text-muted-foreground">Pendentes</span>
           </div>
           <p className="text-xl font-bold">{kpis.pendentes}</p>
@@ -110,25 +110,25 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
 
         <Card className="p-3">
           <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-red-500/10"><AlertTriangle className="h-4 w-4 text-red-600" /></div>
+            <div className="p-1.5 rounded-md bg-destructive/10"><AlertTriangle className="h-4 w-4 text-destructive" /></div>
             <span className="text-xs text-muted-foreground">Vencidos</span>
           </div>
-          <p className="text-xl font-bold text-red-600">{kpis.vencidos}</p>
-          <p className="text-xs text-red-500">{fmt(kpis.valorVencido)}</p>
+          <p className="text-xl font-bold text-destructive">{kpis.vencidos}</p>
+          <p className="text-xs text-destructive">{fmt(kpis.valorVencido)}</p>
         </Card>
 
         <Card className="p-3">
           <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-emerald-500/10"><CheckCircle2 className="h-4 w-4 text-emerald-600" /></div>
+            <div className="p-1.5 rounded-md bg-success/10"><CheckCircle2 className="h-4 w-4 text-success" /></div>
             <span className="text-xs text-muted-foreground">Pago (Mês)</span>
           </div>
-          <p className="text-xl font-bold text-emerald-600">{fmt(kpis.pagosMesAtual)}</p>
+          <p className="text-xl font-bold text-success">{fmt(kpis.pagosMesAtual)}</p>
           <div className="flex items-center gap-1 text-xs">
             {kpis.momVariation >= 0 
-              ? <TrendingUp className="h-3 w-3 text-red-500" />
-              : <TrendingDown className="h-3 w-3 text-emerald-500" />
+              ? <TrendingUp className="h-3 w-3 text-destructive" />
+              : <TrendingDown className="h-3 w-3 text-success" />
             }
-            <span className={kpis.momVariation >= 0 ? "text-red-500" : "text-emerald-500"}>
+            <span className={kpis.momVariation >= 0 ? "text-destructive" : "text-success"}>
               {Math.abs(kpis.momVariation).toFixed(1)}% MoM
             </span>
           </div>
@@ -136,7 +136,7 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
 
         <Card className="p-3">
           <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-blue-500/10"><Timer className="h-4 w-4 text-blue-600" /></div>
+            <div className="p-1.5 rounded-md bg-info/10"><Timer className="h-4 w-4 text-info" /></div>
             <span className="text-xs text-muted-foreground">DPO</span>
           </div>
           <p className="text-xl font-bold">{kpis.dpo}d</p>
@@ -154,10 +154,10 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
 
         <Card className="p-3">
           <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-amber-500/10"><Calendar className="h-4 w-4 text-amber-600" /></div>
+            <div className="p-1.5 rounded-md bg-warning/10"><Calendar className="h-4 w-4 text-warning" /></div>
             <span className="text-xs text-muted-foreground">Vence Hoje</span>
           </div>
-          <p className="text-xl font-bold text-amber-600">{kpis.venceHoje}</p>
+          <p className="text-xl font-bold text-warning">{kpis.venceHoje}</p>
           <p className="text-xs text-muted-foreground">+{kpis.vence7d} em 7 dias</p>
         </Card>
       </div>
@@ -172,9 +172,9 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
           </div>
           <div className="space-y-2">
             {[
-              { label: "0-7 dias", value: kpis.aging.d0_7, color: "bg-yellow-500" },
-              { label: "8-15 dias", value: kpis.aging.d8_15, color: "bg-orange-500" },
-              { label: "16-30 dias", value: kpis.aging.d16_30, color: "bg-red-500" },
+              { label: "0-7 dias", value: kpis.aging.d0_7, color: "bg-warning" },
+              { label: "8-15 dias", value: kpis.aging.d8_15, color: "bg-warning" },
+              { label: "16-30 dias", value: kpis.aging.d16_30, color: "bg-destructive" },
               { label: "30+ dias", value: kpis.aging.d30plus, color: "bg-red-700" },
             ].map((bucket) => {
               const total = kpis.valorVencido || 1;
@@ -200,7 +200,7 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
           </div>
           <div className="space-y-3">
             {[
-              { label: "Próx. 30 dias", value: kpis.forecast30, color: "text-blue-600" },
+              { label: "Próx. 30 dias", value: kpis.forecast30, color: "text-info" },
               { label: "31-60 dias", value: kpis.forecast60, color: "text-purple-600" },
               { label: "61-90 dias", value: kpis.forecast90, color: "text-indigo-600" },
             ].map((period) => (

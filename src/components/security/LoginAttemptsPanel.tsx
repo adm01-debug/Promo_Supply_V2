@@ -95,7 +95,7 @@ export const LoginAttemptsPanel = () => {
           </div>
         ) : (
           <div className="rounded-md border overflow-hidden">
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[80px]">Status</TableHead>

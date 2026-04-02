@@ -91,7 +91,7 @@ const entityConfig = {
   solicitacoes: {
     label: 'Solicitações',
     icon: Package,
-    color: 'text-blue-500',
+    color: 'text-info',
   },
   pedidos: {
     label: 'Pedidos',
@@ -101,12 +101,12 @@ const entityConfig = {
   pagamentos: {
     label: 'Pagamentos',
     icon: CreditCard,
-    color: 'text-green-500',
+    color: 'text-success',
   },
   fornecedores: {
     label: 'Fornecedores',
     icon: Building2,
-    color: 'text-orange-500',
+    color: 'text-warning',
   },
 };
 
@@ -258,7 +258,7 @@ export function BulkOperationsPreview({
 
   return (
     <Dialog open={true} onOpenChange={() => !isExecuting && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <EntityIcon className={cn("w-5 h-5", config.color)} />
@@ -289,7 +289,7 @@ export function BulkOperationsPreview({
                       className={cn(
                         "h-auto p-4 flex flex-col items-start gap-2 justify-start",
                         action.variant === 'destructive' && "border-destructive/50 hover:bg-destructive/10",
-                        action.variant === 'warning' && "border-orange-500/50 hover:bg-orange-500/10"
+                        action.variant === 'warning' && "border-orange-500/50 hover:bg-warning/10"
                       )}
                       onClick={() => handleSelectAction(action)}
                     >
@@ -297,7 +297,7 @@ export function BulkOperationsPreview({
                         <ActionIcon className={cn(
                           "w-5 h-5",
                           action.variant === 'destructive' && "text-destructive",
-                          action.variant === 'warning' && "text-orange-500"
+                          action.variant === 'warning' && "text-warning"
                         )} />
                         <span className="font-medium">{action.label}</span>
                       </div>

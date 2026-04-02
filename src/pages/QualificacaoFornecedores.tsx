@@ -16,10 +16,10 @@ import {
 import { motion } from 'framer-motion';
 
 const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle2 }> = {
-  qualified: { label: 'Qualificado', color: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20', icon: CheckCircle2 },
-  partially_qualified: { label: 'Parcial', color: 'bg-amber-500/10 text-amber-600 border-amber-500/20', icon: AlertTriangle },
-  pending: { label: 'Pendente', color: 'bg-blue-500/10 text-blue-600 border-blue-500/20', icon: Clock },
-  disqualified: { label: 'Desqualificado', color: 'bg-red-500/10 text-red-600 border-red-500/20', icon: XCircle },
+  qualified: { label: 'Qualificado', color: 'bg-success/10 text-success border-emerald-500/20', icon: CheckCircle2 },
+  partially_qualified: { label: 'Parcial', color: 'bg-warning/10 text-warning border-amber-500/20', icon: AlertTriangle },
+  pending: { label: 'Pendente', color: 'bg-info/10 text-info border-blue-500/20', icon: Clock },
+  disqualified: { label: 'Desqualificado', color: 'bg-destructive/10 text-destructive border-red-500/20', icon: XCircle },
 };
 
 const docStatusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
@@ -93,9 +93,9 @@ const QualificacaoFornecedores = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { label: 'Total Avaliados', value: stats.total, icon: Award, color: 'text-primary' },
-            { label: 'Qualificados', value: stats.qualified, icon: CheckCircle2, color: 'text-emerald-500' },
-            { label: 'Pendentes', value: stats.pending, icon: Clock, color: 'text-amber-500' },
-            { label: 'Desqualificados', value: stats.disqualified, icon: XCircle, color: 'text-red-500' },
+            { label: 'Qualificados', value: stats.qualified, icon: CheckCircle2, color: 'text-success' },
+            { label: 'Pendentes', value: stats.pending, icon: Clock, color: 'text-warning' },
+            { label: 'Desqualificados', value: stats.disqualified, icon: XCircle, color: 'text-destructive' },
           ].map((kpi, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
               <Card className="p-4">
@@ -201,7 +201,7 @@ const QualificacaoFornecedores = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="text-emerald-600 border-emerald-300 hover:bg-emerald-50"
+                                className="text-success border-emerald-300 hover:bg-success/5"
                                 onClick={() => updateDocumentStatus.mutate({ docId: doc.id, status: 'approved' })}
                               >
                                 Aprovar
@@ -209,7 +209,7 @@ const QualificacaoFornecedores = () => {
                               <Button
                                 size="sm"
                                 variant="outline"
-                                className="text-red-600 border-red-300 hover:bg-red-50"
+                                className="text-destructive border-red-300 hover:bg-destructive/5"
                                 onClick={() => updateDocumentStatus.mutate({ docId: doc.id, status: 'rejected' })}
                               >
                                 Rejeitar

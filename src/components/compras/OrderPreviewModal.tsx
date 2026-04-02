@@ -26,7 +26,7 @@ export const OrderPreviewModal = ({ pedido, open, onOpenChange, onConfirmSend }:
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5 text-primary" />
@@ -121,7 +121,7 @@ export const OrderPreviewModal = ({ pedido, open, onOpenChange, onConfirmSend }:
               {pedido.desconto > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Desconto:</span>
-                  <span className="text-green-600">-{formatCurrency(pedido.desconto)}</span>
+                  <span className="text-success">-{formatCurrency(pedido.desconto)}</span>
                 </div>
               )}
               <Separator />

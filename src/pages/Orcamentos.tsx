@@ -51,9 +51,9 @@ const Orcamentos = () => {
   };
 
   const getUsageColor = (pct: number) => {
-    if (pct >= 90) return 'text-red-500';
-    if (pct >= 70) return 'text-amber-500';
-    return 'text-emerald-500';
+    if (pct >= 90) return 'text-destructive';
+    if (pct >= 70) return 'text-warning';
+    return 'text-success';
   };
 
   if (loading) {
@@ -131,9 +131,9 @@ const Orcamentos = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
             { label: 'Orçamento Total', value: formatCurrency(summary.totalBudget), icon: PiggyBank, color: 'text-primary' },
-            { label: 'Comprometido', value: formatCurrency(summary.totalCommitted), icon: TrendingUp, color: 'text-amber-500' },
-            { label: 'Utilizado', value: formatCurrency(summary.totalUsed), icon: BarChart3, color: 'text-blue-500' },
-            { label: 'Disponível', value: formatCurrency(summary.available), icon: CheckCircle2, color: summary.available < 0 ? 'text-red-500' : 'text-emerald-500' },
+            { label: 'Comprometido', value: formatCurrency(summary.totalCommitted), icon: TrendingUp, color: 'text-warning' },
+            { label: 'Utilizado', value: formatCurrency(summary.totalUsed), icon: BarChart3, color: 'text-info' },
+            { label: 'Disponível', value: formatCurrency(summary.available), icon: CheckCircle2, color: summary.available < 0 ? 'text-destructive' : 'text-success' },
           ].map((kpi, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
               <Card className="p-4">
@@ -201,7 +201,7 @@ const Orcamentos = () => {
                         </div>
                         <Progress value={Math.min(pct, 100)} className="h-2" />
                         {pct >= 90 && (
-                          <div className="flex items-center gap-1 text-[10px] text-red-500">
+                          <div className="flex items-center gap-1 text-[10px] text-destructive">
                             <AlertTriangle className="w-3 h-3" />
                             Orçamento crítico
                           </div>
@@ -210,7 +210,7 @@ const Orcamentos = () => {
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="text-muted-foreground hover:text-red-500"
+                        className="text-muted-foreground hover:text-destructive"
                         onClick={() => deleteBudget.mutate(budget.id)}
                       >
                         <Trash2 className="w-4 h-4" />

@@ -33,6 +33,7 @@ const DocumentosFiscais = lazy(() => import("@/pages/DocumentosFiscais"));
 const RecompraInteligente = lazy(() => import("@/pages/RecompraInteligente"));
 const Devolucoes = lazy(() => import("@/pages/Devolucoes"));
 const CatalogoProdutos = lazy(() => import("@/pages/CatalogoProdutos"));
+const Licitacoes = lazy(() => import("@/pages/Licitacoes"));
 const AdminTelemetria = lazy(() => import("@/pages/AdminTelemetria"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
@@ -131,6 +132,9 @@ export const AnimatedRoutes = () => {
         } />
         <Route path="/catalogo-produtos" element={
           <ProtectedRoute><ModuleErrorBoundary module="default"><CatalogoProdutos /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/licitacoes" element={
+          <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="default"><Licitacoes /></ModuleErrorBoundary></ProtectedRoute>
         } />
         <Route path="/admin/telemetria" element={
           <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><AdminTelemetria /></ModuleErrorBoundary></ProtectedRoute>

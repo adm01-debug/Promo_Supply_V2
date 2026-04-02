@@ -23,9 +23,9 @@ interface RankingCotacoesProps {
 }
 
 const medalColors = [
-  { bg: 'bg-yellow-500/20', border: 'border-yellow-500/50', text: 'text-yellow-600', icon: '🥇' },
-  { bg: 'bg-gray-300/20', border: 'border-gray-400/50', text: 'text-gray-500', icon: '🥈' },
-  { bg: 'bg-orange-400/20', border: 'border-orange-400/50', text: 'text-orange-600', icon: '🥉' },
+  { bg: 'bg-warning/20', border: 'border-yellow-500/50', text: 'text-warning', icon: '🥇' },
+  { bg: 'bg-gray-300/20', border: 'border-gray-400/50', text: 'text-muted-foreground', icon: '🥈' },
+  { bg: 'bg-orange-400/20', border: 'border-orange-400/50', text: 'text-warning', icon: '🥉' },
 ];
 
 export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionado }: RankingCotacoesProps) => {
@@ -88,13 +88,13 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
                     <div className="flex items-center gap-1">
                       {estoqueOk ? (
                         <>
-                          <Check className="w-4 h-4 text-green-500" />
-                          <span className="font-semibold text-green-600">{cotacao.quantidadeDisponivel}</span>
+                          <Check className="w-4 h-4 text-success" />
+                          <span className="font-semibold text-success">{cotacao.quantidadeDisponivel}</span>
                         </>
                       ) : (
                         <>
-                          <AlertTriangle className="w-4 h-4 text-yellow-500" />
-                          <span className="font-semibold text-yellow-600">
+                          <AlertTriangle className="w-4 h-4 text-warning" />
+                          <span className="font-semibold text-warning">
                             {cotacao.quantidadeDisponivel}
                             {cotacao.alerta && <span className="text-xs ml-1">({cotacao.alerta})</span>}
                           </span>

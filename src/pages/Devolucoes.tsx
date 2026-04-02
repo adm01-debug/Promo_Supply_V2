@@ -27,8 +27,8 @@ const STATUS_MAP: Record<string, { label: string; color: string; icon: React.Ele
   rascunho: { label: "Rascunho", color: "bg-muted text-muted-foreground", icon: Clock },
   solicitada: { label: "Solicitada", color: "bg-kpi-warning/20 text-kpi-warning", icon: AlertTriangle },
   aprovada: { label: "Aprovada", color: "bg-primary/20 text-primary", icon: CheckCircle2 },
-  em_transito: { label: "Em Trânsito", color: "bg-blue-500/20 text-blue-400", icon: Truck },
-  recebida_fornecedor: { label: "Recebida", color: "bg-emerald-500/20 text-emerald-400", icon: Package },
+  em_transito: { label: "Em Trânsito", color: "bg-info/20 text-info", icon: Truck },
+  recebida_fornecedor: { label: "Recebida", color: "bg-success/20 text-success", icon: Package },
   credito_emitido: { label: "Crédito Emitido", color: "bg-violet-500/20 text-violet-400", icon: CreditCard },
   reposicao_enviada: { label: "Reposição Enviada", color: "bg-cyan-500/20 text-cyan-400", icon: Truck },
   concluida: { label: "Concluída", color: "bg-kpi-success/20 text-kpi-success", icon: CheckCircle2 },
@@ -123,7 +123,7 @@ function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: () => v
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <RotateCcw className="w-5 h-5 text-primary" />
@@ -265,7 +265,7 @@ function DevolucaoDetailModal({ devolucao, open, onClose }: { devolucao: import(
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <StatusIcon className="w-5 h-5" />
@@ -371,7 +371,7 @@ export default function Devolucoes() {
             <>
               <KpiCard title="Total Devoluções" value={kpis.total} icon={RotateCcw} color="bg-primary/15 text-primary" />
               <KpiCard title="Abertas" value={kpis.abertas} icon={AlertTriangle} color="bg-kpi-warning/15 text-kpi-warning" />
-              <KpiCard title="Em Trânsito" value={kpis.emTransito} icon={Truck} color="bg-blue-500/15 text-blue-400" />
+              <KpiCard title="Em Trânsito" value={kpis.emTransito} icon={Truck} color="bg-info/15 text-info" />
               <KpiCard title="Concluídas" value={kpis.concluidas} icon={CheckCircle2} color="bg-kpi-success/15 text-kpi-success" />
               <KpiCard title="Valor Total" value={`R$ ${(kpis.valorTotal / 1000).toFixed(1)}k`} icon={TrendingDown} color="bg-kpi-danger/15 text-kpi-danger" />
               <KpiCard title="Créditos Ativos" value={`R$ ${(saldoTotal / 1000).toFixed(1)}k`} subtitle="Saldo disponível" icon={CreditCard} color="bg-violet-500/15 text-violet-400" />
@@ -419,7 +419,7 @@ export default function Devolucoes() {
                     <p className="text-xs text-muted-foreground mt-1">Crie uma nova devolução para começar</p>
                   </div>
                 ) : (
-                  <Table>
+                  <Table aria-label="Tabela de dados">
                     <TableHeader>
                       <TableRow className="hover:bg-transparent">
                         <TableHead>Número</TableHead>
@@ -485,7 +485,7 @@ export default function Devolucoes() {
                     <p className="text-xs text-muted-foreground mt-1">Créditos são gerados automaticamente ao concluir devoluções</p>
                   </div>
                 ) : (
-                  <Table>
+                  <Table aria-label="Tabela de dados">
                     <TableHeader>
                       <TableRow className="hover:bg-transparent">
                         <TableHead>Fornecedor</TableHead>

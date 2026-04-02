@@ -252,7 +252,7 @@ const CatalogoProdutos = () => {
       ) : (
         <Card>
           <ScrollArea className="max-h-[600px]">
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead>Código</TableHead>
@@ -299,7 +299,7 @@ const CatalogoProdutos = () => {
 
       {/* Create/Edit Modal */}
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="w-[95vw] max-w-lg max-h-[85vh] overflow-y-auto">
+        <DialogContent aria-describedby="dialog-desc" className="w-[95vw] max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Package className="w-5 h-5 text-primary" />

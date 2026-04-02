@@ -235,10 +235,10 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   };
 
   const prioridadeConfig = {
-    baixa: { label: 'Baixa', color: 'bg-slate-500' },
-    normal: { label: 'Normal', color: 'bg-blue-500' },
-    alta: { label: 'Alta', color: 'bg-orange-500' },
-    urgente: { label: 'Urgente', color: 'bg-red-500' },
+    baixa: { label: 'Baixa', color: 'bg-muted-foreground' },
+    normal: { label: 'Normal', color: 'bg-info' },
+    alta: { label: 'Alta', color: 'bg-warning' },
+    urgente: { label: 'Urgente', color: 'bg-destructive' },
   };
 
   const tipoConfig = {
@@ -256,7 +256,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
         </Button>
       </DialogTrigger>
       
-      <DialogContent className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+      <DialogContent aria-describedby="dialog-desc" className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="w-5 h-5 text-primary" />
@@ -535,7 +535,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                         {formatBytes(file.size)}
                       </span>
                       {file.type === 'image/webp' && (
-                        <Check className="w-3 h-3 text-green-500" />
+                        <Check className="w-3 h-3 text-success" />
                       )}
                       <button 
                         onClick={() => removeFile(index)}

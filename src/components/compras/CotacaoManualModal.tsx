@@ -91,7 +91,7 @@ export const CotacaoManualModal = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-lg max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+      <DialogContent aria-describedby="dialog-desc" className="w-[95vw] max-w-lg max-h-[85vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Save className="w-5 h-5 text-primary" />

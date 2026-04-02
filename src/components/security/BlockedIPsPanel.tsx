@@ -109,7 +109,7 @@ export const BlockedIPsPanel = () => {
               <p>Nenhum IP bloqueado no momento</p>
             </div>
           ) : (
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead>IP</TableHead>

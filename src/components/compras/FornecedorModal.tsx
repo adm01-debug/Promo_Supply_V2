@@ -106,7 +106,7 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+      <DialogContent aria-describedby="dialog-desc" className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>
             {fornecedor ? "Editar Fornecedor" : "Novo Fornecedor"}

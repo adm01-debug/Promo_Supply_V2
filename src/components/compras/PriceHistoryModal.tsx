@@ -220,7 +220,7 @@ export function PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-4xl max-h-[85vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-primary" />
@@ -267,7 +267,7 @@ export function PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps
                 {trend.change > 1 ? (
                   <ArrowUpRight className="w-5 h-5 text-destructive" />
                 ) : trend.change < -1 ? (
-                  <ArrowDownRight className="w-5 h-5 text-green-500" />
+                  <ArrowDownRight className="w-5 h-5 text-success" />
                 ) : (
                   <Minus className="w-5 h-5 text-muted-foreground" />
                 )}
@@ -340,7 +340,7 @@ export function PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   <Card className="p-3 text-center">
                     <p className="text-xs text-muted-foreground">Menor Preço</p>
-                    <p className="text-lg font-bold text-green-600">
+                    <p className="text-lg font-bold text-success">
                       {formatBRL(Math.min(...monthlyEvolution.map((m) => m.min)))}
                     </p>
                   </Card>
@@ -391,8 +391,8 @@ export function PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps
 
                   {/* Best supplier highlight */}
                   {supplierComparison.length > 1 && (
-                    <div className="mt-3 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
-                      <p className="text-sm text-green-700 dark:text-green-400 font-medium">
+                    <div className="mt-3 p-3 rounded-lg bg-success/10 border border-green-500/20">
+                      <p className="text-sm text-success dark:text-success font-medium">
                         🏆 Melhor preço médio: <strong>{supplierComparison[0].fornecedor}</strong> — {formatBRL(supplierComparison[0].precoMedio)}
                       </p>
                       {supplierComparison.length > 1 && (

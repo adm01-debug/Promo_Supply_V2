@@ -39,14 +39,14 @@ const statusConfig: Record<string, {
 }> = {
   pendente: { 
     label: 'Pendente', 
-    color: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20', 
+    color: 'bg-warning/10 text-warning dark:text-warning border-amber-500/20', 
     icon: Clock,
     bgGradient: 'from-amber-500/5 to-transparent',
     glowColor: 'shadow-amber-500/10'
   },
   aprovado: { 
     label: 'Aprovado', 
-    color: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20', 
+    color: 'bg-info/10 text-info dark:text-info border-blue-500/20', 
     icon: CheckCircle2,
     bgGradient: 'from-blue-500/5 to-transparent',
     glowColor: 'shadow-blue-500/10'
@@ -67,14 +67,14 @@ const statusConfig: Record<string, {
   },
   entregue: { 
     label: 'Entregue', 
-    color: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20', 
+    color: 'bg-success/10 text-success dark:text-success border-emerald-500/20', 
     icon: CheckCircle2,
     bgGradient: 'from-emerald-500/5 to-transparent',
     glowColor: 'shadow-emerald-500/10'
   },
   cancelado: { 
     label: 'Cancelado', 
-    color: 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/20', 
+    color: 'bg-destructive/10 text-destructive dark:text-destructive border-red-500/20', 
     icon: X,
     bgGradient: 'from-red-500/5 to-transparent',
     glowColor: 'shadow-red-500/10'
@@ -88,7 +88,7 @@ const getPrazoStatus = (prazo: string | null, status: string) => {
   const dias = differenceInDays(new Date(prazo), new Date());
   if (dias < 0) return { label: 'Atrasado', color: 'text-destructive', urgent: true, icon: AlertCircle };
   if (dias === 0) return { label: 'Vence hoje', color: 'text-destructive', urgent: true, icon: AlertCircle };
-  if (dias <= 2) return { label: `${dias}d restante${dias > 1 ? 's' : ''}`, color: 'text-orange-500', urgent: true, icon: Clock };
+  if (dias <= 2) return { label: `${dias}d restante${dias > 1 ? 's' : ''}`, color: 'text-warning', urgent: true, icon: Clock };
   return { label: `${dias}d restantes`, color: 'text-muted-foreground', urgent: false, icon: Calendar };
 };
 
@@ -187,9 +187,9 @@ export const PedidoMobileCard = ({
                 )}
               </div>
             </div>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10">
-              <TrendingUp className="w-4 h-4 text-emerald-500" />
-              <span className="font-bold text-emerald-600 dark:text-emerald-400">
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success/10">
+              <TrendingUp className="w-4 h-4 text-success" />
+              <span className="font-bold text-success dark:text-success">
                 {pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
               </span>
             </div>

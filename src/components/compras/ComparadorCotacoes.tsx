@@ -133,7 +133,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
     {
       label: 'Pontuação Geral',
       key: 'score',
-      icon: <Star className="w-4 h-4 text-yellow-500" />,
+      icon: <Star className="w-4 h-4 text-warning" />,
       format: (_, cotacao) => {
         const score = getScore(cotacao.id);
         return (
@@ -152,20 +152,20 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
     {
       label: 'Valor Total',
       key: 'total',
-      icon: <DollarSign className="w-4 h-4 text-emerald-500" />,
+      icon: <DollarSign className="w-4 h-4 text-success" />,
       format: (value, cotacao, allCotacoes) => {
         const isBest = analysis?.bestPrice === cotacao.id;
         const diff = analysis ? ((value - analysis.minTotal) / analysis.minTotal * 100).toFixed(1) : 0;
         return (
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className={cn("text-xl font-bold", isBest && "text-emerald-500")}>
+              <span className={cn("text-xl font-bold", isBest && "text-success")}>
                 R$ {value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
               </span>
-              {isBest && <Trophy className="w-4 h-4 text-yellow-500" />}
+              {isBest && <Trophy className="w-4 h-4 text-warning" />}
             </div>
             {!isBest && analysis && (
-              <span className="text-xs text-orange-500 flex items-center gap-1">
+              <span className="text-xs text-warning flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" />
                 +{diff}% vs menor
               </span>
@@ -179,12 +179,12 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
     {
       label: 'Valor Unitário',
       key: 'valorUnitario',
-      icon: <Package className="w-4 h-4 text-blue-500" />,
+      icon: <Package className="w-4 h-4 text-info" />,
       format: (value, cotacao) => {
         const isBest = value === analysis?.minValorUnitario;
         return (
           <div className="flex items-center gap-2">
-            <span className={cn("text-lg font-semibold", isBest && "text-emerald-500")}>
+            <span className={cn("text-lg font-semibold", isBest && "text-success")}>
               R$ {value.toFixed(2)}
             </span>
             {isBest && <Badge variant="outline" className="text-xs">Menor</Badge>}
@@ -202,7 +202,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
         const isBest = analysis?.bestDelivery === cotacao.id;
         return (
           <div className="flex items-center gap-2">
-            <span className={cn("text-lg font-semibold", isBest && "text-emerald-500")}>
+            <span className={cn("text-lg font-semibold", isBest && "text-success")}>
               {value} {value === 1 ? 'dia' : 'dias'}
             </span>
             {isBest && <Badge variant="outline" className="text-xs">Mais rápido</Badge>}
@@ -215,12 +215,12 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
     {
       label: 'Frete',
       key: 'frete',
-      icon: <Truck className="w-4 h-4 text-orange-500" />,
+      icon: <Truck className="w-4 h-4 text-warning" />,
       format: (value, cotacao) => {
         const isFree = value === 0;
         return (
           <div className="flex items-center gap-2">
-            <span className={cn("text-lg font-semibold", isFree && "text-emerald-500")}>
+            <span className={cn("text-lg font-semibold", isFree && "text-success")}>
               {isFree ? 'Grátis' : `R$ ${value.toFixed(2)}`}
             </span>
             {cotacao.freteInfo && (
@@ -244,22 +244,22 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
         return (
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className={cn("text-lg font-semibold", sufficient ? "text-emerald-500" : "text-orange-500")}>
+              <span className={cn("text-lg font-semibold", sufficient ? "text-success" : "text-warning")}>
                 {value.toLocaleString('pt-BR')} un
               </span>
               {sufficient ? (
-                <Check className="w-4 h-4 text-emerald-500" />
+                <Check className="w-4 h-4 text-success" />
               ) : (
-                <AlertTriangle className="w-4 h-4 text-orange-500" />
+                <AlertTriangle className="w-4 h-4 text-warning" />
               )}
             </div>
             {!sufficient && (
-              <span className="text-xs text-orange-500">
+              <span className="text-xs text-warning">
                 Falta {(quantidade - value).toLocaleString('pt-BR')} un ({percentage}%)
               </span>
             )}
             {cotacao.alerta && (
-              <Badge variant="outline" className="text-xs text-orange-600 border-orange-300">
+              <Badge variant="outline" className="text-xs text-warning border-orange-300">
                 {cotacao.alerta}
               </Badge>
             )}
@@ -294,7 +294,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-6xl max-h-[90vh] p-0">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-6xl max-h-[90vh] p-0">
         <DialogHeader className="p-6 pb-4 border-b">
           <DialogTitle className="flex items-center gap-2">
             <Scale className="w-5 h-5 text-primary" />
@@ -336,7 +336,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                             {score}pts
                           </Badge>
                           {cotacao.id === analysis.bestOverall && (
-                            <Trophy className="w-4 h-4 text-yellow-500" />
+                            <Trophy className="w-4 h-4 text-warning" />
                           )}
                         </button>
                       </TooltipTrigger>
@@ -372,7 +372,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                           <div className="space-y-1">
                             <p className="font-semibold">{cotacao.fornecedor}</p>
                             {cotacao.id === analysis.bestOverall && (
-                              <Badge className="bg-yellow-500 text-yellow-950">
+                              <Badge className="bg-warning text-foreground">
                                 <Trophy className="w-3 h-3 mr-1" />
                                 Recomendado
                               </Badge>
@@ -404,7 +404,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                               key={cotacao.id} 
                               className={cn(
                                 "p-3 text-center",
-                                isBest && metric.key !== 'score' && metric.key !== 'condicaoPagamento' && "bg-emerald-500/10"
+                                isBest && metric.key !== 'score' && metric.key !== 'condicaoPagamento' && "bg-success/10"
                               )}
                             >
                               <div className="flex justify-center">

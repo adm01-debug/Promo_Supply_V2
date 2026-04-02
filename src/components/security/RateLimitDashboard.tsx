@@ -242,7 +242,7 @@ export const RateLimitDashboard = () => {
               <p>Nenhum dado de rate limit disponível</p>
             </div>
           ) : (
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead>IP</TableHead>

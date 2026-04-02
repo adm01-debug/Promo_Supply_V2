@@ -74,9 +74,9 @@ const NegociacaoIA = () => {
   });
 
   const riskColor = (risk?: string) => {
-    if (risk === "baixo") return "text-green-500";
-    if (risk === "medio") return "text-yellow-500";
-    return "text-red-500";
+    if (risk === "baixo") return "text-success";
+    if (risk === "medio") return "text-warning";
+    return "text-destructive";
   };
 
   return (
@@ -156,8 +156,8 @@ const NegociacaoIA = () => {
                 <p className="text-foreground">{analysis.resumo}</p>
                 <div className="grid gap-4 md:grid-cols-2">
                   {analysis.melhor_cotacao && (
-                    <div className="flex items-center gap-2 p-3 rounded-lg bg-green-500/10">
-                      <CheckCircle className="h-5 w-5 text-green-500" />
+                    <div className="flex items-center gap-2 p-3 rounded-lg bg-success/10">
+                      <CheckCircle className="h-5 w-5 text-success" />
                       <div>
                         <p className="text-xs text-muted-foreground">Melhor Cotação</p>
                         <p className="font-semibold">{analysis.melhor_cotacao}</p>
@@ -196,7 +196,7 @@ const NegociacaoIA = () => {
                     <p className="text-sm">{s.estrategia}</p>
                     {s.valor_contraproposta && (
                       <div className="flex items-center gap-2 p-2 rounded bg-muted">
-                        <TrendingDown className="h-4 w-4 text-green-500" />
+                        <TrendingDown className="h-4 w-4 text-success" />
                         <span className="text-sm font-medium">
                           Contraproposta: R$ {Number(s.valor_contraproposta).toLocaleString("pt-BR")}
                         </span>

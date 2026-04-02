@@ -21,8 +21,8 @@ import { ptBR } from "date-fns/locale";
 const AlertIcon = ({ type }: { type: BuyerAlert['type'] }) => {
   switch (type) {
     case 'critical': return <AlertCircle className="w-4 h-4 text-destructive" />;
-    case 'warning': return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
-    case 'success': return <CheckCircle2 className="w-4 h-4 text-green-500" />;
+    case 'warning': return <AlertTriangle className="w-4 h-4 text-warning" />;
+    case 'success': return <CheckCircle2 className="w-4 h-4 text-success" />;
   }
 };
 
@@ -30,8 +30,8 @@ const getAlertBgClass = (type: BuyerAlert['type'], read: boolean) => {
   if (read) return 'bg-muted/30';
   switch (type) {
     case 'critical': return 'bg-destructive/10 border-l-2 border-l-destructive';
-    case 'warning': return 'bg-yellow-500/10 border-l-2 border-l-yellow-500';
-    case 'success': return 'bg-green-500/10 border-l-2 border-l-green-500';
+    case 'warning': return 'bg-warning/10 border-l-2 border-l-yellow-500';
+    case 'success': return 'bg-success/10 border-l-2 border-l-green-500';
   }
 };
 
@@ -84,7 +84,7 @@ export const BuyerPerformanceAlerts = () => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="relative">
-          {unreadCount > 0 ? <BellRing className="w-4 h-4 text-yellow-500" /> : <Bell className="w-4 h-4" />}
+          {unreadCount > 0 ? <BellRing className="w-4 h-4 text-warning" /> : <Bell className="w-4 h-4" />}
           <span className="ml-2 hidden sm:inline">Alertas</span>
           {unreadCount > 0 && (
             <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
@@ -96,7 +96,7 @@ export const BuyerPerformanceAlerts = () => {
       <PopoverContent className="w-96 p-0" align="end">
         <div className="flex items-center justify-between p-4 border-b border-border">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-yellow-500" />
+            <AlertTriangle className="w-5 h-5 text-warning" />
             <h3 className="font-semibold">Alertas de Performance</h3>
           </div>
           {alerts.length > 0 && (
@@ -114,7 +114,7 @@ export const BuyerPerformanceAlerts = () => {
         <ScrollArea className="h-[400px]">
           {alerts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
-              <CheckCircle2 className="w-12 h-12 mb-3 text-green-500/50" />
+              <CheckCircle2 className="w-12 h-12 mb-3 text-success/50" />
               <p className="text-sm font-medium">Nenhum alerta</p>
               <p className="text-xs">Todos os compradores estão dentro das metas</p>
             </div>
@@ -136,7 +136,7 @@ export const BuyerPerformanceAlerts = () => {
                       </div>
                       <p className="text-sm font-medium text-foreground">{alert.message}</p>
                       <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                        <span>Atual: <strong className={alert.type === 'critical' ? 'text-destructive' : 'text-yellow-600'}>{formatMetricValue(alert.metric, alert.currentValue)}</strong></span>
+                        <span>Atual: <strong className={alert.type === 'critical' ? 'text-destructive' : 'text-warning'}>{formatMetricValue(alert.metric, alert.currentValue)}</strong></span>
                         <span>Meta: <strong>{formatMetricValue(alert.metric, alert.targetValue)}</strong></span>
                         <span>({alert.percentage.toFixed(0)}%)</span>
                       </div>

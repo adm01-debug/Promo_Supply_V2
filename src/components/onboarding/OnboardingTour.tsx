@@ -203,7 +203,7 @@ const CompletionModal = ({ onClose }: { onClose: () => void }) => (
             animate={{ scale: 1, rotate: 0 }}
             transition={{ delay: 0.6 + i * 0.1, type: 'spring' }}
           >
-            <Star className="w-6 h-6 text-yellow-500 fill-yellow-500" />
+            <Star className="w-6 h-6 text-warning fill-yellow-500" />
           </motion.div>
         ))}
       </motion.div>

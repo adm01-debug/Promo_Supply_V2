@@ -29,9 +29,9 @@ const WEIGHTS = {
 
 const getRankIcon = (position: number) => {
   switch (position) {
-    case 0: return <Trophy className="h-5 w-5 text-yellow-500" />;
-    case 1: return <Medal className="h-5 w-5 text-gray-400" />;
-    case 2: return <Medal className="h-5 w-5 text-amber-600" />;
+    case 0: return <Trophy className="h-5 w-5 text-warning" />;
+    case 1: return <Medal className="h-5 w-5 text-muted-foreground" />;
+    case 2: return <Medal className="h-5 w-5 text-warning" />;
     default: return <span className="text-sm font-bold text-muted-foreground w-5 text-center">{position + 1}</span>;
   }
 };
@@ -63,9 +63,9 @@ const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: Supplier
     <div 
       className={cn(
         "p-3 rounded-lg border transition-all cursor-pointer hover:shadow-sm",
-        position === 0 && "border-yellow-500/30 bg-yellow-500/5",
+        position === 0 && "border-yellow-500/30 bg-warning/5",
         position === 1 && "border-gray-400/30 bg-gray-400/5",
-        position === 2 && "border-amber-600/30 bg-amber-600/5",
+        position === 2 && "border-amber-600/30 bg-warning/5",
         position > 2 && "border-border bg-muted/30"
       )}
       onClick={onToggle}
@@ -211,7 +211,7 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle className="text-lg flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-yellow-500" />
+            <Trophy className="h-5 w-5 text-warning" />
             Ranking
           </CardTitle>
           <div className="flex items-center gap-2">
@@ -248,10 +248,10 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
         {supplierData.length > 0 ? (
           <>
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+              <div className="p-3 rounded-lg bg-warning/10 border border-yellow-500/20">
                 <p className="text-xs text-muted-foreground">Melhor Fornecedor</p>
                 <p className="font-semibold text-sm truncate">{topPerformer?.name}</p>
-                <p className="text-lg font-bold text-yellow-600">{topPerformer?.overallScore.toFixed(1)} pts</p>
+                <p className="text-lg font-bold text-warning">{topPerformer?.overallScore.toFixed(1)} pts</p>
               </div>
               <div className="p-3 rounded-lg bg-muted/50 border border-border">
                 <p className="text-xs text-muted-foreground">Média Geral</p>

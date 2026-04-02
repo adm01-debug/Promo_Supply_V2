@@ -105,10 +105,10 @@ const riskCategories = [
 ];
 
 const getRiskColor = (value: number) => {
-  if (value <= 25) return { bg: 'bg-emerald-500', text: 'text-emerald-500', light: 'bg-emerald-500/20' };
-  if (value <= 50) return { bg: 'bg-amber-500', text: 'text-amber-500', light: 'bg-amber-500/20' };
-  if (value <= 75) return { bg: 'bg-orange-500', text: 'text-orange-500', light: 'bg-orange-500/20' };
-  return { bg: 'bg-red-500', text: 'text-red-500', light: 'bg-red-500/20' };
+  if (value <= 25) return { bg: 'bg-success', text: 'text-success', light: 'bg-success/20' };
+  if (value <= 50) return { bg: 'bg-warning', text: 'text-warning', light: 'bg-warning/20' };
+  if (value <= 75) return { bg: 'bg-warning', text: 'text-warning', light: 'bg-warning/20' };
+  return { bg: 'bg-destructive', text: 'text-destructive', light: 'bg-destructive/20' };
 };
 
 const getRiskLabel = (value: number) => {
@@ -128,42 +128,42 @@ export const RiskHeatMap = () => {
     <div className="space-y-6">
       {/* Risk Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="p-4 border-emerald-500/30 bg-emerald-500/5">
+        <Card className="p-4 border-emerald-500/30 bg-success/5">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-3 h-3 rounded-full bg-emerald-500" />
+            <div className="w-3 h-3 rounded-full bg-success" />
             <span className="text-sm text-muted-foreground">Risco Baixo</span>
           </div>
-          <p className="text-2xl font-bold text-emerald-500">
+          <p className="text-2xl font-bold text-success">
             {mockRiskData.filter(s => s.overallRisk <= 25).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
-        <Card className="p-4 border-amber-500/30 bg-amber-500/5">
+        <Card className="p-4 border-amber-500/30 bg-warning/5">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-3 h-3 rounded-full bg-amber-500" />
+            <div className="w-3 h-3 rounded-full bg-warning" />
             <span className="text-sm text-muted-foreground">Risco Médio</span>
           </div>
-          <p className="text-2xl font-bold text-amber-500">
+          <p className="text-2xl font-bold text-warning">
             {mockRiskData.filter(s => s.overallRisk > 25 && s.overallRisk <= 50).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
-        <Card className="p-4 border-orange-500/30 bg-orange-500/5">
+        <Card className="p-4 border-orange-500/30 bg-warning/5">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-3 h-3 rounded-full bg-orange-500" />
+            <div className="w-3 h-3 rounded-full bg-warning" />
             <span className="text-sm text-muted-foreground">Risco Alto</span>
           </div>
-          <p className="text-2xl font-bold text-orange-500">
+          <p className="text-2xl font-bold text-warning">
             {mockRiskData.filter(s => s.overallRisk > 50 && s.overallRisk <= 75).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
-        <Card className="p-4 border-red-500/30 bg-red-500/5">
+        <Card className="p-4 border-red-500/30 bg-destructive/5">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-3 h-3 rounded-full bg-red-500" />
+            <div className="w-3 h-3 rounded-full bg-destructive" />
             <span className="text-sm text-muted-foreground">Risco Crítico</span>
           </div>
-          <p className="text-2xl font-bold text-red-500">
+          <p className="text-2xl font-bold text-destructive">
             {mockRiskData.filter(s => s.overallRisk > 75).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
@@ -220,10 +220,10 @@ export const RiskHeatMap = () => {
                             {supplier.supplierName}
                           </span>
                           {supplier.trend === 'improving' && (
-                            <TrendingDown className="w-3 h-3 text-emerald-500" />
+                            <TrendingDown className="w-3 h-3 text-success" />
                           )}
                           {supplier.trend === 'worsening' && (
-                            <TrendingUp className="w-3 h-3 text-red-500" />
+                            <TrendingUp className="w-3 h-3 text-destructive" />
                           )}
                         </div>
                         <Badge variant="outline" className="text-[9px] mt-1">
@@ -311,10 +311,10 @@ export const RiskHeatMap = () => {
           <p className="text-xs text-muted-foreground mb-2">Legenda de Risco:</p>
           <div className="flex items-center gap-6">
             {[
-              { range: '0-25', label: 'Baixo', color: 'bg-emerald-500' },
-              { range: '26-50', label: 'Médio', color: 'bg-amber-500' },
-              { range: '51-75', label: 'Alto', color: 'bg-orange-500' },
-              { range: '76-100', label: 'Crítico', color: 'bg-red-500' }
+              { range: '0-25', label: 'Baixo', color: 'bg-success' },
+              { range: '26-50', label: 'Médio', color: 'bg-warning' },
+              { range: '51-75', label: 'Alto', color: 'bg-warning' },
+              { range: '76-100', label: 'Crítico', color: 'bg-destructive' }
             ].map(item => (
               <div key={item.label} className="flex items-center gap-2">
                 <div className={cn("w-3 h-3 rounded", item.color)} />
@@ -328,8 +328,8 @@ export const RiskHeatMap = () => {
       </Card>
 
       {/* Risk Alerts */}
-      <Card className="p-6 border-red-500/30 bg-red-500/5">
-        <h3 className="text-lg font-semibold text-red-500 mb-4 flex items-center gap-2">
+      <Card className="p-6 border-red-500/30 bg-destructive/5">
+        <h3 className="text-lg font-semibold text-destructive mb-4 flex items-center gap-2">
           <AlertTriangle className="w-5 h-5" />
           Alertas de Risco Prioritários
         </h3>

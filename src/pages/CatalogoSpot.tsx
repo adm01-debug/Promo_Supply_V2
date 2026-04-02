@@ -281,7 +281,7 @@ const CatalogoSpot = () => {
                     <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
                   </div>
                 ) : cart && cart.items.length > 0 ? (
-                  <Table>
+                  <Table aria-label="Tabela de dados">
                     <TableHeader>
                       <TableRow>
                         <TableHead>Referência</TableHead>
@@ -375,7 +375,7 @@ const CatalogoSpot = () => {
                     <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
                   </div>
                 ) : orders.length > 0 ? (
-                  <Table>
+                  <Table aria-label="Tabela de dados">
                     <TableHeader>
                       <TableRow>
                         <TableHead>Status</TableHead>
@@ -486,7 +486,7 @@ const CatalogoSpot = () => {
                     <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
                   </div>
                 ) : financialDocs && financialDocs.documents.length > 0 ? (
-                  <Table>
+                  <Table aria-label="Tabela de dados">
                     <TableHeader>
                       <TableRow>
                         <TableHead>Nº Doc</TableHead>

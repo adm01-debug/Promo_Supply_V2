@@ -259,11 +259,11 @@ interface PriorityIndicatorProps {
 }
 
 const priorityConfigs: Record<PriorityLevel, { label: string; color: string; bars: number }> = {
-  low: { label: "Baixa", color: "bg-green-500", bars: 1 },
-  medium: { label: "Média", color: "bg-amber-500", bars: 2 },
-  high: { label: "Alta", color: "bg-orange-500", bars: 3 },
-  urgent: { label: "Urgente", color: "bg-red-500", bars: 4 },
-  critical: { label: "Crítica", color: "bg-red-600", bars: 4 },
+  low: { label: "Baixa", color: "bg-success", bars: 1 },
+  medium: { label: "Média", color: "bg-warning", bars: 2 },
+  high: { label: "Alta", color: "bg-warning", bars: 3 },
+  urgent: { label: "Urgente", color: "bg-destructive", bars: 4 },
+  critical: { label: "Crítica", color: "bg-destructive", bars: 4 },
 };
 
 export const PriorityIndicator = ({
@@ -317,11 +317,11 @@ export const PriorityIndicator = ({
         <span className={cn(
           "font-medium",
           size === "sm" ? "text-[10px]" : size === "lg" ? "text-sm" : "text-xs",
-          priority === "critical" && "text-red-600 dark:text-red-400",
-          priority === "urgent" && "text-red-500 dark:text-red-400",
-          priority === "high" && "text-orange-500 dark:text-orange-400",
-          priority === "medium" && "text-amber-500 dark:text-amber-400",
-          priority === "low" && "text-green-500 dark:text-green-400"
+          priority === "critical" && "text-destructive",
+          priority === "urgent" && "text-destructive",
+          priority === "high" && "text-warning",
+          priority === "medium" && "text-warning",
+          priority === "low" && "text-success"
         )}>
           {config.label}
         </span>
@@ -362,7 +362,7 @@ export const ProgressStatus = ({
     success: "bg-success",
     warning: "bg-warning",
     destructive: "bg-destructive",
-    gradient: "bg-gradient-to-r from-primary via-purple-500 to-pink-500",
+    gradient: "bg-gradient-to-r from-primary via-primary/70 to-primary/50",
   };
 
   const barHeight = {
@@ -436,15 +436,15 @@ export function TrendIndicator({
   const Icon = change > 0 ? TrendingUp : change < 0 ? TrendingDown : Minus;
   
   const colorClass = isPositive 
-    ? "text-green-600 dark:text-green-400" 
+    ? "text-success" 
     : isNegative 
-    ? "text-red-600 dark:text-red-400"
+    ? "text-destructive"
     : "text-muted-foreground";
 
   const bgClass = isPositive 
-    ? "bg-green-500/10" 
+    ? "bg-success/10" 
     : isNegative 
-    ? "bg-red-500/10"
+    ? "bg-destructive/10"
     : "bg-muted";
 
   const sizes = {
@@ -506,10 +506,10 @@ export function ConfidenceMeter({
   const clampedValue = Math.min(100, Math.max(0, value));
   
   const getColor = (val: number) => {
-    if (val >= 80) return "bg-green-500";
-    if (val >= 60) return "bg-amber-500";
-    if (val >= 40) return "bg-orange-500";
-    return "bg-red-500";
+    if (val >= 80) return "bg-success";
+    if (val >= 60) return "bg-warning";
+    if (val >= 40) return "bg-warning";
+    return "bg-destructive";
   };
 
   const heightConfig = { sm: "h-1.5", default: "h-2", lg: "h-3" };
@@ -606,7 +606,7 @@ export function RatingStars({
                 iconSizes[size],
                 "transition-colors duration-200",
                 isFilled
-                  ? "text-amber-400 fill-amber-400"
+                  ? "text-warning fill-warning"
                   : "text-muted-foreground/30"
               )}
             />
@@ -642,10 +642,10 @@ export function SecurityScore({
   const clampedScore = Math.min(100, Math.max(0, score));
   
   const getLevel = (val: number) => {
-    if (val >= 80) return { label: "Excelente", color: "text-green-500", bg: "bg-green-500/10", border: "border-green-500/20" };
-    if (val >= 60) return { label: "Bom", color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20" };
-    if (val >= 40) return { label: "Moderado", color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20" };
-    return { label: "Crítico", color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/20" };
+    if (val >= 80) return { label: "Excelente", color: "text-success", bg: "bg-success/10", border: "border-success/20" };
+    if (val >= 60) return { label: "Bom", color: "text-info", bg: "bg-info/10", border: "border-info/20" };
+    if (val >= 40) return { label: "Moderado", color: "text-warning", bg: "bg-warning/10", border: "border-warning/20" };
+    return { label: "Crítico", color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/20" };
   };
 
   const level = getLevel(clampedScore);
@@ -968,7 +968,7 @@ export function StepStatus({
                 animate={{ scale: 1 }}
                 transition={{ delay: index * 0.1, type: "spring" }}
                 className={cn(
-                  "rounded-full flex items-center justify-center font-medium text-white relative z-10",
+                  "rounded-full flex items-center justify-center font-medium text-primary-foreground relative z-10",
                   dotSizes[size],
                   styles.bg,
                   step.status === 'current' && "ring-4 ring-primary/20"

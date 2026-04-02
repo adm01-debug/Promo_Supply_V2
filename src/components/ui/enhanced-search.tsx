@@ -69,11 +69,11 @@ const typeLabels: Record<SearchResult["type"], string> = {
 };
 
 const typeColors: Record<SearchResult["type"], string> = {
-  solicitacao: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+  solicitacao: "bg-info/10 text-info dark:text-info",
   pedido: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
-  fornecedor: "bg-green-500/10 text-green-600 dark:text-green-400",
-  cotacao: "bg-orange-500/10 text-orange-600 dark:text-orange-400",
-  pagamento: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400",
+  fornecedor: "bg-success/10 text-success dark:text-success",
+  cotacao: "bg-warning/10 text-warning dark:text-warning",
+  pagamento: "bg-success/10 text-success dark:text-success",
 };
 
 // Fuse.js configuration

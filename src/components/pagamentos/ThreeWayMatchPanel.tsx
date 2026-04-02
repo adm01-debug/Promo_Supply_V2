@@ -65,12 +65,12 @@ export const ThreeWayMatchPanel = ({ pagamento }: Props) => {
         <Link2 className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm font-semibold">Three-Way Match</span>
         {matchStatus.allMatch && (
-          <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 text-xs gap-1">
+          <Badge variant="outline" className="bg-success/10 text-success text-xs gap-1">
             <CheckCircle2 className="h-3 w-3" /> Reconciliado
           </Badge>
         )}
         {matchStatus.hasDivergence && (
-          <Badge variant="outline" className="bg-red-500/10 text-red-600 text-xs gap-1">
+          <Badge variant="outline" className="bg-destructive/10 text-destructive text-xs gap-1">
             <AlertTriangle className="h-3 w-3" /> Divergência
           </Badge>
         )}
@@ -82,7 +82,7 @@ export const ThreeWayMatchPanel = ({ pagamento }: Props) => {
           return (
             <div key={item.label} className="flex items-center justify-between p-2 rounded bg-muted/50">
               <div className="flex items-center gap-2">
-                <Icon className={`h-4 w-4 ${item.found ? 'text-emerald-600' : 'text-muted-foreground'}`} />
+                <Icon className={`h-4 w-4 ${item.found ? 'text-success' : 'text-muted-foreground'}`} />
                 <div>
                   <p className="text-xs font-medium">{item.label}</p>
                   {item.found && item.numero && (
@@ -103,8 +103,8 @@ export const ThreeWayMatchPanel = ({ pagamento }: Props) => {
       </div>
 
       {matchStatus.hasDivergence && (
-        <div className="p-2 rounded bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
-          <p className="text-xs text-red-600 dark:text-red-400 flex items-center gap-1">
+        <div className="p-2 rounded bg-destructive/5 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
+          <p className="text-xs text-destructive dark:text-destructive flex items-center gap-1">
             <AlertTriangle className="h-3 w-3" />
             Valores divergentes entre documentos. Verifique antes de confirmar.
           </p>

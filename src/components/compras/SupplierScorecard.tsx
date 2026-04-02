@@ -169,32 +169,32 @@ const mockSuppliers: SupplierScore[] = [
 ];
 
 const getScoreColor = (score: number) => {
-  if (score >= 85) return "text-emerald-500";
-  if (score >= 70) return "text-amber-500";
-  if (score >= 50) return "text-orange-500";
-  return "text-red-500";
+  if (score >= 85) return "text-success";
+  if (score >= 70) return "text-warning";
+  if (score >= 50) return "text-warning";
+  return "text-destructive";
 };
 
 const getScoreBg = (score: number) => {
-  if (score >= 85) return "bg-emerald-500";
-  if (score >= 70) return "bg-amber-500";
-  if (score >= 50) return "bg-orange-500";
-  return "bg-red-500";
+  if (score >= 85) return "bg-success";
+  if (score >= 70) return "bg-warning";
+  if (score >= 50) return "bg-warning";
+  return "bg-destructive";
 };
 
 const getRiskBadge = (risk: SupplierScore['riskLevel']) => {
   const config = {
-    low: { label: "Baixo", variant: "default" as const, className: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" },
-    medium: { label: "Médio", variant: "secondary" as const, className: "bg-amber-500/10 text-amber-500 border-amber-500/20" },
-    high: { label: "Alto", variant: "destructive" as const, className: "bg-orange-500/10 text-orange-500 border-orange-500/20" },
-    critical: { label: "Crítico", variant: "destructive" as const, className: "bg-red-500/10 text-red-500 border-red-500/20" }
+    low: { label: "Baixo", variant: "default" as const, className: "bg-success/10 text-success border-emerald-500/20" },
+    medium: { label: "Médio", variant: "secondary" as const, className: "bg-warning/10 text-warning border-amber-500/20" },
+    high: { label: "Alto", variant: "destructive" as const, className: "bg-warning/10 text-warning border-orange-500/20" },
+    critical: { label: "Crítico", variant: "destructive" as const, className: "bg-destructive/10 text-destructive border-red-500/20" }
   };
   return config[risk];
 };
 
 const TrendIcon = ({ trend }: { trend: SupplierScore['trend'] }) => {
-  if (trend === 'up') return <TrendingUp className="w-4 h-4 text-emerald-500" />;
-  if (trend === 'down') return <TrendingDown className="w-4 h-4 text-red-500" />;
+  if (trend === 'up') return <TrendingUp className="w-4 h-4 text-success" />;
+  if (trend === 'down') return <TrendingDown className="w-4 h-4 text-destructive" />;
   return <Minus className="w-4 h-4 text-muted-foreground" />;
 };
 
@@ -253,28 +253,28 @@ export const SupplierScorecard = () => {
         </Card>
         <Card className="p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <CheckCircle className="w-4 h-4 text-emerald-500" />
+            <CheckCircle className="w-4 h-4 text-success" />
             <span className="text-sm">Baixo Risco</span>
           </div>
-          <p className="text-2xl font-bold text-emerald-500">
+          <p className="text-2xl font-bold text-success">
             {filteredSuppliers.filter(s => s.riskLevel === 'low').length}
           </p>
         </Card>
         <Card className="p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <AlertTriangle className="w-4 h-4 text-amber-500" />
+            <AlertTriangle className="w-4 h-4 text-warning" />
             <span className="text-sm">Risco Médio/Alto</span>
           </div>
-          <p className="text-2xl font-bold text-amber-500">
+          <p className="text-2xl font-bold text-warning">
             {filteredSuppliers.filter(s => s.riskLevel === 'medium' || s.riskLevel === 'high').length}
           </p>
         </Card>
         <Card className="p-4">
           <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <XCircle className="w-4 h-4 text-red-500" />
+            <XCircle className="w-4 h-4 text-destructive" />
             <span className="text-sm">Críticos</span>
           </div>
-          <p className="text-2xl font-bold text-red-500">
+          <p className="text-2xl font-bold text-destructive">
             {filteredSuppliers.filter(s => s.riskLevel === 'critical').length}
           </p>
         </Card>
@@ -309,9 +309,9 @@ export const SupplierScorecard = () => {
                     {/* Rank */}
                     <div className={cn(
                       "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
-                      index === 0 && "bg-amber-500/20 text-amber-500",
-                      index === 1 && "bg-slate-400/20 text-slate-400",
-                      index === 2 && "bg-orange-600/20 text-orange-600",
+                      index === 0 && "bg-warning/20 text-warning",
+                      index === 1 && "bg-slate-400/20 text-muted-foreground",
+                      index === 2 && "bg-warning/20 text-warning",
                       index > 2 && "bg-muted text-muted-foreground"
                     )}>
                       {index + 1}
@@ -353,8 +353,8 @@ export const SupplierScorecard = () => {
                         <div className="flex items-center gap-1 text-xs">
                           <TrendIcon trend={supplier.trend} />
                           <span className={cn(
-                            scoreDiff > 0 && "text-emerald-500",
-                            scoreDiff < 0 && "text-red-500",
+                            scoreDiff > 0 && "text-success",
+                            scoreDiff < 0 && "text-destructive",
                             scoreDiff === 0 && "text-muted-foreground"
                           )}>
                             {scoreDiff > 0 ? `+${scoreDiff}` : scoreDiff}
@@ -399,14 +399,14 @@ export const SupplierScorecard = () => {
                       </div>
 
                       {supplier.riskFactors.length > 0 && (
-                        <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
-                          <p className="text-xs font-medium text-red-500 mb-2 flex items-center gap-1">
+                        <div className="mt-4 p-3 rounded-lg bg-destructive/10 border border-red-500/20">
+                          <p className="text-xs font-medium text-destructive mb-2 flex items-center gap-1">
                             <AlertTriangle className="w-3 h-3" />
                             Fatores de Risco
                           </p>
                           <div className="flex flex-wrap gap-2">
                             {supplier.riskFactors.map((factor, i) => (
-                              <Badge key={i} variant="outline" className="text-[10px] border-red-500/30 text-red-400">
+                              <Badge key={i} variant="outline" className="text-[10px] border-red-500/30 text-destructive">
                                 {factor}
                               </Badge>
                             ))}
@@ -416,7 +416,7 @@ export const SupplierScorecard = () => {
 
                       {supplier.certifications.length > 0 && (
                         <div className="mt-3 flex items-center gap-2">
-                          <Star className="w-4 h-4 text-amber-500" />
+                          <Star className="w-4 h-4 text-warning" />
                           <span className="text-xs text-muted-foreground">Certificações:</span>
                           {supplier.certifications.map((cert, i) => (
                             <Badge key={i} variant="secondary" className="text-[10px]">

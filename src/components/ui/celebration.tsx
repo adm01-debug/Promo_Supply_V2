@@ -215,7 +215,7 @@ const celebrationConfigs: Record<CelebrationType, {
   },
   streak: {
     icon: Flame,
-    colors: ['bg-orange-500', 'bg-red-400', 'bg-amber-400', 'bg-yellow-500'],
+    colors: ['bg-warning', 'bg-red-400', 'bg-amber-400', 'bg-warning'],
     bgGradient: 'from-orange-500/20 to-red-500/20',
     particles: 'mixed'
   },

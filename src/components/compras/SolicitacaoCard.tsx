@@ -188,16 +188,16 @@ export const SolicitacaoCard = ({
 
         {/* Info adicional por status */}
         {solicitacao.status === 'EM_COTACAO' && solicitacao.cotacoes && (
-          <div className="mt-2 p-2 bg-yellow-500/10 rounded-md">
-            <span className="text-xs text-yellow-600 font-medium">
+          <div className="mt-2 p-2 bg-warning/10 rounded-md">
+            <span className="text-xs text-warning font-medium">
               {solicitacao.cotacoes.length} cotações recebidas | Melhor: R$ {Math.min(...solicitacao.cotacoes.map(c => c.valorUnitario)).toFixed(2)}/un
             </span>
           </div>
         )}
 
         {solicitacao.status === 'FORNECEDOR_SELECIONADO' && solicitacao.fornecedorSelecionado && (
-          <div className="mt-2 p-2 bg-blue-500/10 rounded-md">
-            <span className="text-xs text-blue-600 font-medium">
+          <div className="mt-2 p-2 bg-info/10 rounded-md">
+            <span className="text-xs text-info font-medium">
               Fornecedor: {solicitacao.fornecedorSelecionado} | R$ {solicitacao.valorUnitario?.toFixed(2)}/un | Total: R$ {solicitacao.valorTotal?.toLocaleString('pt-BR')}
             </span>
           </div>
@@ -236,10 +236,10 @@ export const SolicitacaoCard = ({
               asChild={!!actions.primary.href}
               className={cn(
                 "flex-1 sm:flex-none text-xs sm:text-sm h-8 sm:h-9",
-                solicitacao.status === 'AGUARDANDO_COTACAO' && "bg-emerald-600 hover:bg-emerald-700",
+                solicitacao.status === 'AGUARDANDO_COTACAO' && "bg-success hover:bg-success/80",
                 solicitacao.status === 'EM_COTACAO' && "bg-yellow-600 hover:bg-yellow-700",
-                solicitacao.status === 'FORNECEDOR_SELECIONADO' && "bg-blue-600 hover:bg-blue-700",
-                solicitacao.status === 'AGUARDANDO_PAGAMENTO' && "bg-orange-600 hover:bg-orange-700",
+                solicitacao.status === 'FORNECEDOR_SELECIONADO' && "bg-info hover:bg-blue-700",
+                solicitacao.status === 'AGUARDANDO_PAGAMENTO' && "bg-warning hover:bg-orange-700",
               )}
             >
               {actions.primary.href ? (

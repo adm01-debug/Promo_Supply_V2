@@ -57,9 +57,9 @@ interface AISuggestionResponse {
 }
 
 const riskConfig = {
-  low: { label: 'Baixo', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400', icon: CheckCircle2 },
-  medium: { label: 'Médio', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400', icon: AlertTriangle },
-  high: { label: 'Alto', color: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400', icon: AlertTriangle },
+  low: { label: 'Baixo', color: 'bg-success/10 text-success dark:bg-success/15 dark:text-success', icon: CheckCircle2 },
+  medium: { label: 'Médio', color: 'bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning', icon: AlertTriangle },
+  high: { label: 'Alto', color: 'bg-destructive/10 text-destructive dark:bg-destructive/15 dark:text-destructive', icon: AlertTriangle },
 };
 
 export function AISupplierSuggestion() {
@@ -172,7 +172,7 @@ export function AISupplierSuggestion() {
           Sugestão IA
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Bot className="h-5 w-5 text-primary" />
@@ -320,7 +320,7 @@ export function AISupplierSuggestion() {
                                   <ul className="text-sm space-y-1">
                                     {rec.reasons?.map((reason, i) => (
                                       <li key={i} className="flex items-start gap-1">
-                                        <CheckCircle2 className="h-3 w-3 text-emerald-500 mt-0.5 flex-shrink-0" />
+                                        <CheckCircle2 className="h-3 w-3 text-success mt-0.5 flex-shrink-0" />
                                         {reason}
                                       </li>
                                     ))}
@@ -331,7 +331,7 @@ export function AISupplierSuggestion() {
                                   <ul className="text-sm space-y-1">
                                     {rec.negotiationTips?.map((tip, i) => (
                                       <li key={i} className="flex items-start gap-1">
-                                        <Lightbulb className="h-3 w-3 text-amber-500 mt-0.5 flex-shrink-0" />
+                                        <Lightbulb className="h-3 w-3 text-warning mt-0.5 flex-shrink-0" />
                                         {tip}
                                       </li>
                                     ))}
@@ -383,7 +383,7 @@ export function AISupplierSuggestion() {
                 {suggestions.alternativeSuggestions?.length > 0 && (
                   <div>
                     <h3 className="font-semibold flex items-center gap-2 mb-3">
-                      <Lightbulb className="h-4 w-4 text-amber-500" />
+                      <Lightbulb className="h-4 w-4 text-warning" />
                       Sugestões Alternativas
                     </h3>
                     <Card>
@@ -391,7 +391,7 @@ export function AISupplierSuggestion() {
                         <ul className="space-y-2">
                           {suggestions.alternativeSuggestions.map((sug, i) => (
                             <li key={i} className="flex items-start gap-2 text-sm">
-                              <span className="text-amber-500">•</span>
+                              <span className="text-warning">•</span>
                               {sug}
                             </li>
                           ))}

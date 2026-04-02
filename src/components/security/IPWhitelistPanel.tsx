@@ -90,7 +90,7 @@ export const IPWhitelistPanel = () => {
               <p className="text-sm">Adicione IPs confiáveis para evitar bloqueios acidentais</p>
             </div>
           ) : (
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead>IP</TableHead>

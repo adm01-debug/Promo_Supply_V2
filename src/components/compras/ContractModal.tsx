@@ -292,7 +292,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] max-w-4xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+      <DialogContent aria-describedby="dialog-desc" className="w-[95vw] max-w-4xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle>
             {isEditing ? "Editar Contrato" : "Novo Contrato"}
@@ -551,8 +551,8 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
               </div>
             </div>
 
-            <div className="flex items-center gap-3 p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-800">
-              <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0" />
+            <div className="flex items-center gap-3 p-3 bg-warning/5 dark:bg-warning/10 rounded-lg border border-warning/20 dark:border-warning/30">
+              <AlertTriangle className="w-5 h-5 text-warning shrink-0" />
               <div className="flex-1">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input

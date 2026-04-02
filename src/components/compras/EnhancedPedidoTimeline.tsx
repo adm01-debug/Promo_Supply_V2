@@ -134,8 +134,8 @@ export const EnhancedPedidoTimeline = ({
     if (diasRestantes === 0) {
       return {
         label: `Vence hoje (${horasRestantes}h)`,
-        color: "text-orange-500",
-        bgColor: "bg-orange-500/10",
+        color: "text-warning",
+        bgColor: "bg-warning/10",
         icon: Timer,
       };
     }
@@ -143,8 +143,8 @@ export const EnhancedPedidoTimeline = ({
     if (diasRestantes <= 3) {
       return {
         label: `${diasRestantes} dia(s) restante(s)`,
-        color: "text-yellow-500",
-        bgColor: "bg-yellow-500/10",
+        color: "text-warning",
+        bgColor: "bg-warning/10",
         icon: Timer,
       };
     }

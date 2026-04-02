@@ -66,7 +66,7 @@ export const MobileRefreshWrapper = React.forwardRef<HTMLDivElement, MobileRefre
     colorful: {
       indicator: 'bg-gradient-to-br from-primary/80 to-primary-glow/80 border-0',
       activeColor: 'shadow-lg shadow-primary/30',
-      icon: 'text-white',
+      icon: 'text-primary-foreground',
       bg: 'bg-gradient-to-b from-primary/10 to-transparent'
     }
   };
@@ -132,7 +132,7 @@ export const MobileRefreshWrapper = React.forwardRef<HTMLDivElement, MobileRefre
                   animate={{ scale: 1 }}
                   transition={{ type: "spring", stiffness: 500, damping: 25 }}
                 >
-                  <Check className={cn("w-7 h-7", variant === 'colorful' ? 'text-white' : 'text-success')} />
+                  <Check className={cn("w-7 h-7", variant === 'colorful' ? 'text-primary-foreground' : 'text-success')} />
                 </motion.div>
               ) : refreshing ? (
                 <Loader2 className={cn("w-7 h-7 animate-spin", styles.icon)} />

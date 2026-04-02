@@ -20,11 +20,11 @@ export function FeedbackSettingsPanel() {
   const feedback = useFeedback();
 
   const testButtons = [
-    { label: "Sucesso", icon: Check, action: feedback.success, color: "text-green-500" },
-    { label: "Erro", icon: X, action: feedback.error, color: "text-red-500" },
-    { label: "Aviso", icon: AlertTriangle, action: feedback.warning, color: "text-yellow-500" },
-    { label: "Info", icon: Info, action: feedback.info, color: "text-blue-500" },
-    { label: "Aprovação", icon: Check, action: feedback.approval, color: "text-emerald-500" },
+    { label: "Sucesso", icon: Check, action: feedback.success, color: "text-success" },
+    { label: "Erro", icon: X, action: feedback.error, color: "text-destructive" },
+    { label: "Aviso", icon: AlertTriangle, action: feedback.warning, color: "text-warning" },
+    { label: "Info", icon: Info, action: feedback.info, color: "text-info" },
+    { label: "Aprovação", icon: Check, action: feedback.approval, color: "text-success" },
     { label: "Rejeição", icon: X, action: feedback.rejection, color: "text-rose-500" },
     { label: "Notificação", icon: Bell, action: feedback.notification, color: "text-purple-500" },
   ];

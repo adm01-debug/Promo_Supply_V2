@@ -172,7 +172,7 @@ export function ReceivingModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="w-5 h-5 text-primary" />
@@ -192,13 +192,13 @@ export function ReceivingModal({
             <Progress value={receivingProgress} className="h-2" />
             <div className="flex gap-2">
               {isComplete && (
-                <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+                <Badge className="bg-success/10 text-success border-green-500/20">
                   <Check className="w-3 h-3 mr-1" />
                   Completo
                 </Badge>
               )}
               {isPartial && (
-                <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/20">
+                <Badge className="bg-warning/10 text-warning border-orange-500/20">
                   <AlertCircle className="w-3 h-3 mr-1" />
                   Parcial
                 </Badge>
@@ -217,9 +217,9 @@ export function ReceivingModal({
                   key={item.id}
                   className={`p-3 rounded-lg border ${
                     itemComplete
-                      ? "border-green-500/30 bg-green-500/5"
+                      ? "border-green-500/30 bg-success/5"
                       : received > 0
-                      ? "border-orange-500/30 bg-orange-500/5"
+                      ? "border-orange-500/30 bg-warning/5"
                       : "border-border bg-card"
                   }`}
                 >
@@ -250,7 +250,7 @@ export function ReceivingModal({
                       <span className="text-xs text-muted-foreground">
                         / {item.quantidade}
                       </span>
-                      {itemComplete && <Check className="w-4 h-4 text-green-500" />}
+                      {itemComplete && <Check className="w-4 h-4 text-success" />}
                     </div>
                   </div>
                 </div>

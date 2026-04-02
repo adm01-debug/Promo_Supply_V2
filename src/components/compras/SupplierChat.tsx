@@ -311,7 +311,7 @@ export function SupplierChat() {
 
       {/* Chat Dialog */}
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent className="max-w-4xl h-[600px] p-0 gap-0">
+        <DialogContent aria-describedby="dialog-desc" className="max-w-4xl h-[600px] p-0 gap-0">
           <div className="flex h-full">
             {/* Contacts Sidebar */}
             <div className="w-80 border-r flex flex-col">
@@ -359,7 +359,7 @@ export function SupplierChat() {
                             </AvatarFallback>
                           </Avatar>
                           {contact.online && (
-                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-background rounded-full" />
+                            <span className="absolute bottom-0 right-0 w-3 h-3 bg-success border-2 border-background rounded-full" />
                           )}
                         </div>
 
@@ -417,7 +417,7 @@ export function SupplierChat() {
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                           {selectedContact.online ? (
                             <>
-                              <span className="w-2 h-2 bg-green-500 rounded-full" />
+                              <span className="w-2 h-2 bg-success rounded-full" />
                               Online
                             </>
                           ) : (

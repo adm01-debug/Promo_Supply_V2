@@ -66,11 +66,11 @@ const FeatureCard = ({ icon: Icon, title, description, delay }: {
     }}
   >
     <div className="p-2 rounded-lg" style={{ background: 'hsl(265 90% 66% / 0.2)' }}>
-      <Icon className="w-5 h-5 text-white" />
+      <Icon className="w-5 h-5 text-primary-foreground" />
     </div>
     <div>
-      <h3 className="font-semibold text-white text-sm">{title}</h3>
-      <p className="text-white/60 text-xs mt-0.5">{description}</p>
+      <h3 className="font-semibold text-primary-foreground text-sm">{title}</h3>
+      <p className="text-primary-foreground/60 text-xs mt-0.5">{description}</p>
     </div>
   </div>
 );
@@ -266,23 +266,23 @@ const Auth = () => {
         <div className="relative z-10">
           <div className="flex items-center gap-4 mb-8">
             <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-xl border border-white/30">
-              <Package className="w-7 h-7 text-white" />
+              <Package className="w-7 h-7 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-white">Promo Supply</h1>
-              <p className="text-white/70 text-sm">Promo Supply</p>
+              <h1 className="text-2xl font-bold text-primary-foreground">Promo Supply</h1>
+              <p className="text-primary-foreground/70 text-sm">Promo Supply</p>
             </div>
           </div>
 
           <div className="max-w-md">
-            <h2 className="text-4xl font-bold text-white mb-4 leading-tight">
+            <h2 className="text-4xl font-bold text-primary-foreground mb-4 leading-tight">
               Gerencie suas compras com 
               <span className="relative inline-block ml-2">
                 inteligência
                 <Sparkles className="absolute -top-2 -right-6 w-5 h-5 text-yellow-300 animate-pulse" />
               </span>
             </h2>
-            <p className="text-white/80 text-lg">
+            <p className="text-primary-foreground/80 text-lg">
               Plataforma completa para gestão de solicitações, cotações, fornecedores e pagamentos.
             </p>
           </div>
@@ -311,7 +311,7 @@ const Auth = () => {
         </div>
 
         {/* Footer */}
-        <p className="relative z-10 text-white/50 text-sm">
+        <p className="relative z-10 text-primary-foreground/50 text-sm">
            © 2026 Promo Supply. Todos os direitos reservados.
         </p>
       </div>

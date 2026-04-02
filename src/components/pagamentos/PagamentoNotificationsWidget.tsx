@@ -32,7 +32,7 @@ export const PagamentoNotificationsWidget = ({ pagamentos }: Props) => {
       result.push({
         id: 'vencidos', icon: AlertTriangle,
         message: `${vencidos.length} pagamento(s) vencido(s) — ${fmt(valor)}`,
-        priority: 'critical', color: 'text-red-600',
+        priority: 'critical', color: 'text-destructive',
       });
     }
 
@@ -43,7 +43,7 @@ export const PagamentoNotificationsWidget = ({ pagamentos }: Props) => {
       result.push({
         id: 'hoje', icon: Calendar,
         message: `${venceHoje.length} pagamento(s) vence(m) hoje — ${fmt(valor)}`,
-        priority: 'high', color: 'text-orange-500',
+        priority: 'high', color: 'text-warning',
       });
     }
 
@@ -57,7 +57,7 @@ export const PagamentoNotificationsWidget = ({ pagamentos }: Props) => {
       result.push({
         id: 'amanha', icon: Calendar,
         message: `${venceAmanha.length} pagamento(s) vence(m) amanhã — ${fmt(valor)}`,
-        priority: 'normal', color: 'text-amber-500',
+        priority: 'normal', color: 'text-warning',
       });
     }
 
@@ -71,7 +71,7 @@ export const PagamentoNotificationsWidget = ({ pagamentos }: Props) => {
       result.push({
         id: '3dias', icon: Bell,
         message: `${vence3d.length} pagamento(s) nos próximos 3 dias — ${fmt(valor)}`,
-        priority: 'normal', color: 'text-blue-500',
+        priority: 'normal', color: 'text-info',
       });
     }
 
@@ -83,7 +83,7 @@ export const PagamentoNotificationsWidget = ({ pagamentos }: Props) => {
   return (
     <Card className="p-3 border-l-4 border-l-amber-500">
       <div className="flex items-center gap-2 mb-2">
-        <Bell className="h-4 w-4 text-amber-500" />
+        <Bell className="h-4 w-4 text-warning" />
         <span className="text-sm font-semibold">Alertas de Pagamento</span>
         <Badge variant="secondary" className="text-xs">{notifications.length}</Badge>
       </div>

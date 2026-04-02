@@ -65,7 +65,7 @@ export function StatusTimeline({ currentStatus, dates, compact = false }: Status
             <div
               className={cn(
                 "w-2 h-2 rounded-full",
-                step.status === "completed" && "bg-green-500",
+                step.status === "completed" && "bg-success",
                 step.status === "current" && "bg-primary animate-pulse",
                 step.status === "upcoming" && "bg-muted-foreground/30"
               )}
@@ -75,7 +75,7 @@ export function StatusTimeline({ currentStatus, dates, compact = false }: Status
               <div
                 className={cn(
                   "w-3 h-0.5",
-                  step.status === "completed" ? "bg-green-500" : "bg-muted-foreground/20"
+                  step.status === "completed" ? "bg-success" : "bg-muted-foreground/20"
                 )}
               />
             )}
@@ -94,7 +94,7 @@ export function StatusTimeline({ currentStatus, dates, compact = false }: Status
               className={cn(
                 "w-6 h-6 rounded-full flex items-center justify-center text-xs border-2 shrink-0",
                 step.status === "completed" &&
-                  "bg-green-500 border-green-500 text-white",
+                  "bg-success border-green-500 text-primary-foreground",
                 step.status === "current" &&
                   "bg-primary border-primary text-primary-foreground animate-pulse",
                 step.status === "upcoming" &&
@@ -112,7 +112,7 @@ export function StatusTimeline({ currentStatus, dates, compact = false }: Status
             <span
               className={cn(
                 "text-[10px] text-center leading-tight whitespace-nowrap",
-                step.status === "completed" && "text-green-600 font-medium",
+                step.status === "completed" && "text-success font-medium",
                 step.status === "current" && "text-primary font-semibold",
                 step.status === "upcoming" && "text-muted-foreground"
               )}
@@ -124,7 +124,7 @@ export function StatusTimeline({ currentStatus, dates, compact = false }: Status
             <div
               className={cn(
                 "flex-1 h-0.5 mx-1 min-w-2",
-                step.status === "completed" ? "bg-green-500" : "bg-muted-foreground/20"
+                step.status === "completed" ? "bg-success" : "bg-muted-foreground/20"
               )}
             />
           )}

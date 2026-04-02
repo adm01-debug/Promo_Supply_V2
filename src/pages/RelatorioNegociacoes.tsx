@@ -180,29 +180,29 @@ const RelatorioNegociacoes = () => {
         {/* Summary KPIs */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="p-4 border-emerald-500/20">
-            <div className="flex items-center gap-2 text-emerald-600 mb-1">
+            <div className="flex items-center gap-2 text-success mb-1">
               <PiggyBank className="w-4 h-4" />
               <span className="text-xs font-medium">Economia Total</span>
             </div>
-            <p className="text-2xl font-bold text-emerald-600">
+            <p className="text-2xl font-bold text-success">
               R$ {totalEconomia.toLocaleString('pt-BR')}
             </p>
             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <ArrowUpRight className="w-3 h-3 text-emerald-500" />
+              <ArrowUpRight className="w-3 h-3 text-success" />
               +18% vs período anterior
             </p>
           </Card>
 
           <Card className="p-4 border-blue-500/20">
-            <div className="flex items-center gap-2 text-blue-600 mb-1">
+            <div className="flex items-center gap-2 text-info mb-1">
               <TrendingDown className="w-4 h-4" />
               <span className="text-xs font-medium">Desconto Médio</span>
             </div>
-            <p className="text-2xl font-bold text-blue-600">
+            <p className="text-2xl font-bold text-info">
               {mediaPercentual.toFixed(1)}%
             </p>
             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <ArrowUpRight className="w-3 h-3 text-emerald-500" />
+              <ArrowUpRight className="w-3 h-3 text-success" />
               +2.1pp vs período anterior
             </p>
           </Card>
@@ -216,17 +216,17 @@ const RelatorioNegociacoes = () => {
               {totalCotacoes}
             </p>
             <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-              <ArrowUpRight className="w-3 h-3 text-emerald-500" />
+              <ArrowUpRight className="w-3 h-3 text-success" />
               +12 vs período anterior
             </p>
           </Card>
 
           <Card className="p-4 border-amber-500/20">
-            <div className="flex items-center gap-2 text-amber-600 mb-1">
+            <div className="flex items-center gap-2 text-warning mb-1">
               <Users className="w-4 h-4" />
               <span className="text-xs font-medium">Compradores Ativos</span>
             </div>
-            <p className="text-2xl font-bold text-amber-600">
+            <p className="text-2xl font-bold text-warning">
               {comparativoCompradores.length}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
@@ -273,7 +273,7 @@ const RelatorioNegociacoes = () => {
           {/* Savings Rate Trend */}
           <Card className="p-6">
             <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <TrendingDown className="w-5 h-5 text-blue-500" />
+              <TrendingDown className="w-5 h-5 text-info" />
               Taxa de Desconto por Mês
             </h2>
             <ResponsiveContainer width="100%" height={280}>
@@ -328,9 +328,9 @@ const RelatorioNegociacoes = () => {
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-foreground">{comprador.nome}</span>
                       {comprador.tendencia === 'up' ? (
-                        <ArrowUpRight className="w-4 h-4 text-emerald-500" />
+                        <ArrowUpRight className="w-4 h-4 text-success" />
                       ) : (
-                        <ArrowDownRight className="w-4 h-4 text-red-500" />
+                        <ArrowDownRight className="w-4 h-4 text-destructive" />
                       )}
                       <ExternalLink className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
@@ -340,7 +340,7 @@ const RelatorioNegociacoes = () => {
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-emerald-600">R$ {comprador.economia.toLocaleString('pt-BR')}</p>
+                    <p className="font-bold text-success">R$ {comprador.economia.toLocaleString('pt-BR')}</p>
                     <p className="text-xs text-muted-foreground">{comprador.percentual}% desconto</p>
                   </div>
                 </div>
@@ -357,7 +357,7 @@ const RelatorioNegociacoes = () => {
           {/* Category Pie Chart */}
           <Card className="p-6">
             <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <Award className="w-5 h-5 text-amber-500" />
+              <Award className="w-5 h-5 text-warning" />
               Economia por Categoria
             </h2>
             <div className="flex items-center gap-6">
@@ -407,7 +407,7 @@ const RelatorioNegociacoes = () => {
           {/* Supplier Savings */}
           <Card className="p-6">
             <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-              <PiggyBank className="w-5 h-5 text-emerald-500" />
+              <PiggyBank className="w-5 h-5 text-success" />
               Economia por Fornecedor
             </h2>
             <div className="space-y-4">
@@ -421,7 +421,7 @@ const RelatorioNegociacoes = () => {
                       <span className="text-sm font-medium text-foreground">{item.fornecedor}</span>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-foreground">{item.negociacoes} negociações</span>
-                        <span className="text-sm font-bold text-emerald-600">
+                        <span className="text-sm font-bold text-success">
                           R$ {item.economia.toLocaleString('pt-BR')}
                         </span>
                       </div>

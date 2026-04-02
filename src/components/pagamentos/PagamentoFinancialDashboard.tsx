@@ -145,12 +145,12 @@ export const PagamentoFinancialDashboard = ({ pagamentos }: Props) => {
               className={`relative p-1 rounded text-[10px] ${
                 d.isToday ? 'ring-1 ring-primary font-bold' :
                 d.count > 0 ? 'font-semibold' : 'text-muted-foreground'
-              } ${d.count > 0 ? 'bg-red-500/10' : ''}`}
+              } ${d.count > 0 ? 'bg-destructive/10' : ''}`}
               title={d.count > 0 ? `${d.count} vencimento(s): ${fmt(d.valor)}` : ''}
             >
               {d.dia.getDate()}
               {d.count > 0 && (
-                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-red-500" />
+                <div className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-destructive" />
               )}
             </div>
           ))}

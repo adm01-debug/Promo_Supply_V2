@@ -59,26 +59,26 @@ interface DeliveryEvent {
 const statusConfig = {
   scheduled: {
     label: 'Agendado',
-    color: 'bg-blue-500',
-    textColor: 'text-blue-500',
+    color: 'bg-info',
+    textColor: 'text-info',
     icon: Clock,
   },
   in_transit: {
     label: 'Em Trânsito',
-    color: 'bg-orange-500',
-    textColor: 'text-orange-500',
+    color: 'bg-warning',
+    textColor: 'text-warning',
     icon: Truck,
   },
   delivered: {
     label: 'Entregue',
-    color: 'bg-green-500',
-    textColor: 'text-green-500',
+    color: 'bg-success',
+    textColor: 'text-success',
     icon: CheckCircle2,
   },
   delayed: {
     label: 'Atrasado',
-    color: 'bg-red-500',
-    textColor: 'text-red-500',
+    color: 'bg-destructive',
+    textColor: 'text-destructive',
     icon: AlertTriangle,
   },
 };
@@ -244,9 +244,9 @@ export function DeliveryCalendar() {
                             "hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/50",
                             isToday(day) && "ring-2 ring-primary",
                             isSelected && "bg-primary text-primary-foreground",
-                            !isSelected && hasDelayed && "bg-red-500/10",
-                            !isSelected && hasInTransit && !hasDelayed && "bg-orange-500/10",
-                            !isSelected && hasEvents && !hasDelayed && !hasInTransit && "bg-blue-500/10"
+                            !isSelected && hasDelayed && "bg-destructive/10",
+                            !isSelected && hasInTransit && !hasDelayed && "bg-warning/10",
+                            !isSelected && hasEvents && !hasDelayed && !hasInTransit && "bg-info/10"
                           )}
                           onClick={() => setSelectedDate(day)}
                         >
@@ -312,7 +312,7 @@ export function DeliveryCalendar() {
                         key={event.id}
                         className={cn(
                           "w-full p-3 rounded-lg border text-left transition-colors hover:bg-muted/50",
-                          event.status === 'delayed' && "border-red-500/30 bg-red-500/5"
+                          event.status === 'delayed' && "border-red-500/30 bg-destructive/5"
                         )}
                         onClick={() => setSelectedEvent(event)}
                       >
@@ -388,7 +388,7 @@ export function DeliveryCalendar() {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <Badge variant="outline">#{selectedEvent.orderId}</Badge>
-                <Badge className={cn(statusConfig[selectedEvent.status].color, "text-white")}>
+                <Badge className={cn(statusConfig[selectedEvent.status].color, "text-primary-foreground")}>
                   {statusConfig[selectedEvent.status].label}
                 </Badge>
               </div>

@@ -108,15 +108,15 @@ const ComparisonMetricCard = ({
 };
 
 const getMetricStatus = (percentage: number): { status: 'success' | 'warning' | 'critical'; color: string } => {
-  if (percentage >= 100) return { status: 'success', color: 'text-green-500' };
-  if (percentage >= 85) return { status: 'warning', color: 'text-yellow-500' };
+  if (percentage >= 100) return { status: 'success', color: 'text-success' };
+  if (percentage >= 85) return { status: 'warning', color: 'text-warning' };
   return { status: 'critical', color: 'text-destructive' };
 };
 
 const MetricStatusIcon = ({ percentage }: { percentage: number }) => {
   const { status } = getMetricStatus(percentage);
-  if (status === 'success') return <CheckCircle2 className="w-4 h-4 text-green-500" />;
-  if (status === 'warning') return <AlertTriangle className="w-4 h-4 text-yellow-500" />;
+  if (status === 'success') return <CheckCircle2 className="w-4 h-4 text-success" />;
+  if (status === 'warning') return <AlertTriangle className="w-4 h-4 text-warning" />;
   return <AlertCircle className="w-4 h-4 text-destructive" />;
 };
 
@@ -355,9 +355,9 @@ const BuyerPerformanceDashboard = () => {
 
         {/* Alert Banner */}
         {!compareMode && currentBuyerAlerts > 0 && (
-          <Card className="p-4 border-yellow-500/50 bg-yellow-500/5">
+          <Card className="p-4 border-yellow-500/50 bg-warning/5">
             <div className="flex items-center gap-3">
-              <AlertTriangle className="w-5 h-5 text-yellow-500" />
+              <AlertTriangle className="w-5 h-5 text-warning" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-foreground">
                   {buyer.nome} tem {currentBuyerAlerts} métrica{currentBuyerAlerts > 1 ? 's' : ''} abaixo da meta
@@ -374,7 +374,7 @@ const BuyerPerformanceDashboard = () => {
               {[buyer, compareBuyer].map((b, idx) => (
                 <Card key={b.id} className={`p-6 ${idx === 0 ? 'border-primary/30' : 'border-blue-500/30'}`}>
                   <div className="flex items-start gap-4">
-                    <div className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl ${idx === 0 ? 'bg-primary/10 text-primary' : 'bg-blue-500/10 text-blue-600'}`}>
+                    <div className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-xl ${idx === 0 ? 'bg-primary/10 text-primary' : 'bg-info/10 text-info'}`}>
                       {b.avatar}
                     </div>
                     <div className="flex-1">
@@ -388,7 +388,7 @@ const BuyerPerformanceDashboard = () => {
                           {b.performance.fornecedoresAtivos} fornecedores
                         </span>
                         <span className="flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                          <CheckCircle2 className="w-3 h-3 text-success" />
                           {b.performance.taxaSucesso}% sucesso
                         </span>
                       </div>
@@ -399,10 +399,10 @@ const BuyerPerformanceDashboard = () => {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <ComparisonMetricCard label="Economia do Mês" icon={PiggyBank} value1={buyer.performance.economiaMes} value2={compareBuyer.performance.economiaMes} format="currency" color="text-emerald-600" />
-              <ComparisonMetricCard label="Desconto Médio" icon={Percent} value1={buyer.performance.descontoMedio} value2={compareBuyer.performance.descontoMedio} format="percent" color="text-blue-600" />
+              <ComparisonMetricCard label="Economia do Mês" icon={PiggyBank} value1={buyer.performance.economiaMes} value2={compareBuyer.performance.economiaMes} format="currency" color="text-success" />
+              <ComparisonMetricCard label="Desconto Médio" icon={Percent} value1={buyer.performance.descontoMedio} value2={compareBuyer.performance.descontoMedio} format="percent" color="text-info" />
               <ComparisonMetricCard label="Cotações" icon={Target} value1={buyer.performance.cotacoesRealizadas} value2={compareBuyer.performance.cotacoesRealizadas} format="number" color="text-purple-600" />
-              <ComparisonMetricCard label="Taxa Melhor Preço" icon={Award} value1={buyer.performance.melhorPrecoRate} value2={compareBuyer.performance.melhorPrecoRate} format="percent" color="text-amber-600" />
+              <ComparisonMetricCard label="Taxa Melhor Preço" icon={Award} value1={buyer.performance.melhorPrecoRate} value2={compareBuyer.performance.melhorPrecoRate} format="percent" color="text-warning" />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -426,7 +426,7 @@ const BuyerPerformanceDashboard = () => {
 
               <Card className="p-6">
                 <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-amber-500" />
+                  <Zap className="w-5 h-5 text-warning" />
                   Comparativo de Competências
                 </h3>
                 <ResponsiveContainer width="100%" height={280}>
@@ -465,7 +465,7 @@ const BuyerPerformanceDashboard = () => {
                       <span className="text-muted-foreground">{buyer.performance.fornecedoresAtivos} fornecedores ativos</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      <CheckCircle2 className="w-4 h-4 text-success" />
                       <span className="text-muted-foreground">{buyer.performance.taxaSucesso}% taxa de sucesso</span>
                     </div>
                     {buyer.performance.tempoMedioNegociacao > 0 && (
@@ -483,13 +483,13 @@ const BuyerPerformanceDashboard = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <Card className={`p-4 ${economiaStatus.status === 'critical' ? 'border-destructive/50' : economiaStatus.status === 'warning' ? 'border-yellow-500/50' : ''}`}>
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 text-emerald-600">
+                  <div className="flex items-center gap-2 text-success">
                     <PiggyBank className="w-4 h-4" />
                     <span className="text-xs font-medium">Economia do Mês</span>
                   </div>
                   <MetricStatusIcon percentage={economiaVsMeta} />
                 </div>
-                <p className="text-2xl font-bold text-emerald-600">
+                <p className="text-2xl font-bold text-success">
                   R$ {buyer.performance.economiaMes.toLocaleString('pt-BR')}
                 </p>
                 <div className="mt-2">
@@ -503,13 +503,13 @@ const BuyerPerformanceDashboard = () => {
 
               <Card className={`p-4 ${descontoStatus.status === 'critical' ? 'border-destructive/50' : descontoStatus.status === 'warning' ? 'border-yellow-500/50' : ''}`}>
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2 text-blue-600">
+                  <div className="flex items-center gap-2 text-info">
                     <Percent className="w-4 h-4" />
                     <span className="text-xs font-medium">Desconto Médio</span>
                   </div>
                   <MetricStatusIcon percentage={descontoVsMeta} />
                 </div>
-                <p className="text-2xl font-bold text-blue-600">{buyer.performance.descontoMedio}%</p>
+                <p className="text-2xl font-bold text-info">{buyer.performance.descontoMedio}%</p>
                 <div className="mt-2">
                   <div className="flex justify-between text-xs mb-1">
                     <span className="text-muted-foreground">Meta: {meta.descontoMedio}%</span>
@@ -538,11 +538,11 @@ const BuyerPerformanceDashboard = () => {
               </Card>
 
               <Card className="p-4">
-                <div className="flex items-center gap-2 text-amber-600 mb-2">
+                <div className="flex items-center gap-2 text-warning mb-2">
                   <Award className="w-4 h-4" />
                   <span className="text-xs font-medium">Taxa Melhor Preço</span>
                 </div>
-                <p className="text-2xl font-bold text-amber-600">{buyer.performance.melhorPrecoRate}%</p>
+                <p className="text-2xl font-bold text-warning">{buyer.performance.melhorPrecoRate}%</p>
                 <p className="text-xs text-muted-foreground mt-2">
                   Frequência de escolha do melhor preço disponível
                 </p>
@@ -584,7 +584,7 @@ const BuyerPerformanceDashboard = () => {
 
               <Card className="p-6">
                 <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-amber-500" />
+                  <Zap className="w-5 h-5 text-warning" />
                   Perfil de Competências
                 </h3>
                 <ResponsiveContainer width="100%" height={280}>
@@ -626,7 +626,7 @@ const BuyerPerformanceDashboard = () => {
 
               <Card className="p-6">
                 <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <PiggyBank className="w-5 h-5 text-emerald-500" />
+                  <PiggyBank className="w-5 h-5 text-success" />
                   Performance por Fornecedor
                 </h3>
                 {buyer.fornecedores.length > 0 ? (
@@ -658,7 +658,7 @@ const BuyerPerformanceDashboard = () => {
             {buyer.ultimasNegociacoes.length > 0 && (
               <Card className="p-6">
                 <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-                  <TrendingDown className="w-5 h-5 text-blue-500" />
+                  <TrendingDown className="w-5 h-5 text-info" />
                   Últimas Negociações de Destaque
                 </h3>
                 <div className="overflow-x-auto">
@@ -679,13 +679,13 @@ const BuyerPerformanceDashboard = () => {
                             {new Date(neg.data).toLocaleDateString('pt-BR')}
                           </td>
                           <td className="py-3 px-4 text-right">
-                            <Badge variant="outline" className="text-blue-600 border-blue-200">
+                            <Badge variant="outline" className="text-info border-info/20">
                               <ArrowDownRight className="w-3 h-3 mr-1" />
                               {neg.percentual}%
                             </Badge>
                           </td>
                           <td className="py-3 px-4 text-right">
-                            <span className="font-bold text-emerald-600 flex items-center justify-end gap-1">
+                            <span className="font-bold text-success flex items-center justify-end gap-1">
                               <ArrowUpRight className="w-4 h-4" />
                               R$ {neg.economia.toLocaleString('pt-BR')}
                             </span>

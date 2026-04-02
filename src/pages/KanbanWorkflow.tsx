@@ -11,13 +11,13 @@ import { toast } from "sonner";
 import { differenceInHours } from "date-fns";
 
 const STATUS_COLUMNS = [
-  { id: "pendente", label: "Pendente", color: "bg-yellow-500/10 border-yellow-500/30", textColor: "text-yellow-600" },
+  { id: "pendente", label: "Pendente", color: "bg-warning/10 border-yellow-500/30", textColor: "text-warning" },
   { id: "em_cotacao", label: "Em Cotação", color: "bg-purple-500/10 border-purple-500/30", textColor: "text-purple-600" },
-  { id: "aprovada", label: "Aprovada", color: "bg-blue-500/10 border-blue-500/30", textColor: "text-blue-600" },
-  { id: "em_andamento", label: "Em Andamento", color: "bg-orange-500/10 border-orange-500/30", textColor: "text-orange-600" },
+  { id: "aprovada", label: "Aprovada", color: "bg-info/10 border-blue-500/30", textColor: "text-info" },
+  { id: "em_andamento", label: "Em Andamento", color: "bg-warning/10 border-orange-500/30", textColor: "text-warning" },
   { id: "rejeitada", label: "Rejeitada", color: "bg-rose-500/10 border-rose-500/30", textColor: "text-rose-600" },
-  { id: "concluida", label: "Concluída", color: "bg-green-500/10 border-green-500/30", textColor: "text-green-600" },
-  { id: "cancelada", label: "Cancelada", color: "bg-red-500/10 border-red-500/30", textColor: "text-red-600" },
+  { id: "concluida", label: "Concluída", color: "bg-success/10 border-green-500/30", textColor: "text-success" },
+  { id: "cancelada", label: "Cancelada", color: "bg-destructive/10 border-red-500/30", textColor: "text-destructive" },
 ];
 
 // Valid transitions per DB trigger validate_solicitacao_status_transition
@@ -135,8 +135,8 @@ const KanbanWorkflow = () => {
                           <div className="flex items-start justify-between gap-1">
                             <p className="text-xs font-mono text-muted-foreground">{item.numero}</p>
                             {sla === "critical" && <AlertTriangle className="h-3.5 w-3.5 text-destructive flex-shrink-0" />}
-                            {sla === "warning" && <Clock className="h-3.5 w-3.5 text-yellow-500 flex-shrink-0" />}
-                            {sla === "ok" && item.status === "concluida" && <CheckCircle className="h-3.5 w-3.5 text-green-500 flex-shrink-0" />}
+                            {sla === "warning" && <Clock className="h-3.5 w-3.5 text-warning flex-shrink-0" />}
+                            {sla === "ok" && item.status === "concluida" && <CheckCircle className="h-3.5 w-3.5 text-success flex-shrink-0" />}
                           </div>
                           <p className="text-sm font-medium leading-tight line-clamp-2">{item.titulo}</p>
                           <div className="flex items-center gap-1 flex-wrap">

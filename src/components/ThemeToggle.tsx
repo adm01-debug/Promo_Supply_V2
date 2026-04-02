@@ -63,7 +63,7 @@ export function ThemeToggle() {
                 transition={{ duration: 0.2, ease: 'easeInOut' }}
                 className="absolute"
               >
-                <Moon className="h-4 w-4 text-yellow-400" />
+                <Moon className="h-4 w-4 text-warning" />
               </motion.div>
             ) : (
               <motion.div
@@ -74,7 +74,7 @@ export function ThemeToggle() {
                 transition={{ duration: 0.2, ease: 'easeInOut' }}
                 className="absolute"
               >
-                <Sun className="h-4 w-4 text-amber-500" />
+                <Sun className="h-4 w-4 text-warning" />
               </motion.div>
             )}
           </AnimatePresence>
@@ -93,7 +93,7 @@ export function ThemeToggle() {
             theme === 'light' && "bg-accent"
           )}
         >
-          <Sun className="h-4 w-4 text-amber-500" />
+          <Sun className="h-4 w-4 text-warning" />
           <span>Claro</span>
           {theme === 'light' && (
             <Check className="ml-auto h-4 w-4 text-primary" />
@@ -106,7 +106,7 @@ export function ThemeToggle() {
             theme === 'dark' && "bg-accent"
           )}
         >
-          <Moon className="h-4 w-4 text-blue-400" />
+          <Moon className="h-4 w-4 text-info" />
           <span>Escuro</span>
           {theme === 'dark' && (
             <Check className="ml-auto h-4 w-4 text-primary" />

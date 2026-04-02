@@ -91,17 +91,17 @@ export const BuyerPerformancePanel = () => {
   return (
     <Card className="p-6">
       <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-        <Award className="w-5 h-5 text-amber-500" />
+        <Award className="w-5 h-5 text-warning" />
         Performance do Comprador
       </h2>
 
       <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-emerald-500/10 rounded-lg p-3">
-          <div className="flex items-center gap-2 text-emerald-600 mb-1">
+        <div className="bg-success/10 rounded-lg p-3">
+          <div className="flex items-center gap-2 text-success mb-1">
             <PiggyBank className="w-4 h-4" />
             <span className="text-xs font-medium">Economia Gerada</span>
           </div>
-          <p className="text-xl font-bold text-emerald-600">
+          <p className="text-xl font-bold text-success">
             R$ {stats.economiaGerada.toLocaleString('pt-BR')}
           </p>
           <p className="text-xs text-muted-foreground">
@@ -109,12 +109,12 @@ export const BuyerPerformancePanel = () => {
           </p>
         </div>
 
-        <div className="bg-blue-500/10 rounded-lg p-3">
-          <div className="flex items-center gap-2 text-blue-600 mb-1">
+        <div className="bg-info/10 rounded-lg p-3">
+          <div className="flex items-center gap-2 text-info mb-1">
             <TrendingDown className="w-4 h-4" />
             <span className="text-xs font-medium">Desconto Médio</span>
           </div>
-          <p className="text-xl font-bold text-blue-600">
+          <p className="text-xl font-bold text-info">
             {stats.descontoMedio}%
           </p>
           <p className="text-xs text-muted-foreground">
@@ -149,11 +149,11 @@ export const BuyerPerformancePanel = () => {
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-emerald-600 flex items-center gap-0.5">
+                  <span className="text-xs text-success flex items-center gap-0.5">
                     <ArrowUp className="w-3 h-3" />
                     {item.percentual}%
                   </span>
-                  <span className="text-sm font-semibold text-emerald-600">
+                  <span className="text-sm font-semibold text-success">
                     R$ {item.economia.toLocaleString('pt-BR')}
                   </span>
                 </div>

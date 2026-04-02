@@ -150,7 +150,7 @@ export function QuickActionsFAB() {
                   </motion.span>
                   <motion.button
                     className={cn(
-                      "w-12 h-12 rounded-full flex items-center justify-center text-white shadow-lg",
+                      "w-12 h-12 rounded-full flex items-center justify-center text-primary-foreground shadow-lg",
                       action.color
                     )}
                     whileHover={{ scale: 1.1 }}

@@ -231,7 +231,7 @@ export const SLASettingsPanel = forwardRef<HTMLDivElement>((_props, ref) => {
           <Settings2 className="h-5 w-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
+      <DialogContent aria-describedby="dialog-desc" className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5 text-primary" />

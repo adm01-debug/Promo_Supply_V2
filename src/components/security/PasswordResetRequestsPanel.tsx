@@ -96,7 +96,7 @@ export const PasswordResetRequestsPanel = () => {
     }
 
     return (
-      <Table>
+      <Table aria-label="Tabela de dados">
         <TableHeader>
           <TableRow>
             <TableHead>Email</TableHead>
