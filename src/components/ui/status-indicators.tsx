@@ -506,10 +506,10 @@ export function ConfidenceMeter({
   const clampedValue = Math.min(100, Math.max(0, value));
   
   const getColor = (val: number) => {
-    if (val >= 80) return "bg-green-500";
-    if (val >= 60) return "bg-amber-500";
-    if (val >= 40) return "bg-orange-500";
-    return "bg-red-500";
+    if (val >= 80) return "bg-success";
+    if (val >= 60) return "bg-warning";
+    if (val >= 40) return "bg-warning";
+    return "bg-destructive";
   };
 
   const heightConfig = { sm: "h-1.5", default: "h-2", lg: "h-3" };
