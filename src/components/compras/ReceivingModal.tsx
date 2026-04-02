@@ -217,9 +217,9 @@ export function ReceivingModal({
                   key={item.id}
                   className={`p-3 rounded-lg border ${
                     itemComplete
-                      ? "border-green-500/30 bg-success/5"
+                      ? "border-success/30 bg-success/5"
                       : received > 0
-                      ? "border-orange-500/30 bg-warning/5"
+                      ? "border-warning/30 bg-warning/5"
                       : "border-border bg-card"
                   }`}
                 >
