@@ -85,7 +85,7 @@ export const FilterFavoritesManager = ({
             Salvar Filtro
           </Button>
         </DialogTrigger>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent aria-describedby="dialog-desc" className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Bookmark className="h-5 w-5" />

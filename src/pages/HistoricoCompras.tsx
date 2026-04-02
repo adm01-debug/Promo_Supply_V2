@@ -727,7 +727,7 @@ const HistoricoCompras = () => {
                         <FileText className="w-4 h-4 text-primary" />Histórico de Compras ({productPurchases.length})
                       </h3>
                       <div className="border border-border rounded-lg overflow-hidden">
-                        <Table>
+                        <Table aria-label="Tabela de dados">
                           <TableHeader>
                             <TableRow className="bg-muted/30">
                               <TableHead className="text-xs">Pedido</TableHead>
@@ -860,7 +860,7 @@ const HistoricoCompras = () => {
                     <div>
                       <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2"><FileText className="w-4 h-4 text-primary" />Histórico de Pedidos ({supplierPurchases.length})</h3>
                       <div className="border border-border rounded-lg overflow-hidden">
-                        <Table>
+                        <Table aria-label="Tabela de dados">
                           <TableHeader>
                             <TableRow className="bg-muted/30">
                               <TableHead className="text-xs">Pedido</TableHead>
@@ -1111,7 +1111,7 @@ const HistoricoCompras = () => {
                 <h3 className="font-semibold text-foreground flex items-center gap-2"><Percent className="w-4 h-4 text-primary" />Métricas por Fornecedor</h3>
               </div>
               <div className="overflow-x-auto">
-                <Table>
+                <Table aria-label="Tabela de dados">
                   <TableHeader>
                     <TableRow className="bg-muted/30">
                       <TableHead className="text-xs">Fornecedor</TableHead>
@@ -1160,7 +1160,7 @@ const HistoricoCompras = () => {
                 </p>
               </div>
               <div className="overflow-x-auto">
-                <Table>
+                <Table aria-label="Tabela de dados">
                   <TableHeader>
                     <TableRow className="bg-muted/30">
                       <TableHead className="text-xs">Pedido</TableHead>
@@ -1205,7 +1205,7 @@ const HistoricoCompras = () => {
 
         {/* Drill-down Dialog */}
         <Dialog open={drilldownOpen} onOpenChange={setDrilldownOpen}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogContent aria-describedby="dialog-desc" className="max-w-4xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-primary" />
@@ -1227,7 +1227,7 @@ const HistoricoCompras = () => {
                   <p className="text-lg font-bold">{drilldownRecords.reduce((s, r) => s + r.quantity, 0).toLocaleString("pt-BR")}</p>
                 </div>
               </div>
-              <Table>
+              <Table aria-label="Tabela de dados">
                 <TableHeader>
                   <TableRow className="bg-muted/30">
                     <TableHead className="text-xs">Pedido</TableHead>

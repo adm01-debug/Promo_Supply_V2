@@ -174,7 +174,7 @@ const Pagamentos = () => {
   const renderTable = (list: Pagamento[], showCheckbox: boolean) => (
     <TooltipProvider>
       <Card>
-        <Table>
+        <Table aria-label="Tabela de dados">
           <TableHeader>
             <TableRow>
               {showCheckbox && (

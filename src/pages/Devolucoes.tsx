@@ -123,7 +123,7 @@ function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: () => v
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <RotateCcw className="w-5 h-5 text-primary" />
@@ -265,7 +265,7 @@ function DevolucaoDetailModal({ devolucao, open, onClose }: { devolucao: import(
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <StatusIcon className="w-5 h-5" />
@@ -419,7 +419,7 @@ export default function Devolucoes() {
                     <p className="text-xs text-muted-foreground mt-1">Crie uma nova devolução para começar</p>
                   </div>
                 ) : (
-                  <Table>
+                  <Table aria-label="Tabela de dados">
                     <TableHeader>
                       <TableRow className="hover:bg-transparent">
                         <TableHead>Número</TableHead>
@@ -485,7 +485,7 @@ export default function Devolucoes() {
                     <p className="text-xs text-muted-foreground mt-1">Créditos são gerados automaticamente ao concluir devoluções</p>
                   </div>
                 ) : (
-                  <Table>
+                  <Table aria-label="Tabela de dados">
                     <TableHeader>
                       <TableRow className="hover:bg-transparent">
                         <TableHead>Fornecedor</TableHead>

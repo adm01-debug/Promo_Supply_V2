@@ -55,7 +55,7 @@ export const HistoricoComprasModal = ({ open, onOpenChange, fornecedor }: Histor
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Histórico de Compras - {fornecedorName}</DialogTitle>
         </DialogHeader>
@@ -99,7 +99,7 @@ export const HistoricoComprasModal = ({ open, onOpenChange, fornecedor }: Histor
 
         {pedidos.length > 0 ? (
           <div className="rounded-lg border border-border overflow-hidden">
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow className="bg-muted/50">
                   <TableHead>Nº Pedido</TableHead>

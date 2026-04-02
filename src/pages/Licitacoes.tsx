@@ -156,7 +156,7 @@ export default function Licitacoes() {
               <p className="font-medium">Nenhuma licitação encontrada</p>
             </div>
           ) : (
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead>Número</TableHead>
@@ -203,7 +203,7 @@ export default function Licitacoes() {
 
       {/* Create Dialog */}
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
-        <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
+        <DialogContent aria-describedby="dialog-desc" className="max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Gavel className="w-5 h-5 text-primary" /> Nova Licitação
@@ -313,7 +313,7 @@ function LicitacaoDetailDialog({
 
   return (
     <Dialog open={open} onOpenChange={() => onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Gavel className="w-5 h-5 text-primary" />
@@ -396,7 +396,7 @@ function LicitacaoDetailDialog({
           ) : propostas.length === 0 ? (
             <p className="text-sm text-muted-foreground text-center py-6">Nenhuma proposta registrada</p>
           ) : (
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead>Fornecedor</TableHead>

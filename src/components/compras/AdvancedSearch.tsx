@@ -742,7 +742,7 @@ export function AdvancedSearch() {
 
       {/* Search Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-2xl p-0 gap-0 overflow-hidden">
+        <DialogContent aria-describedby="dialog-desc" className="max-w-2xl p-0 gap-0 overflow-hidden">
           <VisuallyHidden>
             <DialogTitle>Busca Avançada</DialogTitle>
             <DialogDescription>Pesquise em toda a aplicação</DialogDescription>

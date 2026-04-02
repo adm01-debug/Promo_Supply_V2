@@ -469,7 +469,7 @@ const Pedidos = () => {
         ) : (
           /* Desktop Table */
           <Card className="overflow-hidden" data-tour="pedidos-tabela">
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow className="bg-muted/50">
                   <TableHead className="w-12">
@@ -676,7 +676,7 @@ const Pedidos = () => {
 
       {/* Modal de Detalhes */}
       <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent aria-describedby="dialog-desc" className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" />

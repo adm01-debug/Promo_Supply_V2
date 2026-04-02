@@ -211,7 +211,7 @@ export const DynamicApprovalMatrix = () => {
         </div>
 
         <div className="rounded-lg border overflow-hidden">
-          <Table>
+          <Table aria-label="Tabela de dados">
             <TableHeader>
               <TableRow className="bg-muted/50">
                 <TableHead>Regra</TableHead>
@@ -438,7 +438,7 @@ export const DynamicApprovalMatrix = () => {
         </div>
 
         <div className="rounded-lg border overflow-hidden">
-          <Table>
+          <Table aria-label="Tabela de dados">
             <TableHeader>
               <TableRow className="bg-muted/50">
                 <TableHead>Delegante</TableHead>
@@ -549,7 +549,7 @@ export const DynamicApprovalMatrix = () => {
 
       {/* Rule Edit Modal */}
       <Dialog open={ruleModalOpen} onOpenChange={setRuleModalOpen}>
-        <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
+        <DialogContent aria-describedby="dialog-desc" className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Shield className="w-5 h-5 text-primary" />
@@ -739,7 +739,7 @@ export const DynamicApprovalMatrix = () => {
 
       {/* Delegation Edit Modal */}
       <Dialog open={delegationModalOpen} onOpenChange={setDelegationModalOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent aria-describedby="dialog-desc" className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Users className="w-5 h-5 text-primary" />
@@ -860,7 +860,7 @@ export const DynamicApprovalMatrix = () => {
 
       {/* Delete Confirmation Modal */}
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent aria-describedby="dialog-desc" className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-destructive">
               <Trash2 className="w-5 h-5" />

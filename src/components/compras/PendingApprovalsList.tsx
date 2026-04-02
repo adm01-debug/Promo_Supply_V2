@@ -608,7 +608,7 @@ export const PendingApprovalsList = () => {
 
       {/* Reject Modal */}
       <Dialog open={rejectModalOpen} onOpenChange={setRejectModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent aria-describedby="dialog-desc" className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-destructive flex items-center gap-2">
               <X className="w-5 h-5" />
@@ -659,7 +659,7 @@ export const PendingApprovalsList = () => {
 
       {/* Details Modal */}
       <Dialog open={detailsModalOpen} onOpenChange={setDetailsModalOpen}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent aria-describedby="dialog-desc" className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Eye className="w-5 h-5 text-primary" />

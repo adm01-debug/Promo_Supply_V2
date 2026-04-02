@@ -190,7 +190,7 @@ const RecompraInteligente = () => {
             <CardDescription>Produtos com padrão de compra recorrente detectado</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead>Produto</TableHead>

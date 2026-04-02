@@ -56,7 +56,7 @@ export const PagamentoModal = ({ pagamento, open, onOpenChange, onConfirmarPagam
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent aria-describedby="dialog-desc" className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {pagamento.metodo === "PIX" ? (

@@ -356,7 +356,7 @@ const Fornecedores = () => {
         {!isMobile && (
           <Card className="overflow-hidden" data-tour="fornecedor-tabela">
             <div className="overflow-x-auto">
-              <Table>
+              <Table aria-label="Tabela de dados">
                 <TableHeader>
                   <TableRow className="bg-muted/50">
                     <TableHead>Fornecedor</TableHead>

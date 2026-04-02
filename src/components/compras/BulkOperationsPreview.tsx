@@ -258,7 +258,7 @@ export function BulkOperationsPreview({
 
   return (
     <Dialog open={true} onOpenChange={() => !isExecuting && onClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <EntityIcon className={cn("w-5 h-5", config.color)} />

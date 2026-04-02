@@ -294,7 +294,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-6xl max-h-[90vh] p-0">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-6xl max-h-[90vh] p-0">
         <DialogHeader className="p-6 pb-4 border-b">
           <DialogTitle className="flex items-center gap-2">
             <Scale className="w-5 h-5 text-primary" />

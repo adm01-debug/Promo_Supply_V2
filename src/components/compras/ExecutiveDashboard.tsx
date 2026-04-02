@@ -1167,7 +1167,7 @@ export const ExecutiveDashboard = () => {
 
       {/* Drill Down Modal */}
       <Dialog open={!!drillDown} onOpenChange={() => setDrillDown(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent aria-describedby="dialog-desc" className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
               {drillDown?.type === 'category' && `Detalhes: ${drillDown.data?.name}`}

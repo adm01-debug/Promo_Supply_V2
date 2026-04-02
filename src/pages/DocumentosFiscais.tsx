@@ -197,7 +197,7 @@ const DocumentosFiscais = () => {
             </div>
           </CardHeader>
           <CardContent>
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead>NF-e</TableHead>

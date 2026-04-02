@@ -129,7 +129,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5" />
@@ -327,7 +327,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
                   <p className="text-muted-foreground">Nenhum item cadastrado</p>
                 </div>
               ) : (
-                <Table>
+                <Table aria-label="Tabela de dados">
                   <TableHeader>
                     <TableRow>
                       <TableHead>Item</TableHead>
@@ -385,7 +385,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
                     </Badge>
                   </div>
 
-                  <Table>
+                  <Table aria-label="Tabela de dados">
                     <TableHeader>
                       <TableRow>
                         <TableHead>Tipo</TableHead>

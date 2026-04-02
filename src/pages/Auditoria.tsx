@@ -241,7 +241,7 @@ const Auditoria = () => {
         {/* Table */}
         <Card>
           <CardContent className="p-0">
-            <Table>
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[40px]"></TableHead>

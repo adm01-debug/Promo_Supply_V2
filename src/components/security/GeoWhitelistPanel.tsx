@@ -178,7 +178,7 @@ export const GeoWhitelistPanel = () => {
                 <p className="text-sm">Adicione países para permitir o acesso</p>
               </div>
             ) : (
-              <Table>
+              <Table aria-label="Tabela de dados">
                 <TableHeader>
                   <TableRow>
                     <TableHead>País</TableHead>

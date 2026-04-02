@@ -232,7 +232,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-7xl max-h-[95vh] p-0 overflow-hidden">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-7xl max-h-[95vh] p-0 overflow-hidden">
         <DialogHeader className="p-6 pb-4 border-b bg-gradient-to-r from-primary/5 to-transparent">
           <DialogTitle className="flex items-center gap-2 text-xl">
             <motion.div

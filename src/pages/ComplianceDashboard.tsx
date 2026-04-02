@@ -212,7 +212,7 @@ export default function ComplianceDashboard() {
 
             <Card>
               <CardContent className="p-0">
-                <Table>
+                <Table aria-label="Tabela de dados">
                   <TableHeader>
                     <TableRow>
                       <TableHead>#</TableHead>
@@ -359,7 +359,7 @@ export default function ComplianceDashboard() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <Table>
+                <Table aria-label="Tabela de dados">
                   <TableHeader>
                     <TableRow>
                       <TableHead>Fornecedor</TableHead>

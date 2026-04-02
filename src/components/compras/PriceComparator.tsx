@@ -195,7 +195,7 @@ export function PriceComparator() {
           Comparar Preços
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-5xl max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Scale className="h-5 w-5 text-primary" />
@@ -324,7 +324,7 @@ export function PriceComparator() {
                     <CardTitle className="text-sm">Cotações Detalhadas</CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
-                    <Table>
+                    <Table aria-label="Tabela de dados">
                       <TableHeader>
                         <TableRow>
                           <TableHead>Fornecedor</TableHead>

@@ -762,7 +762,7 @@ const Acompanhamento = () => {
 
       {/* Modal de Detalhes */}
       <Dialog open={!!pedidoDetalhes} onOpenChange={() => setPedidoDetalhes(null)}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent aria-describedby="dialog-desc" className="max-w-2xl">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <Package className="w-5 h-5 text-primary" />
