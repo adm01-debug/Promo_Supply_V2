@@ -133,6 +133,9 @@ export const AnimatedRoutes = () => {
         <Route path="/catalogo-produtos" element={
           <ProtectedRoute><ModuleErrorBoundary module="default"><CatalogoProdutos /></ModuleErrorBoundary></ProtectedRoute>
         } />
+        <Route path="/licitacoes" element={
+          <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="default"><Licitacoes /></ModuleErrorBoundary></ProtectedRoute>
+        } />
         <Route path="/admin/telemetria" element={
           <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><AdminTelemetria /></ModuleErrorBoundary></ProtectedRoute>
         } />

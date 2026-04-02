@@ -481,7 +481,7 @@ function LicitacaoDetailDialog({
                   <p className="text-sm text-muted-foreground">
                     {licitacao.fornecedor_vencedor?.razao_social || 'Fornecedor'} — {formatCurrency(licitacao.valor_vencedor)}
                     {licitacao.valor_estimado > 0 && (
-                      <span className="ml-2 text-green-600 font-medium">
+                      <span className="ml-2 text-primary font-medium">
                         (Economia: {((1 - licitacao.valor_vencedor / licitacao.valor_estimado) * 100).toFixed(1)}%)
                       </span>
                     )}
