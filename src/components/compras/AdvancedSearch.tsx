@@ -961,6 +961,31 @@ export function AdvancedSearch() {
                       exit={{ opacity: 0 }}
                       className="space-y-4"
                     >
+                      {/* Natural language intent suggestion */}
+                      {(() => {
+                        const nlIntent = parseNaturalLanguageIntent(query);
+                        if (!nlIntent?.redirectPath) return null;
+                        return (
+                          <motion.button
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            onClick={() => {
+                              setOpen(false);
+                              navigate(nlIntent.redirectPath!);
+                            }}
+                            className="w-full flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 transition-colors text-left"
+                          >
+                            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                              <Sparkles className="w-5 h-5 text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium">{nlIntent.description}</p>
+                              <p className="text-xs text-muted-foreground">Ir diretamente para a página filtrada</p>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                          </motion.button>
+                        );
+                      })()}
                       {Object.entries(groupedResults).map(([type, items]) => {
                         const config = categoryConfig[type as SearchCategory];
                         if (!config || items.length === 0) return null;
