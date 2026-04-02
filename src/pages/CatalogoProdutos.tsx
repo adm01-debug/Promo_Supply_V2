@@ -277,7 +277,7 @@ const CatalogoProdutos = () => {
                       <TableCell className="text-right">{formatCurrency(p.ultimo_preco)}</TableCell>
                       <TableCell className="text-right">
                         {variation !== null ? (
-                          <span className={cn("text-xs font-medium", variation > 0 ? "text-destructive" : "text-green-600")}>
+                          <span className={cn("text-xs font-medium", variation > 0 ? "text-destructive" : "text-kpi-success")}>
                             {variation > 0 ? "+" : ""}{variation.toFixed(1)}%
                           </span>
                         ) : "—"}
