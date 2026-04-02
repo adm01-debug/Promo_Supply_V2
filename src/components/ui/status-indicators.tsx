@@ -436,15 +436,15 @@ export function TrendIndicator({
   const Icon = change > 0 ? TrendingUp : change < 0 ? TrendingDown : Minus;
   
   const colorClass = isPositive 
-    ? "text-green-600 dark:text-green-400" 
+    ? "text-success" 
     : isNegative 
-    ? "text-red-600 dark:text-red-400"
+    ? "text-destructive"
     : "text-muted-foreground";
 
   const bgClass = isPositive 
-    ? "bg-green-500/10" 
+    ? "bg-success/10" 
     : isNegative 
-    ? "bg-red-500/10"
+    ? "bg-destructive/10"
     : "bg-muted";
 
   const sizes = {

@@ -235,10 +235,10 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   };
 
   const prioridadeConfig = {
-    baixa: { label: 'Baixa', color: 'bg-slate-500' },
-    normal: { label: 'Normal', color: 'bg-blue-500' },
-    alta: { label: 'Alta', color: 'bg-orange-500' },
-    urgente: { label: 'Urgente', color: 'bg-red-500' },
+    baixa: { label: 'Baixa', color: 'bg-muted-foreground' },
+    normal: { label: 'Normal', color: 'bg-info' },
+    alta: { label: 'Alta', color: 'bg-warning' },
+    urgente: { label: 'Urgente', color: 'bg-destructive' },
   };
 
   const tipoConfig = {
