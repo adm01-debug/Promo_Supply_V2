@@ -178,6 +178,37 @@ const HighlightedText = React.memo(({
   return <>{result}</>;
 });
 
+// Natural language intent parser
+interface NLIntent {
+  category: SearchCategory;
+  statusFilter?: string;
+  description: string;
+  redirectPath?: string;
+}
+
+function parseNaturalLanguageIntent(query: string): NLIntent | null {
+  const q = query.toLowerCase().trim();
+
+  const patterns: { test: RegExp; result: NLIntent }[] = [
+    { test: /pedidos?\s+(atrasad|pendente|em.atraso)/i, result: { category: 'pedidos', statusFilter: 'pendente', description: 'Pedidos atrasados/pendentes', redirectPath: '/pedidos?status=pendente' } },
+    { test: /pedidos?\s+entreg/i, result: { category: 'pedidos', statusFilter: 'entregue', description: 'Pedidos entregues', redirectPath: '/pedidos?status=entregue' } },
+    { test: /pagamentos?\s+(pendente|atrasad|vencid)/i, result: { category: 'pagamentos', statusFilter: 'pendente', description: 'Pagamentos pendentes', redirectPath: '/pagamentos?status=pendente' } },
+    { test: /pagamentos?\s+pag[oa]/i, result: { category: 'pagamentos', statusFilter: 'pago', description: 'Pagamentos realizados', redirectPath: '/pagamentos?status=pago' } },
+    { test: /fornecedor.*(melhor|top|rank)/i, result: { category: 'fornecedores', description: 'Ranking de fornecedores', redirectPath: '/supplier-performance' } },
+    { test: /solicit.*(urgent|alta.priorid)/i, result: { category: 'solicitacoes', statusFilter: 'urgente', description: 'Solicitações urgentes', redirectPath: '/solicitacoes?prioridade=urgente' } },
+    { test: /cotac.*(pendente|aberta)/i, result: { category: 'all', description: 'Cotações pendentes', redirectPath: '/cotacao?status=pendente' } },
+    { test: /contrat.*(venc|expir)/i, result: { category: 'contratos', description: 'Contratos vencendo', redirectPath: '/contratos?status=expiring' } },
+    { test: /relat[oó]rio|dashboard|resumo/i, result: { category: 'pages', description: 'Relatórios e dashboards', redirectPath: '/relatorios' } },
+    { test: /aprovaç|aprovac|aprovar/i, result: { category: 'pages', description: 'Aprovações pendentes', redirectPath: '/aprovacoes' } },
+    { test: /cat[aá]logo|produto/i, result: { category: 'pages', description: 'Catálogo de produtos', redirectPath: '/catalogo-produtos' } },
+  ];
+
+  for (const { test, result } of patterns) {
+    if (test.test(q)) return result;
+  }
+  return null;
+}
+
 // Quick actions
 const quickActions = [
   { id: 'nova-solicitacao', label: 'Nova Solicitação', icon: FileText, action: '/solicitacoes?action=new' },
@@ -915,12 +946,30 @@ export function AdvancedSearch() {
                       exit={{ opacity: 0, y: -10 }}
                       className="flex flex-col items-center justify-center py-12"
                     >
+                      {(() => {
+                        const nlIntent = parseNaturalLanguageIntent(query);
+                        if (nlIntent?.redirectPath) {
+                          return (
+                            <button
+                              onClick={() => { setOpen(false); navigate(nlIntent.redirectPath!); }}
+                              className="w-full max-w-xs flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 transition-colors text-left mb-4"
+                            >
+                              <Sparkles className="w-5 h-5 text-primary shrink-0" />
+                              <div>
+                                <p className="text-sm font-medium">{nlIntent.description}</p>
+                                <p className="text-xs text-muted-foreground">Clique para navegar</p>
+                              </div>
+                            </button>
+                          );
+                        }
+                        return null;
+                      })()}
                       <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
                         <Search className="w-8 h-8 text-muted-foreground" />
                       </div>
                       <p className="text-sm font-medium mb-1">Nenhum resultado encontrado</p>
                       <p className="text-xs text-muted-foreground text-center max-w-[240px]">
-                        Tente buscar por outro termo ou categoria
+                        Tente buscar por outro termo ou use linguagem natural como &quot;pedidos atrasados&quot;
                       </p>
                     </motion.div>
                   ) : (
@@ -930,6 +979,31 @@ export function AdvancedSearch() {
                       exit={{ opacity: 0 }}
                       className="space-y-4"
                     >
+                      {/* Natural language intent suggestion */}
+                      {(() => {
+                        const nlIntent = parseNaturalLanguageIntent(query);
+                        if (!nlIntent?.redirectPath) return null;
+                        return (
+                          <motion.button
+                            initial={{ opacity: 0, y: -5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            onClick={() => {
+                              setOpen(false);
+                              navigate(nlIntent.redirectPath!);
+                            }}
+                            className="w-full flex items-center gap-3 p-3 rounded-xl bg-primary/5 border border-primary/20 hover:bg-primary/10 transition-colors text-left"
+                          >
+                            <div className="w-9 h-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                              <Sparkles className="w-5 h-5 text-primary" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium">{nlIntent.description}</p>
+                              <p className="text-xs text-muted-foreground">Ir diretamente para a página filtrada</p>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
+                          </motion.button>
+                        );
+                      })()}
                       {Object.entries(groupedResults).map(([type, items]) => {
                         const config = categoryConfig[type as SearchCategory];
                         if (!config || items.length === 0) return null;

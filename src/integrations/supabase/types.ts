@@ -2268,11 +2268,17 @@ export type Database = {
           categoria_id: string | null
           codigo: string
           created_at: string
+          created_by: string | null
           descricao: string | null
           estoque_minimo: number | null
+          fornecedor_preferencial_id: string | null
           id: string
+          imagem_url: string | null
           nome: string
           preco_medio: number | null
+          preco_referencia: number | null
+          tags: string[] | null
+          ultimo_preco: number | null
           unidade: string
           updated_at: string
         }
@@ -2281,11 +2287,17 @@ export type Database = {
           categoria_id?: string | null
           codigo: string
           created_at?: string
+          created_by?: string | null
           descricao?: string | null
           estoque_minimo?: number | null
+          fornecedor_preferencial_id?: string | null
           id?: string
+          imagem_url?: string | null
           nome: string
           preco_medio?: number | null
+          preco_referencia?: number | null
+          tags?: string[] | null
+          ultimo_preco?: number | null
           unidade?: string
           updated_at?: string
         }
@@ -2294,11 +2306,17 @@ export type Database = {
           categoria_id?: string | null
           codigo?: string
           created_at?: string
+          created_by?: string | null
           descricao?: string | null
           estoque_minimo?: number | null
+          fornecedor_preferencial_id?: string | null
           id?: string
+          imagem_url?: string | null
           nome?: string
           preco_medio?: number | null
+          preco_referencia?: number | null
+          tags?: string[] | null
+          ultimo_preco?: number | null
           unidade?: string
           updated_at?: string
         }
@@ -2309,6 +2327,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "categorias"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_fornecedor_preferencial_id_fkey"
+            columns: ["fornecedor_preferencial_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_fornecedor_preferencial_id_fkey"
+            columns: ["fornecedor_preferencial_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
           },
         ]
       }

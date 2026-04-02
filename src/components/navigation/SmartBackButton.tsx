@@ -37,6 +37,7 @@ const parentRoutes: Record<string, string> = {
   '/documentos-fiscais': '/pagamentos',
   '/recompra-inteligente': '/pedidos',
   '/devolucoes': '/pedidos',
+  '/catalogo-produtos': '/',
   '/admin/telemetria': '/',
 };
 
@@ -53,6 +54,7 @@ const routeLabels: Record<string, string> = {
   '/compliance': 'Compliance',
   '/dashboard-executivo': 'Executivo',
   '/kanban': 'Kanban',
+  '/catalogo-produtos': 'Catálogo',
 };
 
 interface SmartBackButtonProps {
