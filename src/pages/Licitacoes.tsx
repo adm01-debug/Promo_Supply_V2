@@ -411,7 +411,7 @@ function LicitacaoDetailDialog({
                   <TableRow key={p.id} className={cn(p.vencedora && 'bg-primary/5')}>
                     <TableCell className="font-medium">
                       {p.fornecedor?.razao_social || 'Fornecedor'}
-                      {p.vencedora && <Trophy className="w-4 h-4 text-yellow-500 inline ml-2" />}
+                      {p.vencedora && <Trophy className="w-4 h-4 text-primary inline ml-2" />}
                     </TableCell>
                     <TableCell className="text-right font-mono">{formatCurrency(p.valor_proposta)}</TableCell>
                     <TableCell className="hidden md:table-cell text-right">{p.prazo_entrega}</TableCell>
