@@ -1572,6 +1572,181 @@ export type Database = {
         }
         Relationships: []
       }
+      licitacao_propostas: {
+        Row: {
+          created_at: string
+          data_submissao: string | null
+          desclassificada: boolean | null
+          desconto_percentual: number | null
+          documentos: Json | null
+          fornecedor_id: string
+          id: string
+          licitacao_id: string
+          motivo_desclassificacao: string | null
+          observacoes: string | null
+          prazo_entrega: number | null
+          score_preco: number | null
+          score_tecnico: number | null
+          score_total: number | null
+          status: string
+          updated_at: string
+          valor_proposta: number
+          vencedora: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          data_submissao?: string | null
+          desclassificada?: boolean | null
+          desconto_percentual?: number | null
+          documentos?: Json | null
+          fornecedor_id: string
+          id?: string
+          licitacao_id: string
+          motivo_desclassificacao?: string | null
+          observacoes?: string | null
+          prazo_entrega?: number | null
+          score_preco?: number | null
+          score_tecnico?: number | null
+          score_total?: number | null
+          status?: string
+          updated_at?: string
+          valor_proposta?: number
+          vencedora?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          data_submissao?: string | null
+          desclassificada?: boolean | null
+          desconto_percentual?: number | null
+          documentos?: Json | null
+          fornecedor_id?: string
+          id?: string
+          licitacao_id?: string
+          motivo_desclassificacao?: string | null
+          observacoes?: string | null
+          prazo_entrega?: number | null
+          score_preco?: number | null
+          score_tecnico?: number | null
+          score_total?: number | null
+          status?: string
+          updated_at?: string
+          valor_proposta?: number
+          vencedora?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licitacao_propostas_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licitacao_propostas_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "licitacao_propostas_licitacao_id_fkey"
+            columns: ["licitacao_id"]
+            isOneToOne: false
+            referencedRelation: "licitacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      licitacoes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          criterios_avaliacao: Json | null
+          data_abertura: string | null
+          data_encerramento: string | null
+          data_publicacao: string | null
+          descricao: string | null
+          documentos_exigidos: Json | null
+          edital_url: string | null
+          fornecedor_vencedor_id: string | null
+          id: string
+          modalidade: string
+          numero: string
+          objeto: string | null
+          observacoes: string | null
+          responsavel_id: string | null
+          status: string
+          tipo: string
+          titulo: string
+          updated_at: string
+          valor_estimado: number | null
+          valor_vencedor: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          criterios_avaliacao?: Json | null
+          data_abertura?: string | null
+          data_encerramento?: string | null
+          data_publicacao?: string | null
+          descricao?: string | null
+          documentos_exigidos?: Json | null
+          edital_url?: string | null
+          fornecedor_vencedor_id?: string | null
+          id?: string
+          modalidade?: string
+          numero: string
+          objeto?: string | null
+          observacoes?: string | null
+          responsavel_id?: string | null
+          status?: string
+          tipo?: string
+          titulo: string
+          updated_at?: string
+          valor_estimado?: number | null
+          valor_vencedor?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          criterios_avaliacao?: Json | null
+          data_abertura?: string | null
+          data_encerramento?: string | null
+          data_publicacao?: string | null
+          descricao?: string | null
+          documentos_exigidos?: Json | null
+          edital_url?: string | null
+          fornecedor_vencedor_id?: string | null
+          id?: string
+          modalidade?: string
+          numero?: string
+          objeto?: string | null
+          observacoes?: string | null
+          responsavel_id?: string | null
+          status?: string
+          tipo?: string
+          titulo?: string
+          updated_at?: string
+          valor_estimado?: number | null
+          valor_vencedor?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licitacoes_fornecedor_vencedor_id_fkey"
+            columns: ["fornecedor_vencedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licitacoes_fornecedor_vencedor_id_fkey"
+            columns: ["fornecedor_vencedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+        ]
+      }
       login_attempts: {
         Row: {
           created_at: string
