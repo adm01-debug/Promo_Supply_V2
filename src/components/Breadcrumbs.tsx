@@ -56,6 +56,7 @@ const routeConfig: Record<string, { label: string; icon?: LucideIcon; descriptio
   'documentos-fiscais': { label: 'Docs Fiscais', icon: FileText, description: 'Documentos fiscais e NFs' },
   'recompra-inteligente': { label: 'Recompra', icon: ShoppingCart, description: 'Recompra inteligente automática' },
   'devolucoes': { label: 'Devoluções', icon: Package, description: 'Gestão de devoluções (RMA)' },
+  'catalogo-produtos': { label: 'Catálogo de Produtos', icon: Package, description: 'Produtos com preços de referência' },
   'admin': { label: 'Admin', icon: Settings, description: 'Administração do sistema' },
   'telemetria': { label: 'Telemetria', icon: BarChart3, description: 'Métricas de telemetria' },
 };
