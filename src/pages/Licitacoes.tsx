@@ -475,7 +475,7 @@ function LicitacaoDetailDialog({
             <>
               <Separator />
               <div className="bg-primary/5 rounded-lg p-4 flex items-center gap-3">
-                <Trophy className="w-6 h-6 text-yellow-500" />
+                <Trophy className="w-6 h-6 text-primary" />
                 <div>
                   <p className="font-semibold">Vencedor Homologado</p>
                   <p className="text-sm text-muted-foreground">
