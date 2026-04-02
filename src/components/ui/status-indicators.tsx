@@ -642,10 +642,10 @@ export function SecurityScore({
   const clampedScore = Math.min(100, Math.max(0, score));
   
   const getLevel = (val: number) => {
-    if (val >= 80) return { label: "Excelente", color: "text-green-500", bg: "bg-green-500/10", border: "border-green-500/20" };
-    if (val >= 60) return { label: "Bom", color: "text-blue-500", bg: "bg-blue-500/10", border: "border-blue-500/20" };
-    if (val >= 40) return { label: "Moderado", color: "text-amber-500", bg: "bg-amber-500/10", border: "border-amber-500/20" };
-    return { label: "Crítico", color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/20" };
+    if (val >= 80) return { label: "Excelente", color: "text-success", bg: "bg-success/10", border: "border-success/20" };
+    if (val >= 60) return { label: "Bom", color: "text-info", bg: "bg-info/10", border: "border-info/20" };
+    if (val >= 40) return { label: "Moderado", color: "text-warning", bg: "bg-warning/10", border: "border-warning/20" };
+    return { label: "Crítico", color: "text-destructive", bg: "bg-destructive/10", border: "border-destructive/20" };
   };
 
   const level = getLevel(clampedScore);
