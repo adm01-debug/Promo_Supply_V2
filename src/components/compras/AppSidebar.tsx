@@ -71,6 +71,7 @@ const sections: NavSection[] = [
       { title: "Pedidos", icon: FileText, href: "/pedidos" },
       { title: "Recompra", icon: RefreshCw, href: "/recompra-inteligente" },
       { title: "Acompanhamento", icon: Truck, href: "/acompanhamento" },
+      { title: "Recebimento", icon: ClipboardCheck, href: "/recebimento" },
       { title: "Devoluções", icon: RotateCcw, href: "/devolucoes" },
       { title: "Catálogo", icon: Package, href: "/catalogo-produtos" },
     ],
