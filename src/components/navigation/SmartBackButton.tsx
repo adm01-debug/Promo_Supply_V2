@@ -26,6 +26,7 @@ const parentRoutes: Record<string, string> = {
   '/buyer-performance': '/',
   '/historico-compras': '/pedidos',
   '/contratos': '/',
+  '/licitacoes': '/',
   '/compliance': '/',
   '/auditoria': '/',
   '/seguranca': '/',

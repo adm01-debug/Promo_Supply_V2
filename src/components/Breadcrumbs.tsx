@@ -57,6 +57,7 @@ const routeConfig: Record<string, { label: string; icon?: LucideIcon; descriptio
   'recompra-inteligente': { label: 'Recompra', icon: ShoppingCart, description: 'Recompra inteligente automática' },
   'devolucoes': { label: 'Devoluções', icon: Package, description: 'Gestão de devoluções (RMA)' },
   'catalogo-produtos': { label: 'Catálogo de Produtos', icon: Package, description: 'Produtos com preços de referência' },
+  'licitacoes': { label: 'Licitações', icon: FileCheck, description: 'Processos licitatórios' },
   'admin': { label: 'Admin', icon: Settings, description: 'Administração do sistema' },
   'telemetria': { label: 'Telemetria', icon: BarChart3, description: 'Métricas de telemetria' },
 };
