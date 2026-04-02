@@ -54,6 +54,7 @@ const routeLabels: Record<string, string> = {
   '/compliance': 'Compliance',
   '/dashboard-executivo': 'Executivo',
   '/kanban': 'Kanban',
+  '/catalogo-produtos': 'Catálogo',
 };
 
 interface SmartBackButtonProps {
