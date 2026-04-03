@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { Package, RefreshCw, Search, Plus, Trophy, Clock, Check, Loader2 } from "lucide-react";
+import { Package, RefreshCw, Search, Plus, Trophy, Clock, Check, Loader2, Bell } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { useSearchParams, Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
