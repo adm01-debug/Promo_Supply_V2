@@ -400,6 +400,48 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
               )}
             </TabsContent>
 
+            {/* Documents Tab */}
+            <TabsContent value="docs">
+              <div className="space-y-4">
+                <div className="flex justify-end">
+                  <label>
+                    <input type="file" className="hidden" onChange={handleUploadDocument} disabled={uploading} />
+                    <Button variant="outline" className="gap-2 cursor-pointer" asChild disabled={uploading}>
+                      <span>
+                        {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                        {uploading ? 'Enviando...' : 'Upload Documento'}
+                      </span>
+                    </Button>
+                  </label>
+                </div>
+                {documents.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Paperclip className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                    <p className="text-muted-foreground">Nenhum documento anexado</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {documents.map((doc) => (
+                      <div key={doc.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <File className="w-5 h-5 text-primary" />
+                          <div>
+                            <p className="font-medium text-sm">{doc.file_name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {doc.file_size ? `${(doc.file_size / 1024).toFixed(1)} KB` : ''} · {format(new Date(doc.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                            </p>
+                          </div>
+                        </div>
+                        <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                          <Button variant="ghost" size="sm"><Download className="w-4 h-4" /></Button>
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </TabsContent>
+
             {/* Penalties Applied Tab */}
             <TabsContent value="penalties">
               {penalties.length === 0 ? (
