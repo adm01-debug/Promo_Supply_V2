@@ -10,7 +10,11 @@ import {
   Upload,
   AlertCircle,
   Loader2,
-  Check
+  Check,
+  DollarSign,
+  ShieldCheck,
+  ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 import { useImageCompression } from "@/hooks/useImageCompression";
 import { formatBytes } from "@/lib/imageCompression";
@@ -49,6 +53,8 @@ interface NovaSolicitacaoData {
   prazoEntrega: string;
   observacoes: string;
   prioridade: 'baixa' | 'normal' | 'alta' | 'urgente';
+  valorEstimado: number;
+  centroCusto: string;
   anexos: File[];
 }
 
@@ -61,6 +67,8 @@ const initialFormData: NovaSolicitacaoData = {
   prazoEntrega: '',
   observacoes: '',
   prioridade: 'normal',
+  valorEstimado: 0,
+  centroCusto: '',
   anexos: [],
 };
 
@@ -80,9 +88,27 @@ const vendedoresMock = [
   'Pedro Lima',
 ];
 
+interface BudgetCheckResult {
+  available: boolean;
+  has_budget: boolean;
+  budget_total?: number;
+  budget_available?: number;
+  budget_committed?: number;
+  budget_used?: number;
+  requested?: number;
+  message: string;
+}
+
 interface NovaSolicitacaoModalProps {
   onSuccess?: () => void;
 }
+
+const STEPS = [
+  { num: 1, label: 'Identificação', icon: Building2 },
+  { num: 2, label: 'Especificações', icon: Package },
+  { num: 3, label: 'Valores', icon: DollarSign },
+  { num: 4, label: 'Revisão', icon: ShieldCheck },
+];
 
 export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   const { user } = useAuth();
@@ -91,6 +117,8 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   const [formData, setFormData] = useState<NovaSolicitacaoData>(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof NovaSolicitacaoData, string>>>({});
+  const [budgetCheck, setBudgetCheck] = useState<BudgetCheckResult | null>(null);
+  const [isCheckingBudget, setIsCheckingBudget] = useState(false);
 
   const updateField = <K extends keyof NovaSolicitacaoData>(
     field: K, 
@@ -100,34 +128,65 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
+    // Clear budget check when value or centro custo changes
+    if (field === 'valorEstimado' || field === 'centroCusto') {
+      setBudgetCheck(null);
+    }
   };
 
   const validateStep1 = () => {
     const newErrors: Partial<Record<keyof NovaSolicitacaoData, string>> = {};
-    
     if (!formData.empresa) newErrors.empresa = 'Selecione a empresa';
     if (!formData.vendedor) newErrors.vendedor = 'Selecione o vendedor';
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const validateStep2 = () => {
     const newErrors: Partial<Record<keyof NovaSolicitacaoData, string>> = {};
-    
     if (!formData.produto) newErrors.produto = 'Informe o produto';
     if (formData.quantidade <= 0) newErrors.quantidade = 'Quantidade deve ser maior que 0';
     if (!formData.prazoEntrega) newErrors.prazoEntrega = 'Informe o prazo de entrega';
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleNext = () => {
+  const validateStep3 = () => {
+    const newErrors: Partial<Record<keyof NovaSolicitacaoData, string>> = {};
+    if (formData.valorEstimado <= 0) newErrors.valorEstimado = 'Informe o valor estimado';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const checkBudget = async () => {
+    if (!formData.centroCusto || formData.valorEstimado <= 0) return;
+    setIsCheckingBudget(true);
+    try {
+      const { data, error } = await supabase.rpc('check_budget_availability', {
+        p_centro_custo: formData.centroCusto,
+        p_valor: formData.valorEstimado,
+      });
+      if (error) throw error;
+      setBudgetCheck(data as unknown as BudgetCheckResult);
+    } catch (error: unknown) {
+      console.error('Budget check error:', error);
+      setBudgetCheck(null);
+    } finally {
+      setIsCheckingBudget(false);
+    }
+  };
+
+  const handleNext = async () => {
     if (step === 1 && validateStep1()) {
       setStep(2);
     } else if (step === 2 && validateStep2()) {
       setStep(3);
+    } else if (step === 3 && validateStep3()) {
+      // Auto-check budget if centro de custo provided
+      if (formData.centroCusto && formData.valorEstimado > 0) {
+        await checkBudget();
+      }
+      setStep(4);
     }
   };
 
@@ -150,14 +209,12 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
       });
       const numero = numData || `SOL-${Date.now()}`;
 
-      // Map tipo to DB format
       const tipoMap: Record<string, string> = {
         PE_LISO: 'material',
         FAB_LISO: 'material',
         FAB_PERSONALIZADO: 'servico',
       };
 
-      // Map prioridade
       const prioridadeMap: Record<string, string> = {
         baixa: 'baixa',
         normal: 'media',
@@ -174,22 +231,37 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           tipo: tipoMap[formData.tipo] || 'material',
           prioridade: prioridadeMap[formData.prioridade] || 'media',
           quantidade: formData.quantidade,
+          valor_estimado: formData.valorEstimado > 0 ? formData.valorEstimado : null,
+          centro_custo: formData.centroCusto || null,
           data_necessidade: formData.prazoEntrega || null,
           solicitante_id: user.id,
           departamento: formData.empresa,
         })
-        .select('numero')
+        .select('id, numero')
         .single();
 
       if (error) throw error;
+
+      // Upload attachments to Storage
+      if (formData.anexos.length > 0 && data?.id) {
+        for (const file of formData.anexos) {
+          const filePath = `solicitacoes/${data.id}/${Date.now()}-${file.name}`;
+          const { error: uploadError } = await supabase.storage
+            .from('documentos')
+            .upload(filePath, file);
+          if (uploadError) {
+            console.error('File upload error:', uploadError);
+          }
+        }
+      }
       
       toast.success(`Solicitação ${data.numero} criada com sucesso!`, {
-        description: `${formData.produto} - ${formData.quantidade} unidades`,
+        description: `${formData.produto} - ${formData.quantidade} un. | R$ ${formData.valorEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
       });
       
-      // Reset and close
       setFormData(initialFormData);
       setStep(1);
+      setBudgetCheck(null);
       setOpen(false);
       onSuccess?.();
       
@@ -201,7 +273,6 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     }
   };
 
-  // Image compression hook
   const { compressAndReplace, isCompressing } = useImageCompression({
     maxWidth: 1920,
     maxHeight: 1080,
@@ -212,14 +283,10 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
-
-    // Compress images automatically
     const processedFiles = await compressAndReplace(files);
     updateField('anexos', [...formData.anexos, ...processedFiles]);
-    
-    // Reset input
     e.target.value = '';
-  }, [compressAndReplace, formData.anexos, updateField]);
+  }, [compressAndReplace, formData.anexos]);
 
   const removeFile = (index: number) => {
     updateField('anexos', formData.anexos.filter((_, i) => i !== index));
@@ -231,6 +298,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
       setFormData(initialFormData);
       setStep(1);
       setErrors({});
+      setBudgetCheck(null);
     }
   };
 
@@ -264,55 +332,51 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           </DialogTitle>
         </DialogHeader>
 
-        {/* Progress Steps */}
-        <div className="flex items-center justify-between mb-6">
-          {[
-            { num: 1, label: 'Identificação' },
-            { num: 2, label: 'Produto' },
-            { num: 3, label: 'Revisão' },
-          ].map((s, i) => (
-            <div key={s.num} className="flex items-center flex-1">
-              <div className="flex items-center gap-2">
-                <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors",
-                  step >= s.num 
-                    ? "bg-primary text-primary-foreground" 
-                    : "bg-muted text-muted-foreground"
-                )}>
-                  {s.num}
+        {/* Progress Steps - 4 etapas */}
+        <div className="flex items-center justify-between mb-4">
+          {STEPS.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <div key={s.num} className="flex items-center flex-1">
+                <div className="flex items-center gap-1.5">
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all",
+                    step > s.num && "bg-primary text-primary-foreground",
+                    step === s.num && "bg-primary text-primary-foreground ring-2 ring-primary/30 ring-offset-2 ring-offset-background",
+                    step < s.num && "bg-muted text-muted-foreground"
+                  )}>
+                    {step > s.num ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
+                  </div>
+                  <span className={cn(
+                    "text-xs hidden lg:block",
+                    step >= s.num ? "text-foreground font-medium" : "text-muted-foreground"
+                  )}>
+                    {s.label}
+                  </span>
                 </div>
-                <span className={cn(
-                  "text-sm hidden sm:block",
-                  step >= s.num ? "text-foreground font-medium" : "text-muted-foreground"
-                )}>
-                  {s.label}
-                </span>
+                {i < STEPS.length - 1 && (
+                  <div className={cn(
+                    "flex-1 h-0.5 mx-2",
+                    step > s.num ? "bg-primary" : "bg-muted"
+                  )} />
+                )}
               </div>
-              {i < 2 && (
-                <div className={cn(
-                  "flex-1 h-0.5 mx-4",
-                  step > s.num ? "bg-primary" : "bg-muted"
-                )} />
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
-        <Separator className="mb-6" />
+        <Separator className="mb-4" />
 
-        {/* Step 1: Identification */}
+        {/* Step 1: Identificação */}
         {step === 1 && (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
               <div className="space-y-2">
                 <Label htmlFor="empresa" className="flex items-center gap-2">
                   <Building2 className="w-4 h-4" />
                   Empresa *
                 </Label>
-                <Select 
-                  value={formData.empresa} 
-                  onValueChange={(v) => updateField('empresa', v)}
-                >
+                <Select value={formData.empresa} onValueChange={(v) => updateField('empresa', v)}>
                   <SelectTrigger className={cn(errors.empresa && "border-destructive")}>
                     <SelectValue placeholder="Selecione a empresa" />
                   </SelectTrigger>
@@ -324,8 +388,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                 </Select>
                 {errors.empresa && (
                   <p className="text-xs text-destructive flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {errors.empresa}
+                    <AlertCircle className="w-3 h-3" />{errors.empresa}
                   </p>
                 )}
               </div>
@@ -335,10 +398,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                   <User className="w-4 h-4" />
                   Vendedor *
                 </Label>
-                <Select 
-                  value={formData.vendedor} 
-                  onValueChange={(v) => updateField('vendedor', v)}
-                >
+                <Select value={formData.vendedor} onValueChange={(v) => updateField('vendedor', v)}>
                   <SelectTrigger className={cn(errors.vendedor && "border-destructive")}>
                     <SelectValue placeholder="Selecione o vendedor" />
                   </SelectTrigger>
@@ -350,8 +410,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                 </Select>
                 {errors.vendedor && (
                   <p className="text-xs text-destructive flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {errors.vendedor}
+                    <AlertCircle className="w-3 h-3" />{errors.vendedor}
                   </p>
                 )}
               </div>
@@ -365,9 +424,9 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                     key={key}
                     type="button"
                     className={cn(
-                      "py-2 px-2 sm:px-3 sm:flex-1 rounded-lg border-2 transition-colors text-xs sm:text-sm font-medium",
+                      "py-2 px-2 sm:px-3 sm:flex-1 rounded-lg border-2 transition-all text-xs sm:text-sm font-medium",
                       formData.prioridade === key 
-                        ? "border-primary bg-primary/10" 
+                        ? "border-primary bg-primary/10 shadow-sm" 
                         : "border-muted hover:border-muted-foreground/30"
                     )}
                     onClick={() => updateField('prioridade', key as NovaSolicitacaoData['prioridade'])}
@@ -381,9 +440,9 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           </div>
         )}
 
-        {/* Step 2: Product */}
+        {/* Step 2: Especificações */}
         {step === 2 && (
-          <div className="space-y-4">
+          <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
             <div className="space-y-2">
               <Label htmlFor="produto" className="flex items-center gap-2">
                 <Package className="w-4 h-4" />
@@ -398,8 +457,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
               />
               {errors.produto && (
                 <p className="text-xs text-destructive flex items-center gap-1">
-                  <AlertCircle className="w-3 h-3" />
-                  {errors.produto}
+                  <AlertCircle className="w-3 h-3" />{errors.produto}
                 </p>
               )}
             </div>
@@ -418,8 +476,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                 />
                 {errors.quantidade && (
                   <p className="text-xs text-destructive flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {errors.quantidade}
+                    <AlertCircle className="w-3 h-3" />{errors.quantidade}
                   </p>
                 )}
               </div>
@@ -438,8 +495,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                 />
                 {errors.prazoEntrega && (
                   <p className="text-xs text-destructive flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" />
-                    {errors.prazoEntrega}
+                    <AlertCircle className="w-3 h-3" />{errors.prazoEntrega}
                   </p>
                 )}
               </div>
@@ -453,9 +509,9 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                     key={key}
                     type="button"
                     className={cn(
-                      "p-3 rounded-lg border-2 text-left transition-colors",
+                      "p-3 rounded-lg border-2 text-left transition-all",
                       formData.tipo === key 
-                        ? "border-primary bg-primary/10" 
+                        ? "border-primary bg-primary/10 shadow-sm" 
                         : "border-muted hover:border-muted-foreground/30"
                     )}
                     onClick={() => updateField('tipo', key as NovaSolicitacaoData['tipo'])}
@@ -466,6 +522,98 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                 ))}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* Step 3: Valores & Observações */}
+        {step === 3 && (
+          <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="valorEstimado" className="flex items-center gap-2">
+                  <DollarSign className="w-4 h-4" />
+                  Valor Estimado (R$) *
+                </Label>
+                <Input
+                  id="valorEstimado"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={formData.valorEstimado || ''}
+                  onChange={(e) => updateField('valorEstimado', parseFloat(e.target.value) || 0)}
+                  placeholder="0,00"
+                  className={cn(errors.valorEstimado && "border-destructive")}
+                />
+                {errors.valorEstimado && (
+                  <p className="text-xs text-destructive flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />{errors.valorEstimado}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="centroCusto">Centro de Custo</Label>
+                <Input
+                  id="centroCusto"
+                  value={formData.centroCusto}
+                  onChange={(e) => updateField('centroCusto', e.target.value)}
+                  placeholder="Ex: CC-001"
+                />
+                {formData.centroCusto && formData.valorEstimado > 0 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={checkBudget}
+                    disabled={isCheckingBudget}
+                    className="w-full mt-1"
+                  >
+                    {isCheckingBudget ? (
+                      <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Verificando...</>
+                    ) : (
+                      <><ShieldCheck className="w-3 h-3 mr-1" /> Verificar Orçamento</>
+                    )}
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Budget Check Result */}
+            {budgetCheck && (
+              <div className={cn(
+                "rounded-lg p-3 border text-sm",
+                budgetCheck.available
+                  ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-400"
+                  : "bg-destructive/10 border-destructive/20 text-destructive"
+              )}>
+                <div className="flex items-center gap-2 font-medium mb-1">
+                  {budgetCheck.available ? (
+                    <><Check className="w-4 h-4" /> Orçamento Disponível</>
+                  ) : (
+                    <><AlertCircle className="w-4 h-4" /> Orçamento Insuficiente</>
+                  )}
+                </div>
+                <p className="text-xs">{budgetCheck.message}</p>
+                {budgetCheck.has_budget && budgetCheck.budget_available !== undefined && (
+                  <p className="text-xs mt-1">
+                    Disponível: R$ {budgetCheck.budget_available.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Auto-approval hint */}
+            {formData.valorEstimado > 0 && formData.valorEstimado < 1000 && (
+              <div className="rounded-lg p-3 border bg-primary/5 border-primary/20 text-sm">
+                <div className="flex items-center gap-2 text-primary font-medium">
+                  <Check className="w-4 h-4" />
+                  Aprovação Automática
+                </div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Solicitações abaixo de R$ 1.000 são aprovadas automaticamente.
+                </p>
+              </div>
+            )}
 
             <div className="space-y-2">
               <Label htmlFor="observacoes" className="flex items-center gap-2">
@@ -531,16 +679,9 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                   {formData.anexos.map((file, index) => (
                     <Badge key={index} variant="secondary" className="gap-1 pr-1">
                       <span className="max-w-[120px] truncate">{file.name}</span>
-                      <span className="text-[10px] text-muted-foreground">
-                        {formatBytes(file.size)}
-                      </span>
-                      {file.type === 'image/webp' && (
-                        <Check className="w-3 h-3 text-success" />
-                      )}
-                      <button 
-                        onClick={() => removeFile(index)}
-                        className="ml-1 hover:text-destructive"
-                      >
+                      <span className="text-[10px] text-muted-foreground">{formatBytes(file.size)}</span>
+                      {file.type === 'image/webp' && <Check className="w-3 h-3 text-emerald-500" />}
+                      <button onClick={() => removeFile(index)} className="ml-1 hover:text-destructive">
                         <X className="w-3 h-3" />
                       </button>
                     </Badge>
@@ -551,9 +692,9 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           </div>
         )}
 
-        {/* Step 3: Review */}
-        {step === 3 && (
-          <div className="space-y-4">
+        {/* Step 4: Revisão */}
+        {step === 4 && (
+          <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
             <div className="bg-muted/50 rounded-lg p-4 space-y-3">
               <h4 className="font-medium flex items-center gap-2">
                 <Building2 className="w-4 h-4 text-primary" />
@@ -571,10 +712,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                 <div>
                   <p className="text-muted-foreground">Prioridade</p>
                   <Badge variant="outline" className="mt-1">
-                    <span className={cn(
-                      "w-2 h-2 rounded-full mr-1",
-                      prioridadeConfig[formData.prioridade].color
-                    )} />
+                    <span className={cn("w-2 h-2 rounded-full mr-1", prioridadeConfig[formData.prioridade].color)} />
                     {prioridadeConfig[formData.prioridade].label}
                   </Badge>
                 </div>
@@ -584,7 +722,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
             <div className="bg-muted/50 rounded-lg p-4 space-y-3">
               <h4 className="font-medium flex items-center gap-2">
                 <Package className="w-4 h-4 text-primary" />
-                Produto
+                Especificações
               </h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="col-span-2">
@@ -605,51 +743,95 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
                   <p className="text-muted-foreground">Tipo</p>
                   <p className="font-medium">{tipoConfig[formData.tipo].label}</p>
                 </div>
-                {formData.observacoes && (
-                  <div className="col-span-2">
-                    <p className="text-muted-foreground">Observações</p>
-                    <p className="font-medium">{formData.observacoes}</p>
+              </div>
+            </div>
+
+            <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+              <h4 className="font-medium flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-primary" />
+                Valores
+              </h4>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p className="text-muted-foreground">Valor Estimado</p>
+                  <p className="font-medium text-lg">
+                    R$ {formData.valorEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </p>
+                </div>
+                {formData.centroCusto && (
+                  <div>
+                    <p className="text-muted-foreground">Centro de Custo</p>
+                    <p className="font-medium">{formData.centroCusto}</p>
                   </div>
                 )}
-                {formData.anexos.length > 0 && (
+                {formData.valorEstimado < 1000 && formData.valorEstimado > 0 && (
                   <div className="col-span-2">
-                    <p className="text-muted-foreground">Anexos</p>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {formData.anexos.map((file, i) => (
-                        <Badge key={i} variant="outline" className="text-xs">
-                          {file.name}
-                        </Badge>
-                      ))}
-                    </div>
+                    <Badge className="bg-primary/10 text-primary border-primary/20" variant="outline">
+                      <Check className="w-3 h-3 mr-1" /> Aprovação Automática
+                    </Badge>
                   </div>
                 )}
               </div>
+
+              {budgetCheck && (
+                <div className={cn(
+                  "rounded-md p-2 text-xs",
+                  budgetCheck.available ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" : "bg-destructive/10 text-destructive"
+                )}>
+                  {budgetCheck.available ? '✅' : '⚠️'} {budgetCheck.message}
+                </div>
+              )}
             </div>
+
+            {(formData.observacoes || formData.anexos.length > 0) && (
+              <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+                <h4 className="font-medium flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-primary" />
+                  Informações Adicionais
+                </h4>
+                <div className="text-sm space-y-2">
+                  {formData.observacoes && (
+                    <div>
+                      <p className="text-muted-foreground">Observações</p>
+                      <p className="font-medium">{formData.observacoes}</p>
+                    </div>
+                  )}
+                  {formData.anexos.length > 0 && (
+                    <div>
+                      <p className="text-muted-foreground">Anexos ({formData.anexos.length})</p>
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {formData.anexos.map((file, i) => (
+                          <Badge key={i} variant="outline" className="text-xs">
+                            {file.name}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
-        <DialogFooter className="mt-6">
+        <DialogFooter className="mt-6 flex gap-2">
           {step > 1 && (
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={handleBack}
-              disabled={isSubmitting}
-            >
-              Voltar
+            <Button type="button" variant="outline" onClick={handleBack} disabled={isSubmitting}>
+              <ArrowLeft className="w-4 h-4 mr-1" /> Voltar
             </Button>
           )}
           
-          {step < 3 ? (
+          {step < 4 ? (
             <Button onClick={handleNext}>
-              Próximo
+              Próximo <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           ) : (
-            <Button 
-              onClick={handleSubmit}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Criando...' : 'Criar Solicitação'}
+            <Button onClick={handleSubmit} disabled={isSubmitting || (budgetCheck !== null && !budgetCheck.available)}>
+              {isSubmitting ? (
+                <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Criando...</>
+              ) : (
+                <><Check className="w-4 h-4 mr-1" /> Criar Solicitação</>
+              )}
             </Button>
           )}
         </DialogFooter>

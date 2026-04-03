@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { Package, RefreshCw, Search, Plus, Trophy, Clock, Check, Loader2 } from "lucide-react";
+import { Package, RefreshCw, Search, Plus, Trophy, Clock, Check, Loader2, Bell } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { useSearchParams, Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -23,6 +24,7 @@ import { toast } from "@/lib/feedbackToast";
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
   const solicitacaoId = searchParams.get("id");
+  const { hasRole } = useAuth();
   
   // Tour preferences
   const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, isLoading: isTourLoading } = useTourPreferences('cotacao');
@@ -32,6 +34,28 @@ const Cotacao = () => {
   const { cotacoes, loading: loadingCotacoes, createCotacao, selectCotacao, refetch } = useCotacoes({
     solicitacao_id: solicitacaoId || undefined,
   });
+  const [isRunningFollowUp, setIsRunningFollowUp] = useState(false);
+
+  const handleRunFollowUp = async () => {
+    setIsRunningFollowUp(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('check-cotacao-followup');
+      if (error) throw error;
+      const result = data as { followUpsSent: number; emailsSent: number; totalStale: number };
+      if (result.totalStale === 0) {
+        toast.info('Nenhuma cotação pendente há mais de 48h');
+      } else {
+        toast.success(`Follow-up enviado para ${result.followUpsSent} cotação(ões)`, {
+          description: result.emailsSent > 0 ? `${result.emailsSent} e-mail(s) enviado(s)` : undefined,
+        });
+      }
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Erro desconhecido';
+      toast.error('Erro ao executar follow-up: ' + msg);
+    } finally {
+      setIsRunningFollowUp(false);
+    }
+  };
   
   const [buscaStatus, setBuscaStatus] = useState<'idle' | 'searching' | 'done'>('idle');
   interface CotacaoAPI {
@@ -231,13 +255,30 @@ const Cotacao = () => {
     <MainLayout>
       <div className="space-y-6">
         {/* Page Header */}
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Badge variant="outline" className="font-mono">#{solicitacao.numero}</Badge>
-            <span className="text-muted-foreground">•</span>
-            <span className="text-sm text-muted-foreground">{solicitacao.departamento || 'Sem departamento'}</span>
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant="outline" className="font-mono">#{solicitacao.numero}</Badge>
+              <span className="text-muted-foreground">•</span>
+              <span className="text-sm text-muted-foreground">{solicitacao.departamento || 'Sem departamento'}</span>
+            </div>
+            <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
+          {hasRole(['admin', 'coordinator']) && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRunFollowUp}
+              disabled={isRunningFollowUp}
+              title="Verificar cotações pendentes há mais de 48h e enviar follow-up"
+            >
+              {isRunningFollowUp ? (
+                <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Verificando...</>
+              ) : (
+                <><Bell className="w-4 h-4 mr-1" /> Follow-up 48h</>
+              )}
+            </Button>
+          )}
         </div>
 
         {/* Info do Produto */}

@@ -299,9 +299,9 @@ export const useApprovalWorkflow = () => {
     }
   }, [fetchDelegations]);
 
-  // Find applicable rule for a given value and category
+  // Find applicable rule for a given value and category (uses DB RPC for accuracy)
   const findApplicableRule = useCallback((valor: number, categoriaId?: string): ApprovalRule | null => {
-    // First try to find category-specific rule
+    // Client-side fallback: search through loaded rules
     let rule = rules.find(r => 
       r.ativo &&
       valor >= r.valor_min &&
@@ -309,7 +309,6 @@ export const useApprovalWorkflow = () => {
       r.categoria_id === categoriaId
     );
 
-    // If no category-specific rule, find general rule
     if (!rule) {
       rule = rules.find(r => 
         r.ativo &&
@@ -322,6 +321,37 @@ export const useApprovalWorkflow = () => {
     return rule || null;
   }, [rules]);
 
+  // Server-side rule finder (more accurate, respects priority)
+  const findApplicableRuleRPC = useCallback(async (valor: number, categoriaId?: string): Promise<string | null> => {
+    try {
+      const { data, error } = await supabase.rpc('find_approval_rule', {
+        p_valor: valor,
+        p_categoria_id: categoriaId || undefined,
+      });
+      if (error) throw error;
+      return data as string | null;
+    } catch (error: unknown) {
+      console.error('Error finding approval rule via RPC:', error);
+      return null;
+    }
+  }, []);
+
+  // Get effective approver (resolves delegations)
+  const getEffectiveApprover = useCallback(async (approverId: string, categoriaId?: string, valor?: number) => {
+    try {
+      const { data, error } = await supabase.rpc('get_effective_approver', {
+        p_approver_id: approverId,
+        p_categoria_id: categoriaId || undefined,
+        p_valor: valor || undefined,
+      });
+      if (error) throw error;
+      return data as Array<{ approver_id: string; delegation_id: string | null }> | null;
+    } catch (error: unknown) {
+      console.error('Error getting effective approver:', error);
+      return null;
+    }
+  }, []);
+
   // Create workflow for a solicitação
   const createWorkflow = useCallback(async (
     solicitacaoId: string, 
@@ -330,7 +360,19 @@ export const useApprovalWorkflow = () => {
   ): Promise<ApprovalWorkflow | null> => {
     try {
       setLoading(true);
-      const rule = findApplicableRule(valor, categoriaId);
+      
+      // Try server-side rule finder first for accuracy
+      const ruleId = await findApplicableRuleRPC(valor, categoriaId);
+      let rule: ApprovalRule | null = null;
+      
+      if (ruleId) {
+        rule = rules.find(r => r.id === ruleId) || null;
+      }
+      
+      // Fallback to client-side
+      if (!rule) {
+        rule = findApplicableRule(valor, categoriaId);
+      }
       
       if (!rule) {
         toast.error('Nenhuma regra de aprovação encontrada para este valor');
@@ -359,15 +401,25 @@ export const useApprovalWorkflow = () => {
 
       const typedWorkflow = workflow as ApprovalWorkflow;
 
-      // Create steps for each approver
-      const steps = rule.aprovadores.map((aprovador, index) => ({
-        workflow_id: typedWorkflow.id,
-        etapa: index + 1,
-        aprovador_id: aprovador.user_id,
-        prazo_limite: new Date(
-          Date.now() + (index + 1) * rule.tempo_limite_horas * 60 * 60 * 1000
-        ).toISOString()
-      }));
+      // Create steps, resolving delegations via RPC
+      const steps = [];
+      for (let index = 0; index < rule.aprovadores.length; index++) {
+        const aprovador = rule.aprovadores[index];
+        const effective = await getEffectiveApprover(aprovador.user_id, categoriaId, valor);
+        const effectiveId = effective?.[0]?.approver_id || aprovador.user_id;
+        const delegationId = effective?.[0]?.delegation_id || null;
+
+        steps.push({
+          workflow_id: typedWorkflow.id,
+          etapa: index + 1,
+          aprovador_id: aprovador.user_id,
+          aprovador_efetivo_id: effectiveId !== aprovador.user_id ? effectiveId : null,
+          delegacao_id: delegationId,
+          prazo_limite: new Date(
+            Date.now() + (index + 1) * rule.tempo_limite_horas * 60 * 60 * 1000
+          ).toISOString()
+        });
+      }
 
       const { error: stepsError } = await supabase
         .from('approval_steps')
@@ -662,6 +714,8 @@ export const useApprovalWorkflow = () => {
     saveDelegation,
     deleteDelegation,
     findApplicableRule,
+    findApplicableRuleRPC,
+    getEffectiveApprover,
     createWorkflow,
     approveStep,
     rejectStep,
