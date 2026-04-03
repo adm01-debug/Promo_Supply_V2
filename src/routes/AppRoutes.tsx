@@ -144,6 +144,9 @@ export const AnimatedRoutes = () => {
         <Route path="/admin/telemetria" element={
           <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><AdminTelemetria /></ModuleErrorBoundary></ProtectedRoute>
         } />
+        <Route path="/portal-fornecedor" element={
+          <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><PortalFornecedor /></ModuleErrorBoundary></ProtectedRoute>
+        } />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
