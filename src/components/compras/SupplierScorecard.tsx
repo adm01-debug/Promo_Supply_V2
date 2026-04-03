@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   TrendingUp,
   TrendingDown,
@@ -11,12 +12,12 @@ import {
   CheckCircle,
   XCircle,
   BarChart3,
-  Filter
+  Filter,
+  Loader2,
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -24,6 +25,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
 interface SupplierScore {
@@ -50,123 +54,134 @@ interface SupplierScore {
   certifications: string[];
 }
 
-const mockSuppliers: SupplierScore[] = [
-  {
-    id: "1",
-    name: "XBZ Brindes",
-    category: "Brindes Promocionais",
-    overallScore: 92,
-    previousScore: 88,
-    metrics: {
-      slaCompliance: 95,
-      deliveryTime: 90,
-      quality: 94,
-      pricing: 88,
-      communication: 92,
-      flexibility: 90
+function useSupplierScorecardData(periodDays: number) {
+  const { user } = useAuth();
+
+  return useQuery({
+    queryKey: ['supplier-scorecard', periodDays],
+    queryFn: async (): Promise<SupplierScore[]> => {
+      const cutoff = new Date(Date.now() - periodDays * 24 * 60 * 60 * 1000).toISOString();
+
+      // Fetch suppliers, pedidos, qualification scores in parallel
+      const [fornRes, pedRes, qualRes, devRes] = await Promise.all([
+        supabase.from('fornecedores').select('id, razao_social, segmento, avaliacao, prazo_medio_entrega, status'),
+        supabase.from('pedidos').select('id, fornecedor_id, status, valor_total, data_entrega, data_previsao, created_at').gte('created_at', cutoff),
+        supabase.from('supplier_qualification_scores').select('fornecedor_id, overall_score, compliance_score, document_score, expiry_score, qualification_status'),
+        supabase.from('devolucoes').select('id, fornecedor_id, status').gte('created_at', cutoff),
+      ]);
+
+      const fornecedores = fornRes.data || [];
+      const pedidos = pedRes.data || [];
+      const qualScores = qualRes.data || [];
+      const devolucoes = devRes.data || [];
+
+      return fornecedores
+        .filter(f => f.status === 'ativo')
+        .map(f => {
+          const fPedidos = pedidos.filter(p => p.fornecedor_id === f.id);
+          const fQual = qualScores.find(q => q.fornecedor_id === f.id);
+          const fDevs = devolucoes.filter(d => d.fornecedor_id === f.id);
+
+          const ordersCompleted = fPedidos.filter(p => p.status === 'entregue').length;
+          const totalOrders = fPedidos.length;
+
+          // Delivery metrics
+          const deliveredOrders = fPedidos.filter(p => p.data_entrega && p.data_previsao);
+          const onTime = deliveredOrders.filter(p => {
+            const real = new Date(p.data_entrega!);
+            const prev = new Date(p.data_previsao!);
+            return real <= prev;
+          }).length;
+
+          const slaCompliance = deliveredOrders.length > 0 ? Math.round((onTime / deliveredOrders.length) * 100) : 80;
+
+          // Avg delivery days
+          const avgDays = deliveredOrders.length > 0
+            ? deliveredOrders.reduce((sum, p) => {
+                const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);
+                return sum + Math.max(0, diff);
+              }, 0) / deliveredOrders.length
+            : f.prazo_medio_entrega || 10;
+
+          // Quality from qualification scores (overall_score is 0-100)
+          const quality = fQual ? Math.round(fQual.overall_score) : Math.round((f.avaliacao || 3) * 20);
+
+          // Defect rate from devolucoes
+          const defectRate = totalOrders > 0
+            ? Math.round((fDevs.length / totalOrders) * 100 * 10) / 10
+            : 0;
+
+          // Communication & flexibility derived from qualification sub-scores
+          const communication = fQual ? Math.round(fQual.compliance_score) : 70;
+          const flexibility = fQual ? Math.round(fQual.document_score) : 70;
+
+          // Delivery time score (inverse of avg days)
+          const deliveryTime = Math.max(0, Math.min(100, Math.round(100 - (avgDays - 3) * 3)));
+
+          // Pricing score estimate from expiry_score or avaliacao
+          const pricing = fQual ? Math.round(fQual.expiry_score) : 75;
+
+          // Overall score
+          const overallScore = Math.round(
+            slaCompliance * 0.25 +
+            deliveryTime * 0.20 +
+            quality * 0.25 +
+            pricing * 0.15 +
+            communication * 0.08 +
+            flexibility * 0.07
+          );
+
+          // Previous score estimate (baseline from avaliacao)
+          const previousScore = Math.round((f.avaliacao || 3) * 20);
+
+          // Risk level
+          let riskLevel: SupplierScore['riskLevel'] = 'low';
+          if (overallScore < 50) riskLevel = 'critical';
+          else if (overallScore < 65) riskLevel = 'high';
+          else if (overallScore < 80) riskLevel = 'medium';
+
+          // Risk factors
+          const riskFactors: string[] = [];
+          if (slaCompliance < 70) riskFactors.push('SLA abaixo do esperado');
+          if (avgDays > 15) riskFactors.push('Lead time elevado');
+          if (defectRate > 3) riskFactors.push('Taxa de defeito alta');
+          if (totalOrders === 0) riskFactors.push('Sem pedidos recentes');
+          if (fQual?.qualification_status === 'blocked') riskFactors.push('Fornecedor bloqueado');
+
+          // Trend
+          const trend: SupplierScore['trend'] = overallScore > previousScore + 2
+            ? 'up'
+            : overallScore < previousScore - 2
+              ? 'down'
+              : 'stable';
+
+          // Last order date
+          const lastOrder = [...fPedidos].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+
+          return {
+            id: f.id,
+            name: f.razao_social,
+            category: f.segmento || 'Geral',
+            overallScore,
+            previousScore,
+            metrics: { slaCompliance, deliveryTime, quality, pricing, communication, flexibility },
+            riskLevel,
+            riskFactors,
+            ordersCompleted,
+            avgDeliveryDays: Math.round(avgDays * 10) / 10,
+            defectRate,
+            lastOrderDate: lastOrder?.created_at || '',
+            trend,
+            certifications: [],
+          };
+        })
+        .filter(s => s.ordersCompleted > 0 || s.overallScore > 0)
+        .sort((a, b) => b.overallScore - a.overallScore);
     },
-    riskLevel: 'low',
-    riskFactors: [],
-    ordersCompleted: 156,
-    avgDeliveryDays: 5.2,
-    defectRate: 0.8,
-    lastOrderDate: "2024-12-14",
-    trend: 'up',
-    certifications: ["ISO 9001", "FSC"]
-  },
-  {
-    id: "2",
-    name: "Asia Import",
-    category: "Importados",
-    overallScore: 78,
-    previousScore: 82,
-    metrics: {
-      slaCompliance: 72,
-      deliveryTime: 68,
-      quality: 85,
-      pricing: 92,
-      communication: 75,
-      flexibility: 70
-    },
-    riskLevel: 'medium',
-    riskFactors: ["Lead time variável", "Comunicação lenta"],
-    ordersCompleted: 89,
-    avgDeliveryDays: 18.5,
-    defectRate: 2.1,
-    lastOrderDate: "2024-12-10",
-    trend: 'down',
-    certifications: ["ISO 9001"]
-  },
-  {
-    id: "3",
-    name: "Stricker/Spot Gifts",
-    category: "Brindes Premium",
-    overallScore: 88,
-    previousScore: 87,
-    metrics: {
-      slaCompliance: 90,
-      deliveryTime: 85,
-      quality: 95,
-      pricing: 78,
-      communication: 90,
-      flexibility: 88
-    },
-    riskLevel: 'low',
-    riskFactors: [],
-    ordersCompleted: 72,
-    avgDeliveryDays: 7.8,
-    defectRate: 0.5,
-    lastOrderDate: "2024-12-12",
-    trend: 'stable',
-    certifications: ["ISO 9001", "ISO 14001", "BSCI"]
-  },
-  {
-    id: "4",
-    name: "Só Marcas",
-    category: "Têxteis",
-    overallScore: 65,
-    previousScore: 70,
-    metrics: {
-      slaCompliance: 58,
-      deliveryTime: 55,
-      quality: 75,
-      pricing: 85,
-      communication: 60,
-      flexibility: 55
-    },
-    riskLevel: 'high',
-    riskFactors: ["SLA abaixo do esperado", "Atrasos frequentes", "Capacidade limitada"],
-    ordersCompleted: 45,
-    avgDeliveryDays: 12.3,
-    defectRate: 3.8,
-    lastOrderDate: "2024-12-08",
-    trend: 'down',
-    certifications: []
-  },
-  {
-    id: "5",
-    name: "Fornecedor Crítico ABC",
-    category: "Eletrônicos",
-    overallScore: 45,
-    previousScore: 55,
-    metrics: {
-      slaCompliance: 40,
-      deliveryTime: 35,
-      quality: 60,
-      pricing: 70,
-      communication: 38,
-      flexibility: 30
-    },
-    riskLevel: 'critical',
-    riskFactors: ["Performance crítica", "Múltiplos atrasos", "Qualidade inconsistente", "Risco de ruptura"],
-    ordersCompleted: 23,
-    avgDeliveryDays: 25.6,
-    defectRate: 8.2,
-    lastOrderDate: "2024-11-28",
-    trend: 'down',
-    certifications: []
-  }
-];
+    enabled: !!user,
+    staleTime: 60_000,
+  });
+}
 
 const getScoreColor = (score: number) => {
   if (score >= 85) return "text-success";
@@ -184,10 +199,10 @@ const getScoreBg = (score: number) => {
 
 const getRiskBadge = (risk: SupplierScore['riskLevel']) => {
   const config = {
-    low: { label: "Baixo", variant: "default" as const, className: "bg-success/10 text-success border-emerald-500/20" },
-    medium: { label: "Médio", variant: "secondary" as const, className: "bg-warning/10 text-warning border-amber-500/20" },
-    high: { label: "Alto", variant: "destructive" as const, className: "bg-warning/10 text-warning border-orange-500/20" },
-    critical: { label: "Crítico", variant: "destructive" as const, className: "bg-destructive/10 text-destructive border-red-500/20" }
+    low: { label: "Baixo", className: "bg-success/10 text-success border-emerald-500/20" },
+    medium: { label: "Médio", className: "bg-warning/10 text-warning border-amber-500/20" },
+    high: { label: "Alto", className: "bg-warning/10 text-warning border-orange-500/20" },
+    critical: { label: "Crítico", className: "bg-destructive/10 text-destructive border-red-500/20" },
   };
   return config[risk];
 };
@@ -203,11 +218,25 @@ export const SupplierScorecard = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierScore | null>(null);
 
-  const filteredSuppliers = mockSuppliers.filter(s => 
-    selectedCategory === "all" || s.category === selectedCategory
+  const { data: suppliers = [], isLoading } = useSupplierScorecardData(parseInt(selectedPeriod));
+
+  const filteredSuppliers = useMemo(() =>
+    suppliers.filter(s => selectedCategory === "all" || s.category === selectedCategory),
+    [suppliers, selectedCategory]
   );
 
-  const categories = [...new Set(mockSuppliers.map(s => s.category))];
+  const categories = useMemo(() => [...new Set(suppliers.map(s => s.category))], [suppliers]);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20" />)}
+        </div>
+        <Skeleton className="h-64" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -248,7 +277,9 @@ export const SupplierScorecard = () => {
             <span className="text-sm">Score Médio</span>
           </div>
           <p className="text-2xl font-bold text-foreground">
-            {Math.round(filteredSuppliers.reduce((acc, s) => acc + s.overallScore, 0) / filteredSuppliers.length)}
+            {filteredSuppliers.length > 0
+              ? Math.round(filteredSuppliers.reduce((acc, s) => acc + s.overallScore, 0) / filteredSuppliers.length)
+              : '—'}
           </p>
         </Card>
         <Card className="p-4">
@@ -285,15 +316,21 @@ export const SupplierScorecard = () => {
         <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
           <BarChart3 className="w-5 h-5 text-primary" />
           Scorecard de Fornecedores
+          <Badge variant="outline" className="ml-2 text-xs">{filteredSuppliers.length} fornecedores</Badge>
         </h3>
 
-        <div className="space-y-3">
-          {filteredSuppliers
-            .sort((a, b) => b.overallScore - a.overallScore)
-            .map((supplier, index) => {
+        {filteredSuppliers.length === 0 ? (
+          <div className="text-center py-12 text-muted-foreground">
+            <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-30" />
+            <p className="font-medium">Nenhum fornecedor com dados no período</p>
+            <p className="text-sm mt-1">Tente ampliar o período de análise</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredSuppliers.map((supplier, index) => {
               const riskBadge = getRiskBadge(supplier.riskLevel);
               const scoreDiff = supplier.overallScore - supplier.previousScore;
-              
+
               return (
                 <div
                   key={supplier.id}
@@ -319,7 +356,7 @@ export const SupplierScorecard = () => {
 
                     {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <h4 className="font-medium text-foreground">{supplier.name}</h4>
                         <Badge variant="outline" className="text-[10px]">
                           {supplier.category}
@@ -362,8 +399,8 @@ export const SupplierScorecard = () => {
                         </div>
                       </div>
                       <div className="w-20">
-                        <Progress 
-                          value={supplier.overallScore} 
+                        <Progress
+                          value={supplier.overallScore}
                           className={cn("h-2", `[&>div]:${getScoreBg(supplier.overallScore)}`)}
                         />
                       </div>
@@ -381,7 +418,7 @@ export const SupplierScorecard = () => {
                             quality: "Qualidade",
                             pricing: "Preço",
                             communication: "Comunicação",
-                            flexibility: "Flexibilidade"
+                            flexibility: "Flexibilidade",
                           };
                           return (
                             <div key={key} className="text-center">
@@ -389,10 +426,7 @@ export const SupplierScorecard = () => {
                               <p className={cn("text-lg font-semibold", getScoreColor(value))}>
                                 {value}
                               </p>
-                              <Progress 
-                                value={value} 
-                                className="h-1 mt-1"
-                              />
+                              <Progress value={value} className="h-1 mt-1" />
                             </div>
                           );
                         })}
@@ -430,7 +464,8 @@ export const SupplierScorecard = () => {
                 </div>
               );
             })}
-        </div>
+          </div>
+        )}
       </Card>
     </div>
   );

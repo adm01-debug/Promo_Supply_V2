@@ -36,6 +36,7 @@ const CatalogoProdutos = lazy(() => import("@/pages/CatalogoProdutos"));
 const Licitacoes = lazy(() => import("@/pages/Licitacoes"));
 const RecebimentoOffline = lazy(() => import("@/pages/RecebimentoOffline"));
 const AdminTelemetria = lazy(() => import("@/pages/AdminTelemetria"));
+const PortalFornecedor = lazy(() => import("@/pages/PortalFornecedor"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 export const AnimatedRoutes = () => {
@@ -142,6 +143,9 @@ export const AnimatedRoutes = () => {
         } />
         <Route path="/admin/telemetria" element={
           <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><AdminTelemetria /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/portal-fornecedor" element={
+          <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><PortalFornecedor /></ModuleErrorBoundary></ProtectedRoute>
         } />
 
         <Route path="*" element={<NotFound />} />
