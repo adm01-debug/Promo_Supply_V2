@@ -205,13 +205,17 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
           </div>
 
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="general">Geral</TabsTrigger>
               <TabsTrigger value="sla" className="gap-1">
                 <ShieldAlert className="w-3 h-3" />
                 SLA
               </TabsTrigger>
               <TabsTrigger value="items">Itens ({items.length})</TabsTrigger>
+              <TabsTrigger value="docs" className="gap-1">
+                <Paperclip className="w-3 h-3" />
+                Docs ({documents.length})
+              </TabsTrigger>
               <TabsTrigger value="penalties" className="gap-1">
                 Multas ({penalties.length})
               </TabsTrigger>
