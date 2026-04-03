@@ -714,6 +714,8 @@ export const useApprovalWorkflow = () => {
     saveDelegation,
     deleteDelegation,
     findApplicableRule,
+    findApplicableRuleRPC,
+    getEffectiveApprover,
     createWorkflow,
     approveStep,
     rejectStep,
