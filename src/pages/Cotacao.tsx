@@ -255,13 +255,30 @@ const Cotacao = () => {
     <MainLayout>
       <div className="space-y-6">
         {/* Page Header */}
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Badge variant="outline" className="font-mono">#{solicitacao.numero}</Badge>
-            <span className="text-muted-foreground">•</span>
-            <span className="text-sm text-muted-foreground">{solicitacao.departamento || 'Sem departamento'}</span>
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Badge variant="outline" className="font-mono">#{solicitacao.numero}</Badge>
+              <span className="text-muted-foreground">•</span>
+              <span className="text-sm text-muted-foreground">{solicitacao.departamento || 'Sem departamento'}</span>
+            </div>
+            <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
+          {hasRole(['admin', 'coordinator']) && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleRunFollowUp}
+              disabled={isRunningFollowUp}
+              title="Verificar cotações pendentes há mais de 48h e enviar follow-up"
+            >
+              {isRunningFollowUp ? (
+                <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Verificando...</>
+              ) : (
+                <><Bell className="w-4 h-4 mr-1" /> Follow-up 48h</>
+              )}
+            </Button>
+          )}
         </div>
 
         {/* Info do Produto */}
