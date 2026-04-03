@@ -413,6 +413,14 @@ export default function ComplianceDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+
+          {/* Bonifications CRUD Tab - directly below eligibility */}
+        </Tabs>
+
+        {/* Bonificações CRUD real */}
+        <SupplierBonificationsPanel />
+
+        {/* Penalty Escalation Config stays below */}
         </Tabs>
 
         {/* Penalty Escalation Config */}
