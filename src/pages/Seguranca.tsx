@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe, KeyRound, Bell, GraduationCap } from 'lucide-react';
+import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe, KeyRound, Bell, GraduationCap, ShieldBan, MapPin } from 'lucide-react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
