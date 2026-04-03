@@ -360,7 +360,19 @@ export const useApprovalWorkflow = () => {
   ): Promise<ApprovalWorkflow | null> => {
     try {
       setLoading(true);
-      const rule = findApplicableRule(valor, categoriaId);
+      
+      // Try server-side rule finder first for accuracy
+      const ruleId = await findApplicableRuleRPC(valor, categoriaId);
+      let rule: ApprovalRule | null = null;
+      
+      if (ruleId) {
+        rule = rules.find(r => r.id === ruleId) || null;
+      }
+      
+      // Fallback to client-side
+      if (!rule) {
+        rule = findApplicableRule(valor, categoriaId);
+      }
       
       if (!rule) {
         toast.error('Nenhuma regra de aprovação encontrada para este valor');
@@ -389,15 +401,25 @@ export const useApprovalWorkflow = () => {
 
       const typedWorkflow = workflow as ApprovalWorkflow;
 
-      // Create steps for each approver
-      const steps = rule.aprovadores.map((aprovador, index) => ({
-        workflow_id: typedWorkflow.id,
-        etapa: index + 1,
-        aprovador_id: aprovador.user_id,
-        prazo_limite: new Date(
-          Date.now() + (index + 1) * rule.tempo_limite_horas * 60 * 60 * 1000
-        ).toISOString()
-      }));
+      // Create steps, resolving delegations via RPC
+      const steps = [];
+      for (let index = 0; index < rule.aprovadores.length; index++) {
+        const aprovador = rule.aprovadores[index];
+        const effective = await getEffectiveApprover(aprovador.user_id, categoriaId, valor);
+        const effectiveId = effective?.[0]?.approver_id || aprovador.user_id;
+        const delegationId = effective?.[0]?.delegation_id || null;
+
+        steps.push({
+          workflow_id: typedWorkflow.id,
+          etapa: index + 1,
+          aprovador_id: aprovador.user_id,
+          aprovador_efetivo_id: effectiveId !== aprovador.user_id ? effectiveId : null,
+          delegacao_id: delegationId,
+          prazo_limite: new Date(
+            Date.now() + (index + 1) * rule.tempo_limite_horas * 60 * 60 * 1000
+          ).toISOString()
+        });
+      }
 
       const { error: stepsError } = await supabase
         .from('approval_steps')
