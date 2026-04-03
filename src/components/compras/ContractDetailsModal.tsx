@@ -32,6 +32,9 @@ import {
   AlertTriangle,
   ShieldAlert,
   Loader2,
+  Paperclip,
+  Upload,
+  File,
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
