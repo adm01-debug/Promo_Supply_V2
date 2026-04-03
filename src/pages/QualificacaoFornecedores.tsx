@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSupplierQualification } from '@/hooks/useSupplierQualification';
+import { QualificationHistoryTimeline } from '@/components/compras/QualificationHistoryTimeline';
 import { 
   ShieldCheck, FileCheck, AlertTriangle, Clock, CheckCircle2, XCircle, 
   FileText, Award, TrendingUp, Filter
@@ -116,6 +117,7 @@ const QualificacaoFornecedores = () => {
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="documents">Documentos ({documents.length})</TabsTrigger>
             <TabsTrigger value="requirements">Requisitos ({requirements.length})</TabsTrigger>
+            <TabsTrigger value="history">Histórico</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4 mt-4">
@@ -253,6 +255,10 @@ const QualificacaoFornecedores = () => {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="history" className="space-y-4 mt-4">
+            <QualificationHistoryTimeline fornecedorId={selectedSupplier !== 'all' ? selectedSupplier : undefined} />
           </TabsContent>
         </Tabs>
       </PageTransition>
