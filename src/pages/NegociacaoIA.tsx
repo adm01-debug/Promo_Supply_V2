@@ -4,10 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, TrendingDown, AlertTriangle, CheckCircle, Loader2, Brain, Target, DollarSign } from "lucide-react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { Sparkles, TrendingDown, AlertTriangle, CheckCircle, Loader2, Brain, Target, DollarSign, History, Clock } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface NegotiationAnalysis {
   resumo: string;
@@ -24,6 +27,8 @@ interface NegotiationAnalysis {
 }
 
 const NegociacaoIA = () => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [selectedSolicitacao, setSelectedSolicitacao] = useState<string>("");
   const [analysis, setAnalysis] = useState<NegotiationAnalysis | null>(null);
 
@@ -54,6 +59,21 @@ const NegociacaoIA = () => {
     enabled: !!selectedSolicitacao,
   });
 
+  // Fetch past analyses
+  const { data: pastAnalyses = [] } = useQuery({
+    queryKey: ["negotiation-analyses"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("negotiation_analyses")
+        .select("*, solicitacao:solicitacoes(numero, titulo)")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
   const analyzeMutation = useMutation({
     mutationFn: async () => {
       const sol = solicitacoes?.find(s => s.id === selectedSolicitacao);
@@ -62,11 +82,25 @@ const NegociacaoIA = () => {
       });
       if (error) throw error;
       if (data.error) throw new Error(data.error);
-      return data as NegotiationAnalysis;
+
+      const result = data as NegotiationAnalysis;
+
+      // Persist to negotiation_analyses table
+      await supabase.from("negotiation_analyses").insert({
+        solicitacao_id: selectedSolicitacao,
+        analise_texto: result.analise_detalhada || result.resumo,
+        sugestoes: result.sugestoes as any,
+        economia_estimada: result.economia_estimada || 0,
+        modelo_ia: "gemini-2.5-flash",
+        created_by: user?.id,
+      });
+
+      return result;
     },
     onSuccess: (data) => {
       setAnalysis(data);
-      toast.success("Análise de negociação concluída!");
+      queryClient.invalidateQueries({ queryKey: ["negotiation-analyses"] });
+      toast.success("Análise de negociação concluída e salva!");
     },
     onError: (err: Error) => {
       toast.error(err.message || "Erro ao analisar negociação");
