@@ -66,11 +66,13 @@ const typeConfig: Record<string, TypeConfig> = {
 
 export function ContractDetailsModal({ open, onOpenChange, contract }: ContractDetailsModalProps) {
   const [items, setItems] = useState<ContractItem[]>([]);
+  const [documents, setDocuments] = useState<ContractDocument[]>([]);
   const [history, setHistory] = useState<any[]>([]);
   const [linkedOrders, setLinkedOrders] = useState<any[]>([]);
   const [penalties, setPenalties] = useState<ContractPenalty[]>([]);
   const [loading, setLoading] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (contract && open) {
