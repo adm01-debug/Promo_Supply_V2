@@ -413,6 +413,9 @@ export default function ComplianceDashboard() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Penalty Escalation Config */}
+        <PenaltyEscalationConfigPanel />
       </div>
     </MainLayout>
   );
