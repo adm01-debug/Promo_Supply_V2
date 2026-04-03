@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { PenaltyEscalationConfigPanel } from "@/components/compras/PenaltyEscalationConfigPanel";
+import { SupplierBonificationsPanel } from "@/components/compras/SupplierBonificationsPanel";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
