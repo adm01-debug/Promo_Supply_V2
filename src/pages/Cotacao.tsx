@@ -24,6 +24,7 @@ import { toast } from "@/lib/feedbackToast";
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
   const solicitacaoId = searchParams.get("id");
+  const { hasRole } = useAuth();
   
   // Tour preferences
   const { isOpen: isTourOpen, complete: completeTour, skip: skipTour, isLoading: isTourLoading } = useTourPreferences('cotacao');
@@ -33,6 +34,28 @@ const Cotacao = () => {
   const { cotacoes, loading: loadingCotacoes, createCotacao, selectCotacao, refetch } = useCotacoes({
     solicitacao_id: solicitacaoId || undefined,
   });
+  const [isRunningFollowUp, setIsRunningFollowUp] = useState(false);
+
+  const handleRunFollowUp = async () => {
+    setIsRunningFollowUp(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('check-cotacao-followup');
+      if (error) throw error;
+      const result = data as { followUpsSent: number; emailsSent: number; totalStale: number };
+      if (result.totalStale === 0) {
+        toast.info('Nenhuma cotação pendente há mais de 48h');
+      } else {
+        toast.success(`Follow-up enviado para ${result.followUpsSent} cotação(ões)`, {
+          description: result.emailsSent > 0 ? `${result.emailsSent} e-mail(s) enviado(s)` : undefined,
+        });
+      }
+    } catch (error: unknown) {
+      const msg = error instanceof Error ? error.message : 'Erro desconhecido';
+      toast.error('Erro ao executar follow-up: ' + msg);
+    } finally {
+      setIsRunningFollowUp(false);
+    }
+  };
   
   const [buscaStatus, setBuscaStatus] = useState<'idle' | 'searching' | 'done'>('idle');
   interface CotacaoAPI {
