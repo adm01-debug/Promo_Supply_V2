@@ -8,6 +8,8 @@ import { MFASettings } from '@/components/security/MFASettings';
 import { BlockedIPsPanel } from '@/components/security/BlockedIPsPanel';
 import { IPWhitelistPanel } from '@/components/security/IPWhitelistPanel';
 import { GeoWhitelistPanel } from '@/components/security/GeoWhitelistPanel';
+import { BlockedCountriesPanel } from '@/components/security/BlockedCountriesPanel';
+import { GeoAccessLogsPanel } from '@/components/security/GeoAccessLogsPanel';
 import { PasswordResetRequestsPanel } from '@/components/security/PasswordResetRequestsPanel';
 import { ActiveSessionsPanel } from '@/components/security/ActiveSessionsPanel';
 import { SecurityLogsPanel } from '@/components/security/SecurityLogsPanel';
