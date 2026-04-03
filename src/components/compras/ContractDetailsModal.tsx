@@ -83,21 +83,48 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const fetchContractDetails = async () => {
     setLoading(true);
     try {
-      const [itemsRes, historyRes, ordersRes, penaltiesRes] = await Promise.all([
+      const [itemsRes, historyRes, ordersRes, penaltiesRes, docsRes] = await Promise.all([
         supabase.from('contract_items').select('*').eq('contract_id', contract.id),
         supabase.from('contract_history').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
         supabase.from('order_contracts').select('*').eq('contract_id', contract.id),
         (supabase as any).from('contract_penalties').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
+        supabase.from('contract_documents').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
       ]);
 
       setItems(itemsRes.data || []);
       setHistory(historyRes.data || []);
       setLinkedOrders(ordersRes.data || []);
       setPenalties(penaltiesRes.data || []);
+      setDocuments(docsRes.data || []);
     } catch (error) {
       console.error('Error fetching contract details:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const filePath = `contracts/${contract.id}/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('documentos').upload(filePath, file);
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from('documentos').getPublicUrl(filePath);
+      await supabase.from('contract_documents').insert({
+        contract_id: contract.id,
+        file_name: file.name,
+        file_url: urlData.publicUrl,
+        file_type: file.type,
+        file_size: file.size,
+      });
+      toast.success('Documento enviado!');
+      fetchContractDetails();
+    } catch (err: unknown) {
+      toast.error('Erro ao enviar documento');
+    } finally {
+      setUploading(false);
     }
   };
 
