@@ -256,6 +256,10 @@ const QualificacaoFornecedores = () => {
               </div>
             )}
           </TabsContent>
+
+          <TabsContent value="history" className="space-y-4 mt-4">
+            <QualificationHistoryTimeline fornecedorId={selectedSupplier !== 'all' ? selectedSupplier : undefined} />
+          </TabsContent>
         </Tabs>
       </PageTransition>
     </MainLayout>
