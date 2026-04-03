@@ -270,6 +270,16 @@ const Seguranca = () => {
             <GeoWhitelistPanel />
           </TabsContent>
 
+          {/* Geo Blacklist Tab */}
+          <TabsContent value="geo-blocked">
+            <BlockedCountriesPanel />
+          </TabsContent>
+
+          {/* Geo Access Logs Tab */}
+          <TabsContent value="geo-logs">
+            <GeoAccessLogsPanel />
+          </TabsContent>
+
           {/* Login Attempts Tab */}
           <TabsContent value="logins">
             <LoginAttemptsPanel />
