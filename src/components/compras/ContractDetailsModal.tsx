@@ -40,7 +40,8 @@ import { format, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import type { Contract, ContractItem, ContractPenalty, StatusConfig, TypeConfig } from "@/types/contract";
+import type { Contract, ContractItem, ContractPenalty, ContractDocument, StatusConfig, TypeConfig } from "@/types/contract";
+import { Input } from "@/components/ui/input";
 
 interface ContractDetailsModalProps {
   open: boolean;
