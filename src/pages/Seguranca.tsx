@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe, KeyRound, Bell, GraduationCap } from 'lucide-react';
+import { Shield, Ban, ShieldCheck, Monitor, FileText, LogIn, Activity, Key, Settings, Lock, Fingerprint, Globe, KeyRound, Bell, GraduationCap, ShieldBan, MapPin } from 'lucide-react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +8,8 @@ import { MFASettings } from '@/components/security/MFASettings';
 import { BlockedIPsPanel } from '@/components/security/BlockedIPsPanel';
 import { IPWhitelistPanel } from '@/components/security/IPWhitelistPanel';
 import { GeoWhitelistPanel } from '@/components/security/GeoWhitelistPanel';
+import { BlockedCountriesPanel } from '@/components/security/BlockedCountriesPanel';
+import { GeoAccessLogsPanel } from '@/components/security/GeoAccessLogsPanel';
 import { PasswordResetRequestsPanel } from '@/components/security/PasswordResetRequestsPanel';
 import { ActiveSessionsPanel } from '@/components/security/ActiveSessionsPanel';
 import { SecurityLogsPanel } from '@/components/security/SecurityLogsPanel';
@@ -135,7 +137,15 @@ const Seguranca = () => {
               </TabsTrigger>
               <TabsTrigger value="geo" className="flex items-center gap-2">
                 <Globe className="w-4 h-4" />
-                <span className="hidden sm:inline">Geo</span>
+                <span className="hidden sm:inline">Geo Whitelist</span>
+              </TabsTrigger>
+              <TabsTrigger value="geo-blocked" className="flex items-center gap-2">
+                <ShieldBan className="w-4 h-4" />
+                <span className="hidden sm:inline">Geo Blacklist</span>
+              </TabsTrigger>
+              <TabsTrigger value="geo-logs" className="flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                <span className="hidden sm:inline">Geo Logs</span>
               </TabsTrigger>
             </PermissionGate>
             <PermissionGate module="security" action="view_logs" fallback={null}>
@@ -258,6 +268,16 @@ const Seguranca = () => {
           {/* Geo Whitelist Tab */}
           <TabsContent value="geo">
             <GeoWhitelistPanel />
+          </TabsContent>
+
+          {/* Geo Blacklist Tab */}
+          <TabsContent value="geo-blocked">
+            <BlockedCountriesPanel />
+          </TabsContent>
+
+          {/* Geo Access Logs Tab */}
+          <TabsContent value="geo-logs">
+            <GeoAccessLogsPanel />
           </TabsContent>
 
           {/* Login Attempts Tab */}

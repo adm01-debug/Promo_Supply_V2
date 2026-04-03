@@ -4,10 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, TrendingDown, AlertTriangle, CheckCircle, Loader2, Brain, Target, DollarSign } from "lucide-react";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { Sparkles, TrendingDown, AlertTriangle, CheckCircle, Loader2, Brain, Target, DollarSign, History, Clock } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface NegotiationAnalysis {
   resumo: string;
@@ -24,6 +27,8 @@ interface NegotiationAnalysis {
 }
 
 const NegociacaoIA = () => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [selectedSolicitacao, setSelectedSolicitacao] = useState<string>("");
   const [analysis, setAnalysis] = useState<NegotiationAnalysis | null>(null);
 
@@ -54,6 +59,21 @@ const NegociacaoIA = () => {
     enabled: !!selectedSolicitacao,
   });
 
+  // Fetch past analyses
+  const { data: pastAnalyses = [] } = useQuery({
+    queryKey: ["negotiation-analyses"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("negotiation_analyses")
+        .select("*, solicitacao:solicitacoes(numero, titulo)")
+        .order("created_at", { ascending: false })
+        .limit(20);
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
   const analyzeMutation = useMutation({
     mutationFn: async () => {
       const sol = solicitacoes?.find(s => s.id === selectedSolicitacao);
@@ -62,11 +82,25 @@ const NegociacaoIA = () => {
       });
       if (error) throw error;
       if (data.error) throw new Error(data.error);
-      return data as NegotiationAnalysis;
+
+      const result = data as NegotiationAnalysis;
+
+      // Persist to negotiation_analyses table
+      await supabase.from("negotiation_analyses").insert({
+        solicitacao_id: selectedSolicitacao,
+        analise_texto: result.analise_detalhada || result.resumo,
+        sugestoes: result.sugestoes as any,
+        economia_estimada: result.economia_estimada || 0,
+        modelo_ia: "gemini-2.5-flash",
+        created_by: user?.id,
+      });
+
+      return result;
     },
     onSuccess: (data) => {
       setAnalysis(data);
-      toast.success("Análise de negociação concluída!");
+      queryClient.invalidateQueries({ queryKey: ["negotiation-analyses"] });
+      toast.success("Análise de negociação concluída e salva!");
     },
     onError: (err: Error) => {
       toast.error(err.message || "Erro ao analisar negociação");
@@ -231,6 +265,50 @@ const NegociacaoIA = () => {
               </Card>
             )}
           </div>
+        )}
+
+        {/* History of past analyses */}
+        {pastAnalyses.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <History className="h-5 w-5" />
+                Histórico de Análises
+              </CardTitle>
+              <CardDescription>{pastAnalyses.length} análise(s) realizadas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {pastAnalyses.map((a: any) => (
+                  <div key={a.id} className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Brain className="h-4 w-4 text-primary shrink-0" />
+                      <div className="min-w-0">
+                        <p className="font-medium text-sm truncate">
+                          {a.solicitacao?.numero || 'Sem solicitação'} — {a.solicitacao?.titulo || 'Análise avulsa'}
+                        </p>
+                        <p className="text-xs text-muted-foreground line-clamp-1">
+                          {a.analise_texto?.substring(0, 120) || 'Sem detalhes'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0 ml-4">
+                      {(a.economia_estimada || 0) > 0 && (
+                        <Badge variant="outline" className="text-kpi-success border-kpi-success/30 gap-1">
+                          <DollarSign className="h-3 w-3" />
+                          R$ {Number(a.economia_estimada).toLocaleString("pt-BR")}
+                        </Badge>
+                      )}
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3" />
+                        {format(new Date(a.created_at), "dd/MM/yy HH:mm", { locale: ptBR })}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         )}
       </div>
     </MainLayout>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { PenaltyEscalationConfigPanel } from "@/components/compras/PenaltyEscalationConfigPanel";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -412,6 +413,9 @@ export default function ComplianceDashboard() {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Penalty Escalation Config */}
+        <PenaltyEscalationConfigPanel />
       </div>
     </MainLayout>
   );

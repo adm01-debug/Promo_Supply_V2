@@ -32,12 +32,16 @@ import {
   AlertTriangle,
   ShieldAlert,
   Loader2,
+  Paperclip,
+  Upload,
+  File,
 } from "lucide-react";
 import { format, differenceInDays } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import type { Contract, ContractItem, ContractPenalty, StatusConfig, TypeConfig } from "@/types/contract";
+import type { Contract, ContractItem, ContractPenalty, ContractDocument, StatusConfig, TypeConfig } from "@/types/contract";
+import { Input } from "@/components/ui/input";
 
 interface ContractDetailsModalProps {
   open: boolean;
@@ -62,11 +66,13 @@ const typeConfig: Record<string, TypeConfig> = {
 
 export function ContractDetailsModal({ open, onOpenChange, contract }: ContractDetailsModalProps) {
   const [items, setItems] = useState<ContractItem[]>([]);
+  const [documents, setDocuments] = useState<ContractDocument[]>([]);
   const [history, setHistory] = useState<any[]>([]);
   const [linkedOrders, setLinkedOrders] = useState<any[]>([]);
   const [penalties, setPenalties] = useState<ContractPenalty[]>([]);
   const [loading, setLoading] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (contract && open) {
@@ -77,21 +83,48 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const fetchContractDetails = async () => {
     setLoading(true);
     try {
-      const [itemsRes, historyRes, ordersRes, penaltiesRes] = await Promise.all([
+      const [itemsRes, historyRes, ordersRes, penaltiesRes, docsRes] = await Promise.all([
         supabase.from('contract_items').select('*').eq('contract_id', contract.id),
         supabase.from('contract_history').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
         supabase.from('order_contracts').select('*').eq('contract_id', contract.id),
         (supabase as any).from('contract_penalties').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
+        supabase.from('contract_documents').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
       ]);
 
       setItems(itemsRes.data || []);
       setHistory(historyRes.data || []);
       setLinkedOrders(ordersRes.data || []);
       setPenalties(penaltiesRes.data || []);
+      setDocuments(docsRes.data || []);
     } catch (error) {
       console.error('Error fetching contract details:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const filePath = `contracts/${contract.id}/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('documentos').upload(filePath, file);
+      if (uploadError) throw uploadError;
+      const { data: urlData } = supabase.storage.from('documentos').getPublicUrl(filePath);
+      await supabase.from('contract_documents').insert({
+        contract_id: contract.id,
+        file_name: file.name,
+        file_url: urlData.publicUrl,
+        file_type: file.type,
+        file_size: file.size,
+      });
+      toast.success('Documento enviado!');
+      fetchContractDetails();
+    } catch (err: unknown) {
+      toast.error('Erro ao enviar documento');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -172,13 +205,17 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
           </div>
 
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="general">Geral</TabsTrigger>
               <TabsTrigger value="sla" className="gap-1">
                 <ShieldAlert className="w-3 h-3" />
                 SLA
               </TabsTrigger>
               <TabsTrigger value="items">Itens ({items.length})</TabsTrigger>
+              <TabsTrigger value="docs" className="gap-1">
+                <Paperclip className="w-3 h-3" />
+                Docs ({documents.length})
+              </TabsTrigger>
               <TabsTrigger value="penalties" className="gap-1">
                 Multas ({penalties.length})
               </TabsTrigger>
@@ -361,6 +398,48 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
                   </TableBody>
                 </Table>
               )}
+            </TabsContent>
+
+            {/* Documents Tab */}
+            <TabsContent value="docs">
+              <div className="space-y-4">
+                <div className="flex justify-end">
+                  <label>
+                    <input type="file" className="hidden" onChange={handleUploadDocument} disabled={uploading} />
+                    <Button variant="outline" className="gap-2 cursor-pointer" asChild disabled={uploading}>
+                      <span>
+                        {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                        {uploading ? 'Enviando...' : 'Upload Documento'}
+                      </span>
+                    </Button>
+                  </label>
+                </div>
+                {documents.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Paperclip className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+                    <p className="text-muted-foreground">Nenhum documento anexado</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {documents.map((doc) => (
+                      <div key={doc.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <File className="w-5 h-5 text-primary" />
+                          <div>
+                            <p className="font-medium text-sm">{doc.file_name}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {doc.file_size ? `${(doc.file_size / 1024).toFixed(1)} KB` : ''} · {format(new Date(doc.created_at), "dd/MM/yyyy", { locale: ptBR })}
+                            </p>
+                          </div>
+                        </div>
+                        <a href={doc.file_url} target="_blank" rel="noopener noreferrer">
+                          <Button variant="ghost" size="sm"><Download className="w-4 h-4" /></Button>
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
             </TabsContent>
 
             {/* Penalties Applied Tab */}
