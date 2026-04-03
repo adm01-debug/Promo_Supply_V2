@@ -299,9 +299,9 @@ export const useApprovalWorkflow = () => {
     }
   }, [fetchDelegations]);
 
-  // Find applicable rule for a given value and category
+  // Find applicable rule for a given value and category (uses DB RPC for accuracy)
   const findApplicableRule = useCallback((valor: number, categoriaId?: string): ApprovalRule | null => {
-    // First try to find category-specific rule
+    // Client-side fallback: search through loaded rules
     let rule = rules.find(r => 
       r.ativo &&
       valor >= r.valor_min &&
@@ -309,7 +309,6 @@ export const useApprovalWorkflow = () => {
       r.categoria_id === categoriaId
     );
 
-    // If no category-specific rule, find general rule
     if (!rule) {
       rule = rules.find(r => 
         r.ativo &&
@@ -321,6 +320,37 @@ export const useApprovalWorkflow = () => {
 
     return rule || null;
   }, [rules]);
+
+  // Server-side rule finder (more accurate, respects priority)
+  const findApplicableRuleRPC = useCallback(async (valor: number, categoriaId?: string): Promise<string | null> => {
+    try {
+      const { data, error } = await supabase.rpc('find_approval_rule', {
+        p_valor: valor,
+        p_categoria_id: categoriaId || undefined,
+      });
+      if (error) throw error;
+      return data as string | null;
+    } catch (error: unknown) {
+      console.error('Error finding approval rule via RPC:', error);
+      return null;
+    }
+  }, []);
+
+  // Get effective approver (resolves delegations)
+  const getEffectiveApprover = useCallback(async (approverId: string, categoriaId?: string, valor?: number) => {
+    try {
+      const { data, error } = await supabase.rpc('get_effective_approver', {
+        p_approver_id: approverId,
+        p_categoria_id: categoriaId || undefined,
+        p_valor: valor || undefined,
+      });
+      if (error) throw error;
+      return data as Array<{ approver_id: string; delegation_id: string | null }> | null;
+    } catch (error: unknown) {
+      console.error('Error getting effective approver:', error);
+      return null;
+    }
+  }, []);
 
   // Create workflow for a solicitação
   const createWorkflow = useCallback(async (
