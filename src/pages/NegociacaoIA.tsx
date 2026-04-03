@@ -266,6 +266,50 @@ const NegociacaoIA = () => {
             )}
           </div>
         )}
+
+        {/* History of past analyses */}
+        {pastAnalyses.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <History className="h-5 w-5" />
+                Histórico de Análises
+              </CardTitle>
+              <CardDescription>{pastAnalyses.length} análise(s) realizadas</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {pastAnalyses.map((a: any) => (
+                  <div key={a.id} className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 transition-colors">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <Brain className="h-4 w-4 text-primary shrink-0" />
+                      <div className="min-w-0">
+                        <p className="font-medium text-sm truncate">
+                          {a.solicitacao?.numero || 'Sem solicitação'} — {a.solicitacao?.titulo || 'Análise avulsa'}
+                        </p>
+                        <p className="text-xs text-muted-foreground line-clamp-1">
+                          {a.analise_texto?.substring(0, 120) || 'Sem detalhes'}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3 shrink-0 ml-4">
+                      {(a.economia_estimada || 0) > 0 && (
+                        <Badge variant="outline" className="text-kpi-success border-kpi-success/30 gap-1">
+                          <DollarSign className="h-3 w-3" />
+                          R$ {Number(a.economia_estimada).toLocaleString("pt-BR")}
+                        </Badge>
+                      )}
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3" />
+                        {format(new Date(a.created_at), "dd/MM/yy HH:mm", { locale: ptBR })}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </MainLayout>
   );
