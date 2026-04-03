@@ -421,9 +421,6 @@ export default function ComplianceDashboard() {
         <SupplierBonificationsPanel />
 
         {/* Penalty Escalation Config stays below */}
-        </Tabs>
-
-        {/* Penalty Escalation Config */}
         <PenaltyEscalationConfigPanel />
       </div>
     </MainLayout>
