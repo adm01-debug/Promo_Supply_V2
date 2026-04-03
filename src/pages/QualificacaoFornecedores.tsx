@@ -117,6 +117,7 @@ const QualificacaoFornecedores = () => {
             <TabsTrigger value="overview">Visão Geral</TabsTrigger>
             <TabsTrigger value="documents">Documentos ({documents.length})</TabsTrigger>
             <TabsTrigger value="requirements">Requisitos ({requirements.length})</TabsTrigger>
+            <TabsTrigger value="history">Histórico</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-4 mt-4">
