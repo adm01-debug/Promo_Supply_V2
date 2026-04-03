@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSupplierQualification } from '@/hooks/useSupplierQualification';
+import { QualificationHistoryTimeline } from '@/components/compras/QualificationHistoryTimeline';
 import { 
   ShieldCheck, FileCheck, AlertTriangle, Clock, CheckCircle2, XCircle, 
   FileText, Award, TrendingUp, Filter
