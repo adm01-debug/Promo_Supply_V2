@@ -137,7 +137,15 @@ const Seguranca = () => {
               </TabsTrigger>
               <TabsTrigger value="geo" className="flex items-center gap-2">
                 <Globe className="w-4 h-4" />
-                <span className="hidden sm:inline">Geo</span>
+                <span className="hidden sm:inline">Geo Whitelist</span>
+              </TabsTrigger>
+              <TabsTrigger value="geo-blocked" className="flex items-center gap-2">
+                <ShieldBan className="w-4 h-4" />
+                <span className="hidden sm:inline">Geo Blacklist</span>
+              </TabsTrigger>
+              <TabsTrigger value="geo-logs" className="flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                <span className="hidden sm:inline">Geo Logs</span>
               </TabsTrigger>
             </PermissionGate>
             <PermissionGate module="security" action="view_logs" fallback={null}>
