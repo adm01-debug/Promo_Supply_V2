@@ -65,8 +65,8 @@ function useSupplierScorecardData(periodDays: number) {
       // Fetch suppliers, pedidos, qualification scores in parallel
       const [fornRes, pedRes, qualRes, devRes] = await Promise.all([
         supabase.from('fornecedores').select('id, razao_social, segmento, avaliacao, prazo_medio_entrega, status'),
-        supabase.from('pedidos').select('id, fornecedor_id, status, valor_total, data_entrega_prevista, data_entrega_real, created_at').gte('created_at', cutoff),
-        supabase.from('supplier_qualification_scores').select('fornecedor_id, dimension, score, evaluated_at').gte('evaluated_at', cutoff),
+        supabase.from('pedidos').select('id, fornecedor_id, status, valor_total, data_entrega, data_previsao, created_at').gte('created_at', cutoff),
+        supabase.from('supplier_qualification_scores').select('fornecedor_id, overall_score, compliance_score, document_score, expiry_score, qualification_status'),
         supabase.from('devolucoes').select('id, fornecedor_id, status').gte('created_at', cutoff),
       ]);
 
@@ -79,17 +79,17 @@ function useSupplierScorecardData(periodDays: number) {
         .filter(f => f.status === 'ativo')
         .map(f => {
           const fPedidos = pedidos.filter(p => p.fornecedor_id === f.id);
-          const fQual = qualScores.filter(q => q.fornecedor_id === f.id);
+          const fQual = qualScores.find(q => q.fornecedor_id === f.id);
           const fDevs = devolucoes.filter(d => d.fornecedor_id === f.id);
 
           const ordersCompleted = fPedidos.filter(p => p.status === 'entregue').length;
           const totalOrders = fPedidos.length;
 
           // Delivery metrics
-          const deliveredOrders = fPedidos.filter(p => p.data_entrega_real && p.data_entrega_prevista);
+          const deliveredOrders = fPedidos.filter(p => p.data_entrega && p.data_previsao);
           const onTime = deliveredOrders.filter(p => {
-            const real = new Date(p.data_entrega_real!);
-            const prev = new Date(p.data_entrega_prevista!);
+            const real = new Date(p.data_entrega!);
+            const prev = new Date(p.data_previsao!);
             return real <= prev;
           }).length;
 
@@ -98,40 +98,28 @@ function useSupplierScorecardData(periodDays: number) {
           // Avg delivery days
           const avgDays = deliveredOrders.length > 0
             ? deliveredOrders.reduce((sum, p) => {
-                const diff = (new Date(p.data_entrega_real!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);
+                const diff = (new Date(p.data_entrega!).getTime() - new Date(p.created_at).getTime()) / (1000 * 60 * 60 * 24);
                 return sum + Math.max(0, diff);
               }, 0) / deliveredOrders.length
             : f.prazo_medio_entrega || 10;
 
-          // Quality from qualification scores
-          const qualityScores = fQual.filter(q => q.dimension === 'quality');
-          const quality = qualityScores.length > 0
-            ? Math.round(qualityScores.reduce((s, q) => s + (q.score || 0), 0) / qualityScores.length)
-            : Math.round((f.avaliacao || 3) * 20);
+          // Quality from qualification scores (overall_score is 0-100)
+          const quality = fQual ? Math.round(fQual.overall_score) : Math.round((f.avaliacao || 3) * 20);
 
           // Defect rate from devolucoes
           const defectRate = totalOrders > 0
             ? Math.round((fDevs.length / totalOrders) * 100 * 10) / 10
             : 0;
 
-          // Communication & flexibility from qualification
-          const commScores = fQual.filter(q => q.dimension === 'communication');
-          const flexScores = fQual.filter(q => q.dimension === 'flexibility');
-          const communication = commScores.length > 0
-            ? Math.round(commScores.reduce((s, q) => s + (q.score || 0), 0) / commScores.length)
-            : 70;
-          const flexibility = flexScores.length > 0
-            ? Math.round(flexScores.reduce((s, q) => s + (q.score || 0), 0) / flexScores.length)
-            : 70;
+          // Communication & flexibility derived from qualification sub-scores
+          const communication = fQual ? Math.round(fQual.compliance_score) : 70;
+          const flexibility = fQual ? Math.round(fQual.document_score) : 70;
 
           // Delivery time score (inverse of avg days)
           const deliveryTime = Math.max(0, Math.min(100, Math.round(100 - (avgDays - 3) * 3)));
 
-          // Pricing score from qualification or estimate
-          const priceScores = fQual.filter(q => q.dimension === 'pricing');
-          const pricing = priceScores.length > 0
-            ? Math.round(priceScores.reduce((s, q) => s + (q.score || 0), 0) / priceScores.length)
-            : 75;
+          // Pricing score estimate from expiry_score or avaliacao
+          const pricing = fQual ? Math.round(fQual.expiry_score) : 75;
 
           // Overall score
           const overallScore = Math.round(
@@ -158,6 +146,7 @@ function useSupplierScorecardData(periodDays: number) {
           if (avgDays > 15) riskFactors.push('Lead time elevado');
           if (defectRate > 3) riskFactors.push('Taxa de defeito alta');
           if (totalOrders === 0) riskFactors.push('Sem pedidos recentes');
+          if (fQual?.qualification_status === 'blocked') riskFactors.push('Fornecedor bloqueado');
 
           // Trend
           const trend: SupplierScore['trend'] = overallScore > previousScore + 2
@@ -167,7 +156,7 @@ function useSupplierScorecardData(periodDays: number) {
               : 'stable';
 
           // Last order date
-          const lastOrder = fPedidos.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
+          const lastOrder = [...fPedidos].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0];
 
           return {
             id: f.id,
@@ -183,7 +172,7 @@ function useSupplierScorecardData(periodDays: number) {
             defectRate,
             lastOrderDate: lastOrder?.created_at || '',
             trend,
-            certifications: [], // Could be extended with supplier_documents
+            certifications: [],
           };
         })
         .filter(s => s.ordersCompleted > 0 || s.overallScore > 0)
