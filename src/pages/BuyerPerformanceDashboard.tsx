@@ -1,3 +1,4 @@
+import { BuyerComparisonView } from "./buyer/BuyerComparisonView";
 import { useState, useMemo } from "react";
 import {
   User,
