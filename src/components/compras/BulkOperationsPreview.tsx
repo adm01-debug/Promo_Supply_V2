@@ -50,65 +50,15 @@ import {
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-// Types for different entity types
-export interface BulkItem {
-  id: string;
-  title: string;
-  subtitle?: string;
-  status: string;
-  value?: number;
-  date?: string;
-  extra?: Record<string, any>;
-}
+import {
+  type BulkItem,
+  type BulkAction,
+  type BulkPreviewChange,
+  type BulkOperationsPreviewProps,
+  entityConfig,
+} from './bulk-operations/bulkOperationsTypes';
 
-export interface BulkAction {
-  id: string;
-  label: string;
-  icon: React.ElementType;
-  variant?: 'default' | 'destructive' | 'warning';
-  requiresConfirmation?: boolean;
-  targetStatus?: string;
-}
-
-export interface BulkPreviewChange {
-  itemId: string;
-  field: string;
-  oldValue: string | number;
-  newValue: string | number;
-}
-
-interface BulkOperationsPreviewProps {
-  entityType: 'solicitacoes' | 'pedidos' | 'pagamentos' | 'fornecedores';
-  selectedItems: BulkItem[];
-  availableActions: BulkAction[];
-  statusOptions: { value: string; label: string; color?: string }[];
-  onExecute: (action: BulkAction, itemIds: string[], options?: Record<string, unknown>) => Promise<boolean>;
-  onClose: () => void;
-  onExport?: (format: 'pdf' | 'excel', itemIds: string[]) => void;
-}
-
-const entityConfig = {
-  solicitacoes: {
-    label: 'Solicitações',
-    icon: Package,
-    color: 'text-info',
-  },
-  pedidos: {
-    label: 'Pedidos',
-    icon: FileText,
-    color: 'text-purple-500',
-  },
-  pagamentos: {
-    label: 'Pagamentos',
-    icon: CreditCard,
-    color: 'text-success',
-  },
-  fornecedores: {
-    label: 'Fornecedores',
-    icon: Building2,
-    color: 'text-warning',
-  },
-};
+export type { BulkItem, BulkAction, BulkPreviewChange };
 
 export function BulkOperationsPreview({
   entityType,

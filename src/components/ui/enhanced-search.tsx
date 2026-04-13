@@ -6,93 +6,25 @@ import {
   X, 
   Clock, 
   TrendingUp, 
-  FileText, 
-  Users, 
-  Package,
   Loader2,
   Sparkles,
   ArrowRight,
-  type LucideIcon
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 import { normalizeText } from "@/hooks/useFuseSearch";
+import {
+  type SearchResult,
+  type EnhancedSearchProps,
+  typeIcons,
+  typeLabels,
+  typeColors,
+  fuseOptions,
+} from "./enhanced-search-helpers";
 
-interface SearchResult {
-  id: string;
-  title: string;
-  subtitle?: string;
-  type: "solicitacao" | "pedido" | "fornecedor" | "cotacao" | "pagamento";
-  href: string;
-  badge?: string;
-  normalizedTitle?: string;
-  normalizedSubtitle?: string;
-  matchIndices?: { key: string; indices: [number, number][] }[];
-}
-
-interface SearchSuggestion {
-  text: string;
-  icon?: LucideIcon;
-  category?: string;
-}
-
-interface EnhancedSearchProps {
-  placeholder?: string;
-  onSearch?: (query: string) => void;
-  onSelect?: (result: SearchResult) => void;
-  results?: SearchResult[];
-  recentSearches?: string[];
-  trendingSearches?: string[];
-  suggestions?: SearchSuggestion[];
-  loading?: boolean;
-  className?: string;
-  showShortcut?: boolean;
-  enableFuzzy?: boolean;
-}
-
-const typeIcons: Record<SearchResult["type"], LucideIcon> = {
-  solicitacao: FileText,
-  pedido: Package,
-  fornecedor: Users,
-  cotacao: TrendingUp,
-  pagamento: FileText,
-};
-
-const typeLabels: Record<SearchResult["type"], string> = {
-  solicitacao: "Solicitação",
-  pedido: "Pedido",
-  fornecedor: "Fornecedor",
-  cotacao: "Cotação",
-  pagamento: "Pagamento",
-};
-
-const typeColors: Record<SearchResult["type"], string> = {
-  solicitacao: "bg-info/10 text-info dark:text-info",
-  pedido: "bg-purple-500/10 text-purple-600 dark:text-purple-400",
-  fornecedor: "bg-success/10 text-success dark:text-success",
-  cotacao: "bg-warning/10 text-warning dark:text-warning",
-  pagamento: "bg-success/10 text-success dark:text-success",
-};
-
-// Fuse.js configuration
-const fuseOptions = {
-  isCaseSensitive: false,
-  includeScore: true,
-  includeMatches: true,
-  shouldSort: true,
-  threshold: 0.4,
-  location: 0,
-  distance: 100,
-  minMatchCharLength: 2,
-  keys: [
-    { name: 'title', weight: 2.0 },
-    { name: 'subtitle', weight: 1.5 },
-    { name: 'normalizedTitle', weight: 1.8 },
-    { name: 'normalizedSubtitle', weight: 1.3 },
-  ],
-};
+export type { SearchResult };
 
 // Highlight component for matched text
 const HighlightedText = React.memo(({ 
