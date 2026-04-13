@@ -164,25 +164,6 @@ const Fornecedores = () => {
     setModalOpen(false);
   };
 
-  const getTipoLabel = (tipo: LegacyFornecedor["tipo"]) => {
-    const labels = { IMPORTADORA: "Importadora", FABRICANTE: "Fabricante", DISTRIBUIDORA: "Distribuidora" };
-    return labels[tipo];
-  };
-
-  const getTipoBadgeColor = (tipo: LegacyFornecedor["tipo"]) => {
-    const colors = { 
-      IMPORTADORA: "bg-info/20 text-info border-blue-500/30",
-      FABRICANTE: "bg-purple-500/20 text-purple-400 border-purple-500/30",
-      DISTRIBUIDORA: "bg-cyan-500/20 text-cyan-400 border-cyan-500/30"
-    };
-    return colors[tipo];
-  };
-
-  const getProdutoLabel = (produto: LegacyFornecedor["vendeProduto"]) => {
-    const labels = { LISO: "Liso", PERSONALIZADO: "Personalizado", AMBOS: "Liso + Personalizado" };
-    return labels[produto];
-  };
-
   if (loading) {
     return (
       <MainLayout>
