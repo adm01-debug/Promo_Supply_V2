@@ -22,47 +22,14 @@ import { cn } from "@/lib/utils";
 import { format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-interface PendingOrder {
-  id: string;
-  numero: string;
-  fornecedor_nome: string;
-  data_previsao: string | null;
-  valor_total: number;
-  status: string;
-  itens: OrderItem[];
-}
-
-interface OrderItem {
-  id: string;
-  descricao: string;
-  quantidade: number;
-  quantidade_recebida: number | null;
-  unidade: string | null;
-  valor_unitario: number;
-}
-
-interface ReceivingEntry {
-  pedido_id: string;
-  pedido_numero: string;
-  items: { item_id: string; quantidade_recebida: number; observacao: string }[];
-  observacao_geral: string;
-  timestamp: string;
-  synced: boolean;
-}
-
-const OFFLINE_STORAGE_KEY = "offline-receiving-entries";
-
-function getOfflineEntries(): ReceivingEntry[] {
-  try {
-    return JSON.parse(localStorage.getItem(OFFLINE_STORAGE_KEY) || "[]");
-  } catch {
-    return [];
-  }
-}
-
-function saveOfflineEntries(entries: ReceivingEntry[]) {
-  localStorage.setItem(OFFLINE_STORAGE_KEY, JSON.stringify(entries));
-}
+import {
+  type PendingOrder,
+  type OrderItem,
+  type ReceivingEntry,
+  OFFLINE_STORAGE_KEY,
+  getOfflineEntries,
+  saveOfflineEntries,
+} from "./recebimento/recebimentoHelpers";
 
 export default function RecebimentoOffline() {
   const { user } = useAuth();
