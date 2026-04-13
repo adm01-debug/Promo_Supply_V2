@@ -97,7 +97,7 @@ export function AdvancedSearch() {
       // DB searches
       const searchEntities = async (table: string, cat: SearchCategory, fields: string, orFilter: string, mapFn: (item: any) => SearchResult & { normalizedTitle: string; normalizedSubtitle: string }, weight: number) => {
         if (category !== 'all' && category !== cat) return;
-        const { data } = await supabase.from(table).select(fields).or(orFilter).limit(20);
+        const { data } = await supabase.from(table as any).select(fields).or(orFilter).limit(20);
         if (!data?.length) return;
         const items = data.map(mapFn);
         const fuse = new Fuse(items, fuseOptions);
