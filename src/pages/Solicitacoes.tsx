@@ -36,51 +36,7 @@ import { OnboardingTour, solicitacoesTourSteps } from "@/components/onboarding/O
 import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import type { Solicitacao as MockSolicitacao } from "@/types/legacyTypes";
-
-// Map DB status to legacy status for UI compatibility
-const mapDbStatusToLegacy = (status: Solicitacao['status']): MockSolicitacao['status'] => {
-  const mapping: Record<Solicitacao['status'], MockSolicitacao['status']> = {
-    'pendente': 'AGUARDANDO_COTACAO',
-    'em_cotacao': 'EM_COTACAO',
-    'aprovada': 'FORNECEDOR_SELECIONADO',
-    'em_andamento': 'AGUARDANDO_PAGAMENTO',
-    'concluida': 'ENTREGUE',
-    'rejeitada': 'FORNECEDOR_SELECIONADO',
-    'cancelada': 'PEDIDO_GERADO',
-  };
-  return mapping[status] || 'AGUARDANDO_COTACAO';
-};
-
-const mapLegacyStatusToDb = (legacyStatus: string): Solicitacao['status'] => {
-  const mapping: Record<string, Solicitacao['status']> = {
-    'AGUARDANDO_COTACAO': 'pendente',
-    'EM_COTACAO': 'em_cotacao',
-    'FORNECEDOR_SELECIONADO': 'aprovada',
-    'AGUARDANDO_PAGAMENTO': 'em_andamento',
-    'PAGO': 'concluida',
-    'EM_TRANSITO': 'concluida',
-    'ENTREGUE': 'concluida',
-    'PEDIDO_GERADO': 'em_andamento',
-    'CANCELADO': 'cancelada',
-  };
-  return mapping[legacyStatus] || 'pendente';
-};
-
-// Adapt DB solicitacao to legacy format for components (matches mockData.Solicitacao)
-const adaptToLegacyFormat = (sol: Solicitacao): MockSolicitacao => ({
-  id: sol.id,
-  itemNumber: sol.id.slice(0, 8),
-  empresa: sol.departamento || 'Empresa',
-  produto: sol.titulo,
-  quantidade: sol.quantidade,
-  quantidadeReal: Math.ceil(sol.quantidade * 1.02),
-  tipo: sol.tipo === 'material' ? 'PE_LISO' : sol.tipo === 'servico' ? 'FAB_LISO' : 'FAB_PERSONALIZADO',
-  status: mapDbStatusToLegacy(sol.status),
-  vendedor: sol.observacoes || 'Vendedor',
-  prazoEntrega: sol.data_necessidade || sol.created_at,
-  valorTotal: sol.valor_estimado || 0,
-  createdAt: sol.created_at,
-});
+import { mapDbStatusToLegacy, mapLegacyStatusToDb, adaptToLegacyFormat, statusConfig } from "./solicitacoes/solicitacoesHelpers";
 
 const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");
