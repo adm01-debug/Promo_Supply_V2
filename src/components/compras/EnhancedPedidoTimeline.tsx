@@ -1,22 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Check, 
-  Clock, 
-  Package, 
-  CreditCard, 
-  Truck, 
-  MapPin, 
-  CheckCircle2,
-  FileText,
-  ChevronDown,
-  ChevronUp,
-  CalendarDays,
-  User,
-  Building2,
-  AlertTriangle,
-  Timer,
-  ExternalLink
+  Check, Clock, FileText, ChevronDown, ChevronUp,
+  CalendarDays, User, Building2, ExternalLink
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
@@ -25,78 +11,15 @@ import { Card } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { format, parseISO, differenceInDays, differenceInHours, isPast } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { AlertTriangle, Timer, CheckCircle2 } from "lucide-react";
+import { 
+  type TimelineStep, 
+  type EnhancedPedidoTimelineProps, 
+  iconesPorEtapa, 
+  statusColors 
+} from "./timeline/timelineConfig";
 
-export interface TimelineStep {
-  id: string;
-  nome: string;
-  status: 'concluido' | 'atual' | 'pendente' | 'erro';
-  data?: string;
-  dataReal?: string;
-  descricao?: string;
-  responsavel?: string;
-  duracao?: string;
-  documentos?: { nome: string; url: string }[];
-  observacoes?: string;
-}
-
-interface EnhancedPedidoTimelineProps {
-  etapas: TimelineStep[];
-  pedidoNumero?: string;
-  fornecedor?: string;
-  valorTotal?: number;
-  prazoFinal?: string;
-  orientacao?: 'horizontal' | 'vertical';
-  showDetails?: boolean;
-}
-
-const iconesPorEtapa: Record<string, typeof Check> = {
-  solicitacao: FileText,
-  aprovacao: Check,
-  cotacao: Package,
-  selecao: CheckCircle2,
-  pedido: CreditCard,
-  pagamento: CreditCard,
-  preparacao: Package,
-  transito: Truck,
-  coleta: MapPin,
-  entregue: CheckCircle2,
-};
-
-const statusColors = {
-  concluido: {
-    bg: "bg-success",
-    border: "border-success",
-    text: "text-success",
-    icon: "text-success-foreground",
-    line: "bg-success",
-    glow: "shadow-success/30",
-  },
-  atual: {
-    bg: "bg-primary",
-    border: "border-primary",
-    text: "text-primary",
-    icon: "text-primary-foreground",
-    line: "bg-primary/50",
-    glow: "shadow-primary/30",
-  },
-  pendente: {
-    bg: "bg-muted",
-    border: "border-border",
-    text: "text-muted-foreground",
-    icon: "text-muted-foreground",
-    line: "bg-border",
-    glow: "",
-  },
-  erro: {
-    bg: "bg-destructive",
-    border: "border-destructive",
-    text: "text-destructive",
-    icon: "text-destructive-foreground",
-    line: "bg-destructive",
-    glow: "shadow-destructive/30",
-  },
-};
-
+export type { TimelineStep };
 export const EnhancedPedidoTimeline = ({ 
   etapas, 
   pedidoNumero,

@@ -36,42 +36,10 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/lib/feedbackToast";
 import { normalizeText } from "@/hooks/useFuseSearch";
 
-// Legacy adapter types
-interface LegacyFornecedor {
-  id: string;
-  razaoSocial: string;
-  nomeFantasia: string;
-  cnpj: string;
-  tipo: "IMPORTADORA" | "FABRICANTE" | "DISTRIBUIDORA";
-  ramos: string[];
-  vendeProduto: "LISO" | "PERSONALIZADO" | "AMBOS";
-  email: string;
-  telefone: string;
-  whatsapp: string;
-  apiIntegrada: boolean;
-  rating: number;
-  totalMes: number;
-  ultimaCompra: string;
-}
-
-// Map DB fornecedor to legacy format
-const adaptToLegacy = (f: Fornecedor): LegacyFornecedor => ({
-  id: f.id,
-  razaoSocial: f.razao_social,
-  nomeFantasia: f.nome_fantasia || f.razao_social,
-  cnpj: f.cnpj || '',
-  tipo: f.tipo === 'internacional' ? 'IMPORTADORA' : f.tipo === 'local' ? 'DISTRIBUIDORA' : 'FABRICANTE',
-  ramos: f.segmento ? [f.segmento] : [],
-  vendeProduto: 'AMBOS',
-  email: f.email || '',
-  telefone: f.telefone || '',
-  whatsapp: f.telefone || '',
-  apiIntegrada: f.integrado_api,
-  rating: Math.round(f.avaliacao),
-  totalMes: 0,
-  ultimaCompra: '-',
-});
-
+import { 
+  type LegacyFornecedor, adaptToLegacy, 
+  getTipoLabel, getTipoBadgeColor, getProdutoLabel 
+} from './fornecedores/fornecedorHelpers';
 const Fornecedores = () => {
   const isMobile = useIsMobile();
   const [search, setSearch] = useState("");
