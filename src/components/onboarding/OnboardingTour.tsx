@@ -4,18 +4,18 @@ import { Button } from "@/components/ui/button";
 import { 
   X, ChevronLeft, ChevronRight, Sparkles, 
   Check, Lightbulb, Rocket, Target, Zap,
-  PartyPopper, Star
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSwipeGesture, useHapticFeedback } from "@/hooks/useMobileGestures";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Spotlight, StepIndicators, CompletionModal } from "./TourVisualComponents";
 
 export interface TourStep {
-  target: string; // CSS selector
+  target: string;
   title: string;
   content: string;
   position?: "top" | "bottom" | "left" | "right";
-  icon?: React.ElementType; // Changed from React.ReactNode to React.ElementType
+  icon?: React.ElementType;
   highlight?: "primary" | "success" | "warning" | "info";
   action?: {
     label: string;
@@ -30,121 +30,7 @@ interface OnboardingTourProps {
   onSkip: () => void;
 }
 
-// Confetti animation component
-const Confetti = () => {
-  const confettiPieces = Array.from({ length: 50 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    delay: Math.random() * 0.5,
-    duration: 1 + Math.random() * 2,
-    color: [
-      'hsl(var(--primary))',
-      'hsl(var(--success))',
-      'hsl(var(--warning))',
-      'hsl(var(--info))',
-    ][Math.floor(Math.random() * 4)],
-  }));
-
-  return (
-    <div className="fixed inset-0 pointer-events-none z-[10001] overflow-hidden">
-      {confettiPieces.map((piece) => (
-        <motion.div
-          key={piece.id}
-          initial={{ 
-            x: `${piece.x}vw`, 
-            y: -20, 
-            rotate: 0,
-            opacity: 1 
-          }}
-          animate={{ 
-            y: '110vh', 
-            rotate: 720,
-            opacity: 0 
-          }}
-          transition={{ 
-            duration: piece.duration, 
-            delay: piece.delay,
-            ease: 'linear'
-          }}
-          className="absolute w-3 h-3 rounded-sm"
-          style={{ backgroundColor: piece.color }}
-        />
-      ))}
-    </div>
-  );
-};
-
-// Spotlight effect component with cutout
-const Spotlight = ({ rect, highlight = "primary" }: { rect: DOMRect | null; highlight?: string }) => {
-  if (!rect) return null;
-  
-  const padding = 8;
-  const borderRadius = 12;
-
-  return (
-    <>
-      {/* Highlight ring around target */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 1.05 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-        className="fixed z-[9999] pointer-events-none rounded-xl border-2 border-primary"
-        style={{
-          top: rect.top - padding,
-          left: rect.left - padding,
-          width: rect.width + padding * 2,
-          height: rect.height + padding * 2,
-          boxShadow: `0 0 0 9999px rgba(0, 0, 0, 0.75), 0 0 30px hsl(var(--primary) / 0.5)`,
-          borderRadius: borderRadius,
-        }}
-      >
-        {/* Pulsing glow effect */}
-        <motion.div
-          animate={{ 
-            boxShadow: [
-              `0 0 15px hsl(var(--primary) / 0.4), inset 0 0 15px hsl(var(--primary) / 0.1)`,
-              `0 0 30px hsl(var(--primary) / 0.6), inset 0 0 20px hsl(var(--primary) / 0.15)`,
-              `0 0 15px hsl(var(--primary) / 0.4), inset 0 0 15px hsl(var(--primary) / 0.1)`,
-            ]
-          }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute inset-0 rounded-xl"
-        />
-      </motion.div>
-    </>
-  );
-};
-
-// Step indicator dots
-const StepIndicators = ({ 
-  total, 
-  current, 
-  onStepClick 
-}: { 
-  total: number; 
-  current: number;
-  onStepClick: (index: number) => void;
-}) => (
-  <div className="flex items-center gap-2 justify-center">
-    {Array.from({ length: total }, (_, i) => (
-      <motion.button
-        key={i}
-        onClick={() => onStepClick(i)}
-        whileHover={{ scale: 1.2 }}
-        whileTap={{ scale: 0.9 }}
-        className={cn(
-          "h-2 rounded-full transition-all duration-300 cursor-pointer",
-          i === current 
-            ? "w-6 bg-primary" 
-            : i < current 
-              ? "w-2 bg-primary/60" 
-              : "w-2 bg-muted-foreground/30"
-        )}
-      />
-    ))}
-  </div>
-);
+// Visual components (Confetti, Spotlight, StepIndicators, CompletionModal) imported from TourVisualComponents
 
 // CompletionModal is imported from TourVisualComponents
 
