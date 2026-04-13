@@ -1,9 +1,8 @@
 import { useState, useCallback } from "react";
 import { SolicitacaoReviewStep } from "./solicitacao/SolicitacaoReviewStep";
 import { 
-  Plus, X, Package, Building2, User, Calendar,
-  FileText, Upload, AlertCircle, Loader2, Check,
-  DollarSign, ShieldCheck, ArrowRight, ArrowLeft,
+  Plus, Package, Check, Loader2,
+  Building2, DollarSign, ShieldCheck, ArrowRight, ArrowLeft,
 } from "lucide-react";
 import { useImageCompression } from "@/hooks/useImageCompression";
 import { formatBytes } from "@/lib/imageCompression";
@@ -62,21 +61,8 @@ const initialFormData: NovaSolicitacaoData = {
   anexos: [],
 };
 
-const empresasMock = [
-  'Promo Supply',
-  'Gift Solutions',
-  'Marketing Promo',
-  'Brindes Express',
-  'Corporate Gifts',
-];
 
-const vendedoresMock = [
-  'João Silva',
-  'Maria Santos',
-  'Carlos Oliveira',
-  'Ana Costa',
-  'Pedro Lima',
-];
+
 
 interface BudgetCheckResult {
   available: boolean;
