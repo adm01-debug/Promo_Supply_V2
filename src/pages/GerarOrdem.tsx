@@ -30,7 +30,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { getTipoLabel } from './gerar-ordem/gerarOrdemHelpers';
+import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerar-ordem/gerarOrdemHelpers';
 
 const GerarOrdem = () => {
   const navigate = useNavigate();
@@ -105,70 +105,19 @@ const GerarOrdem = () => {
   const subtotal = (solicitacao.valorUnitario || 12) * solicitacao.quantidadeReal;
   const total = subtotal + frete - desconto;
 
-  // Gera mensagens automáticas
   const gerarMensagemWhatsApp = () => {
-    const msg = `Olá ${fornecedor.nome_fantasia || fornecedor.razao_social}!
-
-Gostaríamos de confirmar o pedido abaixo:
-
-*ORDEM DE COMPRA: ${ordemNumero}*
-
-📦 *Produto:* ${solicitacao.produto}
-📊 *Quantidade:* ${solicitacao.quantidadeReal} unidades
-💰 *Valor Unitário:* R$ ${(solicitacao.valorUnitario || 12).toFixed(2)}
-${frete > 0 ? `🚚 *Frete:* R$ ${frete.toFixed(2)}` : '🚚 *Frete:* Grátis'}
-${desconto > 0 ? `🎁 *Desconto:* R$ ${desconto.toFixed(2)}` : ''}
-💵 *TOTAL:* R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-
-📅 *Prazo de Entrega:* ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
-💳 *Condição:* À vista via PIX
-${observacoes ? `\n📝 *Observações:* ${observacoes}` : ''}
-Por favor, confirme o recebimento e disponibilidade.
-
-Atenciosamente,
-Equipe de Compras - Promo Supply`;
-    setMensagemWhatsApp(msg);
+    setMensagemWhatsApp(buildWhatsAppMessage(
+      { nome_fantasia: fornecedor.nome_fantasia || '', razao_social: fornecedor.razao_social },
+      solicitacao, ordemNumero, total, frete, desconto, observacoes,
+    ));
   };
 
   const gerarMensagemEmail = () => {
-    setAssuntoEmail(`Ordem de Compra ${ordemNumero} - ${solicitacao.produto}`);
-    const msg = `Prezados,
-
-Segue abaixo os detalhes da Ordem de Compra para confirmação:
-
-═══════════════════════════════════════════
-ORDEM DE COMPRA: ${ordemNumero}
-═══════════════════════════════════════════
-
-DADOS DO PEDIDO:
-• Produto: ${solicitacao.produto}
-• Quantidade: ${solicitacao.quantidadeReal} unidades
-• Tipo: ${getTipoLabel(solicitacao.tipo)}
-
-VALORES:
-• Valor Unitário: R$ ${(solicitacao.valorUnitario || 12).toFixed(2)}
-• Subtotal: R$ ${subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-• Frete: ${frete > 0 ? `R$ ${frete.toFixed(2)}` : 'Grátis'}
-${desconto > 0 ? `• Desconto: R$ ${desconto.toFixed(2)}` : ''}
-• Total: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-
-CONDIÇÕES:
-• Pagamento: À vista via PIX
-• Prazo de Entrega: ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
-${observacoes ? `\nOBSERVAÇÕES:\n${observacoes}` : ''}
-DADOS PARA ENTREGA:
-Promo Supply
-[Endereço da empresa]
-
-═══════════════════════════════════════════
-
-Por favor, confirme o recebimento desta ordem e a disponibilidade do prazo informado.
-
-Atenciosamente,
-Equipe de Compras
-Promo Supply
-compras@promosupply.com.br`;
-    setMensagemEmail(msg);
+    const { assunto, corpo } = buildEmailMessage(
+      solicitacao, ordemNumero, subtotal, total, frete, desconto, observacoes,
+    );
+    setAssuntoEmail(assunto);
+    setMensagemEmail(corpo);
   };
 
   const copiarMensagem = (tipo: string, texto: string) => {
