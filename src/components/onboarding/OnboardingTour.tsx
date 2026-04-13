@@ -10,7 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useSwipeGesture, useHapticFeedback } from "@/hooks/useMobileGestures";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-interface TourStep {
+export interface TourStep {
   target: string; // CSS selector
   title: string;
   content: string;
@@ -656,10 +656,14 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
 // Re-export the database-backed hook for managing tour state
 export { useTourPreferences as useOnboardingTour } from '@/hooks/useTourPreferences';
 
-// Predefined tour steps for main features
-export const dashboardTourSteps: TourStep[] = [
-  {
-    target: "[data-tour='sidebar']",
+// Re-export tour step definitions from dedicated file
+export {
+  dashboardTourSteps,
+  cotacaoTourSteps,
+  fornecedorTourSteps,
+  pedidosTourSteps,
+  solicitacoesTourSteps,
+} from './tourStepDefinitions';
     title: "Menu de Navegação",
     content: "Acesse todas as funcionalidades do sistema através do menu lateral. Os itens são organizados por categoria para facilitar a navegação.",
     position: "right",
