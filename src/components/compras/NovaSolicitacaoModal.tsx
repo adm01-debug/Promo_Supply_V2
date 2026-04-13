@@ -1,20 +1,9 @@
 import { useState, useCallback } from "react";
 import { SolicitacaoReviewStep } from "./solicitacao/SolicitacaoReviewStep";
-  Plus, 
-  X, 
-  Package, 
-  Building2, 
-  User, 
-  Calendar,
-  FileText,
-  Upload,
-  AlertCircle,
-  Loader2,
-  Check,
-  DollarSign,
-  ShieldCheck,
-  ArrowRight,
-  ArrowLeft,
+import { 
+  Plus, X, Package, Building2, User, Calendar,
+  FileText, Upload, AlertCircle, Loader2, Check,
+  DollarSign, ShieldCheck, ArrowRight, ArrowLeft,
 } from "lucide-react";
 import { useImageCompression } from "@/hooks/useImageCompression";
 import { formatBytes } from "@/lib/imageCompression";
