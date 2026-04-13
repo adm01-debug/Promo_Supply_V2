@@ -6,59 +6,19 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { useDevolucoes, useCreditosFornecedor, useDevolucoesKPIs, type CreateDevolucaoInput } from "@/hooks/useDevolucoes";
-import { useFornecedores } from "@/hooks/useFornecedores";
+import { useDevolucoes, useCreditosFornecedor, useDevolucoesKPIs } from "@/hooks/useDevolucoes";
 import { 
   RotateCcw, Plus, Search, TrendingDown, Truck, CheckCircle2, 
-  AlertTriangle, DollarSign, CreditCard, ArrowRight, Package, 
-  Clock, X, Eye
+  AlertTriangle, DollarSign, CreditCard, Package, 
+  Clock, Eye
 } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { motion } from "framer-motion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
-
-const STATUS_MAP: Record<string, { label: string; color: string; icon: React.ElementType }> = {
-  rascunho: { label: "Rascunho", color: "bg-muted text-muted-foreground", icon: Clock },
-  solicitada: { label: "Solicitada", color: "bg-kpi-warning/20 text-kpi-warning", icon: AlertTriangle },
-  aprovada: { label: "Aprovada", color: "bg-primary/20 text-primary", icon: CheckCircle2 },
-  em_transito: { label: "Em Trânsito", color: "bg-info/20 text-info", icon: Truck },
-  recebida_fornecedor: { label: "Recebida", color: "bg-success/20 text-success", icon: Package },
-  credito_emitido: { label: "Crédito Emitido", color: "bg-violet-500/20 text-violet-400", icon: CreditCard },
-  reposicao_enviada: { label: "Reposição Enviada", color: "bg-cyan-500/20 text-cyan-400", icon: Truck },
-  concluida: { label: "Concluída", color: "bg-kpi-success/20 text-kpi-success", icon: CheckCircle2 },
-  rejeitada: { label: "Rejeitada", color: "bg-kpi-danger/20 text-kpi-danger", icon: X },
-  cancelada: { label: "Cancelada", color: "bg-muted text-muted-foreground", icon: X },
-};
-
-const MOTIVO_LABELS: Record<string, string> = {
-  defeito: "Defeito de Fabricação",
-  divergencia: "Divergência do Pedido",
-  avaria_transporte: "Avaria no Transporte",
-  prazo_vencido: "Prazo de Validade",
-  quantidade_errada: "Quantidade Errada",
-  especificacao_errada: "Especificação Errada",
-  outro: "Outro",
-};
-
-const RESOLUCAO_LABELS: Record<string, string> = {
-  credito: "Crédito para Futuras Compras",
-  reposicao: "Reposição de Produto",
-  reembolso: "Reembolso Financeiro",
-  desconto_futuro: "Desconto em Pedido Futuro",
-};
-
-const CREDITO_STATUS_MAP: Record<string, { label: string; color: string }> = {
-  ativo: { label: "Ativo", color: "bg-kpi-success/20 text-kpi-success" },
-  utilizado: { label: "Utilizado", color: "bg-muted text-muted-foreground" },
-  expirado: { label: "Expirado", color: "bg-kpi-danger/20 text-kpi-danger" },
-  cancelado: { label: "Cancelado", color: "bg-muted text-muted-foreground" },
-};
+import { NovaDevolucaoModal, DevolucaoDetailModal, MOTIVO_LABELS } from "./devolucoes/DevolucoesModals";
+import { STATUS_MAP, CREDITO_STATUS_MAP } from "./devolucoes/devolucoesData";
 
 function KpiCard({ title, value, subtitle, icon: Icon, color }: { title: string; value: string | number; subtitle?: string; icon: React.ElementType; color: string }) {
   return (
