@@ -117,14 +117,7 @@ const Solicitacoes = () => {
     EM_TRANSITO: filteredSolicitacoes.filter(s => s.status === 'EM_TRANSITO'),
   }), [filteredSolicitacoes]);
 
-  const statusConfig: Record<string, { label: string; color: string; indicatorStatus: "pending" | "processing" | "approved" | "completed" | "warning" | "info" }> = {
-    AGUARDANDO_COTACAO: { label: 'Aguardando Cotação', color: 'bg-success', indicatorStatus: 'pending' },
-    EM_COTACAO: { label: 'Em Cotação', color: 'bg-warning', indicatorStatus: 'warning' },
-    FORNECEDOR_SELECIONADO: { label: 'Fornecedor Selecionado', color: 'bg-info', indicatorStatus: 'info' },
-    AGUARDANDO_PAGAMENTO: { label: 'Aguardando Pagamento', color: 'bg-warning', indicatorStatus: 'processing' },
-    PAGO: { label: 'Pago', color: 'bg-cyan-500', indicatorStatus: 'completed' },
-    EM_TRANSITO: { label: 'Em Trânsito', color: 'bg-purple-500', indicatorStatus: 'approved' },
-  };
+  // statusConfig imported from solicitacoesHelpers
 
   // Calculate stats for header
   const stats = useMemo(() => {
