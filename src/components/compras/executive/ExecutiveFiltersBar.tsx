@@ -18,9 +18,9 @@ interface Props {
   onClearFilters: () => void;
   favorites: DashboardFilter[];
   currentFilters: { category: string; supplier: string; period: string; showComparison: boolean };
-  onSave: (name: string) => void;
-  onDelete: (id: string) => void;
-  onSetDefault: (id: string) => void;
+  onSave: (name: string, filters: FilterValues) => Promise<DashboardFilter | null>;
+  onDelete: (id: string) => Promise<void>;
+  onSetDefault: (id: string) => Promise<void>;
   onApply: (filter: DashboardFilter) => void;
   favoritesLoading: boolean;
 }
