@@ -664,7 +664,6 @@ export {
   pedidosTourSteps,
   solicitacoesTourSteps,
 } from './tourStepDefinitions';
-    title: "Menu de Navegação",
     content: "Acesse todas as funcionalidades do sistema através do menu lateral. Os itens são organizados por categoria para facilitar a navegação.",
     position: "right",
     highlight: "primary",
