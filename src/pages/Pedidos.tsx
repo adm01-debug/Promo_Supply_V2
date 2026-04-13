@@ -310,7 +310,7 @@ const Pedidos = () => {
         </div>
       </div>
 
-      <PedidoDetailsDialog open={detailsOpen} onOpenChange={setDetailsOpen} pedido={selectedPedido} statusConfig={statusConfig} />
+      <PedidoDetailsDialog open={detailsOpen} onOpenChange={setDetailsOpen} pedido={selectedPedido} />
 
       <EnhancedBulkActionsBar
         entityType="pedidos" selectedItems={selectedBulkItems} totalCount={filteredPedidos.length}

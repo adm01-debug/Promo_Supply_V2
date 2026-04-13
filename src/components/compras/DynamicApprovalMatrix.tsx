@@ -185,8 +185,8 @@ export const DynamicApprovalMatrix = () => {
       </Card>
 
       {/* Modals */}
-      <ApprovalRuleModal open={ruleModalOpen} onOpenChange={setRuleModalOpen} editingRule={editingRule} setEditingRule={setEditingRule as any} onSave={handleSaveRule} loading={loading} mockUsers={mockUsers} mockCategories={mockCategories} />
-      <ApprovalDelegationModal open={delegationModalOpen} onOpenChange={setDelegationModalOpen} editingDelegation={editingDelegation} setEditingDelegation={setEditingDelegation as any} onSave={handleSaveDelegation} loading={loading} mockUsers={mockUsers} />
+      <ApprovalRuleModal open={ruleModalOpen} onOpenChange={setRuleModalOpen} editingRule={editingRule} setEditingRule={setEditingRule as any} onSave={handleSaveRule} loading={loading} />
+      <ApprovalDelegationModal open={delegationModalOpen} onOpenChange={setDelegationModalOpen} editingDelegation={editingDelegation} setEditingDelegation={setEditingDelegation as any} onSave={handleSaveDelegation} loading={loading} />
 
       {/* Delete Confirmation */}
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
