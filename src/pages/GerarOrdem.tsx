@@ -30,13 +30,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
-const getTipoLabel = (tipo: string) => {
-  const map: Record<string, string> = {
-    'produto': 'Produto', 'servico': 'Serviço', 'material': 'Material',
-    'pe_liso': 'P.E. Liso', 'fabricacao_liso': 'Fab. Liso', 'fabricacao_personalizado': 'Fab. Personalizado',
-  };
-  return map[tipo] || tipo;
-};
+import { getTipoLabel } from './gerar-ordem/gerarOrdemHelpers';
 
 const GerarOrdem = () => {
   const navigate = useNavigate();
