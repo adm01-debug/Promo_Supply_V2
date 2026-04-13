@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
-import { Gavel, Plus, Trophy, Trash2 } from 'lucide-react';
+import { Gavel, Plus, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Card, CardContent } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLicitacaoPropostas, type Licitacao } from '@/hooks/useLicitacoes';
+import { cn } from '@/lib/utils';
 
 const modalidadeLabels: Record<string, string> = {
   pregao: 'Pregão', concorrencia: 'Concorrência',
@@ -27,6 +28,8 @@ const statusConfig: Record<string, { label: string; variant: 'default' | 'second
   cancelada: { label: 'Cancelada', variant: 'destructive' },
   deserta: { label: 'Deserta', variant: 'destructive' },
 };
+
+export { modalidadeLabels, statusConfig };
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -146,37 +149,38 @@ export function LicitacaoDetailDialog({
           </div>
 
           {loadingPropostas ? (
-            <div className="space-y-2">{[1, 2].map(i => <Skeleton key={i} className="h-12 w-full" />)}</div>
+            <Skeleton className="h-20 w-full" />
           ) : propostas.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">Nenhuma proposta registrada</p>
+            <p className="text-sm text-muted-foreground text-center py-6">Nenhuma proposta registrada</p>
           ) : (
-            <Table aria-label="Propostas da licitação">
+            <Table aria-label="Tabela de dados">
               <TableHeader>
                 <TableRow>
                   <TableHead>Fornecedor</TableHead>
                   <TableHead className="text-right">Valor</TableHead>
-                  <TableHead className="hidden md:table-cell">Prazo</TableHead>
+                  <TableHead className="hidden md:table-cell text-right">Prazo (dias)</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {propostas.map(p => (
-                  <TableRow key={p.id} className={p.vencedora ? 'bg-success/5' : ''}>
-                    <TableCell className="font-medium">{(p as any).fornecedor?.razao_social || '—'}</TableCell>
-                    <TableCell className="text-right">{formatCurrency(p.valor_proposta)}</TableCell>
-                    <TableCell className="hidden md:table-cell">{p.prazo_entrega} dias</TableCell>
+                  <TableRow key={p.id} className={cn(p.vencedora && 'bg-primary/5')}>
+                    <TableCell className="font-medium">
+                      {p.fornecedor?.razao_social || 'Fornecedor'}
+                      {p.vencedora && <Trophy className="w-4 h-4 text-primary inline ml-2" />}
+                    </TableCell>
+                    <TableCell className="text-right font-mono">{formatCurrency(p.valor_proposta)}</TableCell>
+                    <TableCell className="hidden md:table-cell text-right">{p.prazo_entrega}</TableCell>
                     <TableCell>
-                      {p.vencedora ? (
-                        <Badge className="bg-success/20 text-success">🏆 Vencedora</Badge>
-                      ) : (
-                        <Badge variant="outline">{p.status === 'aprovada' ? 'Aprovada' : p.status === 'rejeitada' ? 'Rejeitada' : 'Pendente'}</Badge>
-                      )}
+                      <Badge variant={p.vencedora ? 'default' : p.desclassificada ? 'destructive' : 'secondary'}>
+                        {p.vencedora ? 'Vencedora' : p.desclassificada ? 'Desclassificada' : p.status}
+                      </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      {canManage && !p.vencedora && licitacao.status === 'encerrada' && (
-                        <Button size="sm" variant="outline" onClick={() => selectWinner(p.id)}>
-                          <Trophy className="w-3 h-3 mr-1" /> Selecionar
+                      {!p.vencedora && !p.desclassificada && licitacao.status === 'encerrada' && (
+                        <Button size="sm" variant="outline" onClick={() => selectWinner(p.id, p.fornecedor_id, p.valor_proposta)}>
+                          <Trophy className="w-3 h-3 mr-1" /> Homologar
                         </Button>
                       )}
                     </TableCell>
@@ -188,40 +192,57 @@ export function LicitacaoDetailDialog({
 
           {/* Add Proposal Form */}
           {addingProposta && (
-            <>
-              <Separator />
-              <div className="space-y-3 p-4 border rounded-lg bg-muted/30">
-                <h4 className="font-medium">Nova Proposta</h4>
-                <div className="space-y-2">
-                  <Label>Fornecedor</Label>
-                  <Select value={propostaForm.fornecedor_id} onValueChange={v => setPropostaForm(f => ({ ...f, fornecedor_id: v }))}>
-                    <SelectTrigger><SelectValue placeholder="Selecione..." /></SelectTrigger>
-                    <SelectContent>
-                      {fornecedores.map(f => (
-                        <SelectItem key={f.id} value={f.id}>{f.razao_social}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-2">
-                    <Label>Valor (R$)</Label>
+            <Card>
+              <CardContent className="p-4 space-y-3">
+                <h4 className="font-medium text-sm">Nova Proposta</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-1">
+                    <Label className="text-xs">Fornecedor *</Label>
+                    <Select value={propostaForm.fornecedor_id} onValueChange={v => setPropostaForm(f => ({ ...f, fornecedor_id: v }))}>
+                      <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
+                      <SelectContent>
+                        {fornecedores.filter((f: any) => f.status === 'ativo').map((f: any) => (
+                          <SelectItem key={f.id} value={f.id}>{f.razao_social}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Valor (R$) *</Label>
                     <Input type="number" value={propostaForm.valor_proposta} onChange={e => setPropostaForm(f => ({ ...f, valor_proposta: e.target.value }))} />
                   </div>
-                  <div className="space-y-2">
-                    <Label>Prazo (dias)</Label>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Prazo Entrega (dias)</Label>
                     <Input type="number" value={propostaForm.prazo_entrega} onChange={e => setPropostaForm(f => ({ ...f, prazo_entrega: e.target.value }))} />
                   </div>
+                  <div className="space-y-1">
+                    <Label className="text-xs">Observações</Label>
+                    <Input value={propostaForm.observacoes} onChange={e => setPropostaForm(f => ({ ...f, observacoes: e.target.value }))} />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Observações</Label>
-                  <Textarea value={propostaForm.observacoes} onChange={e => setPropostaForm(f => ({ ...f, observacoes: e.target.value }))} rows={2} />
-                </div>
-                <div className="flex gap-2">
-                  <Button size="sm" onClick={handleAddProposta} disabled={!propostaForm.fornecedor_id || !propostaForm.valor_proposta}>
-                    Salvar Proposta
-                  </Button>
+                <div className="flex gap-2 justify-end">
                   <Button size="sm" variant="outline" onClick={() => setAddingProposta(false)}>Cancelar</Button>
+                  <Button size="sm" onClick={handleAddProposta} disabled={!propostaForm.fornecedor_id || !propostaForm.valor_proposta}>Salvar</Button>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {licitacao.valor_vencedor && (
+            <>
+              <Separator />
+              <div className="bg-primary/5 rounded-lg p-4 flex items-center gap-3">
+                <Trophy className="w-6 h-6 text-primary" />
+                <div>
+                  <p className="font-semibold">Vencedor Homologado</p>
+                  <p className="text-sm text-muted-foreground">
+                    {licitacao.fornecedor_vencedor?.razao_social || 'Fornecedor'} — {formatCurrency(licitacao.valor_vencedor)}
+                    {licitacao.valor_estimado > 0 && (
+                      <span className="ml-2 text-primary font-medium">
+                        (Economia: {((1 - licitacao.valor_vencedor / licitacao.valor_estimado) * 100).toFixed(1)}%)
+                      </span>
+                    )}
+                  </p>
                 </div>
               </div>
             </>
