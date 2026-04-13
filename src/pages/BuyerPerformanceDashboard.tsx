@@ -68,45 +68,8 @@ const COLORS = ['hsl(var(--primary))', 'hsl(142, 76%, 36%)', 'hsl(221, 83%, 53%)
 
 const PERIOD_MAP: Record<string, number> = { '3m': 3, '6m': 6, '12m': 12 };
 
-// Comparison metric card component
-const ComparisonMetricCard = ({ 
-  label, icon: Icon, value1, value2, format = "number", color 
-}: { 
-  label: string; icon: React.ElementType; value1: number; value2: number;
-  format?: "number" | "currency" | "percent"; color: string;
-}) => {
-  const formatValue = (val: number) => {
-    if (format === "currency") return `R$ ${val.toLocaleString('pt-BR')}`;
-    if (format === "percent") return `${val}%`;
-    return val.toString();
-  };
-  const diff = value1 - value2;
-  const percentDiff = value2 !== 0 ? ((diff / value2) * 100).toFixed(1) : "0";
-  const isPositive = diff > 0;
-  
-  return (
-    <Card className="p-4">
-      <div className={`flex items-center gap-2 ${color} mb-3`}>
-        <Icon className="w-4 h-4" />
-        <span className="text-xs font-medium">{label}</span>
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="text-center border-r border-border">
-          <p className={`text-xl font-bold ${color}`}>{formatValue(value1)}</p>
-        </div>
-        <div className="text-center">
-          <p className={`text-xl font-bold ${color}`}>{formatValue(value2)}</p>
-        </div>
-      </div>
-      <div className="mt-2 text-center">
-        <Badge variant={isPositive ? "default" : "secondary"} className="text-xs">
-          {isPositive ? <ArrowUpRight className="w-3 h-3 mr-1" /> : <ArrowDownRight className="w-3 h-3 mr-1" />}
-          {isPositive ? "+" : ""}{percentDiff}% diferença
-        </Badge>
-      </div>
-    </Card>
-  );
-};
+
+
 
 const getMetricStatus = (percentage: number): { status: 'success' | 'warning' | 'critical'; color: string } => {
   if (percentage >= 100) return { status: 'success', color: 'text-success' };
