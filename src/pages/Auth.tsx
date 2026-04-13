@@ -38,42 +38,7 @@ const signupSchema = z.object({
   path: ['confirmPassword'],
 });
 
-// Animated background shapes
-const FloatingShape = ({ className, delay = 0 }: { className?: string; delay?: number }) => (
-  <div 
-    className={cn(
-      "absolute rounded-full bg-gradient-to-br from-primary/20 to-primary/5 blur-3xl animate-float",
-      className
-    )}
-    style={{ animationDelay: `${delay}s` }}
-  />
-);
-
-// Feature card for the left panel
-const FeatureCard = ({ icon: Icon, title, description, delay }: { 
-  icon: typeof ShoppingBag; 
-  title: string; 
-  description: string;
-  delay: number;
-}) => (
-  <div 
-    className="flex items-start gap-3 p-4 rounded-xl border animate-fade-in"
-    style={{ 
-      animationDelay: `${delay}ms`,
-      background: 'linear-gradient(135deg, hsl(265 90% 66% / 0.08) 0%, hsl(0 0% 100% / 0.03) 100%)',
-      borderColor: 'hsl(265 90% 66% / 0.15)',
-      backdropFilter: 'blur(12px)',
-    }}
-  >
-    <div className="p-2 rounded-lg" style={{ background: 'hsl(265 90% 66% / 0.2)' }}>
-      <Icon className="w-5 h-5 text-primary-foreground" />
-    </div>
-    <div>
-      <h3 className="font-semibold text-primary-foreground text-sm">{title}</h3>
-      <p className="text-primary-foreground/60 text-xs mt-0.5">{description}</p>
-    </div>
-  </div>
-);
+import { AuthBackground, AuthBrandingPanel } from './auth/AuthBranding';
 
 const Auth = () => {
   const navigate = useNavigate();
