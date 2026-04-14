@@ -20,6 +20,7 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/hooks/useCotacoes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
+import { type CotacaoAPI, adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch } from "./cotacao/cotacaoHelpers";
 
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
@@ -157,24 +158,7 @@ const Cotacao = () => {
     );
   }
 
-  // Adapt legacy fornecedores for modal
-  const legacyFornecedores = fornecedores.map(f => ({
-    id: f.id,
-    nomeFantasia: f.nome_fantasia || f.razao_social,
-    razaoSocial: f.razao_social,
-    cnpj: f.cnpj || '',
-    tipo: f.tipo === 'internacional' ? 'IMPORTADORA' as const : 
-          f.tipo === 'local' ? 'DISTRIBUIDORA' as const : 'FABRICANTE' as const,
-    ramos: f.segmento ? [f.segmento] : [],
-    vendeProduto: 'AMBOS' as const,
-    email: f.email || '',
-    telefone: f.telefone || '',
-    whatsapp: f.telefone || '',
-    apiIntegrada: f.integrado_api,
-    rating: Math.round(f.avaliacao),
-    totalMes: 0,
-    ultimaCompra: '-',
-  }));
+  const legacyFornecedores = adaptFornecedoresToLegacy(fornecedores);
 
   return (
     <MainLayout>
