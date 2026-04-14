@@ -36,37 +36,10 @@ import {
 } from 'lucide-react';
 
 
-// Mock SLA data per supplier
-const generateSupplierSLAData = () => {
-  const suppliers = [
-    'XBZ Brindes',
-    'Tech Brindes',
-    'Stricker / Spot Gifts',
-    'Premium Gifts',
-    'Asia Import',
-    'Eco Brindes',
-  ];
-
-  return suppliers.map((name) => {
-    const baseCompliance = 80 + Math.random() * 18;
-    const baseOnTime = 85 + Math.random() * 14;
-    const baseLeadTime = 2 + Math.random() * 4;
-    
-    return {
-      name,
-      slaCompliance: Math.round(baseCompliance * 10) / 10,
-      onTimeDelivery: Math.round(baseOnTime * 10) / 10,
-      avgLeadTime: Math.round(baseLeadTime * 10) / 10,
-      totalOrders: Math.floor(20 + Math.random() * 40),
-      criticalOrders: Math.floor(Math.random() * 5),
-      overdueOrders: Math.floor(Math.random() * 3),
-      avgResponseTime: Math.round((0.5 + Math.random() * 2) * 10) / 10,
-      qualityScore: Math.round((85 + Math.random() * 14) * 10) / 10,
-      trend: Math.random() > 0.5 ? 'up' : 'down',
-      trendValue: Math.round(Math.random() * 5 * 10) / 10,
-    };
-  });
-};
+import {
+  SUPPLIER_COLORS,
+  generateSupplierSLAData,
+} from "./sla-analysis/slaAnalysisData";
 
 const generateHistoricalSLAData = () => {
   const months = ['Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
@@ -83,16 +56,6 @@ const generateHistoricalSLAData = () => {
 
 const supplierSLAData = generateSupplierSLAData();
 const historicalSLAData = generateHistoricalSLAData();
-
-const SUPPLIER_COLORS: Record<string, string> = {
-  'XBZ Brindes': '#3b82f6',
-  'Tech Brindes': '#f59e0b',
-  'Stricker / Spot Gifts': '#8b5cf6',
-  'Stricker': '#8b5cf6',
-  'Premium Gifts': '#10b981',
-  'Asia Import': '#ec4899',
-  'Eco Brindes': '#06b6d4',
-};
 
 const SupplierSLACard = ({ supplier }: { supplier: typeof supplierSLAData[0] }) => {
   const TrendIcon = supplier.trend === 'up' ? TrendingUp : TrendingDown;
