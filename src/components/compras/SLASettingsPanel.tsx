@@ -1,12 +1,11 @@
 import { useState, forwardRef } from 'react';
-import { Settings2, RotateCcw, Save, Bell, Mail, Clock, AlertTriangle, Building2, Percent, ChevronDown, ChevronRight } from 'lucide-react';
+import { Settings2, RotateCcw, Save, Bell, Mail, Clock, AlertTriangle, Building2, Percent } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Slider } from '@/components/ui/slider';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   Dialog,
   DialogContent,
@@ -16,8 +15,9 @@ import {
   DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { useSLASettings, SLASettings, SupplierAlertConfig } from '@/stores/slaSettingsStore';
+import { useSLASettings, SLASettings } from '@/stores/slaSettingsStore';
 import { toast } from "@/lib/feedbackToast";
+import { SupplierThresholdConfig } from './sla-settings/SupplierThresholdConfig';
 
 // Known suppliers for configuration
 const KNOWN_SUPPLIERS = [
