@@ -30,34 +30,7 @@ import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
-interface PriceQuote {
-  supplierId: string;
-  supplierName: string;
-  unitPrice: number;
-  totalPrice: number;
-  deliveryDays: number;
-  paymentTerms: string;
-  stock: number;
-  rating: number;
-  onTimeDelivery: number;
-  savings: number;
-  savingsPercent: number;
-  recommended: boolean;
-  pros: string[];
-  cons: string[];
-}
-
-interface ComparisonResult {
-  product: string;
-  quantity: number;
-  quotes: PriceQuote[];
-  bestPrice: string;
-  bestDelivery: string;
-  bestOverall: string;
-  averagePrice: number;
-  priceRange: { min: number; max: number };
-  insights: string[];
-}
+import { type PriceQuote, type ComparisonResult, generateQuotesFromSuppliers } from './price-comparator/priceComparatorHelpers';
 
 export function PriceComparator() {
   const { toast } = useToast();
