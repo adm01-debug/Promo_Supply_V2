@@ -19,6 +19,14 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
+import {
+  type ComplianceData,
+  type EscalationRule,
+  actionTypeLabels,
+  getComplianceStatus,
+  computeComplianceKPIs,
+  sortComplianceData,
+} from "./compliance/complianceHelpers";
 
 interface ComplianceData {
   fornecedor_id: string;
