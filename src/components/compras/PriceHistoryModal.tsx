@@ -67,6 +67,19 @@ export function PriceHistoryModal({ open, onOpenChange }: PriceHistoryModalProps
     [solicitacoes]
   );
 
+  const filtered = useMemo(() => {
+    let data = [...cotacoes].sort(
+      (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+    );
+    if (selectedFornecedor !== "all") {
+      data = data.filter((c) => c.fornecedor_id === selectedFornecedor);
+    }
+    if (selectedSolicitacao !== "all") {
+      data = data.filter((c) => c.solicitacao_id === selectedSolicitacao);
+    }
+    return data;
+  }, [cotacoes, selectedFornecedor, selectedSolicitacao]);
+
   const { trend, monthlyEvolution, supplierComparison, supplierMonthlyLines, supplierNames, solicitacoesWithCotacoes } =
     usePriceHistoryAnalysis(cotacoes, filtered, fornecedorMap, solicitacaoMap, selectedSolicitacao);
 
