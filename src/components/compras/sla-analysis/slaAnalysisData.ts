@@ -18,8 +18,12 @@ export interface SupplierSLAData {
   avgLeadTime: number;
   totalOrders: number;
   lateOrders: number;
+  criticalOrders: number;
+  overdueOrders: number;
   avgResponseTime: number;
   qualityScore: number;
+  trend: string;
+  trendValue: number;
   monthlyTrend: { month: string; compliance: number; onTime: number }[];
   radarData: { metric: string; value: number }[];
 }
@@ -46,8 +50,12 @@ export const generateSupplierSLAData = (): SupplierSLAData[] => {
       avgLeadTime: Math.round(baseLeadTime * 10) / 10,
       totalOrders: Math.floor(20 + Math.random() * 40),
       lateOrders: Math.floor(Math.random() * 8),
+      criticalOrders: Math.floor(Math.random() * 5),
+      overdueOrders: Math.floor(Math.random() * 3),
       avgResponseTime: Math.round((1 + Math.random() * 3) * 10) / 10,
-      qualityScore: Math.round((3.5 + Math.random() * 1.5) * 10) / 10,
+      qualityScore: Math.round((85 + Math.random() * 14) * 10) / 10,
+      trend: Math.random() > 0.5 ? 'up' : 'down',
+      trendValue: Math.round(Math.random() * 5 * 10) / 10,
       monthlyTrend: ['Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'].map(month => ({
         month,
         compliance: Math.round((baseCompliance + (Math.random() - 0.5) * 10) * 10) / 10,
