@@ -20,6 +20,7 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/hooks/useCotacoes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
+import { type CotacaoAPI, adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch } from "./cotacao/cotacaoHelpers";
 
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
@@ -58,20 +59,6 @@ const Cotacao = () => {
   };
   
   const [buscaStatus, setBuscaStatus] = useState<'idle' | 'searching' | 'done'>('idle');
-  interface CotacaoAPI {
-    id: string;
-    fornecedor: string;
-    fornecedor_id?: string;
-    status: 'encontrado' | 'nao_encontrado' | 'buscando';
-    valorUnitario: number;
-    quantidadeDisponivel: number;
-    prazoEntrega: number;
-    frete: number;
-    freteInfo: string;
-    condicaoPagamento: string;
-    total: number;
-  }
-  
   const [cotacoesAPI, setCotacoesAPI] = useState<CotacaoAPI[]>([]);
   const [showManualModal, setShowManualModal] = useState(false);
   const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string | null>(null);
@@ -84,80 +71,19 @@ const Cotacao = () => {
     return solicitacoes[0];
   }, [solicitacoes, solicitacaoId]);
 
-  // Adapt DB cotacoes to legacy format
-  const adaptedCotacoes = useMemo(() => {
-    return cotacoes.map(c => ({
-      id: c.id,
-      fornecedor: c.fornecedor?.nome_fantasia || c.fornecedor?.razao_social || 'Fornecedor',
-      status: 'encontrado',
-      valorUnitario: c.valor_unitario,
-      quantidadeDisponivel: c.quantidade,
-      prazoEntrega: c.prazo_entrega,
-      frete: c.valor_frete,
-      freteInfo: c.valor_frete > 0 ? `+R$ ${c.valor_frete}` : 'Incluso',
-      condicaoPagamento: c.condicao_pagamento || 'À vista',
-      total: c.valor_total,
-      selecionada: c.selecionada,
-    }));
-  }, [cotacoes]);
+  const adaptedCotacoes = useMemo(() => adaptCotacoesFromDB(cotacoes), [cotacoes]);
 
-  // Combine API results with DB cotacoes
   const allCotacoes = useMemo(() => {
     return [...adaptedCotacoes, ...cotacoesAPI];
   }, [adaptedCotacoes, cotacoesAPI]);
 
   const handleBuscarCotacoes = async () => {
     setBuscaStatus('searching');
-    
     try {
-      // Simulate API search (would connect to real supplier APIs)
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Get suppliers with API integration
-      const apiSuppliers = fornecedores.filter(f => f.integrado_api);
-      
-      const results: CotacaoAPI[] = apiSuppliers.map(supplier => {
-        const isEncontrado = Math.random() > 0.3;
-        const status: 'encontrado' | 'nao_encontrado' = isEncontrado ? 'encontrado' : 'nao_encontrado';
-        const valorUnitario = 20 + Math.random() * 15;
-        const frete = Math.random() > 0.5 ? Math.floor(50 + Math.random() * 200) : 0;
-        return {
-          id: `api-${supplier.id}`,
-          fornecedor: supplier.nome_fantasia || supplier.razao_social,
-          fornecedor_id: supplier.id,
-          status,
-          valorUnitario,
-          quantidadeDisponivel: Math.floor(100 + Math.random() * 500),
-          prazoEntrega: Math.floor(2 + Math.random() * 5),
-          frete,
-          freteInfo: frete > 0 ? `+R$ ${frete}` : 'Incluso',
-          condicaoPagamento: ['À vista', '30 dias', '30/60 dias'][Math.floor(Math.random() * 3)],
-          total: isEncontrado ? (valorUnitario * (solicitacao?.quantidade || 100)) + frete : 0,
-        };
-      });
-
-      // Add manual suppliers that aren't in the results
-      const manualSuppliers = fornecedores.filter(f => !f.integrado_api).slice(0, 3);
-      manualSuppliers.forEach(s => {
-        const manualCotacao: CotacaoAPI = {
-          id: `manual-${s.id}`,
-          fornecedor: s.nome_fantasia || s.razao_social,
-          fornecedor_id: s.id,
-          status: 'nao_encontrado',
-          valorUnitario: 0,
-          quantidadeDisponivel: 0,
-          prazoEntrega: 0,
-          frete: 0,
-          freteInfo: '',
-          condicaoPagamento: '',
-          total: 0,
-        };
-        results.push(manualCotacao);
-      });
-
-      setCotacoesAPI(results.filter(r => r.status === 'encontrado'));
+      const results = await simulateAPISearch(fornecedores, solicitacao?.quantidade || 100);
+      setCotacoesAPI(results);
       setBuscaStatus('done');
-      toast.success(`${results.filter(r => r.status === 'encontrado').length} cotações encontradas`);
+      toast.success(`${results.length} cotações encontradas`);
     } catch (error) {
       console.error('Error searching:', error);
       toast.error('Erro ao buscar cotações');
@@ -232,24 +158,7 @@ const Cotacao = () => {
     );
   }
 
-  // Adapt legacy fornecedores for modal
-  const legacyFornecedores = fornecedores.map(f => ({
-    id: f.id,
-    nomeFantasia: f.nome_fantasia || f.razao_social,
-    razaoSocial: f.razao_social,
-    cnpj: f.cnpj || '',
-    tipo: f.tipo === 'internacional' ? 'IMPORTADORA' as const : 
-          f.tipo === 'local' ? 'DISTRIBUIDORA' as const : 'FABRICANTE' as const,
-    ramos: f.segmento ? [f.segmento] : [],
-    vendeProduto: 'AMBOS' as const,
-    email: f.email || '',
-    telefone: f.telefone || '',
-    whatsapp: f.telefone || '',
-    apiIntegrada: f.integrado_api,
-    rating: Math.round(f.avaliacao),
-    totalMes: 0,
-    ultimaCompra: '-',
-  }));
+  const legacyFornecedores = adaptFornecedoresToLegacy(fornecedores);
 
   return (
     <MainLayout>
