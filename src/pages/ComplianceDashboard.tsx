@@ -28,43 +28,6 @@ import {
   sortComplianceData,
 } from "./compliance/complianceHelpers";
 
-interface ComplianceData {
-  fornecedor_id: string;
-  razao_social: string;
-  avaliacao: number | null;
-  supplier_status: string;
-  penalty_count: number;
-  total_penalty_value: number;
-  total_deliveries: number;
-  on_time_deliveries: number;
-  late_deliveries: number;
-  on_time_rate: number;
-  avg_quality_score: number;
-  total_inspections: number;
-  rejected_count: number;
-  active_bonifications: number;
-}
-
-interface EscalationRule {
-  id: string;
-  level: number;
-  min_infractions: number;
-  max_infractions: number | null;
-  action_type: string;
-  penalty_multiplier: number;
-  block_days: number;
-  description: string;
-  is_active: boolean;
-}
-
-const actionTypeLabels: Record<string, { label: string; color: string; icon: typeof AlertTriangle }> = {
-  warning: { label: "Advertência", color: "bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning", icon: AlertTriangle },
-  standard_fine: { label: "Multa Padrão", color: "bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning", icon: ShieldAlert },
-  double_fine: { label: "Multa Dobrada", color: "bg-destructive/10 text-destructive dark:bg-destructive/15 dark:text-destructive", icon: ShieldAlert },
-  temp_block: { label: "Bloq. Temporário", color: "bg-red-200 text-red-900 dark:bg-red-900/50 dark:text-red-300", icon: Ban },
-  permanent_block: { label: "Bloq. Permanente", color: "bg-destructive text-destructive-foreground", icon: XCircle },
-};
-
 export default function ComplianceDashboard() {
   const [data, setData] = useState<ComplianceData[]>([]);
   const [rules, setRules] = useState<EscalationRule[]>([]);
