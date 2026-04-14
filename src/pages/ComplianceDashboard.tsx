@@ -54,28 +54,8 @@ export default function ComplianceDashboard() {
     }
   };
 
-  const sortedData = [...data].sort((a, b) => {
-    switch (sortBy) {
-      case "penalties": return b.penalty_count - a.penalty_count;
-      case "late": return b.late_deliveries - a.late_deliveries;
-      case "quality": return (a.avg_quality_score || 5) - (b.avg_quality_score || 5);
-      case "ontime": return a.on_time_rate - b.on_time_rate;
-      default: return 0;
-    }
-  });
-
-  const infractors = data.filter(d => d.penalty_count > 0 || d.late_deliveries > 0 || d.rejected_count > 0);
-  const compliant = data.filter(d => d.on_time_rate >= 95 && d.penalty_count === 0);
-  const totalPenaltyValue = data.reduce((s, d) => s + Number(d.total_penalty_value), 0);
-  const avgOnTimeRate = data.length > 0 ? data.reduce((s, d) => s + Number(d.on_time_rate), 0) / data.length : 0;
-
-  const getComplianceStatus = (item: ComplianceData) => {
-    if (item.supplier_status === 'bloqueado') return { label: "Bloqueado", color: "bg-destructive text-destructive-foreground", icon: Ban };
-    if (item.penalty_count >= 3) return { label: "Crítico", color: "bg-destructive/10 text-destructive dark:bg-destructive/15 dark:text-destructive", icon: XCircle };
-    if (item.penalty_count >= 1 || item.late_deliveries > 0) return { label: "Em Risco", color: "bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning", icon: AlertTriangle };
-    if (item.on_time_rate >= 95) return { label: "Excelente", color: "bg-success/10 text-success dark:bg-success/15 dark:text-success", icon: CheckCircle2 };
-    return { label: "Regular", color: "bg-info/10 text-info dark:bg-info/15 dark:text-info", icon: Clock };
-  };
+  const sortedData = sortComplianceData(data, sortBy);
+  const { infractors, compliant, totalPenaltyValue, avgOnTimeRate } = computeComplianceKPIs(data);
 
   return (
     <MainLayout>
