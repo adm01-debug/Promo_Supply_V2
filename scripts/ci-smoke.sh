@@ -11,6 +11,18 @@ preflight
 LOG_DIR="ci-logs"
 mkdir -p "$LOG_DIR"
 
+# Optional first arg: path to the vitest smoke test file.
+# Defaults to the date-fns smoke test for backwards compatibility.
+SMOKE_TEST_PATH="${1:-src/test/dateFns.smoke.test.ts}"
+
+if [ ! -f "$SMOKE_TEST_PATH" ]; then
+  echo "✗ Smoke test file not found: $SMOKE_TEST_PATH" >&2
+  echo "  Usage: $0 [path/to/smoke.test.ts]" >&2
+  exit 2
+fi
+
+echo "▶ Smoke test target: $SMOKE_TEST_PATH"
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Summary state — populated as steps run; printed by trap on EXIT.
 # ─────────────────────────────────────────────────────────────────────────────
@@ -135,6 +147,7 @@ print_summary() {
   printf "  ESLint date-fns gate: %s\n" "$eslint_line"
   printf "  Smoke tsc           : %s\n" "$tsc_line"
   printf "  Smoke vitest        : %s\n" "$vitest_line"
+  printf "  Smoke test file     : %s\n" "$SMOKE_TEST_PATH"
   printf "  Logs                : %s/tsc-smoke.log\n" "$LOG_DIR"
   printf "                        %s/vitest-smoke.log\n" "$LOG_DIR"
   printf "                        %s/vitest-smoke.json\n" "$LOG_DIR"
@@ -198,7 +211,7 @@ SMOKE_TSC_EXIT=${PIPESTATUS[0]}
 if [ "$SMOKE_TSC_EXIT" -eq 0 ]; then
   SMOKE_VITEST_RAN=1
   VITEST_START=$SECONDS
-  bunx vitest run src/test/dateFns.smoke.test.ts \
+  bunx vitest run "$SMOKE_TEST_PATH" \
     --reporter=verbose \
     --reporter=json --outputFile="$LOG_DIR/vitest-smoke.json" \
     --hideSkippedTests \
