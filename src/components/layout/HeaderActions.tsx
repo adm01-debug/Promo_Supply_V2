@@ -1,5 +1,7 @@
-import { memo } from "react";
+import { memo, lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
+
+const DependencyHealthBadge = lazy(() => import("@/components/admin/DependencyHealthBadge"));
 import { RealNotificationCenter } from "@/components/compras/RealNotificationCenter";
 import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
 import { UserMenu } from "@/components/compras/UserMenu";
@@ -45,6 +47,10 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
       </Tooltip>
 
       <ThemeToggle />
+
+      <Suspense fallback={null}>
+        <DependencyHealthBadge />
+      </Suspense>
 
       {/* Accessibility Settings */}
       <Popover>
