@@ -168,6 +168,36 @@ bun run hook:smoke:disable
 
 Bypass any hook in an emergency: `git push --no-verify`.
 
+### `test:date-fns` — focused smoke test
+
+`bun run test:date-fns` runs **only** `src/test/dateFns.smoke.test.ts` —
+the auto-generated import smoke test that imports every `date-fns/<subpath>`
+referenced by `src/`. It's the same vitest invocation CI uses, so a green
+local run is a strong signal that the date-fns lane in CI will be green too.
+
+**When to run it:**
+
+- After adding, removing, or renaming a `date-fns/<subpath>` import.
+- After changing the locked `date-fns` version in `package.json` / `bun.lock`.
+- After a `bun install` that touched `node_modules/date-fns` (broken installs
+  surface here before the rest of vitest runs).
+- While iterating: `bun run test:date-fns:watch` re-runs on save.
+
+**Relation to CI:**
+
+| Step | Local command | CI script step |
+|---|---|---|
+| Subpath files exist on disk | `bun run verify:datefns-files` | `ci-check.sh [7/14]`, `ci-smoke.sh [5/9]` |
+| ESLint barrel-import gate | `bun run lint:date-fns` | `ci-check.sh [6/14]`, `ci-smoke.sh [7/9]` |
+| Smoke test up-to-date | `bun run verify:datefns-smoke` | `ci-check.sh [10/14]` |
+| Smoke test types compile | `bun run verify:datefns-smoke-types` | `ci-check.sh [11/14]`, `ci-smoke.sh [8/9]` |
+| **Smoke test runs green** | **`bun run test:date-fns`** | **`ci-check.sh [13/14]`, `ci-smoke.sh [8/9]`** |
+
+CI invokes `bun run test:date-fns` directly (with extra reporters appended
+after `--`), so the base command is identical in both environments — what
+passes locally passes in CI for this lane.
+
+
 ### Time-zone guard
 
 `src/test/dateFns.timezone.test.ts` enforces `TZ=UTC` so `date-fns`
