@@ -159,15 +159,12 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
 
     const lockText = readFileSync(lockPath, "utf8");
     const installed = JSON.parse(readFileSync(installedPkgPath, "utf8")).version as string;
-    const locked = (resolveLockedVersion as (t: string, n: string) => string | null)(
-      lockText,
-      "date-fns",
-    );
+    const locked = resolveLockedVersion(lockText, "date-fns");
 
     if (!locked) {
       throw new Error(
         `Could not resolve date-fns entry in bun.lock ` +
-          `(tried patterns: ${(RESOLVER_PATTERN_NAMES as string[]).join(", ")}). ` +
+          `(tried patterns: ${RESOLVER_PATTERN_NAMES.join(", ")}). ` +
           `The lockfile may be corrupt — run \`rm bun.lock && bun install\`.`,
       );
     }
