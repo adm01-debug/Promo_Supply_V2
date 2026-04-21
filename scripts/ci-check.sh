@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "▶ [1/4] Removing node_modules..."
+echo "▶ [1/5] Removing node_modules..."
 rm -rf node_modules
 
-echo "▶ [2/4] Installing from frozen lockfile..."
+echo "▶ [2/5] Installing from frozen lockfile..."
 bun install --frozen-lockfile
 
-echo "▶ [3/4] Type-checking with tsc --noEmit..."
+echo "▶ [3/5] Type-checking with tsc --noEmit..."
 npx tsc --noEmit -p tsconfig.app.json
 
-echo "▶ [4/4] Writing public/dependency-health.json snapshot..."
+echo "▶ [4/5] Running date-fns smoke test..."
+npx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
+
+echo "▶ [5/5] Writing public/dependency-health.json snapshot..."
 NOW="$(date -u +%FT%TZ)"
 SPEC="$(node -p "require('./package.json').dependencies['date-fns'] || require('./package.json').devDependencies['date-fns'] || ''")"
 INSTALLED="$(node -p "require('./node_modules/date-fns/package.json').version")"
