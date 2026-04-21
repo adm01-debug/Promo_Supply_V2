@@ -17,8 +17,14 @@
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
-LOG_DIR="$ROOT_DIR/.git/hook-logs"
-mkdir -p "$LOG_DIR"
+# Prefer .git/hook-logs (gitignored by default), fall back to node_modules/.cache
+# when .git isn't a directory (e.g. worktrees, sandboxes, bare clones).
+if [ -d "$ROOT_DIR/.git" ]; then
+  LOG_DIR="$ROOT_DIR/.git/hook-logs"
+else
+  LOG_DIR="$ROOT_DIR/node_modules/.cache/datefns-hook"
+fi
+mkdir -p "$LOG_DIR" 2>/dev/null || LOG_DIR="$(mktemp -d)"
 GEN_LOG="$LOG_DIR/datefns-generator.log"
 TSC_LOG="$LOG_DIR/datefns-tsc-smoke.log"
 
