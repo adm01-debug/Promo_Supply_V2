@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.app.json",
+  "include": [
+    "src/test/dateFns.smoke.test.ts",
+    "src/vite-env.d.ts",
+    "package.json"
+  ]
+}
