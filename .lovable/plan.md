@@ -1,68 +1,63 @@
 
-## Plan: Extend dependency-health to React, Vite, TypeScript, shadcn/ui
+## Plan: Tree-shaking risk section in dependency-health
 
 ### Goal
-Track versions and drift status for additional core packages — `react`, `vite`, `typescript`, and shadcn/ui — alongside the existing `date-fns` data, in the same snapshot, edge function, CI workflow, and admin dashboard.
+Add a "Tree-shaking risk" section to the dependency-health report that scans the codebase for `date-fns` and `date-fns/locale` barrel imports and flags them. Reuses the same detection logic the ESLint rule already enforces.
 
-### Tracked packages
-- **react** (`dependencies.react`)
-- **vite** (`devDependencies.vite`)
-- **typescript** (`devDependencies.typescript`)
-- **shadcn/ui** — not a single npm package. Use `components.json` presence + a representative `@radix-ui/react-dialog` version (always present in shadcn projects) as the proxy version, labeled "shadcn/ui (radix-dialog proxy)".
-
-### Snapshot shape (additive, backward-compatible)
-Keep `dateFns` at top level for backward compat; add a `packages` array containing all five entries with the same fields (`name`, `spec`, `installed`, `locked`, `exactPinned`). UI prefers `packages` when present, falls back to `dateFns`.
-
-```ts
-interface PackageHealth {
-  name: string;            // "react", "vite", ...
-  label: string;           // display name
-  spec: string;
-  installed: string;
-  locked: string;
-  exactPinned: boolean;
-  driftDetected: boolean;  // per-package drift
-}
-interface DependencyHealthSnapshot {
-  generatedAt: string;
-  dateFns: { ... };        // unchanged
-  packages?: PackageHealth[];  // NEW
-  lockfileDrift: { ... };  // unchanged (overall)
-}
+### Detection logic
+A "barrel import" is any `import ... from "date-fns"` or `import ... from "date-fns/locale"` (no subpath). Match via regex:
 ```
+/from\s+['"]date-fns(\/locale)?['"]/g
+```
+Scope: `src/**/*.{ts,tsx,js,jsx}`. Skip `node_modules`, `dist`, `eslint-rules/__fixtures__/` (intentional violations), and test fixtures.
+
+### Snapshot shape (additive)
+Extend `DependencyHealthSnapshot` with an optional `treeShaking` field:
+```ts
+treeShaking?: {
+  scannedAt: string;
+  filesScanned: number;
+  barrelImportsFound: number;
+  offenders: Array<{ file: string; line: number; importPath: "date-fns" | "date-fns/locale" }>;
+  riskLevel: "ok" | "warning" | "critical";  // 0 / 1-4 / 5+
+};
+```
+Backward compatible — UI hides the section if absent.
 
 ### Changes
 
 #### 1. `scripts/generate-dependency-health.mjs`
-Refactor inner logic into a `computePackageHealth(pkgJson, lockText, name, location)` helper. Call it for each tracked package. Emit `packages: [...]` plus the existing `dateFns` field. Aggregate `lockfileDrift.detected` = `packages.some(p => p.driftDetected)`.
+- Add `scanTreeShaking(rootDir)` helper that walks `src/` (using `fs.readdirSync` recursive, no extra deps), reads each matching file, regex-matches barrel imports, and returns the structured object above.
+- Cap `offenders` at 50 entries (with a `truncated: true` flag if exceeded) to keep payload small.
+- `riskLevel`: `0 → ok`, `1-4 → warning`, `5+ → critical`.
+- Include `treeShaking` in the emitted JSON.
 
 #### 2. `supabase/functions/dependency-health/index.ts`
-Mirror the same helper inline (Deno-side). Compute all five packages from the fetched `package.json` + `bun.lock`. Update the `DependencyHealthSnapshot` interface and the upserted payload. Existing fallback stub stays compatible.
+- The edge function fetches files from GitHub raw — it cannot recursively walk `src/`. Solution: use the GitHub Search API (`GET /search/code?q=from+"date-fns"+repo:<owner>/<repo>+path:src`) when `GITHUB_DISPATCH_TOKEN` (or a new `GITHUB_API_TOKEN`) is available; otherwise omit `treeShaking` and let the static JSON (refreshed by CI) carry it.
+- No new secret required if `GITHUB_DISPATCH_TOKEN` already has `metadata:read` (covers code search on private repos). If absent → graceful skip with `treeShaking: { ...empty, riskLevel: "ok", note: "scan unavailable" }` semantics handled UI-side.
 
-#### 3. `scripts/ci-check.sh` step [11/11]
-Replace the inline `cat > public/dependency-health.json <<JSON` block with a single call to `bun run deps:health` (the script is already authoritative). Keeps CI byte-identical to the script and avoids drift between the two code paths.
+#### 3. `src/pages/admin/DependencyHealth.tsx`
+Add a new card "Risco de tree-shaking" rendered when `data.treeShaking` is present:
+- Badge: green (ok) / yellow (warning) / red (critical) using `riskLevel`.
+- Counters: `filesScanned`, `barrelImportsFound`.
+- Collapsible list of offenders (`file:line` + import path), capped at 50.
+- Empty state message when 0 offenders: "Nenhum import barrel detectado — tree-shaking saudável."
+- Tooltip/help text explaining barrel imports defeat tree-shaking and link to the ESLint rule (`local/date-fns-subpath`).
 
-#### 4. `src/pages/admin/DependencyHealth.tsx`
-- Extend `DependencyHealthSnapshot` with optional `packages: PackageHealth[]`.
-- Render a new card "Pacotes monitorados" listing all entries in a compact table (name, spec, lock, installed, status badge). When `packages` is absent, fall back to today's `date-fns`-only view.
-- Drift summary now reads `packages?.some(p => p.driftDetected) ?? lockfileDrift.detected`.
-
-#### 5. Static fallback `public/dependency-health.json`
-Regenerated automatically by the updated script; no manual edit needed.
+#### 4. `public/dependency-health.json`
+Auto-regenerated by `bun run deps:health`; no manual edit.
 
 ### What does NOT change
-- DB schema / `dependency_health` table (payload is already `jsonb`).
-- RLS policies, route registration, `GITHUB_REPO_RAW_BASE` / `GITHUB_DISPATCH_TOKEN` secrets.
-- `.github/workflows/dependency-health.yml` (it already runs `bun run deps:health`).
-- Existing `dateFns` field on the snapshot — preserved for backward compat.
+- ESLint rule `local/date-fns-subpath` — it already blocks new offenders at lint time. The report is observational/reporting, not enforcement.
+- Schema, RLS, secrets, workflow files, route registration.
+- `dateFns` and `packages` fields — preserved.
 
 ### Verification
-1. Run `bun run deps:health` locally → JSON contains `packages` with 5 entries, all `driftDetected: false` if installs are clean.
-2. Admin page → new "Pacotes monitorados" card shows React, Vite, TypeScript, shadcn/ui (radix-dialog proxy), date-fns rows.
-3. Manually edit `package.json` to bump `vite` spec → `bun run deps:health` → that row shows drift.
-4. Edge function `GET` returns the extended payload; `POST` upserts the new shape.
-5. Old payloads in DB without `packages` still render (fallback to legacy `dateFns` card).
-6. `bun run ci:check` step [11/11] now invokes the script and produces identical output for date-fns plus the four new entries.
+1. Run `bun run deps:health` locally on a clean tree → `treeShaking.barrelImportsFound: 0`, `riskLevel: "ok"`. Fixture file under `eslint-rules/__fixtures__/` is excluded.
+2. Temporarily add `import { format } from "date-fns"` in a `src/` file → re-run → that file appears in `offenders`, `riskLevel: "warning"`.
+3. Admin page shows new card with correct counts and badge color.
+4. Edge function `GET` without API token → `treeShaking` omitted; UI hides the card cleanly.
+5. CI workflow `dependency-health.yml` already runs `bun run deps:health` → snapshot in repo gets the new field on next dispatch.
 
 ### Risk / scope
-- ~70 added lines in the script, ~50 in the edge function, ~60 in `DependencyHealth.tsx`, 3 lines changed in `ci-check.sh`. Backward compatible, no schema changes, no new secrets.
+- ~50 added lines in the script, ~40 in the edge function (graceful skip path), ~60 in `DependencyHealth.tsx`. Backward compatible. No new dependencies, no schema changes, no required secrets. Worst case (GitHub Search API unavailable): edge `GET` returns snapshot without `treeShaking`, static JSON from CI still carries it.
