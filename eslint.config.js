@@ -21,6 +21,18 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "@typescript-eslint/no-unused-vars": "off",
+      "no-restricted-imports": ["error", {
+        paths: [
+          {
+            name: "date-fns",
+            message: "Import from a date-fns subpath instead, e.g. `from \"date-fns/format\"`. Top-level barrel imports break tree-shaking and have regressed in past upgrades.",
+          },
+          {
+            name: "date-fns/locale",
+            message: "Import the specific locale subpath, e.g. `from \"date-fns/locale/pt-BR\"`.",
+          },
+        ],
+      }],
     },
   },
 );
