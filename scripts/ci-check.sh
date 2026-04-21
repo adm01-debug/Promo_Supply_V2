@@ -20,20 +20,23 @@ if [ -n "$LOCKED" ] && [ "$INSTALLED" != "$LOCKED" ]; then
 fi
 echo "✓ date-fns $INSTALLED matches lockfile."
 
-echo "▶ [5/9] Verifying date-fns subpath files exist on disk..."
+echo "▶ [5/10] Printing install verification report..."
+node scripts/install-report.mjs
+
+echo "▶ [6/10] Verifying date-fns subpath files exist on disk..."
 node scripts/verify-datefns-files.mjs
 
-echo "▶ [6/9] Type-checking source with tsc --noEmit..."
+echo "▶ [7/10] Type-checking source with tsc --noEmit..."
 npx tsc --noEmit -p tsconfig.app.json
 
-echo "▶ [7/9] Regenerating date-fns smoke test from src/ usage..."
+echo "▶ [8/10] Regenerating date-fns smoke test from src/ usage..."
 node scripts/generate-datefns-smoke-test.mjs
 
-echo "▶ [8/9] Type-checking again + running date-fns smoke test..."
+echo "▶ [9/10] Type-checking again + running date-fns smoke test..."
 npx tsc --noEmit -p tsconfig.app.json
 npx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
 
-echo "▶ [9/9] Writing public/dependency-health.json snapshot..."
+echo "▶ [10/10] Writing public/dependency-health.json snapshot..."
 NOW="$(date -u +%FT%TZ)"
 SPEC="$(node -p "require('./package.json').dependencies['date-fns'] || require('./package.json').devDependencies['date-fns'] || ''")"
 LOCKED_SNAPSHOT="$LOCKED"

@@ -20,7 +20,10 @@ if [ -n "$LOCKED" ] && [ "$INSTALLED" != "$LOCKED" ]; then
 fi
 echo "✓ date-fns $INSTALLED matches lockfile."
 
-echo "▶ [5/5] Verifying date-fns subpath files + running smoke test..."
+echo "▶ [5/6] Printing install verification report..."
+node scripts/install-report.mjs
+
+echo "▶ [6/6] Verifying date-fns subpath files + running smoke test..."
 node scripts/verify-datefns-files.mjs
 npx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
 
