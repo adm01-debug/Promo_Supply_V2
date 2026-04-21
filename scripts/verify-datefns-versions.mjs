@@ -45,21 +45,22 @@ function fail(msg, code = EXIT.GENERIC) {
 }
 
 const pkgPath = join(ROOT, "package.json");
-if (!existsSync(pkgPath)) fail("✗ package.json not found at " + pkgPath);
+if (!existsSync(pkgPath)) fail("✗ package.json not found at " + pkgPath, EXIT.MISSING_SPEC);
 const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
 const SPEC =
   pkg.dependencies?.["date-fns"] ?? pkg.devDependencies?.["date-fns"];
-if (!SPEC) fail("✗ date-fns is not declared in package.json dependencies.");
+if (!SPEC) fail("✗ date-fns is not declared in package.json dependencies.", EXIT.MISSING_SPEC);
 const SPEC_NORM = SPEC.replace(/^[\^~]/, "");
 
 const lockPath = join(ROOT, "bun.lock");
 if (!existsSync(lockPath))
-  fail("✗ bun.lock not found — run `bun install` to generate it.");
+  fail("✗ bun.lock not found — run `bun install` to generate it.", EXIT.MISSING_LOCK);
 const lockText = readFileSync(lockPath, "utf8");
 const LOCKED = resolveLockedVersion(lockText, "date-fns");
 if (!LOCKED) {
   fail(
     `✗ date-fns entry not found in bun.lock (tried: ${RESOLVER_PATTERN_NAMES.join(", ")}) — run \`bun install\`.`,
+    EXIT.MISSING_LOCK_ENTRY,
   );
 }
 
@@ -71,6 +72,7 @@ if (!existsSync(dfPkgPath)) {
       "",
       "  Fix: bun install --frozen-lockfile",
     ].join("\n"),
+    EXIT.MISSING_INSTALL,
   );
 }
 const INSTALLED = JSON.parse(readFileSync(dfPkgPath, "utf8")).version;
