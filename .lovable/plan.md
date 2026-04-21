@@ -1,98 +1,48 @@
 
-## Plan: Make `scripts/ci-check.sh` cross-platform
+## Plan: Explicit lockfile-drift gate in CI
 
 ### Goal
-Let `scripts/ci-check.sh` (and its sibling `scripts/ci-smoke.sh`) run cleanly on macOS, Linux, and Windows (Git Bash / WSL / MSYS) without changing the clean-install + type-check contract. Today the scripts assume POSIX shell + Unix paths and use `node -p` snippets that don't quote-escape well on Windows shells. They also `rm -rf` paths that don't exist on Windows native runs.
+Add a dedicated CI step that **fails loudly** if `bun.lock` is out of sync with `package.json`. Today both workflows already run `bun install --frozen-lockfile`, which technically fails on drift — but the failure message ("lockfile had changes, but lockfile is frozen") is buried in install output and easy to misread as a network/install error. A separate, explicit step makes the intent and the failure mode obvious in the PR checks UI.
 
-### Root issues in the current scripts
-1. **Shebang `#!/usr/bin/env bash`** — fine on macOS/Linux/WSL, fine on Git Bash (which ships bash), but the scripts must actually be invoked through bash on Windows. Need to document that and guard against `cmd.exe` invocation.
-2. **`rm -rf "${BUN_INSTALL:-$HOME/.bun}/install/cache/date-fns"*`** — on Windows the Bun cache lives at `%USERPROFILE%\.bun\install\cache` (Git Bash maps `$HOME` to that, so it works) **but** the npm cache path `$HOME/.npm/_cacache/...` doesn't exist on Windows where npm uses `%LOCALAPPDATA%\npm-cache`. The glob silently no-ops today, which is fine, but the `**` globstar requires `shopt -s globstar` in bash; without it the line expands literally and `rm` errors are swallowed by `|| true`. Works but masks real failures.
-3. **`node -p "require('./node_modules/date-fns/package.json').version"`** — the embedded single quotes break under `cmd.exe` but are fine in bash on all three OSes. The bigger problem is path separators: `require('./node_modules/...')` is Node-normalized so it's fine. ✓
-4. **`grep -A1 '"date-fns"' bun.lock | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'`** — `grep -A1` and `grep -oE` are GNU extensions. macOS BSD grep supports `-A` and `-oE`, Git Bash bundles GNU grep. ✓ on all three.
-5. **`date -u +%FT%TZ`** — GNU and BSD `date` both support this format. ✓
-6. **Heredoc `cat > public/dependency-health.json <<JSON`** — works in all bash variants. ✓
-7. **`mkdir -p public`** — works everywhere. ✓
-8. **No `set -o pipefail` issue, but `bun.lock` parsing via `grep` is brittle** — should delegate to the existing `scripts/lib/resolve-locked-version.mjs` (already used by `scripts/install-report.mjs`) for consistency and to avoid OS-specific grep quirks.
-9. **No detection of missing `bun`** — on a fresh Windows machine without Bun, the script dies with a confusing `bun: command not found`. A friendly preflight check helps.
-10. **`npx eslint` / `npx tsc` / `npx vitest`** — `npx` works everywhere bun installs node_modules/.bin, but on Windows Git Bash `npx` invokes the `.cmd` shim. Switching to `bunx` (already used in the GitHub Actions workflows) is consistent and avoids needing npm on the PATH.
+### Approach
+Keep the existing `bun install --frozen-lockfile` step (it still installs deps). **Before** it, add a no-op verification step that runs `bun install --frozen-lockfile --dry-run`. With `--dry-run`, Bun resolves the lockfile against `package.json` and exits non-zero on drift **without** writing `node_modules` — fast (~1–2s), and its failure message in the GitHub Actions log is unambiguously "lockfile drift" rather than "install failed".
+
+This runs in both PR workflows so a stale lockfile is caught regardless of which gate someone is looking at.
 
 ### Changes
 
-#### 1. `scripts/ci-check.sh` — refactor for portability
-- Add `set -euo pipefail` (already present, keep).
-- Add `shopt -s nullglob globstar 2>/dev/null || true` so unmatched cache globs don't expand literally.
-- Add a preflight block that verifies `bun`, `node`, and `bash` are on PATH and prints a clear error otherwise.
-- Detect OS once via `uname -s` and branch the cache-eviction step:
-  - **Linux/macOS/WSL/MSYS/CYGWIN**: current paths (`$HOME/.bun/install/cache/date-fns*`, `$HOME/.npm/_cacache/...`).
-  - **Windows-native (`MINGW*`, `MSYS*`, `CYGWIN*`)**: also try `"$LOCALAPPDATA/npm-cache"` if `LOCALAPPDATA` is set; map it via `cygpath -u` if available, else use as-is.
-- Replace the `grep | grep -oE` lockfile parser with a single `node` call delegating to `scripts/lib/resolve-locked-version.mjs`:
-  ```bash
-  LOCKED="$(node -e "import('./scripts/lib/resolve-locked-version.mjs').then(m=>{const v=m.resolveLockedVersion(require('fs').readFileSync('bun.lock','utf8'),'date-fns');process.stdout.write(v||'')})")"
-  ```
-  Same logic on every OS, no grep-flavor dependency.
-- Replace `npx <tool>` with `bunx <tool>` in all four call sites (`eslint`, `tsc` x2, `vitest`). Matches the GH Actions workflows; avoids needing npm.
-- Keep step numbering and log messages identical so output stays diff-friendly.
-- The `cat > public/dependency-health.json <<JSON` heredoc stays; it's portable.
+#### `.github/workflows/typecheck.yml`
+Insert one step between the cache restore and the existing install:
 
-#### 2. `scripts/ci-smoke.sh` — apply the same five edits
-Same preflight, same OS-aware cache eviction, same `resolve-locked-version.mjs` delegation, same `npx` → `bunx` swap. Keep its own step numbering.
-
-#### 3. New `scripts/lib/preflight.sh` (~25 lines)
-Tiny helper sourced by both scripts:
-```bash
-preflight() {
-  local missing=()
-  command -v bun  >/dev/null 2>&1 || missing+=("bun")
-  command -v node >/dev/null 2>&1 || missing+=("node")
-  if [ ${#missing[@]} -gt 0 ]; then
-    echo "✗ Missing required tools: ${missing[*]}" >&2
-    echo "  Install Bun: https://bun.sh   |   Node: https://nodejs.org" >&2
-    exit 127
-  fi
-  case "$(uname -s 2>/dev/null || echo unknown)" in
-    Linux*|Darwin*) PLATFORM=unix ;;
-    MINGW*|MSYS*|CYGWIN*) PLATFORM=windows ;;
-    *) PLATFORM=unknown ;;
-  esac
-  export PLATFORM
-}
-evict_datefns_cache() {
-  shopt -s nullglob globstar 2>/dev/null || true
-  rm -rf "${BUN_INSTALL:-$HOME/.bun}/install/cache/date-fns"* 2>/dev/null || true
-  rm -rf "$HOME"/.npm/_cacache/content-v2/**/date-fns-* 2>/dev/null || true
-  if [ "$PLATFORM" = "windows" ] && [ -n "${LOCALAPPDATA:-}" ]; then
-    local winpath="$LOCALAPPDATA/npm-cache"
-    command -v cygpath >/dev/null 2>&1 && winpath="$(cygpath -u "$winpath")"
-    rm -rf "$winpath"/**/date-fns-* 2>/dev/null || true
-  fi
-}
+```yaml
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+      - name: Verify lockfile is up to date (no drift vs package.json)
+        run: bun install --frozen-lockfile --dry-run
+      - name: Install dependencies (frozen lockfile)
+        run: bun install --frozen-lockfile
 ```
-Both scripts source it: `source "$(dirname "$0")/lib/preflight.sh"` then call `preflight` and `evict_datefns_cache` instead of the inline versions.
 
-#### 4. `package.json` — add a Windows-friendly entry point (optional but useful)
-Add an npm script alias so Windows users without bash can still run the gates via `bun run ci:check` (which already works since bun executes the .sh through its bundled shell on Windows):
-```json
-"ci:check": "bash scripts/ci-check.sh",
-"ci:smoke": "bash scripts/ci-smoke.sh"
-```
-If these already exist, leave them. Bun on Windows ships a POSIX shell wrapper for `bash scripts/*.sh` invocations.
+#### `.github/workflows/lint-date-fns.yml`
+Identical insertion in the same position.
 
-#### 5. `README.md` — short "Running CI locally" note (~6 lines)
-Document: macOS/Linux run `bash scripts/ci-check.sh` directly; Windows users run it from Git Bash, WSL, or via `bun run ci:check`. Mention the Bun and Node prerequisites the preflight checks for.
+### Why these choices
+- **`--dry-run` before the real install** → distinct status line in the PR checks UI ("Verify lockfile is up to date") with a clear failure cause; the subsequent install step still runs (and would also fail on drift, but redundancy is the point — defense in depth).
+- **Both workflows updated** → the lockfile gate is a property of the repo state, not of any one check. Adding it to both means a stale lockfile blocks every PR check, not just one.
+- **No change to `scripts/ci-check.sh` / `scripts/ci-smoke.sh`** → those already do `rm -rf node_modules && bun install --frozen-lockfile` and have version-drift assertions afterward. They're the authoritative local gate; CI workflows mirror their intent.
+- **Step placed AFTER cache restore but BEFORE install** → cache hit doesn't bypass the drift check (the dry-run still resolves against `package.json`); placing it before install means failure is reported as "lockfile drift" not as "install couldn't finish".
+- **No new tools, no script changes, no `package.json` edits** → strictly additive workflow steps.
 
-### What does NOT change
-- GitHub Actions workflows (`typecheck.yml`, `lint-date-fns.yml`) — they run on Ubuntu, no portability issue.
-- `eslint-rules/`, `vitest.config.ts`, `tsconfig.app.json`, source code — untouched.
-- The clean-install contract: `rm -rf node_modules` + `bun install --frozen-lockfile` + version-match assertion still runs first on every OS.
-- Step ordering, step numbering, and log lines — preserved so CI output diffs cleanly.
-
-### Verification (post-implementation)
-1. **macOS/Linux**: `bash scripts/ci-check.sh` → identical output to today.
-2. **WSL Ubuntu**: same as Linux.
-3. **Windows Git Bash**: `bash scripts/ci-check.sh` → preflight passes, cache eviction tries the extra Windows path, install + typecheck + smoke test all green.
-4. **Windows without Bun**: preflight prints the friendly error and exits 127 instead of a cryptic `command not found`.
-5. `scripts/ci-smoke.sh` — same matrix, same expected outcomes.
-6. Existing GH Actions workflows — unchanged, still green.
+### Verification
+1. Open a PR that edits `package.json` (e.g. bumps a version) without running `bun install` → **"Verify lockfile is up to date"** step fails with Bun's "lockfile had changes" message; install step never runs.
+2. Open a PR that edits both `package.json` and `bun.lock` consistently → step passes, install runs, lint + typecheck proceed.
+3. PR with no dep changes → step is a ~1s no-op cache-friendly success.
+4. Existing local scripts (`scripts/ci-check.sh`, `scripts/ci-smoke.sh`) → unchanged.
 
 ### Risk / scope
-- 2 scripts edited, 1 small helper added, optional 2 lines in `package.json`, optional 6 lines in `README.md`. Zero source, dependency, route, or schema changes. Strictly additive on Windows; behavior on macOS/Linux is byte-identical except `npx`→`bunx` (same resolved binary in `node_modules/.bin`).
+- 2 workflow files, 2 added lines each. Zero source, dependency, config, schema, or script changes. Worst case (Bun CLI changes `--dry-run` semantics) the redundant `bun install --frozen-lockfile` step right after still catches drift — no regression in coverage.
