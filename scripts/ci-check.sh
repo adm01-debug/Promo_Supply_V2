@@ -82,7 +82,7 @@ if [ ! -f "$SMOKE_TEST_FILE" ]; then
   exit 1
 fi
 echo "✓ Smoke test file present: $SMOKE_TEST_FILE"
-bunx vitest run "$SMOKE_TEST_FILE" --reporter=verbose --passWithNoTests 2>&1 | tee "$LOG_DIR/vitest-smoke.log"
+bun run test:date-fns 2>&1 | tee "$LOG_DIR/vitest-smoke.log"
 VITEST_EXIT=${PIPESTATUS[0]}
 if [ "$VITEST_EXIT" -ne 0 ]; then
   echo "✗ Smoke vitest failed. See $LOG_DIR/vitest-smoke.log (uploaded as CI artifact)." >&2
