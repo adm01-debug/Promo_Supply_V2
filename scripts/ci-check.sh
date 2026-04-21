@@ -66,7 +66,7 @@ fi
 echo "✓ Smoke test file present: $SMOKE_TEST_FILE"
 bunx vitest run "$SMOKE_TEST_FILE" --reporter=verbose --passWithNoTests
 
-echo "▶ [14/14] Writing public/dependency-health.json snapshot via deps:health..."
+echo "▶ [14/14] Refreshing public/dependency-health.json snapshot (with diff vs. previous)..."
 bun run deps:health
 
 echo "✅ CI check passed: clean install + cache evict + version match + file verify + type-check green."

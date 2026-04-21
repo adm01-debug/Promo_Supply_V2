@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-21T16:27:28.075Z",
+  "generatedAt": "2026-04-21T17:59:11.370Z",
   "dateFns": {
     "spec": "3.6.0",
     "installed": "3.6.0",
@@ -55,12 +55,12 @@
   ],
   "lockfileDrift": {
     "detected": false,
-    "lastCheckedAt": "2026-04-21T16:27:28.075Z",
+    "lastCheckedAt": "2026-04-21T17:59:11.370Z",
     "source": "scripts/generate-dependency-health.mjs"
   },
   "treeShaking": {
-    "scannedAt": "2026-04-21T16:27:28.113Z",
-    "filesScanned": 393,
+    "scannedAt": "2026-04-21T17:59:11.401Z",
+    "filesScanned": 395,
     "barrelImportsFound": 0,
     "offenders": [],
     "truncated": false,
