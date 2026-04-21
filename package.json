@@ -8,6 +8,7 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
+    "lint:date-fns": "eslint . --max-warnings=0 --rule 'no-restricted-imports: [\"error\", {\"paths\": [{\"name\": \"date-fns\", \"message\": \"Import from a date-fns subpath, e.g. date-fns/format.\"}, {\"name\": \"date-fns/locale\", \"message\": \"Import the specific locale subpath, e.g. date-fns/locale/pt-BR.\"}]}]'",
     "preview": "vite preview",
     "verify:date-fns": "node scripts/verify-datefns-versions.mjs",
     "smoke:date-fns": "bash scripts/smoke-date-fns.sh"
