@@ -175,8 +175,8 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
       import("../../package.json"),
       import("date-fns/package.json"),
     ]);
-    const rootPkg = (rootPkgMod as { default: Record<string, Record<string, string> | undefined> }).default;
-    const installedPkg = (installedPkgMod as { default: { version: string } }).default;
+    const rootPkg = (rootPkgMod as unknown as { default: Record<string, Record<string, string> | undefined> }).default;
+    const installedPkg = (installedPkgMod as unknown as { default: { version: string } }).default;
     const spec =
       rootPkg.dependencies?.["date-fns"] ??
       rootPkg.devDependencies?.["date-fns"] ??
