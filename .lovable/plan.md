@@ -1,61 +1,57 @@
 
-## Plan: Assert installed date-fns version matches pinned version
+## Plan: Confirm clean-install + smoke-test CI flow
 
-### Goal
-Fail the smoke test (and therefore CI) when the resolved `node_modules/date-fns` version drifts from the spec pinned in `package.json`. Log the version on every run for visibility.
+### Current state
+`scripts/ci-check.sh` already implements exactly this flow as steps 1, 2, and 6 of a 7-step pipeline:
 
-### Change — `scripts/generate-datefns-smoke-test.mjs`
-
-Extend the generator template to emit one additional `it(...)` block at the end of the existing `describe`. No new files, no CI changes — the new assertion rides the existing generate → tsc → vitest pipeline.
-
-The emitted block reads both `package.json` files at test time and compares:
-
-```ts
-it("installed date-fns version matches the pinned spec in package.json", async () => {
-  const [{ default: rootPkg }, { default: installedPkg }] = await Promise.all([
-    import("../../package.json"),
-    import("date-fns/package.json"),
-  ]);
-  const spec =
-    rootPkg.dependencies?.["date-fns"] ??
-    rootPkg.devDependencies?.["date-fns"] ??
-    "";
-  const installed = installedPkg.version as string;
-
-  // eslint-disable-next-line no-console
-  console.log(`[date-fns smoke] pinned spec="${spec}" installed="${installed}"`);
-
-  expect(spec, "date-fns must be listed in package.json").not.toBe("");
-  expect(/^[0-9]/.test(spec), `spec "${spec}" must be exact-pinned (no ^ or ~)`).toBe(true);
-  expect(installed, `installed ${installed} must match pinned ${spec}`).toBe(spec);
-});
+```text
+[1/7] rm -rf node_modules
+[2/7] bun install --frozen-lockfile
+[3/7] npx tsc --noEmit -p tsconfig.app.json          (source typecheck)
+[4/7] node scripts/generate-datefns-smoke-test.mjs   (regenerate test)
+[5/7] npx tsc --noEmit -p tsconfig.app.json          (typecheck regenerated test)
+[6/7] npx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
+[7/7] write public/dependency-health.json snapshot
 ```
 
-Three assertions:
-1. `date-fns` is declared in `package.json`.
-2. The spec is exact-pinned (starts with a digit — rejects `^3.6.0`, `~3.6.0`, `latest`, ranges).
-3. The resolved version in `node_modules` equals the spec exactly.
+The requested flow (delete `node_modules` → `bun install --frozen-lockfile` → run smoke test) is steps 1, 2, and 6. The intermediate steps (3, 4, 5) only strengthen the signal — they do not block or alter the requested behavior.
 
-The `console.log` line surfaces both versions in vitest's verbose output for every CI run.
+### Goal
+Add an entry-point script that **only** does the three requested steps, so it can be invoked directly (e.g. from a Git hook, a lighter CI lane, or local pre-push checks) without paying for typecheck + generator + snapshot.
 
-### Supporting tweak — `tsconfig.app.json`
+Keep `scripts/ci-check.sh` as the full pipeline. Add a new minimal script alongside it.
 
-Verify `resolveJsonModule: true` is already set (standard in Vite/Lovable projects). If absent, add it so the two `import("…/package.json")` calls type-check. This is a no-op for runtime; vitest already resolves JSON imports natively.
+### Change — new file `scripts/ci-smoke.sh`
 
-### Why this shape
-- **Single source of truth stays the generator.** The new test rides the same regenerate → tsc → vitest pipeline already in CI; no new step, no new file.
-- **Reads `package.json` at test time, not generate time.** Catches drift introduced after the generator runs (e.g. someone hand-edits `package.json` between generate and test, or a stale `node_modules` from an unclean install).
-- **Exact-pin guard.** Prevents the test from silently passing when someone loosens the spec to `^3.6.0` — which is the exact failure mode this whole CI chain exists to prevent.
-- **Aligns with `public/dependency-health.json`.** Step 7 already records `spec` / `installed` / `exactPinned`; this test enforces the same invariants at runtime so the snapshot can never lie.
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+echo "▶ [1/3] Removing node_modules..."
+rm -rf node_modules
+
+echo "▶ [2/3] Installing from frozen lockfile..."
+bun install --frozen-lockfile
+
+echo "▶ [3/3] Running date-fns smoke test..."
+npx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
+
+echo "✅ Smoke check passed: clean install + date-fns smoke test green."
+```
+
+Made executable via `chmod +x scripts/ci-smoke.sh`.
+
+Notes:
+- Uses the **already-committed** `src/test/dateFns.smoke.test.ts` — does not regenerate it. That keeps this script fast and deterministic; if the test is stale relative to current `src/` imports, run `scripts/ci-check.sh` instead.
+- `set -euo pipefail` halts on any non-zero exit so a failed install or failing test fails CI immediately.
+- No edit to `scripts/ci-check.sh` (the full 7-step flow is unchanged).
+- No edit to `package.json` scripts (project convention is to invoke shell scripts directly, matching `scripts/ci-check.sh`).
 
 ### Verification
-1. `node scripts/generate-datefns-smoke-test.mjs` → file regenerates with the new `it(...)` block, summary log printed.
-2. `npx tsc --noEmit -p tsconfig.app.json` → 0 errors.
-3. `npx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose` → all tests green; console shows `[date-fns smoke] pinned spec="3.6.0" installed="3.6.0"`.
-4. Sanity check A: temporarily change `package.json` to `"date-fns": "^3.6.0"` → rerun → exact-pin assertion fails with clear message. Revert.
-5. Sanity check B: temporarily change `package.json` to `"date-fns": "3.5.0"` (without reinstalling) → rerun → mismatch assertion fails (`installed 3.6.0 must match pinned 3.5.0`). Revert.
-6. `bash scripts/ci-check.sh` → 7 numbered steps green.
+1. `bash scripts/ci-smoke.sh` → 3 numbered steps, ends with `✅ Smoke check passed`.
+2. Sanity check: temporarily edit `package.json` to `"date-fns": "3.5.0"` (no reinstall) → rerun → step 3 fails on the version-pin assertion. Revert.
+3. `bash scripts/ci-check.sh` → still 7 steps green (unaffected).
 
 ### Risk / scope
-- One generator file edited; one generated test file refreshed (still ≤120 lines). Possibly one `tsconfig.app.json` flag if missing. No source, route, schema, or runtime changes.
-- Adds <50ms to the smoke test (two JSON imports).
+- One new file (`scripts/ci-smoke.sh`, ~12 lines). No source, dependency, route, schema, or runtime changes.
+- Runtime: ~clean-install time + <1s for the smoke test.
