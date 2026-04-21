@@ -6,11 +6,11 @@ import { toast } from 'sonner';
 export interface DashboardFilter {
   id: string;
   name: string;
-  category_filter: string;
-  supplier_filter: string;
-  period_filter: string;
-  show_comparison: boolean;
-  is_default: boolean;
+  category_filter: string | null;
+  supplier_filter: string | null;
+  period_filter: string | null;
+  show_comparison: boolean | null;
+  is_default: boolean | null;
   created_at: string;
 }
 

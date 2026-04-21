@@ -87,7 +87,7 @@ export const useGeoRestriction = () => {
           updated_at: new Date().toISOString(),
           updated_by: user?.id
         })
-        .eq('id', geoSettings?.id);
+        .eq('id', geoSettings?.id ?? '');
       
       if (error) throw error;
     },
