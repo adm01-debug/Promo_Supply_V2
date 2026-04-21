@@ -4,13 +4,30 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes, Scissors } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes, Scissors, History } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
+import { Sparkline } from "@/components/ui/sparkline";
+
+interface HistoryEntry {
+  id: string;
+  generatedAt: string;
+  driftCount: number;
+  barrelImports: number;
+  packages: { name: string; driftDetected: boolean }[];
+}
+
+const fetchHistory = async (): Promise<HistoryEntry[]> => {
+  const { data, error } = await supabase.functions.invoke("dependency-health?history=true", {
+    method: "GET",
+  });
+  if (error) throw error;
+  return ((data as { history?: HistoryEntry[] } | null)?.history) ?? [];
+};
 
 interface PackageHealth {
   name: string;
@@ -79,6 +96,12 @@ const DependencyHealth = () => {
     staleTime: 60_000,
   });
 
+  const { data: history } = useQuery({
+    queryKey: ["dependency-health-history"],
+    queryFn: fetchHistory,
+    staleTime: 60_000,
+  });
+
   const buildRefresh = (dispatchCi: boolean) =>
     useMutation({
       mutationFn: async () => {
@@ -91,6 +114,7 @@ const DependencyHealth = () => {
       },
       onSuccess: (fresh) => {
         queryClient.setQueryData(["dependency-health"], fresh);
+        queryClient.invalidateQueries({ queryKey: ["dependency-health-history"] });
         toast({
           title: dispatchCi ? "Snapshot atualizado + CI" : "Snapshot atualizado",
           description: dispatchCi
@@ -403,6 +427,92 @@ const DependencyHealth = () => {
           </CardContent>
         </Card>
       )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <History className="h-5 w-5 text-primary" />
+            Histórico de drift (últimas 30 atualizações)
+          </CardTitle>
+          <CardDescription>
+            Tendência de drift e imports barrel ao longo das últimas atualizações.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {!history || history.length === 0 ? (
+            <div className="text-sm text-muted-foreground">
+              Nenhuma atualização registrada ainda — clique em "Atualizar agora" para começar a coletar histórico.
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="rounded-md border bg-muted/30 p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">Drift count</span>
+                    <Badge variant={history[0].driftCount > 0 ? "destructive" : "secondary"} className="font-mono">
+                      atual: {history[0].driftCount}
+                    </Badge>
+                  </div>
+                  <Sparkline
+                    data={[...history].reverse().map((h) => h.driftCount)}
+                    width={280}
+                    height={48}
+                    showDots
+                  />
+                </div>
+                <div className="rounded-md border bg-muted/30 p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs text-muted-foreground">Imports barrel</span>
+                    <Badge variant={history[0].barrelImports > 0 ? "destructive" : "secondary"} className="font-mono">
+                      atual: {history[0].barrelImports}
+                    </Badge>
+                  </div>
+                  <Sparkline
+                    data={[...history].reverse().map((h) => h.barrelImports)}
+                    width={280}
+                    height={48}
+                    showDots
+                  />
+                </div>
+              </div>
+
+              <div className="rounded-md border overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Quando</TableHead>
+                      <TableHead className="font-mono text-xs">Drift</TableHead>
+                      <TableHead className="font-mono text-xs">Barrel</TableHead>
+                      <TableHead className="font-mono text-xs">Timestamp</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {history.slice(0, 10).map((h) => (
+                      <TableRow key={h.id} className={h.driftCount > 0 ? "bg-destructive/5" : ""}>
+                        <TableCell className="text-sm">
+                          {formatDistanceToNow(parseISO(h.generatedAt), { addSuffix: true, locale: ptBR })}
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">
+                          {h.driftCount > 0 ? (
+                            <Badge variant="destructive" className="gap-1">
+                              <AlertTriangle className="h-3 w-3" />
+                              {h.driftCount}
+                            </Badge>
+                          ) : (
+                            <Badge variant="secondary">0</Badge>
+                          )}
+                        </TableCell>
+                        <TableCell className="font-mono text-xs">{h.barrelImports}</TableCell>
+                        <TableCell className="font-mono text-xs text-muted-foreground">{h.generatedAt}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

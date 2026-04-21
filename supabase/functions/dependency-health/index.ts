@@ -231,7 +231,33 @@ async function fetchStaticFallback(origin: string): Promise<DependencyHealthSnap
   }
 }
 
+async function handleHistory(): Promise<Response> {
+  const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+  const { data, error } = await admin
+    .from("dependency_health_history")
+    .select("id, generated_at, drift_count, barrel_imports, payload")
+    .order("generated_at", { ascending: false })
+    .limit(30);
+  if (error) return json({ error: error.message }, 500);
+  // deno-lint-ignore no-explicit-any
+  const rows = (data ?? []).map((row: any) => {
+    const pkgs: any[] = Array.isArray(row?.payload?.packages) ? row.payload.packages : [];
+    return {
+      id: row.id,
+      generatedAt: row.generated_at,
+      driftCount: row.drift_count,
+      barrelImports: row.barrel_imports,
+      packages: pkgs.map((p) => ({ name: p?.name, driftDetected: !!p?.driftDetected })),
+    };
+  });
+  return json({ history: rows });
+}
+
 async function handleGet(req: Request): Promise<Response> {
+  const url = new URL(req.url);
+  if (url.searchParams.get("history") === "true") {
+    return await handleHistory();
+  }
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   const { data } = await admin
     .from("dependency_health")
@@ -323,6 +349,34 @@ async function handlePost(req: Request): Promise<Response> {
     .from("dependency_health")
     .upsert({ id: true, payload, updated_by: userData.user.id, updated_at: now });
   if (upsertErr) return json({ error: `Upsert failed: ${upsertErr.message}` }, 500);
+
+  // Append to history + prune to last 30
+  const driftCount = packages.filter((p) => p.driftDetected).length;
+  const barrelImports = treeShaking?.barrelImportsFound ?? 0;
+  const { error: histErr } = await admin.from("dependency_health_history").insert({
+    payload,
+    drift_count: driftCount,
+    barrel_imports: barrelImports,
+    generated_at: now,
+    created_by: userData.user.id,
+  });
+  if (histErr) {
+    console.error("history insert failed:", histErr.message);
+  } else {
+    const { data: keepRows } = await admin
+      .from("dependency_health_history")
+      .select("id")
+      .order("generated_at", { ascending: false })
+      .limit(30);
+    const keepIds = (keepRows ?? []).map((r: { id: string }) => r.id);
+    if (keepIds.length > 0) {
+      const { error: pruneErr } = await admin
+        .from("dependency_health_history")
+        .delete()
+        .not("id", "in", `(${keepIds.map((id) => `"${id}"`).join(",")})`);
+      if (pruneErr) console.error("history prune failed:", pruneErr.message);
+    }
+  }
 
   const url = new URL(req.url);
   if (url.searchParams.get("dispatchCi") === "true") {
