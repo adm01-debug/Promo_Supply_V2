@@ -17,7 +17,8 @@
     "ci:check": "bash scripts/ci-check.sh",
     "ci:smoke": "bash scripts/ci-smoke.sh",
     "deps:health": "node scripts/generate-dependency-health.mjs",
-    "verify:datefns-locales": "node scripts/verify-datefns-locales.mjs"
+    "verify:datefns-locales": "node scripts/verify-datefns-locales.mjs",
+    "verify:datefns-smoke": "node scripts/generate-datefns-smoke-test.mjs --dry-run"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

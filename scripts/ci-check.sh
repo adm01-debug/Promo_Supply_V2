@@ -41,42 +41,8 @@ echo "▶ [9/13] Verifying date-fns locale imports match manifest..."
 node scripts/verify-datefns-locales.mjs
 
 echo "▶ [10/13] Verifying date-fns smoke test is up to date..."
-SMOKE_TEST_FILE="src/test/dateFns.smoke.test.ts"
-MANIFEST_FILE="public/datefns-usage.json"
-SMOKE_BACKUP="$(mktemp)"
-MANIFEST_BACKUP="$(mktemp)"
-if [ -f "$SMOKE_TEST_FILE" ]; then
-  cp "$SMOKE_TEST_FILE" "$SMOKE_BACKUP"
-fi
-if [ -f "$MANIFEST_FILE" ]; then
-  cp "$MANIFEST_FILE" "$MANIFEST_BACKUP"
-fi
-node scripts/generate-datefns-smoke-test.mjs
-DRIFT=0
-if [ -f "$SMOKE_BACKUP" ]; then
-  if ! diff -q "$SMOKE_BACKUP" "$SMOKE_TEST_FILE" > /dev/null 2>&1; then
-    echo "✗ $SMOKE_TEST_FILE is out of date." >&2
-    diff -u "$SMOKE_BACKUP" "$SMOKE_TEST_FILE" >&2 || true
-    cp "$SMOKE_BACKUP" "$SMOKE_TEST_FILE"
-    DRIFT=1
-  fi
-else
-  echo "✗ $SMOKE_TEST_FILE did not exist before generation." >&2
-  DRIFT=1
-fi
-if [ -s "$MANIFEST_BACKUP" ]; then
-  if ! diff -q "$MANIFEST_BACKUP" "$MANIFEST_FILE" > /dev/null 2>&1; then
-    echo "✗ $MANIFEST_FILE is out of date." >&2
-    diff -u "$MANIFEST_BACKUP" "$MANIFEST_FILE" >&2 || true
-    cp "$MANIFEST_BACKUP" "$MANIFEST_FILE"
-    DRIFT=1
-  fi
-elif [ ! -f "$MANIFEST_FILE" ]; then
-  echo "✗ $MANIFEST_FILE was not generated." >&2
-  DRIFT=1
-fi
-rm -f "$SMOKE_BACKUP" "$MANIFEST_BACKUP"
-if [ "$DRIFT" -ne 0 ]; then
+if ! node scripts/generate-datefns-smoke-test.mjs --dry-run; then
+  echo "✗ Smoke test or manifest is out of date." >&2
   echo "  Run \`node scripts/generate-datefns-smoke-test.mjs\` and commit the result." >&2
   exit 1
 fi
