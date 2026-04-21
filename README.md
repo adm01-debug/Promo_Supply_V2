@@ -148,3 +148,15 @@ on PATH and adapt cache eviction per OS.
 
 Prerequisites: [Bun](https://bun.sh) and [Node.js](https://nodejs.org). If
 either is missing, the preflight prints a friendly error and exits 127.
+
+### Time-zone guard
+
+`src/test/dateFns.timezone.test.ts` enforces `TZ=UTC` so `date-fns`
+formatting (especially with `pt-BR`) is deterministic across machines. CI
+pins `TZ: UTC` on the relevant workflows. To run locally in a different
+zone, override both vars:
+
+```sh
+EXPECTED_TZ=America/Sao_Paulo TZ=America/Sao_Paulo \
+  bunx vitest run src/test/dateFns.timezone.test.ts
+```

@@ -24,11 +24,15 @@ jobs:
       - name: Install dependencies (frozen lockfile)
         run: bun install --frozen-lockfile
       - name: Verify smoke test is in sync
+        env:
+          TZ: UTC
         run: |
           mkdir -p ci-logs
           set -o pipefail
           bun run verify:datefns-smoke 2>&1 | tee ci-logs/verify-smoke-drift.log
       - name: Validate smoke test types
+        env:
+          TZ: UTC
         run: |
           mkdir -p ci-logs
           set -o pipefail
