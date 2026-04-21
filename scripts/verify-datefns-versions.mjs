@@ -5,8 +5,30 @@
  *   - bun.lock resolved version
  *   - node_modules installed version
  *
- * Exits 0 on alignment, 1 on any drift or missing source.
+ * Exit codes (CI can branch on these):
+ *    0  aligned
+ *   10  spec drifted from lock+installed   (package.json edited, not relocked)
+ *   11  node_modules drifted from spec+lock (stale / hand-mutated install)
+ *   12  lockfile drifted from spec+installed (lock stale or corrupt)
+ *   13  all three sources differ           (full corruption)
+ *   20  date-fns missing from package.json
+ *   21  bun.lock missing
+ *   22  date-fns entry not found in bun.lock
+ *   23  date-fns not installed in node_modules
+ *    1  unexpected / generic failure
  */
+const EXIT = {
+  OK: 0,
+  SPEC_DRIFT: 10,
+  INSTALLED_DRIFT: 11,
+  LOCK_DRIFT: 12,
+  ALL_DIFFER: 13,
+  MISSING_SPEC: 20,
+  MISSING_LOCK: 21,
+  MISSING_LOCK_ENTRY: 22,
+  MISSING_INSTALL: 23,
+  GENERIC: 1,
+};
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import {
