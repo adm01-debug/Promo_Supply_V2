@@ -1,80 +1,83 @@
 
-## Plan: Lightweight refresh route for `dependency-health.json`
+## Plan: On-demand dependency-health generation (CI + admin button)
 
 ### Goal
-Let an authenticated admin regenerate `public/dependency-health.json` (the snapshot consumed by `/admin/dependency-health`) on demand, without rebuilding/redeploying the frontend. Keep the existing `scripts/ci-check.sh` path working unchanged — the new route is a complementary runtime refresher.
+Let `public/dependency-health.json` be regenerated on demand from two triggers — a manually-dispatched GitHub Actions job and the existing admin "Refresh now" button — without a full rebuild. The admin button already writes to the `dependency_health` table via the edge function; this plan closes the loop so the **static JSON in the repo** can also be refreshed deterministically by CI.
 
-### Approach
-A Supabase Edge Function `dependency-health` that:
-1. Accepts `GET` → returns the latest computed snapshot (JSON).
-2. Accepts `POST` (admin only) → recomputes the snapshot from `package.json` + `bun.lock` fetched from the project's public GitHub raw URL (configurable via `GITHUB_REPO_RAW_BASE` secret), persists it to a `dependency_health` table, and returns the fresh JSON.
-3. Both methods also return the same JSON shape the existing React page already expects, so no frontend changes are required to keep viewing it.
+### Current state (already in place)
+- Edge function `supabase/functions/dependency-health/index.ts` — `GET` returns stored/fallback snapshot, `POST` (admin) recomputes from GitHub raw files and upserts to `dependency_health` table.
+- `src/pages/admin/DependencyHealth.tsx` — "Refresh now" button wired to `POST`.
+- `scripts/ci-check.sh` step [11/11] — writes `public/dependency-health.json` during full CI.
+- Route `/admin/dependency-health` — admin-only, consumes the JSON.
 
-The static `public/dependency-health.json` stays as the CI-generated fallback (shipped with builds). The frontend page gets a small addition: a "Refresh now" button that hits the edge function and, on success, swaps the displayed data.
+### Gaps to close
+1. No way to regenerate the **static JSON** without running the full 11-step `ci-check.sh`.
+2. No GitHub-native "run now" trigger — today you must push a commit.
+3. Admin button refreshes DB state but doesn't update the committed snapshot.
 
 ### Changes
 
-#### 1. New table `public.dependency_health` (single-row snapshot)
-Migration (via database migration tool):
-```sql
-create table public.dependency_health (
-  id boolean primary key default true check (id),  -- enforces single row
-  payload jsonb not null,
-  updated_at timestamptz not null default now(),
-  updated_by uuid references auth.users(id)
-);
-alter table public.dependency_health enable row level security;
+#### 1. New standalone script: `scripts/generate-dependency-health.mjs`
+Extracts just step [11/11] of `ci-check.sh` into a reusable Node script.
 
--- Anyone authenticated can read the snapshot
-create policy "dependency_health_read_auth"
-  on public.dependency_health for select
-  to authenticated using (true);
+- Reads `package.json` → `dependencies["date-fns"]` → `spec`.
+- Reads `bun.lock` → resolves locked `date-fns` via existing `scripts/lib/resolve-locked-version.mjs`.
+- Reads `node_modules/date-fns/package.json` if present → `installed` (falls back to `locked`).
+- Computes `exactPinned` (`/^\d+\.\d+\.\d+$/.test(spec)`) and `lockfileDrift.detected` (`spec.replace(/^[\^~]/,'') !== locked`).
+- Writes `public/dependency-health.json` with `source: "scripts/generate-dependency-health.mjs"`.
+- Exits 0 on success, non-zero with clear message on failure.
 
--- Only admins can upsert (via edge function using service role; policy is belt-and-suspenders)
-create policy "dependency_health_write_admin"
-  on public.dependency_health for all
-  to authenticated
-  using (public.has_role(auth.uid(), 'admin'))
-  with check (public.has_role(auth.uid(), 'admin'));
+Added to `package.json` scripts:
+```json
+"deps:health": "node scripts/generate-dependency-health.mjs"
 ```
 
-#### 2. New edge function `supabase/functions/dependency-health/index.ts`
-- CORS headers from `@supabase/supabase-js/cors`.
-- `OPTIONS` → 204.
-- **`GET`**: read the single row from `dependency_health`; if empty, fall back to fetching `/dependency-health.json` from the deployed site (or return a stub with `exactPinned: false`). Returns 200 JSON matching the `DependencyHealthSnapshot` interface.
-- **`POST`**: 
-  - Validate JWT: `supabase.auth.getUser(token)`; 401 on failure.
-  - Check admin role via `has_role(user.id, 'admin')` RPC; 403 otherwise.
-  - Fetch `package.json` and `bun.lock` from `${GITHUB_REPO_RAW_BASE}/package.json` and `.../bun.lock` (secret, e.g. `https://raw.githubusercontent.com/<owner>/<repo>/main`).
-  - Parse: `spec` = `dependencies["date-fns"]`; `locked` = regex-extract first `date-fns` version block from `bun.lock`; `installed` mirrors `locked` (no `node_modules` in edge runtime — document this).
-  - Compute `exactPinned` = spec matches `/^\d+\.\d+\.\d+$/`; `lockfileDrift.detected` = `spec.replace(/^[\^~]/,'') !== locked`.
-  - `generatedAt` / `lastCheckedAt` = `new Date().toISOString()`; `source` = `"edge:dependency-health POST"`.
-  - Upsert into `dependency_health` (id=true), stamping `updated_by = user.id`.
-  - Return 200 with the fresh payload.
-- Reject all other methods with 405.
+#### 2. New GitHub Actions workflow: `.github/workflows/dependency-health.yml`
+Triggers:
+- `workflow_dispatch` — manual "Run workflow" button in the Actions tab.
+- `schedule` — weekly cron (Mondays 06:00 UTC) to catch silent drift.
+- `push` on `main` when `package.json` or `bun.lock` changes — auto-refresh on dep bumps.
 
-No `supabase/config.toml` changes needed — default `verify_jwt = false` is fine since the function validates manually (and `GET` stays public-readable for authenticated users via a separate in-code check if desired).
+Steps:
+1. Checkout (with a write-capable token via default `GITHUB_TOKEN` + `permissions: contents: write`).
+2. Setup Bun + cache (same pattern as `lint.yml`).
+3. `bun install --frozen-lockfile --dry-run` (reuse the drift gate).
+4. `bun install --frozen-lockfile`.
+5. `bun run deps:health`.
+6. If `public/dependency-health.json` changed: commit with message `chore(deps): refresh dependency-health snapshot [skip ci]` and push back to the branch. Uses `stefanzweifel/git-auto-commit-action@v5` (already-idiomatic for this pattern). If no diff, the action no-ops.
 
-#### 3. Secret: `GITHUB_REPO_RAW_BASE`
-Use the `add_secret` flow to prompt the user for the raw GitHub base URL (e.g. `https://raw.githubusercontent.com/owner/repo/main`). Required only for `POST`; `GET` works without it.
+#### 3. Edge function enhancement: `supabase/functions/dependency-health/index.ts`
+Add an optional `?dispatchCi=true` query param on `POST` (admin-only). When set and a `GITHUB_DISPATCH_TOKEN` secret is configured, the function fires a `workflow_dispatch` event against `.github/workflows/dependency-health.yml`, so the admin button can ALSO trigger the GitHub Actions job that commits the updated JSON back to the repo.
+
+- New optional secret: `GITHUB_DISPATCH_TOKEN` (fine-grained PAT with `actions:write` + `contents:read` on the repo, or repo-scoped token). Requested via `add_secret`. If unset, the `dispatchCi` param is silently ignored (DB upsert still happens).
+- Reuses existing `GITHUB_REPO_RAW_BASE` to derive `<owner>/<repo>` (parse the path segments); if not parseable, skip dispatch and return a soft warning in the response payload (`{ ...payload, ciDispatch: "skipped: owner/repo not derivable" }`).
 
 #### 4. Frontend: `src/pages/admin/DependencyHealth.tsx`
-- Change the `fetchSnapshot` query to call `supabase.functions.invoke("dependency-health", { method: "GET" })` and fall back to the static `/dependency-health.json` on error (so local dev without the function still works).
-- Add a **"Refresh now"** button (admin-only, guarded via existing `usePermissions`/role check) that calls `POST` to the edge function, invalidates the `["dependency-health"]` React Query key, and shows a toast with the new `generatedAt`.
-- No design changes beyond one button in the page header.
+Add a second button next to "Refresh now":
+- **"Refresh & commit to repo"** (admin-only) — calls `POST /dependency-health?dispatchCi=true`.
+- Shows toast with either `ciDispatch: "queued"` or the skip reason returned by the function.
+- No design changes beyond one extra `<Button variant="outline">`.
 
 ### What does NOT change
-- `scripts/ci-check.sh` and the CI-generated `public/dependency-health.json` — still the build-time source of truth; the edge function is a runtime supplement.
-- The `DependencyHealthSnapshot` TS interface and existing UI layout.
-- Route registration in `src/routes/AppRoutes.tsx` (already wired at `/admin/dependency-health`, admin-only).
+- `scripts/ci-check.sh` — still runs step [11/11] inline; the new script is the same logic, so CI stays byte-identical. (Optional follow-up: have step [11/11] call `bun run deps:health` for DRY — explicitly out of scope here.)
+- `DependencyHealthSnapshot` TS interface, route registration, RLS policies, table schema.
+- Existing workflows (`typecheck.yml`, `lint.yml`, `lint-date-fns.yml`).
 
 ### Verification
-1. Admin visits `/admin/dependency-health` → `GET` edge function returns the stored or static snapshot → page renders as today.
-2. Admin clicks **Refresh now** → `POST` fetches `package.json` + `bun.lock` from GitHub, computes snapshot, upserts row, page re-renders with new `generatedAt`.
-3. Non-admin attempts `POST` → 403; button is hidden for them.
-4. Unauthenticated request → 401 on both verbs.
-5. `GET` with empty table and unreachable GitHub → returns the static fallback JSON so the page never breaks.
-6. CI-generated `public/dependency-health.json` still updated by `bun run ci:check`; edge-refreshed values simply take precedence at runtime.
+1. Run `bun run deps:health` locally → `public/dependency-health.json` regenerates with matching content and new `generatedAt`.
+2. Actions tab → manually dispatch `dependency-health` workflow → bot commit appears on `main` if the JSON changed; no commit if unchanged.
+3. Edit `package.json` on a PR → merge → push-trigger regenerates and commits.
+4. Weekly schedule → Monday run either no-ops (clean) or commits a drift fix.
+5. Admin "Refresh now" (no CI) → DB updated, static JSON untouched (today's behavior).
+6. Admin "Refresh & commit to repo" with `GITHUB_DISPATCH_TOKEN` set → DB updated AND workflow queued; confirm in Actions tab. Without token → DB updated, toast shows skip reason.
+7. Non-admin → both buttons hidden; `POST` returns 403.
+
+### Technical details
+- **Secret shape**: `GITHUB_DISPATCH_TOKEN` is a GitHub PAT, NOT a Supabase secret's public twin — handled only server-side in the edge function.
+- **Owner/repo parsing**: `GITHUB_REPO_RAW_BASE` format assumed `https://raw.githubusercontent.com/<owner>/<repo>/<branch>`; split on `/` after host, take segments `[3]` and `[4]`. On any mismatch, skip dispatch rather than error.
+- **Commit loop safety**: `[skip ci]` in the auto-commit message prevents other workflows from re-firing on the bot commit.
+- **Write permission**: workflow uses `permissions: contents: write` scope; no PAT needed for self-commits.
+- **No `verify_jwt` change** in `supabase/config.toml` — function already self-validates.
 
 ### Risk / scope
-- 1 new edge function, 1 new table + RLS, ~15 added lines in `DependencyHealth.tsx`, 1 secret. No existing files deleted, no breaking changes to the snapshot shape. Failure modes (GitHub unreachable, missing secret) degrade gracefully to the static JSON.
+- 1 new script (~60 lines), 1 new workflow (~35 lines), 1 new `package.json` script line, ~30 added lines in edge function, 1 new button in `DependencyHealth.tsx`, 1 optional secret. Zero schema changes, zero existing-file deletions, graceful degradation when the new secret is absent.
