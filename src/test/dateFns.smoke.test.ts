@@ -132,10 +132,13 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
   it("installed date-fns version matches the resolved version in bun.lock", async () => {
     const { readFileSync, existsSync } = await import("node:fs");
     const { join } = await import("node:path");
-    const { resolveLockedVersion, RESOLVER_PATTERN_NAMES } = await import(
-      // @ts-expect-error - .mjs helper, no types
-      "../../scripts/lib/resolve-locked-version.mjs"
-    );
+    const helperPath = "../../scripts/lib/resolve-locked-version.mjs";
+    const { resolveLockedVersion, RESOLVER_PATTERN_NAMES } = (await import(
+      /* @vite-ignore */ helperPath
+    )) as {
+      resolveLockedVersion: (text: string, name: string) => string | null;
+      RESOLVER_PATTERN_NAMES: string[];
+    };
 
     const root = process.cwd();
     const lockPath = join(root, "bun.lock");
