@@ -33,12 +33,12 @@ function walk(dir, acc = []) {
 }
 
 // Match: import [type] { a, b as c } from "date-fns/<subpath>"
-// Inner `[\s\S]*?` is non-greedy and explicitly accepts newlines so multi-line
-// import specifiers are matched. Non-greedy stops at the first `}`, preventing
-// adjacent import blocks from merging.
+// Brace contents use `[^{}]*` which allows newlines (multi-line imports) but
+// forbids nested braces, preventing the match from spanning across adjacent
+// import statements.
 // Captures: 1=isType, 2=names, 3=subpath
 const IMPORT_RE =
-  /import\s+(type\s+)?\{([\s\S]*?)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
+  /import\s+(type\s+)?\{([^{}]*)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
 
 /** Strip /* ... *\/ and // ... comments from an import-specifier blob. */
 function stripComments(s) {
