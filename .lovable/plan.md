@@ -1,105 +1,111 @@
 
-## Plan: Improve missing-subpath output in `verify-datefns-files.mjs`
+## Plan: Persist discovered date-fns subpaths into `public/dependency-health.json`
 
 ### Goal
-Make the failure output of `scripts/verify-datefns-files.mjs` more actionable: clearly enumerate every missing `date-fns/<subpath>`, show which candidate files were probed, and surface a copy-pasteable repair command in a visually distinct block.
+Let `scripts/verify-datefns-files.mjs` optionally append the sorted list of discovered `date-fns/<subpath>` references into `public/dependency-health.json`, so install-to-install drift in subpath usage is visible to the existing `scripts/diff-dependency-health.mjs` tooling.
 
-### Current state (baseline)
-On failure today the script prints:
-```
-✗ Missing date-fns subpath files (N):
-  - date-fns/<sp>
-  ...
-Checked under: node_modules/date-fns
-Run `rm -rf node_modules && bun install --frozen-lockfile` to repair.
-```
-The repair command is buried on the last line, the subpaths aren't grouped, and there's no hint of which candidate filenames were tried.
+### Design
 
-### Change — single file: `scripts/verify-datefns-files.mjs`
+#### 1. Opt-in flag in `verify-datefns-files.mjs`
+Add a `--write-health` (also `--update-health`) CLI flag, off by default.
+- Without flag → behavior is unchanged (pure verifier, exits 0/1).
+- With flag → after a successful verification, merge a new `dateFns.subpaths` block into `public/dependency-health.json`.
 
-#### 1. Track candidates per missing subpath
-Refactor the existence loop to record, per missing subpath, the full list of candidate paths it tried (already computed — just keep them):
+Why opt-in: the verifier runs in pre-push hooks and CI step `[5/9]`/`[7/14]`; we don't want every developer's local run to dirty `public/dependency-health.json`. The flag is for the dependency-health workflow and on-demand local diffs.
 
-```js
-const missing = []; // [{ subpath, tried: [absPath, ...] }]
-for (const sp of [...subpaths].sort()) {
-  const candidates = [
-    `${sp}.js`, `${sp}.mjs`, `${sp}.cjs`,
-    `${sp}/index.js`, `${sp}/index.mjs`, `${sp}/index.cjs`,
-  ].map((c) => join(PKG_DIR, c));
-  if (!candidates.some(existsSync)) {
-    missing.push({ subpath: sp, tried: candidates });
+#### 2. JSON shape — additive, non-breaking
+Inside the existing `dateFns` object in `public/dependency-health.json`:
+
+```json
+"dateFns": {
+  "spec": "3.6.0",
+  "installed": "3.6.0",
+  "locked": "3.6.0",
+  "exactPinned": true,
+  "subpaths": {
+    "scannedAt": "2026-04-21T18:30:00.000Z",
+    "count": 42,
+    "list": ["addDays", "format", "locale/pt-BR", "parseISO", ...]
   }
 }
 ```
 
-#### 2. Format the failure block
-Replace the current failure print with a clearly delimited, three-section block:
+- Keys at the top of the file (`generatedAt`, `packages`, `lockfileDrift`, `treeShaking`) are untouched.
+- `list` is sorted alphabetically (already sorted by the verifier's existence loop).
+- `count` is redundant with `list.length` but cheap and improves grep-ability.
 
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✗ verify-datefns-files: N missing date-fns subpath(s)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#### 3. Merge semantics
+The verifier doesn't regenerate the whole snapshot — it only rewrites the `dateFns.subpaths` sub-object. Read-merge-write:
 
-Missing subpaths (imported from src/ but not on disk):
-  • date-fns/<sp1>
-      tried: <sp1>.js, <sp1>.mjs, <sp1>.cjs,
-             <sp1>/index.js, <sp1>/index.mjs, <sp1>/index.cjs
-  • date-fns/<sp2>
-      tried: ...
-
-Package directory checked:
-  node_modules/date-fns
-
-Likely cause:
-  Broken or partial install — the lockfile resolves date-fns@X.Y.Z
-  but one or more subpath files are missing from node_modules.
-
-▶ Repair (copy & run):
-
-    rm -rf node_modules && bun install --frozen-lockfile
-
-After repair, re-run:
-
-    bun run verify:datefns-files
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```js
+const snapshot = existsSync(SNAPSHOT) ? JSON.parse(readFileSync(SNAPSHOT, "utf8")) : {};
+snapshot.dateFns = snapshot.dateFns ?? {};
+snapshot.dateFns.subpaths = { scannedAt, count, list };
+writeFileSync(SNAPSHOT, JSON.stringify(snapshot, null, 2) + "\n");
 ```
 
-Implementation notes:
-- The `tried:` paths are printed **relative to `node_modules/date-fns`** (strip `PKG_DIR + "/"`) so lines stay short.
-- Use plain ASCII `━` / `•` / `▶` (already used elsewhere in the repo, e.g. `scripts/hooks/datefns-precommit.sh`).
-- Wrap the repair command in **its own indented line with blank lines above/below** so terminal triple-click selects only the command — the "copyable text" requirement.
-- Use ANSI color helpers (`red`, `cyan`, `gray`, `green`) **only when `process.stdout.isTTY`** so CI logs stay clean. Mirror the small color-helper pattern from `scripts/hooks/datefns-precommit.sh`.
+If the file doesn't exist yet, write a minimal `{ dateFns: { subpaths: {...} } }` skeleton — `scripts/generate-dependency-health.mjs` will fill in the rest on its next run.
 
-#### 3. Polish the empty-set and missing-pkg branches
-Apply the same delimited-block style to the existing two early-exit error paths so all three failure modes look consistent:
-- `node_modules/date-fns not found` — suggest the same repair command.
-- `no date-fns subpath imports found in src/` — suggest checking the scan root, no repair command.
+#### 4. Generator stays the source of truth for everything else
+`scripts/generate-dependency-health.mjs` keeps writing `generatedAt`, `packages`, `lockfileDrift`, `treeShaking`, **and now** preserves any pre-existing `dateFns.subpaths` it finds (read-then-merge, same pattern). One added safeguard so a generator run after a verifier run doesn't wipe `subpaths`:
 
-#### 4. Success message unchanged
+```js
+const existing = readJsonSafe(outPath);
+if (existing?.dateFns?.subpaths) snapshot.dateFns.subpaths = existing.dateFns.subpaths;
 ```
-✓ Verified N date-fns subpath(s) exist on disk under node_modules/date-fns.
+
+#### 5. Diff visibility
+Extend `scripts/diff-dependency-health.mjs`'s `diffDateFns()` to print added/removed subpaths when `dateFns.subpaths.list` differs:
+
 ```
-Keep as-is — already concise.
+  date-fns:
+    subpaths.count: 41 → 42
+    subpaths added:
+      + locale/pt-BR
+    subpaths removed:
+      - locale/pt
+```
 
-### Behavior
+Cap added/removed lists at 20 entries (mirrors `OFFENDER_DIFF_CAP`). No exit-code change — diff is informational, matching existing policy.
 
-| Scenario | Output |
-|---|---|
-| All subpaths present | Single-line `✓ Verified N ...` (unchanged) |
-| Missing subpaths | New delimited block: enumerated subpaths with their tried candidate files, followed by an isolated, copy-pasteable repair command |
-| `node_modules/date-fns` missing | Same delimited style, copy-pasteable repair command |
-| No imports found in `src/` | Same delimited style, no repair command (different cause) |
+#### 6. New npm script for convenience
+Add to `package.json`:
 
-### Out of scope
-- No new CLI flags (no `--json`, no `--quiet`).
-- No change to exit codes (still `1` on any failure, `0` on success).
-- No change to detection patterns (still static named imports only — broader patterns are a separate plan already discussed).
-- No change to CI scripts, `package.json`, or workflows.
+```json
+"verify:datefns-files:write": "node scripts/verify-datefns-files.mjs --write-health"
+```
+
+Naming aligns with the existing `verify:datefns-files` entry.
+
+#### 7. CI wiring
+- `scripts/ci-smoke.sh` step `[5/9]` → unchanged (still runs verifier without `--write-health`; CI shouldn't dirty the snapshot).
+- `scripts/ci-check.sh` step `[7/14]` → unchanged.
+- `.github/workflows/dependency-health.yml` → after `bun run deps:health`, add one line: `bun run verify:datefns-files:write`. The auto-commit step (`stefanzweifel/git-auto-commit-action@v5`) already commits `public/dependency-health.json`, so the new field rides along.
+
+### Behavior matrix
+
+| Invocation | Output | Snapshot side effect |
+|---|---|---|
+| `bun run verify:datefns-files` (default) | Verifier output only | None |
+| `bun run verify:datefns-files:write` | Verifier output + `▶ Wrote dateFns.subpaths to public/dependency-health.json (N entries)` | `dateFns.subpaths` updated |
+| `bun run deps:health` | Generator output | Full snapshot rewritten; preserves any prior `dateFns.subpaths` |
+| `bun run deps:health:diff` (after a `:write` run) | Now also prints subpath added/removed | None |
+| Weekly `dependency-health` workflow | Generator + verifier:write | Snapshot committed with both `treeShaking` and `dateFns.subpaths` refreshed |
 
 ### Files edited
-- `scripts/verify-datefns-files.mjs` — ~40 lines changed (new formatting helpers + restructured failure blocks).
+- `scripts/verify-datefns-files.mjs` — add `--write-health` flag handler (~25 lines).
+- `scripts/generate-dependency-health.mjs` — preserve existing `dateFns.subpaths` on regeneration (~5 lines).
+- `scripts/diff-dependency-health.mjs` — extend `diffDateFns()` with subpath added/removed section (~25 lines).
+- `package.json` — add `verify:datefns-files:write` script (1 line).
+- `.github/workflows/dependency-health.yml` — add one verifier-write step after `deps:health` (~3 lines).
+
+### Out of scope
+- No change to detection patterns (still static named imports — broader patterns remain a separate plan).
+- No change to verifier exit codes or failure-block formatting.
+- No new top-level keys in `dependency-health.json` — `subpaths` lives under the existing `dateFns` object to keep the shape additive.
+- No tests added for the diff helper (matches existing convention — `diff-dependency-health.mjs` has no unit tests today).
 
 ### Risk / scope
-- 1 file, output-only change. Exit contract preserved. CI parsing isn't affected (no script greps this output today). Strictly improves developer experience on failure.
+- 5 files, ~60 lines total, all additive.
+- Default verifier behavior unchanged → zero impact on pre-push and CI.
+- JSON shape extension is backwards-compatible (consumers reading `dateFns.spec`/`installed`/`locked` are unaffected).
