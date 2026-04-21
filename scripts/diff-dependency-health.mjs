@@ -38,6 +38,21 @@ function diffPrimitive(label, prev, next, lines, { warnOnChange = false } = {}) 
   lines.push(`    ${label}: ${arrow}${flag}`);
 }
 
+function subpathNames(sub) {
+  if (!sub) return [];
+  if (Array.isArray(sub.entries)) return sub.entries.map((e) => e.subpath);
+  if (Array.isArray(sub.list)) return sub.list; // legacy shape fallback
+  return [];
+}
+
+function entriesByName(sub) {
+  const map = new Map();
+  if (sub && Array.isArray(sub.entries)) {
+    for (const e of sub.entries) map.set(e.subpath, e);
+  }
+  return map;
+}
+
 function diffDateFns(prev, next, lines) {
   const a = prev?.dateFns ?? {};
   const b = next?.dateFns ?? {};
@@ -48,19 +63,26 @@ function diffDateFns(prev, next, lines) {
     }
   }
 
-  // Subpaths drift (added/removed entries between snapshots)
+  // Subpaths drift (added/removed entries between snapshots; supports both
+  // the new entries[] shape and the legacy list[] shape for back-compat).
   const aSub = a.subpaths ?? null;
   const bSub = b.subpaths ?? null;
   if (aSub || bSub) {
-    const aList = new Set(aSub?.list ?? []);
-    const bList = new Set(bSub?.list ?? []);
-    if ((aSub?.count ?? aList.size) !== (bSub?.count ?? bList.size)) {
+    const aNames = new Set(subpathNames(aSub));
+    const bNames = new Set(subpathNames(bSub));
+    const aCount = aSub?.count ?? aNames.size;
+    const bCount = bSub?.count ?? bNames.size;
+    if (aCount !== bCount) {
+      section.push(`    subpaths.count: ${aCount ?? "—"} → ${bCount ?? "—"}`);
+    }
+    if ((aSub?.missingCount ?? undefined) !== (bSub?.missingCount ?? undefined)) {
+      const flag = (bSub?.missingCount ?? 0) > (aSub?.missingCount ?? 0) ? "  ⚠" : "";
       section.push(
-        `    subpaths.count: ${aSub?.count ?? aList.size ?? "—"} → ${bSub?.count ?? bList.size ?? "—"}`,
+        `    subpaths.missingCount: ${aSub?.missingCount ?? "—"} → ${bSub?.missingCount ?? "—"}${flag}`,
       );
     }
-    const added = [...bList].filter((s) => !aList.has(s)).sort();
-    const removed = [...aList].filter((s) => !bList.has(s)).sort();
+    const added = [...bNames].filter((s) => !aNames.has(s)).sort();
+    const removed = [...aNames].filter((s) => !bNames.has(s)).sort();
     if (added.length > 0) {
       section.push("    subpaths added:");
       for (const s of added.slice(0, OFFENDER_DIFF_CAP)) section.push(`      + ${s}`);
@@ -73,6 +95,31 @@ function diffDateFns(prev, next, lines) {
       for (const s of removed.slice(0, OFFENDER_DIFF_CAP)) section.push(`      - ${s}`);
       if (removed.length > OFFENDER_DIFF_CAP) {
         section.push(`      … and ${removed.length - OFFENDER_DIFF_CAP} more removed`);
+      }
+    }
+
+    // Resolution flips — only meaningful when both snapshots use entries[].
+    const aMap = entriesByName(aSub);
+    const bMap = entriesByName(bSub);
+    if (aMap.size > 0 && bMap.size > 0) {
+      const flipped = [];
+      for (const [name, ae] of aMap) {
+        const be = bMap.get(name);
+        if (!be) continue;
+        if (ae.exists !== be.exists || ae.resolvedFile !== be.resolvedFile) {
+          flipped.push({ name, ae, be });
+        }
+      }
+      if (flipped.length > 0) {
+        section.push("    subpaths resolution changed:");
+        for (const { name, ae, be } of flipped.slice(0, OFFENDER_DIFF_CAP)) {
+          section.push(
+            `      ~ ${name}: exists ${ae.exists} → ${be.exists}  (resolved ${ae.resolvedFile ?? "—"} → ${be.resolvedFile ?? "—"})`,
+          );
+        }
+        if (flipped.length > OFFENDER_DIFF_CAP) {
+          section.push(`      … and ${flipped.length - OFFENDER_DIFF_CAP} more changed`);
+        }
       }
     }
   }
