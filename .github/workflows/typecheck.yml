@@ -29,3 +29,14 @@ jobs:
       - name: Type-check tsconfig.node.json
         if: ${{ hashFiles('tsconfig.node.json') != '' }}
         run: bunx tsc --noEmit -p tsconfig.node.json
+      - name: Generate typecheck report artifact
+        if: always()
+        run: node scripts/typecheck-report.mjs
+      - name: Upload typecheck report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-report
+          path: ci-artifacts/typecheck-report.json
+          if-no-files-found: error
+          retention-days: 30
