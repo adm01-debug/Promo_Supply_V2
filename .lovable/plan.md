@@ -1,21 +1,48 @@
 
-## Plan: Align date-fns version with lockfile
-
-### Current state
-- `package.json` declares `date-fns@3.6.0` (set during the previous fix attempt).
-- All 56 source files now use subpath imports (`from "date-fns/format"`, `from "date-fns/locale/pt-BR"`), which work on both v3 and v4.
-- The lockfiles (`bun.lock`, `package-lock.json`) may still resolve to a different version than declared, causing drift.
+## Plan: Add date-fns smoke test
 
 ### Goal
-Verify the actually-installed version, then regenerate the lockfile so it matches `package.json` exactly and the build is reproducible.
+Catch any regression where a `date-fns` function we rely on stops being importable (e.g. accidental upgrade to v4 + barrel import, or a missing subpath).
 
-### Steps
-1. Read installed version from `node_modules/date-fns/package.json` and the resolved entry in `bun.lock` / `package-lock.json` — confirm whether they agree with `package.json` (`3.6.0`).
-2. If there is drift, pin `date-fns` to `3.6.0` explicitly in `package.json` (exact version, no caret) so future installs cannot upgrade to 4.x.
-3. Regenerate `bun.lock` (project's primary lockfile per `bun.lockb` presence) by running `bun install` so the lock entry matches the pinned version. Also refresh `package-lock.json` via `npm install --package-lock-only` to keep both lockfiles consistent.
-4. Re-verify: `node_modules/date-fns/package.json` reports `3.6.0`, lockfile entries point to `3.6.0`, and `npx tsc --noEmit` still passes (subpath imports remain valid).
+### File
+Create `src/test/dateFns.smoke.test.ts`.
+
+### What it does
+Imports every `date-fns` function and locale currently used across the codebase via the **subpath** form (the pattern we standardized on), then exercises each one with a trivial call to confirm it's a real function. If any export goes missing, the test fails at import time — before CI/build.
+
+### Coverage (derived from current `src/` usage)
+Functions: `format`, `formatDistanceToNow`, `parseISO`, `differenceInDays`, `differenceInHours`, `isPast`, `isToday`, `isSameDay`, `isSameMonth`, `startOfMonth`, `endOfMonth`, `startOfWeek`, `eachDayOfInterval`, `addDays`, `addMonths`, `addWeeks`, `subDays`, `subMonths`.
+Locale: `ptBR` from `date-fns/locale/pt-BR`.
+
+### Test shape
+```ts
+import { describe, it, expect } from "vitest";
+import { format } from "date-fns/format";
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+// ...one import per function
+import { ptBR } from "date-fns/locale/pt-BR";
+
+describe("date-fns subpath imports smoke test", () => {
+  const ref = new Date("2025-01-15T12:00:00Z");
+
+  it("exports are all callable functions", () => {
+    for (const fn of [format, formatDistanceToNow, parseISO, /* ... */]) {
+      expect(typeof fn).toBe("function");
+    }
+  });
+
+  it("format works with ptBR locale", () => {
+    expect(format(ref, "dd/MM/yyyy", { locale: ptBR })).toMatch(/\d{2}\/\d{2}\/\d{4}/);
+  });
+
+  it("date math helpers return Dates / numbers", () => {
+    expect(addDays(ref, 1)).toBeInstanceOf(Date);
+    expect(differenceInDays(addDays(ref, 5), ref)).toBe(5);
+  });
+});
+```
 
 ### Notes
-- No source code changes — subpath imports already work on v3 and v4, so this is purely a dependency hygiene step.
-- Pinning to `3.6.0` (not `^3.6.0`) prevents accidental upgrade to v4 which removes barrel exports and could regress if any future code reverts to `from "date-fns"`.
-- No UI, schema, or behavior changes.
+- No source/code changes. Single new test file (~60 lines).
+- Runs under existing Vitest config — no config edits required.
+- Will fail loudly if `date-fns` is ever upgraded to a version that drops a subpath we use.
