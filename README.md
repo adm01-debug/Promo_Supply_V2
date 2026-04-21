@@ -71,3 +71,66 @@ Yes, you can!
 To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
 
 Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+
+## Coding conventions
+
+### `date-fns` imports — subpath only
+
+This project pins `date-fns` and **requires** subpath imports. Top-level barrel
+imports break tree-shaking and have regressed across past upgrades, so they
+are forbidden by lint, type-check, and CI.
+
+**✅ Do**
+
+```ts
+import { format } from "date-fns/format";
+import { addMonths } from "date-fns/addMonths";
+import { ptBR } from "date-fns/locale/pt-BR";
+```
+
+**❌ Don't**
+
+```ts
+import { format, addMonths } from "date-fns";          // barrel — banned
+import { ptBR } from "date-fns/locale";                 // locale barrel — banned
+import { format } from "date-fns/this-does-not-exist"; // bad subpath — banned
+```
+
+#### How this is enforced
+
+Four overlapping guards. If you violate the rule, at least one fails before
+your change merges:
+
+1. **ESLint — `no-restricted-imports`** (`eslint.config.js`)
+   Blocks `from "date-fns"` and `from "date-fns/locale"` with a message
+   pointing at the correct pattern.
+2. **ESLint — `import/no-unresolved` + `import/named`** (`eslint.config.js`,
+   `src/**/*.{ts,tsx}` only) Uses the TypeScript resolver against
+   `tsconfig.app.json`, so any non-existent subpath or named export fires
+   immediately at lint time.
+3. **TypeScript** (`tsconfig.app.json`) The following compiler options are
+   set so invalid subpaths fail type-check with a clear `TS2307`:
+   - `"resolvePackageJsonExports": true` — honors `date-fns`'s `exports`
+     field, so unexported subpaths fail to resolve.
+   - `"resolvePackageJsonImports": true` — same for `imports`.
+   - `"allowArbitraryExtensions": false` — prevents accidental escape
+     hatches.
+   - `"noUncheckedSideEffectImports": true` — flags side-effect imports of
+     missing modules.
+4. **CI scripts** (`scripts/ci-smoke.sh`, `scripts/ci-check.sh`) Assert the
+   pinned `date-fns` version matches what's installed and locked, then print
+   the install verification report (`scripts/install-report.mjs`) so any
+   drift is visible in CI logs.
+
+#### Why
+
+`date-fns` v3+ ships ESM with a strict `exports` field, but bundlers and
+Node resolvers historically disagreed on what's allowed. Subpath imports are
+the one pattern that:
+- tree-shakes correctly in Vite/Rollup,
+- works under `moduleResolution: "bundler"` with `resolvePackageJsonExports`,
+- survives minor `date-fns` version bumps without surprise breakage.
+
+If you're adding a new helper, find its subpath in `node_modules/date-fns/`
+or on [date-fns.org](https://date-fns.org) — every public function has a
+matching `date-fns/<functionName>` entry.
