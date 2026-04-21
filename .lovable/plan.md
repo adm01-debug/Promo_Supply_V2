@@ -1,40 +1,21 @@
 
-## Plan: Fix date-fns imports across the codebase
+## Plan: Align date-fns version with lockfile
 
-### Problem
-`date-fns@4.x` removed the top-level barrel exports for many functions (`format`, `formatDistanceToNow`, `differenceInDays`, etc.), so `import { format } from "date-fns"` fails with TS2305 in 70+ files. The previous attempt to downgrade via `package.json` did not resolve it (the lockfile/install still resolves to v4 or the named exports remain unavailable).
+### Current state
+- `package.json` declares `date-fns@3.6.0` (set during the previous fix attempt).
+- All 56 source files now use subpath imports (`from "date-fns/format"`, `from "date-fns/locale/pt-BR"`), which work on both v3 and v4.
+- The lockfiles (`bun.lock`, `package-lock.json`) may still resolve to a different version than declared, causing drift.
 
-### Fix
-Switch every affected import from the barrel to the per-function subpath imports, which are stable across date-fns v3 and v4. This is the officially recommended pattern and avoids any dependency on the package version.
+### Goal
+Verify the actually-installed version, then regenerate the lockfile so it matches `package.json` exactly and the build is reproducible.
 
-**Transformation pattern:**
-```ts
-// before
-import { format, differenceInDays, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+### Steps
+1. Read installed version from `node_modules/date-fns/package.json` and the resolved entry in `bun.lock` / `package-lock.json` — confirm whether they agree with `package.json` (`3.6.0`).
+2. If there is drift, pin `date-fns` to `3.6.0` explicitly in `package.json` (exact version, no caret) so future installs cannot upgrade to 4.x.
+3. Regenerate `bun.lock` (project's primary lockfile per `bun.lockb` presence) by running `bun install` so the lock entry matches the pinned version. Also refresh `package-lock.json` via `npm install --package-lock-only` to keep both lockfiles consistent.
+4. Re-verify: `node_modules/date-fns/package.json` reports `3.6.0`, lockfile entries point to `3.6.0`, and `npx tsc --noEmit` still passes (subpath imports remain valid).
 
-// after
-import { format } from "date-fns/format";
-import { differenceInDays } from "date-fns/differenceInDays";
-import { parseISO } from "date-fns/parseISO";
-import { ptBR } from "date-fns/locale/pt-BR";
-```
-
-### Scope (~40 files from build errors)
-- `src/components/compras/`: BuyerPerformanceAlerts, ContractDetailsModal, ContractModal, DeliveryCalendar, EnhancedPedidoTimeline, OrderPreviewModal, QualificationHistoryTimeline, RealNotificationCenter, RecentlyViewedPanel, SupplierBonificationsPanel, SupplierChat, chat/ChatArea, delivery-calendar/deliveryCalendarHelpers, price-history/priceHistoryHelpers
-- `src/components/pagamentos/`: PagamentoAdvancedFilters, PagamentoAdvancedKPIs, PagamentoDetailModal, PagamentoExportPanel, PagamentoFinancialDashboard, PagamentoMobileCard, PagamentoNotificationsWidget, PagamentoScheduleModal, ThreeWayMatchPanel
-- `src/components/pedidos/PedidoMobileCard`
-- `src/components/security/`: ActiveSessionsPanel, BlockedCountriesPanel, BlockedIPsPanel, GeoAccessLogsPanel, GeoWhitelistPanel, IPWhitelistPanel, LoginAttemptsPanel, PasskeyManager, PasswordResetRequestsPanel, RateLimitDashboard, SecurityLogsPanel
-- `src/pages/`: AdminTelemetria, Auditoria, Contratos, Devolucoes, DocumentosFiscais, HistoricoCompras, and any other pages flagged in the truncated build output
-- `src/pages/admin-telemetria/telemetriaHelpers.ts` (already imports `format` from `date-fns`)
-- Plus any helper files surfaced by a final repo-wide grep for `from "date-fns"` / `from 'date-fns'`
-
-### Approach
-1. Run a grep across `src/` for every `from "date-fns"` / `from 'date-fns'` import and build the complete file list (catches anything truncated from the build log).
-2. For each file, replace the barrel import with one subpath import per function. Replace `date-fns/locale` with `date-fns/locale/pt-BR` (or matching locale).
-3. Leave `date-fns` version in `package.json` as-is — subpath imports work on both v3 and v4.
-4. No logic changes, no UI changes, no other refactors.
-
-### Verification
-- Confirm no remaining `from "date-fns"` (barrel) or `from "date-fns/locale"` (barrel) imports in `src/`.
-- Build should pass; all TS2305 errors resolved.
+### Notes
+- No source code changes — subpath imports already work on v3 and v4, so this is purely a dependency hygiene step.
+- Pinning to `3.6.0` (not `^3.6.0`) prevents accidental upgrade to v4 which removes barrel exports and could regress if any future code reverts to `from "date-fns"`.
+- No UI, schema, or behavior changes.
