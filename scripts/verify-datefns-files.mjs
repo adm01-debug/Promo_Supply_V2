@@ -5,10 +5,12 @@
  * if any are missing — catches broken installs before vitest/tsc do.
  * Pure Node, zero deps. Same scan logic as generate-datefns-smoke-test.mjs.
  */
-import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
-import { join, relative } from "node:path";
+import { readdirSync, readFileSync, statSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
+import { join, relative, dirname } from "node:path";
 
 const ROOT = process.cwd();
+const WRITE_HEALTH = process.argv.slice(2).some((a) => a === "--write-health" || a === "--update-health");
+const SNAPSHOT_PATH = join(ROOT, "public", "dependency-health.json");
 const SRC_DIR = join(ROOT, "src");
 const PKG_DIR = join(ROOT, "node_modules", "date-fns");
 const PKG_REL = relative(ROOT, PKG_DIR);
@@ -155,3 +157,32 @@ console.log(
     `✓ Verified ${subpaths.size} date-fns subpath(s) exist on disk under ${PKG_REL}.`,
   ),
 );
+
+// ── Optional: persist discovered subpaths into dependency-health.json ────────
+if (WRITE_HEALTH) {
+  const sortedList = [...subpaths].sort();
+  const subpathsBlock = {
+    scannedAt: new Date().toISOString(),
+    count: sortedList.length,
+    list: sortedList,
+  };
+  let snapshot = {};
+  if (existsSync(SNAPSHOT_PATH)) {
+    try {
+      snapshot = JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8"));
+    } catch {
+      snapshot = {};
+    }
+  } else {
+    mkdirSync(dirname(SNAPSHOT_PATH), { recursive: true });
+  }
+  snapshot.dateFns = snapshot.dateFns ?? {};
+  snapshot.dateFns.subpaths = subpathsBlock;
+  writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2) + "\n", "utf8");
+  console.log(
+    cyan(
+      `▶ Wrote dateFns.subpaths to ${relative(ROOT, SNAPSHOT_PATH)} (${sortedList.length} entries).`,
+    ),
+  );
+}
+

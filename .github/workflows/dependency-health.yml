@@ -35,6 +35,8 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Regenerate dependency-health snapshot
         run: bun run deps:health
+      - name: Append discovered date-fns subpaths
+        run: bun run verify:datefns-files:write
       - name: Commit updated snapshot if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:

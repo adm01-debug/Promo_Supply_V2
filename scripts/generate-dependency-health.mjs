@@ -199,6 +199,19 @@ function main() {
   };
 
   if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
+
+  // Preserve any existing dateFns.subpaths block written by verify-datefns-files --write-health
+  if (existsSync(outPath)) {
+    try {
+      const existing = JSON.parse(readFileSync(outPath, "utf8"));
+      if (existing?.dateFns?.subpaths) {
+        snapshot.dateFns.subpaths = existing.dateFns.subpaths;
+      }
+    } catch {
+      // ignore parse errors — generator is source of truth for the rest
+    }
+  }
+
   writeFileSync(outPath, JSON.stringify(snapshot, null, 2) + "\n", "utf8");
 
   console.log(`✓ Wrote ${outPath}`);
