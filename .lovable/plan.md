@@ -1,89 +1,53 @@
 
-## Plan: Batch locale formatting checks in the generated smoke test
+## Plan: `--dry-run` flag for the smoke test generator
 
 ### Goal
-Reduce the number of `it()` blocks and redundant work in `src/test/dateFns.smoke.test.ts` so vitest startup + per-test overhead drops, while preserving the same validation coverage (callable functions, structurally valid locales, format works per locale, distinct weekdays, version pin).
+Let contributors preview what `scripts/generate-datefns-smoke-test.mjs` would change without touching the working tree. Useful for local audits and for the CI drift step to surface a richer report.
 
-### Current cost
-Today the smoke test runs 6 `it()` blocks. Three of them iterate the locales array independently:
-- "all imported locales are structurally valid" — loops locales
-- "format works with each imported locale" — loops locales, calls `format` 3× per locale
-- "every imported locale produces a distinct weekday name" — loops locales again, calls `format` 1× per locale
+### Behavior
 
-Each `it()` carries vitest setup/teardown overhead, and the locale array is walked 3× with overlapping work (the weekday `format` call is duplicated between tests 2 and 3).
+Invoking `node scripts/generate-datefns-smoke-test.mjs --dry-run` (alias `-n`):
 
-### Change
+1. Runs the full scan exactly as today (same regex, same exclusions).
+2. Prints a compact summary to stdout:
+   - Totals: `N subpaths / M function exports / K locales`.
+   - **Functions** section: one line per subpath, `subpath  →  exportA, exportB`.
+   - **Locales** section: same format.
+3. Computes the rendered smoke-test contents in memory and the manifest JSON in memory.
+4. Diffs each against the on-disk file:
+   - If a target file is missing, prints `(new file)` followed by the full would-be content.
+   - Otherwise prints a unified diff (`--- a/<path>` / `+++ b/<path>`) using a tiny built-in line differ (no new deps — Node's `node:util` has nothing for this, so use a minimal LCS-free implementation: split both sides on `\n`, walk with a basic Myers-lite or just emit a "changed lines" block when any line differs, prefixed with `-`/`+`). Keep it under ~40 lines.
+5. **Writes nothing.** Exits `0` if both files would be unchanged, `1` if either would change or be created. This makes `--dry-run` directly reusable as a CI guard if desired.
 
-#### `scripts/generate-datefns-smoke-test.mjs` — render a single batched locale test
+Default invocation (no flag) is unchanged: writes both files and exits 0/1 per current rules.
 
-Replace the three locale `it()` blocks with **one** consolidated block that walks the locales array once and asserts everything inline. Cache each locale's `format` outputs in local consts so `weekday` is computed exactly once and reused for both the per-locale assertion and the distinct-set check.
+### Implementation outline (`scripts/generate-datefns-smoke-test.mjs`)
 
-New rendered block (replaces the three current locale tests):
-
-```ts
-it("locales are structurally valid, format correctly, and produce distinct weekdays", () => {
-  const locales = [...] as const;
-  const weekdays: string[] = [];
-  for (const [name, locale] of locales) {
-    // structural validity
-    expect(locale, name).toBeDefined();
-    expect(typeof locale, name).toBe("object");
-    const l = locale as {
-      code?: unknown;
-      formatLong?: unknown;
-      localize?: unknown;
-      match?: unknown;
-    };
-    expect(typeof l.code, name).toBe("string");
-    expect(l.formatLong, name).toBeTruthy();
-    expect(l.localize, name).toBeTruthy();
-    expect(l.match, name).toBeTruthy();
-
-    // format coverage (numeric, long, weekday) — single pass
-    const numeric = format(ref, "dd/MM/yyyy", { locale });
-    expect(numeric, name).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
-    const longDate = format(ref, "PPP", { locale });
-    expect(typeof longDate, name).toBe("string");
-    expect(longDate.length, name).toBeGreaterThan(0);
-    const weekday = format(ref, "EEEE", { locale });
-    expect(typeof weekday, name).toBe("string");
-    expect(weekday.length, name).toBeGreaterThan(0);
-    weekdays.push(weekday);
-  }
-
-  // distinctness check — only meaningful with 2+ locales
-  if (weekdays.length >= 2) {
-    expect(new Set(weekdays).size, "distinct weekday names").toBe(weekdays.length);
-  }
-});
-```
-
-Net effect with the current single locale (`pt-BR`):
-- 6 `it()` blocks → **4** `it()` blocks
-- Locales walked 3× → **1×**
-- `format(ref, "EEEE", ...)` called 2× per locale → **1×**
-- All current assertions retained byte-for-byte (same expect calls, same labels, same regex).
-
-### Files touched
-- `scripts/generate-datefns-smoke-test.mjs` — rewrite the locale-test rendering section (~30 lines changed, no new imports, no new deps).
-
-After regeneration:
-- `src/test/dateFns.smoke.test.ts` — auto-updates via the generator.
-- `public/datefns-usage.json` — unchanged (manifest schema is independent of test rendering).
+- Parse argv at the top: `const dryRun = process.argv.slice(2).some(a => a === "--dry-run" || a === "-n");`
+- Refactor the final write section into two small helpers:
+  - `renderSmokeTest()` → returns the string currently passed to `writeFileSync(OUT_FILE, …)`.
+  - `renderManifest()` → returns the JSON string currently passed to `writeFileSync(MANIFEST_FILE, …)`.
+- New helper `unifiedDiff(oldStr, newStr, label)` (~30 lines, no deps): splits to lines, finds first/last differing index, emits a hunk header `@@ -a,b +c,d @@` and `-`/`+`/` ` lines. Good enough for human review; not git-quality but accurate.
+- New helper `printDryRun({ subpaths, fnSubpaths, localeSubpaths, smokeText, manifestText })`:
+  - Prints totals + "Functions" + "Locales" tables (plain text, fixed-width via simple padding).
+  - For each of `[OUT_FILE, MANIFEST_FILE]`: read on-disk if exists, compute diff vs in-memory, print.
+  - Returns `true` if any file would change.
+- Branch at the end:
+  - If `dryRun`: build both strings, call `printDryRun`, exit `changed ? 1 : 0`. Skip both `writeFileSync` calls.
+  - Else: existing behavior (write both, log success).
 
 ### What does NOT change
-- Function-callable test (`it("all imported function exports are callable")`).
-- Ref date stability test.
-- Version pin test.
-- Generator's scanning logic, manifest output, exit codes.
-- `scripts/ci-check.sh` step [9/11] drift check — it just reruns the generator and diffs; on first commit the smoke test file changes once, then stays stable.
+- Scanning logic, regex, exclusions, exit codes for the no-flag path.
+- `src/test/dateFns.smoke.test.ts` or `public/datefns-usage.json` rendering.
+- `scripts/ci-check.sh` step [9/11] — still runs the generator (without `--dry-run`) and diffs the file. Existing guard behavior unchanged.
+- No new npm dependencies.
 
 ### Verification
-1. Run generator → `src/test/dateFns.smoke.test.ts` now has 4 `it()` blocks; ci-check step [9/11] flags the drift on the very first run; commit the new output and CI stays green from then on.
-2. `bunx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose` → 4 tests pass, total runtime drops noticeably (vitest per-test overhead × 2 fewer tests + ~33% fewer `format` calls).
-3. Add a second locale (e.g. `enUS` from `date-fns/locale/en-US`) somewhere in `src/`, regenerate → batched test still passes; distinctness assertion now actively runs (weekdays length ≥ 2).
-4. Break a locale on purpose (e.g. swap to a malformed object via a temporary edit) → batched test fails with the same labeled `expect` so the failing locale is still identifiable in the output.
-5. CI step [10/11] still type-checks the generated file (no new types introduced) and runs the smoke test.
+1. Clean tree: `node scripts/generate-datefns-smoke-test.mjs --dry-run` → prints summary, prints "no changes" for both files, exits 0, working tree untouched.
+2. Add `import { addYears } from "date-fns/addYears"` somewhere in `src/`, run `--dry-run` → summary lists `addYears`, unified diff shows the new import + array entry in the smoke test and the new manifest row, exits 1, files unchanged on disk.
+3. Delete `src/test/dateFns.smoke.test.ts`, run `--dry-run` → prints `(new file) src/test/dateFns.smoke.test.ts` followed by full content, exits 1.
+4. `node scripts/generate-datefns-smoke-test.mjs` (no flag) after step 2 → writes both files normally, exits 0.
+5. `-n` short alias works identically to `--dry-run`.
 
 ### Risk / scope
-- One generator-script edit, ~30 lines. Output remains deterministic and sorted. Coverage preserved (every prior assertion still present, just inlined into one loop). One-time drift commit on the first regeneration.
+- One file edited (`scripts/generate-datefns-smoke-test.mjs`), ~80 added lines (helpers + dry-run branch), zero new deps, zero behavioral change for the existing no-flag path.
