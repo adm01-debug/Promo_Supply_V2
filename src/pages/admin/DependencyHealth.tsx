@@ -96,6 +96,12 @@ const DependencyHealth = () => {
     staleTime: 60_000,
   });
 
+  const { data: history } = useQuery({
+    queryKey: ["dependency-health-history"],
+    queryFn: fetchHistory,
+    staleTime: 60_000,
+  });
+
   const buildRefresh = (dispatchCi: boolean) =>
     useMutation({
       mutationFn: async () => {
