@@ -1,83 +1,68 @@
 
-## Plan: On-demand dependency-health generation (CI + admin button)
+## Plan: Extend dependency-health to React, Vite, TypeScript, shadcn/ui
 
 ### Goal
-Let `public/dependency-health.json` be regenerated on demand from two triggers — a manually-dispatched GitHub Actions job and the existing admin "Refresh now" button — without a full rebuild. The admin button already writes to the `dependency_health` table via the edge function; this plan closes the loop so the **static JSON in the repo** can also be refreshed deterministically by CI.
+Track versions and drift status for additional core packages — `react`, `vite`, `typescript`, and shadcn/ui — alongside the existing `date-fns` data, in the same snapshot, edge function, CI workflow, and admin dashboard.
 
-### Current state (already in place)
-- Edge function `supabase/functions/dependency-health/index.ts` — `GET` returns stored/fallback snapshot, `POST` (admin) recomputes from GitHub raw files and upserts to `dependency_health` table.
-- `src/pages/admin/DependencyHealth.tsx` — "Refresh now" button wired to `POST`.
-- `scripts/ci-check.sh` step [11/11] — writes `public/dependency-health.json` during full CI.
-- Route `/admin/dependency-health` — admin-only, consumes the JSON.
+### Tracked packages
+- **react** (`dependencies.react`)
+- **vite** (`devDependencies.vite`)
+- **typescript** (`devDependencies.typescript`)
+- **shadcn/ui** — not a single npm package. Use `components.json` presence + a representative `@radix-ui/react-dialog` version (always present in shadcn projects) as the proxy version, labeled "shadcn/ui (radix-dialog proxy)".
 
-### Gaps to close
-1. No way to regenerate the **static JSON** without running the full 11-step `ci-check.sh`.
-2. No GitHub-native "run now" trigger — today you must push a commit.
-3. Admin button refreshes DB state but doesn't update the committed snapshot.
+### Snapshot shape (additive, backward-compatible)
+Keep `dateFns` at top level for backward compat; add a `packages` array containing all five entries with the same fields (`name`, `spec`, `installed`, `locked`, `exactPinned`). UI prefers `packages` when present, falls back to `dateFns`.
+
+```ts
+interface PackageHealth {
+  name: string;            // "react", "vite", ...
+  label: string;           // display name
+  spec: string;
+  installed: string;
+  locked: string;
+  exactPinned: boolean;
+  driftDetected: boolean;  // per-package drift
+}
+interface DependencyHealthSnapshot {
+  generatedAt: string;
+  dateFns: { ... };        // unchanged
+  packages?: PackageHealth[];  // NEW
+  lockfileDrift: { ... };  // unchanged (overall)
+}
+```
 
 ### Changes
 
-#### 1. New standalone script: `scripts/generate-dependency-health.mjs`
-Extracts just step [11/11] of `ci-check.sh` into a reusable Node script.
+#### 1. `scripts/generate-dependency-health.mjs`
+Refactor inner logic into a `computePackageHealth(pkgJson, lockText, name, location)` helper. Call it for each tracked package. Emit `packages: [...]` plus the existing `dateFns` field. Aggregate `lockfileDrift.detected` = `packages.some(p => p.driftDetected)`.
 
-- Reads `package.json` → `dependencies["date-fns"]` → `spec`.
-- Reads `bun.lock` → resolves locked `date-fns` via existing `scripts/lib/resolve-locked-version.mjs`.
-- Reads `node_modules/date-fns/package.json` if present → `installed` (falls back to `locked`).
-- Computes `exactPinned` (`/^\d+\.\d+\.\d+$/.test(spec)`) and `lockfileDrift.detected` (`spec.replace(/^[\^~]/,'') !== locked`).
-- Writes `public/dependency-health.json` with `source: "scripts/generate-dependency-health.mjs"`.
-- Exits 0 on success, non-zero with clear message on failure.
+#### 2. `supabase/functions/dependency-health/index.ts`
+Mirror the same helper inline (Deno-side). Compute all five packages from the fetched `package.json` + `bun.lock`. Update the `DependencyHealthSnapshot` interface and the upserted payload. Existing fallback stub stays compatible.
 
-Added to `package.json` scripts:
-```json
-"deps:health": "node scripts/generate-dependency-health.mjs"
-```
+#### 3. `scripts/ci-check.sh` step [11/11]
+Replace the inline `cat > public/dependency-health.json <<JSON` block with a single call to `bun run deps:health` (the script is already authoritative). Keeps CI byte-identical to the script and avoids drift between the two code paths.
 
-#### 2. New GitHub Actions workflow: `.github/workflows/dependency-health.yml`
-Triggers:
-- `workflow_dispatch` — manual "Run workflow" button in the Actions tab.
-- `schedule` — weekly cron (Mondays 06:00 UTC) to catch silent drift.
-- `push` on `main` when `package.json` or `bun.lock` changes — auto-refresh on dep bumps.
+#### 4. `src/pages/admin/DependencyHealth.tsx`
+- Extend `DependencyHealthSnapshot` with optional `packages: PackageHealth[]`.
+- Render a new card "Pacotes monitorados" listing all entries in a compact table (name, spec, lock, installed, status badge). When `packages` is absent, fall back to today's `date-fns`-only view.
+- Drift summary now reads `packages?.some(p => p.driftDetected) ?? lockfileDrift.detected`.
 
-Steps:
-1. Checkout (with a write-capable token via default `GITHUB_TOKEN` + `permissions: contents: write`).
-2. Setup Bun + cache (same pattern as `lint.yml`).
-3. `bun install --frozen-lockfile --dry-run` (reuse the drift gate).
-4. `bun install --frozen-lockfile`.
-5. `bun run deps:health`.
-6. If `public/dependency-health.json` changed: commit with message `chore(deps): refresh dependency-health snapshot [skip ci]` and push back to the branch. Uses `stefanzweifel/git-auto-commit-action@v5` (already-idiomatic for this pattern). If no diff, the action no-ops.
-
-#### 3. Edge function enhancement: `supabase/functions/dependency-health/index.ts`
-Add an optional `?dispatchCi=true` query param on `POST` (admin-only). When set and a `GITHUB_DISPATCH_TOKEN` secret is configured, the function fires a `workflow_dispatch` event against `.github/workflows/dependency-health.yml`, so the admin button can ALSO trigger the GitHub Actions job that commits the updated JSON back to the repo.
-
-- New optional secret: `GITHUB_DISPATCH_TOKEN` (fine-grained PAT with `actions:write` + `contents:read` on the repo, or repo-scoped token). Requested via `add_secret`. If unset, the `dispatchCi` param is silently ignored (DB upsert still happens).
-- Reuses existing `GITHUB_REPO_RAW_BASE` to derive `<owner>/<repo>` (parse the path segments); if not parseable, skip dispatch and return a soft warning in the response payload (`{ ...payload, ciDispatch: "skipped: owner/repo not derivable" }`).
-
-#### 4. Frontend: `src/pages/admin/DependencyHealth.tsx`
-Add a second button next to "Refresh now":
-- **"Refresh & commit to repo"** (admin-only) — calls `POST /dependency-health?dispatchCi=true`.
-- Shows toast with either `ciDispatch: "queued"` or the skip reason returned by the function.
-- No design changes beyond one extra `<Button variant="outline">`.
+#### 5. Static fallback `public/dependency-health.json`
+Regenerated automatically by the updated script; no manual edit needed.
 
 ### What does NOT change
-- `scripts/ci-check.sh` — still runs step [11/11] inline; the new script is the same logic, so CI stays byte-identical. (Optional follow-up: have step [11/11] call `bun run deps:health` for DRY — explicitly out of scope here.)
-- `DependencyHealthSnapshot` TS interface, route registration, RLS policies, table schema.
-- Existing workflows (`typecheck.yml`, `lint.yml`, `lint-date-fns.yml`).
+- DB schema / `dependency_health` table (payload is already `jsonb`).
+- RLS policies, route registration, `GITHUB_REPO_RAW_BASE` / `GITHUB_DISPATCH_TOKEN` secrets.
+- `.github/workflows/dependency-health.yml` (it already runs `bun run deps:health`).
+- Existing `dateFns` field on the snapshot — preserved for backward compat.
 
 ### Verification
-1. Run `bun run deps:health` locally → `public/dependency-health.json` regenerates with matching content and new `generatedAt`.
-2. Actions tab → manually dispatch `dependency-health` workflow → bot commit appears on `main` if the JSON changed; no commit if unchanged.
-3. Edit `package.json` on a PR → merge → push-trigger regenerates and commits.
-4. Weekly schedule → Monday run either no-ops (clean) or commits a drift fix.
-5. Admin "Refresh now" (no CI) → DB updated, static JSON untouched (today's behavior).
-6. Admin "Refresh & commit to repo" with `GITHUB_DISPATCH_TOKEN` set → DB updated AND workflow queued; confirm in Actions tab. Without token → DB updated, toast shows skip reason.
-7. Non-admin → both buttons hidden; `POST` returns 403.
-
-### Technical details
-- **Secret shape**: `GITHUB_DISPATCH_TOKEN` is a GitHub PAT, NOT a Supabase secret's public twin — handled only server-side in the edge function.
-- **Owner/repo parsing**: `GITHUB_REPO_RAW_BASE` format assumed `https://raw.githubusercontent.com/<owner>/<repo>/<branch>`; split on `/` after host, take segments `[3]` and `[4]`. On any mismatch, skip dispatch rather than error.
-- **Commit loop safety**: `[skip ci]` in the auto-commit message prevents other workflows from re-firing on the bot commit.
-- **Write permission**: workflow uses `permissions: contents: write` scope; no PAT needed for self-commits.
-- **No `verify_jwt` change** in `supabase/config.toml` — function already self-validates.
+1. Run `bun run deps:health` locally → JSON contains `packages` with 5 entries, all `driftDetected: false` if installs are clean.
+2. Admin page → new "Pacotes monitorados" card shows React, Vite, TypeScript, shadcn/ui (radix-dialog proxy), date-fns rows.
+3. Manually edit `package.json` to bump `vite` spec → `bun run deps:health` → that row shows drift.
+4. Edge function `GET` returns the extended payload; `POST` upserts the new shape.
+5. Old payloads in DB without `packages` still render (fallback to legacy `dateFns` card).
+6. `bun run ci:check` step [11/11] now invokes the script and produces identical output for date-fns plus the four new entries.
 
 ### Risk / scope
-- 1 new script (~60 lines), 1 new workflow (~35 lines), 1 new `package.json` script line, ~30 added lines in edge function, 1 new button in `DependencyHealth.tsx`, 1 optional secret. Zero schema changes, zero existing-file deletions, graceful degradation when the new secret is absent.
+- ~70 added lines in the script, ~50 in the edge function, ~60 in `DependencyHealth.tsx`, 3 lines changed in `ci-check.sh`. Backward compatible, no schema changes, no new secrets.
