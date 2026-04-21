@@ -1,44 +1,51 @@
 
-## Plan: Enforce date-fns subpath imports via ESLint
+## Plan: Add CI script for clean install + type-check
 
 ### Goal
-Prevent regressions where someone writes `import { format } from "date-fns"` (top-level barrel) instead of the required subpath form `import { format } from "date-fns/format"`. Catch it at lint time, not runtime.
+Provide a single, repeatable command that wipes `node_modules`, reinstalls strictly from `bun.lock` (no drift allowed), and runs `tsc --noEmit` — so CI (or any contributor) can verify the build stays green in one shot.
 
-### Approach
-Use ESLint's built-in `no-restricted-imports` rule to ban the bare `"date-fns"` and `"date-fns/locale"` specifiers, while allowing every subpath (`date-fns/format`, `date-fns/locale/pt-BR`, etc.). No new dependency needed — the rule ships with ESLint core.
+### Changes
 
-### Change — `eslint.config.js`
+**1. New file — `scripts/ci-check.sh`** (executable bash script)
 
-Add one rule entry inside the existing `rules` block:
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-```js
-"no-restricted-imports": ["error", {
-  paths: [
-    {
-      name: "date-fns",
-      message: "Import from a date-fns subpath instead, e.g. `from \"date-fns/format\"`. Top-level barrel imports break tree-shaking and have regressed in past upgrades.",
-    },
-    {
-      name: "date-fns/locale",
-      message: "Import the specific locale subpath, e.g. `from \"date-fns/locale/pt-BR\"`.",
-    },
-  ],
-}],
+echo "▶ [1/3] Removing node_modules..."
+rm -rf node_modules
+
+echo "▶ [2/3] Installing from frozen lockfile..."
+bun install --frozen-lockfile
+
+echo "▶ [3/3] Type-checking with tsc --noEmit..."
+npx tsc --noEmit -p tsconfig.app.json
+
+echo "✅ CI check passed: clean install + type-check green."
 ```
 
-That's the only file edit. Everything else stays as-is.
+- `set -euo pipefail` → fail fast on any error, undefined var, or pipe failure.
+- `--frozen-lockfile` → install fails if `package.json` and `bun.lock` disagree (catches drift).
+- Targets `tsconfig.app.json` to match the strict app config (not the looser node config).
 
-### Why this rule (and not a TS-only check)
-- TypeScript can't distinguish "this export exists on the barrel" from "this import is forbidden by policy" — both resolve fine. ESLint's `no-restricted-imports` is the standard mechanism for *policy* bans.
-- Built into ESLint core → zero new dependencies, zero config plugins.
-- `paths[].name` matches the exact specifier, so `date-fns/format`, `date-fns/addDays`, `date-fns/locale/pt-BR` etc. all remain allowed automatically.
+**2. `package.json`** — add one npm script entry:
+
+```diff
+  "scripts": {
+    ...
++   "ci:check": "bash scripts/ci-check.sh",
+    ...
+  }
+```
+
+So it can be invoked as `npm run ci:check` or `bun run ci:check` from any environment.
 
 ### Verification
-1. Run `npx eslint . --max-warnings=0` → must pass (codebase already uses subpaths everywhere per recent fixes).
-2. Sanity check: temporarily edit one file to `import { format } from "date-fns"` → confirm ESLint reports the error with the custom message → revert.
-3. Same sanity check with `import { ptBR } from "date-fns/locale"` → confirm second rule fires → revert.
-4. Smoke test `npx vitest run src/test/dateFns.smoke.test.ts` stays green (8/8) — the rule is lint-only, no runtime impact.
+1. Run `bun run ci:check` locally → must print all 3 steps and end with `✅ CI check passed`.
+2. Total runtime should be a few minutes (install dominates); `tsc --noEmit` must report 0 errors.
+3. Sanity check: temporarily introduce a type error in any `src/` file → script must exit non-zero at step 3 → revert.
 
-### Risk / scope
-- Single-file config edit. No source changes, no dependency changes, no behavior change.
-- If any pre-existing file still imports from the barrel, ESLint will flag it — fix inline by switching to the subpath form (matches the established convention).
+### Notes
+- No source code, dependency, or schema changes. Pure tooling addition.
+- Script is portable: works in GitHub Actions, GitLab CI, local pre-push hooks, etc.
+- Does not replace or modify the existing `dev`/`build`/`lint` scripts — purely additive.
