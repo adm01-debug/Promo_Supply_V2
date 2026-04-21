@@ -31,3 +31,12 @@ jobs:
         run: bash scripts/ci-check.sh
         env:
           CI: 'true'
+
+      - name: Upload smoke logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-check-smoke-logs
+          path: ci-logs/
+          if-no-files-found: ignore
+          retention-days: 14

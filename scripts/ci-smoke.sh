@@ -7,6 +7,10 @@ set -euo pipefail
 source "$(dirname "$0")/lib/preflight.sh"
 preflight
 
+# ci-logs/ is generated for CI artifact upload. Safe to delete locally.
+LOG_DIR="ci-logs"
+mkdir -p "$LOG_DIR"
+
 echo "▶ [1/5] Removing node_modules..."
 rm -rf node_modules
 
@@ -36,7 +40,17 @@ node scripts/verify-datefns-files.mjs
 echo "▶ Verifying date-fns smoke test is in sync..."
 node scripts/generate-datefns-smoke-test.mjs --dry-run
 echo "▶ Validating smoke test imports against tsconfig.smoke.json..."
-bunx tsc --noEmit -p tsconfig.smoke.json
-bunx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
+bunx tsc --noEmit -p tsconfig.smoke.json 2>&1 | tee "$LOG_DIR/tsc-smoke.log"
+SMOKE_TSC_EXIT=${PIPESTATUS[0]}
+if [ "$SMOKE_TSC_EXIT" -ne 0 ]; then
+  echo "✗ Focused tsc failed. See $LOG_DIR/tsc-smoke.log (uploaded as CI artifact)." >&2
+  exit "$SMOKE_TSC_EXIT"
+fi
+bunx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose 2>&1 | tee "$LOG_DIR/vitest-smoke.log"
+VITEST_EXIT=${PIPESTATUS[0]}
+if [ "$VITEST_EXIT" -ne 0 ]; then
+  echo "✗ Smoke vitest failed. See $LOG_DIR/vitest-smoke.log (uploaded as CI artifact)." >&2
+  exit "$VITEST_EXIT"
+fi
 
 echo "✅ Smoke check passed: clean install + cache evict + version match + file verify + smoke test green."

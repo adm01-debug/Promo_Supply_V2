@@ -7,6 +7,11 @@ set -euo pipefail
 source "$(dirname "$0")/lib/preflight.sh"
 preflight
 
+# ci-logs/ is generated for CI artifact upload (see .github/workflows/ci-check.yml).
+# Safe to delete locally; not intended to be committed.
+LOG_DIR="ci-logs"
+mkdir -p "$LOG_DIR"
+
 echo "▶ [1/9] Removing node_modules..."
 rm -rf node_modules
 
@@ -49,11 +54,21 @@ fi
 echo "✓ Smoke test file and manifest are up to date."
 
 echo "▶ [11/14] Validating smoke test imports against tsconfig.smoke.json (focused tsc)..."
-bunx tsc --noEmit -p tsconfig.smoke.json
+bunx tsc --noEmit -p tsconfig.smoke.json 2>&1 | tee "$LOG_DIR/tsc-smoke.log"
+SMOKE_TSC_EXIT=${PIPESTATUS[0]}
+if [ "$SMOKE_TSC_EXIT" -ne 0 ]; then
+  echo "✗ Focused tsc failed. See $LOG_DIR/tsc-smoke.log (uploaded as CI artifact)." >&2
+  exit "$SMOKE_TSC_EXIT"
+fi
 echo "✓ Smoke test imports type-check cleanly."
 
 echo "▶ [12/14] Type-checking full project with tsc --noEmit..."
-bunx tsc --noEmit -p tsconfig.app.json
+bunx tsc --noEmit -p tsconfig.app.json 2>&1 | tee "$LOG_DIR/tsc-project.log"
+TSC_EXIT=${PIPESTATUS[0]}
+if [ "$TSC_EXIT" -ne 0 ]; then
+  echo "✗ Project tsc failed. See $LOG_DIR/tsc-project.log (uploaded as CI artifact)." >&2
+  exit "$TSC_EXIT"
+fi
 
 echo "▶ [13/14] Running date-fns smoke test..."
 SMOKE_TEST_FILE="src/test/dateFns.smoke.test.ts"
@@ -64,7 +79,12 @@ if [ ! -f "$SMOKE_TEST_FILE" ]; then
   exit 1
 fi
 echo "✓ Smoke test file present: $SMOKE_TEST_FILE"
-bunx vitest run "$SMOKE_TEST_FILE" --reporter=verbose --passWithNoTests
+bunx vitest run "$SMOKE_TEST_FILE" --reporter=verbose --passWithNoTests 2>&1 | tee "$LOG_DIR/vitest-smoke.log"
+VITEST_EXIT=${PIPESTATUS[0]}
+if [ "$VITEST_EXIT" -ne 0 ]; then
+  echo "✗ Smoke vitest failed. See $LOG_DIR/vitest-smoke.log (uploaded as CI artifact)." >&2
+  exit "$VITEST_EXIT"
+fi
 
 echo "▶ [14/14] Refreshing public/dependency-health.json snapshot (with diff vs. previous)..."
 bun run deps:health
