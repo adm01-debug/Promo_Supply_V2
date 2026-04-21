@@ -158,7 +158,11 @@ if (subpaths.size === 0) {
   process.exit(1);
 }
 
-// ── Existence check (track candidate paths per missing subpath) ──────────────
+// ── Existence check (build per-subpath entries + collect missing) ───────────
+// Single pass: probe each subpath's six candidate files, record the first hit
+// (relative to node_modules/date-fns) into entries[], and accumulate missing[]
+// for the failure-mode formatter below.
+const entries = []; // [{ subpath, exists, resolvedFile }]
 const missing = []; // [{ subpath, tried: [relPath, ...] }]
 for (const sp of [...subpaths].sort()) {
   const candidates = [
@@ -169,9 +173,42 @@ for (const sp of [...subpaths].sort()) {
     `${sp}/index.mjs`,
     `${sp}/index.cjs`,
   ];
-  const found = candidates.some((c) => existsSync(join(PKG_DIR, c)));
-  if (!found) missing.push({ subpath: sp, tried: candidates });
+  const hit = candidates.find((c) => existsSync(join(PKG_DIR, c))) ?? null;
+  entries.push({ subpath: sp, exists: hit !== null, resolvedFile: hit });
+  if (!hit) missing.push({ subpath: sp, tried: candidates });
 }
+
+// ── Optional: persist per-subpath report into dependency-health.json ────────
+// Intentionally written BEFORE the missing-subpath exit so the snapshot is
+// comprehensive (includes exists:false rows) even on a partly-broken install.
+// Verifier still exits 1 below if any subpath is missing — CI gating intact.
+function writeHealthSnapshot(entriesArr) {
+  const subpathsBlock = {
+    scannedAt: new Date().toISOString(),
+    count: entriesArr.length,
+    missingCount: entriesArr.filter((e) => !e.exists).length,
+    entries: entriesArr,
+  };
+  let snapshot = {};
+  if (existsSync(SNAPSHOT_PATH)) {
+    try {
+      snapshot = JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8"));
+    } catch {
+      snapshot = {};
+    }
+  } else {
+    mkdirSync(dirname(SNAPSHOT_PATH), { recursive: true });
+  }
+  snapshot.dateFns = snapshot.dateFns ?? {};
+  snapshot.dateFns.subpaths = subpathsBlock;
+  writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2) + "\n", "utf8");
+  console.log(
+    cyan(
+      `▶ Wrote dateFns.subpaths to ${relative(ROOT, SNAPSHOT_PATH)} (${entriesArr.length} entries, ${subpathsBlock.missingCount} missing).`,
+    ),
+  );
+}
+if (WRITE_HEALTH) writeHealthSnapshot(entries);
 
 // ── Failure mode C: one or more subpaths missing on disk ─────────────────────
 if (missing.length > 0) {
