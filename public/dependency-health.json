@@ -4,7 +4,34 @@
     "spec": "3.6.0",
     "installed": "3.6.0",
     "locked": "3.6.0",
-    "exactPinned": true
+    "exactPinned": true,
+    "subpaths": {
+      "scannedAt": "2026-04-21T20:14:10.042Z",
+      "count": 21,
+      "list": [
+        "addDays",
+        "addMonths",
+        "addWeeks",
+        "differenceInDays",
+        "differenceInHours",
+        "eachDayOfInterval",
+        "endOfMonth",
+        "format",
+        "formatDistanceToNow",
+        "isPast",
+        "isSameDay",
+        "isSameMonth",
+        "isToday",
+        "isTomorrow",
+        "isWithinInterval",
+        "locale/pt-BR",
+        "parseISO",
+        "startOfMonth",
+        "startOfWeek",
+        "subDays",
+        "subMonths"
+      ]
+    }
   },
   "packages": [
     {
