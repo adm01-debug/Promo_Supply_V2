@@ -34,3 +34,40 @@ evict_datefns_cache() {
 resolve_locked_datefns() {
   node -e "import('./scripts/lib/resolve-locked-version.mjs').then(m=>{const fs=require('fs');const v=m.resolveLockedVersion(fs.readFileSync('bun.lock','utf8'),'date-fns');process.stdout.write(v||'')})"
 }
+
+# Run scripts/verify-datefns-files.mjs and, on failure, print the missing
+# subpaths from public/dependency-health.json (refreshed via --write-health)
+# in a single shared format used by both ci-check.sh and ci-smoke.sh, then
+# exit early with code 1.
+run_verify_datefns_files_or_die() {
+  if node scripts/verify-datefns-files.mjs --write-health; then
+    return 0
+  fi
+  local rule="━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "" >&2
+  echo "$rule" >&2
+  echo "✗ verify-datefns-files.mjs failed — missing date-fns subpath(s)" >&2
+  echo "$rule" >&2
+  node -e '
+    try {
+      const fs = require("fs");
+      const p = "public/dependency-health.json";
+      if (!fs.existsSync(p)) { process.stdout.write("  (no dependency-health.json snapshot available)\n"); process.exit(0); }
+      const j = JSON.parse(fs.readFileSync(p, "utf8"));
+      const entries = j?.dateFns?.subpaths?.entries || [];
+      const missing = entries.filter(e => !e.exists);
+      if (missing.length === 0) {
+        process.stdout.write("  (verifier failed but snapshot reports no missing subpaths — see verifier output above)\n");
+        return;
+      }
+      process.stdout.write(`  ${missing.length} missing subpath(s):\n`);
+      for (const m of missing) process.stdout.write(`    • date-fns/${m.subpath}\n`);
+      process.stdout.write("\n  ▶ Repair (copy & run):\n");
+      process.stdout.write("      rm -rf node_modules && bun install --frozen-lockfile\n");
+    } catch (e) {
+      process.stdout.write(`  (failed to read snapshot: ${e.message})\n`);
+    }
+  ' >&2
+  echo "$rule" >&2
+  exit 1
+}

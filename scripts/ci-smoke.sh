@@ -203,12 +203,12 @@ echo "✓ date-fns $DATEFNS_INSTALLED matches lockfile."
 
 echo "▶ [5/9] Verifying date-fns subpath files exist on disk..."
 VERIFY_FILES_RAN=1
-if ! node scripts/verify-datefns-files.mjs; then
+if run_verify_datefns_files_or_die; then
+  VERIFY_FILES_OK=1
+else
   VERIFY_FILES_OK=0
-  echo "✗ verify-datefns-files.mjs failed — broken install or missing subpath." >&2
   exit 1
 fi
-VERIFY_FILES_OK=1
 
 echo "▶ [6/9] Printing install verification report..."
 node scripts/install-report.mjs
