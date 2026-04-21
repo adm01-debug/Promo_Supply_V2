@@ -1,0 +1,33 @@
+name: CI Check
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci-check:
+    name: Full CI gate (date-fns + lint + types + smoke)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run ci-check.sh
+        run: bash scripts/ci-check.sh
+        env:
+          CI: 'true'
