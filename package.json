@@ -66,6 +66,7 @@
     "eslint-plugin-import": "^2.32.0",
     "framer-motion": "^12.24.7",
     "fuse.js": "^7.1.0",
+    "husky": "^9.1.7",
     "input-otp": "^1.4.2",
     "jsdom": "^20.0.3",
     "jspdf": "^4.2.1",
