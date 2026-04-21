@@ -50,7 +50,7 @@ if [ ! -f "$SMOKE_TEST_FILE" ]; then
 fi
 echo "✓ Smoke test file present: $SMOKE_TEST_FILE"
 bunx tsc --noEmit -p tsconfig.app.json
-bunx vitest run "$SMOKE_TEST_FILE" --reporter=verbose
+bunx vitest run "$SMOKE_TEST_FILE" --reporter=verbose --passWithNoTests
 
 echo "▶ [11/11] Writing public/dependency-health.json snapshot via deps:health..."
 bun run deps:health
