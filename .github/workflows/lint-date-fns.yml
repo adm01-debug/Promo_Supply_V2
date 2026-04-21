@@ -21,6 +21,8 @@ jobs:
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
+      - name: Verify lockfile is up to date (no drift vs package.json)
+        run: bun install --frozen-lockfile --dry-run
       - name: Install dependencies (frozen lockfile)
         run: bun install --frozen-lockfile
       - name: Run ESLint date-fns gate
