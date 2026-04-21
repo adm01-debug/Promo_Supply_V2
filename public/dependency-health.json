@@ -6,30 +6,115 @@
     "locked": "3.6.0",
     "exactPinned": true,
     "subpaths": {
-      "scannedAt": "2026-04-21T20:15:49.912Z",
+      "scannedAt": "2026-04-21T20:20:12.650Z",
       "count": 21,
-      "list": [
-        "addDays",
-        "addMonths",
-        "addWeeks",
-        "differenceInDays",
-        "differenceInHours",
-        "eachDayOfInterval",
-        "endOfMonth",
-        "format",
-        "formatDistanceToNow",
-        "isPast",
-        "isSameDay",
-        "isSameMonth",
-        "isToday",
-        "isTomorrow",
-        "isWithinInterval",
-        "locale/pt-BR",
-        "parseISO",
-        "startOfMonth",
-        "startOfWeek",
-        "subDays",
-        "subMonths"
+      "missingCount": 0,
+      "entries": [
+        {
+          "subpath": "addDays",
+          "exists": true,
+          "resolvedFile": "addDays.js"
+        },
+        {
+          "subpath": "addMonths",
+          "exists": true,
+          "resolvedFile": "addMonths.js"
+        },
+        {
+          "subpath": "addWeeks",
+          "exists": true,
+          "resolvedFile": "addWeeks.js"
+        },
+        {
+          "subpath": "differenceInDays",
+          "exists": true,
+          "resolvedFile": "differenceInDays.js"
+        },
+        {
+          "subpath": "differenceInHours",
+          "exists": true,
+          "resolvedFile": "differenceInHours.js"
+        },
+        {
+          "subpath": "eachDayOfInterval",
+          "exists": true,
+          "resolvedFile": "eachDayOfInterval.js"
+        },
+        {
+          "subpath": "endOfMonth",
+          "exists": true,
+          "resolvedFile": "endOfMonth.js"
+        },
+        {
+          "subpath": "format",
+          "exists": true,
+          "resolvedFile": "format.js"
+        },
+        {
+          "subpath": "formatDistanceToNow",
+          "exists": true,
+          "resolvedFile": "formatDistanceToNow.js"
+        },
+        {
+          "subpath": "isPast",
+          "exists": true,
+          "resolvedFile": "isPast.js"
+        },
+        {
+          "subpath": "isSameDay",
+          "exists": true,
+          "resolvedFile": "isSameDay.js"
+        },
+        {
+          "subpath": "isSameMonth",
+          "exists": true,
+          "resolvedFile": "isSameMonth.js"
+        },
+        {
+          "subpath": "isToday",
+          "exists": true,
+          "resolvedFile": "isToday.js"
+        },
+        {
+          "subpath": "isTomorrow",
+          "exists": true,
+          "resolvedFile": "isTomorrow.js"
+        },
+        {
+          "subpath": "isWithinInterval",
+          "exists": true,
+          "resolvedFile": "isWithinInterval.js"
+        },
+        {
+          "subpath": "locale/pt-BR",
+          "exists": true,
+          "resolvedFile": "locale/pt-BR.js"
+        },
+        {
+          "subpath": "parseISO",
+          "exists": true,
+          "resolvedFile": "parseISO.js"
+        },
+        {
+          "subpath": "startOfMonth",
+          "exists": true,
+          "resolvedFile": "startOfMonth.js"
+        },
+        {
+          "subpath": "startOfWeek",
+          "exists": true,
+          "resolvedFile": "startOfWeek.js"
+        },
+        {
+          "subpath": "subDays",
+          "exists": true,
+          "resolvedFile": "subDays.js"
+        },
+        {
+          "subpath": "subMonths",
+          "exists": true,
+          "resolvedFile": "subMonths.js"
+        }
       ]
     }
   },
