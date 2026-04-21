@@ -242,7 +242,7 @@ if [ "$SMOKE_TSC_EXIT" -eq 0 ]; then
   SMOKE_VITEST_DURATION=$((SECONDS - VITEST_START))
 fi
 
-echo "▶ [8/8] Emitting dependency-health snapshot for smoke run..."
+echo "▶ [9/9] Emitting dependency-health snapshot for smoke run..."
 node scripts/emit-smoke-health.mjs \
   --tsc-exit "$SMOKE_TSC_EXIT" \
   --vitest-exit "$SMOKE_VITEST_EXIT" \
