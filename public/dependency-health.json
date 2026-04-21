@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-04-21T00:00:00Z",
+  "dateFns": {
+    "spec": "3.6.0",
+    "installed": "3.6.0",
+    "locked": "3.6.0",
+    "exactPinned": true
+  },
+  "lockfileDrift": {
+    "detected": false,
+    "lastCheckedAt": "2026-04-21T00:00:00Z",
+    "source": "bun install --frozen-lockfile"
+  }
+}
