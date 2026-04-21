@@ -248,31 +248,3 @@ console.log(
   ),
 );
 
-// ── Optional: persist discovered subpaths into dependency-health.json ────────
-if (WRITE_HEALTH) {
-  const sortedList = [...subpaths].sort();
-  const subpathsBlock = {
-    scannedAt: new Date().toISOString(),
-    count: sortedList.length,
-    list: sortedList,
-  };
-  let snapshot = {};
-  if (existsSync(SNAPSHOT_PATH)) {
-    try {
-      snapshot = JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8"));
-    } catch {
-      snapshot = {};
-    }
-  } else {
-    mkdirSync(dirname(SNAPSHOT_PATH), { recursive: true });
-  }
-  snapshot.dateFns = snapshot.dateFns ?? {};
-  snapshot.dateFns.subpaths = subpathsBlock;
-  writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2) + "\n", "utf8");
-  console.log(
-    cyan(
-      `▶ Wrote dateFns.subpaths to ${relative(ROOT, SNAPSHOT_PATH)} (${sortedList.length} entries).`,
-    ),
-  );
-}
-
