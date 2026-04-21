@@ -4,9 +4,10 @@
  * src/test/dateFns.smoke.test.ts so the smoke test always reflects
  * actual usage. Pure Node, zero dependencies.
  */
-import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
+const DRY_RUN = process.argv.slice(2).some((a) => a === "--dry-run" || a === "-n");
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
 const OUT_FILE = join(SRC_DIR, "test", "dateFns.smoke.test.ts");
