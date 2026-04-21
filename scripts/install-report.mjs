@@ -3,6 +3,7 @@ import { readFileSync, existsSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
+import { renderMismatch } from "./lib/semver-diff.mjs";
 
 const ROOT = process.cwd();
 const PKG = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
