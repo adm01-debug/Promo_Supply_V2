@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
-# Husky pre-push hook: runs the date-fns generator + smoke tsc and prints a
-# focused failure summary (which step failed + exact date-fns import path).
-# To bypass in an emergency: `git push --no-verify`.
-bash "$(dirname "$0")/../scripts/hooks/datefns-precommit.sh"
+# Husky pre-push hook: runs either a lightweight date-fns check (default) or
+# the full ci-smoke.sh if FULL_SMOKE_PRE_PUSH is set or hook.fullSmoke is true.
+# To bypass entirely: `git push --no-verify`.
+#
+# Opt-in to full smoke test:
+#   FULL_SMOKE_PRE_PUSH=1 git push          # one-time
+#   bun run hook:smoke:enable               # persistent (per-repo git config)
+#   bun run hook:smoke:disable              # return to lightweight mode
+if [ "${FULL_SMOKE_PRE_PUSH:-}" = "1" ] || \
+   [ "$(git config --local hook.fullSmoke 2>/dev/null || echo false)" = "true" ]; then
+  echo "▶ Running full ci-smoke.sh (opt-in mode)..."
+  bash "$(dirname "$0")/../scripts/ci-smoke.sh"
+else
+  bash "$(dirname "$0")/../scripts/hooks/datefns-precommit.sh"
+fi
