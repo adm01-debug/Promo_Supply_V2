@@ -13,7 +13,9 @@
     "ci:lint:date-fns": "eslint . --config eslint.date-fns.config.js --max-warnings=0",
     "preview": "vite preview",
     "verify:date-fns": "node scripts/verify-datefns-versions.mjs",
-    "smoke:date-fns": "bash scripts/smoke-date-fns.sh"
+    "smoke:date-fns": "bash scripts/smoke-date-fns.sh",
+    "ci:check": "bash scripts/ci-check.sh",
+    "ci:smoke": "bash scripts/ci-smoke.sh"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
