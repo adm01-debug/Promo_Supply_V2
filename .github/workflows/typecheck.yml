@@ -10,6 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
@@ -29,9 +31,11 @@ jobs:
       - name: Type-check tsconfig.node.json
         if: ${{ hashFiles('tsconfig.node.json') != '' }}
         run: bunx tsc --noEmit -p tsconfig.node.json
+
       - name: Generate typecheck report artifact
         if: always()
         run: node scripts/typecheck-report.mjs
+
       - name: Upload typecheck report
         if: always()
         uses: actions/upload-artifact@v4
@@ -39,4 +43,70 @@ jobs:
           name: typecheck-report
           path: ci-artifacts/typecheck-report.json
           if-no-files-found: error
+          retention-days: 30
+
+      - name: Determine changed files (PR vs base, push vs previous commit)
+        id: changed
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+            HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+            git fetch --no-tags --depth=1 origin "$BASE_SHA" || true
+          else
+            BASE_SHA="${{ github.event.before }}"
+            HEAD_SHA="${{ github.sha }}"
+          fi
+          # Fall back to a full diff if BASE_SHA is missing or all-zeros (first push, force-push).
+          if [ -z "$BASE_SHA" ] || [ "$BASE_SHA" = "0000000000000000000000000000000000000000" ]; then
+            CHANGED="$(git ls-files '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.cjs')"
+          else
+            CHANGED="$(git diff --name-only --diff-filter=ACMRTUXB "$BASE_SHA" "$HEAD_SHA" -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.cjs' || true)"
+          fi
+          # Filter to existing files only (skip deletions).
+          EXISTING=""
+          while IFS= read -r f; do
+            [ -n "$f" ] && [ -f "$f" ] && EXISTING="$EXISTING $f"
+          done <<< "$CHANGED"
+          EXISTING="$(echo "$EXISTING" | xargs || true)"
+          echo "files=$EXISTING" >> "$GITHUB_OUTPUT"
+          if [ -z "$EXISTING" ]; then
+            echo "No lintable files changed."
+          else
+            echo "Changed lintable files:"
+            echo "$EXISTING" | tr ' ' '\n'
+          fi
+
+      - name: ESLint on changed files (blocks on lint or type-aware rule failures)
+        if: ${{ steps.changed.outputs.files != '' }}
+        run: |
+          mkdir -p ci-artifacts
+          # --max-warnings=0 ensures warnings (including type-aware rules surfaced as warnings)
+          # also block the merge. Output a JSON report alongside human-readable stylish output.
+          bunx eslint ${{ steps.changed.outputs.files }} \
+            --max-warnings=0 \
+            --format stylish \
+            --output-file ci-artifacts/eslint-report.txt \
+            || ESLINT_EXIT=$?
+          # Re-emit the human report to the job log so failures are visible without downloading artifacts.
+          if [ -f ci-artifacts/eslint-report.txt ]; then
+            echo "── ESLint report ──"
+            cat ci-artifacts/eslint-report.txt
+          fi
+          # Also emit a JSON report for programmatic inspection.
+          bunx eslint ${{ steps.changed.outputs.files }} \
+            --max-warnings=0 \
+            --format json \
+            --output-file ci-artifacts/eslint-report.json || true
+          exit ${ESLINT_EXIT:-0}
+
+      - name: Upload ESLint report
+        if: ${{ always() && steps.changed.outputs.files != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-report
+          path: |
+            ci-artifacts/eslint-report.txt
+            ci-artifacts/eslint-report.json
+          if-no-files-found: ignore
           retention-days: 30
