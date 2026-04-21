@@ -33,6 +33,8 @@ bunx eslint . --config eslint.date-fns.config.js --max-warnings=0
 
 echo "▶ [7/7] Verifying date-fns subpath files + running smoke test..."
 node scripts/verify-datefns-files.mjs
+echo "▶ Verifying date-fns smoke test is in sync..."
+node scripts/generate-datefns-smoke-test.mjs --dry-run
 bunx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
 
 echo "✅ Smoke check passed: clean install + cache evict + version match + file verify + smoke test green."
