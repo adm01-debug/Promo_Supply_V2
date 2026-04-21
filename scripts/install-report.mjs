@@ -48,3 +48,22 @@ console.log(line("bun.lock sha256",     lockSha));
 console.log(line("bun.lock size",       `${lockSize} bytes`));
 console.log(line("alignment",           aligned ? "✓ spec / lock / installed match" : "✗ DRIFT"));
 console.log("─────────────────────────────────────────────");
+
+if (!aligned) {
+  const SPEC_NORM = SPEC.replace(/^[\^~]/, "");
+  const specEqLock = SPEC_NORM === LOCKED;
+  const lockEqInstalled = LOCKED === INSTALLED;
+  const specEqInstalled = SPEC_NORM === INSTALLED;
+  console.log("\n  Mismatch detail:");
+  if (!specEqLock && lockEqInstalled) {
+    console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+  } else if (specEqLock && !lockEqInstalled) {
+    console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+  } else if (specEqInstalled && !specEqLock) {
+    console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+  } else {
+    console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+    console.log("");
+    console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+  }
+}
