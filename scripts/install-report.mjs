@@ -5,6 +5,10 @@ import { join } from "node:path";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
 import { renderMismatch } from "./lib/semver-diff.mjs";
 
+// CLI flags:
+//   --strict   exit 1 when spec / lock / installed are not aligned (default: exit 0)
+const STRICT = process.argv.slice(2).some((a) => a === "--strict");
+
 const ROOT = process.cwd();
 const PKG = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
 const SPEC = PKG.dependencies?.["date-fns"] ?? PKG.devDependencies?.["date-fns"] ?? "—";
@@ -65,5 +69,9 @@ if (!aligned) {
     console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
     console.log("");
     console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+  }
+  if (STRICT) {
+    console.error("\n✗ install-report --strict: spec / lock / installed drift detected.");
+    process.exit(1);
   }
 }
