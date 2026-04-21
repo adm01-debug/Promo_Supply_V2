@@ -67,6 +67,16 @@ print_summary() {
     eslint_line="✗ FAIL"
   fi
 
+  # verify-datefns-files line
+  local verify_files_line
+  if [ "$VERIFY_FILES_RAN" -eq 0 ]; then
+    verify_files_line="not run"
+  elif [ "$VERIFY_FILES_OK" -eq 1 ]; then
+    verify_files_line="verified ✓"
+  else
+    verify_files_line="✗ FAIL"
+  fi
+
   # tsc line
   local tsc_line
   if [ "$SMOKE_TSC_RAN" -eq 0 ]; then
