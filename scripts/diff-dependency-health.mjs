@@ -47,6 +47,36 @@ function diffDateFns(prev, next, lines) {
       section.push(`    ${key}: ${a[key] ?? "—"} → ${b[key] ?? "—"}`);
     }
   }
+
+  // Subpaths drift (added/removed entries between snapshots)
+  const aSub = a.subpaths ?? null;
+  const bSub = b.subpaths ?? null;
+  if (aSub || bSub) {
+    const aList = new Set(aSub?.list ?? []);
+    const bList = new Set(bSub?.list ?? []);
+    if ((aSub?.count ?? aList.size) !== (bSub?.count ?? bList.size)) {
+      section.push(
+        `    subpaths.count: ${aSub?.count ?? aList.size ?? "—"} → ${bSub?.count ?? bList.size ?? "—"}`,
+      );
+    }
+    const added = [...bList].filter((s) => !aList.has(s)).sort();
+    const removed = [...aList].filter((s) => !bList.has(s)).sort();
+    if (added.length > 0) {
+      section.push("    subpaths added:");
+      for (const s of added.slice(0, OFFENDER_DIFF_CAP)) section.push(`      + ${s}`);
+      if (added.length > OFFENDER_DIFF_CAP) {
+        section.push(`      … and ${added.length - OFFENDER_DIFF_CAP} more added`);
+      }
+    }
+    if (removed.length > 0) {
+      section.push("    subpaths removed:");
+      for (const s of removed.slice(0, OFFENDER_DIFF_CAP)) section.push(`      - ${s}`);
+      if (removed.length > OFFENDER_DIFF_CAP) {
+        section.push(`      … and ${removed.length - OFFENDER_DIFF_CAP} more removed`);
+      }
+    }
+  }
+
   if (section.length > 0) {
     lines.push("  date-fns:");
     lines.push(...section);
