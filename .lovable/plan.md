@@ -1,38 +1,61 @@
 
-## Plan: Run typecheck before tests in CI
-
-### Current state
-`scripts/ci-check.sh` already runs `npx tsc --noEmit -p tsconfig.app.json` as step 3/6, **before** the generator (4/6) and the smoke test (5/6). However, the generator overwrites `src/test/dateFns.smoke.test.ts` *after* tsc runs — so if a newly added `date-fns/<subpath>` import in `src/` resolves to a missing export, tsc on the source file catches it, but tsc on the freshly regenerated test file does not run.
+## Plan: Assert installed date-fns version matches pinned version
 
 ### Goal
-Add a second typecheck pass **after** the generator and **before** vitest, so the regenerated smoke test itself is type-checked. Missing date-fns exports surface as a tsc error (faster, clearer signal) instead of waiting for the vitest runtime.
+Fail the smoke test (and therefore CI) when the resolved `node_modules/date-fns` version drifts from the spec pinned in `package.json`. Log the version on every run for visibility.
 
-### Change — `scripts/ci-check.sh`
+### Change — `scripts/generate-datefns-smoke-test.mjs`
 
-Restructure to 7 steps. Keep step 3 (initial tsc on source) as-is; insert a new tsc pass as step 5 after generation:
+Extend the generator template to emit one additional `it(...)` block at the end of the existing `describe`. No new files, no CI changes — the new assertion rides the existing generate → tsc → vitest pipeline.
 
-```text
-[1/7] rm -rf node_modules
-[2/7] bun install --frozen-lockfile
-[3/7] npx tsc --noEmit -p tsconfig.app.json          (source typecheck)
-[4/7] node scripts/generate-datefns-smoke-test.mjs   (regenerate test)
-[5/7] npx tsc --noEmit -p tsconfig.app.json          (NEW: typecheck includes regenerated test)
-[6/7] npx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
-[7/7] write public/dependency-health.json snapshot
+The emitted block reads both `package.json` files at test time and compares:
+
+```ts
+it("installed date-fns version matches the pinned spec in package.json", async () => {
+  const [{ default: rootPkg }, { default: installedPkg }] = await Promise.all([
+    import("../../package.json"),
+    import("date-fns/package.json"),
+  ]);
+  const spec =
+    rootPkg.dependencies?.["date-fns"] ??
+    rootPkg.devDependencies?.["date-fns"] ??
+    "";
+  const installed = installedPkg.version as string;
+
+  // eslint-disable-next-line no-console
+  console.log(`[date-fns smoke] pinned spec="${spec}" installed="${installed}"`);
+
+  expect(spec, "date-fns must be listed in package.json").not.toBe("");
+  expect(/^[0-9]/.test(spec), `spec "${spec}" must be exact-pinned (no ^ or ~)`).toBe(true);
+  expect(installed, `installed ${installed} must match pinned ${spec}`).toBe(spec);
+});
 ```
 
-The new step uses the same `tsconfig.app.json` (which already includes `src/`, so the regenerated test file is in scope). `set -euo pipefail` ensures a tsc failure halts CI before vitest or the snapshot run.
+Three assertions:
+1. `date-fns` is declared in `package.json`.
+2. The spec is exact-pinned (starts with a digit — rejects `^3.6.0`, `~3.6.0`, `latest`, ranges).
+3. The resolved version in `node_modules` equals the spec exactly.
 
-### Why two tsc passes
-- **Step 3** catches missing exports in production source immediately — the original signal.
-- **Step 5** catches the case where the source uses a valid subpath but the *generator's emitted import line* fails to type-check (e.g. an export was removed from `date-fns` between the source-import and the generator-emit, or the regenerated file changes shape). Cheap second pass; same config; <2s on warm cache.
+The `console.log` line surfaces both versions in vitest's verbose output for every CI run.
+
+### Supporting tweak — `tsconfig.app.json`
+
+Verify `resolveJsonModule: true` is already set (standard in Vite/Lovable projects). If absent, add it so the two `import("…/package.json")` calls type-check. This is a no-op for runtime; vitest already resolves JSON imports natively.
+
+### Why this shape
+- **Single source of truth stays the generator.** The new test rides the same regenerate → tsc → vitest pipeline already in CI; no new step, no new file.
+- **Reads `package.json` at test time, not generate time.** Catches drift introduced after the generator runs (e.g. someone hand-edits `package.json` between generate and test, or a stale `node_modules` from an unclean install).
+- **Exact-pin guard.** Prevents the test from silently passing when someone loosens the spec to `^3.6.0` — which is the exact failure mode this whole CI chain exists to prevent.
+- **Aligns with `public/dependency-health.json`.** Step 7 already records `spec` / `installed` / `exactPinned`; this test enforces the same invariants at runtime so the snapshot can never lie.
 
 ### Verification
-1. `bash scripts/ci-check.sh` → 7 numbered steps green, snapshot written, final `✅`.
-2. Sanity check: temporarily add `import { nonExistent } from "date-fns/nonExistent"` to any `src/` file → step 3 fails (source). Revert.
-3. Sanity check: temporarily edit the generator template to emit `import { fakeFn } from "date-fns/format"` → step 4 succeeds, step 5 fails with TS2305 before vitest runs. Revert.
-4. `npx tsc --noEmit -p tsconfig.app.json` standalone → 0 errors.
+1. `node scripts/generate-datefns-smoke-test.mjs` → file regenerates with the new `it(...)` block, summary log printed.
+2. `npx tsc --noEmit -p tsconfig.app.json` → 0 errors.
+3. `npx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose` → all tests green; console shows `[date-fns smoke] pinned spec="3.6.0" installed="3.6.0"`.
+4. Sanity check A: temporarily change `package.json` to `"date-fns": "^3.6.0"` → rerun → exact-pin assertion fails with clear message. Revert.
+5. Sanity check B: temporarily change `package.json` to `"date-fns": "3.5.0"` (without reinstalling) → rerun → mismatch assertion fails (`installed 3.6.0 must match pinned 3.5.0`). Revert.
+6. `bash scripts/ci-check.sh` → 7 numbered steps green.
 
 ### Risk / scope
-- One file edited (`scripts/ci-check.sh`). No source, dependency, route, schema, or runtime changes.
-- Adds ~2s to CI (second tsc pass on warm cache).
+- One generator file edited; one generated test file refreshed (still ≤120 lines). Possibly one `tsconfig.app.json` flag if missing. No source, route, schema, or runtime changes.
+- Adds <50ms to the smoke test (two JSON imports).
