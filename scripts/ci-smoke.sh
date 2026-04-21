@@ -147,6 +147,7 @@ print_summary() {
   printf "  ESLint date-fns gate: %s\n" "$eslint_line"
   printf "  Smoke tsc           : %s\n" "$tsc_line"
   printf "  Smoke vitest        : %s\n" "$vitest_line"
+  printf "  Smoke test file     : %s\n" "$SMOKE_TEST_PATH"
   printf "  Logs                : %s/tsc-smoke.log\n" "$LOG_DIR"
   printf "                        %s/vitest-smoke.log\n" "$LOG_DIR"
   printf "                        %s/vitest-smoke.json\n" "$LOG_DIR"
