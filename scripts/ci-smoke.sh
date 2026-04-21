@@ -210,7 +210,7 @@ SMOKE_TSC_EXIT=${PIPESTATUS[0]}
 if [ "$SMOKE_TSC_EXIT" -eq 0 ]; then
   SMOKE_VITEST_RAN=1
   VITEST_START=$SECONDS
-  bunx vitest run src/test/dateFns.smoke.test.ts \
+  bunx vitest run "$SMOKE_TEST_PATH" \
     --reporter=verbose \
     --reporter=json --outputFile="$LOG_DIR/vitest-smoke.json" \
     --hideSkippedTests \
