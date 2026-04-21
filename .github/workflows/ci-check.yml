@@ -9,8 +9,42 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  ci-smoke:
+    name: Fast smoke gate (date-fns install + smoke test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run ci-smoke.sh
+        run: bash scripts/ci-smoke.sh
+        env:
+          CI: 'true'
+          TZ: UTC
+
+      - name: Upload smoke logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-smoke-logs
+          path: ci-logs/
+          if-no-files-found: ignore
+          retention-days: 14
+
   ci-check:
     name: Full CI gate (date-fns + lint + types + smoke)
+    needs: [ci-smoke]
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
