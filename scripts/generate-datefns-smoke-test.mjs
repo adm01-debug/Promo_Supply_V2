@@ -196,7 +196,25 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
 
 writeFileSync(OUT_FILE, out, "utf8");
 
+// --- Emit machine-readable manifest for the admin panel ---
+const manifest = {
+  generatedAt: new Date().toISOString(),
+  totalSubpaths: sortedSubpaths.length,
+  totalFunctions: allFnNames.length,
+  totalLocales: allLocaleNames.length,
+  functions: fnSubpaths.map((sp) => ({
+    subpath: sp,
+    exports: [...subpaths.get(sp)].sort(),
+  })),
+  locales: localeSubpaths.map((sp) => ({
+    subpath: sp,
+    exports: [...subpaths.get(sp)].sort(),
+  })),
+};
+writeFileSync(MANIFEST_FILE, JSON.stringify(manifest, null, 2) + "\n", "utf8");
+
 console.log(
   `✓ Generated smoke test for ${sortedSubpaths.length} subpaths, ${allFnNames.length} named function exports, ${allLocaleNames.length} locales.`,
 );
 console.log(`  → ${relative(ROOT, OUT_FILE)}`);
+console.log(`  → ${relative(ROOT, MANIFEST_FILE)}`);
