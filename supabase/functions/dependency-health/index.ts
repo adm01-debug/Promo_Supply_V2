@@ -231,7 +231,33 @@ async function fetchStaticFallback(origin: string): Promise<DependencyHealthSnap
   }
 }
 
+async function handleHistory(): Promise<Response> {
+  const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+  const { data, error } = await admin
+    .from("dependency_health_history")
+    .select("id, generated_at, drift_count, barrel_imports, payload")
+    .order("generated_at", { ascending: false })
+    .limit(30);
+  if (error) return json({ error: error.message }, 500);
+  // deno-lint-ignore no-explicit-any
+  const rows = (data ?? []).map((row: any) => {
+    const pkgs: any[] = Array.isArray(row?.payload?.packages) ? row.payload.packages : [];
+    return {
+      id: row.id,
+      generatedAt: row.generated_at,
+      driftCount: row.drift_count,
+      barrelImports: row.barrel_imports,
+      packages: pkgs.map((p) => ({ name: p?.name, driftDetected: !!p?.driftDetected })),
+    };
+  });
+  return json({ history: rows });
+}
+
 async function handleGet(req: Request): Promise<Response> {
+  const url = new URL(req.url);
+  if (url.searchParams.get("history") === "true") {
+    return await handleHistory();
+  }
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   const { data } = await admin
     .from("dependency_health")
