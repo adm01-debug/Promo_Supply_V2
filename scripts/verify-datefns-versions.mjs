@@ -46,16 +46,63 @@ if (!existsSync(dfPkgPath)) {
 }
 const INSTALLED = JSON.parse(readFileSync(dfPkgPath, "utf8")).version;
 
-const aligned = SPEC_NORM === LOCKED && LOCKED === INSTALLED;
+const specEqLock = SPEC_NORM === LOCKED;
+const lockEqInstalled = LOCKED === INSTALLED;
+const specEqInstalled = SPEC_NORM === INSTALLED;
+const aligned = specEqLock && lockEqInstalled;
 
 if (!aligned) {
-  const mark = (v, ref) => (v === ref ? "" : "   ← MISMATCH");
-  const ref = INSTALLED;
+  // Majority-based outlier detection: a value is "ok" if it matches at least
+  // one other source; it's "drift" if it matches neither of the other two.
+  const status = (v, others) =>
+    others.some((o) => o === v) ? "ok" : "← drift";
+
+  const rows = [
+    ["package.json spec", SPEC, status(SPEC_NORM, [LOCKED, INSTALLED])],
+    ["bun.lock resolved", LOCKED, status(LOCKED, [SPEC_NORM, INSTALLED])],
+    ["node_modules", INSTALLED, status(INSTALLED, [SPEC_NORM, LOCKED])],
+  ];
+
+  const colSource = Math.max(...rows.map((r) => r[0].length), "SOURCE".length);
+  const colVersion = Math.max(...rows.map((r) => r[1].length), "VERSION".length);
+  const colStatus = Math.max(...rows.map((r) => r[2].length), "STATUS".length);
+  const pad = (s, n) => s + " ".repeat(n - s.length);
+  const sep = (n) => "─".repeat(n);
+
   console.error("✗ date-fns version drift detected:\n");
-  console.error(`    package.json spec : ${SPEC}  (normalized: ${SPEC_NORM})${mark(SPEC_NORM, ref)}`);
-  console.error(`    bun.lock resolved : ${LOCKED}${mark(LOCKED, ref)}`);
-  console.error(`    node_modules      : ${INSTALLED}`);
-  console.error("\n  Fix: rm -rf node_modules && bun install --frozen-lockfile");
+  console.error(
+    `    ${pad("SOURCE", colSource)}  ${pad("VERSION", colVersion)}  ${pad("STATUS", colStatus)}`,
+  );
+  console.error(
+    `    ${sep(colSource)}  ${sep(colVersion)}  ${sep(colStatus)}`,
+  );
+  for (const [src, ver, st] of rows) {
+    console.error(
+      `    ${pad(src, colSource)}  ${pad(ver, colVersion)}  ${pad(st, colStatus)}`,
+    );
+  }
+  if (SPEC !== SPEC_NORM) {
+    console.error(`\n    (spec normalized: ${SPEC_NORM})`);
+  }
+
+  // Diagnose drift pattern → targeted fix
+  let diagnosis, fixCmd;
+  if (!specEqLock && lockEqInstalled) {
+    diagnosis = "spec drifted from lock+installed (package.json edited but not relocked)";
+    fixCmd = "bun install";
+  } else if (specEqLock && !lockEqInstalled) {
+    diagnosis = "node_modules drifted from spec+lock (stale or hand-mutated)";
+    fixCmd = "bun install --frozen-lockfile";
+  } else if (specEqInstalled && !specEqLock) {
+    diagnosis = "lockfile drifted from spec+installed (lock is stale or corrupt)";
+    fixCmd = "rm bun.lock && bun install";
+  } else {
+    diagnosis = "all three sources differ (full corruption)";
+    fixCmd = "rm -rf node_modules bun.lock && bun install";
+  }
+
+  console.error(`\n  Fix (${diagnosis}):`);
+  console.error(`    ${fixCmd}`);
   process.exit(1);
 }
 
