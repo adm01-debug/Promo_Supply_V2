@@ -2,6 +2,7 @@
 import { readFileSync, existsSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
+import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
 
 const ROOT = process.cwd();
 const PKG = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
@@ -20,8 +21,8 @@ if (existsSync(lockPath)) {
   const buf = readFileSync(lockPath);
   lockSha = createHash("sha256").update(buf).digest("hex").slice(0, 16);
   lockSize = statSync(lockPath).size;
-  const m = buf.toString("utf8").match(/"date-fns@(\d+\.\d+\.\d+)"/);
-  if (m) LOCKED = m[1];
+  const resolved = resolveLockedVersion(buf.toString("utf8"), "date-fns");
+  if (resolved) LOCKED = resolved;
 }
 
 let dfSha = "—";

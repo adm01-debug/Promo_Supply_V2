@@ -9,6 +9,10 @@
  */
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
+import {
+  resolveLockedVersion,
+  RESOLVER_PATTERN_NAMES,
+} from "./lib/resolve-locked-version.mjs";
 
 const ROOT = process.cwd();
 
@@ -29,10 +33,12 @@ const lockPath = join(ROOT, "bun.lock");
 if (!existsSync(lockPath))
   fail("✗ bun.lock not found — run `bun install` to generate it.");
 const lockText = readFileSync(lockPath, "utf8");
-const lockMatch = lockText.match(/"date-fns@(\d+\.\d+\.\d+)"/);
-if (!lockMatch)
-  fail("✗ date-fns entry not found in bun.lock — run `bun install`.");
-const LOCKED = lockMatch[1];
+const LOCKED = resolveLockedVersion(lockText, "date-fns");
+if (!LOCKED) {
+  fail(
+    `✗ date-fns entry not found in bun.lock (tried: ${RESOLVER_PATTERN_NAMES.join(", ")}) — run \`bun install\`.`,
+  );
+}
 
 const dfPkgPath = join(ROOT, "node_modules", "date-fns", "package.json");
 if (!existsSync(dfPkgPath)) {
