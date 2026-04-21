@@ -1,15 +1,17 @@
 
-## Plan: Pre-flight check for dateFns.smoke.test.ts in ci-check.sh
+## Plan: Conditional `--passWithNoTests` in ci-check.sh smoke step
 
 ### Goal
-Add an explicit existence check for `src/test/dateFns.smoke.test.ts` between generation (step 9/11) and execution (step 10/11) in `scripts/ci-check.sh`, so a missing/failed-to-generate smoke test fails fast with an actionable error instead of a confusing vitest "no test files found" message.
+Make step [10/11] in `scripts/ci-check.sh` resilient: when `src/test/dateFns.smoke.test.ts` exists, run vitest with `--passWithNoTests` (so an empty/skipped suite doesn't break CI); when the file is missing, keep the existing strict behavior — fail fast with the actionable error already in place.
 
 ### Change
 
-#### `scripts/ci-check.sh`
-Insert a guard immediately after step [9/11] (smoke test generation) and before step [10/11] (tsc + vitest run):
+#### `scripts/ci-check.sh` — step [10/11]
+
+Current logic already exits 1 when the file is missing. Update the existing vitest invocation in the same step to append `--passWithNoTests` only on the present-branch:
 
 ```bash
+echo "▶ [10/11] Type-checking again + running date-fns smoke test..."
 SMOKE_TEST_FILE="src/test/dateFns.smoke.test.ts"
 if [ ! -f "$SMOKE_TEST_FILE" ]; then
   echo "✗ Smoke test file missing: $SMOKE_TEST_FILE" >&2
@@ -18,19 +20,21 @@ if [ ! -f "$SMOKE_TEST_FILE" ]; then
   exit 1
 fi
 echo "✓ Smoke test file present: $SMOKE_TEST_FILE"
+bunx tsc --noEmit -p tsconfig.app.json
+bunx vitest run "$SMOKE_TEST_FILE" --reporter=verbose --passWithNoTests
 ```
 
-The check is placed as part of step [10/11] (no renumbering needed) — it runs right before the existing `tsc --noEmit` + `vitest run` calls.
+The strict guard above the vitest call guarantees `--passWithNoTests` can never mask a missing file — by the time the flag is used, the file is proven present.
 
 ### What does NOT change
-- `scripts/ci-smoke.sh` — already runs `verify-datefns-files.mjs` immediately before vitest in the same step; smoke test path is statically referenced and would error visibly if missing. Keeping it untouched preserves current step numbering.
-- Generator script, vitest config, smoke test contents, workflow files.
-- No step renumbering (the guard is inline within step 10).
+- `scripts/ci-smoke.sh` — keeps its current strict invocation (separate quick-check workflow). Can be revisited later if needed.
+- Generator, vitest config, smoke test contents, GitHub workflow.
+- Step numbering or any other step's behavior.
 
 ### Verification
-1. Normal run: file exists → "✓ Smoke test file present" line appears → tsc + vitest proceed as today.
-2. Manually `rm src/test/dateFns.smoke.test.ts` and skip step 9 (or break the generator) → ci-check.sh exits 1 with the three-line actionable error before invoking vitest.
-3. Exit code on failure is `1` (not vitest's exit code), so CI logs surface the smoke-test-missing message clearly at the top.
+1. Normal run with file present → vitest runs with `--passWithNoTests`; if the test file has assertions (current case), passes as today.
+2. Edge case: generator emits a file with zero `it()` blocks → vitest exits 0 instead of failing with "no tests found", letting the rest of CI proceed.
+3. File missing (generator broken or skipped) → guard exits 1 with the three-line actionable error before vitest is ever invoked.
 
 ### Risk / scope
-- ~8 added lines in one shell script. Zero behavioral change on green runs. No other files touched.
+- 1 added flag in one shell script. No behavioral regression on green runs. No other files touched.
