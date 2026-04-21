@@ -121,15 +121,26 @@ const DependencyHealth = () => {
           </p>
         </div>
         {isAdmin && (
-          <Button
-            onClick={() => refresh.mutate()}
-            disabled={refresh.isPending}
-            variant="outline"
-            aria-label="Atualizar snapshot agora"
-          >
-            <RefreshCw className={`h-4 w-4 ${refresh.isPending ? "animate-spin" : ""}`} />
-            {refresh.isPending ? "Atualizando…" : "Atualizar agora"}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => refresh.mutate()}
+              disabled={refresh.isPending || refreshAndCommit.isPending}
+              variant="outline"
+              aria-label="Atualizar snapshot agora"
+            >
+              <RefreshCw className={`h-4 w-4 ${refresh.isPending ? "animate-spin" : ""}`} />
+              {refresh.isPending ? "Atualizando…" : "Atualizar agora"}
+            </Button>
+            <Button
+              onClick={() => refreshAndCommit.mutate()}
+              disabled={refresh.isPending || refreshAndCommit.isPending}
+              variant="outline"
+              aria-label="Atualizar e commitar snapshot no repositório"
+            >
+              <RefreshCw className={`h-4 w-4 ${refreshAndCommit.isPending ? "animate-spin" : ""}`} />
+              {refreshAndCommit.isPending ? "Disparando CI…" : "Atualizar & commitar no repo"}
+            </Button>
+          </div>
         )}
       </div>
 
