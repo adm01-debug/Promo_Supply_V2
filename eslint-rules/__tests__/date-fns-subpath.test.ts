@@ -10,14 +10,14 @@ const FIXTURE = path.resolve(
   "../__fixtures__/bad-date-fns-import.ts",
 );
 
-function makeLinter() {
-  const linter = new Linter();
-  linter.defineRule("local/date-fns-subpath", dateFnsSubpath as never);
-  return linter;
-}
-
 const CONFIG = {
-  parserOptions: { ecmaVersion: 2020 as const, sourceType: "module" as const },
+  plugins: {
+    local: { rules: { "date-fns-subpath": dateFnsSubpath } },
+  },
+  languageOptions: {
+    ecmaVersion: 2020 as const,
+    sourceType: "module" as const,
+  },
   rules: { "local/date-fns-subpath": "error" as const },
 };
 
@@ -25,8 +25,8 @@ describe("local/date-fns-subpath", () => {
   const src = readFileSync(FIXTURE, "utf8");
 
   it("reports both barrel imports on the fixture", () => {
-    const linter = makeLinter();
-    const msgs = linter.verify(src, CONFIG, FIXTURE);
+    const linter = new Linter();
+    const msgs = linter.verify(src, CONFIG as never, FIXTURE);
     expect(msgs).toHaveLength(2);
     expect(msgs.every((m) => m.ruleId === "local/date-fns-subpath")).toBe(true);
     expect(msgs.map((m) => m.messageId).sort()).toEqual([
@@ -36,8 +36,10 @@ describe("local/date-fns-subpath", () => {
   });
 
   it("autofix rewrites to subpath imports", () => {
-    const linter = makeLinter();
-    const result = linter.verifyAndFix(src, CONFIG, { filename: FIXTURE });
+    const linter = new Linter();
+    const result = linter.verifyAndFix(src, CONFIG as never, {
+      filename: FIXTURE,
+    });
     expect(result.fixed).toBe(true);
     expect(result.output).toContain('from "date-fns/format"');
     expect(result.output).toContain('from "date-fns/locale/pt-BR"');
