@@ -17,6 +17,13 @@
  *   23  date-fns not installed in node_modules
  *    1  unexpected / generic failure
  */
+import { readFileSync, existsSync } from "node:fs";
+import { join } from "node:path";
+import {
+  resolveLockedVersion,
+  RESOLVER_PATTERN_NAMES,
+} from "./lib/resolve-locked-version.mjs";
+
 const EXIT = {
   OK: 0,
   SPEC_DRIFT: 10,
@@ -29,18 +36,12 @@ const EXIT = {
   MISSING_INSTALL: 23,
   GENERIC: 1,
 };
-import { readFileSync, existsSync } from "node:fs";
-import { join } from "node:path";
-import {
-  resolveLockedVersion,
-  RESOLVER_PATTERN_NAMES,
-} from "./lib/resolve-locked-version.mjs";
 
 const ROOT = process.cwd();
 
-function fail(msg) {
+function fail(msg, code = EXIT.GENERIC) {
   console.error(msg);
-  process.exit(1);
+  process.exit(code);
 }
 
 const pkgPath = join(ROOT, "package.json");
