@@ -7,7 +7,11 @@ import { renderMismatch } from "./lib/semver-diff.mjs";
 
 // CLI flags:
 //   --strict   exit 1 when spec / lock / installed are not aligned (default: exit 0)
-const STRICT = process.argv.slice(2).some((a) => a === "--strict");
+//   --json     emit a single JSON object (no human-readable lines) for log
+//              parsing / dashboards. Combines with --strict.
+const argv = process.argv.slice(2);
+const STRICT = argv.includes("--strict");
+const JSON_MODE = argv.includes("--json");
 
 const ROOT = process.cwd();
 const PKG = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
@@ -42,36 +46,61 @@ if (existsSync(dfPkgPath)) {
 const aligned =
   SPEC.replace(/^[\^~]/, "") === INSTALLED && INSTALLED === LOCKED;
 
-const line = (k, v) => `  ${k.padEnd(22)} ${v}`;
-console.log("──────── Install verification report ────────");
-console.log(line("date-fns spec",       SPEC));
-console.log(line("date-fns locked",     LOCKED));
-console.log(line("date-fns installed",  INSTALLED));
-console.log(line("date-fns pkg sha256", dfSha));
-console.log(line("bun.lock sha256",     lockSha));
-console.log(line("bun.lock size",       `${lockSize} bytes`));
-console.log(line("alignment",           aligned ? "✓ spec / lock / installed match" : "✗ DRIFT"));
-console.log("─────────────────────────────────────────────");
+const SPEC_NORM = SPEC.replace(/^[\^~]/, "");
 
-if (!aligned) {
-  const SPEC_NORM = SPEC.replace(/^[\^~]/, "");
-  const specEqLock = SPEC_NORM === LOCKED;
-  const lockEqInstalled = LOCKED === INSTALLED;
-  const specEqInstalled = SPEC_NORM === INSTALLED;
-  console.log("\n  Mismatch detail:");
-  if (!specEqLock && lockEqInstalled) {
-    console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
-  } else if (specEqLock && !lockEqInstalled) {
-    console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
-  } else if (specEqInstalled && !specEqLock) {
-    console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
-  } else {
-    console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
-    console.log("");
-    console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
-  }
-  if (STRICT) {
-    console.error("\n✗ install-report --strict: spec / lock / installed drift detected.");
-    process.exit(1);
+if (JSON_MODE) {
+  const payload = {
+    generatedAt: new Date().toISOString(),
+    dateFns: {
+      spec: SPEC,
+      specNormalized: SPEC_NORM,
+      locked: LOCKED,
+      installed: INSTALLED,
+      pkgSha256: dfSha,
+      exactPinned: /^[0-9]/.test(SPEC),
+    },
+    bunLock: { sha256: lockSha, sizeBytes: lockSize },
+    alignment: {
+      aligned,
+      specEqLocked: SPEC_NORM === LOCKED,
+      lockedEqInstalled: LOCKED === INSTALLED,
+      specEqInstalled: SPEC_NORM === INSTALLED,
+    },
+    strict: STRICT,
+  };
+  process.stdout.write(JSON.stringify(payload, null, 2) + "\n");
+  if (!aligned && STRICT) process.exit(1);
+} else {
+  const line = (k, v) => `  ${k.padEnd(22)} ${v}`;
+  console.log("──────── Install verification report ────────");
+  console.log(line("date-fns spec",       SPEC));
+  console.log(line("date-fns locked",     LOCKED));
+  console.log(line("date-fns installed",  INSTALLED));
+  console.log(line("date-fns pkg sha256", dfSha));
+  console.log(line("bun.lock sha256",     lockSha));
+  console.log(line("bun.lock size",       `${lockSize} bytes`));
+  console.log(line("alignment",           aligned ? "✓ spec / lock / installed match" : "✗ DRIFT"));
+  console.log("─────────────────────────────────────────────");
+
+  if (!aligned) {
+    const specEqLock = SPEC_NORM === LOCKED;
+    const lockEqInstalled = LOCKED === INSTALLED;
+    const specEqInstalled = SPEC_NORM === INSTALLED;
+    console.log("\n  Mismatch detail:");
+    if (!specEqLock && lockEqInstalled) {
+      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+    } else if (specEqLock && !lockEqInstalled) {
+      console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+    } else if (specEqInstalled && !specEqLock) {
+      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+    } else {
+      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+      console.log("");
+      console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+    }
+    if (STRICT) {
+      console.error("\n✗ install-report --strict: spec / lock / installed drift detected.");
+      process.exit(1);
+    }
   }
 }
