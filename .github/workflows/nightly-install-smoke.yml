@@ -1,0 +1,90 @@
+name: Nightly Install & Smoke
+
+on:
+  schedule:
+    # 03:17 UTC every day — off-peak, slightly off-the-hour to avoid runner congestion
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: nightly-install-smoke-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  nightly:
+    name: Nightly install verification + smoke tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (frozen lockfile)
+        run: bun install --frozen-lockfile
+
+      - name: Generate install-report.json
+        run: |
+          mkdir -p ci-artifacts
+          node scripts/install-report.mjs --json | tee ci-artifacts/install-report.json
+
+      - name: Print human-readable install report
+        if: always()
+        run: node scripts/install-report.mjs
+
+      - name: Strict drift check
+        if: always()
+        run: node scripts/install-report.mjs --strict --json > /dev/null
+
+      - name: Verify date-fns versions
+        if: always()
+        run: bun run verify:date-fns
+
+      - name: Verify date-fns files
+        if: always()
+        run: bun run verify:datefns-files
+
+      - name: Verify date-fns locales
+        if: always()
+        run: bun run verify:datefns-locales
+
+      - name: date-fns smoke test
+        if: always()
+        run: bun run test:date-fns
+        env:
+          CI: 'true'
+          TZ: UTC
+
+      - name: Full smoke gate (ci-smoke.sh)
+        if: always()
+        run: bash scripts/ci-smoke.sh
+        env:
+          CI: 'true'
+          TZ: UTC
+
+      - name: Upload install-report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-install-report
+          path: ci-artifacts/install-report.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload smoke logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-smoke-logs
+          path: ci-logs/
+          if-no-files-found: ignore
+          retention-days: 30
