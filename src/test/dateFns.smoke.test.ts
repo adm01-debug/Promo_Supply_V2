@@ -103,4 +103,25 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
   it("ref date is stable", () => {
     expect(ref.toISOString()).toBe("2025-01-15T12:00:00.000Z");
   });
+
+  it("installed date-fns version matches the pinned spec in package.json", async () => {
+    const [rootPkgMod, installedPkgMod] = await Promise.all([
+      import("../../package.json"),
+      import("date-fns/package.json"),
+    ]);
+    const rootPkg = (rootPkgMod as { default: Record<string, Record<string, string> | undefined> }).default;
+    const installedPkg = (installedPkgMod as { default: { version: string } }).default;
+    const spec =
+      rootPkg.dependencies?.["date-fns"] ??
+      rootPkg.devDependencies?.["date-fns"] ??
+      "";
+    const installed = installedPkg.version;
+
+    // eslint-disable-next-line no-console
+    console.log(`[date-fns smoke] pinned spec="${spec}" installed="${installed}"`);
+
+    expect(spec, "date-fns must be listed in package.json").not.toBe("");
+    expect(/^[0-9]/.test(spec), `spec "${spec}" must be exact-pinned (no ^ or ~)`).toBe(true);
+    expect(installed, `installed ${installed} must match pinned ${spec}`).toBe(spec);
+  });
 });
