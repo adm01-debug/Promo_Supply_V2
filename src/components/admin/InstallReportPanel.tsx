@@ -80,9 +80,27 @@ const InstallReportPanel = () => {
   }
 
   const { dateFns, bunLock, alignment, generatedAt } = data;
+  const driftMessages: string[] = [];
+  if (!alignment.specEqLocked) driftMessages.push("package.json ≠ bun.lock");
+  if (!alignment.lockedEqInstalled) driftMessages.push("bun.lock ≠ node_modules");
+  if (!alignment.specEqInstalled) driftMessages.push("package.json ≠ node_modules");
+  if (!dateFns.exactPinned) driftMessages.push("spec não pinada exatamente");
+
+  const hasDrift = !alignment.aligned || !dateFns.exactPinned;
+  const toastFiredRef = useRef(false);
+  useEffect(() => {
+    if (hasDrift && !toastFiredRef.current) {
+      toastFiredRef.current = true;
+      toast({
+        title: "Drift de instalação detectado",
+        description: driftMessages.join(" · ") || "Spec / lock / installed divergentes.",
+        variant: "destructive",
+      });
+    }
+  }, [hasDrift, driftMessages]);
 
   return (
-    <Card>
+    <Card className={hasDrift ? "border-destructive/50" : undefined}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <PackageCheck className="h-5 w-5 text-primary" />
