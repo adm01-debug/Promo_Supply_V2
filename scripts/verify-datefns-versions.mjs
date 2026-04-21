@@ -116,25 +116,30 @@ if (!aligned) {
     console.error(`\n    (spec normalized: ${SPEC_NORM})`);
   }
 
-  // Diagnose drift pattern → targeted fix
-  let diagnosis, fixCmd;
+  // Diagnose drift pattern → targeted fix + distinct exit code
+  let diagnosis, fixCmd, exitCode;
   if (!specEqLock && lockEqInstalled) {
     diagnosis = "spec drifted from lock+installed (package.json edited but not relocked)";
     fixCmd = "bun install";
+    exitCode = EXIT.SPEC_DRIFT;
   } else if (specEqLock && !lockEqInstalled) {
     diagnosis = "node_modules drifted from spec+lock (stale or hand-mutated)";
     fixCmd = "bun install --frozen-lockfile";
+    exitCode = EXIT.INSTALLED_DRIFT;
   } else if (specEqInstalled && !specEqLock) {
     diagnosis = "lockfile drifted from spec+installed (lock is stale or corrupt)";
     fixCmd = "rm bun.lock && bun install";
+    exitCode = EXIT.LOCK_DRIFT;
   } else {
     diagnosis = "all three sources differ (full corruption)";
     fixCmd = "rm -rf node_modules bun.lock && bun install";
+    exitCode = EXIT.ALL_DIFFER;
   }
 
   console.error(`\n  Fix (${diagnosis}):`);
   console.error(`    ${fixCmd}`);
-  process.exit(1);
+  console.error(`\n  Exit code: ${exitCode}`);
+  process.exit(exitCode);
 }
 
 console.log(
