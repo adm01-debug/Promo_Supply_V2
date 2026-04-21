@@ -1,37 +1,56 @@
 
-## Plan: ESLint guard for invalid `date-fns` imports
+## Plan: One-shot `verify:date-fns` script
 
 ### Goal
-Catch invalid `date-fns` subpath imports and bad named exports at lint time (before type-check, before CI), with clear error messages pointing at the offending line.
+Single command that compares the three sources of truth for `date-fns` — `package.json` spec, `bun.lock` resolved version, `node_modules` installed version — and exits non-zero with a precise diff message if any drift exists. Usable locally and as a fast pre-flight in CI without the full clean-install cycle.
 
 ### Approach
-Use `eslint-plugin-import` with the TypeScript resolver — it understands `package.json` `exports`, so any `date-fns/<bad>` subpath or non-existent named export fires immediately:
+Reuse the logic already in `scripts/install-report.mjs` (it computes all three values), but wrap it in a strict pass/fail script. Rather than duplicating, add a new minimal script that delegates to the same fields and `process.exit(1)` on mismatch.
 
-- `import/no-unresolved` — flags `import x from "date-fns/foo"` if the subpath isn't exported.
-- `import/named` — flags `import { nonExistent } from "date-fns"`.
+### Change 1 — new file `scripts/verify-datefns-versions.mjs`
 
-Two new dev deps: `eslint-plugin-import` + `eslint-import-resolver-typescript`. Both are the de facto standard pairing for ESLint flat config + TS path resolution.
+~30 lines:
 
-### Change — `eslint.config.js`
+- Read `package.json` → `dependencies["date-fns"]` (the spec, e.g. `4.1.0` or `^4.1.0`).
+- Read `bun.lock` → grep for `"date-fns@X.Y.Z"` to extract the locked version.
+- Read `node_modules/date-fns/package.json` → installed version.
+- Normalize spec by stripping leading `^` / `~`.
+- Compare all three. On mismatch, print a clear table:
 
-Add the plugin, register the two rules, and wire up the TS resolver pointing at `tsconfig.app.json` (so it picks up our tightened `resolvePackageJsonExports`).
+  ```
+  ✗ date-fns version drift detected:
 
-Scope the new rules to `src/**/*.{ts,tsx}` only — no point linting config files or scripts.
+      package.json spec : ^4.1.0  (normalized: 4.1.0)
+      bun.lock resolved : 4.1.0
+      node_modules      : 3.6.0   ← MISMATCH
+
+    Fix: rm -rf node_modules && bun install --frozen-lockfile
+  ```
+
+  Then `process.exit(1)`. On match, print one green line and exit 0.
+
+- Handle missing files explicitly (e.g. `node_modules/date-fns` absent → "not installed — run `bun install`").
+
+### Change 2 — `package.json` scripts
+
+Add one entry:
+
+```json
+"verify:date-fns": "node scripts/verify-datefns-versions.mjs"
+```
+
+Run via `bun run verify:date-fns` or `npm run verify:date-fns`.
 
 ### Why this shape
-- **Plugin-based, not custom rule.** `eslint-plugin-import` is mature, widely used, and already understands the exports field via the TS resolver. Writing a custom rule for one package is overkill.
-- **TS resolver, not Node resolver.** The TS resolver respects `tsconfig.app.json` settings (`resolvePackageJsonExports: true`), keeping lint and type-check in lockstep. The default Node resolver would miss exports-field violations.
-- **Only two rules enabled.** `no-unresolved` + `named` cover the failure modes we actually care about (bad subpath, bad named export). Other plugin rules (`import/order`, `import/no-cycle`, etc.) are style/architecture concerns out of scope here.
-- **Errors, not warnings.** A broken import is never a warning — it's a build break waiting to happen.
+- **Separate from `install-report.mjs`.** That script is a *report* (always exits 0, prints info). This is a *gate* (exits 1 on drift). Mixing the two would force every CI step that just wants the report to also fail on drift, which is the opposite of how `ci-smoke.sh` step 5 is designed.
+- **No new deps.** Pure Node, same parsing approach as the existing report script.
+- **Doesn't replace CI logic.** `ci-smoke.sh` and `ci-check.sh` already do version checks inline (steps 4). This script gives developers and ad-hoc CI jobs the same gate as a one-liner, without running the full clean-install.
 
 ### Verification
-1. `bun add -D eslint-plugin-import eslint-import-resolver-typescript` → installs.
-2. `npx eslint src` → exits 0 (current code is clean).
-3. Sanity A: temporarily add `import { format } from "date-fns/this-does-not-exist";` to a file → `npx eslint <file>` → fires `import/no-unresolved` with the bad path. Revert.
-4. Sanity B: temporarily add `import { totallyFakeExport } from "date-fns";` → `npx eslint <file>` → fires `import/named`. Revert.
-5. `npx tsc --noEmit -p tsconfig.app.json` → still green (no source change).
+1. `bun run verify:date-fns` on current tree → exits 0, prints "✓ date-fns X.Y.Z aligned across spec / lock / node_modules".
+2. Sanity A: temporarily edit `package.json` `date-fns` to `"3.5.0"` (no reinstall) → script exits 1, message highlights spec vs installed mismatch. Revert.
+3. Sanity B: temporarily `rm -rf node_modules/date-fns` → script exits 1 with "not installed" message. Restore via `bun install`.
+4. `bash scripts/ci-smoke.sh` and `bash scripts/ci-check.sh` → unchanged, still green.
 
 ### Risk / scope
-- Two new dev deps. One config file edited. No source, runtime, route, schema, or CI-script changes.
-- Adds ~1–2s to `eslint` runs (resolver has to load tsconfig + walk `node_modules` exports). Trivial.
-- Possible false positives on existing imports if any subpath happens to violate the exports field today — verification step 2 catches this before we ship.
+- One new file (~30 lines). One new `package.json` script entry. No source, dependency, route, schema, runtime, or existing-CI-script changes.
