@@ -4,13 +4,30 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes, Scissors } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes, Scissors, History } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
+import { Sparkline } from "@/components/ui/sparkline";
+
+interface HistoryEntry {
+  id: string;
+  generatedAt: string;
+  driftCount: number;
+  barrelImports: number;
+  packages: { name: string; driftDetected: boolean }[];
+}
+
+const fetchHistory = async (): Promise<HistoryEntry[]> => {
+  const { data, error } = await supabase.functions.invoke("dependency-health?history=true", {
+    method: "GET",
+  });
+  if (error) throw error;
+  return ((data as { history?: HistoryEntry[] } | null)?.history) ?? [];
+};
 
 interface PackageHealth {
   name: string;
