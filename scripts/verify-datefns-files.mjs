@@ -16,8 +16,41 @@ const PKG_DIR = join(ROOT, "node_modules", "date-fns");
 const PKG_REL = relative(ROOT, PKG_DIR);
 const EXCLUDE_DIRS = new Set(["test", "node_modules", ".git", "dist", "build"]);
 const FILE_EXT = /\.(ts|tsx)$/;
-const IMPORT_RE =
-  /import\s+(type\s+)?\{[^{}]*\}\s+from\s+["']date-fns\/([^"']+)["']/g;
+// Patterns we recognise (all match the `date-fns/<subpath>` specifier):
+//   1. Named import:        import { fn } from "date-fns/fn"
+//   2. Default import:      import fn from "date-fns/fn"
+//   3. Namespace import:    import * as df from "date-fns/fn"
+//   4. Side-effect import:  import "date-fns/fn"
+//   5. Re-export named:     export { fn } from "date-fns/fn"
+//   6. Re-export all:       export * from "date-fns/fn"
+//   7. Dynamic import:      import("date-fns/fn")
+// Type-only imports (`import type … from`, `export type … from`) are skipped.
+const IMPORT_PATTERNS = [
+  // Named/default/namespace imports — capture the optional `type` keyword
+  {
+    re: /import\s+(type\s+)?(?:\{[^{}]*\}|\*\s+as\s+[\w$]+|[\w$]+(?:\s*,\s*\{[^{}]*\})?)\s+from\s+["']date-fns\/([^"']+)["']/g,
+    typeIdx: 1,
+    pathIdx: 2,
+  },
+  // Side-effect import: `import "date-fns/format"`
+  {
+    re: /import\s+["']date-fns\/([^"']+)["']/g,
+    typeIdx: -1,
+    pathIdx: 1,
+  },
+  // Re-exports: `export { x } from "..."` and `export * from "..."` (incl. `export type`)
+  {
+    re: /export\s+(type\s+)?(?:\{[^{}]*\}|\*(?:\s+as\s+[\w$]+)?)\s+from\s+["']date-fns\/([^"']+)["']/g,
+    typeIdx: 1,
+    pathIdx: 2,
+  },
+  // Dynamic import: `import("date-fns/format")` or `await import('date-fns/format')`
+  {
+    re: /import\s*\(\s*["']date-fns\/([^"']+)["']\s*\)/g,
+    typeIdx: -1,
+    pathIdx: 1,
+  },
+];
 
 // ── ANSI color helpers (TTY only — keep CI logs clean) ────────────────────────
 const isTTY = Boolean(process.stdout.isTTY);
