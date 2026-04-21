@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# Husky pre-commit hook: runs ESLint with the date-fns import-validity rules
+# on staged files so bad imports (e.g. barrel `from "date-fns"`) are blocked
+# before they enter the repo.
+#
+# Behavior:
+#   - Only lints files actually staged for this commit (.ts, .tsx, .js, .jsx,
+#     .mjs, .cjs). If none are staged, exits 0 silently.
+#   - Uses --max-warnings=0 so any warning also blocks the commit.
+#   - Runs the dedicated date-fns config (eslint.date-fns.config.js) which
+#     contains the import-validity rules; if it fails, also runs the project
+#     ESLint config on the same files for richer feedback.
+#
+# Bypass (use sparingly): `git commit --no-verify`.
+set -uo pipefail
+
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+cd "$ROOT_DIR"
+
+# Collect staged files matching JS/TS extensions, NUL-delimited for safety.
+mapfile -d '' STAGED < <(git diff --cached --name-only --diff-filter=ACMR -z -- \
+  '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.cjs' 2>/dev/null)
+
+# Filter to files that still exist on disk (skip rename-source phantoms).
+FILES=()
+for f in "${STAGED[@]}"; do
+  [ -n "$f" ] && [ -f "$f" ] && FILES+=("$f")
+done
+
+if [ "${#FILES[@]}" -eq 0 ]; then
+  exit 0
+fi
+
+echo "▶ pre-commit: ESLint on ${#FILES[@]} staged file(s)"
+
+# 1) Dedicated date-fns import-validity gate (fast, focused error message).
+if ! bunx eslint --config eslint.date-fns.config.js --max-warnings=0 "${FILES[@]}"; then
+  echo ""
+  echo "✗ pre-commit FAILED: invalid date-fns import detected."
+  echo "  Use a subpath import (e.g. \`from \"date-fns/format\"\`) instead of the barrel."
+  echo "  Bypass with \`git commit --no-verify\` only if you know what you're doing."
+  exit 1
+fi
+
+# 2) Full project ESLint config on the same staged files.
+if ! bunx eslint --max-warnings=0 "${FILES[@]}"; then
+  echo ""
+  echo "✗ pre-commit FAILED: ESLint reported errors or warnings on staged files."
+  echo "  Fix the issues above (or run \`bun run lint:src:fix\`), then re-stage and commit."
+  exit 1
+fi
+
+echo "✓ pre-commit: ESLint clean."
+exit 0
