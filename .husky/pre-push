@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Husky pre-push hook: runs the date-fns generator + smoke tsc and prints a
+# focused failure summary (which step failed + exact date-fns import path).
+# To bypass in an emergency: `git push --no-verify`.
+bash "$(dirname "$0")/../scripts/hooks/datefns-precommit.sh"
