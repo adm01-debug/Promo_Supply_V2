@@ -1,0 +1,58 @@
+name: Install Report
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: install-report-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  install-report:
+    name: Generate & publish install-report.json
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (frozen lockfile)
+        run: bun install --frozen-lockfile
+
+      - name: Generate install-report.json
+        id: report
+        run: |
+          mkdir -p ci-artifacts
+          node scripts/install-report.mjs --json | tee ci-artifacts/install-report.json
+
+      - name: Print human-readable report (for log auditing)
+        if: always()
+        run: node scripts/install-report.mjs
+
+      - name: Detect drift (strict)
+        id: strict
+        if: always()
+        run: node scripts/install-report.mjs --strict --json > /dev/null
+
+      - name: Upload install-report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: install-report
+          path: ci-artifacts/install-report.json
+          if-no-files-found: error
+          retention-days: 30
