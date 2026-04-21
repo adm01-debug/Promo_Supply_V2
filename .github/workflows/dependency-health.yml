@@ -1,0 +1,42 @@
+name: dependency-health
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1"
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "bun.lock"
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    name: Regenerate dependency-health.json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+      - name: Verify lockfile is up to date
+        run: bun install --frozen-lockfile --dry-run
+      - name: Install dependencies (frozen lockfile)
+        run: bun install --frozen-lockfile
+      - name: Regenerate dependency-health snapshot
+        run: bun run deps:health
+      - name: Commit updated snapshot if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(deps): refresh dependency-health snapshot [skip ci]"
+          file_pattern: public/dependency-health.json
