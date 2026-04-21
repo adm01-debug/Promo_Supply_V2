@@ -1156,6 +1156,27 @@ export type Database = {
         }
         Relationships: []
       }
+      dependency_health: {
+        Row: {
+          id: boolean
+          payload: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id?: boolean
+          payload: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: boolean
+          payload?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       devolucao_itens: {
         Row: {
           created_at: string
