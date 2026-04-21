@@ -1,58 +1,100 @@
 
-## Plan: Wire the date-fns ESLint gate into PR CI
+## Plan: Add a fixture + test that proves the date-fns rule fails
 
-### Current state
-- `package.json` already has `lint:date-fns` (strict gate, `--max-warnings=0`) and `lint:date-fns:fix` (autofix).
-- `scripts/ci-check.sh` and `scripts/ci-smoke.sh` already invoke the gate locally.
-- **Gap:** no GitHub Actions workflow runs it on PRs, so the gate is local-only.
+### Goal
+Create a deliberately-bad example file and a tiny test that runs the date-fns ESLint config against it and asserts the rule fires. The fixture must NOT pollute the main lint gate (CI must stay green).
 
-### Change 1 — `package.json`
-Add one alias script for clarity in CI logs (the underlying command is identical to `lint:date-fns`, but a PR-named script makes the workflow step self-documenting):
-```json
-"ci:lint:date-fns": "eslint . --config eslint.date-fns.config.js --max-warnings=0"
-```
-Existing `lint:date-fns` stays unchanged.
+### Files
 
-### Change 2 — new file `.github/workflows/lint-date-fns.yml`
-Single-job workflow, runs on every PR (any branch) and on pushes to `main`:
+#### New — `eslint-rules/__fixtures__/bad-date-fns-import.ts` (~6 lines)
+A throwaway TS file that intentionally violates the rule:
+```ts
+// Intentional violation — used by eslint-rules/__tests__/date-fns-subpath.test.ts
+// to prove `local/date-fns-subpath` reports on barrel imports.
+// DO NOT FIX. DO NOT IMPORT FROM RUNTIME CODE.
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
-```yaml
-name: lint-date-fns
-
-on:
-  pull_request:
-  push:
-    branches: [main]
-
-jobs:
-  lint-date-fns:
-    name: ESLint date-fns subpath gate
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
-        with:
-          bun-version: latest
-      - name: Install dependencies (frozen lockfile)
-        run: bun install --frozen-lockfile
-      - name: Run ESLint date-fns gate
-        run: bun run ci:lint:date-fns
+export const _sample = format(new Date(), "yyyy-MM-dd", { locale: ptBR });
 ```
 
-Why these choices:
-- **`pull_request` with no `branches` filter** → fires on PRs targeting any branch, matching the request literally.
-- **`push: main`** → catches direct pushes / post-merge regressions.
-- **`bun install --frozen-lockfile`** → matches the project's existing CI scripts; no version drift.
-- **No matrix, no caching tricks** → the gate is <5s; keep the workflow boring and fast to read.
-- **Job name `ESLint date-fns subpath gate`** → this is the string that appears as a required status check; readable in branch protection settings.
+#### Modified — `eslint.date-fns.config.js`
+Extend the existing `ignores` array to skip the fixtures directory so the main `lint:date-fns` / `ci:lint:date-fns` gate doesn't trip on it:
+```js
+ignores: [
+  "dist/**",
+  "node_modules/**",
+  "supabase/functions/**",
+  "eslint-rules/**",
+  "eslint-rules/__fixtures__/**", // explicit, even though covered by line above
+],
+```
+(`eslint-rules/**` already covers it; the explicit line is documentation.)
 
-### After merge — branch protection (one-time, user action)
-GitHub repo → Settings → Branches → branch protection rule for `main` → require status check **"ESLint date-fns subpath gate"**. Without this, the workflow runs but PRs can still merge red. Mention this in the PR description.
+#### New — `eslint-rules/__tests__/date-fns-subpath.test.ts` (~40 lines)
+Vitest test that:
+1. Imports `ESLint` from `eslint` programmatically.
+2. Builds a Linter instance with ONLY the custom rule loaded (bypasses the config's `ignores`).
+3. Lints the fixture file.
+4. Asserts:
+   - Exactly 2 messages reported (one per barrel import).
+   - Both have `ruleId === "local/date-fns-subpath"`.
+   - Messages reference the `barrel` and `barrelLocale` message IDs respectively.
+5. Sanity check the autofixer: run with `fix: true`, assert output contains `from "date-fns/format"` and `from "date-fns/locale/pt-BR"`.
+
+```ts
+import { describe, it, expect } from "vitest";
+import { Linter } from "eslint";
+import { readFileSync } from "node:fs";
+import { dateFnsSubpath } from "../date-fns-subpath.js";
+
+const FIXTURE = "eslint-rules/__fixtures__/bad-date-fns-import.ts";
+
+function lint(code: string, fix = false) {
+  const linter = new Linter();
+  linter.defineRule("local/date-fns-subpath", dateFnsSubpath as never);
+  return linter.verifyAndFix(code, {
+    parserOptions: { ecmaVersion: 2020, sourceType: "module" },
+    rules: { "local/date-fns-subpath": "error" },
+  }, { filename: FIXTURE });
+}
+
+describe("local/date-fns-subpath", () => {
+  const src = readFileSync(FIXTURE, "utf8");
+
+  it("reports both barrel imports", () => {
+    const linter = new Linter();
+    linter.defineRule("local/date-fns-subpath", dateFnsSubpath as never);
+    const msgs = linter.verify(src, {
+      parserOptions: { ecmaVersion: 2020, sourceType: "module" },
+      rules: { "local/date-fns-subpath": "error" },
+    }, FIXTURE);
+    expect(msgs).toHaveLength(2);
+    expect(msgs.every(m => m.ruleId === "local/date-fns-subpath")).toBe(true);
+    expect(msgs.map(m => m.messageId).sort()).toEqual(["barrel", "barrelLocale"]);
+  });
+
+  it("autofix rewrites to subpath imports", () => {
+    const result = lint(src, true);
+    expect(result.fixed).toBe(true);
+    expect(result.output).toContain('from "date-fns/format"');
+    expect(result.output).toContain('from "date-fns/locale/pt-BR"');
+    expect(result.output).not.toMatch(/from "date-fns"/);
+  });
+});
+```
+
+Note: the project already has `eslint` as a devDep (it's used by `lint:date-fns`), so no new dependency. Vitest is also already configured (`vitest.config.ts` exists, plenty of tests in `src/test/`).
+
+#### Modified — `vitest.config.ts` (only if needed)
+Confirm the test glob picks up `eslint-rules/**/*.test.ts`. If the existing config restricts to `src/`, widen `include` to also match `eslint-rules/__tests__/**/*.test.ts`. (Will inspect during implementation; if `src/`-scoped, add the extra glob — single-line change.)
 
 ### Verification
-1. Open a PR introducing `import { format } from "date-fns"` → workflow fails with the custom rule's barrel message; PR cannot merge once branch protection is set.
-2. Run `bun run ci:lint:date-fns:fix`-equivalent (`bun run lint:date-fns:fix`), push → workflow goes green.
-3. Existing `scripts/ci-check.sh` and `scripts/ci-smoke.sh` unchanged → local flow unaffected.
+1. `bun run test eslint-rules/__tests__/date-fns-subpath.test.ts` → both assertions pass (rule fires on fixture, autofix rewrites correctly).
+2. `bun run lint:date-fns` → exits 0 (fixture is ignored by config, real source still clean).
+3. `bun run ci:lint:date-fns` → same, exits 0.
+4. `bash scripts/ci-check.sh` and `bash scripts/ci-smoke.sh` → unchanged, green.
+5. The new GitHub Actions workflow (`lint-date-fns.yml`) → green on PRs since the fixture is ignored.
 
 ### Risk / scope
-- One new workflow file (~20 lines). One new `package.json` script entry. Zero source, dependency, or config changes. No effect on existing CI scripts. Strictly additive.
+- 2 new files (~50 lines combined). 1 small config edit (comment-only line in `ignores`). Optional 1-line vitest config widening. Zero source/dep/route/schema changes. The fixture is explicitly excluded from the lint gate, so CI remains green.
