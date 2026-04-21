@@ -20,7 +20,7 @@ if (existsSync(lockPath)) {
   const buf = readFileSync(lockPath);
   lockSha = createHash("sha256").update(buf).digest("hex").slice(0, 16);
   lockSize = statSync(lockPath).size;
-  const m = buf.toString("utf8").match(/"date-fns"[^\n]*\n[^\n]*?(\d+\.\d+\.\d+)/);
+  const m = buf.toString("utf8").match(/"date-fns@(\d+\.\d+\.\d+)"/);
   if (m) LOCKED = m[1];
 }
 
