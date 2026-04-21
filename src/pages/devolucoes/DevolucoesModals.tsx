@@ -9,8 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useDevolucoes, type CreateDevolucaoInput, type Devolucao } from "@/hooks/useDevolucoes";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { RotateCcw, Plus, X, Clock } from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { toast } from "sonner";
 
 export const MOTIVO_LABELS: Record<string, string> = {

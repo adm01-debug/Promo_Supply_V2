@@ -3,8 +3,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, History, CheckCircle2, XCircle, FileText, RefreshCw, ShieldCheck } from 'lucide-react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
 
 const ACTION_CONFIG: Record<string, { icon: typeof CheckCircle2; color: string; label: string }> = {
   qualified: { icon: CheckCircle2, color: 'text-success', label: 'Qualificado' },

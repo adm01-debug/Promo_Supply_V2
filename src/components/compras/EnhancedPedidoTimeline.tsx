@@ -9,8 +9,12 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { format, parseISO, differenceInDays, differenceInHours, isPast } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { differenceInHours } from "date-fns/differenceInHours";
+import { isPast } from "date-fns/isPast";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { AlertTriangle, Timer, CheckCircle2 } from "lucide-react";
 import { 
   type TimelineStep, 

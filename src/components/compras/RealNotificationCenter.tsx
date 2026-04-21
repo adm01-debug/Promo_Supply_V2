@@ -18,8 +18,8 @@ import {
   TabsTrigger,
 } from '@/components/ui/tabs';
 import { useRealPushNotifications, Notification } from '@/hooks/useRealPushNotifications';
-import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { cn } from '@/lib/utils';
 
 const typeConfig: Record<string, { label: string; icon: string; color: string }> = {

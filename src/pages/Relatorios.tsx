@@ -16,8 +16,10 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { exportToCSV } from "@/lib/exportData";
 import { toast } from "sonner";
-import { subMonths, format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { subMonths } from "date-fns/subMonths";
+import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
+import { ptBR } from "date-fns/locale/pt-BR";
 import {
   KPICards,
   VolumeChart,

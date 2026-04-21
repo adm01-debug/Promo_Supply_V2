@@ -10,8 +10,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from 'sonner';
 import { useSecurityLogs, BlockedIP } from '@/hooks/useSecurityLogs';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
 
 export const BlockedIPsPanel = () => {
   const { blockedIPs, isLoading, blockIP, unblockIP } = useSecurityLogs();

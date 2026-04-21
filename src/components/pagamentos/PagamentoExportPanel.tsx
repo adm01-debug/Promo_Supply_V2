@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Download, FileText, Table2 } from "lucide-react";
-import { format } from "date-fns";
+import { format } from "date-fns/format";
 import { toast } from "@/hooks/use-toast";
 import type { Pagamento } from "@/hooks/usePagamentos";
 

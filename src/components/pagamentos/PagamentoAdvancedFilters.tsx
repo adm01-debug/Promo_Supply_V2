@@ -8,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Slider } from "@/components/ui/slider";
 import { Search, Filter, X, CalendarIcon, RotateCcw } from "lucide-react";
-import { format } from "date-fns";
+import { format } from "date-fns/format";
 import { cn } from "@/lib/utils";
 import type { Pagamento } from "@/hooks/usePagamentos";
 

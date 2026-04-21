@@ -27,18 +27,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { 
-  format, 
-  startOfMonth, 
-  endOfMonth, 
-  eachDayOfInterval, 
-  isSameDay, 
-  isToday,
-  addMonths,
-  subMonths,
-  differenceInDays,
-} from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { format } from "date-fns/format";
+import { startOfMonth } from "date-fns/startOfMonth";
+import { endOfMonth } from "date-fns/endOfMonth";
+import { eachDayOfInterval } from "date-fns/eachDayOfInterval";
+import { isSameDay } from "date-fns/isSameDay";
+import { isToday } from "date-fns/isToday";
+import { addMonths } from "date-fns/addMonths";
+import { subMonths } from "date-fns/subMonths";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { ptBR } from "date-fns/locale/pt-BR";
 import {
   type DeliveryEvent,
   statusConfig,

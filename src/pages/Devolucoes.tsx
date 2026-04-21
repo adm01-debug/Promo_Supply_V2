@@ -14,8 +14,8 @@ import {
   AlertTriangle, DollarSign, CreditCard, Package, 
   Clock, Eye
 } from "lucide-react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { Skeleton } from "@/components/ui/skeleton";
 import { NovaDevolucaoModal, DevolucaoDetailModal, MOTIVO_LABELS } from "./devolucoes/DevolucoesModals";
 import { STATUS_MAP, CREDITO_STATUS_MAP } from "./devolucoes/devolucoesData";

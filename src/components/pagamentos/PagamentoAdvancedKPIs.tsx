@@ -6,7 +6,11 @@ import {
   Clock, AlertTriangle, CheckCircle2, DollarSign, TrendingUp, TrendingDown,
   Calendar, BarChart3, Percent, Timer
 } from "lucide-react";
-import { differenceInDays, subMonths, startOfMonth, endOfMonth, format } from "date-fns";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { subMonths } from "date-fns/subMonths";
+import { startOfMonth } from "date-fns/startOfMonth";
+import { endOfMonth } from "date-fns/endOfMonth";
+import { format } from "date-fns/format";
 import type { Pagamento } from "@/hooks/usePagamentos";
 
 interface PagamentoAdvancedKPIsProps {

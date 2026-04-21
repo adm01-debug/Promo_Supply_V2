@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { FileText, Printer, Building2, Calendar, DollarSign, Package } from 'lucide-react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
 import type { Pedido } from '@/hooks/usePedidos';
 
 interface OrderPreviewModalProps {
