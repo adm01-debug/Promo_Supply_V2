@@ -13,6 +13,10 @@ const SRC_DIR = join(ROOT, "src");
 const MANIFEST_FILE = join(ROOT, "public", "datefns-usage.json");
 const EXCLUDE_DIRS = new Set(["test", "node_modules", ".git", "dist", "build"]);
 const FILE_EXT = /\.(ts|tsx)$/;
+// `[^{}]*` allows newlines (multi-line imports) but forbids nested braces,
+// preventing the match from spanning across adjacent import statements.
+// NOTE: this script only reads capture group 3 (subpath), so comments inside
+// braces don't affect detection — no stripComments() helper needed here.
 const IMPORT_RE =
   /import\s+(type\s+)?\{([^{}]*)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
 const GENERATOR_HINT =
