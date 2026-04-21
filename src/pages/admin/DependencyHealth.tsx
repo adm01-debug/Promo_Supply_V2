@@ -114,8 +114,14 @@ const DependencyHealth = () => {
       },
       onSuccess: (fresh) => {
         queryClient.setQueryData(["dependency-health"], fresh);
+        queryClient.invalidateQueries({ queryKey: ["dependency-health-history"] });
         toast({
           title: dispatchCi ? "Snapshot atualizado + CI" : "Snapshot atualizado",
+          description: dispatchCi
+            ? `Gerado em ${fresh.generatedAt} · CI: ${fresh.ciDispatch ?? "n/a"}`
+            : `Gerado em ${fresh.generatedAt}`,
+        });
+      },
           description: dispatchCi
             ? `Gerado em ${fresh.generatedAt} · CI: ${fresh.ciDispatch ?? "n/a"}`
             : `Gerado em ${fresh.generatedAt}`,
