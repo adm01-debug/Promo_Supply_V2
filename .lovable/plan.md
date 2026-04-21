@@ -1,75 +1,89 @@
 
-## Plan: Admin panel showing detected date-fns subpaths & locales
+## Plan: Batch locale formatting checks in the generated smoke test
 
 ### Goal
-Surface a read-only "Detected date-fns usage" section inside the existing admin Dependency Health page that lists every subpath and locale the generator currently detects, sourced from the latest generator run. Lets admins audit tree-shaking surface area without opening the test file.
+Reduce the number of `it()` blocks and redundant work in `src/test/dateFns.smoke.test.ts` so vitest startup + per-test overhead drops, while preserving the same validation coverage (callable functions, structurally valid locales, format works per locale, distinct weekdays, version pin).
 
-### Approach
-The generator already knows the full subpath/locale inventory at run time. Today it only writes the smoke test file. Extend it to **also** emit a small JSON manifest under `public/`, then render it in the admin page.
+### Current cost
+Today the smoke test runs 6 `it()` blocks. Three of them iterate the locales array independently:
+- "all imported locales are structurally valid" — loops locales
+- "format works with each imported locale" — loops locales, calls `format` 3× per locale
+- "every imported locale produces a distinct weekday name" — loops locales again, calls `format` 1× per locale
 
-### Changes
+Each `it()` carries vitest setup/teardown overhead, and the locale array is walked 3× with overlapping work (the weekday `format` call is duplicated between tests 2 and 3).
 
-#### 1. `scripts/generate-datefns-smoke-test.mjs` — emit manifest
+### Change
 
-After the smoke test write, also write `public/datefns-usage.json`:
+#### `scripts/generate-datefns-smoke-test.mjs` — render a single batched locale test
 
-```json
-{
-  "generatedAt": "2026-04-21T...",
-  "totalSubpaths": 42,
-  "totalFunctions": 38,
-  "totalLocales": 4,
-  "functions": [
-    { "subpath": "addYears", "exports": ["addYears"] },
-    { "subpath": "format",   "exports": ["format"] }
-  ],
-  "locales": [
-    { "subpath": "locale/pt-BR", "exports": ["ptBR"] },
-    { "subpath": "locale/en-US", "exports": ["enUS"] }
-  ]
-}
+Replace the three locale `it()` blocks with **one** consolidated block that walks the locales array once and asserts everything inline. Cache each locale's `format` outputs in local consts so `weekday` is computed exactly once and reused for both the per-locale assertion and the distinct-set check.
+
+New rendered block (replaces the three current locale tests):
+
+```ts
+it("locales are structurally valid, format correctly, and produce distinct weekdays", () => {
+  const locales = [...] as const;
+  const weekdays: string[] = [];
+  for (const [name, locale] of locales) {
+    // structural validity
+    expect(locale, name).toBeDefined();
+    expect(typeof locale, name).toBe("object");
+    const l = locale as {
+      code?: unknown;
+      formatLong?: unknown;
+      localize?: unknown;
+      match?: unknown;
+    };
+    expect(typeof l.code, name).toBe("string");
+    expect(l.formatLong, name).toBeTruthy();
+    expect(l.localize, name).toBeTruthy();
+    expect(l.match, name).toBeTruthy();
+
+    // format coverage (numeric, long, weekday) — single pass
+    const numeric = format(ref, "dd/MM/yyyy", { locale });
+    expect(numeric, name).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+    const longDate = format(ref, "PPP", { locale });
+    expect(typeof longDate, name).toBe("string");
+    expect(longDate.length, name).toBeGreaterThan(0);
+    const weekday = format(ref, "EEEE", { locale });
+    expect(typeof weekday, name).toBe("string");
+    expect(weekday.length, name).toBeGreaterThan(0);
+    weekdays.push(weekday);
+  }
+
+  // distinctness check — only meaningful with 2+ locales
+  if (weekdays.length >= 2) {
+    expect(new Set(weekdays).size, "distinct weekday names").toBe(weekdays.length);
+  }
+});
 ```
 
-Reuses the already-built `subpaths` Map / `fnSubpaths` / `localeSubpaths` arrays — ~15 added lines, deterministic output (sorted keys), no new deps.
+Net effect with the current single locale (`pt-BR`):
+- 6 `it()` blocks → **4** `it()` blocks
+- Locales walked 3× → **1×**
+- `format(ref, "EEEE", ...)` called 2× per locale → **1×**
+- All current assertions retained byte-for-byte (same expect calls, same labels, same regex).
 
-#### 2. `scripts/ci-check.sh` — include manifest in drift check
+### Files touched
+- `scripts/generate-datefns-smoke-test.mjs` — rewrite the locale-test rendering section (~30 lines changed, no new imports, no new deps).
 
-Step [9/11] currently diffs only `src/test/dateFns.smoke.test.ts`. Extend it to also back up + diff `public/datefns-usage.json`, with the same restore-on-fail behavior. Same actionable error message ("Run … and commit"). ~15 added lines.
-
-#### 3. `src/components/admin/DateFnsUsagePanel.tsx` (new, ~120 lines)
-
-- `useQuery(["datefns-usage-static"], () => fetch("/datefns-usage.json").then(r => r.json()))`, `staleTime: 5 * 60_000`.
-- Renders a `<Card>` with:
-  - Header: "Uso de date-fns detectado" + small muted timestamp ("atualizado há X").
-  - Three KPI chips: total subpaths, total função exports, total locales.
-  - Two collapsible tables (shadcn `<Table>` inside `<Collapsible>`, locales open by default since list is short):
-    - **Funções** — columns: Subpath, Exports (comma-joined badges), count. Sortable client-side by clicking headers (subpath asc default).
-    - **Locales** — same columns.
-  - Search input above the funções table that filters rows by subpath or export name (case-insensitive `includes`).
-  - Empty state if fetch fails / file missing: muted text "Manifesto não encontrado. Rode `node scripts/generate-datefns-smoke-test.mjs`."
-- No write actions, fully read-only.
-
-#### 4. `src/pages/admin/DependencyHealth.tsx` — mount the panel
-
-Insert `<DateFnsUsagePanel />` below the existing drift history card (lazy-imported via `React.lazy` + `Suspense fallback={<Skeleton className="h-48" />}`). One `import` + one JSX line.
+After regeneration:
+- `src/test/dateFns.smoke.test.ts` — auto-updates via the generator.
+- `public/datefns-usage.json` — unchanged (manifest schema is independent of test rendering).
 
 ### What does NOT change
-- Smoke test file structure, vitest config, edge function, history table, badge component.
-- Routes, sidebar, mobile nav.
-- Step numbering in `ci-check.sh`.
+- Function-callable test (`it("all imported function exports are callable")`).
+- Ref date stability test.
+- Version pin test.
+- Generator's scanning logic, manifest output, exit codes.
+- `scripts/ci-check.sh` step [9/11] drift check — it just reruns the generator and diffs; on first commit the smoke test file changes once, then stays stable.
 
 ### Verification
-1. Run generator locally → `public/datefns-usage.json` appears with sorted, deduped entries; admin page lists same subpaths as the auto-generated smoke test imports.
-2. Add a new `import { addYears } from "date-fns/addYears"` in `src/`, regenerate → manifest grows by one row; admin panel reflects it on next refresh.
-3. Skip regeneration after editing imports → ci-check step [9/11] fails with the existing actionable error, now also citing `public/datefns-usage.json` if that's the drifted file.
-4. Delete the manifest file → admin panel shows empty state with the run-the-generator hint; no console errors.
-5. Search "ptBR" → locales table filters to the matching row; funções table empties.
-
-### Technical details
-- Manifest is a static asset → zero edge function load, cacheable by the browser.
-- Component is admin-only by virtue of living inside `/admin/dependency-health` (already gated by `<ProtectedRoute>` + admin role check on that route).
-- Sort/filter is purely client-side over a small array (<200 rows in practice).
-- File-size budget respected: panel ≤ 150 lines; helper `computeStatus` not needed here.
+1. Run generator → `src/test/dateFns.smoke.test.ts` now has 4 `it()` blocks; ci-check step [9/11] flags the drift on the very first run; commit the new output and CI stays green from then on.
+2. `bunx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose` → 4 tests pass, total runtime drops noticeably (vitest per-test overhead × 2 fewer tests + ~33% fewer `format` calls).
+3. Add a second locale (e.g. `enUS` from `date-fns/locale/en-US`) somewhere in `src/`, regenerate → batched test still passes; distinctness assertion now actively runs (weekdays length ≥ 2).
+4. Break a locale on purpose (e.g. swap to a malformed object via a temporary edit) → batched test fails with the same labeled `expect` so the failing locale is still identifiable in the output.
+5. CI step [10/11] still type-checks the generated file (no new types introduced) and runs the smoke test.
 
 ### Risk / scope
-- 1 new component (~120 lines), ~15 added lines in generator, ~15 added lines in `ci-check.sh`, ~3 lines in admin page. No new deps, no schema changes, no behavioral regression on green CI runs.
+- One generator-script edit, ~30 lines. Output remains deterministic and sorted. Coverage preserved (every prior assertion still present, just inlined into one loop). One-time drift commit on the first regeneration.
