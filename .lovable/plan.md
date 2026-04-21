@@ -1,27 +1,39 @@
 
-## Plan: Pin date-fns to exact version 3.6.0
+## Plan: Verify installed date-fns version matches package.json + lockfile
 
 ### Goal
-Remove the caret (`^`) from `date-fns` in `package.json` so the version is exact-pinned, preventing any future `npm/bun install` from silently jumping to a higher minor (e.g. 3.7.x) or major (4.x) that could regress the subpath imports.
+Add a one-shot verification step that cross-checks three sources of truth for `date-fns` and reports any mismatch:
+1. Declared spec in `package.json`
+2. Resolved entry in `bun.lock`
+3. Actual `version` in `node_modules/date-fns/package.json`
 
-### Change
-**`package.json`** — single edit:
+### Approach
+Run a small inline shell script (no new file committed — pure verification, not source code). It reads each source, prints a compact report, and exits non-zero if any of the three disagree.
 
-```diff
-- "date-fns": "^3.6.0",
-+ "date-fns": "3.6.0",
-```
+### Steps
+1. **Read `package.json` spec**
+   `node -p "require('./package.json').dependencies['date-fns']"` → expect `3.6.0`.
 
-(If the current entry is already `"3.6.0"` without the caret, no edit is needed and we skip straight to verification.)
+2. **Read installed version**
+   `node -p "require('./node_modules/date-fns/package.json').version"` → expect `3.6.0`.
 
-### Verification steps
-1. Read `package.json` to confirm current spec, apply the edit only if a range operator (`^`, `~`, `>=`) is present.
-2. Run `bun install` so the lockfile is rewritten with the exact pin (no version drift; same 3.6.0 already on disk).
-3. Confirm `node_modules/date-fns/package.json` still reports `"version": "3.6.0"`.
-4. Grep the lockfile (`bun.lock`) for the `date-fns` entry — must resolve to `3.6.0` exactly.
-5. Run the smoke test `npx vitest run src/test/dateFns.smoke.test.ts` — must stay green (8/8).
-6. Run `npx tsc --noEmit -p tsconfig.app.json` — must report 0 errors.
+3. **Read lockfile resolution**
+   `grep -E '"date-fns@[^"]+"' bun.lock | head -3` → extract the resolved version string.
+
+4. **Compare & report**
+   Inline bash:
+   ```bash
+   SPEC=$(node -p "require('./package.json').dependencies['date-fns']")
+   INSTALLED=$(node -p "require('./node_modules/date-fns/package.json').version")
+   LOCKED=$(grep -oE 'date-fns@[0-9]+\.[0-9]+\.[0-9]+' bun.lock | head -1 | cut -d@ -f2)
+   echo "spec=$SPEC installed=$INSTALLED locked=$LOCKED"
+   [ "$SPEC" = "$INSTALLED" ] && [ "$INSTALLED" = "$LOCKED" ] \
+     && echo "OK: all three agree on $INSTALLED" \
+     || { echo "MISMATCH"; exit 1; }
+   ```
+
+5. **On mismatch** — report the three values to the user and recommend `bun install` (if lockfile drifted) or `bun add date-fns@3.6.0 --exact` (if `package.json` drifted). No automatic remediation in this step.
 
 ### Notes
-- No source code changes. No UI, schema, or behavior impact.
-- Pure dependency hygiene: locks the version contract so the previously fixed subpath imports cannot break from an automatic upgrade.
+- No file edits. No dependency changes. Pure read-only verification executed in default mode.
+- Output is a single line + OK/MISMATCH verdict — easy to paste back to the user.
