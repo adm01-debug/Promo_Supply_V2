@@ -59,6 +59,16 @@ async function dispatchWorkflow(rawBase: string): Promise<string> {
   }
 }
 
+interface PackageHealth {
+  name: string;
+  label: string;
+  spec: string;
+  installed: string;
+  locked: string;
+  exactPinned: boolean;
+  driftDetected: boolean;
+}
+
 interface DependencyHealthSnapshot {
   generatedAt: string;
   dateFns: {
@@ -67,6 +77,7 @@ interface DependencyHealthSnapshot {
     locked: string;
     exactPinned: boolean;
   };
+  packages?: PackageHealth[];
   lockfileDrift: {
     detected: boolean;
     lastCheckedAt: string;
@@ -94,6 +105,51 @@ function resolveLockedVersion(lockText: string, pkg: string): string | null {
     if (m) return m[1];
   }
   return null;
+}
+
+interface TrackedEntry {
+  name: string;
+  label: string;
+  npmName: string;
+  location: "dependencies" | "devDependencies";
+}
+
+const TRACKED: TrackedEntry[] = [
+  { name: "date-fns", label: "date-fns", npmName: "date-fns", location: "dependencies" },
+  { name: "react", label: "React", npmName: "react", location: "dependencies" },
+  { name: "vite", label: "Vite", npmName: "vite", location: "devDependencies" },
+  { name: "typescript", label: "TypeScript", npmName: "typescript", location: "devDependencies" },
+  {
+    name: "shadcn-ui",
+    label: "shadcn/ui (radix-dialog proxy)",
+    npmName: "@radix-ui/react-dialog",
+    location: "dependencies",
+  },
+];
+
+// deno-lint-ignore no-explicit-any
+function computePackageHealth(pkg: any, lockText: string, entry: TrackedEntry): PackageHealth {
+  let spec: string = pkg?.[entry.location]?.[entry.npmName] ?? "";
+  if (!spec) {
+    const altLoc: TrackedEntry["location"] =
+      entry.location === "dependencies" ? "devDependencies" : "dependencies";
+    spec = pkg?.[altLoc]?.[entry.npmName] ?? "";
+  }
+  const locked = resolveLockedVersion(lockText, entry.npmName) ?? "";
+  const installed = locked; // edge cannot read node_modules
+  const exactPinned = /^\d+\.\d+\.\d+$/.test(spec);
+  const normalizedSpec = spec.replace(/^[\^~]/, "");
+  const driftDetected = Boolean(spec && locked && normalizedSpec !== locked);
+
+  return {
+    name: entry.name,
+    label: entry.label,
+    spec,
+    installed,
+    locked,
+    exactPinned,
+    driftDetected,
+  };
 }
 
 async function fetchStaticFallback(origin: string): Promise<DependencyHealthSnapshot | null> {
@@ -170,19 +226,22 @@ async function handlePost(req: Request): Promise<Response> {
   const pkg = await pkgRes.json();
   const lockText = await lockRes.text();
 
-  const spec: string = pkg?.dependencies?.["date-fns"] ?? "";
-  const locked = resolveLockedVersion(lockText, "date-fns") ?? "";
-  const installed = locked;
-  const exactPinned = /^\d+\.\d+\.\d+$/.test(spec);
-  const normalizedSpec = spec.replace(/^[\^~]/, "");
-  const driftDetected = Boolean(spec && locked && normalizedSpec !== locked);
+  const packages = TRACKED.map((entry) => computePackageHealth(pkg, lockText, entry));
+  const dateFnsEntry = packages.find((p) => p.name === "date-fns");
+  const aggregateDrift = packages.some((p) => p.driftDetected);
   const now = new Date().toISOString();
 
   const payload: DependencyHealthSnapshot = {
     generatedAt: now,
-    dateFns: { spec, installed, locked, exactPinned },
+    dateFns: {
+      spec: dateFnsEntry?.spec ?? "",
+      installed: dateFnsEntry?.installed ?? "",
+      locked: dateFnsEntry?.locked ?? "",
+      exactPinned: dateFnsEntry?.exactPinned ?? false,
+    },
+    packages,
     lockfileDrift: {
-      detected: driftDetected,
+      detected: aggregateDrift,
       lastCheckedAt: now,
       source: "edge:dependency-health POST",
     },

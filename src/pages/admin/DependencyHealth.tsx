@@ -3,13 +3,24 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
+
+interface PackageHealth {
+  name: string;
+  label: string;
+  spec: string;
+  installed: string;
+  locked: string;
+  exactPinned: boolean;
+  driftDetected: boolean;
+}
 
 interface DependencyHealthSnapshot {
   generatedAt: string;
@@ -19,6 +30,7 @@ interface DependencyHealthSnapshot {
     locked: string;
     exactPinned: boolean;
   };
+  packages?: PackageHealth[];
   lockfileDrift: {
     detected: boolean;
     lastCheckedAt: string;
@@ -104,7 +116,11 @@ const DependencyHealth = () => {
     );
   }
 
-  const { dateFns, lockfileDrift, generatedAt } = data;
+  const { dateFns, lockfileDrift, generatedAt, packages } = data;
+  const hasPackages = Array.isArray(packages) && packages.length > 0;
+  const aggregateDrift = hasPackages
+    ? packages!.some((p) => p.driftDetected)
+    : lockfileDrift.detected;
   const versionsMatch =
     dateFns.spec.replace(/^[\^~]/, "") === dateFns.installed &&
     dateFns.installed === dateFns.locked;
@@ -144,57 +160,109 @@ const DependencyHealth = () => {
         )}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Package className="h-5 w-5 text-primary" />
-            date-fns
-          </CardTitle>
-          <CardDescription>Versão pinada e estado do lockfile.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center gap-3">
-            <Badge variant="default" className="text-base px-3 py-1 font-mono">
-              v{dateFns.installed}
-            </Badge>
-            {versionsMatch ? (
-              <span className="flex items-center gap-1 text-sm text-success">
-                <CheckCircle2 className="h-4 w-4" />
-                spec / lock / installed alinhados
-              </span>
-            ) : (
-              <span className="flex items-center gap-1 text-sm text-destructive">
+      {hasPackages ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Boxes className="h-5 w-5 text-primary" />
+              Pacotes monitorados
+            </CardTitle>
+            <CardDescription>
+              Versões declaradas, do lockfile e instaladas para os pacotes-chave do projeto.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Pacote</TableHead>
+                  <TableHead className="font-mono text-xs">package.json</TableHead>
+                  <TableHead className="font-mono text-xs">bun.lock</TableHead>
+                  <TableHead className="font-mono text-xs">node_modules</TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {packages!.map((p) => (
+                  <TableRow key={p.name}>
+                    <TableCell className="font-medium">{p.label}</TableCell>
+                    <TableCell className="font-mono text-xs">{p.spec || "—"}</TableCell>
+                    <TableCell className="font-mono text-xs">{p.locked || "—"}</TableCell>
+                    <TableCell className="font-mono text-xs">{p.installed || "—"}</TableCell>
+                    <TableCell>
+                      {p.driftDetected ? (
+                        <Badge variant="destructive" className="gap-1">
+                          <AlertTriangle className="h-3 w-3" />
+                          Drift
+                        </Badge>
+                      ) : p.spec ? (
+                        <Badge variant="secondary" className="gap-1">
+                          <CheckCircle2 className="h-3 w-3" />
+                          OK
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline">N/D</Badge>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Package className="h-5 w-5 text-primary" />
+              date-fns
+            </CardTitle>
+            <CardDescription>Versão pinada e estado do lockfile.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Badge variant="default" className="text-base px-3 py-1 font-mono">
+                v{dateFns.installed}
+              </Badge>
+              {versionsMatch ? (
+                <span className="flex items-center gap-1 text-sm text-success">
+                  <CheckCircle2 className="h-4 w-4" />
+                  spec / lock / installed alinhados
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-sm text-destructive">
+                  <AlertTriangle className="h-4 w-4" />
+                  Versões divergentes
+                </span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-3 gap-3 text-sm">
+              <div className="rounded-md border bg-muted/30 p-3">
+                <div className="text-xs text-muted-foreground">package.json</div>
+                <div className="font-mono">{dateFns.spec || "—"}</div>
+              </div>
+              <div className="rounded-md border bg-muted/30 p-3">
+                <div className="text-xs text-muted-foreground">bun.lock</div>
+                <div className="font-mono">{dateFns.locked || "—"}</div>
+              </div>
+              <div className="rounded-md border bg-muted/30 p-3">
+                <div className="text-xs text-muted-foreground">node_modules</div>
+                <div className="font-mono">{dateFns.installed || "—"}</div>
+              </div>
+            </div>
+
+            {!dateFns.exactPinned && (
+              <Alert variant="destructive">
                 <AlertTriangle className="h-4 w-4" />
-                Versões divergentes
-              </span>
+                <AlertDescription>
+                  A spec em <code className="font-mono">package.json</code> não está pinada de forma exata.
+                </AlertDescription>
+              </Alert>
             )}
-          </div>
-
-          <div className="grid grid-cols-3 gap-3 text-sm">
-            <div className="rounded-md border bg-muted/30 p-3">
-              <div className="text-xs text-muted-foreground">package.json</div>
-              <div className="font-mono">{dateFns.spec || "—"}</div>
-            </div>
-            <div className="rounded-md border bg-muted/30 p-3">
-              <div className="text-xs text-muted-foreground">bun.lock</div>
-              <div className="font-mono">{dateFns.locked || "—"}</div>
-            </div>
-            <div className="rounded-md border bg-muted/30 p-3">
-              <div className="text-xs text-muted-foreground">node_modules</div>
-              <div className="font-mono">{dateFns.installed || "—"}</div>
-            </div>
-          </div>
-
-          {!dateFns.exactPinned && (
-            <Alert variant="destructive">
-              <AlertTriangle className="h-4 w-4" />
-              <AlertDescription>
-                A spec em <code className="font-mono">package.json</code> não está pinada de forma exata.
-              </AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>
@@ -207,13 +275,13 @@ const DependencyHealth = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
-          {lockfileDrift.detected ? (
+          {aggregateDrift ? (
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle>Drift detectado</AlertTitle>
               <AlertDescription>
                 <code className="font-mono">package.json</code> e <code className="font-mono">bun.lock</code>{" "}
-                divergem. Rode <code className="font-mono">bun install</code> e commit do lockfile.
+                divergem em um ou mais pacotes. Rode <code className="font-mono">bun install</code> e commit do lockfile.
               </AlertDescription>
             </Alert>
           ) : (

@@ -44,28 +44,7 @@ echo "▶ [10/11] Type-checking again + running date-fns smoke test..."
 bunx tsc --noEmit -p tsconfig.app.json
 bunx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
 
-echo "▶ [11/11] Writing public/dependency-health.json snapshot..."
-NOW="$(date -u +%FT%TZ)"
-SPEC="$(node -p "require('./package.json').dependencies['date-fns'] || require('./package.json').devDependencies['date-fns'] || ''")"
-LOCKED_SNAPSHOT="$LOCKED"
-EXACT="$(node -p "/^[0-9]/.test(require('./package.json').dependencies['date-fns'] || '') ? 'true' : 'false'")"
-
-mkdir -p public
-cat > public/dependency-health.json <<JSON
-{
-  "generatedAt": "${NOW}",
-  "dateFns": {
-    "spec": "${SPEC}",
-    "installed": "${INSTALLED}",
-    "locked": "${LOCKED_SNAPSHOT}",
-    "exactPinned": ${EXACT}
-  },
-  "lockfileDrift": {
-    "detected": false,
-    "lastCheckedAt": "${NOW}",
-    "source": "bun install --frozen-lockfile"
-  }
-}
-JSON
+echo "▶ [11/11] Writing public/dependency-health.json snapshot via deps:health..."
+bun run deps:health
 
 echo "✅ CI check passed: clean install + cache evict + version match + file verify + type-check green."
