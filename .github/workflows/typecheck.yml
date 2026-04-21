@@ -24,5 +24,8 @@ jobs:
         run: bun install --frozen-lockfile --dry-run
       - name: Install dependencies (frozen lockfile)
         run: bun install --frozen-lockfile
-      - name: Type-check (tsc --noEmit)
+      - name: Type-check tsconfig.app.json
         run: bunx tsc --noEmit -p tsconfig.app.json
+      - name: Type-check tsconfig.node.json
+        if: ${{ hashFiles('tsconfig.node.json') != '' }}
+        run: bunx tsc --noEmit -p tsconfig.node.json
