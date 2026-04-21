@@ -182,16 +182,16 @@ print_summary() {
 }
 trap print_summary EXIT
 
-echo "▶ [1/5] Removing node_modules..."
+echo "▶ [1/9] Removing node_modules..."
 rm -rf node_modules
 
-echo "▶ [2/5] Evicting any cached date-fns tarballs..."
+echo "▶ [2/9] Evicting any cached date-fns tarballs..."
 evict_datefns_cache
 
-echo "▶ [3/5] Installing from frozen lockfile..."
+echo "▶ [3/9] Installing from frozen lockfile..."
 bun install --frozen-lockfile
 
-echo "▶ [4/5] Confirming installed date-fns version matches lockfile..."
+echo "▶ [4/9] Confirming installed date-fns version matches lockfile..."
 DATEFNS_INSTALLED="$(node -p "require('./node_modules/date-fns/package.json').version")"
 DATEFNS_LOCKED="$(resolve_locked_datefns)"
 if [ -n "$DATEFNS_LOCKED" ] && [ "$DATEFNS_INSTALLED" != "$DATEFNS_LOCKED" ]; then
@@ -201,10 +201,19 @@ fi
 DATEFNS_VERSION_OK=1
 echo "✓ date-fns $DATEFNS_INSTALLED matches lockfile."
 
-echo "▶ [5/7] Printing install verification report..."
+echo "▶ [5/9] Verifying date-fns subpath files exist on disk..."
+VERIFY_FILES_RAN=1
+if ! node scripts/verify-datefns-files.mjs; then
+  VERIFY_FILES_OK=0
+  echo "✗ verify-datefns-files.mjs failed — broken install or missing subpath." >&2
+  exit 1
+fi
+VERIFY_FILES_OK=1
+
+echo "▶ [6/9] Printing install verification report..."
 node scripts/install-report.mjs
 
-echo "▶ [6/7] ESLint gate: blocking date-fns barrel imports (--max-warnings=0)..."
+echo "▶ [7/9] ESLint gate: blocking date-fns barrel imports (--max-warnings=0)..."
 ESLINT_RAN=1
 if bunx eslint . --config eslint.date-fns.config.js --max-warnings=0; then
   ESLINT_OK=1
@@ -213,8 +222,7 @@ else
   exit 1
 fi
 
-echo "▶ [7/7] Verifying date-fns subpath files + running smoke test..."
-node scripts/verify-datefns-files.mjs
+echo "▶ [8/9] Running smoke test pipeline..."
 echo "▶ Verifying date-fns smoke test is in sync..."
 node scripts/generate-datefns-smoke-test.mjs --dry-run
 echo "▶ Validating smoke test imports against tsconfig.smoke.json..."
