@@ -23,6 +23,7 @@
     "verify:datefns-smoke-types": "bunx tsc --noEmit -p tsconfig.smoke.json",
     "verify:datefns-files": "node scripts/verify-datefns-files.mjs",
     "verify:datefns-files:write": "node scripts/verify-datefns-files.mjs --write-health",
+    "verify:install-report": "bun install --frozen-lockfile && node scripts/install-report.mjs --strict",
     "pretest": "node scripts/verify-datefns-files.mjs",
     "test": "vitest run",
     "test:date-fns": "vitest run src/test/dateFns.smoke.test.ts --reporter=verbose --passWithNoTests",
