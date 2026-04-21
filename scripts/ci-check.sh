@@ -37,10 +37,7 @@ echo "▶ [6/14] ESLint gate: blocking date-fns barrel imports (--max-warnings=0
 bunx eslint . --config eslint.date-fns.config.js --max-warnings=0
 
 echo "▶ [7/14] Verifying date-fns subpath files exist on disk..."
-if ! node scripts/verify-datefns-files.mjs; then
-  echo "✗ verify-datefns-files.mjs failed — broken install or missing subpath." >&2
-  exit 1
-fi
+run_verify_datefns_files_or_die
 
 echo "▶ [8/14] Type-checking source with tsc --noEmit..."
 bunx tsc --noEmit -p tsconfig.app.json
