@@ -28,6 +28,7 @@
     "test:date-fns": "vitest run src/test/dateFns.smoke.test.ts --reporter=verbose --passWithNoTests",
     "test:date-fns:format": "vitest run src/test/dateFns.smoke.test.ts -t \"format\" --reporter=verbose --passWithNoTests",
     "test:date-fns:watch": "vitest watch src/test/dateFns.smoke.test.ts --reporter=verbose",
+    "test:date-fns:parity": "node scripts/verify-test-datefns-parity.mjs",
     "pretypecheck": "node scripts/verify-datefns-files.mjs",
     "typecheck": "tsc --noEmit",
     "hook:datefns": "bash scripts/hooks/datefns-precommit.sh",
