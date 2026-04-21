@@ -97,7 +97,7 @@ function walk(dir, acc = []) {
       if (full === join(SRC_DIR, "test")) continue;
       if (EXCLUDE_DIRS.has(entry)) continue;
       walk(full, acc);
-    } else if (FILE_EXT.test(entry)) {
+    } else if (FILE_EXT.test(entry) && !EXCLUDE_FILE_RE.test(entry)) {
       acc.push(full);
     }
   }
