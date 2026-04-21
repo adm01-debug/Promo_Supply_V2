@@ -23,6 +23,7 @@ import {
   resolveLockedVersion,
   RESOLVER_PATTERN_NAMES,
 } from "./lib/resolve-locked-version.mjs";
+import { renderMismatch } from "./lib/semver-diff.mjs";
 
 const EXIT = {
   OK: 0,
