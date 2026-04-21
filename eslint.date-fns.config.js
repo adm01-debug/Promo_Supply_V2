@@ -12,6 +12,7 @@ export default tseslint.config({
     "node_modules/**",
     "supabase/functions/**",
     "eslint-rules/**",
+    "eslint-rules/__fixtures__/**",
   ],
   languageOptions: {
     parser: tseslint.parser,

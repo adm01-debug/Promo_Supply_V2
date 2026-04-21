@@ -8,7 +8,10 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
-    include: ["src/**/*.{test,spec}.{ts,tsx}"],
+    include: [
+      "src/**/*.{test,spec}.{ts,tsx}",
+      "eslint-rules/__tests__/**/*.test.ts",
+    ],
     testTimeout: 10_000,
     pool: 'forks',
     isolate: true,
