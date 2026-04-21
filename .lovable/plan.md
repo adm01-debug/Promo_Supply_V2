@@ -1,106 +1,78 @@
 
-## Plan: Verify date-fns subpath files exist on disk
+## Plan: Make reinstalls cache-proof for date-fns
+
+### Problem
+`bun install --frozen-lockfile` already exists in `scripts/ci-check.sh` and `scripts/ci-smoke.sh`, but bun's **global install cache** (`~/.bun/install/cache`) can still hand back a stale `date-fns` tarball if the cache entry was poisoned (corrupted download, manual mutation, mid-flight upgrade). The frozen lockfile guarantees the *requested* version, not the *bytes on disk*. A clean `node_modules` plus a poisoned cache = the same stale install, silently.
 
 ### Goal
-Add a script that checks `node_modules/date-fns` actually contains the subpath files our code imports (`format`, `locale/pt-BR`, plus every other detected subpath). Fails fast with a clear message if any are missing — catches broken installs, partial extractions, or upstream package restructures before they show up as cryptic vitest errors.
+Guarantee that every CI install resolves `date-fns` from a freshly-fetched tarball, never from a cached one — without slowing down unrelated dependencies.
 
-### Change — new file `scripts/verify-datefns-files.mjs`
+### Change 1 — surgical cache eviction in both CI scripts
 
-Pure Node, zero deps. Reuses the same scan logic as the smoke-test generator so the verification stays in sync with actual usage.
+In `scripts/ci-check.sh` and `scripts/ci-smoke.sh`, between `rm -rf node_modules` and `bun install`, add:
 
-```js
-#!/usr/bin/env node
-import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
-import { join, relative } from "node:path";
-
-const ROOT = process.cwd();
-const SRC_DIR = join(ROOT, "src");
-const PKG_DIR = join(ROOT, "node_modules", "date-fns");
-const EXCLUDE_DIRS = new Set(["test", "node_modules", ".git", "dist", "build"]);
-const FILE_EXT = /\.(ts|tsx)$/;
-const IMPORT_RE = /import\s+(type\s+)?\{[^{}]*\}\s+from\s+["']date-fns\/([^"']+)["']/g;
-
-function walk(dir, acc = []) {
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-    const st = statSync(full);
-    if (st.isDirectory()) {
-      if (full === join(SRC_DIR, "test")) continue;
-      if (EXCLUDE_DIRS.has(entry)) continue;
-      walk(full, acc);
-    } else if (FILE_EXT.test(entry)) acc.push(full);
-  }
-  return acc;
-}
-
-// Collect subpaths
-const subpaths = new Set();
-for (const file of walk(SRC_DIR)) {
-  const src = readFileSync(file, "utf8");
-  let m;
-  while ((m = IMPORT_RE.exec(src)) !== null) {
-    if (m[1]) continue; // skip type-only
-    subpaths.add(m[2]);
-  }
-}
-
-// Verify package root exists
-if (!existsSync(PKG_DIR)) {
-  console.error(`✗ ${relative(ROOT, PKG_DIR)} not found. Run \`bun install\`.`);
-  process.exit(1);
-}
-
-// For each subpath, check that ONE of: <sp>.js, <sp>.mjs, <sp>/index.js, <sp>/index.mjs exists
-const missing = [];
-for (const sp of [...subpaths].sort()) {
-  const candidates = [
-    `${sp}.js`, `${sp}.mjs`, `${sp}.cjs`,
-    `${sp}/index.js`, `${sp}/index.mjs`, `${sp}/index.cjs`,
-  ];
-  const found = candidates.some((c) => existsSync(join(PKG_DIR, c)));
-  if (!found) missing.push(sp);
-}
-
-if (missing.length > 0) {
-  console.error(`✗ Missing date-fns subpath files (${missing.length}):`);
-  for (const sp of missing) console.error(`  - date-fns/${sp}`);
-  console.error(`\nChecked under: ${relative(ROOT, PKG_DIR)}`);
-  console.error(`Run \`rm -rf node_modules && bun install --frozen-lockfile\` to repair.`);
-  process.exit(1);
-}
-
-console.log(`✓ Verified ${subpaths.size} date-fns subpath(s) exist on disk.`);
+```bash
+echo "▶ Evicting any cached date-fns tarballs..."
+rm -rf "${BUN_INSTALL:-$HOME/.bun}/install/cache/date-fns"* 2>/dev/null || true
+rm -rf "$HOME/.npm/_cacache/content-v2"/**/date-fns-* 2>/dev/null || true
 ```
 
-### Wire into CI — `scripts/ci-check.sh`
+- Targets only `date-fns` cache entries — leaves the rest of the global cache warm so other deps still install fast.
+- Glob covers both bun's flat layout (`date-fns@3.6.0/`) and npm's content-addressed layout (fallback when bun isn't the resolver).
+- `|| true` keeps the script green when the cache dir doesn't exist (fresh environment).
+- Quotes around `${BUN_INSTALL:-$HOME/.bun}` handle the env var being unset.
 
-Insert as a new step between install (2/7) and source typecheck (3/7), promoting the pipeline to 8 steps:
+### Change 2 — promote step counters
 
+- `scripts/ci-smoke.sh`: 4 → 5 steps (cache evict becomes step 2/5).
+- `scripts/ci-check.sh`: 8 → 9 steps (cache evict becomes step 2/9).
+
+### Change 3 — post-install integrity assertion
+
+After install completes, before the existing `verify-datefns-files.mjs` runs, add a one-liner that confirms the resolved version on disk matches the lockfile expectation. This catches the rare case where bun resolves from a partially-corrupted cache entry that *exists* but contains wrong bytes:
+
+```bash
+echo "▶ Confirming installed date-fns version matches lockfile..."
+INSTALLED="$(node -p "require('./node_modules/date-fns/package.json').version")"
+LOCKED="$(grep -A1 '\"date-fns\"' bun.lock 2>/dev/null | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+' | head -n1)"
+if [ -n "$LOCKED" ] && [ "$INSTALLED" != "$LOCKED" ]; then
+  echo "✗ date-fns drift: installed=$INSTALLED, locked=$LOCKED" >&2
+  exit 1
+fi
+echo "✓ date-fns $INSTALLED matches lockfile."
+```
+
+This is a **belt-and-suspenders** check — the existing smoke test (`installed === pkg.json spec`) verifies declared spec parity, this verifies *lockfile* parity (catches a desynced lockfile that the smoke test would miss).
+
+### Final pipeline shapes
+
+`scripts/ci-smoke.sh` (5 steps):
 ```text
-[1/8] rm -rf node_modules
-[2/8] bun install --frozen-lockfile
-[3/8] node scripts/verify-datefns-files.mjs        ← NEW
-[4/8] npx tsc --noEmit -p tsconfig.app.json
-[5/8] node scripts/generate-datefns-smoke-test.mjs
-[6/8] npx tsc --noEmit -p tsconfig.app.json
-[7/8] npx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
-[8/8] write public/dependency-health.json snapshot
+[1/5] rm -rf node_modules
+[2/5] evict date-fns from bun/npm caches              ← NEW
+[3/5] bun install --frozen-lockfile
+[4/5] confirm installed === lockfile date-fns         ← NEW
+[5/5] node scripts/verify-datefns-files.mjs
+[5/5] npx vitest run src/test/dateFns.smoke.test.ts
 ```
+(merged into 5 ordered steps in the actual script.)
 
-Also wire into `scripts/ci-smoke.sh` (becomes 4 steps): install → verify-files → vitest.
+`scripts/ci-check.sh` (9 steps): same insert pattern between current 1 and 2, plus the integrity check before current step 3.
 
-### Why this shape
-- **Disk-level check, not module-resolver check.** Catches half-extracted tarballs, missing `locale/pt-BR/` directory, ENOENT before tsc/vitest reports a confusing module-resolution error.
-- **Same scan algorithm as the smoke-test generator** — single source of truth for "what subpaths do we use". If the generator finds it, the verifier checks it.
-- **Multi-extension tolerant.** date-fns v3 ships `.js` files at subpath roots (e.g. `node_modules/date-fns/format.js`, `node_modules/date-fns/locale/pt-BR.js`); the candidate list covers `.js`/`.mjs`/`.cjs` and index variants to remain robust across patch versions.
-- **Fast.** Pure `existsSync` calls — runs in <100ms even for ~25 subpaths.
+### Why this shape (not the alternatives)
+- **Not `rm -rf ~/.bun/install/cache`**: nukes the entire cache → every dep redownloads → CI cost spikes for an unrelated reason. Surgical eviction keeps the warm cache benefit.
+- **Not `bun install --no-cache`**: that flag affects all deps for that run; same cost problem.
+- **Not adding integrity hashes to package.json**: bun's lockfile already stores integrity hashes; the gap is the *cache layer*, not the *manifest layer*.
+- **Lockfile version parse via `grep`**: `bun.lock` is text; avoiding a JSON parser keeps the script zero-dep and matches the existing style (the dependency-health.json step uses the same `grep` pattern already).
 
 ### Verification
-1. `node scripts/verify-datefns-files.mjs` → prints `✓ Verified N date-fns subpath(s) exist on disk.`
-2. Sanity check: temporarily rename `node_modules/date-fns/locale/pt-BR.js` → rerun → fails with `Missing date-fns subpath files (1): - date-fns/locale/pt-BR`. Restore.
-3. `bash scripts/ci-smoke.sh` → 4 steps green.
-4. `bash scripts/ci-check.sh` → 8 steps green, snapshot written.
+1. `bash scripts/ci-smoke.sh` → 5 steps, all green.
+2. `bash scripts/ci-check.sh` → 9 steps, all green, snapshot written.
+3. Sanity A: `mkdir -p ~/.bun/install/cache/date-fns@99.0.0 && touch ~/.bun/install/cache/date-fns@99.0.0/poison` → rerun `ci-smoke.sh` → step 2 silently removes it, install proceeds clean.
+4. Sanity B: temporarily edit `bun.lock` to bump `date-fns` to `3.5.0` (without reinstalling) → step 4 fails with `✗ date-fns drift: installed=3.6.0, locked=3.5.0`. Revert.
+5. Sanity C: unset `BUN_INSTALL`, delete `~/.bun` → rerun → step 2 no-ops cleanly (no error from missing dir).
 
 ### Risk / scope
-- One new file (~50 lines). Two CI scripts gain one extra step each. No source, dependency, route, schema, or runtime changes.
-- Adds <200ms to CI.
+- Two existing scripts edited. No new files. No source, dependency, route, schema, or runtime changes.
+- Adds <50ms (rm of small dir) plus one `node -p` call (~30ms) per CI run.
+- Cache eviction is scoped to `date-fns` — zero impact on install speed of the other ~60 dependencies.
