@@ -11,10 +11,31 @@ import { join, relative } from "node:path";
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
 const PKG_DIR = join(ROOT, "node_modules", "date-fns");
+const PKG_REL = relative(ROOT, PKG_DIR);
 const EXCLUDE_DIRS = new Set(["test", "node_modules", ".git", "dist", "build"]);
 const FILE_EXT = /\.(ts|tsx)$/;
 const IMPORT_RE =
   /import\s+(type\s+)?\{[^{}]*\}\s+from\s+["']date-fns\/([^"']+)["']/g;
+
+// ── ANSI color helpers (TTY only — keep CI logs clean) ────────────────────────
+const isTTY = Boolean(process.stdout.isTTY);
+const color = (code, s) => (isTTY ? `\x1b[${code}m${s}\x1b[0m` : s);
+const red = (s) => color(31, s);
+const green = (s) => color(32, s);
+const cyan = (s) => color(36, s);
+const gray = (s) => color(90, s);
+const bold = (s) => color(1, s);
+
+const RULE = "━".repeat(64);
+
+function printBlock(title, body, { withRule = true } = {}) {
+  if (withRule) console.error(red(RULE));
+  console.error(red(`✗ ${title}`));
+  if (withRule) console.error(red(RULE));
+  console.error("");
+  console.error(body);
+  if (withRule) console.error(red(RULE));
+}
 
 function walk(dir, acc = []) {
   for (const entry of readdirSync(dir)) {
@@ -41,21 +62,49 @@ for (const file of walk(SRC_DIR)) {
   }
 }
 
+// ── Failure mode A: package directory missing ────────────────────────────────
 if (!existsSync(PKG_DIR)) {
-  console.error(
-    `✗ ${relative(ROOT, PKG_DIR)} not found. Run \`bun install --frozen-lockfile\`.`,
+  const body = [
+    cyan("Package directory checked:"),
+    `  ${PKG_REL}`,
+    "",
+    cyan("Likely cause:"),
+    "  Dependencies not installed (or node_modules wiped).",
+    "",
+    cyan("▶ Repair (copy & run):"),
+    "",
+    bold("    rm -rf node_modules && bun install --frozen-lockfile"),
+    "",
+    "After repair, re-run:",
+    "",
+    bold("    bun run verify:datefns-files"),
+  ].join("\n");
+  printBlock(
+    `verify-datefns-files: ${PKG_REL} not found`,
+    body,
   );
   process.exit(1);
 }
 
+// ── Failure mode B: no imports detected at all ───────────────────────────────
 if (subpaths.size === 0) {
-  console.error(
-    "✗ verify-datefns-files: no date-fns subpath imports found in src/. Aborting.",
+  const body = [
+    cyan("Scan root:"),
+    `  ${relative(ROOT, SRC_DIR)}`,
+    "",
+    cyan("Likely cause:"),
+    "  Source layout changed, or the static-import regex no longer matches",
+    "  any usage. Verify imports look like: import { fn } from \"date-fns/fn\".",
+  ].join("\n");
+  printBlock(
+    "verify-datefns-files: no date-fns subpath imports found in src/",
+    body,
   );
   process.exit(1);
 }
 
-const missing = [];
+// ── Existence check (track candidate paths per missing subpath) ──────────────
+const missing = []; // [{ subpath, tried: [relPath, ...] }]
 for (const sp of [...subpaths].sort()) {
   const candidates = [
     `${sp}.js`,
@@ -66,19 +115,43 @@ for (const sp of [...subpaths].sort()) {
     `${sp}/index.cjs`,
   ];
   const found = candidates.some((c) => existsSync(join(PKG_DIR, c)));
-  if (!found) missing.push(sp);
+  if (!found) missing.push({ subpath: sp, tried: candidates });
 }
 
+// ── Failure mode C: one or more subpaths missing on disk ─────────────────────
 if (missing.length > 0) {
-  console.error(`✗ Missing date-fns subpath files (${missing.length}):`);
-  for (const sp of missing) console.error(`  - date-fns/${sp}`);
-  console.error(`\nChecked under: ${relative(ROOT, PKG_DIR)}`);
-  console.error(
-    `Run \`rm -rf node_modules && bun install --frozen-lockfile\` to repair.`,
+  const lines = [];
+  lines.push(cyan("Missing subpaths (imported from src/ but not on disk):"));
+  for (const { subpath, tried } of missing) {
+    lines.push(`  ${red("•")} ${bold(`date-fns/${subpath}`)}`);
+    lines.push(gray(`      tried: ${tried.slice(0, 3).join(", ")},`));
+    lines.push(gray(`             ${tried.slice(3).join(", ")}`));
+  }
+  lines.push("");
+  lines.push(cyan("Package directory checked:"));
+  lines.push(`  ${PKG_REL}`);
+  lines.push("");
+  lines.push(cyan("Likely cause:"));
+  lines.push("  Broken or partial install — the lockfile resolves a date-fns version");
+  lines.push("  but one or more subpath files are missing from node_modules.");
+  lines.push("");
+  lines.push(cyan("▶ Repair (copy & run):"));
+  lines.push("");
+  lines.push(bold("    rm -rf node_modules && bun install --frozen-lockfile"));
+  lines.push("");
+  lines.push("After repair, re-run:");
+  lines.push("");
+  lines.push(bold("    bun run verify:datefns-files"));
+
+  printBlock(
+    `verify-datefns-files: ${missing.length} missing date-fns subpath(s)`,
+    lines.join("\n"),
   );
   process.exit(1);
 }
 
 console.log(
-  `✓ Verified ${subpaths.size} date-fns subpath(s) exist on disk under ${relative(ROOT, PKG_DIR)}.`,
+  green(
+    `✓ Verified ${subpaths.size} date-fns subpath(s) exist on disk under ${PKG_REL}.`,
+  ),
 );
