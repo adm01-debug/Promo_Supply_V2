@@ -24,6 +24,20 @@ jobs:
       - name: Install dependencies (frozen lockfile)
         run: bun install --frozen-lockfile
       - name: Verify smoke test is in sync
-        run: bun run verify:datefns-smoke
+        run: |
+          mkdir -p ci-logs
+          set -o pipefail
+          bun run verify:datefns-smoke 2>&1 | tee ci-logs/verify-smoke-drift.log
       - name: Validate smoke test types
-        run: bun run verify:datefns-smoke-types
+        run: |
+          mkdir -p ci-logs
+          set -o pipefail
+          bun run verify:datefns-smoke-types 2>&1 | tee ci-logs/verify-smoke-types.log
+      - name: Upload smoke logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: datefns-smoke-drift-logs
+          path: ci-logs/
+          if-no-files-found: ignore
+          retention-days: 14
