@@ -232,8 +232,10 @@ SMOKE_TSC_EXIT=${PIPESTATUS[0]}
 if [ "$SMOKE_TSC_EXIT" -eq 0 ]; then
   SMOKE_VITEST_RAN=1
   VITEST_START=$SECONDS
-  bunx vitest run "$SMOKE_TEST_PATH" \
-    --reporter=verbose \
+  # Stay aligned with the local `bun run test:date-fns` script. CI appends
+  # the test path override + extra reporters/flags after `--`.
+  bun run test:date-fns -- \
+    "$SMOKE_TEST_PATH" \
     --reporter=json --outputFile="$LOG_DIR/vitest-smoke.json" \
     --hideSkippedTests \
     --printConsoleTrace \
