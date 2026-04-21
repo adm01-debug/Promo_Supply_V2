@@ -13,8 +13,11 @@ const SRC_DIR = join(ROOT, "src");
 const MANIFEST_FILE = join(ROOT, "public", "datefns-usage.json");
 const EXCLUDE_DIRS = new Set(["test", "node_modules", ".git", "dist", "build"]);
 const FILE_EXT = /\.(ts|tsx)$/;
+// Inner `[\s\S]*?` (non-greedy, any char incl. newlines) handles multi-line
+// import specifiers. NOTE: this script only reads capture group 3 (subpath),
+// so comments inside braces don't affect detection — no stripComments() needed.
 const IMPORT_RE =
-  /import\s+(type\s+)?\{([^{}]*)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
+  /import\s+(type\s+)?\{([\s\S]*?)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
 const GENERATOR_HINT =
   "Run `node scripts/generate-datefns-smoke-test.mjs` and commit the result.";
 
