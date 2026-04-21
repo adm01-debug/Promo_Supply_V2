@@ -5,10 +5,12 @@
  * if any are missing — catches broken installs before vitest/tsc do.
  * Pure Node, zero deps. Same scan logic as generate-datefns-smoke-test.mjs.
  */
-import { readdirSync, readFileSync, statSync, existsSync } from "node:fs";
-import { join, relative } from "node:path";
+import { readdirSync, readFileSync, statSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
+import { join, relative, dirname } from "node:path";
 
 const ROOT = process.cwd();
+const WRITE_HEALTH = process.argv.slice(2).some((a) => a === "--write-health" || a === "--update-health");
+const SNAPSHOT_PATH = join(ROOT, "public", "dependency-health.json");
 const SRC_DIR = join(ROOT, "src");
 const PKG_DIR = join(ROOT, "node_modules", "date-fns");
 const PKG_REL = relative(ROOT, PKG_DIR);
