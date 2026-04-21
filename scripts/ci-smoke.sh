@@ -156,6 +156,7 @@ print_summary() {
   echo "  ci-smoke.sh summary"
   echo "$rule"
   printf "  date-fns version    : %s\n" "$datefns_line"
+  printf "  Subpath files       : %s\n" "$verify_files_line"
   printf "  ESLint date-fns gate: %s\n" "$eslint_line"
   printf "  Smoke tsc           : %s\n" "$tsc_line"
   printf "  Smoke vitest        : %s\n" "$vitest_line"
