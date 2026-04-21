@@ -14,7 +14,24 @@ const SNAPSHOT_PATH = join(ROOT, "public", "dependency-health.json");
 const SRC_DIR = join(ROOT, "src");
 const PKG_DIR = join(ROOT, "node_modules", "date-fns");
 const PKG_REL = relative(ROOT, PKG_DIR);
-const EXCLUDE_DIRS = new Set(["test", "node_modules", ".git", "dist", "build"]);
+// Directories skipped during the walk (matched by basename).
+// __mocks__ and storybook directories are intentionally excluded — they exercise
+// imports for tooling, not runtime behavior, and should not influence the
+// "what subpaths must exist on disk?" question.
+const EXCLUDE_DIRS = new Set([
+  "test",
+  "node_modules",
+  ".git",
+  "dist",
+  "build",
+  "__mocks__",
+  "__stories__",
+  "stories",
+  ".storybook",
+]);
+// Files skipped during the walk (matched against basename).
+// Covers `*.stories.ts(x)`, `*.story.ts(x)`, and `*.mock.ts(x)`.
+const EXCLUDE_FILE_RE = /\.(stories|story|mock)\.(ts|tsx)$/;
 const FILE_EXT = /\.(ts|tsx)$/;
 // Patterns we recognise (all match the `date-fns/<subpath>` specifier):
 //   1. Named import:        import { fn } from "date-fns/fn"
