@@ -31,9 +31,11 @@ function walk(dir, acc = []) {
 }
 
 // Match: import [type] { a, b as c } from "date-fns/<subpath>"
-// Allows multi-line brace contents. Captures: 1=isType, 2=names, 3=subpath
+// Brace contents must not contain `{` or `}` (no nesting in import lists),
+// which keeps the match from spanning across unrelated import statements.
+// Captures: 1=isType, 2=names, 3=subpath
 const IMPORT_RE =
-  /import\s+(type\s+)?\{([\s\S]*?)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
+  /import\s+(type\s+)?\{([^{}]*)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
 
 /** Map<subpath, Set<exportName>> */
 const subpaths = new Map();
