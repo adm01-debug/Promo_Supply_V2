@@ -91,6 +91,7 @@ const fetchSnapshot = async (): Promise<DependencyHealthSnapshot> => {
 const DependencyHealth = () => {
   const { isAdmin } = useAuth();
   const queryClient = useQueryClient();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const { data, isLoading, error } = useQuery({
     queryKey: ["dependency-health"],
     queryFn: fetchSnapshot,
@@ -102,6 +103,28 @@ const DependencyHealth = () => {
     queryFn: fetchHistory,
     staleTime: 60_000,
   });
+
+  const selectedDiff = useMemo(() => {
+    if (!history || history.length === 0) return null;
+    const idx = selectedId ? history.findIndex((h) => h.id === selectedId) : 0;
+    const currentIdx = idx === -1 ? 0 : idx;
+    const current = history[currentIdx];
+    const previous = history[currentIdx + 1] ?? null;
+    const prevMap = new Map<string, boolean>(
+      (previous?.packages ?? []).map((p) => [p.name, p.driftDetected]),
+    );
+    const drifted: string[] = [];
+    const recovered: string[] = [];
+    const persisted: string[] = [];
+    for (const p of current.packages ?? []) {
+      const wasDrift = prevMap.get(p.name) ?? false;
+      if (p.driftDetected && !wasDrift) drifted.push(p.name);
+      else if (!p.driftDetected && wasDrift) recovered.push(p.name);
+      else if (p.driftDetected && wasDrift) persisted.push(p.name);
+    }
+    return { current, previous, drifted, recovered, persisted };
+  }, [history, selectedId]);
+
 
   const buildRefresh = (dispatchCi: boolean) =>
     useMutation({
