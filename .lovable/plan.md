@@ -1,126 +1,88 @@
 
-## Plan: Clearer diff output on date-fns version mismatch
+## Plan: Add CI workflow that runs `scripts/ci-smoke.sh` before `ci-check.sh` on PRs
 
 ### Goal
-When `scripts/verify-datefns-versions.mjs` detects drift, show a visual side-by-side diff that makes the mismatch obvious at a glance — character-level highlight of where the versions diverge, plus a one-line summary like `spec 3.5.0 ≠ installed 3.6.0 (minor bump)`.
+Run the fast smoke lane (`scripts/ci-smoke.sh`) as a required gate on PRs **before** the full `ci-check.sh` lane runs, so obvious `date-fns` install/import drift fails in ~2 min instead of waiting ~10 min for the full check.
 
-Today's output already has a 3-row table with `← drift` markers and a fix command. This adds: (1) a character-aligned diff highlighting the differing semver segment, (2) a semver-level classification (major/minor/patch/prerelease/build), and (3) a focused 2-line "what changed" callout for the most common case (spec vs installed).
-
-### Current output (recap)
-```
-✗ date-fns version drift detected:
-
-    SOURCE              VERSION  STATUS
-    ──────────────────  ───────  ────────
-    package.json spec   ^3.5.0   ← drift
-    bun.lock resolved   3.6.0    ok
-    node_modules        3.6.0    ok
-```
-
-### New output (added below the existing table, before the Fix line)
-```
-  Mismatch detail:
-    spec       3.5.0
-    installed  3.6.0
-                 ^
-    → minor version drift (3.5.0 → 3.6.0)
-```
-The caret line points at the exact differing semver segment (major / minor / patch / prerelease / build). For full corruption (all three differ), one block per pair.
+### Current state
+- `.github/workflows/ci-check.yml` runs `bash scripts/ci-check.sh` on `pull_request` to `main`, uploads `ci-logs/` as artifact `ci-check-smoke-logs`.
+- `scripts/ci-smoke.sh` exists (clean install + frozen lockfile + ESLint date-fns gate + file/locale verify + focused tsc + smoke vitest + health emit) but has no workflow wiring.
+- No job dependency exists between the two.
 
 ### Changes
 
-#### 1. `scripts/verify-datefns-versions.mjs` — add a diff renderer (~50 lines)
+#### 1. New file: `.github/workflows/ci-smoke.yml` (~40 lines)
 
-New helpers, inserted just before the existing diagnosis block:
+Mirror the structure of `ci-check.yml`:
+- Trigger: `pull_request` → `main`.
+- Concurrency group `ci-smoke-${{ github.ref }}` with `cancel-in-progress: true`.
+- `runs-on: ubuntu-latest`, `timeout-minutes: 8`.
+- Steps: checkout → setup-bun → setup-node 20 → `bash scripts/ci-smoke.sh` (env `CI=true`, `TZ=UTC`) → upload `ci-logs/` as artifact `ci-smoke-logs` (`if: always()`, 14-day retention, `if-no-files-found: ignore`).
 
-```js
-// Split semver into [major, minor, patch, prerelease, build]
-function splitSemver(v) {
-  const m = /^(\d+)\.(\d+)\.(\d+)(?:-([0-9A-Za-z.-]+))?(?:\+([0-9A-Za-z.-]+))?$/.exec(v);
-  if (!m) return null;
-  return { major: m[1], minor: m[2], patch: m[3], pre: m[4] ?? "", build: m[5] ?? "" };
-}
+#### 2. Edit `.github/workflows/ci-check.yml` — gate on smoke
 
-// Returns { level: "major"|"minor"|"patch"|"prerelease"|"build"|"unknown", caretCol }
-function classifyDiff(a, b) {
-  const sa = splitSemver(a), sb = splitSemver(b);
-  if (!sa || !sb) return { level: "unknown", caretCol: 0 };
-  const segs = ["major", "minor", "patch", "pre", "build"];
-  // caretCol is the column (0-indexed) of the first differing char in `b`
-  const labelMap = { pre: "prerelease" };
-  let col = 0;
-  for (const seg of segs) {
-    if (sa[seg] !== sb[seg]) {
-      // find first differing char inside this segment
-      const offset = [...sb[seg]].findIndex((c, i) => sa[seg][i] !== c);
-      return {
-        level: labelMap[seg] ?? seg,
-        caretCol: col + Math.max(0, offset),
-      };
-    }
-    col += sb[seg].length + 1; // +1 for "." or "-" or "+" delimiter
-  }
-  return { level: "unknown", caretCol: 0 };
-}
+Add `needs: [ci-smoke]` to the `ci-check` job so the heavy lane only runs once smoke is green. Two options for the dependency:
 
-function renderMismatch(label1, v1, label2, v2) {
-  const { level, caretCol } = classifyDiff(v1, v2);
-  const labelW = Math.max(label1.length, label2.length);
-  const pad = (s) => s + " ".repeat(labelW - s.length);
-  const caretIndent = " ".repeat(labelW + 2 + caretCol);
-  const lines = [
-    `    ${pad(label1)}  ${v1}`,
-    `    ${pad(label2)}  ${v2}`,
-    `    ${caretIndent}^`,
-    `    → ${level} version drift (${v1} → ${v2})`,
-  ];
-  return lines.join("\n");
-}
+- **Option A (chosen)**: Reference smoke as a separate workflow via a single combined workflow file. Since GitHub Actions can't `needs:` across workflow files, the cleanest implementation is to **merge both into one workflow** with two jobs (`ci-smoke` first, `ci-check` with `needs: [ci-smoke]`).
+
+Concretely:
+- Rename the new file's job to `ci-smoke` and **add it to `ci-check.yml`** as the first job, instead of creating a separate `.yml`. Keep filename `.github/workflows/ci-check.yml` (already what branch protection points at). Add `needs: [ci-smoke]` to the existing `ci-check` job.
+
+Final shape of `.github/workflows/ci-check.yml`:
+```yaml
+name: CI Check
+on:
+  pull_request:
+    branches: [main]
+concurrency:
+  group: ci-check-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ci-smoke:
+    name: Fast smoke gate (date-fns install + smoke test)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: latest }
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - name: Run ci-smoke.sh
+        run: bash scripts/ci-smoke.sh
+        env: { CI: 'true', TZ: UTC }
+      - name: Upload smoke logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-smoke-logs
+          path: ci-logs/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  ci-check:
+    name: Full CI gate (date-fns + lint + types + smoke)
+    needs: [ci-smoke]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # ... existing steps unchanged ...
 ```
 
-Wire-up — after the existing table prints, before the "Fix" block, render one diff block per drifting pair:
-
-```js
-console.error("\n  Mismatch detail:");
-if (!specEqLock && lockEqInstalled) {
-  console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
-} else if (specEqLock && !lockEqInstalled) {
-  console.error(renderMismatch("locked", LOCKED, "installed", INSTALLED));
-} else if (specEqInstalled && !specEqLock) {
-  console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
-} else {
-  // all three differ
-  console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
-  console.error("");
-  console.error(renderMismatch("locked", LOCKED, "installed", INSTALLED));
-}
-```
-
-Notes:
-- Pure additive — the existing table, diagnosis sentence, fix command, and exit codes are untouched.
-- Uses only `console.error` + plain ASCII (no color libs, no deps), consistent with the rest of the script.
-- Handles malformed versions gracefully (`level: "unknown"`, caret at column 0) — no crash on weird tags like `git+ssh://…`.
-
-#### 2. `scripts/install-report.mjs` — call the same renderer when drift detected (~5 lines)
-
-Currently prints `✗ DRIFT` with no detail. Import the two new helpers (or inline them — they're small) and append the same `Mismatch detail:` block when `aligned` is false. Mirrors the verify script so devs see the same diff in both contexts.
-
-To avoid duplication, extract the helpers into `scripts/lib/semver-diff.mjs` (~40 lines) and import from both scripts.
+The existing `ci-check` job body, env, and artifact upload (`ci-check-smoke-logs`) are preserved verbatim — only `needs: [ci-smoke]` is added.
 
 #### 3. No other changes
-- `scripts/emit-smoke-health.mjs` already records spec/locked/installed in JSON — no UI there to enrich.
-- CI workflows, tests, exit codes, fix commands — all unchanged.
-- `package.json` — no new deps.
+- `scripts/ci-smoke.sh` and `scripts/ci-check.sh` — unchanged.
+- Other workflows (`lint.yml`, `typecheck.yml`, `lint-date-fns.yml`, `dependency-health.yml`, `datefns-smoke-drift.yml`) — unchanged; they continue to run in parallel as independent gates.
+- Branch protection — already targets `ci-check.yml`; both jobs in the same workflow will appear as required checks once GitHub registers them on the next PR.
 
 ### Verification
-1. `bun install` clean → no output change (drift path not triggered).
-2. Manually edit `package.json` `date-fns` to `"3.5.0"`, run `node scripts/verify-datefns-versions.mjs` → see new `Mismatch detail` block with caret pointing at minor segment, `→ minor version drift (3.5.0 → 3.6.0)`.
-3. Edit installed `node_modules/date-fns/package.json` version to `4.0.0` → caret points at major, `→ major version drift`.
-4. Edit to `3.6.1` → caret at patch, `→ patch version drift`.
-5. Force all-three-differ scenario → two stacked diff blocks (spec↔locked, locked↔installed).
-6. Same diff appears at the bottom of `node scripts/install-report.mjs` output when drifted.
+1. Open a PR → `ci-smoke` job starts immediately, `ci-check` is queued with "Waiting for ci-smoke".
+2. Smoke green → `ci-check` runs as before; both artifacts (`ci-smoke-logs`, `ci-check-smoke-logs`) uploaded.
+3. Smoke red (e.g. introduce a barrel `import { format } from "date-fns"`) → `ci-check` is skipped, PR fails fast in ~2 min with `ci-smoke-logs` artifact attached.
+4. Concurrency: pushing a new commit cancels both jobs of the prior run via the shared `ci-check-${{ github.ref }}` group.
 
 ### Risk / scope
-- 1 new file (`scripts/lib/semver-diff.mjs`, ~40 lines), ~15 lines added to `verify-datefns-versions.mjs`, ~5 lines added to `install-report.mjs`.
-- 0 deps, 0 test changes, 0 workflow changes, 0 exit-code changes.
-- Drift path only — green runs unchanged.
+- 1 file edited (`.github/workflows/ci-check.yml`), 0 new files, 0 script changes, 0 dep changes.
+- Adds ~2 min to total wall-clock on green PRs (smoke runs serially before check). Acceptable trade-off for fail-fast on red.
+- Branch protection requires no manual update — same workflow filename, just an extra required job named `ci-smoke` will appear after first run; admin should mark it required in repo settings.
