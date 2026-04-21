@@ -1,111 +1,132 @@
 
-## Plan: Persist discovered date-fns subpaths into `public/dependency-health.json`
+## Plan: Per-subpath existence report in `public/dependency-health.json`
 
 ### Goal
-Let `scripts/verify-datefns-files.mjs` optionally append the sorted list of discovered `date-fns/<subpath>` references into `public/dependency-health.json`, so install-to-install drift in subpath usage is visible to the existing `scripts/diff-dependency-health.mjs` tooling.
+Extend the snapshot written by `scripts/verify-datefns-files.mjs --write-health` so each detected `date-fns/<subpath>` is recorded **with its on-disk status and the resolved file**, not just as a name in a flat list. This makes drift between installs (e.g. a subpath flipping from `exists: true` to `exists: false`) visible to `scripts/diff-dependency-health.mjs`.
 
-### Design
-
-#### 1. Opt-in flag in `verify-datefns-files.mjs`
-Add a `--write-health` (also `--update-health`) CLI flag, off by default.
-- Without flag → behavior is unchanged (pure verifier, exits 0/1).
-- With flag → after a successful verification, merge a new `dateFns.subpaths` block into `public/dependency-health.json`.
-
-Why opt-in: the verifier runs in pre-push hooks and CI step `[5/9]`/`[7/14]`; we don't want every developer's local run to dirty `public/dependency-health.json`. The flag is for the dependency-health workflow and on-demand local diffs.
-
-#### 2. JSON shape — additive, non-breaking
-Inside the existing `dateFns` object in `public/dependency-health.json`:
+### Current state (baseline)
+After today's `--write-health` run, the snapshot contains:
 
 ```json
 "dateFns": {
-  "spec": "3.6.0",
-  "installed": "3.6.0",
-  "locked": "3.6.0",
-  "exactPinned": true,
+  "spec": "3.6.0", "installed": "3.6.0", "locked": "3.6.0", "exactPinned": true,
   "subpaths": {
-    "scannedAt": "2026-04-21T18:30:00.000Z",
-    "count": 42,
-    "list": ["addDays", "format", "locale/pt-BR", "parseISO", ...]
+    "scannedAt": "2026-04-21T...",
+    "count": 21,
+    "list": ["addDays", "addMonths", ..., "parseISO"]
   }
 }
 ```
 
-- Keys at the top of the file (`generatedAt`, `packages`, `lockfileDrift`, `treeShaking`) are untouched.
-- `list` is sorted alphabetically (already sorted by the verifier's existence loop).
-- `count` is redundant with `list.length` but cheap and improves grep-ability.
+The flat `list` says **what we import** but not **whether it resolves**. Today the verifier already probes each subpath against six candidate files — we just throw that result away after the pass/fail decision.
 
-#### 3. Merge semantics
-The verifier doesn't regenerate the whole snapshot — it only rewrites the `dateFns.subpaths` sub-object. Read-merge-write:
+### Design
 
-```js
-const snapshot = existsSync(SNAPSHOT) ? JSON.parse(readFileSync(SNAPSHOT, "utf8")) : {};
-snapshot.dateFns = snapshot.dateFns ?? {};
-snapshot.dateFns.subpaths = { scannedAt, count, list };
-writeFileSync(SNAPSHOT, JSON.stringify(snapshot, null, 2) + "\n");
+#### 1. Reshape `dateFns.subpaths` — additive at the field level
+Replace `list: string[]` with `entries: Array<{ subpath, exists, resolvedFile }>`, and keep `count` plus a new `missingCount` for grep-ability.
+
+```json
+"dateFns": {
+  "spec": "3.6.0", "installed": "3.6.0", "locked": "3.6.0", "exactPinned": true,
+  "subpaths": {
+    "scannedAt": "2026-04-21T18:30:00.000Z",
+    "count": 21,
+    "missingCount": 0,
+    "entries": [
+      { "subpath": "addDays",      "exists": true, "resolvedFile": "addDays.js" },
+      { "subpath": "format",       "exists": true, "resolvedFile": "format/index.js" },
+      { "subpath": "locale/pt-BR", "exists": true, "resolvedFile": "locale/pt-BR/index.js" },
+      ...
+    ]
+  }
+}
 ```
 
-If the file doesn't exist yet, write a minimal `{ dateFns: { subpaths: {...} } }` skeleton — `scripts/generate-dependency-health.mjs` will fill in the rest on its next run.
+- `entries` is sorted by `subpath` (already what the verifier does).
+- `resolvedFile` is the **first** matching candidate from the existing probe list (`<sp>.js`, `<sp>.mjs`, `<sp>.cjs`, `<sp>/index.js`, `<sp>/index.mjs`, `<sp>/index.cjs`), printed **relative to `node_modules/date-fns`** so the value is short and stable across machines.
+- `resolvedFile` is `null` when `exists: false`.
+- `list` is **dropped** — `entries.map(e => e.subpath)` reconstructs it. Backwards-compatible reads of `dateFns.spec/installed/locked/exactPinned` are untouched; `subpaths.list` had only one consumer (`diff-dependency-health.mjs`'s newly-added subpath diff) which we update in step 3.
 
-#### 4. Generator stays the source of truth for everything else
-`scripts/generate-dependency-health.mjs` keeps writing `generatedAt`, `packages`, `lockfileDrift`, `treeShaking`, **and now** preserves any pre-existing `dateFns.subpaths` it finds (read-then-merge, same pattern). One added safeguard so a generator run after a verifier run doesn't wipe `subpaths`:
+#### 2. Compute the report inside the verifier — reuse, don't re-walk
+Refactor the existence loop so it builds `entries` for **every** subpath (existing loop only tracks the missing ones). One pass, same probes:
 
 ```js
-const existing = readJsonSafe(outPath);
-if (existing?.dateFns?.subpaths) snapshot.dateFns.subpaths = existing.dateFns.subpaths;
+const entries = [];
+const missing = [];
+for (const sp of [...subpaths].sort()) {
+  const candidates = [`${sp}.js`, `${sp}.mjs`, `${sp}.cjs`,
+                      `${sp}/index.js`, `${sp}/index.mjs`, `${sp}/index.cjs`];
+  const hit = candidates.find((c) => existsSync(join(PKG_DIR, c))) ?? null;
+  entries.push({ subpath: sp, exists: hit !== null, resolvedFile: hit });
+  if (!hit) missing.push({ subpath: sp, tried: candidates });
+}
 ```
 
-#### 5. Diff visibility
-Extend `scripts/diff-dependency-health.mjs`'s `diffDateFns()` to print added/removed subpaths when `dateFns.subpaths.list` differs:
+Failure-mode formatting (Failure mode C: missing subpaths block) is unchanged — it still uses `missing[]` and exits with code `1`.
+
+#### 3. Write the richer block under `--write-health`
+The `--write-health` branch (already at the bottom of the script) now serializes `entries` instead of `list`:
+
+```js
+const subpathsBlock = {
+  scannedAt: new Date().toISOString(),
+  count: entries.length,
+  missingCount: entries.filter((e) => !e.exists).length,
+  entries,
+};
+```
+
+Crucially: this branch runs **after** the `missing.length > 0` exit. So `--write-health` only lands a snapshot in the success path. That matches the existing intent (don't poison the snapshot on a broken install) and keeps `missingCount` always `0` in committed snapshots — but the field is still useful when a developer runs the verifier locally with `--write-health` on a partly-broken tree (we'll move the write earlier? **No.** Keep current ordering: a missing subpath aborts before we write. Document the `missingCount: 0` invariant in a comment.).
+
+Actually — re-reading the user's intent ("lists the detected date-fns subpaths and whether each one exists on disk") suggests they want the report **even when some don't exist**. Compromise: under `--write-health`, write the snapshot **before** the early-exit, then still exit 1. That preserves CI gating while making the report comprehensive. Add a one-line comment explaining the ordering.
+
+```js
+if (WRITE_HEALTH) writeSnapshot(entries);  // always write first
+if (missing.length > 0) { /* print failure block + exit 1 */ }
+```
+
+#### 4. Update the diff helper for the new shape
+`scripts/diff-dependency-health.mjs::diffDateFns()` currently reads `subpaths.list`. Update it to read `subpaths.entries.map(e => e.subpath)` for added/removed detection, and add a third diff line for **resolution flips** — subpaths present in both snapshots whose `exists` or `resolvedFile` changed:
 
 ```
   date-fns:
-    subpaths.count: 41 → 42
+    subpaths.count: 21 → 22
+    subpaths.missingCount: 0 → 1
     subpaths added:
-      + locale/pt-BR
-    subpaths removed:
-      - locale/pt
+      + locale/de
+    subpaths resolution changed:
+      ~ format: exists true → false  (resolved format/index.js → —)
 ```
 
-Cap added/removed lists at 20 entries (mirrors `OFFENDER_DIFF_CAP`). No exit-code change — diff is informational, matching existing policy.
+Cap each list at `OFFENDER_DIFF_CAP` (20) — same pattern as today.
 
-#### 6. New npm script for convenience
-Add to `package.json`:
+Backwards-compat: if the previous snapshot still has `list` (older format), fall back to that for the added/removed comparison and skip the resolution-flip section.
 
-```json
-"verify:datefns-files:write": "node scripts/verify-datefns-files.mjs --write-health"
-```
-
-Naming aligns with the existing `verify:datefns-files` entry.
-
-#### 7. CI wiring
-- `scripts/ci-smoke.sh` step `[5/9]` → unchanged (still runs verifier without `--write-health`; CI shouldn't dirty the snapshot).
-- `scripts/ci-check.sh` step `[7/14]` → unchanged.
-- `.github/workflows/dependency-health.yml` → after `bun run deps:health`, add one line: `bun run verify:datefns-files:write`. The auto-commit step (`stefanzweifel/git-auto-commit-action@v5`) already commits `public/dependency-health.json`, so the new field rides along.
+#### 5. Generator preserves the new shape
+`scripts/generate-dependency-health.mjs` already preserves `existing.dateFns.subpaths` wholesale (the block we added in the previous plan). No change needed — the new `entries` shape rides through the same code path.
 
 ### Behavior matrix
 
-| Invocation | Output | Snapshot side effect |
+| Scenario | Snapshot effect | Exit code |
 |---|---|---|
-| `bun run verify:datefns-files` (default) | Verifier output only | None |
-| `bun run verify:datefns-files:write` | Verifier output + `▶ Wrote dateFns.subpaths to public/dependency-health.json (N entries)` | `dateFns.subpaths` updated |
-| `bun run deps:health` | Generator output | Full snapshot rewritten; preserves any prior `dateFns.subpaths` |
-| `bun run deps:health:diff` (after a `:write` run) | Now also prints subpath added/removed | None |
-| Weekly `dependency-health` workflow | Generator + verifier:write | Snapshot committed with both `treeShaking` and `dateFns.subpaths` refreshed |
+| `verify:datefns-files` (no flag, all present) | None | 0 |
+| `verify:datefns-files:write` (all present) | `entries` written, `missingCount: 0` | 0 |
+| `verify:datefns-files:write` (some missing) | `entries` written **with `exists: false` rows**, `missingCount > 0` | 1 |
+| `deps:health` (regenerator) | `subpaths` block preserved unchanged | 0 |
+| `deps:health` diff after a `:write` run | Now also reports added/removed/flipped subpaths | 0 |
 
 ### Files edited
-- `scripts/verify-datefns-files.mjs` — add `--write-health` flag handler (~25 lines).
-- `scripts/generate-dependency-health.mjs` — preserve existing `dateFns.subpaths` on regeneration (~5 lines).
-- `scripts/diff-dependency-health.mjs` — extend `diffDateFns()` with subpath added/removed section (~25 lines).
-- `package.json` — add `verify:datefns-files:write` script (1 line).
-- `.github/workflows/dependency-health.yml` — add one verifier-write step after `deps:health` (~3 lines).
+- `scripts/verify-datefns-files.mjs` — refactor probe loop to build `entries[]`, move `--write-health` branch to before the missing-subpath exit, write new shape (~20 lines changed).
+- `scripts/diff-dependency-health.mjs` — read `entries`, add resolution-flip section, keep `list` fallback (~25 lines changed).
 
 ### Out of scope
-- No change to detection patterns (still static named imports — broader patterns remain a separate plan).
-- No change to verifier exit codes or failure-block formatting.
-- No new top-level keys in `dependency-health.json` — `subpaths` lives under the existing `dateFns` object to keep the shape additive.
-- No tests added for the diff helper (matches existing convention — `diff-dependency-health.mjs` has no unit tests today).
+- No change to the failure-block formatting, exit codes, or detection regex set.
+- No new CLI flags — `--write-health` keeps its single role.
+- No new `npm` scripts.
+- No CI workflow change — the existing `.github/workflows/dependency-health.yml` step (`bun run verify:datefns-files:write`) automatically picks up the richer payload.
+- No tests added (matches existing convention; no unit tests exist for verifier or diff).
 
 ### Risk / scope
-- 5 files, ~60 lines total, all additive.
-- Default verifier behavior unchanged → zero impact on pre-push and CI.
-- JSON shape extension is backwards-compatible (consumers reading `dateFns.spec`/`installed`/`locked` are unaffected).
+- 2 files, ~45 lines total, additive at the JSON-field level (`list` removed, `entries` added).
+- The only consumer of the prior shape was the diff helper — updated in the same change.
+- One subtle behavioral change: with `--write-health`, the snapshot is now written even when subpaths are missing (so the report is comprehensive). The verifier still exits 1 in that case. If you'd rather keep the old "abort before write" ordering, say so and I'll flip it.
