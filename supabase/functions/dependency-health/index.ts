@@ -69,6 +69,22 @@ interface PackageHealth {
   driftDetected: boolean;
 }
 
+interface TreeShakingOffender {
+  file: string;
+  line: number;
+  importPath: string;
+}
+
+interface TreeShakingReport {
+  scannedAt: string;
+  filesScanned: number;
+  barrelImportsFound: number;
+  offenders: TreeShakingOffender[];
+  truncated?: boolean;
+  riskLevel: "ok" | "warning" | "critical";
+  note?: string;
+}
+
 interface DependencyHealthSnapshot {
   generatedAt: string;
   dateFns: {
@@ -83,6 +99,59 @@ interface DependencyHealthSnapshot {
     lastCheckedAt: string;
     source: string;
   };
+  treeShaking?: TreeShakingReport;
+}
+
+async function scanTreeShakingViaGitHub(rawBase: string): Promise<TreeShakingReport | null> {
+  if (!GITHUB_DISPATCH_TOKEN) return null;
+  const or = deriveOwnerRepo(rawBase);
+  if (!or) return null;
+  const q = encodeURIComponent(`from "date-fns" repo:${or.owner}/${or.repo} path:src`);
+  const url = `https://api.github.com/search/code?q=${q}&per_page=50`;
+  try {
+    const res = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`,
+        Accept: "application/vnd.github.text-match+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) return null;
+    // deno-lint-ignore no-explicit-any
+    const body: any = await res.json();
+    const items: any[] = Array.isArray(body?.items) ? body.items : [];
+    const offenders: TreeShakingOffender[] = [];
+    let barrelImportsFound = 0;
+    for (const item of items) {
+      const matches: any[] = Array.isArray(item?.text_matches) ? item.text_matches : [];
+      for (const m of matches) {
+        const frag = String(m?.fragment ?? "");
+        const re = /from\s+['"](date-fns(?:\/locale)?)['"]/g;
+        let mm: RegExpExecArray | null;
+        while ((mm = re.exec(frag)) !== null) {
+          barrelImportsFound++;
+          if (offenders.length < 50) {
+            offenders.push({ file: String(item?.path ?? ""), line: 0, importPath: mm[1] });
+          }
+        }
+      }
+    }
+    const total = typeof body?.total_count === "number" ? body.total_count : barrelImportsFound;
+    const riskLevel: TreeShakingReport["riskLevel"] =
+      total === 0 ? "ok" : total < 5 ? "warning" : "critical";
+    return {
+      scannedAt: new Date().toISOString(),
+      filesScanned: items.length,
+      barrelImportsFound: total,
+      offenders,
+      truncated: offenders.length < total,
+      riskLevel,
+      note: "scanned via GitHub Search API",
+    };
+  } catch {
+    return null;
+  }
 }
 
 function json(body: unknown, status = 200): Response {
@@ -231,6 +300,8 @@ async function handlePost(req: Request): Promise<Response> {
   const aggregateDrift = packages.some((p) => p.driftDetected);
   const now = new Date().toISOString();
 
+  const treeShaking = await scanTreeShakingViaGitHub(GITHUB_REPO_RAW_BASE);
+
   const payload: DependencyHealthSnapshot = {
     generatedAt: now,
     dateFns: {
@@ -245,6 +316,7 @@ async function handlePost(req: Request): Promise<Response> {
       lastCheckedAt: now,
       source: "edge:dependency-health POST",
     },
+    ...(treeShaking ? { treeShaking } : {}),
   };
 
   const { error: upsertErr } = await admin

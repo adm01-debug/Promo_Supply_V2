@@ -1,14 +1,69 @@
 {
-  "generatedAt": "2026-04-21T00:00:00Z",
+  "generatedAt": "2026-04-21T16:27:28.075Z",
   "dateFns": {
     "spec": "3.6.0",
     "installed": "3.6.0",
     "locked": "3.6.0",
     "exactPinned": true
   },
+  "packages": [
+    {
+      "name": "date-fns",
+      "label": "date-fns",
+      "spec": "3.6.0",
+      "installed": "3.6.0",
+      "locked": "3.6.0",
+      "exactPinned": true,
+      "driftDetected": false
+    },
+    {
+      "name": "react",
+      "label": "React",
+      "spec": "^18.3.1",
+      "installed": "18.3.1",
+      "locked": "18.3.1",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "vite",
+      "label": "Vite",
+      "spec": "^5.4.19",
+      "installed": "5.4.19",
+      "locked": "5.4.19",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "typescript",
+      "label": "TypeScript",
+      "spec": "^5.8.3",
+      "installed": "5.8.3",
+      "locked": "5.8.3",
+      "exactPinned": false,
+      "driftDetected": false
+    },
+    {
+      "name": "shadcn-ui",
+      "label": "shadcn/ui (radix-dialog proxy)",
+      "spec": "^1.1.14",
+      "installed": "1.1.14",
+      "locked": "1.1.14",
+      "exactPinned": false,
+      "driftDetected": false
+    }
+  ],
   "lockfileDrift": {
     "detected": false,
-    "lastCheckedAt": "2026-04-21T00:00:00Z",
-    "source": "bun install --frozen-lockfile"
+    "lastCheckedAt": "2026-04-21T16:27:28.075Z",
+    "source": "scripts/generate-dependency-health.mjs"
+  },
+  "treeShaking": {
+    "scannedAt": "2026-04-21T16:27:28.113Z",
+    "filesScanned": 393,
+    "barrelImportsFound": 0,
+    "offenders": [],
+    "truncated": false,
+    "riskLevel": "ok"
   }
 }

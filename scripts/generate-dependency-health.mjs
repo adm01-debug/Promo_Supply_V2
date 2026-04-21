@@ -3,10 +3,89 @@
  * Generates public/dependency-health.json from package.json + bun.lock.
  * Reusable by CI workflows or local invocation via `bun run deps:health`.
  */
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
+import { resolve, dirname, relative, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
+
+const SCAN_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx"]);
+const SCAN_SKIP_DIRS = new Set(["node_modules", "dist", "build", ".next", "coverage"]);
+const BARREL_IMPORT_RE = /from\s+['"](date-fns(?:\/locale)?)['"]/g;
+const OFFENDERS_CAP = 50;
+
+function walkSourceFiles(dir, out = []) {
+  let entries;
+  try {
+    entries = readdirSync(dir);
+  } catch {
+    return out;
+  }
+  for (const name of entries) {
+    if (SCAN_SKIP_DIRS.has(name)) continue;
+    const full = join(dir, name);
+    let st;
+    try {
+      st = statSync(full);
+    } catch {
+      continue;
+    }
+    if (st.isDirectory()) {
+      // Skip intentional ESLint fixtures (they contain deliberate violations)
+      if (full.includes(`${"eslint-rules"}/__fixtures__`) || full.endsWith("__fixtures__")) continue;
+      walkSourceFiles(full, out);
+    } else if (st.isFile()) {
+      const dot = name.lastIndexOf(".");
+      if (dot !== -1 && SCAN_EXTENSIONS.has(name.slice(dot))) out.push(full);
+    }
+  }
+  return out;
+}
+
+function scanTreeShaking(rootDir) {
+  const srcDir = resolve(rootDir, "src");
+  const offenders = [];
+  let filesScanned = 0;
+  let barrelImportsFound = 0;
+  let truncated = false;
+
+  if (existsSync(srcDir)) {
+    const files = walkSourceFiles(srcDir);
+    for (const file of files) {
+      filesScanned++;
+      let content;
+      try {
+        content = readFileSync(file, "utf8");
+      } catch {
+        continue;
+      }
+      BARREL_IMPORT_RE.lastIndex = 0;
+      let match;
+      while ((match = BARREL_IMPORT_RE.exec(content)) !== null) {
+        barrelImportsFound++;
+        if (offenders.length >= OFFENDERS_CAP) {
+          truncated = true;
+          continue;
+        }
+        const line = content.slice(0, match.index).split("\n").length;
+        offenders.push({
+          file: relative(rootDir, file).replace(/\\/g, "/"),
+          line,
+          importPath: match[1],
+        });
+      }
+    }
+  }
+
+  const riskLevel = barrelImportsFound === 0 ? "ok" : barrelImportsFound < 5 ? "warning" : "critical";
+  return {
+    scannedAt: new Date().toISOString(),
+    filesScanned,
+    barrelImportsFound,
+    offenders,
+    truncated,
+    riskLevel,
+  };
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
@@ -100,6 +179,7 @@ function main() {
 
   const aggregateDrift = packages.some((p) => p.driftDetected);
   const now = new Date().toISOString();
+  const treeShaking = scanTreeShaking(root);
 
   const snapshot = {
     generatedAt: now,
@@ -115,6 +195,7 @@ function main() {
       lastCheckedAt: now,
       source: "scripts/generate-dependency-health.mjs",
     },
+    treeShaking,
   };
 
   if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
@@ -126,6 +207,9 @@ function main() {
       `  ${p.label.padEnd(34)} spec=${p.spec || "—"} locked=${p.locked || "—"} installed=${p.installed || "—"} drift=${p.driftDetected}`,
     );
   }
+  console.log(
+    `  tree-shaking: scanned=${treeShaking.filesScanned} barrelImports=${treeShaking.barrelImportsFound} risk=${treeShaking.riskLevel}`,
+  );
 }
 
 main();

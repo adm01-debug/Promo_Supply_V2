@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes, Scissors } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
@@ -22,6 +22,22 @@ interface PackageHealth {
   driftDetected: boolean;
 }
 
+interface TreeShakingOffender {
+  file: string;
+  line: number;
+  importPath: string;
+}
+
+interface TreeShakingReport {
+  scannedAt: string;
+  filesScanned: number;
+  barrelImportsFound: number;
+  offenders: TreeShakingOffender[];
+  truncated?: boolean;
+  riskLevel: "ok" | "warning" | "critical";
+  note?: string;
+}
+
 interface DependencyHealthSnapshot {
   generatedAt: string;
   dateFns: {
@@ -36,6 +52,7 @@ interface DependencyHealthSnapshot {
     lastCheckedAt: string;
     source: string;
   };
+  treeShaking?: TreeShakingReport;
 }
 
 const fetchSnapshot = async (): Promise<DependencyHealthSnapshot> => {
@@ -312,6 +329,80 @@ const DependencyHealth = () => {
           <div className="font-mono text-xs text-muted-foreground">{generatedAt}</div>
         </CardContent>
       </Card>
+      {data.treeShaking && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Scissors className="h-5 w-5 text-primary" />
+              Risco de tree-shaking
+            </CardTitle>
+            <CardDescription>
+              Imports barrel de <code className="font-mono">date-fns</code> /{" "}
+              <code className="font-mono">date-fns/locale</code> derrotam o tree-shaking e aumentam o bundle.
+              Use sempre subpaths (ex.: <code className="font-mono">date-fns/format</code>). A regra ESLint{" "}
+              <code className="font-mono">local/date-fns-subpath</code> bloqueia novos casos.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex flex-wrap items-center gap-3">
+              {data.treeShaking.riskLevel === "ok" ? (
+                <Badge variant="secondary" className="gap-1">
+                  <CheckCircle2 className="h-3 w-3" />
+                  OK
+                </Badge>
+              ) : data.treeShaking.riskLevel === "warning" ? (
+                <Badge className="gap-1 bg-warning text-warning-foreground hover:bg-warning/90">
+                  <AlertTriangle className="h-3 w-3" />
+                  Atenção
+                </Badge>
+              ) : (
+                <Badge variant="destructive" className="gap-1">
+                  <AlertTriangle className="h-3 w-3" />
+                  Crítico
+                </Badge>
+              )}
+              <span className="text-sm text-muted-foreground">
+                {data.treeShaking.filesScanned} arquivo(s) escaneado(s) ·{" "}
+                {data.treeShaking.barrelImportsFound} import(s) barrel
+                {data.treeShaking.truncated ? " (lista truncada em 50)" : ""}
+              </span>
+            </div>
+
+            {data.treeShaking.barrelImportsFound === 0 ? (
+              <div className="flex items-center gap-2 text-sm text-success">
+                <CheckCircle2 className="h-4 w-4" />
+                Nenhum import barrel detectado — tree-shaking saudável.
+              </div>
+            ) : (
+              <div className="rounded-md border bg-muted/30 max-h-64 overflow-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="font-mono text-xs">Arquivo</TableHead>
+                      <TableHead className="font-mono text-xs w-16">Linha</TableHead>
+                      <TableHead className="font-mono text-xs">Import</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {data.treeShaking.offenders.map((o, idx) => (
+                      <TableRow key={`${o.file}:${o.line}:${idx}`}>
+                        <TableCell className="font-mono text-xs">{o.file}</TableCell>
+                        <TableCell className="font-mono text-xs">{o.line || "—"}</TableCell>
+                        <TableCell className="font-mono text-xs">{o.importPath}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            <div className="text-xs text-muted-foreground">
+              Escaneado em {data.treeShaking.scannedAt}
+              {data.treeShaking.note ? ` · ${data.treeShaking.note}` : ""}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
