@@ -1,63 +1,71 @@
 
-## Plan: Tree-shaking risk section in dependency-health
+## Plan: Dependency-health snapshot history + drift trend view
 
 ### Goal
-Add a "Tree-shaking risk" section to the dependency-health report that scans the codebase for `date-fns` and `date-fns/locale` barrel imports and flags them. Reuses the same detection logic the ESLint rule already enforces.
+Persist the last N (default **30**) dependency-health snapshots and render a "Histórico de drift" section on `/admin/dependency-health` showing drift over time, so admins can see when packages drifted/recovered without scrubbing through git history.
 
-### Detection logic
-A "barrel import" is any `import ... from "date-fns"` or `import ... from "date-fns/locale"` (no subpath). Match via regex:
+### Data model
+
+#### New table: `public.dependency_health_history`
+```sql
+create table public.dependency_health_history (
+  id uuid primary key default gen_random_uuid(),
+  payload jsonb not null,          -- full DependencyHealthSnapshot
+  drift_count int not null,        -- packages.filter(driftDetected).length
+  barrel_imports int not null,     -- treeShaking?.barrelImportsFound ?? 0
+  generated_at timestamptz not null,
+  created_at timestamptz not null default now(),
+  created_by uuid references auth.users(id)
+);
+create index dependency_health_history_generated_at_idx
+  on public.dependency_health_history (generated_at desc);
 ```
-/from\s+['"]date-fns(\/locale)?['"]/g
-```
-Scope: `src/**/*.{ts,tsx,js,jsx}`. Skip `node_modules`, `dist`, `eslint-rules/__fixtures__/` (intentional violations), and test fixtures.
 
-### Snapshot shape (additive)
-Extend `DependencyHealthSnapshot` with an optional `treeShaking` field:
-```ts
-treeShaking?: {
-  scannedAt: string;
-  filesScanned: number;
-  barrelImportsFound: number;
-  offenders: Array<{ file: string; line: number; importPath: "date-fns" | "date-fns/locale" }>;
-  riskLevel: "ok" | "warning" | "critical";  // 0 / 1-4 / 5+
-};
-```
-Backward compatible — UI hides the section if absent.
+RLS:
+- `select` — `authenticated` (matches existing `dependency_health_read_auth`).
+- `insert` — `has_role(auth.uid(), 'admin')` (only triggered server-side by edge function with service role anyway, but keep parity).
+- No `update` / `delete` policies — history is append-only; pruning is server-side via service role.
 
-### Changes
+The current `dependency_health` table stays as the **latest** singleton — unchanged.
 
-#### 1. `scripts/generate-dependency-health.mjs`
-- Add `scanTreeShaking(rootDir)` helper that walks `src/` (using `fs.readdirSync` recursive, no extra deps), reads each matching file, regex-matches barrel imports, and returns the structured object above.
-- Cap `offenders` at 50 entries (with a `truncated: true` flag if exceeded) to keep payload small.
-- `riskLevel`: `0 → ok`, `1-4 → warning`, `5+ → critical`.
-- Include `treeShaking` in the emitted JSON.
+### Backend changes
 
-#### 2. `supabase/functions/dependency-health/index.ts`
-- The edge function fetches files from GitHub raw — it cannot recursively walk `src/`. Solution: use the GitHub Search API (`GET /search/code?q=from+"date-fns"+repo:<owner>/<repo>+path:src`) when `GITHUB_DISPATCH_TOKEN` (or a new `GITHUB_API_TOKEN`) is available; otherwise omit `treeShaking` and let the static JSON (refreshed by CI) carry it.
-- No new secret required if `GITHUB_DISPATCH_TOKEN` already has `metadata:read` (covers code search on private repos). If absent → graceful skip with `treeShaking: { ...empty, riskLevel: "ok", note: "scan unavailable" }` semantics handled UI-side.
+#### `supabase/functions/dependency-health/index.ts`
+After the existing `upsert` of the latest snapshot in `handlePost`, also:
+1. `insert` the same payload into `dependency_health_history` with computed `drift_count`, `barrel_imports`, `generated_at`, `created_by`.
+2. Prune: `delete from dependency_health_history where id not in (select id from dependency_health_history order by generated_at desc limit 30)`. Use a single SQL via `admin.rpc` or two queries (`select` ids → `delete`) — pick the two-query approach since arbitrary SQL isn't allowed; keeps it safe.
 
-#### 3. `src/pages/admin/DependencyHealth.tsx`
-Add a new card "Risco de tree-shaking" rendered when `data.treeShaking` is present:
-- Badge: green (ok) / yellow (warning) / red (critical) using `riskLevel`.
-- Counters: `filesScanned`, `barrelImportsFound`.
-- Collapsible list of offenders (`file:line` + import path), capped at 50.
-- Empty state message when 0 offenders: "Nenhum import barrel detectado — tree-shaking saudável."
-- Tooltip/help text explaining barrel imports defeat tree-shaking and link to the ESLint rule (`local/date-fns-subpath`).
+No changes to `handleGet` of `dependency-health`. Add a new `GET` branch on the **same function** keyed by `?history=true` that returns up to 30 rows: `[{ generatedAt, driftCount, barrelImports, packages: [{name, driftDetected}] }]` — slim projection, no full payload, to keep response small.
 
-#### 4. `public/dependency-health.json`
-Auto-regenerated by `bun run deps:health`; no manual edit.
+#### `scripts/generate-dependency-health.mjs`
+No change. The CLI script writes the static JSON only; history is purely a runtime/edge concern (no point persisting CI runs to DB from local dev).
+
+### Frontend changes
+
+#### `src/pages/admin/DependencyHealth.tsx`
+Add a new card **"Histórico de drift (últimas 30 atualizações)"** below the existing Tree-shaking card:
+
+- New `useQuery` keyed `["dependency-health-history"]` calling `supabase.functions.invoke("dependency-health?history=true", { method: "GET" })`.
+- Render a compact sparkline-style bar timeline using existing `<Sparkline>` (already in `src/components/ui/sparkline.tsx`) for `driftCount` over time, plus a second sparkline for `barrelImports`.
+- Below the sparklines, a small table of the last 10 entries: `generated_at` (relative + absolute), `driftCount`, `barrelImports`, with row color tinted red when `driftCount > 0`.
+- Empty state when `length === 0`: "Nenhuma atualização registrada ainda — clique em 'Atualizar agora' para começar a coletar histórico."
+- Both refresh mutations (`refresh` and `refreshAndCommit`) `invalidateQueries(["dependency-health-history"])` on success so the sparkline updates immediately.
+
+No new dependencies. Sparkline component already exists.
 
 ### What does NOT change
-- ESLint rule `local/date-fns-subpath` — it already blocks new offenders at lint time. The report is observational/reporting, not enforcement.
-- Schema, RLS, secrets, workflow files, route registration.
-- `dateFns` and `packages` fields — preserved.
+- `dependency_health` singleton table, RLS, or shape.
+- Static JSON pipeline / GitHub workflow / `bun run deps:health`.
+- ESLint rule, route registration, secrets.
+- `DependencyHealthSnapshot` interface (history is a separate slim shape).
 
 ### Verification
-1. Run `bun run deps:health` locally on a clean tree → `treeShaking.barrelImportsFound: 0`, `riskLevel: "ok"`. Fixture file under `eslint-rules/__fixtures__/` is excluded.
-2. Temporarily add `import { format } from "date-fns"` in a `src/` file → re-run → that file appears in `offenders`, `riskLevel: "warning"`.
-3. Admin page shows new card with correct counts and badge color.
-4. Edge function `GET` without API token → `treeShaking` omitted; UI hides the card cleanly.
-5. CI workflow `dependency-health.yml` already runs `bun run deps:health` → snapshot in repo gets the new field on next dispatch.
+1. Migration creates table + RLS; existing read still works.
+2. Click "Atualizar agora" twice → DB has 2 rows in `dependency_health_history`; `?history=true` returns both.
+3. After 31 refreshes, only 30 most-recent rows remain (oldest pruned).
+4. Sparkline renders flat green when `driftCount` is always 0; spikes when a drift occurs.
+5. Non-admin: `GET ?history=true` works (read-only auth); refresh buttons hidden as today.
+6. Empty DB → empty state message renders cleanly.
 
 ### Risk / scope
-- ~50 added lines in the script, ~40 in the edge function (graceful skip path), ~60 in `DependencyHealth.tsx`. Backward compatible. No new dependencies, no schema changes, no required secrets. Worst case (GitHub Search API unavailable): edge `GET` returns snapshot without `treeShaking`, static JSON from CI still carries it.
+- 1 migration (~25 lines), ~50 added lines in edge function, ~70 added lines in `DependencyHealth.tsx`. No schema impact on existing table, no secrets, append-only writes capped at 30 rows.
