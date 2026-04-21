@@ -55,14 +55,22 @@ for (const file of files) {
   while ((m = IMPORT_RE.exec(src)) !== null) {
     const [, isType, namesRaw, subpath] = m;
     if (isType) continue; // skip type-only imports
-    const names = namesRaw
+    const cleaned = stripComments(namesRaw);
+    const names = cleaned
       .split(",")
       .map((n) => n.trim())
       .filter(Boolean)
       .map((n) => n.replace(/^type\s+/, "")) // inline `type` keyword
       .map((n) => n.split(/\s+as\s+/)[0].trim()) // strip aliases
       .filter(Boolean);
-    if (names.length === 0) continue;
+    if (names.length === 0) {
+      if (subpath.startsWith("locale/")) {
+        console.warn(
+          `⚠ ${file}: import from "date-fns/${subpath}" has no usable specifiers (after comment-strip). Skipping.`,
+        );
+      }
+      continue;
+    }
     if (!subpaths.has(subpath)) subpaths.set(subpath, new Set());
     const set = subpaths.get(subpath);
     for (const n of names) set.add(n);
