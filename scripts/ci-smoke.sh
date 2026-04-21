@@ -42,15 +42,25 @@ node scripts/generate-datefns-smoke-test.mjs --dry-run
 echo "▶ Validating smoke test imports against tsconfig.smoke.json..."
 bunx tsc --noEmit -p tsconfig.smoke.json 2>&1 | tee "$LOG_DIR/tsc-smoke.log"
 SMOKE_TSC_EXIT=${PIPESTATUS[0]}
+SMOKE_VITEST_EXIT=0
+if [ "$SMOKE_TSC_EXIT" -eq 0 ]; then
+  bunx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose 2>&1 | tee "$LOG_DIR/vitest-smoke.log"
+  SMOKE_VITEST_EXIT=${PIPESTATUS[0]}
+fi
+
+echo "▶ [8/8] Emitting dependency-health snapshot for smoke run..."
+node scripts/emit-smoke-health.mjs \
+  --tsc-exit "$SMOKE_TSC_EXIT" \
+  --vitest-exit "$SMOKE_VITEST_EXIT" \
+  --out "$LOG_DIR/datefns-smoke-health.json" || true
+
 if [ "$SMOKE_TSC_EXIT" -ne 0 ]; then
   echo "✗ Focused tsc failed. See $LOG_DIR/tsc-smoke.log (uploaded as CI artifact)." >&2
   exit "$SMOKE_TSC_EXIT"
 fi
-bunx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose 2>&1 | tee "$LOG_DIR/vitest-smoke.log"
-VITEST_EXIT=${PIPESTATUS[0]}
-if [ "$VITEST_EXIT" -ne 0 ]; then
+if [ "$SMOKE_VITEST_EXIT" -ne 0 ]; then
   echo "✗ Smoke vitest failed. See $LOG_DIR/vitest-smoke.log (uploaded as CI artifact)." >&2
-  exit "$VITEST_EXIT"
+  exit "$SMOKE_VITEST_EXIT"
 fi
 
 echo "✅ Smoke check passed: clean install + cache evict + version match + file verify + smoke test green."

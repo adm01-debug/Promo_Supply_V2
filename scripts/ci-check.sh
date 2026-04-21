@@ -89,4 +89,10 @@ fi
 echo "▶ [14/14] Refreshing public/dependency-health.json snapshot (with diff vs. previous)..."
 bun run deps:health
 
+echo "▶ Emitting dependency-health snapshot for smoke run..."
+node scripts/emit-smoke-health.mjs \
+  --tsc-exit "${SMOKE_TSC_EXIT:-0}" \
+  --vitest-exit "${VITEST_EXIT:-0}" \
+  --out "$LOG_DIR/datefns-smoke-health.json" || true
+
 echo "✅ CI check passed: clean install + cache evict + version match + file verify + type-check green."
