@@ -12,6 +12,7 @@ const FIXTURE = path.resolve(
 );
 
 const CONFIG = {
+  files: ["**/*.ts"],
   plugins: {
     local: { rules: { "date-fns-subpath": dateFnsSubpath } },
   },
