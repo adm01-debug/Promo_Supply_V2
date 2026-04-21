@@ -11,6 +11,53 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const GITHUB_REPO_RAW_BASE = Deno.env.get("GITHUB_REPO_RAW_BASE") ?? "";
+const GITHUB_DISPATCH_TOKEN = Deno.env.get("GITHUB_DISPATCH_TOKEN") ?? "";
+const DISPATCH_WORKFLOW_FILE = "dependency-health.yml";
+
+function deriveOwnerRepo(rawBase: string): { owner: string; repo: string } | null {
+  try {
+    const url = new URL(rawBase);
+    const parts = url.pathname.split("/").filter(Boolean);
+    if (parts.length < 2) return null;
+    return { owner: parts[0], repo: parts[1] };
+  } catch {
+    return null;
+  }
+}
+
+async function dispatchWorkflow(rawBase: string): Promise<string> {
+  if (!GITHUB_DISPATCH_TOKEN) return "skipped: GITHUB_DISPATCH_TOKEN not configured";
+  const or = deriveOwnerRepo(rawBase);
+  if (!or) return "skipped: owner/repo not derivable from GITHUB_REPO_RAW_BASE";
+  const url = `https://api.github.com/repos/${or.owner}/${or.repo}/actions/workflows/${DISPATCH_WORKFLOW_FILE}/dispatches`;
+  try {
+    const branch = (() => {
+      try {
+        const u = new URL(rawBase);
+        const parts = u.pathname.split("/").filter(Boolean);
+        return parts[2] ?? "main";
+      } catch {
+        return "main";
+      }
+    })();
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`,
+        Accept: "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ref: branch }),
+      signal: AbortSignal.timeout(10000),
+    });
+    if (res.status === 204) return "queued";
+    const text = await res.text().catch(() => "");
+    return `failed: HTTP ${res.status} ${text.slice(0, 200)}`;
+  } catch (e) {
+    return `failed: ${e instanceof Error ? e.message : String(e)}`;
+  }
+}
 
 interface DependencyHealthSnapshot {
   generatedAt: string;
