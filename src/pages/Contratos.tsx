@@ -430,15 +430,17 @@ export default function Contratos() {
       <ContractModal
         open={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
-        contract={selectedContract}
+        contract={selectedContract ?? undefined}
         onSuccess={fetchContracts}
       />
 
-      <ContractDetailsModal
-        open={isDetailsModalOpen}
-        onOpenChange={setIsDetailsModalOpen}
-        contract={selectedContract}
-      />
+      {selectedContract && (
+        <ContractDetailsModal
+          open={isDetailsModalOpen}
+          onOpenChange={setIsDetailsModalOpen}
+          contract={selectedContract}
+        />
+      )}
     </MainLayout>
   );
 }
