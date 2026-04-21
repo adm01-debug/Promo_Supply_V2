@@ -25,22 +25,22 @@ if [ -n "$LOCKED" ] && [ "$INSTALLED" != "$LOCKED" ]; then
 fi
 echo "✓ date-fns $INSTALLED matches lockfile."
 
-echo "▶ [5/12] Printing install verification report..."
+echo "▶ [5/13] Printing install verification report..."
 node scripts/install-report.mjs
 
-echo "▶ [6/12] ESLint gate: blocking date-fns barrel imports (--max-warnings=0)..."
+echo "▶ [6/13] ESLint gate: blocking date-fns barrel imports (--max-warnings=0)..."
 bunx eslint . --config eslint.date-fns.config.js --max-warnings=0
 
-echo "▶ [7/12] Verifying date-fns subpath files exist on disk..."
+echo "▶ [7/13] Verifying date-fns subpath files exist on disk..."
 node scripts/verify-datefns-files.mjs
 
-echo "▶ [8/12] Type-checking source with tsc --noEmit..."
+echo "▶ [8/13] Type-checking source with tsc --noEmit..."
 bunx tsc --noEmit -p tsconfig.app.json
 
-echo "▶ [9/12] Verifying date-fns locale imports match manifest..."
+echo "▶ [9/13] Verifying date-fns locale imports match manifest..."
 node scripts/verify-datefns-locales.mjs
 
-echo "▶ [10/12] Verifying date-fns smoke test is up to date..."
+echo "▶ [10/13] Verifying date-fns smoke test is up to date..."
 SMOKE_TEST_FILE="src/test/dateFns.smoke.test.ts"
 MANIFEST_FILE="public/datefns-usage.json"
 SMOKE_BACKUP="$(mktemp)"
