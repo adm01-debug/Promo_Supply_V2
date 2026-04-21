@@ -621,6 +621,10 @@ const DependencyHealth = () => {
       </Card>
 
       <Suspense fallback={<Skeleton className="h-48" />}>
+        <InstallReportPanel />
+      </Suspense>
+
+      <Suspense fallback={<Skeleton className="h-48" />}>
         <DateFnsUsagePanel />
       </Suspense>
     </div>
