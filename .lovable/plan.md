@@ -1,39 +1,44 @@
 
-## Plan: Verify installed date-fns version matches package.json + lockfile
+## Plan: Enforce date-fns subpath imports via ESLint
 
 ### Goal
-Add a one-shot verification step that cross-checks three sources of truth for `date-fns` and reports any mismatch:
-1. Declared spec in `package.json`
-2. Resolved entry in `bun.lock`
-3. Actual `version` in `node_modules/date-fns/package.json`
+Prevent regressions where someone writes `import { format } from "date-fns"` (top-level barrel) instead of the required subpath form `import { format } from "date-fns/format"`. Catch it at lint time, not runtime.
 
 ### Approach
-Run a small inline shell script (no new file committed — pure verification, not source code). It reads each source, prints a compact report, and exits non-zero if any of the three disagree.
+Use ESLint's built-in `no-restricted-imports` rule to ban the bare `"date-fns"` and `"date-fns/locale"` specifiers, while allowing every subpath (`date-fns/format`, `date-fns/locale/pt-BR`, etc.). No new dependency needed — the rule ships with ESLint core.
 
-### Steps
-1. **Read `package.json` spec**
-   `node -p "require('./package.json').dependencies['date-fns']"` → expect `3.6.0`.
+### Change — `eslint.config.js`
 
-2. **Read installed version**
-   `node -p "require('./node_modules/date-fns/package.json').version"` → expect `3.6.0`.
+Add one rule entry inside the existing `rules` block:
 
-3. **Read lockfile resolution**
-   `grep -E '"date-fns@[^"]+"' bun.lock | head -3` → extract the resolved version string.
+```js
+"no-restricted-imports": ["error", {
+  paths: [
+    {
+      name: "date-fns",
+      message: "Import from a date-fns subpath instead, e.g. `from \"date-fns/format\"`. Top-level barrel imports break tree-shaking and have regressed in past upgrades.",
+    },
+    {
+      name: "date-fns/locale",
+      message: "Import the specific locale subpath, e.g. `from \"date-fns/locale/pt-BR\"`.",
+    },
+  ],
+}],
+```
 
-4. **Compare & report**
-   Inline bash:
-   ```bash
-   SPEC=$(node -p "require('./package.json').dependencies['date-fns']")
-   INSTALLED=$(node -p "require('./node_modules/date-fns/package.json').version")
-   LOCKED=$(grep -oE 'date-fns@[0-9]+\.[0-9]+\.[0-9]+' bun.lock | head -1 | cut -d@ -f2)
-   echo "spec=$SPEC installed=$INSTALLED locked=$LOCKED"
-   [ "$SPEC" = "$INSTALLED" ] && [ "$INSTALLED" = "$LOCKED" ] \
-     && echo "OK: all three agree on $INSTALLED" \
-     || { echo "MISMATCH"; exit 1; }
-   ```
+That's the only file edit. Everything else stays as-is.
 
-5. **On mismatch** — report the three values to the user and recommend `bun install` (if lockfile drifted) or `bun add date-fns@3.6.0 --exact` (if `package.json` drifted). No automatic remediation in this step.
+### Why this rule (and not a TS-only check)
+- TypeScript can't distinguish "this export exists on the barrel" from "this import is forbidden by policy" — both resolve fine. ESLint's `no-restricted-imports` is the standard mechanism for *policy* bans.
+- Built into ESLint core → zero new dependencies, zero config plugins.
+- `paths[].name` matches the exact specifier, so `date-fns/format`, `date-fns/addDays`, `date-fns/locale/pt-BR` etc. all remain allowed automatically.
 
-### Notes
-- No file edits. No dependency changes. Pure read-only verification executed in default mode.
-- Output is a single line + OK/MISMATCH verdict — easy to paste back to the user.
+### Verification
+1. Run `npx eslint . --max-warnings=0` → must pass (codebase already uses subpaths everywhere per recent fixes).
+2. Sanity check: temporarily edit one file to `import { format } from "date-fns"` → confirm ESLint reports the error with the custom message → revert.
+3. Same sanity check with `import { ptBR } from "date-fns/locale"` → confirm second rule fires → revert.
+4. Smoke test `npx vitest run src/test/dateFns.smoke.test.ts` stays green (8/8) — the rule is lint-only, no runtime impact.
+
+### Risk / scope
+- Single-file config edit. No source changes, no dependency changes, no behavior change.
+- If any pre-existing file still imports from the barrel, ESLint will flag it — fix inline by switching to the subpath form (matches the established convention).
