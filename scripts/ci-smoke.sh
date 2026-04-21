@@ -203,12 +203,12 @@ echo "✓ date-fns $DATEFNS_INSTALLED matches lockfile."
 
 echo "▶ [5/9] Verifying date-fns subpath files exist on disk..."
 VERIFY_FILES_RAN=1
-if run_verify_datefns_files_or_die; then
-  VERIFY_FILES_OK=1
-else
+if ! node scripts/verify-datefns-files.mjs; then
   VERIFY_FILES_OK=0
+  echo "✗ verify-datefns-files.mjs failed — broken install or missing subpath." >&2
   exit 1
 fi
+VERIFY_FILES_OK=1
 
 echo "▶ [6/9] Printing install verification report..."
 node scripts/install-report.mjs
@@ -232,8 +232,10 @@ SMOKE_TSC_EXIT=${PIPESTATUS[0]}
 if [ "$SMOKE_TSC_EXIT" -eq 0 ]; then
   SMOKE_VITEST_RAN=1
   VITEST_START=$SECONDS
-  bunx vitest run "$SMOKE_TEST_PATH" \
-    --reporter=verbose \
+  # Stay aligned with the local `bun run test:date-fns` script. CI appends
+  # the test path override + extra reporters/flags after `--`.
+  bun run test:date-fns -- \
+    "$SMOKE_TEST_PATH" \
     --reporter=json --outputFile="$LOG_DIR/vitest-smoke.json" \
     --hideSkippedTests \
     --printConsoleTrace \
