@@ -149,6 +149,25 @@ on PATH and adapt cache eviction per OS.
 Prerequisites: [Bun](https://bun.sh) and [Node.js](https://nodejs.org). If
 either is missing, the preflight prints a friendly error and exits 127.
 
+### Optional full smoke on every push
+
+By default, the pre-push Git hook runs a lightweight `date-fns` integrity
+check (~10s). To run the full `scripts/ci-smoke.sh` lane (clean install +
+all verifications, ~2 min) on every push instead:
+
+```sh
+# One-time (current push only)
+FULL_SMOKE_PRE_PUSH=1 git push
+
+# Persistent for this repo (stored in .git/config)
+bun run hook:smoke:enable
+
+# Disable and return to lightweight mode
+bun run hook:smoke:disable
+```
+
+Bypass any hook in an emergency: `git push --no-verify`.
+
 ### Time-zone guard
 
 `src/test/dateFns.timezone.test.ts` enforces `TZ=UTC` so `date-fns`
