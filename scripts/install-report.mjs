@@ -66,4 +66,8 @@ if (!aligned) {
     console.log("");
     console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
   }
+  if (STRICT) {
+    console.error("\n✗ install-report --strict: spec / lock / installed drift detected.");
+    process.exit(1);
+  }
 }
