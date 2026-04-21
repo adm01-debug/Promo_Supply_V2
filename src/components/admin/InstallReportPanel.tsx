@@ -112,22 +112,29 @@ const InstallReportPanel = () => {
         </CardTitle>
         <CardDescription>
           Saída de <code className="font-mono">bun install</code> + <code className="font-mono">scripts/install-report.mjs</code>.
-
-  return (
-    <Card className={hasDrift ? "border-destructive/50" : undefined}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <PackageCheck className="h-5 w-5 text-primary" />
-          Relatório de instalação
-        </CardTitle>
-        <CardDescription>
-          Saída de <code className="font-mono">bun install</code> + <code className="font-mono">scripts/install-report.mjs</code>.
           {generatedAt && (
             <> Gerado em <span className="font-mono">{generatedAt}</span>.</>
           )}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {hasDrift && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Drift de instalação detectado</AlertTitle>
+            <AlertDescription>
+              <ul className="list-disc list-inside mt-1 space-y-0.5">
+                {driftMessages.map((m) => (
+                  <li key={m} className="font-mono text-xs">{m}</li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs">
+                Rode <code className="font-mono">bun install --frozen-lockfile</code> e revise{" "}
+                <code className="font-mono">package.json</code> / <code className="font-mono">bun.lock</code>.
+              </p>
+            </AlertDescription>
+          </Alert>
+        )}
         {/* Alignment */}
         <div className="flex flex-wrap items-center gap-2">
           {alignment.aligned ? (
