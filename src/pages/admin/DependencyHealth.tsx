@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -90,6 +91,7 @@ const fetchSnapshot = async (): Promise<DependencyHealthSnapshot> => {
 const DependencyHealth = () => {
   const { isAdmin } = useAuth();
   const queryClient = useQueryClient();
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const { data, isLoading, error } = useQuery({
     queryKey: ["dependency-health"],
     queryFn: fetchSnapshot,
@@ -101,6 +103,28 @@ const DependencyHealth = () => {
     queryFn: fetchHistory,
     staleTime: 60_000,
   });
+
+  const selectedDiff = useMemo(() => {
+    if (!history || history.length === 0) return null;
+    const idx = selectedId ? history.findIndex((h) => h.id === selectedId) : 0;
+    const currentIdx = idx === -1 ? 0 : idx;
+    const current = history[currentIdx];
+    const previous = history[currentIdx + 1] ?? null;
+    const prevMap = new Map<string, boolean>(
+      (previous?.packages ?? []).map((p) => [p.name, p.driftDetected]),
+    );
+    const drifted: string[] = [];
+    const recovered: string[] = [];
+    const persisted: string[] = [];
+    for (const p of current.packages ?? []) {
+      const wasDrift = prevMap.get(p.name) ?? false;
+      if (p.driftDetected && !wasDrift) drifted.push(p.name);
+      else if (!p.driftDetected && wasDrift) recovered.push(p.name);
+      else if (p.driftDetected && wasDrift) persisted.push(p.name);
+    }
+    return { current, previous, drifted, recovered, persisted };
+  }, [history, selectedId]);
+
 
   const buildRefresh = (dispatchCi: boolean) =>
     useMutation({
@@ -487,28 +511,106 @@ const DependencyHealth = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {history.slice(0, 10).map((h) => (
-                      <TableRow key={h.id} className={h.driftCount > 0 ? "bg-destructive/5" : ""}>
-                        <TableCell className="text-sm">
-                          {formatDistanceToNow(parseISO(h.generatedAt), { addSuffix: true, locale: ptBR })}
-                        </TableCell>
-                        <TableCell className="font-mono text-xs">
-                          {h.driftCount > 0 ? (
-                            <Badge variant="destructive" className="gap-1">
-                              <AlertTriangle className="h-3 w-3" />
-                              {h.driftCount}
-                            </Badge>
-                          ) : (
-                            <Badge variant="secondary">0</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="font-mono text-xs">{h.barrelImports}</TableCell>
-                        <TableCell className="font-mono text-xs text-muted-foreground">{h.generatedAt}</TableCell>
-                      </TableRow>
-                    ))}
+                    {history.slice(0, 10).map((h) => {
+                      const isSelected = (selectedId ?? history[0].id) === h.id;
+                      return (
+                        <TableRow
+                          key={h.id}
+                          onClick={() => setSelectedId(h.id)}
+                          className={`cursor-pointer ${
+                            isSelected ? "bg-primary/10 hover:bg-primary/15" : h.driftCount > 0 ? "bg-destructive/5" : ""
+                          }`}
+                          aria-label={`Selecionar snapshot de ${h.generatedAt}`}
+                        >
+                          <TableCell className="text-sm">
+                            {formatDistanceToNow(parseISO(h.generatedAt), { addSuffix: true, locale: ptBR })}
+                          </TableCell>
+                          <TableCell className="font-mono text-xs">
+                            {h.driftCount > 0 ? (
+                              <Badge variant="destructive" className="gap-1">
+                                <AlertTriangle className="h-3 w-3" />
+                                {h.driftCount}
+                              </Badge>
+                            ) : (
+                              <Badge variant="secondary">0</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="font-mono text-xs">{h.barrelImports}</TableCell>
+                          <TableCell className="font-mono text-xs text-muted-foreground">{h.generatedAt}</TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>
+
+              {selectedDiff && (
+                <div className="rounded-md border bg-muted/20 p-4 space-y-3">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <div className="text-sm font-medium">Diff do snapshot selecionado</div>
+                    <div className="text-xs text-muted-foreground font-mono">
+                      {selectedDiff.current.generatedAt}
+                      {selectedDiff.previous
+                        ? ` vs ${selectedDiff.previous.generatedAt}`
+                        : " (sem snapshot anterior)"}
+                    </div>
+                  </div>
+
+                  {selectedDiff.drifted.length === 0 &&
+                  selectedDiff.recovered.length === 0 &&
+                  selectedDiff.persisted.length === 0 ? (
+                    <div className="flex items-center gap-2 text-sm text-success">
+                      <CheckCircle2 className="h-4 w-4" />
+                      Nenhuma mudança de drift entre os dois snapshots.
+                    </div>
+                  ) : (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Pacote</TableHead>
+                          <TableHead>Mudança</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedDiff.drifted.map((name) => (
+                          <TableRow key={`drifted-${name}`}>
+                            <TableCell className="font-mono text-xs">{name}</TableCell>
+                            <TableCell>
+                              <Badge variant="destructive" className="gap-1">
+                                <AlertTriangle className="h-3 w-3" />
+                                Novo drift
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                        {selectedDiff.recovered.map((name) => (
+                          <TableRow key={`recovered-${name}`}>
+                            <TableCell className="font-mono text-xs">{name}</TableCell>
+                            <TableCell>
+                              <Badge variant="secondary" className="gap-1 bg-success/15 text-success hover:bg-success/20">
+                                <CheckCircle2 className="h-3 w-3" />
+                                Recuperado
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                        {selectedDiff.persisted.map((name) => (
+                          <TableRow key={`persisted-${name}`}>
+                            <TableCell className="font-mono text-xs">{name}</TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="gap-1">
+                                <AlertTriangle className="h-3 w-3" />
+                                Drift persistente
+                              </Badge>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  )}
+                </div>
+              )}
+
             </>
           )}
         </CardContent>
