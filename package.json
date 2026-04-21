@@ -25,6 +25,8 @@
     "verify:datefns-files:write": "node scripts/verify-datefns-files.mjs --write-health",
     "pretest": "node scripts/verify-datefns-files.mjs",
     "test": "vitest run",
+    "test:date-fns": "vitest run src/test/dateFns.smoke.test.ts --reporter=verbose --passWithNoTests",
+    "test:date-fns:watch": "vitest watch src/test/dateFns.smoke.test.ts --reporter=verbose",
     "pretypecheck": "node scripts/verify-datefns-files.mjs",
     "typecheck": "tsc --noEmit",
     "hook:datefns": "bash scripts/hooks/datefns-precommit.sh",
