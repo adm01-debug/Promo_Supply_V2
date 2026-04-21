@@ -22,6 +22,9 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "verbatimModuleSyntax": false,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noUncheckedSideEffectImports": true,
     "paths": {
       "@/*": [
         "./src/*"
