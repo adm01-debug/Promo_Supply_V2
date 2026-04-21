@@ -1,8 +1,10 @@
+import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, AlertTriangle, PackageCheck, FileLock2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface InstallReport {
   generatedAt: string | null;
