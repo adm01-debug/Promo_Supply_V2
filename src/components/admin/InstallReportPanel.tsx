@@ -1,8 +1,10 @@
+import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2, AlertTriangle, PackageCheck, FileLock2 } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface InstallReport {
   generatedAt: string | null;
@@ -45,6 +47,28 @@ const InstallReportPanel = () => {
     retry: false,
   });
 
+  const driftMessages: string[] = [];
+  if (data) {
+    if (!data.alignment.specEqLocked) driftMessages.push("package.json ≠ bun.lock");
+    if (!data.alignment.lockedEqInstalled) driftMessages.push("bun.lock ≠ node_modules");
+    if (!data.alignment.specEqInstalled) driftMessages.push("package.json ≠ node_modules");
+    if (!data.dateFns.exactPinned) driftMessages.push("spec não pinada exatamente");
+  }
+  const hasDrift = !!data && (!data.alignment.aligned || !data.dateFns.exactPinned);
+
+  const toastFiredRef = useRef(false);
+  const driftSummary = driftMessages.join(" · ");
+  useEffect(() => {
+    if (hasDrift && !toastFiredRef.current) {
+      toastFiredRef.current = true;
+      toast({
+        title: "Drift de instalação detectado",
+        description: driftSummary || "Spec / lock / installed divergentes.",
+        variant: "destructive",
+      });
+    }
+  }, [hasDrift, driftSummary]);
+
   if (isLoading) {
     return (
       <Card>
@@ -80,7 +104,7 @@ const InstallReportPanel = () => {
   const { dateFns, bunLock, alignment, generatedAt } = data;
 
   return (
-    <Card>
+    <Card className={hasDrift ? "border-destructive/50" : undefined}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <PackageCheck className="h-5 w-5 text-primary" />
@@ -94,6 +118,23 @@ const InstallReportPanel = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {hasDrift && (
+          <Alert variant="destructive">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Drift de instalação detectado</AlertTitle>
+            <AlertDescription>
+              <ul className="list-disc list-inside mt-1 space-y-0.5">
+                {driftMessages.map((m) => (
+                  <li key={m} className="font-mono text-xs">{m}</li>
+                ))}
+              </ul>
+              <p className="mt-2 text-xs">
+                Rode <code className="font-mono">bun install --frozen-lockfile</code> e revise{" "}
+                <code className="font-mono">package.json</code> / <code className="font-mono">bun.lock</code>.
+              </p>
+            </AlertDescription>
+          </Alert>
+        )}
         {/* Alignment */}
         <div className="flex flex-wrap items-center gap-2">
           {alignment.aligned ? (
