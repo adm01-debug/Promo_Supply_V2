@@ -211,7 +211,7 @@ fi
 VERIFY_FILES_OK=1
 
 echo "▶ [6/9] Printing install verification report..."
-node scripts/install-report.mjs
+node scripts/install-report.mjs 2>&1 | tee "$LOG_DIR/install-report.txt"
 
 echo "▶ [7/9] ESLint gate: blocking date-fns barrel imports (--max-warnings=0)..."
 ESLINT_RAN=1

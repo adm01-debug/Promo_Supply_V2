@@ -31,7 +31,7 @@ fi
 echo "✓ date-fns $INSTALLED matches lockfile."
 
 echo "▶ [5/14] Printing install verification report..."
-node scripts/install-report.mjs
+node scripts/install-report.mjs 2>&1 | tee "$LOG_DIR/install-report.txt"
 
 echo "▶ [6/14] ESLint gate: blocking date-fns barrel imports (--max-warnings=0)..."
 bunx eslint . --config eslint.date-fns.config.js --max-warnings=0
