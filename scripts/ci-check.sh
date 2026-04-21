@@ -1,25 +1,28 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "▶ [1/7] Removing node_modules..."
+echo "▶ [1/8] Removing node_modules..."
 rm -rf node_modules
 
-echo "▶ [2/7] Installing from frozen lockfile..."
+echo "▶ [2/8] Installing from frozen lockfile..."
 bun install --frozen-lockfile
 
-echo "▶ [3/7] Type-checking source with tsc --noEmit..."
+echo "▶ [3/8] Verifying date-fns subpath files exist on disk..."
+node scripts/verify-datefns-files.mjs
+
+echo "▶ [4/8] Type-checking source with tsc --noEmit..."
 npx tsc --noEmit -p tsconfig.app.json
 
-echo "▶ [4/7] Regenerating date-fns smoke test from src/ usage..."
+echo "▶ [5/8] Regenerating date-fns smoke test from src/ usage..."
 node scripts/generate-datefns-smoke-test.mjs
 
-echo "▶ [5/7] Type-checking again (includes regenerated smoke test)..."
+echo "▶ [6/8] Type-checking again (includes regenerated smoke test)..."
 npx tsc --noEmit -p tsconfig.app.json
 
-echo "▶ [6/7] Running date-fns smoke test..."
+echo "▶ [7/8] Running date-fns smoke test..."
 npx vitest run src/test/dateFns.smoke.test.ts --reporter=verbose
 
-echo "▶ [7/7] Writing public/dependency-health.json snapshot..."
+echo "▶ [8/8] Writing public/dependency-health.json snapshot..."
 NOW="$(date -u +%FT%TZ)"
 SPEC="$(node -p "require('./package.json').dependencies['date-fns'] || require('./package.json').devDependencies['date-fns'] || ''")"
 INSTALLED="$(node -p "require('./node_modules/date-fns/package.json').version")"
@@ -44,4 +47,4 @@ cat > public/dependency-health.json <<JSON
 }
 JSON
 
-echo "✅ CI check passed: clean install + type-check green."
+echo "✅ CI check passed: clean install + file verify + type-check green."
