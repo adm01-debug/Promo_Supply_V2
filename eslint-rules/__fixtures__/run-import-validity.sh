@@ -6,16 +6,18 @@
 # Expect: exit code 0 (all 3 fixtures failed ESLint as designed).
 # If any fixture passes ESLint, the rule is misconfigured — exit 1.
 #
-# Cleanup: delete the .ts fixture files when you're done validating.
+# Cleanup:
+#   rm -rf src/__eslint-fixtures__
+#   rm eslint-rules/__fixtures__/run-import-validity.sh
 set -uo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT_DIR"
 
 FIXTURES=(
-  "eslint-rules/__fixtures__/bad-date-fns-unresolved.ts:import/no-unresolved"
-  "eslint-rules/__fixtures__/bad-date-fns-named.ts:import/named"
-  "eslint-rules/__fixtures__/bad-date-fns-locale.ts:import/no-unresolved"
+  "src/__eslint-fixtures__/bad-date-fns-unresolved.ts:import/no-unresolved"
+  "src/__eslint-fixtures__/bad-date-fns-named.ts:import/named"
+  "src/__eslint-fixtures__/bad-date-fns-locale.ts:import/no-unresolved"
 )
 
 PASS=0
@@ -33,8 +35,7 @@ for entry in "${FIXTURES[@]}"; do
   fi
 
   echo "── $file (expecting $expected_rule) ──"
-  output="$(bunx eslint --no-eslintrc=false --format stylish "$file" 2>&1 || true)"
-  exit_code=$?
+  output="$(bunx eslint --format stylish "$file" 2>&1 || true)"
   echo "$output" | sed 's/^/    /'
 
   if echo "$output" | grep -q "$expected_rule"; then
@@ -55,6 +56,8 @@ if [ "$FAIL" -gt 0 ]; then
 fi
 echo " ✅ All import-validity rules fire as designed."
 echo ""
-echo " Cleanup: rm eslint-rules/__fixtures__/bad-date-fns-{unresolved,named,locale}.ts"
+echo " Cleanup when done:"
+echo "   rm -rf src/__eslint-fixtures__"
+echo "   rm eslint-rules/__fixtures__/run-import-validity.sh"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 exit 0
