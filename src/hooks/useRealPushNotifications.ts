@@ -156,7 +156,7 @@ export function useRealPushNotifications() {
 
       if (error) throw error;
 
-      const typedNotifications = (data || []).map(n => ({
+      const typedNotifications: Notification[] = (data || []).map(n => ({
         ...n,
         priority: n.priority as 'low' | 'medium' | 'high' | 'critical',
         data: (n.data || {}) as Record<string, unknown>,
