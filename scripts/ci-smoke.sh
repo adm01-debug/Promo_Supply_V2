@@ -11,6 +11,18 @@ preflight
 LOG_DIR="ci-logs"
 mkdir -p "$LOG_DIR"
 
+# Optional first arg: path to the vitest smoke test file.
+# Defaults to the date-fns smoke test for backwards compatibility.
+SMOKE_TEST_PATH="${1:-src/test/dateFns.smoke.test.ts}"
+
+if [ ! -f "$SMOKE_TEST_PATH" ]; then
+  echo "✗ Smoke test file not found: $SMOKE_TEST_PATH" >&2
+  echo "  Usage: $0 [path/to/smoke.test.ts]" >&2
+  exit 2
+fi
+
+echo "▶ Smoke test target: $SMOKE_TEST_PATH"
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Summary state — populated as steps run; printed by trap on EXIT.
 # ─────────────────────────────────────────────────────────────────────────────
