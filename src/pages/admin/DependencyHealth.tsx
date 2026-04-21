@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const DateFnsUsagePanel = lazy(() => import("@/components/admin/DateFnsUsagePanel"));
 const InstallReportPanel = lazy(() => import("@/components/admin/InstallReportPanel"));
+const InstallReportHelp = lazy(() => import("@/components/admin/InstallReportHelp"));
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -622,6 +623,10 @@ const DependencyHealth = () => {
 
       <Suspense fallback={<Skeleton className="h-48" />}>
         <InstallReportPanel />
+      </Suspense>
+
+      <Suspense fallback={<Skeleton className="h-48" />}>
+        <InstallReportHelp />
       </Suspense>
 
       <Suspense fallback={<Skeleton className="h-48" />}>
