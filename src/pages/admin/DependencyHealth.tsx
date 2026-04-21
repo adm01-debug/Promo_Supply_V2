@@ -50,26 +50,33 @@ const DependencyHealth = () => {
     staleTime: 60_000,
   });
 
-  const refresh = useMutation({
-    mutationFn: async () => {
-      const { data, error } = await supabase.functions.invoke("dependency-health", {
-        method: "POST",
-      });
-      if (error) throw error;
-      return data as DependencyHealthSnapshot;
-    },
-    onSuccess: (fresh) => {
-      queryClient.setQueryData(["dependency-health"], fresh);
-      toast({
-        title: "Snapshot atualizado",
-        description: `Gerado em ${fresh.generatedAt}`,
-      });
-    },
-    onError: (err: unknown) => {
-      const msg = err instanceof Error ? err.message : "Falha ao atualizar snapshot";
-      toast({ title: "Erro", description: msg, variant: "destructive" });
-    },
-  });
+  const buildRefresh = (dispatchCi: boolean) =>
+    useMutation({
+      mutationFn: async () => {
+        const { data, error } = await supabase.functions.invoke(
+          `dependency-health${dispatchCi ? "?dispatchCi=true" : ""}`,
+          { method: "POST" },
+        );
+        if (error) throw error;
+        return data as DependencyHealthSnapshot & { ciDispatch?: string };
+      },
+      onSuccess: (fresh) => {
+        queryClient.setQueryData(["dependency-health"], fresh);
+        toast({
+          title: dispatchCi ? "Snapshot atualizado + CI" : "Snapshot atualizado",
+          description: dispatchCi
+            ? `Gerado em ${fresh.generatedAt} · CI: ${fresh.ciDispatch ?? "n/a"}`
+            : `Gerado em ${fresh.generatedAt}`,
+        });
+      },
+      onError: (err: unknown) => {
+        const msg = err instanceof Error ? err.message : "Falha ao atualizar snapshot";
+        toast({ title: "Erro", description: msg, variant: "destructive" });
+      },
+    });
+
+  const refresh = buildRefresh(false);
+  const refreshAndCommit = buildRefresh(true);
 
   if (isLoading) {
     return (
