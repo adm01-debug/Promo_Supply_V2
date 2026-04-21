@@ -1,67 +1,43 @@
 
-## Plan: Robust import scanning for single-line and multi-line specifiers
+## Plan: Second `tsc --noEmit` pass after smoke test regeneration
 
 ### Goal
-Make `scripts/generate-datefns-smoke-test.mjs` (and `scripts/verify-datefns-locales.mjs`) detect every `date-fns/*` and `date-fns/locale/*` import regardless of formatting — including multi-line braces, trailing commas, comments inside braces, and non-standard whitespace.
+Catch missing/renamed `date-fns` exports surfaced by a freshly regenerated `src/test/dateFns.smoke.test.ts` *before* Vitest runs in `scripts/ci-check.sh`. Today, type errors in the regenerated smoke file would only surface during Vitest's transform — slower and noisier than a focused `tsc` failure.
 
-### Current limitation
-Both scripts use:
-```js
-/import\s+(type\s+)?\{([^{}]*)\}\s+from\s+["']date-fns\/([^"']+)["']/g
-```
+### Current state
+`scripts/ci-check.sh` already runs `bunx tsc --noEmit -p tsconfig.app.json` twice:
+- Step `[8/12]` — initial type-check of source.
+- Step `[11/12]` — re-run + Vitest smoke test (combined into one step description).
 
-This works for compact imports but the `[^{}]*` class also matches newlines, which is good — however it silently breaks on:
-- Inline `// comment` inside the braces (the `//` doesn't end the regex but a trailing comment after a specifier can confuse downstream `.split(",")`).
-- `/* block comments */` inside or between specifiers — comment text leaks into the names list and gets parsed as a fake specifier.
-- Trailing commas before `}` — produces an empty entry that's currently filtered, OK, but worth keeping covered.
-- Imports written as `import\n{\n  foo\n}\nfrom\n"date-fns/foo"` (newlines around `from`) — `\s+` already handles this, but worth a regression test.
-- Imports with surrounding parentheses or unusual quote escaping — out of scope (not valid TS).
-
-The real gap: **comments inside braces** corrupt the names list and can cause a locale to be missed or misnamed. With multi-line imports this is common (developers add `// keep` notes).
+Step `[10/12]` regenerates the smoke test and asserts no drift vs. the pre-existing file. If a contributor adds `import { addYears } from "date-fns/addYears"` and `addYears` doesn't actually exist in the installed `date-fns`, the failure currently appears inside Vitest's run in `[11/12]`, mixed with test output.
 
 ### Change
+Split step `[11/12]` into two distinct steps so the type-check failure is isolated and named:
 
-#### 1. `scripts/generate-datefns-smoke-test.mjs` — strip comments from the names blob before splitting
+- **New `[11/13]`** — `Type-checking regenerated smoke test (catches missing date-fns exports)...`
+  Runs `bunx tsc --noEmit -p tsconfig.app.json` on its own. Fails fast with a clear step header if the regenerated file references a non-existent `date-fns/<x>` subpath or export.
+- **New `[12/13]`** — `Running date-fns smoke test...`
+  Runs only `bunx vitest run "$SMOKE_TEST_FILE" --reporter=verbose --passWithNoTests`. The pre-existence guard for `$SMOKE_TEST_FILE` stays attached to this step.
+- Existing `[12/12]` (`deps:health` snapshot) becomes `[13/13]`.
 
-In the import-extraction loop, after capturing `namesRaw`, run it through a small `stripComments()` helper that removes `/* … */` and `// …` runs before the existing `.split(",")` pipeline.
+### Step-numbering update
+All `[N/12]` labels in `scripts/ci-check.sh` from step `[5]` onward bump their denominator to `/13`. Step `[10/12]`'s internal echoes (the drift guard prints "Run …" hints) stay textually identical — only the bracketed counter changes.
 
-```js
-function stripComments(s) {
-  // Remove /* ... */ (non-greedy, multi-line) then // ... to end-of-line.
-  return s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
-}
-```
-
-Apply it once: `const cleaned = stripComments(namesRaw);` then split `cleaned` instead of `namesRaw`. Existing trim/`type ` strip/alias-strip/empty-filter chain stays untouched.
-
-#### 2. Same fix in `scripts/verify-datefns-locales.mjs`
-
-Mirror the helper and apply it to the captured names group. Even though that script only inspects subpaths (not specifier names), keeping the two scanners byte-identical prevents drift between "what the generator sees" and "what the locale guard sees."
-
-Actually — `verify-datefns-locales.mjs` only reads the subpath capture group (group 3), not the names group, so comments inside braces don't affect it. **Skip the change there**; document this in a one-line code comment so future maintainers don't re-add it.
-
-#### 3. Regex tightening (both scripts)
-
-Replace the inner `[^{}]*` with `[\s\S]*?` (non-greedy, explicit any-char-including-newline). Functionally similar but:
-- Documents intent clearly (we accept newlines).
-- Non-greedy stops at the first `}`, preventing edge cases where two adjacent `import { … }` blocks could merge if the source had unusual nesting. (`[^{}]*` already prevents this, but `*?` is more idiomatic.)
-
-#### 4. Add a sanity check after parsing
-
-If `IMPORT_RE` matches a `date-fns/locale/*` subpath but `stripComments(namesRaw)` yields zero names after splitting, log a warning to stderr and continue. This surfaces malformed imports (e.g. someone wrote `import { } from "date-fns/locale/pt-BR"`) instead of silently dropping the locale.
+### Why a second pass (not just relying on `[8/12]`)
+- `[8/12]` runs *before* regeneration, so it sees the previously committed smoke test, which is known-good.
+- After `[10/12]` regenerates the file, the on-disk content may now reference a new `date-fns` subpath that doesn't exist in the installed version (e.g. typo, removed export, version drift). A dedicated `tsc` pass catches this with TypeScript's own error format rather than Vitest's transform error.
 
 ### What does NOT change
-- Manifest schema, smoke test render template, exit codes.
-- ESLint rule (`eslint-rules/date-fns-subpath.js`) — has its own AST-based parser, immune to formatting issues.
-- `scripts/ci-check.sh` step ordering or numbers.
-- `public/datefns-usage.json` content for the current source tree (no comments inside braces today, so output is byte-identical).
+- `scripts/ci-smoke.sh` (separate, simpler flow — out of scope).
+- `scripts/generate-datefns-smoke-test.mjs`, the manifest, the smoke test template.
+- `.github/workflows/*.yml` — they invoke `bash scripts/ci-check.sh`, no per-step references.
+- `package.json` scripts.
 
 ### Verification
-1. Add a multi-line import with a `// keep for v2` comment between two specifiers in a `src/` file → regenerate → both specifiers appear in the manifest.
-2. Add `import {\n  ptBR /* primary */,\n  enUS,\n} from "date-fns/locale/pt-BR";` style block (block comment + trailing comma) → both names extracted, no fake specifier from the comment text.
-3. Add an intentionally empty `import { } from "date-fns/locale/fr";` → stderr warning printed, locale skipped, exit code unchanged on the no-flag path (since the regex didn't yield usable names, the subpath isn't added).
-4. Run `node scripts/generate-datefns-smoke-test.mjs --dry-run` on the current tree → output is byte-identical to before the change (no diff).
-5. `node scripts/verify-datefns-locales.mjs` still passes; comment in that file explains why no parallel change was needed.
+1. Clean tree: `bash scripts/ci-check.sh` → all 13 steps pass with the new numbering.
+2. Add `import { nonExistentFn } from "date-fns/nonExistentFn"` to a `src/` file → `[11/13]` fails with a `tsc` error naming the missing module, *before* Vitest starts. Step header makes the cause obvious.
+3. Revert that import → step passes; `[12/13]` runs the smoke test as before.
+4. Confirm the `deps:health` step still runs last as `[13/13]`.
 
 ### Risk / scope
-~10 added lines in `scripts/generate-datefns-smoke-test.mjs` (one helper + two call sites + one warning), ~3 lines of clarifying comment in `scripts/verify-datefns-locales.mjs`. Zero new deps, zero behavioral change for the current source tree.
+~6 line edits in `scripts/ci-check.sh` (split one step into two, renumber 8 step labels). Zero code changes elsewhere, zero new deps, zero behavioral change on green CI runs (just one extra `tsc` invocation, ~3-5s on this codebase).
