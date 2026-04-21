@@ -1,0 +1,33 @@
+name: lint
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "package.json"
+      - "bun.lock"
+      - "eslint.config.js"
+      - ".github/workflows/lint.yml"
+
+jobs:
+  lint:
+    name: ESLint (full config)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+      - name: Verify lockfile is up to date (no drift vs package.json)
+        run: bun install --frozen-lockfile --dry-run
+      - name: Install dependencies (frozen lockfile)
+        run: bun install --frozen-lockfile
+      - name: Run ESLint (full config)
+        run: bunx eslint . --max-warnings=0
