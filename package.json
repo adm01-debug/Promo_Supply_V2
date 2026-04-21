@@ -36,7 +36,9 @@
     "hook:datefns": "bash scripts/hooks/datefns-precommit.sh",
     "hook:smoke:enable": "git config --local hook.fullSmoke true && echo 'Full smoke enabled on pre-push'",
     "hook:smoke:disable": "git config --local hook.fullSmoke false && echo 'Full smoke disabled on pre-push'",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "lint:src": "eslint src --max-warnings=0",
+    "lint:src:fix": "eslint src --fix"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
