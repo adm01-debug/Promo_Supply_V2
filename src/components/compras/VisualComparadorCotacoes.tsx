@@ -283,10 +283,10 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                       </div>
                       <div className="flex flex-col items-end gap-1">
                         <Badge 
-                          variant={score?.score >= 70 ? "default" : score?.score >= 40 ? "secondary" : "outline"}
+                          variant={(score?.score ?? 0) >= 70 ? "default" : (score?.score ?? 0) >= 40 ? "secondary" : "outline"}
                           className="text-xs"
                         >
-                          {score?.score}pts
+                          {score?.score ?? 0}pts
                         </Badge>
                         {cotacao.id === analysis.bestOverall && (
                           <Trophy className="w-4 h-4 text-warning" />

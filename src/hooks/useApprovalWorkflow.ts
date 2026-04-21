@@ -28,7 +28,7 @@ export const useApprovalWorkflow = () => {
       setRules((data || []).map(rule => ({
         ...rule,
         aprovadores: typeof rule.aprovadores === 'string' ? JSON.parse(rule.aprovadores) : rule.aprovadores || []
-      })));
+      })) as ApprovalRule[]);
     } catch (error) { console.error('Error fetching approval rules:', error); }
   }, []);
 
@@ -39,7 +39,7 @@ export const useApprovalWorkflow = () => {
       setDelegations((data || []).map(d => ({
         ...d,
         categorias_permitidas: typeof d.categorias_permitidas === 'string' ? JSON.parse(d.categorias_permitidas) : d.categorias_permitidas || []
-      })));
+      })) as ApprovalDelegation[]);
     } catch (error) { console.error('Error fetching delegations:', error); }
   }, []);
 

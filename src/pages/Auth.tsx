@@ -115,7 +115,7 @@ const Auth = () => {
         _ip_address: '',
         _user_agent: userAgent,
         _success: success,
-        _failure_reason: failureReason ?? null,
+        _failure_reason: failureReason ?? undefined,
       }).then(({ error: logError }) => {
         if (logError) console.error('Failed to log login attempt:', logError);
       });

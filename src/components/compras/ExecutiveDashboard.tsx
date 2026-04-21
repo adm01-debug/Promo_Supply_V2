@@ -99,19 +99,19 @@ export const ExecutiveDashboard = () => {
     if (hasAppliedDefault || favorites.length === 0) return;
     const defaultFilter = getDefaultFilter();
     if (defaultFilter) {
-      setSelectedCategory(defaultFilter.category_filter);
-      setSelectedSupplier(defaultFilter.supplier_filter);
-      setSelectedPeriod(defaultFilter.period_filter);
-      setShowComparison(defaultFilter.show_comparison);
+      setSelectedCategory(defaultFilter.category_filter ?? 'all');
+      setSelectedSupplier(defaultFilter.supplier_filter ?? 'all');
+      setSelectedPeriod(defaultFilter.period_filter ?? '6m');
+      setShowComparison(defaultFilter.show_comparison ?? true);
     }
     setHasAppliedDefault(true);
   }, [favorites.length, getDefaultFilter, hasAppliedDefault]);
 
   const applyFilter = (filter: DashboardFilter) => {
-    setSelectedCategory(filter.category_filter);
-    setSelectedSupplier(filter.supplier_filter);
-    setSelectedPeriod(filter.period_filter);
-    setShowComparison(filter.show_comparison);
+    setSelectedCategory(filter.category_filter ?? 'all');
+    setSelectedSupplier(filter.supplier_filter ?? 'all');
+    setSelectedPeriod(filter.period_filter ?? '6m');
+    setShowComparison(filter.show_comparison ?? true);
   };
 
   const currentFilters = { category: selectedCategory, supplier: selectedSupplier, period: selectedPeriod, showComparison };

@@ -155,7 +155,7 @@ export const useSecurityLogs = () => {
     queryFn: async () => {
       const query = isAdmin
         ? supabase.from('active_sessions').select('*')
-        : supabase.from('active_sessions').select('*').eq('user_id', user?.id);
+        : supabase.from('active_sessions').select('*').eq('user_id', user?.id ?? '');
       
       const { data, error } = await query.order('last_activity', { ascending: false });
       

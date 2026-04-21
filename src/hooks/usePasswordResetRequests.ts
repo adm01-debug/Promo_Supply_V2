@@ -62,7 +62,7 @@ export const usePasswordResetRequests = () => {
       const { data, error } = await supabase
         .from('password_reset_requests')
         .select('*')
-        .eq('user_id', user?.id)
+        .eq('user_id', user?.id ?? '')
         .order('requested_at', { ascending: false });
       
       if (error) throw error;
@@ -74,11 +74,12 @@ export const usePasswordResetRequests = () => {
   // Create a reset request
   const createRequest = useMutation({
     mutationFn: async ({ reason }: { reason?: string }) => {
+      if (!user?.id || !user?.email) throw new Error('Usuário não autenticado');
       const { error } = await supabase
         .from('password_reset_requests')
         .insert({
-          user_id: user?.id,
-          email: user?.email,
+          user_id: user.id,
+          email: user.email,
           reason,
           ip_address: null, // Would need edge function to get real IP
           user_agent: navigator.userAgent,
