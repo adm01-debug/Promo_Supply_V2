@@ -37,7 +37,10 @@ node scripts/verify-datefns-files.mjs
 echo "▶ [8/11] Type-checking source with tsc --noEmit..."
 bunx tsc --noEmit -p tsconfig.app.json
 
-echo "▶ [9/11] Verifying date-fns smoke test is up to date..."
+echo "▶ [9/12] Verifying date-fns locale imports match manifest..."
+node scripts/verify-datefns-locales.mjs
+
+echo "▶ [10/12] Verifying date-fns smoke test is up to date..."
 SMOKE_TEST_FILE="src/test/dateFns.smoke.test.ts"
 MANIFEST_FILE="public/datefns-usage.json"
 SMOKE_BACKUP="$(mktemp)"
