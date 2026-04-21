@@ -1,5 +1,6 @@
-import { defineConfig } from "vite";
-import type { RollupLog } from "rollup";
+import { defineConfig, type Rollup } from "vite";
+
+type RollupLog = Rollup.RollupLog;
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { componentTagger } from "lovable-tagger";
