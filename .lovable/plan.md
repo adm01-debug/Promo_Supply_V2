@@ -1,80 +1,62 @@
 
-## Plan: Optional pre-push hook for full `ci-smoke.sh`
+## Plan: Accept optional Vitest test path argument in `ci-smoke.sh`
 
 ### Goal
-Allow developers to opt into running the full `scripts/ci-smoke.sh` (clean install + full verification) on every push, while keeping the default lightweight `datefns-precommit.sh` for fast feedback.
+Allow `scripts/ci-smoke.sh` to run a different smoke test file when invoked with an argument, while keeping `src/test/dateFns.smoke.test.ts` as the default. This makes the script reusable for ad-hoc smoke runs without forking it.
 
-### Current state
-- `.husky/pre-push` runs `scripts/hooks/datefns-precommit.sh` (lightweight: generator drift + tsc only, no clean install)
-- `scripts/ci-smoke.sh` is the full smoke lane (~2 min: clean node_modules, install, eslint, verify, tsc, vitest)
+### Change — single file: `scripts/ci-smoke.sh`
 
-### Changes
-
-#### 1. Update `.husky/pre-push`
-Replace the single-line invocation with logic that checks for opt-in before deciding which script to run:
+#### 1. Parse the argument near the top
+Right after `mkdir -p "$LOG_DIR"` (and before the summary state vars), add:
 
 ```bash
-#!/usr/bin/env bash
-# Husky pre-push hook: runs either a lightweight date-fns check (default) or
-# the full ci-smoke.sh if FULL_SMOKE_PRE_PUSH is set.
-# To bypass entirely: git push --no-verify
+# Optional first arg: path to the vitest smoke test file.
+# Defaults to the date-fns smoke test for backwards compatibility.
+SMOKE_TEST_PATH="${1:-src/test/dateFns.smoke.test.ts}"
 
-# Opt-in to full smoke test via environment variable or git config:
-#   FULL_SMOKE_PRE_PUSH=1 git push          # one-time
-#   git config --local hook.fullSmoke true  # persistent for this repo
-if [ "${FULL_SMOKE_PRE_PUSH:-}" = "1" ] || \
-   [ "$(git config --local hook.fullSmoke 2>/dev/null || echo false)" = "true" ]; then
-  echo "▶ Running full ci-smoke.sh (opt-in mode)..."
-  bash "$(dirname "$0")/../scripts/ci-smoke.sh"
-else
-  # Default: lightweight date-fns integrity check
-  bash "$(dirname "$0")/../scripts/hooks/datefns-precommit.sh"
+if [ ! -f "$SMOKE_TEST_PATH" ]; then
+  echo "✗ Smoke test file not found: $SMOKE_TEST_PATH" >&2
+  echo "  Usage: $0 [path/to/smoke.test.ts]" >&2
+  exit 2
 fi
 ```
 
-#### 2. Add npm script for convenience
-Add to `package.json` scripts section:
+#### 2. Use the variable in the vitest invocation
+Replace the hardcoded path in step [7/7]:
 
-```json
-"hook:smoke:enable": "git config --local hook.fullSmoke true && echo 'Full smoke enabled on pre-push'",
-"hook:smoke:disable": "git config --local hook.fullSmoke false && echo 'Full smoke disabled on pre-push'"
+```bash
+bunx vitest run "$SMOKE_TEST_PATH" \
+  --reporter=verbose \
+  --reporter=json --outputFile="$LOG_DIR/vitest-smoke.json" \
+  --hideSkippedTests \
+  --printConsoleTrace \
+  2>&1 | tee "$LOG_DIR/vitest-smoke.log"
 ```
 
-#### 3. Document in README.md
-Add under "Running CI locally" section:
+#### 3. Surface the chosen path in the summary
+Add one line to the `print_summary()` block (above the `Logs` line):
 
-```markdown
-### Optional full smoke on every push
-
-By default, the pre-push hook runs a lightweight date-fns check (~10s). To run the full `ci-smoke.sh` lane (clean install + all verifications, ~2 min) on every push instead:
-
-```sh
-# One-time (current push only)
-FULL_SMOKE_PRE_PUSH=1 git push
-
-# Persistent for this repo (stored in .git/config)
-bun run hook:smoke:enable
-
-# Disable and return to lightweight mode
-bun run hook:smoke:disable
+```
+  Smoke test file     : src/test/dateFns.smoke.test.ts
 ```
 
-Bypass any hook in an emergency: `git push --no-verify`
-```
+So users can confirm which file ran when reading the summary.
 
-### Verification
-1. Default push (no env, no config): runs lightweight `datefns-precommit.sh` only
-2. `FULL_SMOKE_PRE_PUSH=1 git push`: runs full `ci-smoke.sh`, shows summary at end
-3. `bun run hook:smoke:enable` then push: runs full smoke (persistent opt-in)
-4. `bun run hook:smoke:disable`: returns to default lightweight mode
-5. `git push --no-verify`: skips both hooks entirely
+#### 4. Echo it once at start
+After parsing the arg, log `echo "▶ Smoke test target: $SMOKE_TEST_PATH"` so it appears near the top of the run output too.
+
+### Behavior
+- `bash scripts/ci-smoke.sh` → unchanged, runs `src/test/dateFns.smoke.test.ts`.
+- `bash scripts/ci-smoke.sh src/test/example.test.ts` → runs the supplied file through the same pipeline (clean install, eslint gate, tsc, vitest, summary).
+- Missing file → exits 2 with usage hint before doing any work.
+
+### Out of scope
+- No changes to `tsconfig.smoke.json` (still validates the date-fns smoke import surface; if the user passes a non-date-fns test, tsc step still runs against the same config — acceptable, documented limitation).
+- No changes to `ci-check.sh`, workflows, or `package.json`.
+- No changes to argument parsing beyond a single positional arg (no flags).
 
 ### Files edited
-- `.husky/pre-push` — add opt-in logic (~15 lines)
-- `package.json` — add two npm scripts (~2 lines)
-- `README.md` — document the feature (~15 lines)
+- `scripts/ci-smoke.sh` — ~10 lines added, 1 line modified.
 
 ### Risk / scope
-- 3 files edited, ~35 lines total, 0 new files, 0 dependency changes
-- Default behavior unchanged (opt-in only)
-- Hook remains bypassable with `--no-verify`
+- 1 file edited, fully backwards-compatible (default value preserves current behavior), 0 dep/workflow changes.
