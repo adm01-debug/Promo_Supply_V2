@@ -21,6 +21,7 @@
     "verify:datefns-locales": "node scripts/verify-datefns-locales.mjs",
     "verify:datefns-smoke": "node scripts/generate-datefns-smoke-test.mjs --dry-run",
     "verify:datefns-smoke-types": "bunx tsc --noEmit -p tsconfig.smoke.json",
+    "verify:datefns-files": "node scripts/verify-datefns-files.mjs",
     "hook:datefns": "bash scripts/hooks/datefns-precommit.sh",
     "hook:smoke:enable": "git config --local hook.fullSmoke true && echo 'Full smoke enabled on pre-push'",
     "hook:smoke:disable": "git config --local hook.fullSmoke false && echo 'Full smoke disabled on pre-push'",
