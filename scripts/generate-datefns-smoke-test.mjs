@@ -10,6 +10,7 @@ import { join, relative } from "node:path";
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
 const OUT_FILE = join(SRC_DIR, "test", "dateFns.smoke.test.ts");
+const MANIFEST_FILE = join(ROOT, "public", "datefns-usage.json");
 const EXCLUDE_DIRS = new Set(["test", "node_modules", ".git", "dist", "build"]);
 const FILE_EXT = /\.(ts|tsx)$/;
 
