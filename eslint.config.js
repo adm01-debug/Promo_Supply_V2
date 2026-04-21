@@ -2,6 +2,7 @@ import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
+import importPlugin from "eslint-plugin-import";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
@@ -33,6 +34,25 @@ export default tseslint.config(
           },
         ],
       }],
+    },
+  },
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    plugins: {
+      import: importPlugin,
+    },
+    settings: {
+      "import/resolver": {
+        typescript: {
+          project: "./tsconfig.app.json",
+          alwaysTryTypes: true,
+        },
+        node: true,
+      },
+    },
+    rules: {
+      "import/no-unresolved": "error",
+      "import/named": "error",
     },
   },
 );
