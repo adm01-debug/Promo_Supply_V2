@@ -1,11 +1,15 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle2, AlertTriangle, Package, Lock, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
 
 interface DependencyHealthSnapshot {
   generatedAt: string;
@@ -23,16 +27,48 @@ interface DependencyHealthSnapshot {
 }
 
 const fetchSnapshot = async (): Promise<DependencyHealthSnapshot> => {
+  // Prefer edge function (runtime refreshable)
+  try {
+    const { data, error } = await supabase.functions.invoke("dependency-health", {
+      method: "GET",
+    });
+    if (!error && data) return data as DependencyHealthSnapshot;
+  } catch {
+    // fall through to static
+  }
   const res = await fetch("/dependency-health.json", { cache: "no-store" });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
 };
 
 const DependencyHealth = () => {
+  const { isAdmin } = useAuth();
+  const queryClient = useQueryClient();
   const { data, isLoading, error } = useQuery({
     queryKey: ["dependency-health"],
     queryFn: fetchSnapshot,
     staleTime: 60_000,
+  });
+
+  const refresh = useMutation({
+    mutationFn: async () => {
+      const { data, error } = await supabase.functions.invoke("dependency-health", {
+        method: "POST",
+      });
+      if (error) throw error;
+      return data as DependencyHealthSnapshot;
+    },
+    onSuccess: (fresh) => {
+      queryClient.setQueryData(["dependency-health"], fresh);
+      toast({
+        title: "Snapshot atualizado",
+        description: `Gerado em ${fresh.generatedAt}`,
+      });
+    },
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : "Falha ao atualizar snapshot";
+      toast({ title: "Erro", description: msg, variant: "destructive" });
+    },
   });
 
   if (isLoading) {
@@ -70,11 +106,24 @@ const DependencyHealth = () => {
 
   return (
     <div className="container mx-auto p-6 space-y-4">
-      <div>
-        <h1 className="text-2xl font-bold">Saúde das Dependências</h1>
-        <p className="text-sm text-muted-foreground">
-          Snapshot gerado pela rotina <code className="font-mono">bun run ci:check</code>.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold">Saúde das Dependências</h1>
+          <p className="text-sm text-muted-foreground">
+            Snapshot gerado pela rotina <code className="font-mono">bun run ci:check</code> ou pelo botão abaixo.
+          </p>
+        </div>
+        {isAdmin && (
+          <Button
+            onClick={() => refresh.mutate()}
+            disabled={refresh.isPending}
+            variant="outline"
+            aria-label="Atualizar snapshot agora"
+          >
+            <RefreshCw className={`h-4 w-4 ${refresh.isPending ? "animate-spin" : ""}`} />
+            {refresh.isPending ? "Atualizando…" : "Atualizar agora"}
+          </Button>
+        )}
       </div>
 
       <Card>
