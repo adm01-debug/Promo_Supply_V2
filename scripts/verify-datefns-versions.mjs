@@ -117,6 +117,20 @@ if (!aligned) {
     console.error(`\n    (spec normalized: ${SPEC_NORM})`);
   }
 
+  // Mismatch detail: caret-pointer diff per drifting pair
+  console.error("\n  Mismatch detail:");
+  if (!specEqLock && lockEqInstalled) {
+    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+  } else if (specEqLock && !lockEqInstalled) {
+    console.error(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+  } else if (specEqInstalled && !specEqLock) {
+    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+  } else {
+    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+    console.error("");
+    console.error(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+  }
+
   // Diagnose drift pattern → targeted fix + distinct exit code
   let diagnosis, fixCmd, exitCode;
   if (!specEqLock && lockEqInstalled) {
