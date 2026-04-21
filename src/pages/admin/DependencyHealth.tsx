@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes, Scissors } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
@@ -22,6 +22,22 @@ interface PackageHealth {
   driftDetected: boolean;
 }
 
+interface TreeShakingOffender {
+  file: string;
+  line: number;
+  importPath: string;
+}
+
+interface TreeShakingReport {
+  scannedAt: string;
+  filesScanned: number;
+  barrelImportsFound: number;
+  offenders: TreeShakingOffender[];
+  truncated?: boolean;
+  riskLevel: "ok" | "warning" | "critical";
+  note?: string;
+}
+
 interface DependencyHealthSnapshot {
   generatedAt: string;
   dateFns: {
@@ -36,6 +52,7 @@ interface DependencyHealthSnapshot {
     lastCheckedAt: string;
     source: string;
   };
+  treeShaking?: TreeShakingReport;
 }
 
 const fetchSnapshot = async (): Promise<DependencyHealthSnapshot> => {
