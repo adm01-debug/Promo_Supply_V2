@@ -39,28 +39,45 @@ bunx tsc --noEmit -p tsconfig.app.json
 
 echo "▶ [9/11] Verifying date-fns smoke test is up to date..."
 SMOKE_TEST_FILE="src/test/dateFns.smoke.test.ts"
+MANIFEST_FILE="public/datefns-usage.json"
 SMOKE_BACKUP="$(mktemp)"
+MANIFEST_BACKUP="$(mktemp)"
 if [ -f "$SMOKE_TEST_FILE" ]; then
   cp "$SMOKE_TEST_FILE" "$SMOKE_BACKUP"
 fi
+if [ -f "$MANIFEST_FILE" ]; then
+  cp "$MANIFEST_FILE" "$MANIFEST_BACKUP"
+fi
 node scripts/generate-datefns-smoke-test.mjs
+DRIFT=0
 if [ -f "$SMOKE_BACKUP" ]; then
   if ! diff -q "$SMOKE_BACKUP" "$SMOKE_TEST_FILE" > /dev/null 2>&1; then
     echo "✗ $SMOKE_TEST_FILE is out of date." >&2
-    echo "  Run \`node scripts/generate-datefns-smoke-test.mjs\` and commit the result." >&2
-    echo "  Diff:" >&2
     diff -u "$SMOKE_BACKUP" "$SMOKE_TEST_FILE" >&2 || true
     cp "$SMOKE_BACKUP" "$SMOKE_TEST_FILE"
-    rm -f "$SMOKE_BACKUP"
-    exit 1
+    DRIFT=1
   fi
-  rm -f "$SMOKE_BACKUP"
 else
   echo "✗ $SMOKE_TEST_FILE did not exist before generation." >&2
+  DRIFT=1
+fi
+if [ -s "$MANIFEST_BACKUP" ]; then
+  if ! diff -q "$MANIFEST_BACKUP" "$MANIFEST_FILE" > /dev/null 2>&1; then
+    echo "✗ $MANIFEST_FILE is out of date." >&2
+    diff -u "$MANIFEST_BACKUP" "$MANIFEST_FILE" >&2 || true
+    cp "$MANIFEST_BACKUP" "$MANIFEST_FILE"
+    DRIFT=1
+  fi
+elif [ ! -f "$MANIFEST_FILE" ]; then
+  echo "✗ $MANIFEST_FILE was not generated." >&2
+  DRIFT=1
+fi
+rm -f "$SMOKE_BACKUP" "$MANIFEST_BACKUP"
+if [ "$DRIFT" -ne 0 ]; then
   echo "  Run \`node scripts/generate-datefns-smoke-test.mjs\` and commit the result." >&2
   exit 1
 fi
-echo "✓ Smoke test file is up to date."
+echo "✓ Smoke test file and manifest are up to date."
 
 echo "▶ [10/11] Type-checking again + running date-fns smoke test..."
 SMOKE_TEST_FILE="src/test/dateFns.smoke.test.ts"
