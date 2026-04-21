@@ -4,9 +4,10 @@
  * src/test/dateFns.smoke.test.ts so the smoke test always reflects
  * actual usage. Pure Node, zero dependencies.
  */
-import { readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 
+const DRY_RUN = process.argv.slice(2).some((a) => a === "--dry-run" || a === "-n");
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
 const OUT_FILE = join(SRC_DIR, "test", "dateFns.smoke.test.ts");
@@ -187,8 +188,6 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
 });
 `;
 
-writeFileSync(OUT_FILE, out, "utf8");
-
 // --- Emit machine-readable manifest for the admin panel ---
 const manifest = {
   generatedAt: new Date().toISOString(),
@@ -204,7 +203,83 @@ const manifest = {
     exports: [...subpaths.get(sp)].sort(),
   })),
 };
-writeFileSync(MANIFEST_FILE, JSON.stringify(manifest, null, 2) + "\n", "utf8");
+const manifestText = JSON.stringify(manifest, null, 2) + "\n";
+
+// --- Minimal unified-diff helper (no deps) ---
+function unifiedDiff(oldStr, newStr, label) {
+  const oldLines = oldStr.split("\n");
+  const newLines = newStr.split("\n");
+  let start = 0;
+  while (
+    start < oldLines.length &&
+    start < newLines.length &&
+    oldLines[start] === newLines[start]
+  ) start++;
+  let oldEnd = oldLines.length;
+  let newEnd = newLines.length;
+  while (
+    oldEnd > start &&
+    newEnd > start &&
+    oldLines[oldEnd - 1] === newLines[newEnd - 1]
+  ) { oldEnd--; newEnd--; }
+  if (start === oldEnd && start === newEnd) return "";
+  const out = [`--- a/${label}`, `+++ b/${label}`];
+  const oldCount = oldEnd - start;
+  const newCount = newEnd - start;
+  out.push(`@@ -${start + 1},${oldCount} +${start + 1},${newCount} @@`);
+  for (let i = start; i < oldEnd; i++) out.push(`-${oldLines[i]}`);
+  for (let i = start; i < newEnd; i++) out.push(`+${newLines[i]}`);
+  return out.join("\n");
+}
+
+function printSummary() {
+  console.log(
+    `Detected: ${sortedSubpaths.length} subpaths / ${allFnNames.length} function exports / ${allLocaleNames.length} locales\n`,
+  );
+  if (fnSubpaths.length > 0) {
+    console.log("Functions:");
+    const pad = Math.max(...fnSubpaths.map((s) => s.length));
+    for (const sp of fnSubpaths) {
+      console.log(`  ${sp.padEnd(pad)}  →  ${[...subpaths.get(sp)].sort().join(", ")}`);
+    }
+    console.log("");
+  }
+  if (localeSubpaths.length > 0) {
+    console.log("Locales:");
+    const pad = Math.max(...localeSubpaths.map((s) => s.length));
+    for (const sp of localeSubpaths) {
+      console.log(`  ${sp.padEnd(pad)}  →  ${[...subpaths.get(sp)].sort().join(", ")}`);
+    }
+    console.log("");
+  }
+}
+
+function diffFile(path, newText) {
+  const rel = relative(ROOT, path);
+  if (!existsSync(path)) {
+    console.log(`(new file) ${rel}`);
+    console.log(newText);
+    return true;
+  }
+  const current = readFileSync(path, "utf8");
+  const diff = unifiedDiff(current, newText, rel);
+  if (!diff) {
+    console.log(`= ${rel} (no changes)`);
+    return false;
+  }
+  console.log(diff);
+  return true;
+}
+
+if (DRY_RUN) {
+  printSummary();
+  const a = diffFile(OUT_FILE, out);
+  const b = diffFile(MANIFEST_FILE, manifestText);
+  process.exit(a || b ? 1 : 0);
+}
+
+writeFileSync(OUT_FILE, out, "utf8");
+writeFileSync(MANIFEST_FILE, manifestText, "utf8");
 
 console.log(
   `✓ Generated smoke test for ${sortedSubpaths.length} subpaths, ${allFnNames.length} named function exports, ${allLocaleNames.length} locales.`,
