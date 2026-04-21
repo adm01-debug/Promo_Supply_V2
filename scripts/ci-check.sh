@@ -20,8 +20,11 @@ if [ -n "$LOCKED" ] && [ "$INSTALLED" != "$LOCKED" ]; then
 fi
 echo "✓ date-fns $INSTALLED matches lockfile."
 
-echo "▶ [5/10] Printing install verification report..."
+echo "▶ [5/11] Printing install verification report..."
 node scripts/install-report.mjs
+
+echo "▶ [6/11] ESLint gate: blocking date-fns barrel imports (--max-warnings=0)..."
+npx eslint . --max-warnings=0 --rule 'no-restricted-imports: ["error", {"paths": [{"name": "date-fns", "message": "Import from a date-fns subpath, e.g. date-fns/format."}, {"name": "date-fns/locale", "message": "Import the specific locale subpath, e.g. date-fns/locale/pt-BR."}]}]'
 
 echo "▶ [6/10] Verifying date-fns subpath files exist on disk..."
 node scripts/verify-datefns-files.mjs
