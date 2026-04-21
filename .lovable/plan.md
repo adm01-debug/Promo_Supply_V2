@@ -1,53 +1,64 @@
 
-## Plan: `--dry-run` flag for the smoke test generator
+## Plan: CI guard for smoke test freshness on locale changes
 
 ### Goal
-Let contributors preview what `scripts/generate-datefns-smoke-test.mjs` would change without touching the working tree. Useful for local audits and for the CI drift step to surface a richer report.
+Catch the case where someone edits `date-fns/locale/*` imports in `src/` but the generated `src/test/dateFns.smoke.test.ts` and `public/datefns-usage.json` weren't regenerated to reflect them. Today's drift step ([9/11] in `ci-check.sh`) already catches *content* drift; this adds a focused, fast-feedback locale-specific guard that runs earlier and reports clearly when locales are the cause.
 
-### Behavior
+### Approach
+Add a small Node script that:
+1. Scans `src/` for `date-fns/locale/*` subpath imports (reusing the same regex family already in `generate-datefns-smoke-test.mjs`).
+2. Reads `public/datefns-usage.json` (the manifest emitted by the generator).
+3. Compares the set of locale subpaths found in source vs. listed in the manifest.
+4. Also compares the manifest's `totalLocales` to the actual count.
+5. Fails (exit 1) with a precise message naming the missing/extra locale subpaths and telling the contributor to run the generator.
 
-Invoking `node scripts/generate-datefns-smoke-test.mjs --dry-run` (alias `-n`):
+Then wire it into `ci-check.sh` as a new fast step before the full content-drift check, so locale-only regressions surface with a clearer error.
 
-1. Runs the full scan exactly as today (same regex, same exclusions).
-2. Prints a compact summary to stdout:
-   - Totals: `N subpaths / M function exports / K locales`.
-   - **Functions** section: one line per subpath, `subpath  →  exportA, exportB`.
-   - **Locales** section: same format.
-3. Computes the rendered smoke-test contents in memory and the manifest JSON in memory.
-4. Diffs each against the on-disk file:
-   - If a target file is missing, prints `(new file)` followed by the full would-be content.
-   - Otherwise prints a unified diff (`--- a/<path>` / `+++ b/<path>`) using a tiny built-in line differ (no new deps — Node's `node:util` has nothing for this, so use a minimal LCS-free implementation: split both sides on `\n`, walk with a basic Myers-lite or just emit a "changed lines" block when any line differs, prefixed with `-`/`+`). Keep it under ~40 lines.
-5. **Writes nothing.** Exits `0` if both files would be unchanged, `1` if either would change or be created. This makes `--dry-run` directly reusable as a CI guard if desired.
+### Changes
 
-Default invocation (no flag) is unchanged: writes both files and exits 0/1 per current rules.
+#### 1. New file: `scripts/verify-datefns-locales.mjs` (~70 lines)
 
-### Implementation outline (`scripts/generate-datefns-smoke-test.mjs`)
+- Reuses the same `walk()` + import regex pattern from `generate-datefns-smoke-test.mjs` (copy the small helpers — these are ~30 lines and zero deps; keeping them local avoids creating a shared module just for two callers).
+- Builds `Set<string>` of locale subpaths found in `src/` (filter to `subpath.startsWith("locale/")`).
+- Loads `public/datefns-usage.json`; if missing, exits 1 with: *"Manifest missing. Run `node scripts/generate-datefns-smoke-test.mjs` and commit the result."*
+- Builds `Set<string>` from `manifest.locales[].subpath`.
+- Computes `missing = source - manifest` and `extra = manifest - source`.
+- Also asserts:
+  - `manifest.totalLocales === manifest.locales.length`
+  - `manifest.generatedAt` is a valid ISO date string (parseable, not `NaN`)
+- Prints a single-line success: *"✓ Locales in sync: N entries (manifest generated <relative time>)."*
+- On any mismatch: prints both lists side by side and exits 1 with the actionable run-the-generator message.
 
-- Parse argv at the top: `const dryRun = process.argv.slice(2).some(a => a === "--dry-run" || a === "-n");`
-- Refactor the final write section into two small helpers:
-  - `renderSmokeTest()` → returns the string currently passed to `writeFileSync(OUT_FILE, …)`.
-  - `renderManifest()` → returns the JSON string currently passed to `writeFileSync(MANIFEST_FILE, …)`.
-- New helper `unifiedDiff(oldStr, newStr, label)` (~30 lines, no deps): splits to lines, finds first/last differing index, emits a hunk header `@@ -a,b +c,d @@` and `-`/`+`/` ` lines. Good enough for human review; not git-quality but accurate.
-- New helper `printDryRun({ subpaths, fnSubpaths, localeSubpaths, smokeText, manifestText })`:
-  - Prints totals + "Functions" + "Locales" tables (plain text, fixed-width via simple padding).
-  - For each of `[OUT_FILE, MANIFEST_FILE]`: read on-disk if exists, compute diff vs in-memory, print.
-  - Returns `true` if any file would change.
-- Branch at the end:
-  - If `dryRun`: build both strings, call `printDryRun`, exit `changed ? 1 : 0`. Skip both `writeFileSync` calls.
-  - Else: existing behavior (write both, log success).
+#### 2. `scripts/ci-check.sh` — insert new step
+
+Before the existing content-drift step (currently `[9/11]`), insert a new step:
+
+```
+▶ [N/M] Verifying date-fns locale imports match manifest...
+node scripts/verify-datefns-locales.mjs
+```
+
+Renumber the subsequent steps accordingly (becomes `[9/12]` … `[12/12]`). Step descriptions stay identical otherwise.
+
+The existing content-drift step still runs after and remains the source of truth for full file-byte equality; this new step just gives faster, locale-specific feedback.
+
+#### 3. `package.json` — optional npm script alias
+
+Add `"verify:datefns-locales": "node scripts/verify-datefns-locales.mjs"` so contributors can run it standalone (`bun run verify:datefns-locales`). Single-line addition next to the existing `deps:health` entry.
 
 ### What does NOT change
-- Scanning logic, regex, exclusions, exit codes for the no-flag path.
-- `src/test/dateFns.smoke.test.ts` or `public/datefns-usage.json` rendering.
-- `scripts/ci-check.sh` step [9/11] — still runs the generator (without `--dry-run`) and diffs the file. Existing guard behavior unchanged.
-- No new npm dependencies.
+- `scripts/generate-datefns-smoke-test.mjs` (the generator itself — already correct).
+- The smoke test file or the manifest schema.
+- `eslint-rules/`, edge functions, CI lint job (`.github/workflows/lint-date-fns.yml`).
+- The admin `DateFnsUsagePanel` component.
 
 ### Verification
-1. Clean tree: `node scripts/generate-datefns-smoke-test.mjs --dry-run` → prints summary, prints "no changes" for both files, exits 0, working tree untouched.
-2. Add `import { addYears } from "date-fns/addYears"` somewhere in `src/`, run `--dry-run` → summary lists `addYears`, unified diff shows the new import + array entry in the smoke test and the new manifest row, exits 1, files unchanged on disk.
-3. Delete `src/test/dateFns.smoke.test.ts`, run `--dry-run` → prints `(new file) src/test/dateFns.smoke.test.ts` followed by full content, exits 1.
-4. `node scripts/generate-datefns-smoke-test.mjs` (no flag) after step 2 → writes both files normally, exits 0.
-5. `-n` short alias works identically to `--dry-run`.
+1. Clean tree → step passes silently with the green summary line.
+2. Add `import { enUS } from "date-fns/locale/en-US"` somewhere in `src/`, do **not** regenerate → new step fails with: *"Missing in manifest: locale/en-US. Run `node scripts/generate-datefns-smoke-test.mjs` and commit."* — surfaces before the broader content-drift step.
+3. Run the generator → manifest updates, step passes, content-drift step also passes.
+4. Delete `public/datefns-usage.json` → step fails with the manifest-missing message and exits 1.
+5. Hand-edit the manifest to add a phantom locale → step fails with: *"Extra in manifest (not in src/): locale/fake-XX."*
+6. Hand-corrupt `manifest.generatedAt` → step fails with the timestamp-validation message.
 
 ### Risk / scope
-- One file edited (`scripts/generate-datefns-smoke-test.mjs`), ~80 added lines (helpers + dry-run branch), zero new deps, zero behavioral change for the existing no-flag path.
+~70 added lines in a new script + ~3 added lines in `ci-check.sh` + 1 line in `package.json`. No new deps, no behavioral change on green CI runs, no source files renamed.
