@@ -1,54 +1,75 @@
 
-## Plan: Fail CI when smoke test file is out of date
+## Plan: Admin panel showing detected date-fns subpaths & locales
 
 ### Goal
-Block PRs where a contributor changed `date-fns/*` imports in `src/` but forgot to commit the regenerated `src/test/dateFns.smoke.test.ts`. The check runs the generator, then fails if the file would differ from what's checked in.
+Surface a read-only "Detected date-fns usage" section inside the existing admin Dependency Health page that lists every subpath and locale the generator currently detects, sourced from the latest generator run. Lets admins audit tree-shaking surface area without opening the test file.
 
-### Change
+### Approach
+The generator already knows the full subpath/locale inventory at run time. Today it only writes the smoke test file. Extend it to **also** emit a small JSON manifest under `public/`, then render it in the admin page.
 
-#### `scripts/ci-check.sh` — split step [9/11]
+### Changes
 
-Today step [9/11] regenerates the smoke test in-place, silently overwriting any drift. Replace it with a drift-detection variant:
+#### 1. `scripts/generate-datefns-smoke-test.mjs` — emit manifest
 
-```bash
-echo "▶ [9/11] Verifying date-fns smoke test is up to date..."
-SMOKE_TEST_FILE="src/test/dateFns.smoke.test.ts"
-SMOKE_BACKUP="$(mktemp)"
-if [ -f "$SMOKE_TEST_FILE" ]; then
-  cp "$SMOKE_TEST_FILE" "$SMOKE_BACKUP"
-fi
-node scripts/generate-datefns-smoke-test.mjs
-if [ -f "$SMOKE_BACKUP" ]; then
-  if ! diff -q "$SMOKE_BACKUP" "$SMOKE_TEST_FILE" > /dev/null 2>&1; then
-    echo "✗ $SMOKE_TEST_FILE is out of date." >&2
-    echo "  Run \`node scripts/generate-datefns-smoke-test.mjs\` and commit the result." >&2
-    echo "  Diff:" >&2
-    diff -u "$SMOKE_BACKUP" "$SMOKE_TEST_FILE" >&2 || true
-    cp "$SMOKE_BACKUP" "$SMOKE_TEST_FILE"  # restore so later steps run on committed file
-    rm -f "$SMOKE_BACKUP"
-    exit 1
-  fi
-  rm -f "$SMOKE_BACKUP"
-else
-  echo "✗ $SMOKE_TEST_FILE did not exist before generation." >&2
-  echo "  Run \`node scripts/generate-datefns-smoke-test.mjs\` and commit the result." >&2
-  exit 1
-fi
-echo "✓ Smoke test file is up to date."
+After the smoke test write, also write `public/datefns-usage.json`:
+
+```json
+{
+  "generatedAt": "2026-04-21T...",
+  "totalSubpaths": 42,
+  "totalFunctions": 38,
+  "totalLocales": 4,
+  "functions": [
+    { "subpath": "addYears", "exports": ["addYears"] },
+    { "subpath": "format",   "exports": ["format"] }
+  ],
+  "locales": [
+    { "subpath": "locale/pt-BR", "exports": ["ptBR"] },
+    { "subpath": "locale/en-US", "exports": ["enUS"] }
+  ]
+}
 ```
 
-Step [10/11] (presence check + tsc + vitest) and step [11/11] (deps:health) remain unchanged.
+Reuses the already-built `subpaths` Map / `fnSubpaths` / `localeSubpaths` arrays — ~15 added lines, deterministic output (sorted keys), no new deps.
+
+#### 2. `scripts/ci-check.sh` — include manifest in drift check
+
+Step [9/11] currently diffs only `src/test/dateFns.smoke.test.ts`. Extend it to also back up + diff `public/datefns-usage.json`, with the same restore-on-fail behavior. Same actionable error message ("Run … and commit"). ~15 added lines.
+
+#### 3. `src/components/admin/DateFnsUsagePanel.tsx` (new, ~120 lines)
+
+- `useQuery(["datefns-usage-static"], () => fetch("/datefns-usage.json").then(r => r.json()))`, `staleTime: 5 * 60_000`.
+- Renders a `<Card>` with:
+  - Header: "Uso de date-fns detectado" + small muted timestamp ("atualizado há X").
+  - Three KPI chips: total subpaths, total função exports, total locales.
+  - Two collapsible tables (shadcn `<Table>` inside `<Collapsible>`, locales open by default since list is short):
+    - **Funções** — columns: Subpath, Exports (comma-joined badges), count. Sortable client-side by clicking headers (subpath asc default).
+    - **Locales** — same columns.
+  - Search input above the funções table that filters rows by subpath or export name (case-insensitive `includes`).
+  - Empty state if fetch fails / file missing: muted text "Manifesto não encontrado. Rode `node scripts/generate-datefns-smoke-test.mjs`."
+- No write actions, fully read-only.
+
+#### 4. `src/pages/admin/DependencyHealth.tsx` — mount the panel
+
+Insert `<DateFnsUsagePanel />` below the existing drift history card (lazy-imported via `React.lazy` + `Suspense fallback={<Skeleton className="h-48" />}`). One `import` + one JSX line.
 
 ### What does NOT change
-- `scripts/ci-smoke.sh` (quick path, no generator step).
-- The generator script, vitest config, GitHub workflow, or step numbering.
-- Local dev: contributors run `node scripts/generate-datefns-smoke-test.mjs` (already documented) and commit the diff.
+- Smoke test file structure, vitest config, edge function, history table, badge component.
+- Routes, sidebar, mobile nav.
+- Step numbering in `ci-check.sh`.
 
 ### Verification
-1. Clean tree, generator output matches committed file → step [9/11] prints "✓ Smoke test file is up to date." and CI proceeds.
-2. Add a new `import { addYears } from "date-fns/addYears"` to a `src/` file but skip regenerating → step [9/11] exits 1 with a unified diff and the actionable "Run … and commit" message. Steps [10] and [11] don't run.
-3. Delete the committed file entirely → step [9/11] exits 1 with the "did not exist before generation" message.
-4. Run `node scripts/generate-datefns-smoke-test.mjs` locally and commit → CI green again.
+1. Run generator locally → `public/datefns-usage.json` appears with sorted, deduped entries; admin page lists same subpaths as the auto-generated smoke test imports.
+2. Add a new `import { addYears } from "date-fns/addYears"` in `src/`, regenerate → manifest grows by one row; admin panel reflects it on next refresh.
+3. Skip regeneration after editing imports → ci-check step [9/11] fails with the existing actionable error, now also citing `public/datefns-usage.json` if that's the drifted file.
+4. Delete the manifest file → admin panel shows empty state with the run-the-generator hint; no console errors.
+5. Search "ptBR" → locales table filters to the matching row; funções table empties.
+
+### Technical details
+- Manifest is a static asset → zero edge function load, cacheable by the browser.
+- Component is admin-only by virtue of living inside `/admin/dependency-health` (already gated by `<ProtectedRoute>` + admin role check on that route).
+- Sort/filter is purely client-side over a small array (<200 rows in practice).
+- File-size budget respected: panel ≤ 150 lines; helper `computeStatus` not needed here.
 
 ### Risk / scope
-- ~20 added lines in one shell script. Zero behavioral change on green runs (file restored to committed contents whether check passes or fails). No other files touched.
+- 1 new component (~120 lines), ~15 added lines in generator, ~15 added lines in `ci-check.sh`, ~3 lines in admin page. No new deps, no schema changes, no behavioral regression on green CI runs.
