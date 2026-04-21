@@ -90,10 +90,13 @@ function walk(dir, acc = []) {
 const subpaths = new Set();
 for (const file of walk(SRC_DIR)) {
   const src = readFileSync(file, "utf8");
-  let m;
-  while ((m = IMPORT_RE.exec(src)) !== null) {
-    if (m[1]) continue; // skip type-only imports
-    subpaths.add(m[2]);
+  for (const { re, typeIdx, pathIdx } of IMPORT_PATTERNS) {
+    re.lastIndex = 0;
+    let m;
+    while ((m = re.exec(src)) !== null) {
+      if (typeIdx >= 0 && m[typeIdx]) continue; // skip type-only imports/exports
+      subpaths.add(m[pathIdx]);
+    }
   }
 }
 
