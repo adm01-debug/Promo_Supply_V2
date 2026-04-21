@@ -134,3 +134,17 @@ the one pattern that:
 If you're adding a new helper, find its subpath in `node_modules/date-fns/`
 or on [date-fns.org](https://date-fns.org) — every public function has a
 matching `date-fns/<functionName>` entry.
+
+## Running CI locally
+
+The CI gate scripts (`scripts/ci-check.sh`, `scripts/ci-smoke.sh`) are
+cross-platform bash scripts. They preflight-check that `bun` and `node` are
+on PATH and adapt cache eviction per OS.
+
+- **macOS / Linux / WSL**: `bash scripts/ci-check.sh` (or `bun run ci:check`).
+- **Windows**: run from Git Bash or WSL, or use `bun run ci:check` /
+  `bun run ci:smoke` — Bun ships a POSIX shell wrapper. `cmd.exe` and
+  PowerShell are not supported; the scripts must be invoked through bash.
+
+Prerequisites: [Bun](https://bun.sh) and [Node.js](https://nodejs.org). If
+either is missing, the preflight prints a friendly error and exits 127.
