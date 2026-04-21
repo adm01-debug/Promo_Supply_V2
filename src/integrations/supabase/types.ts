@@ -1177,6 +1177,36 @@ export type Database = {
         }
         Relationships: []
       }
+      dependency_health_history: {
+        Row: {
+          barrel_imports: number
+          created_at: string
+          created_by: string | null
+          drift_count: number
+          generated_at: string
+          id: string
+          payload: Json
+        }
+        Insert: {
+          barrel_imports?: number
+          created_at?: string
+          created_by?: string | null
+          drift_count?: number
+          generated_at?: string
+          id?: string
+          payload: Json
+        }
+        Update: {
+          barrel_imports?: number
+          created_at?: string
+          created_by?: string | null
+          drift_count?: number
+          generated_at?: string
+          id?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
       devolucao_itens: {
         Row: {
           created_at: string
