@@ -5,8 +5,15 @@ import {
   PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend
 } from "recharts";
 import { Building2, TrendingUp, Calendar as CalendarIcon, PieChart as PieChartIcon } from "lucide-react";
-import { startOfWeek, addWeeks, format, differenceInDays, startOfMonth, addMonths, endOfMonth, eachDayOfInterval } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { startOfWeek } from "date-fns/startOfWeek";
+import { addWeeks } from "date-fns/addWeeks";
+import { format } from "date-fns/format";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { startOfMonth } from "date-fns/startOfMonth";
+import { addMonths } from "date-fns/addMonths";
+import { endOfMonth } from "date-fns/endOfMonth";
+import { eachDayOfInterval } from "date-fns/eachDayOfInterval";
+import { ptBR } from "date-fns/locale/pt-BR";
 import type { Pagamento } from "@/hooks/usePagamentos";
 
 interface Props {

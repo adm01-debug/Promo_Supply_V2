@@ -15,8 +15,8 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { 
   useRecentlyViewed, 
   RecentItem, 

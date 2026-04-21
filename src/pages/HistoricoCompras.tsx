@@ -16,8 +16,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { format, subDays, subMonths, startOfMonth, endOfMonth, isWithinInterval, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { format } from "date-fns/format";
+import { subDays } from "date-fns/subDays";
+import { subMonths } from "date-fns/subMonths";
+import { startOfMonth } from "date-fns/startOfMonth";
+import { endOfMonth } from "date-fns/endOfMonth";
+import { isWithinInterval } from "date-fns/isWithinInterval";
+import { parseISO } from "date-fns/parseISO";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 import { MainLayout } from "@/components/compras/MainLayout";

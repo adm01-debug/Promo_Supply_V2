@@ -8,7 +8,7 @@ import { Columns3, Clock, AlertTriangle, CheckCircle, ArrowRight, Filter, Refres
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { differenceInHours } from "date-fns";
+import { differenceInHours } from "date-fns/differenceInHours";
 
 const STATUS_COLUMNS = [
   { id: "pendente", label: "Pendente", color: "bg-warning/10 border-yellow-500/30", textColor: "text-warning" },

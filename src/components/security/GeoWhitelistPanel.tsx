@@ -11,8 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { useGeoRestriction, COMMON_COUNTRIES } from '@/hooks/useGeoRestriction';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
 
 export const GeoWhitelistPanel = () => {
   const { 

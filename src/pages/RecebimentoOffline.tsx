@@ -19,8 +19,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { cn } from "@/lib/utils";
-import { format, parseISO } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { ReceivingFormView } from "./recebimento/ReceivingFormView";
 
 import {

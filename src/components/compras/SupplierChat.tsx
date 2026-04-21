@@ -20,8 +20,8 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useContactNotes } from "@/hooks/useContactNotes";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { normalizeText } from "@/hooks/useFuseSearch";
 import { ChatArea } from "./chat/ChatArea";
 

@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle2, Link2, FileText, ShoppingCart, CreditCard } from "lucide-react";
-import { format } from "date-fns";
+import { format } from "date-fns/format";
 import type { Pagamento } from "@/hooks/usePagamentos";
 
 interface Props {

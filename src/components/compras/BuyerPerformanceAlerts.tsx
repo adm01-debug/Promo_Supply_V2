@@ -15,8 +15,8 @@ import {
   formatMetricValue
 } from "@/stores/buyerAlertsStore";
 import { useBuyerPerformanceData } from "@/hooks/useBuyerPerformanceData";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { ptBR } from "date-fns/locale/pt-BR";
 
 const AlertIcon = ({ type }: { type: BuyerAlert['type'] }) => {
   switch (type) {

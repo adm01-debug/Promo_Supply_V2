@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { Gavel, Plus, Search, Eye, Trophy, Trash2, FileText, Filter, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

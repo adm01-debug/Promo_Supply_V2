@@ -2,7 +2,8 @@ import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Bell, AlertTriangle, DollarSign, Calendar, CheckCircle2 } from "lucide-react";
-import { differenceInDays, format } from "date-fns";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { format } from "date-fns/format";
 import type { Pagamento } from "@/hooks/usePagamentos";
 
 interface Props {

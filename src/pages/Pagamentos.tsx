@@ -38,7 +38,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { usePagamentos, usePagamentosKPIs, type Pagamento } from "@/hooks/usePagamentos";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/lib/feedbackToast";
-import { format, differenceInDays } from "date-fns";
+import { format } from "date-fns/format";
+import { differenceInDays } from "date-fns/differenceInDays";
 import { cn } from "@/lib/utils";
 
 const Pagamentos = () => {

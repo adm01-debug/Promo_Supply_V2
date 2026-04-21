@@ -1,4 +1,9 @@
-import { differenceInDays, differenceInHours, isPast, isToday, isTomorrow, parseISO } from "date-fns";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { differenceInHours } from "date-fns/differenceInHours";
+import { isPast } from "date-fns/isPast";
+import { isToday } from "date-fns/isToday";
+import { isTomorrow } from "date-fns/isTomorrow";
+import { parseISO } from "date-fns/parseISO";
 import { AlertTriangle, AlertCircle, CheckCircle2, Timer } from "lucide-react";
 import { EtapaPipeline } from "@/components/compras/PedidoTimeline";
 import { TimelineStep } from "@/components/compras/EnhancedPedidoTimeline";

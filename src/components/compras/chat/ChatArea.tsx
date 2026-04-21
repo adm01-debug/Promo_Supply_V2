@@ -25,8 +25,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
 import React from "react";
 
 interface Message {

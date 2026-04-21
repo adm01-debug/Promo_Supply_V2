@@ -27,8 +27,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useWebAuthn } from '@/hooks/useWebAuthn';
 import { useAuth } from '@/hooks/useAuth';
-import { formatDistanceToNow } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
+import { ptBR } from "date-fns/locale/pt-BR";
 
 export function PasskeyManager() {
   const { user, profile } = useAuth();

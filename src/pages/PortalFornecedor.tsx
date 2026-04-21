@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
 import {
   Building2, Package, FileText, TrendingUp, Clock,
   CheckCircle, AlertTriangle, DollarSign, Eye, Search,

@@ -39,8 +39,10 @@ import {
   Building2,
   DollarSign,
 } from "lucide-react";
-import { format, differenceInDays, addDays } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { format } from "date-fns/format";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { addDays } from "date-fns/addDays";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
 import { ContractModal } from "@/components/compras/ContractModal";

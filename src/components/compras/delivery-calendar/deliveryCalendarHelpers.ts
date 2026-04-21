@@ -1,12 +1,10 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  parseISO,
-  isPast,
-  differenceInDays,
-  isSameMonth,
-  isSameDay,
-} from "date-fns";
+import { parseISO } from "date-fns/parseISO";
+import { isPast } from "date-fns/isPast";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { isSameMonth } from "date-fns/isSameMonth";
+import { isSameDay } from "date-fns/isSameDay";
 import {
   Clock,
   Truck,

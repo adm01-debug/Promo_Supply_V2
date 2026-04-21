@@ -1,4 +1,5 @@
-import { format, differenceInDays } from "date-fns";
+import { format } from "date-fns/format";
+import { differenceInDays } from "date-fns/differenceInDays";
 import { motion } from "framer-motion";
 import { 
   CreditCard, 

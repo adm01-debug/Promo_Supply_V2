@@ -12,7 +12,7 @@ import { Activity, AlertTriangle, Clock, Database, RefreshCw, Zap, Trash2, Downl
 import { Skeleton } from "@/components/ui/skeleton";
 import { TelemetryCharts } from "@/components/admin/telemetry/TelemetryCharts";
 import { toast } from "sonner";
-import { format } from "date-fns";
+import { format } from "date-fns/format";
 import {
   type TelemetryRow, type SeverityFilter, type TimeFilter,
   formatDuration, formatTime, getTimeThreshold, computeStats, exportCSV, exportPDF,

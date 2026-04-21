@@ -1,8 +1,9 @@
 import { Card } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { FileText } from 'lucide-react';
-import { format, parseISO } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
+import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
+import { ptBR } from "date-fns/locale/pt-BR";
 import { type PurchaseRecord } from '@/hooks/usePurchaseHistory';
 import { DeliveryBadge, StatusBadge, QualityStars } from './HistoricoHelpers';
 
