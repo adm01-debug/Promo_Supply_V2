@@ -122,11 +122,6 @@ const DependencyHealth = () => {
             : `Gerado em ${fresh.generatedAt}`,
         });
       },
-          description: dispatchCi
-            ? `Gerado em ${fresh.generatedAt} · CI: ${fresh.ciDispatch ?? "n/a"}`
-            : `Gerado em ${fresh.generatedAt}`,
-        });
-      },
       onError: (err: unknown) => {
         const msg = err instanceof Error ? err.message : "Falha ao atualizar snapshot";
         toast({ title: "Erro", description: msg, variant: "destructive" });
