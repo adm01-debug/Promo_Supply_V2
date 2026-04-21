@@ -193,6 +193,12 @@ async function handlePost(req: Request): Promise<Response> {
     .upsert({ id: true, payload, updated_by: userData.user.id, updated_at: now });
   if (upsertErr) return json({ error: `Upsert failed: ${upsertErr.message}` }, 500);
 
+  const url = new URL(req.url);
+  if (url.searchParams.get("dispatchCi") === "true") {
+    const ciDispatch = await dispatchWorkflow(GITHUB_REPO_RAW_BASE);
+    return json({ ...payload, ciDispatch });
+  }
+
   return json(payload);
 }
 
