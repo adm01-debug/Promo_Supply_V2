@@ -1,147 +1,96 @@
 
-## Plan: Generator-emitted imports guaranteed compatible with `tsconfig.app.json` + dedicated tsc validation
+## Plan: Detailed `dependency-health.json` diff in CI output
 
 ### Goal
-Two related guarantees for `src/test/dateFns.smoke.test.ts`:
-1. The **import shape** the generator emits is always compatible with the project's `tsconfig.app.json` (`module: ESNext`, `moduleResolution: bundler`, `resolvePackageJsonExports: true`, `verbatimModuleSyntax: false`, `allowImportingTsExtensions: true`, `isolatedModules: true`).
-2. A **dedicated, narrowly-scoped `tsc` pass** validates only the generated file, so a missing/renamed `date-fns` export fails fast with a focused error — independent of the broader `[8/13]` and `[11/13]` passes.
+When `bun run deps:health` runs in CI (step `[14/14]` of `scripts/ci-check.sh`), surface a human-readable diff of `public/dependency-health.json` between the previously committed snapshot and the freshly generated one — focused on the fields that matter: `date-fns` spec/locked/installed versions, tracked package drift flags, and the tree-shaking offenders list (which captures locale and `date-fns/*` import changes).
 
 ### Current state
-- The generator emits `import { foo } from "date-fns/foo";` — already correct for `moduleResolution: bundler` + `resolvePackageJsonExports: true` (date-fns v3+ exposes each subpath via its `exports` map).
-- `[11/13]` in `scripts/ci-check.sh` already runs `bunx tsc --noEmit -p tsconfig.app.json` after regeneration. It type-checks the **whole project** (~2-5s on this codebase). When it fails, the error is buried among unrelated diagnostics if any other file regresses simultaneously.
-- No standalone validation isolates the smoke file.
-
-### What's actually missing
-Two concrete gaps:
-
-**A. Compatibility hardening in the generator** — three small but real risks today:
-- Emitted imports use bare `"date-fns/<sub>"` strings. Under `verbatimModuleSyntax: false` (current setting) this is fine; if anyone flips that flag, type-only re-exports inside `date-fns` could trip. Add a header comment in the generated file documenting the required tsconfig flags so a future flip is caught in review.
-- The two dynamic JSON imports at the bottom (`import("../../package.json")` and `import("date-fns/package.json")`) rely on `resolveJsonModule: true` (already on) and on `date-fns/package.json` being in the package's `exports` map. v3+ exports it; pin a runtime guard that prints a clear message if the dynamic import fails, instead of letting Vitest surface a cryptic stack.
-- The generator currently does not emit a `// @ts-check` or any per-file pragma. Not strictly needed (the file is `.ts`), but it should explicitly declare it has no triple-slash refs and no side-effect imports — a one-line banner comment for clarity.
-
-**B. Dedicated `tsc` validation step** — a focused single-file check.
-- TypeScript can't `--noEmit` a single file *without* a project (it loses path mapping, lib defaults, etc.). The clean approach: keep the existing project-wide `[11/13]` (it's the source of truth) but **add a new pre-step `[10b]` (or renumber)** that uses `tsc --noEmit -p tsconfig.app.json` with `--incremental` + a dedicated `tsBuildInfoFile` cached only against the smoke file's mtime. On second runs (when only the smoke file changed) this completes in <500ms.
-- Alternatively, generate a tiny, throwaway `tsconfig.smoke.json` that `extends` `tsconfig.app.json` and narrows `include` to `["src/test/dateFns.smoke.test.ts", "src/**/*.d.ts"]`. This gives a focused error report scoped to just the smoke file's import graph. **This is the better approach** — no caching state to manage, deterministic output, and the focused `include` means tsc only loads files reachable from the smoke test.
+- `scripts/generate-dependency-health.mjs` overwrites `public/dependency-health.json` and prints a flat one-line summary per package plus a `tree-shaking` line.
+- CI step `[14/14]` just calls `bun run deps:health`. If the snapshot changes, the only signal is the file diff in the eventual commit — invisible during the CI run itself.
+- No way to see *what* changed (e.g., did `date-fns` move from `3.6.0` → `3.6.1`? Did a new barrel import appear? Did a tracked package drift?) without manually diffing two JSON blobs.
 
 ### Approach
+Read the *existing* `public/dependency-health.json` **before** the generator overwrites it, then compute and print a focused diff after generation. Implement as a new script `scripts/diff-dependency-health.mjs` invoked as a wrapper, leaving the existing generator untouched.
 
-#### 1. `scripts/generate-datefns-smoke-test.mjs` — header + runtime guard
+### Changes
 
-Update the rendered template to:
+#### 1. New file: `scripts/diff-dependency-health.mjs` (~120 lines)
 
-a. Add a **3-line header comment** below the existing AUTO-GENERATED banner documenting the tsconfig assumptions:
-```ts
-// Compatible with tsconfig.app.json: module=ESNext, moduleResolution=bundler,
-// resolvePackageJsonExports=true, resolveJsonModule=true, isolatedModules=true.
-// Each `date-fns/<subpath>` import resolves via date-fns v3+ package exports map.
-```
-This makes the contract explicit so a future tsconfig change that breaks resolution is caught in code review.
+Pure Node, zero deps. Responsibilities:
 
-b. Wrap the two dynamic JSON imports in a `try/catch` that re-throws with a focused message:
-```ts
-let rootPkgMod, installedPkgMod;
-try {
-  [rootPkgMod, installedPkgMod] = await Promise.all([
-    import("../../package.json"),
-    import("date-fns/package.json"),
-  ]);
-} catch (err) {
-  throw new Error(
-    `Failed to dynamic-import package.json files. ` +
-    `Check tsconfig.app.json has resolveJsonModule:true and date-fns v3+ exposes ./package.json in its exports map. ` +
-    `Original: ${(err as Error).message}`,
-  );
-}
-```
-No behavioral change on green CI; cryptic failures get a actionable message.
+a. **Snapshot the previous file** before the generator runs:
+   - Read `public/dependency-health.json` if it exists; keep contents in memory.
+   - If missing (first run), record `previous = null` and print `"No previous snapshot — this is the baseline."`.
 
-c. **No change** to the import statement format itself — current `import { name } from "date-fns/sub"` is already the optimal shape for bundler resolution + tree-shaking + date-fns v3+ exports map.
+b. **Invoke the generator** via `child_process.spawnSync("node", ["scripts/generate-dependency-health.mjs"], { stdio: "inherit" })`. Propagate exit code on failure.
 
-#### 2. New file: `tsconfig.smoke.json`
+c. **Read the new file** and compute a focused diff:
+   - **`date-fns` block**: per-field comparison of `spec`, `installed`, `locked`, `exactPinned`. Print only changed fields, e.g. `date-fns.installed: 3.6.0 → 3.6.1`.
+   - **`packages[]` array**: keyed by `name`. For each tracked package, compare `spec`, `locked`, `installed`, `driftDetected`. Print added/removed/changed entries.
+   - **`lockfileDrift.detected`**: boolean flip → highlight as `⚠ lockfile drift status: false → true` (or vice versa).
+   - **`treeShaking`**:
+     - `barrelImportsFound`: numeric delta with arrow.
+     - `riskLevel`: state transition (`ok → warning`, etc.) — flagged with `⚠` if degrading.
+     - `offenders[]`: keyed by `${file}:${line}:${importPath}`. Print added (`+ src/foo.ts:42 imports "date-fns/locale"`) and removed (`- src/bar.ts:10 imports "date-fns"`) entries. Cap at 20 added + 20 removed; print `… and N more` if truncated. This is the line that surfaces locale/export changes.
 
-Tiny extension of the app config, narrowed to the smoke test:
+d. **Output format** — plain text, prefixed with section headers and color-friendly arrows, written to stdout so it appears inline in CI logs:
+   ```
+   ▶ dependency-health.json diff
+     date-fns:
+       installed: 3.6.0 → 3.6.1
+     packages:
+       react.locked: 18.3.1 → 18.3.2
+     tree-shaking:
+       barrelImportsFound: 0 → 1
+       riskLevel: ok → warning  ⚠
+       offenders:
+         + src/components/Foo.tsx:14  "date-fns/locale"
+   ```
+   When nothing changed: `✓ dependency-health.json unchanged.` on a single line.
+
+e. **Exit code policy**: always exit `0` on a clean run. Diff content is informational, not a gate. (Drift gating is already handled by `[10/14]` via `--dry-run` and by separate workflows.) Only exit non-zero if the wrapped generator itself failed.
+
+#### 2. `package.json` — wrap `deps:health`
+
+Current:
 ```json
-{
-  "extends": "./tsconfig.app.json",
-  "include": [
-    "src/test/dateFns.smoke.test.ts",
-    "src/vite-env.d.ts",
-    "package.json"
-  ]
-}
+"deps:health": "node scripts/generate-dependency-health.mjs"
 ```
 
-This loads the same compiler options (so any future tsconfig flip is honored) but only walks the smoke file's import graph. tsc completes in <1s vs ~3-5s for the full project pass.
-
-#### 3. New `package.json` script
-
-Add next to `verify:datefns-smoke`:
+Replace with:
 ```json
-"verify:datefns-smoke-types": "bunx tsc --noEmit -p tsconfig.smoke.json"
+"deps:health": "node scripts/diff-dependency-health.mjs",
+"deps:health:generate": "node scripts/generate-dependency-health.mjs"
 ```
 
-Runnable locally as `bun run verify:datefns-smoke-types` for fast iteration when fiddling with date-fns imports.
+The wrapper becomes the default — CI and local runs both get the diff. The raw generator stays accessible as `deps:health:generate` for cases that need silent regeneration (e.g., the `dependency-health.yml` GitHub workflow which auto-commits the file; using the wrapper there too is fine since extra log noise is harmless).
 
-#### 4. `scripts/ci-check.sh` — insert a focused validation step
+#### 3. `scripts/ci-check.sh` — update step `[14/14]` label
 
-Currently:
-```
-[10/13] Verify smoke test is up to date  (--dry-run drift guard)
-[11/13] Type-check regenerated smoke test  (project-wide tsc)
-[12/13] Run date-fns smoke test  (vitest)
-[13/13] deps:health snapshot
-```
-
-Insert a new focused step between `[10]` and the existing project-wide check, renumber to `/14`:
-```
-[10/14] Verify smoke test is up to date
-[11/14] Validate smoke test imports against tsconfig.smoke.json   ← NEW (fast, focused)
-[12/14] Type-check full project                                    ← was [11/13]
-[13/14] Run date-fns smoke test                                    ← was [12/13]
-[14/14] deps:health snapshot                                       ← was [13/13]
-```
-
-The new `[11/14]` runs `bunx tsc --noEmit -p tsconfig.smoke.json`. If a missing `date-fns` export sneaks in (e.g. `import { addYears } from "date-fns/addYears"` regenerated, but `addYears` doesn't exist in the installed version), this step fails with **only the smoke file's diagnostics** — no noise from unrelated files. If something else is also broken, the broader `[12/14]` catches it next.
-
-#### 5. `scripts/ci-smoke.sh` — same focused guard
-
-Add one line near the existing date-fns checks:
+Tiny copy update:
 ```sh
-echo "▶ Validating smoke test imports..."
-bunx tsc --noEmit -p tsconfig.smoke.json
+echo "▶ [14/14] Refreshing public/dependency-health.json snapshot (with diff vs. previous)..."
+bun run deps:health
 ```
 
-#### 6. New GitHub workflow step (extend existing `datefns-smoke-drift.yml`)
-
-Append one step after `Verify smoke test is in sync`:
-```yaml
-- name: Validate smoke test types
-  run: bun run verify:datefns-smoke-types
-```
-
-Same job, same cache, ~+1s runtime. Now the workflow guards both drift and type validity in one PR check.
+No structural change — just clarifies the new behavior in the step header.
 
 ### What does NOT change
-- The emitted import statement format (already optimal for the current tsconfig).
-- Manifest schema (`public/datefns-usage.json`).
-- The generator's `--dry-run` flag, regex scanner, or comment-stripping logic.
-- ESLint date-fns rule, edge functions, other workflows.
-- `tsconfig.app.json` itself (the new `tsconfig.smoke.json` only extends it).
+- `scripts/generate-dependency-health.mjs` — kept as the single source of truth for generating the snapshot. The wrapper composes it.
+- The schema of `public/dependency-health.json`.
+- Edge function `supabase/functions/dependency-health/index.ts`, the admin UI panel `src/components/admin/DependencyHealthBadge.tsx`, the `dependency_health` and `dependency_health_history` tables.
+- `.github/workflows/dependency-health.yml` — it currently calls `bun run deps:health`; the wrapper is a drop-in replacement that just adds log output (auto-commit logic is unaffected).
+- All other CI steps and scripts (smoke test, drift check, lint, typecheck).
 
 ### Verification
-1. Clean tree → `bun run verify:datefns-smoke-types` exits 0 in <1s. `[11/14]` in `ci-check.sh` passes; full pipeline green with new numbering.
-2. Add `import { nonExistent } from "date-fns/nonExistent"` to a `src/` file, regenerate the smoke test → `[11/14]` fails with a focused tsc error naming only the smoke file. Vitest never starts.
-3. Revert → green.
-4. Hand-flip `tsconfig.app.json`'s `resolveJsonModule` to `false` → `[11/14]` fails with the new runtime-guard message about JSON imports (when the smoke test runs in step `[13/14]`). The header comment in the generated file makes the cause obvious during code review.
-5. `node scripts/generate-datefns-smoke-test.mjs --dry-run` against current tree → exits 0; the only content drift vs. today is the new 3-line header comment + try/catch wrapper. Run the no-flag generator once to commit the new format, then drift guard stays green.
-6. New PR workflow: both `Verify smoke test is in sync` and `Validate smoke test types` show as separate green checks.
+1. Clean tree: `bun run deps:health` → wrapper runs generator, prints `✓ dependency-health.json unchanged.` Exit 0.
+2. Manually edit `public/dependency-health.json` to set `dateFns.installed = "3.5.0"` then `bun run deps:health` → output shows `date-fns.installed: 3.5.0 → 3.6.0`. Exit 0.
+3. Add `import { format } from "date-fns"` (a deliberate barrel import) to a `src/` file → output shows the new offender line under `tree-shaking → offenders → +`, plus `barrelImportsFound: 0 → 1` and `riskLevel: ok → warning ⚠`. Revert → diff shows the inverse.
+4. Delete `public/dependency-health.json` then `bun run deps:health` → output starts with `"No previous snapshot — this is the baseline."`, full snapshot is regenerated, exit 0.
+5. CI: step `[14/14]` log now contains the diff section inline. The `dependency-health.yml` weekly workflow continues to auto-commit; commit message unchanged.
 
 ### Risk / scope
-- 1 new file (`tsconfig.smoke.json`, ~8 lines).
-- 1 new workflow step (~3 lines added to `datefns-smoke-drift.yml`).
-- ~15 lines added to `scripts/generate-datefns-smoke-test.mjs` (header comment + try/catch in the rendered template).
-- ~4 lines added + 4 step labels renumbered in `scripts/ci-check.sh`.
-- 2 lines added to `scripts/ci-smoke.sh`.
-- 1 line added to `package.json`.
-- One forced regeneration of `src/test/dateFns.smoke.test.ts` to embed the new header (safe — generator is the source of truth).
-- Zero new deps, zero behavioral change on green CI runs. The new focused tsc step adds ~1s; the existing project-wide pass is unchanged.
+- 1 new file (`scripts/diff-dependency-health.mjs`, ~120 lines, pure Node + JSON).
+- 2 lines edited in `package.json` (one renamed, one added).
+- 1 line edited in `scripts/ci-check.sh` (label only).
+- Zero new deps, zero behavioral change to the snapshot itself, zero impact on green CI runs beyond extra informational log lines. The wrapper adds <100ms overhead.
