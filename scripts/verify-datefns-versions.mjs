@@ -5,7 +5,17 @@
  *   - bun.lock resolved version
  *   - node_modules installed version
  *
- * Exits 0 on alignment, 1 on any drift or missing source.
+ * Exit codes (CI can branch on these):
+ *    0  aligned
+ *   10  spec drifted from lock+installed   (package.json edited, not relocked)
+ *   11  node_modules drifted from spec+lock (stale / hand-mutated install)
+ *   12  lockfile drifted from spec+installed (lock stale or corrupt)
+ *   13  all three sources differ           (full corruption)
+ *   20  date-fns missing from package.json
+ *   21  bun.lock missing
+ *   22  date-fns entry not found in bun.lock
+ *   23  date-fns not installed in node_modules
+ *    1  unexpected / generic failure
  */
 import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
@@ -14,29 +24,43 @@ import {
   RESOLVER_PATTERN_NAMES,
 } from "./lib/resolve-locked-version.mjs";
 
+const EXIT = {
+  OK: 0,
+  SPEC_DRIFT: 10,
+  INSTALLED_DRIFT: 11,
+  LOCK_DRIFT: 12,
+  ALL_DIFFER: 13,
+  MISSING_SPEC: 20,
+  MISSING_LOCK: 21,
+  MISSING_LOCK_ENTRY: 22,
+  MISSING_INSTALL: 23,
+  GENERIC: 1,
+};
+
 const ROOT = process.cwd();
 
-function fail(msg) {
+function fail(msg, code = EXIT.GENERIC) {
   console.error(msg);
-  process.exit(1);
+  process.exit(code);
 }
 
 const pkgPath = join(ROOT, "package.json");
-if (!existsSync(pkgPath)) fail("✗ package.json not found at " + pkgPath);
+if (!existsSync(pkgPath)) fail("✗ package.json not found at " + pkgPath, EXIT.MISSING_SPEC);
 const pkg = JSON.parse(readFileSync(pkgPath, "utf8"));
 const SPEC =
   pkg.dependencies?.["date-fns"] ?? pkg.devDependencies?.["date-fns"];
-if (!SPEC) fail("✗ date-fns is not declared in package.json dependencies.");
+if (!SPEC) fail("✗ date-fns is not declared in package.json dependencies.", EXIT.MISSING_SPEC);
 const SPEC_NORM = SPEC.replace(/^[\^~]/, "");
 
 const lockPath = join(ROOT, "bun.lock");
 if (!existsSync(lockPath))
-  fail("✗ bun.lock not found — run `bun install` to generate it.");
+  fail("✗ bun.lock not found — run `bun install` to generate it.", EXIT.MISSING_LOCK);
 const lockText = readFileSync(lockPath, "utf8");
 const LOCKED = resolveLockedVersion(lockText, "date-fns");
 if (!LOCKED) {
   fail(
     `✗ date-fns entry not found in bun.lock (tried: ${RESOLVER_PATTERN_NAMES.join(", ")}) — run \`bun install\`.`,
+    EXIT.MISSING_LOCK_ENTRY,
   );
 }
 
@@ -48,6 +72,7 @@ if (!existsSync(dfPkgPath)) {
       "",
       "  Fix: bun install --frozen-lockfile",
     ].join("\n"),
+    EXIT.MISSING_INSTALL,
   );
 }
 const INSTALLED = JSON.parse(readFileSync(dfPkgPath, "utf8")).version;
@@ -91,25 +116,30 @@ if (!aligned) {
     console.error(`\n    (spec normalized: ${SPEC_NORM})`);
   }
 
-  // Diagnose drift pattern → targeted fix
-  let diagnosis, fixCmd;
+  // Diagnose drift pattern → targeted fix + distinct exit code
+  let diagnosis, fixCmd, exitCode;
   if (!specEqLock && lockEqInstalled) {
     diagnosis = "spec drifted from lock+installed (package.json edited but not relocked)";
     fixCmd = "bun install";
+    exitCode = EXIT.SPEC_DRIFT;
   } else if (specEqLock && !lockEqInstalled) {
     diagnosis = "node_modules drifted from spec+lock (stale or hand-mutated)";
     fixCmd = "bun install --frozen-lockfile";
+    exitCode = EXIT.INSTALLED_DRIFT;
   } else if (specEqInstalled && !specEqLock) {
     diagnosis = "lockfile drifted from spec+installed (lock is stale or corrupt)";
     fixCmd = "rm bun.lock && bun install";
+    exitCode = EXIT.LOCK_DRIFT;
   } else {
     diagnosis = "all three sources differ (full corruption)";
     fixCmd = "rm -rf node_modules bun.lock && bun install";
+    exitCode = EXIT.ALL_DIFFER;
   }
 
   console.error(`\n  Fix (${diagnosis}):`);
   console.error(`    ${fixCmd}`);
-  process.exit(1);
+  console.error(`\n  Exit code: ${exitCode}`);
+  process.exit(exitCode);
 }
 
 console.log(
