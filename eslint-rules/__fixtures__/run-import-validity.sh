@@ -56,10 +56,11 @@ for entry in "${FIXTURES[@]}"; do
       FAIL=$((FAIL + 1))
     fi
   else
-    # tsc-enforced: run tsc on just this file and look for any error.
-    tsc_output="$(bunx tsc --noEmit --strict --moduleResolution bundler --module esnext --target es2020 --jsx react-jsx --esModuleInterop --skipLibCheck "$file" 2>&1 || true)"
-    echo "$tsc_output" | sed 's/^/    /'
-    if echo "$tsc_output" | grep -qE "error TS(2305|2724|2614|2307):"; then
+    # tsc-enforced: run a project-aware typecheck and grep for this fixture file.
+    tsc_output="$(bunx tsc --noEmit -p tsconfig.app.json 2>&1 || true)"
+    file_errors="$(echo "$tsc_output" | grep -F "$file" || true)"
+    echo "$file_errors" | sed 's/^/    /'
+    if echo "$file_errors" | grep -qE "error TS(2305|2724|2614|2307):"; then
       echo "  ✓ tsc reported the expected missing-export / unresolved-module error."
       PASS=$((PASS + 1))
     else
