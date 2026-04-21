@@ -55,14 +55,23 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
     }
   });
 
-  it("all imported locales are valid locale objects", () => {
+  it("all imported locales are structurally valid", () => {
     const locales = [
       ["ptBR", ptBR],
     ] as const;
     for (const [name, locale] of locales) {
       expect(locale, name).toBeDefined();
       expect(typeof locale, name).toBe("object");
-      expect(typeof (locale as { code?: unknown }).code, name).toBe("string");
+      const l = locale as {
+        code?: unknown;
+        formatLong?: unknown;
+        localize?: unknown;
+        match?: unknown;
+      };
+      expect(typeof l.code, name).toBe("string");
+      expect(l.formatLong, name).toBeTruthy();
+      expect(l.localize, name).toBeTruthy();
+      expect(l.match, name).toBeTruthy();
     }
   });
 
@@ -71,9 +80,24 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
       ["ptBR", ptBR],
     ] as const;
     for (const [name, locale] of locales) {
-      const out = format(ref, "dd/MM/yyyy", { locale });
-      expect(out, name).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+      const numeric = format(ref, "dd/MM/yyyy", { locale });
+      expect(numeric, name).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+      const longDate = format(ref, "PPP", { locale });
+      expect(typeof longDate, name).toBe("string");
+      expect(longDate.length, name).toBeGreaterThan(0);
+      const weekday = format(ref, "EEEE", { locale });
+      expect(typeof weekday, name).toBe("string");
+      expect(weekday.length, name).toBeGreaterThan(0);
     }
+  });
+
+  it("every imported locale produces a distinct weekday name", () => {
+    const locales = [
+      ["ptBR", ptBR],
+    ] as const;
+    if (locales.length < 2) return;
+    const weekdays = locales.map(([, locale]) => format(ref, "EEEE", { locale }));
+    expect(new Set(weekdays).size, "distinct weekday names").toBe(weekdays.length);
   });
 
   it("ref date is stable", () => {
