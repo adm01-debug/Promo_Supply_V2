@@ -75,6 +75,50 @@ SMOKE_VITEST_EXIT=0
 SMOKE_VITEST_DURATION=0
 SCRIPT_START=$SECONDS
 
+# Lockfile snapshot (computed by snapshot_lockfiles, surfaced in print_summary).
+# Captured EARLY so it appears in the summary even when the lockfile-format
+# guard exits before any other step runs.
+LOCKFILE_BUN_LOCK_PRESENT=0
+LOCKFILE_BUN_LOCK_BYTES=0
+LOCKFILE_BUN_LOCKB_PRESENT=0
+LOCKFILE_BUN_LOCKB_BYTES=0
+
+# `stat -c %s` is GNU; macOS/BSD uses `stat -f %z`. Try GNU first, fall
+# back to BSD, then to `wc -c` (always available). Returns 0 for missing
+# files so arithmetic comparisons stay safe.
+file_bytes() {
+  local f="$1"
+  [ -f "$f" ] || { echo 0; return; }
+  local n
+  n=$(stat -c %s "$f" 2>/dev/null \
+    || stat -f %z "$f" 2>/dev/null \
+    || wc -c <"$f" | tr -d ' \n')
+  echo "${n:-0}"
+}
+
+snapshot_lockfiles() {
+  if [ -f "bun.lock" ]; then
+    LOCKFILE_BUN_LOCK_PRESENT=1
+    LOCKFILE_BUN_LOCK_BYTES=$(file_bytes "bun.lock")
+  fi
+  if [ -f "bun.lockb" ]; then
+    LOCKFILE_BUN_LOCKB_PRESENT=1
+    LOCKFILE_BUN_LOCKB_BYTES=$(file_bytes "bun.lockb")
+  fi
+}
+
+# Render bytes as e.g. "12.3 KB" / "1.4 MB" / "842 B". Pure awk so it works
+# on macOS (no `numfmt`) without extra deps.
+human_bytes() {
+  awk -v b="${1:-0}" 'BEGIN{
+    if (b+0 < 1024)         printf "%d B", b;
+    else if (b+0 < 1048576) printf "%.1f KB", b/1024;
+    else                    printf "%.1f MB", b/1048576;
+  }'
+}
+
+snapshot_lockfiles
+
 print_summary() {
   local overall_exit=$?
   local rule="────────────────────────────────────────────────────────────"
@@ -222,6 +266,23 @@ print_summary() {
   printf "  Smoke vitest        : %s\n" "$vitest_line"
   printf "  Smoke test file     : %s\n" "$SMOKE_TEST_PATH"
   printf "  Pin source          : %s\n" "$SMOKE_PACKAGE_JSON"
+
+  # Lockfile snapshot — reflects state at script start (before any install).
+  # Helps debug "why did frozen-lockfile fail?" / "why is locked= empty?"
+  # without re-running. Sizes are informational only; ✓/✗ is the signal.
+  local lock_text_line lock_bin_line
+  if [ "$LOCKFILE_BUN_LOCK_PRESENT" -eq 1 ]; then
+    lock_text_line="present ✓  ($(human_bytes "$LOCKFILE_BUN_LOCK_BYTES"))"
+  else
+    lock_text_line="missing ✗"
+  fi
+  if [ "$LOCKFILE_BUN_LOCKB_PRESENT" -eq 1 ]; then
+    lock_bin_line="present  ($(human_bytes "$LOCKFILE_BUN_LOCKB_BYTES"))"
+  else
+    lock_bin_line="absent"
+  fi
+  printf "  Lockfile (bun.lock) : %s\n" "$lock_text_line"
+  printf "  Lockfile (bun.lockb): %s\n" "$lock_bin_line"
   printf "  Logs                : %s/tsc-smoke.log\n" "$LOG_DIR"
   printf "                        %s/vitest-smoke.log\n" "$LOG_DIR"
   printf "                        %s/vitest-smoke.json\n" "$LOG_DIR"
