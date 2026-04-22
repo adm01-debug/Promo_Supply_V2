@@ -22,14 +22,29 @@ const STRICT = argv.includes("--strict");
 const JSON_MODE = argv.includes("--json");
 const SUMMARY_ONLY = argv.includes("--drift-summary-only");
 const HELP = argv.includes("--help") || argv.includes("-h");
-const JSON_FILE = (() => {
-  const flag = argv.find((a) => a === "--json-file" || a.startsWith("--json-file="));
+function readValueFlag(name) {
+  const eqForm = `${name}=`;
+  const flag = argv.find((a) => a === name || a.startsWith(eqForm));
   if (!flag) return null;
   if (flag.includes("=")) return flag.slice(flag.indexOf("=") + 1) || null;
-  // Support space-separated form: --json-file path/to/out.json
+  // Support space-separated form: --flag value
   const idx = argv.indexOf(flag);
   return argv[idx + 1] && !argv[idx + 1].startsWith("--") ? argv[idx + 1] : null;
-})();
+}
+const JSON_FILE = readValueFlag("--json-file");
+// --json-file-mode: pretty (default, 2-space indent, trailing newline) or
+// minified (single line, no trailing whitespace). Minified is the right
+// choice for diff-stable caching keys (sha256 the file) and for tools that
+// hash artifacts byte-for-byte (e.g. actions/cache key inputs). Pretty is
+// the right choice when humans will read the file on the artifact tab.
+const JSON_FILE_MODE_RAW = readValueFlag("--json-file-mode") ?? "pretty";
+const JSON_FILE_MODE = JSON_FILE_MODE_RAW.toLowerCase();
+if (!["pretty", "minified"].includes(JSON_FILE_MODE)) {
+  console.error(
+    `[install-report] invalid --json-file-mode=${JSON_FILE_MODE_RAW} (expected: pretty | minified)`,
+  );
+  process.exit(2);
+}
 
 if (HELP) {
   console.log(
