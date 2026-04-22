@@ -52,8 +52,11 @@ const EXCLUDE_DIRS = new Set([
 ]);
 // Files skipped during the walk (matched against basename).
 // Covers `*.stories.ts(x)`, `*.story.ts(x)`, and `*.mock.ts(x)`.
-const EXCLUDE_FILE_RE = /\.(stories|story|mock)\.(ts|tsx)$/;
-const FILE_EXT = /\.(ts|tsx)$/;
+const EXCLUDE_FILE_RE = /\.(stories|story|mock)\.(ts|tsx|js|jsx|cjs|mjs)$/;
+// Extended to .js/.jsx/.cjs/.mjs so CommonJS `require("date-fns/...")` calls
+// (typically in build scripts, .cjs configs, or vendored runtime helpers)
+// participate in the existence check alongside ESM imports.
+const FILE_EXT = /\.(ts|tsx|js|jsx|cjs|mjs)$/;
 // Patterns we recognise (all match the `date-fns/<subpath>` specifier):
 //   1. Named import:        import { fn } from "date-fns/fn"
 //   2. Default import:      import fn from "date-fns/fn"
