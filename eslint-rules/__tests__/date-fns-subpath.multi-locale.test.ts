@@ -66,20 +66,20 @@ describe("local/date-fns-subpath — multi-locale fixture autofix", () => {
 
   // Sanity guard: if someone renames or deletes the fixture's
   // declarations this test would silently pass otherwise.
-  it("fixture preconditions: contains the expected 5 barrel declarations", () => {
+  it("fixture preconditions: contains the expected 4 barrel declarations", () => {
     const barrelCount = (src.match(/from "date-fns\/locale"/g) ?? []).length;
-    expect(barrelCount).toBe(5);
+    expect(barrelCount).toBe(4);
   });
 
-  it("reports one barrelLocale violation per declaration (5 total)", () => {
+  it("reports one barrelLocale violation per declaration (4 total)", () => {
     const ruleHits = lint(src).filter((m) => m.ruleId === RULE_ID);
-    // 5 declarations → 5 reports, all `barrelLocale`. Per-specifier
+    // 4 declarations → 4 reports, all `barrelLocale`. Per-specifier
     // `unfixable` reports must NOT appear: every identifier in the
     // fixture is a known locale.
-    expect(ruleHits).toHaveLength(5);
+    expect(ruleHits).toHaveLength(4);
     expect(ruleHits.every((m) => m.messageId === "barrelLocale")).toBe(true);
     // Every report must carry an autofix descriptor — the whole point
-    // of the fixture is that all 5 declarations are fully fixable.
+    // of the fixture is that all 4 declarations are fully fixable.
     expect(ruleHits.every((m) => Boolean(m.fix))).toBe(true);
   });
 
