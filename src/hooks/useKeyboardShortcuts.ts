@@ -51,6 +51,12 @@ export function useKeyboardShortcuts() {
         }, 100);
       }},
 
+      // Clear filters (current screen)
+      { key: "l", ctrl: true, shift: true, description: "Limpar filtros", action: () => {
+        const event = new CustomEvent('request-clear-filters');
+        window.dispatchEvent(event);
+      }},
+
       // Back navigation
       { key: "Backspace", alt: true, description: "Voltar", action: () => navigate(-1) },
 
@@ -106,6 +112,7 @@ export const shortcutsList = [
     { keys: "Ctrl/⌘ + Shift + P", description: "Novo Pedido" },
     { keys: "Ctrl/⌘ + Shift + F", description: "Novo Fornecedor" },
     { keys: "Ctrl/⌘ + Shift + C", description: "Novo Contrato" },
+    { keys: "Ctrl/⌘ + Shift + L", description: "Limpar filtros (tela atual)" },
   ]},
   { category: "Navegação", items: [
     { keys: "Alt + Backspace", description: "Voltar" },

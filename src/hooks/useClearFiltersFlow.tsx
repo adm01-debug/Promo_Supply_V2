@@ -1,4 +1,4 @@
-import { useCallback, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { ConfirmClearFiltersDialog } from '@/components/filters/ConfirmClearFiltersDialog';
 import { useUndoStore } from '@/stores/undoStore';
@@ -117,6 +117,13 @@ export function useClearFiltersFlow<T>(
     setActiveLines(lines);
     setOpen(true);
   }, [describeActiveFilters, scope, runClear]);
+
+  // Listen for global keyboard shortcut (Ctrl/Cmd + Shift + L) dispatched by useKeyboardShortcuts.
+  useEffect(() => {
+    const handler = () => requestClear();
+    window.addEventListener('request-clear-filters', handler);
+    return () => window.removeEventListener('request-clear-filters', handler);
+  }, [requestClear]);
 
   const handleConfirm = useCallback(
     (skipNextTime: boolean) => {
