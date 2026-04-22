@@ -555,6 +555,60 @@ function writeHealthSnapshot(entriesArr) {
     );
     process.exit(1);
   }
+  if (DRY_RUN) {
+    // Don't touch disk. Print exactly what WOULD land in the file, plus a
+    // short delta vs. the existing dateFns.subpaths block so reviewers can
+    // eyeball drift before re-running without --dry-run.
+    const prevBlock = (() => {
+      try {
+        const raw = readFileSync(SNAPSHOT_PATH, "utf8");
+        return JSON.parse(raw)?.dateFns?.subpaths ?? null;
+      } catch {
+        return null;
+      }
+    })();
+    const prevNames = new Set(
+      (prevBlock?.entries ?? []).map((e) => e.subpath),
+    );
+    const nextNames = new Set(entriesArr.map((e) => e.subpath));
+    const added = [...nextNames].filter((s) => !prevNames.has(s)).sort();
+    const removed = [...prevNames].filter((s) => !nextNames.has(s)).sort();
+    console.log(
+      cyan(
+        `▶ [dry-run] Would write dateFns.subpaths to ${relative(ROOT, SNAPSHOT_PATH)} (${entriesArr.length} entries, ${subpathsBlock.missingCount} missing).`,
+      ),
+    );
+    console.log(gray("  No files were modified."));
+    if (prevBlock) {
+      const prevCount = prevBlock.count ?? (prevBlock.entries?.length ?? 0);
+      const prevMissing = prevBlock.missingCount ?? 0;
+      console.log(
+        gray(
+          `  Delta vs. existing snapshot: count ${prevCount} → ${entriesArr.length}, missingCount ${prevMissing} → ${subpathsBlock.missingCount}, +${added.length} added / -${removed.length} removed.`,
+        ),
+      );
+      const SHOW = 20;
+      if (added.length > 0) {
+        console.log(cyan("  + would add:"));
+        for (const s of added.slice(0, SHOW)) console.log(`      + ${s}`);
+        if (added.length > SHOW) console.log(gray(`      … and ${added.length - SHOW} more`));
+      }
+      if (removed.length > 0) {
+        console.log(cyan("  - would remove:"));
+        for (const s of removed.slice(0, SHOW)) console.log(`      - ${s}`);
+        if (removed.length > SHOW) console.log(gray(`      … and ${removed.length - SHOW} more`));
+      }
+      if (added.length === 0 && removed.length === 0) {
+        console.log(gray("  No subpath set changes — only metadata fields may differ."));
+      }
+    } else {
+      console.log(gray("  (No previous snapshot found — this would be the baseline.)"));
+    }
+    console.log("");
+    console.log(gray("  ── Snapshot preview (full bytes that would be written) ──"));
+    process.stdout.write(serialized);
+    return;
+  }
   writeFileSync(SNAPSHOT_PATH, serialized, "utf8");
   console.log(
     cyan(
