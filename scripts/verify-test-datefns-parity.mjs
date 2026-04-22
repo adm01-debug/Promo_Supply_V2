@@ -180,6 +180,9 @@ function renderMarkdown(s) {
   lines.push("");
   lines.push(`**Status:** \`${s.status}\` &nbsp; **Exit:** \`${s.exitCode}\` &nbsp; **Diffs:** \`${s.diffCount}\``);
   if (s.reason) lines.push(`**Reason:** ${s.reason}`);
+  if (s.forwardedArgs && s.forwardedArgs.length > 0) {
+    lines.push(`**Forwarded args:** \`${s.forwardedArgs.join(" ")}\``);
+  }
   lines.push("");
   if (s.runners.length > 0) {
     lines.push("| Runner | Exit | Total | Passed | Failed | Pending | Duration |");
