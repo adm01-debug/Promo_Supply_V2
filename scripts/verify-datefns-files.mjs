@@ -23,9 +23,19 @@ const DRY_RUN = ARGS.some((a) => a === "--dry-run");
 // scrolling job logs. Emitted on BOTH pass and fail (the empty-table "no
 // drift" case is just as informative). Never affects exit code.
 let SUMMARY_MD_PATH = process.env.DATEFNS_SMOKE_SUMMARY_MD || null;
+// `--report-md <path>` (also via env DATEFNS_SMOKE_REPORT_MD) writes a FULL
+// failure report — partitioned missing subpaths, copy-paste bare list,
+// likely-cause diagnosis, and the exact 3-step repair recipe — to <path>
+// when (and only when) drift is detected. Designed to be uploaded as a CI
+// artifact on failure so reviewers get the full repair recipe offline
+// without scrolling job logs. On a clean run, no file is written.
+let REPORT_MD_PATH = process.env.DATEFNS_SMOKE_REPORT_MD || null;
 for (let i = 0; i < ARGS.length; i++) {
   if (ARGS[i] === "--summary-md" && ARGS[i + 1]) {
     SUMMARY_MD_PATH = ARGS[i + 1];
+    i++;
+  } else if (ARGS[i] === "--report-md" && ARGS[i + 1]) {
+    REPORT_MD_PATH = ARGS[i + 1];
     i++;
   }
 }
