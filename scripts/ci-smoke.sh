@@ -267,8 +267,25 @@ else
 fi
 
 echo "▶ [9/10] Running smoke test pipeline..."
-echo "▶ Verifying date-fns smoke test is in sync..."
-node scripts/generate-datefns-smoke-test.mjs --dry-run
+# Mirror the verify-datefns-smoke.yml CI guard: fail fast if the committed
+# src/test/dateFns.smoke.test.ts OR public/datefns-usage.json no longer matches
+# what the generator would produce. The generator's --dry-run mode diffs both
+# files and exits 1 on either drift. We capture the log so the summary block
+# can point reviewers straight at it.
+echo "▶ Verifying date-fns smoke test + manifest are in sync (generator dry-run)..."
+VERIFY_SMOKE_DRYRUN_RAN=1
+if node scripts/generate-datefns-smoke-test.mjs --dry-run 2>&1 | tee "$LOG_DIR/verify-datefns-smoke.log"; then
+  VERIFY_SMOKE_DRYRUN_OK=1
+else
+  VERIFY_SMOKE_DRYRUN_OK=0
+  echo "✗ Smoke test or manifest drift detected." >&2
+  echo "  Affected files:" >&2
+  echo "    - src/test/dateFns.smoke.test.ts" >&2
+  echo "    - public/datefns-usage.json" >&2
+  echo "  Fix locally:  bun run date-fns:smoke -- --force" >&2
+  echo "  See log:      $LOG_DIR/verify-datefns-smoke.log" >&2
+  exit 1
+fi
 echo "▶ Validating smoke test imports against tsconfig.smoke.json..."
 SMOKE_TSC_RAN=1
 bunx tsc --noEmit -p tsconfig.smoke.json 2>&1 | tee "$LOG_DIR/tsc-smoke.log"
