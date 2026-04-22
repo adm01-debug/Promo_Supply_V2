@@ -10,6 +10,7 @@ import { createHash } from "node:crypto";
 import {
   scanStaticDateFnsImports,
   detectUnsupportedDateFnsUsage,
+  detectMalformedDateFnsImports,
 } from "./lib/datefns-scan.mjs";
 
 const ARGS = process.argv.slice(2);
@@ -22,6 +23,10 @@ const IF_CHANGED = ARGS.some((a) => a === "--if-changed");
 // skipped type-only import, and every unsupported-shape warning with its
 // reason. Off by default to keep CI logs clean.
 const VERBOSE = ARGS.some((a) => a === "--verbose" || a === "-v");
+// --strict: turn malformed date-fns imports (zero usable specifiers after
+// comment stripping) into a fatal error instead of a warning. Off by
+// default so existing pipelines aren't broken; CI can opt in.
+const STRICT = ARGS.some((a) => a === "--strict");
 const vlog = (msg) => { if (VERBOSE) console.log(`  · ${msg}`); };
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
