@@ -234,7 +234,19 @@ const DependencyHealth = () => {
         };
       },
       onSuccess: (fresh) => {
-        queryClient.setQueryData(["dependency-health"], fresh);
+        // Preserve the previous smokeTest if the refreshed payload omits it —
+        // the edge function only emits package/lockfile/tree-shake data, while
+        // smokeTest is recorded by the smoke-date-fns CI workflow. Without this
+        // merge, "Atualizar agora" would wipe the smoke card to empty.
+        const prev = queryClient.getQueryData<SnapshotResult>(["dependency-health"]);
+        const merged: SnapshotResult = {
+          ...fresh,
+          snapshot: {
+            ...fresh.snapshot,
+            smokeTest: fresh.snapshot.smokeTest ?? prev?.snapshot.smokeTest,
+          },
+        };
+        queryClient.setQueryData(["dependency-health"], merged);
         queryClient.invalidateQueries({ queryKey: ["dependency-health-history"] });
 
         if (!dispatchCi) {
