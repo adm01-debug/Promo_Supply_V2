@@ -1,13 +1,13 @@
 /* =================================================================
    PROMO SUPPLY - UTILITIES
    Classes utilitárias reutilizáveis
+   (Imported into @layer utilities via index.css)
    ================================================================= */
 
-@layer utilities {
-  /* ===== GLASS EFFECTS ===== */
-  .glass {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50;
-  }
+/* ===== GLASS EFFECTS ===== */
+.glass {
+  @apply bg-card/80 backdrop-blur-xl border border-border/50;
+}
   .dark .glass {
     @apply bg-card/70 backdrop-blur-xl border border-border/40;
     box-shadow: 0 4px 30px hsl(0 0% 0% / 0.2);
@@ -166,4 +166,3 @@
     body { background: white !important; color: black !important; }
     .print-full-width { width: 100% !important; max-width: none !important; }
   }
-}

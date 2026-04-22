@@ -46,6 +46,8 @@ export default tseslint.config(
         typescript: {
           project: "./tsconfig.app.json",
           alwaysTryTypes: true,
+          cache: true,
+          cacheDuration: 30000,
         },
         node: true,
       },

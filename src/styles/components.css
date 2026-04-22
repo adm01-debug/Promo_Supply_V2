@@ -1,10 +1,10 @@
 /* =================================================================
    PROMO SUPPLY - COMPONENT STYLES
    Estilos de componentes reutilizáveis
+   (Imported into @layer utilities via index.css)
    ================================================================= */
 
-@layer utilities {
-  /* ===== INTERACTIVE COMPONENTS ===== */
+/* ===== INTERACTIVE COMPONENTS ===== */
   .btn-interactive {
     @apply transition-all duration-200;
     @apply hover:brightness-110 hover:-translate-y-px;
@@ -20,7 +20,7 @@
 
   .selection-highlight { @apply relative transition-all duration-200; }
   .selection-highlight::before {
-    content: ''; @apply absolute inset-0 rounded-inherit opacity-0 transition-opacity duration-200 bg-primary/5;
+    content: ''; @apply absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-200 bg-primary/5;
   }
   .selection-highlight:hover::before,
   .selection-highlight[data-selected="true"]::before { @apply opacity-100; }
@@ -223,4 +223,3 @@
 
   .dark-avatar-ring { @apply ring-2 ring-offset-2 ring-offset-background; }
   .dark .dark-avatar-ring { ring-color: hsl(var(--primary) / 0.5); box-shadow: 0 0 12px hsl(var(--primary) / 0.3); }
-}

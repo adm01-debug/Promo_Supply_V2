@@ -1,10 +1,10 @@
 /* =================================================================
    PROMO SUPPLY - ANIMATIONS
    Animações e micro-interações consolidadas
+   (Imported into @layer utilities via index.css)
    ================================================================= */
 
-@layer utilities {
-  /* ===== ENTRY / EXIT ===== */
+/* ===== ENTRY / EXIT ===== */
   .animate-enter {
     animation: enter 0.3s ease-out forwards;
   }
@@ -369,4 +369,3 @@
     margin-left: -50px; margin-top: -50px;
   }
   @keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }
-}
