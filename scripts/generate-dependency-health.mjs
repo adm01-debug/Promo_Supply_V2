@@ -310,8 +310,13 @@ function main() {
     );
   }
   console.log(
-    `  tree-shaking: scanned=${treeShaking.filesScanned} barrelImports=${treeShaking.barrelImportsFound} risk=${treeShaking.riskLevel} cache=${treeShaking.cacheHit ? "HIT" : "MISS"}`,
+    `  tree-shaking: scanned=${treeShaking.filesScanned} barrelImports=${treeShaking.barrelImportsFound} suppressed=${treeShaking.suppressedCount} risk=${treeShaking.riskLevel} cache=${treeShaking.cacheHit ? "HIT" : "MISS"}`,
   );
+  if (treeShaking.expiredAllowlistEntries.length > 0) {
+    console.warn(
+      `  ⚠ ${treeShaking.expiredAllowlistEntries.length} allowlist entr${treeShaking.expiredAllowlistEntries.length === 1 ? "y has" : "ies have"} expired — review .dependency-health-allowlist.json`,
+    );
+  }
 }
 
 main();
