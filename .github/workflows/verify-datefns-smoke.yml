@@ -1,0 +1,101 @@
+name: verify-datefns-smoke
+
+# Fast-fail PR gate: runs `bun run verify:datefns-smoke` (a --dry-run of the
+# generator) so a pull request fails the moment src/test/dateFns.smoke.test.ts
+# would drift from the current `date-fns/*` imports under src/. No regen, no
+# vitest — purely "would the generator produce a different file?".
+#
+# Complements smoke-date-fns.yml (which actually runs the smoke vitest) by
+# catching drift faster and with a clearer error.
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "package.json"
+      - "bun.lock"
+      - "scripts/generate-datefns-smoke-test.mjs"
+      - "scripts/lib/datefns-scan.mjs"
+      - "src/test/dateFns.smoke.test.ts"
+      - ".github/workflows/verify-datefns-smoke.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "package.json"
+      - "bun.lock"
+      - "scripts/generate-datefns-smoke-test.mjs"
+      - "scripts/lib/datefns-scan.mjs"
+      - "src/test/dateFns.smoke.test.ts"
+      - ".github/workflows/verify-datefns-smoke.yml"
+
+concurrency:
+  group: verify-datefns-smoke-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify date-fns smoke test is in sync (dry-run)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies (frozen lockfile)
+        run: bun install --frozen-lockfile
+
+      - name: Run verify:datefns-smoke (generator dry-run)
+        env:
+          CI: 'true'
+          TZ: UTC
+        run: |
+          mkdir -p ci-logs
+          set -o pipefail
+          bun run verify:datefns-smoke 2>&1 | tee ci-logs/verify-datefns-smoke.log
+
+      - name: Surface drift in job summary
+        if: failure()
+        run: |
+          {
+            echo "## ❌ date-fns smoke test is out of sync"
+            echo ""
+            echo "\`src/test/dateFns.smoke.test.ts\` no longer matches the"
+            echo "\`date-fns/*\` imports under \`src/\`."
+            echo ""
+            echo "**Fix locally:**"
+            echo '```bash'
+            echo "bun run date-fns:smoke -- --force"
+            echo "git add src/test/dateFns.smoke.test.ts public/datefns-usage.json"
+            echo '```'
+            echo ""
+            echo "Full log:"
+            echo '```'
+            tail -n 200 ci-logs/verify-datefns-smoke.log || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload verify log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-datefns-smoke-log
+          path: ci-logs/verify-datefns-smoke.log
+          if-no-files-found: warn
+          retention-days: 14
