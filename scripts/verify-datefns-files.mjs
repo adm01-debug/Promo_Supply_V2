@@ -263,15 +263,6 @@ for (const file of scannedFiles) {
     kindSubpaths["cjs-require"].add(sp);
     recordSubpathFile(sp, file);
   }
-  // CJS counterpart: backtick-template require, no interpolation.
-  RESOLVABLE_REQUIRE_TEMPLATE_RE.lastIndex = 0;
-  let rtm;
-  while ((rtm = RESOLVABLE_REQUIRE_TEMPLATE_RE.exec(src)) !== null) {
-    const sp = rtm[1];
-    subpaths.add(sp);
-    kindOccurrences["cjs-require"] += 1;
-    kindSubpaths["cjs-require"].add(sp);
-  }
   // Unresolvable dynamic imports — record for failure mode D.
   UNRESOLVABLE_DYNAMIC_RE.lastIndex = 0;
   let um;
