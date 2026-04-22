@@ -15,6 +15,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
+import { validateSnapshot, failOnInvalid } from "./lib/validate-dependency-health.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
@@ -385,9 +386,19 @@ function diffResolutionFlips(prev, next, lines) {
 
 
 function main() {
+  // Validate the PREVIOUS snapshot before invoking the generator. If it's
+  // structurally broken we want to know NOW (with a clear path-qualified
+  // error) — running the generator over a malformed file would either
+  // overwrite trustworthy sibling blocks or produce a misleading diff.
   const previous = readJsonSafe(SNAPSHOT_PATH);
   if (previous === null) {
     console.log("ℹ No previous snapshot — this is the baseline.");
+  } else {
+    try {
+      validateSnapshot(previous);
+    } catch (err) {
+      failOnInvalid(err, { sourcePath: "public/dependency-health.json", role: "diff-dependency-health (previous)" });
+    }
   }
 
   const result = spawnSync("node", [GENERATOR_PATH], { stdio: "inherit" });
@@ -399,6 +410,15 @@ function main() {
   if (!next) {
     console.error("✗ Failed to read regenerated dependency-health.json");
     process.exit(1);
+  }
+  // Validate the NEXT snapshot too — defends against the generator emitting
+  // an invalid shape (e.g. after a refactor that forgets to populate a
+  // required field). Without this, the diff functions would crash later
+  // with a less actionable stack trace.
+  try {
+    validateSnapshot(next);
+  } catch (err) {
+    failOnInvalid(err, { sourcePath: "public/dependency-health.json", role: "diff-dependency-health (next)" });
   }
 
   if (!previous) {
