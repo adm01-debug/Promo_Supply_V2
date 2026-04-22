@@ -18,7 +18,7 @@ import {
   detectUnsupportedDateFnsUsage,
   parseSpecifiers,
   stripComments,
-} from "../../scripts/lib/datefns-scan.mjs";
+} from "../datefns-scan.mjs";
 
 describe("parseSpecifiers", () => {
   it("trims, dedupes, and sorts plain identifiers", () => {
