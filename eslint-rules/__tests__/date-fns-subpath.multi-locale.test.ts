@@ -24,6 +24,7 @@
  */
 import { describe, it, expect } from "vitest";
 import { Linter } from "eslint";
+import * as tsParser from "@typescript-eslint/parser";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 // @ts-expect-error - plain JS rule, no type declarations
@@ -31,10 +32,15 @@ import { dateFnsSubpath } from "../date-fns-subpath.js";
 
 const RULE_ID = "local/date-fns-subpath";
 
+// TS parser is required because the fixture uses `import type` syntax
+// to exercise the rule's type-only branch. The behavior tests use
+// espree because they only cover plain JS imports — keep this config
+// local to avoid regressing those.
 const CONFIG = {
-  files: ["**/*.js"],
+  files: ["**/*.ts"],
   plugins: { local: { rules: { "date-fns-subpath": dateFnsSubpath } } },
   languageOptions: {
+    parser: tsParser,
     ecmaVersion: 2020 as const,
     sourceType: "module" as const,
   },
