@@ -481,6 +481,7 @@ const HistoricoCompras = () => {
 
         <HistoricoDrilldownModal open={drilldownOpen} onOpenChange={setDrilldownOpen} drilldownType={drilldownType} drilldownData={drilldownData} drilldownRecords={drilldownRecords} />
       </div>
+      {ConfirmDialog}
     </MainLayout>
   );
 };
