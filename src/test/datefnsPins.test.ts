@@ -17,8 +17,80 @@
 // exports map exposes ./package.json — the same path the smoke test relies
 // on for date-fns version verification.
 import { describe, expect, it } from "vitest";
+import { readFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
 import rootPkg from "../../package.json";
 import pinnedManifest from "./datefns-pinned-packages.json";
+
+/**
+ * Trace where a package's installed version came from in bun.lock.
+ *
+ * Bun's text lockfile stores resolution entries in this shape:
+ *   "<name>": ["<name>@<version>", "<resolved-url>", { ... }, "<integrity>"],
+ * (See bun.lock around the `"date-fns": [...]` line for an example.)
+ *
+ * We deliberately match on `"<name>": [` so we never confuse a resolution
+ * entry with a transitive `peerDependencies` declaration like
+ *   "date-fns": "^2.28.0 || ^3.0.0"
+ * which appears INSIDE another package's metadata object and isn't a
+ * resolution at all.
+ *
+ * Returns absolute path + 1-based line number + the verbatim line + the
+ * extracted version, so a failure report can render the exact provenance.
+ */
+interface LockTrace {
+  path: string;
+  lineNumber: number | null;
+  lineText: string | null;
+  resolvedVersion: string | null;
+  /** Compact summary used in the per-test audit log. */
+  summary: string;
+}
+
+function traceLockfileEntry(name: string): LockTrace {
+  const lockPath = resolve(process.cwd(), "bun.lock");
+  if (!existsSync(lockPath)) {
+    return {
+      path: lockPath,
+      lineNumber: null,
+      lineText: null,
+      resolvedVersion: null,
+      summary: "<bun.lock not found>",
+    };
+  }
+  const lines = readFileSync(lockPath, "utf8").split("\n");
+  // Anchor: optional whitespace, then `"<escaped-name>":` followed by ` [`.
+  // The leading-whitespace check (`^\s*`) prevents matches inside string
+  // values; the `[` after the colon is the resolution-entry signature.
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`^\\s*"${escaped}":\\s*\\[`);
+  for (let i = 0; i < lines.length; i++) {
+    if (!re.test(lines[i])) continue;
+    const lineText = lines[i].trim();
+    // Extract `<name>@<version>` from the first array element.
+    const versionMatch = lineText.match(
+      new RegExp(`"${escaped}@([^"]+)"`),
+    );
+    const resolvedVersion = versionMatch ? versionMatch[1] : null;
+    return {
+      path: lockPath,
+      lineNumber: i + 1,
+      lineText,
+      resolvedVersion,
+      summary: resolvedVersion
+        ? `${resolvedVersion}@bun.lock:${i + 1}`
+        : `<unparseable>@bun.lock:${i + 1}`,
+    };
+  }
+  return {
+    path: lockPath,
+    lineNumber: null,
+    lineText: null,
+    resolvedVersion: null,
+    summary: "<no resolution entry>",
+  };
+}
+
 
 /**
  * Packages that MUST be exact-pinned. Sourced from
@@ -157,13 +229,28 @@ describe(`date-fns ecosystem: exact-pin enforcement (scope=${SCOPE})`, () => {
           importError = (err as Error).message;
         }
 
+        // Trace the version source in bun.lock so a mismatch report tells the
+        // contributor exactly WHERE the resolved version came from. We read
+        // bun.lock lazily (synchronously, once per failing test) because:
+        //   - It's only needed when we want to render the failure report.
+        //   - bun.lock is a YAML-ish text file; we don't need a parser, just
+        //     a line-locator. The matched line is shown verbatim in the report.
+        // Format we look for (per `grep -n '"date-fns'` examples):
+        //     934:    "date-fns": ["date-fns@3.6.0", "", {}, "sha512-…"],
+        // Matching is anchored on `"<name>": [` so we never match a transitive
+        // peerDependencies entry like `"date-fns": "^2.28.0 || ^3.0.0"`.
+        const lockTrace = traceLockfileEntry(name);
+
         const matches = installed === spec;
         const ok = isExact && matches;
 
         // Always log a one-line audit trail for every package, pass or fail.
+        // Includes the lockfile line number when available so CI scrollback
+        // lets you jump straight to the source even on green runs.
         // eslint-disable-next-line no-console
         console.log(
           `[pin check] ${name}: declared="${spec}" (${bucket}) installed="${installed}" ` +
+            `lockfile=${lockTrace.summary} ` +
             `exact=${isExact ? "✓" : "✗"} matches=${matches ? "✓" : "✗"} ${ok ? "✓ OK" : "✗ FAIL"}`,
         );
 
@@ -177,6 +264,19 @@ describe(`date-fns ecosystem: exact-pin enforcement (scope=${SCOPE})`, () => {
           `  installed version: ${installed}`,
           `  exact-pinned?    : ${isExact ? "yes ✓" : `no ✗  (must be plain semver, got "${spec}")`}`,
           `  versions match?  : ${matches ? "yes ✓" : `no ✗  (declared "${spec}" ≠ installed "${installed}")`}`,
+          `  lockfile source  : ${lockTrace.path}${
+            lockTrace.lineNumber ? ` (line ${lockTrace.lineNumber})` : ""
+          }`,
+          ...(lockTrace.lineText
+            ? [
+                `  lockfile entry   : ${lockTrace.lineText}`,
+                `  lockfile-resolved: ${lockTrace.resolvedVersion ?? "<not parseable>"}`,
+              ]
+            : [
+                `  lockfile entry   : <no resolution entry found for "${name}">`,
+                `                     (the package may be listed only as a peer dep, or`,
+                `                      the lockfile is out of date — run \`bun install\`)`,
+              ]),
           ...(importError
             ? [
                 `  import error     : ${importError}`,
