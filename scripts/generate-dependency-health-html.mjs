@@ -46,6 +46,10 @@ try {
 
 const subpaths = snapshot?.dateFns?.subpaths ?? {};
 const entries = Array.isArray(subpaths.entries) ? subpaths.entries : [];
+const treeShaking = snapshot?.treeShaking ?? {};
+const offenders = Array.isArray(treeShaking.offenders) ? treeShaking.offenders : [];
+const suppressed = Array.isArray(treeShaking.suppressed) ? treeShaking.suppressed : [];
+const truncated = treeShaking.truncated === true;
 const generatedAt = snapshot.generatedAt ?? subpaths.scannedAt ?? new Date().toISOString();
 const dateFnsMeta = {
   spec: snapshot?.dateFns?.spec ?? "—",
