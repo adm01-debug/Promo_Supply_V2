@@ -88,6 +88,28 @@ const IMPORT_PATTERNS = [
 // Display order for the breakdown report — most → least common in practice.
 const PATTERN_KINDS = ["static", "dynamic", "export-from", "export-star"];
 
+// Unresolvable dynamic imports — `import(\`date-fns/${x}\`)` and friends.
+// These can't be statically verified (the subpath depends on a runtime value),
+// so the verifier must FAIL FAST instead of silently accepting them. Three
+// variants we can detect with a regex (anything more exotic — string
+// concatenation, indirection through a variable — is out of scope and the
+// ESLint rule should catch separately):
+//
+//   1. Pure interpolation:    import(`date-fns/${name}`)
+//   2. Suffix interpolation:  import(`date-fns/locale/${tag}`)
+//   3. Prefix-only literal:   import(`date-fns/` + name)  ← string concat
+//
+// We deliberately match only template literals containing `${` (or `+`) AFTER
+// the `date-fns/` prefix; a fully-literal template like `import(\`date-fns/format\`)`
+// is resolvable and would be picked up by extending the static `dynamic` regex
+// — see `RESOLVABLE_TEMPLATE_RE` below.
+const UNRESOLVABLE_DYNAMIC_RE =
+  /import\s*\(\s*(?:`date-fns\/[^`]*\$\{[^`]*`|["'`]date-fns\/?["'`]\s*\+)/g;
+
+// Resolvable template literal — no interpolation, just backticks. Treat as
+// a normal dynamic import so we still verify the subpath exists.
+const RESOLVABLE_TEMPLATE_RE = /import\s*\(\s*`date-fns\/([^`${}]+)`\s*\)/g;
+
 // ── ANSI color helpers (TTY only — keep CI logs clean) ────────────────────────
 const isTTY = Boolean(process.stdout.isTTY);
 const color = (code, s) => (isTTY ? `\x1b[${code}m${s}\x1b[0m` : s);
@@ -128,6 +150,21 @@ const subpaths = new Set();
 // Both are useful — occurrences shows churn, unique shows surface area.
 const kindOccurrences = Object.fromEntries(PATTERN_KINDS.map((k) => [k, 0]));
 const kindSubpaths = Object.fromEntries(PATTERN_KINDS.map((k) => [k, new Set()]));
+// Unresolvable dynamic imports: `[{ file, line, snippet }]`. Surfaced via
+// failure mode D below — verifier exits non-zero if any are present.
+const unresolvableDynamic = [];
+
+// Convert a char offset to a 1-based line number. Cheap enough to compute
+// per-match because the unresolvable case is expected to be rare (zero in
+// a healthy repo).
+function lineFromOffset(src, offset) {
+  let line = 1;
+  for (let i = 0; i < offset && i < src.length; i++) {
+    if (src.charCodeAt(i) === 10) line++;
+  }
+  return line;
+}
+
 for (const file of walk(SRC_DIR)) {
   const src = readFileSync(file, "utf8");
   for (const { kind, re, typeIdx, pathIdx } of IMPORT_PATTERNS) {
@@ -140,6 +177,27 @@ for (const file of walk(SRC_DIR)) {
       kindOccurrences[kind] += 1;
       kindSubpaths[kind].add(sp);
     }
+  }
+  // Resolvable template literals — `import(\`date-fns/format\`)` — are valid
+  // dynamic imports; fold them into the `dynamic` bucket alongside the
+  // quoted-string variant.
+  RESOLVABLE_TEMPLATE_RE.lastIndex = 0;
+  let tm;
+  while ((tm = RESOLVABLE_TEMPLATE_RE.exec(src)) !== null) {
+    const sp = tm[1];
+    subpaths.add(sp);
+    kindOccurrences.dynamic += 1;
+    kindSubpaths.dynamic.add(sp);
+  }
+  // Unresolvable dynamic imports — record for failure mode D.
+  UNRESOLVABLE_DYNAMIC_RE.lastIndex = 0;
+  let um;
+  while ((um = UNRESOLVABLE_DYNAMIC_RE.exec(src)) !== null) {
+    unresolvableDynamic.push({
+      file: relative(ROOT, file),
+      line: lineFromOffset(src, um.index),
+      snippet: um[0],
+    });
   }
 }
 
@@ -165,9 +223,59 @@ function printBreakdown() {
   console.log(
     `    ${bold("total".padEnd(12))} ${gray(`${subpaths.size} unique subpath(s) across all patterns`)}`,
   );
+  if (unresolvableDynamic.length > 0) {
+    console.log(
+      `    ${bold("unresolved".padEnd(12))} ${red(`${unresolvableDynamic.length} dynamic import(s) with interpolation — see failure below`)}`,
+    );
+  }
   console.log("");
 }
 printBreakdown();
+
+// ── Failure mode D: unresolvable dynamic imports ─────────────────────────────
+// Runs BEFORE the package/file checks because no amount of disk verification
+// can prove a runtime-computed subpath is safe. Fail fast with copy-paste
+// fix recipes so the developer doesn't have to grep for the offending lines.
+if (unresolvableDynamic.length > 0) {
+  const lines = [];
+  lines.push(
+    cyan(
+      `Found ${unresolvableDynamic.length} dynamic import(s) with an interpolated date-fns subpath.`,
+    ),
+  );
+  lines.push(
+    gray(
+      "  These can't be statically verified, defeat tree-shaking, and silently break",
+    ),
+  );
+  lines.push(gray("  when a runtime value resolves to a subpath that doesn't exist."));
+  lines.push("");
+  lines.push(cyan("Offending sites:"));
+  for (const { file, line, snippet } of unresolvableDynamic) {
+    lines.push(`  ${red("•")} ${bold(`${file}:${line}`)}`);
+    lines.push(`      ${gray(snippet)}`);
+  }
+  lines.push("");
+  lines.push(cyan("▶ Fix (rewrite as a static import or a switch over known subpaths):"));
+  lines.push("");
+  lines.push(bold('    // ✗ unresolvable'));
+  lines.push(bold('    const mod = await import(`date-fns/locale/${tag}`);'));
+  lines.push("");
+  lines.push(bold('    // ✓ static (preferred when the set is known)'));
+  lines.push(bold('    import { ptBR } from "date-fns/locale/pt-BR";'));
+  lines.push(bold('    import { enUS } from "date-fns/locale/en-US";'));
+  lines.push(bold('    const mod = tag === "pt-BR" ? { default: ptBR } : { default: enUS };'));
+  lines.push("");
+  lines.push(bold('    // ✓ explicit dynamic switch (when lazy-loading matters)'));
+  lines.push(bold('    const mod = tag === "pt-BR"'));
+  lines.push(bold('      ? await import("date-fns/locale/pt-BR")'));
+  lines.push(bold('      : await import("date-fns/locale/en-US");'));
+  printBlock(
+    `verify-datefns-files: ${unresolvableDynamic.length} unresolvable dynamic date-fns import(s)`,
+    lines.join("\n"),
+  );
+  process.exit(1);
+}
 
 // ── Failure mode A: package directory missing ────────────────────────────────
 if (!existsSync(PKG_DIR)) {

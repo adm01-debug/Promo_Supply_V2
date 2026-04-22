@@ -36,6 +36,16 @@ export const REQUIRE_DESTRUCTURE_RE =
 export const DYNAMIC_IMPORT_RE =
   /(?:await\s+)?import\(\s*["']date-fns\/([^"']+)["']\s*\)/g;
 
+// Match: await? import(`date-fns/<literal-subpath>`) — backticks, NO interpolation.
+// Captures: 1=subpath. Resolvable; treated like the quoted-string variant.
+export const DYNAMIC_IMPORT_TEMPLATE_RE =
+  /(?:await\s+)?import\(\s*`date-fns\/([^`${}]+)`\s*\)/g;
+
+// Match: await? import(`date-fns/${x}...`) or import("date-fns/" + x).
+// No useful captures — flagged as unresolvable so callers fail fast.
+export const DYNAMIC_IMPORT_UNRESOLVABLE_RE =
+  /(?:await\s+)?import\(\s*(?:`date-fns\/[^`]*\$\{[^`]*`|["'`]date-fns\/?["'`]\s*\+)/g;
+
 /** Strip /* ... *\/ and // ... comments from a specifier blob. */
 export function stripComments(s) {
   return s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
@@ -124,6 +134,32 @@ export function detectUnsupportedDateFnsUsage(src, file = "<inline>") {
     findings.push({
       kind: "dynamic-import",
       subpath: m[1],
+      line: lineFor(m.index),
+      snippet: m[0],
+      file,
+    });
+  }
+
+  // Backtick-template dynamic imports without interpolation are still
+  // resolvable, so they're reported under the same `dynamic-import` kind.
+  DYNAMIC_IMPORT_TEMPLATE_RE.lastIndex = 0;
+  while ((m = DYNAMIC_IMPORT_TEMPLATE_RE.exec(src)) !== null) {
+    findings.push({
+      kind: "dynamic-import",
+      subpath: m[1],
+      line: lineFor(m.index),
+      snippet: m[0],
+      file,
+    });
+  }
+
+  // Interpolated templates / string concatenation — UNRESOLVABLE. Distinct
+  // kind so callers (verifier, tests) can fail fast on these specifically.
+  DYNAMIC_IMPORT_UNRESOLVABLE_RE.lastIndex = 0;
+  while ((m = DYNAMIC_IMPORT_UNRESOLVABLE_RE.exec(src)) !== null) {
+    findings.push({
+      kind: "dynamic-import-unresolvable",
+      subpath: null,
       line: lineFor(m.index),
       snippet: m[0],
       file,
