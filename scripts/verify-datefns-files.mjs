@@ -150,6 +150,21 @@ const subpaths = new Set();
 // Both are useful — occurrences shows churn, unique shows surface area.
 const kindOccurrences = Object.fromEntries(PATTERN_KINDS.map((k) => [k, 0]));
 const kindSubpaths = Object.fromEntries(PATTERN_KINDS.map((k) => [k, new Set()]));
+// Unresolvable dynamic imports: `[{ file, line, snippet }]`. Surfaced via
+// failure mode D below — verifier exits non-zero if any are present.
+const unresolvableDynamic = [];
+
+// Convert a char offset to a 1-based line number. Cheap enough to compute
+// per-match because the unresolvable case is expected to be rare (zero in
+// a healthy repo).
+function lineFromOffset(src, offset) {
+  let line = 1;
+  for (let i = 0; i < offset && i < src.length; i++) {
+    if (src.charCodeAt(i) === 10) line++;
+  }
+  return line;
+}
+
 for (const file of walk(SRC_DIR)) {
   const src = readFileSync(file, "utf8");
   for (const { kind, re, typeIdx, pathIdx } of IMPORT_PATTERNS) {
@@ -162,6 +177,27 @@ for (const file of walk(SRC_DIR)) {
       kindOccurrences[kind] += 1;
       kindSubpaths[kind].add(sp);
     }
+  }
+  // Resolvable template literals — `import(\`date-fns/format\`)` — are valid
+  // dynamic imports; fold them into the `dynamic` bucket alongside the
+  // quoted-string variant.
+  RESOLVABLE_TEMPLATE_RE.lastIndex = 0;
+  let tm;
+  while ((tm = RESOLVABLE_TEMPLATE_RE.exec(src)) !== null) {
+    const sp = tm[1];
+    subpaths.add(sp);
+    kindOccurrences.dynamic += 1;
+    kindSubpaths.dynamic.add(sp);
+  }
+  // Unresolvable dynamic imports — record for failure mode D.
+  UNRESOLVABLE_DYNAMIC_RE.lastIndex = 0;
+  let um;
+  while ((um = UNRESOLVABLE_DYNAMIC_RE.exec(src)) !== null) {
+    unresolvableDynamic.push({
+      file: relative(ROOT, file),
+      line: lineFromOffset(src, um.index),
+      snippet: um[0],
+    });
   }
 }
 
@@ -187,6 +223,11 @@ function printBreakdown() {
   console.log(
     `    ${bold("total".padEnd(12))} ${gray(`${subpaths.size} unique subpath(s) across all patterns`)}`,
   );
+  if (unresolvableDynamic.length > 0) {
+    console.log(
+      `    ${bold("unresolved".padEnd(12))} ${red(`${unresolvableDynamic.length} dynamic import(s) with interpolation — see failure below`)}`,
+    );
+  }
   console.log("");
 }
 printBreakdown();
