@@ -247,6 +247,9 @@ function main() {
     process.exit(2);
   }
 
+  if (FORWARDED_ARGS.length > 0) {
+    console.log(cyan(`▶ Forwarding to vitest in BOTH runners: ${bold(FORWARDED_ARGS.join(" "))}`));
+  }
   const tmp = mkdtempSync(join(tmpdir(), "datefns-parity-"));
   const runs = [];
 
