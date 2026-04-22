@@ -11,6 +11,7 @@ export default defineConfig({
     include: [
       "src/**/*.{test,spec}.{ts,tsx}",
       "eslint-rules/__tests__/**/*.test.ts",
+      "scripts/**/__tests__/**/*.test.{mjs,ts}",
     ],
     testTimeout: 10_000,
     pool: 'forks',
