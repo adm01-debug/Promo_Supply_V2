@@ -215,6 +215,38 @@ ${rowsHtml || `      <tr><td colspan="5" class="muted">No entries recorded. Run 
 
 ${scanInputHtml}
 
+  <section class="offenders" aria-labelledby="offenders-h">
+    <h2 id="offenders-h">Tree-shaking offenders <span class="muted">(${offenders.length}${truncated ? "+, truncated" : ""}${suppressed.length ? `, ${suppressed.length} suppressed` : ""})</span></h2>
+    ${offenders.length === 0
+      ? `<p class="muted">No barrel imports detected — every <code>date-fns</code> import uses a tree-shakable subpath. 🎉</p>`
+      : `<table>
+      <thead>
+        <tr>
+          <th scope="col">File</th>
+          <th scope="col" class="num">Line</th>
+          <th scope="col">Import statement</th>
+        </tr>
+      </thead>
+      <tbody>
+${offenders.map((o) => `        <tr>
+          <td><code>${esc(o.file)}</code></td>
+          <td class="num">${esc(String(o.line ?? ""))}</td>
+          <td><code>from "${esc(o.importPath)}"</code></td>
+        </tr>`).join("\n")}
+      </tbody>
+    </table>${truncated ? `<p class="muted">List truncated — see <code>public/dependency-health.json</code> for the full set.</p>` : ""}`}
+    ${suppressed.length > 0 ? `<details class="suppressed">
+      <summary>${suppressed.length} suppressed by allowlist</summary>
+      <table>
+        <thead><tr><th>File</th><th class="num">Line</th><th>Import</th><th>Reason</th></tr></thead>
+        <tbody>
+${suppressed.map((s) => `          <tr><td><code>${esc(s.file)}</code></td><td class="num">${esc(String(s.line ?? ""))}</td><td><code>${esc(s.importPath)}</code></td><td>${esc(s.reason ?? "")}</td></tr>`).join("\n")}
+        </tbody>
+      </table>
+    </details>` : ""}
+  </section>
+
+
   <footer>
     Source of truth: <code>public/dependency-health.json</code> · Regenerate with
     <code>node scripts/generate-dependency-health-html.mjs</code>.
