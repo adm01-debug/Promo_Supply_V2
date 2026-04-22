@@ -41,11 +41,16 @@ jobs:
       - name: Install dependencies (frozen lockfile)
         run: bun install --frozen-lockfile
 
+      # Use --json-file so the script writes the JSON directly to disk
+      # (auto-creates parent dirs). --json keeps the payload mirrored to
+      # stdout for inline log auditing; the file is what the upload-artifact
+      # step below publishes.
       - name: Generate install-report.json
         id: report
         run: |
-          mkdir -p ci-artifacts
-          node scripts/install-report.mjs --json | tee ci-artifacts/install-report.json
+          node scripts/install-report.mjs \
+            --json \
+            --json-file=ci-artifacts/install-report.json
 
 
       # Posts a markdown summary on the GitHub Actions run page using the
