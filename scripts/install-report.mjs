@@ -1,17 +1,28 @@
 #!/usr/bin/env node
-import { readFileSync, existsSync, statSync } from "node:fs";
+import { readFileSync, existsSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
 import { renderMismatch, renderTripleMismatch } from "./lib/semver-diff.mjs";
 
 // CLI flags:
-//   --strict   exit 1 when spec / lock / installed are not aligned (default: exit 0)
-//   --json     emit a single JSON object (no human-readable lines) for log
-//              parsing / dashboards. Combines with --strict.
+//   --strict          exit 1 when spec / lock / installed are not aligned (default: exit 0)
+//   --json            emit a single JSON object (no human-readable lines) for log
+//                     parsing / dashboards. Combines with --strict.
+//   --json-file=PATH  also write the JSON payload to PATH (creates parent dirs).
+//                     Works with or without --json: when used alone, the human
+//                     report still prints to stdout and the file gets the JSON.
 const argv = process.argv.slice(2);
 const STRICT = argv.includes("--strict");
 const JSON_MODE = argv.includes("--json");
+const JSON_FILE = (() => {
+  const flag = argv.find((a) => a === "--json-file" || a.startsWith("--json-file="));
+  if (!flag) return null;
+  if (flag.includes("=")) return flag.slice(flag.indexOf("=") + 1) || null;
+  // Support space-separated form: --json-file path/to/out.json
+  const idx = argv.indexOf(flag);
+  return argv[idx + 1] && !argv[idx + 1].startsWith("--") ? argv[idx + 1] : null;
+})();
 
 const ROOT = process.cwd();
 const PKG = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
@@ -48,26 +59,41 @@ const aligned =
 
 const SPEC_NORM = SPEC.replace(/^[\^~]/, "");
 
+const payload = {
+  generatedAt: new Date().toISOString(),
+  dateFns: {
+    spec: SPEC,
+    specNormalized: SPEC_NORM,
+    locked: LOCKED,
+    installed: INSTALLED,
+    pkgSha256: dfSha,
+    exactPinned: /^[0-9]/.test(SPEC),
+  },
+  bunLock: { sha256: lockSha, sizeBytes: lockSize },
+  alignment: {
+    aligned,
+    specEqLocked: SPEC_NORM === LOCKED,
+    lockedEqInstalled: LOCKED === INSTALLED,
+    specEqInstalled: SPEC_NORM === INSTALLED,
+  },
+  strict: STRICT,
+};
+
+// --json-file always writes the payload, regardless of stdout mode. Useful
+// for `bun run verify:install-report --json-file=ci-artifacts/...json` where
+// the human report still goes to the build log.
+if (JSON_FILE) {
+  try {
+    mkdirSync(dirname(JSON_FILE), { recursive: true });
+    writeFileSync(JSON_FILE, JSON.stringify(payload, null, 2) + "\n");
+    if (!JSON_MODE) console.error(`[install-report] wrote JSON → ${JSON_FILE}`);
+  } catch (e) {
+    console.error(`[install-report] failed to write --json-file=${JSON_FILE}: ${e instanceof Error ? e.message : e}`);
+    process.exit(2);
+  }
+}
+
 if (JSON_MODE) {
-  const payload = {
-    generatedAt: new Date().toISOString(),
-    dateFns: {
-      spec: SPEC,
-      specNormalized: SPEC_NORM,
-      locked: LOCKED,
-      installed: INSTALLED,
-      pkgSha256: dfSha,
-      exactPinned: /^[0-9]/.test(SPEC),
-    },
-    bunLock: { sha256: lockSha, sizeBytes: lockSize },
-    alignment: {
-      aligned,
-      specEqLocked: SPEC_NORM === LOCKED,
-      lockedEqInstalled: LOCKED === INSTALLED,
-      specEqInstalled: SPEC_NORM === INSTALLED,
-    },
-    strict: STRICT,
-  };
   process.stdout.write(JSON.stringify(payload, null, 2) + "\n");
   if (!aligned && STRICT) process.exit(1);
 } else {
