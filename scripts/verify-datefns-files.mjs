@@ -190,7 +190,14 @@ function lineFromOffset(src, offset) {
   return line;
 }
 
-for (const file of walk(SRC_DIR)) {
+// Aggregate scanned file list across every root, then dedupe by absolute
+// path. Roots can overlap (e.g. someone passes both `src` and `src/lib`)
+// without double-counting matches or inflating the breakdown numbers.
+const scannedFiles = new Set();
+for (const root of SCAN_ROOTS) {
+  for (const f of walk(root, root)) scannedFiles.add(f);
+}
+for (const file of scannedFiles) {
   const src = readFileSync(file, "utf8");
   for (const { kind, re, typeIdx, pathIdx } of IMPORT_PATTERNS) {
     re.lastIndex = 0;
