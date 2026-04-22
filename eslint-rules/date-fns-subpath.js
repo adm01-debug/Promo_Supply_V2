@@ -198,6 +198,7 @@ export const dateFnsSubpath = {
   meta: {
     type: "problem",
     fixable: "code",
+    hasSuggestions: true,
     schema: [],
     messages: {
       barrel:
@@ -205,12 +206,99 @@ export const dateFnsSubpath = {
       barrelLocale:
         'Import the specific locale subpath, e.g. `from "date-fns/locale/pt-BR"`.',
       unfixable: "{{reason}} — fix manually.",
+      // Typo branch — `bad` is the offending segment, `suggestions` is a
+      // human-readable comma-separated list (also offered as one ESLint
+      // suggestion per candidate so contributors can apply them in-IDE).
+      typoFunction:
+        'Unknown date-fns subpath "date-fns/{{bad}}". Did you mean: {{suggestions}}?',
+      typoLocale:
+        'Unknown date-fns locale subpath "date-fns/locale/{{bad}}". Did you mean: {{suggestions}}?',
+      typoFunctionNoMatch:
+        'Unknown date-fns subpath "date-fns/{{bad}}" (no close match found — check the date-fns docs).',
+      typoLocaleNoMatch:
+        'Unknown date-fns locale subpath "date-fns/locale/{{bad}}" (no close match found — check the date-fns docs).',
+      replaceWith: 'Replace with "date-fns/{{target}}"',
+      replaceWithLocale: 'Replace with "date-fns/locale/{{target}}"',
     },
   },
   create(context) {
+    const validFunctionSubpaths = loadFunctionSubpaths();
+    const validLocaleSubpaths = new Set(Object.values(LOCALE_SUBPATHS));
+
+    /**
+     * Report a typo'd subpath with up to 3 suggestions. ESLint
+     * `suggest` entries are intentionally NOT `fix` — picking the wrong
+     * candidate would silently rewrite a working-but-typoed import to
+     * something that compiles but is semantically wrong (e.g.
+     * `subWeeks` → `addWeeks`). Surfacing them as IDE suggestions
+     * keeps the human in the loop.
+     */
+    function reportTypo(node, bad, validPool, kind) {
+      // Skip silently if we couldn't load the valid pool (date-fns not
+      // installed). The barrel branch + verify-datefns-files.mjs cover
+      // the "totally broken install" case loudly enough.
+      if (validPool.size === 0) return;
+      // If the subpath IS valid, nothing to do.
+      if (validPool.has(bad)) return;
+
+      const matches = closestMatches(bad, [...validPool]);
+      const isLocale = kind === "locale";
+      const quote = node.source.raw && node.source.raw.startsWith("'") ? "'" : '"';
+
+      if (matches.length === 0) {
+        context.report({
+          node: node.source,
+          messageId: isLocale ? "typoLocaleNoMatch" : "typoFunctionNoMatch",
+          data: { bad },
+        });
+        return;
+      }
+
+      context.report({
+        node: node.source,
+        messageId: isLocale ? "typoLocale" : "typoFunction",
+        data: { bad, suggestions: matches.map((m) => `"${m}"`).join(", ") },
+        suggest: matches.map((target) => ({
+          messageId: isLocale ? "replaceWithLocale" : "replaceWith",
+          data: { target },
+          fix(fixer) {
+            const newSrc = isLocale
+              ? `date-fns/locale/${target}`
+              : `date-fns/${target}`;
+            return fixer.replaceText(node.source, `${quote}${newSrc}${quote}`);
+          },
+        })),
+      });
+    }
+
     return {
       ImportDeclaration(node) {
         const src = node.source && node.source.value;
+        if (typeof src !== "string") return;
+
+        // ── Typo branch ────────────────────────────────────────────────
+        // Match `date-fns/<X>` (single segment, function subpath) and
+        // `date-fns/locale/<X>` (single segment, locale subpath). Multi-
+        // segment paths under date-fns/ are not real subpaths in v3+,
+        // so we treat them as typos too — but only the leaf segment is
+        // worth diffing.
+        if (src.startsWith("date-fns/locale/")) {
+          const seg = src.slice("date-fns/locale/".length);
+          // Skip nested paths under locale (date-fns has no such thing)
+          // — fall through to barrel handling below would mis-classify.
+          if (seg && !seg.includes("/")) {
+            reportTypo(node, seg, validLocaleSubpaths, "locale");
+            return;
+          }
+        } else if (src.startsWith("date-fns/") && src !== "date-fns/locale") {
+          const seg = src.slice("date-fns/".length);
+          if (seg && !seg.includes("/")) {
+            reportTypo(node, seg, validFunctionSubpaths, "function");
+            return;
+          }
+        }
+
+        // ── Barrel branch (existing behaviour) ─────────────────────────
         if (src !== "date-fns" && src !== "date-fns/locale") return;
         const isLocale = src === "date-fns/locale";
         const baseMessageId = isLocale ? "barrelLocale" : "barrel";
