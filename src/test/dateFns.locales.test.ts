@@ -27,6 +27,15 @@ interface Manifest {
 const MANIFEST: Manifest = JSON.parse(readFileSync(MANIFEST_PATH, "utf8"));
 const REF = new Date("2025-01-15T12:00:00Z");
 
+// One-command recovery hint reused across all assertions in this suite. Keeping
+// it centralized guarantees every failure message ends with the same actionable
+// fix, so a developer never has to guess which command to run.
+const FIX_HINT =
+  "Fix: `rm -rf node_modules && bun install --frozen-lockfile` " +
+  "(reinstalls date-fns at the exact pinned version from bun.lock).";
+
+const fullPath = (sp: string) => `date-fns/${sp}`;
+
 const fileCandidates = (sp: string): string[] => [
   `${sp}.js`,
   `${sp}.mjs`,
