@@ -15,42 +15,10 @@
  * cost bounded even when many locales fail at once.
  */
 import type { Reporter, File, Task } from "vitest";
-// The fix-preview lib is plain ESM JS (no declarations). Cast through `any`
-// at the import boundary; the local `FixPreview`/`Builder` types below pin
-// down the surface we actually consume so the reporter body stays typed.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const fixPreviewMod = (await import(
-  /* @vite-ignore */ "../../../scripts/lib/datefns-fix-preview.mjs"
-)) as any;
-const buildFixPreview: (opts?: {
-  rootDir?: string;
-  packages?: string[];
-  timeoutMs?: number;
-}) => FixPreview = fixPreviewMod.buildFixPreview;
-const renderFixPreview: (
-  preview: FixPreview,
-  opts?: { color?: boolean; maxDiffLines?: number },
-) => string = fixPreviewMod.renderFixPreview;
-
-interface FixPreview {
-  command: string;
-  packages: Array<{
-    name: string;
-    installed: string | null;
-    wouldInstall: string | null;
-    declared: string | null;
-    status:
-      | "unchanged"
-      | "would-change"
-      | "missing-locally"
-      | "would-be-removed"
-      | "missing-from-lockfile";
-  }>;
-  lockfileDiff: string;
-  lockfileChanged: boolean;
-  warnings: string[];
-  elapsedMs: number;
-}
+import {
+  buildFixPreview,
+  renderFixPreview,
+} from "../../../scripts/lib/datefns-fix-preview.mjs";
 
 const FILE_PATTERN = /(dateFns|datefns)/i;
 
