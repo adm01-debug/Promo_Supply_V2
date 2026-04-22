@@ -91,3 +91,63 @@ jobs:
           path: ci-logs/
           if-no-files-found: ignore
           retention-days: 14
+
+  strict-baseline:
+    name: Strict-flag regression gate (ratchet on opt-in strict flags)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      # Runs `tsc --noEmit -p tsconfig.app.json --<flag>` for every opt-in
+      # strict flag listed in ci-artifacts/strict-baseline.json. The job fails if:
+      #   • a flag's error count INCREASED vs the checked-in baseline (regression), or
+      #   • a flag whose baseline is 0 produces ANY error (must-be-zero violation).
+      # Improvements (count went DOWN) do NOT fail — contributors update the baseline
+      # locally with `node scripts/check-strict-baseline.mjs --update` so the ratchet
+      # tightens. JSON output is uploaded as a build artifact for inspection.
+      - name: Strict-flag baseline check
+        id: strict
+        run: |
+          mkdir -p ci-artifacts
+          set +e
+          node scripts/check-strict-baseline.mjs --json > ci-artifacts/strict-baseline-report.json
+          status=$?
+          set -e
+          # Re-run in human mode so the GHA log is readable too.
+          node scripts/check-strict-baseline.mjs || true
+          exit $status
+        env:
+          CI: 'true'
+          TZ: UTC
+
+      - name: Upload strict-baseline report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: strict-baseline-report
+          path: ci-artifacts/strict-baseline-report.json
+          if-no-files-found: warn
+          retention-days: 30
