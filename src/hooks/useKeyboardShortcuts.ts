@@ -51,6 +51,12 @@ export function useKeyboardShortcuts() {
         }, 100);
       }},
 
+      // Clear filters (current screen)
+      { key: "l", ctrl: true, shift: true, description: "Limpar filtros", action: () => {
+        const event = new CustomEvent('request-clear-filters');
+        window.dispatchEvent(event);
+      }},
+
       // Back navigation
       { key: "Backspace", alt: true, description: "Voltar", action: () => navigate(-1) },
 
