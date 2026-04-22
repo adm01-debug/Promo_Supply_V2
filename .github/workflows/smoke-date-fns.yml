@@ -94,6 +94,13 @@ jobs:
         env:
           CI: 'true'
           TZ: UTC
+          # Picked up by scripts/verify-datefns-files.mjs to write a concise
+          # Markdown drift table — pinned date-fns version + missing-subpath
+          # rows grouped by Functions/Locales — that the next step appends
+          # to $GITHUB_STEP_SUMMARY. Emitted on BOTH pass and fail; the
+          # verifier still exits non-zero on drift, which propagates through
+          # `bun run smoke:date-fns` and fails this step.
+          DATEFNS_SMOKE_SUMMARY_MD: ci-artifacts/datefns-drift.md
         run: |
           mkdir -p ci-artifacts
           set -o pipefail
@@ -109,6 +116,21 @@ jobs:
           echo "status=$smoke_status" >> "$GITHUB_OUTPUT"
           echo "duration_ms=$((end_ms - start_ms))" >> "$GITHUB_OUTPUT"
           exit "$exit_code"
+
+      # Append the verifier's drift table to the GitHub job summary on every
+      # run (pass or fail). On a clean run this is a single ✓ line; on drift
+      # it's the full Markdown table with each missing subpath, the file
+      # count that imported it, and the pinned date-fns version. This step
+      # NEVER changes the job's pass/fail state — that's owned by the smoke
+      # step above, which already exits non-zero when the verifier finds drift.
+      - name: Append drift table to job summary
+        if: always()
+        run: |
+          if [ -f ci-artifacts/datefns-drift.md ]; then
+            cat ci-artifacts/datefns-drift.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "_(no drift table — verifier did not run, e.g. install failed)_" >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Record smoke result into dependency-health.json
         if: always()
@@ -160,6 +182,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: smoke-date-fns-output
-          path: ci-artifacts/smoke-date-fns.log
+          path: |
+            ci-artifacts/smoke-date-fns.log
+            ci-artifacts/datefns-drift.md
+          if-no-files-found: error
+          retention-days: 30
           if-no-files-found: error
           retention-days: 30
