@@ -31,6 +31,8 @@ DATEFNS_LOCKED=""
 DATEFNS_VERSION_OK=0
 VERIFY_FILES_RAN=0
 VERIFY_FILES_OK=0
+ESLINT_FULL_RAN=0
+ESLINT_FULL_OK=0
 ESLINT_RAN=0
 ESLINT_OK=0
 SMOKE_TSC_RAN=0
@@ -55,6 +57,16 @@ print_summary() {
     fi
   else
     datefns_line="not verified ✗"
+  fi
+
+  # full eslint line
+  local eslint_full_line
+  if [ "$ESLINT_FULL_RAN" -eq 0 ]; then
+    eslint_full_line="not run"
+  elif [ "$ESLINT_FULL_OK" -eq 1 ]; then
+    eslint_full_line="passed ✓"
+  else
+    eslint_full_line="✗ FAIL"
   fi
 
   # eslint line
@@ -157,6 +169,7 @@ print_summary() {
   echo "$rule"
   printf "  date-fns version    : %s\n" "$datefns_line"
   printf "  Subpath files       : %s\n" "$verify_files_line"
+  printf "  ESLint full project : %s\n" "$eslint_full_line"
   printf "  ESLint date-fns gate: %s\n" "$eslint_line"
   printf "  Smoke tsc           : %s\n" "$tsc_line"
   printf "  Smoke vitest        : %s\n" "$vitest_line"
@@ -182,16 +195,16 @@ print_summary() {
 }
 trap print_summary EXIT
 
-echo "▶ [1/9] Removing node_modules..."
+echo "▶ [1/10] Removing node_modules..."
 rm -rf node_modules
 
-echo "▶ [2/9] Evicting any cached date-fns tarballs..."
+echo "▶ [2/10] Evicting any cached date-fns tarballs..."
 evict_datefns_cache
 
-echo "▶ [3/9] Installing from frozen lockfile..."
+echo "▶ [3/10] Installing from frozen lockfile..."
 bun install --frozen-lockfile
 
-echo "▶ [4/9] Confirming installed date-fns version matches lockfile..."
+echo "▶ [4/10] Confirming installed date-fns version matches lockfile..."
 DATEFNS_INSTALLED="$(node -p "require('./node_modules/date-fns/package.json').version")"
 DATEFNS_LOCKED="$(resolve_locked_datefns)"
 if [ -n "$DATEFNS_LOCKED" ] && [ "$DATEFNS_INSTALLED" != "$DATEFNS_LOCKED" ]; then
@@ -201,7 +214,7 @@ fi
 DATEFNS_VERSION_OK=1
 echo "✓ date-fns $DATEFNS_INSTALLED matches lockfile."
 
-echo "▶ [5/9] Verifying date-fns subpath files exist on disk..."
+echo "▶ [5/10] Verifying date-fns subpath files exist on disk..."
 VERIFY_FILES_RAN=1
 if ! node scripts/verify-datefns-files.mjs; then
   VERIFY_FILES_OK=0
@@ -210,10 +223,27 @@ if ! node scripts/verify-datefns-files.mjs; then
 fi
 VERIFY_FILES_OK=1
 
-echo "▶ [6/9] Printing install verification report..."
+echo "▶ [6/10] Printing install verification report..."
 node scripts/install-report.mjs 2>&1 | tee "$LOG_DIR/install-report.txt"
 
-echo "▶ [7/9] ESLint gate: blocking date-fns barrel imports (--max-warnings=0)..."
+# Run the full project ESLint gate EARLY so any lint regression — including
+# date-fns barrel imports — fails the smoke job before we burn time on tsc
+# and vitest. `set -euo pipefail` at the top guarantees an immediate exit on
+# the first non-zero status; the explicit exit below is belt-and-suspenders
+# and surfaces a targeted hint in the job log.
+echo "▶ [7/10] ESLint gate: full project (--max-warnings=0)..."
+ESLINT_FULL_RAN=1
+bunx eslint . --max-warnings=0 2>&1 | tee "$LOG_DIR/eslint-full.log"
+ESLINT_FULL_EXIT=${PIPESTATUS[0]}
+if [ "$ESLINT_FULL_EXIT" -ne 0 ]; then
+  ESLINT_FULL_OK=0
+  echo "✗ ESLint failed (full project, --max-warnings=0). See $LOG_DIR/eslint-full.log." >&2
+  echo "  Common cause: \`import { ... } from \"date-fns\"\` (barrel) — must be \`date-fns/<subpath>\`." >&2
+  exit "$ESLINT_FULL_EXIT"
+fi
+ESLINT_FULL_OK=1
+
+echo "▶ [8/10] ESLint gate: blocking date-fns barrel imports (--max-warnings=0)..."
 ESLINT_RAN=1
 if bunx eslint . --config eslint.date-fns.config.js --max-warnings=0; then
   ESLINT_OK=1
@@ -222,7 +252,7 @@ else
   exit 1
 fi
 
-echo "▶ [8/9] Running smoke test pipeline..."
+echo "▶ [9/10] Running smoke test pipeline..."
 echo "▶ Verifying date-fns smoke test is in sync..."
 node scripts/generate-datefns-smoke-test.mjs --dry-run
 echo "▶ Validating smoke test imports against tsconfig.smoke.json..."
@@ -244,7 +274,7 @@ if [ "$SMOKE_TSC_EXIT" -eq 0 ]; then
   SMOKE_VITEST_DURATION=$((SECONDS - VITEST_START))
 fi
 
-echo "▶ [9/9] Emitting dependency-health snapshot for smoke run..."
+echo "▶ [10/10] Emitting dependency-health snapshot for smoke run..."
 node scripts/emit-smoke-health.mjs \
   --tsc-exit "$SMOKE_TSC_EXIT" \
   --vitest-exit "$SMOKE_VITEST_EXIT" \
