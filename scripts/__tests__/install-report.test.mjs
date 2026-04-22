@@ -143,13 +143,35 @@ describe("install-report --json-file", () => {
     expect(payload.strict).toBe(true);
   });
 
-  it("does not emit the [install-report] stderr line in --json mode", () => {
+  it("logs absolute path and byte count to stderr in --json mode", () => {
     dir = makeFakeProject({ spec: "^3.6.0", locked: "3.6.0", installed: "3.6.0" });
     const out = join(dir, "report.json");
     const res = runScript(dir, ["--json", `--json-file=${out}`]);
     expect(res.status).toBe(0);
-    // In --json mode the script suppresses the human-friendly "wrote JSON"
-    // line so the JSON payload on stdout stays the only structured channel.
-    expect(res.stderr).not.toContain("[install-report] wrote JSON");
+    // The confirmation now ALWAYS goes to stderr (path + bytes), so --json
+    // mode keeps stdout-as-JSON clean while CI logs still see the artifact.
+    const absOut = resolve(out);
+    const bytes = readFileSync(absOut).length;
+    expect(res.stderr).toContain("[install-report] wrote JSON");
+    expect(res.stderr).toContain(absOut);
+    expect(res.stderr).toContain(`(${bytes} bytes)`);
+    // stdout must remain pure JSON — confirmation must not leak there.
+    expect(res.stdout).not.toContain("[install-report] wrote JSON");
+    expect(() => JSON.parse(res.stdout)).not.toThrow();
+  });
+
+  it("logs absolute path and byte count to stderr in human mode", () => {
+    dir = makeFakeProject({ spec: "^3.6.0", locked: "3.6.0", installed: "3.6.0" });
+    // Pass a relative path so we can prove it gets resolved to absolute.
+    const res = runScript(dir, ["--json-file=report.json"]);
+    expect(res.status).toBe(0);
+    const absOut = resolve(dir, "report.json");
+    expect(existsSync(absOut)).toBe(true);
+    const bytes = readFileSync(absOut).length;
+    expect(res.stderr).toMatch(
+      /\[install-report\] wrote JSON → .+ \(\d+ bytes\)/,
+    );
+    expect(res.stderr).toContain(absOut);
+    expect(res.stderr).toContain(`(${bytes} bytes)`);
   });
 });

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve as resolvePath } from "node:path";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
 import { renderMismatch, renderTripleMismatch } from "./lib/semver-diff.mjs";
 
@@ -58,18 +58,15 @@ if (HELP) {
       "  --json-file PATH      directories are created automatically (recursive",
       "                        mkdir). Both `=` and space-separated forms work.",
       "",
-      "                        Behavior by mode:",
-      "                          • With --json:    Writes file + prints JSON to",
-      "                                            stdout. No extra confirmation",
-      "                                            on stderr (keeps stdout-as-",
-      "                                            JSON contract clean).",
-      "                          • Without --json: Writes file + prints the human",
-      "                                            report to stdout, AND logs",
-      "                                            `[install-report] wrote JSON →",
-      "                                            <PATH>` to stderr so it shows",
-      "                                            up in build logs.",
-      "                          • If the write fails (permissions, bad path),",
-      "                            the script exits 2 with the OS error message.",
+      "                        On success, logs to stderr (in BOTH --json and",
+      "                        human modes):",
+      "                          [install-report] wrote JSON → <ABS_PATH> (<N> bytes)",
+      "                        Stderr is used so --json's stdout-as-JSON contract",
+      "                        stays intact and CI logs still show the artifact",
+      "                        path + size for sanity-checking uploads.",
+      "",
+      "                        If the write fails (permissions, bad path), the",
+      "                        script exits 2 with the OS error message.",
       "",
       "  --help, -h            Show this help and exit 0.",
       "",
@@ -161,11 +158,23 @@ const payload = {
 // --json-file always writes the payload, regardless of stdout mode. Useful
 // for `bun run verify:install-report --json-file=ci-artifacts/...json` where
 // the human report still goes to the build log.
+//
+// On success we log BOTH the absolute resolved path (so a CI log reader can
+// click/copy it without guessing the working dir) AND the byte count
+// (cheap sanity check that the artifact isn't empty / truncated). In --json
+// mode the confirmation goes to stderr to avoid polluting the JSON-on-
+// stdout contract; in human mode it also goes to stderr for consistency
+// with the existing wording.
 if (JSON_FILE) {
   try {
-    mkdirSync(dirname(JSON_FILE), { recursive: true });
-    writeFileSync(JSON_FILE, JSON.stringify(payload, null, 2) + "\n");
-    if (!JSON_MODE) console.error(`[install-report] wrote JSON → ${JSON_FILE}`);
+    const absPath = resolvePath(JSON_FILE);
+    mkdirSync(dirname(absPath), { recursive: true });
+    const body = JSON.stringify(payload, null, 2) + "\n";
+    writeFileSync(absPath, body);
+    const bytes = statSync(absPath).size;
+    console.error(
+      `[install-report] wrote JSON → ${absPath} (${bytes} bytes)`,
+    );
   } catch (e) {
     console.error(`[install-report] failed to write --json-file=${JSON_FILE}: ${e instanceof Error ? e.message : e}`);
     process.exit(2);
