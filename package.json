@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "lint:date-fns": "bash scripts/lint-date-fns.sh",
     "lint:all": "bash scripts/lint-all.sh",
+    "lint:watch": "bash scripts/lint-watch.sh",
     "lint:date-fns:fix": "eslint . --config eslint.date-fns.config.js --fix",
     "fix:date-fns": "bash scripts/fix-date-fns.sh",
     "fix:date-fns:dry": "bash scripts/fix-date-fns.sh --all --dry-run",
