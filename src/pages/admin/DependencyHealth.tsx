@@ -78,19 +78,41 @@ interface DependencyHealthSnapshot {
   treeShaking?: TreeShakingReport;
 }
 
-const fetchSnapshot = async (): Promise<DependencyHealthSnapshot> => {
+type SnapshotSource = "edge" | "static";
+
+interface SnapshotResult {
+  snapshot: DependencyHealthSnapshot;
+  source: SnapshotSource;
+  fetchedAt: string;
+  edgeError?: string;
+}
+
+const fetchSnapshot = async (): Promise<SnapshotResult> => {
   // Prefer edge function (runtime refreshable)
+  let edgeError: string | undefined;
   try {
     const { data, error } = await supabase.functions.invoke("dependency-health", {
       method: "GET",
     });
-    if (!error && data) return data as DependencyHealthSnapshot;
-  } catch {
-    // fall through to static
+    if (!error && data) {
+      return {
+        snapshot: data as DependencyHealthSnapshot,
+        source: "edge",
+        fetchedAt: new Date().toISOString(),
+      };
+    }
+    if (error) edgeError = error.message;
+  } catch (e) {
+    edgeError = e instanceof Error ? e.message : String(e);
   }
   const res = await fetch("/dependency-health.json", { cache: "no-store" });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
+  return {
+    snapshot: (await res.json()) as DependencyHealthSnapshot,
+    source: "static",
+    fetchedAt: new Date().toISOString(),
+    edgeError,
+  };
 };
 
 const DependencyHealth = () => {
