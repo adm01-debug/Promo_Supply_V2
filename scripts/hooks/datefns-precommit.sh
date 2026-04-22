@@ -74,14 +74,17 @@ extract_offending_files() {
 }
 
 emit_summary() {
-  # $1 step number, $2 step label, $3 mode, $4 log file, $5 fix-hint command
-  local step="$1" label="$2" mode="$3" log="$4" fix="$5"
+  # $1 step number, $2 step label, $3 mode, $4 log file, $5 fix-hint command,
+  # $6 exact command that failed, $7 exit code from that command
+  local step="$1" label="$2" mode="$3" log="$4" fix="$5" cmd="$6" code="$7"
   echo ""
   red   "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   red   "✗ date-fns pre-hook FAILED"
   red   "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   printf "  %-18s %s\n" "Failed step:"  "[$step] $label"
   printf "  %-18s %s\n" "Failure mode:" "$mode"
+  printf "  %-18s %s\n" "Failed command:" "$cmd"
+  printf "  %-18s %s\n" "Exit code:"    "$code"
   printf "  %-18s %s\n" "Log file:"     "${log#$ROOT_DIR/}"
 
   local imports
@@ -105,6 +108,9 @@ emit_summary() {
   fi
 
   echo ""
+  cyan "  Reproduce locally:"
+  printf "    %s\n" "$cmd"
+  echo ""
   cyan "  Fix:"
   printf "    %s\n" "$fix"
   echo ""
@@ -120,7 +126,8 @@ emit_summary() {
 cd "$ROOT_DIR"
 
 # ── [1/2] Generator drift check ────────────────────────────────────────────────
-node scripts/generate-datefns-smoke-test.mjs --dry-run >"$GEN_LOG" 2>&1
+GEN_CMD="node scripts/generate-datefns-smoke-test.mjs --dry-run"
+$GEN_CMD >"$GEN_LOG" 2>&1
 GEN_EXIT=$?
 if [ "$GEN_EXIT" -ne 0 ]; then
   emit_summary \
@@ -128,12 +135,15 @@ if [ "$GEN_EXIT" -ne 0 ]; then
     "Generator drift check (generate-datefns-smoke-test.mjs --dry-run)" \
     "GENERATOR_DRIFT — smoke test or manifest is out of sync with src/ imports" \
     "$GEN_LOG" \
-    "node scripts/generate-datefns-smoke-test.mjs && git add src/test/dateFns.smoke.test.ts public/datefns-usage.json && git commit --amend --no-edit"
+    "node scripts/generate-datefns-smoke-test.mjs && git add src/test/dateFns.smoke.test.ts public/datefns-usage.json && git commit --amend --no-edit" \
+    "$GEN_CMD" \
+    "$GEN_EXIT"
   exit 1
 fi
 
 # ── [2/2] Smoke tsc check ──────────────────────────────────────────────────────
-bunx tsc --noEmit -p tsconfig.smoke.json >"$TSC_LOG" 2>&1
+TSC_CMD="bunx tsc --noEmit -p tsconfig.smoke.json"
+$TSC_CMD >"$TSC_LOG" 2>&1
 TSC_EXIT=$?
 if [ "$TSC_EXIT" -ne 0 ]; then
   # Distinguish "missing export" (TS2305) from "missing module" (TS2307); both
@@ -144,7 +154,9 @@ if [ "$TSC_EXIT" -ne 0 ]; then
     "Smoke tsc check (tsc --noEmit -p tsconfig.smoke.json)" \
     "TSC_MISSING_EXPORT — a date-fns subpath import is missing or wrong" \
     "$TSC_LOG" \
-    "Inspect the offending import(s) above. Either fix the import path in src/ or run \`rm -rf node_modules && bun install --frozen-lockfile\` if the file is missing on disk."
+    "Inspect the offending import(s) above. Either fix the import path in src/ or run \`rm -rf node_modules && bun install --frozen-lockfile\` if the file is missing on disk." \
+    "$TSC_CMD" \
+    "$TSC_EXIT"
   exit 1
 fi
 
