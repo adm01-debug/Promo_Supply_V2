@@ -214,7 +214,8 @@ const DependencyHealth = () => {
     );
   }
 
-  const { dateFns, lockfileDrift, generatedAt, packages } = data;
+  const { snapshot, source, fetchedAt, edgeError } = data;
+  const { dateFns, lockfileDrift, generatedAt, packages } = snapshot;
   const hasPackages = Array.isArray(packages) && packages.length > 0;
   const aggregateDrift = hasPackages
     ? packages!.some((p) => p.driftDetected)
