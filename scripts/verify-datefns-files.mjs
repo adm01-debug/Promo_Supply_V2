@@ -753,6 +753,67 @@ if ((WRITE_HEALTH || DRY_RUN) && missing.length > 0) {
 }
 
 
+// ── Pinned date-fns version (best-effort, used by both summary + failure block)
+let installedVersion = null;
+try {
+  const pkgJson = JSON.parse(readFileSync(join(PKG_DIR, "package.json"), "utf8"));
+  installedVersion = typeof pkgJson.version === "string" ? pkgJson.version : null;
+} catch {
+  /* ignore — fall back to "unknown" in summary; reinstall hint omits pin */
+}
+
+// ── --summary-md: concise Markdown drift table for $GITHUB_STEP_SUMMARY ──────
+// Always emitted when --summary-md / DATEFNS_SMOKE_SUMMARY_MD is set, regardless
+// of pass/fail. The "no drift" form is intentionally short (one ✓ line) so a
+// green CI run doesn't bloat the job summary. Never affects exit code — the
+// existing failure-mode-C path below still exits 1 when missing.length > 0.
+function writeSummaryMd(path) {
+  const lines = [];
+  const pinned = installedVersion ?? "unknown";
+  lines.push(`### date-fns subpath drift`);
+  lines.push("");
+  lines.push(`**Pinned date-fns version:** \`${pinned}\``);
+  lines.push(
+    `**Imported subpaths:** ${entries.length}` +
+      (FILTER_ACTIVE ? ` _(filtered from ${subpaths.size})_` : ""),
+  );
+  lines.push(`**Missing on disk:** ${missing.length}`);
+  lines.push("");
+  if (missing.length === 0) {
+    lines.push(`✓ No drift — every imported subpath resolves under \`${PKG_REL}\`.`);
+  } else {
+    const fns = missing.filter((m) => !m.subpath.startsWith("locale/"));
+    const locales = missing.filter((m) => m.subpath.startsWith("locale/"));
+    lines.push(
+      `❌ ${missing.length} subpath${missing.length === 1 ? "" : "s"} imported from \`src/\` ` +
+        `but not present in \`${PKG_REL}\` on the pinned version.`,
+    );
+    lines.push("");
+    lines.push(`| Kind | Subpath | Imported in (files) | Pinned date-fns |`);
+    lines.push(`| --- | --- | ---: | --- |`);
+    const renderRow = (kindLabel, subpath) => {
+      const fileCount = (subpathFiles.get(subpath) ?? new Set()).size;
+      lines.push(`| ${kindLabel} | \`date-fns/${subpath}\` | ${fileCount} | \`${pinned}\` |`);
+    };
+    for (const { subpath } of fns) renderRow("function", subpath);
+    for (const { subpath } of locales) renderRow("locale", subpath);
+    lines.push("");
+    lines.push(
+      `_Fix: rerun \`bun install --frozen-lockfile\`, or correct the typo. ` +
+        `See the smoke job log for the full repair recipe._`,
+    );
+  }
+  try {
+    mkdirSync(dirname(path), { recursive: true });
+    writeFileSync(path, lines.join("\n") + "\n", "utf8");
+  } catch (err) {
+    // Never fail the verifier just because the summary file couldn't be
+    // written — the gate's job is to detect drift, not produce reports.
+    console.error(gray(`(verify-datefns-files: could not write summary to ${path}: ${err?.message ?? err})`));
+  }
+}
+if (SUMMARY_MD_PATH) writeSummaryMd(SUMMARY_MD_PATH);
+
 // ── Failure mode C: one or more subpaths missing on disk ─────────────────────
 if (missing.length > 0) {
   // Partition missing entries so the failure block makes the root cause obvious:
@@ -761,17 +822,8 @@ if (missing.length > 0) {
   const missingLocales = missing.filter((m) => m.subpath.startsWith("locale/"));
   const missingFns = missing.filter((m) => !m.subpath.startsWith("locale/"));
 
-  // Read the installed date-fns version (best-effort) so the suggested
-  // reinstall command can pin to the exact version we expect on disk.
-  let installedVersion = null;
-  try {
-    const pkgJson = JSON.parse(
-      readFileSync(join(PKG_DIR, "package.json"), "utf8"),
-    );
-    installedVersion = typeof pkgJson.version === "string" ? pkgJson.version : null;
-  } catch {
-    /* ignore — fall back to unpinned reinstall hint */
-  }
+  // (installedVersion is read above so the summary-md block + failure block
+  // share the same value.)
 
   const lines = [];
   lines.push(
