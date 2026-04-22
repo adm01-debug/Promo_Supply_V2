@@ -204,6 +204,7 @@ jobs:
             ci-artifacts/eslint-report.json
             ci-artifacts/eslint-stdout.log
             ci-artifacts/eslint-changed-files.txt
+            ci-artifacts/eslint-summary.txt
           if-no-files-found: ignore
           retention-days: 30
 
