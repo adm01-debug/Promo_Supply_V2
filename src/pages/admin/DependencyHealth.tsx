@@ -156,13 +156,13 @@ const DependencyHealth = () => {
 
   const buildRefresh = (dispatchCi: boolean) =>
     useMutation({
-      mutationFn: async (): Promise<SnapshotResult & { ciDispatch?: string }> => {
+      mutationFn: async (): Promise<SnapshotResult & { ciDispatch?: CiDispatchInfo | string }> => {
         const { data, error } = await supabase.functions.invoke(
           `dependency-health${dispatchCi ? "?dispatchCi=true" : ""}`,
           { method: "POST" },
         );
         if (error) throw error;
-        const payload = data as DependencyHealthSnapshot & { ciDispatch?: string };
+        const payload = data as DependencyHealthSnapshot & { ciDispatch?: CiDispatchInfo | string };
         return {
           snapshot: payload,
           source: "edge",
@@ -173,10 +173,14 @@ const DependencyHealth = () => {
       onSuccess: (fresh) => {
         queryClient.setQueryData(["dependency-health"], fresh);
         queryClient.invalidateQueries({ queryKey: ["dependency-health-history"] });
+        const statusText =
+          typeof fresh.ciDispatch === "string"
+            ? fresh.ciDispatch
+            : fresh.ciDispatch?.status ?? "n/a";
         toast({
           title: dispatchCi ? "Snapshot atualizado + CI" : "Snapshot atualizado",
           description: dispatchCi
-            ? `Gerado em ${fresh.snapshot.generatedAt} · CI: ${fresh.ciDispatch ?? "n/a"}`
+            ? `Gerado em ${fresh.snapshot.generatedAt} · CI: ${statusText}`
             : `Gerado em ${fresh.snapshot.generatedAt}`,
         });
       },
