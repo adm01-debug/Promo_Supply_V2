@@ -85,6 +85,9 @@ print_summary() {
   if [ -n "$DATEFNS_INSTALLED" ] && [ -n "$DATEFNS_LOCKED" ]; then
     if [ "$DATEFNS_VERSION_OK" -eq 1 ]; then
       datefns_line="$DATEFNS_INSTALLED (matches lockfile ✓)"
+      if [ "${DATEFNS_RETRY_TRIGGERED:-0}" -eq 1 ]; then
+        datefns_line="$datefns_line  [recovered after 1 retry]"
+      fi
     else
       datefns_line="installed=$DATEFNS_INSTALLED locked=$DATEFNS_LOCKED ✗"
     fi
@@ -250,24 +253,72 @@ evict_datefns_cache
 echo "▶ [3/10] Installing from frozen lockfile..."
 bun install --frozen-lockfile
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Step 4 — date-fns version triple-check (installed vs locked vs pinned).
+#
+# Optional env flag DATEFNS_VERIFY_RETRY=1:
+#   On the FIRST mismatch we'll evict any cached date-fns tarballs and run
+#   `bun install --frozen-lockfile` ONCE more, then re-check. This guards
+#   against transient CI flakes (corrupt cache hit, partial install, NFS
+#   write lag) without masking real drift — a second mismatch still fails.
+#   Default OFF for backwards compatibility; opt in via `DATEFNS_VERIFY_RETRY=1`.
+# ─────────────────────────────────────────────────────────────────────────────
+DATEFNS_RETRY_ENABLED="${DATEFNS_VERIFY_RETRY:-0}"
+DATEFNS_RETRY_TRIGGERED=0
+
+read_pinned_version() {
+  node -e '
+    const p = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
+    process.stdout.write(p.dependencies?.["date-fns"] || p.devDependencies?.["date-fns"] || "");
+  ' "$SMOKE_PACKAGE_JSON"
+}
+
+# Sets DATEFNS_INSTALLED, DATEFNS_LOCKED, DATEFNS_PINNED + MISMATCH_REASON.
+# Returns 0 when all three agree, 1 otherwise. Never exits — the caller
+# decides whether to retry or fail.
+check_datefns_versions() {
+  DATEFNS_INSTALLED="$(node -p "require('./node_modules/date-fns/package.json').version" 2>/dev/null || echo "")"
+  DATEFNS_LOCKED="$(resolve_locked_datefns)"
+  DATEFNS_PINNED="$(read_pinned_version)"
+  MISMATCH_REASON=""
+  if [ -z "$DATEFNS_INSTALLED" ]; then
+    MISMATCH_REASON="installed version unreadable (node_modules/date-fns missing or corrupt)"
+    return 1
+  fi
+  if [ -z "$DATEFNS_PINNED" ]; then
+    MISMATCH_REASON="date-fns not declared in $SMOKE_PACKAGE_JSON"
+    return 1
+  fi
+  if [ -n "$DATEFNS_LOCKED" ] && [ "$DATEFNS_INSTALLED" != "$DATEFNS_LOCKED" ]; then
+    MISMATCH_REASON="installed=$DATEFNS_INSTALLED ≠ locked=$DATEFNS_LOCKED"
+    return 1
+  fi
+  if [ "$DATEFNS_INSTALLED" != "$DATEFNS_PINNED" ]; then
+    MISMATCH_REASON="installed=$DATEFNS_INSTALLED ≠ pinned=$DATEFNS_PINNED ($SMOKE_PACKAGE_JSON)"
+    return 1
+  fi
+  return 0
+}
+
 echo "▶ [4/10] Confirming installed date-fns version matches lockfile and pin source ($SMOKE_PACKAGE_JSON)..."
-DATEFNS_INSTALLED="$(node -p "require('./node_modules/date-fns/package.json').version")"
-DATEFNS_LOCKED="$(resolve_locked_datefns)"
-DATEFNS_PINNED="$(node -e '
-  const p = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
-  process.stdout.write(p.dependencies?.["date-fns"] || p.devDependencies?.["date-fns"] || "");
-' "$SMOKE_PACKAGE_JSON")"
-if [ -z "$DATEFNS_PINNED" ]; then
-  echo "✗ date-fns not declared in $SMOKE_PACKAGE_JSON (dependencies/devDependencies)." >&2
-  exit 1
-fi
-if [ -n "$DATEFNS_LOCKED" ] && [ "$DATEFNS_INSTALLED" != "$DATEFNS_LOCKED" ]; then
-  echo "✗ date-fns drift: installed=$DATEFNS_INSTALLED, locked=$DATEFNS_LOCKED" >&2
-  exit 1
-fi
-if [ "$DATEFNS_INSTALLED" != "$DATEFNS_PINNED" ]; then
-  echo "✗ date-fns drift vs pin source: installed=$DATEFNS_INSTALLED, pinned=$DATEFNS_PINNED ($SMOKE_PACKAGE_JSON)" >&2
-  exit 1
+if ! check_datefns_versions; then
+  if [ "$DATEFNS_RETRY_ENABLED" = "1" ]; then
+    DATEFNS_RETRY_TRIGGERED=1
+    echo "⚠ date-fns mismatch detected: $MISMATCH_REASON" >&2
+    echo "  DATEFNS_VERIFY_RETRY=1 → evicting cache and reinstalling once before re-checking..." >&2
+    evict_datefns_cache
+    rm -rf node_modules/date-fns
+    bun install --frozen-lockfile
+    if ! check_datefns_versions; then
+      echo "✗ date-fns mismatch persists after retry: $MISMATCH_REASON" >&2
+      exit 1
+    fi
+    echo "✓ date-fns mismatch resolved after one retry (was likely transient cache/install flake)."
+  else
+    echo "✗ date-fns mismatch: $MISMATCH_REASON" >&2
+    echo "  Hint: set DATEFNS_VERIFY_RETRY=1 to auto-retry once on transient install/cache flakes." >&2
+    exit 1
+  fi
 fi
 DATEFNS_VERSION_OK=1
 echo "✓ date-fns $DATEFNS_INSTALLED matches lockfile + pin source ($SMOKE_PACKAGE_JSON)."
