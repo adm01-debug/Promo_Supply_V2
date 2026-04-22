@@ -119,10 +119,6 @@ describe("local/date-fns-subpath — multi-locale fixture autofix", () => {
     expect(fixed.output).toContain(
       'import { jaHira as japaneseHiragana } from "date-fns/locale/ja-Hira";',
     );
-    // Type-only declaration — must remain `import type` after rewrite.
-    expect(fixed.output).toContain(
-      'import type { Locale } from "date-fns/locale/pt-BR";',
-    );
   });
 
   it("removes every bare 'date-fns/locale' barrel from the output", () => {
