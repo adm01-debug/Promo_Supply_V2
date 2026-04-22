@@ -34,14 +34,25 @@ import { dirname, join, resolve } from "node:path";
 //                       summaries are still emitted (cuts CI log noise).
 // When $GITHUB_STEP_SUMMARY is set we ALSO append the markdown summary there
 // automatically — that's what GitHub Actions surfaces in the run UI.
+// Split argv on the first literal `--`: everything before is parsed as our
+// own flags, everything after is forwarded VERBATIM to both `bun run
+// test:date-fns` and `npm run test:date-fns`. That lets callers do things
+// like `bun run test:date-fns:parity -- -t format --reporter=verbose` to
+// scope parity to a subset of tests. Forwarding to BOTH runners is the
+// whole point — if we passed flags to only one, the comparison would be
+// meaningless.
 const ARGS = process.argv.slice(2);
+const dashDashIdx = ARGS.indexOf("--");
+const OWN_ARGS = dashDashIdx === -1 ? ARGS : ARGS.slice(0, dashDashIdx);
+const FORWARDED_ARGS = dashDashIdx === -1 ? [] : ARGS.slice(dashDashIdx + 1);
 const flagValue = (name) => {
-  const i = ARGS.indexOf(name);
-  return i !== -1 && ARGS[i + 1] ? ARGS[i + 1] : null;
+  const i = OWN_ARGS.indexOf(name);
+  return i !== -1 && OWN_ARGS[i + 1] ? OWN_ARGS[i + 1] : null;
 };
 const JSON_OUT = flagValue("--json-out");
 const MD_OUT = flagValue("--md-out");
-const QUIET = ARGS.includes("--quiet");
+const QUIET = OWN_ARGS.includes("--quiet");
+
 
 
 const isTTY = Boolean(process.stdout.isTTY);
@@ -61,7 +72,18 @@ function hasBin(name) {
 
 function runRunner(runner, jsonPath) {
   // Both `bun run` and `npm run` forward args after `--` to the script.
-  const args = ["run", "test:date-fns", "--", "--reporter=json", `--outputFile=${jsonPath}`];
+  // FORWARDED_ARGS go LAST so they can override our --reporter/--outputFile
+  // if the caller really wants to (rare, but supported — vitest takes the
+  // last value for repeated flags).
+  const args = [
+    "run",
+    "test:date-fns",
+    "--",
+    "--reporter=json",
+    `--outputFile=${jsonPath}`,
+    ...FORWARDED_ARGS,
+  ];
+
   const start = Date.now();
   const result = spawnSync(runner, args, {
     stdio: ["ignore", "inherit", "inherit"],
@@ -141,6 +163,9 @@ function buildSummary({ runs, diffs, status, exitCode, reason }) {
     status, // "pass" | "mismatch" | "single-runner" | "error"
     exitCode,
     reason: reason ?? null,
+    // Forwarded args are part of the run's identity — without them a reader
+    // can't tell whether `total: 4` means "all tests" or "just -t format".
+    forwardedArgs: FORWARDED_ARGS,
     runners: runs.map(runShape),
     diffCount: diffs.length,
     diffs, // [] when status === "pass"
@@ -155,6 +180,9 @@ function renderMarkdown(s) {
   lines.push("");
   lines.push(`**Status:** \`${s.status}\` &nbsp; **Exit:** \`${s.exitCode}\` &nbsp; **Diffs:** \`${s.diffCount}\``);
   if (s.reason) lines.push(`**Reason:** ${s.reason}`);
+  if (s.forwardedArgs && s.forwardedArgs.length > 0) {
+    lines.push(`**Forwarded args:** \`${s.forwardedArgs.join(" ")}\``);
+  }
   lines.push("");
   if (s.runners.length > 0) {
     lines.push("| Runner | Exit | Total | Passed | Failed | Pending | Duration |");
@@ -219,6 +247,9 @@ function main() {
     process.exit(2);
   }
 
+  if (FORWARDED_ARGS.length > 0) {
+    console.log(cyan(`▶ Forwarding to vitest in BOTH runners: ${bold(FORWARDED_ARGS.join(" "))}`));
+  }
   const tmp = mkdtempSync(join(tmpdir(), "datefns-parity-"));
   const runs = [];
 
