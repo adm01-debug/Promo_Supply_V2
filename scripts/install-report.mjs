@@ -59,26 +59,41 @@ const aligned =
 
 const SPEC_NORM = SPEC.replace(/^[\^~]/, "");
 
+const payload = {
+  generatedAt: new Date().toISOString(),
+  dateFns: {
+    spec: SPEC,
+    specNormalized: SPEC_NORM,
+    locked: LOCKED,
+    installed: INSTALLED,
+    pkgSha256: dfSha,
+    exactPinned: /^[0-9]/.test(SPEC),
+  },
+  bunLock: { sha256: lockSha, sizeBytes: lockSize },
+  alignment: {
+    aligned,
+    specEqLocked: SPEC_NORM === LOCKED,
+    lockedEqInstalled: LOCKED === INSTALLED,
+    specEqInstalled: SPEC_NORM === INSTALLED,
+  },
+  strict: STRICT,
+};
+
+// --json-file always writes the payload, regardless of stdout mode. Useful
+// for `bun run verify:install-report --json-file=ci-artifacts/...json` where
+// the human report still goes to the build log.
+if (JSON_FILE) {
+  try {
+    mkdirSync(dirname(JSON_FILE), { recursive: true });
+    writeFileSync(JSON_FILE, JSON.stringify(payload, null, 2) + "\n");
+    if (!JSON_MODE) console.error(`[install-report] wrote JSON → ${JSON_FILE}`);
+  } catch (e) {
+    console.error(`[install-report] failed to write --json-file=${JSON_FILE}: ${e instanceof Error ? e.message : e}`);
+    process.exit(2);
+  }
+}
+
 if (JSON_MODE) {
-  const payload = {
-    generatedAt: new Date().toISOString(),
-    dateFns: {
-      spec: SPEC,
-      specNormalized: SPEC_NORM,
-      locked: LOCKED,
-      installed: INSTALLED,
-      pkgSha256: dfSha,
-      exactPinned: /^[0-9]/.test(SPEC),
-    },
-    bunLock: { sha256: lockSha, sizeBytes: lockSize },
-    alignment: {
-      aligned,
-      specEqLocked: SPEC_NORM === LOCKED,
-      lockedEqInstalled: LOCKED === INSTALLED,
-      specEqInstalled: SPEC_NORM === INSTALLED,
-    },
-    strict: STRICT,
-  };
   process.stdout.write(JSON.stringify(payload, null, 2) + "\n");
   if (!aligned && STRICT) process.exit(1);
 } else {
