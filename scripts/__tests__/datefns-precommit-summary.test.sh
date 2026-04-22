@@ -104,7 +104,7 @@ assert_failure_mode_real() {
     FAILED_NAMES+=("$name")
     return
   fi
-  if printf '%s' "$value" | grep -qiE '(^|[^A-Za-z])(todo|fixme|placeholder|tbd|n\/a)([^A-Za-z]|$)'; then
+  if printf '%s' "$value" | grep -qiE '(^|[^A-Za-z])(todo|fixme|placeholder|tbd|n/a)([^A-Za-z]|$)'; then
     red "  ✗ $name — 'Failure mode:' contains placeholder token: $value"
     FAIL=$((FAIL + 1))
     FAILED_NAMES+=("$name")
