@@ -22,6 +22,12 @@ const IMPORT_RE =
 const GENERATOR_HINT =
   "Run `node scripts/generate-datefns-smoke-test.mjs` and commit the result.";
 
+// --verbose / -v: print every locale subpath discovered in src/ (with file +
+// line), every type-only locale import we skipped (with the reason), and the
+// per-locale match decision against the manifest. Off by default.
+const VERBOSE = process.argv.slice(2).some((a) => a === "--verbose" || a === "-v");
+const vlog = (msg) => { if (VERBOSE) console.log(`  · ${msg}`); };
+
 function walk(dir, acc = []) {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
