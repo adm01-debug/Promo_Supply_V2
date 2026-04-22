@@ -102,10 +102,23 @@ const InstallReportPanel = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <PackageCheck className="h-5 w-5 text-primary" />
-            Relatório de instalação
-          </CardTitle>
+          <div className="flex items-start justify-between gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <PackageCheck className="h-5 w-5 text-primary" />
+              Relatório de instalação
+            </CardTitle>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isFetching}
+              aria-label="Atualizar relatório de instalação"
+            >
+              <RefreshCw className={`h-4 w-4 mr-1.5 ${isFetching ? "animate-spin" : ""}`} />
+              Atualizar
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <Alert variant="destructive">
