@@ -132,3 +132,52 @@ export function detectUnsupportedDateFnsUsage(src, file = "<inline>") {
 
   return findings;
 }
+
+/**
+ * Detect **malformed** static `date-fns/<subpath>` imports — i.e. imports
+ * where the brace body contains zero usable specifiers after comments are
+ * stripped. Examples that match:
+ *
+ *   import { } from "date-fns/format";              // empty braces
+ *   import { /* TODO */ } from "date-fns/format";   // only a comment
+ *   import { // pending\n } from "date-fns/format"; // only a // comment
+ *
+ * Type-only imports (`import type { … }`) are intentionally NOT flagged —
+ * they're a deliberate skip, not a malformation.
+ *
+ * Returns `{ subpath, line, snippet, file, isLocale }[]`. The `isLocale`
+ * flag lets callers (e.g. the locale verifier) filter to locale-only
+ * malformations without re-parsing the subpath.
+ *
+ * @param {string} src     File contents.
+ * @param {string} [file]  Optional file path for richer warnings.
+ */
+export function detectMalformedDateFnsImports(src, file = "<inline>") {
+  const findings = [];
+  const lines = src.split("\n");
+  const lineFor = (idx) => {
+    let pos = 0;
+    for (let i = 0; i < lines.length; i++) {
+      pos += lines[i].length + 1;
+      if (idx < pos) return i + 1;
+    }
+    return lines.length;
+  };
+
+  STATIC_IMPORT_RE.lastIndex = 0;
+  let m;
+  while ((m = STATIC_IMPORT_RE.exec(src)) !== null) {
+    const [, isType, namesRaw, subpath] = m;
+    if (isType) continue; // intentional skip, not malformed
+    if (parseSpecifiers(namesRaw).length === 0) {
+      findings.push({
+        subpath,
+        isLocale: subpath.startsWith("locale/"),
+        line: lineFor(m.index),
+        snippet: m[0],
+        file,
+      });
+    }
+  }
+  return findings;
+}
