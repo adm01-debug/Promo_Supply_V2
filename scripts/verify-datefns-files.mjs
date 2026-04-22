@@ -617,6 +617,11 @@ function writeHealthSnapshot(entriesArr) {
   );
 }
 if (WRITE_HEALTH) writeHealthSnapshot(entries);
+else if (DRY_RUN) {
+  console.log(
+    gray("ℹ --dry-run is a no-op without --write-health (nothing to preview)."),
+  );
+}
 
 // ── Failure mode C: one or more subpaths missing on disk ─────────────────────
 if (missing.length > 0) {
