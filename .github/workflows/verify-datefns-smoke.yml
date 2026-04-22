@@ -17,6 +17,7 @@ on:
       - "scripts/generate-datefns-smoke-test.mjs"
       - "scripts/lib/datefns-scan.mjs"
       - "src/test/dateFns.smoke.test.ts"
+      - "public/datefns-usage.json"
       - ".github/workflows/verify-datefns-smoke.yml"
   push:
     branches: [main]
@@ -27,6 +28,7 @@ on:
       - "scripts/generate-datefns-smoke-test.mjs"
       - "scripts/lib/datefns-scan.mjs"
       - "src/test/dateFns.smoke.test.ts"
+      - "public/datefns-usage.json"
       - ".github/workflows/verify-datefns-smoke.yml"
 
 concurrency:
