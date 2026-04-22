@@ -61,6 +61,7 @@ function relTime(iso) {
 
 // --- 1. Scan src/ for locale imports ---
 const sourceLocales = new Set();
+const malformedLocaleFindings = [];
 let scannedFileCount = 0;
 let filesWithLocales = 0;
 for (const file of walk(SRC_DIR)) {
@@ -85,12 +86,40 @@ for (const file of walk(SRC_DIR)) {
     sourceLocales.add(subpath);
     vlog(`detected → date-fns/${subpath}`);
   }
+  // Detect malformed (empty/comment-only) locale imports — these never make
+  // it into sourceLocales because their specifier list is empty after
+  // comment stripping, but the contributor almost certainly wrote them by
+  // mistake. Surface them so they don't silently rot.
+  for (const f of detectMalformedDateFnsImports(src, rel)) {
+    if (!f.isLocale) continue;
+    malformedLocaleFindings.push(f);
+    if (VERBOSE) {
+      if (!printedHeader) { console.log(`◆ ${rel}`); printedHeader = true; }
+      vlog(`malformed → date-fns/${f.subpath} @ line ${f.line} (reason: zero usable specifiers after comment stripping)`);
+    }
+  }
 }
 
 if (VERBOSE) {
   console.log(
     `\n· Scanned ${scannedFileCount} file(s); ${filesWithLocales} contain date-fns locale imports.\n`,
   );
+}
+
+if (malformedLocaleFindings.length > 0) {
+  const log = STRICT ? console.error : console.warn;
+  log(
+    `${STRICT ? "✗" : "⚠"} Found ${malformedLocaleFindings.length} malformed date-fns locale import(s) (zero usable specifiers after comment stripping):`,
+  );
+  for (const f of malformedLocaleFindings) {
+    log(`   ${f.file}:${f.line} → date-fns/${f.subpath}`);
+  }
+  if (STRICT) {
+    console.error(
+      "  Hint: remove the empty import or add at least one named locale specifier. Re-run without --strict to downgrade to a warning.",
+    );
+    process.exit(1);
+  }
 }
 
 // --- 2. Load manifest ---
