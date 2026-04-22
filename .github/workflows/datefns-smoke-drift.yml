@@ -44,6 +44,20 @@ jobs:
           mkdir -p ci-logs
           set -o pipefail
           bun run verify:datefns-smoke-freshness 2>&1 | tee ci-logs/verify-smoke-freshness.log
+      - name: Verify generator-input hash (subpaths + date-fns version + generator)
+        env:
+          TZ: UTC
+        run: |
+          mkdir -p ci-logs
+          set -o pipefail
+          # Compares hash of (sorted src date-fns subpaths + installed date-fns
+          # version + pinned spec + generator script fingerprint) against the
+          # value stored in public/datefns-generator-input.json. Exits 2 if
+          # regeneration is required, with a per-input diff in the log.
+          bun run verify:datefns-generator-input 2>&1 | tee ci-logs/verify-generator-input.log
+          # Persist the JSON report as an artifact for inspection.
+          node scripts/verify-datefns-generator-input.mjs --json --quiet \
+            > ci-logs/verify-generator-input.json || true
       - name: Upload smoke logs
         if: always()
         uses: actions/upload-artifact@v4

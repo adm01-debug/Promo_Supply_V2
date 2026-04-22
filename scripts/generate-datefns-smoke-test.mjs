@@ -359,3 +359,25 @@ console.log(
 );
 console.log(`  → ${relative(ROOT, OUT_FILE)}`);
 console.log(`  → ${relative(ROOT, MANIFEST_FILE)}`);
+
+// Refresh the stored generator-input hash so the
+// `verify-datefns-generator-input.mjs` CI guard passes on the next run.
+// Best-effort: a failure here (e.g. date-fns not installed in a sandbox)
+// must not fail the regen itself.
+try {
+  const { spawnSync } = await import("node:child_process");
+  const refresh = spawnSync(
+    process.execPath,
+    [join(ROOT, "scripts", "verify-datefns-generator-input.mjs"), "--write", "--quiet"],
+    { stdio: "inherit" },
+  );
+  if (refresh.status === 0) {
+    console.log("  → public/datefns-generator-input.json (input hash refreshed)");
+  } else {
+    console.warn(
+      `  ⚠ Could not refresh public/datefns-generator-input.json (exit ${refresh.status}). Run \`node scripts/verify-datefns-generator-input.mjs --write\` manually.`,
+    );
+  }
+} catch (err) {
+  console.warn(`  ⚠ Skipped input-hash refresh: ${err.message}`);
+}
