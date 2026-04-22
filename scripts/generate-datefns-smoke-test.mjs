@@ -159,6 +159,8 @@ if (malformedFindings.length > 0) {
     process.exit(1);
   }
 }
+
+if (subpaths.size === 0) {
   console.error(
     "✗ generate-datefns-smoke-test: no date-fns subpath imports found in src/. Aborting.",
   );
