@@ -65,6 +65,14 @@ fi
 echo "▶ [9/15] Type-checking source with tsc --noEmit..."
 bunx tsc --noEmit -p tsconfig.app.json
 
+echo "▶ [9b/15] Verifying TS2307 diagnostics include bad specifier + source frame..."
+# Regression guard for the "Sonda TS2307" docs in the in-app Dependency
+# Health panel: if a future tsc/tsconfig change ever stripped the module
+# specifier or the file:line:col frame from TS2307 output, our docs would
+# silently start lying. Probe writes a throwaway .ts2307-probe/ dir,
+# asserts both pieces are present in tsc's output, then cleans up.
+node scripts/verify-ts2307-clarity.mjs
+
 echo "▶ [10/15] Verifying date-fns locale imports match manifest..."
 node scripts/verify-datefns-locales.mjs
 
