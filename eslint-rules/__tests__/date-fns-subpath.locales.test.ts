@@ -91,7 +91,7 @@ describe("local/date-fns-subpath — per-locale autofix coverage", () => {
       const linter = new Linter();
       const src = `import { ${name} } from "date-fns/locale";\n`;
       const result = linter.verifyAndFix(src, CONFIG as never, {
-        filename: "test.ts",
+        filename: "test.js",
       });
 
       expect(result.fixed).toBe(true);
@@ -114,7 +114,7 @@ describe("local/date-fns-subpath — per-locale autofix coverage", () => {
     const linter = new Linter();
     const src = `import { ptBR as defaultLocale } from "date-fns/locale";\n`;
     const result = linter.verifyAndFix(src, CONFIG as never, {
-      filename: "test.ts",
+      filename: "test.js",
     });
     expect(result.fixed).toBe(true);
     expect(result.output.trim()).toBe(
