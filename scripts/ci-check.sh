@@ -33,6 +33,16 @@ echo "✓ date-fns $INSTALLED matches lockfile."
 echo "▶ [5/14] Printing install verification report..."
 node scripts/install-report.mjs 2>&1 | tee "$LOG_DIR/install-report.txt"
 
+# Structured spec↔locked↔installed diff for date-fns. Always exits 0 — this
+# is a report, not a gate. Output is tee'd to the smoke log AND written to
+# its own file so it appears in the uploaded `ci-logs/` artifact verbatim,
+# making post-mortem debugging a single artifact-download away.
+echo "▶ [5b/14] Emitting structured mismatch report (date-fns)..."
+node scripts/emit-mismatch-report.mjs \
+  --pkg date-fns \
+  --out "$LOG_DIR/datefns-mismatch-report.txt" \
+  2>&1 | tee -a "$LOG_DIR/install-report.txt" || true
+
 echo "▶ [6/15] ESLint gate (full project, --max-warnings=0): blocks date-fns barrel imports + all warnings..."
 bunx eslint . --max-warnings=0 2>&1 | tee "$LOG_DIR/eslint-full.log"
 ESLINT_FULL_EXIT=${PIPESTATUS[0]}
