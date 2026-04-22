@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 const DateFnsUsagePanel = lazy(() => import("@/components/admin/DateFnsUsagePanel"));
 const InstallReportPanel = lazy(() => import("@/components/admin/InstallReportPanel"));
 const InstallReportHelp = lazy(() => import("@/components/admin/InstallReportHelp"));
+const RefreshNowHelp = lazy(() => import("@/components/admin/RefreshNowHelp"));
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -284,6 +285,12 @@ const DependencyHealth = () => {
           </div>
         )}
       </div>
+
+      {isAdmin && (
+        <Suspense fallback={<Skeleton className="h-48 w-full" />}>
+          <RefreshNowHelp />
+        </Suspense>
+      )}
 
       {hasPackages ? (
         <Card>
