@@ -37,12 +37,30 @@ RULE="────────────────────────�
 JSON_REPORT="$(mktemp -t lint-date-fns.XXXXXX.json)"
 trap 'rm -f "$JSON_REPORT"' EXIT
 
+# Dedicated ESLint cache for the date-fns suite. Kept separate from the
+# general lint cache (`.eslintcache`) because the two runs use different
+# config files and ESLint keys cache entries by config hash — sharing a
+# cache file would just cause constant invalidation. The CI workflow
+# (lint.yml) caches `node_modules/.cache/eslint/` so this file persists
+# across runs.
+ESLINT_CACHE_DIR="node_modules/.cache/eslint"
+mkdir -p "$ESLINT_CACHE_DIR"
+ESLINT_CACHE_FILE="$ESLINT_CACHE_DIR/.eslintcache-date-fns"
+
 # Run ESLint twice in a single invocation by leveraging --format and
 # --output-file: the json report goes to disk, while the stylish output
 # streams to the terminal. We use a second invocation only if the user
 # passed extra flags like --fix; for the default zero-warnings gate one
 # pass is enough.
-ESLINT_ARGS=("." "--config" "eslint.date-fns.config.js" "--max-warnings=0" "$@")
+ESLINT_ARGS=(
+  "."
+  "--config" "eslint.date-fns.config.js"
+  "--max-warnings=0"
+  "--cache"
+  "--cache-location" "$ESLINT_CACHE_FILE"
+  "--cache-strategy" "content"
+  "$@"
+)
 
 # Stream stylish output to the terminal AND capture json side-by-side.
 # Two-pass keeps it simple and avoids tee+formatter gymnastics — both
