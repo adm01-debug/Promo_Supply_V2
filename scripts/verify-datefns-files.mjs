@@ -151,14 +151,18 @@ function printBlock(title, body, { withRule = true } = {}) {
   if (withRule) console.error(red(RULE));
 }
 
-function walk(dir, acc = []) {
+function walk(dir, scanRoot, acc = []) {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
     const st = statSync(full);
     if (st.isDirectory()) {
+      // Legacy quirk: skip src/test (vendored test fixtures), but DON'T
+      // skip the scan root itself when the user pointed us at a test dir.
       if (full === join(SRC_DIR, "test")) continue;
-      if (EXCLUDE_DIRS.has(entry)) continue;
-      walk(full, acc);
+      // Don't apply the basename exclude list to the scan root — otherwise
+      // `--scan-dir test` would no-op because `test` is in EXCLUDE_DIRS.
+      if (full !== scanRoot && EXCLUDE_DIRS.has(entry)) continue;
+      walk(full, scanRoot, acc);
     } else if (FILE_EXT.test(entry) && !EXCLUDE_FILE_RE.test(entry)) {
       acc.push(full);
     }
