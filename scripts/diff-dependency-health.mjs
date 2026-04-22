@@ -411,6 +411,7 @@ function main() {
   diffPackages(previous, next, lines);
   diffLockfileDrift(previous, next, lines);
   diffTreeShaking(previous, next, lines);
+  diffResolutionFlips(previous, next, lines);
 
   console.log("");
   if (lines.length === 0) {
