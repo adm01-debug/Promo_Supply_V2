@@ -101,12 +101,31 @@ function readVitestJson(path) {
   if (!existsSync(path)) return null;
   try {
     const j = JSON.parse(readFileSync(path, "utf8"));
+    // Walk testResults[].assertionResults[] (vitest's JSON reporter shape)
+    // to extract a deterministic list of FAILED test identities. We use
+    // `<file>::<full ancestor path > test name>` as the identity so a
+    // failure that exists in one runner but not the other is unambiguous —
+    // count-only comparisons miss the case where bun fails test A and npm
+    // fails a DIFFERENT test B (same totals, different reality).
+    const failedTests = [];
+    for (const file of Array.isArray(j.testResults) ? j.testResults : []) {
+      const fileName = file.name ?? file.testFilePath ?? "<unknown-file>";
+      for (const a of Array.isArray(file.assertionResults) ? file.assertionResults : []) {
+        if (a.status === "failed") {
+          const ancestors = Array.isArray(a.ancestorTitles) ? a.ancestorTitles : [];
+          const title = a.fullName ?? [...ancestors, a.title].filter(Boolean).join(" > ");
+          failedTests.push(`${fileName}::${title}`);
+        }
+      }
+    }
+    failedTests.sort();
     return {
       total: j.numTotalTests ?? null,
       passed: j.numPassedTests ?? null,
       failed: j.numFailedTests ?? null,
       pending: j.numPendingTests ?? null,
       success: j.success ?? null,
+      failedTests,
     };
   } catch {
     return null;
@@ -126,6 +145,26 @@ function compare(a, b) {
   if (a.json && b.json) {
     for (const k of ["total", "passed", "failed"]) {
       if (a.json[k] !== b.json[k]) diffs.push(`${k}: ${a.json[k]} vs ${b.json[k]}`);
+    }
+    // Set-difference on FAILED test identities. Two runners can post
+    // identical pass/fail counts while failing entirely different tests
+    // (flaky test on one side, real regression on the other). Counts-only
+    // parity would silently pass that — set diff catches it. We always
+    // compute both directions so the failure message names the runner
+    // that's the outlier in each direction.
+    const setA = new Set(a.json.failedTests ?? []);
+    const setB = new Set(b.json.failedTests ?? []);
+    const onlyInA = [...setA].filter((t) => !setB.has(t)).sort();
+    const onlyInB = [...setB].filter((t) => !setA.has(t)).sort();
+    if (onlyInA.length > 0) {
+      diffs.push(
+        `failed only in ${a.runner} (${onlyInA.length}): ${onlyInA.slice(0, 3).join(", ")}${onlyInA.length > 3 ? `, …+${onlyInA.length - 3}` : ""}`,
+      );
+    }
+    if (onlyInB.length > 0) {
+      diffs.push(
+        `failed only in ${b.runner} (${onlyInB.length}): ${onlyInB.slice(0, 3).join(", ")}${onlyInB.length > 3 ? `, …+${onlyInB.length - 3}` : ""}`,
+      );
     }
   } else if (Boolean(a.json) !== Boolean(b.json)) {
     diffs.push(`JSON report present: ${Boolean(a.json)} vs ${Boolean(b.json)}`);
@@ -151,6 +190,8 @@ function runShape(r) {
           failed: r.json.failed,
           pending: r.json.pending ?? null,
           success: r.json.success ?? null,
+          // Sorted, deterministic — diffable across runs.
+          failedTests: r.json.failedTests ?? [],
         }
       : null,
   };
