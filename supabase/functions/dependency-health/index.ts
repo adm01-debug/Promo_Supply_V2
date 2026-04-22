@@ -374,6 +374,94 @@ async function handleHistory(): Promise<Response> {
   return json({ history: rows });
 }
 
+/**
+ * GET ?prSmoke=true — find the most recent CI artifact whose name starts
+ * with `dependency-health-smoke-` (uploaded by the smoke workflow on
+ * pull_request events) and return its metadata. We deliberately DO NOT
+ * download/unzip the artifact body here: the GitHub Artifacts API only
+ * exposes the zip via a redirect that requires `actions:read` and would
+ * blow our edge timeout for repeated calls. Instead we surface enough
+ * metadata for the UI to link out to the run + the artifact download
+ * page, plus the originating PR/commit context so reviewers can jump
+ * straight to the failing change. A future enhancement could stream +
+ * unzip the body server-side, but that needs caching to be useful.
+ */
+async function handlePrSmoke(): Promise<Response> {
+  if (!GITHUB_DISPATCH_TOKEN) {
+    return json({ status: "skipped", reason: "GITHUB_DISPATCH_TOKEN not configured" });
+  }
+  const or = deriveOwnerRepo(GITHUB_REPO_RAW_BASE);
+  if (!or) {
+    return json({ status: "skipped", reason: "owner/repo not derivable from GITHUB_REPO_RAW_BASE" });
+  }
+  // List artifacts (most recent first). The API returns 30 by default which
+  // is plenty given our retention is 14 days. Filter client-side by prefix.
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${or.owner}/${or.repo}/actions/artifacts?per_page=100`,
+      {
+        headers: {
+          Accept: "application/vnd.github+json",
+          Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`,
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+        signal: AbortSignal.timeout(8000),
+      },
+    );
+    if (!res.ok) {
+      return json(
+        { status: "error", reason: `GitHub API ${res.status}`, artifact: null },
+        res.status === 401 || res.status === 403 ? 200 : 502,
+      );
+    }
+    // deno-lint-ignore no-explicit-any
+    const body: any = await res.json();
+    // deno-lint-ignore no-explicit-any
+    const all: any[] = Array.isArray(body?.artifacts) ? body.artifacts : [];
+    // Only PR smoke artifacts; skip expired ones (download_url 410s).
+    const prArtifacts = all
+      .filter((a) => typeof a?.name === "string" && a.name.startsWith("dependency-health-smoke-"))
+      .filter((a) => a?.expired !== true)
+      .sort(
+        (a, b) =>
+          new Date(b?.created_at ?? 0).getTime() - new Date(a?.created_at ?? 0).getTime(),
+      );
+    const latest = prArtifacts[0];
+    if (!latest) {
+      return json({ status: "empty", artifact: null });
+    }
+    const wf = latest.workflow_run ?? {};
+    return json({
+      status: "ok",
+      artifact: {
+        id: latest.id,
+        name: latest.name,
+        sizeBytes: latest.size_in_bytes,
+        createdAt: latest.created_at,
+        expiresAt: latest.expires_at,
+        downloadUrl: latest.archive_download_url,
+        webUrl: `https://github.com/${or.owner}/${or.repo}/actions/runs/${wf.id ?? ""}`,
+        runId: wf.id ?? null,
+        headBranch: wf.head_branch ?? null,
+        headSha: wf.head_sha ?? null,
+        // Heuristic: artifact name suffix is the PR number when the workflow
+        // tags it that way (`dependency-health-smoke-${{ github.event.number }}`).
+        prNumber: (() => {
+          const m = /dependency-health-smoke-(\d+)/.exec(latest.name);
+          return m ? Number(m[1]) : null;
+        })(),
+      },
+      totalScanned: prArtifacts.length,
+    });
+  } catch (e) {
+    return json({
+      status: "error",
+      reason: e instanceof Error ? `${e.name}: ${e.message}` : String(e),
+      artifact: null,
+    });
+  }
+}
+
 async function handleGet(req: Request): Promise<Response> {
   const url = new URL(req.url);
   if (url.searchParams.get("history") === "true") {
