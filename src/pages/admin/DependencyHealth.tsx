@@ -310,6 +310,102 @@ const DependencyHealth = () => {
         </Suspense>
       )}
 
+      {isAdmin && refreshAndCommit.data?.ciDispatch && typeof refreshAndCommit.data.ciDispatch !== "string" && (() => {
+        const ci = refreshAndCommit.data.ciDispatch as CiDispatchInfo;
+        const queued = ci.status === "queued";
+        return (
+          <Card aria-labelledby="ci-dispatch-result-title" className="border-primary/30">
+            <CardHeader>
+              <CardTitle id="ci-dispatch-result-title" className="flex items-center gap-2 text-base">
+                <Rocket className="h-4 w-4 text-primary" aria-hidden="true" />
+                Resultado do dispatch CI
+                <Badge variant={queued ? "secondary" : "destructive"} className="ml-1">
+                  {ci.status}
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                {ci.dispatchedAt
+                  ? `Disparado ${formatDistanceToNow(parseISO(ci.dispatchedAt), { addSuffix: true, locale: ptBR })}`
+                  : "Verifique se o push do bot foi concluído usando os links abaixo."}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <GitBranch className="h-3.5 w-3.5" aria-hidden="true" />
+                    Branch
+                  </div>
+                  <div className="font-mono text-xs">{ci.branch ?? "—"}</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <RefreshCw className="h-3.5 w-3.5" aria-hidden="true" />
+                    Workflow run
+                  </div>
+                  {ci.workflowRunUrl ? (
+                    <a
+                      href={ci.workflowRunUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="inline-flex items-center gap-1 text-primary hover:underline font-mono text-xs break-all"
+                      aria-label="Abrir workflow run no GitHub"
+                    >
+                      #{ci.workflowRunId} · {ci.workflowRunStatus ?? "queued"}
+                      <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                    </a>
+                  ) : (
+                    <div className="text-xs text-muted-foreground">
+                      Aguardando GitHub registrar o run…
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-1 border-t pt-3">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <GitCommit className="h-3.5 w-3.5" aria-hidden="true" />
+                  Último commit em <span className="font-mono">{ci.branch ?? "main"}</span>
+                </div>
+                {ci.latestCommitSha ? (
+                  <div className="space-y-1">
+                    <a
+                      href={ci.latestCommitUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="inline-flex items-center gap-1 text-primary hover:underline font-mono text-xs"
+                      aria-label="Abrir commit no GitHub"
+                    >
+                      {ci.latestCommitSha.slice(0, 12)}
+                      <ExternalLink className="h-3 w-3" aria-hidden="true" />
+                    </a>
+                    <div className="text-xs text-foreground">{ci.latestCommitMessage ?? "—"}</div>
+                    <div className="text-xs text-muted-foreground">
+                      por <span className="font-medium">{ci.latestCommitAuthor ?? "?"}</span>
+                      {ci.latestCommitAt && (
+                        <>
+                          {" · "}
+                          {formatDistanceToNow(parseISO(ci.latestCommitAt), { addSuffix: true, locale: ptBR })}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-muted-foreground">
+                    Não foi possível ler o último commit (token sem permissão ou GitHub indisponível).
+                  </div>
+                )}
+              </div>
+
+              <p className="text-xs text-muted-foreground border-t pt-3">
+                Após o workflow concluir, o bot fará push de <code className="font-mono">public/dependency-health.json</code>{" "}
+                e o SHA acima vai mudar — atualize esta tela para confirmar.
+              </p>
+            </CardContent>
+          </Card>
+        );
+      })()}
+
       {hasPackages ? (
         <Card>
           <CardHeader>
