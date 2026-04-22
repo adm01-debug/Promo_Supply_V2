@@ -379,6 +379,9 @@ async function handleGet(req: Request): Promise<Response> {
   if (url.searchParams.get("history") === "true") {
     return await handleHistory();
   }
+  if (url.searchParams.get("prSmoke") === "true") {
+    return await handlePrSmoke();
+  }
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   const { data } = await admin
     .from("dependency_health")
