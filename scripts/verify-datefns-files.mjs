@@ -437,7 +437,12 @@ if (subpaths.size === 0) {
 // Single pass: probe each subpath's six candidate files, record the first hit
 // (relative to node_modules/date-fns) into entries[], and accumulate missing[]
 // for the failure-mode formatter below.
-const entries = []; // [{ subpath, exists, resolvedFile }]
+// Per-entry shape now carries `fileCount` and a small `files[]` sample so
+// `diff-dependency-health.mjs` can render "this added subpath is imported in
+// 3 files: …" without re-walking the source tree. The sample is capped at
+// SAMPLE_FILES_PER_ENTRY to keep snapshot diffs reviewable.
+const SAMPLE_FILES_PER_ENTRY = 5;
+const entries = []; // [{ subpath, exists, resolvedFile, fileCount, files }]
 const missing = []; // [{ subpath, tried: [relPath, ...] }]
 for (const sp of [...subpaths].sort()) {
   const candidates = [
@@ -449,7 +454,16 @@ for (const sp of [...subpaths].sort()) {
     `${sp}/index.cjs`,
   ];
   const hit = candidates.find((c) => existsSync(join(PKG_DIR, c))) ?? null;
-  entries.push({ subpath: sp, exists: hit !== null, resolvedFile: hit });
+  const filesForSp = [...(subpathFiles.get(sp) ?? [])]
+    .map((f) => relative(ROOT, f))
+    .sort();
+  entries.push({
+    subpath: sp,
+    exists: hit !== null,
+    resolvedFile: hit,
+    fileCount: filesForSp.length,
+    files: filesForSp.slice(0, SAMPLE_FILES_PER_ENTRY),
+  });
   if (!hit) missing.push({ subpath: sp, tried: candidates });
 }
 
