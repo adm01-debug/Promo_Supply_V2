@@ -62,6 +62,11 @@ const subpaths = new Map();
 // either shape would silently lose smoke-test coverage for that subpath.
 const unsupportedFindings = [];
 
+// Track malformed static date-fns imports (empty/comment-only braces) so we
+// can warn — or, with --strict, fail. These never make it into the manifest
+// either way, but contributors should know they wrote dead code.
+const malformedFindings = [];
+
 // Type-only static imports re-detected for verbose trace only (the main
 // scanner correctly skips them, but in --verbose we surface what was skipped
 // and why so contributors can audit the decision).
