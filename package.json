@@ -9,6 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "lint:date-fns": "eslint . --config eslint.date-fns.config.js --max-warnings=0",
+    "lint:all": "bash scripts/lint-all.sh",
     "lint:date-fns:fix": "eslint . --config eslint.date-fns.config.js --fix",
     "fix:date-fns": "bash scripts/fix-date-fns.sh",
     "fix:date-fns:dry": "bash scripts/fix-date-fns.sh --all --dry-run",
