@@ -16,6 +16,19 @@ const WRITE_HEALTH = ARGS.some((a) => a === "--write-health" || a === "--update-
 // snapshot that WOULD be written, without touching disk. Lets reviewers
 // preview drift before committing the JSON in CI.
 const DRY_RUN = ARGS.some((a) => a === "--dry-run");
+// `--summary-md <path>` (also via env DATEFNS_SMOKE_SUMMARY_MD) writes a
+// concise Markdown drift table — pinned date-fns version + missing-subpath
+// table grouped by Functions/Locales — to <path>. Designed for piping into
+// $GITHUB_STEP_SUMMARY in CI so reviewers see drift at a glance instead of
+// scrolling job logs. Emitted on BOTH pass and fail (the empty-table "no
+// drift" case is just as informative). Never affects exit code.
+let SUMMARY_MD_PATH = process.env.DATEFNS_SMOKE_SUMMARY_MD || null;
+for (let i = 0; i < ARGS.length; i++) {
+  if (ARGS[i] === "--summary-md" && ARGS[i + 1]) {
+    SUMMARY_MD_PATH = ARGS[i + 1];
+    i++;
+  }
+}
 const SNAPSHOT_PATH = join(ROOT, "public", "dependency-health.json");
 const SRC_DIR = join(ROOT, "src");
 const PKG_DIR = join(ROOT, "node_modules", "date-fns");
