@@ -7,25 +7,25 @@
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { detectMalformedDateFnsImports } from "./lib/datefns-scan.mjs";
 
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
 const MANIFEST_FILE = join(ROOT, "public", "datefns-usage.json");
 const EXCLUDE_DIRS = new Set(["test", "node_modules", ".git", "dist", "build"]);
 const FILE_EXT = /\.(ts|tsx)$/;
-// `[^{}]*` allows newlines (multi-line imports) but forbids nested braces,
-// preventing the match from spanning across adjacent import statements.
-// NOTE: this script only reads capture group 3 (subpath), so comments inside
-// braces don't affect detection — no stripComments() helper needed here.
 const IMPORT_RE =
   /import\s+(type\s+)?\{([^{}]*)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
 const GENERATOR_HINT =
   "Run `node scripts/generate-datefns-smoke-test.mjs` and commit the result.";
 
-// --verbose / -v: print every locale subpath discovered in src/ (with file +
-// line), every type-only locale import we skipped (with the reason), and the
-// per-locale match decision against the manifest. Off by default.
-const VERBOSE = process.argv.slice(2).some((a) => a === "--verbose" || a === "-v");
+// CLI flags.
+//   --verbose / -v: per-file trace + per-locale match decision.
+//   --strict     : malformed locale imports (zero usable specifiers after
+//                  comment stripping) become a fatal error.
+const ARGV = process.argv.slice(2);
+const VERBOSE = ARGV.some((a) => a === "--verbose" || a === "-v");
+const STRICT = ARGV.some((a) => a === "--strict");
 const vlog = (msg) => { if (VERBOSE) console.log(`  · ${msg}`); };
 
 function walk(dir, acc = []) {
