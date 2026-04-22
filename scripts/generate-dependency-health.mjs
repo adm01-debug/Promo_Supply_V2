@@ -9,8 +9,14 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
 import { validateSnapshot, failOnInvalid } from "./lib/validate-dependency-health.mjs";
-import { BARREL_IMPORT_RE, computeRiskLevel } from "./lib/tree-shaking-risk.mjs";
+import {
+  BARREL_IMPORT_RE,
+  computeRiskLevel,
+  findBarrelOffenders,
+  DEFAULT_RULES,
+} from "./lib/tree-shaking-risk.mjs";
 import { loadAllowlist, applyAllowlist } from "./lib/dependency-health-allowlist.mjs";
+import { loadRules } from "./lib/dependency-health-rules.mjs";
 
 const SCAN_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx"]);
 const SCAN_SKIP_DIRS = new Set(["node_modules", "dist", "build", ".next", "coverage"]);
