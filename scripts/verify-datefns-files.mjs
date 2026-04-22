@@ -88,6 +88,28 @@ const IMPORT_PATTERNS = [
 // Display order for the breakdown report — most → least common in practice.
 const PATTERN_KINDS = ["static", "dynamic", "export-from", "export-star"];
 
+// Unresolvable dynamic imports — `import(\`date-fns/${x}\`)` and friends.
+// These can't be statically verified (the subpath depends on a runtime value),
+// so the verifier must FAIL FAST instead of silently accepting them. Three
+// variants we can detect with a regex (anything more exotic — string
+// concatenation, indirection through a variable — is out of scope and the
+// ESLint rule should catch separately):
+//
+//   1. Pure interpolation:    import(`date-fns/${name}`)
+//   2. Suffix interpolation:  import(`date-fns/locale/${tag}`)
+//   3. Prefix-only literal:   import(`date-fns/` + name)  ← string concat
+//
+// We deliberately match only template literals containing `${` (or `+`) AFTER
+// the `date-fns/` prefix; a fully-literal template like `import(\`date-fns/format\`)`
+// is resolvable and would be picked up by extending the static `dynamic` regex
+// — see `RESOLVABLE_TEMPLATE_RE` below.
+const UNRESOLVABLE_DYNAMIC_RE =
+  /import\s*\(\s*(?:`date-fns\/[^`]*\$\{[^`]*`|["'`]date-fns\/?["'`]\s*\+)/g;
+
+// Resolvable template literal — no interpolation, just backticks. Treat as
+// a normal dynamic import so we still verify the subpath exists.
+const RESOLVABLE_TEMPLATE_RE = /import\s*\(\s*`date-fns\/([^`${}]+)`\s*\)/g;
+
 // ── ANSI color helpers (TTY only — keep CI logs clean) ────────────────────────
 const isTTY = Boolean(process.stdout.isTTY);
 const color = (code, s) => (isTTY ? `\x1b[${code}m${s}\x1b[0m` : s);
