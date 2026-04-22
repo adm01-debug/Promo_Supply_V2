@@ -262,10 +262,23 @@ const kindSubpaths = Object.fromEntries(PATTERN_KINDS.map((k) => [k, new Set()])
 // fields in the snapshot, which the diff script uses to highlight which
 // imports actually drove drift (added/removed) and how widespread they are.
 const subpathFiles = new Map();
-const recordSubpathFile = (sp, file) => {
+// subpath → Map<absoluteFilePath, Set<lineNumber>>. Captures every concrete
+// import location that contributed to each subpath. Drives the per-subpath
+// "offenders" lists rendered in both the terminal failure block and the
+// Markdown failure report so reviewers can jump straight from a missing
+// subpath to the exact `file:line` that imported it. Line numbers are 1-based.
+const subpathOffenders = new Map();
+const recordSubpathFile = (sp, file, line) => {
   let s = subpathFiles.get(sp);
   if (!s) { s = new Set(); subpathFiles.set(sp, s); }
   s.add(file);
+  if (typeof line === "number" && line > 0) {
+    let perFile = subpathOffenders.get(sp);
+    if (!perFile) { perFile = new Map(); subpathOffenders.set(sp, perFile); }
+    let lines = perFile.get(file);
+    if (!lines) { lines = new Set(); perFile.set(file, lines); }
+    lines.add(line);
+  }
 };
 // Unresolvable dynamic imports: `[{ file, line, snippet }]`. Surfaced via
 // failure mode D below — verifier exits non-zero if any are present.
