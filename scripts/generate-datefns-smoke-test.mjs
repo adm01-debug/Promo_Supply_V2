@@ -249,6 +249,26 @@ if (IF_CHANGED && existsSync(MANIFEST_FILE)) {
   }
 }
 
+// Embed GitHub Actions run metadata so the UI can deep-link to the
+// workflow run that produced this manifest. All env vars are GitHub-provided
+// at CI time; locally they are simply absent.
+const ghServer = process.env.GITHUB_SERVER_URL || "https://github.com";
+const ghRepo = process.env.GITHUB_REPOSITORY || "";
+const ghRunId = process.env.GITHUB_RUN_ID || "";
+const ghRunAttempt = process.env.GITHUB_RUN_ATTEMPT || "";
+const ghWorkflow = process.env.GITHUB_WORKFLOW || "";
+const ci = ghRepo && ghRunId
+  ? {
+      provider: "github-actions",
+      repository: ghRepo,
+      workflow: ghWorkflow || null,
+      runId: ghRunId,
+      runAttempt: ghRunAttempt || null,
+      runUrl: `${ghServer}/${ghRepo}/actions/runs/${ghRunId}${ghRunAttempt ? `/attempts/${ghRunAttempt}` : ""}`,
+      latestRunsUrl: `${ghServer}/${ghRepo}/actions/workflows/dependency-health.yml`,
+    }
+  : null;
+
 const manifest = {
   generatedAt: new Date().toISOString(),
   importSignature,
@@ -263,6 +283,7 @@ const manifest = {
     subpath: sp,
     exports: [...subpaths.get(sp)].sort(),
   })),
+  ...(ci ? { ci } : {}),
 };
 const manifestText = JSON.stringify(manifest, null, 2) + "\n";
 
