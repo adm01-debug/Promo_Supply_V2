@@ -52,18 +52,65 @@ type PkgManifest = {
   dependencies?: Record<string, string>;
   devDependencies?: Record<string, string>;
 };
+type Bucket = "dependencies" | "devDependencies";
+type Scope = "all" | "dependencies" | "devDependencies";
 
-function lookupSpec(name: string): { spec: string; bucket: "dependencies" | "devDependencies" } | null {
+/**
+ * Optional scope filter via env var. Aliases (case-insensitive):
+ *   DATEFNS_PIN_SCOPE=deps  | dep  | dependencies      → dependencies only
+ *   DATEFNS_PIN_SCOPE=dev   | devDeps | devDependencies → devDependencies only
+ *   DATEFNS_PIN_SCOPE=all   (default, or unset)        → both buckets
+ *
+ * Use cases:
+ *   - Run only the runtime-critical pin checks in a fast PR lane:
+ *       DATEFNS_PIN_SCOPE=deps bun run test src/test/datefnsPins.test.ts
+ *   - Validate dev-time tooling pins separately in a nightly job:
+ *       DATEFNS_PIN_SCOPE=dev  bun run test src/test/datefnsPins.test.ts
+ *
+ * Packages found only in the OTHER bucket are reported as `it.skip` with a
+ * clear "skipped: scope=… but found in …" message so the run output is
+ * unambiguous about why a package was excluded.
+ */
+function resolveScope(): Scope {
+  const raw = (typeof process !== "undefined" ? process.env?.DATEFNS_PIN_SCOPE : undefined) ?? "";
+  switch (raw.trim().toLowerCase()) {
+    case "":
+    case "all":
+    case "both":
+      return "all";
+    case "dep":
+    case "deps":
+    case "dependencies":
+    case "prod":
+    case "runtime":
+      return "dependencies";
+    case "dev":
+    case "devdep":
+    case "devdeps":
+    case "devdependencies":
+      return "devDependencies";
+    default:
+      throw new Error(
+        `DATEFNS_PIN_SCOPE="${raw}" is not a recognized value. ` +
+          `Use one of: all, dependencies (deps), devDependencies (dev). Unset to default to "all".`,
+      );
+  }
+}
+
+const SCOPE: Scope = resolveScope();
+
+function lookupSpec(name: string): { spec: string; bucket: Bucket } | null {
   const pkg = rootPkg as PkgManifest;
   if (pkg.dependencies?.[name]) return { spec: pkg.dependencies[name], bucket: "dependencies" };
   if (pkg.devDependencies?.[name]) return { spec: pkg.devDependencies[name], bucket: "devDependencies" };
   return null;
 }
 
-describe("date-fns ecosystem: exact-pin enforcement", () => {
+describe(`date-fns ecosystem: exact-pin enforcement (scope=${SCOPE})`, () => {
   it("PINNED_PACKAGES list is non-empty (guard against accidental clearing)", () => {
     expect(PINNED_PACKAGES.length, "PINNED_PACKAGES must list at least one package").toBeGreaterThan(0);
   });
+
 
   for (const name of PINNED_PACKAGES) {
     describe(name, () => {
