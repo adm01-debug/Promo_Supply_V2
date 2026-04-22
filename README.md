@@ -202,7 +202,86 @@ after `--`), so the base command is identical in both environments — what
 passes locally passes in CI for this lane.
 
 
-### Time-zone guard
+### `test:date-fns:parity` — bun ↔ npm parity guard
+
+`bun run test:date-fns:parity` (or `npm run test:date-fns:parity`) runs the
+`test:date-fns` smoke test under **both** package managers and asserts they
+produce the same outcome — same exit code, same total/passed/failed counts,
+**and** the same set of failed test identities. This catches the case where
+an `npm`-only consumer (Vercel preview, contributor without bun, downstream
+tooling) would resolve a different `date-fns` module tree than CI, or where
+two runners post identical pass/fail counts while failing entirely
+different tests.
+
+The same script runs in CI as the [`datefns-parity`](./.github/workflows/datefns-parity.yml)
+workflow on every PR/push that touches `src/**`, `package.json`,
+`package-lock.json`, `bun.lock`, or the parity script itself, plus a weekly
+heartbeat. Locally, both `bun` and `npm` must be on `PATH`; if only one is
+available the script logs a warning and trivially passes.
+
+**When to run it:**
+
+- Before pushing a `date-fns` upgrade or any `package.json` / lockfile
+  change that touches transitive deps.
+- When `npm ci` and `bun install` produce different `node_modules/date-fns`
+  trees (rare, but happens on lockfile drift).
+- After changing `scripts/verify-datefns-files.mjs`,
+  `scripts/generate-datefns-smoke-test.mjs`, or anything that affects how
+  subpaths are discovered or verified.
+- To debug a "passes locally on bun, fails on npm in CI" report.
+
+**Common flags** (everything after `--` is forwarded to vitest in **both**
+runners — see `scripts/verify-test-datefns-parity.mjs` for the full list):
+
+```sh
+# Scope parity to a subset of tests
+bun run test:date-fns:parity -- -t format
+
+# Write machine-readable + markdown summaries (CI does this automatically)
+bun run test:date-fns:parity \
+  --json-out ci-artifacts/parity.json \
+  --md-out   ci-artifacts/parity.md \
+  --quiet
+```
+
+**Exit codes:**
+
+| Code | Meaning | What to do |
+|---:|---|---|
+| `0` | Parity confirmed, OR only one runner available and it passed. | Nothing — green. |
+| `1` | Both runners ran but disagreed on exit code, test counts, OR the set of failed tests. | See *Troubleshooting* below. |
+| `2` | Neither runner is on `PATH`, or invocation error (script failed before either runner finished). | Install missing tool (`bun` or `npm`), then retry. |
+
+**Troubleshooting a mismatch:**
+
+1. **Read the structured summary.** The script prints a JSON block (with
+   per-runner `failedTests[]`) and a markdown table at the end of every
+   run. CI also appends the markdown to `$GITHUB_STEP_SUMMARY` — read that
+   first, it names the outlier runner and the diverging tests.
+2. **Check for lockfile drift.** Run
+   `bun run deps:health` and inspect `public/dependency-health.json` →
+   `lockfileDrift.detected`. If true, regenerate the offending lockfile
+   (`bun install` or `npm install`) and commit it.
+3. **Reproduce npm side cleanly.** A surprising mismatch is almost always a
+   stale `node_modules`:
+   ```sh
+   rm -rf node_modules
+   npm ci
+   npm run test:date-fns
+   ```
+4. **Compare resolved subpaths.** Run
+   `bun run verify:datefns-files -- --write-health` under each manager
+   (separate clones if needed) and diff
+   `public/dependency-health.json` → `dateFns.subpaths.entries[]`. A
+   `resolvedFile` change between the two runs explains the parity break.
+5. **Scope down.** Use `-- -t <pattern>` to isolate the failing test, then
+   the per-runner `failedTests[]` in the JSON summary tells you exactly
+   which assertions diverge.
+6. **Last resort — bypass.** Parity is a CI gate, not a local hard block.
+   `git push --no-verify` skips the pre-push hook; the CI job can be
+   re-run from the GitHub UI once the underlying drift is fixed.
+
+
 
 `src/test/dateFns.timezone.test.ts` enforces `TZ=UTC` so `date-fns`
 formatting (especially with `pt-BR`) is deterministic across machines. CI
