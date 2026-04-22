@@ -48,10 +48,10 @@ const CONFIG = {
 };
 
 function lint(src: string) {
-  return new Linter().verify(src, CONFIG as never, "x.js");
+  return new Linter().verify(src, CONFIG as never, "x.ts");
 }
 function fix(src: string) {
-  return new Linter().verifyAndFix(src, CONFIG as never, { filename: "x.js" });
+  return new Linter().verifyAndFix(src, CONFIG as never, { filename: "x.ts" });
 }
 
 describe("local/date-fns-subpath — multi-locale fixture autofix", () => {
