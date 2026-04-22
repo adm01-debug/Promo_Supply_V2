@@ -182,8 +182,14 @@
   },
   "smokeTest": {
     "status": "pass",
-    "ranAt": "2026-04-22T13:32:28.860Z",
+    "ranAt": "2026-04-22T14:46:59.818Z",
     "testFile": "src/test/dateFns.smoke.test.ts",
-    "durationMs": 1234
+    "durationMs": 1500,
+    "log": {
+      "path": "/logs/smoke-date-fns-latest.log",
+      "sizeBytes": 69,
+      "capturedAt": "2026-04-22T14:46:59.809Z",
+      "tail": "line1\nline2\nvitest output sample\nPASS src/test/dateFns.smoke.test.ts\n"
+    }
   }
 }
