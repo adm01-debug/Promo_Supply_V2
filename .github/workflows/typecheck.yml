@@ -84,12 +84,18 @@ jobs:
         if: ${{ steps.changed.outputs.files != '' }}
         run: |
           mkdir -p ci-artifacts
+          # Persist the changed-files manifest so failure artifacts are
+          # self-explanatory ("which files did this run actually lint?").
+          printf '%s\n' ${{ steps.changed.outputs.files }} > ci-artifacts/eslint-changed-files.txt
           # --max-warnings=0 ensures warnings (including type-aware rules surfaced as warnings)
           # also block the merge. Output a JSON report alongside human-readable stylish output.
+          # Tee stderr+stdout to a log so failures upload the raw error lines, not just the formatted report.
+          set -o pipefail
           bunx eslint ${{ steps.changed.outputs.files }} \
             --max-warnings=0 \
             --format stylish \
             --output-file ci-artifacts/eslint-report.txt \
+            2>&1 | tee ci-artifacts/eslint-stdout.log \
             || ESLINT_EXIT=$?
           # Re-emit the human report to the job log so failures are visible without downloading artifacts.
           if [ -f ci-artifacts/eslint-report.txt ]; then
@@ -104,13 +110,54 @@ jobs:
           exit ${ESLINT_EXIT:-0}
 
       - name: Upload ESLint report
-        if: ${{ always() && steps.changed.outputs.files != '' }}
+        # Always upload — even on success — but never fail the job because the
+        # artifact is missing (e.g. no lintable files changed in this PR).
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: eslint-report
           path: |
             ci-artifacts/eslint-report.txt
             ci-artifacts/eslint-report.json
+            ci-artifacts/eslint-stdout.log
+            ci-artifacts/eslint-changed-files.txt
+          if-no-files-found: ignore
+          retention-days: 30
+
+      # ──────────────────────────────────────────────────────────────────────
+      # Typecheck runs AFTER lint. tsc is the slowest step in this job, so
+      # putting it last means devs see fast lint feedback first; tsc still
+      # runs (and blocks merge) on every push/PR via the steps below.
+      #
+      # Each tsc invocation tees its output to ci-artifacts/tsc-*.log so
+      # failure artifacts contain the raw "TSxxxx" diagnostic lines, not
+      # just the summary report from typecheck-report.mjs.
+      # ──────────────────────────────────────────────────────────────────────
+      - name: Type-check tsconfig.app.json
+        run: |
+          mkdir -p ci-artifacts
+          set -o pipefail
+          bunx tsc --noEmit -p tsconfig.app.json 2>&1 | tee ci-artifacts/tsc-app.log
+      - name: Type-check tsconfig.node.json
+        if: ${{ hashFiles('tsconfig.node.json') != '' }}
+        run: |
+          mkdir -p ci-artifacts
+          set -o pipefail
+          bunx tsc --noEmit -p tsconfig.node.json 2>&1 | tee ci-artifacts/tsc-node.log
+
+      - name: Generate typecheck report artifact
+        if: always()
+        run: node scripts/typecheck-report.mjs || true
+
+      - name: Upload typecheck report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-report
+          path: |
+            ci-artifacts/typecheck-report.json
+            ci-artifacts/tsc-app.log
+            ci-artifacts/tsc-node.log
           if-no-files-found: ignore
           retention-days: 30
 
