@@ -88,15 +88,14 @@ if (JSON_MODE) {
     const specEqInstalled = SPEC_NORM === INSTALLED;
     console.log("\n  Mismatch detail:");
     if (!specEqLock && lockEqInstalled) {
-      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked" }));
     } else if (specEqLock && !lockEqInstalled) {
-      console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+      console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED, { caseLabel: "locked↔installed" }));
     } else if (specEqInstalled && !specEqLock) {
-      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked" }));
     } else {
-      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
-      console.log("");
-      console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+      // All three differ — labeled triple block with summary line.
+      console.log(renderTripleMismatch(SPEC_NORM, LOCKED, INSTALLED));
     }
     if (STRICT) {
       console.error("\n✗ install-report --strict: spec / lock / installed drift detected.");
