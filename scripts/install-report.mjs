@@ -21,6 +21,7 @@ const argv = process.argv.slice(2);
 const STRICT = argv.includes("--strict");
 const JSON_MODE = argv.includes("--json");
 const SUMMARY_ONLY = argv.includes("--drift-summary-only");
+const HELP = argv.includes("--help") || argv.includes("-h");
 const JSON_FILE = (() => {
   const flag = argv.find((a) => a === "--json-file" || a.startsWith("--json-file="));
   if (!flag) return null;
@@ -29,6 +30,78 @@ const JSON_FILE = (() => {
   const idx = argv.indexOf(flag);
   return argv[idx + 1] && !argv[idx + 1].startsWith("--") ? argv[idx + 1] : null;
 })();
+
+if (HELP) {
+  console.log(
+    [
+      "Usage: node scripts/install-report.mjs [options]",
+      "",
+      "Reports the alignment of date-fns across three sources:",
+      "  • spec       — version range declared in package.json",
+      "  • locked     — resolved version recorded in bun.lock",
+      "  • installed  — actual version under node_modules/date-fns",
+      "",
+      "Options:",
+      "  --strict              Exit 1 when spec / lock / installed are not aligned.",
+      "                        Default: exit 0 even on drift (report-only).",
+      "",
+      "  --json                Emit a single JSON object to stdout instead of the",
+      "                        human-readable report. Combines with --strict.",
+      "",
+      "  --drift-summary-only  In human mode, print only the per-block drift",
+      "                        summary lines under \"Mismatch detail:\" — skip the",
+      "                        multi-line caret diff blocks. Ignored with --json",
+      "                        (the JSON payload already contains structured",
+      "                        alignment data).",
+      "",
+      "  --json-file=PATH      Also write the JSON payload to PATH. Parent",
+      "  --json-file PATH      directories are created automatically (recursive",
+      "                        mkdir). Both `=` and space-separated forms work.",
+      "",
+      "                        Behavior by mode:",
+      "                          • With --json:    Writes file + prints JSON to",
+      "                                            stdout. No extra confirmation",
+      "                                            on stderr (keeps stdout-as-",
+      "                                            JSON contract clean).",
+      "                          • Without --json: Writes file + prints the human",
+      "                                            report to stdout, AND logs",
+      "                                            `[install-report] wrote JSON →",
+      "                                            <PATH>` to stderr so it shows",
+      "                                            up in build logs.",
+      "                          • If the write fails (permissions, bad path),",
+      "                            the script exits 2 with the OS error message.",
+      "",
+      "  --help, -h            Show this help and exit 0.",
+      "",
+      "Examples:",
+      "  # Print the human report to the terminal (no file, no strict gating).",
+      "  node scripts/install-report.mjs",
+      "",
+      "  # CI: fail the job on drift, JSON to stdout for log scrapers.",
+      "  node scripts/install-report.mjs --strict --json",
+      "",
+      "  # CI: write the JSON artifact to disk AND keep the human log,",
+      "  # creating ci-artifacts/ on the fly. Pairs with actions/upload-artifact.",
+      "  node scripts/install-report.mjs --json-file=ci-artifacts/install-report.json",
+      "",
+      "  # CI: dual-channel — JSON on stdout for piping, file for upload, strict",
+      "  # gating so a drifted install fails the build.",
+      "  node scripts/install-report.mjs --strict --json \\",
+      "    --json-file=ci-artifacts/install-report.json",
+      "",
+      "  # Compact terminal report — drop the caret diffs, keep the per-pair",
+      "  # drift summary lines. Useful when scrolling long CI logs.",
+      "  node scripts/install-report.mjs --drift-summary-only",
+      "",
+      "Exit codes:",
+      "  0  Aligned, OR drift detected without --strict, OR --help.",
+      "  1  Drift detected with --strict.",
+      "  2  --json-file write failed (e.g. EACCES, ENOENT on parent).",
+    ].join("\n"),
+  );
+  process.exit(0);
+}
+
 
 const ROOT = process.cwd();
 const PKG = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
