@@ -6,8 +6,14 @@
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { createHash } from "node:crypto";
 
-const DRY_RUN = process.argv.slice(2).some((a) => a === "--dry-run" || a === "-n");
+const ARGS = process.argv.slice(2);
+const DRY_RUN = ARGS.some((a) => a === "--dry-run" || a === "-n");
+// --if-changed: skip regeneration when the set of discovered date-fns imports
+// (subpath + named exports) hashes to the same signature stored in the
+// existing manifest. Pure short-circuit — never writes, never fails.
+const IF_CHANGED = ARGS.some((a) => a === "--if-changed");
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
 const OUT_FILE = join(SRC_DIR, "test", "dateFns.smoke.test.ts");
@@ -218,8 +224,34 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
 `;
 
 // --- Emit machine-readable manifest for the admin panel ---
+// importSignature is a stable hash of every (subpath → sorted exports) pair
+// discovered in src/. It's the source of truth for `--if-changed`: if the
+// stored signature matches the current scan, no regeneration is needed.
+const signaturePayload = sortedSubpaths
+  .map((sp) => `${sp}:${[...subpaths.get(sp)].sort().join(",")}`)
+  .join("|");
+const importSignature = createHash("sha256")
+  .update(signaturePayload)
+  .digest("hex");
+
+// --- Short-circuit when --if-changed and signature unchanged ---
+if (IF_CHANGED && existsSync(MANIFEST_FILE)) {
+  try {
+    const prev = JSON.parse(readFileSync(MANIFEST_FILE, "utf8"));
+    if (prev.importSignature && prev.importSignature === importSignature) {
+      console.log(
+        `✓ date-fns imports unchanged (signature ${importSignature.slice(0, 12)}…) — skipping regeneration.`,
+      );
+      process.exit(0);
+    }
+  } catch {
+    // Malformed manifest → fall through to regenerate.
+  }
+}
+
 const manifest = {
   generatedAt: new Date().toISOString(),
+  importSignature,
   totalSubpaths: sortedSubpaths.length,
   totalFunctions: allFnNames.length,
   totalLocales: allLocaleNames.length,

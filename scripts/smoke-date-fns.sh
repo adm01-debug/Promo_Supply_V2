@@ -4,11 +4,24 @@
 # verifies every imported subpath exists in node_modules/date-fns,
 # then runs only the smoke test (no clean install, no tsc, no report).
 #
-# Usage: bash scripts/smoke-date-fns.sh
+# Usage:
+#   bash scripts/smoke-date-fns.sh             # incremental (skip regen if unchanged)
+#   bash scripts/smoke-date-fns.sh --force     # always regenerate
 set -euo pipefail
 
-echo "▶ [1/3] Regenerating smoke test from src/ imports..."
-node scripts/generate-datefns-smoke-test.mjs
+REGEN_FLAG="--if-changed"
+for arg in "$@"; do
+  case "$arg" in
+    --force|-f) REGEN_FLAG="" ;;
+  esac
+done
+
+if [ -n "$REGEN_FLAG" ]; then
+  echo "▶ [1/3] Regenerating smoke test from src/ imports (incremental: $REGEN_FLAG)..."
+else
+  echo "▶ [1/3] Regenerating smoke test from src/ imports (forced)..."
+fi
+node scripts/generate-datefns-smoke-test.mjs $REGEN_FLAG
 
 echo "▶ [2/3] Verifying date-fns subpath files exist on disk..."
 node scripts/verify-datefns-files.mjs
