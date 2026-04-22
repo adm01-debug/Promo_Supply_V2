@@ -152,5 +152,54 @@ describe("renderMismatch", () => {
     const out = renderMismatch("a", "garbage", "b", "1.2.3");
     expect(out.split("\n")).toHaveLength(4);
     expect(out).toMatch(/unknown version drift/);
+});
+
+describe("renderMismatch (with caseLabel)", () => {
+  it("prepends a [case] header line when caseLabel is provided", () => {
+    const out = renderMismatch("spec", "1.2.3", "locked", "1.2.9", {
+      caseLabel: "spec↔locked",
+    });
+    const lines = out.split("\n");
+    // Now 5 lines: header + v1 + v2 + caret + summary.
+    expect(lines).toHaveLength(5);
+    expect(lines[0]).toMatch(/\[spec↔locked\]\s+spec\s+↔\s+locked/);
+    expect(lines[1]).toContain("1.2.3");
+    expect(lines[2]).toContain("1.2.9");
+    expect(lines[3]).toMatch(/\^$/);
+    expect(lines[4]).toContain("patch version drift");
   });
+
+  it("preserves 4-line legacy shape when caseLabel is omitted", () => {
+    const out = renderMismatch("spec", "1.2.3", "locked", "1.2.9");
+    expect(out.split("\n")).toHaveLength(4);
+  });
+});
+
+describe("renderTripleMismatch", () => {
+  const out = renderTripleMismatch("1.2.3", "1.5.0", "2.0.0");
+  const lines = out.split("\n");
+
+  it("starts with a triple-mismatch banner", () => {
+    expect(lines[0]).toMatch(/triple mismatch: spec ≠ locked ≠ installed/);
+  });
+
+  it("includes a summary line listing all three versions and both drift levels", () => {
+    expect(lines[1]).toContain("spec=1.2.3");
+    expect(lines[1]).toContain("locked=1.5.0");
+    expect(lines[1]).toContain("installed=2.0.0");
+    // spec→locked is minor; locked→installed is major.
+    expect(lines[1]).toMatch(/spec→locked is minor/);
+    expect(lines[1]).toMatch(/locked→installed is major/);
+  });
+
+  it("embeds both labeled mismatch blocks (spec↔locked AND locked↔installed)", () => {
+    expect(out).toContain("[spec↔locked] spec ↔ locked");
+    expect(out).toContain("[locked↔installed] locked ↔ installed");
+  });
+
+  it("renders both drift caret blocks (two `^` markers, one per pair)", () => {
+    const caretLines = lines.filter((l) => /^\s+\^$/.test(l));
+    expect(caretLines).toHaveLength(2);
+  });
+});
 });
