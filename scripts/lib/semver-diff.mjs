@@ -46,15 +46,25 @@ export function classifyDiff(a, b) {
  * If `caseLabel` is omitted (legacy callers/tests), the header line is
  * skipped and the block stays 4 lines tall — preserving back-compat.
  *
+ * Pass `{ summaryOnly: true }` to return ONLY the trailing one-liner —
+ * "    [case] → <level> version drift (v1 → v2)" (case prefix included
+ * when caseLabel is provided). Used by `--drift-summary-only` in the
+ * verify CLIs to skip the multi-line caret diff for log scrapers /
+ * dashboards that just want the drift level per pair.
+ *
  * @param {string} label1
  * @param {string} v1
  * @param {string} label2
  * @param {string} v2
- * @param {{ caseLabel?: string }} [opts]
+ * @param {{ caseLabel?: string, summaryOnly?: boolean }} [opts]
  */
 export function renderMismatch(label1, v1, label2, v2, opts = {}) {
-  const { caseLabel } = opts;
+  const { caseLabel, summaryOnly = false } = opts;
   const { level, caretCol } = classifyDiff(v1, v2);
+  if (summaryOnly) {
+    const prefix = caseLabel ? `[${caseLabel}] ` : "";
+    return `    ${prefix}→ ${level} version drift (${v1} → ${v2})`;
+  }
   const labelW = Math.max(label1.length, label2.length);
   const pad = (s) => s + " ".repeat(labelW - s.length);
   const caretIndent = " ".repeat(labelW + 2 + caretCol);
@@ -85,12 +95,23 @@ export function renderMismatch(label1, v1, label2, v2, opts = {}) {
  *
  *   <renderMismatch("locked", Y, "installed", Z, { caseLabel: "locked↔installed" })>
  */
-export function renderTripleMismatch(spec, locked, installed) {
+export function renderTripleMismatch(spec, locked, installed, opts = {}) {
+  const { summaryOnly = false } = opts;
   const { level: l1 } = classifyDiff(spec, locked);
   const { level: l2 } = classifyDiff(locked, installed);
   const summary =
     `    summary: spec=${spec}  locked=${locked}  installed=${installed}` +
     `   (drift: spec→locked is ${l1}, then locked→installed is ${l2})`;
+  if (summaryOnly) {
+    // Keep the header so log scrapers can still detect the triple-mismatch
+    // case; drop the two full caret blocks.
+    return [
+      "    ── triple mismatch: spec ≠ locked ≠ installed ──",
+      summary,
+      renderMismatch("spec", spec, "locked", locked, { caseLabel: "spec↔locked", summaryOnly: true }),
+      renderMismatch("locked", locked, "installed", installed, { caseLabel: "locked↔installed", summaryOnly: true }),
+    ].join("\n");
+  }
   return [
     "    ── triple mismatch: spec ≠ locked ≠ installed ──",
     summary,
@@ -185,16 +206,23 @@ function paint(text, codes, on) {
  *   - indent: leading whitespace prefix on every line (default: "    ")
  */
 export function renderUnifiedDiff(label1, v1, label2, v2, opts = {}) {
-  const { color: colorOverride, indent = "    " } = opts;
+  const { color: colorOverride, indent = "    ", summaryOnly = false } = opts;
   const on = shouldColor(colorOverride);
   const { level, caretCol } = classifyDiff(v1, v2);
 
   const labelW = Math.max(label1.length, label2.length);
   const padLabel = (s) => s + " ".repeat(labelW - s.length);
 
+  const hunkHeader = `${indent}${paint(`@@ ${level} version drift @@`, ANSI.bold + ANSI.cyan, on)}`;
+  if (summaryOnly) {
+    // One-line representation: keep the hunk header (already a summary) and
+    // append a compact "v1 → v2" so the line is self-describing without the
+    // ---/+++ headers or the caret block.
+    return `${hunkHeader} ${paint(`(${v1} → ${v2})`, ANSI.dim, on)}`;
+  }
+
   const minusHeader = `${indent}${paint(`--- ${padLabel(label1)}  ${v1}`, ANSI.dim, on)}`;
   const plusHeader = `${indent}${paint(`+++ ${padLabel(label2)}  ${v2}`, ANSI.dim, on)}`;
-  const hunkHeader = `${indent}${paint(`@@ ${level} version drift @@`, ANSI.bold + ANSI.cyan, on)}`;
   const minusLine = `${indent}${paint(`- ${v1}`, ANSI.red, on)}`;
   const plusLine = `${indent}${paint(`+ ${v2}`, ANSI.green, on)}`;
   // Caret indent: indent + "+ " (2 chars) + caretCol — points at the first
