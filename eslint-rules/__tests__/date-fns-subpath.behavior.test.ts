@@ -152,11 +152,19 @@ describe("local/date-fns-subpath — report-only safety nets", () => {
   });
 
   it("reports the on-disk namespace-import fixture as unfixable", () => {
-    // Pinned fixture file at eslint-rules/__fixtures__/bad-date-fns-namespace-import.ts.
-    // The fixture carries an inline `eslint-disable-next-line` so repo-wide
-    // lint stays green, but the rule itself — invoked directly here —
-    // must still flag it. This guards against accidental regressions where
-    // someone "fixes" the rule to silently accept namespace imports.
+    // Pinned fixture: eslint-rules/__fixtures__/bad-date-fns-namespace-import.ts
+    //
+    // The fixture INTENTIONALLY violates `local/date-fns-subpath` to prove the
+    // rule's report-only branch for namespace imports. To keep the repo-wide
+    // lint gate green, the fixture carries an `eslint-disable-next-line`
+    // comment on the offending import — that comment is the only reason CI
+    // doesn't fail on it, and it MUST remain in place.
+    //
+    // This test strips the disable comment in-memory (so the linter sees the
+    // raw violation) and asserts the rule still flags it as `unfixable`.
+    // Guards against two regression classes:
+    //   1. Someone "fixes" the rule to silently accept namespace imports.
+    //   2. Someone removes the fixture's disable comment, breaking CI.
     const fixturePath = resolve(
       __dirname,
       "../__fixtures__/bad-date-fns-namespace-import.ts",
