@@ -136,6 +136,62 @@ jobs:
             --output-file ci-artifacts/eslint-report.json || true
           exit ${ESLINT_EXIT:-0}
 
+      - name: Summarize ESLint failures (file + rule)
+        # Runs only when the lint step above failed. Parses the JSON report
+        # into a compact "<file>:<line>:<col>  <rule>  <message>" table,
+        # prints it to the job log, writes it to ci-artifacts/eslint-summary.txt
+        # so it ships in the uploaded artifact, and appends it to
+        # $GITHUB_STEP_SUMMARY so it surfaces at the top of the failed run
+        # without opening artifacts.
+        if: ${{ failure() && steps.changed.outputs.files != '' }}
+        run: |
+          set -euo pipefail
+          REPORT=ci-artifacts/eslint-report.json
+          OUT=ci-artifacts/eslint-summary.txt
+          if [ ! -s "$REPORT" ]; then
+            echo "ESLint JSON report missing or empty — falling back to raw stdout."
+            cp ci-artifacts/eslint-stdout.log "$OUT" 2>/dev/null || echo "(no eslint output captured)" > "$OUT"
+          else
+            node --input-type=module -e '
+              import { readFileSync } from "node:fs";
+              const data = JSON.parse(readFileSync(process.argv[1], "utf8"));
+              const rows = [];
+              const ruleCounts = new Map();
+              let totalErrors = 0;
+              let totalWarnings = 0;
+              for (const f of data) {
+                totalErrors += f.errorCount ?? 0;
+                totalWarnings += f.warningCount ?? 0;
+                for (const m of f.messages ?? []) {
+                  if (m.severity !== 2 && m.severity !== 1) continue;
+                  const sev = m.severity === 2 ? "error" : "warn ";
+                  const rule = m.ruleId ?? "(parse)";
+                  ruleCounts.set(rule, (ruleCounts.get(rule) ?? 0) + 1);
+                  // Trim repo prefix to keep lines short.
+                  const file = f.filePath.replace(process.cwd() + "/", "");
+                  rows.push(`${sev}  ${file}:${m.line ?? 0}:${m.column ?? 0}  ${rule}  ${m.message.replace(/\s+/g, " ").slice(0, 140)}`);
+                }
+              }
+              const lines = [];
+              lines.push(`ESLint failed: ${totalErrors} error(s), ${totalWarnings} warning(s) across ${data.length} file(s).`);
+              lines.push("");
+              lines.push("Top rules:");
+              const top = [...ruleCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
+              for (const [rule, count] of top) lines.push(`  ${String(count).padStart(4)}  ${rule}`);
+              lines.push("");
+              lines.push("Findings:");
+              for (const r of rows.slice(0, 200)) lines.push(`  ${r}`);
+              if (rows.length > 200) lines.push(`  … ${rows.length - 200} more (see eslint-report.txt)`);
+              process.stdout.write(lines.join("\n") + "\n");
+            ' "$REPORT" | tee "$OUT"
+          fi
+          # Surface the summary at the top of the GitHub Actions run page.
+          {
+            echo "### ESLint failures";
+            echo '```';
+            cat "$OUT";
+            echo '```';
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Upload ESLint report
         # Always upload — even on success — but never fail the job because the
         # artifact is missing (e.g. no lintable files changed in this PR).
