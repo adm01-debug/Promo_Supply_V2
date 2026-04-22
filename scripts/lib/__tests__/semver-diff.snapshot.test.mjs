@@ -40,7 +40,7 @@ describe("renderMismatch — golden snapshots (default mode)", () => {
       .toMatchInlineSnapshot(`
         "    declared   1.2.3
             installed  1.2.9
-                         ^
+                           ^
             → patch version drift (1.2.3 → 1.2.9)"
       `);
   });
