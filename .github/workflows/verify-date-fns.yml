@@ -1,0 +1,59 @@
+name: verify-date-fns
+
+# Fails the build if `date-fns` drifts across package.json, bun.lock, and
+# node_modules. Backed by `bun run verify:date-fns` (scripts/verify-datefns-versions.mjs),
+# which exits non-zero on any drift and prints a pairwise diagnosis explaining
+# which file is out of sync and why.
+#
+# Exit codes surfaced by the script:
+#    0  aligned
+#   10  spec drifted from lock+installed
+#   11  node_modules drifted from spec+lock
+#   12  lockfile drifted from spec+installed
+#   13  all three sources differ
+#   20-23  missing spec / lock / lock-entry / install
+
+on:
+  pull_request:
+    paths:
+      - "package.json"
+      - "bun.lock"
+      - "scripts/verify-datefns-versions.mjs"
+      - "scripts/lib/resolve-locked-version.mjs"
+      - "scripts/lib/semver-diff.mjs"
+      - ".github/workflows/verify-date-fns.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "package.json"
+      - "bun.lock"
+      - "scripts/verify-datefns-versions.mjs"
+      - "scripts/lib/resolve-locked-version.mjs"
+      - "scripts/lib/semver-diff.mjs"
+      - ".github/workflows/verify-date-fns.yml"
+
+jobs:
+  verify-date-fns:
+    name: Verify date-fns version alignment
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies (frozen lockfile)
+        run: bun install --frozen-lockfile
+
+      - name: Verify date-fns alignment (spec ↔ lock ↔ installed)
+        run: bun run verify:date-fns
