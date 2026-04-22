@@ -113,7 +113,7 @@ function scanTreeShaking(rootDir, previous) {
     }
   }
 
-  const riskLevel = barrelImportsFound === 0 ? "ok" : barrelImportsFound < 5 ? "warning" : "critical";
+  const riskLevel = computeRiskLevel(barrelImportsFound);
   return {
     scannedAt: new Date().toISOString(),
     filesScanned,
