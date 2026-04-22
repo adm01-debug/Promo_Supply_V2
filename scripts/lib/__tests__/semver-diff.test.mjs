@@ -22,7 +22,7 @@ import {
   classifyDiff,
   renderMismatch,
   splitSemver,
-} from "../lib/semver-diff.mjs";
+} from "../semver-diff.mjs";
 
 describe("splitSemver", () => {
   it("parses a plain X.Y.Z release", () => {
