@@ -18,6 +18,11 @@ const DRY_RUN = ARGS.some((a) => a === "--dry-run" || a === "-n");
 // (subpath + named exports) hashes to the same signature stored in the
 // existing manifest. Pure short-circuit — never writes, never fails.
 const IF_CHANGED = ARGS.some((a) => a === "--if-changed");
+// --verbose / -v: emit per-file trace of every detected import block, every
+// skipped type-only import, and every unsupported-shape warning with its
+// reason. Off by default to keep CI logs clean.
+const VERBOSE = ARGS.some((a) => a === "--verbose" || a === "-v");
+const vlog = (msg) => { if (VERBOSE) console.log(`  · ${msg}`); };
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
 const OUT_FILE = join(SRC_DIR, "test", "dateFns.smoke.test.ts");
