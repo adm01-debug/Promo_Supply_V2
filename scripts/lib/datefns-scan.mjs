@@ -137,11 +137,56 @@ export function detectUnsupportedDateFnsUsage(src, file = "<inline>") {
 
   REQUIRE_DESTRUCTURE_RE.lastIndex = 0;
   let m;
+  // Track byte offsets of destructured-require matches so we can suppress the
+  // bare-require pass from double-reporting them (the bare regex matches the
+  // `require(...)` portion of a destructured statement too).
+  const destructuredOffsets = new Set();
   while ((m = REQUIRE_DESTRUCTURE_RE.exec(src)) !== null) {
+    destructuredOffsets.add(m.index + m[0].indexOf("require("));
     findings.push({
       kind: "require-destructure",
       subpath: m[2],
       names: parseSpecifiers(m[1]),
+      line: lineFor(m.index),
+      snippet: m[0],
+      file,
+    });
+  }
+
+  // Bare/default require — `require("date-fns/format")` /
+  // `const x = require("date-fns/format")`. Skip matches whose `require(`
+  // start offset matches a destructured hit (they're the same call).
+  REQUIRE_BARE_RE.lastIndex = 0;
+  while ((m = REQUIRE_BARE_RE.exec(src)) !== null) {
+    if (destructuredOffsets.has(m.index)) continue;
+    findings.push({
+      kind: "require-bare",
+      subpath: m[1],
+      line: lineFor(m.index),
+      snippet: m[0],
+      file,
+    });
+  }
+
+  // Backtick-template require without interpolation — resolvable, same kind.
+  REQUIRE_TEMPLATE_RE.lastIndex = 0;
+  while ((m = REQUIRE_TEMPLATE_RE.exec(src)) !== null) {
+    findings.push({
+      kind: "require-bare",
+      subpath: m[1],
+      line: lineFor(m.index),
+      snippet: m[0],
+      file,
+    });
+  }
+
+  // Unresolvable CJS — interpolated template or string concat. Same fail-fast
+  // semantics as `dynamic-import-unresolvable`; distinct kind for clarity.
+  REQUIRE_UNRESOLVABLE_RE.lastIndex = 0;
+  while ((m = REQUIRE_UNRESOLVABLE_RE.exec(src)) !== null) {
+    findings.push({
+      kind: "require-unresolvable",
+      subpath: null,
       line: lineFor(m.index),
       snippet: m[0],
       file,
