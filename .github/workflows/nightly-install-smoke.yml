@@ -45,13 +45,17 @@ jobs:
           mkdir -p ci-artifacts
           node scripts/install-report.mjs --json | tee ci-artifacts/install-report.json
 
+      # Hard gate: any spec ↔ lock ↔ installed mismatch fails the job
+      # immediately, before downstream verify/smoke steps run. This is the
+      # earliest point where all three sources are known, so failing here
+      # gives the fastest, most actionable signal (and the Slack alert at
+      # the end of the job still fires via `if: failure()`).
+      - name: Strict drift check (fail-fast)
+        run: node scripts/install-report.mjs --strict --json > /dev/null
+
       - name: Print human-readable install report
         if: always()
         run: node scripts/install-report.mjs
-
-      - name: Strict drift check
-        if: always()
-        run: node scripts/install-report.mjs --strict --json > /dev/null
 
       - name: Verify date-fns versions
         if: always()
