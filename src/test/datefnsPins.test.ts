@@ -18,17 +18,33 @@
 // on for date-fns version verification.
 import { describe, expect, it } from "vitest";
 import rootPkg from "../../package.json";
+import pinnedManifest from "./datefns-pinned-packages.json";
 
 /**
- * Packages that MUST be exact-pinned. Add new entries as the project grows.
- * Each entry is a bare package name as it appears in dependencies /
- * devDependencies (e.g. "date-fns", "@date-fns/tz").
+ * Packages that MUST be exact-pinned. Sourced from
+ * `src/test/datefns-pinned-packages.json` so the list can be extended
+ * without editing test code. Schema:
+ *   { "packages": string[] }
+ * The JSON file is the single source of truth — see its `description`
+ * field and the companion JSON-schema for usage notes.
  */
-const PINNED_PACKAGES: readonly string[] = [
-  "date-fns",
-  // Add additional date-fns ecosystem packages here as they're introduced,
-  // e.g. "@date-fns/tz", "@date-fns/utc", "date-fns-tz".
-];
+const PINNED_PACKAGES: readonly string[] = (() => {
+  const raw = (pinnedManifest as { packages?: unknown }).packages;
+  if (!Array.isArray(raw)) {
+    throw new Error(
+      `src/test/datefns-pinned-packages.json must contain a "packages" array. Got: ${typeof raw}.`,
+    );
+  }
+  const cleaned = raw.filter((x): x is string => typeof x === "string" && x.length > 0);
+  if (cleaned.length !== raw.length) {
+    throw new Error(
+      `src/test/datefns-pinned-packages.json: every entry in "packages" must be a non-empty string.`,
+    );
+  }
+  // Dedupe while preserving order — duplicate entries would just produce
+  // duplicate test cases, which is noise.
+  return Array.from(new Set(cleaned));
+})();
 
 const EXACT_SEMVER_RE = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 
