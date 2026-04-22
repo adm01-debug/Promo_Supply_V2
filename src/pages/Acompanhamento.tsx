@@ -301,6 +301,7 @@ const Acompanhamento = () => {
           })()}
         </DialogContent>
       </Dialog>
+      {clearFlow.ConfirmDialog}
     </MainLayout>
   );
 };
