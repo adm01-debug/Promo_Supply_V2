@@ -72,7 +72,18 @@ function hasBin(name) {
 
 function runRunner(runner, jsonPath) {
   // Both `bun run` and `npm run` forward args after `--` to the script.
-  const args = ["run", "test:date-fns", "--", "--reporter=json", `--outputFile=${jsonPath}`];
+  // FORWARDED_ARGS go LAST so they can override our --reporter/--outputFile
+  // if the caller really wants to (rare, but supported — vitest takes the
+  // last value for repeated flags).
+  const args = [
+    "run",
+    "test:date-fns",
+    "--",
+    "--reporter=json",
+    `--outputFile=${jsonPath}`,
+    ...FORWARDED_ARGS,
+  ];
+
   const start = Date.now();
   const result = spawnSync(runner, args, {
     stdio: ["ignore", "inherit", "inherit"],
