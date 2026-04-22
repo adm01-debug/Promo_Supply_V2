@@ -313,7 +313,7 @@ for (const file of scannedFiles) {
       subpaths.add(sp);
       kindOccurrences[kind] += 1;
       kindSubpaths[kind].add(sp);
-      recordSubpathFile(sp, file);
+      recordSubpathFile(sp, file, lineFromOffset(src, m.index));
     }
   }
   // Resolvable template literals — `import(\`date-fns/format\`)` — are valid
@@ -326,7 +326,7 @@ for (const file of scannedFiles) {
     subpaths.add(sp);
     kindOccurrences.dynamic += 1;
     kindSubpaths.dynamic.add(sp);
-    recordSubpathFile(sp, file);
+    recordSubpathFile(sp, file, lineFromOffset(src, tm.index));
   }
   // CJS counterpart: backtick-template require, no interpolation.
   RESOLVABLE_REQUIRE_TEMPLATE_RE.lastIndex = 0;
@@ -336,7 +336,7 @@ for (const file of scannedFiles) {
     subpaths.add(sp);
     kindOccurrences["cjs-require"] += 1;
     kindSubpaths["cjs-require"].add(sp);
-    recordSubpathFile(sp, file);
+    recordSubpathFile(sp, file, lineFromOffset(src, rtm.index));
   }
   // Unresolvable dynamic imports — record for failure mode D.
   UNRESOLVABLE_DYNAMIC_RE.lastIndex = 0;
