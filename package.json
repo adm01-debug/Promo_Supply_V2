@@ -38,6 +38,8 @@
     "verify:datefns-files:write": "node scripts/verify-datefns-files.mjs --write-health",
     "verify:install-report": "bun install --frozen-lockfile && node scripts/install-report.mjs --strict",
     "verify:install-report:json": "node scripts/install-report.mjs --json > public/install-report.json",
+    "verify:install-report:prom": "node scripts/install-report.mjs --json | node scripts/install-report-export.mjs --format=prom",
+    "verify:install-report:csv": "node scripts/install-report.mjs --json | node scripts/install-report-export.mjs --format=csv",
     "pretest": "node scripts/verify-datefns-files.mjs",
     "test": "vitest run",
     "test:date-fns": "vitest run src/test/dateFns.smoke.test.ts --reporter=verbose --passWithNoTests",
