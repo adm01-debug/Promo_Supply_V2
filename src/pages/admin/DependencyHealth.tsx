@@ -820,6 +820,120 @@ const DependencyHealth = () => {
         </Card>
       )}
 
+      {/* Smoke test card — always renders, even when snapshot.smokeTest is missing
+          or status === "unknown". The "Atualizar agora" action only refreshes the
+          deps health payload (no smoke run), so we render an "Sem dados" state
+          instead of hiding the card, making the absence of data discoverable. */}
+      {(() => {
+        const smoke = snapshot.smokeTest;
+        const statusRaw = (smoke?.status ?? "").toLowerCase();
+        const hasData = !!smoke && statusRaw !== "" && statusRaw !== "unknown";
+        const tone: "ok" | "fail" | "unknown" =
+          statusRaw === "pass" ? "ok" : statusRaw === "fail" ? "fail" : "unknown";
+        const dotClass =
+          tone === "ok" ? "bg-success" : tone === "fail" ? "bg-destructive" : "bg-muted-foreground";
+        const label = tone === "ok" ? "Passou" : tone === "fail" ? "Falhou" : "Sem dados";
+
+        return (
+          <Card aria-labelledby="smoke-test-card-title">
+            <CardHeader>
+              <CardTitle id="smoke-test-card-title" className="flex items-center gap-2 text-lg">
+                <FlaskConical className="h-5 w-5 text-primary" />
+                Smoke test (date-fns)
+                <Badge
+                  variant={tone === "ok" ? "default" : tone === "fail" ? "destructive" : "secondary"}
+                  className="ml-2 gap-1.5"
+                >
+                  <span className={`w-2 h-2 rounded-full ${dotClass}`} aria-hidden="true" />
+                  {label}
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                Resultado do workflow <code className="font-mono text-xs">smoke-date-fns</code> gravado em{" "}
+                <code className="font-mono text-xs">public/dependency-health.json</code>.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              {!hasData ? (
+                <Alert>
+                  <HelpCircle className="h-4 w-4" />
+                  <AlertTitle>Sem dados de smoke test</AlertTitle>
+                  <AlertDescription className="space-y-1">
+                    <p>
+                      Nenhum resultado registrado ainda. O bloco{" "}
+                      <code className="font-mono text-xs">smokeTest</code> só é preenchido pelo workflow{" "}
+                      <code className="font-mono text-xs">.github/workflows/smoke-date-fns.yml</code> em
+                      pushes para <code className="font-mono text-xs">main</code> ou pull requests que tocam{" "}
+                      <code className="font-mono text-xs">src/**</code>.
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      A ação <strong>Atualizar agora</strong> só recalcula drift e tree-shaking — ela preserva
+                      o último smoke conhecido, mas não dispara um novo. Aguarde o próximo PR ou commit em{" "}
+                      <code className="font-mono text-xs">main</code>.
+                    </p>
+                  </AlertDescription>
+                </Alert>
+              ) : (
+                <>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="rounded-md border bg-muted/30 p-3">
+                      <div className="text-xs text-muted-foreground">Duração</div>
+                      <div className="font-medium">
+                        {typeof smoke!.durationMs === "number" ? `${smoke!.durationMs} ms` : "—"}
+                      </div>
+                    </div>
+                    <div className="rounded-md border bg-muted/30 p-3">
+                      <div className="text-xs text-muted-foreground">Executado</div>
+                      <div className="font-medium">
+                        {smoke!.ranAt
+                          ? formatDistanceToNow(parseISO(smoke!.ranAt), { addSuffix: true, locale: ptBR })
+                          : "—"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {smoke!.testFile && (
+                    <div className="text-xs text-muted-foreground">
+                      Arquivo: <code className="font-mono">{smoke!.testFile}</code>
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {smoke!.ci?.runUrl && (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={smoke!.ci.runUrl} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
+                          Abrir execução
+                        </a>
+                      </Button>
+                    )}
+                    {smoke!.ci?.prNumber && smoke!.ci.prUrl && (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={smoke!.ci.prUrl} target="_blank" rel="noopener noreferrer">
+                          <GitBranch className="h-3.5 w-3.5 mr-1.5" />
+                          PR #{smoke!.ci.prNumber}
+                          {smoke!.ci.branch ? ` · ${smoke!.ci.branch}` : ""}
+                        </a>
+                      </Button>
+                    )}
+                    {smoke!.log?.path && (
+                      <Button asChild variant="outline" size="sm">
+                        <a href={smoke!.log.path} target="_blank" rel="noopener noreferrer">
+                          <FileText className="h-3.5 w-3.5 mr-1.5" />
+                          Log completo
+                          {typeof smoke!.log.sizeBytes === "number" &&
+                            ` (${(smoke!.log.sizeBytes / 1024).toFixed(1)} KB)`}
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        );
+      })()}
+
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
