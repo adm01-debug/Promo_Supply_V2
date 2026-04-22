@@ -196,7 +196,7 @@ const Acompanhamento = () => {
         <Card className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input placeholder="Buscar por ID, produto, empresa ou fornecedor..." className="pl-10" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
-            {filtroSLA !== 'todos' && <Button variant="outline" className="gap-2" onClick={() => setFiltroSLA('todos')}>Limpar filtro SLA</Button>}
+            {(searchTerm || filtroSLA !== 'todos') && <Button variant="outline" className="gap-2" onClick={clearFlow.requestClear}>Limpar filtros</Button>}
             <Button variant="outline" className="gap-2"><Filter className="w-4 h-4" />Filtros</Button>
           </div>
         </Card>
@@ -207,7 +207,7 @@ const Acompanhamento = () => {
         ) : (
           <div className="space-y-4">
             {pedidosFiltrados.length === 0 ? (
-              <IllustratedEmptyState type="orders" title="Nenhum pedido em acompanhamento" description="Nenhum pedido corresponde aos filtros atuais." action={{ label: "Limpar filtros", onClick: () => { setSearchTerm(''); setFiltroSLA('todos'); }, variant: "outline" }} />
+              <IllustratedEmptyState type="orders" title="Nenhum pedido em acompanhamento" description="Nenhum pedido corresponde aos filtros atuais." action={{ label: "Limpar filtros", onClick: clearFlow.requestClear, variant: "outline" }} />
             ) : pedidosFiltrados.map((pedido) => {
               const SLAIcon = pedido.sla.icon;
               const isUrgent = pedido.sla.status === 'atrasado' || pedido.sla.status === 'critico';
