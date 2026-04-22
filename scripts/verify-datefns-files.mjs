@@ -9,11 +9,32 @@ import { readdirSync, readFileSync, statSync, existsSync, writeFileSync, mkdirSy
 import { join, relative, dirname } from "node:path";
 
 const ROOT = process.cwd();
-const WRITE_HEALTH = process.argv.slice(2).some((a) => a === "--write-health" || a === "--update-health");
+const ARGS = process.argv.slice(2);
+const WRITE_HEALTH = ARGS.some((a) => a === "--write-health" || a === "--update-health");
 const SNAPSHOT_PATH = join(ROOT, "public", "dependency-health.json");
 const SRC_DIR = join(ROOT, "src");
 const PKG_DIR = join(ROOT, "node_modules", "date-fns");
 const PKG_REL = relative(ROOT, PKG_DIR);
+
+// ── Scan roots ───────────────────────────────────────────────────────────────
+// Default: src/ plus any sibling test directories that actually exist
+// (tests/, test/, e2e/). Build output (dist/, build/), node_modules, .git,
+// stories and mocks are excluded via EXCLUDE_DIRS / EXCLUDE_FILE_RE below —
+// keeping local + CI scans tightly scoped to runtime source.
+//
+// Override via repeatable `--scan-dir <path>` (relative to repo root). When
+// any `--scan-dir` flag is given, the defaults are REPLACED, not extended.
+const DEFAULT_SCAN_ROOTS = ["src", "tests", "test", "e2e"]
+  .map((d) => join(ROOT, d))
+  .filter((p) => existsSync(p) && statSync(p).isDirectory());
+const CLI_SCAN_ROOTS = [];
+for (let i = 0; i < ARGS.length; i++) {
+  if (ARGS[i] === "--scan-dir" && ARGS[i + 1]) {
+    CLI_SCAN_ROOTS.push(join(ROOT, ARGS[i + 1]));
+    i++;
+  }
+}
+const SCAN_ROOTS = CLI_SCAN_ROOTS.length > 0 ? CLI_SCAN_ROOTS : DEFAULT_SCAN_ROOTS;
 // Directories skipped during the walk (matched by basename).
 // __mocks__ and storybook directories are intentionally excluded — they exercise
 // imports for tooling, not runtime behavior, and should not influence the
@@ -130,14 +151,18 @@ function printBlock(title, body, { withRule = true } = {}) {
   if (withRule) console.error(red(RULE));
 }
 
-function walk(dir, acc = []) {
+function walk(dir, scanRoot, acc = []) {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
     const st = statSync(full);
     if (st.isDirectory()) {
+      // Legacy quirk: skip src/test (vendored test fixtures), but DON'T
+      // skip the scan root itself when the user pointed us at a test dir.
       if (full === join(SRC_DIR, "test")) continue;
-      if (EXCLUDE_DIRS.has(entry)) continue;
-      walk(full, acc);
+      // Don't apply the basename exclude list to the scan root — otherwise
+      // `--scan-dir test` would no-op because `test` is in EXCLUDE_DIRS.
+      if (full !== scanRoot && EXCLUDE_DIRS.has(entry)) continue;
+      walk(full, scanRoot, acc);
     } else if (FILE_EXT.test(entry) && !EXCLUDE_FILE_RE.test(entry)) {
       acc.push(full);
     }
@@ -165,7 +190,14 @@ function lineFromOffset(src, offset) {
   return line;
 }
 
-for (const file of walk(SRC_DIR)) {
+// Aggregate scanned file list across every root, then dedupe by absolute
+// path. Roots can overlap (e.g. someone passes both `src` and `src/lib`)
+// without double-counting matches or inflating the breakdown numbers.
+const scannedFiles = new Set();
+for (const root of SCAN_ROOTS) {
+  for (const f of walk(root, root)) scannedFiles.add(f);
+}
+for (const file of scannedFiles) {
   const src = readFileSync(file, "utf8");
   for (const { kind, re, typeIdx, pathIdx } of IMPORT_PATTERNS) {
     re.lastIndex = 0;
@@ -206,7 +238,8 @@ for (const file of walk(SRC_DIR)) {
 // even when verification later fails. Kept compact (one line per kind) so
 // it doesn't drown the green ✓ summary on success.
 function printBreakdown() {
-  console.log(cyan("▶ date-fns import breakdown (pre-verify):"));
+  const rootsLabel = SCAN_ROOTS.map((r) => relative(ROOT, r) || ".").join(", ");
+  console.log(cyan(`▶ date-fns import breakdown (pre-verify) — roots: ${rootsLabel}, files: ${scannedFiles.size}`));
   for (const kind of PATTERN_KINDS) {
     const occ = kindOccurrences[kind];
     const uniq = kindSubpaths[kind].size;
@@ -304,8 +337,8 @@ if (!existsSync(PKG_DIR)) {
 // ── Failure mode B: no imports detected at all ───────────────────────────────
 if (subpaths.size === 0) {
   const body = [
-    cyan("Scan root:"),
-    `  ${relative(ROOT, SRC_DIR)}`,
+    cyan("Scan roots:"),
+    ...SCAN_ROOTS.map((r) => `  ${relative(ROOT, r) || "."}`),
     "",
     cyan("Likely cause:"),
     "  Source layout changed, or the static-import regex no longer matches",
