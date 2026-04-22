@@ -131,12 +131,15 @@ VITEST_ARGS=("run" "src/test/dateFns.smoke.test.ts" "--reporter=verbose")
 if [ "$REPORT_FORMAT" = "junit" ]; then
   step "3/3" "Run vitest smoke test (verbose + JUnit XML → $REPORT_PATH)"
   mkdir -p "$(dirname "$REPORT_PATH")"
-  VITEST_ARGS+=("--reporter=junit")
-  # `JUNIT_SUITE_NAME` gives downstream viewers a stable, human-readable
-  # name under the run rather than the default `vitest tests`. Picked to
-  # match the smoke pipeline identity, not the test file path.
-  export JUNIT_SUITE_NAME="date-fns subpath smoke"
-  export VITEST_JUNIT_OUTPUT_FILE="$REPORT_PATH"
+  # Pin the JUnit output to a file via vitest's documented --outputFile.junit
+  # selector. The bare `--outputFile=<path>` form would also work since
+  # only one reporter writes files here, but the namespaced form is
+  # explicit and survives a future second file-writing reporter being
+  # added without silently overwriting this artifact.
+  VITEST_ARGS+=("--reporter=junit" "--outputFile.junit=$REPORT_PATH")
+  # Stable, human-readable suite name for downstream CI test viewers
+  # (instead of the default `vitest tests`).
+  export VITEST_JUNIT_SUITE_NAME="date-fns subpath smoke"
 else
   step "3/3" "Run vitest smoke test (src/test/dateFns.smoke.test.ts)"
 fi
