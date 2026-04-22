@@ -4,9 +4,12 @@ name: lint
 #   [1/2] npm run lint -- --max-warnings=0   (general ESLint, zero-warnings)
 #   [2/2] npm run lint:date-fns              (date-fns barrel import check)
 #
-# Both suites always run (failures in step 1 do NOT short-circuit step 2)
-# so a single CI invocation surfaces every lint issue across both suites.
-# The job fails the build the moment either suite reports an error.
+# Mode: FAIL-FAST (default). If suite #1 fails, suite #2 is skipped and
+# the job exits non-zero immediately — CI surfaces the red build sooner
+# and we don't burn runner minutes on a downstream suite that can't
+# unblock the merge anyway. To debug both suites in one run locally:
+#   LINT_FAIL_FAST=0 bun run lint:all
+# (or set the env var on this job for a one-off full run).
 #
 # Companion to smoke-date-fns.yml / pr-date-fns-smoke.yml — those gate the
 # date-fns subpath EXISTENCE on disk; this gate is purely about lint
