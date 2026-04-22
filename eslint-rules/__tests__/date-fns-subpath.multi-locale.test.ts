@@ -24,7 +24,6 @@
  */
 import { describe, it, expect } from "vitest";
 import { Linter } from "eslint";
-import * as tsParser from "@typescript-eslint/parser";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 // @ts-expect-error - plain JS rule, no type declarations
@@ -32,15 +31,13 @@ import { dateFnsSubpath } from "../date-fns-subpath.js";
 
 const RULE_ID = "local/date-fns-subpath";
 
-// TS parser is required because the fixture uses `import type` syntax
-// to exercise the rule's type-only branch. The behavior tests use
-// espree because they only cover plain JS imports — keep this config
-// local to avoid regressing those.
+// Espree (ESLint's built-in parser) is enough — every import in the
+// fixture is plain JS-compatible syntax. Using espree keeps these
+// tests free of the `@typescript-eslint/parser` runtime dep.
 const CONFIG = {
-  files: ["**/*.ts"],
+  files: ["**/*.js"],
   plugins: { local: { rules: { "date-fns-subpath": dateFnsSubpath } } },
   languageOptions: {
-    parser: tsParser,
     ecmaVersion: 2020 as const,
     sourceType: "module" as const,
   },
@@ -48,10 +45,10 @@ const CONFIG = {
 };
 
 function lint(src: string) {
-  return new Linter().verify(src, CONFIG as never, "x.ts");
+  return new Linter().verify(src, CONFIG as never, "x.js");
 }
 function fix(src: string) {
-  return new Linter().verifyAndFix(src, CONFIG as never, { filename: "x.ts" });
+  return new Linter().verifyAndFix(src, CONFIG as never, { filename: "x.js" });
 }
 
 describe("local/date-fns-subpath — multi-locale fixture autofix", () => {
