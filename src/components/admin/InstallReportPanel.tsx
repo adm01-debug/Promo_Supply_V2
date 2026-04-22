@@ -41,12 +41,30 @@ const formatBytes = (n: number) => {
 };
 
 const InstallReportPanel = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ["install-report"],
     queryFn: fetchReport,
     staleTime: 60_000,
     retry: false,
   });
+
+  const handleRefresh = async () => {
+    const result = await refetch();
+    if (result.error) {
+      toast({
+        title: "Falha ao atualizar relatório",
+        description: result.error instanceof Error ? result.error.message : "Erro desconhecido",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Relatório atualizado",
+        description: result.data?.generatedAt
+          ? `Gerado em ${result.data.generatedAt}`
+          : "Dados recarregados.",
+      });
+    }
+  };
 
   const driftMessages: string[] = [];
   if (data) {
