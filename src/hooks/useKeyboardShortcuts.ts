@@ -112,6 +112,7 @@ export const shortcutsList = [
     { keys: "Ctrl/⌘ + Shift + P", description: "Novo Pedido" },
     { keys: "Ctrl/⌘ + Shift + F", description: "Novo Fornecedor" },
     { keys: "Ctrl/⌘ + Shift + C", description: "Novo Contrato" },
+    { keys: "Ctrl/⌘ + Shift + L", description: "Limpar filtros (tela atual)" },
   ]},
   { category: "Navegação", items: [
     { keys: "Alt + Backspace", description: "Voltar" },
