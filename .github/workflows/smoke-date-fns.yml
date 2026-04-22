@@ -101,6 +101,13 @@ jobs:
           # verifier still exits non-zero on drift, which propagates through
           # `bun run smoke:date-fns` and fails this step.
           DATEFNS_SMOKE_SUMMARY_MD: ci-artifacts/datefns-drift.md
+          # Picked up by scripts/verify-datefns-files.mjs to write the FULL
+          # failure report (partitioned missing list + copy-paste bare list +
+          # likely-cause diagnosis + 3-step repair recipe with exact commands)
+          # to this path. Written ONLY on failure — uploaded as the dedicated
+          # `smoke-date-fns-failure-report` artifact below so reviewers get
+          # the full repair recipe offline without scrolling job logs.
+          DATEFNS_SMOKE_REPORT_MD: ci-artifacts/datefns-failure-report.md
         run: |
           mkdir -p ci-artifacts
           set -o pipefail
