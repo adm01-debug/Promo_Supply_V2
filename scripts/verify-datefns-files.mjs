@@ -196,6 +196,15 @@ const subpaths = new Set();
 // Both are useful — occurrences shows churn, unique shows surface area.
 const kindOccurrences = Object.fromEntries(PATTERN_KINDS.map((k) => [k, 0]));
 const kindSubpaths = Object.fromEntries(PATTERN_KINDS.map((k) => [k, new Set()]));
+// subpath → Set<absoluteFilePath>. Drives the per-entry `fileCount` / `files[]`
+// fields in the snapshot, which the diff script uses to highlight which
+// imports actually drove drift (added/removed) and how widespread they are.
+const subpathFiles = new Map();
+const recordSubpathFile = (sp, file) => {
+  let s = subpathFiles.get(sp);
+  if (!s) { s = new Set(); subpathFiles.set(sp, s); }
+  s.add(file);
+};
 // Unresolvable dynamic imports: `[{ file, line, snippet }]`. Surfaced via
 // failure mode D below — verifier exits non-zero if any are present.
 const unresolvableDynamic = [];
