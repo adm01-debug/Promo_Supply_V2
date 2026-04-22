@@ -118,6 +118,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: datefns-parity-log-${{ github.run_id }}
-          path: ci-artifacts/datefns-parity.log
+          path: |
+            ci-artifacts/datefns-parity.log
+            ci-artifacts/datefns-parity-summary.json
+            ci-artifacts/datefns-parity-summary.md
           if-no-files-found: warn
           retention-days: 30
