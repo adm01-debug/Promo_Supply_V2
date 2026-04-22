@@ -76,7 +76,42 @@ jobs:
         run: |
           mkdir -p ci-artifacts
           set -o pipefail
-          bun run smoke:date-fns 2>&1 | tee ci-artifacts/smoke-date-fns.log
+          start_ms=$(date +%s%3N)
+          if bun run smoke:date-fns 2>&1 | tee ci-artifacts/smoke-date-fns.log; then
+            smoke_status=pass
+            exit_code=0
+          else
+            smoke_status=fail
+            exit_code=$?
+          fi
+          end_ms=$(date +%s%3N)
+          echo "status=$smoke_status" >> "$GITHUB_OUTPUT"
+          echo "duration_ms=$((end_ms - start_ms))" >> "$GITHUB_OUTPUT"
+          exit "$exit_code"
+
+      - name: Record smoke result into dependency-health.json
+        if: always()
+        run: |
+          node scripts/record-smoke-result.mjs \
+            --status "${{ steps.smoke.outputs.status || 'fail' }}" \
+            --duration-ms "${{ steps.smoke.outputs.duration_ms || '0' }}" \
+            --test-file "src/test/dateFns.smoke.test.ts"
+
+      - name: Upload updated dependency-health.json (smoke result)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-health-smoke-${{ github.run_id }}
+          path: public/dependency-health.json
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Commit updated snapshot (main only)
+        if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(deps): record smoke test result [skip ci]"
+          file_pattern: public/dependency-health.json
 
       - name: Surface smoke failure in job summary
         if: failure()
