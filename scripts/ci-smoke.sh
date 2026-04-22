@@ -85,6 +85,9 @@ print_summary() {
   if [ -n "$DATEFNS_INSTALLED" ] && [ -n "$DATEFNS_LOCKED" ]; then
     if [ "$DATEFNS_VERSION_OK" -eq 1 ]; then
       datefns_line="$DATEFNS_INSTALLED (matches lockfile ✓)"
+      if [ "${DATEFNS_RETRY_TRIGGERED:-0}" -eq 1 ]; then
+        datefns_line="$datefns_line  [recovered after 1 retry]"
+      fi
     else
       datefns_line="installed=$DATEFNS_INSTALLED locked=$DATEFNS_LOCKED ✗"
     fi
