@@ -109,10 +109,12 @@ jobs:
         if: failure()
         run: |
           {
-            echo "## ❌ date-fns smoke test is out of sync"
+            echo "## ❌ date-fns smoke test or manifest is out of sync"
             echo ""
-            echo "\`src/test/dateFns.smoke.test.ts\` no longer matches the"
-            echo "\`date-fns/*\` imports under \`src/\`."
+            echo "One of the following has drifted from the current"
+            echo "\`date-fns/*\` imports under \`src/\`:"
+            echo "- \`src/test/dateFns.smoke.test.ts\`"
+            echo "- \`public/datefns-usage.json\`"
             echo ""
             echo "**Fix locally:**"
             echo '```bash'
