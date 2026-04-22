@@ -42,32 +42,51 @@ const FILE_EXT = /\.(ts|tsx)$/;
 //   6. Re-export all:       export * from "date-fns/fn"
 //   7. Dynamic import:      import("date-fns/fn")
 // Type-only imports (`import type … from`, `export type … from`) are skipped.
+// Each pattern is tagged with a `kind` so the breakdown report can show how
+// each subpath was discovered. `export-from` (named re-export) and
+// `export-star` (`export * from`) are separated because they have very
+// different tree-shaking implications — a star re-export of a date-fns
+// subpath is usually a smell worth flagging in the summary.
 const IMPORT_PATTERNS = [
-  // Named/default/namespace imports — capture the optional `type` keyword
+  // Static imports: named/default/namespace (incl. `import type`)
   {
+    kind: "static",
     re: /import\s+(type\s+)?(?:\{[^{}]*\}|\*\s+as\s+[\w$]+|[\w$]+(?:\s*,\s*\{[^{}]*\})?)\s+from\s+["']date-fns\/([^"']+)["']/g,
     typeIdx: 1,
     pathIdx: 2,
   },
-  // Side-effect import: `import "date-fns/format"`
+  // Side-effect import: `import "date-fns/format"` — counted as static.
   {
+    kind: "static",
     re: /import\s+["']date-fns\/([^"']+)["']/g,
     typeIdx: -1,
     pathIdx: 1,
   },
-  // Re-exports: `export { x } from "..."` and `export * from "..."` (incl. `export type`)
+  // Named re-export: `export { x } from "date-fns/..."` (incl. `export type`)
   {
-    re: /export\s+(type\s+)?(?:\{[^{}]*\}|\*(?:\s+as\s+[\w$]+)?)\s+from\s+["']date-fns\/([^"']+)["']/g,
+    kind: "export-from",
+    re: /export\s+(type\s+)?\{[^{}]*\}\s+from\s+["']date-fns\/([^"']+)["']/g,
+    typeIdx: 1,
+    pathIdx: 2,
+  },
+  // Star re-export: `export * from "date-fns/..."` / `export * as ns from "..."`
+  {
+    kind: "export-star",
+    re: /export\s+(type\s+)?\*(?:\s+as\s+[\w$]+)?\s+from\s+["']date-fns\/([^"']+)["']/g,
     typeIdx: 1,
     pathIdx: 2,
   },
   // Dynamic import: `import("date-fns/format")` or `await import('date-fns/format')`
   {
+    kind: "dynamic",
     re: /import\s*\(\s*["']date-fns\/([^"']+)["']\s*\)/g,
     typeIdx: -1,
     pathIdx: 1,
   },
 ];
+
+// Display order for the breakdown report — most → least common in practice.
+const PATTERN_KINDS = ["static", "dynamic", "export-from", "export-star"];
 
 // ── ANSI color helpers (TTY only — keep CI logs clean) ────────────────────────
 const isTTY = Boolean(process.stdout.isTTY);
@@ -105,17 +124,50 @@ function walk(dir, acc = []) {
 }
 
 const subpaths = new Set();
+// Per-kind tracking: occurrences (raw match count) and unique subpaths.
+// Both are useful — occurrences shows churn, unique shows surface area.
+const kindOccurrences = Object.fromEntries(PATTERN_KINDS.map((k) => [k, 0]));
+const kindSubpaths = Object.fromEntries(PATTERN_KINDS.map((k) => [k, new Set()]));
 for (const file of walk(SRC_DIR)) {
   const src = readFileSync(file, "utf8");
-  for (const { re, typeIdx, pathIdx } of IMPORT_PATTERNS) {
+  for (const { kind, re, typeIdx, pathIdx } of IMPORT_PATTERNS) {
     re.lastIndex = 0;
     let m;
     while ((m = re.exec(src)) !== null) {
       if (typeIdx >= 0 && m[typeIdx]) continue; // skip type-only imports/exports
-      subpaths.add(m[pathIdx]);
+      const sp = m[pathIdx];
+      subpaths.add(sp);
+      kindOccurrences[kind] += 1;
+      kindSubpaths[kind].add(sp);
     }
   }
 }
+
+// ── Breakdown report ─────────────────────────────────────────────────────────
+// Printed BEFORE the existence check so the user sees the discovery stats
+// even when verification later fails. Kept compact (one line per kind) so
+// it doesn't drown the green ✓ summary on success.
+function printBreakdown() {
+  console.log(cyan("▶ date-fns import breakdown (pre-verify):"));
+  for (const kind of PATTERN_KINDS) {
+    const occ = kindOccurrences[kind];
+    const uniq = kindSubpaths[kind].size;
+    if (occ === 0) {
+      console.log(`    ${gray(`• ${kind.padEnd(12)} 0 occurrences`)}`);
+      continue;
+    }
+    const label = kind.padEnd(12);
+    const occStr = `${occ} occurrence${occ === 1 ? "" : "s"}`;
+    const uniqStr = `${uniq} unique subpath${uniq === 1 ? "" : "s"}`;
+    console.log(`    • ${bold(label)} ${occStr.padEnd(18)} ${gray(`(${uniqStr})`)}`);
+  }
+  console.log(`    ${gray("─".repeat(48))}`);
+  console.log(
+    `    ${bold("total".padEnd(12))} ${gray(`${subpaths.size} unique subpath(s) across all patterns`)}`,
+  );
+  console.log("");
+}
+printBreakdown();
 
 // ── Failure mode A: package directory missing ────────────────────────────────
 if (!existsSync(PKG_DIR)) {
