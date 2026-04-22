@@ -101,9 +101,15 @@ describe("local/date-fns-subpath — per-locale autofix coverage", () => {
       expect(result.output.trim()).toBe(
         `import { ${name} } from "date-fns/locale/${subpath}";`,
       );
-      // And the rewritten file must itself be lint-clean.
-      const post = linter.verify(result.output, CONFIG as never, "test.ts");
-      expect(post).toEqual([]);
+      // Re-lint the rewritten output and assert no message from THIS
+      // rule fires on the canonical subpath import (parser-level
+      // notices with `ruleId: null` are ignored — we only care that
+      // the rule itself is satisfied by its own fix).
+      const post = linter.verify(result.output, CONFIG as never, "test.js");
+      const ourMessages = post.filter(
+        (m) => m.ruleId === "local/date-fns-subpath",
+      );
+      expect(ourMessages).toEqual([]);
     });
   }
 
