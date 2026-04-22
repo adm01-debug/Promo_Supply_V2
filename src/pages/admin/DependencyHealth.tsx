@@ -411,7 +411,7 @@ const DependencyHealth = () => {
           <div className="font-mono text-xs text-muted-foreground">{generatedAt}</div>
         </CardContent>
       </Card>
-      {data.treeShaking && (
+      {snapshot.treeShaking && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
@@ -427,12 +427,12 @@ const DependencyHealth = () => {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex flex-wrap items-center gap-3">
-              {data.treeShaking.riskLevel === "ok" ? (
+              {snapshot.treeShaking.riskLevel === "ok" ? (
                 <Badge variant="secondary" className="gap-1">
                   <CheckCircle2 className="h-3 w-3" />
                   OK
                 </Badge>
-              ) : data.treeShaking.riskLevel === "warning" ? (
+              ) : snapshot.treeShaking.riskLevel === "warning" ? (
                 <Badge className="gap-1 bg-warning text-warning-foreground hover:bg-warning/90">
                   <AlertTriangle className="h-3 w-3" />
                   Atenção
@@ -444,13 +444,13 @@ const DependencyHealth = () => {
                 </Badge>
               )}
               <span className="text-sm text-muted-foreground">
-                {data.treeShaking.filesScanned} arquivo(s) escaneado(s) ·{" "}
-                {data.treeShaking.barrelImportsFound} import(s) barrel
-                {data.treeShaking.truncated ? " (lista truncada em 50)" : ""}
+                {snapshot.treeShaking.filesScanned} arquivo(s) escaneado(s) ·{" "}
+                {snapshot.treeShaking.barrelImportsFound} import(s) barrel
+                {snapshot.treeShaking.truncated ? " (lista truncada em 50)" : ""}
               </span>
             </div>
 
-            {data.treeShaking.barrelImportsFound === 0 ? (
+            {snapshot.treeShaking.barrelImportsFound === 0 ? (
               <div className="flex items-center gap-2 text-sm text-success">
                 <CheckCircle2 className="h-4 w-4" />
                 Nenhum import barrel detectado — tree-shaking saudável.
@@ -466,7 +466,7 @@ const DependencyHealth = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {data.treeShaking.offenders.map((o, idx) => (
+                    {snapshot.treeShaking.offenders.map((o, idx) => (
                       <TableRow key={`${o.file}:${o.line}:${idx}`}>
                         <TableCell className="font-mono text-xs">{o.file}</TableCell>
                         <TableCell className="font-mono text-xs">{o.line || "—"}</TableCell>
@@ -479,8 +479,8 @@ const DependencyHealth = () => {
             )}
 
             <div className="text-xs text-muted-foreground">
-              Escaneado em {data.treeShaking.scannedAt}
-              {data.treeShaking.note ? ` · ${data.treeShaking.note}` : ""}
+              Escaneado em {snapshot.treeShaking.scannedAt}
+              {snapshot.treeShaking.note ? ` · ${snapshot.treeShaking.note}` : ""}
             </div>
           </CardContent>
         </Card>
