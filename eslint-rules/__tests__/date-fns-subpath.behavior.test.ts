@@ -181,6 +181,58 @@ describe("local/date-fns-subpath — report-only safety nets", () => {
     expect(fixed.output).toBe(src);
   });
 
+  it("partitions a mixed namespace + named barrel fixture: fixes named, leaves namespace", () => {
+    // Pinned fixture: eslint-rules/__fixtures__/bad-date-fns-mixed-imports.ts
+    //
+    // Two violations in one file:
+    //   1. `import * as dateFns from "date-fns"` — namespace, UNFIXABLE
+    //   2. `import { format } from "date-fns"`   — named barrel, FIXABLE
+    //
+    // The rule must report both, autofix only #2 into `date-fns/format`,
+    // and leave the namespace import byte-for-byte unchanged. This guards
+    // against two regression classes:
+    //   a) silently rewriting a namespace import (would corrupt the file)
+    //   b) skipping the fixable named import because a sibling violation
+    //      in the same file is unfixable
+    const fixturePath = resolve(
+      __dirname,
+      "../__fixtures__/bad-date-fns-mixed-imports.ts",
+    );
+    const raw = readFileSync(fixturePath, "utf8");
+    // Strip ALL disable comments so the linter sees both raw violations.
+    const src = raw.replace(/^\s*\/\/ eslint-disable-next-line[^\n]*\n/gm, "");
+
+    // ── Pre-fix: both violations reported, exactly one fixable ──────────
+    const messages = lint(src);
+    const ruleHits = messages.filter((m) => m.ruleId === RULE_ID);
+    expect(ruleHits).toHaveLength(2);
+    const ids = ruleHits.map((m) => m.messageId).sort();
+    expect(ids).toEqual(["barrel", "unfixable"]);
+    const unfixableMsg = ruleHits.find((m) => m.messageId === "unfixable")!;
+    expect(unfixableMsg.message).toMatch(/Namespace import/i);
+    // ESLint attaches a `fix` descriptor only to autofixable messages.
+    const fixableCount = ruleHits.filter((m) => m.fix).length;
+    expect(fixableCount).toBe(1);
+
+    // ── Post-fix: named import rewritten, namespace import preserved ────
+    const fixed = fix(src);
+    expect(fixed.fixed).toBe(true);
+    // Named barrel was rewritten to its subpath.
+    expect(fixed.output).toContain('import { format } from "date-fns/format"');
+    // Namespace import survived verbatim — no rewrite, no deletion.
+    expect(fixed.output).toContain('import * as dateFns from "date-fns"');
+    // No bare-barrel `from "date-fns"` remains for the named import line
+    // (the namespace line legitimately keeps it; assert via count).
+    const bareBarrelMatches = fixed.output.match(/from "date-fns"/g) ?? [];
+    expect(bareBarrelMatches).toHaveLength(1);
+
+    // ── Residual: only the namespace `unfixable` report remains ─────────
+    const residual = lint(fixed.output).filter((m) => m.ruleId === RULE_ID);
+    expect(residual).toHaveLength(1);
+    expect(residual[0].messageId).toBe("unfixable");
+    expect(residual[0].message).toMatch(/Namespace import/i);
+  });
+
   it("reports the on-disk namespace-import fixture as unfixable", () => {
     // Pinned fixture: eslint-rules/__fixtures__/bad-date-fns-namespace-import.ts
     //
