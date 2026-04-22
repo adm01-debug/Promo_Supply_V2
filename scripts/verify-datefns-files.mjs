@@ -104,10 +104,21 @@ const IMPORT_PATTERNS = [
     typeIdx: -1,
     pathIdx: 1,
   },
+  // CommonJS require: `require("date-fns/format")` — including destructured
+  // (`const { format } = require(...)`) and bare side-effect form. Treated
+  // as a first-class kind so mixed CJS/ESM repos get the same fail-fast
+  // behavior on missing subpaths. Captures only the subpath; the binding
+  // shape is irrelevant to the existence check.
+  {
+    kind: "cjs-require",
+    re: /require\s*\(\s*["']date-fns\/([^"']+)["']\s*\)/g,
+    typeIdx: -1,
+    pathIdx: 1,
+  },
 ];
 
 // Display order for the breakdown report — most → least common in practice.
-const PATTERN_KINDS = ["static", "dynamic", "export-from", "export-star"];
+const PATTERN_KINDS = ["static", "dynamic", "cjs-require", "export-from", "export-star"];
 
 // Unresolvable dynamic imports — `import(\`date-fns/${x}\`)` and friends.
 // These can't be statically verified (the subpath depends on a runtime value),
