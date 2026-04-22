@@ -77,38 +77,69 @@ describe("date-fns ecosystem: exact-pin enforcement", () => {
         return;
       }
 
-      it(`spec in package.json (${found.bucket}) is exact-pinned`, () => {
-        expect(
-          EXACT_SEMVER_RE.test(found.spec),
-          `package.json ${found.bucket}["${name}"] = "${found.spec}" — must be an exact semver (no ^, ~, >=, ranges, or tags). Use \`bun add ${name}@<exact-version>\`.`,
-        ).toBe(true);
-      });
+      it("is exact-pinned in package.json AND installed version matches", async () => {
+        const spec = found.spec;
+        const bucket = found.bucket;
+        const isExact = EXACT_SEMVER_RE.test(spec);
 
-      it(`installed version in node_modules matches the pinned spec exactly`, async () => {
-        let mod: unknown;
+        // Resolve the installed version (best-effort — surface as "<not
+        // installed>" so the consolidated report stays informative even when
+        // the import fails).
+        let installed: string | "<not installed>" | "<malformed package.json>" = "<not installed>";
+        let importError: string | null = null;
         try {
-          // Dynamic import works because date-fns v3+ exposes ./package.json
-          // in its exports map. If a sibling package doesn't, this assertion
-          // surfaces it as a clear error rather than a silent miss.
-          mod = await import(/* @vite-ignore */ `${name}/package.json`);
+          const mod = (await import(/* @vite-ignore */ `${name}/package.json`)) as {
+            default?: { version?: string };
+            version?: string;
+          };
+          const v = mod.default?.version ?? mod.version;
+          installed = typeof v === "string" && v.length > 0 ? v : "<malformed package.json>";
         } catch (err) {
-          throw new Error(
-            `Failed to import "${name}/package.json": ${(err as Error).message}. ` +
-              `Either the package isn't installed (run \`bun install --frozen-lockfile\`) ` +
-              `or its exports map doesn't expose ./package.json.`,
-          );
+          importError = (err as Error).message;
         }
-        const installed = (mod as { default?: { version?: string }; version?: string }).default?.version
-          ?? (mod as { version?: string }).version;
-        expect(typeof installed, `"${name}" package.json must expose a string \`version\``).toBe("string");
-        expect(
-          installed,
-          `Installed "${name}@${installed}" does NOT match pinned "${found.spec}" in package.json. ` +
-            `Run \`bun install --frozen-lockfile\` to restore the pinned version, or update both together.`,
-        ).toBe(found.spec);
 
+        const matches = installed === spec;
+        const ok = isExact && matches;
+
+        // Always log a one-line audit trail for every package, pass or fail.
         // eslint-disable-next-line no-console
-        console.log(`[pin check] ${name}: pinned="${found.spec}" installed="${installed}" ✓`);
+        console.log(
+          `[pin check] ${name}: declared="${spec}" (${bucket}) installed="${installed}" ` +
+            `exact=${isExact ? "✓" : "✗"} matches=${matches ? "✓" : "✗"} ${ok ? "✓ OK" : "✗ FAIL"}`,
+        );
+
+        // Build a single, multi-line error report covering every relevant fact
+        // so the contributor never has to cross-reference two failed assertions.
+        const report = [
+          ``,
+          `── date-fns pin check failed for "${name}" ──`,
+          `  package          : ${name}`,
+          `  declared spec    : ${spec}     (package.json → ${bucket})`,
+          `  installed version: ${installed}`,
+          `  exact-pinned?    : ${isExact ? "yes ✓" : `no ✗  (must be plain semver, got "${spec}")`}`,
+          `  versions match?  : ${matches ? "yes ✓" : `no ✗  (declared "${spec}" ≠ installed "${installed}")`}`,
+          ...(importError
+            ? [
+                `  import error     : ${importError}`,
+                `                     (package may not be installed, or its exports map`,
+                `                      doesn't expose ./package.json)`,
+              ]
+            : []),
+          ``,
+          `  Fix:`,
+          ...(!isExact
+            ? [`    bun add ${name}@<exact-version>           # re-pin (drop ^/~/range/tag)`]
+            : []),
+          ...(!matches
+            ? [`    bun install --frozen-lockfile             # restore install to match lockfile`]
+            : []),
+          ...(importError
+            ? [`    bun install --frozen-lockfile             # ensure ${name} is installed`]
+            : []),
+          ``,
+        ].join("\n");
+
+        expect(ok, report).toBe(true);
       });
     });
   }
