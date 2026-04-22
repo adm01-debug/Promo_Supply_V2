@@ -28,6 +28,7 @@
     "verify:datefns-locales": "node scripts/verify-datefns-locales.mjs",
     "verify:datefns-smoke": "node scripts/generate-datefns-smoke-test.mjs --dry-run",
     "verify:datefns-smoke-types": "bunx tsc --noEmit -p tsconfig.smoke.json",
+    "verify:datefns-smoke-freshness": "node scripts/verify-datefns-smoke-freshness.mjs",
     "verify:datefns-files": "node scripts/verify-datefns-files.mjs",
     "verify:datefns-files:write": "node scripts/verify-datefns-files.mjs --write-health",
     "verify:install-report": "bun install --frozen-lockfile && node scripts/install-report.mjs --strict",

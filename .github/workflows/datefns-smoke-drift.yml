@@ -37,6 +37,13 @@ jobs:
           mkdir -p ci-logs
           set -o pipefail
           bun run verify:datefns-smoke-types 2>&1 | tee ci-logs/verify-smoke-types.log
+      - name: Verify smoke test freshness (size + locale-import set)
+        env:
+          TZ: UTC
+        run: |
+          mkdir -p ci-logs
+          set -o pipefail
+          bun run verify:datefns-smoke-freshness 2>&1 | tee ci-logs/verify-smoke-freshness.log
       - name: Upload smoke logs
         if: always()
         uses: actions/upload-artifact@v4
