@@ -10,10 +10,19 @@ interface PackageEntry {
   driftDetected?: boolean;
 }
 
+interface SmokeCi {
+  event?: string | null;
+  runUrl?: string;
+  prNumber?: number;
+  prUrl?: string;
+  branch?: string | null;
+}
+
 interface SmokeTest {
   status?: "pass" | "fail" | string;
   ranAt?: string;
   durationMs?: number;
+  ci?: SmokeCi;
 }
 
 interface DepHealthSnapshot {
