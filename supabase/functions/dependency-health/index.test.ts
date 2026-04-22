@@ -107,15 +107,15 @@ Deno.test("GET dependency-health?history=true → 200 with history array", async
   }
 });
 
-Deno.test("POST dependency-health (no auth) → 401", async () => {
+Deno.test("POST dependency-health (no auth) → 403", async () => {
   const res = await fetch(FN_URL, {
     method: "POST",
     headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
     body: "{}",
   });
   const body = await res.json();
-  assertEquals(res.status, 401);
-  assertEquals(body?.error, "Missing Authorization header");
+  assertEquals(res.status, 403);
+  assertEquals(body?.error, "Forbidden: admin role required");
 });
 
 Deno.test("POST dependency-health (non-admin user) → 403", async () => {
