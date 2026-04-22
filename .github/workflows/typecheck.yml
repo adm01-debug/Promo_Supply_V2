@@ -94,16 +94,27 @@ jobs:
 
       - name: ESLint on changed files (blocks on lint or type-aware rule failures)
         if: ${{ steps.changed.outputs.files != '' }}
+        env:
+          # Persistent ESLint cache shared with the actions/cache step above.
+          # Path is intentionally inside node_modules/ so it inherits the
+          # repo's existing gitignore and never gets committed.
+          ESLINT_CACHE_DIR: node_modules/.cache/eslint
         run: |
-          mkdir -p ci-artifacts
+          mkdir -p ci-artifacts "$ESLINT_CACHE_DIR"
           # Persist the changed-files manifest so failure artifacts are
           # self-explanatory ("which files did this run actually lint?").
           printf '%s\n' ${{ steps.changed.outputs.files }} > ci-artifacts/eslint-changed-files.txt
+          # --cache + --cache-location: skip files whose source + config hash
+          # is unchanged since last run. --cache-strategy=content survives
+          # mtime-only changes (e.g. fresh checkouts on every CI run).
           # --max-warnings=0 ensures warnings (including type-aware rules surfaced as warnings)
           # also block the merge. Output a JSON report alongside human-readable stylish output.
           # Tee stderr+stdout to a log so failures upload the raw error lines, not just the formatted report.
           set -o pipefail
           bunx eslint ${{ steps.changed.outputs.files }} \
+            --cache \
+            --cache-location "$ESLINT_CACHE_DIR/.eslintcache" \
+            --cache-strategy content \
             --max-warnings=0 \
             --format stylish \
             --output-file ci-artifacts/eslint-report.txt \
@@ -114,8 +125,12 @@ jobs:
             echo "── ESLint report ──"
             cat ci-artifacts/eslint-report.txt
           fi
-          # Also emit a JSON report for programmatic inspection.
+          # Also emit a JSON report for programmatic inspection. Reuses the
+          # same cache, so this second pass is essentially free.
           bunx eslint ${{ steps.changed.outputs.files }} \
+            --cache \
+            --cache-location "$ESLINT_CACHE_DIR/.eslintcache" \
+            --cache-strategy content \
             --max-warnings=0 \
             --format json \
             --output-file ci-artifacts/eslint-report.json || true
