@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { Calendar, ChevronDown, ChevronRight, Globe, Search, Sigma } from "lucide-react";
+import { Calendar, ChevronDown, ChevronRight, ExternalLink, Globe, Search, Sigma } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
@@ -16,6 +16,16 @@ interface UsageEntry {
   exports: string[];
 }
 
+interface CiMetadata {
+  provider?: string;
+  repository?: string;
+  workflow?: string | null;
+  runId?: string;
+  runAttempt?: string | null;
+  runUrl?: string;
+  latestRunsUrl?: string;
+}
+
 interface UsageManifest {
   generatedAt: string;
   totalSubpaths: number;
@@ -23,6 +33,7 @@ interface UsageManifest {
   totalLocales: number;
   functions: UsageEntry[];
   locales: UsageEntry[];
+  ci?: CiMetadata;
 }
 
 const fetchManifest = async (): Promise<UsageManifest> => {
@@ -188,6 +199,24 @@ const DateFnsUsagePanel = () => {
                 atualizado{" "}
                 {formatDistanceToNow(parseISO(data.generatedAt), { addSuffix: true, locale: ptBR })}
               </span>
+              {(data.ci?.runUrl || data.ci?.latestRunsUrl) && (
+                <a
+                  href={data.ci.runUrl ?? data.ci.latestRunsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                  aria-label={
+                    data.ci.runUrl
+                      ? `Abrir execução ${data.ci.runId ?? ""} no GitHub Actions`
+                      : "Abrir execuções do workflow no GitHub Actions"
+                  }
+                >
+                  <ExternalLink className="h-3 w-3" />
+                  {data.ci.runUrl
+                    ? `Run #${data.ci.runId ?? ""}${data.ci.runAttempt && data.ci.runAttempt !== "1" ? ` (try ${data.ci.runAttempt})` : ""}`
+                    : "Workflow runs"}
+                </a>
+              )}
             </div>
 
             <div className="relative">
