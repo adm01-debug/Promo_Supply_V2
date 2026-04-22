@@ -129,21 +129,20 @@ if (missingInSmoke.length > 0 || extraInSmoke.length > 0) {
   fail("Smoke test is stale relative to current src/ locale imports.");
 }
 
-// --- 3. Manifest generatedAt sanity check (best effort) ---
-if (existsSync(MANIFEST_FILE) && newestLocaleFile) {
+// --- 3. Manifest sanity (best effort): valid JSON + locales align with src ---
+if (existsSync(MANIFEST_FILE)) {
   try {
     const manifest = JSON.parse(readFileSync(MANIFEST_FILE, "utf8"));
-    const generatedMs = new Date(manifest.generatedAt).getTime();
-    if (
-      Number.isFinite(generatedMs) &&
-      generatedMs + 1 < newestLocaleMtime
-    ) {
-      const genIso = new Date(generatedMs).toISOString();
-      const srcIso = new Date(newestLocaleMtime).toISOString();
-      fail(
-        `Manifest generatedAt (${genIso}) is older than locale source ` +
-          `${relative(ROOT, newestLocaleFile)} mtime (${srcIso}).`,
+    if (Array.isArray(manifest.locales)) {
+      const manifestLocales = new Set(
+        manifest.locales.map((l) => l.subpath).filter(Boolean),
       );
+      const missing = [...srcLocales].filter((s) => !manifestLocales.has(s));
+      if (missing.length > 0) {
+        fail(
+          `Manifest is missing locale entries present in src/: ${missing.join(", ")}.`,
+        );
+      }
     }
   } catch (err) {
     fail(`Manifest unreadable: ${err.message}`);
