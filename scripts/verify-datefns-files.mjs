@@ -1083,6 +1083,60 @@ if (missing.length > 0) {
     }
   }
 
+  // ── --report-json: machine-readable missing-subpath report (CI artifact) ──
+  // Mirrors the Markdown report but in a stable, versioned JSON schema so
+  // dashboards / bots can consume the exact missing subpath list + pinned
+  // version + one-step reinstall command without scraping Markdown.
+  if (REPORT_JSON_PATH) {
+    const buildEntry = ({ subpath, tried }) => {
+      const offenders = sortedOffenders(subpath); // [{ file, lines: number[] }]
+      const fileCount = (subpathFiles.get(subpath) ?? new Set()).size;
+      return {
+        subpath,
+        specifier: `date-fns/${subpath}`,
+        kind: subpath.startsWith("locale/") ? "locale" : "function",
+        fileCount,
+        offenders, // [{ file: "src/x.ts", lines: [12, 88] }]
+        triedPaths: tried,
+      };
+    };
+    const reinstallCommand = installedVersion
+      ? `bun add date-fns@${installedVersion} --exact`
+      : `rm -rf node_modules && bun install --frozen-lockfile`;
+    const payload = {
+      schemaVersion: 1,
+      generatedAt: new Date().toISOString(),
+      emittedOn: "failure",
+      pinnedVersion: installedVersion,
+      packageRelativeDir: PKG_REL,
+      scannedFiles: scannedFiles.size,
+      importedSubpathCount: entries.length,
+      filterActive: FILTER_ACTIVE,
+      missingCount: missing.length,
+      missing: missing.map(buildEntry),
+      reinstall: {
+        oneStep: reinstallCommand,
+        steps: [
+          { label: "Frozen reinstall (preferred — respects bun.lock)", command: "rm -rf node_modules && bun install --frozen-lockfile" },
+          { label: installedVersion
+              ? `Re-pin date-fns to the currently-installed version (${installedVersion})`
+              : "Re-pin date-fns (use spec from package.json)",
+            command: installedVersion
+              ? `bun add date-fns@${installedVersion} --exact`
+              : "bun add date-fns@<version-from-package.json> --exact" },
+          { label: "Last resort — clear bun's global cache then reinstall", command: "bun pm cache rm && rm -rf node_modules && bun install --frozen-lockfile" },
+        ],
+        verifyAfter: "bun run verify:datefns-files",
+      },
+    };
+    try {
+      mkdirSync(dirname(REPORT_JSON_PATH), { recursive: true });
+      writeFileSync(REPORT_JSON_PATH, JSON.stringify(payload, null, 2) + "\n", "utf8");
+    } catch (err) {
+      console.error(gray(`(verify-datefns-files: could not write JSON report to ${REPORT_JSON_PATH}: ${err?.message ?? err})`));
+    }
+  }
+
   process.exit(1);
 }
 
