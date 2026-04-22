@@ -1,0 +1,9 @@
+{
+  "_comment": "Baseline error counts for opt-in strict flags NOT yet enabled in tsconfig.app.json. scripts/check-strict-baseline.mjs fails CI if a flag's count INCREASES vs this file (regression guard) and auto-promotes to 'must be 0' once the baseline hits 0 (so the next PR can simply move the flag into tsconfig.app.json without touching CI). Update by running: node scripts/check-strict-baseline.mjs --update.",
+  "generatedAt": "2026-04-22T00:00:00.000Z",
+  "flags": {
+    "noPropertyAccessFromIndexSignature": 52,
+    "exactOptionalPropertyTypes": 143,
+    "noUncheckedIndexedAccess": 326
+  }
+}

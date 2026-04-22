@@ -280,6 +280,42 @@ jobs:
         if: always()
         run: node scripts/typecheck-report.mjs || true
 
+      # ──────────────────────────────────────────────────────────────────────
+      # Advanced strict-flag ratchet. Runs the candidate flags listed in
+      # ci-artifacts/strict-baseline.json (currently:
+      # noPropertyAccessFromIndexSignature, exactOptionalPropertyTypes,
+      # noUncheckedIndexedAccess) against tsconfig.app.json one at a time.
+      #
+      # Behaviour per flag:
+      #   • baseline > 0 → "ratchet" mode: passes while errors ≤ baseline,
+      #     FAILS if errors went up. New strict-flag violations cannot
+      #     sneak in even though the flags themselves aren't promoted yet.
+      #   • baseline = 0 → "must-be-zero" mode: any error fails the job.
+      #     This is the green light to move the flag into tsconfig.app.json
+      #     (and remove it from strict-baseline.json) in the next PR.
+      #
+      # Once ALL three flags hit baseline=0 and are promoted into
+      # tsconfig.app.json, this step becomes redundant and can be deleted
+      # along with strict-baseline.json.
+      # ──────────────────────────────────────────────────────────────────────
+      - name: Strict-flag ratchet (advanced strict)
+        run: |
+          mkdir -p ci-artifacts
+          set -o pipefail
+          node scripts/check-strict-baseline.mjs --json \
+            > ci-artifacts/strict-baseline-result.json || STRICT_EXIT=$?
+          # Re-emit human-readable form to job log + step summary so failures
+          # are visible without downloading artifacts.
+          node scripts/check-strict-baseline.mjs | tee ci-artifacts/strict-baseline-summary.txt
+          {
+            echo "### Strict-flag ratchet";
+            echo '```';
+            cat ci-artifacts/strict-baseline-summary.txt;
+            echo '```';
+            echo "_Baseline lives in \`ci-artifacts/strict-baseline.json\`. Lower it with \`node scripts/check-strict-baseline.mjs --update\` after a cleanup PR; promote a flag into \`tsconfig.app.json\` once its baseline reaches 0._";
+          } >> "$GITHUB_STEP_SUMMARY"
+          exit ${STRICT_EXIT:-0}
+
       - name: Upload typecheck report
         if: always()
         uses: actions/upload-artifact@v4
@@ -289,5 +325,8 @@ jobs:
             ci-artifacts/typecheck-report.json
             ci-artifacts/tsc-app.log
             ci-artifacts/tsc-node.log
+            ci-artifacts/strict-baseline.json
+            ci-artifacts/strict-baseline-result.json
+            ci-artifacts/strict-baseline-summary.txt
           if-no-files-found: ignore
           retention-days: 30
