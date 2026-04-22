@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes, Scissors, History, GitCommit, GitBranch, ExternalLink, Rocket } from "lucide-react";
+import { CheckCircle2, AlertTriangle, Package, Lock, Clock, RefreshCw, Boxes, Scissors, History, GitCommit, GitBranch, ExternalLink, Rocket, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
@@ -647,6 +647,50 @@ const DependencyHealth = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
+            {(() => {
+              const ts = snapshot.treeShaking!;
+              const denom = Math.max(ts.filesScanned, 10);
+              const ratio = ts.barrelImportsFound / denom;
+              const score = Math.max(0, Math.min(100, Math.round(100 - ratio * 100 - ts.barrelImportsFound * 2)));
+
+              const prev = history && history.length > 1 ? history[1] : null;
+              const prevBarrel = prev?.barrelImports;
+              const prevScore = typeof prevBarrel === "number"
+                ? Math.max(0, Math.min(100, Math.round(100 - (prevBarrel / Math.max(denom, 10)) * 100 - prevBarrel * 2)))
+                : null;
+              const delta = prevScore != null ? score - prevScore : null;
+
+              const scoreTone =
+                score >= 90 ? "text-success" : score >= 60 ? "text-warning" : "text-destructive";
+              const trendIcon = delta == null
+                ? <Minus className="h-3 w-3" />
+                : delta > 0
+                  ? <TrendingUp className="h-3 w-3 text-success" />
+                  : delta < 0
+                    ? <TrendingDown className="h-3 w-3 text-destructive" />
+                    : <Minus className="h-3 w-3 text-muted-foreground" />;
+              const trendLabel = delta == null
+                ? "sem snapshot anterior"
+                : delta === 0
+                  ? "estável"
+                  : `${delta > 0 ? "+" : ""}${delta} vs anterior`;
+
+              return (
+                <div className="rounded-md border bg-muted/20 p-3 flex flex-wrap items-center gap-4">
+                  <div className="flex items-baseline gap-2">
+                    <span className={`text-3xl font-bold tabular-nums ${scoreTone}`}>{score}</span>
+                    <span className="text-xs text-muted-foreground">/ 100</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    {trendIcon}
+                    <span>{trendLabel}</span>
+                    {prevScore != null && (
+                      <span className="font-mono ml-1">(antes: {prevScore})</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })()}
             <div className="flex flex-wrap items-center gap-3">
               {snapshot.treeShaking.riskLevel === "ok" ? (
                 <Badge variant="secondary" className="gap-1">
@@ -670,6 +714,7 @@ const DependencyHealth = () => {
                 {snapshot.treeShaking.truncated ? " (lista truncada em 50)" : ""}
               </span>
             </div>
+
 
             {snapshot.treeShaking.barrelImportsFound === 0 ? (
               <div className="flex items-center gap-2 text-sm text-success">
