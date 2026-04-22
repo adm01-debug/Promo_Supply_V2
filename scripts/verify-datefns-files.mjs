@@ -23,9 +23,19 @@ const DRY_RUN = ARGS.some((a) => a === "--dry-run");
 // scrolling job logs. Emitted on BOTH pass and fail (the empty-table "no
 // drift" case is just as informative). Never affects exit code.
 let SUMMARY_MD_PATH = process.env.DATEFNS_SMOKE_SUMMARY_MD || null;
+// `--report-md <path>` (also via env DATEFNS_SMOKE_REPORT_MD) writes a FULL
+// failure report — partitioned missing subpaths, copy-paste bare list,
+// likely-cause diagnosis, and the exact 3-step repair recipe — to <path>
+// when (and only when) drift is detected. Designed to be uploaded as a CI
+// artifact on failure so reviewers get the full repair recipe offline
+// without scrolling job logs. On a clean run, no file is written.
+let REPORT_MD_PATH = process.env.DATEFNS_SMOKE_REPORT_MD || null;
 for (let i = 0; i < ARGS.length; i++) {
   if (ARGS[i] === "--summary-md" && ARGS[i + 1]) {
     SUMMARY_MD_PATH = ARGS[i + 1];
+    i++;
+  } else if (ARGS[i] === "--report-md" && ARGS[i + 1]) {
+    REPORT_MD_PATH = ARGS[i + 1];
     i++;
   }
 }
@@ -904,6 +914,106 @@ if (missing.length > 0) {
     `verify-datefns-files: ${missing.length} missing date-fns subpath(s)${installedVersion ? ` (installed: ${installedVersion})` : ""}`,
     lines.join("\n"),
   );
+
+  // ── --report-md: full Markdown failure report (CI artifact) ────────────────
+  // Written ONLY on failure, ONLY when --report-md / DATEFNS_SMOKE_REPORT_MD
+  // is set. Mirrors the terminal failure block (partitioned missing list +
+  // copy-paste bare list + likely cause + 3-step repair recipe) but in plain
+  // Markdown so it can be uploaded as a CI artifact and read offline. Never
+  // affects exit code — exit(1) below still runs unchanged.
+  if (REPORT_MD_PATH) {
+    const md = [];
+    const pinned = installedVersion ?? "unknown";
+    md.push(`# date-fns subpath drift — failure report`);
+    md.push("");
+    md.push(`**Pinned date-fns version:** \`${pinned}\``);
+    md.push(`**Imported subpaths scanned:** ${entries.length}` +
+      (FILTER_ACTIVE ? ` _(filtered from ${subpaths.size})_` : ""));
+    md.push(`**Missing on disk:** ${missing.length}`);
+    md.push("");
+    md.push(`> Imported from \`src/\` but not present in \`${PKG_REL}\` on the pinned version.`);
+    md.push("");
+
+    const renderMdGroup = (title, group) => {
+      if (group.length === 0) return;
+      md.push(`## ${title} (${group.length})`);
+      md.push("");
+      md.push(`| # | Subpath | Imported in (files) |`);
+      md.push(`| ---: | --- | ---: |`);
+      group.forEach(({ subpath }, i) => {
+        const fileCount = (subpathFiles.get(subpath) ?? new Set()).size;
+        md.push(`| ${i + 1} | \`date-fns/${subpath}\` | ${fileCount} |`);
+      });
+      md.push("");
+    };
+    renderMdGroup("Functions", missingFns);
+    renderMdGroup("Locales", missingLocales);
+
+    md.push(`## Copy-paste list (bare subpaths)`);
+    md.push("");
+    md.push("```");
+    for (const { subpath } of missing) md.push(`date-fns/${subpath}`);
+    md.push("```");
+    md.push("");
+
+    if (missing[0]) {
+      md.push(`## Resolution candidates probed for each subpath`);
+      md.push("");
+      md.push("```");
+      for (const c of missing[0].tried) md.push(c);
+      md.push("```");
+      md.push("");
+    }
+
+    md.push(`## Likely cause`);
+    md.push("");
+    if (missingLocales.length > 0 && missingFns.length === 0) {
+      md.push("Partial install — date-fns is present but its `locale/` tree is incomplete. Common after an interrupted install or a stale package manager cache.");
+    } else if (missingFns.length > 0 && missingLocales.length === 0) {
+      md.push("Either a broken install **OR** an import typo (e.g. `date-fns/formatt`). Verify the bare subpath list above matches real date-fns exports first.");
+    } else {
+      md.push("Broken or partial install — the lockfile resolves a date-fns version but one or more subpath files are missing from `node_modules/date-fns`.");
+    }
+    md.push("");
+
+    md.push(`## Repair (copy & run, in order — stop at the first that succeeds)`);
+    md.push("");
+    md.push(`### 1. Frozen reinstall (preferred — respects \`bun.lock\`)`);
+    md.push("```bash");
+    md.push("rm -rf node_modules && bun install --frozen-lockfile");
+    md.push("```");
+    md.push("");
+    if (pinnedReinstall) {
+      md.push(`### 2. Re-pin date-fns to the currently-installed version (\`${installedVersion}\`)`);
+      md.push("```bash");
+      md.push(pinnedReinstall);
+      md.push("```");
+    } else {
+      md.push("### 2. Re-pin date-fns (could not read installed version — use spec from `package.json`)");
+      md.push("```bash");
+      md.push("bun add date-fns@<version-from-package.json> --exact");
+      md.push("```");
+    }
+    md.push("");
+    md.push("### 3. Last resort — clear bun's global cache then reinstall");
+    md.push("```bash");
+    md.push("bun pm cache rm && rm -rf node_modules && bun install --frozen-lockfile");
+    md.push("```");
+    md.push("");
+    md.push("### After repair, re-run");
+    md.push("```bash");
+    md.push("bun run verify:datefns-files");
+    md.push("```");
+    md.push("");
+
+    try {
+      mkdirSync(dirname(REPORT_MD_PATH), { recursive: true });
+      writeFileSync(REPORT_MD_PATH, md.join("\n"), "utf8");
+    } catch (err) {
+      console.error(gray(`(verify-datefns-files: could not write failure report to ${REPORT_MD_PATH}: ${err?.message ?? err})`));
+    }
+  }
+
   process.exit(1);
 }
 
