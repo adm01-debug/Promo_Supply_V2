@@ -222,6 +222,115 @@ SH
   rm -rf "$sandbox"
 }
 
+# ── Helper: run hook with custom generator stdout/exit + bunx stdout/exit ────
+# Args:
+#   $1 scenario name (for log)
+#   $2 generator-script body (will be wrapped in a shebang script)
+#   $3 generator exit code
+#   $4 bunx body (or empty to skip stub — uses real bunx)
+#   $5 bunx exit code (ignored if $4 empty)
+# Echoes the captured combined stdout+stderr from the hook.
+run_hook_with_stubs() {
+  local name="$1" gen_body="$2" gen_exit="$3" bunx_body="$4" bunx_exit="$5"
+  local sandbox; sandbox="$(mktemp -d)"
+  build_sandbox "$sandbox"
+  {
+    echo "#!/usr/bin/env node"
+    printf '%s\n' "$gen_body"
+    echo "process.exit(${gen_exit});"
+  } > "$sandbox/scripts/generate-datefns-smoke-test.mjs"
+
+  local PATH_OVERRIDE="$PATH"
+  if [ -n "$bunx_body" ]; then
+    local bin_dir="$sandbox/.bin-stubs"
+    mkdir -p "$bin_dir"
+    {
+      echo "#!/usr/bin/env bash"
+      printf '%s\n' "$bunx_body"
+      echo "exit ${bunx_exit}"
+    } > "$bin_dir/bunx"
+    chmod +x "$bin_dir/bunx"
+    PATH_OVERRIDE="$bin_dir:$PATH"
+  fi
+
+  local out
+  out="$(PATH="$PATH_OVERRIDE" bash "$sandbox/scripts/hooks/datefns-precommit.sh" 2>&1 || true)"
+  rm -rf "$sandbox"
+  printf '%s' "$out"
+}
+
+# ── Scenario 3: generator emits TS2305 (missing export) — should bucket as
+#                TSC-style signal but the GENERATOR detector should still fall
+#                through to the safe default since this isn't a generator
+#                signal. Verifies the safe-default branch never goes empty. ──
+run_scenario_generator_unparsable() {
+  bold "[scenario 3] generator log has no recognized signal (safe-default branch)"
+  local out
+  out="$(run_hook_with_stubs \
+    "gen-unparsable" \
+    'process.stdout.write("nothing here that the detector recognizes\\n");' \
+    99 "" "")"
+  assert_contains       "still fails"                              "$out" "date-fns pre-hook FAILED"
+  assert_failure_mode_real "Failure mode is real (safe default)"   "$out"
+  assert_contains       "uses GENERATOR_DRIFT default bucket"      "$out" "GENERATOR_DRIFT"
+  assert_contains       "mentions exit code in default mode"       "$out" "exited 99"
+  assert_contains       "Exit code line shows 99"                  "$out" "99"
+}
+
+# ── Scenario 4: generator throws an uncaught exception ──────────────────────
+run_scenario_generator_node_crash() {
+  bold "[scenario 4] generator throws TypeError (GEN_NODE_CRASH bucket)"
+  local out
+  out="$(run_hook_with_stubs \
+    "gen-crash" \
+    'process.stderr.write("TypeError: Cannot read properties of undefined (reading \\"foo\\")\\n");' \
+    1 "" "")"
+  assert_failure_mode_real "Failure mode is real"                   "$out"
+  assert_contains          "uses GEN_NODE_CRASH bucket"             "$out" "GEN_NODE_CRASH"
+  assert_contains          "names the exception type"               "$out" "TypeError"
+}
+
+# ── Scenario 5: tsc emits TS2305 (missing export, not module) ──────────────
+run_scenario_tsc_missing_export() {
+  bold "[scenario 5] tsc TS2305 → TSC_MISSING_EXPORT bucket"
+  local out
+  out="$(run_hook_with_stubs \
+    "tsc-2305" \
+    'process.exit(0);' 0 \
+    "echo \"src/foo.ts(1,1): error TS2305: Module '\\\"date-fns/format\\\"' has no exported member 'unknownExport'.\" >&2" \
+    2)"
+  assert_failure_mode_real "Failure mode is real"                   "$out"
+  assert_contains          "uses TSC_MISSING_EXPORT bucket"         "$out" "TSC_MISSING_EXPORT"
+  assert_contains          "mentions TS2305"                        "$out" "TS2305"
+}
+
+# ── Scenario 6: tsc emits a config error (TS5xxx) ──────────────────────────
+run_scenario_tsc_config_error() {
+  bold "[scenario 6] tsc TS5xxx → TSC_CONFIG_ERROR bucket"
+  local out
+  out="$(run_hook_with_stubs \
+    "tsc-config" \
+    'process.exit(0);' 0 \
+    "echo \"error TS5083: Cannot read file 'tsconfig.smoke.json'.\" >&2" \
+    1)"
+  assert_failure_mode_real "Failure mode is real"                   "$out"
+  assert_contains          "uses TSC_CONFIG_ERROR bucket"           "$out" "TSC_CONFIG_ERROR"
+}
+
+# ── Scenario 7: tsc fails with no recognizable signal at all ───────────────
+run_scenario_tsc_unparsable() {
+  bold "[scenario 7] tsc log has no recognized signal (safe-default branch)"
+  local out
+  out="$(run_hook_with_stubs \
+    "tsc-unparsable" \
+    'process.exit(0);' 0 \
+    "echo \"some completely unrelated message\" >&2" \
+    13)"
+  assert_failure_mode_real "Failure mode is real (safe default)"    "$out"
+  assert_contains          "uses TSC_MISSING_EXPORT default bucket" "$out" "TSC_MISSING_EXPORT"
+  assert_contains          "mentions exit code in default mode"     "$out" "exited 13"
+}
+
 bold "datefns-precommit.sh — failure-summary tests"
 gray "  hook under test: ${HOOK_SRC#$REPO_ROOT/}"
 echo ""
@@ -229,6 +338,16 @@ echo ""
 run_scenario_generator_drift
 echo ""
 run_scenario_tsc_failure
+echo ""
+run_scenario_generator_unparsable
+echo ""
+run_scenario_generator_node_crash
+echo ""
+run_scenario_tsc_missing_export
+echo ""
+run_scenario_tsc_config_error
+echo ""
+run_scenario_tsc_unparsable
 echo ""
 
 bold "── summary ──"
