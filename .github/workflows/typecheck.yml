@@ -15,13 +15,29 @@ jobs:
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
-      - name: Cache Bun dependencies
+      - name: Cache Bun package store
+        # Caches Bun's global download/install store keyed on bun.lock so PRs
+        # that don't change deps skip the network entirely on `bun install`.
         uses: actions/cache@v4
         with:
-          path: ~/.bun/install/cache
+          path: |
+            ~/.bun/install/cache
+            node_modules/.bun
           key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
           restore-keys: |
             ${{ runner.os }}-bun-
+      - name: Cache tsc incremental build info
+        # Caches the .tsbuildinfo files emitted by tsc --incremental so
+        # unchanged files are skipped on subsequent typechecks. Key is
+        # invalidated whenever tsconfigs or any tracked source file changes,
+        # with a permissive restore-key so partial reuse still helps.
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.cache/tsbuildinfo
+          key: ${{ runner.os }}-tsbuildinfo-${{ hashFiles('tsconfig*.json') }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'vite.config.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-tsbuildinfo-${{ hashFiles('tsconfig*.json') }}-
+            ${{ runner.os }}-tsbuildinfo-
       - name: Verify lockfile is up to date (no drift vs package.json)
         run: bun install --frozen-lockfile --dry-run
       - name: Install dependencies (frozen lockfile)
