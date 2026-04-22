@@ -229,11 +229,37 @@ const DependencyHealth = () => {
   return (
     <div className="container mx-auto p-6 space-y-4">
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="space-y-1">
           <h1 className="text-2xl font-bold">Saúde das Dependências</h1>
           <p className="text-sm text-muted-foreground">
             Snapshot gerado pela rotina <code className="font-mono">bun run ci:check</code> ou pelo botão abaixo.
           </p>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground pt-1">
+            <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>
+              Última atualização da tela:{" "}
+              <span className="font-medium text-foreground">
+                {formatDistanceToNow(parseISO(fetchedAt), { addSuffix: true, locale: ptBR })}
+              </span>{" "}
+              <span className="font-mono">({fetchedAt})</span>
+            </span>
+            {source === "edge" ? (
+              <Badge variant="secondary" className="gap-1" aria-label="Fonte: edge function">
+                <RefreshCw className="h-3 w-3" />
+                Edge (ao vivo)
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="gap-1" aria-label="Fonte: arquivo estático de fallback">
+                <AlertTriangle className="h-3 w-3" />
+                Fallback estático
+              </Badge>
+            )}
+            {edgeError && (
+              <span className="text-destructive" title={edgeError}>
+                · edge falhou: {edgeError.length > 60 ? `${edgeError.slice(0, 60)}…` : edgeError}
+              </span>
+            )}
+          </div>
         </div>
         {isAdmin && (
           <div className="flex gap-2">
