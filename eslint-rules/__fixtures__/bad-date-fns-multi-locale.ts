@@ -49,4 +49,4 @@ export const _locales = {
   beTarask,
   uzCyrl,
 };
-export type _LocaleAlias = Locale;
+
