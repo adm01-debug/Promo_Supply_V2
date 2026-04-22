@@ -94,11 +94,11 @@ describe("date-fns locales — installed surface", () => {
           ).toBeTruthy();
           expect(typeof locale, `${ctx}: expected typeof === "object"`).toBe("object");
           const l = locale as Record<string, unknown>;
-          expect(typeof l.code, `${ctx}: \`code\` must be a string`).toBe("string");
-          expect((l.code as string).length, `${ctx}: \`code\` must be non-empty`).toBeGreaterThan(0);
-          expect(l.formatLong, `${ctx}: missing \`formatLong\``).toBeTruthy();
-          expect(l.localize, `${ctx}: missing \`localize\``).toBeTruthy();
-          expect(l.match, `${ctx}: missing \`match\``).toBeTruthy();
+          expect(typeof l["code"], `${ctx}: \`code\` must be a string`).toBe("string");
+          expect((l["code"] as string).length, `${ctx}: \`code\` must be non-empty`).toBeGreaterThan(0);
+          expect(l["formatLong"], `${ctx}: missing \`formatLong\``).toBeTruthy();
+          expect(l["localize"], `${ctx}: missing \`localize\``).toBeTruthy();
+          expect(l["match"], `${ctx}: missing \`match\``).toBeTruthy();
         }
       });
 

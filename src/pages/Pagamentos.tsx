@@ -153,7 +153,7 @@ const Pagamentos = () => {
       cancelado: { label: 'Cancelado', className: 'bg-destructive/10 text-destructive border-red-500/20' },
       atrasado: { label: 'Atrasado', className: 'bg-destructive/10 text-destructive border-red-500/20' },
     };
-    return map[status] || map.pendente;
+    return map[status] || map["pendente"];
   };
 
   const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });

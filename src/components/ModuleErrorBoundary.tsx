@@ -60,7 +60,7 @@ export function ModuleErrorFallback({
 }: ModuleErrorFallbackProps) {
   const [showDetails, setShowDetails] = React.useState(false);
   const isDev = import.meta.env.DEV;
-  const messages = moduleMessages[module] || moduleMessages.default;
+  const messages = moduleMessages[module] || moduleMessages["default"];
 
   return (
     <div

@@ -207,7 +207,7 @@ export default function Devolucoes() {
                     </TableHeader>
                     <TableBody>
                       {creditos.map(cred => {
-                        const cs = CREDITO_STATUS_MAP[cred.status] || CREDITO_STATUS_MAP.ativo;
+                        const cs = CREDITO_STATUS_MAP[cred.status] || CREDITO_STATUS_MAP["ativo"];
                         return (
                           <TableRow key={cred.id}>
                             <TableCell className="font-medium">{cred.fornecedor?.nome_fantasia || cred.fornecedor?.razao_social || '—'}</TableCell>

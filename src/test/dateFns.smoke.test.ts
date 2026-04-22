@@ -48,7 +48,7 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
       // Honor SMOKE_PACKAGE_JSON (set by ci-smoke.sh / monorepo callers) so
       // the logged spec matches whichever package.json the caller is gating
       // on. Falls back to ./package.json for plain local runs.
-      const pkgEnv = process.env.SMOKE_PACKAGE_JSON;
+      const pkgEnv = process.env["SMOKE_PACKAGE_JSON"];
       const pkgPath = pkgEnv
         ? (path.isAbsolute(pkgEnv) ? pkgEnv : path.join(cwd, pkgEnv))
         : path.join(cwd, "package.json");

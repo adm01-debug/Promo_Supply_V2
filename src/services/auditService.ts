@@ -99,7 +99,7 @@ export const logAuditAction = async (entry: AuditLogEntry): Promise<void> => {
     
     // For development/mock phase, use placeholder values
     const userEmail = user?.email || 'sistema@promobrindes.com.br';
-    const userName = user?.user_metadata?.full_name || 'Sistema';
+    const userName = user?.user_metadata?.["full_name"] || 'Sistema';
 
     const insertData = {
       user_id: user?.id || null,

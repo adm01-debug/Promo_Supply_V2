@@ -51,7 +51,7 @@ interface NotificationItemProps {
 }
 
 function NotificationItem({ notification, onMarkAsRead, onRemove }: NotificationItemProps) {
-  const config = typeConfig[notification.type] || typeConfig.system;
+  const config = typeConfig[notification.type] || typeConfig["system"];
   const priority = priorityConfig[notification.priority];
 
   return (

@@ -129,7 +129,7 @@ export const PagamentoMobileCard = ({
 }: PagamentoMobileCardProps) => {
   const vencStatus = getVencimentoStatus(pagamento.data_vencimento, pagamento.status);
   const VencIcon = vencStatus.icon;
-  const statusBadge = statusConfig[pagamento.status] || statusConfig.pendente;
+  const statusBadge = statusConfig[pagamento.status] || statusConfig["pendente"];
   const StatusIcon = statusBadge.icon;
   const isPago = pagamento.status === 'pago';
   const formaPagamento = getFormaPagamentoConfig(pagamento.forma_pagamento);
