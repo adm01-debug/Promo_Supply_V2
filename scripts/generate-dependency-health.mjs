@@ -249,8 +249,18 @@ function main() {
       failOnInvalid(err, { sourcePath: relative(root, outPath), role: "generate-dependency-health" });
     }
   }
+  // Load configurable barrel rules (extends/replaces DEFAULT_RULES).
+  // Missing file → defaults; malformed file → loud error so CI fails.
+  const rulesPath = resolve(root, ".dependency-health-rules.json");
+  let rulesCtx;
+  try {
+    rulesCtx = loadRules(rulesPath);
+  } catch (err) {
+    console.error(`✗ ${err.message}`);
+    process.exit(1);
+  }
   const previousTreeShaking = existing?.treeShaking;
-  const rawTreeShaking = scanTreeShaking(root, previousTreeShaking);
+  const rawTreeShaking = scanTreeShaking(root, previousTreeShaking, rulesCtx);
 
   // Apply the per-package allowlist of known false positives. The raw
   // scan result is cached as-is (so toggling an allowlist entry doesn't
