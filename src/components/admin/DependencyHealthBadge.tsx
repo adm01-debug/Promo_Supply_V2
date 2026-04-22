@@ -186,6 +186,20 @@ const DependencyHealthBadge = () => {
                   </a>
                 </p>
               )}
+              {smoke.log?.path && (
+                <p className="text-muted-foreground">
+                  <a
+                    href={smoke.log.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Log completo do vitest
+                  </a>
+                  {typeof smoke.log.sizeBytes === "number" &&
+                    ` (${(smoke.log.sizeBytes / 1024).toFixed(1)} KB)`}
+                </p>
+              )}
             </div>
           )}
         </div>
