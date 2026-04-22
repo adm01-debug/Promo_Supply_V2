@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "computedAt": "2026-04-22T15:01:39.039Z",
+  "inputHash": "c0f1e9064a089738d17639a84c0171c1110f5cf9fd6f747bd88c0f4b182921e8",
+  "inputs": {
+    "schemaVersion": 1,
+    "subpaths": [
+      "addDays",
+      "addMonths",
+      "addWeeks",
+      "differenceInDays",
+      "differenceInHours",
+      "eachDayOfInterval",
+      "endOfMonth",
+      "format",
+      "formatDistanceToNow",
+      "isPast",
+      "isSameDay",
+      "isSameMonth",
+      "isToday",
+      "isTomorrow",
+      "isWithinInterval",
+      "locale/pt-BR",
+      "parseISO",
+      "startOfMonth",
+      "startOfWeek",
+      "subDays",
+      "subMonths"
+    ],
+    "installedDateFnsVersion": "3.6.0",
+    "pinnedDateFnsSpec": "3.6.0",
+    "generatorFingerprint": "fd30b88d84c9269a"
+  },
+  "totals": {
+    "subpaths": 21
+  }
+}
