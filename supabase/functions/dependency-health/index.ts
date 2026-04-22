@@ -446,21 +446,22 @@ async function fetchWithRetry(
 }
 
 async function handlePost(req: Request): Promise<Response> {
+  const FORBIDDEN_MESSAGE = "Forbidden: admin role required";
   const auth = req.headers.get("Authorization");
-  if (!auth) return json({ error: "Missing Authorization header" }, 401);
+  if (!auth) return json({ error: FORBIDDEN_MESSAGE }, 403);
 
   const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     global: { headers: { Authorization: auth } },
   });
   const { data: userData, error: userErr } = await userClient.auth.getUser();
-  if (userErr || !userData.user) return json({ error: "Unauthorized" }, 401);
+  if (userErr || !userData.user) return json({ error: FORBIDDEN_MESSAGE }, 403);
 
   const admin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   const { data: isAdmin, error: roleErr } = await admin.rpc("has_role", {
     _user_id: userData.user.id,
     _role: "admin",
   });
-  if (roleErr || !isAdmin) return json({ error: "Forbidden: admin only" }, 403);
+  if (roleErr || !isAdmin) return json({ error: FORBIDDEN_MESSAGE }, 403);
 
   if (!GITHUB_REPO_RAW_BASE) {
     return json({ error: "GITHUB_REPO_RAW_BASE secret not configured" }, 500);
