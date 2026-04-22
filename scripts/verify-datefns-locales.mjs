@@ -22,6 +22,12 @@ const IMPORT_RE =
 const GENERATOR_HINT =
   "Run `node scripts/generate-datefns-smoke-test.mjs` and commit the result.";
 
+// --verbose / -v: print every locale subpath discovered in src/ (with file +
+// line), every type-only locale import we skipped (with the reason), and the
+// per-locale match decision against the manifest. Off by default.
+const VERBOSE = process.argv.slice(2).some((a) => a === "--verbose" || a === "-v");
+const vlog = (msg) => { if (VERBOSE) console.log(`  · ${msg}`); };
+
 function walk(dir, acc = []) {
   for (const entry of readdirSync(dir)) {
     const full = join(dir, entry);
@@ -55,14 +61,36 @@ function relTime(iso) {
 
 // --- 1. Scan src/ for locale imports ---
 const sourceLocales = new Set();
+let scannedFileCount = 0;
+let filesWithLocales = 0;
 for (const file of walk(SRC_DIR)) {
+  scannedFileCount++;
   const src = readFileSync(file, "utf8");
+  const rel = file.startsWith(ROOT) ? file.slice(ROOT.length + 1) : file;
+  let printedHeader = false;
   let m;
+  IMPORT_RE.lastIndex = 0;
   while ((m = IMPORT_RE.exec(src)) !== null) {
     const [, isType, , subpath] = m;
-    if (isType) continue;
-    if (subpath.startsWith("locale/")) sourceLocales.add(subpath);
+    if (!subpath.startsWith("locale/")) continue;
+    if (VERBOSE && !printedHeader) {
+      console.log(`◆ ${rel}`);
+      printedHeader = true;
+      filesWithLocales++;
+    }
+    if (isType) {
+      vlog(`skipped → date-fns/${subpath}  (reason: type-only import, not bundled at runtime)`);
+      continue;
+    }
+    sourceLocales.add(subpath);
+    vlog(`detected → date-fns/${subpath}`);
   }
+}
+
+if (VERBOSE) {
+  console.log(
+    `\n· Scanned ${scannedFileCount} file(s); ${filesWithLocales} contain date-fns locale imports.\n`,
+  );
 }
 
 // --- 2. Load manifest ---
@@ -95,6 +123,19 @@ if (Number.isNaN(new Date(manifest.generatedAt).getTime())) {
 }
 
 const manifestLocales = new Set(manifest.locales.map((l) => l.subpath));
+
+if (VERBOSE) {
+  const union = new Set([...sourceLocales, ...manifestLocales]);
+  console.log(`Per-locale match decisions (${union.size} unique):`);
+  for (const sp of [...union].sort()) {
+    const inSrc = sourceLocales.has(sp);
+    const inManifest = manifestLocales.has(sp);
+    if (inSrc && inManifest) vlog(`✓ ${sp}  (src ↔ manifest)`);
+    else if (inSrc) vlog(`✗ ${sp}  (in src, MISSING from manifest — regenerate)`);
+    else vlog(`✗ ${sp}  (in manifest, NOT in src — stale manifest entry)`);
+  }
+  console.log("");
+}
 
 // --- 3. Diff ---
 const missing = [...sourceLocales].filter((s) => !manifestLocales.has(s)).sort();
