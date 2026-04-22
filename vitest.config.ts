@@ -1,6 +1,7 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import DateFnsFixPreviewReporter from "./src/test/reporters/datefnsFixPreview";
 
 export default defineConfig({
   plugins: [react()],
@@ -17,6 +18,12 @@ export default defineConfig({
     pool: 'forks',
     isolate: true,
     css: false,
+    // The fix-preview reporter is silent on success; on failures of any
+    // date-fns related test file it appends a unified bun.lock diff and a
+    // per-package "installed → would-install" table so the developer sees
+    // exactly what `rm -rf node_modules && bun install --frozen-lockfile`
+    // would change BEFORE running it.
+    reporters: ["default", new DateFnsFixPreviewReporter()],
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
