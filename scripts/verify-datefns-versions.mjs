@@ -120,15 +120,14 @@ if (!aligned) {
   // Mismatch detail: caret-pointer diff per drifting pair
   console.error("\n  Mismatch detail:");
   if (!specEqLock && lockEqInstalled) {
-    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked" }));
   } else if (specEqLock && !lockEqInstalled) {
-    console.error(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+    console.error(renderMismatch("locked", LOCKED, "installed", INSTALLED, { caseLabel: "locked↔installed" }));
   } else if (specEqInstalled && !specEqLock) {
-    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked" }));
   } else {
-    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
-    console.error("");
-    console.error(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+    // All three differ — render the labeled triple block with summary line.
+    console.error(renderTripleMismatch(SPEC_NORM, LOCKED, INSTALLED));
   }
 
   // Pairwise drift diagnosis: explicitly label each of the 3 pairs and explain
