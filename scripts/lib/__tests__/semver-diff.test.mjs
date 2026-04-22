@@ -22,8 +22,14 @@ import {
   classifyDiff,
   renderMismatch,
   renderTripleMismatch,
+  renderUnifiedDiff,
+  shouldColor,
   splitSemver,
 } from "../semver-diff.mjs";
+
+// Strip ANSI escape sequences so assertions can compare plain text without
+// caring about color state. Mirrors the regex used by chalk/strip-ansi.
+const stripAnsi = (s) => s.replace(/\x1b\[[0-9;]*m/g, "");
 
 describe("splitSemver", () => {
   it("parses a plain X.Y.Z release", () => {
@@ -152,6 +158,7 @@ describe("renderMismatch", () => {
     const out = renderMismatch("a", "garbage", "b", "1.2.3");
     expect(out.split("\n")).toHaveLength(4);
     expect(out).toMatch(/unknown version drift/);
+  });
 });
 
 describe("renderMismatch (with caseLabel)", () => {
@@ -160,7 +167,6 @@ describe("renderMismatch (with caseLabel)", () => {
       caseLabel: "spec↔locked",
     });
     const lines = out.split("\n");
-    // Now 5 lines: header + v1 + v2 + caret + summary.
     expect(lines).toHaveLength(5);
     expect(lines[0]).toMatch(/\[spec↔locked\]\s+spec\s+↔\s+locked/);
     expect(lines[1]).toContain("1.2.3");
@@ -187,7 +193,6 @@ describe("renderTripleMismatch", () => {
     expect(lines[1]).toContain("spec=1.2.3");
     expect(lines[1]).toContain("locked=1.5.0");
     expect(lines[1]).toContain("installed=2.0.0");
-    // spec→locked is minor; locked→installed is major.
     expect(lines[1]).toMatch(/spec→locked is minor/);
     expect(lines[1]).toMatch(/locked→installed is major/);
   });
@@ -202,4 +207,81 @@ describe("renderTripleMismatch", () => {
     expect(caretLines).toHaveLength(2);
   });
 });
+
+describe("renderUnifiedDiff", () => {
+  it("emits exactly 6 lines in git-patch order: --- / +++ / @@ / - / + / caret", () => {
+    const out = renderUnifiedDiff("spec", "1.2.3", "installed", "1.2.9", {
+      color: false,
+    });
+    const lines = out.split("\n");
+    expect(lines).toHaveLength(6);
+    expect(lines[0]).toMatch(/^\s+--- spec\s+1\.2\.3$/);
+    expect(lines[1]).toMatch(/^\s+\+\+\+ installed\s+1\.2\.9$/);
+    expect(lines[2]).toMatch(/^\s+@@ patch version drift @@$/);
+    expect(lines[3]).toMatch(/^\s+- 1\.2\.3$/);
+    expect(lines[4]).toMatch(/^\s+\+ 1\.2\.9$/);
+    expect(lines[5]).toMatch(/\^$/);
+  });
+
+  it("right-pads the shorter label so version columns align in --- / +++ headers", () => {
+    // "spec" (4) vs "installed" (9) → spec padded with 5 spaces → both
+    // version columns start at the same offset.
+    const out = renderUnifiedDiff("spec", "1.2.3", "installed", "1.2.9", {
+      color: false,
+    });
+    const [minus, plus] = out.split("\n");
+    expect(minus.indexOf("1.2.3")).toBe(plus.indexOf("1.2.9"));
+  });
+
+  it("aligns the caret to the first differing char on the `+` line", () => {
+    const out = renderUnifiedDiff("a", "1.2.3", "b", "1.5.3", { color: false });
+    const lines = out.split("\n");
+    const plusLine = lines[4];
+    const caretLine = lines[5];
+    const caretIdx = caretLine.indexOf("^");
+    expect(plusLine[caretIdx]).toBe("5");
+  });
+
+  it("does not emit ANSI escapes when color: false", () => {
+    const out = renderUnifiedDiff("spec", "1.2.3", "installed", "1.2.9", {
+      color: false,
+    });
+    expect(out).not.toMatch(/\x1b\[/);
+  });
+
+  it("emits ANSI escapes when color: true (forced) and strips back to plain", () => {
+    const colored = renderUnifiedDiff("spec", "1.2.3", "installed", "1.2.9", {
+      color: true,
+    });
+    expect(colored).toMatch(/\x1b\[/);
+    const plain = renderUnifiedDiff("spec", "1.2.3", "installed", "1.2.9", {
+      color: false,
+    });
+    expect(stripAnsi(colored)).toBe(plain);
+  });
+
+  it("interpolates the drift level into the @@ hunk header", () => {
+    const out = renderUnifiedDiff("a", "1.0.0", "b", "2.0.0", { color: false });
+    expect(out).toContain("@@ major version drift @@");
+  });
+
+  it("respects a custom indent option", () => {
+    const out = renderUnifiedDiff("a", "1.0.0", "b", "1.0.1", {
+      color: false,
+      indent: ">>> ",
+    });
+    for (const line of out.split("\n")) {
+      expect(line.startsWith(">>> ")).toBe(true);
+    }
+  });
+});
+
+describe("shouldColor", () => {
+  it("returns true when override is true regardless of env", () => {
+    expect(shouldColor(true)).toBe(true);
+  });
+
+  it("returns false when override is false regardless of env", () => {
+    expect(shouldColor(false)).toBe(false);
+  });
 });

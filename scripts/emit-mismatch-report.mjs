@@ -37,6 +37,7 @@ import {
   classifyDiff,
   renderMismatch,
   renderTripleMismatch,
+  renderUnifiedDiff,
 } from "./lib/semver-diff.mjs";
 
 const ROOT = process.cwd();
@@ -144,6 +145,14 @@ function renderPackageBlock({ name, spec, specNormalized, locked, installed }) {
     // All three differ — labeled triple block + summary line.
     lines.push(renderTripleMismatch(sn, locked, installed));
   }
+
+  // Unified-diff style summary (normalized spec vs installed). Color is
+  // force-disabled because this exact same string is also written to disk
+  // (see `--out` path); the artifact stays grep-friendly. Contributors
+  // who want color can re-run the verifier scripts directly in a TTY.
+  lines.push("");
+  lines.push("  Unified diff (spec vs installed):");
+  lines.push(renderUnifiedDiff("spec", sn, "installed", installed, { color: false }));
 
   // One-line drift summary at the end so log scrapers / dashboards can pull
   // a single grep-friendly verdict per package without parsing the block.

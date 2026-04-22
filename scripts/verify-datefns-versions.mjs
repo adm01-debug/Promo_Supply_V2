@@ -23,7 +23,11 @@ import {
   resolveLockedVersion,
   RESOLVER_PATTERN_NAMES,
 } from "./lib/resolve-locked-version.mjs";
-import { renderMismatch, renderTripleMismatch } from "./lib/semver-diff.mjs";
+import {
+  renderMismatch,
+  renderTripleMismatch,
+  renderUnifiedDiff,
+} from "./lib/semver-diff.mjs";
 
 const EXIT = {
   OK: 0,
@@ -129,6 +133,13 @@ if (!aligned) {
     // All three differ — render the labeled triple block with summary line.
     console.error(renderTripleMismatch(SPEC_NORM, LOCKED, INSTALLED));
   }
+
+  // Unified-diff style summary (normalized spec vs installed) — git-patch
+  // shape with consistent label padding and TTY-aware colors. This is the
+  // first thing most contributors look at; the detailed labeled blocks
+  // above are kept for deeper post-mortem.
+  console.error("\n  Unified diff (spec vs installed):");
+  console.error(renderUnifiedDiff("spec", SPEC_NORM, "installed", INSTALLED));
 
   // Pairwise drift diagnosis: explicitly label each of the 3 pairs and explain
   // which file is out of sync and the concrete reason. This complements the
