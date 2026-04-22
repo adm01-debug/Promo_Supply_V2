@@ -75,7 +75,7 @@ export function useAccountFilters<T extends FiltersRecord>(
             setFiltersState(merged);
             // Upsert into DB and remove legacy key
             await supabase.from('user_filter_preferences').upsert(
-              { user_id: uid, scope, filters: merged as unknown as FiltersRecord },
+              [{ user_id: uid, scope, filters: merged as unknown as FiltersRecord }],
               { onConflict: 'user_id,scope' },
             );
             try {
@@ -202,7 +202,7 @@ async function persist<T extends FiltersRecord>(
 ): Promise<void> {
   if (userId) {
     await supabase.from('user_filter_preferences').upsert(
-      { user_id: userId, scope, filters: filters as unknown as FiltersRecord },
+      [{ user_id: userId, scope, filters: filters as unknown as FiltersRecord }],
       { onConflict: 'user_id,scope' },
     );
   } else {
