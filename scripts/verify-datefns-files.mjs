@@ -30,12 +30,23 @@ let SUMMARY_MD_PATH = process.env.DATEFNS_SMOKE_SUMMARY_MD || null;
 // artifact on failure so reviewers get the full repair recipe offline
 // without scrolling job logs. On a clean run, no file is written.
 let REPORT_MD_PATH = process.env.DATEFNS_SMOKE_REPORT_MD || null;
+// `--report-json <path>` (also via env DATEFNS_SMOKE_REPORT_JSON) writes a
+// machine-readable JSON sibling of the Markdown failure report. Always
+// emitted on failure (and optionally on success — see `emittedOn` below in
+// the payload), so CI dashboards / bots can consume the exact missing
+// subpath list + pinned version + one-step reinstall command without
+// scraping the Markdown. Schema is versioned (`schemaVersion: 1`) so
+// downstream consumers can pin against breaking changes.
+let REPORT_JSON_PATH = process.env.DATEFNS_SMOKE_REPORT_JSON || null;
 for (let i = 0; i < ARGS.length; i++) {
   if (ARGS[i] === "--summary-md" && ARGS[i + 1]) {
     SUMMARY_MD_PATH = ARGS[i + 1];
     i++;
   } else if (ARGS[i] === "--report-md" && ARGS[i + 1]) {
     REPORT_MD_PATH = ARGS[i + 1];
+    i++;
+  } else if (ARGS[i] === "--report-json" && ARGS[i + 1]) {
+    REPORT_JSON_PATH = ARGS[i + 1];
     i++;
   }
 }
@@ -1069,6 +1080,60 @@ if (missing.length > 0) {
       writeFileSync(REPORT_MD_PATH, md.join("\n"), "utf8");
     } catch (err) {
       console.error(gray(`(verify-datefns-files: could not write failure report to ${REPORT_MD_PATH}: ${err?.message ?? err})`));
+    }
+  }
+
+  // ── --report-json: machine-readable missing-subpath report (CI artifact) ──
+  // Mirrors the Markdown report but in a stable, versioned JSON schema so
+  // dashboards / bots can consume the exact missing subpath list + pinned
+  // version + one-step reinstall command without scraping Markdown.
+  if (REPORT_JSON_PATH) {
+    const buildEntry = ({ subpath, tried }) => {
+      const offenders = sortedOffenders(subpath); // [{ file, lines: number[] }]
+      const fileCount = (subpathFiles.get(subpath) ?? new Set()).size;
+      return {
+        subpath,
+        specifier: `date-fns/${subpath}`,
+        kind: subpath.startsWith("locale/") ? "locale" : "function",
+        fileCount,
+        offenders, // [{ file: "src/x.ts", lines: [12, 88] }]
+        triedPaths: tried,
+      };
+    };
+    const reinstallCommand = installedVersion
+      ? `bun add date-fns@${installedVersion} --exact`
+      : `rm -rf node_modules && bun install --frozen-lockfile`;
+    const payload = {
+      schemaVersion: 1,
+      generatedAt: new Date().toISOString(),
+      emittedOn: "failure",
+      pinnedVersion: installedVersion,
+      packageRelativeDir: PKG_REL,
+      scannedFiles: scannedFiles.size,
+      importedSubpathCount: entries.length,
+      filterActive: FILTER_ACTIVE,
+      missingCount: missing.length,
+      missing: missing.map(buildEntry),
+      reinstall: {
+        oneStep: reinstallCommand,
+        steps: [
+          { label: "Frozen reinstall (preferred — respects bun.lock)", command: "rm -rf node_modules && bun install --frozen-lockfile" },
+          { label: installedVersion
+              ? `Re-pin date-fns to the currently-installed version (${installedVersion})`
+              : "Re-pin date-fns (use spec from package.json)",
+            command: installedVersion
+              ? `bun add date-fns@${installedVersion} --exact`
+              : "bun add date-fns@<version-from-package.json> --exact" },
+          { label: "Last resort — clear bun's global cache then reinstall", command: "bun pm cache rm && rm -rf node_modules && bun install --frozen-lockfile" },
+        ],
+        verifyAfter: "bun run verify:datefns-files",
+      },
+    };
+    try {
+      mkdirSync(dirname(REPORT_JSON_PATH), { recursive: true });
+      writeFileSync(REPORT_JSON_PATH, JSON.stringify(payload, null, 2) + "\n", "utf8");
+    } catch (err) {
+      console.error(gray(`(verify-datefns-files: could not write JSON report to ${REPORT_JSON_PATH}: ${err?.message ?? err})`));
     }
   }
 

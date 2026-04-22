@@ -97,6 +97,12 @@ jobs:
           # pinned at the moment of failure) to this path on failure.
           # The "Compose PR comment body" step below reads it back.
           DATEFNS_SMOKE_REPORT_MD: ci-artifacts/datefns-failure-report.md
+          # Machine-readable sibling — versioned JSON listing every missing
+          # subpath, its offender file:line list, the pinned date-fns
+          # version, and a one-step reinstall command. Uploaded as a PR
+          # artifact below for bots / dashboards to consume without
+          # scraping Markdown. Written ONLY on failure.
+          DATEFNS_SMOKE_REPORT_JSON: ci-artifacts/missing-datefns-subpaths.json
         run: |
           mkdir -p ci-artifacts
           set -o pipefail
@@ -193,6 +199,7 @@ jobs:
           path: |
             ci-artifacts/pr-smoke.log
             ci-artifacts/datefns-failure-report.md
+            ci-artifacts/missing-datefns-subpaths.json
             ci-artifacts/pr-comment.md
           if-no-files-found: warn
           retention-days: 14
