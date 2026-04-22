@@ -83,16 +83,36 @@ function diffDateFns(prev, next, lines) {
     }
     const added = [...bNames].filter((s) => !aNames.has(s)).sort();
     const removed = [...aNames].filter((s) => !bNames.has(s)).sort();
+
+    // Enrich each added/removed line with the per-entry fileCount + a small
+    // sample of importing files (when the snapshot carries them — older
+    // snapshots without fileCount degrade gracefully to the bare subpath).
+    const aMapForDrift = entriesByName(aSub);
+    const bMapForDrift = entriesByName(bSub);
+    const renderDriftLine = (sym, name, src) => {
+      const e = src.get(name);
+      if (!e || typeof e.fileCount !== "number") return `      ${sym} ${name}`;
+      const sample = Array.isArray(e.files) && e.files.length
+        ? `  [${e.files.slice(0, 3).join(", ")}${e.files.length > 3 ? ", …" : ""}]`
+        : "";
+      const noun = e.fileCount === 1 ? "file" : "files";
+      return `      ${sym} ${name}  (${e.fileCount} ${noun})${sample}`;
+    };
+
     if (added.length > 0) {
       section.push("    subpaths added:");
-      for (const s of added.slice(0, OFFENDER_DIFF_CAP)) section.push(`      + ${s}`);
+      for (const s of added.slice(0, OFFENDER_DIFF_CAP)) {
+        section.push(renderDriftLine("+", s, bMapForDrift));
+      }
       if (added.length > OFFENDER_DIFF_CAP) {
         section.push(`      … and ${added.length - OFFENDER_DIFF_CAP} more added`);
       }
     }
     if (removed.length > 0) {
       section.push("    subpaths removed:");
-      for (const s of removed.slice(0, OFFENDER_DIFF_CAP)) section.push(`      - ${s}`);
+      for (const s of removed.slice(0, OFFENDER_DIFF_CAP)) {
+        section.push(renderDriftLine("-", s, aMapForDrift));
+      }
       if (removed.length > OFFENDER_DIFF_CAP) {
         section.push(`      … and ${removed.length - OFFENDER_DIFF_CAP} more removed`);
       }

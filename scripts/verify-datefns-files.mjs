@@ -196,6 +196,15 @@ const subpaths = new Set();
 // Both are useful — occurrences shows churn, unique shows surface area.
 const kindOccurrences = Object.fromEntries(PATTERN_KINDS.map((k) => [k, 0]));
 const kindSubpaths = Object.fromEntries(PATTERN_KINDS.map((k) => [k, new Set()]));
+// subpath → Set<absoluteFilePath>. Drives the per-entry `fileCount` / `files[]`
+// fields in the snapshot, which the diff script uses to highlight which
+// imports actually drove drift (added/removed) and how widespread they are.
+const subpathFiles = new Map();
+const recordSubpathFile = (sp, file) => {
+  let s = subpathFiles.get(sp);
+  if (!s) { s = new Set(); subpathFiles.set(sp, s); }
+  s.add(file);
+};
 // Unresolvable dynamic imports: `[{ file, line, snippet }]`. Surfaced via
 // failure mode D below — verifier exits non-zero if any are present.
 const unresolvableDynamic = [];
@@ -229,6 +238,7 @@ for (const file of scannedFiles) {
       subpaths.add(sp);
       kindOccurrences[kind] += 1;
       kindSubpaths[kind].add(sp);
+      recordSubpathFile(sp, file);
     }
   }
   // Resolvable template literals — `import(\`date-fns/format\`)` — are valid
@@ -241,6 +251,7 @@ for (const file of scannedFiles) {
     subpaths.add(sp);
     kindOccurrences.dynamic += 1;
     kindSubpaths.dynamic.add(sp);
+    recordSubpathFile(sp, file);
   }
   // CJS counterpart: backtick-template require, no interpolation.
   RESOLVABLE_REQUIRE_TEMPLATE_RE.lastIndex = 0;
@@ -250,6 +261,7 @@ for (const file of scannedFiles) {
     subpaths.add(sp);
     kindOccurrences["cjs-require"] += 1;
     kindSubpaths["cjs-require"].add(sp);
+    recordSubpathFile(sp, file);
   }
   // Unresolvable dynamic imports — record for failure mode D.
   UNRESOLVABLE_DYNAMIC_RE.lastIndex = 0;
@@ -416,7 +428,12 @@ if (subpaths.size === 0) {
 // Single pass: probe each subpath's six candidate files, record the first hit
 // (relative to node_modules/date-fns) into entries[], and accumulate missing[]
 // for the failure-mode formatter below.
-const entries = []; // [{ subpath, exists, resolvedFile }]
+// Per-entry shape now carries `fileCount` and a small `files[]` sample so
+// `diff-dependency-health.mjs` can render "this added subpath is imported in
+// 3 files: …" without re-walking the source tree. The sample is capped at
+// SAMPLE_FILES_PER_ENTRY to keep snapshot diffs reviewable.
+const SAMPLE_FILES_PER_ENTRY = 5;
+const entries = []; // [{ subpath, exists, resolvedFile, fileCount, files }]
 const missing = []; // [{ subpath, tried: [relPath, ...] }]
 for (const sp of [...subpaths].sort()) {
   const candidates = [
@@ -428,7 +445,16 @@ for (const sp of [...subpaths].sort()) {
     `${sp}/index.cjs`,
   ];
   const hit = candidates.find((c) => existsSync(join(PKG_DIR, c))) ?? null;
-  entries.push({ subpath: sp, exists: hit !== null, resolvedFile: hit });
+  const filesForSp = [...(subpathFiles.get(sp) ?? [])]
+    .map((f) => relative(ROOT, f))
+    .sort();
+  entries.push({
+    subpath: sp,
+    exists: hit !== null,
+    resolvedFile: hit,
+    fileCount: filesForSp.length,
+    files: filesForSp.slice(0, SAMPLE_FILES_PER_ENTRY),
+  });
   if (!hit) missing.push({ subpath: sp, tried: candidates });
 }
 
