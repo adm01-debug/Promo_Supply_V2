@@ -193,11 +193,17 @@ if (JSON_FILE) {
   try {
     const absPath = resolvePath(JSON_FILE);
     mkdirSync(dirname(absPath), { recursive: true });
-    const body = JSON.stringify(payload, null, 2) + "\n";
+    // pretty: 2-space indent + trailing newline (POSIX-friendly, plays nice
+    // with `git diff` and `cat`). minified: single line, no trailing
+    // newline — byte-stable input for cache keys / sha256 hashing.
+    const body =
+      JSON_FILE_MODE === "minified"
+        ? JSON.stringify(payload)
+        : JSON.stringify(payload, null, 2) + "\n";
     writeFileSync(absPath, body);
     const bytes = statSync(absPath).size;
     console.error(
-      `[install-report] wrote JSON → ${absPath} (${bytes} bytes)`,
+      `[install-report] wrote JSON → ${absPath} (${bytes} bytes, ${JSON_FILE_MODE})`,
     );
   } catch (e) {
     console.error(`[install-report] failed to write --json-file=${JSON_FILE}: ${e instanceof Error ? e.message : e}`);
