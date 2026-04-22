@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-22T16:29:42.676Z",
+  "generatedAt": "2026-04-22T19:40:46.625Z",
   "dateFns": {
     "spec": "3.6.0",
     "installed": "3.6.0",
@@ -693,17 +693,20 @@
   ],
   "lockfileDrift": {
     "detected": false,
-    "lastCheckedAt": "2026-04-22T16:29:42.676Z",
+    "lastCheckedAt": "2026-04-22T19:40:46.625Z",
     "source": "scripts/generate-dependency-health.mjs"
   },
   "treeShaking": {
-    "scannedAt": "2026-04-22T16:16:32.216Z",
-    "filesScanned": 402,
+    "scannedAt": "2026-04-22T19:40:46.654Z",
+    "filesScanned": 408,
     "barrelImportsFound": 0,
     "offenders": [],
     "truncated": false,
     "riskLevel": "ok",
-    "cacheKey": "a516559bed0a8ac941b175b18e02e7cd2f4bfb604e74f320950cc02e2e9d4368",
-    "cacheHit": true
+    "cacheKey": "0736ab3a91d09cf722712d4f0b49b569e8bd2a2d3c54bb710db510b2c786457d",
+    "cacheHit": false,
+    "suppressed": [],
+    "suppressedCount": 0,
+    "expiredAllowlistEntries": []
   }
 }

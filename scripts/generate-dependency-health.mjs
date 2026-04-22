@@ -10,6 +10,7 @@ import { createHash } from "node:crypto";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
 import { validateSnapshot, failOnInvalid } from "./lib/validate-dependency-health.mjs";
 import { BARREL_IMPORT_RE, computeRiskLevel } from "./lib/tree-shaking-risk.mjs";
+import { loadAllowlist, applyAllowlist } from "./lib/dependency-health-allowlist.mjs";
 
 const SCAN_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx"]);
 const SCAN_SKIP_DIRS = new Set(["node_modules", "dist", "build", ".next", "coverage"]);
@@ -240,7 +241,31 @@ function main() {
     }
   }
   const previousTreeShaking = existing?.treeShaking;
-  const treeShaking = scanTreeShaking(root, previousTreeShaking);
+  const rawTreeShaking = scanTreeShaking(root, previousTreeShaking);
+
+  // Apply the per-package allowlist of known false positives. The raw
+  // scan result is cached as-is (so toggling an allowlist entry doesn't
+  // re-read every file); suppression is applied on top here. Expired
+  // entries are surfaced in the snapshot so reviewers can prune them.
+  const allowlistPath = resolve(root, ".dependency-health-allowlist.json");
+  let allowlist;
+  try {
+    allowlist = loadAllowlist(allowlistPath);
+  } catch (err) {
+    console.error(`✗ ${err.message}`);
+    process.exit(1);
+  }
+  const { kept, suppressed } = applyAllowlist(rawTreeShaking.offenders ?? [], allowlist.entries);
+  const suppressedCount = (rawTreeShaking.barrelImportsFound ?? 0) - kept.length;
+  const treeShaking = {
+    ...rawTreeShaking,
+    offenders: kept,
+    barrelImportsFound: Math.max(0, (rawTreeShaking.barrelImportsFound ?? 0) - suppressedCount),
+    riskLevel: computeRiskLevel(Math.max(0, (rawTreeShaking.barrelImportsFound ?? 0) - suppressedCount)),
+    suppressed,
+    suppressedCount,
+    expiredAllowlistEntries: allowlist.expired,
+  };
 
   const snapshot = {
     generatedAt: now,
@@ -285,8 +310,13 @@ function main() {
     );
   }
   console.log(
-    `  tree-shaking: scanned=${treeShaking.filesScanned} barrelImports=${treeShaking.barrelImportsFound} risk=${treeShaking.riskLevel} cache=${treeShaking.cacheHit ? "HIT" : "MISS"}`,
+    `  tree-shaking: scanned=${treeShaking.filesScanned} barrelImports=${treeShaking.barrelImportsFound} suppressed=${treeShaking.suppressedCount} risk=${treeShaking.riskLevel} cache=${treeShaking.cacheHit ? "HIT" : "MISS"}`,
   );
+  if (treeShaking.expiredAllowlistEntries.length > 0) {
+    console.warn(
+      `  ⚠ ${treeShaking.expiredAllowlistEntries.length} allowlist entr${treeShaking.expiredAllowlistEntries.length === 1 ? "y has" : "ies have"} expired — review .dependency-health-allowlist.json`,
+    );
+  }
 }
 
 main();
