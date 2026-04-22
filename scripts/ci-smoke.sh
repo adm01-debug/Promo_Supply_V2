@@ -11,17 +11,48 @@ preflight
 LOG_DIR="ci-logs"
 mkdir -p "$LOG_DIR"
 
-# Optional first arg: path to the vitest smoke test file.
-# Defaults to the date-fns smoke test for backwards compatibility.
-SMOKE_TEST_PATH="${1:-src/test/dateFns.smoke.test.ts}"
+# Optional args:
+#   $1                       path to vitest smoke test  (default: src/test/dateFns.smoke.test.ts)
+#   $2 / --package-json=<p>  path to alternate package.json used for the pinned
+#                            date-fns version check (monorepo support).
+#                            Defaults to ./package.json. Exported as
+#                            SMOKE_PACKAGE_JSON so the smoke test's beforeAll
+#                            versions log reads the SAME file as the bash check.
+SMOKE_TEST_PATH=""
+SMOKE_PACKAGE_JSON=""
+for arg in "$@"; do
+  case "$arg" in
+    --package-json=*) SMOKE_PACKAGE_JSON="${arg#--package-json=}" ;;
+    --help|-h)
+      sed -n '14,21p' "$0" | sed 's/^# \{0,1\}//'
+      exit 0
+      ;;
+    -*) echo "✗ Unknown flag: $arg" >&2; exit 2 ;;
+    *)
+      if [ -z "$SMOKE_TEST_PATH" ]; then SMOKE_TEST_PATH="$arg"
+      elif [ -z "$SMOKE_PACKAGE_JSON" ]; then SMOKE_PACKAGE_JSON="$arg"
+      else echo "✗ Unexpected positional arg: $arg" >&2; exit 2
+      fi
+      ;;
+  esac
+done
+SMOKE_TEST_PATH="${SMOKE_TEST_PATH:-src/test/dateFns.smoke.test.ts}"
+SMOKE_PACKAGE_JSON="${SMOKE_PACKAGE_JSON:-package.json}"
+export SMOKE_PACKAGE_JSON
 
 if [ ! -f "$SMOKE_TEST_PATH" ]; then
   echo "✗ Smoke test file not found: $SMOKE_TEST_PATH" >&2
-  echo "  Usage: $0 [path/to/smoke.test.ts]" >&2
+  echo "  Usage: $0 [path/to/smoke.test.ts] [path/to/package.json] [--package-json=<path>]" >&2
+  exit 2
+fi
+if [ ! -f "$SMOKE_PACKAGE_JSON" ]; then
+  echo "✗ package.json not found: $SMOKE_PACKAGE_JSON" >&2
+  echo "  Pass an existing file via positional arg #2 or --package-json=<path>." >&2
   exit 2
 fi
 
 echo "▶ Smoke test target: $SMOKE_TEST_PATH"
+echo "▶ Pin source       : $SMOKE_PACKAGE_JSON"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Summary state — populated as steps run; printed by trap on EXIT.
@@ -187,6 +218,7 @@ print_summary() {
   printf "  Smoke tsc           : %s\n" "$tsc_line"
   printf "  Smoke vitest        : %s\n" "$vitest_line"
   printf "  Smoke test file     : %s\n" "$SMOKE_TEST_PATH"
+  printf "  Pin source          : %s\n" "$SMOKE_PACKAGE_JSON"
   printf "  Logs                : %s/tsc-smoke.log\n" "$LOG_DIR"
   printf "                        %s/vitest-smoke.log\n" "$LOG_DIR"
   printf "                        %s/vitest-smoke.json\n" "$LOG_DIR"
@@ -218,15 +250,27 @@ evict_datefns_cache
 echo "▶ [3/10] Installing from frozen lockfile..."
 bun install --frozen-lockfile
 
-echo "▶ [4/10] Confirming installed date-fns version matches lockfile..."
+echo "▶ [4/10] Confirming installed date-fns version matches lockfile and pin source ($SMOKE_PACKAGE_JSON)..."
 DATEFNS_INSTALLED="$(node -p "require('./node_modules/date-fns/package.json').version")"
 DATEFNS_LOCKED="$(resolve_locked_datefns)"
+DATEFNS_PINNED="$(node -e '
+  const p = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
+  process.stdout.write(p.dependencies?.["date-fns"] || p.devDependencies?.["date-fns"] || "");
+' "$SMOKE_PACKAGE_JSON")"
+if [ -z "$DATEFNS_PINNED" ]; then
+  echo "✗ date-fns not declared in $SMOKE_PACKAGE_JSON (dependencies/devDependencies)." >&2
+  exit 1
+fi
 if [ -n "$DATEFNS_LOCKED" ] && [ "$DATEFNS_INSTALLED" != "$DATEFNS_LOCKED" ]; then
   echo "✗ date-fns drift: installed=$DATEFNS_INSTALLED, locked=$DATEFNS_LOCKED" >&2
   exit 1
 fi
+if [ "$DATEFNS_INSTALLED" != "$DATEFNS_PINNED" ]; then
+  echo "✗ date-fns drift vs pin source: installed=$DATEFNS_INSTALLED, pinned=$DATEFNS_PINNED ($SMOKE_PACKAGE_JSON)" >&2
+  exit 1
+fi
 DATEFNS_VERSION_OK=1
-echo "✓ date-fns $DATEFNS_INSTALLED matches lockfile."
+echo "✓ date-fns $DATEFNS_INSTALLED matches lockfile + pin source ($SMOKE_PACKAGE_JSON)."
 
 echo "▶ [5/10] Verifying date-fns subpath files exist on disk..."
 VERIFY_FILES_RAN=1

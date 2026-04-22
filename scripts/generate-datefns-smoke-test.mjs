@@ -237,7 +237,13 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
         import("node:path"),
       ]);
       const cwd = process.cwd();
-      const pkgPath = path.join(cwd, "package.json");
+      // Honor SMOKE_PACKAGE_JSON (set by ci-smoke.sh / monorepo callers) so
+      // the logged spec matches whichever package.json the caller is gating
+      // on. Falls back to ./package.json for plain local runs.
+      const pkgEnv = process.env.SMOKE_PACKAGE_JSON;
+      const pkgPath = pkgEnv
+        ? (path.isAbsolute(pkgEnv) ? pkgEnv : path.join(cwd, pkgEnv))
+        : path.join(cwd, "package.json");
       const lockPath = path.join(cwd, "bun.lock");
       const installedPath = path.join(cwd, "node_modules", "date-fns", "package.json");
 
@@ -259,6 +265,7 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
         "── date-fns smoke versions ──────────────────────────────",
         \`  generated: \${stamp}\`,
         \`  cwd:       \${cwd}\`,
+        \`  pkgPath:   \${pkgPath}\`,
         \`  node:      \${process.version}\`,
         \`  spec:      \${spec}\`,
         \`  locked:    \${locked}\`,
