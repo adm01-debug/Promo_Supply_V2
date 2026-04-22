@@ -8,12 +8,16 @@
 //      skipped if QA admin login or GITHUB_REPO_RAW_BASE secret is missing)
 //
 // Run with: deno test --allow-net --allow-env supabase/functions/dependency-health
-import "https://deno.land/std@0.224.0/dotenv/load.ts";
+import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
 import {
   assert,
   assertEquals,
   assertExists,
 } from "https://deno.land/std@0.224.0/assert/mod.ts";
+
+// Load .env without enforcing the .env.example schema (strict load fails on
+// repos whose example file lists vars that are intentionally absent).
+await load({ export: true, allowEmptyValues: true, examplePath: null });
 
 const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY")!;
