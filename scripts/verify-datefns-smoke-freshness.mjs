@@ -151,9 +151,10 @@ if (existsSync(MANIFEST_FILE)) {
 
 const sizeKb = (smokeStat.size / 1024).toFixed(1);
 const smokeIso = new Date(smokeStat.mtimeMs).toISOString();
-if (newestLocaleFile) {
+const localeCount = srcLocales.size;
+if (localeCount > 0) {
   console.log(
-    `✓ Smoke test fresh: ${sizeKb} KB, mtime ${smokeIso} >= newest locale source ${relative(ROOT, newestLocaleFile)}.`,
+    `✓ Smoke test fresh: ${sizeKb} KB, mtime ${smokeIso}, ${localeCount} locale import(s) match src/.`,
   );
 } else {
   console.log(
