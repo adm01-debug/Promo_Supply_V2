@@ -37,6 +37,14 @@ jobs:
         run: bun run deps:health
       - name: Append discovered date-fns subpaths
         run: bun run verify:datefns-files:write
+      - name: Upload dependency-health snapshot artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-health-${{ github.run_id }}
+          path: public/dependency-health.json
+          if-no-files-found: warn
+          retention-days: 14
       - name: Commit updated snapshot if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
