@@ -144,7 +144,21 @@ if (unsupportedFindings.length > 0) {
   }
 }
 
-if (subpaths.size === 0) {
+if (malformedFindings.length > 0) {
+  const localeOnly = malformedFindings.filter((f) => f.isLocale);
+  const label = `${malformedFindings.length} malformed date-fns import(s) (zero usable specifiers after comment stripping${localeOnly.length > 0 ? `; ${localeOnly.length} locale` : ""})`;
+  const log = STRICT ? console.error : console.warn;
+  log(`${STRICT ? "✗" : "⚠"} ${label}:`);
+  for (const f of malformedFindings) {
+    log(`   ${f.file}:${f.line} → date-fns/${f.subpath}${f.isLocale ? "  [locale]" : ""}`);
+  }
+  if (STRICT) {
+    console.error(
+      "  Hint: remove the empty import or add at least one named specifier. Re-run without --strict to downgrade to a warning.",
+    );
+    process.exit(1);
+  }
+}
   console.error(
     "✗ generate-datefns-smoke-test: no date-fns subpath imports found in src/. Aborting.",
   );
