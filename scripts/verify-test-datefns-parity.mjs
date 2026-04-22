@@ -163,6 +163,9 @@ function buildSummary({ runs, diffs, status, exitCode, reason }) {
     status, // "pass" | "mismatch" | "single-runner" | "error"
     exitCode,
     reason: reason ?? null,
+    // Forwarded args are part of the run's identity — without them a reader
+    // can't tell whether `total: 4` means "all tests" or "just -t format".
+    forwardedArgs: FORWARDED_ARGS,
     runners: runs.map(runShape),
     diffCount: diffs.length,
     diffs, // [] when status === "pass"
