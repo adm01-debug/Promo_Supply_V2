@@ -42,25 +42,12 @@ jobs:
         run: bun install --frozen-lockfile --dry-run
       - name: Install dependencies (frozen lockfile)
         run: bun install --frozen-lockfile
-      - name: Type-check tsconfig.app.json
-        run: bunx tsc --noEmit -p tsconfig.app.json
-      - name: Type-check tsconfig.node.json
-        if: ${{ hashFiles('tsconfig.node.json') != '' }}
-        run: bunx tsc --noEmit -p tsconfig.node.json
 
-      - name: Generate typecheck report artifact
-        if: always()
-        run: node scripts/typecheck-report.mjs
-
-      - name: Upload typecheck report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: typecheck-report
-          path: ci-artifacts/typecheck-report.json
-          if-no-files-found: error
-          retention-days: 30
-
+      # ──────────────────────────────────────────────────────────────────────
+      # Lint runs IMMEDIATELY after install and BEFORE tsc, so syntax/style
+      # failures surface first on the PR — devs don't wait for a full
+      # typecheck to learn about a missing semicolon or unused import.
+      # ──────────────────────────────────────────────────────────────────────
       - name: Determine changed files (PR vs base, push vs previous commit)
         id: changed
         run: |
@@ -125,4 +112,28 @@ jobs:
             ci-artifacts/eslint-report.txt
             ci-artifacts/eslint-report.json
           if-no-files-found: ignore
+          retention-days: 30
+
+      # ──────────────────────────────────────────────────────────────────────
+      # Typecheck runs AFTER lint. tsc is the slowest step in this job, so
+      # putting it last means devs see fast lint feedback first; tsc still
+      # runs (and blocks merge) on every push/PR via the steps below.
+      # ──────────────────────────────────────────────────────────────────────
+      - name: Type-check tsconfig.app.json
+        run: bunx tsc --noEmit -p tsconfig.app.json
+      - name: Type-check tsconfig.node.json
+        if: ${{ hashFiles('tsconfig.node.json') != '' }}
+        run: bunx tsc --noEmit -p tsconfig.node.json
+
+      - name: Generate typecheck report artifact
+        if: always()
+        run: node scripts/typecheck-report.mjs
+
+      - name: Upload typecheck report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-report
+          path: ci-artifacts/typecheck-report.json
+          if-no-files-found: error
           retention-days: 30
