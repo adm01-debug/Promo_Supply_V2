@@ -146,6 +146,26 @@ function compare(a, b) {
     for (const k of ["total", "passed", "failed"]) {
       if (a.json[k] !== b.json[k]) diffs.push(`${k}: ${a.json[k]} vs ${b.json[k]}`);
     }
+    // Set-difference on FAILED test identities. Two runners can post
+    // identical pass/fail counts while failing entirely different tests
+    // (flaky test on one side, real regression on the other). Counts-only
+    // parity would silently pass that — set diff catches it. We always
+    // compute both directions so the failure message names the runner
+    // that's the outlier in each direction.
+    const setA = new Set(a.json.failedTests ?? []);
+    const setB = new Set(b.json.failedTests ?? []);
+    const onlyInA = [...setA].filter((t) => !setB.has(t)).sort();
+    const onlyInB = [...setB].filter((t) => !setA.has(t)).sort();
+    if (onlyInA.length > 0) {
+      diffs.push(
+        `failed only in ${a.runner} (${onlyInA.length}): ${onlyInA.slice(0, 3).join(", ")}${onlyInA.length > 3 ? `, …+${onlyInA.length - 3}` : ""}`,
+      );
+    }
+    if (onlyInB.length > 0) {
+      diffs.push(
+        `failed only in ${b.runner} (${onlyInB.length}): ${onlyInB.slice(0, 3).join(", ")}${onlyInB.length > 3 ? `, …+${onlyInB.length - 3}` : ""}`,
+      );
+    }
   } else if (Boolean(a.json) !== Boolean(b.json)) {
     diffs.push(`JSON report present: ${Boolean(a.json)} vs ${Boolean(b.json)}`);
   }
