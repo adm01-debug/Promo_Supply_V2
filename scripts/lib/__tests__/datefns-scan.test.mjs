@@ -51,8 +51,12 @@ describe("parseSpecifiers", () => {
 });
 
 describe("stripComments", () => {
-  it("removes block and line comments", () => {
-    expect(stripComments("a, /* skip */ b // also skip\n, c")).toMatch(/a,\s+,?\s*\n?,?\s*c/);
+  it("removes block and line comments while preserving surrounding tokens", () => {
+    const out = stripComments("a, /* skip */ b // also skip\n, c");
+    expect(out).not.toMatch(/skip/);
+    expect(out).toContain("a,");
+    expect(out).toContain("b");
+    expect(out).toContain("c");
   });
 });
 
