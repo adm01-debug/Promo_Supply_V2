@@ -22,14 +22,29 @@ const STRICT = argv.includes("--strict");
 const JSON_MODE = argv.includes("--json");
 const SUMMARY_ONLY = argv.includes("--drift-summary-only");
 const HELP = argv.includes("--help") || argv.includes("-h");
-const JSON_FILE = (() => {
-  const flag = argv.find((a) => a === "--json-file" || a.startsWith("--json-file="));
+function readValueFlag(name) {
+  const eqForm = `${name}=`;
+  const flag = argv.find((a) => a === name || a.startsWith(eqForm));
   if (!flag) return null;
   if (flag.includes("=")) return flag.slice(flag.indexOf("=") + 1) || null;
-  // Support space-separated form: --json-file path/to/out.json
+  // Support space-separated form: --flag value
   const idx = argv.indexOf(flag);
   return argv[idx + 1] && !argv[idx + 1].startsWith("--") ? argv[idx + 1] : null;
-})();
+}
+const JSON_FILE = readValueFlag("--json-file");
+// --json-file-mode: pretty (default, 2-space indent, trailing newline) or
+// minified (single line, no trailing whitespace). Minified is the right
+// choice for diff-stable caching keys (sha256 the file) and for tools that
+// hash artifacts byte-for-byte (e.g. actions/cache key inputs). Pretty is
+// the right choice when humans will read the file on the artifact tab.
+const JSON_FILE_MODE_RAW = readValueFlag("--json-file-mode") ?? "pretty";
+const JSON_FILE_MODE = JSON_FILE_MODE_RAW.toLowerCase();
+if (!["pretty", "minified"].includes(JSON_FILE_MODE)) {
+  console.error(
+    `[install-report] invalid --json-file-mode=${JSON_FILE_MODE_RAW} (expected: pretty | minified)`,
+  );
+  process.exit(2);
+}
 
 if (HELP) {
   console.log(
@@ -67,6 +82,15 @@ if (HELP) {
       "",
       "                        If the write fails (permissions, bad path), the",
       "                        script exits 2 with the OS error message.",
+      "",
+      "  --json-file-mode=MODE Format of the file written by --json-file:",
+      "                          • pretty   (default) — 2-space indent, trailing",
+      "                            newline. Best for humans reading the artifact.",
+      "                          • minified — single line, no trailing whitespace.",
+      "                            Best for diff-stable cache keys (sha256 the",
+      "                            file) and byte-for-byte artifact hashing in",
+      "                            CI cache actions. Ignored when --json-file is",
+      "                            not set. Invalid values exit 2.",
       "",
       "  --help, -h            Show this help and exit 0.",
       "",
@@ -169,11 +193,17 @@ if (JSON_FILE) {
   try {
     const absPath = resolvePath(JSON_FILE);
     mkdirSync(dirname(absPath), { recursive: true });
-    const body = JSON.stringify(payload, null, 2) + "\n";
+    // pretty: 2-space indent + trailing newline (POSIX-friendly, plays nice
+    // with `git diff` and `cat`). minified: single line, no trailing
+    // newline — byte-stable input for cache keys / sha256 hashing.
+    const body =
+      JSON_FILE_MODE === "minified"
+        ? JSON.stringify(payload)
+        : JSON.stringify(payload, null, 2) + "\n";
     writeFileSync(absPath, body);
     const bytes = statSync(absPath).size;
     console.error(
-      `[install-report] wrote JSON → ${absPath} (${bytes} bytes)`,
+      `[install-report] wrote JSON → ${absPath} (${bytes} bytes, ${JSON_FILE_MODE})`,
     );
   } catch (e) {
     console.error(`[install-report] failed to write --json-file=${JSON_FILE}: ${e instanceof Error ? e.message : e}`);
