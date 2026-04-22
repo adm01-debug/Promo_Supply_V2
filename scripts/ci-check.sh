@@ -58,13 +58,23 @@ bunx tsc --noEmit -p tsconfig.app.json
 echo "▶ [10/15] Verifying date-fns locale imports match manifest..."
 node scripts/verify-datefns-locales.mjs
 
-echo "▶ [11/15] Verifying date-fns smoke test is up to date..."
-if ! node scripts/generate-datefns-smoke-test.mjs --dry-run; then
+echo "▶ [11/15] Verifying date-fns smoke test + manifest are in sync (non-mutating --dry-run)..."
+# Non-mutating guard: the generator's --dry-run mode prints a unified diff of
+# what it WOULD write to src/test/dateFns.smoke.test.ts and
+# public/datefns-usage.json, then exits 1 if either would change. It never
+# touches the working tree, so this step is safe to run on every push and
+# leaves git status clean even on failure.
+if ! node scripts/generate-datefns-smoke-test.mjs --dry-run 2>&1 | tee "$LOG_DIR/verify-datefns-smoke.log"; then
   echo "✗ Smoke test or manifest is out of date." >&2
-  echo "  Run \`node scripts/generate-datefns-smoke-test.mjs\` and commit the result." >&2
+  echo "  Affected files:" >&2
+  echo "    - src/test/dateFns.smoke.test.ts" >&2
+  echo "    - public/datefns-usage.json" >&2
+  echo "  Fix locally:  bun run date-fns:smoke -- --force" >&2
+  echo "  Then commit both files. Diff above shows exactly what changed." >&2
+  echo "  Full log:     $LOG_DIR/verify-datefns-smoke.log" >&2
   exit 1
 fi
-echo "✓ Smoke test file and manifest are up to date."
+echo "✓ Smoke test file and manifest are byte-identical to generator output."
 
 echo "▶ [12/15] Validating smoke test imports against tsconfig.smoke.json (focused tsc)..."
 bunx tsc --noEmit -p tsconfig.smoke.json 2>&1 | tee "$LOG_DIR/tsc-smoke.log"
