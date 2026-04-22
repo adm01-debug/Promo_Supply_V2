@@ -53,19 +53,6 @@ extract_offending_files() {
     | sort -u
 }
 
-print_failure_summary() {
-  local step="$1"
-  local label="$2"
-  local log="$3"
-
-  echo ""
-  red   "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  red   "✗ date-fns hook FAILED"
-  red   "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-  printf "  %-20s %s\n" "Failed step:"   "[$step] $label"
-  printf "  %-20s %s\n" "Failure mode:"  "$3_MODE_PLACEHOLDER" >/dev/null  # noop, mode set below per caller
-}
-
 emit_summary() {
   # $1 step number, $2 step label, $3 mode, $4 log file, $5 fix-hint command
   local step="$1" label="$2" mode="$3" log="$4" fix="$5"
