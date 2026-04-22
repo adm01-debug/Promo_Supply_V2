@@ -37,6 +37,7 @@ import {
   classifyDiff,
   renderMismatch,
   renderTripleMismatch,
+  renderUnifiedDiff,
 } from "./lib/semver-diff.mjs";
 
 const ROOT = process.cwd();
