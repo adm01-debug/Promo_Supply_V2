@@ -50,6 +50,35 @@ const fetchHistory = async (): Promise<HistoryEntry[]> => {
   return ((data as { history?: HistoryEntry[] } | null)?.history) ?? [];
 };
 
+interface PrSmokeArtifact {
+  id: number;
+  name: string;
+  sizeBytes: number;
+  createdAt: string;
+  expiresAt: string;
+  downloadUrl: string;
+  webUrl: string;
+  runId: number | null;
+  headBranch: string | null;
+  headSha: string | null;
+  prNumber: number | null;
+}
+
+interface PrSmokeResponse {
+  status: "ok" | "empty" | "skipped" | "error";
+  artifact: PrSmokeArtifact | null;
+  reason?: string;
+  totalScanned?: number;
+}
+
+const fetchPrSmokeArtifact = async (): Promise<PrSmokeResponse> => {
+  const { data, error } = await supabase.functions.invoke("dependency-health?prSmoke=true", {
+    method: "GET",
+  });
+  if (error) throw error;
+  return (data as PrSmokeResponse) ?? { status: "empty", artifact: null };
+};
+
 interface PackageHealth {
   name: string;
   label: string;
