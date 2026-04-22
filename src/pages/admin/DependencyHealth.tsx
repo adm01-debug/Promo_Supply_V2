@@ -28,6 +28,20 @@ interface HistoryEntry {
   packages: { name: string; driftDetected: boolean }[];
 }
 
+interface CiDispatchInfo {
+  status: string;
+  branch?: string;
+  dispatchedAt?: string;
+  workflowRunUrl?: string;
+  workflowRunId?: number;
+  workflowRunStatus?: string;
+  latestCommitSha?: string;
+  latestCommitUrl?: string;
+  latestCommitMessage?: string;
+  latestCommitAuthor?: string;
+  latestCommitAt?: string;
+}
+
 const fetchHistory = async (): Promise<HistoryEntry[]> => {
   const { data, error } = await supabase.functions.invoke("dependency-health?history=true", {
     method: "GET",
