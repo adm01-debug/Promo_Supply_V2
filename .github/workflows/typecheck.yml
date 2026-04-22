@@ -50,6 +50,53 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-eslint-${{ hashFiles('eslint.config.js', 'eslint.date-fns.config.js', 'eslint-rules/**/*.js', 'package.json', 'bun.lock') }}-
             ${{ runner.os }}-eslint-
+      - name: Print cache key inputs (sha256 of lock + config files)
+        # Diagnostic: prints the exact hash values GitHub used to compose
+        # the cache keys above. Lets you eyeball cache (in)validation from
+        # the run log — if bun.lock's hash is the same as the previous run,
+        # the Bun cache should hit; if it changed, expect a cold install.
+        # Also appends a compact table to $GITHUB_STEP_SUMMARY so you can
+        # diff hashes across runs without scrolling the raw log.
+        run: |
+          set -euo pipefail
+          hash_of() {
+            if [ -f "$1" ]; then
+              sha256sum "$1" | awk '{print $1}'
+            else
+              echo "(missing)"
+            fi
+          }
+          BUN_HASH=$(hash_of bun.lock)
+          PKG_HASH=$(hash_of package.json)
+          ESLINT_CFG_HASH=$(hash_of eslint.config.js)
+          ESLINT_DF_CFG_HASH=$(hash_of eslint.date-fns.config.js)
+          TSCFG_APP_HASH=$(hash_of tsconfig.app.json)
+          TSCFG_NODE_HASH=$(hash_of tsconfig.node.json)
+          TSCFG_BASE_HASH=$(hash_of tsconfig.json)
+
+          echo "── Cache key inputs (sha256) ──"
+          printf '  %-28s %s\n' "bun.lock"                 "$BUN_HASH"
+          printf '  %-28s %s\n' "package.json"             "$PKG_HASH"
+          printf '  %-28s %s\n' "eslint.config.js"         "$ESLINT_CFG_HASH"
+          printf '  %-28s %s\n' "eslint.date-fns.config.js" "$ESLINT_DF_CFG_HASH"
+          printf '  %-28s %s\n' "tsconfig.json"            "$TSCFG_BASE_HASH"
+          printf '  %-28s %s\n' "tsconfig.app.json"        "$TSCFG_APP_HASH"
+          printf '  %-28s %s\n' "tsconfig.node.json"       "$TSCFG_NODE_HASH"
+
+          # Surface the same table at the top of the run page.
+          {
+            echo "### Cache key inputs (sha256)";
+            echo "";
+            echo "| File | sha256 |";
+            echo "| --- | --- |";
+            echo "| \`bun.lock\` | \`$BUN_HASH\` |";
+            echo "| \`package.json\` | \`$PKG_HASH\` |";
+            echo "| \`eslint.config.js\` | \`$ESLINT_CFG_HASH\` |";
+            echo "| \`eslint.date-fns.config.js\` | \`$ESLINT_DF_CFG_HASH\` |";
+            echo "| \`tsconfig.json\` | \`$TSCFG_BASE_HASH\` |";
+            echo "| \`tsconfig.app.json\` | \`$TSCFG_APP_HASH\` |";
+            echo "| \`tsconfig.node.json\` | \`$TSCFG_NODE_HASH\` |";
+          } >> "$GITHUB_STEP_SUMMARY"
       - name: Verify lockfile is up to date (no drift vs package.json)
         run: bun install --frozen-lockfile --dry-run
       - name: Install dependencies (frozen lockfile)
