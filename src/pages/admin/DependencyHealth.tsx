@@ -224,6 +224,17 @@ const DependencyHealth = () => {
     staleTime: 60_000,
   });
 
+  // Most recent PR smoke-test artifact (uploaded by the smoke-date-fns
+  // workflow on pull_request events). Polled less aggressively than the
+  // main snapshot since it only changes on PR pushes, not on every
+  // "Atualizar agora" click.
+  const { data: prSmoke, isLoading: prSmokeLoading, refetch: refetchPrSmoke } = useQuery({
+    queryKey: ["dependency-health-pr-smoke"],
+    queryFn: fetchPrSmokeArtifact,
+    staleTime: 5 * 60_000,
+    retry: 1,
+  });
+
   const selectedDiff = useMemo(() => {
     if (!history || history.length === 0) return null;
     const idx = selectedId ? history.findIndex((h) => h.id === selectedId) : 0;
