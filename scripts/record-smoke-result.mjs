@@ -10,13 +10,18 @@
  * Reads GitHub-provided env vars when available so the admin UI can deep-link
  * to the exact run / PR that produced the result.
  */
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync, copyFileSync } from "node:fs";
+import { resolve, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const OUT_PATH = resolve(ROOT, "public", "dependency-health.json");
+const LOG_DIR = resolve(ROOT, "public", "logs");
+const LOG_DEST_NAME = "smoke-date-fns-latest.log";
+const LOG_DEST = resolve(LOG_DIR, LOG_DEST_NAME);
+// Keep tail short enough to embed in JSON without bloating the snapshot.
+const TAIL_BYTES = 4096;
 
 function arg(name, fallback = "") {
   const idx = process.argv.indexOf(`--${name}`);
@@ -28,10 +33,39 @@ const status = (arg("status", "unknown") || "unknown").toLowerCase();
 const durationMsRaw = arg("duration-ms", "");
 const durationMs = durationMsRaw ? Number(durationMsRaw) : undefined;
 const testFile = arg("test-file", "src/test/dateFns.smoke.test.ts");
+const logFileArg = arg("log-file", "");
 
 if (!["pass", "fail", "unknown"].includes(status)) {
   console.error(`✗ record-smoke-result: invalid --status "${status}" (expected pass|fail|unknown)`);
   process.exit(2);
+}
+
+// Persist the full log into public/logs/ so the admin UI can deep-link to it.
+let logMeta = null;
+if (logFileArg) {
+  const src = resolve(ROOT, logFileArg);
+  if (existsSync(src)) {
+    try {
+      mkdirSync(LOG_DIR, { recursive: true });
+      copyFileSync(src, LOG_DEST);
+      const st = statSync(LOG_DEST);
+      const buf = readFileSync(LOG_DEST);
+      const tail = buf.length > TAIL_BYTES
+        ? buf.subarray(buf.length - TAIL_BYTES).toString("utf8")
+        : buf.toString("utf8");
+      logMeta = {
+        path: `/${relative(resolve(ROOT, "public"), LOG_DEST).split(/\\/g).join("/")}`,
+        sizeBytes: st.size,
+        capturedAt: new Date().toISOString(),
+        tail,
+      };
+      console.log(`✓ Copied smoke log → ${logMeta.path} (${st.size} bytes)`);
+    } catch (err) {
+      console.warn(`! Failed to copy smoke log from ${src}: ${err.message}`);
+    }
+  } else {
+    console.warn(`! Smoke log not found at ${src}, skipping copy`);
+  }
 }
 
 const ghServer = process.env.GITHUB_SERVER_URL || "https://github.com";
@@ -76,6 +110,7 @@ const smokeTest = {
   testFile,
   ...(Number.isFinite(durationMs) ? { durationMs } : {}),
   ...(ci ? { ci } : {}),
+  ...(logMeta ? { log: logMeta } : {}),
 };
 
 let snapshot = {};

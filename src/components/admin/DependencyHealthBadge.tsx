@@ -18,11 +18,18 @@ interface SmokeCi {
   branch?: string | null;
 }
 
+interface SmokeLog {
+  path?: string;
+  sizeBytes?: number;
+  capturedAt?: string;
+}
+
 interface SmokeTest {
   status?: "pass" | "fail" | string;
   ranAt?: string;
   durationMs?: number;
   ci?: SmokeCi;
+  log?: SmokeLog;
 }
 
 interface DepHealthSnapshot {
@@ -177,6 +184,20 @@ const DependencyHealthBadge = () => {
                   >
                     Abrir execução no GitHub Actions
                   </a>
+                </p>
+              )}
+              {smoke.log?.path && (
+                <p className="text-muted-foreground">
+                  <a
+                    href={smoke.log.path}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Log completo do vitest
+                  </a>
+                  {typeof smoke.log.sizeBytes === "number" &&
+                    ` (${(smoke.log.sizeBytes / 1024).toFixed(1)} KB)`}
                 </p>
               )}
             </div>

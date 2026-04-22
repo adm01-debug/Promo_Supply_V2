@@ -95,14 +95,17 @@ jobs:
           node scripts/record-smoke-result.mjs \
             --status "${{ steps.smoke.outputs.status || 'fail' }}" \
             --duration-ms "${{ steps.smoke.outputs.duration_ms || '0' }}" \
-            --test-file "src/test/dateFns.smoke.test.ts"
+            --test-file "src/test/dateFns.smoke.test.ts" \
+            --log-file "ci-artifacts/smoke-date-fns.log"
 
       - name: Upload updated dependency-health.json (smoke result)
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dependency-health-smoke-${{ github.run_id }}
-          path: public/dependency-health.json
+          path: |
+            public/dependency-health.json
+            public/logs/smoke-date-fns-latest.log
           if-no-files-found: warn
           retention-days: 14
 
@@ -110,8 +113,10 @@ jobs:
         if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore(deps): record smoke test result [skip ci]"
-          file_pattern: public/dependency-health.json
+          commit_message: "chore(deps): record smoke test result + log [skip ci]"
+          file_pattern: |
+            public/dependency-health.json
+            public/logs/smoke-date-fns-latest.log
 
       - name: Surface smoke failure in job summary
         if: failure()
