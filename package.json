@@ -13,6 +13,8 @@
     "ci:lint:date-fns": "eslint . --config eslint.date-fns.config.js --max-warnings=0",
     "preview": "vite preview",
     "verify:date-fns": "node scripts/verify-datefns-versions.mjs",
+    "verify:package": "node scripts/verify-package-versions.mjs",
+    "verify:packages:all": "node scripts/verify-package-versions.mjs --all",
     "smoke:date-fns": "bash scripts/smoke-date-fns.sh",
     "ci:check": "bash scripts/ci-check.sh",
     "ci:smoke": "bash scripts/ci-smoke.sh",
