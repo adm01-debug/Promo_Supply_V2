@@ -124,6 +124,18 @@ describe(`date-fns ecosystem: exact-pin enforcement (scope=${SCOPE})`, () => {
         return;
       }
 
+      // Apply scope filter: skip (with a clear reason) when the package
+      // lives in the bucket the current scope excludes.
+      if (SCOPE !== "all" && found.bucket !== SCOPE) {
+        it.skip(
+          `skipped: scope=${SCOPE} but "${name}" is declared in ${found.bucket} (set DATEFNS_PIN_SCOPE=all to include)`,
+          () => {
+            // No-op: scoped out of this run.
+          },
+        );
+        return;
+      }
+
       it("is exact-pinned in package.json AND installed version matches", async () => {
         const spec = found.spec;
         const bucket = found.bucket;
