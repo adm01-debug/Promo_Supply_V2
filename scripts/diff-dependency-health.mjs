@@ -179,28 +179,51 @@ function diffDateFns(prev, next, lines) {
       }
     }
 
-    // Resolution flips — only meaningful when both snapshots use entries[].
+    // Resolution flips — partitioned into three explicit buckets so reviewers
+    // immediately see severity:
+    //   ⚠ became MISSING   — was on disk, now absent  (regression risk)
+    //   ✓ became AVAILABLE — was absent, now resolved (recovery)
+    //   ~ resolved-path    — same exists, different file under date-fns/
+    // Rendered in its own "subpaths resolution:" sub-block (still under the
+    // date-fns heading) and ALSO promoted to a top-level "  resolution:"
+    // section by `diffResolutionFlips` below for at-a-glance visibility when
+    // the subpath set itself is unchanged. Both views read from the same
+    // partition to stay consistent.
     const aMap = entriesByName(aSub);
     const bMap = entriesByName(bSub);
     if (aMap.size > 0 && bMap.size > 0) {
-      const flipped = [];
+      const becameMissing = [];
+      const becameAvailable = [];
+      const pathOnly = [];
       for (const [name, ae] of aMap) {
         const be = bMap.get(name);
         if (!be) continue;
-        if (ae.exists !== be.exists || ae.resolvedFile !== be.resolvedFile) {
-          flipped.push({ name, ae, be });
+        if (ae.exists === true && be.exists === false) {
+          becameMissing.push({ name, ae, be });
+        } else if (ae.exists === false && be.exists === true) {
+          becameAvailable.push({ name, ae, be });
+        } else if (ae.resolvedFile !== be.resolvedFile) {
+          pathOnly.push({ name, ae, be });
         }
       }
-      if (flipped.length > 0) {
-        section.push("    subpaths resolution changed:");
-        for (const { name, ae, be } of flipped.slice(0, OFFENDER_DIFF_CAP)) {
-          section.push(
-            `      ~ ${name}: exists ${ae.exists} → ${be.exists}  (resolved ${ae.resolvedFile ?? "—"} → ${be.resolvedFile ?? "—"})`,
-          );
-        }
-        if (flipped.length > OFFENDER_DIFF_CAP) {
-          section.push(`      … and ${flipped.length - OFFENDER_DIFF_CAP} more changed`);
-        }
+      const totalFlips = becameMissing.length + becameAvailable.length + pathOnly.length;
+      if (totalFlips > 0) {
+        section.push("    subpaths resolution:");
+        const renderBucket = (label, sym, items) => {
+          if (items.length === 0) return;
+          section.push(`      ${label} (${items.length}):`);
+          for (const { name, ae, be } of items.slice(0, OFFENDER_DIFF_CAP)) {
+            section.push(
+              `        ${sym} ${name}: ${ae.resolvedFile ?? "—"} → ${be.resolvedFile ?? "—"}`,
+            );
+          }
+          if (items.length > OFFENDER_DIFF_CAP) {
+            section.push(`        … and ${items.length - OFFENDER_DIFF_CAP} more`);
+          }
+        };
+        renderBucket("⚠ became MISSING", "⚠", becameMissing);
+        renderBucket("✓ became AVAILABLE", "✓", becameAvailable);
+        renderBucket("~ resolved-path changed", "~", pathOnly);
       }
     }
   }
