@@ -199,6 +199,24 @@ const DateFnsUsagePanel = () => {
                 atualizado{" "}
                 {formatDistanceToNow(parseISO(data.generatedAt), { addSuffix: true, locale: ptBR })}
               </span>
+              {(data.ci?.runUrl || data.ci?.latestRunsUrl) && (
+                <a
+                  href={data.ci.runUrl ?? data.ci.latestRunsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                  aria-label={
+                    data.ci.runUrl
+                      ? `Abrir execução ${data.ci.runId ?? ""} no GitHub Actions`
+                      : "Abrir execuções do workflow no GitHub Actions"
+                  }
+                >
+                  <ExternalLink className="h-3 w-3" />
+                  {data.ci.runUrl
+                    ? `Run #${data.ci.runId ?? ""}${data.ci.runAttempt && data.ci.runAttempt !== "1" ? ` (try ${data.ci.runAttempt})` : ""}`
+                    : "Workflow runs"}
+                </a>
+              )}
             </div>
 
             <div className="relative">
