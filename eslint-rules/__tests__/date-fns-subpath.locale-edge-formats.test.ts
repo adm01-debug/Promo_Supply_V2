@@ -100,7 +100,9 @@ describe("local/date-fns-subpath — locale edge formats: invalid identifier sha
     { variant: "all-uppercase", id: "PTBR" },
     { variant: "PascalCase region", id: "PtBr" },
     { variant: "lowercase prefix + uppercase region", id: "PtBR" },
-    { variant: "kebab-cased identifier", id: "pt-BR" },
+    // Note: `pt-BR` (hyphen) is omitted — it's not a valid JS
+    // identifier, so the parser rejects the file before our rule
+    // ever runs. That's a separate (and louder) error class.
     { variant: "underscore separator", id: "pt_BR" },
     { variant: "snake_case lowercase", id: "pt_br" },
     { variant: "uppercase first letter only", id: "Ptbr" },
