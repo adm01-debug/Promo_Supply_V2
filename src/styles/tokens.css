@@ -1,10 +1,10 @@
 /* =================================================================
    PROMO SUPPLY - DESIGN TOKENS
    Variáveis CSS centralizadas para todo o sistema
+   (Imported into @layer base via index.css)
    ================================================================= */
 
-@layer base {
-  :root {
+:root {
     /* ===== FONT FAMILIES ===== */
     --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
     --font-display: 'Outfit', system-ui, sans-serif;
