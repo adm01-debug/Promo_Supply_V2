@@ -13,7 +13,9 @@
 //   • Multi-specifier barrel         — `{ enUS, frCA, deAT }`
 //   • Aliased specifier              — `{ jaHira as japaneseHiragana }`
 //   • Mixed-case kebab subpaths      — `srLatn`, `beTarask`, `uzCyrl`
-//   • Type-only barrel               — `import type { Locale }`
+// so a single autofix run exercises every named-import branch of the
+// locale rewrite path together. Type-only imports are covered
+// separately by the espree-incompatible TS test suites.
 // so a single autofix run exercises every branch of the locale rewrite
 // path together.
 //
