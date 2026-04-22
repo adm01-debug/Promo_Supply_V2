@@ -76,6 +76,25 @@ interface TreeShakingReport {
   note?: string;
 }
 
+interface SmokeTestInfo {
+  status?: "pass" | "fail" | "unknown" | string;
+  ranAt?: string;
+  durationMs?: number;
+  testFile?: string;
+  ci?: {
+    runUrl?: string;
+    prNumber?: number;
+    prUrl?: string;
+    branch?: string | null;
+    event?: string | null;
+  };
+  log?: {
+    path?: string;
+    sizeBytes?: number;
+    capturedAt?: string;
+  };
+}
+
 interface DependencyHealthSnapshot {
   generatedAt: string;
   dateFns: {
@@ -91,6 +110,7 @@ interface DependencyHealthSnapshot {
     source: string;
   };
   treeShaking?: TreeShakingReport;
+  smokeTest?: SmokeTestInfo;
 }
 
 function suggestReplacement(importPath: string): string {
