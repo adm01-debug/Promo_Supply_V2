@@ -17,7 +17,7 @@
     "allowArbitraryExtensions": false,
     "noEmit": true,
     "incremental": true,
-    "tsBuildInfoFile": ".tsbuildinfo/app.tsbuildinfo",
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo/app.tsbuildinfo",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noUnusedLocals": false,
