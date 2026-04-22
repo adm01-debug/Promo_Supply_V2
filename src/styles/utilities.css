@@ -5,9 +5,9 @@
    ================================================================= */
 
 /* ===== GLASS EFFECTS ===== */
-  .glass {
-    @apply bg-card/80 backdrop-blur-xl border border-border/50;
-  }
+.glass {
+  @apply bg-card/80 backdrop-blur-xl border border-border/50;
+}
   .dark .glass {
     @apply bg-card/70 backdrop-blur-xl border border-border/40;
     box-shadow: 0 4px 30px hsl(0 0% 0% / 0.2);
