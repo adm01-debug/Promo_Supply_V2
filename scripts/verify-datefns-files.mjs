@@ -124,17 +124,50 @@ function walk(dir, acc = []) {
 }
 
 const subpaths = new Set();
+// Per-kind tracking: occurrences (raw match count) and unique subpaths.
+// Both are useful — occurrences shows churn, unique shows surface area.
+const kindOccurrences = Object.fromEntries(PATTERN_KINDS.map((k) => [k, 0]));
+const kindSubpaths = Object.fromEntries(PATTERN_KINDS.map((k) => [k, new Set()]));
 for (const file of walk(SRC_DIR)) {
   const src = readFileSync(file, "utf8");
-  for (const { re, typeIdx, pathIdx } of IMPORT_PATTERNS) {
+  for (const { kind, re, typeIdx, pathIdx } of IMPORT_PATTERNS) {
     re.lastIndex = 0;
     let m;
     while ((m = re.exec(src)) !== null) {
       if (typeIdx >= 0 && m[typeIdx]) continue; // skip type-only imports/exports
-      subpaths.add(m[pathIdx]);
+      const sp = m[pathIdx];
+      subpaths.add(sp);
+      kindOccurrences[kind] += 1;
+      kindSubpaths[kind].add(sp);
     }
   }
 }
+
+// ── Breakdown report ─────────────────────────────────────────────────────────
+// Printed BEFORE the existence check so the user sees the discovery stats
+// even when verification later fails. Kept compact (one line per kind) so
+// it doesn't drown the green ✓ summary on success.
+function printBreakdown() {
+  console.log(cyan("▶ date-fns import breakdown (pre-verify):"));
+  for (const kind of PATTERN_KINDS) {
+    const occ = kindOccurrences[kind];
+    const uniq = kindSubpaths[kind].size;
+    if (occ === 0) {
+      console.log(`    ${gray(`• ${kind.padEnd(12)} 0 occurrences`)}`);
+      continue;
+    }
+    const label = kind.padEnd(12);
+    const occStr = `${occ} occurrence${occ === 1 ? "" : "s"}`;
+    const uniqStr = `${uniq} unique subpath${uniq === 1 ? "" : "s"}`;
+    console.log(`    • ${bold(label)} ${occStr.padEnd(18)} ${gray(`(${uniqStr})`)}`);
+  }
+  console.log(`    ${gray("─".repeat(48))}`);
+  console.log(
+    `    ${bold("total".padEnd(12))} ${gray(`${subpaths.size} unique subpath(s) across all patterns`)}`,
+  );
+  console.log("");
+}
+printBreakdown();
 
 // ── Failure mode A: package directory missing ────────────────────────────────
 if (!existsSync(PKG_DIR)) {
