@@ -333,6 +333,7 @@ export const ExecutiveDashboard = () => {
       <ExecutiveTablesRow filteredSuppliers={filteredSuppliers} filteredBuyers={filteredBuyers} showComparison={showComparison} onSupplierDrillDown={(s) => setDrillDown({ type: 'supplier', data: s })} onBuyerDrillDown={(b) => setDrillDown({ type: 'buyer', data: b })} />
       <ExecutivePendingActions items={filteredPendingItems} />
       <ExecutiveDrillDownModal drillDown={drillDown} onClose={() => setDrillDown(null)} />
+      {clearFlow.ConfirmDialog}
     </div>
   );
 };
