@@ -1,16 +1,41 @@
 #!/usr/bin/env bash
-# Husky pre-push hook: runs either a lightweight date-fns check (default) or
-# the full ci-smoke.sh if FULL_SMOKE_PRE_PUSH is set or hook.fullSmoke is true.
-# To bypass entirely: `git push --no-verify`.
+# Husky pre-push hook.
 #
-# Opt-in to full smoke test:
+# Lightweight mode (default):
+#   1. scripts/hooks/datefns-precommit.sh
+#        — generator-drift gate + tsc smoke check.
+#   2. bun run smoke:date-fns
+#        — regenerates the date-fns smoke test from current src/ imports,
+#          verifies every imported subpath exists on disk, and runs the
+#          smoke test. Catches missing date-fns subpaths BEFORE the branch
+#          is shared.
+#
+# Full mode (opt-in): runs scripts/ci-smoke.sh instead.
 #   FULL_SMOKE_PRE_PUSH=1 git push          # one-time
 #   bun run hook:smoke:enable               # persistent (per-repo git config)
 #   bun run hook:smoke:disable              # return to lightweight mode
+#
+# To bypass entirely: `git push --no-verify`.
+set -euo pipefail
+
+HOOK_DIR="$(dirname "$0")"
+ROOT_DIR="$(cd "$HOOK_DIR/.." && pwd)"
+
 if [ "${FULL_SMOKE_PRE_PUSH:-}" = "1" ] || \
    [ "$(git config --local hook.fullSmoke 2>/dev/null || echo false)" = "true" ]; then
   echo "▶ Running full ci-smoke.sh (opt-in mode)..."
-  bash "$(dirname "$0")/../scripts/ci-smoke.sh"
+  exec bash "$ROOT_DIR/scripts/ci-smoke.sh"
+fi
+
+# ── Lightweight mode ──────────────────────────────────────────────────────────
+echo "▶ [pre-push 1/2] date-fns precommit gate..."
+bash "$ROOT_DIR/scripts/hooks/datefns-precommit.sh"
+
+echo "▶ [pre-push 2/2] date-fns smoke (subpath existence + smoke test)..."
+# Prefer bun if available so the script hits the same toolchain CI uses;
+# fall back to invoking the shell script directly otherwise.
+if command -v bun >/dev/null 2>&1; then
+  ( cd "$ROOT_DIR" && bun run smoke:date-fns )
 else
-  bash "$(dirname "$0")/../scripts/hooks/datefns-precommit.sh"
+  bash "$ROOT_DIR/scripts/smoke-date-fns.sh"
 fi
