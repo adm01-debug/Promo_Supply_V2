@@ -36,6 +36,16 @@ export const REQUIRE_DESTRUCTURE_RE =
 export const DYNAMIC_IMPORT_RE =
   /(?:await\s+)?import\(\s*["']date-fns\/([^"']+)["']\s*\)/g;
 
+// Match: await? import(`date-fns/<literal-subpath>`) — backticks, NO interpolation.
+// Captures: 1=subpath. Resolvable; treated like the quoted-string variant.
+export const DYNAMIC_IMPORT_TEMPLATE_RE =
+  /(?:await\s+)?import\(\s*`date-fns\/([^`${}]+)`\s*\)/g;
+
+// Match: await? import(`date-fns/${x}...`) or import("date-fns/" + x).
+// No useful captures — flagged as unresolvable so callers fail fast.
+export const DYNAMIC_IMPORT_UNRESOLVABLE_RE =
+  /(?:await\s+)?import\(\s*(?:`date-fns\/[^`]*\$\{[^`]*`|["'`]date-fns\/?["'`]\s*\+)/g;
+
 /** Strip /* ... *\/ and // ... comments from a specifier blob. */
 export function stripComments(s) {
   return s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
