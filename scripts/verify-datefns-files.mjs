@@ -474,7 +474,29 @@ if (subpaths.size === 0) {
 const SAMPLE_FILES_PER_ENTRY = 5;
 const entries = []; // [{ subpath, exists, resolvedFile, fileCount, files }]
 const missing = []; // [{ subpath, tried: [relPath, ...] }]
-for (const sp of [...subpaths].sort()) {
+// Apply --filter (if any) AFTER discovery so per-file counts above stay
+// truthful. The filtered set drives existence checks AND the failure-mode
+// summary below — a missing subpath excluded by the filter won't fail this
+// run (use the unfiltered run / CI gate to catch those).
+const filteredSubpaths = FILTER_ACTIVE
+  ? [...subpaths].filter(matchesFilter).sort()
+  : [...subpaths].sort();
+
+if (FILTER_ACTIVE) {
+  console.log(
+    cyan(
+      `▶ --filter active (${CLI_FILTERS.map((f) => `"${f}"`).join(", ")}): ` +
+        `${filteredSubpaths.length}/${subpaths.size} subpath(s) selected.`,
+    ),
+  );
+  if (filteredSubpaths.length === 0) {
+    console.log(gray("  No subpaths matched. Examples of discovered subpaths:"));
+    for (const sp of [...subpaths].sort().slice(0, 8)) console.log(`    ${sp}`);
+    process.exit(0);
+  }
+}
+
+for (const sp of filteredSubpaths) {
   const candidates = [
     `${sp}.js`,
     `${sp}.mjs`,
