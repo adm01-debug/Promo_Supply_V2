@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
-    "lint": "eslint .",
+    "lint": "eslint . --cache --cache-location .eslintcache --cache-strategy content",
     "lint:date-fns": "bash scripts/lint-date-fns.sh",
     "lint:all": "bash scripts/lint-all.sh",
     "lint:watch": "bash scripts/lint-watch.sh",

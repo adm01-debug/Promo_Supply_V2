@@ -75,17 +75,30 @@ jobs:
       - name: Install dependencies (frozen lockfile)
         run: bun install --frozen-lockfile
 
-      # Cache ESLint's incremental cache across CI runs. Keyed on the lint
-      # configs + rule sources + bun.lock so any rule/dependency change
-      # invalidates the cache; restore-keys lets unchanged-config runs
-      # benefit from a warm cache even when src/ changed.
+      # Cache ESLint's incremental cache across CI runs. ESLint is invoked
+      # with `--cache --cache-location <path> --cache-strategy content` (see
+      # the `lint` script in package.json and scripts/lint-date-fns.sh), so
+      # unchanged files whose source + config hash match the last run are
+      # skipped entirely on the second pass.
+      #
+      # Two cache locations are persisted:
+      #   • .eslintcache                            — general lint suite
+      #   • node_modules/.cache/eslint/             — date-fns lint suite
+      #     (.eslintcache-date-fns lives here; kept separate from the
+      #      general cache because the two suites use different configs)
+      #
+      # Cache key is hashed on every input that can change ESLint's output
+      # for a given source file: the lint configs, the local rule sources,
+      # the lockfile (transitive plugin/parser updates), and package.json
+      # (script flags / dependency bumps). restore-keys lets unchanged-config
+      # runs benefit from a warm cache even when src/ changed.
       - name: Cache ESLint
         uses: actions/cache@v4
         with:
           path: |
             .eslintcache
             node_modules/.cache/eslint
-          key: eslint-${{ runner.os }}-${{ hashFiles('eslint.config.js', 'eslint.date-fns.config.js', 'eslint-rules/**', 'bun.lock') }}
+          key: eslint-${{ runner.os }}-${{ hashFiles('eslint.config.js', 'eslint.date-fns.config.js', 'eslint-rules/**', 'bun.lock', 'package.json') }}
           restore-keys: |
             eslint-${{ runner.os }}-
 
