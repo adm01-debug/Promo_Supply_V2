@@ -33,13 +33,47 @@ const DEFAULT_SCAN_ROOTS = ["src", "tests", "test", "e2e"]
   .map((d) => join(ROOT, d))
   .filter((p) => existsSync(p) && statSync(p).isDirectory());
 const CLI_SCAN_ROOTS = [];
+// `--filter <glob>` (repeatable, alias `--only`) restricts the existence
+// check + report to subpaths matching ANY of the given glob patterns (e.g.
+// `locale/*`, `format*`, `parseISO`). Tiny glob → RegExp translator (only
+// `*`, `**`, and `?`) so we don't pull in a dep. Filtering is applied AFTER
+// the source scan, so per-subpath file counts stay accurate. Incompatible
+// with `--write-health`: persisting a partial scan would silently delete
+// unrelated entries from dateFns.subpaths.entries[].
+const CLI_FILTERS = [];
 for (let i = 0; i < ARGS.length; i++) {
   if (ARGS[i] === "--scan-dir" && ARGS[i + 1]) {
     CLI_SCAN_ROOTS.push(join(ROOT, ARGS[i + 1]));
     i++;
+  } else if ((ARGS[i] === "--filter" || ARGS[i] === "--only") && ARGS[i + 1]) {
+    CLI_FILTERS.push(ARGS[i + 1]);
+    i++;
   }
 }
 const SCAN_ROOTS = CLI_SCAN_ROOTS.length > 0 ? CLI_SCAN_ROOTS : DEFAULT_SCAN_ROOTS;
+
+const FILTER_REGEXES = CLI_FILTERS.map((g) => {
+  const re = g
+    .replace(/[.+^${}()|[\]\\]/g, "\\$&")
+    .replace(/\*\*/g, "\u0000")
+    .replace(/\*/g, "[^/]*")
+    .replace(/\u0000/g, ".*")
+    .replace(/\?/g, "[^/]");
+  return new RegExp(`^${re}$`);
+});
+const FILTER_ACTIVE = FILTER_REGEXES.length > 0;
+const matchesFilter = (sp) => !FILTER_ACTIVE || FILTER_REGEXES.some((r) => r.test(sp));
+
+if (FILTER_ACTIVE && WRITE_HEALTH) {
+  process.stderr.write(
+    `\n✗ verify-datefns-files: --filter is incompatible with --write-health.\n` +
+      `  A filtered run only inspects a subset of subpaths; persisting it would\n` +
+      `  erase the unrelated entries already recorded in dependency-health.json.\n` +
+      `  ▶ Drop --filter to update the snapshot, or drop --write-health to inspect.\n\n`,
+  );
+  process.exit(2);
+}
+
 // Directories skipped during the walk (matched by basename).
 // __mocks__ and storybook directories are intentionally excluded — they exercise
 // imports for tooling, not runtime behavior, and should not influence the
@@ -440,7 +474,29 @@ if (subpaths.size === 0) {
 const SAMPLE_FILES_PER_ENTRY = 5;
 const entries = []; // [{ subpath, exists, resolvedFile, fileCount, files }]
 const missing = []; // [{ subpath, tried: [relPath, ...] }]
-for (const sp of [...subpaths].sort()) {
+// Apply --filter (if any) AFTER discovery so per-file counts above stay
+// truthful. The filtered set drives existence checks AND the failure-mode
+// summary below — a missing subpath excluded by the filter won't fail this
+// run (use the unfiltered run / CI gate to catch those).
+const filteredSubpaths = FILTER_ACTIVE
+  ? [...subpaths].filter(matchesFilter).sort()
+  : [...subpaths].sort();
+
+if (FILTER_ACTIVE) {
+  console.log(
+    cyan(
+      `▶ --filter active (${CLI_FILTERS.map((f) => `"${f}"`).join(", ")}): ` +
+        `${filteredSubpaths.length}/${subpaths.size} subpath(s) selected.`,
+    ),
+  );
+  if (filteredSubpaths.length === 0) {
+    console.log(gray("  No subpaths matched. Examples of discovered subpaths:"));
+    for (const sp of [...subpaths].sort().slice(0, 8)) console.log(`    ${sp}`);
+    process.exit(0);
+  }
+}
+
+for (const sp of filteredSubpaths) {
   const candidates = [
     `${sp}.js`,
     `${sp}.mjs`,
@@ -788,7 +844,7 @@ if (missing.length > 0) {
 
 console.log(
   green(
-    `✓ Verified ${subpaths.size} date-fns subpath(s) exist on disk under ${PKG_REL}.`,
+    `✓ Verified ${entries.length} date-fns subpath(s) exist on disk under ${PKG_REL}${FILTER_ACTIVE ? ` (filtered from ${subpaths.size})` : ""}.`,
   ),
 );
 
