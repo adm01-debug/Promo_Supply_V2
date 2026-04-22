@@ -63,6 +63,28 @@ jobs:
       - name: Install dependencies (frozen lockfile)
         run: bun install --frozen-lockfile
 
+      # Cache the generated smoke test + its input-signature manifest across
+      # CI runs. The cache key hashes every file the generator actually
+      # reads (src/**/*.{ts,tsx}, the generator + scanner scripts, and the
+      # pinned date-fns spec from package.json). When NONE of those have
+      # changed since the cached run, restoring puts back:
+      #   - public/datefns-usage.json    (manifest with importSignature)
+      #   - src/test/dateFns.smoke.test.ts (generated output)
+      # …and the smoke pipeline's step 1 (`--if-changed`) short-circuits
+      # because the in-memory signature it computes equals the one on disk.
+      # When ANY input changes, the key changes → cache miss → full regen.
+      # The restore-keys fallback lets a near-miss (e.g. one src file
+      # changed) still warm Bun's transitive caches without short-circuiting.
+      - name: Cache generated date-fns smoke test
+        uses: actions/cache@v4
+        with:
+          path: |
+            src/test/dateFns.smoke.test.ts
+            public/datefns-usage.json
+          key: datefns-smoke-gen-${{ runner.os }}-${{ hashFiles('src/**/*.ts', 'src/**/*.tsx', 'scripts/generate-datefns-smoke-test.mjs', 'scripts/lib/datefns-scan.mjs', 'package.json') }}
+          restore-keys: |
+            datefns-smoke-gen-${{ runner.os }}-
+
       - name: Run date-fns:smoke
         id: smoke
         env:
