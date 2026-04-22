@@ -493,7 +493,7 @@ const Solicitacoes = () => {
             action={
               solicitacoes.length === 0 
                 ? undefined
-                : { label: "Limpar Filtros", onClick: () => { setSearchTerm(''); setStatusFilter('todas'); setTipoFilter('todos'); }, variant: "outline" }
+                : { label: "Limpar Filtros", onClick: clearFlow.requestClear, variant: "outline" }
             }
           />
         )}
