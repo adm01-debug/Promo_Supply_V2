@@ -1,5 +1,9 @@
 # Welcome to your Lovable project
 
+[![Verify date-fns](https://github.com/OWNER/REPO/actions/workflows/verify-date-fns.yml/badge.svg?branch=main)](https://github.com/OWNER/REPO/actions/workflows/verify-date-fns.yml)
+
+> Replace `OWNER/REPO` above with your GitHub `owner/repo` slug (e.g. `acme/united-code-flow`) so the badge resolves to your repository's workflow runs.
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
