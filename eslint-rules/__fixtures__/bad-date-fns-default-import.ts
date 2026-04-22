@@ -19,8 +19,9 @@
 //   • DO NOT rewrite this to a subpath import — that would defeat the test.
 //   • DO NOT import this file from runtime/application code.
 // ─────────────────────────────────────────────────────────────────────────────
+// @ts-expect-error - date-fns has no default export; intentional for the rule test
 // eslint-disable-next-line local/date-fns-subpath
 import dateFns from "date-fns";
 
-export const _sample = (dateFns as { format?: (d: Date, f: string) => string })
-  .format?.(new Date(), "yyyy-MM-dd");
+// Reference the binding so it isn't tree-shaken / flagged as unused.
+export const _sample = dateFns;
