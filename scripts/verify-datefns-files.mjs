@@ -238,6 +238,7 @@ for (const file of scannedFiles) {
       subpaths.add(sp);
       kindOccurrences[kind] += 1;
       kindSubpaths[kind].add(sp);
+      recordSubpathFile(sp, file);
     }
   }
   // Resolvable template literals — `import(\`date-fns/format\`)` — are valid
