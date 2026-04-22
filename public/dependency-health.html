@@ -59,6 +59,11 @@
     details.scan-input summary { cursor: pointer; font-weight: 600; }
     details.scan-input dl { margin: 10px 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; }
     details.scan-input dt { color: var(--muted); }
+    section.offenders { margin-top: 28px; }
+    section.offenders h2 { font-size: 16px; margin: 0 0 10px; }
+    details.suppressed { margin-top: 14px; padding: 10px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+    details.suppressed summary { cursor: pointer; font-weight: 600; color: var(--muted); }
+    details.suppressed table { margin-top: 10px; }
     footer { margin-top: 28px; color: var(--muted); font-size: 12px; }
     a { color: var(--accent); }
     [title] { cursor: help; }
@@ -67,7 +72,7 @@
 <body>
 <main>
   <h1>date-fns dependency health</h1>
-  <p class="sub">Generated <time datetime="2026-04-22T16:17:16.968Z">2026-04-22T16:17:16.968Z</time> from <code>public/dependency-health.json</code>. Hover any badge or path for details.</p>
+  <p class="sub">Generated <time datetime="2026-04-22T19:40:46.625Z">2026-04-22T19:40:46.625Z</time> from <code>public/dependency-health.json</code>. Hover any badge or path for details.</p>
 
   <section class="summary" aria-label="Summary">
     <span class="stat"><strong>21</strong><span class="muted">subpaths</span></span>
@@ -290,6 +295,13 @@ src/pages/Relatorios.tsx">src/components/compras/DeliveryCalendar.tsx, src/compo
         <dd><code>\.(ts|tsx|js|jsx|cjs|mjs)$</code></dd>
       </dl>
     </details>
+
+  <section class="offenders" aria-labelledby="offenders-h">
+    <h2 id="offenders-h">Tree-shaking offenders <span class="muted">(0)</span></h2>
+    <p class="muted">No barrel imports detected — every <code>date-fns</code> import uses a tree-shakable subpath. 🎉</p>
+    
+  </section>
+
 
   <footer>
     Source of truth: <code>public/dependency-health.json</code> · Regenerate with
