@@ -131,6 +131,47 @@ if (!aligned) {
     console.error(renderMismatch("locked", LOCKED, "installed", INSTALLED));
   }
 
+  // Pairwise drift diagnosis: explicitly label each of the 3 pairs and explain
+  // which file is out of sync and the concrete reason. This complements the
+  // global diagnosis below by showing the relationship between every pair.
+  const pairwise = [
+    {
+      a: { label: "package.json (spec)", file: "package.json",                       value: SPEC_NORM },
+      b: { label: "bun.lock (locked)",   file: "bun.lock",                           value: LOCKED },
+      reasonMatch:
+        "spec ↔ lock match — package.json and bun.lock agree on the resolved version.",
+      reasonDrift:
+        "spec ↔ lock differ — package.json was edited (or bun.lock is stale) and the lockfile was not regenerated. Run `bun install` to relock against the current spec.",
+    },
+    {
+      a: { label: "bun.lock (locked)",   file: "bun.lock",                           value: LOCKED },
+      b: { label: "node_modules",        file: "node_modules/date-fns/package.json", value: INSTALLED },
+      reasonMatch:
+        "lock ↔ installed match — the install on disk matches what bun.lock pinned.",
+      reasonDrift:
+        "lock ↔ installed differ — node_modules was hand-mutated, partially upgraded, or never reinstalled after a lock change. Run `bun install --frozen-lockfile` to restore the locked install.",
+    },
+    {
+      a: { label: "package.json (spec)", file: "package.json",                       value: SPEC_NORM },
+      b: { label: "node_modules",        file: "node_modules/date-fns/package.json", value: INSTALLED },
+      reasonMatch:
+        "spec ↔ installed match — the installed version satisfies the declared spec.",
+      reasonDrift:
+        "spec ↔ installed differ — the version in node_modules does not match the declared spec. Either the install is stale, or the spec was edited without reinstalling.",
+    },
+  ];
+
+  console.error("\n  Pairwise drift diagnosis:");
+  for (const { a, b, reasonMatch, reasonDrift } of pairwise) {
+    const match = a.value === b.value;
+    const marker = match ? "✓" : "✗";
+    console.error(
+      `    ${marker} ${a.label} (${a.value})  vs  ${b.label} (${b.value})`,
+    );
+    console.error(`        files: ${a.file}  ↔  ${b.file}`);
+    console.error(`        ${match ? reasonMatch : reasonDrift}`);
+  }
+
   // Diagnose drift pattern → targeted fix + distinct exit code
   let diagnosis, fixCmd, exitCode;
   if (!specEqLock && lockEqInstalled) {
