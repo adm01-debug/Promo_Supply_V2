@@ -91,6 +91,16 @@ print_summary() {
     verify_files_line="✗ FAIL"
   fi
 
+  # verify:datefns-smoke (dry-run) line
+  local verify_smoke_dryrun_line
+  if [ "$VERIFY_SMOKE_DRYRUN_RAN" -eq 0 ]; then
+    verify_smoke_dryrun_line="not run"
+  elif [ "$VERIFY_SMOKE_DRYRUN_OK" -eq 1 ]; then
+    verify_smoke_dryrun_line="in sync ✓       (smoke test + manifest)"
+  else
+    verify_smoke_dryrun_line="✗ DRIFT         (smoke test or manifest)"
+  fi
+
   # tsc line
   local tsc_line
   if [ "$SMOKE_TSC_RAN" -eq 0 ]; then
