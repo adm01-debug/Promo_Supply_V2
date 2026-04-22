@@ -16,6 +16,7 @@
  */
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { Linter } from "eslint";
 // @ts-expect-error - plain JS rule, no type declarations
@@ -265,6 +266,56 @@ describe("local/date-fns-subpath — report-only safety nets", () => {
     const fixed = fix(src);
     expect(fixed.fixed).toBe(false);
     expect(fixed.output).toBe(src);
+  });
+
+  it("autofix is byte-for-byte identical on the raw namespace-import fixture", () => {
+    // Stricter sibling of the test above. Where that test strips the
+    // disable comment to exercise the rule's report path, THIS test
+    // feeds the fixture verbatim — disable comment included, exactly
+    // as it lives on disk — and asserts the autofixer's output is
+    // byte-for-byte identical to the input.
+    //
+    // Why a separate test:
+    //   • Pins the contract that ESLint's autofix loop never mutates a
+    //     file containing only unfixable violations, even when those
+    //     violations are silenced by a disable directive.
+    //   • Catches whitespace / newline / BOM regressions that a
+    //     `toBe(src)` string compare would technically catch but a
+    //     reader of the failure message wouldn't immediately diagnose.
+    //     We assert byte length and a content hash so the failure
+    //     message points at the exact divergence class.
+    //   • Guards against a future "helpful" rule change that rewrites
+    //     `import * as X from "date-fns"` into something else.
+    const fixturePath = resolve(
+      __dirname,
+      "../__fixtures__/bad-date-fns-namespace-import.ts",
+    );
+    const raw = readFileSync(fixturePath, "utf8");
+    const rawBytes = Buffer.from(raw, "utf8");
+    const rawHash = createHash("sha256").update(rawBytes).digest("hex");
+
+    // Sanity: the on-disk fixture really does contain the namespace
+    // import we're testing — guards against a rename / accidental edit
+    // making this test trivially pass.
+    expect(raw).toMatch(/import \* as \w+ from "date-fns"/);
+
+    const fixed = fix(raw);
+
+    // The disable directive suppresses the report, so ESLint reports
+    // nothing fixable AND nothing actionable — the source is returned
+    // unchanged.
+    expect(fixed.fixed).toBe(false);
+
+    // Primary assertion: identical string.
+    expect(fixed.output).toBe(raw);
+
+    // Belt-and-suspenders: identical byte length and hash. If these
+    // ever drift while the string compare somehow passes (encoding
+    // shenanigans), the failure message will name the exact dimension
+    // that diverged instead of dumping a multi-KB diff.
+    const outBytes = Buffer.from(fixed.output, "utf8");
+    expect(outBytes.length).toBe(rawBytes.length);
+    expect(createHash("sha256").update(outBytes).digest("hex")).toBe(rawHash);
   });
 
   it("reports each barrel violation independently in a multi-import file", () => {
