@@ -286,6 +286,12 @@ const DependencyHealth = () => {
         )}
       </div>
 
+      {isAdmin && (
+        <Suspense fallback={<Skeleton className="h-48 w-full" />}>
+          <RefreshNowHelp />
+        </Suspense>
+      )}
+
       {hasPackages ? (
         <Card>
           <CardHeader>
