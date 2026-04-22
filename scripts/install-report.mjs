@@ -3,7 +3,7 @@ import { readFileSync, existsSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
-import { renderMismatch } from "./lib/semver-diff.mjs";
+import { renderMismatch, renderTripleMismatch } from "./lib/semver-diff.mjs";
 
 // CLI flags:
 //   --strict   exit 1 when spec / lock / installed are not aligned (default: exit 0)
