@@ -250,6 +250,40 @@ rm -rf node_modules
 echo "▶ [2/10] Evicting any cached date-fns tarballs..."
 evict_datefns_cache
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Lockfile-format guard.
+#
+# `bun install --frozen-lockfile` requires the text-format `bun.lock` (Bun
+# ≥1.1.39 default). If the repo only ships the legacy binary `bun.lockb`,
+# the install step below fails with a cryptic "lockfile not found" error
+# AND every downstream verifier (resolve_locked_datefns, install-report,
+# emit-mismatch-report) silently degrades to "(bun.lock not found)" — which
+# masks real drift. Bail out early with the exact regen recipe instead.
+# ─────────────────────────────────────────────────────────────────────────────
+if [ ! -f "bun.lock" ]; then
+  if [ -f "bun.lockb" ]; then
+    cat >&2 <<'EOF'
+✗ Found legacy binary lockfile (bun.lockb) but no text lockfile (bun.lock).
+  ci-smoke.sh and every date-fns verifier read bun.lock — the binary format
+  cannot be parsed by Node, so version drift checks would silently degrade.
+
+  Regenerate bun.lock as a text lockfile (run from the repo root):
+
+      rm -rf node_modules
+      bun install --save-text-lockfile      # writes bun.lock alongside bun.lockb
+      git add bun.lock
+      # Optional: drop the legacy binary if your team is fully on text-format
+      # git rm bun.lockb
+
+  Then re-run:  bun run ci:smoke
+EOF
+  else
+    echo "✗ No lockfile found (neither bun.lock nor bun.lockb)." >&2
+    echo "  Run: bun install --save-text-lockfile  (then commit bun.lock)." >&2
+  fi
+  exit 1
+fi
+
 echo "▶ [3/10] Installing from frozen lockfile..."
 bun install --frozen-lockfile
 
