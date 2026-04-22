@@ -19,19 +19,22 @@
  */
 import { describe, it, expect } from "vitest";
 import { Linter } from "eslint";
-import * as tsParser from "@typescript-eslint/parser";
 import { readdirSync, existsSync } from "node:fs";
 import path from "node:path";
 // @ts-expect-error - plain JS rule, no type declarations
 import { dateFnsSubpath } from "../date-fns-subpath.js";
 
+// Espree (eslint's bundled parser) handles plain ESM `import` statements
+// without any TS-specific syntax — which is all we generate in the
+// fixtures below — so we deliberately do NOT pull in
+// @typescript-eslint/parser here. Keeping this test parser-free means it
+// runs identically under bun/npm and doesn't depend on optional dev-deps.
 const CONFIG = {
-  files: ["**/*.ts"],
+  files: ["**/*.js"],
   plugins: {
     local: { rules: { "date-fns-subpath": dateFnsSubpath } },
   },
   languageOptions: {
-    parser: tsParser,
     ecmaVersion: 2020 as const,
     sourceType: "module" as const,
   },
