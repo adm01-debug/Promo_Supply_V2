@@ -57,17 +57,62 @@ const subpaths = new Map();
 // either shape would silently lose smoke-test coverage for that subpath.
 const unsupportedFindings = [];
 
+// Type-only static imports re-detected for verbose trace only (the main
+// scanner correctly skips them, but in --verbose we surface what was skipped
+// and why so contributors can audit the decision).
+const TYPE_ONLY_RE =
+  /import\s+type\s+\{([^{}]*)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
+
 const files = walk(SRC_DIR);
+let scannedFileCount = 0;
+let filesWithImports = 0;
 for (const file of files) {
+  scannedFileCount++;
   const src = readFileSync(file, "utf8");
   const fileMap = scanStaticDateFnsImports(src);
+  const rel = relative(ROOT, file);
+  if (fileMap.size > 0) {
+    filesWithImports++;
+    if (VERBOSE) {
+      console.log(`◆ ${rel}`);
+      for (const [subpath, names] of fileMap) {
+        vlog(`detected → date-fns/${subpath}  { ${[...names].sort().join(", ")} }`);
+      }
+    }
+  }
   for (const [subpath, names] of fileMap) {
     if (!subpaths.has(subpath)) subpaths.set(subpath, new Set());
     const set = subpaths.get(subpath);
     for (const n of names) set.add(n);
   }
-  const findings = detectUnsupportedDateFnsUsage(src, relative(ROOT, file));
-  if (findings.length > 0) unsupportedFindings.push(...findings);
+  if (VERBOSE) {
+    TYPE_ONLY_RE.lastIndex = 0;
+    let m;
+    let headerPrinted = fileMap.size > 0;
+    while ((m = TYPE_ONLY_RE.exec(src)) !== null) {
+      if (!headerPrinted) { console.log(`◆ ${rel}`); headerPrinted = true; }
+      vlog(`skipped  → date-fns/${m[2]}  (reason: type-only import, not bundled at runtime)`);
+    }
+  }
+  const findings = detectUnsupportedDateFnsUsage(src, rel);
+  if (findings.length > 0) {
+    unsupportedFindings.push(...findings);
+    if (VERBOSE) {
+      if (fileMap.size === 0) console.log(`◆ ${rel}`);
+      for (const f of findings) {
+        const reason = f.kind === "require-destructure"
+          ? "CommonJS require() — invisible to the static scanner; convert to `import { … } from \"date-fns/…\"`"
+          : "dynamic import() — invisible to the static scanner; convert to a static `import { … } from \"date-fns/…\"`";
+        vlog(`skipped  → date-fns/${f.subpath} @ line ${f.line} [${f.kind}] (reason: ${reason})`);
+      }
+    }
+  }
+}
+
+if (VERBOSE) {
+  console.log(
+    `\n· Scanned ${scannedFileCount} file(s); ${filesWithImports} contain date-fns imports.\n`,
+  );
 }
 
 if (unsupportedFindings.length > 0) {
