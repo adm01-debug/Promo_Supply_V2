@@ -650,6 +650,40 @@ else if (DRY_RUN) {
   );
 }
 
+// ── --write-health summary: compact missing table ────────────────────────────
+// Only fires when persisting the snapshot (incl. --dry-run preview), so the
+// default verifier output stays terse. Failure mode C below still prints the
+// full diagnostic block + exits 1 — this table is just an at-a-glance recap
+// pinned next to the "▶ Wrote …" line so reviewers see WHICH subpaths are
+// missing without scrolling through the long resolution explainer.
+if ((WRITE_HEALTH || DRY_RUN) && missing.length > 0) {
+  // Width = longest subpath name, capped so a runaway path can't blow out
+  // a narrow terminal. Candidate column is left-aligned & comma-joined.
+  const SUBPATH_COL_MAX = 32;
+  const subpathCol = Math.min(
+    SUBPATH_COL_MAX,
+    Math.max("Subpath".length, ...missing.map((m) => m.subpath.length)),
+  );
+  const pad = (s, n) => (s.length >= n ? s : s + " ".repeat(n - s.length));
+  const header = `  ${pad("Subpath", subpathCol)}  Tried (relative to ${PKG_REL})`;
+  const rule = `  ${"─".repeat(subpathCol)}  ${"─".repeat(40)}`;
+  console.log("");
+  console.log(
+    cyan(`▶ ${missing.length} subpath(s) recorded as missing in the snapshot:`),
+  );
+  console.log(gray(header));
+  console.log(gray(rule));
+  for (const m of missing) {
+    const name =
+      m.subpath.length > subpathCol
+        ? m.subpath.slice(0, subpathCol - 1) + "…"
+        : m.subpath;
+    console.log(`  ${red(pad(name, subpathCol))}  ${gray((m.tried ?? []).join(", "))}`);
+  }
+  console.log("");
+}
+
+
 // ── Failure mode C: one or more subpaths missing on disk ─────────────────────
 if (missing.length > 0) {
   // Partition missing entries so the failure block makes the root cause obvious:
