@@ -1,0 +1,22 @@
+{
+  "$comment": "Copy to .dependency-health-rules.json (no .example) at repo root to tune which import patterns the dependency-health scan flags as barrels. Use mode=extend (default) to add packages on top of the built-in date-fns rules; use mode=replace to take full control. Each rule's barrelPaths MUST start with the package name (or equal it).",
+  "version": 1,
+  "mode": "extend",
+  "rules": [
+    {
+      "package": "lodash",
+      "barrelPaths": ["lodash"],
+      "safeSubpathPattern": "^lodash/[^/]+$"
+    },
+    {
+      "package": "@mui/material",
+      "barrelPaths": ["@mui/material"],
+      "safeSubpathPattern": "^@mui/material/[^/]+$"
+    },
+    {
+      "package": "rxjs",
+      "barrelPaths": ["rxjs", "rxjs/operators"],
+      "safeSubpathPattern": "^rxjs/(?!operators$)[^/]+$"
+    }
+  ]
+}

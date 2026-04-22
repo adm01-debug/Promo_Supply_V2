@@ -9,8 +9,14 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
 import { validateSnapshot, failOnInvalid } from "./lib/validate-dependency-health.mjs";
-import { BARREL_IMPORT_RE, computeRiskLevel } from "./lib/tree-shaking-risk.mjs";
+import {
+  BARREL_IMPORT_RE,
+  computeRiskLevel,
+  findBarrelOffenders,
+  DEFAULT_RULES,
+} from "./lib/tree-shaking-risk.mjs";
 import { loadAllowlist, applyAllowlist } from "./lib/dependency-health-allowlist.mjs";
+import { loadRules } from "./lib/dependency-health-rules.mjs";
 
 const SCAN_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx"]);
 const SCAN_SKIP_DIRS = new Set(["node_modules", "dist", "build", ".next", "coverage"]);
@@ -46,12 +52,14 @@ function walkSourceFiles(dir, out = []) {
   return out;
 }
 
-function scanTreeShaking(rootDir, previous) {
+function scanTreeShaking(rootDir, previous, rulesCtx) {
   const srcDir = resolve(rootDir, "src");
   const offenders = [];
   let filesScanned = 0;
   let barrelImportsFound = 0;
   let truncated = false;
+  const rules = rulesCtx?.rules ?? DEFAULT_RULES;
+  const rulesFingerprint = rulesCtx?.fingerprint ?? "default";
 
   if (!existsSync(srcDir)) {
     return {
@@ -61,15 +69,16 @@ function scanTreeShaking(rootDir, previous) {
       offenders: [],
       truncated: false,
       riskLevel: "ok",
-      cacheKey: createHash("sha256").update(`v${SCAN_VERSION}|empty`).digest("hex"),
+      cacheKey: createHash("sha256").update(`v${SCAN_VERSION}|${rulesFingerprint}|empty`).digest("hex"),
       cacheHit: false,
+      rulesSource: rulesCtx?.source ?? "default",
     };
   }
 
-  // Build deterministic cache key from file paths + mtime + size + scan config.
+  // Build deterministic cache key from file paths + mtime + size + scan config + rules.
   const files = walkSourceFiles(srcDir).sort();
   const hash = createHash("sha256");
-  hash.update(`v${SCAN_VERSION}|${BARREL_IMPORT_RE.source}|`);
+  hash.update(`v${SCAN_VERSION}|${BARREL_IMPORT_RE.source}|${rulesFingerprint}|`);
   for (const file of files) {
     let st;
     try {
@@ -86,6 +95,7 @@ function scanTreeShaking(rootDir, previous) {
     return {
       ...previous,
       cacheHit: true,
+      rulesSource: rulesCtx?.source ?? "default",
     };
   }
 
@@ -97,19 +107,17 @@ function scanTreeShaking(rootDir, previous) {
     } catch {
       continue;
     }
-    BARREL_IMPORT_RE.lastIndex = 0;
-    let match;
-    while ((match = BARREL_IMPORT_RE.exec(content)) !== null) {
+    const hits = findBarrelOffenders(content, rules);
+    for (const hit of hits) {
       barrelImportsFound++;
       if (offenders.length >= OFFENDERS_CAP) {
         truncated = true;
         continue;
       }
-      const line = content.slice(0, match.index).split("\n").length;
       offenders.push({
         file: relative(rootDir, file).replace(/\\/g, "/"),
-        line,
-        importPath: match[1],
+        line: hit.line,
+        importPath: hit.specifier,
       });
     }
   }
@@ -124,6 +132,7 @@ function scanTreeShaking(rootDir, previous) {
     riskLevel,
     cacheKey,
     cacheHit: false,
+    rulesSource: rulesCtx?.source ?? "default",
   };
 }
 
@@ -240,8 +249,18 @@ function main() {
       failOnInvalid(err, { sourcePath: relative(root, outPath), role: "generate-dependency-health" });
     }
   }
+  // Load configurable barrel rules (extends/replaces DEFAULT_RULES).
+  // Missing file → defaults; malformed file → loud error so CI fails.
+  const rulesPath = resolve(root, ".dependency-health-rules.json");
+  let rulesCtx;
+  try {
+    rulesCtx = loadRules(rulesPath);
+  } catch (err) {
+    console.error(`✗ ${err.message}`);
+    process.exit(1);
+  }
   const previousTreeShaking = existing?.treeShaking;
-  const rawTreeShaking = scanTreeShaking(root, previousTreeShaking);
+  const rawTreeShaking = scanTreeShaking(root, previousTreeShaking, rulesCtx);
 
   // Apply the per-package allowlist of known false positives. The raw
   // scan result is cached as-is (so toggling an allowlist entry doesn't
