@@ -1,5 +1,13 @@
 name: lint
 
+# ⚠️ Required status check name (DO NOT RENAME without updating branch protection):
+#       lint / lint
+# GitHub composes the status check ID as `<workflow name> / <job name>`.
+# Both are pinned to the literal string `lint` so the check ID stays stable
+# across refactors. If you change either, update branch protection rules in
+# the repository settings (Settings → Branches → main → Required status checks)
+# at the same time, or merges will silently stop being gated on lint.
+
 # Dedicated lint gate — runs `bun run lint:all` which sequences:
 #   [1/2] npm run lint -- --max-warnings=0   (general ESLint, zero-warnings)
 #   [2/2] npm run lint:date-fns              (date-fns barrel import check)
