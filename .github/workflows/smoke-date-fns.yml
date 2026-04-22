@@ -238,6 +238,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: smoke-date-fns-failure-report
-          path: ci-artifacts/datefns-failure-report.md
+          path: |
+            ci-artifacts/datefns-failure-report.md
+            ci-artifacts/missing-datefns-subpaths.json
           if-no-files-found: warn
           retention-days: 30
