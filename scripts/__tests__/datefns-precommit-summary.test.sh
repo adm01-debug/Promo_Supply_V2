@@ -167,6 +167,11 @@ JS
   assert_contains       "names the failed step (1/2)"         "$out" "Failed step:"
   assert_contains       "labels step 1/2 in summary"          "$out" "[1/2]"
   assert_failure_mode_real "Failure mode is real (no placeholders)" "$out"
+  assert_contains       "shows Failed command line"           "$out" "Failed command:"
+  assert_contains       "Failed command names the generator"  "$out" "node scripts/generate-datefns-smoke-test.mjs --dry-run"
+  assert_contains       "shows Exit code line"                "$out" "Exit code:"
+  assert_contains       "Exit code matches stub (42)"         "$out" "42"
+  assert_contains       "shows Reproduce locally section"     "$out" "Reproduce locally:"
   assert_contains       "lists offending date-fns import"     "$out" "date-fns/locale/pt-BR"
   assert_not_matches    "no literal '<placeholder>' tokens"   "$out" '<[A-Za-z0-9_ -]+>'
 
