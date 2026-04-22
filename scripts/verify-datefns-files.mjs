@@ -844,7 +844,7 @@ if (missing.length > 0) {
 
 console.log(
   green(
-    `✓ Verified ${subpaths.size} date-fns subpath(s) exist on disk under ${PKG_REL}.`,
+    `✓ Verified ${entries.length} date-fns subpath(s) exist on disk under ${PKG_REL}${FILTER_ACTIVE ? ` (filtered from ${subpaths.size})` : ""}.`,
   ),
 );
 
