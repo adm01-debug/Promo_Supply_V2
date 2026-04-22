@@ -138,16 +138,31 @@ const InstallReportPanel = () => {
   return (
     <Card className={hasDrift ? "border-destructive/50" : undefined}>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <PackageCheck className="h-5 w-5 text-primary" />
-          Relatório de instalação
-        </CardTitle>
-        <CardDescription>
-          Saída de <code className="font-mono">bun install</code> + <code className="font-mono">scripts/install-report.mjs</code>.
-          {generatedAt && (
-            <> Gerado em <span className="font-mono">{generatedAt}</span>.</>
-          )}
-        </CardDescription>
+        <div className="flex items-start justify-between gap-2">
+          <div className="space-y-1.5">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <PackageCheck className="h-5 w-5 text-primary" />
+              Relatório de instalação
+            </CardTitle>
+            <CardDescription>
+              Saída de <code className="font-mono">bun install</code> + <code className="font-mono">scripts/install-report.mjs</code>.
+              {generatedAt && (
+                <> Gerado em <span className="font-mono">{generatedAt}</span>.</>
+              )}
+            </CardDescription>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={isFetching}
+            aria-label="Atualizar relatório de instalação"
+          >
+            <RefreshCw className={`h-4 w-4 mr-1.5 ${isFetching ? "animate-spin" : ""}`} />
+            Atualizar
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {hasDrift && (
