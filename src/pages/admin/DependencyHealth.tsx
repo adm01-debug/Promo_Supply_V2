@@ -317,8 +317,8 @@ const DependencyHealth = () => {
         {isAdmin && (
           <div className="flex gap-2">
             <Button
-              onClick={() => refresh.mutate()}
-              disabled={refresh.isPending || refreshAndCommit.isPending}
+              onClick={handleRefresh}
+              disabled={anyPending}
               variant="outline"
               aria-label="Atualizar snapshot agora"
             >
@@ -326,13 +326,18 @@ const DependencyHealth = () => {
               {refresh.isPending ? "Atualizando…" : "Atualizar agora"}
             </Button>
             <Button
-              onClick={() => refreshAndCommit.mutate()}
-              disabled={refresh.isPending || refreshAndCommit.isPending}
+              onClick={handleRefreshAndCommit}
+              disabled={anyPending || ciStillRunning}
               variant="outline"
               aria-label="Atualizar e commitar snapshot no repositório"
+              title={ciStillRunning ? "Workflow CI anterior ainda em execução" : undefined}
             >
               <RefreshCw className={`h-4 w-4 ${refreshAndCommit.isPending ? "animate-spin" : ""}`} />
-              {refreshAndCommit.isPending ? "Disparando CI…" : "Atualizar & commitar no repo"}
+              {refreshAndCommit.isPending
+                ? "Disparando CI…"
+                : ciStillRunning
+                ? "CI em execução…"
+                : "Atualizar & commitar no repo"}
             </Button>
           </div>
         )}
