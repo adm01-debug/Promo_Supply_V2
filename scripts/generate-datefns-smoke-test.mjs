@@ -42,48 +42,35 @@ function walk(dir, acc = []) {
   return acc;
 }
 
-// Match: import [type] { a, b as c } from "date-fns/<subpath>"
-// Brace contents use `[^{}]*` which allows newlines (multi-line imports) but
-// forbids nested braces, preventing the match from spanning across adjacent
-// import statements.
-// Captures: 1=isType, 2=names, 3=subpath
-const IMPORT_RE =
-  /import\s+(type\s+)?\{([^{}]*)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
-
-/** Strip /* ... *\/ and // ... comments from an import-specifier blob. */
-function stripComments(s) {
-  return s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
-}
-
-/** Map<subpath, Set<exportName>> */
+// Map<subpath, Set<exportName>> — accumulated across every src/ file.
+// Static-import scanning is delegated to scripts/lib/datefns-scan.mjs so the
+// regexes have unit-test coverage (see scripts/lib/__tests__/datefns-scan.test.mjs).
 const subpaths = new Map();
+
+// Track CJS require destructures and dynamic import() calls so we can warn —
+// the smoke generator can NOT see those, and a contributor accidentally using
+// either shape would silently lose smoke-test coverage for that subpath.
+const unsupportedFindings = [];
 
 const files = walk(SRC_DIR);
 for (const file of files) {
   const src = readFileSync(file, "utf8");
-  let m;
-  while ((m = IMPORT_RE.exec(src)) !== null) {
-    const [, isType, namesRaw, subpath] = m;
-    if (isType) continue; // skip type-only imports
-    const cleaned = stripComments(namesRaw);
-    const names = cleaned
-      .split(",")
-      .map((n) => n.trim())
-      .filter(Boolean)
-      .map((n) => n.replace(/^type\s+/, "")) // inline `type` keyword
-      .map((n) => n.split(/\s+as\s+/)[0].trim()) // strip aliases
-      .filter(Boolean);
-    if (names.length === 0) {
-      if (subpath.startsWith("locale/")) {
-        console.warn(
-          `⚠ ${file}: import from "date-fns/${subpath}" has no usable specifiers (after comment-strip). Skipping.`,
-        );
-      }
-      continue;
-    }
+  const fileMap = scanStaticDateFnsImports(src);
+  for (const [subpath, names] of fileMap) {
     if (!subpaths.has(subpath)) subpaths.set(subpath, new Set());
     const set = subpaths.get(subpath);
     for (const n of names) set.add(n);
+  }
+  const findings = detectUnsupportedDateFnsUsage(src, relative(ROOT, file));
+  if (findings.length > 0) unsupportedFindings.push(...findings);
+}
+
+if (unsupportedFindings.length > 0) {
+  console.warn(
+    `⚠ Found ${unsupportedFindings.length} unsupported date-fns usage(s) — these are NOT covered by the smoke test:`,
+  );
+  for (const f of unsupportedFindings) {
+    console.warn(`   ${f.file}:${f.line} [${f.kind}] → date-fns/${f.subpath}`);
   }
 }
 
