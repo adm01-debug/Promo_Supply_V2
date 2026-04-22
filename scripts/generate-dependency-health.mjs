@@ -9,10 +9,10 @@ import { fileURLToPath } from "node:url";
 import { createHash } from "node:crypto";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
 import { validateSnapshot, failOnInvalid } from "./lib/validate-dependency-health.mjs";
+import { BARREL_IMPORT_RE, computeRiskLevel } from "./lib/tree-shaking-risk.mjs";
 
 const SCAN_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".jsx"]);
 const SCAN_SKIP_DIRS = new Set(["node_modules", "dist", "build", ".next", "coverage"]);
-const BARREL_IMPORT_RE = /from\s+['"](date-fns(?:\/locale)?)['"]/g;
 const OFFENDERS_CAP = 50;
 // Bump when scan logic/regex changes to invalidate stale caches.
 const SCAN_VERSION = "1";
