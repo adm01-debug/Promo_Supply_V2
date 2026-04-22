@@ -212,31 +212,101 @@ if (WRITE_HEALTH) writeHealthSnapshot(entries);
 
 // ── Failure mode C: one or more subpaths missing on disk ─────────────────────
 if (missing.length > 0) {
+  // Partition missing entries so the failure block makes the root cause obvious:
+  // a missing locale almost always means a partial/corrupt install, while a
+  // missing function subpath can also mean an import typo.
+  const missingLocales = missing.filter((m) => m.subpath.startsWith("locale/"));
+  const missingFns = missing.filter((m) => !m.subpath.startsWith("locale/"));
+
+  // Read the installed date-fns version (best-effort) so the suggested
+  // reinstall command can pin to the exact version we expect on disk.
+  let installedVersion = null;
+  try {
+    const pkgJson = JSON.parse(
+      readFileSync(join(PKG_DIR, "package.json"), "utf8"),
+    );
+    installedVersion = typeof pkgJson.version === "string" ? pkgJson.version : null;
+  } catch {
+    /* ignore — fall back to unpinned reinstall hint */
+  }
+
   const lines = [];
-  lines.push(cyan("Missing subpaths (imported from src/ but not on disk):"));
-  for (const { subpath, tried } of missing) {
-    lines.push(`  ${red("•")} ${bold(`date-fns/${subpath}`)}`);
-    lines.push(gray(`      tried: ${tried.slice(0, 3).join(", ")},`));
-    lines.push(gray(`             ${tried.slice(3).join(", ")}`));
+  lines.push(
+    cyan(
+      `Missing ${missing.length} subpath(s) — imported from src/ but not present in ${PKG_REL}:`,
+    ),
+  );
+  lines.push("");
+
+  const renderGroup = (title, group) => {
+    if (group.length === 0) return;
+    lines.push(cyan(`  ${title} (${group.length}):`));
+    for (const { subpath } of group) {
+      lines.push(`    ${red("•")} ${bold(`date-fns/${subpath}`)}`);
+    }
+    lines.push("");
+  };
+  renderGroup("Functions", missingFns);
+  renderGroup("Locales", missingLocales);
+
+  // Copy-paste list of just the bare subpaths — handy to grep src/ or paste
+  // into an issue without the bullet/ANSI noise.
+  lines.push(cyan("Copy-paste list (bare subpaths):"));
+  for (const { subpath } of missing) {
+    lines.push(`    date-fns/${subpath}`);
   }
   lines.push("");
-  lines.push(cyan("Package directory checked:"));
-  lines.push(`  ${PKG_REL}`);
-  lines.push("");
+
+  // One representative `tried:` block — the candidate set is identical for
+  // every subpath, so repeating it per-entry was pure noise.
+  if (missing[0]) {
+    lines.push(cyan("Resolution candidates probed for each subpath:"));
+    for (const c of missing[0].tried) lines.push(gray(`    ${c}`));
+    lines.push("");
+  }
+
   lines.push(cyan("Likely cause:"));
-  lines.push("  Broken or partial install — the lockfile resolves a date-fns version");
-  lines.push("  but one or more subpath files are missing from node_modules.");
+  if (missingLocales.length > 0 && missingFns.length === 0) {
+    lines.push("  Partial install — date-fns is present but its locale/ tree is incomplete.");
+    lines.push("  Common after an interrupted install or a stale package manager cache.");
+  } else if (missingFns.length > 0 && missingLocales.length === 0) {
+    lines.push("  Either a broken install OR an import typo (e.g. `date-fns/formatt`).");
+    lines.push("  Verify the bare subpath list above matches real date-fns exports first.");
+  } else {
+    lines.push("  Broken or partial install — the lockfile resolves a date-fns version");
+    lines.push("  but one or more subpath files are missing from node_modules/date-fns.");
+  }
   lines.push("");
-  lines.push(cyan("▶ Repair (copy & run):"));
+
+  // Suggested fix — pin to the installed version when known so a reinstall
+  // can't silently bump and mask the real bug.
+  const pinnedReinstall = installedVersion
+    ? `bun add date-fns@${installedVersion} --exact`
+    : null;
+
+  lines.push(cyan("▶ Repair (copy & run, in order — stop at the first that succeeds):"));
   lines.push("");
+  lines.push(bold("    # 1. Frozen reinstall (preferred — respects bun.lock):"));
   lines.push(bold("    rm -rf node_modules && bun install --frozen-lockfile"));
+  if (pinnedReinstall) {
+    lines.push("");
+    lines.push(bold(`    # 2. Re-pin date-fns to the currently-installed version (${installedVersion}):`));
+    lines.push(bold(`    ${pinnedReinstall}`));
+  } else {
+    lines.push("");
+    lines.push(bold("    # 2. Re-pin date-fns (could not read installed version — use the spec from package.json):"));
+    lines.push(bold("    bun add date-fns@<version-from-package.json> --exact"));
+  }
+  lines.push("");
+  lines.push(bold("    # 3. Last resort — clear bun's global cache then reinstall:"));
+  lines.push(bold("    bun pm cache rm && rm -rf node_modules && bun install --frozen-lockfile"));
   lines.push("");
   lines.push("After repair, re-run:");
   lines.push("");
   lines.push(bold("    bun run verify:datefns-files"));
 
   printBlock(
-    `verify-datefns-files: ${missing.length} missing date-fns subpath(s)`,
+    `verify-datefns-files: ${missing.length} missing date-fns subpath(s)${installedVersion ? ` (installed: ${installedVersion})` : ""}`,
     lines.join("\n"),
   );
   process.exit(1);
