@@ -10,6 +10,8 @@
     "lint": "eslint .",
     "lint:date-fns": "eslint . --config eslint.date-fns.config.js --max-warnings=0",
     "lint:date-fns:fix": "eslint . --config eslint.date-fns.config.js --fix",
+    "fix:date-fns": "bash scripts/fix-date-fns.sh",
+    "precommit:fix": "bash scripts/fix-date-fns.sh --staged",
     "ci:lint:date-fns": "eslint . --config eslint.date-fns.config.js --max-warnings=0",
     "preview": "vite preview",
     "verify:date-fns": "node scripts/verify-datefns-versions.mjs",
