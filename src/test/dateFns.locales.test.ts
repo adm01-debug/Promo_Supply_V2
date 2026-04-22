@@ -54,13 +54,16 @@ describe("date-fns locales — installed surface", () => {
   for (const entry of MANIFEST.locales) {
     describe(entry.subpath, () => {
       it("has a resolvable file in node_modules/date-fns", () => {
-        const found = fileCandidates(entry.subpath).some((c) =>
-          existsSync(join(PKG_DIR, c)),
-        );
+        const candidates = fileCandidates(entry.subpath);
+        const found = candidates.some((c) => existsSync(join(PKG_DIR, c)));
         expect(
           found,
-          `Missing date-fns/${entry.subpath} on disk. ` +
-            "Run `rm -rf node_modules && bun install --frozen-lockfile`.",
+          [
+            `Missing locale on disk: ${fullPath(entry.subpath)}`,
+            `  Looked for any of:`,
+            ...candidates.map((c) => `    • node_modules/date-fns/${c}`),
+            `  ${FIX_HINT}`,
+          ].join("\n"),
         ).toBe(true);
       });
 
@@ -70,38 +73,51 @@ describe("date-fns locales — installed surface", () => {
         const key = `./${entry.subpath}`;
         expect(
           pkg.exports?.[key],
-          `date-fns/package.json exports map is missing "${key}". ` +
-            "This breaks bundler resolution even if the file exists.",
+          [
+            `Missing exports entry for ${fullPath(entry.subpath)}`,
+            `  Expected key in node_modules/date-fns/package.json → exports: "${key}"`,
+            `  Without this entry, bundlers (Vite/Rollup/esbuild) cannot resolve the import even if the file exists on disk.`,
+            `  ${FIX_HINT}`,
+          ].join("\n"),
         ).toBeTruthy();
       });
 
       it("dynamic-imports and exposes a structurally valid Locale", async () => {
-        const mod = (await import(
-          /* @vite-ignore */ `date-fns/${entry.subpath}`
-        )) as Record<string, unknown>;
+        const importPath = fullPath(entry.subpath);
+        const mod = (await import(/* @vite-ignore */ importPath)) as Record<string, unknown>;
         for (const exportName of entry.exports) {
+          const ctx = `${importPath} (named export "${exportName}")`;
           const locale = mod[exportName];
-          expect(locale, `${entry.subpath} → ${exportName}`).toBeTruthy();
-          expect(typeof locale, `${exportName} type`).toBe("object");
+          expect(
+            locale,
+            `Missing named export from ${ctx}\n  ${FIX_HINT}`,
+          ).toBeTruthy();
+          expect(typeof locale, `${ctx}: expected typeof === "object"`).toBe("object");
           const l = locale as Record<string, unknown>;
-          expect(typeof l.code, `${exportName}.code`).toBe("string");
-          expect((l.code as string).length, `${exportName}.code length`).toBeGreaterThan(0);
-          expect(l.formatLong, `${exportName}.formatLong`).toBeTruthy();
-          expect(l.localize, `${exportName}.localize`).toBeTruthy();
-          expect(l.match, `${exportName}.match`).toBeTruthy();
+          expect(typeof l.code, `${ctx}: \`code\` must be a string`).toBe("string");
+          expect((l.code as string).length, `${ctx}: \`code\` must be non-empty`).toBeGreaterThan(0);
+          expect(l.formatLong, `${ctx}: missing \`formatLong\``).toBeTruthy();
+          expect(l.localize, `${ctx}: missing \`localize\``).toBeTruthy();
+          expect(l.match, `${ctx}: missing \`match\``).toBeTruthy();
         }
       });
 
       it("formats reference date without throwing", async () => {
-        const mod = (await import(
-          /* @vite-ignore */ `date-fns/${entry.subpath}`
-        )) as Record<string, unknown>;
+        const importPath = fullPath(entry.subpath);
+        const mod = (await import(/* @vite-ignore */ importPath)) as Record<string, unknown>;
         for (const exportName of entry.exports) {
+          const ctx = `${importPath} (named export "${exportName}")`;
           const locale = mod[exportName] as never;
           const long = format(REF, "PPP", { locale });
           const weekday = format(REF, "EEEE", { locale });
-          expect(long.length, `${exportName} PPP`).toBeGreaterThan(0);
-          expect(weekday.length, `${exportName} EEEE`).toBeGreaterThan(0);
+          expect(
+            long.length,
+            `${ctx}: format(REF, "PPP") returned empty string\n  ${FIX_HINT}`,
+          ).toBeGreaterThan(0);
+          expect(
+            weekday.length,
+            `${ctx}: format(REF, "EEEE") returned empty string\n  ${FIX_HINT}`,
+          ).toBeGreaterThan(0);
         }
       });
     });
