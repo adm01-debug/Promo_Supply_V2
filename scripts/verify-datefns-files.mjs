@@ -138,9 +138,16 @@ const PATTERN_KINDS = ["static", "dynamic", "cjs-require", "export-from", "expor
 const UNRESOLVABLE_DYNAMIC_RE =
   /import\s*\(\s*(?:`date-fns\/[^`]*\$\{[^`]*`|["'`]date-fns\/?["'`]\s*\+)/g;
 
+// Same shape, CommonJS flavor: `require(\`date-fns/${x}\`)` / `require("date-fns/" + x)`.
+// Surfaced through the same failure-mode-D path as ESM unresolvable imports.
+const UNRESOLVABLE_REQUIRE_RE =
+  /require\s*\(\s*(?:`date-fns\/[^`]*\$\{[^`]*`|["'`]date-fns\/?["'`]\s*\+)/g;
+
 // Resolvable template literal — no interpolation, just backticks. Treat as
 // a normal dynamic import so we still verify the subpath exists.
 const RESOLVABLE_TEMPLATE_RE = /import\s*\(\s*`date-fns\/([^`${}]+)`\s*\)/g;
+// CJS counterpart: `require(\`date-fns/format\`)` — folded into `cjs-require`.
+const RESOLVABLE_REQUIRE_TEMPLATE_RE = /require\s*\(\s*`date-fns\/([^`${}]+)`\s*\)/g;
 
 // ── ANSI color helpers (TTY only — keep CI logs clean) ────────────────────────
 const isTTY = Boolean(process.stdout.isTTY);
