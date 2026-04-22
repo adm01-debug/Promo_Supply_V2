@@ -210,8 +210,8 @@ const DependencyHealth = () => {
   const anyPending = refresh.isPending || refreshAndCommit.isPending;
 
   // Track last successful CI dispatch to prevent overlapping triggers.
-  const [lastDispatch, setLastDispatch] = React.useState<{ at: number; status?: string } | null>(null);
-  React.useEffect(() => {
+  const [lastDispatch, setLastDispatch] = useState<{ at: number; status?: string } | null>(null);
+  useEffect(() => {
     const ci = refreshAndCommit.data?.ciDispatch;
     if (ci && typeof ci !== "string") {
       setLastDispatch({ at: Date.now(), status: ci.workflowRunStatus });
