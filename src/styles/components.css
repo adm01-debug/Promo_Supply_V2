@@ -20,7 +20,7 @@
 
   .selection-highlight { @apply relative transition-all duration-200; }
   .selection-highlight::before {
-    content: ''; @apply absolute inset-0 rounded-inherit opacity-0 transition-opacity duration-200 bg-primary/5;
+    content: ''; @apply absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-200 bg-primary/5;
   }
   .selection-highlight:hover::before,
   .selection-highlight[data-selected="true"]::before { @apply opacity-100; }
