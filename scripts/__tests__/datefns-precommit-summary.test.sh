@@ -197,7 +197,7 @@ JS
   cat > "$bin_dir/bunx" <<'SH'
 #!/usr/bin/env bash
 echo "src/test/dateFns.smoke.test.ts(3,8): error TS2307: Cannot find module 'date-fns/fake-subpath' or its corresponding type declarations." >&2
-exit 1
+exit 7
 SH
   chmod +x "$bin_dir/bunx"
 
@@ -210,6 +210,12 @@ SH
   assert_contains       "names the failed step (2/2)"         "$out" "Failed step:"
   assert_contains       "labels step 2/2 in summary"          "$out" "[2/2]"
   assert_failure_mode_real "Failure mode is real (no placeholders)" "$out"
+  assert_contains       "shows Failed command line"           "$out" "Failed command:"
+  assert_contains       "Failed command names tsc invocation" "$out" "bunx tsc --noEmit -p tsconfig.smoke.json"
+  assert_contains       "shows Exit code line"                "$out" "Exit code:"
+  assert_contains       "Exit code matches stub (7)"          "$out" "Exit code:"
+  assert_contains       "Exit code value is 7"                "$out" " 7"
+  assert_contains       "shows Reproduce locally section"     "$out" "Reproduce locally:"
   assert_contains       "lists offending date-fns import"     "$out" "date-fns/fake-subpath"
   assert_not_matches    "no literal '<placeholder>' tokens"   "$out" '<[A-Za-z0-9_ -]+>'
 
