@@ -30,12 +30,23 @@ let SUMMARY_MD_PATH = process.env.DATEFNS_SMOKE_SUMMARY_MD || null;
 // artifact on failure so reviewers get the full repair recipe offline
 // without scrolling job logs. On a clean run, no file is written.
 let REPORT_MD_PATH = process.env.DATEFNS_SMOKE_REPORT_MD || null;
+// `--report-json <path>` (also via env DATEFNS_SMOKE_REPORT_JSON) writes a
+// machine-readable JSON sibling of the Markdown failure report. Always
+// emitted on failure (and optionally on success — see `emittedOn` below in
+// the payload), so CI dashboards / bots can consume the exact missing
+// subpath list + pinned version + one-step reinstall command without
+// scraping the Markdown. Schema is versioned (`schemaVersion: 1`) so
+// downstream consumers can pin against breaking changes.
+let REPORT_JSON_PATH = process.env.DATEFNS_SMOKE_REPORT_JSON || null;
 for (let i = 0; i < ARGS.length; i++) {
   if (ARGS[i] === "--summary-md" && ARGS[i + 1]) {
     SUMMARY_MD_PATH = ARGS[i + 1];
     i++;
   } else if (ARGS[i] === "--report-md" && ARGS[i + 1]) {
     REPORT_MD_PATH = ARGS[i + 1];
+    i++;
+  } else if (ARGS[i] === "--report-json" && ARGS[i + 1]) {
+    REPORT_JSON_PATH = ARGS[i + 1];
     i++;
   }
 }
