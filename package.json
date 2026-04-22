@@ -17,6 +17,7 @@
     "verify:packages:all": "node scripts/verify-package-versions.mjs --all",
     "verify:critical-deps": "node scripts/verify-critical-deps.mjs",
     "smoke:date-fns": "bash scripts/smoke-date-fns.sh",
+    "date-fns:smoke": "bash scripts/smoke-date-fns.sh",
     "ci:check": "bash scripts/ci-check.sh",
     "ci:smoke": "bash scripts/ci-smoke.sh",
     "deps:health": "node scripts/diff-dependency-health.mjs",
