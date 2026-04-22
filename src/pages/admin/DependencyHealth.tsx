@@ -50,6 +50,35 @@ const fetchHistory = async (): Promise<HistoryEntry[]> => {
   return ((data as { history?: HistoryEntry[] } | null)?.history) ?? [];
 };
 
+interface PrSmokeArtifact {
+  id: number;
+  name: string;
+  sizeBytes: number;
+  createdAt: string;
+  expiresAt: string;
+  downloadUrl: string;
+  webUrl: string;
+  runId: number | null;
+  headBranch: string | null;
+  headSha: string | null;
+  prNumber: number | null;
+}
+
+interface PrSmokeResponse {
+  status: "ok" | "empty" | "skipped" | "error";
+  artifact: PrSmokeArtifact | null;
+  reason?: string;
+  totalScanned?: number;
+}
+
+const fetchPrSmokeArtifact = async (): Promise<PrSmokeResponse> => {
+  const { data, error } = await supabase.functions.invoke("dependency-health?prSmoke=true", {
+    method: "GET",
+  });
+  if (error) throw error;
+  return (data as PrSmokeResponse) ?? { status: "empty", artifact: null };
+};
+
 interface PackageHealth {
   name: string;
   label: string;
@@ -193,6 +222,17 @@ const DependencyHealth = () => {
     queryKey: ["dependency-health-history"],
     queryFn: fetchHistory,
     staleTime: 60_000,
+  });
+
+  // Most recent PR smoke-test artifact (uploaded by the smoke-date-fns
+  // workflow on pull_request events). Polled less aggressively than the
+  // main snapshot since it only changes on PR pushes, not on every
+  // "Atualizar agora" click.
+  const { data: prSmoke, isLoading: prSmokeLoading, refetch: refetchPrSmoke } = useQuery({
+    queryKey: ["dependency-health-pr-smoke"],
+    queryFn: fetchPrSmokeArtifact,
+    staleTime: 5 * 60_000,
+    retry: 1,
   });
 
   const selectedDiff = useMemo(() => {
@@ -933,6 +973,164 @@ const DependencyHealth = () => {
           </Card>
         );
       })()}
+
+      {/* PR smoke artifact card — surfaces the most recent
+          `dependency-health-smoke-*` artifact uploaded by the
+          smoke-date-fns workflow on pull_request runs. The main snapshot
+          card above only ever reflects what's committed to `main`; this
+          card is the only way to see in-flight PR results without
+          navigating to GitHub Actions. */}
+      <Card aria-labelledby="pr-smoke-card-title">
+        <CardHeader>
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <CardTitle id="pr-smoke-card-title" className="flex items-center gap-2 text-lg">
+                <GitBranch className="h-5 w-5 text-primary" />
+                Smoke test de PR (último artefato)
+                <Badge
+                  variant={
+                    prSmoke?.status === "ok"
+                      ? "default"
+                      : prSmoke?.status === "error"
+                      ? "destructive"
+                      : "secondary"
+                  }
+                  className="ml-2"
+                >
+                  {prSmokeLoading
+                    ? "Carregando..."
+                    : prSmoke?.status === "ok"
+                    ? prSmoke.artifact?.prNumber
+                      ? `PR #${prSmoke.artifact.prNumber}`
+                      : "Disponível"
+                    : prSmoke?.status === "empty"
+                    ? "Sem PRs recentes"
+                    : prSmoke?.status === "skipped"
+                    ? "Não configurado"
+                    : prSmoke?.status === "error"
+                    ? "Erro"
+                    : "—"}
+                </Badge>
+              </CardTitle>
+              <CardDescription>
+                Artefato <code className="font-mono text-xs">dependency-health-smoke-*</code> mais
+                recente da API do GitHub. Diferente do card acima (que só reflete{" "}
+                <code className="font-mono text-xs">main</code>), este mostra o último resultado de
+                pull request — útil para revisar PRs antes do merge.
+              </CardDescription>
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => refetchPrSmoke()}
+              disabled={prSmokeLoading}
+              aria-label="Recarregar artefato de PR"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 mr-1.5 ${prSmokeLoading ? "animate-spin" : ""}`} />
+              Recarregar
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-3 text-sm">
+          {prSmoke?.status === "skipped" && (
+            <Alert>
+              <HelpCircle className="h-4 w-4" />
+              <AlertTitle>Integração com GitHub não configurada</AlertTitle>
+              <AlertDescription>
+                {prSmoke.reason ?? "GITHUB_DISPATCH_TOKEN ausente nas secrets da edge function."}
+              </AlertDescription>
+            </Alert>
+          )}
+          {prSmoke?.status === "error" && (
+            <Alert variant="destructive">
+              <AlertTriangle className="h-4 w-4" />
+              <AlertTitle>Falha ao consultar a API do GitHub</AlertTitle>
+              <AlertDescription className="font-mono text-xs">
+                {prSmoke.reason ?? "Erro desconhecido"}
+              </AlertDescription>
+            </Alert>
+          )}
+          {prSmoke?.status === "empty" && (
+            <p className="text-muted-foreground">
+              Nenhum artefato de PR encontrado nos últimos 14 dias (período de retenção). Abra um PR
+              que toque <code className="font-mono text-xs">src/**</code> para gerar o primeiro.
+            </p>
+          )}
+          {prSmoke?.status === "ok" && prSmoke.artifact && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="rounded-md border bg-muted/30 p-3">
+                  <div className="text-xs text-muted-foreground">Branch</div>
+                  <div className="font-medium font-mono text-xs truncate">
+                    {prSmoke.artifact.headBranch ?? "—"}
+                  </div>
+                </div>
+                <div className="rounded-md border bg-muted/30 p-3">
+                  <div className="text-xs text-muted-foreground">Commit</div>
+                  <div className="font-medium font-mono text-xs">
+                    {prSmoke.artifact.headSha?.slice(0, 7) ?? "—"}
+                  </div>
+                </div>
+                <div className="rounded-md border bg-muted/30 p-3">
+                  <div className="text-xs text-muted-foreground">Gerado</div>
+                  <div className="font-medium">
+                    {formatDistanceToNow(parseISO(prSmoke.artifact.createdAt), {
+                      addSuffix: true,
+                      locale: ptBR,
+                    })}
+                  </div>
+                </div>
+                <div className="rounded-md border bg-muted/30 p-3">
+                  <div className="text-xs text-muted-foreground">Tamanho</div>
+                  <div className="font-medium">
+                    {(prSmoke.artifact.sizeBytes / 1024).toFixed(1)} KB
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Button asChild variant="outline" size="sm">
+                  <a href={prSmoke.artifact.webUrl} target="_blank" rel="noopener noreferrer">
+                    <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
+                    Abrir execução
+                  </a>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <a
+                    href={prSmoke.artifact.downloadUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <FileText className="h-3.5 w-3.5 mr-1.5" />
+                    Baixar artefato (.zip)
+                  </a>
+                </Button>
+                {prSmoke.artifact.prNumber && (
+                  <Button asChild variant="outline" size="sm">
+                    <a
+                      href={`https://github.com/${(prSmoke.artifact.webUrl.match(/github\.com\/([^/]+\/[^/]+)/) ?? [])[1]}/pull/${prSmoke.artifact.prNumber}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <GitBranch className="h-3.5 w-3.5 mr-1.5" />
+                      PR #{prSmoke.artifact.prNumber}
+                    </a>
+                  </Button>
+                )}
+              </div>
+
+              <p className="text-xs text-muted-foreground border-t pt-3">
+                Expira{" "}
+                {formatDistanceToNow(parseISO(prSmoke.artifact.expiresAt), {
+                  addSuffix: true,
+                  locale: ptBR,
+                })}{" "}
+                · {prSmoke.totalScanned ?? 0} artefato(s) de PR ativos no repositório.
+              </p>
+            </>
+          )}
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
