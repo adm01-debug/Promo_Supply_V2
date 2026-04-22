@@ -1,0 +1,14 @@
+{
+  "$schema": "Critical dependencies whose spec/lock/installed alignment is enforced by CI.",
+  "description": "Edit this list to add or remove packages from the CI drift check. Each entry must be the npm package name as it appears in package.json. The verify:critical-deps script feeds this list into scripts/verify-package-versions.mjs, which produces the same side-by-side report (per-source values, pairwise diagnosis, fix rationale) used for date-fns.",
+  "packages": [
+    "date-fns",
+    "react",
+    "react-dom",
+    "@tanstack/react-query",
+    "@supabase/supabase-js",
+    "zod",
+    "vite",
+    "typescript"
+  ]
+}
