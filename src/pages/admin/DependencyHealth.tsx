@@ -187,15 +187,50 @@ const DependencyHealth = () => {
       onSuccess: (fresh) => {
         queryClient.setQueryData(["dependency-health"], fresh);
         queryClient.invalidateQueries({ queryKey: ["dependency-health-history"] });
-        const statusText =
-          typeof fresh.ciDispatch === "string"
-            ? fresh.ciDispatch
-            : fresh.ciDispatch?.status ?? "n/a";
+
+        if (!dispatchCi) {
+          toast({
+            title: "Snapshot atualizado",
+            description: `Gerado em ${fresh.snapshot.generatedAt}`,
+          });
+          return;
+        }
+
+        const ci = fresh.ciDispatch;
+        const ciObj = typeof ci === "object" && ci !== null ? ci : null;
+        const statusRaw = (ciObj?.status ?? (typeof ci === "string" ? ci : "")) || "unknown";
+        const statusLower = statusRaw.toLowerCase();
+
+        // Derive owner/repo from any GitHub URL we got back.
+        const anyUrl = ciObj?.workflowRunUrl ?? ciObj?.latestCommitUrl ?? "";
+        let ownerRepo = "";
+        try {
+          if (anyUrl) {
+            const u = new URL(anyUrl);
+            const parts = u.pathname.split("/").filter(Boolean);
+            if (parts.length >= 2) ownerRepo = `${parts[0]}/${parts[1]}`;
+          }
+        } catch {
+          // ignore
+        }
+        const branchSuffix = ciObj?.branch ? `@${ciObj.branch}` : "";
+        const repoLabel = ownerRepo ? `${ownerRepo}${branchSuffix}` : "repositório não identificado";
+
+        let title = "CI: status desconhecido";
+        let variant: "default" | "destructive" = "default";
+        if (statusLower === "queued") {
+          title = "CI enfileirado ✓";
+        } else if (statusLower.startsWith("skipped")) {
+          title = "CI ignorado";
+        } else if (statusLower.startsWith("failed")) {
+          title = "CI falhou";
+          variant = "destructive";
+        }
+
         toast({
-          title: dispatchCi ? "Snapshot atualizado + CI" : "Snapshot atualizado",
-          description: dispatchCi
-            ? `Gerado em ${fresh.snapshot.generatedAt} · CI: ${statusText}`
-            : `Gerado em ${fresh.snapshot.generatedAt}`,
+          title,
+          description: `${repoLabel} · ${statusRaw}`,
+          variant,
         });
       },
       onError: (err: unknown) => {
