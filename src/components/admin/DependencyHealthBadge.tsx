@@ -10,10 +10,19 @@ interface PackageEntry {
   driftDetected?: boolean;
 }
 
+interface SmokeCi {
+  event?: string | null;
+  runUrl?: string;
+  prNumber?: number;
+  prUrl?: string;
+  branch?: string | null;
+}
+
 interface SmokeTest {
   status?: "pass" | "fail" | string;
   ranAt?: string;
   durationMs?: number;
+  ci?: SmokeCi;
 }
 
 interface DepHealthSnapshot {
@@ -139,10 +148,38 @@ const DependencyHealthBadge = () => {
             </ul>
           )}
           {smoke?.status && (
-            <p className="pt-1 border-t border-border/50">
-              Smoke test: <span className="font-medium">{smoke.status}</span>
-              {typeof smoke.durationMs === "number" && ` (${smoke.durationMs}ms)`}
-            </p>
+            <div className="pt-1 border-t border-border/50 space-y-0.5">
+              <p>
+                Smoke test: <span className="font-medium">{smoke.status}</span>
+                {typeof smoke.durationMs === "number" && ` (${smoke.durationMs}ms)`}
+              </p>
+              {smoke.ci?.prNumber && smoke.ci.prUrl && (
+                <p className="text-muted-foreground">
+                  PR{" "}
+                  <a
+                    href={smoke.ci.prUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    #{smoke.ci.prNumber}
+                  </a>
+                  {smoke.ci.branch && ` · ${smoke.ci.branch}`}
+                </p>
+              )}
+              {smoke.ci?.runUrl && (
+                <p className="text-muted-foreground">
+                  <a
+                    href={smoke.ci.runUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-primary hover:underline"
+                  >
+                    Abrir execução no GitHub Actions
+                  </a>
+                </p>
+              )}
+            </div>
           )}
         </div>
       </TooltipContent>
