@@ -61,14 +61,36 @@ function relTime(iso) {
 
 // --- 1. Scan src/ for locale imports ---
 const sourceLocales = new Set();
+let scannedFileCount = 0;
+let filesWithLocales = 0;
 for (const file of walk(SRC_DIR)) {
+  scannedFileCount++;
   const src = readFileSync(file, "utf8");
+  const rel = file.startsWith(ROOT) ? file.slice(ROOT.length + 1) : file;
+  let printedHeader = false;
   let m;
+  IMPORT_RE.lastIndex = 0;
   while ((m = IMPORT_RE.exec(src)) !== null) {
     const [, isType, , subpath] = m;
-    if (isType) continue;
-    if (subpath.startsWith("locale/")) sourceLocales.add(subpath);
+    if (!subpath.startsWith("locale/")) continue;
+    if (VERBOSE && !printedHeader) {
+      console.log(`◆ ${rel}`);
+      printedHeader = true;
+      filesWithLocales++;
+    }
+    if (isType) {
+      vlog(`skipped → date-fns/${subpath}  (reason: type-only import, not bundled at runtime)`);
+      continue;
+    }
+    sourceLocales.add(subpath);
+    vlog(`detected → date-fns/${subpath}`);
   }
+}
+
+if (VERBOSE) {
+  console.log(
+    `\n· Scanned ${scannedFileCount} file(s); ${filesWithLocales} contain date-fns locale imports.\n`,
+  );
 }
 
 // --- 2. Load manifest ---
