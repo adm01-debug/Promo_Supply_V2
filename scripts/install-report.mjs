@@ -3,7 +3,7 @@ import { readFileSync, existsSync, statSync } from "node:fs";
 import { createHash } from "node:crypto";
 import { join } from "node:path";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
-import { renderMismatch } from "./lib/semver-diff.mjs";
+import { renderMismatch, renderTripleMismatch } from "./lib/semver-diff.mjs";
 
 // CLI flags:
 //   --strict   exit 1 when spec / lock / installed are not aligned (default: exit 0)
@@ -88,15 +88,14 @@ if (JSON_MODE) {
     const specEqInstalled = SPEC_NORM === INSTALLED;
     console.log("\n  Mismatch detail:");
     if (!specEqLock && lockEqInstalled) {
-      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked" }));
     } else if (specEqLock && !lockEqInstalled) {
-      console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+      console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED, { caseLabel: "locked↔installed" }));
     } else if (specEqInstalled && !specEqLock) {
-      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
+      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked" }));
     } else {
-      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED));
-      console.log("");
-      console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED));
+      // All three differ — labeled triple block with summary line.
+      console.log(renderTripleMismatch(SPEC_NORM, LOCKED, INSTALLED));
     }
     if (STRICT) {
       console.error("\n✗ install-report --strict: spec / lock / installed drift detected.");

@@ -41,7 +41,7 @@ import {
   resolveLockedVersion,
   RESOLVER_PATTERN_NAMES,
 } from "./lib/resolve-locked-version.mjs";
-import { renderMismatch } from "./lib/semver-diff.mjs";
+import { renderMismatch, renderTripleMismatch } from "./lib/semver-diff.mjs";
 
 const EXIT = {
   OK: 0,
@@ -398,15 +398,14 @@ if (JSON_OUT) {
       const lockEqInstalled = lk === ins;
       const specEqInstalled = sn === ins;
       if (!specEqLock && lockEqInstalled) {
-        console.error(renderMismatch("spec", sn, "locked", lk));
+        console.error(renderMismatch("spec", sn, "locked", lk, { caseLabel: "spec↔locked" }));
       } else if (specEqLock && !lockEqInstalled) {
-        console.error(renderMismatch("locked", lk, "installed", ins));
+        console.error(renderMismatch("locked", lk, "installed", ins, { caseLabel: "locked↔installed" }));
       } else if (specEqInstalled && !specEqLock) {
-        console.error(renderMismatch("spec", sn, "locked", lk));
+        console.error(renderMismatch("spec", sn, "locked", lk, { caseLabel: "spec↔locked" }));
       } else {
-        console.error(renderMismatch("spec", sn, "locked", lk));
-        console.error("");
-        console.error(renderMismatch("locked", lk, "installed", ins));
+        // All three differ — labeled triple block with summary line.
+        console.error(renderTripleMismatch(sn, lk, ins));
       }
 
       console.error("\n  Pairwise drift diagnosis:");

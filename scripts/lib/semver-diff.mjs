@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Shared semver diff helpers for date-fns version mismatch reporting.
- * Used by verify-datefns-versions.mjs and install-report.mjs.
+ * Used by verify-datefns-versions.mjs, verify-package-versions.mjs,
+ * and install-report.mjs.
  */
 
 /** Split a semver string into its components, or null if malformed. */
@@ -35,16 +36,69 @@ export function classifyDiff(a, b) {
   return { level: "unknown", caretCol: 0 };
 }
 
-/** Render a 4-line mismatch block with a caret pointing at the differing segment. */
-export function renderMismatch(label1, v1, label2, v2) {
+/**
+ * Render a 5-line mismatch block:
+ *   line 1: "[case] spec↔locked" header (when `caseLabel` provided)
+ *   lines 2–3: the two version rows, label-padded
+ *   line 4: caret pointing at the first differing column
+ *   line 5: "→ <level> version drift (v1 → v2)"
+ *
+ * If `caseLabel` is omitted (legacy callers/tests), the header line is
+ * skipped and the block stays 4 lines tall — preserving back-compat.
+ *
+ * @param {string} label1
+ * @param {string} v1
+ * @param {string} label2
+ * @param {string} v2
+ * @param {{ caseLabel?: string }} [opts]
+ */
+export function renderMismatch(label1, v1, label2, v2, opts = {}) {
+  const { caseLabel } = opts;
   const { level, caretCol } = classifyDiff(v1, v2);
   const labelW = Math.max(label1.length, label2.length);
   const pad = (s) => s + " ".repeat(labelW - s.length);
   const caretIndent = " ".repeat(labelW + 2 + caretCol);
-  return [
+  const lines = [];
+  if (caseLabel) {
+    lines.push(`    [${caseLabel}] ${label1} ↔ ${label2}`);
+  }
+  lines.push(
     `    ${pad(label1)}  ${v1}`,
     `    ${pad(label2)}  ${v2}`,
     `    ${caretIndent}^`,
     `    → ${level} version drift (${v1} → ${v2})`,
+  );
+  return lines.join("\n");
+}
+
+/**
+ * Render BOTH labeled drift cases (spec↔locked AND locked↔installed) plus a
+ * one-line summary describing the full triple mismatch. Use when all three
+ * versions (spec, locked, installed) differ — reading two separate blocks
+ * without context makes it easy to miss that the install is doubly drifted.
+ *
+ * Output shape (returned as a single \n-joined string):
+ *   ── triple mismatch: spec ≠ locked ≠ installed ──
+ *   summary: spec=X  locked=Y  installed=Z   (drift: <l1>, then <l2>)
+ *
+ *   <renderMismatch("spec", X, "locked", Y, { caseLabel: "spec↔locked" })>
+ *
+ *   <renderMismatch("locked", Y, "installed", Z, { caseLabel: "locked↔installed" })>
+ */
+export function renderTripleMismatch(spec, locked, installed) {
+  const { level: l1 } = classifyDiff(spec, locked);
+  const { level: l2 } = classifyDiff(locked, installed);
+  const summary =
+    `    summary: spec=${spec}  locked=${locked}  installed=${installed}` +
+    `   (drift: spec→locked is ${l1}, then locked→installed is ${l2})`;
+  return [
+    "    ── triple mismatch: spec ≠ locked ≠ installed ──",
+    summary,
+    "",
+    renderMismatch("spec", spec, "locked", locked, { caseLabel: "spec↔locked" }),
+    "",
+    renderMismatch("locked", locked, "installed", installed, {
+      caseLabel: "locked↔installed",
+    }),
   ].join("\n");
 }
