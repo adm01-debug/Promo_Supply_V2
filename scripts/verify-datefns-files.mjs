@@ -42,32 +42,51 @@ const FILE_EXT = /\.(ts|tsx)$/;
 //   6. Re-export all:       export * from "date-fns/fn"
 //   7. Dynamic import:      import("date-fns/fn")
 // Type-only imports (`import type … from`, `export type … from`) are skipped.
+// Each pattern is tagged with a `kind` so the breakdown report can show how
+// each subpath was discovered. `export-from` (named re-export) and
+// `export-star` (`export * from`) are separated because they have very
+// different tree-shaking implications — a star re-export of a date-fns
+// subpath is usually a smell worth flagging in the summary.
 const IMPORT_PATTERNS = [
-  // Named/default/namespace imports — capture the optional `type` keyword
+  // Static imports: named/default/namespace (incl. `import type`)
   {
+    kind: "static",
     re: /import\s+(type\s+)?(?:\{[^{}]*\}|\*\s+as\s+[\w$]+|[\w$]+(?:\s*,\s*\{[^{}]*\})?)\s+from\s+["']date-fns\/([^"']+)["']/g,
     typeIdx: 1,
     pathIdx: 2,
   },
-  // Side-effect import: `import "date-fns/format"`
+  // Side-effect import: `import "date-fns/format"` — counted as static.
   {
+    kind: "static",
     re: /import\s+["']date-fns\/([^"']+)["']/g,
     typeIdx: -1,
     pathIdx: 1,
   },
-  // Re-exports: `export { x } from "..."` and `export * from "..."` (incl. `export type`)
+  // Named re-export: `export { x } from "date-fns/..."` (incl. `export type`)
   {
-    re: /export\s+(type\s+)?(?:\{[^{}]*\}|\*(?:\s+as\s+[\w$]+)?)\s+from\s+["']date-fns\/([^"']+)["']/g,
+    kind: "export-from",
+    re: /export\s+(type\s+)?\{[^{}]*\}\s+from\s+["']date-fns\/([^"']+)["']/g,
+    typeIdx: 1,
+    pathIdx: 2,
+  },
+  // Star re-export: `export * from "date-fns/..."` / `export * as ns from "..."`
+  {
+    kind: "export-star",
+    re: /export\s+(type\s+)?\*(?:\s+as\s+[\w$]+)?\s+from\s+["']date-fns\/([^"']+)["']/g,
     typeIdx: 1,
     pathIdx: 2,
   },
   // Dynamic import: `import("date-fns/format")` or `await import('date-fns/format')`
   {
+    kind: "dynamic",
     re: /import\s*\(\s*["']date-fns\/([^"']+)["']\s*\)/g,
     typeIdx: -1,
     pathIdx: 1,
   },
 ];
+
+// Display order for the breakdown report — most → least common in practice.
+const PATTERN_KINDS = ["static", "dynamic", "export-from", "export-star"];
 
 // ── ANSI color helpers (TTY only — keep CI logs clean) ────────────────────────
 const isTTY = Boolean(process.stdout.isTTY);
