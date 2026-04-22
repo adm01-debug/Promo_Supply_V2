@@ -10,9 +10,9 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Custom CSS layers — imported after Tailwind defines the layer system */
-@import './styles/tokens.css';
-@import './styles/base.css';
-@import './styles/components.css';
-@import './styles/utilities.css';
-@import './styles/animations.css';
+/* Custom CSS layers — imported with layer specification for Tailwind v3 */
+@import './styles/tokens.css' layer(base);
+@import './styles/base.css' layer(base);
+@import './styles/components.css' layer(components);
+@import './styles/utilities.css' layer(utilities);
+@import './styles/animations.css' layer(utilities);
