@@ -9,11 +9,32 @@ import { readdirSync, readFileSync, statSync, existsSync, writeFileSync, mkdirSy
 import { join, relative, dirname } from "node:path";
 
 const ROOT = process.cwd();
-const WRITE_HEALTH = process.argv.slice(2).some((a) => a === "--write-health" || a === "--update-health");
+const ARGS = process.argv.slice(2);
+const WRITE_HEALTH = ARGS.some((a) => a === "--write-health" || a === "--update-health");
 const SNAPSHOT_PATH = join(ROOT, "public", "dependency-health.json");
 const SRC_DIR = join(ROOT, "src");
 const PKG_DIR = join(ROOT, "node_modules", "date-fns");
 const PKG_REL = relative(ROOT, PKG_DIR);
+
+// ── Scan roots ───────────────────────────────────────────────────────────────
+// Default: src/ plus any sibling test directories that actually exist
+// (tests/, test/, e2e/). Build output (dist/, build/), node_modules, .git,
+// stories and mocks are excluded via EXCLUDE_DIRS / EXCLUDE_FILE_RE below —
+// keeping local + CI scans tightly scoped to runtime source.
+//
+// Override via repeatable `--scan-dir <path>` (relative to repo root). When
+// any `--scan-dir` flag is given, the defaults are REPLACED, not extended.
+const DEFAULT_SCAN_ROOTS = ["src", "tests", "test", "e2e"]
+  .map((d) => join(ROOT, d))
+  .filter((p) => existsSync(p) && statSync(p).isDirectory());
+const CLI_SCAN_ROOTS = [];
+for (let i = 0; i < ARGS.length; i++) {
+  if (ARGS[i] === "--scan-dir" && ARGS[i + 1]) {
+    CLI_SCAN_ROOTS.push(join(ROOT, ARGS[i + 1]));
+    i++;
+  }
+}
+const SCAN_ROOTS = CLI_SCAN_ROOTS.length > 0 ? CLI_SCAN_ROOTS : DEFAULT_SCAN_ROOTS;
 // Directories skipped during the walk (matched by basename).
 // __mocks__ and storybook directories are intentionally excluded — they exercise
 // imports for tooling, not runtime behavior, and should not influence the
