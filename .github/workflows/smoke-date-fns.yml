@@ -1,0 +1,104 @@
+name: smoke-date-fns
+
+# Fast-failing PR gate: runs `bun run smoke:date-fns` so pull requests fail
+# the moment a date-fns subpath imported anywhere in src/ doesn't exist on the
+# pinned version. The smoke script:
+#   1. Regenerates src/test/dateFns.smoke.test.ts from current src/ imports.
+#   2. Verifies every imported date-fns subpath exists in node_modules/date-fns.
+#   3. Runs the smoke vitest file.
+#
+# Triggers on changes to anything that could affect date-fns imports or the
+# pinned version. Uses `bun install --frozen-lockfile` so a stale lockfile
+# fails the install instead of silently re-resolving.
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "package.json"
+      - "bun.lock"
+      - "scripts/smoke-date-fns.sh"
+      - "scripts/generate-datefns-smoke-test.mjs"
+      - "scripts/verify-datefns-files.mjs"
+      - "src/test/dateFns.smoke.test.ts"
+      - "tsconfig.smoke.json"
+      - ".github/workflows/smoke-date-fns.yml"
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "package.json"
+      - "bun.lock"
+      - "scripts/smoke-date-fns.sh"
+      - "scripts/generate-datefns-smoke-test.mjs"
+      - "scripts/verify-datefns-files.mjs"
+      - "src/test/dateFns.smoke.test.ts"
+      - "tsconfig.smoke.json"
+      - ".github/workflows/smoke-date-fns.yml"
+
+concurrency:
+  group: smoke-date-fns-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke-date-fns:
+    name: date-fns subpath smoke (PR fast-fail)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.bun/install/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-bun-
+
+      - name: Install dependencies (frozen lockfile)
+        run: bun install --frozen-lockfile
+
+      - name: Run smoke:date-fns (regen + subpath existence + smoke test)
+        id: smoke
+        env:
+          CI: 'true'
+          TZ: UTC
+        run: |
+          mkdir -p ci-artifacts
+          set -o pipefail
+          bun run smoke:date-fns 2>&1 | tee ci-artifacts/smoke-date-fns.log
+
+      - name: Surface smoke failure in job summary
+        if: failure()
+        run: |
+          {
+            echo "## ❌ date-fns subpath smoke failed"
+            echo ""
+            echo "A date-fns import in \`src/\` references a subpath that doesn't"
+            echo "exist on the pinned version, or the smoke test failed."
+            echo ""
+            echo "Full log is attached as the **smoke-date-fns-output** artifact."
+            echo ""
+            echo '```'
+            tail -n 200 ci-artifacts/smoke-date-fns.log || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload smoke-date-fns output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-date-fns-output
+          path: ci-artifacts/smoke-date-fns.log
+          if-no-files-found: error
+          retention-days: 30
