@@ -99,9 +99,9 @@ describe("RBAC — Role-Based Access Control", () => {
     });
 
     it("should have Portuguese module labels", () => {
-      expect(moduleLabels.solicitacoes).toBe("Solicitações");
-      expect(moduleLabels.cotacoes).toBe("Cotações");
-      expect(moduleLabels.pagamentos).toBe("Pagamentos");
+      expect(moduleLabels["solicitacoes"]).toBe("Solicitações");
+      expect(moduleLabels["cotacoes"]).toBe("Cotações");
+      expect(moduleLabels["pagamentos"]).toBe("Pagamentos");
     });
   });
 });

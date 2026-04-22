@@ -129,7 +129,7 @@ const QualificacaoFornecedores = () => {
             ) : (
               <div className="grid gap-4">
                 {filteredScores.map((score) => {
-                  const config = statusConfig[score.qualification_status] || statusConfig.pending;
+                  const config = statusConfig[score.qualification_status] || statusConfig["pending"];
                   const StatusIcon = config.icon;
                   return (
                     <Card key={score.id} className="p-5">
@@ -182,7 +182,7 @@ const QualificacaoFornecedores = () => {
             ) : (
               <div className="grid gap-3">
                 {documents.map((doc) => {
-                  const ds = docStatusConfig[doc.status] || docStatusConfig.pending;
+                  const ds = docStatusConfig[doc.status] || docStatusConfig["pending"];
                   return (
                     <Card key={doc.id} className="p-4">
                       <div className="flex items-center justify-between gap-4">

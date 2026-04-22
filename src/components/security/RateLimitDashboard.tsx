@@ -34,7 +34,7 @@ export const RateLimitDashboard = () => {
           table: 'rate_limit_logs',
         },
         (payload) => {
-          if (payload.new.blocked) {
+          if (payload.new["blocked"]) {
             setRealtimeAlerts(prev => [payload.new as RealtimeAlert, ...prev].slice(0, 10));
           }
         }

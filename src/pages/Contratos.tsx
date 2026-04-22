@@ -333,8 +333,8 @@ export default function Contratos() {
                   </TableHeader>
                   <TableBody>
                     {filteredContracts.map((contract) => {
-                      const status = statusConfig[contract.status] || statusConfig.draft;
-                      const type = typeConfig[contract.contract_type] || typeConfig.service;
+                      const status = statusConfig[contract.status] || statusConfig["draft"];
+                      const type = typeConfig[contract.contract_type] || typeConfig["service"];
                       const StatusIcon = status.icon;
 
                       return (

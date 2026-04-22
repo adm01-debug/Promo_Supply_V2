@@ -136,8 +136,8 @@ export function SupplierChat() {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Object.values(state).forEach((presences: any[]) => {
           presences.forEach((presence: Record<string, unknown>) => {
-            if (presence.isTyping && presence.userId !== user.id) {
-              usersTyping.push((presence.userName as string) || 'Alguém');
+            if (presence["isTyping"] && presence["userId"] !== user.id) {
+              usersTyping.push((presence["userName"] as string) || 'Alguém');
             }
           });
         });

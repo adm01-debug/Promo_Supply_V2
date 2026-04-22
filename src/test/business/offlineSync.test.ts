@@ -114,7 +114,7 @@ describe("Offline Sync — Queue Management", () => {
     const hasConflict = (ops: PendingOperation[]) => {
       const seen = new Map<string, string>();
       for (const op of ops) {
-        const key = `${op.table}:${op.data.id || "new"}`;
+        const key = `${op.table}:${op.data["id"] || "new"}`;
         if (seen.has(key)) return true;
         seen.set(key, op.id);
       }

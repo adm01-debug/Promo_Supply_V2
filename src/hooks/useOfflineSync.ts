@@ -117,7 +117,7 @@ export function useOfflineSync() {
             result = await supabase
               .from(tableName)
               .delete()
-              .eq('id', operation.data.id as string);
+              .eq('id', operation.data["id"] as string);
             break;
         }
 

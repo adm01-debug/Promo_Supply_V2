@@ -446,10 +446,10 @@ describe("Bank Data — Validation Logic", () => {
   const validateBankData = (dados: Record<string, string> | null) => {
     if (!dados) return { valid: false, fields: [] };
     const fields = [];
-    if (dados.banco) fields.push('banco');
-    if (dados.agencia) fields.push('agencia');
-    if (dados.conta) fields.push('conta');
-    if (dados.pix) fields.push('pix');
+    if (dados["banco"]) fields.push('banco');
+    if (dados["agencia"]) fields.push('agencia');
+    if (dados["conta"]) fields.push('conta');
+    if (dados["pix"]) fields.push('pix');
     const hasBankAccount = fields.includes('banco') && fields.includes('agencia') && fields.includes('conta');
     const hasPix = fields.includes('pix');
     return { valid: hasBankAccount || hasPix, fields, hasBankAccount, hasPix };

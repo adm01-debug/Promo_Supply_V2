@@ -144,7 +144,7 @@ type Scope = "all" | "dependencies" | "devDependencies";
  * unambiguous about why a package was excluded.
  */
 function resolveScope(): Scope {
-  const raw = (typeof process !== "undefined" ? process.env?.DATEFNS_PIN_SCOPE : undefined) ?? "";
+  const raw = (typeof process !== "undefined" ? process.env?.["DATEFNS_PIN_SCOPE"] : undefined) ?? "";
   switch (raw.trim().toLowerCase()) {
     case "":
     case "all":

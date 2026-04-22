@@ -156,8 +156,8 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
 
   if (!contract) return null;
 
-  const status = statusConfig[contract.status] || statusConfig.draft;
-  const type = typeConfig[contract.contract_type] || typeConfig.service;
+  const status = statusConfig[contract.status] || statusConfig["draft"];
+  const type = typeConfig[contract.contract_type] || typeConfig["service"];
   const StatusIcon = status.icon;
   const daysRemaining = differenceInDays(new Date(contract.end_date), new Date());
   const totalPenalties = penalties.reduce((sum, p) => sum + Number(p.penalty_value), 0);

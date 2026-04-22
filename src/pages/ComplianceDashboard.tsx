@@ -264,7 +264,7 @@ export default function ComplianceDashboard() {
               <CardContent className="space-y-4">
                 <div className="grid gap-4">
                   {rules.map((rule) => {
-                    const actionConfig = actionTypeLabels[rule.action_type] || actionTypeLabels.warning;
+                    const actionConfig = actionTypeLabels[rule.action_type] || actionTypeLabels["warning"];
                     const ActionIcon = actionConfig.icon;
                     return (
                       <div key={rule.id} className="flex items-center gap-4 p-4 border rounded-lg">

@@ -149,7 +149,7 @@ const Auditoria = () => {
                   <User className="h-5 w-5 text-success" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{actionStats.create || 0}</p>
+                  <p className="text-2xl font-bold">{actionStats["create"] || 0}</p>
                   <p className="text-xs text-muted-foreground">Criações</p>
                 </div>
               </div>
@@ -163,7 +163,7 @@ const Auditoria = () => {
                   <RefreshCw className="h-5 w-5 text-info" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{actionStats.update || 0}</p>
+                  <p className="text-2xl font-bold">{actionStats["update"] || 0}</p>
                   <p className="text-xs text-muted-foreground">Atualizações</p>
                 </div>
               </div>
@@ -177,7 +177,7 @@ const Auditoria = () => {
                   <Clock className="h-5 w-5 text-destructive" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold">{actionStats.delete || 0}</p>
+                  <p className="text-2xl font-bold">{actionStats["delete"] || 0}</p>
                   <p className="text-xs text-muted-foreground">Exclusões</p>
                 </div>
               </div>

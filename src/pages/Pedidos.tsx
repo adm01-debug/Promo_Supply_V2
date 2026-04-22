@@ -251,7 +251,7 @@ const Pedidos = () => {
                 {filteredPedidos.length === 0 ? (
                   <TableRow><TableCell colSpan={7} className="h-32 text-center p-8"><IllustratedEmptyState type="orders" title="Nenhum pedido encontrado" description={search || statusFilter !== 'all' || fornecedorFilter !== 'all' ? 'Tente ajustar os filtros de busca' : 'Crie um novo pedido para começar'} size="sm" /></TableCell></TableRow>
                 ) : filteredPedidos.map((pedido) => {
-                  const config = statusConfig[pedido.status] || statusConfig.pendente;
+                  const config = statusConfig[pedido.status] || statusConfig["pendente"];
                   const StatusIcon = config?.icon || FileText;
                   const prazoStatus = getPrazoStatus(pedido.data_previsao);
                   const isSelected = selectedIds.includes(pedido.id);

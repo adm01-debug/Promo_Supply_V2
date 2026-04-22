@@ -99,7 +99,7 @@ export const PedidoMobileCard = ({
   onEdit,
   onUpdateStatus 
 }: PedidoMobileCardProps) => {
-  const config = statusConfig[pedido.status] || statusConfig.pendente;
+  const config = statusConfig[pedido.status] || statusConfig["pendente"];
   const StatusIcon = config.icon;
   const prazoStatus = getPrazoStatus(pedido.data_previsao, pedido.status);
   const PrazoIcon = prazoStatus.icon;

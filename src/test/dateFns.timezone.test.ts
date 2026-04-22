@@ -7,8 +7,8 @@ import { ptBR } from "date-fns/locale/pt-BR";
 
 describe("date-fns runtime time zone guard", () => {
   const runtimeTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const expectedTz = process.env.EXPECTED_TZ ?? "UTC";
-  const processTz = process.env.TZ ?? "<unset>";
+  const expectedTz = process.env["EXPECTED_TZ"] ?? "UTC";
+  const processTz = process.env["TZ"] ?? "<unset>";
 
   // eslint-disable-next-line no-console
   console.log(

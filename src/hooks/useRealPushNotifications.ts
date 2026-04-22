@@ -388,8 +388,8 @@ export function useRealPushNotifications() {
           (payload) => {
             const newNotification = {
               ...payload.new,
-              priority: payload.new.priority as 'low' | 'medium' | 'high' | 'critical',
-              data: (payload.new.data || {}) as Record<string, unknown>,
+              priority: payload.new["priority"] as 'low' | 'medium' | 'high' | 'critical',
+              data: (payload.new["data"] || {}) as Record<string, unknown>,
             } as Notification;
             
             setNotifications(prev => [newNotification, ...prev].slice(0, 100));

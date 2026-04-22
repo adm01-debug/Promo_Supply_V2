@@ -296,7 +296,7 @@ const Auth = () => {
                       icon={<Mail className="w-5 h-5" />}
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
-                      error={errors.email}
+                      error={errors["email"]}
                       disabled={isSubmitting}
                     />
 
@@ -306,7 +306,7 @@ const Auth = () => {
                       icon={<Lock className="w-5 h-5" />}
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
-                      error={errors.password}
+                      error={errors["password"]}
                       disabled={isSubmitting}
                       rightIcon={<Lock className="w-4 h-4 opacity-50" />}
                     />
@@ -402,7 +402,7 @@ const Auth = () => {
                       icon={<User className="w-5 h-5" />}
                       value={signupName}
                       onChange={(e) => setSignupName(e.target.value)}
-                      error={errors.fullName}
+                      error={errors["fullName"]}
                       disabled={isSubmitting}
                     />
 
@@ -412,7 +412,7 @@ const Auth = () => {
                       icon={<Mail className="w-5 h-5" />}
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
-                      error={errors.email}
+                      error={errors["email"]}
                       disabled={isSubmitting}
                     />
 
@@ -423,7 +423,7 @@ const Auth = () => {
                         icon={<Lock className="w-5 h-5" />}
                         value={signupPassword}
                         onChange={(e) => setSignupPassword(e.target.value)}
-                        error={errors.password}
+                        error={errors["password"]}
                         disabled={isSubmitting}
                       />
                       <PasswordStrengthIndicator 
@@ -438,7 +438,7 @@ const Auth = () => {
                       icon={<Lock className="w-5 h-5" />}
                       value={signupConfirmPassword}
                       onChange={(e) => setSignupConfirmPassword(e.target.value)}
-                      error={errors.confirmPassword}
+                      error={errors["confirmPassword"]}
                       disabled={isSubmitting}
                     />
 
