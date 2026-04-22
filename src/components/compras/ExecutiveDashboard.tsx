@@ -1,4 +1,6 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { useAccountFilters } from '@/hooks/useAccountFilters';
+import { useClearFiltersFlow } from '@/hooks/useClearFiltersFlow';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -116,7 +118,46 @@ export const ExecutiveDashboard = () => {
 
   const currentFilters = { category: selectedCategory, supplier: selectedSupplier, period: selectedPeriod, showComparison };
   const hasActiveFilters = selectedCategory !== 'all' || selectedSupplier !== 'all';
-  const clearFilters = () => { setSelectedCategory('all'); setSelectedSupplier('all'); };
+
+  // Account-based persistence
+  const accountDefaults = useMemo(() => ({
+    selectedCategory: 'all', selectedSupplier: 'all', selectedPeriod: '6m', showComparison: true,
+  }), []);
+  const acct = useAccountFilters('executive-dashboard', accountDefaults);
+  const hydratedAcctRef = useRef(false);
+  useEffect(() => {
+    if (acct.loading || hydratedAcctRef.current) return;
+    hydratedAcctRef.current = true;
+    setSelectedCategory(acct.filters.selectedCategory);
+    setSelectedSupplier(acct.filters.selectedSupplier);
+    setSelectedPeriod(acct.filters.selectedPeriod);
+    setShowComparison(acct.filters.showComparison);
+  }, [acct.loading, acct.filters]);
+  useEffect(() => {
+    if (!hydratedAcctRef.current) return;
+    acct.patchFilters({ selectedCategory, selectedSupplier, selectedPeriod, showComparison });
+  }, [selectedCategory, selectedSupplier, selectedPeriod, showComparison, acct]);
+
+  const clearFlow = useClearFiltersFlow<{
+    selectedCategory: string; selectedSupplier: string; selectedPeriod: string; showComparison: boolean;
+  }>({
+    scope: 'executive-dashboard',
+    screenLabel: 'Dashboard Executivo',
+    describeActiveFilters: () => [
+      { key: 'selectedCategory', label: 'Categoria', value: selectedCategory },
+      { key: 'selectedSupplier', label: 'Fornecedor', value: selectedSupplier },
+    ],
+    takeSnapshot: () => ({ selectedCategory, selectedSupplier, selectedPeriod, showComparison }),
+    applySnapshot: (s) => {
+      setSelectedCategory(s.selectedCategory); setSelectedSupplier(s.selectedSupplier);
+      setSelectedPeriod(s.selectedPeriod); setShowComparison(s.showComparison);
+    },
+    performClear: async () => {
+      setSelectedCategory('all'); setSelectedSupplier('all');
+      return acct.clearFilters();
+    },
+  });
+  const clearFilters = clearFlow.requestClear;
 
   const filteredCategorySpend = useMemo(() => {
     let data = categorySpend;
@@ -292,6 +333,7 @@ export const ExecutiveDashboard = () => {
       <ExecutiveTablesRow filteredSuppliers={filteredSuppliers} filteredBuyers={filteredBuyers} showComparison={showComparison} onSupplierDrillDown={(s) => setDrillDown({ type: 'supplier', data: s })} onBuyerDrillDown={(b) => setDrillDown({ type: 'buyer', data: b })} />
       <ExecutivePendingActions items={filteredPendingItems} />
       <ExecutiveDrillDownModal drillDown={drillDown} onClose={() => setDrillDown(null)} />
+      {clearFlow.ConfirmDialog}
     </div>
   );
 };

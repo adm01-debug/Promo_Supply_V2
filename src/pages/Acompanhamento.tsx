@@ -1,4 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { useAccountFilters } from "@/hooks/useAccountFilters";
+import { useClearFiltersFlow } from "@/hooks/useClearFiltersFlow";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { Eye, Search, Filter, Package, Clock, Building2, User, Calendar, Truck, LayoutList, LayoutGrid, AlertTriangle, AlertCircle, CheckCircle2, Timer } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
@@ -26,6 +28,39 @@ const Acompanhamento = () => {
   const [pedidoDetalhes, setPedidoDetalhes] = useState<AcompanhamentoPedido | null>(null);
   const [viewMode, setViewMode] = useState<'lista' | 'kanban'>('lista');
   const [filtroSLA, setFiltroSLA] = useState<'todos' | 'atrasados' | 'criticos' | 'atencao'>('todos');
+
+  // Account-based persistence
+  const accountDefaults = useMemo(() => ({
+    searchTerm: "",
+    filtroSLA: "todos" as 'todos' | 'atrasados' | 'criticos' | 'atencao',
+  }), []);
+  const acct = useAccountFilters("acompanhamento", accountDefaults);
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (acct.loading || hydratedRef.current) return;
+    hydratedRef.current = true;
+    setSearchTerm(acct.filters.searchTerm);
+    setFiltroSLA(acct.filters.filtroSLA);
+  }, [acct.loading, acct.filters]);
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    acct.patchFilters({ searchTerm, filtroSLA });
+  }, [searchTerm, filtroSLA, acct]);
+
+  const clearFlow = useClearFiltersFlow<{ searchTerm: string; filtroSLA: typeof filtroSLA }>({
+    scope: "acompanhamento",
+    screenLabel: "Acompanhamento",
+    describeActiveFilters: () => [
+      { key: "searchTerm", label: "Busca", value: searchTerm },
+      { key: "filtroSLA", label: "Filtro SLA", value: filtroSLA !== 'todos' ? filtroSLA : null },
+    ],
+    takeSnapshot: () => ({ searchTerm, filtroSLA }),
+    applySnapshot: (s) => { setSearchTerm(s.searchTerm); setFiltroSLA(s.filtroSLA); },
+    performClear: async () => {
+      setSearchTerm(""); setFiltroSLA('todos');
+      return acct.clearFilters();
+    },
+  });
 
   useRealtimeSubscription({ tables: ['pedidos', 'solicitacoes'] });
 
@@ -161,7 +196,7 @@ const Acompanhamento = () => {
         <Card className="p-4">
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1"><Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" /><Input placeholder="Buscar por ID, produto, empresa ou fornecedor..." className="pl-10" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} /></div>
-            {filtroSLA !== 'todos' && <Button variant="outline" className="gap-2" onClick={() => setFiltroSLA('todos')}>Limpar filtro SLA</Button>}
+            {(searchTerm || filtroSLA !== 'todos') && <Button variant="outline" className="gap-2" onClick={clearFlow.requestClear}>Limpar filtros</Button>}
             <Button variant="outline" className="gap-2"><Filter className="w-4 h-4" />Filtros</Button>
           </div>
         </Card>
@@ -172,7 +207,7 @@ const Acompanhamento = () => {
         ) : (
           <div className="space-y-4">
             {pedidosFiltrados.length === 0 ? (
-              <IllustratedEmptyState type="orders" title="Nenhum pedido em acompanhamento" description="Nenhum pedido corresponde aos filtros atuais." action={{ label: "Limpar filtros", onClick: () => { setSearchTerm(''); setFiltroSLA('todos'); }, variant: "outline" }} />
+              <IllustratedEmptyState type="orders" title="Nenhum pedido em acompanhamento" description="Nenhum pedido corresponde aos filtros atuais." action={{ label: "Limpar filtros", onClick: clearFlow.requestClear, variant: "outline" }} />
             ) : pedidosFiltrados.map((pedido) => {
               const SLAIcon = pedido.sla.icon;
               const isUrgent = pedido.sla.status === 'atrasado' || pedido.sla.status === 'critico';
@@ -266,6 +301,7 @@ const Acompanhamento = () => {
           })()}
         </DialogContent>
       </Dialog>
+      {clearFlow.ConfirmDialog}
     </MainLayout>
   );
 };

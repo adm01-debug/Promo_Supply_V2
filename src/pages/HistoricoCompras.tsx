@@ -1,4 +1,6 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
+import { useAccountFilters } from "@/hooks/useAccountFilters";
+import { useClearFiltersFlow } from "@/hooks/useClearFiltersFlow";
 import {
   Package, Building2, Search, Calendar, CheckCircle2,
   DollarSign, BarChart3, FileText, ShoppingCart, Percent,
@@ -89,8 +91,69 @@ const HistoricoCompras = () => {
     }
   };
 
-  const clearAllFilters = () => { setSearchTerm(""); setCategoryFilter("all"); setStatusFilter("all"); setDateRange(undefined); setPeriodPreset("all"); };
   const hasActiveFilters = !!(searchTerm || categoryFilter !== "all" || statusFilter !== "all" || dateRange);
+
+  // Account-based filter persistence
+  const accountDefaults = useMemo(() => ({
+    searchTerm: "", categoryFilter: "all", statusFilter: "all",
+    dateRangeFrom: null as string | null, dateRangeTo: null as string | null,
+    periodPreset: "all",
+  }), []);
+  const acct = useAccountFilters("historico-compras", accountDefaults);
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (acct.loading || hydratedRef.current) return;
+    hydratedRef.current = true;
+    setSearchTerm(acct.filters.searchTerm);
+    setCategoryFilter(acct.filters.categoryFilter);
+    setStatusFilter(acct.filters.statusFilter);
+    setPeriodPreset(acct.filters.periodPreset);
+    if (acct.filters.dateRangeFrom) {
+      setDateRange({
+        from: new Date(acct.filters.dateRangeFrom),
+        to: acct.filters.dateRangeTo ? new Date(acct.filters.dateRangeTo) : undefined,
+      });
+    }
+  }, [acct.loading, acct.filters]);
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    acct.patchFilters({
+      searchTerm, categoryFilter, statusFilter, periodPreset,
+      dateRangeFrom: dateRange?.from ? dateRange.from.toISOString() : null,
+      dateRangeTo: dateRange?.to ? dateRange.to.toISOString() : null,
+    });
+  }, [searchTerm, categoryFilter, statusFilter, periodPreset, dateRange, acct]);
+
+  const formatDateRange = (r: DateRange | undefined) => {
+    if (!r?.from) return "—";
+    const f = format(r.from, "dd/MM/yyyy", { locale: ptBR });
+    return r.to ? `${f} – ${format(r.to, "dd/MM/yyyy", { locale: ptBR })}` : f;
+  };
+
+  const { requestClear, ConfirmDialog } = useClearFiltersFlow<{
+    searchTerm: string; categoryFilter: string; statusFilter: string;
+    dateRange: DateRange | undefined; periodPreset: string;
+  }>({
+    scope: "historico-compras",
+    screenLabel: "Histórico de Compras",
+    describeActiveFilters: () => [
+      { key: "searchTerm", label: "Busca", value: searchTerm },
+      { key: "categoryFilter", label: "Categoria", value: categoryFilter },
+      { key: "statusFilter", label: "Status", value: statusFilter },
+      { key: "dateRange", label: "Período (datas)", value: dateRange?.from ? formatDateRange(dateRange) : null },
+      { key: "periodPreset", label: "Preset de período", value: periodPreset !== "all" ? periodPreset : null },
+    ],
+    takeSnapshot: () => ({ searchTerm, categoryFilter, statusFilter, dateRange, periodPreset }),
+    applySnapshot: (s) => {
+      setSearchTerm(s.searchTerm); setCategoryFilter(s.categoryFilter);
+      setStatusFilter(s.statusFilter); setDateRange(s.dateRange); setPeriodPreset(s.periodPreset);
+    },
+    performClear: async () => {
+      setSearchTerm(""); setCategoryFilter("all"); setStatusFilter("all");
+      setDateRange(undefined); setPeriodPreset("all");
+      return acct.clearFilters();
+    },
+  });
 
   const filteredPurchaseRecords = useMemo(() => {
     return purchaseRecords.filter((record) => {
@@ -259,7 +322,7 @@ const HistoricoCompras = () => {
                 <SlidersHorizontal className="w-4 h-4" />Filtros
                 {hasActiveFilters && <Badge className="ml-1 h-5 w-5 p-0 flex items-center justify-center text-[10px]">{[categoryFilter !== "all", statusFilter !== "all", !!dateRange].filter(Boolean).length}</Badge>}
               </Button>
-              {hasActiveFilters && <Button variant="ghost" size="sm" onClick={clearAllFilters} className="gap-1 text-muted-foreground"><X className="w-3 h-3" />Limpar</Button>}
+              {hasActiveFilters && <Button variant="ghost" size="sm" onClick={requestClear} className="gap-1 text-muted-foreground"><X className="w-3 h-3" />Limpar</Button>}
             </div>
           </div>
 
@@ -418,6 +481,7 @@ const HistoricoCompras = () => {
 
         <HistoricoDrilldownModal open={drilldownOpen} onOpenChange={setDrilldownOpen} drilldownType={drilldownType} drilldownData={drilldownData} drilldownRecords={drilldownRecords} />
       </div>
+      {ConfirmDialog}
     </MainLayout>
   );
 };

@@ -1,4 +1,6 @@
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+import { useAccountFilters } from "@/hooks/useAccountFilters";
+import { useClearFiltersFlow } from "@/hooks/useClearFiltersFlow";
 import { exportToCSV, solicitacaoColumns } from "@/lib/exportData";
 import { 
   ClipboardList,
@@ -45,6 +47,53 @@ const Solicitacoes = () => {
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(initialFilters);
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('kanban');
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  // Account-based persistence
+  const accountDefaults = useMemo(() => ({
+    searchTerm: "", statusFilter: "todas", tipoFilter: "todos",
+    advancedFilters: initialFilters as AdvancedFilters,
+  }), []);
+  const acct = useAccountFilters("solicitacoes", accountDefaults);
+  const hydratedRef = useRef(false);
+  useEffect(() => {
+    if (acct.loading || hydratedRef.current) return;
+    hydratedRef.current = true;
+    setSearchTerm(acct.filters.searchTerm);
+    setStatusFilter(acct.filters.statusFilter);
+    setTipoFilter(acct.filters.tipoFilter);
+    setAdvancedFilters(acct.filters.advancedFilters);
+  }, [acct.loading, acct.filters]);
+  useEffect(() => {
+    if (!hydratedRef.current) return;
+    acct.patchFilters({ searchTerm, statusFilter, tipoFilter, advancedFilters });
+  }, [searchTerm, statusFilter, tipoFilter, advancedFilters, acct]);
+
+  const advancedFiltersAreActive = useMemo(() => {
+    return JSON.stringify(advancedFilters) !== JSON.stringify(initialFilters);
+  }, [advancedFilters]);
+
+  const clearFlow = useClearFiltersFlow<{
+    searchTerm: string; statusFilter: string; tipoFilter: string; advancedFilters: AdvancedFilters;
+  }>({
+    scope: "solicitacoes",
+    screenLabel: "Solicitações",
+    describeActiveFilters: () => [
+      { key: "searchTerm", label: "Busca", value: searchTerm },
+      { key: "statusFilter", label: "Status", value: statusFilter },
+      { key: "tipoFilter", label: "Tipo", value: tipoFilter },
+      { key: "advancedFilters", label: "Filtros avançados", value: advancedFiltersAreActive ? "ativos" : null },
+    ],
+    takeSnapshot: () => ({ searchTerm, statusFilter, tipoFilter, advancedFilters }),
+    applySnapshot: (s) => {
+      setSearchTerm(s.searchTerm); setStatusFilter(s.statusFilter);
+      setTipoFilter(s.tipoFilter); setAdvancedFilters(s.advancedFilters);
+    },
+    performClear: async () => {
+      setSearchTerm(""); setStatusFilter("todas"); setTipoFilter("todos");
+      setAdvancedFilters(initialFilters);
+      return acct.clearFilters();
+    },
+  });
 
   // Tour preferences
   const { isOpen: isTourOpen, isLoading: isTourLoading, complete: completeTour, skip: skipTour } = useTourPreferences('solicitacoes');
@@ -444,7 +493,7 @@ const Solicitacoes = () => {
             action={
               solicitacoes.length === 0 
                 ? undefined
-                : { label: "Limpar Filtros", onClick: () => { setSearchTerm(''); setStatusFilter('todas'); setTipoFilter('todos'); }, variant: "outline" }
+                : { label: "Limpar Filtros", onClick: clearFlow.requestClear, variant: "outline" }
             }
           />
         )}
@@ -472,6 +521,7 @@ const Solicitacoes = () => {
           onSkip={skipTour}
         />
       )}
+      {clearFlow.ConfirmDialog}
     </MainLayout>
   );
 };
