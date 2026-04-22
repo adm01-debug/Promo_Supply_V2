@@ -1,17 +1,28 @@
 #!/usr/bin/env node
-import { readFileSync, existsSync, statSync } from "node:fs";
+import { readFileSync, existsSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { join } from "node:path";
+import { join, dirname } from "node:path";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
 import { renderMismatch, renderTripleMismatch } from "./lib/semver-diff.mjs";
 
 // CLI flags:
-//   --strict   exit 1 when spec / lock / installed are not aligned (default: exit 0)
-//   --json     emit a single JSON object (no human-readable lines) for log
-//              parsing / dashboards. Combines with --strict.
+//   --strict          exit 1 when spec / lock / installed are not aligned (default: exit 0)
+//   --json            emit a single JSON object (no human-readable lines) for log
+//                     parsing / dashboards. Combines with --strict.
+//   --json-file=PATH  also write the JSON payload to PATH (creates parent dirs).
+//                     Works with or without --json: when used alone, the human
+//                     report still prints to stdout and the file gets the JSON.
 const argv = process.argv.slice(2);
 const STRICT = argv.includes("--strict");
 const JSON_MODE = argv.includes("--json");
+const JSON_FILE = (() => {
+  const flag = argv.find((a) => a === "--json-file" || a.startsWith("--json-file="));
+  if (!flag) return null;
+  if (flag.includes("=")) return flag.slice(flag.indexOf("=") + 1) || null;
+  // Support space-separated form: --json-file path/to/out.json
+  const idx = argv.indexOf(flag);
+  return argv[idx + 1] && !argv[idx + 1].startsWith("--") ? argv[idx + 1] : null;
+})();
 
 const ROOT = process.cwd();
 const PKG = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8"));
