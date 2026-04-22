@@ -74,6 +74,17 @@ export function useKeyboardShortcuts() {
         return;
       }
 
+      // Don't trigger Ctrl/Cmd+Shift+L while a modal/command palette is open,
+      // to avoid conflicting with the global search or other open dialogs.
+      const isClearFiltersShortcut =
+        event.key.toLowerCase() === 'l' && (event.ctrlKey || event.metaKey) && event.shiftKey;
+      if (isClearFiltersShortcut) {
+        const hasOpenDialog = document.querySelector(
+          '[role="dialog"][data-state="open"], [cmdk-root], [cmdk-input]',
+        );
+        if (hasOpenDialog) return;
+      }
+
       for (const shortcut of shortcuts) {
         const ctrlMatch = shortcut.ctrl ? (event.ctrlKey || event.metaKey) : !(event.ctrlKey || event.metaKey);
         const shiftMatch = shortcut.shift ? event.shiftKey : !event.shiftKey;
