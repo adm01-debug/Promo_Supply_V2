@@ -1,3 +1,5 @@
+import { nullishStr, nullishNum, nullishBool } from "@/lib/dbMapping";
+
 export interface CotacaoAPI {
   id: string;
   fornecedor: string;
@@ -31,40 +33,49 @@ export interface LegacyFornecedor {
   ultimaCompra: string;
 }
 
+// DB rows here are `any` (Supabase joined queries don't carry generated types).
+// We still funnel every nullable column through `nullishStr` / `nullishNum`
+// so consumers see plain non-null fields instead of `T | null`.
 export function adaptFornecedoresToLegacy(fornecedores: any[]): LegacyFornecedor[] {
   return fornecedores.map(f => ({
     id: f.id,
-    nomeFantasia: f.nome_fantasia || f.razao_social,
+    nomeFantasia: nullishStr(f.nome_fantasia, f.razao_social),
     razaoSocial: f.razao_social,
-    cnpj: f.cnpj || '',
+    cnpj: nullishStr(f.cnpj),
     tipo: f.tipo === 'internacional' ? 'IMPORTADORA' as const :
           f.tipo === 'local' ? 'DISTRIBUIDORA' as const : 'FABRICANTE' as const,
     ramos: f.segmento ? [f.segmento] : [],
     vendeProduto: 'AMBOS' as const,
-    email: f.email || '',
-    telefone: f.telefone || '',
-    whatsapp: f.telefone || '',
-    apiIntegrada: f.integrado_api,
-    rating: Math.round(f.avaliacao),
+    email: nullishStr(f.email),
+    telefone: nullishStr(f.telefone),
+    whatsapp: nullishStr(f.telefone),
+    apiIntegrada: nullishBool(f.integrado_api),
+    rating: Math.round(nullishNum(f.avaliacao)),
     totalMes: 0,
     ultimaCompra: '',
   }));
 }
 
 export function adaptCotacoesFromDB(cotacoes: any[]): CotacaoAPI[] {
-  return cotacoes.map(c => ({
-    id: c.id,
-    fornecedor: c.fornecedor?.nome_fantasia || c.fornecedor?.razao_social || 'Fornecedor',
-    status: 'encontrado' as const,
-    valorUnitario: c.valor_unitario,
-    quantidadeDisponivel: c.quantidade,
-    prazoEntrega: c.prazo_entrega,
-    frete: c.valor_frete,
-    freteInfo: c.valor_frete > 0 ? `+R$ ${c.valor_frete}` : 'Incluso',
-    condicaoPagamento: c.condicao_pagamento || 'À vista',
-    total: c.valor_total,
-    selecionada: c.selecionada,
-  }));
+  return cotacoes.map(c => {
+    const valorFrete = nullishNum(c.valor_frete);
+    return {
+      id: c.id,
+      fornecedor: nullishStr(
+        c.fornecedor?.nome_fantasia ?? c.fornecedor?.razao_social,
+        'Fornecedor',
+      ),
+      status: 'encontrado' as const,
+      valorUnitario: nullishNum(c.valor_unitario),
+      quantidadeDisponivel: nullishNum(c.quantidade),
+      prazoEntrega: nullishNum(c.prazo_entrega),
+      frete: valorFrete,
+      freteInfo: valorFrete > 0 ? `+R$ ${valorFrete}` : 'Incluso',
+      condicaoPagamento: nullishStr(c.condicao_pagamento, 'À vista'),
+      total: nullishNum(c.valor_total),
+      selecionada: nullishBool(c.selecionada),
+    };
+  });
 }
 
 export async function simulateAPISearch(
