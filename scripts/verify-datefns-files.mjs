@@ -52,8 +52,11 @@ const EXCLUDE_DIRS = new Set([
 ]);
 // Files skipped during the walk (matched against basename).
 // Covers `*.stories.ts(x)`, `*.story.ts(x)`, and `*.mock.ts(x)`.
-const EXCLUDE_FILE_RE = /\.(stories|story|mock)\.(ts|tsx)$/;
-const FILE_EXT = /\.(ts|tsx)$/;
+const EXCLUDE_FILE_RE = /\.(stories|story|mock)\.(ts|tsx|js|jsx|cjs|mjs)$/;
+// Extended to .js/.jsx/.cjs/.mjs so CommonJS `require("date-fns/...")` calls
+// (typically in build scripts, .cjs configs, or vendored runtime helpers)
+// participate in the existence check alongside ESM imports.
+const FILE_EXT = /\.(ts|tsx|js|jsx|cjs|mjs)$/;
 // Patterns we recognise (all match the `date-fns/<subpath>` specifier):
 //   1. Named import:        import { fn } from "date-fns/fn"
 //   2. Default import:      import fn from "date-fns/fn"
@@ -104,10 +107,21 @@ const IMPORT_PATTERNS = [
     typeIdx: -1,
     pathIdx: 1,
   },
+  // CommonJS require: `require("date-fns/format")` — including destructured
+  // (`const { format } = require(...)`) and bare side-effect form. Treated
+  // as a first-class kind so mixed CJS/ESM repos get the same fail-fast
+  // behavior on missing subpaths. Captures only the subpath; the binding
+  // shape is irrelevant to the existence check.
+  {
+    kind: "cjs-require",
+    re: /require\s*\(\s*["']date-fns\/([^"']+)["']\s*\)/g,
+    typeIdx: -1,
+    pathIdx: 1,
+  },
 ];
 
 // Display order for the breakdown report — most → least common in practice.
-const PATTERN_KINDS = ["static", "dynamic", "export-from", "export-star"];
+const PATTERN_KINDS = ["static", "dynamic", "cjs-require", "export-from", "export-star"];
 
 // Unresolvable dynamic imports — `import(\`date-fns/${x}\`)` and friends.
 // These can't be statically verified (the subpath depends on a runtime value),
@@ -127,9 +141,16 @@ const PATTERN_KINDS = ["static", "dynamic", "export-from", "export-star"];
 const UNRESOLVABLE_DYNAMIC_RE =
   /import\s*\(\s*(?:`date-fns\/[^`]*\$\{[^`]*`|["'`]date-fns\/?["'`]\s*\+)/g;
 
+// Same shape, CommonJS flavor: `require(\`date-fns/${x}\`)` / `require("date-fns/" + x)`.
+// Surfaced through the same failure-mode-D path as ESM unresolvable imports.
+const UNRESOLVABLE_REQUIRE_RE =
+  /require\s*\(\s*(?:`date-fns\/[^`]*\$\{[^`]*`|["'`]date-fns\/?["'`]\s*\+)/g;
+
 // Resolvable template literal — no interpolation, just backticks. Treat as
 // a normal dynamic import so we still verify the subpath exists.
 const RESOLVABLE_TEMPLATE_RE = /import\s*\(\s*`date-fns\/([^`${}]+)`\s*\)/g;
+// CJS counterpart: `require(\`date-fns/format\`)` — folded into `cjs-require`.
+const RESOLVABLE_REQUIRE_TEMPLATE_RE = /require\s*\(\s*`date-fns\/([^`${}]+)`\s*\)/g;
 
 // ── ANSI color helpers (TTY only — keep CI logs clean) ────────────────────────
 const isTTY = Boolean(process.stdout.isTTY);
@@ -221,6 +242,15 @@ for (const file of scannedFiles) {
     kindOccurrences.dynamic += 1;
     kindSubpaths.dynamic.add(sp);
   }
+  // CJS counterpart: backtick-template require, no interpolation.
+  RESOLVABLE_REQUIRE_TEMPLATE_RE.lastIndex = 0;
+  let rtm;
+  while ((rtm = RESOLVABLE_REQUIRE_TEMPLATE_RE.exec(src)) !== null) {
+    const sp = rtm[1];
+    subpaths.add(sp);
+    kindOccurrences["cjs-require"] += 1;
+    kindSubpaths["cjs-require"].add(sp);
+  }
   // Unresolvable dynamic imports — record for failure mode D.
   UNRESOLVABLE_DYNAMIC_RE.lastIndex = 0;
   let um;
@@ -229,6 +259,21 @@ for (const file of scannedFiles) {
       file: relative(ROOT, file),
       line: lineFromOffset(src, um.index),
       snippet: um[0],
+      kind: "import",
+    });
+  }
+  // Same fail-fast policy for CommonJS: `require(\`date-fns/${x}\`)` and
+  // `require("date-fns/" + x)` defeat the existence check just as badly as
+  // their ESM counterparts. Tagged with `kind: "require"` so the failure
+  // block can render the right fix recipe.
+  UNRESOLVABLE_REQUIRE_RE.lastIndex = 0;
+  let urm;
+  while ((urm = UNRESOLVABLE_REQUIRE_RE.exec(src)) !== null) {
+    unresolvableDynamic.push({
+      file: relative(ROOT, file),
+      line: lineFromOffset(src, urm.index),
+      snippet: urm[0],
+      kind: "require",
     });
   }
 }
@@ -270,11 +315,16 @@ printBreakdown();
 // can prove a runtime-computed subpath is safe. Fail fast with copy-paste
 // fix recipes so the developer doesn't have to grep for the offending lines.
 if (unresolvableDynamic.length > 0) {
+  // Partition by call shape so the heading and the recipe both stay accurate
+  // when a repo mixes ESM dynamic imports with CJS requires.
+  const importHits = unresolvableDynamic.filter((u) => u.kind === "import");
+  const requireHits = unresolvableDynamic.filter((u) => u.kind === "require");
   const lines = [];
+  const parts = [];
+  if (importHits.length) parts.push(`${importHits.length} dynamic import(s)`);
+  if (requireHits.length) parts.push(`${requireHits.length} require() call(s)`);
   lines.push(
-    cyan(
-      `Found ${unresolvableDynamic.length} dynamic import(s) with an interpolated date-fns subpath.`,
-    ),
+    cyan(`Found ${parts.join(" and ")} with an interpolated date-fns subpath.`),
   );
   lines.push(
     gray(
@@ -291,8 +341,12 @@ if (unresolvableDynamic.length > 0) {
   lines.push("");
   lines.push(cyan("▶ Fix (rewrite as a static import or a switch over known subpaths):"));
   lines.push("");
-  lines.push(bold('    // ✗ unresolvable'));
+  lines.push(bold('    // ✗ unresolvable (ESM)'));
   lines.push(bold('    const mod = await import(`date-fns/locale/${tag}`);'));
+  if (requireHits.length) {
+    lines.push(bold('    // ✗ unresolvable (CJS)'));
+    lines.push(bold('    const mod = require(`date-fns/locale/${tag}`);'));
+  }
   lines.push("");
   lines.push(bold('    // ✓ static (preferred when the set is known)'));
   lines.push(bold('    import { ptBR } from "date-fns/locale/pt-BR";'));
@@ -303,8 +357,15 @@ if (unresolvableDynamic.length > 0) {
   lines.push(bold('    const mod = tag === "pt-BR"'));
   lines.push(bold('      ? await import("date-fns/locale/pt-BR")'));
   lines.push(bold('      : await import("date-fns/locale/en-US");'));
+  if (requireHits.length) {
+    lines.push("");
+    lines.push(bold('    // ✓ CJS equivalent'));
+    lines.push(bold('    const mod = tag === "pt-BR"'));
+    lines.push(bold('      ? require("date-fns/locale/pt-BR")'));
+    lines.push(bold('      : require("date-fns/locale/en-US");'));
+  }
   printBlock(
-    `verify-datefns-files: ${unresolvableDynamic.length} unresolvable dynamic date-fns import(s)`,
+    `verify-datefns-files: ${unresolvableDynamic.length} unresolvable dynamic date-fns reference(s)`,
     lines.join("\n"),
   );
   process.exit(1);
