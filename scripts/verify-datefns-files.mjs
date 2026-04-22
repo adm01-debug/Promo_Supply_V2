@@ -856,11 +856,48 @@ if (missing.length > 0) {
   );
   lines.push("");
 
+  // Cap per-subpath offender list to keep the failure block readable when a
+  // missing subpath is imported by hundreds of files. The full unbounded
+  // list is preserved verbatim in the Markdown report (CI artifact).
+  const TERMINAL_OFFENDER_CAP = 8;
+  // Cheapest possible "stable" sort: (file path asc, then line asc).
+  const sortedOffenders = (subpath) => {
+    const perFile = subpathOffenders.get(subpath);
+    if (!perFile || perFile.size === 0) return [];
+    const out = [];
+    for (const [file, lineSet] of perFile) {
+      const sortedLines = [...lineSet].sort((a, b) => a - b);
+      out.push({ file: relative(ROOT, file), lines: sortedLines });
+    }
+    out.sort((a, b) => (a.file < b.file ? -1 : a.file > b.file ? 1 : 0));
+    return out;
+  };
+
   const renderGroup = (title, group) => {
     if (group.length === 0) return;
     lines.push(cyan(`  ${title} (${group.length}):`));
     for (const { subpath } of group) {
       lines.push(`    ${red("•")} ${bold(`date-fns/${subpath}`)}`);
+      const offenders = sortedOffenders(subpath);
+      if (offenders.length === 0) {
+        // Should not happen — every missing subpath was discovered by
+        // scanning a file — but degrade gracefully if line tracking failed.
+        const fileSet = subpathFiles.get(subpath);
+        if (fileSet && fileSet.size > 0) {
+          lines.push(gray(`        (${fileSet.size} file(s) — line numbers unavailable)`));
+        }
+        continue;
+      }
+      const shown = offenders.slice(0, TERMINAL_OFFENDER_CAP);
+      for (const { file, lines: ls } of shown) {
+        // `path:line[, line, …]` — directly clickable in most terminals
+        // when only one line, still actionable when multiple.
+        lines.push(gray(`        ${file}:${ls.join(",")}`));
+      }
+      const hidden = offenders.length - shown.length;
+      if (hidden > 0) {
+        lines.push(gray(`        … and ${hidden} more file(s) — see the full failure-report artifact`));
+      }
     }
     lines.push("");
   };
