@@ -194,5 +194,20 @@ jobs:
             ci-artifacts/datefns-drift.md
           if-no-files-found: error
           retention-days: 30
-          if-no-files-found: error
+
+      # Dedicated failure-only artifact: the full Markdown failure report
+      # written by scripts/verify-datefns-files.mjs (via DATEFNS_SMOKE_REPORT_MD).
+      # Includes the partitioned missing-subpath table, copy-paste bare list,
+      # likely-cause diagnosis, and the exact 3-step repair recipe with the
+      # date-fns version pinned at the moment of failure. Only created when
+      # drift is detected, so this step is gated on `failure()` and uses
+      # `if-no-files-found: warn` defensively (e.g. if the verifier crashed
+      # before reaching the report writer).
+      - name: Upload missing-subpath failure report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-date-fns-failure-report
+          path: ci-artifacts/datefns-failure-report.md
+          if-no-files-found: warn
           retention-days: 30
