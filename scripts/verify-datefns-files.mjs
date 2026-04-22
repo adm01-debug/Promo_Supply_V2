@@ -242,6 +242,15 @@ for (const file of scannedFiles) {
     kindOccurrences.dynamic += 1;
     kindSubpaths.dynamic.add(sp);
   }
+  // CJS counterpart: backtick-template require, no interpolation.
+  RESOLVABLE_REQUIRE_TEMPLATE_RE.lastIndex = 0;
+  let rtm;
+  while ((rtm = RESOLVABLE_REQUIRE_TEMPLATE_RE.exec(src)) !== null) {
+    const sp = rtm[1];
+    subpaths.add(sp);
+    kindOccurrences["cjs-require"] += 1;
+    kindSubpaths["cjs-require"].add(sp);
+  }
   // Unresolvable dynamic imports — record for failure mode D.
   UNRESOLVABLE_DYNAMIC_RE.lastIndex = 0;
   let um;
@@ -250,6 +259,21 @@ for (const file of scannedFiles) {
       file: relative(ROOT, file),
       line: lineFromOffset(src, um.index),
       snippet: um[0],
+      kind: "import",
+    });
+  }
+  // Same fail-fast policy for CommonJS: `require(\`date-fns/${x}\`)` and
+  // `require("date-fns/" + x)` defeat the existence check just as badly as
+  // their ESM counterparts. Tagged with `kind: "require"` so the failure
+  // block can render the right fix recipe.
+  UNRESOLVABLE_REQUIRE_RE.lastIndex = 0;
+  let urm;
+  while ((urm = UNRESOLVABLE_REQUIRE_RE.exec(src)) !== null) {
+    unresolvableDynamic.push({
+      file: relative(ROOT, file),
+      line: lineFromOffset(src, urm.index),
+      snippet: urm[0],
+      kind: "require",
     });
   }
 }
