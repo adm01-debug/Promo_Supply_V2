@@ -361,8 +361,20 @@ if (JSON_OUT) {
     }
 
     if (r.fixCmd) {
-      console.error(`\n  Fix:`);
-      console.error(`    ${r.fixCmd}`);
+      console.error(`\n  Fix (${r.driftKind ?? r.status}):`);
+      if (r.spec || r.locked || r.installed) {
+        console.error(`    Current state:`);
+        console.error(`      • package.json spec → ${r.spec ?? "(missing)"}${r.specNorm && r.spec !== r.specNorm ? ` (normalized: ${r.specNorm})` : ""}`);
+        console.error(`      • bun.lock locked  → ${r.locked ?? "(missing)"}`);
+        console.error(`      • node_modules     → ${r.installed ?? "(missing)"}`);
+      }
+      const why = fixRationale(r);
+      if (why) {
+        console.error(`    Why this command:`);
+        for (const line of why) console.error(`      ${line}`);
+      }
+      console.error(`    Run:`);
+      console.error(`      ${r.fixCmd}`);
     }
     console.error(`  Exit code: ${r.exitCode}`);
   }
