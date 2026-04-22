@@ -34,14 +34,25 @@ import { dirname, join, resolve } from "node:path";
 //                       summaries are still emitted (cuts CI log noise).
 // When $GITHUB_STEP_SUMMARY is set we ALSO append the markdown summary there
 // automatically — that's what GitHub Actions surfaces in the run UI.
+// Split argv on the first literal `--`: everything before is parsed as our
+// own flags, everything after is forwarded VERBATIM to both `bun run
+// test:date-fns` and `npm run test:date-fns`. That lets callers do things
+// like `bun run test:date-fns:parity -- -t format --reporter=verbose` to
+// scope parity to a subset of tests. Forwarding to BOTH runners is the
+// whole point — if we passed flags to only one, the comparison would be
+// meaningless.
 const ARGS = process.argv.slice(2);
+const dashDashIdx = ARGS.indexOf("--");
+const OWN_ARGS = dashDashIdx === -1 ? ARGS : ARGS.slice(0, dashDashIdx);
+const FORWARDED_ARGS = dashDashIdx === -1 ? [] : ARGS.slice(dashDashIdx + 1);
 const flagValue = (name) => {
-  const i = ARGS.indexOf(name);
-  return i !== -1 && ARGS[i + 1] ? ARGS[i + 1] : null;
+  const i = OWN_ARGS.indexOf(name);
+  return i !== -1 && OWN_ARGS[i + 1] ? OWN_ARGS[i + 1] : null;
 };
 const JSON_OUT = flagValue("--json-out");
 const MD_OUT = flagValue("--md-out");
-const QUIET = ARGS.includes("--quiet");
+const QUIET = OWN_ARGS.includes("--quiet");
+
 
 
 const isTTY = Boolean(process.stdout.isTTY);
