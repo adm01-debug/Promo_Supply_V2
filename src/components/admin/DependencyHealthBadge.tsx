@@ -18,11 +18,18 @@ interface SmokeCi {
   branch?: string | null;
 }
 
+interface SmokeLog {
+  path?: string;
+  sizeBytes?: number;
+  capturedAt?: string;
+}
+
 interface SmokeTest {
   status?: "pass" | "fail" | string;
   ranAt?: string;
   durationMs?: number;
   ci?: SmokeCi;
+  log?: SmokeLog;
 }
 
 interface DepHealthSnapshot {
