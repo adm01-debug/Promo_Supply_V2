@@ -98,27 +98,43 @@ if [ "$NEEDS_SMOKE" -eq 1 ]; then
     exit 1
   fi
 
-  # Auto-restage regenerated files so the commit captures the current truth.
-  RESTAGED=()
+  # On drift: show the regenerated diff (so the dev sees exactly what changed)
+  # and FAIL the commit with explicit instructions to stage + recommit. We do
+  # NOT silently `git add` the regenerated files anymore — that hides real
+  # changes (e.g. a forgotten subpath) inside an unrelated commit.
+  DRIFTED=()
   if [ -f "$SMOKE_FILE" ]; then
     new_hash=$(git hash-object "$SMOKE_FILE")
-    if [ "$new_hash" != "$pre_smoke_hash" ]; then
-      git add "$SMOKE_FILE"
-      RESTAGED+=("$SMOKE_FILE")
-    fi
+    [ "$new_hash" != "$pre_smoke_hash" ] && DRIFTED+=("$SMOKE_FILE")
   fi
   if [ -f "$MANIFEST_FILE" ]; then
     new_hash=$(git hash-object "$MANIFEST_FILE")
-    if [ "$new_hash" != "$pre_manifest_hash" ]; then
-      git add "$MANIFEST_FILE"
-      RESTAGED+=("$MANIFEST_FILE")
-    fi
+    [ "$new_hash" != "$pre_manifest_hash" ] && DRIFTED+=("$MANIFEST_FILE")
   fi
-  if [ "${#RESTAGED[@]}" -gt 0 ]; then
-    echo "  ↳ regenerated + re-staged: ${RESTAGED[*]}"
-  else
-    echo "  ↳ no changes — smoke test + manifest already in sync."
+
+  if [ "${#DRIFTED[@]}" -gt 0 ]; then
+    echo ""
+    echo "✗ pre-commit FAILED: date-fns smoke test / manifest is out of date."
+    echo "  Regenerated file(s): ${DRIFTED[*]}"
+    echo ""
+    echo "── unified diff (working tree vs staged) ──"
+    # Use --no-pager so the hook never opens an interactive viewer.
+    # --no-color keeps the output stable when piped to terminals without ANSI.
+    git --no-pager diff --no-color -- "${DRIFTED[@]}" || true
+    echo "── end diff ──"
+    echo ""
+    echo "Next steps:"
+    echo "  1. Review the diff above (or run: git diff -- ${DRIFTED[*]})"
+    echo "  2. Stage the regenerated file(s):"
+    echo "       git add ${DRIFTED[*]}"
+    echo "  3. Re-run your commit:"
+    echo "       git commit"
+    echo ""
+    echo "  Bypass with \`git commit --no-verify\` only if you know what you're doing."
+    exit 1
   fi
+
+  echo "  ↳ no changes — smoke test + manifest already in sync."
 
   echo "▶ pre-commit: tsc --noEmit -p tsconfig.smoke.json"
   if ! bunx tsc --noEmit -p tsconfig.smoke.json; then
