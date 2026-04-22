@@ -22,8 +22,14 @@ import {
   classifyDiff,
   renderMismatch,
   renderTripleMismatch,
+  renderUnifiedDiff,
+  shouldColor,
   splitSemver,
 } from "../semver-diff.mjs";
+
+// Strip ANSI escape sequences so assertions can compare plain text without
+// caring about color state. Mirrors the regex used by chalk/strip-ansi.
+const stripAnsi = (s) => s.replace(/\x1b\[[0-9;]*m/g, "");
 
 describe("splitSemver", () => {
   it("parses a plain X.Y.Z release", () => {
