@@ -315,11 +315,16 @@ printBreakdown();
 // can prove a runtime-computed subpath is safe. Fail fast with copy-paste
 // fix recipes so the developer doesn't have to grep for the offending lines.
 if (unresolvableDynamic.length > 0) {
+  // Partition by call shape so the heading and the recipe both stay accurate
+  // when a repo mixes ESM dynamic imports with CJS requires.
+  const importHits = unresolvableDynamic.filter((u) => u.kind === "import");
+  const requireHits = unresolvableDynamic.filter((u) => u.kind === "require");
   const lines = [];
+  const parts = [];
+  if (importHits.length) parts.push(`${importHits.length} dynamic import(s)`);
+  if (requireHits.length) parts.push(`${requireHits.length} require() call(s)`);
   lines.push(
-    cyan(
-      `Found ${unresolvableDynamic.length} dynamic import(s) with an interpolated date-fns subpath.`,
-    ),
+    cyan(`Found ${parts.join(" and ")} with an interpolated date-fns subpath.`),
   );
   lines.push(
     gray(
@@ -336,8 +341,12 @@ if (unresolvableDynamic.length > 0) {
   lines.push("");
   lines.push(cyan("▶ Fix (rewrite as a static import or a switch over known subpaths):"));
   lines.push("");
-  lines.push(bold('    // ✗ unresolvable'));
+  lines.push(bold('    // ✗ unresolvable (ESM)'));
   lines.push(bold('    const mod = await import(`date-fns/locale/${tag}`);'));
+  if (requireHits.length) {
+    lines.push(bold('    // ✗ unresolvable (CJS)'));
+    lines.push(bold('    const mod = require(`date-fns/locale/${tag}`);'));
+  }
   lines.push("");
   lines.push(bold('    // ✓ static (preferred when the set is known)'));
   lines.push(bold('    import { ptBR } from "date-fns/locale/pt-BR";'));
@@ -348,8 +357,15 @@ if (unresolvableDynamic.length > 0) {
   lines.push(bold('    const mod = tag === "pt-BR"'));
   lines.push(bold('      ? await import("date-fns/locale/pt-BR")'));
   lines.push(bold('      : await import("date-fns/locale/en-US");'));
+  if (requireHits.length) {
+    lines.push("");
+    lines.push(bold('    // ✓ CJS equivalent'));
+    lines.push(bold('    const mod = tag === "pt-BR"'));
+    lines.push(bold('      ? require("date-fns/locale/pt-BR")'));
+    lines.push(bold('      : require("date-fns/locale/en-US");'));
+  }
   printBlock(
-    `verify-datefns-files: ${unresolvableDynamic.length} unresolvable dynamic date-fns import(s)`,
+    `verify-datefns-files: ${unresolvableDynamic.length} unresolvable dynamic date-fns reference(s)`,
     lines.join("\n"),
   );
   process.exit(1);
