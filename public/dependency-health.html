@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>date-fns dependency health</title>
+  <meta name="robots" content="noindex" />
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #0f172a;
+      --panel: #111827;
+      --border: #1f2937;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --ok-bg: #064e3b;
+      --ok-fg: #6ee7b7;
+      --bad-bg: #7f1d1d;
+      --bad-fg: #fecaca;
+      --accent: #818cf8;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f8fafc;
+        --panel: #ffffff;
+        --border: #e2e8f0;
+        --text: #0f172a;
+        --muted: #64748b;
+        --ok-bg: #dcfce7;
+        --ok-fg: #166534;
+        --bad-bg: #fee2e2;
+        --bad-fg: #991b1b;
+        --accent: #4f46e5;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    main { max-width: 1100px; margin: 0 auto; padding: 32px 20px 64px; }
+    h1 { margin: 0 0 4px; font-size: 22px; letter-spacing: -0.01em; }
+    .sub { color: var(--muted); font-size: 13px; margin: 0 0 24px; }
+    .summary { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 0 0 20px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+    .stat { display: inline-flex; align-items: baseline; gap: 6px; }
+    .stat strong { font-size: 16px; }
+    .stat .muted { color: var(--muted); font-size: 12px; }
+    table { width: 100%; border-collapse: collapse; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: color-mix(in oklab, var(--panel) 70%, var(--bg) 30%); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+    tr:last-child td { border-bottom: none; }
+    tr.row-missing { background: color-mix(in oklab, var(--bad-bg) 18%, transparent); }
+    code { font: 12.5px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    code.resolved { color: var(--muted); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+    .files { color: var(--muted); font-size: 12px; max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; cursor: help; }
+    .badge-ok { background: var(--ok-bg); color: var(--ok-fg); }
+    .badge-missing { background: var(--bad-bg); color: var(--bad-fg); }
+    .muted { color: var(--muted); }
+    details.scan-input { margin: 18px 0 0; padding: 12px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+    details.scan-input summary { cursor: pointer; font-weight: 600; }
+    details.scan-input dl { margin: 10px 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; }
+    details.scan-input dt { color: var(--muted); }
+    footer { margin-top: 28px; color: var(--muted); font-size: 12px; }
+    a { color: var(--accent); }
+    [title] { cursor: help; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>date-fns dependency health</h1>
+  <p class="sub">Generated <time datetime="2026-04-22T16:17:16.968Z">2026-04-22T16:17:16.968Z</time> from <code>public/dependency-health.json</code>. Hover any badge or path for details.</p>
+
+  <section class="summary" aria-label="Summary">
+    <span class="stat"><strong>21</strong><span class="muted">subpaths</span></span>
+    <span class="stat"><strong style="color:var(--ok-fg)">21</strong><span class="muted">exist</span></span>
+    <span class="stat"><strong style="color:var(--bad-fg)">0</strong><span class="muted">missing</span></span>
+    <span class="stat"><span class="muted">spec</span><strong>3.6.0</strong></span>
+    <span class="stat"><span class="muted">installed</span><strong>3.6.0</strong></span>
+    <span class="stat"><span class="muted">locked</span><strong>3.6.0</strong></span>
+    <span class="stat"><span class="muted">exact-pinned</span><strong>yes</strong></span>
+  </section>
+
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Subpath</th>
+        <th scope="col">Status</th>
+        <th scope="col">Resolved file (in node_modules/date-fns)</th>
+        <th scope="col" class="num">Imports</th>
+        <th scope="col">Sample importing files</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-ok">
+        <td><code>addDays</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/addDays.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/addDays.js">addDays.js</code></td>
+        <td class="num">1</td>
+        <td><div class="files" title="src/pages/Contratos.tsx">src/pages/Contratos.tsx</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>addMonths</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/addMonths.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/addMonths.js">addMonths.js</code></td>
+        <td class="num">2</td>
+        <td><div class="files" title="src/components/compras/DeliveryCalendar.tsx
+src/components/pagamentos/PagamentoFinancialDashboard.tsx">src/components/compras/DeliveryCalendar.tsx, src/components/pagamentos/PagamentoFinancialDashboard.tsx</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>addWeeks</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/addWeeks.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/addWeeks.js">addWeeks.js</code></td>
+        <td class="num">1</td>
+        <td><div class="files" title="src/components/pagamentos/PagamentoFinancialDashboard.tsx">src/components/pagamentos/PagamentoFinancialDashboard.tsx</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>differenceInDays</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/differenceInDays.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/differenceInDays.js">differenceInDays.js</code></td>
+        <td class="num">13</td>
+        <td><div class="files" title="src/components/compras/ContractDetailsModal.tsx
+src/components/compras/DeliveryCalendar.tsx
+src/components/compras/EnhancedPedidoTimeline.tsx
+src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts
+src/components/pagamentos/PagamentoAdvancedKPIs.tsx">src/components/compras/ContractDetailsModal.tsx, src/components/compras/DeliveryCalendar.tsx, src/components/compras/EnhancedPedidoTimeline.tsx <span class="muted">+2</span></div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>differenceInHours</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/differenceInHours.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/differenceInHours.js">differenceInHours.js</code></td>
+        <td class="num">3</td>
+        <td><div class="files" title="src/components/compras/EnhancedPedidoTimeline.tsx
+src/pages/KanbanWorkflow.tsx
+src/pages/acompanhamento/AcompanhamentoHelpers.ts">src/components/compras/EnhancedPedidoTimeline.tsx, src/pages/KanbanWorkflow.tsx, src/pages/acompanhamento/AcompanhamentoHelpers.ts</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>eachDayOfInterval</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/eachDayOfInterval.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/eachDayOfInterval.js">eachDayOfInterval.js</code></td>
+        <td class="num">2</td>
+        <td><div class="files" title="src/components/compras/DeliveryCalendar.tsx
+src/components/pagamentos/PagamentoFinancialDashboard.tsx">src/components/compras/DeliveryCalendar.tsx, src/components/pagamentos/PagamentoFinancialDashboard.tsx</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>endOfMonth</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/endOfMonth.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/endOfMonth.js">endOfMonth.js</code></td>
+        <td class="num">4</td>
+        <td><div class="files" title="src/components/compras/DeliveryCalendar.tsx
+src/components/pagamentos/PagamentoAdvancedKPIs.tsx
+src/components/pagamentos/PagamentoFinancialDashboard.tsx
+src/pages/HistoricoCompras.tsx">src/components/compras/DeliveryCalendar.tsx, src/components/pagamentos/PagamentoAdvancedKPIs.tsx, src/components/pagamentos/PagamentoFinancialDashboard.tsx <span class="muted">+1</span></div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>format</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/format.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/format.js">format.js</code></td>
+        <td class="num">49</td>
+        <td><div class="files" title="src/components/compras/ContractDetailsModal.tsx
+src/components/compras/ContractModal.tsx
+src/components/compras/DeliveryCalendar.tsx
+src/components/compras/EnhancedPedidoTimeline.tsx
+src/components/compras/OrderPreviewModal.tsx">src/components/compras/ContractDetailsModal.tsx, src/components/compras/ContractModal.tsx, src/components/compras/DeliveryCalendar.tsx <span class="muted">+2</span></div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>formatDistanceToNow</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/formatDistanceToNow.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/formatDistanceToNow.js">formatDistanceToNow.js</code></td>
+        <td class="num">8</td>
+        <td><div class="files" title="src/components/admin/DateFnsUsagePanel.tsx
+src/components/compras/BuyerPerformanceAlerts.tsx
+src/components/compras/RealNotificationCenter.tsx
+src/components/compras/RecentlyViewedPanel.tsx
+src/components/compras/SupplierChat.tsx">src/components/admin/DateFnsUsagePanel.tsx, src/components/compras/BuyerPerformanceAlerts.tsx, src/components/compras/RealNotificationCenter.tsx <span class="muted">+2</span></div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>isPast</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/isPast.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/isPast.js">isPast.js</code></td>
+        <td class="num">3</td>
+        <td><div class="files" title="src/components/compras/EnhancedPedidoTimeline.tsx
+src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts
+src/pages/acompanhamento/AcompanhamentoHelpers.ts">src/components/compras/EnhancedPedidoTimeline.tsx, src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts, src/pages/acompanhamento/AcompanhamentoHelpers.ts</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>isSameDay</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/isSameDay.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/isSameDay.js">isSameDay.js</code></td>
+        <td class="num">2</td>
+        <td><div class="files" title="src/components/compras/DeliveryCalendar.tsx
+src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts">src/components/compras/DeliveryCalendar.tsx, src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>isSameMonth</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/isSameMonth.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/isSameMonth.js">isSameMonth.js</code></td>
+        <td class="num">1</td>
+        <td><div class="files" title="src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts">src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>isToday</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/isToday.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/isToday.js">isToday.js</code></td>
+        <td class="num">2</td>
+        <td><div class="files" title="src/components/compras/DeliveryCalendar.tsx
+src/pages/acompanhamento/AcompanhamentoHelpers.ts">src/components/compras/DeliveryCalendar.tsx, src/pages/acompanhamento/AcompanhamentoHelpers.ts</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>isTomorrow</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/isTomorrow.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/isTomorrow.js">isTomorrow.js</code></td>
+        <td class="num">1</td>
+        <td><div class="files" title="src/pages/acompanhamento/AcompanhamentoHelpers.ts">src/pages/acompanhamento/AcompanhamentoHelpers.ts</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>isWithinInterval</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/isWithinInterval.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/isWithinInterval.js">isWithinInterval.js</code></td>
+        <td class="num">1</td>
+        <td><div class="files" title="src/pages/HistoricoCompras.tsx">src/pages/HistoricoCompras.tsx</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>locale/pt-BR</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/locale/pt-BR.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/locale/pt-BR.js">locale/pt-BR.js</code></td>
+        <td class="num">42</td>
+        <td><div class="files" title="src/components/admin/DateFnsUsagePanel.tsx
+src/components/compras/BuyerPerformanceAlerts.tsx
+src/components/compras/ContractDetailsModal.tsx
+src/components/compras/ContractModal.tsx
+src/components/compras/DeliveryCalendar.tsx">src/components/admin/DateFnsUsagePanel.tsx, src/components/compras/BuyerPerformanceAlerts.tsx, src/components/compras/ContractDetailsModal.tsx <span class="muted">+2</span></div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>parseISO</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/parseISO.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/parseISO.js">parseISO.js</code></td>
+        <td class="num">9</td>
+        <td><div class="files" title="src/components/admin/DateFnsUsagePanel.tsx
+src/components/compras/EnhancedPedidoTimeline.tsx
+src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts
+src/pages/HistoricoCompras.tsx
+src/pages/RecebimentoOffline.tsx">src/components/admin/DateFnsUsagePanel.tsx, src/components/compras/EnhancedPedidoTimeline.tsx, src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts <span class="muted">+2</span></div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>startOfMonth</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/startOfMonth.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/startOfMonth.js">startOfMonth.js</code></td>
+        <td class="num">4</td>
+        <td><div class="files" title="src/components/compras/DeliveryCalendar.tsx
+src/components/pagamentos/PagamentoAdvancedKPIs.tsx
+src/components/pagamentos/PagamentoFinancialDashboard.tsx
+src/pages/HistoricoCompras.tsx">src/components/compras/DeliveryCalendar.tsx, src/components/pagamentos/PagamentoAdvancedKPIs.tsx, src/components/pagamentos/PagamentoFinancialDashboard.tsx <span class="muted">+1</span></div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>startOfWeek</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/startOfWeek.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/startOfWeek.js">startOfWeek.js</code></td>
+        <td class="num">1</td>
+        <td><div class="files" title="src/components/pagamentos/PagamentoFinancialDashboard.tsx">src/components/pagamentos/PagamentoFinancialDashboard.tsx</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>subDays</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/subDays.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/subDays.js">subDays.js</code></td>
+        <td class="num">1</td>
+        <td><div class="files" title="src/pages/HistoricoCompras.tsx">src/pages/HistoricoCompras.tsx</div></td>
+      </tr>
+      <tr class="row-ok">
+        <td><code>subMonths</code></td>
+        <td><span class="badge badge-ok" title="node_modules/date-fns/subMonths.js">✓ exists</span></td>
+        <td><code class="resolved" title="node_modules/date-fns/subMonths.js">subMonths.js</code></td>
+        <td class="num">4</td>
+        <td><div class="files" title="src/components/compras/DeliveryCalendar.tsx
+src/components/pagamentos/PagamentoAdvancedKPIs.tsx
+src/pages/HistoricoCompras.tsx
+src/pages/Relatorios.tsx">src/components/compras/DeliveryCalendar.tsx, src/components/pagamentos/PagamentoAdvancedKPIs.tsx, src/pages/HistoricoCompras.tsx <span class="muted">+1</span></div></td>
+      </tr>
+    </tbody>
+  </table>
+
+    <details class="scan-input">
+      <summary>Scan input (359 files, hash <code>b7848c048693</code>)</summary>
+      <dl>
+        <dt>Roots (default)</dt>
+        <dd><code>src</code></dd>
+        <dt>Exclude dirs</dt>
+        <dd><code>.git</code>, <code>.storybook</code>, <code>__mocks__</code>, <code>__stories__</code>, <code>build</code>, <code>dist</code>, <code>node_modules</code>, <code>stories</code>, <code>test</code></dd>
+        <dt>Exclude file pattern</dt>
+        <dd><code>\.(stories|story|mock)\.(ts|tsx|js|jsx|cjs|mjs)$</code></dd>
+        <dt>File extensions</dt>
+        <dd><code>\.(ts|tsx|js|jsx|cjs|mjs)$</code></dd>
+      </dl>
+    </details>
+
+  <footer>
+    Source of truth: <code>public/dependency-health.json</code> · Regenerate with
+    <code>node scripts/generate-dependency-health-html.mjs</code>.
+  </footer>
+</main>
+</body>
+</html>
