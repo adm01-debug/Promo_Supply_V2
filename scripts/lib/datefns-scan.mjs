@@ -138,9 +138,9 @@ export function detectUnsupportedDateFnsUsage(src, file = "<inline>") {
  * where the brace body contains zero usable specifiers after comments are
  * stripped. Examples that match:
  *
- *   import { } from "date-fns/format";              // empty braces
- *   import { /* TODO */ } from "date-fns/format";   // only a comment
- *   import { // pending\n } from "date-fns/format"; // only a // comment
+ *   import { } from "date-fns/format";                empty braces
+ *   import { (block-comment-only) } from "date-fns/format";
+ *   import { // pending\n } from "date-fns/format";    only a // comment
  *
  * Type-only imports (`import type { … }`) are intentionally NOT flagged —
  * they're a deliberate skip, not a malformation.
