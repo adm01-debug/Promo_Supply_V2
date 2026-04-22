@@ -16,6 +16,7 @@
  */
 import { describe, it, expect } from "vitest";
 import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { Linter } from "eslint";
 // @ts-expect-error - plain JS rule, no type declarations
