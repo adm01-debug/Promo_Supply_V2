@@ -401,8 +401,43 @@ async function handlePost(req: Request): Promise<Response> {
     .upsert({ id: true, payload, updated_by: userData.user.id, updated_at: now });
   if (upsertErr) return json({ error: `Upsert failed: ${upsertErr.message}` }, 500);
 
+  // Audit log: record snapshot recompute
+  const driftCountForAudit = packages.filter((p) => p.driftDetected).length;
+  const { error: auditErr } = await admin.from("audit_logs").insert({
+    action_type: "update",
+    entity_type: "configuracao",
+    entity_id: "dependency_health",
+    entity_description: "Dependency health snapshot recomputed",
+    user_id: userData.user.id,
+    user_email: userData.user.email ?? null,
+    user_name:
+      (userData.user.user_metadata as Record<string, unknown> | null)?.full_name as string ??
+        userData.user.email ?? null,
+    ip_address: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? null,
+    user_agent: req.headers.get("user-agent") ?? null,
+    new_values: {
+      generatedAt: now,
+      updated_at: now,
+      drift_count: driftCountForAudit,
+      barrel_imports: treeShaking?.barrelImportsFound ?? 0,
+      packages: packages.map((p) => ({
+        name: p.name,
+        spec: p.spec,
+        locked: p.locked,
+        driftDetected: p.driftDetected,
+      })),
+    },
+    metadata: {
+      source: "edge:dependency-health POST",
+      github_repo_raw_base: GITHUB_REPO_RAW_BASE,
+      tree_shaking_source: treeShaking?.note ?? null,
+      tree_shaking_risk: treeShaking?.riskLevel ?? null,
+    },
+  });
+  if (auditErr) console.error("audit insert failed:", auditErr.message);
+
   // Append to history + prune to last 30
-  const driftCount = packages.filter((p) => p.driftDetected).length;
+  const driftCount = driftCountForAudit;
   const barrelImports = treeShaking?.barrelImportsFound ?? 0;
   const { error: histErr } = await admin.from("dependency_health_history").insert({
     payload,
