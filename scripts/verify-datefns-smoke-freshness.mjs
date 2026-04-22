@@ -22,6 +22,7 @@
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { spawnSync } from "node:child_process";
 
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
@@ -37,13 +38,102 @@ const LOCALE_IMPORT_RE = /from\s+["']date-fns\/locale\/[^"']+["']/;
 // truncated mid-write.
 const MIN_SMOKE_BYTES = 1024;
 
+// Cap the per-file diff body so a fully-rewritten smoke test doesn't flood
+// the CI log. The shortstat header is always shown; the body is truncated.
+const MAX_DIFF_BODY_LINES = 80;
+
 const HINT =
   "Run `node scripts/generate-datefns-smoke-test.mjs` and commit the updated " +
   "src/test/dateFns.smoke.test.ts (and public/datefns-usage.json).";
 
+function runGit(args) {
+  const res = spawnSync("git", args, { cwd: ROOT, encoding: "utf8" });
+  if (res.error) return { ok: false, stdout: "", stderr: String(res.error.message) };
+  return {
+    ok: res.status === 0,
+    stdout: res.stdout || "",
+    stderr: res.stderr || "",
+    status: res.status,
+  };
+}
+
+/**
+ * Print a `git diff` summary for the generated artifacts when the freshness
+ * check fails. Shows `git status --short`, `git diff --shortstat HEAD --`
+ * per file, and a truncated unified diff body. Degrades gracefully when git
+ * isn't available so the helper never masks the original failure.
+ */
+function printGitDiffSummary() {
+  const targets = [
+    relative(ROOT, SMOKE_FILE).split(/[\\/]/).join("/"),
+    relative(ROOT, MANIFEST_FILE).split(/[\\/]/).join("/"),
+  ];
+
+  const probe = runGit(["rev-parse", "--is-inside-work-tree"]);
+  if (!probe.ok || probe.stdout.trim() !== "true") {
+    console.error("");
+    console.error("  (git diff summary skipped: not a git working tree)");
+    return;
+  }
+
+  console.error("");
+  console.error("── git diff summary ──");
+
+  const status = runGit(["status", "--short", "--", ...targets]);
+  if (status.ok) {
+    const body = status.stdout.trim();
+    console.error("  status:");
+    if (body) {
+      for (const line of body.split("\n")) console.error(`    ${line}`);
+    } else {
+      console.error("    (clean — files match HEAD)");
+    }
+  }
+
+  for (const target of targets) {
+    console.error("");
+    console.error(`  ── ${target} ──`);
+
+    const stat = runGit(["diff", "--shortstat", "HEAD", "--", target]);
+    if (stat.ok) {
+      console.error(
+        `  shortstat: ${stat.stdout.trim() || "(no diff vs HEAD)"}`,
+      );
+    } else {
+      console.error(
+        `  shortstat: (unavailable — ${stat.stderr.trim() || `exit ${stat.status}`})`,
+      );
+    }
+
+    const diff = runGit(["diff", "--no-color", "--unified=2", "HEAD", "--", target]);
+    if (!diff.ok) {
+      console.error(
+        `  diff body unavailable (${diff.stderr.trim() || `exit ${diff.status}`})`,
+      );
+      continue;
+    }
+    const diffBody = diff.stdout.replace(/\n$/, "");
+    if (!diffBody) {
+      console.error("  diff body: (empty — file matches HEAD)");
+      continue;
+    }
+    const lines = diffBody.split("\n");
+    const shown = lines.slice(0, MAX_DIFF_BODY_LINES);
+    console.error("  diff body:");
+    for (const line of shown) console.error(`    ${line}`);
+    if (lines.length > MAX_DIFF_BODY_LINES) {
+      console.error(
+        `    … (${lines.length - MAX_DIFF_BODY_LINES} more line(s) truncated; ` +
+          `run \`git diff -- ${target}\` locally for full output)`,
+      );
+    }
+  }
+}
+
 function fail(msg) {
   console.error(`✗ ${msg}`);
   console.error(`  ${HINT}`);
+  printGitDiffSummary();
   process.exit(1);
 }
 
