@@ -266,6 +266,23 @@ print_summary() {
   printf "  Smoke vitest        : %s\n" "$vitest_line"
   printf "  Smoke test file     : %s\n" "$SMOKE_TEST_PATH"
   printf "  Pin source          : %s\n" "$SMOKE_PACKAGE_JSON"
+
+  # Lockfile snapshot — reflects state at script start (before any install).
+  # Helps debug "why did frozen-lockfile fail?" / "why is locked= empty?"
+  # without re-running. Sizes are informational only; ✓/✗ is the signal.
+  local lock_text_line lock_bin_line
+  if [ "$LOCKFILE_BUN_LOCK_PRESENT" -eq 1 ]; then
+    lock_text_line="present ✓  ($(human_bytes "$LOCKFILE_BUN_LOCK_BYTES"))"
+  else
+    lock_text_line="missing ✗"
+  fi
+  if [ "$LOCKFILE_BUN_LOCKB_PRESENT" -eq 1 ]; then
+    lock_bin_line="present  ($(human_bytes "$LOCKFILE_BUN_LOCKB_BYTES"))"
+  else
+    lock_bin_line="absent"
+  fi
+  printf "  Lockfile (bun.lock) : %s\n" "$lock_text_line"
+  printf "  Lockfile (bun.lockb): %s\n" "$lock_bin_line"
   printf "  Logs                : %s/tsc-smoke.log\n" "$LOG_DIR"
   printf "                        %s/vitest-smoke.log\n" "$LOG_DIR"
   printf "                        %s/vitest-smoke.json\n" "$LOG_DIR"
