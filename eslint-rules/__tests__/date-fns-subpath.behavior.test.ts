@@ -127,16 +127,16 @@ describe("local/date-fns-subpath — report-only safety nets", () => {
     expect(fixed.output).toBe(src);
   });
 
-  it("reports but does NOT fix mixed inline type+value specifiers", () => {
-    // `import { type X, y } from "..."` — splitting would require
-    // resplitting the type/value boundary; rule bails out on purpose.
-    const src = `import { type Day, format } from "date-fns";\n`;
-    const messages = lint(src);
-    expect(messages.length).toBeGreaterThanOrEqual(1);
-    expect(messages.some((m) => m.messageId === "unfixable")).toBe(true);
-    const fixed = fix(src);
-    expect(fixed.fixed).toBe(false);
-    expect(fixed.output).toBe(src);
+  it("preserves a top-level `import type` declaration when splitting", () => {
+    // `import type { ... }` is fine to split — the `type` keyword is
+    // re-emitted on each generated import. Confirm that path doesn't
+    // accidentally regress into the "unfixable mixed type+value" branch.
+    const src = `import type { Day, Month } from "date-fns";\n`;
+    const result = fix(src);
+    expect(result.fixed).toBe(true);
+    expect(result.output).toContain('import type { Day } from "date-fns/Day"');
+    expect(result.output).toContain('import type { Month } from "date-fns/Month"');
+    expect(lint(result.output)).toHaveLength(0);
   });
 
   it("reports but does NOT fix an unknown locale identifier", () => {
