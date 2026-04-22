@@ -521,6 +521,7 @@ const Solicitacoes = () => {
           onSkip={skipTour}
         />
       )}
+      {clearFlow.ConfirmDialog}
     </MainLayout>
   );
 };
