@@ -44,38 +44,71 @@ function walkSourceFiles(dir, out = []) {
   return out;
 }
 
-function scanTreeShaking(rootDir) {
+function scanTreeShaking(rootDir, previous) {
   const srcDir = resolve(rootDir, "src");
   const offenders = [];
   let filesScanned = 0;
   let barrelImportsFound = 0;
   let truncated = false;
 
-  if (existsSync(srcDir)) {
-    const files = walkSourceFiles(srcDir);
-    for (const file of files) {
-      filesScanned++;
-      let content;
-      try {
-        content = readFileSync(file, "utf8");
-      } catch {
+  if (!existsSync(srcDir)) {
+    return {
+      scannedAt: new Date().toISOString(),
+      filesScanned: 0,
+      barrelImportsFound: 0,
+      offenders: [],
+      truncated: false,
+      riskLevel: "ok",
+      cacheKey: createHash("sha256").update(`v${SCAN_VERSION}|empty`).digest("hex"),
+      cacheHit: false,
+    };
+  }
+
+  // Build deterministic cache key from file paths + mtime + size + scan config.
+  const files = walkSourceFiles(srcDir).sort();
+  const hash = createHash("sha256");
+  hash.update(`v${SCAN_VERSION}|${BARREL_IMPORT_RE.source}|`);
+  for (const file of files) {
+    let st;
+    try {
+      st = statSync(file);
+    } catch {
+      continue;
+    }
+    hash.update(`${relative(rootDir, file)}|${st.size}|${st.mtimeMs}\n`);
+  }
+  const cacheKey = hash.digest("hex");
+
+  // Cache hit: reuse previous tree-shaking result without re-reading files.
+  if (previous && previous.cacheKey === cacheKey) {
+    return {
+      ...previous,
+      cacheHit: true,
+    };
+  }
+
+  for (const file of files) {
+    filesScanned++;
+    let content;
+    try {
+      content = readFileSync(file, "utf8");
+    } catch {
+      continue;
+    }
+    BARREL_IMPORT_RE.lastIndex = 0;
+    let match;
+    while ((match = BARREL_IMPORT_RE.exec(content)) !== null) {
+      barrelImportsFound++;
+      if (offenders.length >= OFFENDERS_CAP) {
+        truncated = true;
         continue;
       }
-      BARREL_IMPORT_RE.lastIndex = 0;
-      let match;
-      while ((match = BARREL_IMPORT_RE.exec(content)) !== null) {
-        barrelImportsFound++;
-        if (offenders.length >= OFFENDERS_CAP) {
-          truncated = true;
-          continue;
-        }
-        const line = content.slice(0, match.index).split("\n").length;
-        offenders.push({
-          file: relative(rootDir, file).replace(/\\/g, "/"),
-          line,
-          importPath: match[1],
-        });
-      }
+      const line = content.slice(0, match.index).split("\n").length;
+      offenders.push({
+        file: relative(rootDir, file).replace(/\\/g, "/"),
+        line,
+        importPath: match[1],
+      });
     }
   }
 
@@ -87,6 +120,8 @@ function scanTreeShaking(rootDir) {
     offenders,
     truncated,
     riskLevel,
+    cacheKey,
+    cacheHit: false,
   };
 }
 
