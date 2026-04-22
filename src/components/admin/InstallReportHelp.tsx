@@ -89,6 +89,28 @@ const InstallReportHelp = () => {
             </li>
           </ul>
         </section>
+
+        <section className="space-y-1 rounded-md border border-dashed border-warning/40 bg-warning/5 p-3">
+          <h3 className="font-semibold flex items-center gap-1.5">
+            <FlaskConical className="h-4 w-4 text-warning" aria-hidden="true" />
+            Sonda TS2307 — apenas para verificação manual
+          </h3>
+          <p className="text-muted-foreground">
+            Para validar a clareza das mensagens de erro de subpath quebrado em{" "}
+            <code className="font-mono">date-fns</code>, usamos uma <em>sonda</em> temporária: um
+            arquivo <code className="font-mono">.ts</code> isolado importando um subpath inexistente
+            (ex.: <code className="font-mono">date-fns/__missing__</code>) para forçar o{" "}
+            <code className="font-mono">tsc</code> a emitir <code className="font-mono">TS2307</code>.
+            Confirmamos que a mensagem aponta o pacote certo, o caminho exato e que o ESLint barrel-rule
+            não engole o erro antes do type-check.
+          </p>
+          <p className="text-muted-foreground">
+            <span className="font-medium text-destructive">Nunca commitar.</span> A sonda é
+            estritamente local — qualquer arquivo desse tipo no repositório quebraria o build em
+            CI no passo <code className="font-mono">tsc --noEmit</code>. Apague-a assim que terminar
+            a verificação manual.
+          </p>
+        </section>
       </CardContent>
     </Card>
   );
