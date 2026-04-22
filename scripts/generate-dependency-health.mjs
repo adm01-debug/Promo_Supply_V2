@@ -217,7 +217,18 @@ function main() {
 
   const aggregateDrift = packages.some((p) => p.driftDetected);
   const now = new Date().toISOString();
-  const treeShaking = scanTreeShaking(root);
+
+  // Load previous snapshot's tree-shaking block to enable incremental caching.
+  let previousTreeShaking;
+  if (existsSync(outPath)) {
+    try {
+      const existing = JSON.parse(readFileSync(outPath, "utf8"));
+      previousTreeShaking = existing?.treeShaking;
+    } catch {
+      previousTreeShaking = undefined;
+    }
+  }
+  const treeShaking = scanTreeShaking(root, previousTreeShaking);
 
   const snapshot = {
     generatedAt: now,
@@ -259,7 +270,7 @@ function main() {
     );
   }
   console.log(
-    `  tree-shaking: scanned=${treeShaking.filesScanned} barrelImports=${treeShaking.barrelImportsFound} risk=${treeShaking.riskLevel}`,
+    `  tree-shaking: scanned=${treeShaking.filesScanned} barrelImports=${treeShaking.barrelImportsFound} risk=${treeShaking.riskLevel} cache=${treeShaking.cacheHit ? "HIT" : "MISS"}`,
   );
 }
 
