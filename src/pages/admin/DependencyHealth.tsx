@@ -78,19 +78,41 @@ interface DependencyHealthSnapshot {
   treeShaking?: TreeShakingReport;
 }
 
-const fetchSnapshot = async (): Promise<DependencyHealthSnapshot> => {
+type SnapshotSource = "edge" | "static";
+
+interface SnapshotResult {
+  snapshot: DependencyHealthSnapshot;
+  source: SnapshotSource;
+  fetchedAt: string;
+  edgeError?: string;
+}
+
+const fetchSnapshot = async (): Promise<SnapshotResult> => {
   // Prefer edge function (runtime refreshable)
+  let edgeError: string | undefined;
   try {
     const { data, error } = await supabase.functions.invoke("dependency-health", {
       method: "GET",
     });
-    if (!error && data) return data as DependencyHealthSnapshot;
-  } catch {
-    // fall through to static
+    if (!error && data) {
+      return {
+        snapshot: data as DependencyHealthSnapshot,
+        source: "edge",
+        fetchedAt: new Date().toISOString(),
+      };
+    }
+    if (error) edgeError = error.message;
+  } catch (e) {
+    edgeError = e instanceof Error ? e.message : String(e);
   }
   const res = await fetch("/dependency-health.json", { cache: "no-store" });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return res.json();
+  return {
+    snapshot: (await res.json()) as DependencyHealthSnapshot,
+    source: "static",
+    fetchedAt: new Date().toISOString(),
+    edgeError,
+  };
 };
 
 const DependencyHealth = () => {
@@ -133,13 +155,19 @@ const DependencyHealth = () => {
 
   const buildRefresh = (dispatchCi: boolean) =>
     useMutation({
-      mutationFn: async () => {
+      mutationFn: async (): Promise<SnapshotResult & { ciDispatch?: string }> => {
         const { data, error } = await supabase.functions.invoke(
           `dependency-health${dispatchCi ? "?dispatchCi=true" : ""}`,
           { method: "POST" },
         );
         if (error) throw error;
-        return data as DependencyHealthSnapshot & { ciDispatch?: string };
+        const payload = data as DependencyHealthSnapshot & { ciDispatch?: string };
+        return {
+          snapshot: payload,
+          source: "edge",
+          fetchedAt: new Date().toISOString(),
+          ciDispatch: payload.ciDispatch,
+        };
       },
       onSuccess: (fresh) => {
         queryClient.setQueryData(["dependency-health"], fresh);
@@ -147,8 +175,8 @@ const DependencyHealth = () => {
         toast({
           title: dispatchCi ? "Snapshot atualizado + CI" : "Snapshot atualizado",
           description: dispatchCi
-            ? `Gerado em ${fresh.generatedAt} · CI: ${fresh.ciDispatch ?? "n/a"}`
-            : `Gerado em ${fresh.generatedAt}`,
+            ? `Gerado em ${fresh.snapshot.generatedAt} · CI: ${fresh.ciDispatch ?? "n/a"}`
+            : `Gerado em ${fresh.snapshot.generatedAt}`,
         });
       },
       onError: (err: unknown) => {
@@ -186,7 +214,8 @@ const DependencyHealth = () => {
     );
   }
 
-  const { dateFns, lockfileDrift, generatedAt, packages } = data;
+  const { snapshot, source, fetchedAt, edgeError } = data;
+  const { dateFns, lockfileDrift, generatedAt, packages } = snapshot;
   const hasPackages = Array.isArray(packages) && packages.length > 0;
   const aggregateDrift = hasPackages
     ? packages!.some((p) => p.driftDetected)
@@ -200,11 +229,37 @@ const DependencyHealth = () => {
   return (
     <div className="container mx-auto p-6 space-y-4">
       <div className="flex items-start justify-between gap-4">
-        <div>
+        <div className="space-y-1">
           <h1 className="text-2xl font-bold">Saúde das Dependências</h1>
           <p className="text-sm text-muted-foreground">
             Snapshot gerado pela rotina <code className="font-mono">bun run ci:check</code> ou pelo botão abaixo.
           </p>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground pt-1">
+            <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+            <span>
+              Última atualização da tela:{" "}
+              <span className="font-medium text-foreground">
+                {formatDistanceToNow(parseISO(fetchedAt), { addSuffix: true, locale: ptBR })}
+              </span>{" "}
+              <span className="font-mono">({fetchedAt})</span>
+            </span>
+            {source === "edge" ? (
+              <Badge variant="secondary" className="gap-1" aria-label="Fonte: edge function">
+                <RefreshCw className="h-3 w-3" />
+                Edge (ao vivo)
+              </Badge>
+            ) : (
+              <Badge variant="outline" className="gap-1" aria-label="Fonte: arquivo estático de fallback">
+                <AlertTriangle className="h-3 w-3" />
+                Fallback estático
+              </Badge>
+            )}
+            {edgeError && (
+              <span className="text-destructive" title={edgeError}>
+                · edge falhou: {edgeError.length > 60 ? `${edgeError.slice(0, 60)}…` : edgeError}
+              </span>
+            )}
+          </div>
         </div>
         {isAdmin && (
           <div className="flex gap-2">
@@ -382,7 +437,7 @@ const DependencyHealth = () => {
           <div className="font-mono text-xs text-muted-foreground">{generatedAt}</div>
         </CardContent>
       </Card>
-      {data.treeShaking && (
+      {snapshot.treeShaking && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
@@ -398,12 +453,12 @@ const DependencyHealth = () => {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex flex-wrap items-center gap-3">
-              {data.treeShaking.riskLevel === "ok" ? (
+              {snapshot.treeShaking.riskLevel === "ok" ? (
                 <Badge variant="secondary" className="gap-1">
                   <CheckCircle2 className="h-3 w-3" />
                   OK
                 </Badge>
-              ) : data.treeShaking.riskLevel === "warning" ? (
+              ) : snapshot.treeShaking.riskLevel === "warning" ? (
                 <Badge className="gap-1 bg-warning text-warning-foreground hover:bg-warning/90">
                   <AlertTriangle className="h-3 w-3" />
                   Atenção
@@ -415,13 +470,13 @@ const DependencyHealth = () => {
                 </Badge>
               )}
               <span className="text-sm text-muted-foreground">
-                {data.treeShaking.filesScanned} arquivo(s) escaneado(s) ·{" "}
-                {data.treeShaking.barrelImportsFound} import(s) barrel
-                {data.treeShaking.truncated ? " (lista truncada em 50)" : ""}
+                {snapshot.treeShaking.filesScanned} arquivo(s) escaneado(s) ·{" "}
+                {snapshot.treeShaking.barrelImportsFound} import(s) barrel
+                {snapshot.treeShaking.truncated ? " (lista truncada em 50)" : ""}
               </span>
             </div>
 
-            {data.treeShaking.barrelImportsFound === 0 ? (
+            {snapshot.treeShaking.barrelImportsFound === 0 ? (
               <div className="flex items-center gap-2 text-sm text-success">
                 <CheckCircle2 className="h-4 w-4" />
                 Nenhum import barrel detectado — tree-shaking saudável.
@@ -437,7 +492,7 @@ const DependencyHealth = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {data.treeShaking.offenders.map((o, idx) => (
+                    {snapshot.treeShaking.offenders.map((o: TreeShakingOffender, idx: number) => (
                       <TableRow key={`${o.file}:${o.line}:${idx}`}>
                         <TableCell className="font-mono text-xs">{o.file}</TableCell>
                         <TableCell className="font-mono text-xs">{o.line || "—"}</TableCell>
@@ -450,8 +505,8 @@ const DependencyHealth = () => {
             )}
 
             <div className="text-xs text-muted-foreground">
-              Escaneado em {data.treeShaking.scannedAt}
-              {data.treeShaking.note ? ` · ${data.treeShaking.note}` : ""}
+              Escaneado em {snapshot.treeShaking.scannedAt}
+              {snapshot.treeShaking.note ? ` · ${snapshot.treeShaking.note}` : ""}
             </div>
           </CardContent>
         </Card>
