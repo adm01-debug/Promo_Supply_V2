@@ -90,36 +90,54 @@ describe("local/date-fns-subpath — spotlight locale autofixes", () => {
     });
   }
 
-  it("autofix preserves `as` aliases on a numeric-region locale (es419)", () => {
-    // es419 is the trickiest spotlight entry — combine it with an alias
-    // to prove the rewriter handles digit regions AND aliases together
+  it("autofix preserves `as` aliases on a regional locale (frCA)", () => {
+    // Combine a region-coded locale with an alias to prove the
+    // rewriter handles uppercase regions AND aliases together
     // (each branch is exercised separately above; this guards the
-    // intersection that has bitten us before).
-    const src = `import { es419 as latam } from "date-fns/locale";\n`;
+    // intersection).
+    const src = `import { frCA as canadianFrench } from "date-fns/locale";\n`;
     const result = fix(src);
     expect(result.fixed).toBe(true);
     expect(result.output.trim()).toBe(
-      `import { es419 as latam } from "date-fns/locale/es-419";`,
+      `import { frCA as canadianFrench } from "date-fns/locale/fr-CA";`,
     );
   });
 
   it("autofix rewrites a multi-specifier spotlight barrel correctly", () => {
-    // One declaration mixing three of the trickiest shapes (numeric
-    // region + script subtag + uppercase region). Asserts the rule
-    // emits one canonical subpath import per specifier in order.
-    const src = `import { zhCN, es419, srLatn } from "date-fns/locale";\n`;
+    // One declaration mixing three of the trickiest shapes (uppercase
+    // region + script subtag + single-segment). Asserts the rule
+    // emits one canonical subpath import per specifier.
+    const src = `import { zhCN, srLatn, ja } from "date-fns/locale";\n`;
     const result = fix(src);
     expect(result.fixed).toBe(true);
     expect(result.output).toContain(
       'import { zhCN } from "date-fns/locale/zh-CN";',
     );
     expect(result.output).toContain(
-      'import { es419 } from "date-fns/locale/es-419";',
+      'import { srLatn } from "date-fns/locale/sr-Latn";',
     );
     expect(result.output).toContain(
-      'import { srLatn } from "date-fns/locale/sr-Latn";',
+      'import { ja } from "date-fns/locale/ja";',
     );
     // Bare barrel must be gone after the fix.
     expect(result.output).not.toMatch(/from "date-fns\/locale"\s*;/);
+  });
+
+  it("does NOT autofix `es419` (UN M.49 codes are not shipped by date-fns)", () => {
+    // date-fns ships `es` but no `es-419` (Latin America). The rule
+    // must therefore refuse to invent a subpath that wouldn't resolve
+    // at runtime — it reports `unfixable` and leaves the source
+    // byte-identical. This guards against a tempting-but-wrong
+    // "kebab-ify any camelCase identifier" shortcut.
+    const src = `import { es419 } from "date-fns/locale";\n`;
+    const result = fix(src);
+    expect(result.fixed).toBe(false);
+    expect(result.output).toBe(src);
+    const messages = lint(src).filter((m) => m.ruleId === RULE_ID);
+    // At least one report must surface; the precise messageId may be
+    // `unfixable` (per-specifier) or `barrelLocale` depending on the
+    // rule's reporting strategy — assert presence, not exact id.
+    expect(messages.length).toBeGreaterThan(0);
+    expect(messages.every((m) => !m.fix)).toBe(true);
   });
 });
