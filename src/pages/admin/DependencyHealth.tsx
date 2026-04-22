@@ -729,16 +729,23 @@ const DependencyHealth = () => {
                       <TableHead className="font-mono text-xs">Arquivo</TableHead>
                       <TableHead className="font-mono text-xs w-16">Linha</TableHead>
                       <TableHead className="font-mono text-xs">Import</TableHead>
+                      <TableHead className="font-mono text-xs">Substituição sugerida</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {snapshot.treeShaking.offenders.map((o: TreeShakingOffender, idx: number) => (
-                      <TableRow key={`${o.file}:${o.line}:${idx}`}>
-                        <TableCell className="font-mono text-xs">{o.file}</TableCell>
-                        <TableCell className="font-mono text-xs">{o.line || "—"}</TableCell>
-                        <TableCell className="font-mono text-xs">{o.importPath}</TableCell>
-                      </TableRow>
-                    ))}
+                    {snapshot.treeShaking.offenders.map((o: TreeShakingOffender, idx: number) => {
+                      const suggestion = suggestReplacement(o.importPath);
+                      return (
+                        <TableRow key={`${o.file}:${o.line}:${idx}`}>
+                          <TableCell className="font-mono text-xs">{o.file}</TableCell>
+                          <TableCell className="font-mono text-xs">{o.line || "—"}</TableCell>
+                          <TableCell className="font-mono text-xs">{o.importPath}</TableCell>
+                          <TableCell className="font-mono text-xs text-success-foreground">
+                            {suggestion}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>
