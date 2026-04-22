@@ -11,6 +11,10 @@ import { join, relative, dirname } from "node:path";
 const ROOT = process.cwd();
 const ARGS = process.argv.slice(2);
 const WRITE_HEALTH = ARGS.some((a) => a === "--write-health" || a === "--update-health");
+// `--dry-run` (only meaningful with --write-health) computes & prints the
+// snapshot that WOULD be written, without touching disk. Lets reviewers
+// preview drift before committing the JSON in CI.
+const DRY_RUN = ARGS.some((a) => a === "--dry-run");
 const SNAPSHOT_PATH = join(ROOT, "public", "dependency-health.json");
 const SRC_DIR = join(ROOT, "src");
 const PKG_DIR = join(ROOT, "node_modules", "date-fns");
