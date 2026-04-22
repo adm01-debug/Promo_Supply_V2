@@ -289,6 +289,41 @@ async function handleGet(req: Request): Promise<Response> {
   return json(stub);
 }
 
+async function fetchWithRetry(
+  url: string,
+  { retries = 3, baseDelayMs = 300, timeoutMs = 10_000 }: {
+    retries?: number;
+    baseDelayMs?: number;
+    timeoutMs?: number;
+  } = {},
+): Promise<{ ok: true; res: Response } | { ok: false; status: number; reason: string; attempts: number }> {
+  let lastStatus = 0;
+  let lastReason = "";
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, { signal: AbortSignal.timeout(timeoutMs) });
+      if (res.ok) return { ok: true, res };
+      lastStatus = res.status;
+      lastReason = `HTTP ${res.status}`;
+      // Only retry on transient upstream errors (5xx, 408, 429).
+      const transient = res.status >= 500 || res.status === 408 || res.status === 429;
+      // Drain the body so the connection can be reused.
+      await res.text().catch(() => "");
+      if (!transient) return { ok: false, status: res.status, reason: lastReason, attempts: attempt };
+    } catch (e) {
+      lastStatus = 0;
+      lastReason = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+    }
+    if (attempt < retries) {
+      // Exponential backoff with jitter: 300ms, 600ms, 1200ms (+/- 25%).
+      const delay = baseDelayMs * 2 ** (attempt - 1);
+      const jitter = delay * (Math.random() * 0.5 - 0.25);
+      await new Promise((r) => setTimeout(r, Math.max(50, delay + jitter)));
+    }
+  }
+  return { ok: false, status: lastStatus, reason: lastReason, attempts: retries };
+}
+
 async function handlePost(req: Request): Promise<Response> {
   const auth = req.headers.get("Authorization");
   if (!auth) return json({ error: "Missing Authorization header" }, 401);
@@ -311,15 +346,31 @@ async function handlePost(req: Request): Promise<Response> {
   }
 
   const base = GITHUB_REPO_RAW_BASE.replace(/\/+$/, "");
-  const [pkgRes, lockRes] = await Promise.all([
-    fetch(`${base}/package.json`, { signal: AbortSignal.timeout(10000) }),
-    fetch(`${base}/bun.lock`, { signal: AbortSignal.timeout(10000) }),
+  const [pkgResult, lockResult] = await Promise.all([
+    fetchWithRetry(`${base}/package.json`),
+    fetchWithRetry(`${base}/bun.lock`),
   ]);
-  if (!pkgRes.ok) return json({ error: `Failed to fetch package.json (${pkgRes.status})` }, 502);
-  if (!lockRes.ok) return json({ error: `Failed to fetch bun.lock (${lockRes.status})` }, 502);
+  if (!pkgResult.ok) {
+    return json({
+      error: "Failed to fetch package.json from GitHub after retries",
+      detail: pkgResult.reason,
+      status: pkgResult.status,
+      attempts: pkgResult.attempts,
+      url: `${base}/package.json`,
+    }, 502);
+  }
+  if (!lockResult.ok) {
+    return json({
+      error: "Failed to fetch bun.lock from GitHub after retries",
+      detail: lockResult.reason,
+      status: lockResult.status,
+      attempts: lockResult.attempts,
+      url: `${base}/bun.lock`,
+    }, 502);
+  }
 
-  const pkg = await pkgRes.json();
-  const lockText = await lockRes.text();
+  const pkg = await pkgResult.res.json();
+  const lockText = await lockResult.res.text();
 
   const packages = TRACKED.map((entry) => computePackageHealth(pkg, lockText, entry));
   const dateFnsEntry = packages.find((p) => p.name === "date-fns");
