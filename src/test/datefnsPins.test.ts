@@ -17,8 +17,80 @@
 // exports map exposes ./package.json — the same path the smoke test relies
 // on for date-fns version verification.
 import { describe, expect, it } from "vitest";
+import { readFileSync, existsSync } from "node:fs";
+import { resolve } from "node:path";
 import rootPkg from "../../package.json";
 import pinnedManifest from "./datefns-pinned-packages.json";
+
+/**
+ * Trace where a package's installed version came from in bun.lock.
+ *
+ * Bun's text lockfile stores resolution entries in this shape:
+ *   "<name>": ["<name>@<version>", "<resolved-url>", { ... }, "<integrity>"],
+ * (See bun.lock around the `"date-fns": [...]` line for an example.)
+ *
+ * We deliberately match on `"<name>": [` so we never confuse a resolution
+ * entry with a transitive `peerDependencies` declaration like
+ *   "date-fns": "^2.28.0 || ^3.0.0"
+ * which appears INSIDE another package's metadata object and isn't a
+ * resolution at all.
+ *
+ * Returns absolute path + 1-based line number + the verbatim line + the
+ * extracted version, so a failure report can render the exact provenance.
+ */
+interface LockTrace {
+  path: string;
+  lineNumber: number | null;
+  lineText: string | null;
+  resolvedVersion: string | null;
+  /** Compact summary used in the per-test audit log. */
+  summary: string;
+}
+
+function traceLockfileEntry(name: string): LockTrace {
+  const lockPath = resolve(process.cwd(), "bun.lock");
+  if (!existsSync(lockPath)) {
+    return {
+      path: lockPath,
+      lineNumber: null,
+      lineText: null,
+      resolvedVersion: null,
+      summary: "<bun.lock not found>",
+    };
+  }
+  const lines = readFileSync(lockPath, "utf8").split("\n");
+  // Anchor: optional whitespace, then `"<escaped-name>":` followed by ` [`.
+  // The leading-whitespace check (`^\s*`) prevents matches inside string
+  // values; the `[` after the colon is the resolution-entry signature.
+  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`^\\s*"${escaped}":\\s*\\[`);
+  for (let i = 0; i < lines.length; i++) {
+    if (!re.test(lines[i])) continue;
+    const lineText = lines[i].trim();
+    // Extract `<name>@<version>` from the first array element.
+    const versionMatch = lineText.match(
+      new RegExp(`"${escaped}@([^"]+)"`),
+    );
+    const resolvedVersion = versionMatch ? versionMatch[1] : null;
+    return {
+      path: lockPath,
+      lineNumber: i + 1,
+      lineText,
+      resolvedVersion,
+      summary: resolvedVersion
+        ? `${resolvedVersion}@bun.lock:${i + 1}`
+        : `<unparseable>@bun.lock:${i + 1}`,
+    };
+  }
+  return {
+    path: lockPath,
+    lineNumber: null,
+    lineText: null,
+    resolvedVersion: null,
+    summary: "<no resolution entry>",
+  };
+}
+
 
 /**
  * Packages that MUST be exact-pinned. Sourced from
