@@ -231,6 +231,14 @@ emit_summary() {
   red "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 }
 
+# Library mode: when sourced with DATEFNS_HOOK_LIBRARY=1, expose the helper
+# functions but skip the live pipeline. Used by the fixture-driven test
+# (scripts/__tests__/datefns-hook-fixtures.test.sh) to reuse detect_*/extract_*
+# without executing `node` or `bunx`. No effect on real hook invocations.
+if [ "${DATEFNS_HOOK_LIBRARY:-}" = "1" ]; then
+  return 0 2>/dev/null || exit 0
+fi
+
 cd "$ROOT_DIR"
 
 # ── [1/2] Generator drift check ────────────────────────────────────────────────
