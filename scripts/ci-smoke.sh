@@ -249,15 +249,27 @@ evict_datefns_cache
 echo "▶ [3/10] Installing from frozen lockfile..."
 bun install --frozen-lockfile
 
-echo "▶ [4/10] Confirming installed date-fns version matches lockfile..."
+echo "▶ [4/10] Confirming installed date-fns version matches lockfile and pin source ($SMOKE_PACKAGE_JSON)..."
 DATEFNS_INSTALLED="$(node -p "require('./node_modules/date-fns/package.json').version")"
 DATEFNS_LOCKED="$(resolve_locked_datefns)"
+DATEFNS_PINNED="$(node -e '
+  const p = JSON.parse(require("fs").readFileSync(process.argv[1], "utf8"));
+  process.stdout.write(p.dependencies?.["date-fns"] || p.devDependencies?.["date-fns"] || "");
+' "$SMOKE_PACKAGE_JSON")"
+if [ -z "$DATEFNS_PINNED" ]; then
+  echo "✗ date-fns not declared in $SMOKE_PACKAGE_JSON (dependencies/devDependencies)." >&2
+  exit 1
+fi
 if [ -n "$DATEFNS_LOCKED" ] && [ "$DATEFNS_INSTALLED" != "$DATEFNS_LOCKED" ]; then
   echo "✗ date-fns drift: installed=$DATEFNS_INSTALLED, locked=$DATEFNS_LOCKED" >&2
   exit 1
 fi
+if [ "$DATEFNS_INSTALLED" != "$DATEFNS_PINNED" ]; then
+  echo "✗ date-fns drift vs pin source: installed=$DATEFNS_INSTALLED, pinned=$DATEFNS_PINNED ($SMOKE_PACKAGE_JSON)" >&2
+  exit 1
+fi
 DATEFNS_VERSION_OK=1
-echo "✓ date-fns $DATEFNS_INSTALLED matches lockfile."
+echo "✓ date-fns $DATEFNS_INSTALLED matches lockfile + pin source ($SMOKE_PACKAGE_JSON)."
 
 echo "▶ [5/10] Verifying date-fns subpath files exist on disk..."
 VERIFY_FILES_RAN=1
