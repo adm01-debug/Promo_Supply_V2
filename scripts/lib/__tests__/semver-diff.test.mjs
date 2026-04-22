@@ -21,6 +21,7 @@ import { describe, expect, it } from "vitest";
 import {
   classifyDiff,
   renderMismatch,
+  renderTripleMismatch,
   splitSemver,
 } from "../semver-diff.mjs";
 
