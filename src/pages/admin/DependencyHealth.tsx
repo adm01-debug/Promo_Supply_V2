@@ -207,6 +207,40 @@ const DependencyHealth = () => {
   const refresh = buildRefresh(false);
   const refreshAndCommit = buildRefresh(true);
 
+  const anyPending = refresh.isPending || refreshAndCommit.isPending;
+
+  // Track last successful CI dispatch to prevent overlapping triggers.
+  const [lastDispatch, setLastDispatch] = React.useState<{ at: number; status?: string } | null>(null);
+  React.useEffect(() => {
+    const ci = refreshAndCommit.data?.ciDispatch;
+    if (ci && typeof ci !== "string") {
+      setLastDispatch({ at: Date.now(), status: ci.workflowRunStatus });
+    }
+  }, [refreshAndCommit.data]);
+
+  const CI_COOLDOWN_MS = 30_000;
+  const ciStillRunning =
+    lastDispatch != null &&
+    Date.now() - lastDispatch.at < CI_COOLDOWN_MS &&
+    (lastDispatch.status === "queued" || lastDispatch.status === "in_progress" || !lastDispatch.status);
+
+  const handleRefresh = () => {
+    if (anyPending) return;
+    refresh.mutate();
+  };
+  const handleRefreshAndCommit = () => {
+    if (anyPending) return;
+    if (ciStillRunning) {
+      toast({
+        title: "CI já em execução",
+        description: "Aguarde o workflow anterior concluir antes de disparar outro.",
+        variant: "destructive",
+      });
+      return;
+    }
+    refreshAndCommit.mutate();
+  };
+
   if (isLoading) {
     return (
       <div className="container mx-auto p-6 space-y-4">
