@@ -36,11 +36,31 @@ gray()  { printf "\033[90m%s\033[0m\n" "$*"; }
 # Extract the offending date-fns import path(s) from a tsc log.
 # tsc messages look like:
 #   src/x.ts(12,23): error TS2305: Module '"date-fns/foo"' has no exported member 'bar'.
-#   src/y.ts(3,8):  error TS2307: Cannot find module 'date-fns/locale/zh-CN' or its corresponding type declarations.
+#   src/y.ts(3,8):  error TS2307: Cannot find module 'date-fns/locale/pt-BR' or its corresponding type declarations.
+#   src/z.ts(9,1):  error TS2307: Cannot find module 'date-fns/fp/addDays/index.js' …
+#
+# Requirements:
+#   - Match `date-fns` plus ONE OR MORE `/segment` parts (so `date-fns/locale/pt-BR`,
+#     `date-fns/fp/addDays`, and `date-fns/locale/zh-CN/index.js` all match in full).
+#   - Allow segment chars: A-Z a-z 0-9 _ - . (covers `pt-BR`, `zh_CN`, `index.js`).
+#   - Anchor the START with a non-path char (quote, space, parenthesis, start-of-line)
+#     so we never start mid-word — e.g. `my-date-fns/foo` must NOT match `date-fns/foo`.
+#   - Stop at the first char that can't appear in a module specifier (quote, space,
+#     `)`, `,`, etc.) so trailing punctuation from the tsc message is not captured.
+#   - Bare `date-fns` (no subpath) is intentionally NOT reported — those are not
+#     subpath-resolution failures and would just add noise.
 extract_datefns_imports() {
   local log="$1"
   [ -f "$log" ] || return 0
-  grep -oE "(date-fns(/locale)?(/[A-Za-z0-9_-]+)+)" "$log" \
+  # Prefer GNU grep -P for the lookbehind that prevents `foo-date-fns/...` matches.
+  if grep -oP '(?<![A-Za-z0-9_./-])date-fns(?:/[A-Za-z0-9_.-]+)+' "$log" 2>/dev/null \
+       | sort -u | grep . ; then
+    return 0
+  fi
+  # Portable fallback (BSD/macOS grep without -P): tokenize on anything that
+  # can't be in a specifier, then keep tokens matching the date-fns shape exactly.
+  tr -c 'A-Za-z0-9_./-' '\n' < "$log" \
+    | grep -E '^date-fns(/[A-Za-z0-9_.-]+)+$' \
     | sort -u
 }
 
