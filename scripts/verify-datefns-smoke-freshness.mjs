@@ -73,12 +73,30 @@ if (smokeStat.size < MIN_SMOKE_BYTES) {
   );
 }
 
-// --- 2. Find newest src/ file that imports a date-fns locale ---
+// --- 2. Collect locale subpaths from src/ and from the smoke file, plus
+//        track the newest mtime of any src file that *contains* a locale
+//        import. We only enforce the mtime rule if the locale set itself
+//        changed vs. the smoke file — otherwise unrelated edits to the same
+//        source file (which still imports the same locales) would trip a
+//        false positive.
+const LOCALE_SUBPATH_RE =
+  /from\s+["']date-fns\/(locale\/[^"']+)["']/g;
+
+function collectLocales(src) {
+  const out = new Set();
+  let m;
+  LOCALE_SUBPATH_RE.lastIndex = 0;
+  while ((m = LOCALE_SUBPATH_RE.exec(src)) !== null) out.add(m[1]);
+  return out;
+}
+
+const srcLocales = new Set();
 let newestLocaleFile = null;
 let newestLocaleMtime = 0;
 for (const file of walk(SRC_DIR)) {
   const src = readFileSync(file, "utf8");
   if (!LOCALE_IMPORT_RE.test(src)) continue;
+  for (const sp of collectLocales(src)) srcLocales.add(sp);
   const mtime = statSync(file).mtimeMs;
   if (mtime > newestLocaleMtime) {
     newestLocaleMtime = mtime;
@@ -86,13 +104,29 @@ for (const file of walk(SRC_DIR)) {
   }
 }
 
-if (newestLocaleFile && smokeStat.mtimeMs + 1 < newestLocaleMtime) {
-  const smokeIso = new Date(smokeStat.mtimeMs).toISOString();
-  const srcIso = new Date(newestLocaleMtime).toISOString();
-  fail(
-    `Smoke test mtime (${smokeIso}) is older than locale source ` +
-      `${relative(ROOT, newestLocaleFile)} mtime (${srcIso}).`,
-  );
+const smokeContent = readFileSync(SMOKE_FILE, "utf8");
+const smokeLocales = collectLocales(smokeContent);
+
+const missingInSmoke = [...srcLocales].filter((s) => !smokeLocales.has(s)).sort();
+const extraInSmoke = [...smokeLocales].filter((s) => !srcLocales.has(s)).sort();
+
+if (missingInSmoke.length > 0 || extraInSmoke.length > 0) {
+  console.error("✗ Locale set drift between src/ and smoke test file.");
+  if (missingInSmoke.length > 0) {
+    console.error(`  Missing in smoke test: ${missingInSmoke.join(", ")}`);
+  }
+  if (extraInSmoke.length > 0) {
+    console.error(`  Extra in smoke test: ${extraInSmoke.join(", ")}`);
+  }
+  if (newestLocaleFile) {
+    const smokeIso = new Date(smokeStat.mtimeMs).toISOString();
+    const srcIso = new Date(newestLocaleMtime).toISOString();
+    console.error(
+      `  Smoke mtime: ${smokeIso} | newest locale source mtime: ${srcIso} ` +
+        `(${relative(ROOT, newestLocaleFile)})`,
+    );
+  }
+  fail("Smoke test is stale relative to current src/ locale imports.");
 }
 
 // --- 3. Manifest generatedAt sanity check (best effort) ---
