@@ -1,4 +1,4 @@
-import { useMemo, useState, lazy, Suspense } from "react";
+import { useMemo, useState, useEffect, lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const DateFnsUsagePanel = lazy(() => import("@/components/admin/DateFnsUsagePanel"));
