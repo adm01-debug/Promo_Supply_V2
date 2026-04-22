@@ -133,7 +133,7 @@ describe("computeRiskLevel — threshold boundaries", () => {
   it("treats negative / NaN / non-finite counts as 'ok' (defensive)", () => {
     expect(computeRiskLevel(-1)).toBe("ok");
     expect(computeRiskLevel(NaN)).toBe("ok");
-    expect(computeRiskLevel(Infinity)).toBe("critical"); // Infinity > 5
+    expect(computeRiskLevel(Infinity)).toBe("ok"); // non-finite → defensive bail
     // @ts-expect-error — defensive guard
     expect(computeRiskLevel(undefined)).toBe("ok");
   });
