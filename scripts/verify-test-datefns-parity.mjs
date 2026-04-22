@@ -101,12 +101,31 @@ function readVitestJson(path) {
   if (!existsSync(path)) return null;
   try {
     const j = JSON.parse(readFileSync(path, "utf8"));
+    // Walk testResults[].assertionResults[] (vitest's JSON reporter shape)
+    // to extract a deterministic list of FAILED test identities. We use
+    // `<file>::<full ancestor path > test name>` as the identity so a
+    // failure that exists in one runner but not the other is unambiguous —
+    // count-only comparisons miss the case where bun fails test A and npm
+    // fails a DIFFERENT test B (same totals, different reality).
+    const failedTests = [];
+    for (const file of Array.isArray(j.testResults) ? j.testResults : []) {
+      const fileName = file.name ?? file.testFilePath ?? "<unknown-file>";
+      for (const a of Array.isArray(file.assertionResults) ? file.assertionResults : []) {
+        if (a.status === "failed") {
+          const ancestors = Array.isArray(a.ancestorTitles) ? a.ancestorTitles : [];
+          const title = a.fullName ?? [...ancestors, a.title].filter(Boolean).join(" > ");
+          failedTests.push(`${fileName}::${title}`);
+        }
+      }
+    }
+    failedTests.sort();
     return {
       total: j.numTotalTests ?? null,
       passed: j.numPassedTests ?? null,
       failed: j.numFailedTests ?? null,
       pending: j.numPendingTests ?? null,
       success: j.success ?? null,
+      failedTests,
     };
   } catch {
     return null;
