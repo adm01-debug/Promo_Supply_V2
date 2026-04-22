@@ -11,17 +11,48 @@ preflight
 LOG_DIR="ci-logs"
 mkdir -p "$LOG_DIR"
 
-# Optional first arg: path to the vitest smoke test file.
-# Defaults to the date-fns smoke test for backwards compatibility.
-SMOKE_TEST_PATH="${1:-src/test/dateFns.smoke.test.ts}"
+# Optional args:
+#   $1                       path to vitest smoke test  (default: src/test/dateFns.smoke.test.ts)
+#   $2 / --package-json=<p>  path to alternate package.json used for the pinned
+#                            date-fns version check (monorepo support).
+#                            Defaults to ./package.json. Exported as
+#                            SMOKE_PACKAGE_JSON so the smoke test's beforeAll
+#                            versions log reads the SAME file as the bash check.
+SMOKE_TEST_PATH=""
+SMOKE_PACKAGE_JSON=""
+for arg in "$@"; do
+  case "$arg" in
+    --package-json=*) SMOKE_PACKAGE_JSON="${arg#--package-json=}" ;;
+    --help|-h)
+      sed -n '4,21p' "$0" | sed 's/^# \{0,1\}//'
+      exit 0
+      ;;
+    -*) echo "✗ Unknown flag: $arg" >&2; exit 2 ;;
+    *)
+      if [ -z "$SMOKE_TEST_PATH" ]; then SMOKE_TEST_PATH="$arg"
+      elif [ -z "$SMOKE_PACKAGE_JSON" ]; then SMOKE_PACKAGE_JSON="$arg"
+      else echo "✗ Unexpected positional arg: $arg" >&2; exit 2
+      fi
+      ;;
+  esac
+done
+SMOKE_TEST_PATH="${SMOKE_TEST_PATH:-src/test/dateFns.smoke.test.ts}"
+SMOKE_PACKAGE_JSON="${SMOKE_PACKAGE_JSON:-package.json}"
+export SMOKE_PACKAGE_JSON
 
 if [ ! -f "$SMOKE_TEST_PATH" ]; then
   echo "✗ Smoke test file not found: $SMOKE_TEST_PATH" >&2
-  echo "  Usage: $0 [path/to/smoke.test.ts]" >&2
+  echo "  Usage: $0 [path/to/smoke.test.ts] [path/to/package.json] [--package-json=<path>]" >&2
+  exit 2
+fi
+if [ ! -f "$SMOKE_PACKAGE_JSON" ]; then
+  echo "✗ package.json not found: $SMOKE_PACKAGE_JSON" >&2
+  echo "  Pass an existing file via positional arg #2 or --package-json=<path>." >&2
   exit 2
 fi
 
 echo "▶ Smoke test target: $SMOKE_TEST_PATH"
+echo "▶ Pin source       : $SMOKE_PACKAGE_JSON"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Summary state — populated as steps run; printed by trap on EXIT.
