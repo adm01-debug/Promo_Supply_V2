@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFileSync, existsSync, statSync, writeFileSync, mkdirSync } from "node:fs";
 import { createHash } from "node:crypto";
-import { join, dirname } from "node:path";
+import { join, dirname, resolve as resolvePath } from "node:path";
 import { resolveLockedVersion } from "./lib/resolve-locked-version.mjs";
 import { renderMismatch, renderTripleMismatch } from "./lib/semver-diff.mjs";
 
