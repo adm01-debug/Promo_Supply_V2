@@ -7,6 +7,7 @@
  */
 import { readdirSync, readFileSync, statSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, relative, dirname } from "node:path";
+import { createHash } from "node:crypto";
 
 const ROOT = process.cwd();
 const ARGS = process.argv.slice(2);
