@@ -327,6 +327,63 @@ function diffTreeShaking(prev, next, lines) {
   }
 }
 
+/**
+ * Top-level resolution-flip section. Re-derives the same three buckets used
+ * inside `diffDateFns` so the dedicated header is guaranteed consistent with
+ * the in-line breakdown — but renders even when the subpath set itself is
+ * unchanged (the most common drift signal a reviewer cares about: "did
+ * anything I depend on silently disappear?"). Each bucket is annotated with
+ * a clear severity marker:
+ *   ⚠ became MISSING   — regression; build will likely break next install
+ *   ✓ became AVAILABLE — recovery; previous run had a partial install
+ *   ~ resolved-path    — same exists, different file (e.g. .js → .mjs)
+ */
+function diffResolutionFlips(prev, next, lines) {
+  const aEntries = prev?.dateFns?.subpaths?.entries;
+  const bEntries = next?.dateFns?.subpaths?.entries;
+  if (!Array.isArray(aEntries) || !Array.isArray(bEntries)) return;
+  const aMap = new Map(aEntries.map((e) => [e.subpath, e]));
+  const bMap = new Map(bEntries.map((e) => [e.subpath, e]));
+  const becameMissing = [];
+  const becameAvailable = [];
+  const pathOnly = [];
+  for (const [name, ae] of aMap) {
+    const be = bMap.get(name);
+    if (!be) continue;
+    if (ae.exists === true && be.exists === false) {
+      becameMissing.push({ name, ae, be });
+    } else if (ae.exists === false && be.exists === true) {
+      becameAvailable.push({ name, ae, be });
+    } else if (ae.resolvedFile !== be.resolvedFile) {
+      pathOnly.push({ name, ae, be });
+    }
+  }
+  const total = becameMissing.length + becameAvailable.length + pathOnly.length;
+  if (total === 0) return;
+  // Header summarises severity at a glance; ⚠ wins if any regression exists.
+  const headlineFlag = becameMissing.length > 0 ? "  ⚠" : becameAvailable.length > 0 ? "  ✓" : "";
+  lines.push("  resolution:");
+  lines.push(
+    `    summary: ⚠${becameMissing.length} missing-now / ✓${becameAvailable.length} available-now / ~${pathOnly.length} path-only${headlineFlag}`,
+  );
+  const renderBucket = (label, sym, items) => {
+    if (items.length === 0) return;
+    lines.push(`    ${label} (${items.length}):`);
+    for (const { name, ae, be } of items.slice(0, OFFENDER_DIFF_CAP)) {
+      lines.push(
+        `      ${sym} ${name}: ${ae.resolvedFile ?? "—"} → ${be.resolvedFile ?? "—"}`,
+      );
+    }
+    if (items.length > OFFENDER_DIFF_CAP) {
+      lines.push(`      … and ${items.length - OFFENDER_DIFF_CAP} more`);
+    }
+  };
+  renderBucket("⚠ became MISSING", "⚠", becameMissing);
+  renderBucket("✓ became AVAILABLE", "✓", becameAvailable);
+  renderBucket("~ resolved-path changed", "~", pathOnly);
+}
+
+
 function main() {
   const previous = readJsonSafe(SNAPSHOT_PATH);
   if (previous === null) {
