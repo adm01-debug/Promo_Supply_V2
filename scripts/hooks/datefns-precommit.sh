@@ -255,13 +255,13 @@ TSC_CMD="bunx tsc --noEmit -p tsconfig.smoke.json"
 $TSC_CMD >"$TSC_LOG" 2>&1
 TSC_EXIT=$?
 if [ "$TSC_EXIT" -ne 0 ]; then
-  # Distinguish "missing export" (TS2305) from "missing module" (TS2307); both
-  # are bucketed under TSC_MISSING_EXPORT for the user — the offending import
-  # printout makes the actual cause obvious.
+  # Mode is refined from the actual log content (TS2305 vs TS2307 vs config
+  # error vs missing tooling). Sanitizer guarantees a non-empty value.
+  TSC_MODE="$(detect_tsc_failure_mode "$TSC_LOG" "$TSC_EXIT")"
   emit_summary \
     "2/2" \
     "Smoke tsc check (tsc --noEmit -p tsconfig.smoke.json)" \
-    "TSC_MISSING_EXPORT — a date-fns subpath import is missing or wrong" \
+    "$TSC_MODE" \
     "$TSC_LOG" \
     "Inspect the offending import(s) above. Either fix the import path in src/ or run \`rm -rf node_modules && bun install --frozen-lockfile\` if the file is missing on disk." \
     "$TSC_CMD" \
