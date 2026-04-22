@@ -1,4 +1,4 @@
-import { useCallback, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 import { ConfirmClearFiltersDialog } from '@/components/filters/ConfirmClearFiltersDialog';
 import { useUndoStore } from '@/stores/undoStore';
