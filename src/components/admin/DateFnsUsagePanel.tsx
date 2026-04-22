@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { Calendar, ChevronDown, ChevronRight, Globe, Search, Sigma } from "lucide-react";
+import { Calendar, ChevronDown, ChevronRight, ExternalLink, Globe, Search, Sigma } from "lucide-react";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
@@ -16,6 +16,16 @@ interface UsageEntry {
   exports: string[];
 }
 
+interface CiMetadata {
+  provider?: string;
+  repository?: string;
+  workflow?: string | null;
+  runId?: string;
+  runAttempt?: string | null;
+  runUrl?: string;
+  latestRunsUrl?: string;
+}
+
 interface UsageManifest {
   generatedAt: string;
   totalSubpaths: number;
@@ -23,6 +33,7 @@ interface UsageManifest {
   totalLocales: number;
   functions: UsageEntry[];
   locales: UsageEntry[];
+  ci?: CiMetadata;
 }
 
 const fetchManifest = async (): Promise<UsageManifest> => {
