@@ -444,18 +444,88 @@ function writeHealthSnapshot(entriesArr) {
     entries: entriesArr,
   };
   let snapshot = {};
+
+  // ── Pre-write guard: existing snapshot must be valid JSON ────────────────
+  // Previously corruption was silently swallowed (`snapshot = {}`), which
+  // meant a malformed file would be quietly overwritten — losing whatever
+  // other tools (rollup-pin-check, smoke-test runner, etc.) had written
+  // into it. Fail fast instead, with a recovery recipe.
   if (existsSync(SNAPSHOT_PATH)) {
+    const raw = readFileSync(SNAPSHOT_PATH, "utf8");
     try {
-      snapshot = JSON.parse(readFileSync(SNAPSHOT_PATH, "utf8"));
-    } catch {
-      snapshot = {};
+      const parsed = JSON.parse(raw);
+      if (parsed === null || typeof parsed !== "object" || Array.isArray(parsed)) {
+        throw new TypeError(
+          `expected a JSON object at the top level, got ${
+            Array.isArray(parsed) ? "array" : typeof parsed
+          }`,
+        );
+      }
+      snapshot = parsed;
+    } catch (err) {
+      const body = [
+        cyan("File checked:"),
+        `  ${relative(ROOT, SNAPSHOT_PATH)}`,
+        "",
+        cyan("Parse error:"),
+        `  ${red(String(err?.message ?? err))}`,
+        "",
+        cyan("Likely cause:"),
+        "  Concurrent writes, an aborted previous run, or a manual edit that",
+        "  left the file mid-character. The verifier refuses to overwrite it",
+        "  blindly because that would erase any sibling blocks (rollup-pin,",
+        "  smoke-test, etc.) other tools may have stored alongside dateFns.",
+        "",
+        cyan("▶ Repair (copy & run, in order):"),
+        "",
+        bold("    # 1. Inspect — confirm the corruption isn't recoverable by hand:"),
+        bold(`    cat ${relative(ROOT, SNAPSHOT_PATH)} | head -40`),
+        "",
+        bold("    # 2. If unrecoverable, delete and let this script regenerate it:"),
+        bold(`    rm ${relative(ROOT, SNAPSHOT_PATH)}`),
+        bold("    bun run verify:datefns-files -- --write-health"),
+        "",
+        bold("    # 3. Optionally restore from git history first:"),
+        bold(`    git checkout HEAD -- ${relative(ROOT, SNAPSHOT_PATH)}`),
+      ].join("\n");
+      printBlock(
+        `verify-datefns-files: ${relative(ROOT, SNAPSHOT_PATH)} is not valid JSON`,
+        body,
+      );
+      process.exit(1);
     }
   } else {
     mkdirSync(dirname(SNAPSHOT_PATH), { recursive: true });
   }
   snapshot.dateFns = snapshot.dateFns ?? {};
   snapshot.dateFns.subpaths = subpathsBlock;
-  writeFileSync(SNAPSHOT_PATH, JSON.stringify(snapshot, null, 2) + "\n", "utf8");
+
+  // ── Post-serialize guard: the bytes we're about to write must round-trip ─
+  // Cheap belt-and-braces check: catches any non-JSON-safe value that crept
+  // into the snapshot (BigInt, undefined in arrays, circular refs throwing
+  // earlier — etc.) BEFORE we replace the on-disk file.
+  let serialized;
+  try {
+    serialized = JSON.stringify(snapshot, null, 2) + "\n";
+    JSON.parse(serialized); // throws if stringify produced anything invalid
+  } catch (err) {
+    printBlock(
+      "verify-datefns-files: refusing to write — generated snapshot is not valid JSON",
+      [
+        cyan("Target file (NOT touched):"),
+        `  ${relative(ROOT, SNAPSHOT_PATH)}`,
+        "",
+        cyan("Serialization error:"),
+        `  ${red(String(err?.message ?? err))}`,
+        "",
+        gray("This is a verifier bug — the snapshot object contains a value"),
+        gray("that doesn't round-trip through JSON.stringify/parse. Please"),
+        gray("report it with the offending entries[] payload above."),
+      ].join("\n"),
+    );
+    process.exit(1);
+  }
+  writeFileSync(SNAPSHOT_PATH, serialized, "utf8");
   console.log(
     cyan(
       `▶ Wrote dateFns.subpaths to ${relative(ROOT, SNAPSHOT_PATH)} (${entriesArr.length} entries, ${subpathsBlock.missingCount} missing).`,
