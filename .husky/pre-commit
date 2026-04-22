@@ -51,4 +51,87 @@ if ! bunx eslint --max-warnings=0 "${FILES[@]}"; then
 fi
 
 echo "✓ pre-commit: ESLint clean."
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3) date-fns smoke test regeneration + focused tsc.
+#
+# Runs ONLY when staged files could affect date-fns imports — any staged
+# src/**/*.{ts,tsx} (excluding src/test/) plus the generator/scanner itself.
+# Otherwise it's a no-op so non-src commits stay fast.
+#
+# Steps:
+#   a. Regenerate src/test/dateFns.smoke.test.ts + public/datefns-usage.json.
+#   b. If either file changed, auto-`git add` it so the commit reflects the
+#      true state of date-fns usage.
+#   c. Run `bunx tsc --noEmit -p tsconfig.smoke.json` to catch bad subpath
+#      imports / missing exports BEFORE the commit lands.
+#
+# Bypass with `git commit --no-verify` if you really need to skip.
+# ─────────────────────────────────────────────────────────────────────────────
+NEEDS_SMOKE=0
+for f in "${FILES[@]}"; do
+  case "$f" in
+    src/test/*) ;;
+    src/*.ts|src/*.tsx|src/*/*.ts|src/*/*.tsx|src/*/*/*.ts|src/*/*/*.tsx|src/*/*/*/*.ts|src/*/*/*/*.tsx) NEEDS_SMOKE=1 ;;
+    scripts/generate-datefns-smoke-test.mjs|scripts/lib/datefns-scan.mjs) NEEDS_SMOKE=1 ;;
+    tsconfig.smoke.json) NEEDS_SMOKE=1 ;;
+  esac
+done
+
+if [ "$NEEDS_SMOKE" -eq 1 ]; then
+  echo ""
+  echo "▶ pre-commit: regenerating date-fns smoke test (staged src/ changes detected)"
+
+  SMOKE_FILE="src/test/dateFns.smoke.test.ts"
+  MANIFEST_FILE="public/datefns-usage.json"
+
+  # Snapshot current contents so we can detect post-regen drift.
+  pre_smoke_hash=""
+  pre_manifest_hash=""
+  [ -f "$SMOKE_FILE" ] && pre_smoke_hash=$(git hash-object "$SMOKE_FILE")
+  [ -f "$MANIFEST_FILE" ] && pre_manifest_hash=$(git hash-object "$MANIFEST_FILE")
+
+  if ! node scripts/generate-datefns-smoke-test.mjs; then
+    echo ""
+    echo "✗ pre-commit FAILED: date-fns smoke test generator errored."
+    echo "  Run \`node scripts/generate-datefns-smoke-test.mjs --verbose\` to debug."
+    exit 1
+  fi
+
+  # Auto-restage regenerated files so the commit captures the current truth.
+  RESTAGED=()
+  if [ -f "$SMOKE_FILE" ]; then
+    new_hash=$(git hash-object "$SMOKE_FILE")
+    if [ "$new_hash" != "$pre_smoke_hash" ]; then
+      git add "$SMOKE_FILE"
+      RESTAGED+=("$SMOKE_FILE")
+    fi
+  fi
+  if [ -f "$MANIFEST_FILE" ]; then
+    new_hash=$(git hash-object "$MANIFEST_FILE")
+    if [ "$new_hash" != "$pre_manifest_hash" ]; then
+      git add "$MANIFEST_FILE"
+      RESTAGED+=("$MANIFEST_FILE")
+    fi
+  fi
+  if [ "${#RESTAGED[@]}" -gt 0 ]; then
+    echo "  ↳ regenerated + re-staged: ${RESTAGED[*]}"
+  else
+    echo "  ↳ no changes — smoke test + manifest already in sync."
+  fi
+
+  echo "▶ pre-commit: tsc --noEmit -p tsconfig.smoke.json"
+  if ! bunx tsc --noEmit -p tsconfig.smoke.json; then
+    echo ""
+    echo "✗ pre-commit FAILED: focused tsc on tsconfig.smoke.json reported errors."
+    echo "  A staged src/ change likely imports a date-fns subpath/export that"
+    echo "  doesn't exist on the pinned version. Fix the import (or pin a"
+    echo "  compatible date-fns version), then re-stage and commit."
+    echo "  Bypass with \`git commit --no-verify\` only if you know what you're doing."
+    exit 1
+  fi
+
+  echo "✓ pre-commit: smoke test regenerated + tsc clean."
+fi
+
 exit 0
