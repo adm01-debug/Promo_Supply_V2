@@ -1,4 +1,5 @@
 import type { Fornecedor } from "@/hooks/useFornecedores";
+import { nullishStr } from "@/lib/dbMapping";
 
 export interface LegacyFornecedor {
   id: string;
@@ -17,17 +18,22 @@ export interface LegacyFornecedor {
   ultimaCompra: string;
 }
 
+// `Fornecedor` (DB row) uses `field: T | null`; `LegacyFornecedor` (UI) uses
+// non-nullable fields with empty-string sentinels. The conversion is funnelled
+// through `nullishStr` (NOT `||`) so legitimate empty strings round-trip and
+// `null` becomes `''` only when truly absent. `nome_fantasia` falls back to
+// `razao_social` because the UI always wants a display name.
 export const adaptToLegacy = (f: Fornecedor): LegacyFornecedor => ({
   id: f.id,
   razaoSocial: f.razao_social,
-  nomeFantasia: f.nome_fantasia || f.razao_social,
-  cnpj: f.cnpj || '',
+  nomeFantasia: nullishStr(f.nome_fantasia, f.razao_social),
+  cnpj: nullishStr(f.cnpj),
   tipo: f.tipo === 'internacional' ? 'IMPORTADORA' : f.tipo === 'local' ? 'DISTRIBUIDORA' : 'FABRICANTE',
   ramos: f.segmento ? [f.segmento] : [],
   vendeProduto: 'AMBOS',
-  email: f.email || '',
-  telefone: f.telefone || '',
-  whatsapp: f.telefone || '',
+  email: nullishStr(f.email),
+  telefone: nullishStr(f.telefone),
+  whatsapp: nullishStr(f.telefone),
   apiIntegrada: f.integrado_api,
   rating: Math.round(f.avaliacao),
   totalMes: 0,

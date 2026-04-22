@@ -1,5 +1,6 @@
 import type { Solicitacao } from "@/hooks/useSolicitacoes";
 import type { Solicitacao as MockSolicitacao } from "@/types/legacyTypes";
+import { nullishStr, nullishNum } from "@/lib/dbMapping";
 
 // Map DB status to legacy status for UI compatibility
 export const mapDbStatusToLegacy = (status: Solicitacao['status']): MockSolicitacao['status'] => {
@@ -30,19 +31,23 @@ export const mapLegacyStatusToDb = (legacyStatus: string): Solicitacao['status']
   return mapping[legacyStatus] || 'pendente';
 };
 
-// Adapt DB solicitacao to legacy format for components
+// Adapt DB solicitacao to legacy format for components.
+// Nullable DB columns (`departamento`, `observacoes`, `data_necessidade`,
+// `valor_estimado`) are funnelled through `nullishStr` / `nullishNum` so
+// `null` cleanly becomes the legacy default without collapsing legitimate
+// `0` / `''` values the way `||` would.
 export const adaptToLegacyFormat = (sol: Solicitacao): MockSolicitacao => ({
   id: sol.id,
   itemNumber: sol.id.slice(0, 8),
-  empresa: sol.departamento || 'Empresa',
+  empresa: nullishStr(sol.departamento, 'Empresa'),
   produto: sol.titulo,
   quantidade: sol.quantidade,
   quantidadeReal: Math.ceil(sol.quantidade * 1.02),
   tipo: sol.tipo === 'material' ? 'PE_LISO' : sol.tipo === 'servico' ? 'FAB_LISO' : 'FAB_PERSONALIZADO',
   status: mapDbStatusToLegacy(sol.status),
-  vendedor: sol.observacoes || 'Vendedor',
-  prazoEntrega: sol.data_necessidade || sol.created_at,
-  valorTotal: sol.valor_estimado || 0,
+  vendedor: nullishStr(sol.observacoes, 'Vendedor'),
+  prazoEntrega: nullishStr(sol.data_necessidade, sol.created_at),
+  valorTotal: nullishNum(sol.valor_estimado),
   createdAt: sol.created_at,
 });
 
