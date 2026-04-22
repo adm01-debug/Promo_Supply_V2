@@ -147,14 +147,15 @@ run_scenario_generator_drift() {
 
   # Stub the generator: print a fake tsc-style error mentioning a date-fns
   # subpath so the summary's "Offending date-fns import path(s)" section also
-  # has something to surface, then exit 1.
+  # has something to surface, then exit with a distinctive non-1 code (42) so
+  # the "Exit code:" assertion proves the value is propagated, not hardcoded.
   cat > "$sandbox/scripts/generate-datefns-smoke-test.mjs" <<'JS'
 #!/usr/bin/env node
 process.stderr.write(
   "src/test/dateFns.smoke.test.ts(7,8): error TS2307: " +
   "Cannot find module 'date-fns/locale/pt-BR' or its corresponding type declarations.\n"
 );
-process.exit(1);
+process.exit(42);
 JS
 
   # Run hook; capture combined output regardless of exit code.
