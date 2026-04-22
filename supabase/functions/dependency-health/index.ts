@@ -25,21 +25,122 @@ function deriveOwnerRepo(rawBase: string): { owner: string; repo: string } | nul
   }
 }
 
-async function dispatchWorkflow(rawBase: string): Promise<string> {
-  if (!GITHUB_DISPATCH_TOKEN) return "skipped: GITHUB_DISPATCH_TOKEN not configured";
-  const or = deriveOwnerRepo(rawBase);
-  if (!or) return "skipped: owner/repo not derivable from GITHUB_REPO_RAW_BASE";
-  const url = `https://api.github.com/repos/${or.owner}/${or.repo}/actions/workflows/${DISPATCH_WORKFLOW_FILE}/dispatches`;
+interface DispatchInfo {
+  status: string;
+  branch?: string;
+  dispatchedAt?: string;
+  workflowRunUrl?: string;
+  workflowRunId?: number;
+  workflowRunStatus?: string;
+  latestCommitSha?: string;
+  latestCommitUrl?: string;
+  latestCommitMessage?: string;
+  latestCommitAuthor?: string;
+  latestCommitAt?: string;
+}
+
+function deriveBranch(rawBase: string): string {
   try {
-    const branch = (() => {
-      try {
-        const u = new URL(rawBase);
-        const parts = u.pathname.split("/").filter(Boolean);
-        return parts[2] ?? "main";
-      } catch {
-        return "main";
+    const u = new URL(rawBase);
+    const parts = u.pathname.split("/").filter(Boolean);
+    return parts[2] ?? "main";
+  } catch {
+    return "main";
+  }
+}
+
+async function fetchLatestCommit(
+  owner: string,
+  repo: string,
+  branch: string,
+): Promise<Pick<DispatchInfo, "latestCommitSha" | "latestCommitUrl" | "latestCommitMessage" | "latestCommitAuthor" | "latestCommitAt">> {
+  if (!GITHUB_DISPATCH_TOKEN) return {};
+  try {
+    const res = await fetch(
+      `https://api.github.com/repos/${owner}/${repo}/commits/${encodeURIComponent(branch)}`,
+      {
+        headers: {
+          Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`,
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+        signal: AbortSignal.timeout(8000),
+      },
+    );
+    if (!res.ok) {
+      await res.text().catch(() => "");
+      return {};
+    }
+    // deno-lint-ignore no-explicit-any
+    const body: any = await res.json();
+    return {
+      latestCommitSha: body?.sha,
+      latestCommitUrl: body?.html_url,
+      latestCommitMessage: String(body?.commit?.message ?? "").split("\n")[0]?.slice(0, 200),
+      latestCommitAuthor: body?.commit?.author?.name ?? body?.author?.login,
+      latestCommitAt: body?.commit?.author?.date,
+    };
+  } catch {
+    return {};
+  }
+}
+
+async function fetchLatestWorkflowRun(
+  owner: string,
+  repo: string,
+  branch: string,
+  dispatchedAtMs: number,
+): Promise<Pick<DispatchInfo, "workflowRunUrl" | "workflowRunId" | "workflowRunStatus">> {
+  if (!GITHUB_DISPATCH_TOKEN) return {};
+  // GitHub takes a moment to register the run after dispatch; poll briefly.
+  for (let attempt = 0; attempt < 4; attempt++) {
+    await new Promise((r) => setTimeout(r, attempt === 0 ? 800 : 1200));
+    try {
+      const res = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${DISPATCH_WORKFLOW_FILE}/runs?branch=${encodeURIComponent(branch)}&event=workflow_dispatch&per_page=5`,
+        {
+          headers: {
+            Authorization: `Bearer ${GITHUB_DISPATCH_TOKEN}`,
+            Accept: "application/vnd.github+json",
+            "X-GitHub-Api-Version": "2022-11-28",
+          },
+          signal: AbortSignal.timeout(8000),
+        },
+      );
+      if (!res.ok) {
+        await res.text().catch(() => "");
+        continue;
       }
-    })();
+      // deno-lint-ignore no-explicit-any
+      const body: any = await res.json();
+      // deno-lint-ignore no-explicit-any
+      const runs: any[] = Array.isArray(body?.workflow_runs) ? body.workflow_runs : [];
+      const match = runs.find((r) => {
+        const created = Date.parse(r?.created_at ?? "");
+        return Number.isFinite(created) && created >= dispatchedAtMs - 5000;
+      }) ?? runs[0];
+      if (match) {
+        return {
+          workflowRunUrl: match.html_url,
+          workflowRunId: match.id,
+          workflowRunStatus: match.status,
+        };
+      }
+    } catch {
+      // try again
+    }
+  }
+  return {};
+}
+
+async function dispatchWorkflow(rawBase: string): Promise<DispatchInfo> {
+  if (!GITHUB_DISPATCH_TOKEN) return { status: "skipped: GITHUB_DISPATCH_TOKEN not configured" };
+  const or = deriveOwnerRepo(rawBase);
+  if (!or) return { status: "skipped: owner/repo not derivable from GITHUB_REPO_RAW_BASE" };
+  const branch = deriveBranch(rawBase);
+  const url = `https://api.github.com/repos/${or.owner}/${or.repo}/actions/workflows/${DISPATCH_WORKFLOW_FILE}/dispatches`;
+  const dispatchedAt = new Date();
+  try {
     const res = await fetch(url, {
       method: "POST",
       headers: {
@@ -51,11 +152,31 @@ async function dispatchWorkflow(rawBase: string): Promise<string> {
       body: JSON.stringify({ ref: branch }),
       signal: AbortSignal.timeout(10000),
     });
-    if (res.status === 204) return "queued";
-    const text = await res.text().catch(() => "");
-    return `failed: HTTP ${res.status} ${text.slice(0, 200)}`;
+    if (res.status !== 204) {
+      const text = await res.text().catch(() => "");
+      return {
+        status: `failed: HTTP ${res.status} ${text.slice(0, 200)}`,
+        branch,
+        dispatchedAt: dispatchedAt.toISOString(),
+      };
+    }
+    const [run, commit] = await Promise.all([
+      fetchLatestWorkflowRun(or.owner, or.repo, branch, dispatchedAt.getTime()),
+      fetchLatestCommit(or.owner, or.repo, branch),
+    ]);
+    return {
+      status: "queued",
+      branch,
+      dispatchedAt: dispatchedAt.toISOString(),
+      ...run,
+      ...commit,
+    };
   } catch (e) {
-    return `failed: ${e instanceof Error ? e.message : String(e)}`;
+    return {
+      status: `failed: ${e instanceof Error ? e.message : String(e)}`,
+      branch,
+      dispatchedAt: dispatchedAt.toISOString(),
+    };
   }
 }
 
