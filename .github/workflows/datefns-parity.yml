@@ -75,7 +75,15 @@ jobs:
         run: |
           mkdir -p ci-artifacts
           set -o pipefail
-          if npm run test:date-fns:parity 2>&1 | tee ci-artifacts/datefns-parity.log; then
+          # The script auto-appends a markdown summary to $GITHUB_STEP_SUMMARY
+          # and also writes a machine-readable JSON copy we upload as an
+          # artifact. --quiet trims duplicate human-readable output from the
+          # log, since the structured blocks below cover the same ground.
+          if npm run test:date-fns:parity -- \
+              --quiet \
+              --json-out ci-artifacts/datefns-parity-summary.json \
+              --md-out   ci-artifacts/datefns-parity-summary.md \
+              2>&1 | tee ci-artifacts/datefns-parity.log; then
             echo "status=pass" >> "$GITHUB_OUTPUT"
           else
             echo "status=fail" >> "$GITHUB_OUTPUT"
