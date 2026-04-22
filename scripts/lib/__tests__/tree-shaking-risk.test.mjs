@@ -24,7 +24,7 @@ import {
   BARREL_IMPORT_RE,
   countBarrelImports,
   computeRiskLevel,
-} from "../lib/tree-shaking-risk.mjs";
+} from "../tree-shaking-risk.mjs";
 
 describe("BARREL_IMPORT_RE — barrel detection", () => {
   // Each call must reset lastIndex; verify by running .test() twice on
