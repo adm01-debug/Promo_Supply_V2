@@ -466,7 +466,7 @@ const DependencyHealth = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {snapshot.treeShaking.offenders.map((o, idx) => (
+                    {snapshot.treeShaking.offenders.map((o: TreeShakingOffender, idx: number) => (
                       <TableRow key={`${o.file}:${o.line}:${idx}`}>
                         <TableCell className="font-mono text-xs">{o.file}</TableCell>
                         <TableCell className="font-mono text-xs">{o.line || "—"}</TableCell>
