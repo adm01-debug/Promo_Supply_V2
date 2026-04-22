@@ -118,6 +118,13 @@ export function useClearFiltersFlow<T>(
     setOpen(true);
   }, [describeActiveFilters, scope, runClear]);
 
+  // Listen for global keyboard shortcut (Ctrl/Cmd + Shift + L) dispatched by useKeyboardShortcuts.
+  useEffect(() => {
+    const handler = () => requestClear();
+    window.addEventListener('request-clear-filters', handler);
+    return () => window.removeEventListener('request-clear-filters', handler);
+  }, [requestClear]);
+
   const handleConfirm = useCallback(
     (skipNextTime: boolean) => {
       setOpen(false);
