@@ -1,12 +1,12 @@
 /* =================================================================
    PROMO SUPPLY - BASE STYLES
    Reset, tipografia base, transições de tema
+   (Imported into @layer base via index.css)
    ================================================================= */
 
-@layer base {
-  * {
-    @apply border-border;
-  }
+* {
+  @apply border-border;
+}
 
   html {
     @apply scroll-smooth;
