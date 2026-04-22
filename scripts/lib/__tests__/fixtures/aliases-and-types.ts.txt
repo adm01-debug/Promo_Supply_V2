@@ -1,0 +1,6 @@
+// Fixture: `as` aliases must be stripped; `import type` must be skipped;
+// a sibling value import on the same subpath must still be captured.
+import type { Locale } from "date-fns/locale/pt-BR";
+import { ptBR as defaultLocale } from "date-fns/locale/pt-BR";
+import { enUS } from "date-fns/locale/en-US";
+import { format as fmt, parseISO as parse } from "date-fns/mixed";

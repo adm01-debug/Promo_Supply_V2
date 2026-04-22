@@ -1,0 +1,6 @@
+// Fixture: same subpath imported twice with overlapping names — manifest
+// must dedupe and sort. Also covers two locales the duplicates fixture
+// cross-checks against the locales fixture.
+import { format } from "date-fns/format";
+import { format as f, parseISO } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
