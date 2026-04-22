@@ -265,6 +265,7 @@ describe("date-fns subpath imports smoke test (auto-generated)", () => {
         "── date-fns smoke versions ──────────────────────────────",
         \`  generated: \${stamp}\`,
         \`  cwd:       \${cwd}\`,
+        \`  pkgPath:   \${pkgPath}\`,
         \`  node:      \${process.version}\`,
         \`  spec:      \${spec}\`,
         \`  locked:    \${locked}\`,
