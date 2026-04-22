@@ -238,10 +238,11 @@ GEN_CMD="node scripts/generate-datefns-smoke-test.mjs --dry-run"
 $GEN_CMD >"$GEN_LOG" 2>&1
 GEN_EXIT=$?
 if [ "$GEN_EXIT" -ne 0 ]; then
+  GEN_MODE="$(detect_generator_failure_mode "$GEN_LOG" "$GEN_EXIT")"
   emit_summary \
     "1/2" \
     "Generator drift check (generate-datefns-smoke-test.mjs --dry-run)" \
-    "GENERATOR_DRIFT — smoke test or manifest is out of sync with src/ imports" \
+    "$GEN_MODE" \
     "$GEN_LOG" \
     "node scripts/generate-datefns-smoke-test.mjs && git add src/test/dateFns.smoke.test.ts public/datefns-usage.json && git commit --amend --no-edit" \
     "$GEN_CMD" \
