@@ -10,13 +10,18 @@
  * Reads GitHub-provided env vars when available so the admin UI can deep-link
  * to the exact run / PR that produced the result.
  */
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, statSync, copyFileSync } from "node:fs";
+import { resolve, dirname, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const OUT_PATH = resolve(ROOT, "public", "dependency-health.json");
+const LOG_DIR = resolve(ROOT, "public", "logs");
+const LOG_DEST_NAME = "smoke-date-fns-latest.log";
+const LOG_DEST = resolve(LOG_DIR, LOG_DEST_NAME);
+// Keep tail short enough to embed in JSON without bloating the snapshot.
+const TAIL_BYTES = 4096;
 
 function arg(name, fallback = "") {
   const idx = process.argv.indexOf(`--${name}`);
