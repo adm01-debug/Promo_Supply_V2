@@ -33,10 +33,39 @@ const status = (arg("status", "unknown") || "unknown").toLowerCase();
 const durationMsRaw = arg("duration-ms", "");
 const durationMs = durationMsRaw ? Number(durationMsRaw) : undefined;
 const testFile = arg("test-file", "src/test/dateFns.smoke.test.ts");
+const logFileArg = arg("log-file", "");
 
 if (!["pass", "fail", "unknown"].includes(status)) {
   console.error(`✗ record-smoke-result: invalid --status "${status}" (expected pass|fail|unknown)`);
   process.exit(2);
+}
+
+// Persist the full log into public/logs/ so the admin UI can deep-link to it.
+let logMeta = null;
+if (logFileArg) {
+  const src = resolve(ROOT, logFileArg);
+  if (existsSync(src)) {
+    try {
+      mkdirSync(LOG_DIR, { recursive: true });
+      copyFileSync(src, LOG_DEST);
+      const st = statSync(LOG_DEST);
+      const buf = readFileSync(LOG_DEST);
+      const tail = buf.length > TAIL_BYTES
+        ? buf.subarray(buf.length - TAIL_BYTES).toString("utf8")
+        : buf.toString("utf8");
+      logMeta = {
+        path: `/${relative(resolve(ROOT, "public"), LOG_DEST).split(/\\/g).join("/")}`,
+        sizeBytes: st.size,
+        capturedAt: new Date().toISOString(),
+        tail,
+      };
+      console.log(`✓ Copied smoke log → ${logMeta.path} (${st.size} bytes)`);
+    } catch (err) {
+      console.warn(`! Failed to copy smoke log from ${src}: ${err.message}`);
+    }
+  } else {
+    console.warn(`! Smoke log not found at ${src}, skipping copy`);
+  }
 }
 
 const ghServer = process.env.GITHUB_SERVER_URL || "https://github.com";
