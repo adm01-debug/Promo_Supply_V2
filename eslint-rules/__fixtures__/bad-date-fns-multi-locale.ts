@@ -37,8 +37,6 @@ import { enUS, frCA, deAT } from "date-fns/locale";
 import { jaHira as japaneseHiragana } from "date-fns/locale";
 // eslint-disable-next-line local/date-fns-subpath
 import { srLatn, beTarask, uzCyrl } from "date-fns/locale";
-// eslint-disable-next-line local/date-fns-subpath
-import type { Locale } from "date-fns/locale";
 
 // Reference every binding so unused-import lints don't strip them.
 export const _locales = {
