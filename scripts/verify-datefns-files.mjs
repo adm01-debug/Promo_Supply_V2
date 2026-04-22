@@ -238,7 +238,8 @@ for (const file of scannedFiles) {
 // even when verification later fails. Kept compact (one line per kind) so
 // it doesn't drown the green ✓ summary on success.
 function printBreakdown() {
-  console.log(cyan("▶ date-fns import breakdown (pre-verify):"));
+  const rootsLabel = SCAN_ROOTS.map((r) => relative(ROOT, r) || ".").join(", ");
+  console.log(cyan(`▶ date-fns import breakdown (pre-verify) — roots: ${rootsLabel}, files: ${scannedFiles.size}`));
   for (const kind of PATTERN_KINDS) {
     const occ = kindOccurrences[kind];
     const uniq = kindSubpaths[kind].size;
