@@ -284,6 +284,64 @@ function verifyOne(name) {
 
 const results = targets.map(verifyOne);
 
+/**
+ * Explain WHY the chosen fix command is appropriate for this drift pattern.
+ * Returns an array of human-readable lines, or null when there's no fix to
+ * justify (e.g. aligned packages).
+ */
+function fixRationale(r) {
+  switch (r.status) {
+    case "missing-spec":
+      return [
+        `• ${r.name} is not declared in package.json, so neither bun.lock nor node_modules`,
+        `  can be authoritative. \`bun add\` declares it AND relocks AND installs in one step.`,
+      ];
+    case "missing-lock-entry":
+      return [
+        `• package.json declares ${r.name}@${r.spec}, but bun.lock has no entry for it.`,
+        `  \`bun install\` regenerates the lock entry from the declared spec without`,
+        `  touching unrelated packages.`,
+      ];
+    case "missing-install":
+      return [
+        `• Spec (${r.spec}) and lock (${r.locked}) agree, but ${r.name} is absent from`,
+        `  node_modules. \`--frozen-lockfile\` reinstalls EXACTLY what bun.lock pins,`,
+        `  so the install matches the already-correct lock without re-resolving.`,
+      ];
+  }
+  switch (r.driftKind) {
+    case "SPEC_DRIFT":
+      return [
+        `• bun.lock (${r.locked}) and node_modules (${r.installed}) agree, but`,
+        `  package.json now says ${r.spec}. The spec was edited after the last install.`,
+        `• \`bun install\` re-resolves against the new spec and rewrites bun.lock +`,
+        `  node_modules to match — no need to nuke anything.`,
+      ];
+    case "INSTALLED_DRIFT":
+      return [
+        `• package.json (${r.spec}) and bun.lock (${r.locked}) agree, but`,
+        `  node_modules has ${r.installed} — likely hand-mutated or partially upgraded.`,
+        `• \`--frozen-lockfile\` forbids lock rewrites and reinstalls strictly from`,
+        `  bun.lock, restoring the canonical install without changing the lock.`,
+      ];
+    case "LOCK_DRIFT":
+      return [
+        `• package.json (${r.spec}) and node_modules (${r.installed}) agree, but`,
+        `  bun.lock pins ${r.locked} — the lockfile is stale or corrupt.`,
+        `• Deleting bun.lock forces a full re-resolution from the spec; the new lock`,
+        `  will pin the version already installed (${r.installed}).`,
+      ];
+    case "ALL_DIFFER":
+      return [
+        `• All three sources disagree: spec=${r.spec}, lock=${r.locked}, installed=${r.installed}.`,
+        `  No single source is trustworthy, so partial fixes risk re-introducing drift.`,
+        `• Wiping node_modules + bun.lock and reinstalling from package.json is the`,
+        `  only deterministic recovery.`,
+      ];
+  }
+  return null;
+}
+
 // ───────────────────────── output ─────────────────────────
 if (JSON_OUT) {
   const okCount = results.filter((r) => r.status === "ok").length;
@@ -361,8 +419,20 @@ if (JSON_OUT) {
     }
 
     if (r.fixCmd) {
-      console.error(`\n  Fix:`);
-      console.error(`    ${r.fixCmd}`);
+      console.error(`\n  Fix (${r.driftKind ?? r.status}):`);
+      if (r.spec || r.locked || r.installed) {
+        console.error(`    Current state:`);
+        console.error(`      • package.json spec → ${r.spec ?? "(missing)"}${r.specNorm && r.spec !== r.specNorm ? ` (normalized: ${r.specNorm})` : ""}`);
+        console.error(`      • bun.lock locked  → ${r.locked ?? "(missing)"}`);
+        console.error(`      • node_modules     → ${r.installed ?? "(missing)"}`);
+      }
+      const why = fixRationale(r);
+      if (why) {
+        console.error(`    Why this command:`);
+        for (const line of why) console.error(`      ${line}`);
+      }
+      console.error(`    Run:`);
+      console.error(`      ${r.fixCmd}`);
     }
     console.error(`  Exit code: ${r.exitCode}`);
   }

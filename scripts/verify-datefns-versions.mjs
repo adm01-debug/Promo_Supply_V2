@@ -173,27 +173,58 @@ if (!aligned) {
   }
 
   // Diagnose drift pattern → targeted fix + distinct exit code
-  let diagnosis, fixCmd, exitCode;
+  let diagnosis, fixCmd, exitCode, rationale;
   if (!specEqLock && lockEqInstalled) {
     diagnosis = "spec drifted from lock+installed (package.json edited but not relocked)";
     fixCmd = "bun install";
     exitCode = EXIT.SPEC_DRIFT;
+    rationale = [
+      `• bun.lock (${LOCKED}) and node_modules (${INSTALLED}) agree, but`,
+      `  package.json now says ${SPEC}. The spec was edited after the last install.`,
+      `• \`bun install\` re-resolves against the new spec and rewrites bun.lock +`,
+      `  node_modules to match — no need to nuke anything.`,
+    ];
   } else if (specEqLock && !lockEqInstalled) {
     diagnosis = "node_modules drifted from spec+lock (stale or hand-mutated)";
     fixCmd = "bun install --frozen-lockfile";
     exitCode = EXIT.INSTALLED_DRIFT;
+    rationale = [
+      `• package.json (${SPEC}) and bun.lock (${LOCKED}) agree, but`,
+      `  node_modules has ${INSTALLED} — likely hand-mutated or partially upgraded.`,
+      `• \`--frozen-lockfile\` forbids lock rewrites and reinstalls strictly from`,
+      `  bun.lock, restoring the canonical install without changing the lock.`,
+    ];
   } else if (specEqInstalled && !specEqLock) {
     diagnosis = "lockfile drifted from spec+installed (lock is stale or corrupt)";
     fixCmd = "rm bun.lock && bun install";
     exitCode = EXIT.LOCK_DRIFT;
+    rationale = [
+      `• package.json (${SPEC}) and node_modules (${INSTALLED}) agree, but`,
+      `  bun.lock pins ${LOCKED} — the lockfile is stale or corrupt.`,
+      `• Deleting bun.lock forces a full re-resolution from the spec; the new lock`,
+      `  will pin the version already installed (${INSTALLED}).`,
+    ];
   } else {
     diagnosis = "all three sources differ (full corruption)";
     fixCmd = "rm -rf node_modules bun.lock && bun install";
     exitCode = EXIT.ALL_DIFFER;
+    rationale = [
+      `• All three sources disagree: spec=${SPEC}, lock=${LOCKED}, installed=${INSTALLED}.`,
+      `  No single source is trustworthy, so partial fixes risk re-introducing drift.`,
+      `• Wiping node_modules + bun.lock and reinstalling from package.json is the`,
+      `  only deterministic recovery.`,
+    ];
   }
 
   console.error(`\n  Fix (${diagnosis}):`);
-  console.error(`    ${fixCmd}`);
+  console.error(`    Current state:`);
+  console.error(`      • package.json spec → ${SPEC}${SPEC !== SPEC_NORM ? ` (normalized: ${SPEC_NORM})` : ""}`);
+  console.error(`      • bun.lock locked  → ${LOCKED}`);
+  console.error(`      • node_modules     → ${INSTALLED}`);
+  console.error(`    Why this command:`);
+  for (const line of rationale) console.error(`      ${line}`);
+  console.error(`    Run:`);
+  console.error(`      ${fixCmd}`);
   console.error(`\n  Exit code: ${exitCode}`);
   process.exit(exitCode);
 }
