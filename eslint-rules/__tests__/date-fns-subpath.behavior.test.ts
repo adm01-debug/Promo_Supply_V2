@@ -151,6 +151,36 @@ describe("local/date-fns-subpath — report-only safety nets", () => {
     expect(fixed.output).toBe(src);
   });
 
+  it("reports the on-disk default-import fixture as unfixable", () => {
+    // Pinned fixture: eslint-rules/__fixtures__/bad-date-fns-default-import.ts
+    //
+    // The fixture INTENTIONALLY violates `local/date-fns-subpath` to prove the
+    // rule's report-only branch for default imports (`import X from "date-fns"`).
+    // There is no canonical subpath replacement for a default import — the
+    // rule must report-but-skip-fix. The fixture carries an
+    // `eslint-disable-next-line` comment so the repo-wide lint gate stays
+    // green; this test strips it in-memory and asserts the violation is
+    // still reported as `unfixable` with no source mutation.
+    const fixturePath = resolve(
+      __dirname,
+      "../__fixtures__/bad-date-fns-default-import.ts",
+    );
+    const raw = readFileSync(fixturePath, "utf8");
+    // Strip the disable comment so the linter sees the raw violation.
+    const src = raw.replace(/^\s*\/\/ eslint-disable-next-line[^\n]*\n/m, "");
+
+    const messages = lint(src);
+    const ruleHits = messages.filter((m) => m.ruleId === RULE_ID);
+    expect(ruleHits).toHaveLength(1);
+    expect(ruleHits[0].messageId).toBe("unfixable");
+    expect(ruleHits[0].message).toMatch(/Default import/i);
+
+    // Autofix must be a strict no-op for this pattern.
+    const fixed = fix(src);
+    expect(fixed.fixed).toBe(false);
+    expect(fixed.output).toBe(src);
+  });
+
   it("reports the on-disk namespace-import fixture as unfixable", () => {
     // Pinned fixture: eslint-rules/__fixtures__/bad-date-fns-namespace-import.ts
     //
