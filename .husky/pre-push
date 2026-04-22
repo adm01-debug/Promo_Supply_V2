@@ -58,3 +58,37 @@ if command -v bun >/dev/null 2>&1; then
 else
   bash "$ROOT_DIR/scripts/smoke-date-fns.sh"
 fi
+
+# ── Optional: refresh public/dependency-health.json on push ──────────────────
+# Opt-in via `WRITE_DEP_HEALTH=1 git push`. Keeps the default pre-push fast and
+# read-only — but lets contributors who *want* an up-to-date snapshot in their
+# push regenerate it without remembering the exact flag set. A `--dry-run`
+# escape hatch (`WRITE_DEP_HEALTH=dry`) previews the change without touching
+# the file, useful when checking whether a push would dirty the working tree.
+case "${WRITE_DEP_HEALTH:-}" in
+  1|true|yes)
+    echo "▶ [pre-push opt-in] WRITE_DEP_HEALTH=$WRITE_DEP_HEALTH — refreshing public/dependency-health.json..."
+    ( cd "$ROOT_DIR" && node scripts/verify-datefns-files.mjs --write-health ) || {
+      echo "✗ pre-push: --write-health failed; snapshot was not updated." >&2
+      exit 1
+    }
+    if ! git -C "$ROOT_DIR" diff --quiet -- public/dependency-health.json; then
+      echo "  ⚠ public/dependency-health.json changed — review & commit before re-pushing."
+    else
+      echo "  ✓ public/dependency-health.json already up to date."
+    fi
+    ;;
+  dry|dry-run)
+    echo "▶ [pre-push opt-in] WRITE_DEP_HEALTH=dry — previewing snapshot diff (no write)..."
+    ( cd "$ROOT_DIR" && node scripts/verify-datefns-files.mjs --write-health --dry-run ) || {
+      echo "✗ pre-push: --write-health --dry-run failed." >&2
+      exit 1
+    }
+    ;;
+  "")
+    : # default: skip silently
+    ;;
+  *)
+    echo "  ⚠ Ignoring WRITE_DEP_HEALTH=$WRITE_DEP_HEALTH (expected 1|true|yes|dry)."
+    ;;
+esac
