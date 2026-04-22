@@ -52,6 +52,7 @@
     "pretypecheck": "node scripts/verify-datefns-files.mjs",
     "typecheck": "tsc --noEmit",
     "hook:datefns": "bash scripts/hooks/datefns-precommit.sh",
+    "test:hook:datefns": "bash scripts/__tests__/datefns-precommit-summary.test.sh",
     "hook:smoke:enable": "git config --local hook.fullSmoke true && echo 'Full smoke enabled on pre-push'",
     "hook:smoke:disable": "git config --local hook.fullSmoke false && echo 'Full smoke disabled on pre-push'",
     "prepare": "husky || true",
