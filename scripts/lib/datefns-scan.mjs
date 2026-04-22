@@ -31,6 +31,25 @@ export const STATIC_IMPORT_RE =
 export const REQUIRE_DESTRUCTURE_RE =
   /(?:const|let|var)\s*\{([^{}]*)\}\s*=\s*require\(\s*["']date-fns\/([^"']+)["']\s*\)/g;
 
+// Match: bare/default require — `require("date-fns/format")` (incl.
+// `const x = require(...)`). The destructured shape is matched
+// separately by REQUIRE_DESTRUCTURE_RE; both shapes resolve to the
+// same subpath, so callers should dedupe.
+// Captures: 1=subpath
+export const REQUIRE_BARE_RE =
+  /require\(\s*["']date-fns\/([^"']+)["']\s*\)/g;
+
+// Match: require(`date-fns/<literal-subpath>`) — backticks, NO interpolation.
+// Resolvable; counted alongside REQUIRE_BARE_RE.
+// Captures: 1=subpath
+export const REQUIRE_TEMPLATE_RE =
+  /require\(\s*`date-fns\/([^`${}]+)`\s*\)/g;
+
+// Match: require(`date-fns/${x}...`) or require("date-fns/" + x).
+// No useful captures — flagged as unresolvable so callers fail fast.
+export const REQUIRE_UNRESOLVABLE_RE =
+  /require\(\s*(?:`date-fns\/[^`]*\$\{[^`]*`|["'`]date-fns\/?["'`]\s*\+)/g;
+
 // Match: await? import("date-fns/<subpath>") — bare or destructured.
 // Captures: 1=subpath
 export const DYNAMIC_IMPORT_RE =
