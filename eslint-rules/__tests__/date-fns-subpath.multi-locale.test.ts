@@ -147,8 +147,8 @@ describe("local/date-fns-subpath — multi-locale fixture autofix", () => {
     const subpathImportLines = fixed.output
       .split("\n")
       .filter((l) => /^import .* from "date-fns\/locale\/[A-Za-z-]+";$/.test(l));
-    // 1 (ptBR) + 3 (enUS, frCA, deAT) + 1 (jaHira alias) + 3 (srLatn,
-    // beTarask, uzCyrl) + 1 (type Locale) = 9 emitted lines.
-    expect(subpathImportLines).toHaveLength(9);
+    // 1 (ptBR) + 3 (enUS, frCA, deAT) + 1 (jaHira alias) +
+    // 3 (srLatn, beTarask, uzCyrl) = 8 emitted lines.
+    expect(subpathImportLines).toHaveLength(8);
   });
 });
