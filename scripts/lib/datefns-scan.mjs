@@ -140,6 +140,32 @@ export function detectUnsupportedDateFnsUsage(src, file = "<inline>") {
     });
   }
 
+  // Backtick-template dynamic imports without interpolation are still
+  // resolvable, so they're reported under the same `dynamic-import` kind.
+  DYNAMIC_IMPORT_TEMPLATE_RE.lastIndex = 0;
+  while ((m = DYNAMIC_IMPORT_TEMPLATE_RE.exec(src)) !== null) {
+    findings.push({
+      kind: "dynamic-import",
+      subpath: m[1],
+      line: lineFor(m.index),
+      snippet: m[0],
+      file,
+    });
+  }
+
+  // Interpolated templates / string concatenation — UNRESOLVABLE. Distinct
+  // kind so callers (verifier, tests) can fail fast on these specifically.
+  DYNAMIC_IMPORT_UNRESOLVABLE_RE.lastIndex = 0;
+  while ((m = DYNAMIC_IMPORT_UNRESOLVABLE_RE.exec(src)) !== null) {
+    findings.push({
+      kind: "dynamic-import-unresolvable",
+      subpath: null,
+      line: lineFor(m.index),
+      snippet: m[0],
+      file,
+    });
+  }
+
   return findings;
 }
 
