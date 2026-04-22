@@ -1,4 +1,4 @@
-import { useMemo, useState, lazy, Suspense } from "react";
+import { useMemo, useState, useEffect, lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const DateFnsUsagePanel = lazy(() => import("@/components/admin/DateFnsUsagePanel"));
@@ -207,6 +207,40 @@ const DependencyHealth = () => {
   const refresh = buildRefresh(false);
   const refreshAndCommit = buildRefresh(true);
 
+  const anyPending = refresh.isPending || refreshAndCommit.isPending;
+
+  // Track last successful CI dispatch to prevent overlapping triggers.
+  const [lastDispatch, setLastDispatch] = useState<{ at: number; status?: string } | null>(null);
+  useEffect(() => {
+    const ci = refreshAndCommit.data?.ciDispatch;
+    if (ci && typeof ci !== "string") {
+      setLastDispatch({ at: Date.now(), status: ci.workflowRunStatus });
+    }
+  }, [refreshAndCommit.data]);
+
+  const CI_COOLDOWN_MS = 30_000;
+  const ciStillRunning =
+    lastDispatch != null &&
+    Date.now() - lastDispatch.at < CI_COOLDOWN_MS &&
+    (lastDispatch.status === "queued" || lastDispatch.status === "in_progress" || !lastDispatch.status);
+
+  const handleRefresh = () => {
+    if (anyPending) return;
+    refresh.mutate();
+  };
+  const handleRefreshAndCommit = () => {
+    if (anyPending) return;
+    if (ciStillRunning) {
+      toast({
+        title: "CI já em execução",
+        description: "Aguarde o workflow anterior concluir antes de disparar outro.",
+        variant: "destructive",
+      });
+      return;
+    }
+    refreshAndCommit.mutate();
+  };
+
   if (isLoading) {
     return (
       <div className="container mx-auto p-6 space-y-4">
@@ -283,8 +317,8 @@ const DependencyHealth = () => {
         {isAdmin && (
           <div className="flex gap-2">
             <Button
-              onClick={() => refresh.mutate()}
-              disabled={refresh.isPending || refreshAndCommit.isPending}
+              onClick={handleRefresh}
+              disabled={anyPending}
               variant="outline"
               aria-label="Atualizar snapshot agora"
             >
@@ -292,13 +326,18 @@ const DependencyHealth = () => {
               {refresh.isPending ? "Atualizando…" : "Atualizar agora"}
             </Button>
             <Button
-              onClick={() => refreshAndCommit.mutate()}
-              disabled={refresh.isPending || refreshAndCommit.isPending}
+              onClick={handleRefreshAndCommit}
+              disabled={anyPending || ciStillRunning}
               variant="outline"
               aria-label="Atualizar e commitar snapshot no repositório"
+              title={ciStillRunning ? "Workflow CI anterior ainda em execução" : undefined}
             >
               <RefreshCw className={`h-4 w-4 ${refreshAndCommit.isPending ? "animate-spin" : ""}`} />
-              {refreshAndCommit.isPending ? "Disparando CI…" : "Atualizar & commitar no repo"}
+              {refreshAndCommit.isPending
+                ? "Disparando CI…"
+                : ciStillRunning
+                ? "CI em execução…"
+                : "Atualizar & commitar no repo"}
             </Button>
           </div>
         )}
