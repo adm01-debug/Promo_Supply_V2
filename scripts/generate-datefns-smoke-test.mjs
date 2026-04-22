@@ -117,6 +117,16 @@ for (const file of files) {
       }
     }
   }
+  const malformed = detectMalformedDateFnsImports(src, rel);
+  if (malformed.length > 0) {
+    malformedFindings.push(...malformed);
+    if (VERBOSE) {
+      if (fileMap.size === 0 && findings.length === 0) console.log(`◆ ${rel}`);
+      for (const f of malformed) {
+        vlog(`malformed → date-fns/${f.subpath} @ line ${f.line} (reason: zero usable specifiers after comment stripping)`);
+      }
+    }
+  }
 }
 
 if (VERBOSE) {
