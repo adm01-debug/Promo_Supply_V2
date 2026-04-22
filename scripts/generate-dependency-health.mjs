@@ -219,16 +219,27 @@ function main() {
   const aggregateDrift = packages.some((p) => p.driftDetected);
   const now = new Date().toISOString();
 
-  // Load previous snapshot's tree-shaking block to enable incremental caching.
-  let previousTreeShaking;
+  // Load + validate the previous snapshot ONCE so we can (a) reuse the
+  // tree-shaking cache and (b) preserve the dateFns.subpaths block written
+  // by `verify-datefns-files --write-health`. A malformed previous snapshot
+  // is fatal: silently overwriting it would erase whatever sibling tools
+  // (verifier, smoke runner) had stored, and silently ignoring it would
+  // hand out a stale tree-shaking cache. Fail fast with a fix recipe.
+  let existing;
   if (existsSync(outPath)) {
+    let parsed;
     try {
-      const existing = JSON.parse(readFileSync(outPath, "utf8"));
-      previousTreeShaking = existing?.treeShaking;
-    } catch {
-      previousTreeShaking = undefined;
+      parsed = JSON.parse(readFileSync(outPath, "utf8"));
+    } catch (err) {
+      failOnInvalid(err, { sourcePath: relative(root, outPath), role: "generate-dependency-health" });
+    }
+    try {
+      existing = validateSnapshot(parsed);
+    } catch (err) {
+      failOnInvalid(err, { sourcePath: relative(root, outPath), role: "generate-dependency-health" });
     }
   }
+  const previousTreeShaking = existing?.treeShaking;
   const treeShaking = scanTreeShaking(root, previousTreeShaking);
 
   const snapshot = {
@@ -250,16 +261,19 @@ function main() {
 
   if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
 
-  // Preserve any existing dateFns.subpaths block written by verify-datefns-files --write-health
-  if (existsSync(outPath)) {
-    try {
-      const existing = JSON.parse(readFileSync(outPath, "utf8"));
-      if (existing?.dateFns?.subpaths) {
-        snapshot.dateFns.subpaths = existing.dateFns.subpaths;
-      }
-    } catch {
-      // ignore parse errors — generator is source of truth for the rest
-    }
+  // Preserve the dateFns.subpaths block written by --write-health. Schema
+  // already validated above, so we can graft it on without re-checking.
+  if (existing?.dateFns?.subpaths) {
+    snapshot.dateFns.subpaths = existing.dateFns.subpaths;
+  }
+
+  // Pre-write guard: the bytes we're about to commit must round-trip AND
+  // match the schema. Catches programmer errors in this generator before
+  // they corrupt the on-disk file.
+  try {
+    validateSnapshot(snapshot);
+  } catch (err) {
+    failOnInvalid(err, { sourcePath: relative(root, outPath), role: "generate-dependency-health (pre-write)" });
   }
 
   writeFileSync(outPath, JSON.stringify(snapshot, null, 2) + "\n", "utf8");
