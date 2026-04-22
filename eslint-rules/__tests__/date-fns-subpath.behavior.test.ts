@@ -15,6 +15,8 @@
  *  - Idempotency: a second pass over autofixed output emits no new errors.
  */
 import { describe, it, expect } from "vitest";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { Linter } from "eslint";
 // @ts-expect-error - plain JS rule, no type declarations
 import { dateFnsSubpath } from "../date-fns-subpath.js";
@@ -122,6 +124,32 @@ describe("local/date-fns-subpath — report-only safety nets", () => {
     expect(messages).toHaveLength(1);
     expect(messages[0].messageId).toBe("unfixable");
     expect(messages[0].message).toMatch(/Namespace import/i);
+    const fixed = fix(src);
+    expect(fixed.fixed).toBe(false);
+    expect(fixed.output).toBe(src);
+  });
+
+  it("reports the on-disk namespace-import fixture as unfixable", () => {
+    // Pinned fixture file at eslint-rules/__fixtures__/bad-date-fns-namespace-import.ts.
+    // The fixture carries an inline `eslint-disable-next-line` so repo-wide
+    // lint stays green, but the rule itself — invoked directly here —
+    // must still flag it. This guards against accidental regressions where
+    // someone "fixes" the rule to silently accept namespace imports.
+    const fixturePath = resolve(
+      __dirname,
+      "../__fixtures__/bad-date-fns-namespace-import.ts",
+    );
+    const raw = readFileSync(fixturePath, "utf8");
+    // Strip the disable comment so the linter sees the raw violation.
+    const src = raw.replace(/^\s*\/\/ eslint-disable-next-line[^\n]*\n/m, "");
+
+    const messages = lint(src);
+    const ruleHits = messages.filter((m) => m.ruleId === RULE_ID);
+    expect(ruleHits).toHaveLength(1);
+    expect(ruleHits[0].messageId).toBe("unfixable");
+    expect(ruleHits[0].message).toMatch(/Namespace import/i);
+
+    // Autofix must be a strict no-op for this pattern.
     const fixed = fix(src);
     expect(fixed.fixed).toBe(false);
     expect(fixed.output).toBe(src);
