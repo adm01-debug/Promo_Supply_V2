@@ -7,6 +7,7 @@
  */
 import { readdirSync, readFileSync, statSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
 import { join, relative, dirname } from "node:path";
+import { createHash } from "node:crypto";
 
 const ROOT = process.cwd();
 const ARGS = process.argv.slice(2);
@@ -467,11 +468,37 @@ for (const sp of [...subpaths].sort()) {
 // comprehensive (includes exists:false rows) even on a partly-broken install.
 // Verifier still exits 1 below if any subpath is missing — CI gating intact.
 function writeHealthSnapshot(entriesArr) {
+  // Build a deterministic, diff-friendly description of WHAT was scanned
+  // this run. When `entries[]` changes between snapshots, reviewers need to
+  // know whether a subpath appeared/disappeared because real source changed
+  // or because the scan input itself changed (new test dir, exclusion edit,
+  // CLI `--scan-root` flag, …). The fileHash gives `diff-dependency-health`
+  // a single-field check before walking the (potentially long) files list.
+  const scannedRel = [...scannedFiles]
+    .map((f) => relative(ROOT, f).replace(/\\/g, "/"))
+    .sort();
+  const fileHash = createHash("sha256")
+    .update(scannedRel.join("\n"))
+    .digest("hex");
+  const scanInput = {
+    roots: SCAN_ROOTS.map((r) => relative(ROOT, r).replace(/\\/g, "/") || "."),
+    rootsSource: CLI_SCAN_ROOTS.length > 0 ? "cli" : "default",
+    excludeDirs: [...EXCLUDE_DIRS].sort(),
+    excludeFilePattern: EXCLUDE_FILE_RE.source,
+    fileExtensions: FILE_EXT.source,
+    fileCount: scannedRel.length,
+    fileHash,
+    files: scannedRel,
+  };
   const subpathsBlock = {
     scannedAt: new Date().toISOString(),
     count: entriesArr.length,
     missingCount: entriesArr.filter((e) => !e.exists).length,
     entries: entriesArr,
+    // Legacy alias kept for any older consumer expecting `.list` (just the
+    // names). Distinct from `entries[]` (rich shape with fileCount, etc.).
+    list: entriesArr.map((e) => e.subpath),
+    scanInput,
   };
   let snapshot = {};
 

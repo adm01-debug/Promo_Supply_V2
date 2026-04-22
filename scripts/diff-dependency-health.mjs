@@ -63,6 +63,67 @@ function diffDateFns(prev, next, lines) {
     }
   }
 
+  // Scan input drift (roots/excludes/files) — surfaced FIRST so a changed
+  // entries[] is immediately attributable to "scan widened/narrowed" vs
+  // "real source change". Only fires when at least one snapshot carries the
+  // new scanInput block; older snapshots degrade to silence.
+  const aScan = a.subpaths?.scanInput ?? null;
+  const bScan = b.subpaths?.scanInput ?? null;
+  if (aScan || bScan) {
+    const scanLines = [];
+    const aRoots = (aScan?.roots ?? []).join(", ");
+    const bRoots = (bScan?.roots ?? []).join(", ");
+    if (aRoots !== bRoots) scanLines.push(`    roots: [${aRoots}] → [${bRoots}]`);
+    if ((aScan?.rootsSource ?? null) !== (bScan?.rootsSource ?? null)) {
+      scanLines.push(`    rootsSource: ${aScan?.rootsSource ?? "—"} → ${bScan?.rootsSource ?? "—"}`);
+    }
+    const aExcl = (aScan?.excludeDirs ?? []).join(", ");
+    const bExcl = (bScan?.excludeDirs ?? []).join(", ");
+    if (aExcl !== bExcl) scanLines.push(`    excludeDirs: [${aExcl}] → [${bExcl}]`);
+    if ((aScan?.excludeFilePattern ?? null) !== (bScan?.excludeFilePattern ?? null)) {
+      scanLines.push(
+        `    excludeFilePattern: ${aScan?.excludeFilePattern ?? "—"} → ${bScan?.excludeFilePattern ?? "—"}`,
+      );
+    }
+    if ((aScan?.fileExtensions ?? null) !== (bScan?.fileExtensions ?? null)) {
+      scanLines.push(
+        `    fileExtensions: ${aScan?.fileExtensions ?? "—"} → ${bScan?.fileExtensions ?? "—"}`,
+      );
+    }
+    if ((aScan?.fileCount ?? null) !== (bScan?.fileCount ?? null)) {
+      scanLines.push(`    fileCount: ${aScan?.fileCount ?? "—"} → ${bScan?.fileCount ?? "—"}`);
+    }
+    // fileHash is the cheap "did the actual file set change?" probe; only
+    // walk the files[] arrays when it differs (lists can be long).
+    if ((aScan?.fileHash ?? null) !== (bScan?.fileHash ?? null)) {
+      scanLines.push(
+        `    fileHash: ${(aScan?.fileHash ?? "—").slice(0, 12)} → ${(bScan?.fileHash ?? "—").slice(0, 12)}`,
+      );
+      const aFiles = new Set(aScan?.files ?? []);
+      const bFiles = new Set(bScan?.files ?? []);
+      const addedFiles = [...bFiles].filter((f) => !aFiles.has(f)).sort();
+      const removedFiles = [...aFiles].filter((f) => !bFiles.has(f)).sort();
+      if (addedFiles.length > 0) {
+        scanLines.push(`    files added (${addedFiles.length}):`);
+        for (const f of addedFiles.slice(0, OFFENDER_DIFF_CAP)) scanLines.push(`      + ${f}`);
+        if (addedFiles.length > OFFENDER_DIFF_CAP) {
+          scanLines.push(`      … and ${addedFiles.length - OFFENDER_DIFF_CAP} more`);
+        }
+      }
+      if (removedFiles.length > 0) {
+        scanLines.push(`    files removed (${removedFiles.length}):`);
+        for (const f of removedFiles.slice(0, OFFENDER_DIFF_CAP)) scanLines.push(`      - ${f}`);
+        if (removedFiles.length > OFFENDER_DIFF_CAP) {
+          scanLines.push(`      … and ${removedFiles.length - OFFENDER_DIFF_CAP} more`);
+        }
+      }
+    }
+    if (scanLines.length > 0) {
+      section.push("    scanInput:");
+      section.push(...scanLines);
+    }
+  }
+
   // Subpaths drift (added/removed entries between snapshots; supports both
   // the new entries[] shape and the legacy list[] shape for back-compat).
   const aSub = a.subpaths ?? null;
