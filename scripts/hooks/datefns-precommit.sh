@@ -97,7 +97,14 @@ detect_generator_failure_mode() {
   [ -f "$log" ] && raw="$(cat "$log" 2>/dev/null || true)"
 
   local mode=""
-  if printf '%s' "$raw" | grep -qE '(MODULE_NOT_FOUND|Cannot find module .*generate-datefns-smoke-test|ENOENT.*generate-datefns-smoke-test)'; then
+  # Order matters — check the more-specific deps-missing signal BEFORE the
+  # generic "missing file" one, because Node's ESM error format mentions the
+  # generator script as the *importer* even when the actual missing target is
+  # the date-fns package (e.g. `Cannot find package 'date-fns' imported from
+  # /…/generate-datefns-smoke-test.mjs`).
+  if printf '%s' "$raw" | grep -qE "Cannot find (module|package) ['\"]date-fns(['\"]|/)"; then
+    mode="GEN_DEPS_MISSING — date-fns is not installed in node_modules (run \`bun install --frozen-lockfile\`)"
+  elif printf '%s' "$raw" | grep -qE "(Cannot find module ['\"][^'\"]*generate-datefns-smoke-test|ENOENT.*generate-datefns-smoke-test\.mjs)"; then
     mode="GEN_MISSING_FILE — generator script not found on disk (re-run \`bun install\` or restore the file)"
   elif printf '%s' "$raw" | grep -qE '^(TypeError|ReferenceError|SyntaxError|RangeError|Error):'; then
     local first
@@ -107,8 +114,6 @@ detect_generator_failure_mode() {
     mode="GENERATOR_DRIFT — smoke test or manifest is out of sync with src/ imports"
   elif printf '%s' "$raw" | grep -qiE '(invalid .*(manifest|usage)|JSON\.parse|unexpected token .* JSON|malformed (manifest|usage))'; then
     mode="GEN_MANIFEST_BAD — generator could not parse public/datefns-usage.json (re-run the generator to regenerate it)"
-  elif printf '%s' "$raw" | grep -qE "Cannot find module ['\"]date-fns"; then
-    mode="GEN_DEPS_MISSING — date-fns is not installed in node_modules (run \`bun install --frozen-lockfile\`)"
   fi
 
   if [ -z "$mode" ]; then
@@ -230,6 +235,14 @@ emit_summary() {
   fi
   red "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 }
+
+# Library mode: when sourced with DATEFNS_HOOK_LIBRARY=1, expose the helper
+# functions but skip the live pipeline. Used by the fixture-driven test
+# (scripts/__tests__/datefns-hook-fixtures.test.sh) to reuse detect_*/extract_*
+# without executing `node` or `bunx`. No effect on real hook invocations.
+if [ "${DATEFNS_HOOK_LIBRARY:-}" = "1" ]; then
+  return 0 2>/dev/null || exit 0
+fi
 
 cd "$ROOT_DIR"
 

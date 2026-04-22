@@ -1,0 +1,7 @@
+{
+  "step": "generator",
+  "exitCode": 1,
+  "failureModeBucket": "GEN_DEPS_MISSING",
+  "failureModeContains": ["GEN_DEPS_MISSING", "date-fns is not installed"],
+  "imports": []
+}
