@@ -172,21 +172,32 @@ if (!aligned) {
     console.error(`        ${match ? reasonMatch : reasonDrift}`);
   }
 
-  // Diagnose drift pattern → targeted fix + distinct exit code
-  let diagnosis, fixCmd, exitCode, rationale;
+  // Diagnose drift pattern → targeted fix + distinct exit code.
+  // `commands` is an ordered list of { cmd, why } pairs the user can paste
+  // verbatim. Each pair documents the exact bun invocation + the role of every
+  // non-obvious flag.
+  let diagnosis, exitCode, rationale, commands;
   if (!specEqLock && lockEqInstalled) {
     diagnosis = "spec drifted from lock+installed (package.json edited but not relocked)";
-    fixCmd = "bun install";
     exitCode = EXIT.SPEC_DRIFT;
     rationale = [
       `• bun.lock (${LOCKED}) and node_modules (${INSTALLED}) agree, but`,
       `  package.json now says ${SPEC}. The spec was edited after the last install.`,
-      `• \`bun install\` re-resolves against the new spec and rewrites bun.lock +`,
-      `  node_modules to match — no need to nuke anything.`,
+      `• \`bun install\` (no flags) re-resolves against the new spec and rewrites`,
+      `  bun.lock + node_modules to match — no need to nuke anything.`,
+    ];
+    commands = [
+      {
+        cmd: "bun install",
+        why: "Re-resolves date-fns against the updated spec, rewrites bun.lock, and updates node_modules. NO --frozen-lockfile here: that flag would refuse to update bun.lock and the install would fail.",
+      },
+      {
+        cmd: "bun run verify:date-fns",
+        why: "Confirms spec ↔ lock ↔ installed are now aligned (exit 0).",
+      },
     ];
   } else if (specEqLock && !lockEqInstalled) {
     diagnosis = "node_modules drifted from spec+lock (stale or hand-mutated)";
-    fixCmd = "bun install --frozen-lockfile";
     exitCode = EXIT.INSTALLED_DRIFT;
     rationale = [
       `• package.json (${SPEC}) and bun.lock (${LOCKED}) agree, but`,
@@ -194,9 +205,22 @@ if (!aligned) {
       `• \`--frozen-lockfile\` forbids lock rewrites and reinstalls strictly from`,
       `  bun.lock, restoring the canonical install without changing the lock.`,
     ];
+    commands = [
+      {
+        cmd: "rm -rf node_modules/date-fns",
+        why: "Drops the drifted copy so bun reinstalls it cleanly. Scoped to the date-fns folder to avoid a full node_modules rebuild.",
+      },
+      {
+        cmd: "bun install --frozen-lockfile",
+        why: "--frozen-lockfile pins the install to bun.lock exactly and FAILS if anything would force a lock rewrite — the right guarantee when the lock is already correct.",
+      },
+      {
+        cmd: "bun run verify:date-fns",
+        why: "Confirms node_modules now matches the locked version.",
+      },
+    ];
   } else if (specEqInstalled && !specEqLock) {
     diagnosis = "lockfile drifted from spec+installed (lock is stale or corrupt)";
-    fixCmd = "rm bun.lock && bun install";
     exitCode = EXIT.LOCK_DRIFT;
     rationale = [
       `• package.json (${SPEC}) and node_modules (${INSTALLED}) agree, but`,
@@ -204,15 +228,46 @@ if (!aligned) {
       `• Deleting bun.lock forces a full re-resolution from the spec; the new lock`,
       `  will pin the version already installed (${INSTALLED}).`,
     ];
+    commands = [
+      {
+        cmd: "rm bun.lock",
+        why: "Removes the stale lockfile so bun resolves fresh from package.json. Do NOT pass --frozen-lockfile next — there is no lock to freeze against.",
+      },
+      {
+        cmd: "bun install",
+        why: "Generates a new bun.lock from the current spec. Since node_modules already matches the spec, this should converge without reinstalling much.",
+      },
+      {
+        cmd: "bun run verify:date-fns",
+        why: "Confirms the regenerated lock now matches spec + installed.",
+      },
+    ];
   } else {
     diagnosis = "all three sources differ (full corruption)";
-    fixCmd = "rm -rf node_modules bun.lock && bun install";
     exitCode = EXIT.ALL_DIFFER;
     rationale = [
       `• All three sources disagree: spec=${SPEC}, lock=${LOCKED}, installed=${INSTALLED}.`,
       `  No single source is trustworthy, so partial fixes risk re-introducing drift.`,
       `• Wiping node_modules + bun.lock and reinstalling from package.json is the`,
       `  only deterministic recovery.`,
+    ];
+    commands = [
+      {
+        cmd: "rm -rf node_modules bun.lock",
+        why: "Wipes both untrusted sources so package.json becomes the single source of truth.",
+      },
+      {
+        cmd: "bun install",
+        why: "Resolves from the spec, regenerates bun.lock, and reinstalls node_modules. NO --frozen-lockfile (there's no lock yet).",
+      },
+      {
+        cmd: "bun run verify:date-fns",
+        why: "Confirms full alignment after the rebuild.",
+      },
+      {
+        cmd: "bun run test:date-fns",
+        why: "Runs the date-fns smoke test — catches subpath/locale regressions a fresh install can introduce.",
+      },
     ];
   }
 
@@ -221,10 +276,26 @@ if (!aligned) {
   console.error(`      • package.json spec → ${SPEC}${SPEC !== SPEC_NORM ? ` (normalized: ${SPEC_NORM})` : ""}`);
   console.error(`      • bun.lock locked  → ${LOCKED}`);
   console.error(`      • node_modules     → ${INSTALLED}`);
-  console.error(`    Why this command:`);
+  console.error(`    Why this approach:`);
   for (const line of rationale) console.error(`      ${line}`);
-  console.error(`    Run:`);
-  console.error(`      ${fixCmd}`);
+  console.error(`    Run these bun commands locally (in order):`);
+  commands.forEach(({ cmd, why }, i) => {
+    console.error(`      ${i + 1}. $ ${cmd}`);
+    // Soft-wrap the rationale at ~80 cols so terminals stay readable.
+    const indent = "         ↳ ";
+    const wrapWidth = 78;
+    const words = why.split(/\s+/);
+    let line = indent;
+    for (const w of words) {
+      if (line.length + w.length + 1 > wrapWidth && line !== indent) {
+        console.error(line);
+        line = "           " + w;
+      } else {
+        line += (line === indent ? "" : " ") + w;
+      }
+    }
+    if (line.trim()) console.error(line);
+  });
   console.error(`\n  Exit code: ${exitCode}`);
   process.exit(exitCode);
 }
