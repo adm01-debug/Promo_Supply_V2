@@ -232,6 +232,51 @@ function printBreakdown() {
 }
 printBreakdown();
 
+// ── Failure mode D: unresolvable dynamic imports ─────────────────────────────
+// Runs BEFORE the package/file checks because no amount of disk verification
+// can prove a runtime-computed subpath is safe. Fail fast with copy-paste
+// fix recipes so the developer doesn't have to grep for the offending lines.
+if (unresolvableDynamic.length > 0) {
+  const lines = [];
+  lines.push(
+    cyan(
+      `Found ${unresolvableDynamic.length} dynamic import(s) with an interpolated date-fns subpath.`,
+    ),
+  );
+  lines.push(
+    gray(
+      "  These can't be statically verified, defeat tree-shaking, and silently break",
+    ),
+  );
+  lines.push(gray("  when a runtime value resolves to a subpath that doesn't exist."));
+  lines.push("");
+  lines.push(cyan("Offending sites:"));
+  for (const { file, line, snippet } of unresolvableDynamic) {
+    lines.push(`  ${red("•")} ${bold(`${file}:${line}`)}`);
+    lines.push(`      ${gray(snippet)}`);
+  }
+  lines.push("");
+  lines.push(cyan("▶ Fix (rewrite as a static import or a switch over known subpaths):"));
+  lines.push("");
+  lines.push(bold('    // ✗ unresolvable'));
+  lines.push(bold('    const mod = await import(`date-fns/locale/${tag}`);'));
+  lines.push("");
+  lines.push(bold('    // ✓ static (preferred when the set is known)'));
+  lines.push(bold('    import { ptBR } from "date-fns/locale/pt-BR";'));
+  lines.push(bold('    import { enUS } from "date-fns/locale/en-US";'));
+  lines.push(bold('    const mod = tag === "pt-BR" ? { default: ptBR } : { default: enUS };'));
+  lines.push("");
+  lines.push(bold('    // ✓ explicit dynamic switch (when lazy-loading matters)'));
+  lines.push(bold('    const mod = tag === "pt-BR"'));
+  lines.push(bold('      ? await import("date-fns/locale/pt-BR")'));
+  lines.push(bold('      : await import("date-fns/locale/en-US");'));
+  printBlock(
+    `verify-datefns-files: ${unresolvableDynamic.length} unresolvable dynamic date-fns import(s)`,
+    lines.join("\n"),
+  );
+  process.exit(1);
+}
+
 // ── Failure mode A: package directory missing ────────────────────────────────
 if (!existsSync(PKG_DIR)) {
   const body = [
