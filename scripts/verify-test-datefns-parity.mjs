@@ -23,9 +23,26 @@
  *   2  — neither runner is available, or invocation error
  */
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, existsSync, rmSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync, appendFileSync, existsSync, rmSync, mkdirSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join, resolve } from "node:path";
+
+// CLI flags (all optional, all backward-compatible):
+//   --json-out <path>   Write the structured summary to this path.
+//   --md-out   <path>   Write the markdown summary to this path.
+//   --quiet             Suppress the human Comparison block; structured
+//                       summaries are still emitted (cuts CI log noise).
+// When $GITHUB_STEP_SUMMARY is set we ALSO append the markdown summary there
+// automatically — that's what GitHub Actions surfaces in the run UI.
+const ARGS = process.argv.slice(2);
+const flagValue = (name) => {
+  const i = ARGS.indexOf(name);
+  return i !== -1 && ARGS[i + 1] ? ARGS[i + 1] : null;
+};
+const JSON_OUT = flagValue("--json-out");
+const MD_OUT = flagValue("--md-out");
+const QUIET = ARGS.includes("--quiet");
+
 
 const isTTY = Boolean(process.stdout.isTTY);
 const c = (code, s) => (isTTY ? `\x1b[${code}m${s}\x1b[0m` : s);
