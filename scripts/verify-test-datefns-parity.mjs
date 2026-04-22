@@ -190,6 +190,8 @@ function runShape(r) {
           failed: r.json.failed,
           pending: r.json.pending ?? null,
           success: r.json.success ?? null,
+          // Sorted, deterministic — diffable across runs.
+          failedTests: r.json.failedTests ?? [],
         }
       : null,
   };
