@@ -31,21 +31,12 @@ function makeFakeProject({ spec, locked, installed }) {
     join(dir, "package.json"),
     JSON.stringify({ name: "fake", dependencies: { "date-fns": spec } }, null, 2),
   );
-  // Minimal bun.lock shape that resolveLockedVersion understands. The
-  // resolver looks for `"date-fns": "<version>"` style entries in the
-  // packages section — mimic that.
+  // Minimal bun text-lock snippet. resolveLockedVersion's first-priority
+  // pattern matches the literal `"date-fns@<version>"` key, so a plain
+  // single-line entry is enough.
   writeFileSync(
     join(dir, "bun.lock"),
-    JSON.stringify(
-      {
-        lockfileVersion: 1,
-        packages: {
-          "date-fns": ["date-fns@" + locked, "", {}, ""],
-        },
-      },
-      null,
-      2,
-    ),
+    `"date-fns@${locked}": {\n  "integrity": "sha-fake"\n}\n`,
   );
   const dfDir = join(dir, "node_modules", "date-fns");
   mkdirSync(dfDir, { recursive: true });
