@@ -102,3 +102,104 @@ export function renderTripleMismatch(spec, locked, installed) {
     }),
   ].join("\n");
 }
+
+// ── ANSI color helpers ──────────────────────────────────────────────────
+//
+// Decide ONCE per process whether to colorize. Honor the conventions every
+// well-behaved CLI follows:
+//   - NO_COLOR (any value)        → never colorize       https://no-color.org
+//   - FORCE_COLOR (truthy)        → always colorize      (npm/chalk convention)
+//   - otherwise: colorize only when stdout is a TTY      (CI logs stay clean)
+//
+// Callers can also override per-call via `renderUnifiedDiff(..., { color: bool })`
+// — useful in tests and when piping to a file but still wanting color (e.g.
+// `less -R`).
+const ENV_NO_COLOR =
+  typeof process !== "undefined" && process.env && "NO_COLOR" in process.env;
+const ENV_FORCE_COLOR =
+  typeof process !== "undefined" &&
+  process.env &&
+  process.env.FORCE_COLOR &&
+  process.env.FORCE_COLOR !== "0" &&
+  process.env.FORCE_COLOR !== "false";
+const STDOUT_IS_TTY =
+  typeof process !== "undefined" && process.stdout && process.stdout.isTTY === true;
+
+export function shouldColor(override) {
+  if (override === true) return true;
+  if (override === false) return false;
+  if (ENV_NO_COLOR) return false;
+  if (ENV_FORCE_COLOR) return true;
+  return STDOUT_IS_TTY;
+}
+
+const ANSI = {
+  reset: "\x1b[0m",
+  bold: "\x1b[1m",
+  dim: "\x1b[2m",
+  red: "\x1b[31m",
+  green: "\x1b[32m",
+  yellow: "\x1b[33m",
+  cyan: "\x1b[36m",
+};
+
+function paint(text, codes, on) {
+  return on ? `${codes}${text}${ANSI.reset}` : text;
+}
+
+/**
+ * Render a unified-diff-style block for two semver strings.
+ *
+ * Output mirrors `git diff --no-color` so contributors who already read
+ * patches every day instantly recognize the shape:
+ *
+ *     --- spec       3.6.0
+ *     +++ installed  3.7.1
+ *     @@ patch version drift @@
+ *     - 3.6.0
+ *     + 3.7.1
+ *           ^
+ *
+ * Padding rules:
+ *   - The two LABEL columns (`spec`, `installed`) are right-padded to the
+ *     longer label so the version columns line up vertically in the
+ *     `---`/`+++` headers.
+ *   - The caret column reuses the same `classifyDiff().caretCol` math as
+ *     `renderMismatch` — it points at the first differing character of v2,
+ *     measured from the start of v2 on the `+` line.
+ *
+ * Colors (when enabled):
+ *   - `---` header → dim
+ *   - `+++` header → dim
+ *   - `@@ … @@`    → cyan + bold
+ *   - `-` line     → red
+ *   - `+` line     → green
+ *   - caret `^`    → yellow + bold
+ *
+ * @param {string} label1   "spec" / "declared" / "locked" / etc.
+ * @param {string} v1       version on the `-` line
+ * @param {string} label2   "installed" / "locked" / etc.
+ * @param {string} v2       version on the `+` line
+ * @param {{ color?: boolean, indent?: string }} [opts]
+ *   - color:  override TTY/NO_COLOR detection (default: auto-detect)
+ *   - indent: leading whitespace prefix on every line (default: "    ")
+ */
+export function renderUnifiedDiff(label1, v1, label2, v2, opts = {}) {
+  const { color: colorOverride, indent = "    " } = opts;
+  const on = shouldColor(colorOverride);
+  const { level, caretCol } = classifyDiff(v1, v2);
+
+  const labelW = Math.max(label1.length, label2.length);
+  const padLabel = (s) => s + " ".repeat(labelW - s.length);
+
+  const minusHeader = `${indent}${paint(`--- ${padLabel(label1)}  ${v1}`, ANSI.dim, on)}`;
+  const plusHeader = `${indent}${paint(`+++ ${padLabel(label2)}  ${v2}`, ANSI.dim, on)}`;
+  const hunkHeader = `${indent}${paint(`@@ ${level} version drift @@`, ANSI.bold + ANSI.cyan, on)}`;
+  const minusLine = `${indent}${paint(`- ${v1}`, ANSI.red, on)}`;
+  const plusLine = `${indent}${paint(`+ ${v2}`, ANSI.green, on)}`;
+  // Caret indent: indent + "+ " (2 chars) + caretCol — points at the first
+  // differing char of v2 on the `+` line above.
+  const caretLine = `${indent}  ${" ".repeat(caretCol)}${paint("^", ANSI.bold + ANSI.yellow, on)}`;
+
+  return [minusHeader, plusHeader, hunkHeader, minusLine, plusLine, caretLine].join("\n");
+}
