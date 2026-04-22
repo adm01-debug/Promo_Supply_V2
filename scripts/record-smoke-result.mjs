@@ -110,6 +110,7 @@ const smokeTest = {
   testFile,
   ...(Number.isFinite(durationMs) ? { durationMs } : {}),
   ...(ci ? { ci } : {}),
+  ...(logMeta ? { log: logMeta } : {}),
 };
 
 let snapshot = {};
