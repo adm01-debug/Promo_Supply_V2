@@ -13,24 +13,30 @@
  * header — no scrolling required.
  *
  * Curated set rationale:
- *   • zhCN   — uppercase region after lowercase script-less language.
- *              Common smoke-test target (Mainland Chinese).
- *   • zhTW   — same shape as zhCN; guards against Taiwan-specific drift.
- *   • zhHK   — third zh variant; ensures the rule isn't memoising the
- *              first zh-* it sees.
- *   • frCA   — Canadian French; mirror of frCH/frFR — a regression
- *              here usually means *all* fr-* variants are broken.
- *   • es419  — UN M.49 numeric region code (Latin America). The only
- *              locale where the kebab "region" is purely digits, which
- *              has tripped up regex-based fix paths in the past.
- *   • srLatn — script subtag (`Latn`) instead of a region. The kebab
- *              form preserves PascalCase (`sr-Latn`), unlike region
- *              codes which uppercase (`zh-CN`).
+ *   • zhCN     — uppercase region after lowercase script-less language.
+ *                Common smoke-test target (Mainland Chinese).
+ *   • zhTW     — same shape as zhCN; guards against Taiwan-specific drift.
+ *   • zhHK     — third zh variant; ensures the rule isn't memoising the
+ *                first zh-* it sees.
+ *   • frCA     — Canadian French; mirror of frCH/frFR — a regression
+ *                here usually means *all* fr-* variants are broken.
+ *   • enCA     — Canadian English; second-language coverage of the same
+ *                CA region to catch language-specific bugs.
+ *   • enAU     — Australian English; another uppercase-region en-* variant.
+ *   • srLatn   — script subtag (`Latn`) instead of a region. The kebab
+ *                form preserves PascalCase (`sr-Latn`), unlike region
+ *                codes which uppercase (`zh-CN`).
  *   • beTarask — non-script, non-region lowercase subtag. Distinct
- *              kebab shape (`be-tarask`) — guards against the rule
- *              uppercasing every trailing segment.
- *   • ja      — single-segment locale (no dash). Sanity check that
- *              the rule doesn't require a hyphen to fire.
+ *                kebab shape (`be-tarask`) — guards against the rule
+ *                uppercasing every trailing segment.
+ *   • ja       — single-segment locale (no dash). Sanity check that
+ *                the rule doesn't require a hyphen to fire.
+ *
+ * Negative-test note:
+ *   `es419` (UN M.49 Latin America) is intentionally NOT in the
+ *   spotlight set because date-fns does not ship that locale. It gets
+ *   its own dedicated test asserting the rule REFUSES to invent a
+ *   `date-fns/locale/es-419` subpath that wouldn't resolve at runtime.
  */
 import { describe, it, expect } from "vitest";
 import { Linter } from "eslint";
