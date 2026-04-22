@@ -132,6 +132,12 @@ jobs:
           # `smoke-date-fns-failure-report` artifact below so reviewers get
           # the full repair recipe offline without scrolling job logs.
           DATEFNS_SMOKE_REPORT_MD: ci-artifacts/datefns-failure-report.md
+          # Machine-readable sibling of the Markdown report. Versioned schema
+          # (`schemaVersion: 1`) listing every missing subpath, its offender
+          # `file:line` list, the pinned date-fns version, and a one-step
+          # reinstall command. Lets dashboards / bots consume drift without
+          # scraping Markdown. Written ONLY on failure.
+          DATEFNS_SMOKE_REPORT_JSON: ci-artifacts/missing-datefns-subpaths.json
         run: |
           mkdir -p ci-artifacts
           set -o pipefail
