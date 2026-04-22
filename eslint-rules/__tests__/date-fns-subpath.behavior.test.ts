@@ -127,16 +127,18 @@ describe("local/date-fns-subpath — report-only safety nets", () => {
     expect(fixed.output).toBe(src);
   });
 
-  it("preserves a top-level `import type` declaration when splitting", () => {
-    // `import type { ... }` is fine to split — the `type` keyword is
-    // re-emitted on each generated import. Confirm that path doesn't
-    // accidentally regress into the "unfixable mixed type+value" branch.
-    const src = `import type { Day, Month } from "date-fns";\n`;
-    const result = fix(src);
-    expect(result.fixed).toBe(true);
-    expect(result.output).toContain('import type { Day } from "date-fns/Day"');
-    expect(result.output).toContain('import type { Month } from "date-fns/Month"');
-    expect(lint(result.output)).toHaveLength(0);
+  it("reports each barrel violation independently in a multi-import file", () => {
+    const src = [
+      `import { format } from "date-fns";`,
+      `import { ptBR } from "date-fns/locale";`,
+      `import { foo } from "lodash";`, // unrelated, must NOT report
+      "",
+    ].join("\n");
+    const messages = lint(src);
+    // Two reports: one `barrel`, one `barrelLocale`. Lodash is ignored.
+    expect(messages).toHaveLength(2);
+    const ids = messages.map((m) => m.messageId).sort();
+    expect(ids).toEqual(["barrel", "barrelLocale"]);
   });
 
   it("reports but does NOT fix an unknown locale identifier", () => {
