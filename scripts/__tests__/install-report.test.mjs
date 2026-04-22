@@ -154,7 +154,7 @@ describe("install-report --json-file", () => {
     const bytes = readFileSync(absOut).length;
     expect(res.stderr).toContain("[install-report] wrote JSON");
     expect(res.stderr).toContain(absOut);
-    expect(res.stderr).toContain(`(${bytes} bytes)`);
+    expect(res.stderr).toContain(`(${bytes} bytes, pretty)`);
     // stdout must remain pure JSON — confirmation must not leak there.
     expect(res.stdout).not.toContain("[install-report] wrote JSON");
     expect(() => JSON.parse(res.stdout)).not.toThrow();
