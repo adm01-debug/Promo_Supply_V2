@@ -96,3 +96,15 @@ jobs:
           path: ci-logs/
           if-no-files-found: ignore
           retention-days: 30
+
+      # Slack alert — only fires when the job failed. Re-uses the install-report
+      # artifact written above so the message includes the actual drift detail.
+      # Requires repo secret SLACK_WEBHOOK_URL (Settings → Secrets → Actions).
+      - name: Notify Slack on failure
+        if: failure()
+        uses: ./.github/actions/slack-failure-alert
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          job-name: 'Nightly install + smoke'
+          install-report-path: ci-artifacts/install-report.json
+

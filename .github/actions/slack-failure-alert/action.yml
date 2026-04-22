@@ -1,0 +1,97 @@
+name: 'Slack failure alert'
+description: 'Posts a formatted failure notification to Slack with optional install-report drift details.'
+inputs:
+  webhook-url:
+    description: 'Slack Incoming Webhook URL (store as a repo secret).'
+    required: true
+  job-name:
+    description: 'Friendly name of the failing job/workflow shown in Slack.'
+    required: true
+  install-report-path:
+    description: 'Optional path to install-report.json. If present, drift details are inlined.'
+    required: false
+    default: ''
+jobs: {}
+runs:
+  using: 'composite'
+  steps:
+    - name: Build payload and post to Slack
+      shell: bash
+      env:
+        SLACK_WEBHOOK_URL: ${{ inputs.webhook-url }}
+        JOB_NAME: ${{ inputs.job-name }}
+        REPORT_PATH: ${{ inputs.install-report-path }}
+        REPO: ${{ github.repository }}
+        RUN_ID: ${{ github.run_id }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        WORKFLOW: ${{ github.workflow }}
+        REF: ${{ github.ref_name }}
+        SHA: ${{ github.sha }}
+        ACTOR: ${{ github.actor }}
+        EVENT: ${{ github.event_name }}
+      run: |
+        if [ -z "${SLACK_WEBHOOK_URL:-}" ]; then
+          echo "::warning::SLACK_WEBHOOK_URL is empty; skipping Slack alert (add it as a repo secret to enable)."
+          exit 0
+        fi
+
+        # Drift section is only built when an install-report.json is present.
+        # Pure node — no extra deps — so it works on any runner.
+        DRIFT_BLOCK="$(node -e '
+          const fs = require("node:fs");
+          const p = process.env.REPORT_PATH;
+          if (!p || !fs.existsSync(p)) { process.stdout.write(""); process.exit(0); }
+          try {
+            const r = JSON.parse(fs.readFileSync(p, "utf8"));
+            const a = r.alignment ?? {}; const d = r.dateFns ?? {};
+            const icon = (b) => b === true ? "✅" : b === false ? "❌" : "—";
+            const lines = [
+              `*Drift breakdown* — date-fns spec \`${d.spec ?? "—"}\` · locked \`${d.locked ?? "—"}\` · installed \`${d.installed ?? "—"}\``,
+              `• aligned: ${icon(a.aligned)}  · spec↔locked: ${icon(a.specEqLocked)}  · locked↔installed: ${icon(a.lockedEqInstalled)}  · spec↔installed: ${icon(a.specEqInstalled)}`,
+              `• exact-pin: ${icon(d.exactPinned)}  · bun.lock sha256: \`${r.bunLock?.sha256 ?? "—"}\``,
+            ];
+            process.stdout.write(lines.join("\\n"));
+          } catch (e) { process.stdout.write(`_Could not parse install-report: ${e.message}_`); }
+        ')"
+
+        # Build the JSON payload with jq so message text is properly escaped.
+        PAYLOAD="$(jq -n \
+          --arg job "$JOB_NAME" \
+          --arg workflow "$WORKFLOW" \
+          --arg repo "$REPO" \
+          --arg ref "$REF" \
+          --arg sha "${SHA:0:8}" \
+          --arg actor "$ACTOR" \
+          --arg event "$EVENT" \
+          --arg run_url "$RUN_URL" \
+          --arg drift "$DRIFT_BLOCK" \
+          '{
+             text: ("🚨 *" + $job + "* failed in `" + $repo + "`"),
+             blocks: ([
+               { type: "header", text: { type: "plain_text", text: ("🚨 " + $job + " failed") } },
+               { type: "section", fields: [
+                 { type: "mrkdwn", text: ("*Workflow:*\n`" + $workflow + "`") },
+                 { type: "mrkdwn", text: ("*Repo:*\n`" + $repo + "`") },
+                 { type: "mrkdwn", text: ("*Branch:*\n`" + $ref + "`") },
+                 { type: "mrkdwn", text: ("*Commit:*\n`" + $sha + "`") },
+                 { type: "mrkdwn", text: ("*Triggered by:*\n" + $actor + " (" + $event + ")") }
+               ] }
+             ] + (if ($drift | length) > 0 then [{ type: "section", text: { type: "mrkdwn", text: $drift } }] else [] end)
+             + [{ type: "actions", elements: [{
+                  type: "button",
+                  text: { type: "plain_text", text: "Open run logs" },
+                  url: $run_url,
+                  style: "danger"
+                }] }])
+           }')"
+
+        # Post — fail soft so the alerting step never masks the real failure.
+        HTTP_CODE=$(curl -sS -o /tmp/slack_resp.txt -w '%{http_code}' \
+          -H 'Content-Type: application/json' \
+          --data "$PAYLOAD" \
+          "$SLACK_WEBHOOK_URL" || echo "000")
+        if [ "$HTTP_CODE" != "200" ]; then
+          echo "::warning::Slack webhook returned HTTP $HTTP_CODE — $(cat /tmp/slack_resp.txt 2>/dev/null | head -c 200)"
+        else
+          echo "Slack alert posted for: $JOB_NAME"
+        fi
