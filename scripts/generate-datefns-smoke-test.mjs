@@ -6,8 +6,14 @@
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { createHash } from "node:crypto";
 
-const DRY_RUN = process.argv.slice(2).some((a) => a === "--dry-run" || a === "-n");
+const ARGS = process.argv.slice(2);
+const DRY_RUN = ARGS.some((a) => a === "--dry-run" || a === "-n");
+// --if-changed: skip regeneration when the set of discovered date-fns imports
+// (subpath + named exports) hashes to the same signature stored in the
+// existing manifest. Pure short-circuit — never writes, never fails.
+const IF_CHANGED = ARGS.some((a) => a === "--if-changed");
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
 const OUT_FILE = join(SRC_DIR, "test", "dateFns.smoke.test.ts");
