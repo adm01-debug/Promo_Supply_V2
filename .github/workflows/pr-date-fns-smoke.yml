@@ -199,6 +199,7 @@ jobs:
           path: |
             ci-artifacts/pr-smoke.log
             ci-artifacts/datefns-failure-report.md
+            ci-artifacts/missing-datefns-subpaths.json
             ci-artifacts/pr-comment.md
           if-no-files-found: warn
           retention-days: 14
