@@ -337,8 +337,8 @@ if (!existsSync(PKG_DIR)) {
 // ── Failure mode B: no imports detected at all ───────────────────────────────
 if (subpaths.size === 0) {
   const body = [
-    cyan("Scan root:"),
-    `  ${relative(ROOT, SRC_DIR)}`,
+    cyan("Scan roots:"),
+    ...SCAN_ROOTS.map((r) => `  ${relative(ROOT, r) || "."}`),
     "",
     cyan("Likely cause:"),
     "  Source layout changed, or the static-import regex no longer matches",
