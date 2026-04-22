@@ -37,31 +37,44 @@ ${C_BOLD}fix-date-fns.sh${C_RESET} — developer-only date-fns autofix helper
 Runs \`eslint --config eslint.date-fns.config.js --fix\` so barrel imports
 are rewritten into per-subpath imports automatically.
 
-  ${C_CYAN}--staged${C_RESET}   (default) Only fix files staged for commit.
-  ${C_CYAN}--all${C_RESET}      Fix every .ts/.tsx/.js/.jsx file in the repo.
+  ${C_CYAN}--staged${C_RESET}     (default) Only fix files staged for commit.
+  ${C_CYAN}--all${C_RESET}        Fix every .ts/.tsx/.js/.jsx file in the repo.
+  ${C_CYAN}--dry-run${C_RESET}    Report what would change without writing files.
   ${C_CYAN}--no-restage${C_RESET} Don't \`git add\` modified files after fixing.
-  ${C_CYAN}--help${C_RESET}     Show this message.
+  ${C_CYAN}--help${C_RESET}       Show this message.
 
 Examples:
   bun run fix:date-fns
   bun run fix:date-fns -- --all
-  bun run fix:date-fns -- --no-restage
+  bun run fix:date-fns -- --dry-run
+  bun run fix:date-fns -- --all --dry-run
 EOF
 }
 
 MODE="staged"
 RESTAGE=1
+DRY_RUN=0
 for arg in "$@"; do
   case "$arg" in
     --all) MODE="all" ;;
     --staged) MODE="staged" ;;
+    --dry-run) DRY_RUN=1 ;;
     --no-restage) RESTAGE=0 ;;
     -h|--help) print_help; exit 0 ;;
     *) echo "Unknown flag: $arg" >&2; print_help; exit 2 ;;
   esac
 done
 
-echo -e "${C_BOLD}▶ date-fns autofix${C_RESET} ${C_DIM}(mode: $MODE)${C_RESET}"
+# Dry-run never restages — they're mutually exclusive in spirit.
+if [ "$DRY_RUN" -eq 1 ]; then
+  RESTAGE=0
+fi
+
+MODE_LABEL="$MODE"
+if [ "$DRY_RUN" -eq 1 ]; then
+  MODE_LABEL="$MODE, dry-run"
+fi
+echo -e "${C_BOLD}▶ date-fns autofix${C_RESET} ${C_DIM}(mode: $MODE_LABEL)${C_RESET}"
 
 # ── Collect target files ────────────────────────────────────────────────────
 FILES=()
@@ -77,6 +90,26 @@ if [ "$MODE" = "staged" ]; then
     exit 0
   fi
   echo -e "  Found ${C_BOLD}${#FILES[@]}${C_RESET} staged file(s)."
+fi
+
+# ── Dry-run: compute fixes via --fix-dry-run, summarize, write nothing ──────
+if [ "$DRY_RUN" -eq 1 ]; then
+  echo -e "${C_BOLD}▶ Dry-run: computing fixes${C_RESET} ${C_DIM}(eslint --fix-dry-run -f json)${C_RESET}"
+  REPORT_FILE="$(mktemp -t datefns-dryrun-XXXXXX.json)"
+  trap 'rm -f "$REPORT_FILE"' EXIT
+  if [ "$MODE" = "all" ]; then
+    bunx eslint . --config eslint.date-fns.config.js \
+      --fix-dry-run -f json -o "$REPORT_FILE" >/dev/null 2>&1 || true
+  else
+    bunx eslint --config eslint.date-fns.config.js \
+      --fix-dry-run -f json -o "$REPORT_FILE" "${FILES[@]}" >/dev/null 2>&1 || true
+  fi
+  if [ ! -s "$REPORT_FILE" ]; then
+    echo -e "${C_YELLOW}⚠ ESLint produced no JSON report. Nothing to analyze.${C_RESET}"
+    exit 0
+  fi
+  node scripts/lib/datefns-dryrun-report.mjs "$REPORT_FILE"
+  exit 0
 fi
 
 # ── Run the autofix ─────────────────────────────────────────────────────────
