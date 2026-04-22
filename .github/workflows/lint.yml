@@ -57,7 +57,9 @@ permissions:
 
 jobs:
   lint:
-    name: lint:all (zero warnings + date-fns barrel check)
+    # Pinned name → status check appears as `lint / lint` in branch protection.
+    # See header comment before renaming.
+    name: lint
     runs-on: ubuntu-latest
     timeout-minutes: 8
     steps:
