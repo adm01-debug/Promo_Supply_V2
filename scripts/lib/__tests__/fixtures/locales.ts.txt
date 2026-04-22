@@ -1,0 +1,7 @@
+// Fixture: locale subpaths only (single + multi-line + comment).
+import { ptBR } from "date-fns/locale/pt-BR";
+import {
+  // english fallback
+  enUS,
+} from "date-fns/locale/en-US";
+import { es } from 'date-fns/locale/es';

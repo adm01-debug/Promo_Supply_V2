@@ -1,0 +1,11 @@
+// Fixture: multi-line braces, mixed trailing commas, varied whitespace.
+import {
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+} from "date-fns/intervals-bundle-not-real";
+
+import   {
+    addDays  ,
+    subDays,
+}   from   "date-fns/dateMath"  ;
