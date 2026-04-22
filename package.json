@@ -18,6 +18,7 @@
     "ci:lint:date-fns": "eslint . --config eslint.date-fns.config.js --max-warnings=0",
     "preview": "vite preview",
     "verify:date-fns": "node scripts/verify-datefns-versions.mjs",
+    "verify:datefns-locale-coverage": "node scripts/datefns-locale-coverage.mjs",
     "verify:package": "node scripts/verify-package-versions.mjs",
     "verify:packages:all": "node scripts/verify-package-versions.mjs --all",
     "verify:critical-deps": "node scripts/verify-critical-deps.mjs",
