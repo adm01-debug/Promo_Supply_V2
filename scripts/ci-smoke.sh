@@ -59,6 +59,16 @@ print_summary() {
     datefns_line="not verified ✗"
   fi
 
+  # full eslint line
+  local eslint_full_line
+  if [ "$ESLINT_FULL_RAN" -eq 0 ]; then
+    eslint_full_line="not run"
+  elif [ "$ESLINT_FULL_OK" -eq 1 ]; then
+    eslint_full_line="passed ✓"
+  else
+    eslint_full_line="✗ FAIL"
+  fi
+
   # eslint line
   local eslint_line
   if [ "$ESLINT_RAN" -eq 0 ]; then
