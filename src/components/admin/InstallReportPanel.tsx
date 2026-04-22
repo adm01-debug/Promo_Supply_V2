@@ -2,8 +2,9 @@ import { useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { CheckCircle2, AlertTriangle, PackageCheck, FileLock2 } from "lucide-react";
+import { CheckCircle2, AlertTriangle, PackageCheck, FileLock2, RefreshCw } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface InstallReport {
@@ -40,12 +41,30 @@ const formatBytes = (n: number) => {
 };
 
 const InstallReportPanel = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch, isFetching } = useQuery({
     queryKey: ["install-report"],
     queryFn: fetchReport,
     staleTime: 60_000,
     retry: false,
   });
+
+  const handleRefresh = async () => {
+    const result = await refetch();
+    if (result.error) {
+      toast({
+        title: "Falha ao atualizar relatório",
+        description: result.error instanceof Error ? result.error.message : "Erro desconhecido",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Relatório atualizado",
+        description: result.data?.generatedAt
+          ? `Gerado em ${result.data.generatedAt}`
+          : "Dados recarregados.",
+      });
+    }
+  };
 
   const driftMessages: string[] = [];
   if (data) {
@@ -83,10 +102,23 @@ const InstallReportPanel = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <PackageCheck className="h-5 w-5 text-primary" />
-            Relatório de instalação
-          </CardTitle>
+          <div className="flex items-start justify-between gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <PackageCheck className="h-5 w-5 text-primary" />
+              Relatório de instalação
+            </CardTitle>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleRefresh}
+              disabled={isFetching}
+              aria-label="Atualizar relatório de instalação"
+            >
+              <RefreshCw className={`h-4 w-4 mr-1.5 ${isFetching ? "animate-spin" : ""}`} />
+              Atualizar
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           <Alert variant="destructive">
@@ -106,16 +138,31 @@ const InstallReportPanel = () => {
   return (
     <Card className={hasDrift ? "border-destructive/50" : undefined}>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <PackageCheck className="h-5 w-5 text-primary" />
-          Relatório de instalação
-        </CardTitle>
-        <CardDescription>
-          Saída de <code className="font-mono">bun install</code> + <code className="font-mono">scripts/install-report.mjs</code>.
-          {generatedAt && (
-            <> Gerado em <span className="font-mono">{generatedAt}</span>.</>
-          )}
-        </CardDescription>
+        <div className="flex items-start justify-between gap-2">
+          <div className="space-y-1.5">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <PackageCheck className="h-5 w-5 text-primary" />
+              Relatório de instalação
+            </CardTitle>
+            <CardDescription>
+              Saída de <code className="font-mono">bun install</code> + <code className="font-mono">scripts/install-report.mjs</code>.
+              {generatedAt && (
+                <> Gerado em <span className="font-mono">{generatedAt}</span>.</>
+              )}
+            </CardDescription>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleRefresh}
+            disabled={isFetching}
+            aria-label="Atualizar relatório de instalação"
+          >
+            <RefreshCw className={`h-4 w-4 mr-1.5 ${isFetching ? "animate-spin" : ""}`} />
+            Atualizar
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {hasDrift && (
