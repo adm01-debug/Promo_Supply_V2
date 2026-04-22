@@ -7,14 +7,28 @@ name: smoke-date-fns
 #   2. Verifies every imported date-fns subpath exists in node_modules/date-fns.
 #   3. Runs the smoke vitest file.
 #
-# Triggers on changes to anything that could affect date-fns imports or the
-# pinned version. Uses `bun install --frozen-lockfile` so a stale lockfile
-# fails the install instead of silently re-resolving.
+# Triggers narrowed so this gate fires ONLY when something that could
+# affect a date-fns import or the resolved version actually changes:
+#   • TypeScript/JS sources under src/ (any file that could `import 'date-fns/...'`).
+#     Non-code src changes — *.css, *.md, *.json, *.svg, *.png, snapshots, etc.
+#     — no longer trigger this workflow, which removes the bulk of unrelated
+#     PR runs. (GH Actions doesn't support `paths` + `paths-ignore` in the
+#     same trigger, so the file-extension allow-list is the cleanest filter.)
+#   • package.json / bun.lock — any version bump or transitive resolution change.
+#   • The smoke scripts, generator, verifier, generated test, smoke tsconfig.
+#   • This workflow file itself.
 
 on:
   pull_request:
     paths:
-      - "src/**"
+      - "src/**/*.ts"
+      - "src/**/*.tsx"
+      - "src/**/*.mts"
+      - "src/**/*.cts"
+      - "src/**/*.js"
+      - "src/**/*.jsx"
+      - "src/**/*.mjs"
+      - "src/**/*.cjs"
       - "package.json"
       - "bun.lock"
       - "scripts/smoke-date-fns.sh"
@@ -26,7 +40,14 @@ on:
   push:
     branches: [main]
     paths:
-      - "src/**"
+      - "src/**/*.ts"
+      - "src/**/*.tsx"
+      - "src/**/*.mts"
+      - "src/**/*.cts"
+      - "src/**/*.js"
+      - "src/**/*.jsx"
+      - "src/**/*.mjs"
+      - "src/**/*.cjs"
       - "package.json"
       - "bun.lock"
       - "scripts/smoke-date-fns.sh"
