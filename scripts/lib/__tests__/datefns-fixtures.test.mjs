@@ -236,7 +236,8 @@ describe("fixture-based manifest assertions", () => {
       { subpath: "locale/pt-BR", exports: ["ptBR"] },
     ]);
     expect(m.totalSubpaths).toBe(9);
-    expect(m.totalFunctions).toBe(11); // sum of every functions[].exports[]
+    // sum of every functions[].exports[]: 2+2+2+3+2+1 = 12
+    expect(m.totalFunctions).toBe(12);
     expect(m.totalLocales).toBe(3);
 
     // Unsupported findings come ONLY from the unsupported.ts.txt fixture.
