@@ -437,7 +437,7 @@ async function handlePost(req: Request): Promise<Response> {
   if (auditErr) console.error("audit insert failed:", auditErr.message);
 
   // Append to history + prune to last 30
-  const driftCount = packages.filter((p) => p.driftDetected).length;
+  const driftCount = driftCountForAudit;
   const barrelImports = treeShaking?.barrelImportsFound ?? 0;
   const { error: histErr } = await admin.from("dependency_health_history").insert({
     payload,
