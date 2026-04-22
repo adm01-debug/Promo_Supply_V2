@@ -124,6 +124,19 @@ if (Number.isNaN(new Date(manifest.generatedAt).getTime())) {
 
 const manifestLocales = new Set(manifest.locales.map((l) => l.subpath));
 
+if (VERBOSE) {
+  const union = new Set([...sourceLocales, ...manifestLocales]);
+  console.log(`Per-locale match decisions (${union.size} unique):`);
+  for (const sp of [...union].sort()) {
+    const inSrc = sourceLocales.has(sp);
+    const inManifest = manifestLocales.has(sp);
+    if (inSrc && inManifest) vlog(`✓ ${sp}  (src ↔ manifest)`);
+    else if (inSrc) vlog(`✗ ${sp}  (in src, MISSING from manifest — regenerate)`);
+    else vlog(`✗ ${sp}  (in manifest, NOT in src — stale manifest entry)`);
+  }
+  console.log("");
+}
+
 // --- 3. Diff ---
 const missing = [...sourceLocales].filter((s) => !manifestLocales.has(s)).sort();
 const extra = [...manifestLocales].filter((s) => !sourceLocales.has(s)).sort();
