@@ -259,7 +259,14 @@ evict_datefns_cache
 # AND every downstream verifier (resolve_locked_datefns, install-report,
 # emit-mismatch-report) silently degrades to "(bun.lock not found)" — which
 # masks real drift. Bail out early with the exact regen recipe instead.
+#
+# Exit codes (so CI / scripts can branch on the failure mode):
+#   10 → bun.lockb present but bun.lock missing  (just needs regeneration)
+#   11 → no lockfile at all                      (repo is uninitialized)
+# Both are distinct from generic failures (exit 1) and arg errors (exit 2).
 # ─────────────────────────────────────────────────────────────────────────────
+readonly EXIT_LOCKFILE_LEGACY_ONLY=10
+readonly EXIT_LOCKFILE_MISSING=11
 if [ ! -f "bun.lock" ]; then
   if [ -f "bun.lockb" ]; then
     cat >&2 <<'EOF'
@@ -277,11 +284,14 @@ if [ ! -f "bun.lock" ]; then
 
   Then re-run:  bun run ci:smoke
 EOF
+    echo "  (exit code: $EXIT_LOCKFILE_LEGACY_ONLY — legacy lockfile only)" >&2
+    exit "$EXIT_LOCKFILE_LEGACY_ONLY"
   else
     echo "✗ No lockfile found (neither bun.lock nor bun.lockb)." >&2
     echo "  Run: bun install --save-text-lockfile  (then commit bun.lock)." >&2
+    echo "  (exit code: $EXIT_LOCKFILE_MISSING — no lockfile present)" >&2
+    exit "$EXIT_LOCKFILE_MISSING"
   fi
-  exit 1
 fi
 
 echo "▶ [3/10] Installing from frozen lockfile..."
