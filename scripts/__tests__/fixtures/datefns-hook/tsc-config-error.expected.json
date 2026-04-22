@@ -1,0 +1,7 @@
+{
+  "step": "tsc",
+  "exitCode": 1,
+  "failureModeBucket": "TSC_CONFIG_ERROR",
+  "failureModeContains": ["TSC_CONFIG_ERROR", "tsconfig.smoke.json"],
+  "imports": []
+}
