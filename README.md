@@ -140,6 +140,33 @@ If you're adding a new helper, find its subpath in `node_modules/date-fns/`
 or on [date-fns.org](https://date-fns.org) — every public function has a
 matching `date-fns/<functionName>` entry.
 
+## Running lint locally
+
+Copy-paste these commands to reproduce the same lint checks CI runs. Both must exit `0` for a green build.
+
+```sh
+# 1. General ESLint — fails on ANY warning or error.
+npm run lint -- --max-warnings=0
+
+# 2. date-fns barrel-import rule — prints offending files + fix commands on failure.
+npm run lint:date-fns
+
+# Run BOTH in sequence with a single summary table (recommended).
+bun run lint:all
+
+# Watch mode for local dev — re-runs both suites on every save in src/.
+bun run lint:watch
+
+# Auto-fix date-fns barrel imports where possible.
+bun run lint:date-fns:fix
+```
+
+| Command | What it checks | Exit `0` means |
+|---|---|---|
+| `npm run lint -- --max-warnings=0` | All ESLint rules across the repo, zero-warnings policy | No errors **and** no warnings |
+| `npm run lint:date-fns` | `date-fns` / `date-fns/locale` barrel imports are forbidden (subpath only) | No barrel imports in `src/` |
+| `bun run lint:all` | Both of the above, in sequence, with a summary table | Both suites passed |
+
 ## Running CI locally
 
 The CI gate scripts (`scripts/ci-check.sh`, `scripts/ci-smoke.sh`) are
