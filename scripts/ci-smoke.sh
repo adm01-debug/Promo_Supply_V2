@@ -24,7 +24,7 @@ for arg in "$@"; do
   case "$arg" in
     --package-json=*) SMOKE_PACKAGE_JSON="${arg#--package-json=}" ;;
     --help|-h)
-      sed -n '4,21p' "$0" | sed 's/^# \{0,1\}//'
+      sed -n '14,21p' "$0" | sed 's/^# \{0,1\}//'
       exit 0
       ;;
     -*) echo "✗ Unknown flag: $arg" >&2; exit 2 ;;
