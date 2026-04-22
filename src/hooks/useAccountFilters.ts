@@ -67,6 +67,14 @@ export function useAccountFilters<T extends FiltersRecord>(
 
         if (!error && row?.filters && typeof row.filters === 'object') {
           setFiltersState({ ...defaults, ...(row.filters as FiltersRecord) } as T);
+          // DB wins — but still purge any orphan legacy key from this device
+          try {
+            if (localStorage.getItem(legacyStorageKey) !== null) {
+              localStorage.removeItem(legacyStorageKey);
+            }
+          } catch {
+            /* ignore */
+          }
         } else {
           // Try one-shot migration from localStorage
           const legacy = readLegacy<T>(legacyStorageKey);
@@ -83,6 +91,10 @@ export function useAccountFilters<T extends FiltersRecord>(
             } catch {
               /* ignore */
             }
+            // Skip the autosave that the setFiltersState above would trigger,
+            // so the just-removed legacy key isn't rewritten by the anonymous
+            // fallback branch of persist() before userId propagates.
+            skipNextSaveRef.current = true;
           }
         }
       } else {
