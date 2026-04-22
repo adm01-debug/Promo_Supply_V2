@@ -47,6 +47,58 @@ jobs:
           mkdir -p ci-artifacts
           node scripts/install-report.mjs --json | tee ci-artifacts/install-report.json
 
+
+      # Posts a markdown summary on the GitHub Actions run page using the
+      # alignment.* booleans from the JSON. Runs even on failure so reviewers
+      # always see the breakdown — most install-report failures ARE alignment
+      # mismatches, and the table makes it obvious which axis flipped.
+      # Inline node script (no extra files): reads the JSON we just wrote,
+      # appends a table to $GITHUB_STEP_SUMMARY, and emits ::warning::
+      # annotations for any false alignment booleans so they surface in the
+      # PR "Files changed" view too.
+      - name: Post install-report alignment summary
+        if: always()
+        env:
+          REPORT_PATH: ci-artifacts/install-report.json
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const path = process.env.REPORT_PATH;
+            if (!fs.existsSync(path)) {
+              console.log(`::warning::install-report JSON not found at ${path} — skipping summary.`);
+              process.exit(0);
+            }
+            const r = JSON.parse(fs.readFileSync(path, "utf8"));
+            const a = r.alignment ?? {};
+            const d = r.dateFns ?? {};
+            const icon = (b) => (b === true ? "✅" : b === false ? "❌" : "—");
+            const status = a.aligned ? "✅ aligned" : "❌ drift detected";
+            const md = [
+              `## ${status} — install-report`,
+              "",
+              `**date-fns:** spec \`${d.spec ?? "—"}\` · locked \`${d.locked ?? "—"}\` · installed \`${d.installed ?? "—"}\` · exact-pin ${icon(d.exactPinned)}`,
+              "",
+              "| Alignment axis | Status | Meaning |",
+              "| --- | :---: | --- |",
+              `| \`aligned\` | ${icon(a.aligned)} | All three (spec/locked/installed) match. |`,
+              `| \`specEqLocked\` | ${icon(a.specEqLocked)} | \`package.json\` spec matches \`bun.lock\`. |`,
+              `| \`lockedEqInstalled\` | ${icon(a.lockedEqInstalled)} | \`bun.lock\` matches \`node_modules\`. |`,
+              `| \`specEqInstalled\` | ${icon(a.specEqInstalled)} | \`package.json\` spec matches \`node_modules\`. |`,
+              "",
+              `_Generated at ${r.generatedAt ?? "(unknown)"} · bun.lock sha256 \`${r.bunLock?.sha256 ?? "—"}\`_`,
+              "",
+            ].join("\n");
+            const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+            if (summaryPath) fs.appendFileSync(summaryPath, md + "\n");
+            // Mirror to stdout so the step log is also useful.
+            console.log(md);
+            // Per-axis ::warning:: annotations — visible in the PR Files tab
+            // and the run page sidebar.
+            for (const [k, v] of Object.entries(a)) {
+              if (v === false) console.log(`::warning title=install-report alignment::${k} is false (see job summary).`);
+            }
+          '
+
       - name: Print human-readable report (for log auditing)
         if: always()
         run: node scripts/install-report.mjs
