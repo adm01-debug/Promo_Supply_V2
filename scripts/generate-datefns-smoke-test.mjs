@@ -7,6 +7,10 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { createHash } from "node:crypto";
+import {
+  scanStaticDateFnsImports,
+  detectUnsupportedDateFnsUsage,
+} from "./lib/datefns-scan.mjs";
 
 const ARGS = process.argv.slice(2);
 const DRY_RUN = ARGS.some((a) => a === "--dry-run" || a === "-n");
