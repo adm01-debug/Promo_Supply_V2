@@ -178,6 +178,11 @@ const html = `<!doctype html>
     details.scan-input summary { cursor: pointer; font-weight: 600; }
     details.scan-input dl { margin: 10px 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 16px; }
     details.scan-input dt { color: var(--muted); }
+    section.offenders { margin-top: 28px; }
+    section.offenders h2 { font-size: 16px; margin: 0 0 10px; }
+    details.suppressed { margin-top: 14px; padding: 10px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+    details.suppressed summary { cursor: pointer; font-weight: 600; color: var(--muted); }
+    details.suppressed table { margin-top: 10px; }
     footer { margin-top: 28px; color: var(--muted); font-size: 12px; }
     a { color: var(--accent); }
     [title] { cursor: help; }
