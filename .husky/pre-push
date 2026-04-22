@@ -16,10 +16,29 @@
 #   bun run hook:smoke:disable              # return to lightweight mode
 #
 # To bypass entirely: `git push --no-verify`.
+#
+# Targeted bypass (skip the date-fns gates only, keep everything else):
+#   SKIP_DATEFNS_HOOK=1 git push
+# Aliases accepted (any of these set to 1/true/yes): SKIP_DATEFNS_HOOK,
+# SKIP_DATE_FNS_HOOK, LOVABLE_SKIP_DATEFNS. Useful for emergency pushes,
+# WIP branches, or when you've already verified locally with
+# `bun run verify:datefns`.
 set -euo pipefail
 
 HOOK_DIR="$(dirname "$0")"
 ROOT_DIR="$(cd "$HOOK_DIR/.." && pwd)"
+
+# Normalize the skip flag — accept 1, true, yes (case-insensitive).
+_skip_raw="${SKIP_DATEFNS_HOOK:-${SKIP_DATE_FNS_HOOK:-${LOVABLE_SKIP_DATEFNS:-}}}"
+_skip_lc="$(printf '%s' "$_skip_raw" | tr '[:upper:]' '[:lower:]')"
+case "$_skip_lc" in
+  1|true|yes)
+    echo "⚠  pre-push: SKIP_DATEFNS_HOOK is set — skipping date-fns verification."
+    echo "   Reason: explicit env-var bypass. Re-enable by unsetting the variable."
+    echo "   Tip: run \`bun run verify:datefns\` before merging to confirm sync."
+    exit 0
+    ;;
+esac
 
 if [ "${FULL_SMOKE_PRE_PUSH:-}" = "1" ] || \
    [ "$(git config --local hook.fullSmoke 2>/dev/null || echo false)" = "true" ]; then
