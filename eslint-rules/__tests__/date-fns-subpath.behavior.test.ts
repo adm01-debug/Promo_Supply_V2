@@ -95,6 +95,28 @@ describe("local/date-fns-subpath — autofix behavior", () => {
     expect(lint(result.output)).toHaveLength(0);
   });
 
+  it.each([
+    { name: "enUS", subpath: "en-US" },
+    { name: "ja", subpath: "ja" },
+    { name: "ptBR", subpath: "pt-BR" },
+    { name: "deAT", subpath: "de-AT" },
+    { name: "uzCyrl", subpath: "uz-Cyrl" },
+  ])(
+    "autofixes locale `$name` to date-fns/locale/$subpath",
+    ({ name, subpath }) => {
+      const src = `import { ${name} } from "date-fns/locale";\n`;
+      const result = fix(src);
+      expect(result.fixed).toBe(true);
+      // Exact target subpath — guards against regressions like emitting
+      // `date-fns/locale/enUS` (camelCase) instead of the kebab subpath.
+      expect(result.output).toContain(
+        `import { ${name} } from "date-fns/locale/${subpath}";`,
+      );
+      // No remaining barrel violations.
+      expect(lint(result.output)).toHaveLength(0);
+    },
+  );
+
   it("is idempotent — a second pass produces no further changes", () => {
     const src = `import { format, parseISO } from "date-fns";\n`;
     const first = fix(src);
