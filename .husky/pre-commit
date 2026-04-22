@@ -135,7 +135,6 @@ if [ "$NEEDS_SMOKE" -eq 1 ]; then
   fi
 
   echo "  ↳ no changes — smoke test + manifest already in sync."
-  fi
 
   echo "▶ pre-commit: tsc --noEmit -p tsconfig.smoke.json"
   if ! bunx tsc --noEmit -p tsconfig.smoke.json; then
