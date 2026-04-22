@@ -67,6 +67,10 @@ const positional = argv.filter((a) => !a.startsWith("--"));
 const JSON_OUT = flags.has("--json");
 const ALL = flags.has("--all");
 const HELP = flags.has("--help") || flags.has("-h");
+// --drift-summary-only: skip the multi-line caret diff blocks and emit only
+// the per-block summary lines for each drifted package. Ignored when --json
+// is set (JSON output already contains the structured drift data).
+const SUMMARY_ONLY = flags.has("--drift-summary-only");
 
 if (HELP) {
   console.log(
@@ -76,6 +80,9 @@ if (HELP) {
       "  <pkg>     One or more package names (repeat as needed).",
       "  --all     Verify every dependency listed in package.json (deps + devDeps).",
       "  --json    Emit machine-readable JSON instead of a human report.",
+      "  --drift-summary-only",
+      "            Print only the per-block drift summary lines (skip the full",
+      "            caret diff blocks under \"Mismatch detail:\"). Ignored with --json.",
       "",
       "Exit codes: 0 aligned · 10 spec · 11 installed · 12 lock · 13 all-diff",
       "            20 missing-spec · 21 missing-lock · 22 missing-lock-entry · 23 missing-install",
@@ -398,14 +405,14 @@ if (JSON_OUT) {
       const lockEqInstalled = lk === ins;
       const specEqInstalled = sn === ins;
       if (!specEqLock && lockEqInstalled) {
-        console.error(renderMismatch("spec", sn, "locked", lk, { caseLabel: "spec↔locked" }));
+        console.error(renderMismatch("spec", sn, "locked", lk, { caseLabel: "spec↔locked", summaryOnly: SUMMARY_ONLY }));
       } else if (specEqLock && !lockEqInstalled) {
-        console.error(renderMismatch("locked", lk, "installed", ins, { caseLabel: "locked↔installed" }));
+        console.error(renderMismatch("locked", lk, "installed", ins, { caseLabel: "locked↔installed", summaryOnly: SUMMARY_ONLY }));
       } else if (specEqInstalled && !specEqLock) {
-        console.error(renderMismatch("spec", sn, "locked", lk, { caseLabel: "spec↔locked" }));
+        console.error(renderMismatch("spec", sn, "locked", lk, { caseLabel: "spec↔locked", summaryOnly: SUMMARY_ONLY }));
       } else {
         // All three differ — labeled triple block with summary line.
-        console.error(renderTripleMismatch(sn, lk, ins));
+        console.error(renderTripleMismatch(sn, lk, ins, { summaryOnly: SUMMARY_ONLY }));
       }
 
       console.error("\n  Pairwise drift diagnosis:");

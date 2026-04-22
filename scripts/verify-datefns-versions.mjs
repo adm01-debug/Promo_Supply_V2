@@ -44,6 +44,17 @@ const EXIT = {
 
 const ROOT = process.cwd();
 
+// CLI flags. Currently only `--drift-summary-only` is recognized; unknown
+// flags are silently ignored to stay forwards-compatible with wrapper scripts
+// that may pass through extra args.
+//   --drift-summary-only  Skip the multi-line caret diff blocks under
+//                         "Mismatch detail:" and "Unified diff:". Emit ONLY
+//                         the per-block summary lines (e.g. "→ patch version
+//                         drift (3.6.0 → 3.7.1)"). Useful for log scrapers
+//                         and dashboards. Exit codes are unchanged.
+const ARGS = new Set(process.argv.slice(2));
+const SUMMARY_ONLY = ARGS.has("--drift-summary-only");
+
 function fail(msg, code = EXIT.GENERIC) {
   console.error(msg);
   process.exit(code);
@@ -124,14 +135,14 @@ if (!aligned) {
   // Mismatch detail: caret-pointer diff per drifting pair
   console.error("\n  Mismatch detail:");
   if (!specEqLock && lockEqInstalled) {
-    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked" }));
+    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked", summaryOnly: SUMMARY_ONLY }));
   } else if (specEqLock && !lockEqInstalled) {
-    console.error(renderMismatch("locked", LOCKED, "installed", INSTALLED, { caseLabel: "locked↔installed" }));
+    console.error(renderMismatch("locked", LOCKED, "installed", INSTALLED, { caseLabel: "locked↔installed", summaryOnly: SUMMARY_ONLY }));
   } else if (specEqInstalled && !specEqLock) {
-    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked" }));
+    console.error(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked", summaryOnly: SUMMARY_ONLY }));
   } else {
     // All three differ — render the labeled triple block with summary line.
-    console.error(renderTripleMismatch(SPEC_NORM, LOCKED, INSTALLED));
+    console.error(renderTripleMismatch(SPEC_NORM, LOCKED, INSTALLED, { summaryOnly: SUMMARY_ONLY }));
   }
 
   // Unified-diff style summary (normalized spec vs installed) — git-patch
@@ -139,7 +150,7 @@ if (!aligned) {
   // first thing most contributors look at; the detailed labeled blocks
   // above are kept for deeper post-mortem.
   console.error("\n  Unified diff (spec vs installed):");
-  console.error(renderUnifiedDiff("spec", SPEC_NORM, "installed", INSTALLED));
+  console.error(renderUnifiedDiff("spec", SPEC_NORM, "installed", INSTALLED, { summaryOnly: SUMMARY_ONLY }));
 
   // Pairwise drift diagnosis: explicitly label each of the 3 pairs and explain
   // which file is out of sync and the concrete reason. This complements the

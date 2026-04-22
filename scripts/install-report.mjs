@@ -12,9 +12,15 @@ import { renderMismatch, renderTripleMismatch } from "./lib/semver-diff.mjs";
 //   --json-file=PATH  also write the JSON payload to PATH (creates parent dirs).
 //                     Works with or without --json: when used alone, the human
 //                     report still prints to stdout and the file gets the JSON.
+//   --drift-summary-only
+//                     In human mode, print only the per-block drift summary
+//                     lines under "Mismatch detail:" — skip the multi-line
+//                     caret diff blocks. Ignored with --json (the JSON payload
+//                     already contains structured alignment data).
 const argv = process.argv.slice(2);
 const STRICT = argv.includes("--strict");
 const JSON_MODE = argv.includes("--json");
+const SUMMARY_ONLY = argv.includes("--drift-summary-only");
 const JSON_FILE = (() => {
   const flag = argv.find((a) => a === "--json-file" || a.startsWith("--json-file="));
   if (!flag) return null;
@@ -114,14 +120,14 @@ if (JSON_MODE) {
     const specEqInstalled = SPEC_NORM === INSTALLED;
     console.log("\n  Mismatch detail:");
     if (!specEqLock && lockEqInstalled) {
-      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked" }));
+      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked", summaryOnly: SUMMARY_ONLY }));
     } else if (specEqLock && !lockEqInstalled) {
-      console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED, { caseLabel: "locked↔installed" }));
+      console.log(renderMismatch("locked", LOCKED, "installed", INSTALLED, { caseLabel: "locked↔installed", summaryOnly: SUMMARY_ONLY }));
     } else if (specEqInstalled && !specEqLock) {
-      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked" }));
+      console.log(renderMismatch("spec", SPEC_NORM, "locked", LOCKED, { caseLabel: "spec↔locked", summaryOnly: SUMMARY_ONLY }));
     } else {
       // All three differ — labeled triple block with summary line.
-      console.log(renderTripleMismatch(SPEC_NORM, LOCKED, INSTALLED));
+      console.log(renderTripleMismatch(SPEC_NORM, LOCKED, INSTALLED, { summaryOnly: SUMMARY_ONLY }));
     }
     if (STRICT) {
       console.error("\n✗ install-report --strict: spec / lock / installed drift detected.");
