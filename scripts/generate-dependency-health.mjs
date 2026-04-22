@@ -241,7 +241,31 @@ function main() {
     }
   }
   const previousTreeShaking = existing?.treeShaking;
-  const treeShaking = scanTreeShaking(root, previousTreeShaking);
+  const rawTreeShaking = scanTreeShaking(root, previousTreeShaking);
+
+  // Apply the per-package allowlist of known false positives. The raw
+  // scan result is cached as-is (so toggling an allowlist entry doesn't
+  // re-read every file); suppression is applied on top here. Expired
+  // entries are surfaced in the snapshot so reviewers can prune them.
+  const allowlistPath = resolve(root, ".dependency-health-allowlist.json");
+  let allowlist;
+  try {
+    allowlist = loadAllowlist(allowlistPath);
+  } catch (err) {
+    console.error(`✗ ${err.message}`);
+    process.exit(1);
+  }
+  const { kept, suppressed } = applyAllowlist(rawTreeShaking.offenders ?? [], allowlist.entries);
+  const suppressedCount = (rawTreeShaking.barrelImportsFound ?? 0) - kept.length;
+  const treeShaking = {
+    ...rawTreeShaking,
+    offenders: kept,
+    barrelImportsFound: Math.max(0, (rawTreeShaking.barrelImportsFound ?? 0) - suppressedCount),
+    riskLevel: computeRiskLevel(Math.max(0, (rawTreeShaking.barrelImportsFound ?? 0) - suppressedCount)),
+    suppressed,
+    suppressedCount,
+    expiredAllowlistEntries: allowlist.expired,
+  };
 
   const snapshot = {
     generatedAt: now,
