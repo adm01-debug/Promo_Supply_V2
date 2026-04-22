@@ -10,6 +10,7 @@ import { createHash } from "node:crypto";
 import {
   scanStaticDateFnsImports,
   detectUnsupportedDateFnsUsage,
+  detectMalformedDateFnsImports,
 } from "./lib/datefns-scan.mjs";
 
 const ARGS = process.argv.slice(2);
@@ -22,6 +23,10 @@ const IF_CHANGED = ARGS.some((a) => a === "--if-changed");
 // skipped type-only import, and every unsupported-shape warning with its
 // reason. Off by default to keep CI logs clean.
 const VERBOSE = ARGS.some((a) => a === "--verbose" || a === "-v");
+// --strict: turn malformed date-fns imports (zero usable specifiers after
+// comment stripping) into a fatal error instead of a warning. Off by
+// default so existing pipelines aren't broken; CI can opt in.
+const STRICT = ARGS.some((a) => a === "--strict");
 const vlog = (msg) => { if (VERBOSE) console.log(`  · ${msg}`); };
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
@@ -56,6 +61,11 @@ const subpaths = new Map();
 // the smoke generator can NOT see those, and a contributor accidentally using
 // either shape would silently lose smoke-test coverage for that subpath.
 const unsupportedFindings = [];
+
+// Track malformed static date-fns imports (empty/comment-only braces) so we
+// can warn — or, with --strict, fail. These never make it into the manifest
+// either way, but contributors should know they wrote dead code.
+const malformedFindings = [];
 
 // Type-only static imports re-detected for verbose trace only (the main
 // scanner correctly skips them, but in --verbose we surface what was skipped
@@ -107,6 +117,16 @@ for (const file of files) {
       }
     }
   }
+  const malformed = detectMalformedDateFnsImports(src, rel);
+  if (malformed.length > 0) {
+    malformedFindings.push(...malformed);
+    if (VERBOSE) {
+      if (fileMap.size === 0 && findings.length === 0) console.log(`◆ ${rel}`);
+      for (const f of malformed) {
+        vlog(`malformed → date-fns/${f.subpath} @ line ${f.line} (reason: zero usable specifiers after comment stripping)`);
+      }
+    }
+  }
 }
 
 if (VERBOSE) {
@@ -121,6 +141,22 @@ if (unsupportedFindings.length > 0) {
   );
   for (const f of unsupportedFindings) {
     console.warn(`   ${f.file}:${f.line} [${f.kind}] → date-fns/${f.subpath}`);
+  }
+}
+
+if (malformedFindings.length > 0) {
+  const localeOnly = malformedFindings.filter((f) => f.isLocale);
+  const label = `${malformedFindings.length} malformed date-fns import(s) (zero usable specifiers after comment stripping${localeOnly.length > 0 ? `; ${localeOnly.length} locale` : ""})`;
+  const log = STRICT ? console.error : console.warn;
+  log(`${STRICT ? "✗" : "⚠"} ${label}:`);
+  for (const f of malformedFindings) {
+    log(`   ${f.file}:${f.line} → date-fns/${f.subpath}${f.isLocale ? "  [locale]" : ""}`);
+  }
+  if (STRICT) {
+    console.error(
+      "  Hint: remove the empty import or add at least one named specifier. Re-run without --strict to downgrade to a warning.",
+    );
+    process.exit(1);
   }
 }
 

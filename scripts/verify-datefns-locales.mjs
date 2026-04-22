@@ -7,25 +7,25 @@
  */
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { detectMalformedDateFnsImports } from "./lib/datefns-scan.mjs";
 
 const ROOT = process.cwd();
 const SRC_DIR = join(ROOT, "src");
 const MANIFEST_FILE = join(ROOT, "public", "datefns-usage.json");
 const EXCLUDE_DIRS = new Set(["test", "node_modules", ".git", "dist", "build"]);
 const FILE_EXT = /\.(ts|tsx)$/;
-// `[^{}]*` allows newlines (multi-line imports) but forbids nested braces,
-// preventing the match from spanning across adjacent import statements.
-// NOTE: this script only reads capture group 3 (subpath), so comments inside
-// braces don't affect detection — no stripComments() helper needed here.
 const IMPORT_RE =
   /import\s+(type\s+)?\{([^{}]*)\}\s+from\s+["']date-fns\/([^"']+)["']/g;
 const GENERATOR_HINT =
   "Run `node scripts/generate-datefns-smoke-test.mjs` and commit the result.";
 
-// --verbose / -v: print every locale subpath discovered in src/ (with file +
-// line), every type-only locale import we skipped (with the reason), and the
-// per-locale match decision against the manifest. Off by default.
-const VERBOSE = process.argv.slice(2).some((a) => a === "--verbose" || a === "-v");
+// CLI flags.
+//   --verbose / -v: per-file trace + per-locale match decision.
+//   --strict     : malformed locale imports (zero usable specifiers after
+//                  comment stripping) become a fatal error.
+const ARGV = process.argv.slice(2);
+const VERBOSE = ARGV.some((a) => a === "--verbose" || a === "-v");
+const STRICT = ARGV.some((a) => a === "--strict");
 const vlog = (msg) => { if (VERBOSE) console.log(`  · ${msg}`); };
 
 function walk(dir, acc = []) {
@@ -61,6 +61,7 @@ function relTime(iso) {
 
 // --- 1. Scan src/ for locale imports ---
 const sourceLocales = new Set();
+const malformedLocaleFindings = [];
 let scannedFileCount = 0;
 let filesWithLocales = 0;
 for (const file of walk(SRC_DIR)) {
@@ -85,12 +86,40 @@ for (const file of walk(SRC_DIR)) {
     sourceLocales.add(subpath);
     vlog(`detected → date-fns/${subpath}`);
   }
+  // Detect malformed (empty/comment-only) locale imports — these never make
+  // it into sourceLocales because their specifier list is empty after
+  // comment stripping, but the contributor almost certainly wrote them by
+  // mistake. Surface them so they don't silently rot.
+  for (const f of detectMalformedDateFnsImports(src, rel)) {
+    if (!f.isLocale) continue;
+    malformedLocaleFindings.push(f);
+    if (VERBOSE) {
+      if (!printedHeader) { console.log(`◆ ${rel}`); printedHeader = true; }
+      vlog(`malformed → date-fns/${f.subpath} @ line ${f.line} (reason: zero usable specifiers after comment stripping)`);
+    }
+  }
 }
 
 if (VERBOSE) {
   console.log(
     `\n· Scanned ${scannedFileCount} file(s); ${filesWithLocales} contain date-fns locale imports.\n`,
   );
+}
+
+if (malformedLocaleFindings.length > 0) {
+  const log = STRICT ? console.error : console.warn;
+  log(
+    `${STRICT ? "✗" : "⚠"} Found ${malformedLocaleFindings.length} malformed date-fns locale import(s) (zero usable specifiers after comment stripping):`,
+  );
+  for (const f of malformedLocaleFindings) {
+    log(`   ${f.file}:${f.line} → date-fns/${f.subpath}`);
+  }
+  if (STRICT) {
+    console.error(
+      "  Hint: remove the empty import or add at least one named locale specifier. Re-run without --strict to downgrade to a warning.",
+    );
+    process.exit(1);
+  }
 }
 
 // --- 2. Load manifest ---
