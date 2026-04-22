@@ -157,13 +157,28 @@ describe(`date-fns ecosystem: exact-pin enforcement (scope=${SCOPE})`, () => {
           importError = (err as Error).message;
         }
 
+        // Trace the version source in bun.lock so a mismatch report tells the
+        // contributor exactly WHERE the resolved version came from. We read
+        // bun.lock lazily (synchronously, once per failing test) because:
+        //   - It's only needed when we want to render the failure report.
+        //   - bun.lock is a YAML-ish text file; we don't need a parser, just
+        //     a line-locator. The matched line is shown verbatim in the report.
+        // Format we look for (per `grep -n '"date-fns'` examples):
+        //     934:    "date-fns": ["date-fns@3.6.0", "", {}, "sha512-…"],
+        // Matching is anchored on `"<name>": [` so we never match a transitive
+        // peerDependencies entry like `"date-fns": "^2.28.0 || ^3.0.0"`.
+        const lockTrace = traceLockfileEntry(name);
+
         const matches = installed === spec;
         const ok = isExact && matches;
 
         // Always log a one-line audit trail for every package, pass or fail.
+        // Includes the lockfile line number when available so CI scrollback
+        // lets you jump straight to the source even on green runs.
         // eslint-disable-next-line no-console
         console.log(
           `[pin check] ${name}: declared="${spec}" (${bucket}) installed="${installed}" ` +
+            `lockfile=${lockTrace.summary} ` +
             `exact=${isExact ? "✓" : "✗"} matches=${matches ? "✓" : "✗"} ${ok ? "✓ OK" : "✗ FAIL"}`,
         );
 
@@ -177,6 +192,19 @@ describe(`date-fns ecosystem: exact-pin enforcement (scope=${SCOPE})`, () => {
           `  installed version: ${installed}`,
           `  exact-pinned?    : ${isExact ? "yes ✓" : `no ✗  (must be plain semver, got "${spec}")`}`,
           `  versions match?  : ${matches ? "yes ✓" : `no ✗  (declared "${spec}" ≠ installed "${installed}")`}`,
+          `  lockfile source  : ${lockTrace.path}${
+            lockTrace.lineNumber ? ` (line ${lockTrace.lineNumber})` : ""
+          }`,
+          ...(lockTrace.lineText
+            ? [
+                `  lockfile entry   : ${lockTrace.lineText}`,
+                `  lockfile-resolved: ${lockTrace.resolvedVersion ?? "<not parseable>"}`,
+              ]
+            : [
+                `  lockfile entry   : <no resolution entry found for "${name}">`,
+                `                     (the package may be listed only as a peer dep, or`,
+                `                      the lockfile is out of date — run \`bun install\`)`,
+              ]),
           ...(importError
             ? [
                 `  import error     : ${importError}`,
