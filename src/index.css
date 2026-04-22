@@ -5,14 +5,14 @@
    Modular CSS Architecture
    ================================================================= */
 
-/* CSS imports precisam vir antes de qualquer outra regra para evitar
-   erro de build e tela branca no preview. */
+/* Tailwind directives must come first to define the layer system */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS layers — imported after Tailwind defines the layer system */
 @import './styles/tokens.css';
 @import './styles/base.css';
 @import './styles/components.css';
 @import './styles/utilities.css';
 @import './styles/animations.css';
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
