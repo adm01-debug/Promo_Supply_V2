@@ -169,9 +169,68 @@ describe("install-report --json-file", () => {
     expect(existsSync(absOut)).toBe(true);
     const bytes = readFileSync(absOut).length;
     expect(res.stderr).toMatch(
-      /\[install-report\] wrote JSON → .+ \(\d+ bytes\)/,
+      /\[install-report\] wrote JSON → .+ \(\d+ bytes, (pretty|minified)\)/,
     );
     expect(res.stderr).toContain(absOut);
-    expect(res.stderr).toContain(`(${bytes} bytes)`);
+    expect(res.stderr).toContain(`(${bytes} bytes, pretty)`);
+  });
+
+  it("writes pretty JSON by default (multi-line, trailing newline)", () => {
+    dir = makeFakeProject({ spec: "^3.6.0", locked: "3.6.0", installed: "3.6.0" });
+    const out = join(dir, "report.json");
+    const res = runScript(dir, [`--json-file=${out}`]);
+    expect(res.status).toBe(0);
+    const raw = readFileSync(out, "utf8");
+    expect(raw).toMatch(/\n/); // multi-line
+    expect(raw.endsWith("\n")).toBe(true);
+    expect(raw).toContain('  "dateFns"'); // 2-space indent
+    expect(res.stderr).toContain("pretty)");
+  });
+
+  it("writes minified JSON with --json-file-mode=minified (single line, no trailing newline)", () => {
+    dir = makeFakeProject({ spec: "^3.6.0", locked: "3.6.0", installed: "3.6.0" });
+    const out = join(dir, "report.json");
+    const res = runScript(dir, [
+      `--json-file=${out}`,
+      "--json-file-mode=minified",
+    ]);
+    expect(res.status).toBe(0);
+    const raw = readFileSync(out, "utf8");
+    expect(raw).not.toMatch(/\n/); // single line
+    expect(raw.endsWith("\n")).toBe(false); // no trailing newline
+    expect(raw).not.toContain("  "); // no indentation whitespace
+    // Still parses to the same shape as pretty.
+    const payload = JSON.parse(raw);
+    expect(payload.alignment.aligned).toBe(true);
+    expect(res.stderr).toContain("minified)");
+  });
+
+  it("minified output is byte-stable across runs (diff/cache friendly)", () => {
+    dir = makeFakeProject({ spec: "^3.6.0", locked: "3.6.0", installed: "3.6.0" });
+    const out1 = join(dir, "a.json");
+    const out2 = join(dir, "b.json");
+    const r1 = runScript(dir, [`--json-file=${out1}`, "--json-file-mode=minified"]);
+    const r2 = runScript(dir, [`--json-file=${out2}`, "--json-file-mode=minified"]);
+    expect(r1.status).toBe(0);
+    expect(r2.status).toBe(0);
+    // The `generatedAt` timestamp will differ between runs — strip it before
+    // comparing so we're testing format stability, not payload determinism.
+    // (Cache keys typically hash a normalized subset; the format itself
+    // staying byte-stable is the contract `--json-file-mode=minified`
+    // promises.)
+    const strip = (s) => s.replace(/"generatedAt":"[^"]+"/, '"generatedAt":""');
+    expect(strip(readFileSync(out1, "utf8"))).toBe(
+      strip(readFileSync(out2, "utf8")),
+    );
+  });
+
+  it("rejects invalid --json-file-mode with exit 2", () => {
+    dir = makeFakeProject({ spec: "^3.6.0", locked: "3.6.0", installed: "3.6.0" });
+    const out = join(dir, "report.json");
+    const res = runScript(dir, [`--json-file=${out}`, "--json-file-mode=banana"]);
+    expect(res.status).toBe(2);
+    expect(res.stderr).toContain("invalid --json-file-mode=banana");
+    expect(res.stderr).toContain("pretty | minified");
+    expect(existsSync(out)).toBe(false); // bailed before writing
   });
 });
