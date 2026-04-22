@@ -179,11 +179,56 @@ jobs:
             echo "_Duration: ${{ steps.lint.outputs.duration_ms }}ms_"
           } >> "$GITHUB_STEP_SUMMARY"
 
+      # Generate a machine-readable JSON ESLint report so reviewers can
+      # download structured lint output from a failing PR (file-by-file
+      # rule violations, line/column, severity) instead of grepping logs.
+      #
+      # Runs unconditionally (`if: always()`) and tolerates failure
+      # (`continue-on-error: true`) because:
+      #   • ESLint exits non-zero whenever there are errors — but we still
+      #     want the report on red builds (that's the whole point).
+      #   • This step is purely diagnostic; the real gate above
+      #     (`bun run lint:all`) is what fails the job.
+      #
+      # `--no-error-on-unmatched-pattern` keeps it green on empty repos.
+      # The cache flags mirror the `lint` script so this pass reuses the
+      # warm cache from the gate above.
+      - name: Generate ESLint JSON report
+        if: always()
+        continue-on-error: true
+        run: |
+          mkdir -p ci-artifacts
+          bunx eslint . \
+            --cache --cache-location .eslintcache --cache-strategy content \
+            --no-error-on-unmatched-pattern \
+            --format json \
+            --output-file ci-artifacts/eslint-report.json || true
+          # Emit a tiny summary alongside the raw report for quick triage.
+          if [ -f ci-artifacts/eslint-report.json ]; then
+            node -e '
+              const r = JSON.parse(require("fs").readFileSync("ci-artifacts/eslint-report.json","utf8"));
+              const totals = r.reduce((a,f)=>({errors:a.errors+f.errorCount,warnings:a.warnings+f.warningCount,fixable:a.fixable+f.fixableErrorCount+f.fixableWarningCount,files:a.files+(f.errorCount||f.warningCount?1:0)}),{errors:0,warnings:0,fixable:0,files:0});
+              require("fs").writeFileSync("ci-artifacts/eslint-summary.json", JSON.stringify({...totals,totalFiles:r.length},null,2));
+              console.log("ESLint summary:", totals);
+            ' || true
+          fi
+
       - name: Upload lint:all log
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: lint-all-log-${{ github.run_id }}
           path: ci-artifacts/lint-all.log
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Upload ESLint JSON report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-report-${{ github.run_id }}
+          path: |
+            ci-artifacts/eslint-report.json
+            ci-artifacts/eslint-summary.json
           if-no-files-found: warn
           retention-days: 14
