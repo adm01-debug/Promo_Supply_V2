@@ -988,11 +988,19 @@ if (missing.length > 0) {
       if (group.length === 0) return;
       md.push(`## ${title} (${group.length})`);
       md.push("");
-      md.push(`| # | Subpath | Imported in (files) |`);
-      md.push(`| ---: | --- | ---: |`);
+      md.push(`| # | Subpath | Imported in (files) | Offenders (\`file:line\`) |`);
+      md.push(`| ---: | --- | ---: | --- |`);
       group.forEach(({ subpath }, i) => {
         const fileCount = (subpathFiles.get(subpath) ?? new Set()).size;
-        md.push(`| ${i + 1} | \`date-fns/${subpath}\` | ${fileCount} |`);
+        const offenders = sortedOffenders(subpath);
+        // Render every offender in the artifact — full audit trail. Uses
+        // <br> for in-cell line breaks so the table stays valid Markdown
+        // but each `file:line` is on its own visual row in the rendered
+        // output (GitHub job summary, browser preview, etc.).
+        const cell = offenders.length > 0
+          ? offenders.map(({ file, lines: ls }) => `\`${file}:${ls.join(",")}\``).join("<br>")
+          : "_(line numbers unavailable)_";
+        md.push(`| ${i + 1} | \`date-fns/${subpath}\` | ${fileCount} | ${cell} |`);
       });
       md.push("");
     };
