@@ -187,7 +187,7 @@ describe('useKeyboardShortcuts wiring', () => {
     });
 
     act(() => {
-      window.dispatchEvent(
+      document.dispatchEvent(
         new KeyboardEvent('keydown', {
           key: 'l',
           ctrlKey: true,
@@ -201,7 +201,7 @@ describe('useKeyboardShortcuts wiring', () => {
 
     // Cmd + Shift + L (macOS) must also trigger.
     act(() => {
-      window.dispatchEvent(
+      document.dispatchEvent(
         new KeyboardEvent('keydown', {
           key: 'L',
           metaKey: true,
