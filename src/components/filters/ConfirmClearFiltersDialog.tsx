@@ -78,8 +78,9 @@ export const ConfirmClearFiltersDialog = ({
         </div>
 
         <AlertDialogFooter>
-          <AlertDialogCancel autoFocus>Cancelar</AlertDialogCancel>
+          <AlertDialogCancel>Cancelar</AlertDialogCancel>
           <AlertDialogAction
+            autoFocus
             onClick={() => onConfirm(skipNextTime)}
             className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
           >
