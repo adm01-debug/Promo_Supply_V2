@@ -54,32 +54,32 @@ const screens: HarnessProps[] = [
     scope: 'solicitacoes',
     screenLabel: 'Solicitações',
     fields: [
-      { label: 'Busca', value: 'orçamento' },
-      { label: 'Status', value: 'Pendente' },
+      { key: 'searchTerm', label: 'Busca', value: 'orçamento' },
+      { key: 'statusFilter', label: 'Status', value: 'Pendente' },
     ],
   },
   {
     scope: 'acompanhamento',
     screenLabel: 'Acompanhamento',
     fields: [
-      { label: 'Busca', value: 'fornecedor X' },
-      { label: 'SLA', value: 'crítico' },
+      { key: 'searchTerm', label: 'Busca', value: 'fornecedor X' },
+      { key: 'filtroSLA', label: 'SLA', value: 'crítico' },
     ],
   },
   {
     scope: 'historico-compras',
     screenLabel: 'Histórico de Compras',
     fields: [
-      { label: 'Categoria', value: 'Insumos' },
-      { label: 'Período', value: 'últimos 30 dias' },
+      { key: 'categoryFilter', label: 'Categoria', value: 'Insumos' },
+      { key: 'periodPreset', label: 'Período', value: 'últimos 30 dias' },
     ],
   },
   {
     scope: 'executive-dashboard',
     screenLabel: 'Dashboard Executivo',
     fields: [
-      { label: 'Categoria', value: 'TI' },
-      { label: 'Fornecedor', value: 'ACME' },
+      { key: 'selectedCategory', label: 'Categoria', value: 'TI' },
+      { key: 'selectedSupplier', label: 'Fornecedor', value: 'ACME' },
     ],
   },
 ];
@@ -138,7 +138,7 @@ describe('Ctrl/⌘ + Shift + L → confirmation modal', () => {
       <Harness
         scope="historico-compras"
         screenLabel="Histórico de Compras"
-        fields={[{ label: 'Categoria', value: 'Insumos' }]}
+        fields={[{ key: 'categoryFilter', label: 'Categoria', value: 'Insumos' }]}
       />,
     );
 
@@ -155,7 +155,7 @@ describe('Ctrl/⌘ + Shift + L → confirmation modal', () => {
       <Harness
         scope="solicitacoes"
         screenLabel="Solicitações"
-        fields={[{ label: 'Status', value: 'Pendente' }]}
+        fields={[{ key: 'statusFilter', label: 'Status', value: 'Pendente' }]}
       />,
     );
 
@@ -182,7 +182,7 @@ describe('useKeyboardShortcuts wiring', () => {
     window.addEventListener('request-clear-filters', heard);
 
     renderHook(() => useKeyboardShortcuts(), {
-      wrapper: ({ children }) =>
+      wrapper: ({ children }: { children: React.ReactNode }) =>
         React.createElement(MemoryRouter, null, children),
     });
 
