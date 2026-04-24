@@ -6,16 +6,24 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Keyboard } from "lucide-react";
-import { shortcutsList } from "@/hooks/useKeyboardShortcuts";
+import { getShortcutsList } from "@/hooks/useKeyboardShortcuts";
+import { ClearFiltersShortcutEditor } from "./ClearFiltersShortcutEditor";
+import { subscribeToShortcutChanges } from "@/lib/clearFiltersShortcut";
+
+const CLEAR_FILTERS_DESCRIPTION = "Limpar filtros (tela atual)";
 
 export function KeyboardShortcutsDialog() {
   const [open, setOpen] = useState(false);
+  const [shortcuts, setShortcuts] = useState(() => getShortcutsList());
 
   useEffect(() => {
     const handleShowShortcuts = () => setOpen(true);
     window.addEventListener('show-keyboard-shortcuts', handleShowShortcuts);
     return () => window.removeEventListener('show-keyboard-shortcuts', handleShowShortcuts);
   }, []);
+
+  // Refresh the displayed list when the user changes their shortcut.
+  useEffect(() => subscribeToShortcutChanges(() => setShortcuts(getShortcutsList())), []);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -28,23 +36,30 @@ export function KeyboardShortcutsDialog() {
         </DialogHeader>
 
         <div className="space-y-6">
-          {shortcutsList.map((category) => (
+          {shortcuts.map((category) => (
             <div key={category.category}>
               <h3 className="text-sm font-semibold text-muted-foreground mb-3">
                 {category.category}
               </h3>
               <div className="space-y-2">
-                {category.items.map((item) => (
-                  <div
-                    key={item.keys}
-                    className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/50"
-                  >
-                    <span className="text-sm">{item.description}</span>
-                    <kbd className="inline-flex items-center gap-1 px-2 py-1 rounded border bg-muted font-mono text-xs">
-                      {item.keys}
-                    </kbd>
-                  </div>
-                ))}
+                {category.items.map((item) => {
+                  const isCustomizable = item.description === CLEAR_FILTERS_DESCRIPTION;
+                  return (
+                    <div
+                      key={item.description}
+                      className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-muted/50 gap-3"
+                    >
+                      <span className="text-sm">{item.description}</span>
+                      {isCustomizable ? (
+                        <ClearFiltersShortcutEditor />
+                      ) : (
+                        <kbd className="inline-flex items-center gap-1 px-2 py-1 rounded border bg-muted font-mono text-xs">
+                          {item.keys}
+                        </kbd>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           ))}

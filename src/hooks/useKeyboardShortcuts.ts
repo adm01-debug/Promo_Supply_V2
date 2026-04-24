@@ -1,5 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  formatCombo,
+  getClearFiltersShortcut,
+  subscribeToShortcutChanges,
+  type ShortcutCombo,
+} from "@/lib/clearFiltersShortcut";
 
 interface KeyboardShortcut {
   key: string;
@@ -13,6 +19,10 @@ interface KeyboardShortcut {
 
 export function useKeyboardShortcuts() {
   const navigate = useNavigate();
+  const [clearCombo, setClearCombo] = useState<ShortcutCombo>(() => getClearFiltersShortcut());
+
+  // Re-subscribe so the registered handler refreshes when the user changes their preference.
+  useEffect(() => subscribeToShortcutChanges(setClearCombo), []);
 
   useEffect(() => {
     const shortcuts: KeyboardShortcut[] = [
@@ -26,7 +36,7 @@ export function useKeyboardShortcuts() {
       { key: "7", alt: true, description: "Ir para Fornecedores", action: () => navigate("/fornecedores") },
       { key: "8", alt: true, description: "Ir para Contratos", action: () => navigate("/contratos") },
       { key: "9", alt: true, description: "Ir para Relatórios", action: () => navigate("/relatorios") },
-      
+
       // Quick actions (Ctrl/Cmd + Shift)
       { key: "n", ctrl: true, shift: true, description: "Nova Solicitação", action: () => {
         navigate("/solicitacoes");
@@ -51,11 +61,18 @@ export function useKeyboardShortcuts() {
         }, 100);
       }},
 
-      // Clear filters (current screen)
-      { key: "l", ctrl: true, shift: true, description: "Limpar filtros", action: () => {
-        const event = new CustomEvent('request-clear-filters');
-        window.dispatchEvent(event);
-      }},
+      // Clear filters (current screen) — user-configurable
+      {
+        key: clearCombo.key,
+        ctrl: clearCombo.ctrl,
+        shift: clearCombo.shift,
+        alt: clearCombo.alt,
+        description: "Limpar filtros",
+        action: () => {
+          const event = new CustomEvent('request-clear-filters');
+          window.dispatchEvent(event);
+        },
+      },
 
       // Back navigation
       { key: "Backspace", alt: true, description: "Voltar", action: () => navigate(-1) },
@@ -74,10 +91,13 @@ export function useKeyboardShortcuts() {
         return;
       }
 
-      // Don't trigger Ctrl/Cmd+Shift+L while a modal/command palette is open,
+      // Don't trigger the "Clear filters" shortcut while a modal/command palette is open,
       // to avoid conflicting with the global search or other open dialogs.
       const isClearFiltersShortcut =
-        event.key.toLowerCase() === 'l' && (event.ctrlKey || event.metaKey) && event.shiftKey;
+        event.key.toLowerCase() === clearCombo.key.toLowerCase() &&
+        (clearCombo.ctrl ? (event.ctrlKey || event.metaKey) : !(event.ctrlKey || event.metaKey)) &&
+        (clearCombo.shift ? event.shiftKey : !event.shiftKey) &&
+        (clearCombo.alt ? event.altKey : !event.altKey);
       if (isClearFiltersShortcut) {
         const hasOpenDialog = document.querySelector(
           '[role="dialog"][data-state="open"], [cmdk-root], [cmdk-input]',
@@ -101,34 +121,42 @@ export function useKeyboardShortcuts() {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [navigate]);
+  }, [navigate, clearCombo]);
 }
 
-// Export shortcuts list for display
-export const shortcutsList = [
-  { category: "Navegação (Alt + número)", items: [
-    { keys: "Alt + 1", description: "Dashboard" },
-    { keys: "Alt + 2", description: "Solicitações" },
-    { keys: "Alt + 3", description: "Cotações" },
-    { keys: "Alt + 4", description: "Pedidos" },
-    { keys: "Alt + 5", description: "Acompanhamento" },
-    { keys: "Alt + 6", description: "Pagamentos" },
-    { keys: "Alt + 7", description: "Fornecedores" },
-    { keys: "Alt + 8", description: "Contratos" },
-    { keys: "Alt + 9", description: "Relatórios" },
-  ]},
-  { category: "Ações Rápidas", items: [
-    { keys: "Ctrl/⌘ + K", description: "Busca Global" },
-    { keys: "Ctrl/⌘ + Shift + N", description: "Nova Solicitação" },
-    { keys: "Ctrl/⌘ + Shift + P", description: "Novo Pedido" },
-    { keys: "Ctrl/⌘ + Shift + F", description: "Novo Fornecedor" },
-    { keys: "Ctrl/⌘ + Shift + C", description: "Novo Contrato" },
-    { keys: "Ctrl/⌘ + Shift + L", description: "Limpar filtros (tela atual)" },
-  ]},
-  { category: "Navegação", items: [
-    { keys: "Alt + Backspace", description: "Voltar" },
-  ]},
-  { category: "Ajuda", items: [
-    { keys: "Shift + ?", description: "Mostrar atalhos" },
-  ]},
-];
+// Export shortcuts list for display. The "Limpar filtros" item reflects the
+// user's current preference (read at call time).
+export function getShortcutsList() {
+  const clearLabel = formatCombo(getClearFiltersShortcut());
+  return [
+    { category: "Navegação (Alt + número)", items: [
+      { keys: "Alt + 1", description: "Dashboard" },
+      { keys: "Alt + 2", description: "Solicitações" },
+      { keys: "Alt + 3", description: "Cotações" },
+      { keys: "Alt + 4", description: "Pedidos" },
+      { keys: "Alt + 5", description: "Acompanhamento" },
+      { keys: "Alt + 6", description: "Pagamentos" },
+      { keys: "Alt + 7", description: "Fornecedores" },
+      { keys: "Alt + 8", description: "Contratos" },
+      { keys: "Alt + 9", description: "Relatórios" },
+    ]},
+    { category: "Ações Rápidas", items: [
+      { keys: "Ctrl/⌘ + K", description: "Busca Global" },
+      { keys: "Ctrl/⌘ + Shift + N", description: "Nova Solicitação" },
+      { keys: "Ctrl/⌘ + Shift + P", description: "Novo Pedido" },
+      { keys: "Ctrl/⌘ + Shift + F", description: "Novo Fornecedor" },
+      { keys: "Ctrl/⌘ + Shift + C", description: "Novo Contrato" },
+      { keys: clearLabel, description: "Limpar filtros (tela atual)" },
+    ]},
+    { category: "Navegação", items: [
+      { keys: "Alt + Backspace", description: "Voltar" },
+    ]},
+    { category: "Ajuda", items: [
+      { keys: "Shift + ?", description: "Mostrar atalhos" },
+    ]},
+  ];
+}
+
+// Backwards-compatible static export. Prefer `getShortcutsList()` so the
+// "Limpar filtros" entry stays in sync with the user preference.
+export const shortcutsList = getShortcutsList();
