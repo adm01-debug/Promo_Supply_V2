@@ -269,34 +269,70 @@ ${scanInputHtml}
 
   <section class="offenders" aria-labelledby="offenders-h">
     <h2 id="offenders-h">Tree-shaking offenders <span class="muted">(${offenders.length}${truncated ? "+, truncated" : ""}${suppressed.length ? `, ${suppressed.length} suppressed` : ""})</span></h2>
-    ${offenders.length === 0
+    <div class="offender-toolbar" aria-label="Offender filters">
+      <label>
+        Minimum risk
+        <select id="risk-filter">
+          <option value="ok">OK and above</option>
+          <option value="warning">Warning and above</option>
+          <option value="critical">Critical only</option>
+        </select>
+      </label>
+      <label>
+        <input id="show-suppressed" type="checkbox" />
+        Show suppressed offenders
+      </label>
+      <span id="offender-count" class="offender-count" aria-live="polite"></span>
+    </div>
+    ${allOffenderRows.length === 0
       ? `<p class="muted">No barrel imports detected — every <code>date-fns</code> import uses a tree-shakable subpath. 🎉</p>`
-      : `<table>
+      : `<table id="offenders-table">
       <thead>
         <tr>
           <th scope="col">File</th>
           <th scope="col" class="num">Line</th>
+          <th scope="col">Risk</th>
           <th scope="col">Import statement</th>
+          <th scope="col">Status</th>
         </tr>
       </thead>
       <tbody>
-${offenders.map((o) => `        <tr>
-          <td><code>${esc(o.file)}</code></td>
-          <td class="num">${esc(String(o.line ?? ""))}</td>
-          <td><code>from "${esc(o.importPath)}"</code></td>
-        </tr>`).join("\n")}
+${allOffenderRows.map(renderOffenderRow).join("\n")}
       </tbody>
-    </table>${truncated ? `<p class="muted">List truncated — see <code>public/dependency-health.json</code> for the full set.</p>` : ""}`}
-    ${suppressed.length > 0 ? `<details class="suppressed">
-      <summary>${suppressed.length} suppressed by allowlist</summary>
-      <table>
-        <thead><tr><th>File</th><th class="num">Line</th><th>Import</th><th>Reason</th></tr></thead>
-        <tbody>
-${suppressed.map((s) => `          <tr><td><code>${esc(s.file)}</code></td><td class="num">${esc(String(s.line ?? ""))}</td><td><code>${esc(s.importPath)}</code></td><td>${esc(s.reason ?? "")}</td></tr>`).join("\n")}
-        </tbody>
-      </table>
-    </details>` : ""}
+    </table>
+    <p id="empty-filter-result" class="empty-filter-result" hidden>No offenders match the selected filters.</p>
+    ${truncated ? `<p class="muted">List truncated — see <code>public/dependency-health.json</code> for the full set.</p>` : ""}`}
   </section>
+
+  <script>
+    (() => {
+      const riskRank = { ok: 0, warning: 1, critical: 2 };
+      const riskFilter = document.getElementById('risk-filter');
+      const showSuppressed = document.getElementById('show-suppressed');
+      const count = document.getElementById('offender-count');
+      const empty = document.getElementById('empty-filter-result');
+      const rows = Array.from(document.querySelectorAll('#offenders-table tbody tr'));
+      const update = () => {
+        const minRisk = riskRank[riskFilter?.value || 'ok'] ?? 0;
+        const includeSuppressed = showSuppressed?.checked === true;
+        let visible = 0;
+        let hiddenSuppressed = 0;
+        for (const row of rows) {
+          const risk = riskRank[row.dataset.risk || 'ok'] ?? 0;
+          const suppressed = row.dataset.suppressed === 'true';
+          const passes = risk >= minRisk && (includeSuppressed || !suppressed);
+          row.classList.toggle('hidden-by-filter', !passes);
+          if (passes) visible += 1;
+          if (suppressed && !includeSuppressed) hiddenSuppressed += 1;
+        }
+        if (count) count.textContent = `${visible} shown${hiddenSuppressed ? ` · ${hiddenSuppressed} suppressed hidden` : ''}`;
+        if (empty) empty.hidden = visible !== 0;
+      };
+      riskFilter?.addEventListener('change', update);
+      showSuppressed?.addEventListener('change', update);
+      update();
+    })();
+  </script>
 
 
   <footer>
