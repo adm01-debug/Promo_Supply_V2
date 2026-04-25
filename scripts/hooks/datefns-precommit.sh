@@ -29,6 +29,13 @@ GEN_LOG="$LOG_DIR/datefns-generator.log"
 TSC_LOG="$LOG_DIR/datefns-tsc-smoke.log"
 BUNDLE_ROOT="${DATEFNS_HOOK_BUNDLE_ROOT:-$LOG_DIR/pre-push-artifacts}"
 BUNDLE_DIR=""
+EMIT_JSON_SUMMARY="${DATEFNS_HOOK_JSON_SUMMARY:-0}"
+
+for arg in "$@"; do
+  case "$arg" in
+    --json-summary) EMIT_JSON_SUMMARY=1 ;;
+  esac
+done
 
 cyan()  { printf "\033[36m%s\033[0m\n" "$*"; }
 red()   { printf "\033[31m%s\033[0m\n" "$*"; }
@@ -37,6 +44,13 @@ gray()  { printf "\033[90m%s\033[0m\n" "$*"; }
 
 strip_ansi() {
   sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g'
+}
+
+json_summary_enabled() {
+  case "$EMIT_JSON_SUMMARY" in
+    1|true|TRUE|yes|YES|on|ON) return 0 ;;
+    *) return 1 ;;
+  esac
 }
 
 # Extract the offending date-fns import path(s) from a tsc log.
@@ -77,6 +91,35 @@ extract_offending_files() {
   grep -E "error TS[0-9]+:.*date-fns" "$log" \
     | grep -oE "^[^:]+\([0-9]+,[0-9]+\)" \
     | sort -u
+}
+
+emit_machine_summary() {
+  # $1 step number, $2 step label, $3 mode, $4 log file, $5 exit code, $6 imports
+  local step="$1" label="$2" mode="$3" log="$4" code="$5" imports="$6"
+  local bucket
+  bucket="$(printf '%s' "$mode" | awk '{print $1}')"
+  local json
+  json="$(python3 - "$step" "$label" "$bucket" "$mode" "$code" "$imports" <<'PY'
+import json, sys
+step, label, bucket, mode, code, imports_raw = sys.argv[1:]
+payload = {
+    "step": step,
+    "label": label,
+    "bucket": bucket,
+    "failureMode": mode,
+    "exitCode": int(code) if code.isdigit() else code,
+    "imports": [line for line in imports_raw.splitlines() if line],
+}
+print(json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
+PY
+)"
+  printf 'DATEFNS_HOOK_SUMMARY_JSON=%s\n' "$json"
+  if [ -f "$log" ]; then
+    {
+      printf '\n===== DATEFNS_HOOK_SUMMARY_JSON =====\n'
+      printf '%s\n' "$json"
+    } >> "$log"
+  fi
 }
 
 # ── Failure-mode detection ────────────────────────────────────────────────────
@@ -259,6 +302,9 @@ emit_summary() {
 
   local imports
   imports="$(extract_datefns_imports "$log" || true)"
+  if json_summary_enabled; then
+    emit_machine_summary "$step" "$label" "$mode" "$log" "$code" "$imports"
+  fi
   if [ -n "$imports" ]; then
     echo ""
     cyan "  Offending date-fns import path(s):"
