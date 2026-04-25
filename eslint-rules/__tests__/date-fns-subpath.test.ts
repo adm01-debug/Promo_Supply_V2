@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { Linter } from "eslint";
-import * as tsParser from "@typescript-eslint/parser";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 // @ts-expect-error - plain JS rule, no type declarations
@@ -17,7 +16,6 @@ const CONFIG = {
     local: { rules: { "date-fns-subpath": dateFnsSubpath } },
   },
   languageOptions: {
-    parser: tsParser,
     ecmaVersion: 2020 as const,
     sourceType: "module" as const,
   },
