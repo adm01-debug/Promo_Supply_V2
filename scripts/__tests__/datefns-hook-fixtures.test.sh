@@ -171,6 +171,8 @@ run_fixture() {
   esac
 
   gray "    detector → $mode_output"
+  local fixture_failed_before
+  fixture_failed_before="$FAIL"
 
   # Assertion 1: bucket prefix matches.
   local actual_bucket
@@ -196,14 +198,12 @@ run_fixture() {
   # Assertion 4: every expected import is extracted from the log.
   local extracted
   extracted="$(extract_datefns_imports "$log_file" 2>/dev/null || true)"
-  local actual_bucket actual_json imports_tmp fixture_failed_before
-  actual_bucket="$(printf '%s' "$mode_output" | awk '{print $1}')"
+  local actual_json imports_tmp
   imports_tmp="$(mktemp)"
   printf '%s\n' "$extracted" | sed '/^$/d' > "$imports_tmp"
   actual_json="$(mktemp)"
   write_actual_snapshot "$actual_json" "$step" "$exit_code" "$actual_bucket" "$mode_output" "$imports_tmp"
   rm -f "$imports_tmp"
-  fixture_failed_before="$FAIL"
 
   while IFS= read -r want; do
     [ -z "$want" ] && continue
