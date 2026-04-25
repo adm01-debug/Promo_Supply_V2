@@ -143,6 +143,15 @@ PY
       printf '%s\n' "$json"
     } >> "$log"
   fi
+  if [ -n "$JSON_FILE" ]; then
+    if [ -e "$JSON_FILE" ] && ! json_file_overwrite_enabled; then
+      printf 'datefns-precommit: refusing to overwrite existing --json-file target: %s\n' "$JSON_FILE" >&2
+      printf 'datefns-precommit: pass --json-file-overwrite or set DATEFNS_HOOK_JSON_FILE_OVERWRITE=1 to replace it.\n' >&2
+      return 2
+    fi
+    mkdir -p "$(dirname "$JSON_FILE")"
+    printf '%s\n' "$json" > "$JSON_FILE"
+  fi
 }
 
 # ── Failure-mode detection ────────────────────────────────────────────────────
