@@ -32,7 +32,11 @@ BUNDLE_DIR=""
 EMIT_JSON_SUMMARY="${DATEFNS_HOOK_JSON_SUMMARY:-0}"
 JSON_FILE="${DATEFNS_HOOK_JSON_FILE:-}"
 JSON_FILE_OVERWRITE="${DATEFNS_HOOK_JSON_FILE_OVERWRITE:-0}"
+JSON_FILE_LOG="${DATEFNS_HOOK_JSON_FILE_LOG:-}"
+JSON_FILE_LOG_ENABLED=0
 LOG_LEVEL="${DATEFNS_HOOK_LOG_LEVEL:-always}"
+
+[ -n "$JSON_FILE_LOG" ] && JSON_FILE_LOG_ENABLED=1
 
 prev_arg=""
 for arg in "$@"; do
@@ -50,6 +54,8 @@ for arg in "$@"; do
     --json-file=*) JSON_FILE="${arg#--json-file=}"; EMIT_JSON_SUMMARY=1 ;;
     --json-file) prev_arg="--json-file"; EMIT_JSON_SUMMARY=1 ;;
     --json-file-overwrite) JSON_FILE_OVERWRITE=1 ;;
+    --json-file-log=*) JSON_FILE_LOG="${arg#--json-file-log=}"; JSON_FILE_LOG_ENABLED=1 ;;
+    --json-file-log) JSON_FILE_LOG_ENABLED=1 ;;
     --log-level=*) LOG_LEVEL="${arg#--log-level=}" ;;
     --log-level) prev_arg="--log-level" ;;
   esac
@@ -139,6 +145,27 @@ emit_artifact_confirmation() {
   printf '  %-18s %s (%s bytes)\n' "$label" "${path#$ROOT_DIR/}" "$(path_bytes "$path")"
 }
 
+write_json_file_log() {
+  local artifact_path="$1" bytes="$2"
+  [ "$JSON_FILE_LOG_ENABLED" -eq 1 ] || return 0
+  local log_path="$JSON_FILE_LOG"
+  if [ -z "$log_path" ]; then
+    log_path="${artifact_path}.log.json"
+  fi
+  mkdir -p "$(dirname "$log_path")"
+  python3 - "$artifact_path" "$bytes" "$log_path" <<'PY'
+import json, os, sys
+artifact_path, bytes_raw, log_path = sys.argv[1:]
+payload = {
+    "path": os.path.abspath(artifact_path),
+    "bytes": int(bytes_raw),
+}
+with open(log_path, "w", encoding="utf-8") as f:
+    json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
+    f.write("\n")
+PY
+}
+
 # Extract the offending date-fns import path(s) from a tsc log.
 # tsc messages look like:
 #   src/x.ts(12,23): error TS2305: Module '"date-fns/foo"' has no exported member 'bar'.
@@ -214,6 +241,7 @@ PY
     fi
     mkdir -p "$(dirname "$JSON_FILE")"
     printf '%s\n' "$json" > "$JSON_FILE"
+    write_json_file_log "$JSON_FILE" "$(file_bytes "$JSON_FILE")"
     emit_artifact_confirmation "JSON file:" "$JSON_FILE"
   fi
 }
