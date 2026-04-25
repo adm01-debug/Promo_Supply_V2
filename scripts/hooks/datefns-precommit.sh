@@ -29,6 +29,13 @@ GEN_LOG="$LOG_DIR/datefns-generator.log"
 TSC_LOG="$LOG_DIR/datefns-tsc-smoke.log"
 BUNDLE_ROOT="${DATEFNS_HOOK_BUNDLE_ROOT:-$LOG_DIR/pre-push-artifacts}"
 BUNDLE_DIR=""
+EMIT_JSON_SUMMARY="${DATEFNS_HOOK_JSON_SUMMARY:-0}"
+
+for arg in "$@"; do
+  case "$arg" in
+    --json-summary) EMIT_JSON_SUMMARY=1 ;;
+  esac
+done
 
 cyan()  { printf "\033[36m%s\033[0m\n" "$*"; }
 red()   { printf "\033[31m%s\033[0m\n" "$*"; }
@@ -37,6 +44,13 @@ gray()  { printf "\033[90m%s\033[0m\n" "$*"; }
 
 strip_ansi() {
   sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g'
+}
+
+json_summary_enabled() {
+  case "$EMIT_JSON_SUMMARY" in
+    1|true|TRUE|yes|YES|on|ON) return 0 ;;
+    *) return 1 ;;
+  esac
 }
 
 # Extract the offending date-fns import path(s) from a tsc log.
