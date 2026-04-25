@@ -101,6 +101,42 @@ const rowsHtml = entries
   .map(renderRow)
   .join("\n");
 
+const RISK_ORDER = { ok: 0, warning: 1, critical: 2 };
+
+function normalizeRisk(value) {
+  return Object.prototype.hasOwnProperty.call(RISK_ORDER, value) ? value : "ok";
+}
+
+function renderRiskBadge(risk) {
+  const normalized = normalizeRisk(risk);
+  const label = normalized === "critical" ? "Critical" : normalized === "warning" ? "Warning" : "OK";
+  return `<span class="risk risk-${normalized}">${label}</span>`;
+}
+
+const offenderRows = offenders.map((o) => ({
+  ...o,
+  riskLevel: normalizeRisk(o.riskLevel ?? treeShaking.riskLevel),
+  suppressed: false,
+  reason: "",
+}));
+const suppressedRows = suppressed.map((s) => ({
+  ...s,
+  riskLevel: normalizeRisk(s.riskLevel ?? treeShaking.riskLevel),
+  suppressed: true,
+  reason: s.reason ?? "Allowlisted",
+}));
+const allOffenderRows = [...offenderRows, ...suppressedRows];
+
+function renderOffenderRow(row) {
+  return `        <tr data-risk="${esc(row.riskLevel)}" data-suppressed="${row.suppressed ? "true" : "false"}">
+          <td><code>${esc(row.file)}</code></td>
+          <td class="num">${esc(String(row.line ?? ""))}</td>
+          <td>${renderRiskBadge(row.riskLevel)}</td>
+          <td><code>from "${esc(row.importPath)}"</code></td>
+          <td>${row.suppressed ? `<span class="suppressed-label">Suppressed</span><div class="muted">${esc(row.reason)}</div>` : `<span class="active-label">Active</span>`}</td>
+        </tr>`;
+}
+
 const scanInputHtml = scanInput
   ? `    <details class="scan-input">
       <summary>Scan input (${scanInput.fileCount ?? "?"} files, hash <code>${esc((scanInput.fileHash ?? "").slice(0, 12))}</code>)</summary>
