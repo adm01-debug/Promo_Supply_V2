@@ -337,6 +337,7 @@ ${scanInputHtml}
           <th scope="col" class="num">Line</th>
           <th scope="col">Risk</th>
           <th scope="col">Import statement</th>
+          <th scope="col">Recommended replacement</th>
           <th scope="col">Status</th>
         </tr>
       </thead>
