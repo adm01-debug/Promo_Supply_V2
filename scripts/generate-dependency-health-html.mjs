@@ -79,6 +79,27 @@ function esc(s) {
     .replace(/'/g, "&#39;");
 }
 
+function normalizeRepoBaseUrl(value) {
+  const raw = String(value ?? "").trim();
+  if (!raw) return "";
+  return raw.replace(/\/+$/, "");
+}
+
+function inferGitHubRepoBaseUrl() {
+  const repo = process.env.GITHUB_REPOSITORY;
+  if (!repo) return "";
+  const server = process.env.GITHUB_SERVER_URL || "https://github.com";
+  const ref = process.env.GITHUB_SHA || process.env.GITHUB_REF_NAME || "main";
+  return `${server.replace(/\/+$/, "")}/${repo}/blob/${ref}`;
+}
+
+function repoLineHref(file, line) {
+  if (!REPO_BASE_URL) return `#L${encodeURIComponent(String(line ?? ""))}`;
+  const normalizedFile = String(file ?? "").replace(/^\/+/, "");
+  const suffix = line ? `#L${encodeURIComponent(String(line))}` : "";
+  return `${REPO_BASE_URL}/${encodeURI(normalizedFile)}${suffix}`;
+}
+
 function renderRow(e) {
   const ok = e.exists === true;
   const badgeClass = ok ? "badge badge-ok" : "badge badge-missing";
