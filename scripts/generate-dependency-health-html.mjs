@@ -216,9 +216,20 @@ const html = `<!doctype html>
     details.scan-input dt { color: var(--muted); }
     section.offenders { margin-top: 28px; }
     section.offenders h2 { font-size: 16px; margin: 0 0 10px; }
-    details.suppressed { margin-top: 14px; padding: 10px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
-    details.suppressed summary { cursor: pointer; font-weight: 600; color: var(--muted); }
-    details.suppressed table { margin-top: 10px; }
+    .offender-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 16px; margin: 0 0 12px; padding: 12px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+    .offender-toolbar label { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+    .offender-toolbar select { color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; }
+    .offender-toolbar input { accent-color: var(--accent); }
+    .offender-count { color: var(--muted); font-size: 12px; }
+    .risk { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .risk-ok { background: var(--ok-bg); color: var(--ok-fg); }
+    .risk-warning { background: #78350f; color: #fde68a; }
+    .risk-critical { background: var(--bad-bg); color: var(--bad-fg); }
+    .suppressed-label, .active-label { display: inline-flex; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .suppressed-label { background: var(--border); color: var(--muted); }
+    .active-label { background: var(--ok-bg); color: var(--ok-fg); }
+    .hidden-by-filter { display: none; }
+    .empty-filter-result { margin: 12px 0 0; padding: 12px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; color: var(--muted); }
     footer { margin-top: 28px; color: var(--muted); font-size: 12px; }
     a { color: var(--accent); }
     [title] { cursor: help; }
