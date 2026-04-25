@@ -30,12 +30,28 @@ TSC_LOG="$LOG_DIR/datefns-tsc-smoke.log"
 BUNDLE_ROOT="${DATEFNS_HOOK_BUNDLE_ROOT:-$LOG_DIR/pre-push-artifacts}"
 BUNDLE_DIR=""
 EMIT_JSON_SUMMARY="${DATEFNS_HOOK_JSON_SUMMARY:-0}"
+JSON_FILE="${DATEFNS_HOOK_JSON_FILE:-}"
+JSON_FILE_OVERWRITE="${DATEFNS_HOOK_JSON_FILE_OVERWRITE:-0}"
 
+prev_arg=""
 for arg in "$@"; do
+  if [ "$prev_arg" = "--json-file" ]; then
+    JSON_FILE="$arg"
+    prev_arg=""
+    continue
+  fi
   case "$arg" in
     --json-summary) EMIT_JSON_SUMMARY=1 ;;
+    --json-file=*) JSON_FILE="${arg#--json-file=}"; EMIT_JSON_SUMMARY=1 ;;
+    --json-file) prev_arg="--json-file"; EMIT_JSON_SUMMARY=1 ;;
+    --json-file-overwrite) JSON_FILE_OVERWRITE=1 ;;
   esac
 done
+
+if [ "$prev_arg" = "--json-file" ]; then
+  echo "datefns-precommit: --json-file requires a path" >&2
+  exit 2
+fi
 
 cyan()  { printf "\033[36m%s\033[0m\n" "$*"; }
 red()   { printf "\033[31m%s\033[0m\n" "$*"; }
@@ -48,6 +64,13 @@ strip_ansi() {
 
 json_summary_enabled() {
   case "$EMIT_JSON_SUMMARY" in
+    1|true|TRUE|yes|YES|on|ON) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+json_file_overwrite_enabled() {
+  case "$JSON_FILE_OVERWRITE" in
     1|true|TRUE|yes|YES|on|ON) return 0 ;;
     *) return 1 ;;
   esac
@@ -119,6 +142,15 @@ PY
       printf '\n===== DATEFNS_HOOK_SUMMARY_JSON =====\n'
       printf '%s\n' "$json"
     } >> "$log"
+  fi
+  if [ -n "$JSON_FILE" ]; then
+    if [ -e "$JSON_FILE" ] && ! json_file_overwrite_enabled; then
+      printf 'datefns-precommit: refusing to overwrite existing --json-file target: %s\n' "$JSON_FILE" >&2
+      printf 'datefns-precommit: pass --json-file-overwrite or set DATEFNS_HOOK_JSON_FILE_OVERWRITE=1 to replace it.\n' >&2
+      return 2
+    fi
+    mkdir -p "$(dirname "$JSON_FILE")"
+    printf '%s\n' "$json" > "$JSON_FILE"
   fi
 }
 
