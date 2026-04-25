@@ -145,6 +145,27 @@ emit_artifact_confirmation() {
   printf '  %-18s %s (%s bytes)\n' "$label" "${path#$ROOT_DIR/}" "$(path_bytes "$path")"
 }
 
+write_json_file_log() {
+  local artifact_path="$1" bytes="$2"
+  [ "$JSON_FILE_LOG_ENABLED" -eq 1 ] || return 0
+  local log_path="$JSON_FILE_LOG"
+  if [ -z "$log_path" ]; then
+    log_path="${artifact_path}.log.json"
+  fi
+  mkdir -p "$(dirname "$log_path")"
+  python3 - "$artifact_path" "$bytes" "$log_path" <<'PY'
+import json, os, sys
+artifact_path, bytes_raw, log_path = sys.argv[1:]
+payload = {
+    "path": os.path.abspath(artifact_path),
+    "bytes": int(bytes_raw),
+}
+with open(log_path, "w", encoding="utf-8") as f:
+    json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
+    f.write("\n")
+PY
+}
+
 # Extract the offending date-fns import path(s) from a tsc log.
 # tsc messages look like:
 #   src/x.ts(12,23): error TS2305: Module '"date-fns/foo"' has no exported member 'bar'.
