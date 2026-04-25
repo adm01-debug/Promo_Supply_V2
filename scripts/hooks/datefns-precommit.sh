@@ -32,6 +32,7 @@ BUNDLE_DIR=""
 EMIT_JSON_SUMMARY="${DATEFNS_HOOK_JSON_SUMMARY:-0}"
 JSON_FILE="${DATEFNS_HOOK_JSON_FILE:-}"
 JSON_FILE_OVERWRITE="${DATEFNS_HOOK_JSON_FILE_OVERWRITE:-0}"
+LOG_LEVEL="${DATEFNS_HOOK_LOG_LEVEL:-always}"
 
 prev_arg=""
 for arg in "$@"; do
@@ -45,12 +46,26 @@ for arg in "$@"; do
     --json-file=*) JSON_FILE="${arg#--json-file=}"; EMIT_JSON_SUMMARY=1 ;;
     --json-file) prev_arg="--json-file"; EMIT_JSON_SUMMARY=1 ;;
     --json-file-overwrite) JSON_FILE_OVERWRITE=1 ;;
+    --log-level=*) LOG_LEVEL="${arg#--log-level=}" ;;
+    --log-level) prev_arg="--log-level" ;;
   esac
 done
 
 if [ "$prev_arg" = "--json-file" ]; then
   echo "datefns-precommit: --json-file requires a path" >&2
   exit 2
+elif [ "$prev_arg" = "--log-level" ]; then
+  echo "datefns-precommit: --log-level requires one of: always, human, silent" >&2
+  exit 2
+fi
+
+case "$LOG_LEVEL" in
+  always|human|silent) ;;
+  *)
+    echo "datefns-precommit: invalid --log-level=$LOG_LEVEL (expected: always, human, silent)" >&2
+    exit 2
+    ;;
+esac
 fi
 
 cyan()  { printf "\033[36m%s\033[0m\n" "$*"; }
