@@ -79,6 +79,32 @@ Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/c
 
 ## Coding conventions
 
+### Indexed objects and typed env access
+
+`tsconfig.app.json` enables `noPropertyAccessFromIndexSignature` so TypeScript
+does not silently treat arbitrary index-signature keys as known properties.
+This catches typos early and keeps env/config objects explicit.
+
+**✅ Do** use bracket notation for keys that come from an index signature:
+
+```ts
+const value = record["someKey"];
+const flag = settings[dynamicKey];
+```
+
+For Vite env vars, add known fields to `src/vite-env.d.ts` before using dot
+access:
+
+```ts
+const url = import.meta.env.VITE_SUPABASE_URL;
+```
+
+**❌ Don't** use dot access for arbitrary indexed keys:
+
+```ts
+const value = record.someKey;
+```
+
 ### `date-fns` imports — subpath only
 
 This project pins `date-fns` and **requires** subpath imports. Top-level barrel
