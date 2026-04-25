@@ -77,6 +77,33 @@ v=json.load(open(sys.argv[1])).get(sys.argv[2], [])
 print('\n'.join(v))" "$1" "$2"
 }
 
+write_actual_snapshot() {
+  local out="$1" step="$2" exit_code="$3" bucket="$4" mode_output="$5" imports_file="$6"
+  python3 - "$out" "$step" "$exit_code" "$bucket" "$mode_output" "$imports_file" <<'PY'
+import json, sys
+out, step, exit_code, bucket, mode_output, imports_file = sys.argv[1:]
+with open(imports_file, encoding="utf-8") as f:
+    imports = [line.rstrip("\n") for line in f if line.rstrip("\n")]
+payload = {
+    "step": step,
+    "exitCode": int(exit_code) if str(exit_code).isdigit() else exit_code,
+    "failureModeBucket": bucket,
+    "failureModeActual": mode_output,
+    "imports": imports,
+}
+with open(out, "w", encoding="utf-8") as f:
+    json.dump(payload, f, ensure_ascii=False, indent=2)
+    f.write("\n")
+PY
+}
+
+emit_snapshot_diff() {
+  local expected_json="$1" actual_json="$2"
+  red "    ✗ snapshot diff (expected JSON ↔ actual detector output):"
+  diff -u --label "expected:${expected_json#$REPO_ROOT/}" --label "actual:detector-output" \
+    "$expected_json" "$actual_json" || true
+}
+
 assert_contains() {
   local name="$1" haystack="$2" needle="$3"
   if printf '%s' "$haystack" | grep -qF -- "$needle"; then
