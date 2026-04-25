@@ -139,6 +139,17 @@ PY
   fi
 }
 
+file_sha256() {
+  python3 - "$1" <<'PY'
+import hashlib, sys
+h = hashlib.sha256()
+with open(sys.argv[1], "rb") as f:
+    for chunk in iter(lambda: f.read(1024 * 1024), b""):
+        h.update(chunk)
+print(h.hexdigest())
+PY
+}
+
 emit_artifact_confirmation() {
   local label="$1" path="$2"
   artifact_confirmation_enabled || return 0
