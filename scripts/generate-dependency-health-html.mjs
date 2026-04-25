@@ -126,6 +126,49 @@ const suppressedRows = suppressed.map((s) => ({
   reason: s.reason ?? "Allowlisted",
 }));
 const allOffenderRows = [...offenderRows, ...suppressedRows];
+const sourceLineCache = new Map();
+
+function sourceLineFor(row) {
+  const key = `${row.file}:${row.line ?? ""}`;
+  if (sourceLineCache.has(key)) return sourceLineCache.get(key);
+  try {
+    const content = readFileSync(resolve(ROOT, row.file), "utf8");
+    const line = content.split(/\r?\n/)[Number(row.line) - 1]?.trim() ?? "";
+    sourceLineCache.set(key, line);
+    return line;
+  } catch {
+    sourceLineCache.set(key, "");
+    return "";
+  }
+}
+
+function localeSubpathName(symbol) {
+  // date-fns locale exports usually use camel-cased region names (ptBR, enUS)
+  // while subpaths use BCP-47 casing (pt-BR, en-US). Keep the common case
+  // readable without hardcoding every supported locale.
+  return String(symbol).replace(/^([a-z]{2})([A-Z]{2})$/, (_, lang, region) => `${lang}-${region}`);
+}
+
+function recommendedReplacement(row) {
+  const importLine = sourceLineFor(row);
+  const namedMatch = /import\s*\{([^}]+)\}\s*from\s*['"][^'"]+['"]/.exec(importLine);
+  const names = namedMatch?.[1]
+    ?.split(",")
+    .map((part) => part.trim().split(/\s+as\s+/i)[0]?.trim())
+    .filter(Boolean) ?? [];
+
+  if (row.importPath === "date-fns/locale") {
+    if (names.length === 0) return "Use locale subpaths: date-fns/locale/<locale>";
+    return names.map((name) => `date-fns/locale/${localeSubpathName(name)}`).join(" · ");
+  }
+
+  if (row.importPath === "date-fns") {
+    if (names.length === 0) return "Use function subpaths: date-fns/<function>";
+    return names.map((name) => `date-fns/${name}`).join(" · ");
+  }
+
+  return "Use the package's direct tree-shakable subpath";
+}
 
 function renderOffenderRow(row) {
   return `        <tr data-risk="${esc(row.riskLevel)}" data-suppressed="${row.suppressed ? "true" : "false"}">
@@ -133,6 +176,7 @@ function renderOffenderRow(row) {
           <td class="num">${esc(String(row.line ?? ""))}</td>
           <td>${renderRiskBadge(row.riskLevel)}</td>
           <td><code>from "${esc(row.importPath)}"</code></td>
+          <td><code class="replacement">${esc(recommendedReplacement(row))}</code></td>
           <td>${row.suppressed ? `<span class="suppressed-label">Suppressed</span><div class="muted">${esc(row.reason)}</div>` : `<span class="active-label">Active</span>`}</td>
         </tr>`;
 }
@@ -203,7 +247,7 @@ const html = `<!doctype html>
     tr:last-child td { border-bottom: none; }
     tr.row-missing { background: color-mix(in oklab, var(--bad-bg) 18%, transparent); }
     code { font: 12.5px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    code.resolved { color: var(--muted); }
+    code.resolved, code.replacement { color: var(--muted); }
     .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
     .files { color: var(--muted); font-size: 12px; max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; cursor: help; }
@@ -293,6 +337,7 @@ ${scanInputHtml}
           <th scope="col" class="num">Line</th>
           <th scope="col">Risk</th>
           <th scope="col">Import statement</th>
+          <th scope="col">Recommended replacement</th>
           <th scope="col">Status</th>
         </tr>
       </thead>
