@@ -93,7 +93,7 @@ jobs:
           retention-days: 14
 
   strict-baseline:
-    name: Strict-flag regression gate (ratchet on opt-in strict flags)
+    name: Strict-flag offender baseline gate
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -122,13 +122,12 @@ jobs:
         run: bun install --frozen-lockfile
 
       # Runs `tsc --noEmit -p tsconfig.app.json --<flag>` for every opt-in
-      # strict flag listed in ci-artifacts/strict-baseline.json. The job fails if:
-      #   • a flag's error count INCREASED vs the checked-in baseline (regression), or
-      #   • a flag whose baseline is 0 produces ANY error (must-be-zero violation).
-      # Improvements (count went DOWN) do NOT fail — contributors update the baseline
-      # locally with `node scripts/check-strict-baseline.mjs --update` so the ratchet
-      # tightens. JSON output is uploaded as a build artifact for inspection.
-      - name: Strict-flag baseline check
+      # strict flag listed in ci-artifacts/strict-baseline.json. The job fails
+      # only when a diagnostic appears that is not already allowlisted in the
+      # baseline offender snapshot. Existing offenders may remain; removed
+      # offenders are reported as improvements. JSON output is uploaded as an
+      # artifact for inspection.
+      - name: Strict-flag offender baseline check
         id: strict
         run: |
           mkdir -p ci-artifacts
