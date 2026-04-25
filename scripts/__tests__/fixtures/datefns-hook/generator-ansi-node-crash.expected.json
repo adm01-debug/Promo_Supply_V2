@@ -1,0 +1,7 @@
+{
+  "step": "generator",
+  "exitCode": 1,
+  "failureModeBucket": "GEN_NODE_CRASH",
+  "failureModeContains": ["GEN_NODE_CRASH", "TypeError"],
+  "imports": []
+}
