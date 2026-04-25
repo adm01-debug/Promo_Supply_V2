@@ -302,6 +302,9 @@ emit_summary() {
 
   local imports
   imports="$(extract_datefns_imports "$log" || true)"
+  if json_summary_enabled; then
+    emit_machine_summary "$step" "$label" "$mode" "$log" "$code" "$imports"
+  fi
   if [ -n "$imports" ]; then
     echo ""
     cyan "  Offending date-fns import path(s):"
