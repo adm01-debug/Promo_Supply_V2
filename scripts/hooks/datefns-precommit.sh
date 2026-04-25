@@ -70,7 +70,6 @@ case "$LOG_LEVEL" in
     exit 2
     ;;
 esac
-fi
 
 cyan()  { printf "\033[36m%s\033[0m\n" "$*"; }
 red()   { printf "\033[31m%s\033[0m\n" "$*"; }
