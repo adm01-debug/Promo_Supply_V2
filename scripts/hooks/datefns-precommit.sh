@@ -215,6 +215,7 @@ PY
     fi
     mkdir -p "$(dirname "$JSON_FILE")"
     printf '%s\n' "$json" > "$JSON_FILE"
+    emit_artifact_confirmation "JSON file:" "$JSON_FILE"
   fi
 }
 
@@ -394,7 +395,7 @@ emit_summary() {
   local bundle
   bundle="$(bundle_failure_logs "[$step] $label" "$cmd" "$code" "$mode")"
   printf "  %-18s %s\n" "Log file:"     "${log#$ROOT_DIR/}"
-  printf "  %-18s %s\n" "Artifact bundle:" "${bundle#$ROOT_DIR/}"
+  emit_artifact_confirmation "Artifact bundle:" "$bundle"
 
   local imports
   imports="$(extract_datefns_imports "$log" || true)"
