@@ -44,16 +44,20 @@ jobs:
         run: bun run deps:health
       - name: Append discovered date-fns subpaths
         run: bun run verify:datefns-files:write
-      - name: Upload dependency-health snapshot artifact
+      - name: Regenerate dependency-health HTML report
+        run: node scripts/generate-dependency-health-html.mjs
+      - name: Upload dependency-health report artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: dependency-health-${{ github.run_id }}
-          path: public/dependency-health.json
+          path: |
+            public/dependency-health.json
+            public/dependency-health.html
           if-no-files-found: warn
           retention-days: 14
-      - name: Commit updated snapshot if changed
+      - name: Commit updated report if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "chore(deps): refresh dependency-health snapshot [skip ci]"
-          file_pattern: public/dependency-health.json
+          commit_message: "chore(deps): refresh dependency-health report [skip ci]"
+          file_pattern: public/dependency-health.json public/dependency-health.html

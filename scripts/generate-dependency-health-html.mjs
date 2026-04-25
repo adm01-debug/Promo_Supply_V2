@@ -24,11 +24,17 @@ const ROOT = resolve(__dirname, "..");
 const ARGS = process.argv.slice(2);
 const DRY_RUN = ARGS.includes("--dry-run");
 const outIdx = ARGS.findIndex((a) => a === "--out");
+const repoBaseIdx = ARGS.findIndex((a) => a === "--repo-base-url");
 const SNAPSHOT_PATH = resolve(ROOT, "public/dependency-health.json");
 const OUT_PATH =
   outIdx >= 0 && ARGS[outIdx + 1]
     ? resolve(ROOT, ARGS[outIdx + 1])
     : resolve(ROOT, "public/dependency-health.html");
+const REPO_BASE_URL = normalizeRepoBaseUrl(
+  repoBaseIdx >= 0 && ARGS[repoBaseIdx + 1]
+    ? ARGS[repoBaseIdx + 1]
+    : process.env.DEPENDENCY_HEALTH_REPO_BASE_URL || inferGitHubRepoBaseUrl(),
+);
 
 if (!existsSync(SNAPSHOT_PATH)) {
   console.error(`✗ ${relative(ROOT, SNAPSHOT_PATH)} not found.`);
@@ -71,6 +77,27 @@ function esc(s) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
+}
+
+function normalizeRepoBaseUrl(value) {
+  const raw = String(value ?? "").trim();
+  if (!raw) return "";
+  return raw.replace(/\/+$/, "");
+}
+
+function inferGitHubRepoBaseUrl() {
+  const repo = process.env.GITHUB_REPOSITORY;
+  if (!repo) return "";
+  const server = process.env.GITHUB_SERVER_URL || "https://github.com";
+  const ref = process.env.GITHUB_SHA || process.env.GITHUB_REF_NAME || "main";
+  return `${server.replace(/\/+$/, "")}/${repo}/blob/${ref}`;
+}
+
+function repoLineHref(file, line) {
+  if (!REPO_BASE_URL) return `#L${encodeURIComponent(String(line ?? ""))}`;
+  const normalizedFile = String(file ?? "").replace(/^\/+/, "");
+  const suffix = line ? `#L${encodeURIComponent(String(line))}` : "";
+  return `${REPO_BASE_URL}/${encodeURI(normalizedFile)}${suffix}`;
 }
 
 function renderRow(e) {
@@ -171,9 +198,10 @@ function recommendedReplacement(row) {
 }
 
 function renderOffenderRow(row) {
+  const href = repoLineHref(row.file, row.line);
   return `        <tr data-risk="${esc(row.riskLevel)}" data-suppressed="${row.suppressed ? "true" : "false"}">
-          <td><code>${esc(row.file)}</code></td>
-          <td class="num">${esc(String(row.line ?? ""))}</td>
+          <td><a class="repo-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer"><code>${esc(row.file)}</code></a></td>
+          <td class="num"><a class="repo-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(String(row.line ?? ""))}</a></td>
           <td>${renderRiskBadge(row.riskLevel)}</td>
           <td><code>from "${esc(row.importPath)}"</code></td>
           <td><code class="replacement">${esc(recommendedReplacement(row))}</code></td>
@@ -248,6 +276,8 @@ const html = `<!doctype html>
     tr.row-missing { background: color-mix(in oklab, var(--bad-bg) 18%, transparent); }
     code { font: 12.5px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
     code.resolved, code.replacement { color: var(--muted); }
+    a.repo-link { color: var(--accent); text-decoration: none; }
+    a.repo-link:hover { text-decoration: underline; }
     .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
     .files { color: var(--muted); font-size: 12px; max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; cursor: help; }
