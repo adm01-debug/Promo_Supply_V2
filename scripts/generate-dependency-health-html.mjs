@@ -247,7 +247,7 @@ const html = `<!doctype html>
     tr:last-child td { border-bottom: none; }
     tr.row-missing { background: color-mix(in oklab, var(--bad-bg) 18%, transparent); }
     code { font: 12.5px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-    code.resolved { color: var(--muted); }
+    code.resolved, code.replacement { color: var(--muted); }
     .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
     .files { color: var(--muted); font-size: 12px; max-width: 360px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; cursor: help; }
