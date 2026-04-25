@@ -48,10 +48,33 @@ jobs:
       - name: Generate install-report.json
         id: report
         run: |
+          mkdir -p ci-logs
           node scripts/install-report.mjs \
             --json \
-            --json-file=ci-artifacts/install-report.json
+            --json-file=ci-artifacts/install-report.json \
+            2> >(tee ci-logs/install-report-json-file.log >&2)
 
+      - name: Verify install-report byte count
+        env:
+          REPORT_PATH: ci-artifacts/install-report.json
+          REPORT_LOG: ci-logs/install-report-json-file.log
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const reportPath = process.env.REPORT_PATH;
+            const logPath = process.env.REPORT_LOG;
+            if (!fs.existsSync(reportPath)) throw new Error(`install-report artifact missing: ${reportPath}`);
+            if (!fs.existsSync(logPath)) throw new Error(`install-report byte log missing: ${logPath}`);
+            const bytes = fs.statSync(reportPath).size;
+            const log = fs.readFileSync(logPath, "utf8");
+            const matches = [...log.matchAll(/\((\d+) bytes,\s*(?:pretty|minified)\)/g)];
+            if (matches.length === 0) throw new Error(`No logged byte count found in ${logPath}`);
+            const loggedBytes = Number(matches.at(-1)[1]);
+            if (bytes !== loggedBytes) {
+              throw new Error(`install-report.json byte count mismatch: file has ${bytes} bytes, log says ${loggedBytes}`);
+            }
+            console.log(`install-report.json byte count verified: ${bytes} bytes`);
+          '
 
       # Posts a markdown summary on the GitHub Actions run page using the
       # alignment.* booleans from the JSON. Runs even on failure so reviewers
