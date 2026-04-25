@@ -325,7 +325,7 @@ ${allOffenderRows.map(renderOffenderRow).join("\n")}
           if (passes) visible += 1;
           if (suppressed && !includeSuppressed) hiddenSuppressed += 1;
         }
-        if (count) count.textContent = `${visible} shown${hiddenSuppressed ? ` · ${hiddenSuppressed} suppressed hidden` : ''}`;
+        if (count) count.textContent = visible + ' shown' + (hiddenSuppressed ? ' · ' + hiddenSuppressed + ' suppressed hidden' : '');
         if (empty) empty.hidden = visible !== 0;
       };
       riskFilter?.addEventListener('change', update);
