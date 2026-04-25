@@ -93,6 +93,35 @@ extract_offending_files() {
     | sort -u
 }
 
+emit_machine_summary() {
+  # $1 step number, $2 step label, $3 mode, $4 log file, $5 exit code, $6 imports
+  local step="$1" label="$2" mode="$3" log="$4" code="$5" imports="$6"
+  local bucket
+  bucket="$(printf '%s' "$mode" | awk '{print $1}')"
+  local json
+  json="$(python3 - "$step" "$label" "$bucket" "$mode" "$code" "$imports" <<'PY'
+import json, sys
+step, label, bucket, mode, code, imports_raw = sys.argv[1:]
+payload = {
+    "step": step,
+    "label": label,
+    "bucket": bucket,
+    "failureMode": mode,
+    "exitCode": int(code) if code.isdigit() else code,
+    "imports": [line for line in imports_raw.splitlines() if line],
+}
+print(json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
+PY
+)"
+  printf 'DATEFNS_HOOK_SUMMARY_JSON=%s\n' "$json"
+  if [ -f "$log" ]; then
+    {
+      printf '\n===== DATEFNS_HOOK_SUMMARY_JSON =====\n'
+      printf '%s\n' "$json"
+    } >> "$log"
+  fi
+}
+
 # ── Failure-mode detection ────────────────────────────────────────────────────
 # Inspects log output to refine the bucket label across the different formats
 # tsc and the smoke-test generator emit. Hard guarantees:
