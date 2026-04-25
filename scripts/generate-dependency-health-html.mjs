@@ -101,6 +101,42 @@ const rowsHtml = entries
   .map(renderRow)
   .join("\n");
 
+const RISK_ORDER = { ok: 0, warning: 1, critical: 2 };
+
+function normalizeRisk(value) {
+  return Object.prototype.hasOwnProperty.call(RISK_ORDER, value) ? value : "ok";
+}
+
+function renderRiskBadge(risk) {
+  const normalized = normalizeRisk(risk);
+  const label = normalized === "critical" ? "Critical" : normalized === "warning" ? "Warning" : "OK";
+  return `<span class="risk risk-${normalized}">${label}</span>`;
+}
+
+const offenderRows = offenders.map((o) => ({
+  ...o,
+  riskLevel: normalizeRisk(o.riskLevel ?? treeShaking.riskLevel),
+  suppressed: false,
+  reason: "",
+}));
+const suppressedRows = suppressed.map((s) => ({
+  ...s,
+  riskLevel: normalizeRisk(s.riskLevel ?? treeShaking.riskLevel),
+  suppressed: true,
+  reason: s.reason ?? "Allowlisted",
+}));
+const allOffenderRows = [...offenderRows, ...suppressedRows];
+
+function renderOffenderRow(row) {
+  return `        <tr data-risk="${esc(row.riskLevel)}" data-suppressed="${row.suppressed ? "true" : "false"}">
+          <td><code>${esc(row.file)}</code></td>
+          <td class="num">${esc(String(row.line ?? ""))}</td>
+          <td>${renderRiskBadge(row.riskLevel)}</td>
+          <td><code>from "${esc(row.importPath)}"</code></td>
+          <td>${row.suppressed ? `<span class="suppressed-label">Suppressed</span><div class="muted">${esc(row.reason)}</div>` : `<span class="active-label">Active</span>`}</td>
+        </tr>`;
+}
+
 const scanInputHtml = scanInput
   ? `    <details class="scan-input">
       <summary>Scan input (${scanInput.fileCount ?? "?"} files, hash <code>${esc((scanInput.fileHash ?? "").slice(0, 12))}</code>)</summary>
@@ -180,9 +216,20 @@ const html = `<!doctype html>
     details.scan-input dt { color: var(--muted); }
     section.offenders { margin-top: 28px; }
     section.offenders h2 { font-size: 16px; margin: 0 0 10px; }
-    details.suppressed { margin-top: 14px; padding: 10px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
-    details.suppressed summary { cursor: pointer; font-weight: 600; color: var(--muted); }
-    details.suppressed table { margin-top: 10px; }
+    .offender-toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 16px; margin: 0 0 12px; padding: 12px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; }
+    .offender-toolbar label { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; }
+    .offender-toolbar select { color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 5px 8px; }
+    .offender-toolbar input { accent-color: var(--accent); }
+    .offender-count { color: var(--muted); font-size: 12px; }
+    .risk { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .risk-ok { background: var(--ok-bg); color: var(--ok-fg); }
+    .risk-warning { background: #78350f; color: #fde68a; }
+    .risk-critical { background: var(--bad-bg); color: var(--bad-fg); }
+    .suppressed-label, .active-label { display: inline-flex; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .suppressed-label { background: var(--border); color: var(--muted); }
+    .active-label { background: var(--ok-bg); color: var(--ok-fg); }
+    .hidden-by-filter { display: none; }
+    .empty-filter-result { margin: 12px 0 0; padding: 12px 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; color: var(--muted); }
     footer { margin-top: 28px; color: var(--muted); font-size: 12px; }
     a { color: var(--accent); }
     [title] { cursor: help; }
@@ -222,34 +269,70 @@ ${scanInputHtml}
 
   <section class="offenders" aria-labelledby="offenders-h">
     <h2 id="offenders-h">Tree-shaking offenders <span class="muted">(${offenders.length}${truncated ? "+, truncated" : ""}${suppressed.length ? `, ${suppressed.length} suppressed` : ""})</span></h2>
-    ${offenders.length === 0
+    <div class="offender-toolbar" aria-label="Offender filters">
+      <label>
+        Minimum risk
+        <select id="risk-filter">
+          <option value="ok">OK and above</option>
+          <option value="warning">Warning and above</option>
+          <option value="critical">Critical only</option>
+        </select>
+      </label>
+      <label>
+        <input id="show-suppressed" type="checkbox" />
+        Show suppressed offenders
+      </label>
+      <span id="offender-count" class="offender-count" aria-live="polite"></span>
+    </div>
+    ${allOffenderRows.length === 0
       ? `<p class="muted">No barrel imports detected — every <code>date-fns</code> import uses a tree-shakable subpath. 🎉</p>`
-      : `<table>
+      : `<table id="offenders-table">
       <thead>
         <tr>
           <th scope="col">File</th>
           <th scope="col" class="num">Line</th>
+          <th scope="col">Risk</th>
           <th scope="col">Import statement</th>
+          <th scope="col">Status</th>
         </tr>
       </thead>
       <tbody>
-${offenders.map((o) => `        <tr>
-          <td><code>${esc(o.file)}</code></td>
-          <td class="num">${esc(String(o.line ?? ""))}</td>
-          <td><code>from "${esc(o.importPath)}"</code></td>
-        </tr>`).join("\n")}
+${allOffenderRows.map(renderOffenderRow).join("\n")}
       </tbody>
-    </table>${truncated ? `<p class="muted">List truncated — see <code>public/dependency-health.json</code> for the full set.</p>` : ""}`}
-    ${suppressed.length > 0 ? `<details class="suppressed">
-      <summary>${suppressed.length} suppressed by allowlist</summary>
-      <table>
-        <thead><tr><th>File</th><th class="num">Line</th><th>Import</th><th>Reason</th></tr></thead>
-        <tbody>
-${suppressed.map((s) => `          <tr><td><code>${esc(s.file)}</code></td><td class="num">${esc(String(s.line ?? ""))}</td><td><code>${esc(s.importPath)}</code></td><td>${esc(s.reason ?? "")}</td></tr>`).join("\n")}
-        </tbody>
-      </table>
-    </details>` : ""}
+    </table>
+    <p id="empty-filter-result" class="empty-filter-result" hidden>No offenders match the selected filters.</p>
+    ${truncated ? `<p class="muted">List truncated — see <code>public/dependency-health.json</code> for the full set.</p>` : ""}`}
   </section>
+
+  <script>
+    (() => {
+      const riskRank = { ok: 0, warning: 1, critical: 2 };
+      const riskFilter = document.getElementById('risk-filter');
+      const showSuppressed = document.getElementById('show-suppressed');
+      const count = document.getElementById('offender-count');
+      const empty = document.getElementById('empty-filter-result');
+      const rows = Array.from(document.querySelectorAll('#offenders-table tbody tr'));
+      const update = () => {
+        const minRisk = riskRank[riskFilter?.value || 'ok'] ?? 0;
+        const includeSuppressed = showSuppressed?.checked === true;
+        let visible = 0;
+        let hiddenSuppressed = 0;
+        for (const row of rows) {
+          const risk = riskRank[row.dataset.risk || 'ok'] ?? 0;
+          const suppressed = row.dataset.suppressed === 'true';
+          const passes = risk >= minRisk && (includeSuppressed || !suppressed);
+          row.classList.toggle('hidden-by-filter', !passes);
+          if (passes) visible += 1;
+          if (suppressed && !includeSuppressed) hiddenSuppressed += 1;
+        }
+        if (count) count.textContent = visible + ' shown' + (hiddenSuppressed ? ' · ' + hiddenSuppressed + ' suppressed hidden' : '');
+        if (empty) empty.hidden = visible !== 0;
+      };
+      riskFilter?.addEventListener('change', update);
+      showSuppressed?.addEventListener('change', update);
+      update();
+    })();
+  </script>
 
 
   <footer>
