@@ -281,24 +281,16 @@ jobs:
         run: node scripts/typecheck-report.mjs || true
 
       # ──────────────────────────────────────────────────────────────────────
-      # Advanced strict-flag ratchet. Runs the candidate flags listed in
-      # ci-artifacts/strict-baseline.json (currently:
-      # noPropertyAccessFromIndexSignature, exactOptionalPropertyTypes,
-      # noUncheckedIndexedAccess) against tsconfig.app.json one at a time.
+      # Advanced strict-flag offender baseline. Runs each candidate flag listed
+      # in ci-artifacts/strict-baseline.json against tsconfig.app.json and
+      # compares the resulting diagnostics to the checked-in allowlist.
       #
-      # Behaviour per flag:
-      #   • baseline > 0 → "ratchet" mode: passes while errors ≤ baseline,
-      #     FAILS if errors went up. New strict-flag violations cannot
-      #     sneak in even though the flags themselves aren't promoted yet.
-      #   • baseline = 0 → "must-be-zero" mode: any error fails the job.
-      #     This is the green light to move the flag into tsconfig.app.json
-      #     (and remove it from strict-baseline.json) in the next PR.
-      #
-      # Once ALL three flags hit baseline=0 and are promoted into
-      # tsconfig.app.json, this step becomes redundant and can be deleted
-      # along with strict-baseline.json.
+      # The job fails ONLY when new non-allowlisted offenders appear. Existing
+      # offenders may remain, and removals are treated as improvements. Refresh
+      # the snapshot with `node scripts/check-strict-baseline.mjs --update`
+      # after an intentional cleanup/rebaseline.
       # ──────────────────────────────────────────────────────────────────────
-      - name: Strict-flag ratchet (advanced strict)
+      - name: Strict-flag offender baseline (advanced strict)
         run: |
           mkdir -p ci-artifacts
           set -o pipefail
@@ -308,11 +300,11 @@ jobs:
           # are visible without downloading artifacts.
           node scripts/check-strict-baseline.mjs | tee ci-artifacts/strict-baseline-summary.txt
           {
-            echo "### Strict-flag ratchet";
+            echo "### Strict-flag offender baseline";
             echo '```';
             cat ci-artifacts/strict-baseline-summary.txt;
             echo '```';
-            echo "_Baseline lives in \`ci-artifacts/strict-baseline.json\`. Lower it with \`node scripts/check-strict-baseline.mjs --update\` after a cleanup PR; promote a flag into \`tsconfig.app.json\` once its baseline reaches 0._";
+            echo "_Baseline lives in \`ci-artifacts/strict-baseline.json\`. The job fails only for new non-allowlisted offenders. Refresh it with \`node scripts/check-strict-baseline.mjs --update\` after cleanup or intentional rebaseline._";
           } >> "$GITHUB_STEP_SUMMARY"
           exit ${STRICT_EXIT:-0}
 
