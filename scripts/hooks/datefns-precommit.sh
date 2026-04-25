@@ -32,7 +32,11 @@ BUNDLE_DIR=""
 EMIT_JSON_SUMMARY="${DATEFNS_HOOK_JSON_SUMMARY:-0}"
 JSON_FILE="${DATEFNS_HOOK_JSON_FILE:-}"
 JSON_FILE_OVERWRITE="${DATEFNS_HOOK_JSON_FILE_OVERWRITE:-0}"
+JSON_FILE_LOG="${DATEFNS_HOOK_JSON_FILE_LOG:-}"
+JSON_FILE_LOG_ENABLED=0
 LOG_LEVEL="${DATEFNS_HOOK_LOG_LEVEL:-always}"
+
+[ -n "$JSON_FILE_LOG" ] && JSON_FILE_LOG_ENABLED=1
 
 prev_arg=""
 for arg in "$@"; do
@@ -50,6 +54,8 @@ for arg in "$@"; do
     --json-file=*) JSON_FILE="${arg#--json-file=}"; EMIT_JSON_SUMMARY=1 ;;
     --json-file) prev_arg="--json-file"; EMIT_JSON_SUMMARY=1 ;;
     --json-file-overwrite) JSON_FILE_OVERWRITE=1 ;;
+    --json-file-log=*) JSON_FILE_LOG="${arg#--json-file-log=}"; JSON_FILE_LOG_ENABLED=1 ;;
+    --json-file-log) JSON_FILE_LOG_ENABLED=1 ;;
     --log-level=*) LOG_LEVEL="${arg#--log-level=}" ;;
     --log-level) prev_arg="--log-level" ;;
   esac
