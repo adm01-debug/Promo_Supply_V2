@@ -48,7 +48,8 @@ fi
 
 # ── Lightweight mode ──────────────────────────────────────────────────────────
 echo "▶ [pre-push 1/2] date-fns precommit gate..."
-bash "$ROOT_DIR/scripts/hooks/datefns-precommit.sh"
+DATEFNS_HOOK_BUNDLE_ROOT="${DATEFNS_HOOK_BUNDLE_ROOT:-$ROOT_DIR/ci-logs/pre-push}" \
+  bash "$ROOT_DIR/scripts/hooks/datefns-precommit.sh"
 
 echo "▶ [pre-push 2/2] date-fns smoke (subpath existence + smoke test)..."
 # Prefer bun if available so the script hits the same toolchain CI uses;

@@ -27,6 +27,8 @@ fi
 mkdir -p "$LOG_DIR" 2>/dev/null || LOG_DIR="$(mktemp -d)"
 GEN_LOG="$LOG_DIR/datefns-generator.log"
 TSC_LOG="$LOG_DIR/datefns-tsc-smoke.log"
+BUNDLE_ROOT="${DATEFNS_HOOK_BUNDLE_ROOT:-$LOG_DIR/pre-push-artifacts}"
+BUNDLE_DIR=""
 
 cyan()  { printf "\033[36m%s\033[0m\n" "$*"; }
 red()   { printf "\033[31m%s\033[0m\n" "$*"; }
@@ -186,6 +188,52 @@ sanitize_failure_mode() {
   fi
 }
 
+bundle_failure_logs() {
+  # $1 failed step label, $2 failed command, $3 exit code, $4 failure mode
+  local step_label="$1" failed_cmd="$2" exit_code="$3" failure_mode="$4"
+  local ts
+  ts="$(date -u +%Y%m%dT%H%M%SZ)"
+  BUNDLE_DIR="$BUNDLE_ROOT/$ts"
+  mkdir -p "$BUNDLE_DIR" 2>/dev/null || BUNDLE_DIR="$(mktemp -d)"
+
+  # Always include both canonical log filenames. Missing/not-yet-run logs get
+  # placeholders so CI artifacts are structurally stable and easy to diff.
+  if [ -f "$GEN_LOG" ]; then
+    cp "$GEN_LOG" "$BUNDLE_DIR/datefns-generator.log" 2>/dev/null || true
+  else
+    printf '(generator log not produced)\n' > "$BUNDLE_DIR/datefns-generator.log"
+  fi
+  if [ -f "$TSC_LOG" ]; then
+    cp "$TSC_LOG" "$BUNDLE_DIR/datefns-tsc-smoke.log" 2>/dev/null || true
+  else
+    printf '(tsc log not produced; earlier step failed before tsc ran)\n' > "$BUNDLE_DIR/datefns-tsc-smoke.log"
+  fi
+
+  cat > "$BUNDLE_DIR/manifest.txt" <<EOF
+Generated: $ts
+Failed step: $step_label
+Failure mode: $failure_mode
+Failed command: $failed_cmd
+Exit code: $exit_code
+Generator log: datefns-generator.log
+TSC log: datefns-tsc-smoke.log
+EOF
+
+  # Convenience combined log for one-click artifact inspection.
+  {
+    echo "===== manifest ====="
+    cat "$BUNDLE_DIR/manifest.txt"
+    echo
+    echo "===== datefns-generator.log ====="
+    cat "$BUNDLE_DIR/datefns-generator.log"
+    echo
+    echo "===== datefns-tsc-smoke.log ====="
+    cat "$BUNDLE_DIR/datefns-tsc-smoke.log"
+  } > "$BUNDLE_DIR/combined.log"
+
+  printf '%s\n' "$BUNDLE_DIR"
+}
+
 emit_summary() {
   # $1 step number, $2 step label, $3 mode, $4 log file, $5 fix-hint command,
   # $6 exact command that failed, $7 exit code from that command
@@ -198,7 +246,10 @@ emit_summary() {
   printf "  %-18s %s\n" "Failure mode:" "$mode"
   printf "  %-18s %s\n" "Failed command:" "$cmd"
   printf "  %-18s %s\n" "Exit code:"    "$code"
+  local bundle
+  bundle="$(bundle_failure_logs "[$step] $label" "$cmd" "$code" "$mode")"
   printf "  %-18s %s\n" "Log file:"     "${log#$ROOT_DIR/}"
+  printf "  %-18s %s\n" "Artifact bundle:" "${bundle#$ROOT_DIR/}"
 
   local imports
   imports="$(extract_datefns_imports "$log" || true)"
