@@ -35,6 +35,10 @@ red()   { printf "\033[31m%s\033[0m\n" "$*"; }
 green() { printf "\033[32m%s\033[0m\n" "$*"; }
 gray()  { printf "\033[90m%s\033[0m\n" "$*"; }
 
+strip_ansi() {
+  sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g'
+}
+
 # Extract the offending date-fns import path(s) from a tsc log.
 # tsc messages look like:
 #   src/x.ts(12,23): error TS2305: Module '"date-fns/foo"' has no exported member 'bar'.
@@ -97,6 +101,7 @@ extract_offending_files() {
 detect_generator_failure_mode() {
   local log="$1" exit_code="$2" raw=""
   [ -f "$log" ] && raw="$(cat "$log" 2>/dev/null || true)"
+  raw="$(printf '%s' "$raw" | strip_ansi)"
 
   local mode=""
   # Order matters — check the more-specific deps-missing signal BEFORE the
@@ -136,6 +141,7 @@ detect_generator_failure_mode() {
 detect_tsc_failure_mode() {
   local log="$1" exit_code="$2" raw=""
   [ -f "$log" ] && raw="$(cat "$log" 2>/dev/null || true)"
+  raw="$(printf '%s' "$raw" | strip_ansi)"
 
   local mode=""
   if printf '%s' "$raw" | grep -qE 'error TS2307:.*date-fns'; then
@@ -167,7 +173,7 @@ detect_tsc_failure_mode() {
 sanitize_failure_mode() {
   local raw="$1" fallback="$2"
   local clean
-  clean="$(printf '%s' "$raw" | sed -E 's/\x1B\[[0-9;]*[a-zA-Z]//g' | tr -s '[:space:]' ' ')"
+  clean="$(printf '%s' "$raw" | strip_ansi | tr -s '[:space:]' ' ')"
   # Trim leading/trailing whitespace.
   clean="$(printf '%s' "$clean" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')"
 
