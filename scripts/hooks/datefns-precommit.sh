@@ -40,6 +40,10 @@ for arg in "$@"; do
     JSON_FILE="$arg"
     prev_arg=""
     continue
+  elif [ "$prev_arg" = "--log-level" ]; then
+    LOG_LEVEL="$arg"
+    prev_arg=""
+    continue
   fi
   case "$arg" in
     --json-summary) EMIT_JSON_SUMMARY=1 ;;
