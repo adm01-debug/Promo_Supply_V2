@@ -100,8 +100,20 @@ PY
 emit_snapshot_diff() {
   local expected_json="$1" actual_json="$2"
   red "    ✗ snapshot diff (expected JSON ↔ actual detector output):"
-  diff -u --label "expected:${expected_json#$REPO_ROOT/}" --label "actual:detector-output" \
-    "$expected_json" "$actual_json" || true
+  python3 - "$expected_json" "$actual_json" "expected:${expected_json#$REPO_ROOT/}" "actual:detector-output" <<'PY'
+import difflib, sys
+expected, actual, expected_label, actual_label = sys.argv[1:]
+with open(expected, encoding="utf-8") as f:
+    expected_lines = f.readlines()
+with open(actual, encoding="utf-8") as f:
+    actual_lines = f.readlines()
+sys.stdout.writelines(difflib.unified_diff(
+    expected_lines,
+    actual_lines,
+    fromfile=expected_label,
+    tofile=actual_label,
+))
+PY
 }
 
 assert_contains() {
