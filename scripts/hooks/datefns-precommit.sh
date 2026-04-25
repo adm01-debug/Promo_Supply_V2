@@ -253,7 +253,7 @@ PY
     fi
     mkdir -p "$(dirname "$JSON_FILE")"
     printf '%s\n' "$json" > "$JSON_FILE"
-    write_json_file_log "$JSON_FILE" "$(file_bytes "$JSON_FILE")"
+    write_json_file_log "$JSON_FILE" "$(file_bytes "$JSON_FILE")" "$(file_sha256 "$JSON_FILE")"
     emit_artifact_confirmation "JSON file:" "$JSON_FILE"
   fi
 }
