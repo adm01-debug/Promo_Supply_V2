@@ -112,6 +112,34 @@ file_bytes() {
   wc -c < "$1" | tr -d '[:space:]'
 }
 
+path_bytes() {
+  local path="$1"
+  if [ -f "$path" ]; then
+    file_bytes "$path"
+  elif [ -d "$path" ]; then
+    python3 - "$path" <<'PY'
+import os, sys
+root = sys.argv[1]
+total = 0
+for base, _, files in os.walk(root):
+    for name in files:
+        try:
+            total += os.path.getsize(os.path.join(base, name))
+        except OSError:
+            pass
+print(total)
+PY
+  else
+    printf '0\n'
+  fi
+}
+
+emit_artifact_confirmation() {
+  local label="$1" path="$2"
+  artifact_confirmation_enabled || return 0
+  printf '  %-18s %s (%s bytes)\n' "$label" "${path#$ROOT_DIR/}" "$(path_bytes "$path")"
+}
+
 # Extract the offending date-fns import path(s) from a tsc log.
 # tsc messages look like:
 #   src/x.ts(12,23): error TS2305: Module '"date-fns/foo"' has no exported member 'bar'.
