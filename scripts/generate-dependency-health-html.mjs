@@ -24,11 +24,17 @@ const ROOT = resolve(__dirname, "..");
 const ARGS = process.argv.slice(2);
 const DRY_RUN = ARGS.includes("--dry-run");
 const outIdx = ARGS.findIndex((a) => a === "--out");
+const repoBaseIdx = ARGS.findIndex((a) => a === "--repo-base-url");
 const SNAPSHOT_PATH = resolve(ROOT, "public/dependency-health.json");
 const OUT_PATH =
   outIdx >= 0 && ARGS[outIdx + 1]
     ? resolve(ROOT, ARGS[outIdx + 1])
     : resolve(ROOT, "public/dependency-health.html");
+const REPO_BASE_URL = normalizeRepoBaseUrl(
+  repoBaseIdx >= 0 && ARGS[repoBaseIdx + 1]
+    ? ARGS[repoBaseIdx + 1]
+    : process.env.DEPENDENCY_HEALTH_REPO_BASE_URL || inferGitHubRepoBaseUrl(),
+);
 
 if (!existsSync(SNAPSHOT_PATH)) {
   console.error(`✗ ${relative(ROOT, SNAPSHOT_PATH)} not found.`);
