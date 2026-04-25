@@ -69,6 +69,13 @@ json_summary_enabled() {
   esac
 }
 
+json_file_overwrite_enabled() {
+  case "$JSON_FILE_OVERWRITE" in
+    1|true|TRUE|yes|YES|on|ON) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 # Extract the offending date-fns import path(s) from a tsc log.
 # tsc messages look like:
 #   src/x.ts(12,23): error TS2305: Module '"date-fns/foo"' has no exported member 'bar'.
