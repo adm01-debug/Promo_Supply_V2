@@ -185,11 +185,16 @@ describe("detectUnsupportedDateFnsUsage — require destructuring", () => {
     expect(findings[0].line).toBe(4);
   });
 
-  it("does NOT flag a normal require of date-fns without destructuring", () => {
-    // `const x = require("date-fns/format")` is not a destructure → not matched.
+  it("flags a normal require of date-fns without destructuring", () => {
+    // Bare/default require is not visible to the static ESM import scanner.
     const src = `const fns = require("date-fns/format");`;
     const findings = detectUnsupportedDateFnsUsage(src);
-    expect(findings).toHaveLength(0);
+    expect(findings).toHaveLength(1);
+    expect(findings[0]).toMatchObject({
+      kind: "require-bare",
+      subpath: "format",
+      line: 1,
+    });
   });
 
   it("does NOT confuse an unrelated require for date-fns", () => {
