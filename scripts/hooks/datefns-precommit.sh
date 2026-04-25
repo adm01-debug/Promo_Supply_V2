@@ -246,7 +246,10 @@ emit_summary() {
   printf "  %-18s %s\n" "Failure mode:" "$mode"
   printf "  %-18s %s\n" "Failed command:" "$cmd"
   printf "  %-18s %s\n" "Exit code:"    "$code"
+  local bundle
+  bundle="$(bundle_failure_logs "[$step] $label" "$cmd" "$code" "$mode")"
   printf "  %-18s %s\n" "Log file:"     "${log#$ROOT_DIR/}"
+  printf "  %-18s %s\n" "Artifact bundle:" "${bundle#$ROOT_DIR/}"
 
   local imports
   imports="$(extract_datefns_imports "$log" || true)"
