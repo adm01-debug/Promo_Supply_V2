@@ -27,6 +27,8 @@ fi
 mkdir -p "$LOG_DIR" 2>/dev/null || LOG_DIR="$(mktemp -d)"
 GEN_LOG="$LOG_DIR/datefns-generator.log"
 TSC_LOG="$LOG_DIR/datefns-tsc-smoke.log"
+BUNDLE_ROOT="${DATEFNS_HOOK_BUNDLE_ROOT:-$LOG_DIR/pre-push-artifacts}"
+BUNDLE_DIR=""
 
 cyan()  { printf "\033[36m%s\033[0m\n" "$*"; }
 red()   { printf "\033[31m%s\033[0m\n" "$*"; }
