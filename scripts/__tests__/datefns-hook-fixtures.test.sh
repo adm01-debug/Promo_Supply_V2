@@ -77,6 +77,45 @@ v=json.load(open(sys.argv[1])).get(sys.argv[2], [])
 print('\n'.join(v))" "$1" "$2"
 }
 
+write_actual_snapshot() {
+  local out="$1" step="$2" exit_code="$3" bucket="$4" mode_output="$5" imports_file="$6"
+  python3 - "$out" "$step" "$exit_code" "$bucket" "$mode_output" "$imports_file" <<'PY'
+import json, sys
+out, step, exit_code, bucket, mode_output, imports_file = sys.argv[1:]
+with open(imports_file, encoding="utf-8") as f:
+    imports = [line.rstrip("\n") for line in f if line.rstrip("\n")]
+payload = {
+    "step": step,
+    "exitCode": int(exit_code) if str(exit_code).isdigit() else exit_code,
+    "failureModeBucket": bucket,
+    "failureModeActual": mode_output,
+    "imports": imports,
+}
+with open(out, "w", encoding="utf-8") as f:
+    json.dump(payload, f, ensure_ascii=False, indent=2)
+    f.write("\n")
+PY
+}
+
+emit_snapshot_diff() {
+  local expected_json="$1" actual_json="$2"
+  red "    ✗ snapshot diff (expected JSON ↔ actual detector output):"
+  python3 - "$expected_json" "$actual_json" "expected:${expected_json#$REPO_ROOT/}" "actual:detector-output" <<'PY'
+import difflib, sys
+expected, actual, expected_label, actual_label = sys.argv[1:]
+with open(expected, encoding="utf-8") as f:
+    expected_lines = f.readlines()
+with open(actual, encoding="utf-8") as f:
+    actual_lines = f.readlines()
+sys.stdout.writelines(difflib.unified_diff(
+    expected_lines,
+    actual_lines,
+    fromfile=expected_label,
+    tofile=actual_label,
+))
+PY
+}
+
 assert_contains() {
   local name="$1" haystack="$2" needle="$3"
   if printf '%s' "$haystack" | grep -qF -- "$needle"; then
@@ -144,6 +183,8 @@ run_fixture() {
   esac
 
   gray "    detector → $mode_output"
+  local fixture_failed_before
+  fixture_failed_before="$FAIL"
 
   # Assertion 1: bucket prefix matches.
   local actual_bucket
@@ -169,6 +210,13 @@ run_fixture() {
   # Assertion 4: every expected import is extracted from the log.
   local extracted
   extracted="$(extract_datefns_imports "$log_file" 2>/dev/null || true)"
+  local actual_json imports_tmp
+  imports_tmp="$(mktemp)"
+  printf '%s\n' "$extracted" | sed '/^$/d' > "$imports_tmp"
+  actual_json="$(mktemp)"
+  write_actual_snapshot "$actual_json" "$step" "$exit_code" "$actual_bucket" "$mode_output" "$imports_tmp"
+  rm -f "$imports_tmp"
+
   while IFS= read -r want; do
     [ -z "$want" ] && continue
     if printf '%s\n' "$extracted" | grep -qx -- "$want"; then
@@ -181,6 +229,11 @@ run_fixture() {
       FAILED_NAMES+=("$fixture_name (import: $want)")
     fi
   done < <(json_string_array "$expected_json" imports)
+
+  if [ "$FAIL" -ne "$fixture_failed_before" ]; then
+    emit_snapshot_diff "$expected_json" "$actual_json"
+  fi
+  rm -f "$actual_json"
 }
 
 # ── main ────────────────────────────────────────────────────────────────────
