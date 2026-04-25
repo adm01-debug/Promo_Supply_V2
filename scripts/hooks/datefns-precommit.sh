@@ -32,11 +32,16 @@ BUNDLE_DIR=""
 EMIT_JSON_SUMMARY="${DATEFNS_HOOK_JSON_SUMMARY:-0}"
 JSON_FILE="${DATEFNS_HOOK_JSON_FILE:-}"
 JSON_FILE_OVERWRITE="${DATEFNS_HOOK_JSON_FILE_OVERWRITE:-0}"
+LOG_LEVEL="${DATEFNS_HOOK_LOG_LEVEL:-always}"
 
 prev_arg=""
 for arg in "$@"; do
   if [ "$prev_arg" = "--json-file" ]; then
     JSON_FILE="$arg"
+    prev_arg=""
+    continue
+  elif [ "$prev_arg" = "--log-level" ]; then
+    LOG_LEVEL="$arg"
     prev_arg=""
     continue
   fi
@@ -45,13 +50,26 @@ for arg in "$@"; do
     --json-file=*) JSON_FILE="${arg#--json-file=}"; EMIT_JSON_SUMMARY=1 ;;
     --json-file) prev_arg="--json-file"; EMIT_JSON_SUMMARY=1 ;;
     --json-file-overwrite) JSON_FILE_OVERWRITE=1 ;;
+    --log-level=*) LOG_LEVEL="${arg#--log-level=}" ;;
+    --log-level) prev_arg="--log-level" ;;
   esac
 done
 
 if [ "$prev_arg" = "--json-file" ]; then
   echo "datefns-precommit: --json-file requires a path" >&2
   exit 2
+elif [ "$prev_arg" = "--log-level" ]; then
+  echo "datefns-precommit: --log-level requires one of: always, human, silent" >&2
+  exit 2
 fi
+
+case "$LOG_LEVEL" in
+  always|human|silent) ;;
+  *)
+    echo "datefns-precommit: invalid --log-level=$LOG_LEVEL (expected: always, human, silent)" >&2
+    exit 2
+    ;;
+esac
 
 cyan()  { printf "\033[36m%s\033[0m\n" "$*"; }
 red()   { printf "\033[31m%s\033[0m\n" "$*"; }
@@ -74,6 +92,51 @@ json_file_overwrite_enabled() {
     1|true|TRUE|yes|YES|on|ON) return 0 ;;
     *) return 1 ;;
   esac
+}
+
+human_output_enabled() {
+  json_summary_enabled && return 1
+  return 0
+}
+
+artifact_confirmation_enabled() {
+  case "$LOG_LEVEL" in
+    always) return 0 ;;
+    human) human_output_enabled ;;
+    silent) return 1 ;;
+  esac
+}
+
+file_bytes() {
+  wc -c < "$1" | tr -d '[:space:]'
+}
+
+path_bytes() {
+  local path="$1"
+  if [ -f "$path" ]; then
+    file_bytes "$path"
+  elif [ -d "$path" ]; then
+    python3 - "$path" <<'PY'
+import os, sys
+root = sys.argv[1]
+total = 0
+for base, _, files in os.walk(root):
+    for name in files:
+        try:
+            total += os.path.getsize(os.path.join(base, name))
+        except OSError:
+            pass
+print(total)
+PY
+  else
+    printf '0\n'
+  fi
+}
+
+emit_artifact_confirmation() {
+  local label="$1" path="$2"
+  artifact_confirmation_enabled || return 0
+  printf '  %-18s %s (%s bytes)\n' "$label" "${path#$ROOT_DIR/}" "$(path_bytes "$path")"
 }
 
 # Extract the offending date-fns import path(s) from a tsc log.
@@ -151,6 +214,7 @@ PY
     fi
     mkdir -p "$(dirname "$JSON_FILE")"
     printf '%s\n' "$json" > "$JSON_FILE"
+    emit_artifact_confirmation "JSON file:" "$JSON_FILE"
   fi
 }
 
@@ -330,7 +394,7 @@ emit_summary() {
   local bundle
   bundle="$(bundle_failure_logs "[$step] $label" "$cmd" "$code" "$mode")"
   printf "  %-18s %s\n" "Log file:"     "${log#$ROOT_DIR/}"
-  printf "  %-18s %s\n" "Artifact bundle:" "${bundle#$ROOT_DIR/}"
+  emit_artifact_confirmation "Artifact bundle:" "$bundle"
 
   local imports
   imports="$(extract_datefns_imports "$log" || true)"
