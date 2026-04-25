@@ -30,12 +30,28 @@ TSC_LOG="$LOG_DIR/datefns-tsc-smoke.log"
 BUNDLE_ROOT="${DATEFNS_HOOK_BUNDLE_ROOT:-$LOG_DIR/pre-push-artifacts}"
 BUNDLE_DIR=""
 EMIT_JSON_SUMMARY="${DATEFNS_HOOK_JSON_SUMMARY:-0}"
+JSON_FILE="${DATEFNS_HOOK_JSON_FILE:-}"
+JSON_FILE_OVERWRITE="${DATEFNS_HOOK_JSON_FILE_OVERWRITE:-0}"
 
+prev_arg=""
 for arg in "$@"; do
+  if [ "$prev_arg" = "--json-file" ]; then
+    JSON_FILE="$arg"
+    prev_arg=""
+    continue
+  fi
   case "$arg" in
     --json-summary) EMIT_JSON_SUMMARY=1 ;;
+    --json-file=*) JSON_FILE="${arg#--json-file=}"; EMIT_JSON_SUMMARY=1 ;;
+    --json-file) prev_arg="--json-file"; EMIT_JSON_SUMMARY=1 ;;
+    --json-file-overwrite) JSON_FILE_OVERWRITE=1 ;;
   esac
 done
+
+if [ "$prev_arg" = "--json-file" ]; then
+  echo "datefns-precommit: --json-file requires a path" >&2
+  exit 2
+fi
 
 cyan()  { printf "\033[36m%s\033[0m\n" "$*"; }
 red()   { printf "\033[31m%s\033[0m\n" "$*"; }
