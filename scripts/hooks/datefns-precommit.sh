@@ -139,6 +139,17 @@ PY
   fi
 }
 
+file_sha256() {
+  python3 - "$1" <<'PY'
+import hashlib, sys
+h = hashlib.sha256()
+with open(sys.argv[1], "rb") as f:
+    for chunk in iter(lambda: f.read(1024 * 1024), b""):
+        h.update(chunk)
+print(h.hexdigest())
+PY
+}
+
 emit_artifact_confirmation() {
   local label="$1" path="$2"
   artifact_confirmation_enabled || return 0
@@ -146,19 +157,20 @@ emit_artifact_confirmation() {
 }
 
 write_json_file_log() {
-  local artifact_path="$1" bytes="$2"
+  local artifact_path="$1" bytes="$2" sha256="$3"
   [ "$JSON_FILE_LOG_ENABLED" -eq 1 ] || return 0
   local log_path="$JSON_FILE_LOG"
   if [ -z "$log_path" ]; then
     log_path="${artifact_path}.log.json"
   fi
   mkdir -p "$(dirname "$log_path")"
-  python3 - "$artifact_path" "$bytes" "$log_path" <<'PY'
+  python3 - "$artifact_path" "$bytes" "$sha256" "$log_path" <<'PY'
 import json, os, sys
-artifact_path, bytes_raw, log_path = sys.argv[1:]
+artifact_path, bytes_raw, sha256, log_path = sys.argv[1:]
 payload = {
     "path": os.path.abspath(artifact_path),
     "bytes": int(bytes_raw),
+    "sha256": sha256,
 }
 with open(log_path, "w", encoding="utf-8") as f:
     json.dump(payload, f, ensure_ascii=False, separators=(",", ":"))
@@ -241,7 +253,7 @@ PY
     fi
     mkdir -p "$(dirname "$JSON_FILE")"
     printf '%s\n' "$json" > "$JSON_FILE"
-    write_json_file_log "$JSON_FILE" "$(file_bytes "$JSON_FILE")"
+    write_json_file_log "$JSON_FILE" "$(file_bytes "$JSON_FILE")" "$(file_sha256 "$JSON_FILE")"
     emit_artifact_confirmation "JSON file:" "$JSON_FILE"
   fi
 }
