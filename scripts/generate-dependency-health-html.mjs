@@ -198,9 +198,10 @@ function recommendedReplacement(row) {
 }
 
 function renderOffenderRow(row) {
+  const href = repoLineHref(row.file, row.line);
   return `        <tr data-risk="${esc(row.riskLevel)}" data-suppressed="${row.suppressed ? "true" : "false"}">
-          <td><code>${esc(row.file)}</code></td>
-          <td class="num">${esc(String(row.line ?? ""))}</td>
+          <td><a class="repo-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer"><code>${esc(row.file)}</code></a></td>
+          <td class="num"><a class="repo-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(String(row.line ?? ""))}</a></td>
           <td>${renderRiskBadge(row.riskLevel)}</td>
           <td><code>from "${esc(row.importPath)}"</code></td>
           <td><code class="replacement">${esc(recommendedReplacement(row))}</code></td>
