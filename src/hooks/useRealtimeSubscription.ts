@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 
-type TableName = 'solicitacoes' | 'pedidos' | 'cotacoes' | 'pagamentos' | 'notifications' | 'fornecedores' | 'contracts';
+type TableName = 'solicitacoes' | 'pedidos' | 'cotacoes' | 'pagamentos' | 'notifications' | 'fornecedores' | 'contracts' | 'approval_workflows' | 'approval_steps';
 
 interface RealtimeOptions {
   tables: TableName[];
