@@ -72,6 +72,8 @@ export const PendingApprovalsList = () => {
   const approvals: PendingApprovalItem[] = useMemo(() => {
     return pendingSteps.map((step: any) => ({
       id: step.id,
+      workflow_id: step.workflow_id,
+      solicitacao_id: step.solicitacao_id || step.workflow_id, // Fallback if missing
       solicitacao_numero: step.workflow_id?.substring(0, 8) || "SOL-...",
       descricao: "Aprovação pendente",
       solicitante: "Sistema",
@@ -79,7 +81,7 @@ export const PendingApprovalsList = () => {
       data_solicitacao: step.created_at,
       prazo_limite: step.prazo_limite,
       etapa_atual: step.etapa,
-      total_etapas: 3, // Defaulting to 3 if unknown
+      total_etapas: 3,
       urgente: false,
       escalado: !!step.delegacao_id,
       categoria: "Geral",
