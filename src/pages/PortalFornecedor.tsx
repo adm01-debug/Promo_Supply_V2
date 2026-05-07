@@ -5,7 +5,7 @@ import { ptBR } from "date-fns/locale/pt-BR";
 import {
   Building2, Package, FileText, TrendingUp, Clock,
   CheckCircle, AlertTriangle, DollarSign, Eye, Search,
-  Star, Truck, BarChart3, ShieldCheck,
+  Star, Truck, BarChart3, ShieldCheck, Gavel
 } from 'lucide-react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
