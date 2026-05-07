@@ -25,7 +25,7 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "dot-notation": "off",
-      "@typescript-eslint/dot-notation": ["error", { allowIndexSignaturePropertyAccess: true }],
+      "@typescript-eslint/dot-notation": ["error", { allowIndexSignaturePropertyAccess: false }],
       "@typescript-eslint/no-unused-vars": "off",
       "no-restricted-imports": ["error", {
         paths: [
