@@ -29,8 +29,11 @@ import {
   FileCheck,
   RefreshCw,
   RotateCcw,
-  Gavel
+  Gavel,
+  LogOut,
+  Settings
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -127,9 +130,13 @@ function isItemActive(pathname: string, href: string) {
 
 /* ─── Badge ─── */
 const CountBadge = ({ count }: { count: number }) => (
-  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary/15 text-primary text-[10px] font-semibold tabular-nums">
+  <motion.span 
+    initial={{ scale: 0.8, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[9px] font-bold shadow-sm"
+  >
     {count}
-  </span>
+  </motion.span>
 );
 
 /* ─── Single Nav Item ─── */
@@ -149,16 +156,19 @@ const SidebarItem = ({
       to={item.href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors",
+        "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-all duration-200",
         collapsed && "justify-center px-0",
         active
-          ? "bg-primary/10 text-primary"
-          : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+          ? "bg-primary/10 text-primary shadow-sm"
+          : "text-muted-foreground hover:bg-muted/80 hover:text-foreground hover:translate-x-1"
       )}
     >
-      {/* Left accent bar */}
+      {/* Indicator Bar */}
       {active && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-primary" />
+        <motion.span 
+          layoutId="sidebar-active-indicator"
+          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[4px] rounded-r-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" 
+        />
       )}
 
       <Icon
@@ -212,7 +222,7 @@ const SidebarSection = ({
   <div className="space-y-0.5">
     {/* Section label — hidden when collapsed */}
     {!collapsed && (
-      <p className="px-3 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 select-none">
+      <p className="px-4 pb-2 pt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 select-none">
         {section.label}
       </p>
     )}
@@ -242,20 +252,27 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
     <aside
       data-tour="sidebar"
       className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/50 bg-sidebar-background transition-[width] duration-300",
-        collapsed ? "w-[60px]" : "w-60"
+        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/40 bg-card/80 backdrop-blur-xl transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+        collapsed ? "w-[68px]" : "w-64"
       )}
     >
       {/* ── Header ── */}
-      <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-border/40 px-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-glow">
-          <Package className="h-4 w-4 text-primary-foreground" />
+      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-border/10 px-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary via-primary-glow to-primary shadow-lg shadow-primary/20 transition-transform hover:scale-105 active:scale-95">
+          <Package className="h-5 w-5 text-primary-foreground" />
         </div>
-        {!collapsed && (
-          <span className="text-sm font-bold tracking-tight text-foreground">
-            Promo Supply
-          </span>
-        )}
+        <AnimatePresence>
+          {!collapsed && (
+            <motion.span 
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="text-[15px] font-black uppercase tracking-tighter text-foreground"
+            >
+              PROMO <span className="text-primary">SUPPLY</span>
+            </motion.span>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* ── Toggle ── */}
@@ -263,13 +280,13 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
         variant="ghost"
         size="icon"
         onClick={onToggle}
-        className="absolute -right-3 top-[52px] z-50 h-6 w-6 rounded-full border border-border/60 bg-sidebar-background shadow-sm hover:bg-accent"
+        className="absolute -right-3 top-[68px] z-50 h-7 w-7 rounded-full border border-border/20 bg-card shadow-md transition-transform hover:scale-110 active:scale-90"
         aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
       >
         {collapsed ? (
-          <ChevronRight className="h-3 w-3" />
+          <ChevronRight className="h-4 w-4 text-primary" />
         ) : (
-          <ChevronLeft className="h-3 w-3" />
+          <ChevronLeft className="h-4 w-4 text-primary" />
         )}
       </Button>
 
@@ -289,36 +306,53 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
         ))}
       </nav>
 
-      {/* ── Footer ── */}
-      {!collapsed && (
-        <div className="shrink-0 border-t border-border/40 p-2">
-          <PrefetchLink
-            to="#"
-            className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-          >
-            <HelpCircle className="h-4 w-4" />
-            Ajuda & Suporte
-          </PrefetchLink>
-        </div>
-      )}
+      <div className="mt-auto space-y-1 p-2 border-t border-border/10 bg-muted/20">
+        {!collapsed && (
+          <>
+            <PrefetchLink
+              to="/settings"
+              className="flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary"
+            >
+              <Settings className="h-[18px] w-[18px]" />
+              Configurações
+            </PrefetchLink>
+            <PrefetchLink
+              to="/logout"
+              className="flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:bg-destructive/5 hover:text-destructive"
+            >
+              <LogOut className="h-[18px] w-[18px]" />
+              Sair da conta
+            </PrefetchLink>
+          </>
+        )}
 
-      {collapsed && (
-        <div className="shrink-0 border-t border-border/40 p-2">
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>
-              <PrefetchLink
-                to="#"
-                className="flex items-center justify-center rounded-lg py-2 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-              >
-                <HelpCircle className="h-[18px] w-[18px]" />
-              </PrefetchLink>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="text-xs font-medium">
-              Ajuda & Suporte
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      )}
+        {collapsed && (
+          <div className="flex flex-col items-center gap-2">
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <PrefetchLink
+                  to="/settings"
+                  className="flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary"
+                >
+                  <Settings className="h-[18px] w-[18px]" />
+                </PrefetchLink>
+              </TooltipTrigger>
+              <TooltipContent side="right">Configurações</TooltipContent>
+            </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <PrefetchLink
+                  to="/logout"
+                  className="flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-all hover:bg-destructive/5 hover:text-destructive"
+                >
+                  <LogOut className="h-[18px] w-[18px]" />
+                </PrefetchLink>
+              </TooltipTrigger>
+              <TooltipContent side="right">Sair</TooltipContent>
+            </Tooltip>
+          </div>
+        )}
+      </div>
     </aside>
   );
 };

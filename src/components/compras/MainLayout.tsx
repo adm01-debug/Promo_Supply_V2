@@ -135,7 +135,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       </div>
 
       {/* Main Content */}
-      <div className={cn("transition-all duration-300", sidebarCollapsed ? "md:ml-[60px]" : "md:ml-60")}>
+      <div className={cn("transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]", sidebarCollapsed ? "md:ml-[68px]" : "md:ml-64")}>
         {/* Sticky Header */}
         <header className="sticky top-0 z-20 h-14 md:h-14 border-b border-border/40 bg-card/95 backdrop-blur-xl dark:bg-[hsl(228,28%,6%,0.9)] dark:border-border/20">
           <div className="h-full px-3 md:px-4 flex items-center justify-between gap-2 md:gap-3">
