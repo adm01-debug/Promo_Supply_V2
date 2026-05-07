@@ -194,7 +194,7 @@ export function ReverseAuctionRoom({ licitacao, userFornecedorId }: ReverseAucti
                         {formatCurrency(lance.valor_lance)}
                       </p>
                       <p className="text-[10px] text-muted-foreground">
-                        {new Date(lance.created_at).toLocaleTimeString()}
+                        {lance.created_at ? new Date(lance.created_at).toLocaleTimeString() : '--:--'}
                       </p>
                     </div>
                   </div>
