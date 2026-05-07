@@ -99,10 +99,13 @@ export const KraljicMatrix = () => {
             const categoriesInQuadrant = mockCategories.filter(c => c.quadrant === q);
             
             return (
-              <div 
+              <motion.div 
                 key={q}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3, delay: Object.keys(quadrants).indexOf(q) * 0.1 }}
                 className={cn(
-                  "p-3 border rounded-xl flex flex-col gap-2 transition-all group overflow-hidden relative",
+                  "p-3 border rounded-xl flex flex-col gap-2 transition-all duration-300 group overflow-hidden relative shadow-sm hover:shadow-md",
                   config.color,
                   hoveredCategory && categoriesInQuadrant.some(c => c.id === hoveredCategory) ? "ring-2 ring-primary/50 shadow-lg" : "opacity-90 hover:opacity-100"
                 )}
@@ -122,16 +125,17 @@ export const KraljicMatrix = () => {
                     <TooltipProvider key={c.id}>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <div 
+                          <motion.div 
+                            whileHover={{ scale: 1.05 }}
                             onMouseEnter={() => setHoveredCategory(c.id)}
                             onMouseLeave={() => setHoveredCategory(null)}
                             className={cn(
-                              "h-6 px-2 rounded-md bg-background/80 flex items-center text-[10px] font-medium cursor-help border border-transparent hover:border-primary/30 transition-colors truncate max-w-full",
+                              "h-6 px-2 rounded-md bg-background/80 flex items-center text-[10px] font-medium cursor-help border border-transparent hover:border-primary/30 transition-colors truncate max-w-full shadow-sm",
                               hoveredCategory === c.id ? "bg-background border-primary shadow-sm" : ""
                             )}
                           >
                             {c.name}
-                          </div>
+                          </motion.div>
                         </TooltipTrigger>
                         <TooltipContent>
                           <div className="space-y-1 py-1">
@@ -151,9 +155,8 @@ export const KraljicMatrix = () => {
                   </p>
                 </div>
 
-                {/* Grid Position Watermark Icon */}
-                <config.icon className="absolute -bottom-4 -right-4 h-20 w-20 opacity-5 rotate-12" />
-              </div>
+                <config.icon className="absolute -bottom-4 -right-4 h-20 w-20 opacity-5 rotate-12 transition-transform group-hover:rotate-0" />
+              </motion.div>
             );
           })}
         </div>
