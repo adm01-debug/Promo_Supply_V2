@@ -7,6 +7,7 @@ import {
   PiggyBank
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { EnhancedKpiCard } from "@/components/compras/EnhancedKpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
