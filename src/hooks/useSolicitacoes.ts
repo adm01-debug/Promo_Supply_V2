@@ -34,6 +34,7 @@ export interface Solicitacao {
   updated_at: string;
   fornecedor?: { razao_social: string; nome_fantasia: string | null; } | null;
   categoria?: { nome: string; } | null;
+  organization?: { name: string; } | null;
 }
 
 export interface CreateSolicitacaoInput {
@@ -87,7 +88,8 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
     .select(`
       *,
       fornecedor:fornecedores(razao_social, nome_fantasia),
-      categoria:categorias(nome)
+      categoria:categorias(nome),
+      organization:organizations(name)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);

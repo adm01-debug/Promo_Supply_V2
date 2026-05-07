@@ -115,6 +115,26 @@ Deno.serve(async (req) => {
       }
     }
 
+    // 5.1. Find stale cotações (no response in 48h)
+    const fortyEightHoursAgo = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
+    const { data: staleCotacoes } = await supabase
+      .from("cotacoes")
+      .select("id, numero, solicitacao_id, fornecedor_id, updated_at")
+      .eq("status", "pendente")
+      .lte("updated_at", fortyEightHoursAgo);
+
+    for (const cotacao of staleCotacoes || []) {
+      for (const userId of userIds) {
+        notifications.push({
+          user_id: userId,
+          title: `Follow-up necessário: Cotação ${cotacao.numero}`,
+          message: `O fornecedor ainda não respondeu à cotação ${cotacao.numero} enviada há mais de 48h.`,
+          type: "cotacao_followup",
+          priority: "medium",
+        });
+      }
+    }
+
     // Payment due alerts
     for (const pag of dueSoonPagamentos || []) {
       const daysLeft = Math.ceil(

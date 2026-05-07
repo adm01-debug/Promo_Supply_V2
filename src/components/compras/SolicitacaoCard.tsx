@@ -170,6 +170,11 @@ export const SolicitacaoCard = ({
               <span className="font-mono text-xs sm:text-sm font-bold text-primary">#{solicitacao.id}</span>
               <span className="text-muted-foreground hidden sm:inline">|</span>
               <span className="font-semibold text-foreground text-sm truncate">{solicitacao.empresa}</span>
+              {(solicitacao as any).organizationName && (
+                <Badge variant="outline" className="text-[10px] py-0 bg-primary/5 text-primary border-primary/20">
+                  {(solicitacao as any).organizationName}
+                </Badge>
+              )}
             </div>
             
             <p className="text-sm text-foreground mb-2 line-clamp-2">{solicitacao.produto}</p>

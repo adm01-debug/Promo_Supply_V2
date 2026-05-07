@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { Package, RefreshCw, Search, Plus, Trophy, Clock, Check, Loader2, Bell, Sparkles } from "lucide-react";
+import { Package, RefreshCw, Search, Plus, Trophy, Clock, Check, Loader2, Bell, Sparkles, TrendingDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { useSearchParams, Link } from "react-router-dom";
@@ -44,6 +44,8 @@ const Cotacao = () => {
   const [cotacoesAPI, setCotacoesAPI] = useState<CotacaoAPI[]>([]);
   const [showManualModal, setShowManualModal] = useState(false);
   const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string | null>(null);
+
+  // State already declared above
 
   const handleAiAnalyze = async () => {
     if (!solicitacao || allCotacoes.length === 0) return;
@@ -107,6 +109,12 @@ const Cotacao = () => {
   const allCotacoes = useMemo(() => {
     return [...adaptedCotacoes, ...cotacoesAPI];
   }, [adaptedCotacoes, cotacoesAPI]);
+
+  const savingsActual = useMemo(() => {
+    if (!solicitacao?.valor_estimado || allCotacoes.length === 0) return 0;
+    const best = [...allCotacoes].sort((a, b) => (a.total || 0) - (b.total || 0))[0];
+    return Math.max(0, (solicitacao.valor_estimado || 0) - (best.total || 0));
+  }, [solicitacao, allCotacoes]);
 
   const handleBuscarCotacoes = async () => {
     setBuscaStatus('searching');
@@ -202,7 +210,15 @@ const Cotacao = () => {
               <span className="text-muted-foreground">•</span>
               <span className="text-sm text-muted-foreground">{solicitacao.departamento || 'Sem departamento'}</span>
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
+              {savingsActual > 0 && (
+                <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 animate-in fade-in zoom-in duration-500">
+                  <TrendingDown className="w-3 h-3 mr-1" />
+                  Saving Potencial: {savingsActual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                </Badge>
+              )}
+            </div>
           </div>
           {hasRole(['admin', 'coordinator']) && (
             <Button
