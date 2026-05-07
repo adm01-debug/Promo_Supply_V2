@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, 
@@ -8,12 +8,21 @@ import {
   Users, 
   X,
   Search,
-  BarChart3
+  BarChart3,
+  Sparkles,
+  Layers,
+  ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useHapticFeedback } from "@/hooks/useMobileGestures";
 import { cn } from "@/lib/utils";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface QuickAction {
   id: string;
@@ -104,90 +113,120 @@ export function QuickActionsFAB() {
   };
 
   return (
-    <div className="fixed bottom-[4.5rem] sm:bottom-20 right-3 sm:right-4 md:bottom-6 md:right-6 z-40">
+    <div className="fixed bottom-6 right-6 z-50">
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop */}
+            {/* Ultra-premium Backdrop */}
             <motion.div
-              className="fixed inset-0 bg-background/60 backdrop-blur-sm"
+              className="fixed inset-0 bg-background/20 backdrop-blur-[12px] z-40"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
             />
             
-            {/* Action Buttons */}
+            {/* Quick Actions Panel */}
             <motion.div 
-              className="absolute bottom-16 right-0 flex flex-col-reverse gap-3 items-end"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              className="absolute bottom-20 right-0 flex flex-col-reverse gap-4 items-end z-50 w-72"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", damping: 20, stiffness: 300 }}
             >
-              {quickActions.map((action, index) => (
-                <motion.div
-                  key={action.id}
-                  initial={{ opacity: 0, y: 20, scale: 0.8 }}
-                  animate={{ 
-                    opacity: 1, 
-                    y: 0, 
-                    scale: 1,
-                    transition: { delay: index * 0.05 }
-                  }}
-                  exit={{ 
-                    opacity: 0, 
-                    y: 20, 
-                    scale: 0.8,
-                    transition: { delay: (quickActions.length - index) * 0.02 }
-                  }}
-                  className="flex items-center gap-3"
-                >
-                  <motion.span 
-                    className="px-3 py-1.5 bg-card border border-border rounded-lg shadow-lg text-sm font-medium whitespace-nowrap"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    {action.label}
-                  </motion.span>
-                  <motion.button
-                    className={cn(
-                      "w-12 h-12 rounded-full flex items-center justify-center text-primary-foreground shadow-lg",
-                      action.color
-                    )}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => handleAction(action)}
-                  >
-                    <action.icon className="w-5 h-5" />
-                  </motion.button>
-                </motion.div>
-              ))}
+              <div className="w-full bg-card/90 backdrop-blur-2xl border border-primary/10 shadow-2xl rounded-[2.5rem] p-3 overflow-hidden">
+                <div className="flex flex-col gap-1">
+                  {quickActions.map((action, index) => (
+                    <motion.button
+                      key={action.id}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ 
+                        opacity: 1, 
+                        x: 0,
+                        transition: { delay: index * 0.05 }
+                      }}
+                      whileHover={{ x: -4, backgroundColor: "hsl(var(--primary) / 0.05)" }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleAction(action)}
+                      className="group flex items-center justify-between w-full p-3 rounded-2xl transition-all"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className={cn(
+                          "w-10 h-10 rounded-xl flex items-center justify-center text-primary-foreground shadow-lg transition-transform group-hover:scale-110 group-hover:rotate-3",
+                          action.color
+                        )}>
+                          <action.icon className="w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-sm font-bold tracking-tight text-foreground/90">{action.label}</p>
+                          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Acesso Rápido</p>
+                        </div>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all" />
+                    </motion.button>
+                  ))}
+                </div>
+                
+                <div className="mt-2 pt-2 border-t border-primary/5 px-3 pb-1">
+                  <div className="flex items-center gap-2 text-primary">
+                    <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Promo Supply AI</span>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
 
-      {/* Main FAB */}
-      <motion.div
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-      >
-        <Button
-          size="lg"
-          className={cn(
-            "w-14 h-14 rounded-full shadow-xl transition-all duration-300",
-            isOpen 
-              ? "bg-destructive hover:bg-destructive/90 rotate-45" 
-              : "gradient-primary shadow-glow-primary"
-          )}
-          onClick={toggleOpen}
-        >
-          {isOpen ? (
-            <X className="w-6 h-6" />
-          ) : (
-            <Plus className="w-6 h-6" />
-          )}
-        </Button>
-      </motion.div>
+      {/* Main Trigger FAB */}
+      <TooltipProvider>
+        <Tooltip delayDuration={0}>
+          <TooltipTrigger asChild>
+            <motion.div
+              className="relative z-50"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.92 }}
+            >
+              <Button
+                size="lg"
+                className={cn(
+                  "w-16 h-16 rounded-[2rem] shadow-2xl transition-all duration-500 group",
+                  isOpen 
+                    ? "bg-destructive hover:bg-destructive/90 border-destructive/20" 
+                    : "gradient-primary shadow-glow-primary border-none"
+                )}
+                onClick={toggleOpen}
+              >
+                <AnimatePresence mode="wait">
+                  {isOpen ? (
+                    <motion.div
+                      key="close"
+                      initial={{ rotate: -90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: 90, opacity: 0 }}
+                    >
+                      <X className="w-7 h-7" />
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="plus"
+                      initial={{ rotate: 90, opacity: 0 }}
+                      animate={{ rotate: 0, opacity: 1 }}
+                      exit={{ rotate: -90, opacity: 0 }}
+                      className="relative"
+                    >
+                      <Layers className="w-7 h-7 transition-transform group-hover:scale-110" />
+                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-success rounded-full border-2 border-background animate-pulse" />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Button>
+            </motion.div>
+          </TooltipTrigger>
+          {!isOpen && <TooltipContent side="left" className="font-bold">Ações Rápidas</TooltipContent>}
+        </Tooltip>
+      </TooltipProvider>
     </div>
   );
 }

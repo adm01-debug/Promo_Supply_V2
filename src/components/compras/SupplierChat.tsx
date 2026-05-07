@@ -225,10 +225,15 @@ export function SupplierChat() {
 
   return (
     <>
-      <Button className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-50" onClick={() => setIsOpen(true)}>
+      <Button 
+        className="fixed bottom-6 right-24 h-14 w-14 rounded-full shadow-lg z-50 gradient-primary shadow-glow-primary border-none" 
+        onClick={() => setIsOpen(true)}
+      >
         <MessageCircle className="h-6 w-6" />
         {totalUnread > 0 && (
-          <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 text-xs">{totalUnread}</Badge>
+          <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 text-xs animate-bounce">
+            {totalUnread}
+          </Badge>
         )}
       </Button>
 
