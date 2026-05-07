@@ -70,11 +70,11 @@ const ComprasDashboard = () => {
       case 'kpi-volume':
         return (
           <EnhancedKpiCard
-            title="Volume Mês"
+            title={t('dashboard.kpis.total_spend')}
             value={kpis.volumeMes}
             icon={TrendingUp}
             color="cyan"
-            subtitle="Total em compras"
+            subtitle="Total"
             format="currency"
             variant="default"
           />
@@ -82,7 +82,7 @@ const ComprasDashboard = () => {
       case 'kpi-economia':
         return (
           <EnhancedKpiCard
-            title="Economia Gerada"
+            title={t('dashboard.kpis.saving')}
             value={kpis.economiaGerada}
             icon={PiggyBank}
             color="emerald"
