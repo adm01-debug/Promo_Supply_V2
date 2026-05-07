@@ -69,8 +69,24 @@ export default function Licitacoes() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Licitações" description="Gerenciamento de processos licitatórios e propostas" icon={Gavel}
-        actions={[{ label: 'Nova Licitação', icon: Plus, onClick: () => setCreateOpen(true) }]} />
+      <PageHeader 
+        title={activeAuctionId ? "Sala de Leilão" : "Licitações"} 
+        description={activeAuctionId ? "Acompanhamento em tempo real e lances" : "Gerenciamento de processos licitatórios e propostas"} 
+        icon={Gavel}
+        actions={
+          activeAuctionId 
+            ? [{ label: 'Voltar para Lista', icon: Filter, onClick: () => setActiveAuctionId(null) }]
+            : [{ label: 'Nova Licitação', icon: Plus, onClick: () => setCreateOpen(true) }]
+        } 
+      />
+
+      {activeAuctionId && licitacoes.find(l => l.id === activeAuctionId) ? (
+        <ReverseAuctionRoom 
+          licitacao={licitacoes.find(l => l.id === activeAuctionId)!} 
+          userFornecedorId={fornecedores[0]?.id} // For demo purposes, use first supplier
+        />
+      ) : (
+        <>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
