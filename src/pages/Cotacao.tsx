@@ -45,6 +45,11 @@ const Cotacao = () => {
   const [showManualModal, setShowManualModal] = useState(false);
   const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string | null>(null);
 
+  const [buscaStatus, setBuscaStatus] = useState<'idle' | 'searching' | 'done'>('idle');
+  const [cotacoesAPI, setCotacoesAPI] = useState<CotacaoAPI[]>([]);
+  const [showManualModal, setShowManualModal] = useState(false);
+  const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string | null>(null);
+
   const handleAiAnalyze = async () => {
     if (!solicitacao || allCotacoes.length === 0) return;
     setIsAiAnalyzing(true);
