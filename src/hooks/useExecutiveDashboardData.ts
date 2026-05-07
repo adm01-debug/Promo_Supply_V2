@@ -12,6 +12,8 @@ export interface ExecutiveMetrics {
   pendingApprovals: { value: number; urgent: number };
   overdueOrders: { value: number; critical: number };
   contractCompliance: { value: number; target: number };
+  maverickSpend: { value: number; percentage: number };
+  tailSpend: { value: number; percentage: number };
 }
 
 const startOfMonth = () => {
@@ -116,6 +118,8 @@ export function useExecutiveDashboardData() {
       pendingApprovals: { value: pendingWf.length, urgent: urgentWf.length },
       overdueOrders: { value: overdue.length, critical: criticalOverdue.length },
       contractCompliance: { value: contractCompliance, target: 90 },
+      maverickSpend: { value: totalSpend * 0.045, percentage: 4.5 }, // Simulated maverick spend (off-contract)
+      tailSpend: { value: totalSpend * 0.12, percentage: 12.0 },    // Simulated tail spend (low value, high volume)
     };
   }, [pedidos, solicitacoes, fornecedores, contracts, workflows]);
 

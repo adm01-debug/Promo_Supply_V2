@@ -24,6 +24,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useProdutos, type Produto } from "@/hooks/useProdutos";
+import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/ui/page-header";
 
 const formatCurrency = (v: number | null) =>
@@ -42,6 +43,7 @@ const emptyProduct: Partial<Produto> = {
 
 const CatalogoProdutos = () => {
   const { produtos, isLoading, categorias, createProduto, updateProduto } = useProdutos();
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");

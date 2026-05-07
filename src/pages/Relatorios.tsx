@@ -4,12 +4,14 @@ import {
   TrendingUp,
   Calendar,
   Download,
+  Target
 } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SLABySupplierAnalysis } from "@/components/compras/SLABySupplierAnalysis";
+import { KraljicMatrix } from "@/components/compras/executive/KraljicMatrix";
 import { AdvancedProcurementKPIs } from "@/components/compras/AdvancedProcurementKPIs";
 import { DemandPredictionPanel } from "@/components/compras/DemandPredictionPanel";
 import { useQuery } from "@tanstack/react-query";
@@ -250,7 +252,7 @@ const Relatorios = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-3 h-auto p-1">
+          <TabsList className="w-full grid grid-cols-4 h-auto p-1">
             <TabsTrigger value="geral" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
               <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Visão</span> Geral
@@ -258,6 +260,10 @@ const Relatorios = () => {
             <TabsTrigger value="kpis" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
               <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               KPIs
+            </TabsTrigger>
+            <TabsTrigger value="estrategia" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <Target className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Matriz</span> Kraljic
             </TabsTrigger>
             <TabsTrigger value="previsao" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
               <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -284,6 +290,10 @@ const Relatorios = () => {
 
             <SLABySupplierAnalysis />
             <SupplierPerformanceTable data={stats.fornecedorPerformance} />
+          </TabsContent>
+
+          <TabsContent value="estrategia" className="mt-6">
+            <KraljicMatrix />
           </TabsContent>
 
           <TabsContent value="previsao" className="mt-6">

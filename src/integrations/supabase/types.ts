@@ -555,6 +555,63 @@ export type Database = {
         }
         Relationships: []
       }
+      category_strategies: {
+        Row: {
+          categoria_id: string | null
+          created_at: string | null
+          id: string
+          kraljic_quadrant: string | null
+          last_review_at: string | null
+          organization_id: string | null
+          preferred_contract_type: string | null
+          risk_level: string | null
+          spend_impact: string | null
+          strategy_description: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          categoria_id?: string | null
+          created_at?: string | null
+          id?: string
+          kraljic_quadrant?: string | null
+          last_review_at?: string | null
+          organization_id?: string | null
+          preferred_contract_type?: string | null
+          risk_level?: string | null
+          spend_impact?: string | null
+          strategy_description?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          categoria_id?: string | null
+          created_at?: string | null
+          id?: string
+          kraljic_quadrant?: string | null
+          last_review_at?: string | null
+          organization_id?: string | null
+          preferred_contract_type?: string | null
+          risk_level?: string | null
+          spend_impact?: string | null
+          strategy_description?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "category_strategies_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "category_strategies_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_notes: {
         Row: {
           author_id: string | null
@@ -3312,6 +3369,120 @@ export type Database = {
           },
           {
             foreignKeyName: "solicitacoes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sourcing_pipeline: {
+        Row: {
+          actual_saving_value: number | null
+          baseline_value: number | null
+          categoria_id: string | null
+          comprador_id: string | null
+          created_at: string | null
+          end_date: string | null
+          estimated_saving_value: number | null
+          id: string
+          organization_id: string | null
+          start_date: string | null
+          status: string | null
+          target_saving_percent: number | null
+          titulo: string
+          updated_at: string | null
+        }
+        Insert: {
+          actual_saving_value?: number | null
+          baseline_value?: number | null
+          categoria_id?: string | null
+          comprador_id?: string | null
+          created_at?: string | null
+          end_date?: string | null
+          estimated_saving_value?: number | null
+          id?: string
+          organization_id?: string | null
+          start_date?: string | null
+          status?: string | null
+          target_saving_percent?: number | null
+          titulo: string
+          updated_at?: string | null
+        }
+        Update: {
+          actual_saving_value?: number | null
+          baseline_value?: number | null
+          categoria_id?: string | null
+          comprador_id?: string | null
+          created_at?: string | null
+          end_date?: string | null
+          estimated_saving_value?: number | null
+          id?: string
+          organization_id?: string | null
+          start_date?: string | null
+          status?: string | null
+          target_saving_percent?: number | null
+          titulo?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_pipeline_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_pipeline_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      spend_forecasts: {
+        Row: {
+          categoria_id: string | null
+          confidence_level: number | null
+          created_at: string | null
+          estimated_value: number
+          forecast_date: string
+          id: string
+          metadata: Json | null
+          organization_id: string | null
+        }
+        Insert: {
+          categoria_id?: string | null
+          confidence_level?: number | null
+          created_at?: string | null
+          estimated_value: number
+          forecast_date: string
+          id?: string
+          metadata?: Json | null
+          organization_id?: string | null
+        }
+        Update: {
+          categoria_id?: string | null
+          confidence_level?: number | null
+          created_at?: string | null
+          estimated_value?: number
+          forecast_date?: string
+          id?: string
+          metadata?: Json | null
+          organization_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "spend_forecasts_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "spend_forecasts_organization_id_fkey"
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"

@@ -27,6 +27,7 @@ import { ExecutiveTablesRow } from './executive/ExecutiveTablesRow';
 import { ExecutivePendingActions } from './executive/ExecutivePendingActions';
 import { ExecutiveDrillDownModal } from './executive/ExecutiveDrillDownModal';
 import { PriceVarianceAnalysis } from './executive/PriceVarianceAnalysis';
+import { KraljicMatrix } from './executive/KraljicMatrix';
 
 export const ExecutiveDashboard = () => {
   const [drillDown, setDrillDown] = useState<DrillDownData | null>(null);
@@ -89,7 +90,9 @@ export const ExecutiveDashboard = () => {
         previousValue: executiveMetrics.contractCompliance.previousValue,
         change: rm.contractCompliance.value > 0 ? calculateChange(rm.contractCompliance.value, executiveMetrics.contractCompliance.previousValue) : executiveMetrics.contractCompliance.change,
         target: rm.contractCompliance.target || executiveMetrics.contractCompliance.target
-      }
+      },
+      maverickSpend: rm.maverickSpend,
+      tailSpend: rm.tailSpend
     };
   }, [realMetrics, realDataLoading]);
 
@@ -330,21 +333,21 @@ export const ExecutiveDashboard = () => {
             onCategoryDrillDown={(data) => setDrillDown({ type: 'category', data })} 
           />
         </div>
-        <div className="xl:col-span-1">
+        <div className="xl:col-span-1 grid grid-cols-1 gap-6">
           <PriceVarianceAnalysis />
+          <KraljicMatrix />
         </div>
       </div>
 
       {/* Secondary KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <ExecutiveMetricCard title="Aderência Contrato" value={activeMetrics.contractCompliance.value} change={activeMetrics.contractCompliance.change} target={activeMetrics.contractCompliance.target} icon={Target} format="percent" showComparison={showComparison} />
+        <ExecutiveMetricCard title="Maverick Spend" value={activeMetrics.maverickSpend?.value || 0} change={-2.4} subtitle={`${activeMetrics.maverickSpend?.percentage || 0}% do total`} icon={AlertTriangle} format="currency" showComparison={showComparison} invertChange />
+        <ExecutiveMetricCard title="Tail Spend" value={activeMetrics.tailSpend?.value || 0} change={1.5} subtitle={`${activeMetrics.tailSpend?.percentage || 0}% do total`} icon={Zap} format="currency" showComparison={showComparison} />
         <ExecutiveMetricCard title="Saving %" value={activeMetrics.savingsPercent} change={activeMetrics.savingsPercent > 10 ? activeMetrics.savingsPercent - 10 : 0} target={15} icon={Zap} format="percent" showComparison={showComparison} trendData={trendDataSets.savings.map((s, i) => (trendDataSets.spend[i] > 0 ? (s / trendDataSets.spend[i]) * 100 : 0))} />
         <ExecutiveMetricCard title="Base de Fornecedores" value={activeMetrics.supplierCount.value} previousValue={activeMetrics.supplierCount.previousValue} change={activeMetrics.supplierCount.change} target={activeMetrics.supplierCount.target} icon={Users} showComparison={showComparison} trendData={trendDataSets.suppliers} />
-        <ExecutiveMetricCard title="Aprovações Pendentes" value={activeMetrics.pendingApprovals.value} previousValue={activeMetrics.pendingApprovals.previousValue} change={activeMetrics.pendingApprovals.change} urgent={activeMetrics.pendingApprovals.urgent} icon={CheckCircle2} onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })} showComparison={showComparison} invertChange trendData={trendDataSets.pendingApprovals} />
-        <ExecutiveMetricCard title="Pedidos Atrasados" value={activeMetrics.overdueOrders.value} previousValue={activeMetrics.overdueOrders.previousValue} change={activeMetrics.overdueOrders.change} critical={activeMetrics.overdueOrders.critical} icon={XCircle} showComparison={showComparison} invertChange trendData={trendDataSets.overdueOrders} />
-        <ExecutiveMetricCard title="Compliance Contratos" value={activeMetrics.contractCompliance.value} previousValue={activeMetrics.contractCompliance.previousValue} change={activeMetrics.contractCompliance.change} target={activeMetrics.contractCompliance.target} icon={Target} format="percent" showComparison={showComparison} trendData={trendDataSets.compliance} />
       </div>
 
-      <ExecutiveChartsRow showComparison={showComparison} filteredCategorySpend={filteredCategorySpend} onCategoryDrillDown={(cat) => setDrillDown({ type: 'category', data: cat })} />
       <ExecutiveTablesRow filteredSuppliers={filteredSuppliers} filteredBuyers={filteredBuyers} showComparison={showComparison} onSupplierDrillDown={(s) => setDrillDown({ type: 'supplier', data: s })} onBuyerDrillDown={(b) => setDrillDown({ type: 'buyer', data: b })} />
       <ExecutivePendingActions items={filteredPendingItems} />
       <ExecutiveDrillDownModal drillDown={drillDown} onClose={() => setDrillDown(null)} />

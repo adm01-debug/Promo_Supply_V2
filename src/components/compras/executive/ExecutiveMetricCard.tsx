@@ -13,6 +13,7 @@ interface MetricCardProps {
   target?: number;
   icon: React.ElementType;
   format?: 'currency' | 'number' | 'percent' | 'days';
+  subtitle?: string;
   onClick?: () => void;
   urgent?: number;
   critical?: number;
@@ -23,7 +24,7 @@ interface MetricCardProps {
 
 export const ExecutiveMetricCard = ({
   title, value, previousValue, change, target, icon: Icon,
-  format = 'number', onClick, urgent, critical, showComparison,
+  format = 'number', subtitle, onClick, urgent, critical, showComparison,
   invertChange = false, trendData
 }: MetricCardProps) => {
   const isPositive = change && change > 0;
@@ -78,6 +79,7 @@ export const ExecutiveMetricCard = ({
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">{title}</p>
           <p className="text-2xl font-bold">{formatValue(value)}</p>
+          {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
 
           {showComparison && previousValue !== undefined && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
