@@ -101,18 +101,27 @@ emit_snapshot_diff() {
   local expected_json="$1" actual_json="$2"
   red "    ✗ snapshot diff (expected JSON ↔ actual detector output):"
   python3 - "$expected_json" "$actual_json" "expected:${expected_json#$REPO_ROOT/}" "actual:detector-output" <<'PY'
-import difflib, sys
+import difflib, sys, json
 expected, actual, expected_label, actual_label = sys.argv[1:]
-with open(expected, encoding="utf-8") as f:
-    expected_lines = f.readlines()
-with open(actual, encoding="utf-8") as f:
-    actual_lines = f.readlines()
-sys.stdout.writelines(difflib.unified_diff(
-    expected_lines,
-    actual_lines,
+
+def read_json_sorted(path):
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    # Sort imports so diff is stable if extraction order varies
+    if "imports" in data:
+        data["imports"].sort()
+    return json.dumps(data, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
+
+expected_content = read_json_sorted(expected)
+actual_content = read_json_sorted(actual)
+
+diff = difflib.unified_diff(
+    expected_content.splitlines(keepends=True),
+    actual_content.splitlines(keepends=True),
     fromfile=expected_label,
     tofile=actual_label,
-))
+)
+sys.stdout.writelines(diff)
 PY
 }
 
