@@ -31,8 +31,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerar-ordem/gerarOrdemHelpers';
+import { generateOrderPDF } from "@/lib/pdfGenerator";
+import { useAuth } from "@/hooks/useAuth";
 
 const GerarOrdem = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const solicitacaoId = searchParams.get("solicitacao");
@@ -147,6 +150,26 @@ const GerarOrdem = () => {
       description: `A ordem ${ordemNumero} foi gerada com sucesso.`,
     });
     navigate("/acompanhamento");
+  };
+
+  const previewPDF = () => {
+    const doc = generateOrderPDF({
+      numero: ordemNumero,
+      data: new Date().toLocaleDateString('pt-BR'),
+      fornecedor,
+      solicitante: user,
+      itens: [{
+        descricao: solicitacao.produto,
+        quantidade: solicitacao.quantidadeReal,
+        valor_unitario: solicitacao.valorUnitario || 12,
+      }],
+      subtotal,
+      frete,
+      desconto,
+      total,
+      observacoes
+    });
+    window.open(doc.output('bloburl'), '_blank');
   };
 
   return (
