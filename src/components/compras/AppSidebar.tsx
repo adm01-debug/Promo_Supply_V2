@@ -152,16 +152,19 @@ const SidebarItem = ({
       to={item.href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors",
+        "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-all duration-200",
         collapsed && "justify-center px-0",
         active
-          ? "bg-primary/10 text-primary"
-          : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+          ? "bg-primary/10 text-primary shadow-sm"
+          : "text-muted-foreground hover:bg-muted/80 hover:text-foreground hover:translate-x-1"
       )}
     >
-      {/* Left accent bar */}
+      {/* Indicator Bar */}
       {active && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-primary" />
+        <motion.span 
+          layoutId="sidebar-active-indicator"
+          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[4px] rounded-r-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" 
+        />
       )}
 
       <Icon
