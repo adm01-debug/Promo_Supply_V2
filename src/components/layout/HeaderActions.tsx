@@ -92,13 +92,14 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
       {/* Keyboard shortcuts */}
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => window.dispatchEvent(new CustomEvent('show-keyboard-shortcuts'))}
-            className="hidden md:flex"
-            aria-label="Atalhos de teclado"
-          >
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => window.dispatchEvent(new CustomEvent('show-keyboard-shortcuts'))}
+              className="hidden md:flex rounded-xl hover:bg-primary/5 hover:text-primary transition-all duration-300"
+              aria-label="Atalhos de teclado"
+            >
+
             <Keyboard className="w-4 h-4" />
           </Button>
         </TooltipTrigger>
