@@ -110,9 +110,10 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
       {isDashboard && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" onClick={onRestartTour} className="hidden md:flex" aria-label="Ver tour de introdução">
+            <Button variant="ghost" size="icon" onClick={onRestartTour} className="hidden md:flex rounded-xl hover:bg-primary/5 hover:text-primary transition-all duration-300" aria-label="Ver tour de introdução">
               <HelpCircle className="w-4 h-4" />
             </Button>
+
           </TooltipTrigger>
           <TooltipContent><p>Ver tour de introdução</p></TooltipContent>
         </Tooltip>
