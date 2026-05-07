@@ -23,7 +23,7 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
   const isDashboard = location.pathname === '/dashboard' || location.pathname === '/';
 
   return (
-    <div className="flex items-center gap-1 sm:gap-2">
+    <div className="flex items-center gap-1.5 sm:gap-2.5">
       {/* Command Palette Button */}
       <Tooltip>
         <TooltipTrigger asChild>
@@ -31,20 +31,21 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
             variant="outline"
             size="sm"
             onClick={onOpenCommandPalette}
-            className="hidden md:flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            className="hidden lg:flex items-center gap-2.5 text-muted-foreground hover:text-foreground bg-muted/20 border-border/40 rounded-xl px-4 transition-all duration-300 hover:shadow-sm"
             aria-label="Abrir Command Palette"
           >
-            <Command className="w-4 h-4" />
-            <span className="text-xs">Buscar...</span>
-            <kbd className="ml-2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-              <span className="text-xs">⌘</span>K
+            <Command className="w-4 h-4 text-primary" />
+            <span className="text-xs font-semibold">Atalhos</span>
+            <kbd className="ml-1 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded-lg border border-border/40 bg-background/50 px-1.5 font-mono text-[10px] font-bold text-muted-foreground">
+              <span className="text-[10px]">⌘</span>K
             </kbd>
           </Button>
         </TooltipTrigger>
-        <TooltipContent>
-          <p>Busca rápida (Ctrl+K / ⌘K)</p>
+        <TooltipContent className="bg-popover/90 backdrop-blur-md border-border/40">
+          <p className="text-xs font-bold">Busca rápida (Ctrl+K / ⌘K)</p>
         </TooltipContent>
       </Tooltip>
+
 
       <ThemeToggle />
 
