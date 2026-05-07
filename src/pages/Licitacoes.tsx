@@ -29,6 +29,7 @@ export default function Licitacoes() {
   const [filterStatus, setFilterStatus] = useState('todos');
   const [createOpen, setCreateOpen] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [activeAuctionId, setActiveAuctionId] = useState<string | null>(null);
   const [newForm, setNewForm] = useState({
     titulo: '', descricao: '', modalidade: 'pregao', tipo: 'menor_preco',
     valor_estimado: '', data_abertura: '', data_encerramento: '', objeto: '',
