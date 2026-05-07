@@ -280,13 +280,13 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
         variant="ghost"
         size="icon"
         onClick={onToggle}
-        className="absolute -right-3 top-[52px] z-50 h-6 w-6 rounded-full border border-border/60 bg-sidebar-background shadow-sm hover:bg-accent"
+        className="absolute -right-3 top-[68px] z-50 h-7 w-7 rounded-full border border-border/20 bg-card shadow-md transition-transform hover:scale-110 active:scale-90"
         aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
       >
         {collapsed ? (
-          <ChevronRight className="h-3 w-3" />
+          <ChevronRight className="h-4 w-4 text-primary" />
         ) : (
-          <ChevronLeft className="h-3 w-3" />
+          <ChevronLeft className="h-4 w-4 text-primary" />
         )}
       </Button>
 
