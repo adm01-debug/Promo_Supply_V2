@@ -12,7 +12,10 @@ import {
   Smile,
   Loader2,
   MoreVertical,
+  ChevronLeft,
+  Sparkles
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
