@@ -134,18 +134,24 @@ const ComprasDashboard = () => {
               <Link to="/solicitacoes" className="text-sm text-primary hover:underline">Ver Todos</Link>
             </div>
             {urgentItems.length > 0 ? (
-              <div className="space-y-2">
-                {urgentItems.map(item => (
-                  <div key={item.id} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
-                    <span className="text-sm font-medium text-foreground truncate">{item.status}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : '—'}
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <UrgentItemsList 
+                items={urgentItems.map(item => {
+                  const now = new Date();
+                  const diff = item.data_necessidade 
+                    ? Math.ceil((new Date(item.data_necessidade).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) 
+                    : 5;
+                  
+                  return {
+                    id: item.numero || item.id.substring(0, 8),
+                    produto: item.titulo || "Item sem título",
+                    fornecedor: item.status || "Pendente",
+                    vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
+                    urgencia: diff <= 1 ? 'critico' : diff <= 3 ? 'alto' : 'medio'
+                  };
+                })} 
+              />
             ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">Nenhum item urgente</p>
+              <p className="text-sm text-muted-foreground text-center py-12">Nenhum item urgente detectado.</p>
             )}
           </Card>
         );
