@@ -227,12 +227,24 @@ const DocumentosFiscais = () => {
                 <CardTitle>Upload NF-e</CardTitle>
                 <CardDescription>Importe arquivos XML de Notas Fiscais Eletrônicas</CardDescription>
               </div>
-              <label>
-                <input type="file" accept=".xml" className="hidden" onChange={handleXmlUpload} />
-                <Button asChild>
-                  <span><Upload className="h-4 w-4 mr-2" /> Importar XML</span>
-                </Button>
-              </label>
+              <div className="flex gap-2">
+                <label>
+                  <input type="file" accept=".xml" className="hidden" onChange={handleXmlUpload} />
+                  <Button variant="outline" asChild>
+                    <span><Upload className="h-4 w-4 mr-2" /> Importar XML</span>
+                  </Button>
+                </label>
+                <label>
+                  <input type="file" accept=".pdf,image/*" className="hidden" onChange={handlePdfUpload} disabled={isProcessingPdf} />
+                  <Button disabled={isProcessingPdf} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700">
+                    {isProcessingPdf ? (
+                      <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processando...</>
+                    ) : (
+                      <><BrainCircuit className="h-4 w-4 mr-2" /> Importar PDF (IA)</>
+                    )}
+                  </Button>
+                </label>
+              </div>
             </div>
           </CardHeader>
         </Card>
