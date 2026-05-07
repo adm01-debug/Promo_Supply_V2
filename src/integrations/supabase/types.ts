@@ -1375,14 +1375,17 @@ export type Database = {
           chave_acesso: string | null
           created_at: string
           data_emissao: string | null
+          file_path: string | null
           fornecedor_id: string | null
           id: string
           numero_nf: string
           pdf_url: string | null
           pedido_id: string | null
+          processing_id: string | null
           reconciliation_notes: string | null
           reconciliation_status: string | null
           serie: string | null
+          source_type: string | null
           status: string
           updated_at: string
           uploaded_by: string | null
@@ -1397,14 +1400,17 @@ export type Database = {
           chave_acesso?: string | null
           created_at?: string
           data_emissao?: string | null
+          file_path?: string | null
           fornecedor_id?: string | null
           id?: string
           numero_nf: string
           pdf_url?: string | null
           pedido_id?: string | null
+          processing_id?: string | null
           reconciliation_notes?: string | null
           reconciliation_status?: string | null
           serie?: string | null
+          source_type?: string | null
           status?: string
           updated_at?: string
           uploaded_by?: string | null
@@ -1419,14 +1425,17 @@ export type Database = {
           chave_acesso?: string | null
           created_at?: string
           data_emissao?: string | null
+          file_path?: string | null
           fornecedor_id?: string | null
           id?: string
           numero_nf?: string
           pdf_url?: string | null
           pedido_id?: string | null
+          processing_id?: string | null
           reconciliation_notes?: string | null
           reconciliation_status?: string | null
           serie?: string | null
+          source_type?: string | null
           status?: string
           updated_at?: string
           uploaded_by?: string | null
