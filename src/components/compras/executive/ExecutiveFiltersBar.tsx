@@ -31,8 +31,8 @@ export const ExecutiveFiltersBar = ({
   onSave, onDelete, onSetDefault, onApply, favoritesLoading
 }: Props) => {
   return (
-    <Card>
-      <CardContent className="p-4">
+    <Card className="bg-card/30 backdrop-blur-2xl border-white/[0.03] shadow-lg">
+      <CardContent className="p-4 py-3">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />

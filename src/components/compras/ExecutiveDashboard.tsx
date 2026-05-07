@@ -232,8 +232,12 @@ export const ExecutiveDashboard = () => {
       {/* Header */}
       <motion.div variants={itemVariants} className="flex items-center justify-between flex-wrap gap-6">
         <div>
-          <h2 className="text-3xl font-black tracking-tight text-foreground">Dashboard Executivo</h2>
-          <p className="text-muted-foreground font-medium">Visão consolidada de compras — Inteligência em tempo real</p>
+          <h2 className="text-4xl font-black tracking-tight text-foreground bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+            Dashboard Executivo
+          </h2>
+          <p className="text-sm text-muted-foreground font-medium tracking-wide">
+            Inteligência preditiva e visão 360° da operação
+          </p>
         </div>
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-3 px-4 py-2 rounded-xl border-border/40 bg-card/50 backdrop-blur-sm shadow-sm ring-1 ring-black/5 dark:ring-white/5">
