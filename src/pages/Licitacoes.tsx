@@ -193,6 +193,13 @@ export default function Licitacoes() {
               <div className="space-y-2"><Label>Data Abertura</Label><Input type="datetime-local" value={newForm.data_abertura} onChange={e => setNewForm(f => ({ ...f, data_abertura: e.target.value }))} /></div>
               <div className="space-y-2"><Label>Data Encerramento</Label><Input type="datetime-local" value={newForm.data_encerramento} onChange={e => setNewForm(f => ({ ...f, data_encerramento: e.target.value }))} /></div>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2"><Label>Decremento Mínimo (R$)</Label><Input type="number" value={newForm.lance_minimo_decremento} onChange={e => setNewForm(f => ({ ...f, lance_minimo_decremento: e.target.value }))} step="0.01" /></div>
+              <div className="flex items-center gap-2 pt-8">
+                <input type="checkbox" checked={newForm.is_live} onChange={e => setNewForm(f => ({ ...f, is_live: e.target.checked }))} id="is_live" className="w-4 h-4" />
+                <Label htmlFor="is_live">Leilão ao Vivo</Label>
+              </div>
+            </div>
             <div className="space-y-2"><Label>Objeto</Label><Textarea value={newForm.objeto} onChange={e => setNewForm(f => ({ ...f, objeto: e.target.value }))} placeholder="Descrição do objeto da licitação" rows={3} /></div>
             <div className="space-y-2"><Label>Descrição</Label><Textarea value={newForm.descricao} onChange={e => setNewForm(f => ({ ...f, descricao: e.target.value }))} placeholder="Informações adicionais" rows={2} /></div>
           </div>
