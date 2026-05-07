@@ -238,7 +238,9 @@ payload = {
 print(json.dumps(payload, ensure_ascii=False, separators=(",", ":")))
 PY
 )"
-  printf 'DATEFNS_HOOK_SUMMARY_JSON=%s\n' "$json"
+  if json_summary_enabled; then
+    printf 'DATEFNS_HOOK_SUMMARY_JSON=%s\n' "$json"
+  fi
   if [ -f "$log" ]; then
     {
       printf '\n===== DATEFNS_HOOK_SUMMARY_JSON =====\n'
@@ -249,7 +251,7 @@ PY
     if [ -e "$JSON_FILE" ] && ! json_file_overwrite_enabled; then
       printf 'datefns-precommit: refusing to overwrite existing --json-file target: %s\n' "$JSON_FILE" >&2
       printf 'datefns-precommit: pass --json-file-overwrite or set DATEFNS_HOOK_JSON_FILE_OVERWRITE=1 to replace it.\n' >&2
-      return 2
+      exit 2
     fi
     mkdir -p "$(dirname "$JSON_FILE")"
     printf '%s\n' "$json" > "$JSON_FILE"
