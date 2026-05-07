@@ -150,6 +150,16 @@ export default function Licitacoes() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1" onClick={e => e.stopPropagation()}>
+                        {lic.is_live && (
+                          <Button 
+                            variant="destructive" 
+                            size="sm" 
+                            className="h-8 animate-pulse text-[10px]" 
+                            onClick={() => setActiveAuctionId(lic.id)}
+                          >
+                            SALA AO VIVO
+                          </Button>
+                        )}
                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setDetailId(lic.id)} aria-label="Ver detalhes"><Eye className="w-4 h-4" /></Button>
                         <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => deleteLicitacao(lic.id)} aria-label="Excluir"><Trash2 className="w-4 h-4" /></Button>
                       </div>
