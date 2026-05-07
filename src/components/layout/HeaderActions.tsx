@@ -76,9 +76,10 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
         <Tooltip>
           <TooltipTrigger asChild>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="hidden md:flex" aria-label="Configurações de feedback">
+              <Button variant="ghost" size="icon" className="hidden md:flex rounded-xl hover:bg-primary/5 hover:text-primary transition-all duration-300" aria-label="Configurações de feedback">
                 <Settings2 className="w-4 h-4" />
               </Button>
+
             </PopoverTrigger>
           </TooltipTrigger>
           <TooltipContent><p>Som e vibração</p></TooltipContent>
