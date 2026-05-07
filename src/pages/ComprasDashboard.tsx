@@ -59,7 +59,7 @@ const ComprasDashboard = () => {
       case 'kpi-aguardando':
         return (
           <EnhancedKpiCard
-            title="Aguard. Cotação"
+            title={t('dashboard.kpis.pending_approval')}
             value={kpis.aguardandoCotacao}
             icon={ClipboardList}
             color="emerald"
