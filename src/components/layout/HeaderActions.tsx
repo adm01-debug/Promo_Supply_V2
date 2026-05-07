@@ -48,6 +48,7 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
       </Tooltip>
 
       <ThemeToggle />
+      <LanguageSwitcher />
 
       <Suspense fallback={null}>
         <DependencyHealthBadge />
