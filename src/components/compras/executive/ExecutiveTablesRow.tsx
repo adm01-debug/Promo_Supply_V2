@@ -29,7 +29,7 @@ export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComp
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Top Suppliers */}
-      <Card>
+      <Card className="dark:bg-card/20 dark:backdrop-blur-3xl dark:border-white/[0.02] rounded-3xl overflow-hidden">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
@@ -77,7 +77,7 @@ export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComp
       </Card>
 
       {/* Buyer Performance */}
-      <Card>
+      <Card className="dark:bg-card/20 dark:backdrop-blur-3xl dark:border-white/[0.02] rounded-3xl overflow-hidden">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5" />

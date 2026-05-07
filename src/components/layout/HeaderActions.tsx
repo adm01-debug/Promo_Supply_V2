@@ -31,12 +31,12 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
             variant="outline"
             size="sm"
             onClick={onOpenCommandPalette}
-            className="hidden lg:flex items-center gap-2.5 text-muted-foreground hover:text-foreground bg-muted/20 border-border/40 rounded-xl px-4 transition-all duration-300 hover:shadow-sm"
+            className="hidden lg:flex items-center gap-2.5 text-muted-foreground hover:text-foreground bg-white/[0.03] border-white/[0.05] rounded-xl px-4 transition-all duration-500 hover:shadow-2xl hover:bg-white/[0.08]"
             aria-label="Abrir Command Palette"
           >
             <Command className="w-4 h-4 text-primary" />
             <span className="text-xs font-semibold">Atalhos</span>
-            <kbd className="ml-1 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded-lg border border-border/40 bg-background/50 px-1.5 font-mono text-[10px] font-bold text-muted-foreground">
+            <kbd className="ml-1 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded-lg border border-white/[0.1] bg-black/30 px-1.5 font-mono text-[10px] font-bold text-muted-foreground/80">
               <span className="text-[10px]">⌘</span>K
             </kbd>
           </Button>

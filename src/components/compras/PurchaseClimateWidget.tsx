@@ -136,10 +136,10 @@ export const PurchaseClimateWidget = forwardRef<HTMLDivElement>((_props, ref) =>
     >
       <Card 
         className={cn(
-          "relative overflow-hidden cursor-pointer transition-all duration-500 h-full group",
+          "relative overflow-hidden cursor-pointer transition-all duration-700 h-full group",
           config.borderColor, 
-          "border-2 hover:shadow-glow-primary/20",
-          "bg-gradient-to-br from-card to-card/50 backdrop-blur-md"
+          "border-2 hover:shadow-[0_20px_50px_rgba(var(--primary),0.15)]",
+          "bg-gradient-to-br from-card/60 to-card/20 backdrop-blur-3xl rounded-3xl"
         )}
         onClick={() => setShowDetails(!showDetails)}
       >
