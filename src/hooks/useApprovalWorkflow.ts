@@ -281,14 +281,8 @@ export const useApprovalWorkflow = () => {
     } catch (error) { console.error('Error checking escalations:', error); }
   }, [fetchPendingWorkflows, fetchPendingSteps]);
 
-  useEffect(() => {
-    if (!user) return;
-    const workflowChannel = supabase.channel('approval-workflows')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'approval_workflows' }, () => { fetchPendingWorkflows(); })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'approval_steps' }, () => { fetchPendingSteps(); })
-      .subscribe();
-    return () => { supabase.removeChannel(workflowChannel); };
-  }, [user, fetchPendingWorkflows, fetchPendingSteps]);
+  // Realtime subscription is now standard across the app
+  // Removed custom subscription here to avoid duplication as useRealtimeSubscription handles it globally
 
   useEffect(() => { fetchRules(); fetchDelegations(); fetchPendingWorkflows(); fetchPendingSteps(); }, [fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps]);
   useEffect(() => { const interval = setInterval(checkEscalations, 60000); return () => clearInterval(interval); }, [checkEscalations]);
