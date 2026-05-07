@@ -867,6 +867,7 @@ export type Database = {
           id: string
           min_quality_score: number | null
           min_supplier_score: number | null
+          organization_id: string | null
           payment_terms: string | null
           penalty_cap_percent: number | null
           penalty_clauses: Json | null
@@ -897,6 +898,7 @@ export type Database = {
           id?: string
           min_quality_score?: number | null
           min_supplier_score?: number | null
+          organization_id?: string | null
           payment_terms?: string | null
           penalty_cap_percent?: number | null
           penalty_clauses?: Json | null
@@ -927,6 +929,7 @@ export type Database = {
           id?: string
           min_quality_score?: number | null
           min_supplier_score?: number | null
+          organization_id?: string | null
           payment_terms?: string | null
           penalty_cap_percent?: number | null
           penalty_clauses?: Json | null
@@ -944,7 +947,15 @@ export type Database = {
           total_value?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "contracts_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       cotacoes: {
         Row: {
@@ -1446,6 +1457,7 @@ export type Database = {
           fornecedor_id: string | null
           id: string
           numero_nf: string
+          organization_id: string | null
           pdf_url: string | null
           pedido_id: string | null
           processing_id: string | null
@@ -1471,6 +1483,7 @@ export type Database = {
           fornecedor_id?: string | null
           id?: string
           numero_nf: string
+          organization_id?: string | null
           pdf_url?: string | null
           pedido_id?: string | null
           processing_id?: string | null
@@ -1496,6 +1509,7 @@ export type Database = {
           fornecedor_id?: string | null
           id?: string
           numero_nf?: string
+          organization_id?: string | null
           pdf_url?: string | null
           pedido_id?: string | null
           processing_id?: string | null
@@ -1527,6 +1541,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "supplier_compliance_summary"
             referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "fiscal_documents_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "fiscal_documents_pedido_id_fkey"
@@ -1867,6 +1888,7 @@ export type Database = {
           numero: string
           objeto: string | null
           observacoes: string | null
+          organization_id: string | null
           responsavel_id: string | null
           status: string
           tipo: string
@@ -1894,6 +1916,7 @@ export type Database = {
           numero: string
           objeto?: string | null
           observacoes?: string | null
+          organization_id?: string | null
           responsavel_id?: string | null
           status?: string
           tipo?: string
@@ -1921,6 +1944,7 @@ export type Database = {
           numero?: string
           objeto?: string | null
           observacoes?: string | null
+          organization_id?: string | null
           responsavel_id?: string | null
           status?: string
           tipo?: string
@@ -1943,6 +1967,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "supplier_compliance_summary"
             referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "licitacoes_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -2235,6 +2266,7 @@ export type Database = {
           numero: string
           numero_nf: string | null
           observacoes: string | null
+          organization_id: string | null
           pedido_id: string | null
           status: string
           updated_at: string
@@ -2257,6 +2289,7 @@ export type Database = {
           numero: string
           numero_nf?: string | null
           observacoes?: string | null
+          organization_id?: string | null
           pedido_id?: string | null
           status?: string
           updated_at?: string
@@ -2279,6 +2312,7 @@ export type Database = {
           numero?: string
           numero_nf?: string | null
           observacoes?: string | null
+          organization_id?: string | null
           pedido_id?: string | null
           status?: string
           updated_at?: string
@@ -2299,6 +2333,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "supplier_compliance_summary"
             referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "pagamentos_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "pagamentos_pedido_id_fkey"
@@ -2787,6 +2828,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           created_at: string
+          current_organization_id: string | null
           department: string | null
           email: string | null
           full_name: string | null
@@ -2798,6 +2840,7 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           created_at?: string
+          current_organization_id?: string | null
           department?: string | null
           email?: string | null
           full_name?: string | null
@@ -2809,6 +2852,7 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           created_at?: string
+          current_organization_id?: string | null
           department?: string | null
           email?: string | null
           full_name?: string | null
@@ -2817,7 +2861,15 @@ export type Database = {
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_current_organization_id_fkey"
+            columns: ["current_organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       push_subscriptions: {
         Row: {
@@ -4047,6 +4099,7 @@ export type Database = {
         Args: { _email: string; _minutes?: number }
         Returns: number
       }
+      get_my_organization: { Args: never; Returns: string }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
