@@ -90,7 +90,9 @@ export const ExecutiveDashboard = () => {
         previousValue: executiveMetrics.contractCompliance.previousValue,
         change: rm.contractCompliance.value > 0 ? calculateChange(rm.contractCompliance.value, executiveMetrics.contractCompliance.previousValue) : executiveMetrics.contractCompliance.change,
         target: rm.contractCompliance.target || executiveMetrics.contractCompliance.target
-      }
+      },
+      maverickSpend: rm.maverickSpend,
+      tailSpend: rm.tailSpend
     };
   }, [realMetrics, realDataLoading]);
 
