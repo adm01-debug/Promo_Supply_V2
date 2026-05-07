@@ -161,11 +161,23 @@ export function AdvancedSearch() {
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className={cn("group flex items-center gap-2 px-3 py-2 text-sm", "bg-muted/50 hover:bg-muted dark:bg-muted/30 dark:hover:bg-muted/50", "rounded-xl border border-border/50 hover:border-border", "transition-all duration-200", "w-full md:w-64 lg:w-80")}>
-        <Search className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-        <span className="text-muted-foreground group-hover:text-foreground transition-colors flex-1 text-left truncate">Busca avançada...</span>
-        <kbd className={cn("hidden md:inline-flex items-center gap-1 px-2 py-0.5", "text-[10px] font-mono font-medium", "bg-background rounded border border-border", "text-muted-foreground")}><Command className="w-3 h-3" />K</kbd>
+      <button 
+        onClick={() => setOpen(true)} 
+        className={cn(
+          "group flex items-center gap-2.5 px-4 py-2 text-sm", 
+          "bg-muted/30 hover:bg-muted/50 dark:bg-white/[0.03] dark:hover:bg-white/[0.06]", 
+          "rounded-2xl border border-border/40 hover:border-primary/40", 
+          "transition-all duration-300 shadow-sm hover:shadow-glow-primary/5", 
+          "w-full md:w-64 lg:w-80"
+        )}
+      >
+        <Search className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+        <span className="text-muted-foreground group-hover:text-foreground transition-colors flex-1 text-left truncate font-medium">Busca avançada...</span>
+        <kbd className={cn("hidden md:inline-flex items-center gap-1 px-1.5 py-0.5", "text-[9px] font-mono font-bold tracking-widest", "bg-background/80 backdrop-blur-sm rounded-lg border border-border/40", "text-muted-foreground")}>
+          <Command className="w-2.5 h-2.5" />K
+        </kbd>
       </button>
+
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent aria-describedby="dialog-desc" className="max-w-2xl p-0 gap-0 overflow-hidden">
