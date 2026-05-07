@@ -3,6 +3,9 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Sparkline } from '@/components/ui/sparkline';
 import { ArrowUpRight, ArrowDownRight, AlertTriangle, Calendar } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { cn } from '@/lib/utils';
+
 import { formatCurrency, formatNumber } from './executiveDashboardData';
 
 interface MetricCardProps {
