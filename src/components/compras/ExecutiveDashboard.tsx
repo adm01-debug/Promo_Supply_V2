@@ -331,8 +331,9 @@ export const ExecutiveDashboard = () => {
             onCategoryDrillDown={(data) => setDrillDown({ type: 'category', data })} 
           />
         </div>
-        <div className="xl:col-span-1">
+        <div className="xl:col-span-1 grid grid-cols-1 gap-6">
           <PriceVarianceAnalysis />
+          <KraljicMatrix />
         </div>
       </div>
 
