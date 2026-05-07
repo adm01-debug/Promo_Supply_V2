@@ -243,23 +243,30 @@ export function ChatArea({
         )}
       </ScrollArea>
 
-      {/* Typing Indicator */}
-      {typingUsers.length > 0 && (
-        <div className="px-4 py-2 border-t bg-muted/30">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+      {/* Premium Typing Indicator */}
+      <AnimatePresence>
+        {typingUsers.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="px-4 py-2 border-t bg-muted/20 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
+              <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-full">
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                {typingUsers.length === 1
+                  ? `${typingUsers[0]} está digitando...`
+                  : `Múltiplos contatos digitando...`}
+              </span>
             </div>
-            <span className="text-xs italic">
-              {typingUsers.length === 1
-                ? `${typingUsers[0]} está digitando...`
-                : `${typingUsers.slice(0, -1).join(', ')} e ${typingUsers[typingUsers.length - 1]} estão digitando...`}
-            </span>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Message Input */}
       <div className="p-4 border-t">
