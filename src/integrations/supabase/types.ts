@@ -899,6 +899,7 @@ export type Database = {
           desconto_percentual: number | null
           fornecedor_id: string | null
           id: string
+          moeda: string | null
           numero: string
           observacoes: string | null
           prazo_entrega: number
@@ -910,6 +911,7 @@ export type Database = {
           selecionada: boolean | null
           solicitacao_id: string | null
           status: string
+          taxa_conversao: number | null
           updated_at: string
           validade_proposta: string | null
           valor_frete: number | null
@@ -925,6 +927,7 @@ export type Database = {
           desconto_percentual?: number | null
           fornecedor_id?: string | null
           id?: string
+          moeda?: string | null
           numero: string
           observacoes?: string | null
           prazo_entrega?: number
@@ -936,6 +939,7 @@ export type Database = {
           selecionada?: boolean | null
           solicitacao_id?: string | null
           status?: string
+          taxa_conversao?: number | null
           updated_at?: string
           validade_proposta?: string | null
           valor_frete?: number | null
@@ -951,6 +955,7 @@ export type Database = {
           desconto_percentual?: number | null
           fornecedor_id?: string | null
           id?: string
+          moeda?: string | null
           numero?: string
           observacoes?: string | null
           prazo_entrega?: number
@@ -962,6 +967,7 @@ export type Database = {
           selecionada?: boolean | null
           solicitacao_id?: string | null
           status?: string
+          taxa_conversao?: number | null
           updated_at?: string
           validade_proposta?: string | null
           valor_frete?: number | null
@@ -2322,10 +2328,12 @@ export type Database = {
           endereco_entrega: string | null
           fornecedor_id: string
           id: string
+          moeda: string | null
           numero: string
           observacoes: string | null
           solicitacao_id: string | null
           status: string
+          taxa_conversao: number | null
           transportadora: string | null
           updated_at: string
           valor_frete: number | null
@@ -2345,10 +2353,12 @@ export type Database = {
           endereco_entrega?: string | null
           fornecedor_id: string
           id?: string
+          moeda?: string | null
           numero: string
           observacoes?: string | null
           solicitacao_id?: string | null
           status?: string
+          taxa_conversao?: number | null
           transportadora?: string | null
           updated_at?: string
           valor_frete?: number | null
@@ -2368,10 +2378,12 @@ export type Database = {
           endereco_entrega?: string | null
           fornecedor_id?: string
           id?: string
+          moeda?: string | null
           numero?: string
           observacoes?: string | null
           solicitacao_id?: string | null
           status?: string
+          taxa_conversao?: number | null
           transportadora?: string | null
           updated_at?: string
           valor_frete?: number | null
@@ -2493,6 +2505,9 @@ export type Database = {
           ativo: boolean | null
           categoria_id: string | null
           codigo: string
+          codigo_cnae: string | null
+          codigo_ncm: string | null
+          codigo_unspsc: string | null
           created_at: string
           created_by: string | null
           descricao: string | null
@@ -2512,6 +2527,9 @@ export type Database = {
           ativo?: boolean | null
           categoria_id?: string | null
           codigo: string
+          codigo_cnae?: string | null
+          codigo_ncm?: string | null
+          codigo_unspsc?: string | null
           created_at?: string
           created_by?: string | null
           descricao?: string | null
@@ -2531,6 +2549,9 @@ export type Database = {
           ativo?: boolean | null
           categoria_id?: string | null
           codigo?: string
+          codigo_cnae?: string | null
+          codigo_ncm?: string | null
+          codigo_unspsc?: string | null
           created_at?: string
           created_by?: string | null
           descricao?: string | null
