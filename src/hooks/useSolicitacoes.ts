@@ -34,6 +34,7 @@ export interface Solicitacao {
   updated_at: string;
   fornecedor?: { razao_social: string; nome_fantasia: string | null; } | null;
   categoria?: { nome: string; } | null;
+  organization?: { name: string; } | null;
 }
 
 export interface CreateSolicitacaoInput {
