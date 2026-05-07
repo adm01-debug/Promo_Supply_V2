@@ -183,9 +183,9 @@ const ComprasDashboard = () => {
         
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t('dashboard.title')}</h1>
             <p className="text-sm text-muted-foreground">
-              Visão geral do sistema de compras
+              {t('common.welcome')} - {t('common.dashboard')}
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
