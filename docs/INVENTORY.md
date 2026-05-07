@@ -69,7 +69,8 @@ The following enhancements were requested and verified during the "10/10 Excelle
 15. **Performance Tables Optimization:** `ExecutiveTablesRow` now features staggered entrance animations and enhanced hover states.
 16. **Pending Actions Excellence:** `ExecutivePendingActions` redesigned with priority-aware card layouts and micro-interactions.
 17. **Advanced Filter UX:** `ExecutiveFiltersBar` upgraded with glassmorphism effects and coordinated transitions.
-18. **High-Fidelity Analytics:** `ExecutiveChartsRow` enhanced with custom glass-morphism tooltips, advanced Recharts gradients, `framer-motion` entrance effects, and group-aware hover insights.
+18. **High-Fidelity Analytics:** `ExecutiveChartsRow` enhanced with custom tooltips, gradients, and entrance effects.
+19. **Drill-down Experience:** `ExecutiveDrillDownModal` overhauled with glass-morphism depth, contextual icons, staggered grid reveals, and sophisticated transitions for deep data exploration.
 
 ## 5. Maintenance Guide
 Refer to the `README.md` for local development setup and CI troubleshooting guides. The `scripts/` directory contains all automation logic, including the highly specialized `date-fns` integrity pipeline.
