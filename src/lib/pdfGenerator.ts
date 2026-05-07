@@ -57,7 +57,7 @@ export const generateOrderPDF = (data: {
       `R$ ${(i.quantidade * i.valor_unitario).toFixed(2)}`
     ]),
     theme: 'grid',
-    headStyles: { fillGray: 200, textColor: 0, fontStyle: 'bold' }
+    headStyles: { fillColor: [200, 200, 200], textColor: 0, fontStyle: 'bold' }
   });
 
   // Totals
