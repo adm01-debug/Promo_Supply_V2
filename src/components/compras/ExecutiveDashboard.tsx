@@ -328,7 +328,7 @@ export const ExecutiveDashboard = () => {
                       {activeMetrics.pendingApprovals.urgent} urgentes | {activeMetrics.overdueOrders.critical} críticos
                     </p>
                   </div>
-                  <Button variant="destructive" size="xs" className="h-7 text-[10px] font-black px-2" onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}>VER</Button>
+                  <Button variant="destructive" size="sm" className="h-7 text-[10px] font-black px-2" onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}>VER</Button>
                 </CardContent>
               </Card>
             )}
