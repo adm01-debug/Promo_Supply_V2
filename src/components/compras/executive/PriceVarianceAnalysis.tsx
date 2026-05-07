@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 import { GitCompare, AlertCircle } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
@@ -15,54 +16,60 @@ const priceVarianceData = [
 
 export const PriceVarianceAnalysis = () => {
   return (
-    <Card className="h-full">
+    <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-lg">
       <CardHeader className="pb-2">
         <CardTitle className="text-lg flex items-center gap-2">
-          <GitCompare className="h-5 w-5 text-primary" />
+          <GitCompare className="h-5 w-5 text-primary animate-pulse" />
           Análise de Variação de Preço (SKU)
         </CardTitle>
         <p className="text-xs text-muted-foreground">Comparativo de menor vs maior preço por item no período</p>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={priceVarianceData} layout="vertical" margin={{ left: 20 }}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" horizontal={false} />
-            <XAxis type="number" hide />
-            <YAxis 
-              dataKey="item" 
-              type="category" 
-              className="text-[10px]" 
-              width={100}
-            />
-            <Tooltip
-              content={({ active, payload }) => {
-                if (active && payload && payload.length) {
-                  const data = payload[0].payload;
-                  return (
-                    <div className="bg-background border border-border p-2 rounded shadow-md text-xs">
-                      <p className="font-bold mb-1">{data.item}</p>
-                      <p>Mín: {formatCurrency(data.minPrice)}</p>
-                      <p>Máx: {formatCurrency(data.maxPrice)}</p>
-                      <p className="text-primary font-semibold mt-1">Variação: {data.variance}%</p>
-                    </div>
-                  );
-                }
-                return null;
-              }}
-            />
-            <Bar dataKey="variance" name="Variação %" radius={[0, 4, 4, 0]}>
-              {priceVarianceData.map((entry, index) => (
-                <Cell 
-                  key={`cell-${index}`} 
-                  fill={entry.variance > 30 ? 'hsl(var(--destructive))' : entry.variance > 15 ? 'hsl(var(--warning))' : 'hsl(var(--primary))'} 
-                  fillOpacity={0.8}
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 300 }}
+          transition={{ duration: 0.5 }}
+        >
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={priceVarianceData} layout="vertical" margin={{ left: 20 }}>
+              <CartesianGrid strokeDasharray="3 3" className="stroke-muted" horizontal={false} />
+              <XAxis type="number" hide />
+              <YAxis 
+                dataKey="item" 
+                type="category" 
+                className="text-[10px]" 
+                width={100}
+              />
+              <Tooltip
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
+                    const data = payload[0].payload;
+                    return (
+                      <div className="bg-background border border-border p-2 rounded shadow-xl text-xs">
+                        <p className="font-bold mb-1">{data.item}</p>
+                        <p>Mín: {formatCurrency(data.minPrice)}</p>
+                        <p>Máx: {formatCurrency(data.maxPrice)}</p>
+                        <p className="text-primary font-semibold mt-1">Variação: {data.variance}%</p>
+                      </div>
+                    );
+                  }
+                  return null;
+                }}
+              />
+              <Bar dataKey="variance" name="Variação %" radius={[0, 4, 4, 0]}>
+                {priceVarianceData.map((entry, index) => (
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={entry.variance > 30 ? 'hsl(var(--destructive))' : entry.variance > 15 ? 'hsl(var(--warning))' : 'hsl(var(--primary))'} 
+                    fillOpacity={0.8}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </motion.div>
         
-        <div className="mt-4 flex items-start gap-2 p-2 bg-muted/30 rounded-lg border border-border/50">
+        <div className="mt-4 flex items-start gap-2 p-2 bg-muted/30 rounded-lg border border-border/50 animate-in fade-in zoom-in duration-500 delay-500">
           <AlertCircle className="h-4 w-4 text-warning shrink-0 mt-0.5" />
           <p className="text-[10px] leading-tight text-muted-foreground">
             <strong>Oportunidade:</strong> Itens como "Cadeira Ergonômica" apresentam variação superior a 40%. Centralizar compras nestes itens pode gerar um saving adicional estimado de 15%.
