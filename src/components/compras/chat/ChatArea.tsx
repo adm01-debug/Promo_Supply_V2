@@ -164,51 +164,80 @@ export function ChatArea({
             <p className="text-xs">Envie uma mensagem para iniciar a conversa</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {messages.map((message, index) => {
-              const isMe = message.senderId === 'me';
-              const showDate = index === 0 ||
-                format(messages[index - 1].timestamp, 'yyyy-MM-dd') !==
-                format(message.timestamp, 'yyyy-MM-dd');
+          <div className="space-y-6 pb-4">
+            <AnimatePresence mode="popLayout">
+              {messages.map((message, index) => {
+                const isMe = message.senderId === 'me';
+                const showDate = index === 0 ||
+                  format(messages[index - 1].timestamp, 'yyyy-MM-dd') !==
+                  format(message.timestamp, 'yyyy-MM-dd');
 
-              return (
-                <div key={message.id}>
-                  {showDate && (
-                    <div className="flex justify-center my-4">
-                      <Badge variant="outline" className="text-xs">
-                        {format(message.timestamp, "dd 'de' MMMM", { locale: ptBR })}
-                      </Badge>
-                    </div>
-                  )}
-                  <div className={cn("flex", isMe ? "justify-end" : "justify-start")}>
-                    <div className={cn(
-                      "max-w-[70%] rounded-2xl px-4 py-2",
-                      isMe ? "bg-primary text-primary-foreground rounded-br-md" : "bg-muted rounded-bl-md"
-                    )}>
-                      {message.type === 'file' && (
-                        <div className={cn("flex items-center gap-2 p-2 rounded mb-1", isMe ? "bg-primary-foreground/10" : "bg-background")}>
-                          <FileText className="w-5 h-5" />
-                          <span className="text-sm truncate">{message.attachmentName}</span>
+                return (
+                  <motion.div 
+                    key={message.id}
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ type: "spring", damping: 25, stiffness: 500 }}
+                  >
+                    {showDate && (
+                      <div className="flex justify-center my-6">
+                        <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-[0.2em] bg-muted/30 border-none text-muted-foreground/80 px-3 py-1 rounded-full">
+                          {format(message.timestamp, "dd 'de' MMMM", { locale: ptBR })}
+                        </Badge>
+                      </div>
+                    )}
+                    <div className={cn("flex group", isMe ? "justify-end" : "justify-start")}>
+                      <div className={cn(
+                        "max-w-[80%] space-y-1",
+                        isMe ? "items-end" : "items-start"
+                      )}>
+                        <div className={cn(
+                          "relative rounded-[1.25rem] px-4 py-2.5 shadow-sm transition-all duration-300",
+                          isMe 
+                            ? "bg-primary text-primary-foreground rounded-tr-none hover:shadow-md hover:translate-x-[-2px]" 
+                            : "bg-card border border-border/50 text-foreground rounded-tl-none hover:shadow-md hover:translate-x-[2px]"
+                        )}>
+                          {message.type === 'file' && (
+                            <div className={cn(
+                              "flex items-center gap-3 p-3 rounded-xl mb-2 transition-colors", 
+                              isMe ? "bg-white/10" : "bg-primary/5"
+                            )}>
+                              <div className={cn(
+                                "p-2 rounded-lg",
+                                isMe ? "bg-white/20" : "bg-primary/10 text-primary"
+                              )}>
+                                <FileText className="w-5 h-5" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-sm font-bold truncate leading-none">{message.attachmentName}</p>
+                                <p className={cn("text-[10px] mt-1 opacity-70", isMe ? "text-white" : "text-muted-foreground")}>Documento • 2.4 MB</p>
+                              </div>
+                            </div>
+                          )}
+                          {message.type !== 'file' && (
+                            <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium">{message.content}</p>
+                          )}
+                          <div className={cn("flex items-center gap-1.5 mt-1.5", isMe ? "justify-end" : "justify-start")}>
+                            <span className={cn("text-[9px] font-bold", isMe ? "text-primary-foreground/60" : "text-muted-foreground/60")}>
+                              {format(message.timestamp, 'HH:mm')}
+                            </span>
+                            {isMe && (
+                              <div className="flex">
+                                {message.status === 'read' ? (
+                                  <CheckCheck className="w-3 h-3 text-white" />
+                                ) : (
+                                  <Check className="w-3 h-3 text-white/50" />
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      )}
-                      {message.type !== 'file' && (
-                        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                      )}
-                      <div className={cn("flex items-center gap-1 mt-1", isMe ? "justify-end" : "justify-start")}>
-                        <span className={cn("text-[10px]", isMe ? "text-primary-foreground/70" : "text-muted-foreground")}>
-                          {format(message.timestamp, 'HH:mm')}
-                        </span>
-                        {isMe && (
-                          message.status === 'read' ? <CheckCheck className="w-3 h-3 text-primary-foreground/70" /> :
-                          message.status === 'delivered' ? <CheckCheck className="w-3 h-3 text-primary-foreground/50" /> :
-                          <Check className="w-3 h-3 text-primary-foreground/50" />
-                        )}
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
             <div ref={messagesEndRef} />
           </div>
         )}
