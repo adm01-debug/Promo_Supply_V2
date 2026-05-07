@@ -341,6 +341,12 @@ export const ExecutiveDashboard = () => {
 
       {/* Secondary KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <ExecutiveMetricCard title="Aderência Contrato" value={activeMetrics.contractCompliance.value} change={activeMetrics.contractCompliance.change} target={activeMetrics.contractCompliance.target} icon={Target} format="percent" showComparison={showComparison} />
+        <ExecutiveMetricCard title="Maverick Spend" value={activeMetrics.maverickSpend.value} change={-2.4} subtitle={`${activeMetrics.maverickSpend.percentage}% do total`} icon={AlertTriangle} format="currency" showComparison={showComparison} invertChange />
+        <ExecutiveMetricCard title="Tail Spend" value={activeMetrics.tailSpend.value} change={1.5} subtitle={`${activeMetrics.tailSpend.percentage}% do total`} icon={Zap} format="currency" showComparison={showComparison} />
+        <ExecutiveMetricCard title="Aprovações Pend." value={activeMetrics.pendingApprovals.value} change={activeMetrics.pendingApprovals.change} icon={Clock} showComparison={showComparison} />
+        <ExecutiveMetricCard title="Pedidos Atrasados" value={activeMetrics.overdueOrders.value} change={activeMetrics.overdueOrders.change} icon={AlertTriangle} showComparison={showComparison} invertChange />
+      </div>
         <ExecutiveMetricCard title="Saving %" value={activeMetrics.savingsPercent} change={activeMetrics.savingsPercent > 10 ? activeMetrics.savingsPercent - 10 : 0} target={15} icon={Zap} format="percent" showComparison={showComparison} trendData={trendDataSets.savings.map((s, i) => (trendDataSets.spend[i] > 0 ? (s / trendDataSets.spend[i]) * 100 : 0))} />
         <ExecutiveMetricCard title="Base de Fornecedores" value={activeMetrics.supplierCount.value} previousValue={activeMetrics.supplierCount.previousValue} change={activeMetrics.supplierCount.change} target={activeMetrics.supplierCount.target} icon={Users} showComparison={showComparison} trendData={trendDataSets.suppliers} />
         <ExecutiveMetricCard title="Aprovações Pendentes" value={activeMetrics.pendingApprovals.value} previousValue={activeMetrics.pendingApprovals.previousValue} change={activeMetrics.pendingApprovals.change} urgent={activeMetrics.pendingApprovals.urgent} icon={CheckCircle2} onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })} showComparison={showComparison} invertChange trendData={trendDataSets.pendingApprovals} />
