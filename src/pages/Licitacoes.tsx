@@ -16,6 +16,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { useLicitacoes } from '@/hooks/useLicitacoes';
 import { useFornecedores } from '@/hooks/useFornecedores';
 import { LicitacaoDetailDialog, modalidadeLabels, statusConfig } from './licitacoes/LicitacaoDetailDialog';
+import { ReverseAuctionRoom } from '@/components/licitacoes/ReverseAuctionRoom';
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
