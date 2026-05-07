@@ -36,9 +36,9 @@ export const mapLegacyStatusToDb = (legacyStatus: string): Solicitacao['status']
 // `valor_estimado`) are funnelled through `nullishStr` / `nullishNum` so
 // `null` cleanly becomes the legacy default without collapsing legitimate
 // `0` / `''` values the way `||` would.
-export const adaptToLegacyFormat = (sol: Solicitacao): MockSolicitacao => ({
+export const adaptToLegacyFormat = (sol: Solicitacao): MockSolicitacao & { organizationName?: string } => ({
   id: sol.id,
-  itemNumber: sol.id.slice(0, 8),
+  itemNumber: sol.numero || sol.id.slice(0, 8),
   empresa: nullishStr(sol.departamento, 'Empresa'),
   produto: sol.titulo,
   quantidade: sol.quantidade,
@@ -49,6 +49,7 @@ export const adaptToLegacyFormat = (sol: Solicitacao): MockSolicitacao => ({
   prazoEntrega: nullishStr(sol.data_necessidade, sol.created_at),
   valorTotal: nullishNum(sol.valor_estimado),
   createdAt: sol.created_at,
+  organizationName: sol.organization?.name,
 });
 
 export const statusConfig: Record<string, { label: string; color: string; indicatorStatus: "pending" | "processing" | "approved" | "completed" | "warning" | "info" }> = {
