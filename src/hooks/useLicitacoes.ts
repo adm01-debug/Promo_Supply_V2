@@ -17,6 +17,9 @@ export interface Licitacao {
   data_encerramento: string | null;
   valor_estimado: number;
   valor_vencedor: number | null;
+  current_best_bid: number | null;
+  lance_minimo_decremento: number;
+  is_live: boolean;
   fornecedor_vencedor_id: string | null;
   objeto: string | null;
   edital_url: string | null;
