@@ -471,19 +471,19 @@ const GerarOrdem = () => {
 
               <div className="space-y-3">
                 <Button 
-                  variant="outline" 
-                  className="w-full gap-2"
-                  onClick={() => window.print()}
-                >
-                  <Printer className="w-4 h-4" />
-                  Imprimir OC
-                </Button>
-                <Button 
+                  onClick={finalizarOrdem} 
                   className="w-full gap-2 gradient-primary"
-                  onClick={finalizarOrdem}
                 >
                   <Check className="w-4 h-4" />
-                  Finalizar e Gerar Ordem
+                  Finalizar e Salvar OC
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={previewPDF}
+                  className="w-full gap-2 text-muted-foreground"
+                >
+                  <Printer className="w-4 h-4" />
+                  Visualizar PDF
                 </Button>
               </div>
             </Card>
