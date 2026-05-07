@@ -268,34 +268,46 @@ export function ChatArea({
         )}
       </AnimatePresence>
 
-      {/* Message Input */}
-      <div className="p-4 border-t">
-        <div className="flex items-end gap-2">
-          <Button variant="ghost" size="icon" className="h-10 w-10 flex-shrink-0">
+      {/* Ultra-premium Input Area */}
+      <div className="p-4 border-t bg-card/50 backdrop-blur-xl">
+        <div className="flex items-end gap-3">
+          <Button variant="ghost" size="icon" className="h-10 w-10 flex-shrink-0 rounded-xl hover:bg-primary/10 hover:text-primary transition-all active:scale-90">
             <Paperclip className="w-5 h-5" />
           </Button>
-          <div className="flex-1 relative">
+          <div className="flex-1 relative group">
             <Textarea
-              placeholder="Digite sua mensagem..."
+              placeholder="Falar com o fornecedor..."
               value={newMessage}
               onChange={onMessageChange}
               onKeyDown={onKeyPress}
-              className="min-h-[44px] max-h-32 resize-none pr-10"
+              className="min-h-[46px] max-h-32 resize-none pr-12 rounded-2xl bg-muted/30 border-transparent focus:border-primary/30 focus:ring-primary/10 transition-all font-medium text-sm scrollbar-hide"
               rows={1}
               disabled={sendingMessage}
             />
-            <Button variant="ghost" size="icon" className="absolute right-1 bottom-1 h-8 w-8">
-              <Smile className="w-5 h-5 text-muted-foreground" />
+            <Button variant="ghost" size="icon" className="absolute right-2 bottom-1.5 h-8 w-8 rounded-lg hover:bg-primary/5 group-focus-within:text-primary transition-colors">
+              <Smile className="w-5 h-5 opacity-60" />
             </Button>
           </div>
-          <Button
-            size="icon"
-            className="h-10 w-10 flex-shrink-0"
-            onClick={onSendMessage}
-            disabled={!newMessage.trim() || sendingMessage}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {sendingMessage ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-          </Button>
+            <Button
+              size="icon"
+              className={cn(
+                "h-11 w-11 flex-shrink-0 rounded-2xl shadow-lg transition-all duration-300",
+                newMessage.trim() ? "gradient-primary shadow-glow-primary border-none" : "bg-muted text-muted-foreground"
+              )}
+              onClick={onSendMessage}
+              disabled={!newMessage.trim() || sendingMessage}
+            >
+              {sendingMessage ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className={cn("w-5 h-5 transition-transform", newMessage.trim() && "translate-x-0.5 -translate-y-0.5")} />
+              )}
+            </Button>
+          </motion.div>
         </div>
       </div>
     </>
