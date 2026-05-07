@@ -3,6 +3,7 @@ import { Package, RefreshCw, Search, Plus, Trophy, Clock, Check, Loader2, Bell, 
 import { useAuth } from "@/hooks/useAuth";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { useSearchParams, Link } from "react-router-dom";
+import ReactMarkdown from 'react-markdown';
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
