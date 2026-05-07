@@ -26,6 +26,7 @@ import { ExecutiveChartsRow } from './executive/ExecutiveChartsRow';
 import { ExecutiveTablesRow } from './executive/ExecutiveTablesRow';
 import { ExecutivePendingActions } from './executive/ExecutivePendingActions';
 import { ExecutiveDrillDownModal } from './executive/ExecutiveDrillDownModal';
+import { PriceVarianceAnalysis } from './executive/PriceVarianceAnalysis';
 
 export const ExecutiveDashboard = () => {
   const [drillDown, setDrillDown] = useState<DrillDownData | null>(null);
