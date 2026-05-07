@@ -306,36 +306,53 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
         ))}
       </nav>
 
-      {/* ── Footer ── */}
-      {!collapsed && (
-        <div className="shrink-0 border-t border-border/40 p-2">
-          <PrefetchLink
-            to="#"
-            className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-[13px] text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-          >
-            <HelpCircle className="h-4 w-4" />
-            Ajuda & Suporte
-          </PrefetchLink>
-        </div>
-      )}
+      <div className="mt-auto space-y-1 p-2 border-t border-border/10 bg-muted/20">
+        {!collapsed && (
+          <>
+            <PrefetchLink
+              to="/settings"
+              className="flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary"
+            >
+              <Settings className="h-[18px] w-[18px]" />
+              Configurações
+            </PrefetchLink>
+            <PrefetchLink
+              to="/logout"
+              className="flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:bg-destructive/5 hover:text-destructive"
+            >
+              <LogOut className="h-[18px] w-[18px]" />
+              Sair da conta
+            </PrefetchLink>
+          </>
+        )}
 
-      {collapsed && (
-        <div className="shrink-0 border-t border-border/40 p-2">
-          <Tooltip delayDuration={0}>
-            <TooltipTrigger asChild>
-              <PrefetchLink
-                to="#"
-                className="flex items-center justify-center rounded-lg py-2 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
-              >
-                <HelpCircle className="h-[18px] w-[18px]" />
-              </PrefetchLink>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="text-xs font-medium">
-              Ajuda & Suporte
-            </TooltipContent>
-          </Tooltip>
-        </div>
-      )}
+        {collapsed && (
+          <div className="flex flex-col items-center gap-2">
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <PrefetchLink
+                  to="/settings"
+                  className="flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary"
+                >
+                  <Settings className="h-[18px] w-[18px]" />
+                </PrefetchLink>
+              </TooltipTrigger>
+              <TooltipContent side="right">Configurações</TooltipContent>
+            </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <PrefetchLink
+                  to="/logout"
+                  className="flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-all hover:bg-destructive/5 hover:text-destructive"
+                >
+                  <LogOut className="h-[18px] w-[18px]" />
+                </PrefetchLink>
+              </TooltipTrigger>
+              <TooltipContent side="right">Sair</TooltipContent>
+            </Tooltip>
+          </div>
+        )}
+      </div>
     </aside>
   );
 };
