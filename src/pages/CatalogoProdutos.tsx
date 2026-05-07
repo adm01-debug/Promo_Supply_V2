@@ -43,6 +43,7 @@ const emptyProduct: Partial<Produto> = {
 
 const CatalogoProdutos = () => {
   const { produtos, isLoading, categorias, createProduto, updateProduto } = useProdutos();
+  const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
