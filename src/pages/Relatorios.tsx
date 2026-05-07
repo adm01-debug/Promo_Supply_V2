@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SLABySupplierAnalysis } from "@/components/compras/SLABySupplierAnalysis";
+import { KraljicMatrix } from "@/components/compras/executive/KraljicMatrix";
 import { AdvancedProcurementKPIs } from "@/components/compras/AdvancedProcurementKPIs";
 import { DemandPredictionPanel } from "@/components/compras/DemandPredictionPanel";
 import { useQuery } from "@tanstack/react-query";
