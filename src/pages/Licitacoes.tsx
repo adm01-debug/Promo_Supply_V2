@@ -62,7 +62,7 @@ export default function Licitacoes() {
     });
     if (result) {
       setCreateOpen(false);
-      setNewForm({ titulo: '', descricao: '', modalidade: 'pregao', tipo: 'menor_preco', valor_estimado: '', data_abertura: '', data_encerramento: '', objeto: '' });
+      setNewForm({ titulo: '', descricao: '', modalidade: 'pregao', tipo: 'menor_preco', valor_estimado: '', data_abertura: '', data_encerramento: '', objeto: '', is_live: false, lance_minimo_decremento: '0.01' });
     }
   };
 
