@@ -44,12 +44,12 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { useApprovalNotifications } from "@/hooks/useApprovalNotifications";
+import { useApprovalWorkflow, type ApprovalStep } from "@/hooks/useApprovalWorkflow";
 import { toast } from "sonner";
 import {
   PendingApprovalItem,
   SortOption,
   FilterStatus,
-  mockPendingApprovals,
   formatCurrency,
   getTimeStatus,
   getTimeProgress,
@@ -58,7 +58,7 @@ import { RejectModal, DetailsModal } from "./pending-approvals/ApprovalModals";
 
 export const PendingApprovalsList = () => {
   const { pendingSteps, approveStep, rejectStep, loading: workflowLoading } = useApprovalWorkflow();
-  const [selectedApproval, setSelectedApproval] = useState<any | null>(null);
+  const [selectedApproval, setSelectedApproval] = useState<PendingApprovalItem | null>(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
@@ -69,17 +69,17 @@ export const PendingApprovalsList = () => {
   const [loading, setLoading] = useState(false);
 
   // Map pendingSteps to the format expected by the UI
-  const approvals = useMemo(() => {
-    return pendingSteps.map(step => ({
+  const approvals: PendingApprovalItem[] = useMemo(() => {
+    return pendingSteps.map((step: any) => ({
       id: step.id,
-      solicitacao_numero: step.workflow_id?.substring(0, 8) || "SOL-...", // Ideally we'd join with solicitacoes
-      descricao: "Aprovação pendente", // Ideally fetch from solicitation
-      solicitante: "Solicitante", // Ideally fetch from solicitation
-      valor: 0, // Ideally fetch from workflow/solicitation
+      solicitacao_numero: step.workflow_id?.substring(0, 8) || "SOL-...",
+      descricao: "Aprovação pendente",
+      solicitante: "Sistema",
+      valor: 0,
       data_solicitacao: step.created_at,
       prazo_limite: step.prazo_limite,
       etapa_atual: step.etapa,
-      total_etapas: 1, // Ideally from workflow
+      total_etapas: 3, // Defaulting to 3 if unknown
       urgente: false,
       escalado: !!step.delegacao_id,
       categoria: "Geral",
@@ -95,7 +95,7 @@ export const PendingApprovalsList = () => {
   } = useApprovalNotifications();
 
   const getMonitoringApprovals = useCallback(() => {
-    return approvals.map(a => ({
+    return approvals.map((a: PendingApprovalItem) => ({
       id: a.id,
       solicitacaoId: a.solicitacao_numero,
       requesterName: a.solicitante,
@@ -113,7 +113,7 @@ export const PendingApprovalsList = () => {
   }, [startMonitoring, getMonitoringApprovals]);
 
   const approvalsFuse = useMemo(() => {
-    const preparedApprovals = approvals.map(a => ({
+    const preparedApprovals = approvals.map((a: PendingApprovalItem) => ({
       ...a,
       normalizedDescricao: normalizeText(a.descricao),
       normalizedSolicitante: normalizeText(a.solicitante),
@@ -178,11 +178,7 @@ export const PendingApprovalsList = () => {
   const handleApprove = async (approval: PendingApprovalItem) => {
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setApprovals(prev => prev.filter(a => a.id !== approval.id));
-      toast.success(`${approval.solicitacao_numero} aprovada com sucesso!`, {
-        description: approveComment ? `Comentário: ${approveComment}` : undefined
-      });
+      await approveStep(approval.id, approveComment);
       setApproveComment("");
     } catch (error: unknown) {
       toast.error("Erro ao aprovar solicitação");
@@ -195,11 +191,7 @@ export const PendingApprovalsList = () => {
     if (!selectedApproval || !rejectReason) return;
     setLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setApprovals(prev => prev.filter(a => a.id !== selectedApproval.id));
-      toast.error(`${selectedApproval.solicitacao_numero} rejeitada`, {
-        description: `Motivo: ${rejectReason}`
-      });
+      await rejectStep(selectedApproval.id, rejectReason);
       setRejectModalOpen(false);
       setSelectedApproval(null);
       setRejectReason("");
