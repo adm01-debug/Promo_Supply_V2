@@ -161,10 +161,24 @@ export function AdvancedSearch() {
 
   return (
     <>
-      <button onClick={() => setOpen(true)} className={cn("group flex items-center gap-2 px-3 py-2 text-sm", "bg-muted/50 hover:bg-muted dark:bg-muted/30 dark:hover:bg-muted/50", "rounded-xl border border-border/50 hover:border-border", "transition-all duration-200", "w-full md:w-64 lg:w-80")}>
-        <Search className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors" />
-        <span className="text-muted-foreground group-hover:text-foreground transition-colors flex-1 text-left truncate">Busca avançada...</span>
-        <kbd className={cn("hidden md:inline-flex items-center gap-1 px-2 py-0.5", "text-[10px] font-mono font-medium", "bg-background rounded border border-border", "text-muted-foreground")}><Command className="w-3 h-3" />K</kbd>
+      <button 
+        onClick={() => setOpen(true)} 
+        className={cn(
+          "group flex items-center gap-2.5 px-4 py-2.5 text-sm", 
+          "bg-muted/30 hover:bg-muted/50 dark:bg-muted/10 dark:hover:bg-muted/20", 
+          "rounded-2xl border border-border/10 hover:border-primary/20", 
+          "transition-all duration-300 shadow-sm hover:shadow-md",
+          "w-full md:w-72 lg:w-96"
+        )}
+      >
+        <div className="p-1 rounded-lg bg-primary/5 text-primary group-hover:bg-primary/10 transition-colors">
+          <Search className="w-4 h-4" />
+        </div>
+        <span className="text-muted-foreground group-hover:text-foreground transition-colors flex-1 text-left truncate font-medium">Busca inteligente...</span>
+        <div className="hidden md:flex items-center gap-1 opacity-40 group-hover:opacity-100 transition-opacity">
+          <kbd className="px-1.5 py-0.5 text-[10px] font-bold bg-background rounded-md border border-border shadow-sm">⌘</kbd>
+          <kbd className="px-1.5 py-0.5 text-[10px] font-bold bg-background rounded-md border border-border shadow-sm">K</kbd>
+        </div>
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>

@@ -137,8 +137,8 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       {/* Main Content */}
       <div className={cn("transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]", sidebarCollapsed ? "md:ml-[68px]" : "md:ml-64")}>
         {/* Sticky Header */}
-        <header className="sticky top-0 z-20 h-14 md:h-14 border-b border-border/40 bg-card/95 backdrop-blur-xl dark:bg-[hsl(228,28%,6%,0.9)] dark:border-border/20">
-          <div className="h-full px-3 md:px-4 flex items-center justify-between gap-2 md:gap-3">
+        <header className="sticky top-0 z-30 h-16 md:h-16 border-b border-border/10 bg-card/60 backdrop-blur-2xl dark:bg-[hsl(228,28%,6%,0.6)]">
+          <div className="h-full px-4 md:px-6 flex items-center justify-between gap-4 md:gap-6">
             {/* LEFT: Mobile nav controls + Desktop back button */}
             <div className="flex items-center gap-1 shrink-0">
               {/* Mobile: hamburger or back+hamburger */}
