@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, 
@@ -8,12 +8,21 @@ import {
   Users, 
   X,
   Search,
-  BarChart3
+  BarChart3,
+  Sparkles,
+  Layers,
+  ArrowRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useHapticFeedback } from "@/hooks/useMobileGestures";
 import { cn } from "@/lib/utils";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface QuickAction {
   id: string;
