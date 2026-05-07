@@ -130,9 +130,13 @@ function isItemActive(pathname: string, href: string) {
 
 /* ─── Badge ─── */
 const CountBadge = ({ count }: { count: number }) => (
-  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary/15 text-primary text-[10px] font-semibold tabular-nums">
+  <motion.span 
+    initial={{ scale: 0.8, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[9px] font-bold shadow-sm"
+  >
     {count}
-  </span>
+  </motion.span>
 );
 
 /* ─── Single Nav Item ─── */
