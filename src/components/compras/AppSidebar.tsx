@@ -248,8 +248,8 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
     <aside
       data-tour="sidebar"
       className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/50 bg-sidebar-background transition-[width] duration-300",
-        collapsed ? "w-[60px]" : "w-60"
+        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/40 bg-card/80 backdrop-blur-xl transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+        collapsed ? "w-[68px]" : "w-64"
       )}
     >
       {/* ── Header ── */}
