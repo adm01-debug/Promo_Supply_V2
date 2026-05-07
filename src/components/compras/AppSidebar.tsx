@@ -126,7 +126,10 @@ function isItemActive(pathname: string, href: string) {
 
 /* ─── Badge ─── */
 const CountBadge = ({ count }: { count: number }) => (
-  <span className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary/15 text-primary text-[10px] font-semibold tabular-nums">
+  <span className={cn(
+    "ml-auto flex h-5 min-w-5 items-center justify-center rounded-lg text-[10px] font-black tabular-nums transition-all duration-500",
+    "bg-white/10 text-white/90 ring-1 ring-white/20 group-hover:bg-primary-glow group-hover:text-primary-foreground"
+  )}>
     {count}
   </span>
 );
@@ -148,23 +151,23 @@ const SidebarItem = ({
       to={item.href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-all duration-200",
+        "group relative flex items-center gap-3 rounded-2xl px-3 py-2.5 text-[13px] font-bold transition-all duration-500",
         collapsed && "justify-center px-0 mx-2",
         active
-          ? "bg-primary/10 text-primary shadow-[inset_0_0_20px_rgba(var(--primary),0.05)]"
-          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:translate-x-0.5"
+          ? "bg-primary text-primary-foreground shadow-[0_10px_20px_-5px_rgba(var(--primary),0.3)] scale-[1.02]"
+          : "text-muted-foreground hover:bg-white/[0.05] hover:text-foreground hover:translate-x-1"
       )}
     >
 
       {/* Left accent bar */}
       {active && (
-        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-primary" />
+        <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[4px] rounded-r-full bg-white/40 blur-[1px]" />
       )}
 
       <Icon
         className={cn(
-          "h-[18px] w-[18px] shrink-0 transition-colors",
-          active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+          "h-[18px] w-[18px] shrink-0 transition-all duration-500",
+          active ? "text-primary-foreground scale-110" : "text-muted-foreground group-hover:text-foreground group-hover:scale-110"
         )}
       />
 
@@ -242,13 +245,15 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
     <aside
       data-tour="sidebar"
       className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/40 bg-sidebar-background transition-[width] duration-300 dark:bg-card/30 dark:backdrop-blur-xl",
+        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/40 transition-[width] duration-500",
+        "bg-gradient-to-b from-sidebar-background/80 to-sidebar-background/40 backdrop-blur-2xl",
+        "dark:from-card/40 dark:to-background/20",
         collapsed ? "w-[60px]" : "w-64"
       )}
     >
 
       {/* ── Header ── */}
-      <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-border/40 px-3">
+      <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-white/[0.03] px-3">
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-glow">
           <Package className="h-4 w-4 text-primary-foreground" />
         </div>
@@ -264,7 +269,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
         variant="ghost"
         size="icon"
         onClick={onToggle}
-        className="absolute -right-3 top-[52px] z-50 h-6 w-6 rounded-full border border-border/60 bg-sidebar-background shadow-sm hover:bg-accent"
+        className="absolute -right-3 top-[52px] z-50 h-6 w-6 rounded-full border border-white/[0.05] bg-card/80 backdrop-blur-md shadow-xl hover:bg-primary/10 transition-all duration-500"
         aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
       >
         {collapsed ? (

@@ -43,7 +43,7 @@ export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComp
               return (
                 <div
                   key={supplier.name}
-                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/[0.05] cursor-pointer transition-all duration-500 border border-transparent hover:border-white/[0.05] hover:shadow-2xl"
                   onClick={() => onSupplierDrillDown(supplier)}
                 >
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
@@ -92,7 +92,7 @@ export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComp
               return (
                 <div
                   key={buyer.name}
-                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
+                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/[0.05] cursor-pointer transition-all duration-500 border border-transparent hover:border-white/[0.05] hover:shadow-2xl"
                   onClick={() => onBuyerDrillDown(buyer)}
                 >
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-chart-2/20 text-chart-2 font-bold text-sm">
