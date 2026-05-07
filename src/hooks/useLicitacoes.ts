@@ -225,6 +225,28 @@ export function useSourcingEvents() {
   return { events, isLoading, createEvent };
 }
 
+export function useSourcingEventDetails(eventId: string | null) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: event, isLoading: loadingEvent } = useQuery({
+    queryKey: ['sourcing-event', eventId],
+    queryFn: async () => {
+      if (!eventId) return null;
+      const { data, error } = await supabase
+        .from('sourcing_events')
+        .select('*, category:categorias(nome), lots:sourcing_event_lots(*), questions:sourcing_event_questions(*), criteria:sourcing_event_criteria(*), invitations:sourcing_invitations(*, fornecedor:fornecedores(razao_social)), responses:sourcing_responses(*, fornecedor:fornecedores(razao_social))')
+        .eq('id', eventId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user && !!eventId,
+  });
+
+  return { event, loadingEvent };
+}
+
 export function useLicitacaoLances(licitacaoId: string | null) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
