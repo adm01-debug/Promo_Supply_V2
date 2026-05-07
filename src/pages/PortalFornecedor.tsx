@@ -236,6 +236,9 @@ export default function PortalFornecedor() {
                 <TabsTrigger value="contratos" className="gap-1.5">
                   <Truck className="w-4 h-4" /> Contratos ({contratos.length})
                 </TabsTrigger>
+                <TabsTrigger value="sourcing" className="gap-1.5">
+                  <Gavel className="w-4 h-4" /> Sourcing (RFx)
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="pedidos">
