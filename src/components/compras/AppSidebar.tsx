@@ -29,8 +29,11 @@ import {
   FileCheck,
   RefreshCw,
   RotateCcw,
-  Gavel
+  Gavel,
+  LogOut,
+  Settings
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
