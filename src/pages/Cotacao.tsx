@@ -39,26 +39,26 @@ const Cotacao = () => {
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
 
+  const [buscaStatus, setBuscaStatus] = useState<'idle' | 'searching' | 'done'>('idle');
+  const [cotacoesAPI, setCotacoesAPI] = useState<CotacaoAPI[]>([]);
+  const [showManualModal, setShowManualModal] = useState(false);
+  const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string | null>(null);
+
   const handleAiAnalyze = async () => {
     if (!solicitacao || allCotacoes.length === 0) return;
     setIsAiAnalyzing(true);
     try {
-      // Simulate IA calling Lovable AI Gateway
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const best = allCotacoes.sort((a, b) => a.total - b.total)[0];
-      const fastest = allCotacoes.sort((a, b) => a.prazoEntrega - b.prazoEntrega)[0];
-      
+      const best = [...allCotacoes].sort((a, b) => a.total - b.total)[0];
+      const fastest = [...allCotacoes].sort((a, b) => a.prazoEntrega - b.prazoEntrega)[0];
       const analysis = `**Análise IA Promo Supply:**
       
 1.  **Melhor Preço:** O fornecedor **${best.fornecedor}** oferece o menor custo total (**R$ ${best.total.toLocaleString('pt-BR')}**).
 2.  **Agilidade:** Se o prazo for crítico, **${fastest.fornecedor}** entrega em apenas **${fastest.prazoEntrega} dias**.
 3.  **Veredito:** Recomendamos prosseguir com **${best.fornecedor}**, pois o saving em relação à média é de **12%**, mantendo um score de qualidade superior a 85%.`;
-
       setAiAnalysis(analysis);
-      toast.success('Análise IA concluída');
     } catch (error) {
-      toast.error('Erro na análise IA');
+      console.error(error);
     } finally {
       setIsAiAnalyzing(false);
     }
