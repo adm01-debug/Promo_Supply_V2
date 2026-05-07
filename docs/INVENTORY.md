@@ -66,7 +66,8 @@ The following enhancements were requested and verified during the "10/10 Excelle
 12. **Staggered Entry Animations:** KPIs load with a coordinated sequence for superior perceived performance.
 13. **Dynamic Feedback Systems:** Added real-time visual delta indicators and high-priority alerts with pulse animations.
 14. **Strategic Matrix & SKU Analysis:** Refined `KraljicMatrix` and `PriceVarianceAnalysis` with smooth transitions.
-15. **Performance Tables Optimization:** `ExecutiveTablesRow` now features staggered entrance animations, enhanced hover states, and improved typography.
+15. **Performance Tables Optimization:** `ExecutiveTablesRow` now features staggered entrance animations and enhanced hover states.
+16. **Pending Actions Excellence:** `ExecutivePendingActions` redesigned with priority-aware card layouts, micro-interactions (ping alerts), and staggered scale-in animations for urgency management.
 
 ## 5. Maintenance Guide
 Refer to the `README.md` for local development setup and CI troubleshooting guides. The `scripts/` directory contains all automation logic, including the highly specialized `date-fns` integrity pipeline.
