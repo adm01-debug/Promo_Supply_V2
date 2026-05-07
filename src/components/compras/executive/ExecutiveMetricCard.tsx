@@ -79,6 +79,7 @@ export const ExecutiveMetricCard = ({
         <div className="space-y-2">
           <p className="text-sm text-muted-foreground">{title}</p>
           <p className="text-2xl font-bold">{formatValue(value)}</p>
+          {subtitle && <p className="text-xs text-muted-foreground">{subtitle}</p>}
 
           {showComparison && previousValue !== undefined && (
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
