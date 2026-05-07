@@ -12,7 +12,10 @@ import {
   Smile,
   Loader2,
   MoreVertical,
+  ChevronLeft,
+  Sparkles
 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -87,36 +90,62 @@ export function ChatArea({
 
   return (
     <>
-      {/* Chat Header */}
-      <div className="p-4 border-b flex items-center justify-between">
+      {/* Premium Chat Header */}
+      <div className="p-4 border-b bg-card/50 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={selectedContact.avatar} />
-            <AvatarFallback><Building2 className="w-5 h-5" /></AvatarFallback>
-          </Avatar>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="relative"
+          >
+            <Avatar className="h-10 w-10 border-2 border-primary/10">
+              <AvatarImage src={selectedContact.avatar} />
+              <AvatarFallback className="bg-primary/5 text-primary">
+                <Building2 className="w-5 h-5" />
+              </AvatarFallback>
+            </Avatar>
+            {selectedContact.online && (
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-success border-2 border-background rounded-full shadow-sm" />
+            )}
+          </motion.div>
           <div>
-            <p className="font-medium">{selectedContact.name}</p>
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              {selectedContact.online ? (
-                <><span className="w-2 h-2 bg-success rounded-full" />Online</>
-              ) : (
-                <><Clock className="w-3 h-3" />Offline</>
+            <div className="flex items-center gap-2">
+              <p className="font-bold tracking-tight text-foreground/90">{selectedContact.name}</p>
+              {selectedContact.online && (
+                <Badge variant="secondary" className="h-4 px-1.5 text-[9px] font-bold uppercase tracking-widest bg-success/10 text-success border-none">
+                  Online
+                </Badge>
               )}
+            </div>
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight flex items-center gap-1.5">
+              <Building2 className="w-3 h-3" />
+              {selectedContact.company}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-9 w-9"><Phone className="w-4 h-4" /></Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9"><Video className="w-4 h-4" /></Button>
+          <div className="hidden sm:flex items-center gap-1 mr-2 px-2 py-1 rounded-lg bg-primary/5 border border-primary/10">
+            <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+            <span className="text-[9px] font-black uppercase tracking-tighter text-primary">IA Sync</span>
+          </div>
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all">
+            <Phone className="w-4 h-4" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all">
+            <Video className="w-4 h-4" />
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9"><MoreVertical className="w-4 h-4" /></Button>
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl transition-all">
+                <MoreVertical className="w-4 h-4" />
+              </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Ver perfil</DropdownMenuItem>
-              <DropdownMenuItem>Ver cotações</DropdownMenuItem>
-              <DropdownMenuItem>Arquivar conversa</DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">Bloquear</DropdownMenuItem>
+            <DropdownMenuContent align="end" className="rounded-xl border-primary/10 shadow-2xl">
+              <DropdownMenuItem className="text-xs font-medium rounded-lg">Ver perfil completo</DropdownMenuItem>
+              <DropdownMenuItem className="text-xs font-medium rounded-lg">Histórico de cotações</DropdownMenuItem>
+              <DropdownMenuItem className="text-xs font-medium rounded-lg">Análise de performance</DropdownMenuItem>
+              <div className="h-px bg-border/50 my-1" />
+              <DropdownMenuItem className="text-xs font-medium rounded-lg text-destructive">Bloquear fornecedor</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -135,102 +164,150 @@ export function ChatArea({
             <p className="text-xs">Envie uma mensagem para iniciar a conversa</p>
           </div>
         ) : (
-          <div className="space-y-4">
-            {messages.map((message, index) => {
-              const isMe = message.senderId === 'me';
-              const showDate = index === 0 ||
-                format(messages[index - 1].timestamp, 'yyyy-MM-dd') !==
-                format(message.timestamp, 'yyyy-MM-dd');
+          <div className="space-y-6 pb-4">
+            <AnimatePresence mode="popLayout">
+              {messages.map((message, index) => {
+                const isMe = message.senderId === 'me';
+                const showDate = index === 0 ||
+                  format(messages[index - 1].timestamp, 'yyyy-MM-dd') !==
+                  format(message.timestamp, 'yyyy-MM-dd');
 
-              return (
-                <div key={message.id}>
-                  {showDate && (
-                    <div className="flex justify-center my-4">
-                      <Badge variant="outline" className="text-xs">
-                        {format(message.timestamp, "dd 'de' MMMM", { locale: ptBR })}
-                      </Badge>
-                    </div>
-                  )}
-                  <div className={cn("flex", isMe ? "justify-end" : "justify-start")}>
-                    <div className={cn(
-                      "max-w-[70%] rounded-2xl px-4 py-2",
-                      isMe ? "bg-primary text-primary-foreground rounded-br-md" : "bg-muted rounded-bl-md"
-                    )}>
-                      {message.type === 'file' && (
-                        <div className={cn("flex items-center gap-2 p-2 rounded mb-1", isMe ? "bg-primary-foreground/10" : "bg-background")}>
-                          <FileText className="w-5 h-5" />
-                          <span className="text-sm truncate">{message.attachmentName}</span>
+                return (
+                  <motion.div 
+                    key={message.id}
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{ type: "spring", damping: 25, stiffness: 500 }}
+                  >
+                    {showDate && (
+                      <div className="flex justify-center my-6">
+                        <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-[0.2em] bg-muted/30 border-none text-muted-foreground/80 px-3 py-1 rounded-full">
+                          {format(message.timestamp, "dd 'de' MMMM", { locale: ptBR })}
+                        </Badge>
+                      </div>
+                    )}
+                    <div className={cn("flex group", isMe ? "justify-end" : "justify-start")}>
+                      <div className={cn(
+                        "max-w-[80%] space-y-1",
+                        isMe ? "items-end" : "items-start"
+                      )}>
+                        <div className={cn(
+                          "relative rounded-[1.25rem] px-4 py-2.5 shadow-sm transition-all duration-300",
+                          isMe 
+                            ? "bg-primary text-primary-foreground rounded-tr-none hover:shadow-md hover:translate-x-[-2px]" 
+                            : "bg-card border border-border/50 text-foreground rounded-tl-none hover:shadow-md hover:translate-x-[2px]"
+                        )}>
+                          {message.type === 'file' && (
+                            <div className={cn(
+                              "flex items-center gap-3 p-3 rounded-xl mb-2 transition-colors", 
+                              isMe ? "bg-white/10" : "bg-primary/5"
+                            )}>
+                              <div className={cn(
+                                "p-2 rounded-lg",
+                                isMe ? "bg-white/20" : "bg-primary/10 text-primary"
+                              )}>
+                                <FileText className="w-5 h-5" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-sm font-bold truncate leading-none">{message.attachmentName}</p>
+                                <p className={cn("text-[10px] mt-1 opacity-70", isMe ? "text-white" : "text-muted-foreground")}>Documento • 2.4 MB</p>
+                              </div>
+                            </div>
+                          )}
+                          {message.type !== 'file' && (
+                            <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium">{message.content}</p>
+                          )}
+                          <div className={cn("flex items-center gap-1.5 mt-1.5", isMe ? "justify-end" : "justify-start")}>
+                            <span className={cn("text-[9px] font-bold", isMe ? "text-primary-foreground/60" : "text-muted-foreground/60")}>
+                              {format(message.timestamp, 'HH:mm')}
+                            </span>
+                            {isMe && (
+                              <div className="flex">
+                                {message.status === 'read' ? (
+                                  <CheckCheck className="w-3 h-3 text-white" />
+                                ) : (
+                                  <Check className="w-3 h-3 text-white/50" />
+                                )}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                      )}
-                      {message.type !== 'file' && (
-                        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                      )}
-                      <div className={cn("flex items-center gap-1 mt-1", isMe ? "justify-end" : "justify-start")}>
-                        <span className={cn("text-[10px]", isMe ? "text-primary-foreground/70" : "text-muted-foreground")}>
-                          {format(message.timestamp, 'HH:mm')}
-                        </span>
-                        {isMe && (
-                          message.status === 'read' ? <CheckCheck className="w-3 h-3 text-primary-foreground/70" /> :
-                          message.status === 'delivered' ? <CheckCheck className="w-3 h-3 text-primary-foreground/50" /> :
-                          <Check className="w-3 h-3 text-primary-foreground/50" />
-                        )}
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
             <div ref={messagesEndRef} />
           </div>
         )}
       </ScrollArea>
 
-      {/* Typing Indicator */}
-      {typingUsers.length > 0 && (
-        <div className="px-4 py-2 border-t bg-muted/30">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <span className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+      {/* Premium Typing Indicator */}
+      <AnimatePresence>
+        {typingUsers.length > 0 && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="px-4 py-2 border-t bg-muted/20 backdrop-blur-sm"
+          >
+            <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
+              <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-full">
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
+              <span className="text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                {typingUsers.length === 1
+                  ? `${typingUsers[0]} está digitando...`
+                  : `Múltiplos contatos digitando...`}
+              </span>
             </div>
-            <span className="text-xs italic">
-              {typingUsers.length === 1
-                ? `${typingUsers[0]} está digitando...`
-                : `${typingUsers.slice(0, -1).join(', ')} e ${typingUsers[typingUsers.length - 1]} estão digitando...`}
-            </span>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Message Input */}
-      <div className="p-4 border-t">
-        <div className="flex items-end gap-2">
-          <Button variant="ghost" size="icon" className="h-10 w-10 flex-shrink-0">
+      {/* Ultra-premium Input Area */}
+      <div className="p-4 border-t bg-card/50 backdrop-blur-xl">
+        <div className="flex items-end gap-3">
+          <Button variant="ghost" size="icon" className="h-10 w-10 flex-shrink-0 rounded-xl hover:bg-primary/10 hover:text-primary transition-all active:scale-90">
             <Paperclip className="w-5 h-5" />
           </Button>
-          <div className="flex-1 relative">
+          <div className="flex-1 relative group">
             <Textarea
-              placeholder="Digite sua mensagem..."
+              placeholder="Falar com o fornecedor..."
               value={newMessage}
               onChange={onMessageChange}
               onKeyDown={onKeyPress}
-              className="min-h-[44px] max-h-32 resize-none pr-10"
+              className="min-h-[46px] max-h-32 resize-none pr-12 rounded-2xl bg-muted/30 border-transparent focus:border-primary/30 focus:ring-primary/10 transition-all font-medium text-sm scrollbar-hide"
               rows={1}
               disabled={sendingMessage}
             />
-            <Button variant="ghost" size="icon" className="absolute right-1 bottom-1 h-8 w-8">
-              <Smile className="w-5 h-5 text-muted-foreground" />
+            <Button variant="ghost" size="icon" className="absolute right-2 bottom-1.5 h-8 w-8 rounded-lg hover:bg-primary/5 group-focus-within:text-primary transition-colors">
+              <Smile className="w-5 h-5 opacity-60" />
             </Button>
           </div>
-          <Button
-            size="icon"
-            className="h-10 w-10 flex-shrink-0"
-            onClick={onSendMessage}
-            disabled={!newMessage.trim() || sendingMessage}
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {sendingMessage ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-          </Button>
+            <Button
+              size="icon"
+              className={cn(
+                "h-11 w-11 flex-shrink-0 rounded-2xl shadow-lg transition-all duration-300",
+                newMessage.trim() ? "gradient-primary shadow-glow-primary border-none" : "bg-muted text-muted-foreground"
+              )}
+              onClick={onSendMessage}
+              disabled={!newMessage.trim() || sendingMessage}
+            >
+              {sendingMessage ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Send className={cn("w-5 h-5 transition-transform", newMessage.trim() && "translate-x-0.5 -translate-y-0.5")} />
+              )}
+            </Button>
+          </motion.div>
         </div>
       </div>
     </>
