@@ -219,6 +219,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       <BottomNavigation />
       <QuickActionsFAB />
       <SupplierChat />
+      <GuidedBuyingAssistant />
       <CelebrationOverlay />
       <UndoToastContainer />
       <OfflineIndicator />
