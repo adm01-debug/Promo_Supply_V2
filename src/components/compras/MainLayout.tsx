@@ -22,6 +22,7 @@ import { SmartBackButton } from "@/components/navigation/SmartBackButton";
 import { NavigationProgressBar } from "@/components/navigation/NavigationProgressBar";
 import { HeaderActions } from "@/components/layout/HeaderActions";
 import { SupplierChat } from "@/components/compras/SupplierChat";
+import { GuidedBuyingAssistant } from "@/components/compras/GuidedBuyingAssistant";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
