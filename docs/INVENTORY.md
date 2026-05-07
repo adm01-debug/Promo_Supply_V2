@@ -67,7 +67,8 @@ The following enhancements were requested and verified during the "10/10 Excelle
 13. **Dynamic Feedback Systems:** Added real-time visual delta indicators and high-priority alerts with pulse animations.
 14. **Strategic Matrix & SKU Analysis:** Refined `KraljicMatrix` and `PriceVarianceAnalysis` with smooth transitions.
 15. **Performance Tables Optimization:** `ExecutiveTablesRow` now features staggered entrance animations and enhanced hover states.
-16. **Pending Actions Excellence:** `ExecutivePendingActions` redesigned with priority-aware card layouts, micro-interactions (ping alerts), and staggered scale-in animations for urgency management.
+16. **Pending Actions Excellence:** `ExecutivePendingActions` redesigned with priority-aware card layouts and micro-interactions.
+17. **Advanced Filter UX:** `ExecutiveFiltersBar` upgraded with glassmorphism effects, coordinated height transitions for active tags, and interactive indicators for IA-driven suggestions.
 
 ## 5. Maintenance Guide
 Refer to the `README.md` for local development setup and CI troubleshooting guides. The `scripts/` directory contains all automation logic, including the highly specialized `date-fns` integrity pipeline.
