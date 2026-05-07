@@ -192,6 +192,39 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
   return { propostas, isLoading, addProposta, selectWinner, invalidate };
 }
 
+export function useSourcingEvents() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: events = [], isLoading } = useQuery({
+    queryKey: ['sourcing-events'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('sourcing_events')
+        .select('*, category:categorias(nome)')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const createEvent = useMutation({
+    mutationFn: async (event: any) => {
+      const { data, error } = await supabase.from('sourcing_events').insert(event).select().single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sourcing-events'] });
+      toast.success('Evento de sourcing criado!');
+    },
+    onError: (err: any) => toast.error('Erro: ' + err.message)
+  });
+
+  return { events, isLoading, createEvent };
+}
+
 export function useLicitacaoLances(licitacaoId: string | null) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
