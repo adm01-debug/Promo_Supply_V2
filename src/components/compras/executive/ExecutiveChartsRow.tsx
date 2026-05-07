@@ -19,7 +19,7 @@ export const ExecutiveChartsRow = ({ showComparison, filteredCategorySpend, onCa
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Trend Chart */}
-      <Card className="dark:bg-card/20 dark:backdrop-blur-3xl dark:border-white/[0.02]">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Activity className="h-5 w-5" />
@@ -80,7 +80,7 @@ export const ExecutiveChartsRow = ({ showComparison, filteredCategorySpend, onCa
       </Card>
 
       {/* Category Spend */}
-      <Card className="dark:bg-card/20 dark:backdrop-blur-3xl dark:border-white/[0.02]">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             {showComparison ? <BarChart3 className="h-5 w-5" /> : <PieChart className="h-5 w-5" />}

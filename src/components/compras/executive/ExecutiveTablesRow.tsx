@@ -29,7 +29,7 @@ export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComp
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Top Suppliers */}
-      <Card className="dark:bg-card/20 dark:backdrop-blur-3xl dark:border-white/[0.02] rounded-3xl overflow-hidden">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Users className="h-5 w-5" />
@@ -43,7 +43,7 @@ export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComp
               return (
                 <div
                   key={supplier.name}
-                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/[0.05] cursor-pointer transition-all duration-500 border border-transparent hover:border-white/[0.05] hover:shadow-2xl"
+                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
                   onClick={() => onSupplierDrillDown(supplier)}
                 >
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
@@ -77,7 +77,7 @@ export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComp
       </Card>
 
       {/* Buyer Performance */}
-      <Card className="dark:bg-card/20 dark:backdrop-blur-3xl dark:border-white/[0.02] rounded-3xl overflow-hidden">
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Zap className="h-5 w-5" />
@@ -92,7 +92,7 @@ export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComp
               return (
                 <div
                   key={buyer.name}
-                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/[0.05] cursor-pointer transition-all duration-500 border border-transparent hover:border-white/[0.05] hover:shadow-2xl"
+                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
                   onClick={() => onBuyerDrillDown(buyer)}
                 >
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-chart-2/20 text-chart-2 font-bold text-sm">

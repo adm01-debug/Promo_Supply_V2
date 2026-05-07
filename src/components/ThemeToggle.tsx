@@ -51,7 +51,7 @@ export function ThemeToggle() {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="relative w-9 h-9 overflow-hidden rounded-xl hover:bg-primary/5 transition-all duration-300"
+          className="relative w-9 h-9 overflow-hidden"
         >
           <AnimatePresence mode="wait" initial={false}>
             {isDark ? (

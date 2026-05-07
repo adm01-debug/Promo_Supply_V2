@@ -100,9 +100,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background pb-16 md:pb-0 selection:bg-primary/20 selection:text-primary">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,hsl(var(--primary)/0.05),transparent_50%)] pointer-events-none" />
-
+    <div className="min-h-screen bg-background pb-16 md:pb-0">
       <NavigationProgressBar />
       <SkipLinks />
       <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />

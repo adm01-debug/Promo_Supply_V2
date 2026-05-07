@@ -14,8 +14,6 @@ import {
 } from 'lucide-react';
 import { useExecutiveDashboardData } from '@/hooks/useExecutiveDashboardData';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
-import { motion, AnimatePresence } from 'framer-motion';
-import { cn } from '@/lib/utils';
 
 import {
   executiveMetrics, calculateChange, trendDataSets,
@@ -206,147 +204,114 @@ export const ExecutiveDashboard = () => {
     return m[selectedPeriod] || 'Período Anterior';
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
-
   return (
-    <motion.div 
-      initial="hidden"
-      animate="visible"
-      variants={containerVariants}
-      className="space-y-8" 
-      data-tour="dashboard-content"
-    >
+    <div className="space-y-6" data-tour="dashboard-content">
       {/* Header */}
-      <motion.div variants={itemVariants} className="flex items-center justify-between flex-wrap gap-6">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h2 className="text-4xl font-black tracking-tight text-foreground bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
-            Dashboard Executivo
-          </h2>
-          <p className="text-sm text-muted-foreground font-medium tracking-wide">
-            Inteligência preditiva e visão 360° da operação
-          </p>
+          <h2 className="text-2xl font-bold">Dashboard Executivo</h2>
+          <p className="text-muted-foreground">Visão consolidada de compras - Atualizado em tempo real</p>
         </div>
         <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-3 px-4 py-2 rounded-2xl border-white/[0.05] bg-card/30 backdrop-blur-xl shadow-2xl ring-1 ring-white/5">
-            <GitCompare className="h-4 w-4 text-primary animate-pulse" />
-            <Label htmlFor="comparison-mode" className="text-xs font-bold cursor-pointer tracking-wider text-muted-foreground uppercase">Comparar Períodos</Label>
-            <Switch id="comparison-mode" checked={showComparison} onCheckedChange={setShowComparison} className="data-[state=checked]:bg-primary" />
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-card">
+            <GitCompare className="h-4 w-4 text-muted-foreground" />
+            <Label htmlFor="comparison-mode" className="text-sm cursor-pointer">Comparar Períodos</Label>
+            <Switch id="comparison-mode" checked={showComparison} onCheckedChange={setShowComparison} />
           </div>
-          <div className="flex items-center gap-1 p-1 rounded-2xl bg-card/30 backdrop-blur-xl border border-white/[0.05] shadow-2xl">
+          <div className="flex items-center gap-1">
             {['1m', '3m', '6m', '1y'].map(p => (
-              <Button 
-                key={p} 
-                variant="ghost" 
-                size="sm" 
-                onClick={() => setSelectedPeriod(p)}
-                className={cn(
-                  "rounded-xl px-4 text-[10px] font-black transition-all duration-500",
-                  selectedPeriod === p 
-                    ? 'bg-primary text-primary-foreground shadow-[0_0_20px_rgba(var(--primary),0.3)]' 
-                    : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
-                )}
-              >
+              <Button key={p} variant="outline" size="sm" onClick={() => setSelectedPeriod(p)}
+                className={selectedPeriod === p ? 'bg-primary text-primary-foreground' : ''}>
                 {p === '1y' ? '1A' : p.toUpperCase()}
               </Button>
             ))}
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      <motion.div variants={itemVariants}>
-        <ExecutiveFiltersBar
-          selectedCategory={selectedCategory}
-          selectedSupplier={selectedSupplier}
-          onCategoryChange={setSelectedCategory}
-          onSupplierChange={setSelectedSupplier}
-          hasActiveFilters={hasActiveFilters}
-          onClearFilters={clearFilters}
-          favorites={favorites}
-          currentFilters={currentFilters}
-          onSave={saveFavorite}
-          onDelete={deleteFavorite}
-          onSetDefault={setAsDefault}
-          onApply={applyFilter}
-          favoritesLoading={favoritesLoading}
-        />
-      </motion.div>
+      <ExecutiveFiltersBar
+        selectedCategory={selectedCategory}
+        selectedSupplier={selectedSupplier}
+        onCategoryChange={setSelectedCategory}
+        onSupplierChange={setSelectedSupplier}
+        hasActiveFilters={hasActiveFilters}
+        onClearFilters={clearFilters}
+        favorites={favorites}
+        currentFilters={currentFilters}
+        onSave={saveFavorite}
+        onDelete={deleteFavorite}
+        onSetDefault={setAsDefault}
+        onApply={applyFilter}
+        favoritesLoading={favoritesLoading}
+      />
 
-      {/* Comparison & Alerts */}
-      <AnimatePresence>
-        {(showComparison || hasActiveFilters || activeMetrics.pendingApprovals.urgent > 0 || activeMetrics.overdueOrders.critical > 0) && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            variants={itemVariants}
-            className="grid grid-cols-1 md:grid-cols-3 gap-4"
-          >
-            {showComparison && (
-              <Card className="border-primary/20 bg-primary/[0.03] backdrop-blur-sm">
-                <CardContent className="p-4 flex items-center gap-4">
-                  <div className="p-2 rounded-lg bg-primary/10"><GitCompare className="h-5 w-5 text-primary" /></div>
-                  <div className="flex-1">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-primary">Comparativo</p>
-                    <p className="text-xs text-muted-foreground">
-                      <span className="font-bold text-foreground">{getPeriodLabel()}</span> vs <span className="font-bold text-foreground">{getPreviousPeriodLabel()}</span>
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+      {/* Period Comparison Summary */}
+      {showComparison && (
+        <Card className="border-primary/20 bg-primary/5">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4 flex-wrap">
+              <GitCompare className="h-5 w-5 text-primary" />
+              <div className="flex-1">
+                <p className="font-medium text-primary">Modo Comparativo Ativo</p>
+                <p className="text-sm text-muted-foreground">
+                  Comparando <span className="font-medium">{getPeriodLabel()}</span> vs <span className="font-medium">{getPreviousPeriodLabel()}</span>
+                </p>
+              </div>
+              <div className="flex gap-4 text-sm">
+                <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-primary" /><span>Atual</span></div>
+                <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-muted-foreground/50" /><span>Anterior</span></div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-            {hasActiveFilters && (
-              <Card className="border-info/20 bg-info/[0.03] backdrop-blur-sm">
-                <CardContent className="p-4 flex items-center gap-4">
-                  <div className="p-2 rounded-lg bg-info/10"><Filter className="h-5 w-5 text-info" /></div>
-                  <div className="flex-1">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-info">Dados Filtrados</p>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {selectedCategory !== 'all' && selectedCategory}
-                      {selectedCategory !== 'all' && selectedSupplier !== 'all' && ' | '}
-                      {selectedSupplier !== 'all' && selectedSupplier}
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+      {/* Filtered Summary */}
+      {hasActiveFilters && (
+        <Card className="border-chart-2/30 bg-chart-2/5">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div className="flex items-center gap-3">
+                <Filter className="h-5 w-5 text-chart-2" />
+                <div>
+                  <p className="font-medium text-chart-2">Dados Filtrados</p>
+                  <p className="text-sm text-muted-foreground">
+                    Exibindo resultados para
+                    {selectedCategory !== 'all' && <span className="font-medium"> {selectedCategory}</span>}
+                    {selectedCategory !== 'all' && selectedSupplier !== 'all' && ' de'}
+                    {selectedSupplier !== 'all' && <span className="font-medium"> {selectedSupplier}</span>}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-6">
+                <div className="text-center"><p className="text-xs text-muted-foreground">Spend Filtrado</p><p className="font-bold text-lg">{formatCurrency(filteredMetrics.totalSpend)}</p></div>
+                <div className="text-center"><p className="text-xs text-muted-foreground">Pedidos</p><p className="font-bold text-lg">{filteredMetrics.totalOrders}</p></div>
+                <div className="text-center"><p className="text-xs text-muted-foreground">Variação</p><p className={`font-bold text-lg ${filteredMetrics.spendChange >= 0 ? 'text-success' : 'text-destructive'}`}>{filteredMetrics.spendChange >= 0 ? '+' : ''}{filteredMetrics.spendChange.toFixed(1)}%</p></div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-            {(activeMetrics.pendingApprovals.urgent > 0 || activeMetrics.overdueOrders.critical > 0) && (
-              <Card className="border-destructive/20 bg-destructive/[0.03] backdrop-blur-sm">
-                <CardContent className="p-4 flex items-center gap-4">
-                  <div className="p-2 rounded-lg bg-destructive/10 animate-pulse"><AlertTriangle className="h-5 w-5 text-destructive" /></div>
-                  <div className="flex-1">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-destructive">Atenção</p>
-                    <p className="text-xs text-muted-foreground">
-                      {activeMetrics.pendingApprovals.urgent} urgentes | {activeMetrics.overdueOrders.critical} críticos
-                    </p>
-                  </div>
-                  <Button variant="destructive" size="sm" className="h-7 text-[10px] font-black px-2" onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}>VER</Button>
-                </CardContent>
-              </Card>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Critical Alerts */}
+      {(activeMetrics.pendingApprovals.urgent > 0 || activeMetrics.overdueOrders.critical > 0) && (
+        <Card className="border-destructive bg-destructive/5">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              <div className="flex-1">
+                <p className="font-medium text-destructive">Atenção Requerida</p>
+                <p className="text-sm text-muted-foreground">{activeMetrics.pendingApprovals.urgent} aprovações urgentes e {activeMetrics.overdueOrders.critical} pedidos críticos</p>
+              </div>
+              <Button variant="destructive" size="sm" onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}>Ver Detalhes</Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Primary KPIs */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <motion.div variants={itemVariants} className="lg:col-span-1 h-full">
-          <PurchaseClimateWidget />
-        </motion.div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-1"><PurchaseClimateWidget /></div>
         <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
           <ExecutiveMetricCard title="Spend Total" value={activeMetrics.totalSpend.value} previousValue={activeMetrics.totalSpend.previousValue} change={activeMetrics.totalSpend.change} target={activeMetrics.totalSpend.target} icon={DollarSign} format="currency" showComparison={showComparison} trendData={trendDataSets.spend} />
           <ExecutiveMetricCard title="Economia Realizada" value={activeMetrics.savings.value} previousValue={activeMetrics.savings.previousValue} change={activeMetrics.savings.change} target={activeMetrics.savings.target} icon={TrendingUp} format="currency" showComparison={showComparison} trendData={trendDataSets.savings} />
@@ -356,28 +321,19 @@ export const ExecutiveDashboard = () => {
       </div>
 
       {/* Secondary KPIs */}
-      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <ExecutiveMetricCard title="Saving %" value={activeMetrics.savingsPercent} change={activeMetrics.savingsPercent > 10 ? activeMetrics.savingsPercent - 10 : 0} target={15} icon={Zap} format="percent" showComparison={showComparison} trendData={trendDataSets.savings.map((s, i) => (trendDataSets.spend[i] > 0 ? (s / trendDataSets.spend[i]) * 100 : 0))} />
-        <ExecutiveMetricCard title="Base Fornecedores" value={activeMetrics.supplierCount.value} previousValue={activeMetrics.supplierCount.previousValue} change={activeMetrics.supplierCount.change} target={activeMetrics.supplierCount.target} icon={Users} showComparison={showComparison} trendData={trendDataSets.suppliers} />
-        <ExecutiveMetricCard title="Aprovações" value={activeMetrics.pendingApprovals.value} previousValue={activeMetrics.pendingApprovals.previousValue} change={activeMetrics.pendingApprovals.change} urgent={activeMetrics.pendingApprovals.urgent} icon={CheckCircle2} onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })} showComparison={showComparison} invertChange trendData={trendDataSets.pendingApprovals} />
-        <ExecutiveMetricCard title="Atrasos" value={activeMetrics.overdueOrders.value} previousValue={activeMetrics.overdueOrders.previousValue} change={activeMetrics.overdueOrders.change} critical={activeMetrics.overdueOrders.critical} icon={XCircle} showComparison={showComparison} invertChange trendData={trendDataSets.overdueOrders} />
-        <ExecutiveMetricCard title="Compliance" value={activeMetrics.contractCompliance.value} previousValue={activeMetrics.contractCompliance.previousValue} change={activeMetrics.contractCompliance.change} target={activeMetrics.contractCompliance.target} icon={Target} format="percent" showComparison={showComparison} trendData={trendDataSets.compliance} />
-      </motion.div>
+        <ExecutiveMetricCard title="Base de Fornecedores" value={activeMetrics.supplierCount.value} previousValue={activeMetrics.supplierCount.previousValue} change={activeMetrics.supplierCount.change} target={activeMetrics.supplierCount.target} icon={Users} showComparison={showComparison} trendData={trendDataSets.suppliers} />
+        <ExecutiveMetricCard title="Aprovações Pendentes" value={activeMetrics.pendingApprovals.value} previousValue={activeMetrics.pendingApprovals.previousValue} change={activeMetrics.pendingApprovals.change} urgent={activeMetrics.pendingApprovals.urgent} icon={CheckCircle2} onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })} showComparison={showComparison} invertChange trendData={trendDataSets.pendingApprovals} />
+        <ExecutiveMetricCard title="Pedidos Atrasados" value={activeMetrics.overdueOrders.value} previousValue={activeMetrics.overdueOrders.previousValue} change={activeMetrics.overdueOrders.change} critical={activeMetrics.overdueOrders.critical} icon={XCircle} showComparison={showComparison} invertChange trendData={trendDataSets.overdueOrders} />
+        <ExecutiveMetricCard title="Compliance Contratos" value={activeMetrics.contractCompliance.value} previousValue={activeMetrics.contractCompliance.previousValue} change={activeMetrics.contractCompliance.change} target={activeMetrics.contractCompliance.target} icon={Target} format="percent" showComparison={showComparison} trendData={trendDataSets.compliance} />
+      </div>
 
-      <motion.div variants={itemVariants}>
-        <ExecutiveChartsRow showComparison={showComparison} filteredCategorySpend={filteredCategorySpend} onCategoryDrillDown={(cat) => setDrillDown({ type: 'category', data: cat })} />
-      </motion.div>
-
-      <motion.div variants={itemVariants}>
-        <ExecutiveTablesRow filteredSuppliers={filteredSuppliers} filteredBuyers={filteredBuyers} showComparison={showComparison} onSupplierDrillDown={(s) => setDrillDown({ type: 'supplier', data: s })} onBuyerDrillDown={(b) => setDrillDown({ type: 'buyer', data: b })} />
-      </motion.div>
-
-      <motion.div variants={itemVariants}>
-        <ExecutivePendingActions items={filteredPendingItems} />
-      </motion.div>
-
+      <ExecutiveChartsRow showComparison={showComparison} filteredCategorySpend={filteredCategorySpend} onCategoryDrillDown={(cat) => setDrillDown({ type: 'category', data: cat })} />
+      <ExecutiveTablesRow filteredSuppliers={filteredSuppliers} filteredBuyers={filteredBuyers} showComparison={showComparison} onSupplierDrillDown={(s) => setDrillDown({ type: 'supplier', data: s })} onBuyerDrillDown={(b) => setDrillDown({ type: 'buyer', data: b })} />
+      <ExecutivePendingActions items={filteredPendingItems} />
       <ExecutiveDrillDownModal drillDown={drillDown} onClose={() => setDrillDown(null)} />
       {clearFlow.ConfirmDialog}
-    </motion.div>
+    </div>
   );
 };

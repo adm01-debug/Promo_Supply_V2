@@ -31,8 +31,8 @@ export const ExecutiveFiltersBar = ({
   onSave, onDelete, onSetDefault, onApply, favoritesLoading
 }: Props) => {
   return (
-    <Card className="bg-card/30 backdrop-blur-2xl border-white/[0.03] shadow-lg">
-      <CardContent className="p-4 py-3">
+    <Card>
+      <CardContent className="p-4">
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
@@ -42,7 +42,7 @@ export const ExecutiveFiltersBar = ({
           <div className="flex items-center gap-2">
             <Label className="text-sm text-muted-foreground">Categoria:</Label>
             <Select value={selectedCategory} onValueChange={onCategoryChange}>
-              <SelectTrigger className="w-[160px] h-9 bg-background/50 backdrop-blur-sm border-white/[0.05] rounded-lg">
+              <SelectTrigger className="w-[160px] h-9 bg-background">
                 <SelectValue placeholder="Todas" />
               </SelectTrigger>
               <SelectContent className="bg-background border shadow-lg z-50">
@@ -57,7 +57,7 @@ export const ExecutiveFiltersBar = ({
           <div className="flex items-center gap-2">
             <Label className="text-sm text-muted-foreground">Fornecedor:</Label>
             <Select value={selectedSupplier} onValueChange={onSupplierChange}>
-              <SelectTrigger className="w-[160px] h-9 bg-background/50 backdrop-blur-sm border-white/[0.05] rounded-lg">
+              <SelectTrigger className="w-[160px] h-9 bg-background">
                 <SelectValue placeholder="Todos" />
               </SelectTrigger>
               <SelectContent className="bg-background border shadow-lg z-50">

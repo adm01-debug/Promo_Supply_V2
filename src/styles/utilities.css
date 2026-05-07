@@ -6,38 +6,29 @@
 
 /* ===== GLASS EFFECTS ===== */
 .glass {
-  @apply bg-card/70 backdrop-blur-xl border border-border/40;
+  @apply bg-card/80 backdrop-blur-xl border border-border/50;
 }
-.dark .glass {
-  background: linear-gradient(135deg, hsl(var(--card) / 0.5) 0%, hsl(var(--card) / 0.3) 100%);
-  @apply backdrop-blur-2xl border border-white/5;
-  box-shadow: 0 8px 32px hsl(0 0% 0% / 0.3), inset 0 1px 1px hsl(0 0% 100% / 0.05);
-}
+  .dark .glass {
+    @apply bg-card/70 backdrop-blur-xl border border-border/40;
+    box-shadow: 0 4px 30px hsl(0 0% 0% / 0.2);
+  }
 
-.glass-morphism {
-  @apply bg-card/75 backdrop-blur-2xl border border-border/40;
-}
-.dark .glass-morphism {
-  background: linear-gradient(135deg, hsl(var(--card) / 0.4) 0%, hsl(var(--card) / 0.2) 100%);
-  border: 1px solid hsl(0 0% 100% / 0.08);
-  box-shadow: 
-    0 20px 50px hsl(0 0% 0% / 0.4),
-    inset 0 1px 0 hsl(0 0% 100% / 0.05);
-}
+  .glass-dark {
+    @apply bg-card/60 backdrop-blur-xl border border-border/30;
+  }
+  .dark .glass-dark {
+    @apply bg-card/50 backdrop-blur-xl border border-white/5;
+    box-shadow: 0 8px 32px hsl(0 0% 0% / 0.3);
+  }
 
-.premium-depth {
-  @apply transition-all duration-500 ease-out;
-  box-shadow: 0 1px 3px hsl(0 0% 0% / 0.05);
-}
-.dark .premium-depth {
-  box-shadow: 
-    0 10px 30px -10px hsl(0 0% 0% / 0.5),
-    0 0 1px 1px hsl(0 0% 100% / 0.03) inset;
-}
-.premium-depth:hover {
-  @apply -translate-y-1;
-  box-shadow: 0 20px 40px -20px hsl(var(--primary) / 0.3);
-}
+  .glass-morphism {
+    @apply bg-card/75 backdrop-blur-2xl border border-border/40;
+  }
+  .dark .glass-morphism {
+    background: linear-gradient(135deg, hsl(var(--card) / 0.8) 0%, hsl(var(--card) / 0.6) 100%);
+    border: 1px solid hsl(var(--border) / 0.5);
+    box-shadow: 0 8px 32px hsl(0 0% 0% / 0.25), inset 0 0 0 1px hsl(0 0% 100% / 0.03);
+  }
 
   /* ===== GRADIENTS ===== */
   .gradient-primary { background: var(--gradient-primary); }
