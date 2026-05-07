@@ -57,8 +57,8 @@ import {
 import { RejectModal, DetailsModal } from "./pending-approvals/ApprovalModals";
 
 export const PendingApprovalsList = () => {
-  const [approvals, setApprovals] = useState<PendingApprovalItem[]>(mockPendingApprovals);
-  const [selectedApproval, setSelectedApproval] = useState<PendingApprovalItem | null>(null);
+  const { pendingSteps, approveStep, rejectStep, loading: workflowLoading } = useApprovalWorkflow();
+  const [selectedApproval, setSelectedApproval] = useState<any | null>(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
@@ -67,6 +67,25 @@ export const PendingApprovalsList = () => {
   const [sortBy, setSortBy] = useState<SortOption>('prazo');
   const [filterStatus, setFilterStatus] = useState<FilterStatus>('all');
   const [loading, setLoading] = useState(false);
+
+  // Map pendingSteps to the format expected by the UI
+  const approvals = useMemo(() => {
+    return pendingSteps.map(step => ({
+      id: step.id,
+      solicitacao_numero: step.workflow_id?.substring(0, 8) || "SOL-...", // Ideally we'd join with solicitacoes
+      descricao: "Aprovação pendente", // Ideally fetch from solicitation
+      solicitante: "Solicitante", // Ideally fetch from solicitation
+      valor: 0, // Ideally fetch from workflow/solicitation
+      data_solicitacao: step.created_at,
+      prazo_limite: step.prazo_limite,
+      etapa_atual: step.etapa,
+      total_etapas: 1, // Ideally from workflow
+      urgente: false,
+      escalado: !!step.delegacao_id,
+      categoria: "Geral",
+      aprovadores_anteriores: []
+    }));
+  }, [pendingSteps]);
   
   const { 
     unreadCount,
