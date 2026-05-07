@@ -33,6 +33,7 @@ export default function Licitacoes() {
   const [newForm, setNewForm] = useState({
     titulo: '', descricao: '', modalidade: 'pregao', tipo: 'menor_preco',
     valor_estimado: '', data_abertura: '', data_encerramento: '', objeto: '',
+    is_live: false, lance_minimo_decremento: '0.01'
   });
 
   const filtered = useMemo(() => {
