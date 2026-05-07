@@ -52,6 +52,7 @@ jobs:
           node scripts/install-report.mjs \
             --json \
             --json-file=ci-artifacts/install-report.json \
+            --json-file-overwrite \
             2> >(tee ci-logs/install-report-json-file.log >&2)
 
       - name: Verify install-report byte count
@@ -68,8 +69,25 @@ jobs:
             const bytes = fs.statSync(reportPath).size;
             const log = fs.readFileSync(logPath, "utf8");
             const matches = [...log.matchAll(/\((\d+) bytes,\s*(?:pretty|minified)\)/g)];
+            const shaMatches = [...log.matchAll(/content hash \(sha256\) → ([0-9a-f]{64})/g)];
             if (matches.length === 0) throw new Error(`No logged byte count found in ${logPath}`);
+            if (shaMatches.length === 0) throw new Error(`No logged sha256 found in ${logPath}`);
             const loggedBytes = Number(matches.at(-1)[1]);
+            const loggedSha = shaMatches.at(-1)[1];
+            
+            // Verify bytes
+            if (bytes !== loggedBytes) {
+              throw new Error(`install-report.json byte count mismatch: file has ${bytes} bytes, log says ${loggedBytes}`);
+            }
+            
+            // Verify content hash
+            const crypto = require("node:crypto");
+            const actualSha = crypto.createHash("sha256").update(fs.readFileSync(reportPath)).digest("hex");
+            if (actualSha !== loggedSha) {
+              throw new Error(`install-report.json sha256 mismatch: file has ${actualSha}, log says ${loggedSha}`);
+            }
+            
+            console.log(`install-report.json verified: ${bytes} bytes, sha256 ${actualSha}`);
             if (bytes !== loggedBytes) {
               throw new Error(`install-report.json byte count mismatch: file has ${bytes} bytes, log says ${loggedBytes}`);
             }

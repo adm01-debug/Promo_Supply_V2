@@ -6,6 +6,7 @@ on:
       - "scripts/hooks/datefns-precommit.sh"
       - "scripts/__tests__/datefns-hook-fixtures.test.sh"
       - "scripts/__tests__/fixtures/datefns-hook/**"
+      - "scripts/hooks/fixtures/**"
 
 permissions:
   contents: read
