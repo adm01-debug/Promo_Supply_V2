@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useExecutiveDashboardData } from '@/hooks/useExecutiveDashboardData';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
+import { motion } from 'framer-motion';
 
 import {
   executiveMetrics, calculateChange, trendDataSets,
@@ -26,6 +27,7 @@ import { ExecutiveChartsRow } from './executive/ExecutiveChartsRow';
 import { ExecutiveTablesRow } from './executive/ExecutiveTablesRow';
 import { ExecutivePendingActions } from './executive/ExecutivePendingActions';
 import { ExecutiveDrillDownModal } from './executive/ExecutiveDrillDownModal';
+
 
 export const ExecutiveDashboard = () => {
   const [drillDown, setDrillDown] = useState<DrillDownData | null>(null);
