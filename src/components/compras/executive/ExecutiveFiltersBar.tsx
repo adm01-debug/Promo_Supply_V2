@@ -42,7 +42,7 @@ export const ExecutiveFiltersBar = ({
           <div className="flex items-center gap-2">
             <Label className="text-sm text-muted-foreground">Categoria:</Label>
             <Select value={selectedCategory} onValueChange={onCategoryChange}>
-              <SelectTrigger className="w-[160px] h-9 bg-background">
+              <SelectTrigger className="w-[160px] h-9 bg-background/50 backdrop-blur-sm border-white/[0.05] rounded-lg">
                 <SelectValue placeholder="Todas" />
               </SelectTrigger>
               <SelectContent className="bg-background border shadow-lg z-50">
@@ -57,7 +57,7 @@ export const ExecutiveFiltersBar = ({
           <div className="flex items-center gap-2">
             <Label className="text-sm text-muted-foreground">Fornecedor:</Label>
             <Select value={selectedSupplier} onValueChange={onSupplierChange}>
-              <SelectTrigger className="w-[160px] h-9 bg-background">
+              <SelectTrigger className="w-[160px] h-9 bg-background/50 backdrop-blur-sm border-white/[0.05] rounded-lg">
                 <SelectValue placeholder="Todos" />
               </SelectTrigger>
               <SelectContent className="bg-background border shadow-lg z-50">
