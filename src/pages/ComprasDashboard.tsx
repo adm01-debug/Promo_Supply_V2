@@ -142,8 +142,8 @@ const ComprasDashboard = () => {
                     : 5;
                   
                   return {
-                    id: item.numero || item.id.substring(0, 8),
-                    produto: item.titulo || "Item sem título",
+                    id: (item as any).numero || item.id.substring(0, 8),
+                    produto: (item as any).titulo || "Item sem título",
                     fornecedor: item.status || "Pendente",
                     vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
                     urgencia: diff <= 1 ? 'critico' : diff <= 3 ? 'alto' : 'medio'
