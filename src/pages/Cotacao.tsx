@@ -271,6 +271,32 @@ const Cotacao = () => {
           </div>
         </Card>
 
+        {/* AI Insight */}
+        {isAiAnalyzing && (
+          <Card className="p-5 border-indigo-500/30 bg-indigo-50/10 animate-pulse">
+            <div className="flex items-center gap-2">
+              <Loader2 className="w-5 h-5 text-indigo-500 animate-spin" />
+              <p className="text-sm font-medium text-indigo-700 dark:text-indigo-400">IA analisando melhores cenários de cotação...</p>
+            </div>
+          </Card>
+        )}
+
+        {aiAnalysis && !isAiAnalyzing && (
+          <Card className="p-5 border-indigo-500/30 bg-indigo-50/5 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-2 opacity-10">
+              <Sparkles className="w-20 h-20 text-indigo-500" />
+            </div>
+            <div className="flex gap-4 relative z-10">
+              <div className="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900/30 shrink-0 h-fit">
+                <Sparkles className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+              </div>
+              <div className="space-y-2 prose prose-sm dark:prose-invert max-w-none">
+                <ReactMarkdown>{aiAnalysis}</ReactMarkdown>
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Cotações do Banco */}
         {adaptedCotacoes.length > 0 && (
           <Card className="p-5">
