@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Upload, CheckCircle, XCircle, Clock, Search, AlertTriangle, FileCheck } from "lucide-react";
+import { FileText, Upload, CheckCircle, XCircle, Clock, Search, AlertTriangle, FileCheck, BrainCircuit, Loader2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
