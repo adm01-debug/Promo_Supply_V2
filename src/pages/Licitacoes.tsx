@@ -59,6 +59,8 @@ export default function Licitacoes() {
       tipo: newForm.tipo, valor_estimado: parseFloat(newForm.valor_estimado) || 0,
       data_abertura: newForm.data_abertura || null, data_encerramento: newForm.data_encerramento || null,
       objeto: newForm.objeto || null,
+      is_live: newForm.is_live,
+      lance_minimo_decremento: parseFloat(newForm.lance_minimo_decremento) || 0.01,
     });
     if (result) {
       setCreateOpen(false);
