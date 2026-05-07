@@ -292,6 +292,10 @@ const Relatorios = () => {
             <SupplierPerformanceTable data={stats.fornecedorPerformance} />
           </TabsContent>
 
+          <TabsContent value="estrategia" className="mt-6">
+            <KraljicMatrix />
+          </TabsContent>
+
           <TabsContent value="previsao" className="mt-6">
             <DemandPredictionPanel />
           </TabsContent>
