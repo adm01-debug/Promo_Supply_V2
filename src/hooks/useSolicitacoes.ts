@@ -87,7 +87,8 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
     .select(`
       *,
       fornecedor:fornecedores(razao_social, nome_fantasia),
-      categoria:categorias(nome)
+      categoria:categorias(nome),
+      organization:organizations(name)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
