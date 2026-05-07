@@ -26,6 +26,7 @@ import { ExecutiveChartsRow } from './executive/ExecutiveChartsRow';
 import { ExecutiveTablesRow } from './executive/ExecutiveTablesRow';
 import { ExecutivePendingActions } from './executive/ExecutivePendingActions';
 import { ExecutiveDrillDownModal } from './executive/ExecutiveDrillDownModal';
+import { PriceVarianceAnalysis } from './executive/PriceVarianceAnalysis';
 
 export const ExecutiveDashboard = () => {
   const [drillDown, setDrillDown] = useState<DrillDownData | null>(null);
@@ -317,6 +318,20 @@ export const ExecutiveDashboard = () => {
           <ExecutiveMetricCard title="Economia Realizada" value={activeMetrics.savings.value} previousValue={activeMetrics.savings.previousValue} change={activeMetrics.savings.change} target={activeMetrics.savings.target} icon={TrendingUp} format="currency" showComparison={showComparison} trendData={trendDataSets.savings} />
           <ExecutiveMetricCard title="Pedidos no Mês" value={activeMetrics.ordersThisMonth.value} previousValue={activeMetrics.ordersThisMonth.previousValue} change={activeMetrics.ordersThisMonth.change} target={activeMetrics.ordersThisMonth.target} icon={ShoppingCart} showComparison={showComparison} trendData={trendDataSets.orders} />
           <ExecutiveMetricCard title="Tempo Médio Ciclo" value={activeMetrics.avgCycleTime.value} previousValue={activeMetrics.avgCycleTime.previousValue} change={activeMetrics.avgCycleTime.change} target={activeMetrics.avgCycleTime.target} icon={Clock} format="days" showComparison={showComparison} invertChange trendData={trendDataSets.cycleTime} />
+        </div>
+      </div>
+
+      {/* Charts and Analysis */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+          <ExecutiveChartsRow 
+            showComparison={showComparison} 
+            filteredCategorySpend={filteredCategorySpend} 
+            onCategoryDrillDown={(data) => setDrillDown({ type: 'category', data })} 
+          />
+        </div>
+        <div className="xl:col-span-1">
+          <PriceVarianceAnalysis />
         </div>
       </div>
 

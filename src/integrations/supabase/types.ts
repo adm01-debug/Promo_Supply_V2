@@ -1659,6 +1659,52 @@ export type Database = {
         }
         Relationships: []
       }
+      licitacao_lances: {
+        Row: {
+          created_at: string | null
+          fornecedor_id: string | null
+          id: string
+          licitacao_id: string | null
+          valor_lance: number
+        }
+        Insert: {
+          created_at?: string | null
+          fornecedor_id?: string | null
+          id?: string
+          licitacao_id?: string | null
+          valor_lance: number
+        }
+        Update: {
+          created_at?: string | null
+          fornecedor_id?: string | null
+          id?: string
+          licitacao_id?: string | null
+          valor_lance?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "licitacao_lances_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "licitacao_lances_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "licitacao_lances_licitacao_id_fkey"
+            columns: ["licitacao_id"]
+            isOneToOne: false
+            referencedRelation: "licitacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       licitacao_propostas: {
         Row: {
           created_at: string
@@ -1749,6 +1795,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           criterios_avaliacao: Json | null
+          current_best_bid: number | null
           data_abertura: string | null
           data_encerramento: string | null
           data_publicacao: string | null
@@ -1757,6 +1804,8 @@ export type Database = {
           edital_url: string | null
           fornecedor_vencedor_id: string | null
           id: string
+          is_live: boolean | null
+          lance_minimo_decremento: number | null
           modalidade: string
           numero: string
           objeto: string | null
@@ -1773,6 +1822,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           criterios_avaliacao?: Json | null
+          current_best_bid?: number | null
           data_abertura?: string | null
           data_encerramento?: string | null
           data_publicacao?: string | null
@@ -1781,6 +1831,8 @@ export type Database = {
           edital_url?: string | null
           fornecedor_vencedor_id?: string | null
           id?: string
+          is_live?: boolean | null
+          lance_minimo_decremento?: number | null
           modalidade?: string
           numero: string
           objeto?: string | null
@@ -1797,6 +1849,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           criterios_avaliacao?: Json | null
+          current_best_bid?: number | null
           data_abertura?: string | null
           data_encerramento?: string | null
           data_publicacao?: string | null
@@ -1805,6 +1858,8 @@ export type Database = {
           edital_url?: string | null
           fornecedor_vencedor_id?: string | null
           id?: string
+          is_live?: boolean | null
+          lance_minimo_decremento?: number | null
           modalidade?: string
           numero?: string
           objeto?: string | null

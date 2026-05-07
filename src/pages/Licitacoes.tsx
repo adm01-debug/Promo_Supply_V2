@@ -16,6 +16,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { useLicitacoes } from '@/hooks/useLicitacoes';
 import { useFornecedores } from '@/hooks/useFornecedores';
 import { LicitacaoDetailDialog, modalidadeLabels, statusConfig } from './licitacoes/LicitacaoDetailDialog';
+import { ReverseAuctionRoom } from '@/components/licitacoes/ReverseAuctionRoom';
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -28,9 +29,11 @@ export default function Licitacoes() {
   const [filterStatus, setFilterStatus] = useState('todos');
   const [createOpen, setCreateOpen] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
+  const [activeAuctionId, setActiveAuctionId] = useState<string | null>(null);
   const [newForm, setNewForm] = useState({
     titulo: '', descricao: '', modalidade: 'pregao', tipo: 'menor_preco',
     valor_estimado: '', data_abertura: '', data_encerramento: '', objeto: '',
+    is_live: false, lance_minimo_decremento: '0.01'
   });
 
   const filtered = useMemo(() => {
@@ -56,10 +59,12 @@ export default function Licitacoes() {
       tipo: newForm.tipo, valor_estimado: parseFloat(newForm.valor_estimado) || 0,
       data_abertura: newForm.data_abertura || null, data_encerramento: newForm.data_encerramento || null,
       objeto: newForm.objeto || null,
+      is_live: newForm.is_live,
+      lance_minimo_decremento: parseFloat(newForm.lance_minimo_decremento) || 0.01,
     });
     if (result) {
       setCreateOpen(false);
-      setNewForm({ titulo: '', descricao: '', modalidade: 'pregao', tipo: 'menor_preco', valor_estimado: '', data_abertura: '', data_encerramento: '', objeto: '' });
+      setNewForm({ titulo: '', descricao: '', modalidade: 'pregao', tipo: 'menor_preco', valor_estimado: '', data_abertura: '', data_encerramento: '', objeto: '', is_live: false, lance_minimo_decremento: '0.01' });
     }
   };
 
@@ -67,8 +72,24 @@ export default function Licitacoes() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Licitações" description="Gerenciamento de processos licitatórios e propostas" icon={Gavel}
-        actions={[{ label: 'Nova Licitação', icon: Plus, onClick: () => setCreateOpen(true) }]} />
+      <PageHeader 
+        title={activeAuctionId ? "Sala de Leilão" : "Licitações"} 
+        description={activeAuctionId ? "Acompanhamento em tempo real e lances" : "Gerenciamento de processos licitatórios e propostas"} 
+        icon={Gavel}
+        actions={
+          activeAuctionId 
+            ? [{ label: 'Voltar para Lista', icon: Filter, onClick: () => setActiveAuctionId(null) }]
+            : [{ label: 'Nova Licitação', icon: Plus, onClick: () => setCreateOpen(true) }]
+        } 
+      />
+
+      {activeAuctionId && licitacoes.find(l => l.id === activeAuctionId) ? (
+        <ReverseAuctionRoom 
+          licitacao={licitacoes.find(l => l.id === activeAuctionId)!} 
+          userFornecedorId={fornecedores[0]?.id} // For demo purposes, use first supplier
+        />
+      ) : (
+        <>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
@@ -132,6 +153,16 @@ export default function Licitacoes() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1" onClick={e => e.stopPropagation()}>
+                        {lic.is_live && (
+                          <Button 
+                            variant="destructive" 
+                            size="sm" 
+                            className="h-8 animate-pulse text-[10px]" 
+                            onClick={() => setActiveAuctionId(lic.id)}
+                          >
+                            SALA AO VIVO
+                          </Button>
+                        )}
                         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setDetailId(lic.id)} aria-label="Ver detalhes"><Eye className="w-4 h-4" /></Button>
                         <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={() => deleteLicitacao(lic.id)} aria-label="Excluir"><Trash2 className="w-4 h-4" /></Button>
                       </div>
@@ -164,6 +195,13 @@ export default function Licitacoes() {
               <div className="space-y-2"><Label>Data Abertura</Label><Input type="datetime-local" value={newForm.data_abertura} onChange={e => setNewForm(f => ({ ...f, data_abertura: e.target.value }))} /></div>
               <div className="space-y-2"><Label>Data Encerramento</Label><Input type="datetime-local" value={newForm.data_encerramento} onChange={e => setNewForm(f => ({ ...f, data_encerramento: e.target.value }))} /></div>
             </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2"><Label>Decremento Mínimo (R$)</Label><Input type="number" value={newForm.lance_minimo_decremento} onChange={e => setNewForm(f => ({ ...f, lance_minimo_decremento: e.target.value }))} step="0.01" /></div>
+              <div className="flex items-center gap-2 pt-8">
+                <input type="checkbox" checked={newForm.is_live} onChange={e => setNewForm(f => ({ ...f, is_live: e.target.checked }))} id="is_live" className="w-4 h-4" />
+                <Label htmlFor="is_live">Leilão ao Vivo</Label>
+              </div>
+            </div>
             <div className="space-y-2"><Label>Objeto</Label><Textarea value={newForm.objeto} onChange={e => setNewForm(f => ({ ...f, objeto: e.target.value }))} placeholder="Descrição do objeto da licitação" rows={3} /></div>
             <div className="space-y-2"><Label>Descrição</Label><Textarea value={newForm.descricao} onChange={e => setNewForm(f => ({ ...f, descricao: e.target.value }))} placeholder="Informações adicionais" rows={2} /></div>
           </div>
@@ -176,6 +214,8 @@ export default function Licitacoes() {
 
       {selectedLicitacao && (
         <LicitacaoDetailDialog licitacao={selectedLicitacao} open={!!detailId} onClose={() => setDetailId(null)} onUpdate={updateLicitacao} fornecedores={fornecedores} />
+      )}
+        </>
       )}
     </div>
   );
