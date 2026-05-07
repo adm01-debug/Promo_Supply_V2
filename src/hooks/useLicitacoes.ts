@@ -191,3 +191,62 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
 
   return { propostas, isLoading, addProposta, selectWinner, invalidate };
 }
+
+export function useLicitacaoLances(licitacaoId: string | null) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: lances = [], isLoading } = useQuery({
+    queryKey: ['licitacao-lances', licitacaoId],
+    queryFn: async () => {
+      if (!licitacaoId) return [];
+      const { data, error } = await supabase
+        .from('licitacao_lances')
+        .select('*, fornecedor:fornecedores(razao_social)')
+        .eq('licitacao_id', licitacaoId)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user && !!licitacaoId,
+  });
+
+  const placeBid = useCallback(async (valor: number, fornecedorId: string) => {
+    try {
+      const { error } = await supabase.from('licitacao_lances').insert({
+        licitacao_id: licitacaoId,
+        fornecedor_id: fornecedorId,
+        valor_lance: valor
+      });
+      if (error) throw error;
+      toast.success('Lance enviado!');
+      queryClient.invalidateQueries({ queryKey: ['licitacao-lances', licitacaoId] });
+      queryClient.invalidateQueries({ queryKey: ['licitacoes'] });
+      return true;
+    } catch (err: any) {
+      toast.error('Erro ao enviar lance: ' + err.message);
+      return false;
+    }
+  }, [licitacaoId, queryClient]);
+
+  // Subscribe to real-time bids
+  const subscribeToBids = useCallback(() => {
+    if (!licitacaoId) return;
+    const channel = supabase
+      .channel(`licitacao-bids-${licitacaoId}`)
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'licitacao_lances', filter: `licitacao_id=eq.${licitacaoId}` },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ['licitacao-lances', licitacaoId] });
+          queryClient.invalidateQueries({ queryKey: ['licitacoes'] });
+        }
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [licitacaoId, queryClient]);
+
+  return { lances, isLoading, placeBid, subscribeToBids };
+}
