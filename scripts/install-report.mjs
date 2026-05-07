@@ -192,6 +192,11 @@ const payload = {
 if (JSON_FILE) {
   try {
     const absPath = resolvePath(JSON_FILE);
+    if (existsSync(absPath) && !argv.includes("--json-file-overwrite")) {
+      console.error(`[install-report] refusing to overwrite existing --json-file target: ${JSON_FILE}`);
+      console.error(`[install-report] pass --json-file-overwrite to replace it.`);
+      process.exit(2);
+    }
     mkdirSync(dirname(absPath), { recursive: true });
     // pretty: 2-space indent + trailing newline (POSIX-friendly, plays nice
     // with `git diff` and `cat`). minified: single line, no trailing
@@ -202,9 +207,11 @@ if (JSON_FILE) {
         : JSON.stringify(payload, null, 2) + "\n";
     writeFileSync(absPath, body);
     const bytes = statSync(absPath).size;
+    const sha256 = createHash("sha256").update(body).digest("hex");
     console.error(
       `[install-report] wrote JSON → ${absPath} (${bytes} bytes, ${JSON_FILE_MODE})`,
     );
+    console.error(`[install-report] content hash (sha256) → ${sha256}`);
   } catch (e) {
     console.error(`[install-report] failed to write --json-file=${JSON_FILE}: ${e instanceof Error ? e.message : e}`);
     process.exit(2);
