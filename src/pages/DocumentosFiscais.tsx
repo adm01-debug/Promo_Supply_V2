@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { FileText, Upload, CheckCircle, XCircle, Clock, Search, AlertTriangle, FileCheck } from "lucide-react";
+import { FileText, Upload, CheckCircle, XCircle, Clock, Search, AlertTriangle, FileCheck, BrainCircuit, Loader2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -92,6 +92,62 @@ const DocumentosFiscais = () => {
     e.target.value = "";
   };
 
+  const [isProcessingPdf, setIsProcessingPdf] = useState(false);
+
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.includes("pdf") && !file.type.includes("image")) {
+      toast.error("Apenas arquivos PDF ou Imagem são aceitos");
+      return;
+    }
+
+    setIsProcessingPdf(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const fileName = `${Date.now()}-${file.name}`;
+      const filePath = `uploads/${user?.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("fiscal-documents")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Call AI extraction function
+      const { data: extractedData, error: extractionError } = await supabase.functions.invoke('process-invoice-idp', {
+        body: { filePath }
+      });
+
+      if (extractionError) throw extractionError;
+
+      const { error: dbError } = await supabase.from("fiscal_documents").insert({
+        numero_nf: extractedData.numero_nf,
+        chave_acesso: extractedData.chave_acesso,
+        data_emissao: extractedData.data_emissao,
+        valor_total: extractedData.valor_total,
+        valor_produtos: extractedData.valor_produtos,
+        valor_frete: extractedData.valor_frete,
+        source_type: 'pdf',
+        file_path: filePath,
+        status: "validada",
+        uploaded_by: user?.id || null,
+      });
+
+      if (dbError) throw dbError;
+      queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
+      toast.success(`Nota processada via IA com sucesso!`);
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Erro ao processar com IA: " + err.message);
+    } finally {
+      setIsProcessingPdf(false);
+    }
+
+    e.target.value = "";
+  };
+
   const reconcileMutation = useMutation({
     mutationFn: async (docId: string) => {
       const doc = documents?.find(d => d.id === docId);
@@ -171,12 +227,24 @@ const DocumentosFiscais = () => {
                 <CardTitle>Upload NF-e</CardTitle>
                 <CardDescription>Importe arquivos XML de Notas Fiscais Eletrônicas</CardDescription>
               </div>
-              <label>
-                <input type="file" accept=".xml" className="hidden" onChange={handleXmlUpload} />
-                <Button asChild>
-                  <span><Upload className="h-4 w-4 mr-2" /> Importar XML</span>
-                </Button>
-              </label>
+              <div className="flex gap-2">
+                <label>
+                  <input type="file" accept=".xml" className="hidden" onChange={handleXmlUpload} />
+                  <Button variant="outline" asChild>
+                    <span><Upload className="h-4 w-4 mr-2" /> Importar XML</span>
+                  </Button>
+                </label>
+                <label>
+                  <input type="file" accept=".pdf,image/*" className="hidden" onChange={handlePdfUpload} disabled={isProcessingPdf} />
+                  <Button disabled={isProcessingPdf} className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700">
+                    {isProcessingPdf ? (
+                      <><Loader2 className="h-4 w-4 mr-2 animate-spin" /> Processando...</>
+                    ) : (
+                      <><BrainCircuit className="h-4 w-4 mr-2" /> Importar PDF (IA)</>
+                    )}
+                  </Button>
+                </label>
+              </div>
             </div>
           </CardHeader>
         </Card>

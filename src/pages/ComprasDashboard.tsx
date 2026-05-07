@@ -7,6 +7,7 @@ import {
   PiggyBank
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { EnhancedKpiCard } from "@/components/compras/EnhancedKpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
@@ -39,6 +40,7 @@ const LazyPanel = ({ children }: { children: React.ReactNode }) => (
 
 const ComprasDashboard = () => {
   const { kpis, pipeline, urgentItems, loading } = useDashboardKPIs();
+  const { t } = useTranslation();
   const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault } = useDashboardFilters();
   const [currentFilters, setCurrentFilters] = useState({ category: 'all', supplier: 'all', period: '6m', showComparison: true });
 
@@ -57,7 +59,7 @@ const ComprasDashboard = () => {
       case 'kpi-aguardando':
         return (
           <EnhancedKpiCard
-            title="Aguard. Cotação"
+            title={t('dashboard.kpis.pending_approval')}
             value={kpis.aguardandoCotacao}
             icon={ClipboardList}
             color="emerald"
@@ -68,11 +70,11 @@ const ComprasDashboard = () => {
       case 'kpi-volume':
         return (
           <EnhancedKpiCard
-            title="Volume Mês"
+            title={t('dashboard.kpis.total_spend')}
             value={kpis.volumeMes}
             icon={TrendingUp}
             color="cyan"
-            subtitle="Total em compras"
+            subtitle="Total"
             format="currency"
             variant="default"
           />
@@ -80,7 +82,7 @@ const ComprasDashboard = () => {
       case 'kpi-economia':
         return (
           <EnhancedKpiCard
-            title="Economia Gerada"
+            title={t('dashboard.kpis.saving')}
             value={kpis.economiaGerada}
             icon={PiggyBank}
             color="emerald"
@@ -181,9 +183,9 @@ const ComprasDashboard = () => {
         
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Dashboard</h1>
+            <h1 className="text-2xl font-bold text-foreground">{t('dashboard.title')}</h1>
             <p className="text-sm text-muted-foreground">
-              Visão geral do sistema de compras
+              {t('common.welcome')} - {t('common.dashboard')}
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">

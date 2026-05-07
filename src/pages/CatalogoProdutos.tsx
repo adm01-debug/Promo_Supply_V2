@@ -200,9 +200,14 @@ const CatalogoProdutos = () => {
                   </Button>
                 </div>
 
-                {p.categoria_nome && (
-                  <Badge variant="outline" className="text-xs mb-2">{p.categoria_nome}</Badge>
-                )}
+                <div className="flex items-center gap-1 mb-2">
+                  {p.categoria_nome && (
+                    <Badge variant="outline" className="text-[10px] px-1 h-5">{p.categoria_nome}</Badge>
+                  )}
+                  {p.codigo_unspsc && (
+                    <Badge variant="secondary" className="text-[10px] px-1 h-5 bg-blue-50 text-blue-700 border-blue-200">UNSPSC: {p.codigo_unspsc}</Badge>
+                  )}
+                </div>
 
                 <div className="space-y-1.5 text-sm">
                   <div className="flex justify-between">
@@ -323,6 +328,21 @@ const CatalogoProdutos = () => {
                     ))}
                   </SelectContent>
                 </Select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-3">
+              <div className="space-y-1.5">
+                <Label className="text-[10px] uppercase">UNSPSC</Label>
+                <Input value={formData.codigo_unspsc || ""} onChange={(e) => updateField("codigo_unspsc", e.target.value)} placeholder="8 dígitos" className="text-xs h-8" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-[10px] uppercase">CNAE</Label>
+                <Input value={formData.codigo_cnae || ""} onChange={(e) => updateField("codigo_cnae", e.target.value)} placeholder="Atividade" className="text-xs h-8" />
+              </div>
+              <div className="space-y-1.5">
+                <Label className="text-[10px] uppercase">NCM</Label>
+                <Input value={formData.codigo_ncm || ""} onChange={(e) => updateField("codigo_ncm", e.target.value)} placeholder="Fiscal" className="text-xs h-8" />
               </div>
             </div>
 

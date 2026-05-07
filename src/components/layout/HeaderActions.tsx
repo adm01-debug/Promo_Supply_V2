@@ -6,6 +6,7 @@ import { RealNotificationCenter } from "@/components/compras/RealNotificationCen
 import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
 import { UserMenu } from "@/components/compras/UserMenu";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AccessibilityPanel } from "@/components/accessibility/AdvancedAccessibility";
 import { FeedbackSettingsPanel } from "@/components/settings/FeedbackSettingsPanel";
 import { Keyboard, HelpCircle, Command, Settings2, Accessibility } from "lucide-react";
@@ -47,6 +48,7 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
       </Tooltip>
 
       <ThemeToggle />
+      <LanguageSwitcher />
 
       <Suspense fallback={null}>
         <DependencyHealthBadge />

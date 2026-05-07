@@ -13,6 +13,9 @@ export interface Produto {
   preco_referencia: number | null;
   ultimo_preco: number | null;
   estoque_minimo: number | null;
+  codigo_unspsc: string | null;
+  codigo_cnae: string | null;
+  codigo_ncm: string | null;
   ativo: boolean | null;
   imagem_url: string | null;
   tags: string[] | null;

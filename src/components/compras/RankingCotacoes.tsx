@@ -1,6 +1,15 @@
-import { Trophy, Check, AlertTriangle, Truck } from "lucide-react";
+import { useState } from "react";
+import { Trophy, Check, AlertTriangle, Truck, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
 
 interface Cotacao {
   id: string;
@@ -22,6 +31,12 @@ interface RankingCotacoesProps {
   selecionado: string | null;
 }
 
+interface ScoreWeights {
+  preco: number;
+  prazo: number;
+  estoque: number;
+}
+
 const medalColors = [
   { bg: 'bg-warning/20', border: 'border-yellow-500/50', text: 'text-warning', icon: '🥇' },
   { bg: 'bg-gray-300/20', border: 'border-gray-400/50', text: 'text-muted-foreground', icon: '🥈' },
@@ -29,11 +44,119 @@ const medalColors = [
 ];
 
 export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionado }: RankingCotacoesProps) => {
-  // Ordena por total
-  const cotacoesOrdenadas = [...cotacoes].sort((a, b) => a.total - b.total);
+  const [weights, setWeights] = useState<ScoreWeights>({
+    preco: 60,
+    prazo: 20,
+    estoque: 20
+  });
+
+  const calculateScore = (cotacao: Cotacao) => {
+    // Encontrar min/max para normalização
+    const minTotal = Math.min(...cotacoes.map(c => c.total));
+    const maxTotal = Math.max(...cotacoes.map(c => c.total));
+    const minPrazo = Math.min(...cotacoes.map(c => c.prazoEntrega));
+    const maxPrazo = Math.max(...cotacoes.map(c => c.prazoEntrega));
+    
+    // Normalização (0 a 100)
+    // Para preço e prazo, quanto menor, melhor (por isso 1 - normalized)
+    const normalizedPreco = maxTotal === minTotal ? 100 : (1 - (cotacao.total - minTotal) / (maxTotal - minTotal)) * 100;
+    const normalizedPrazo = maxPrazo === minPrazo ? 100 : (1 - (cotacao.prazoEntrega - minPrazo) / (maxPrazo - minPrazo)) * 100;
+    
+    // Para estoque, quanto mais próximo do necessário, melhor
+    const normalizedEstoque = cotacao.quantidadeDisponivel >= quantidade ? 100 : (cotacao.quantidadeDisponivel / quantidade) * 100;
+
+    const finalScore = (
+      (normalizedPreco * (weights.preco / 100)) +
+      (normalizedPrazo * (weights.prazo / 100)) +
+      (normalizedEstoque * (weights.estoque / 100))
+    );
+
+    return Math.round(finalScore);
+  };
+
+  const cotacoesComScore = cotacoes.map(c => ({
+    ...c,
+    score: calculateScore(c)
+  }));
+
+  // Ordena por score decrescente
+  const cotacoesOrdenadas = [...cotacoesComScore].sort((a, b) => b.score - a.score);
 
   return (
     <div className="space-y-3">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs text-muted-foreground italic">
+          Ranking calculado com base em: Preço ({weights.preco}%), Prazo ({weights.prazo}%), Estoque ({weights.estoque}%)
+        </p>
+        
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 gap-2">
+              <Settings2 className="w-4 h-4" />
+              Ajustar Pesos
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <h4 className="font-medium leading-none text-foreground">Pesos do Scorecard</h4>
+                <p className="text-sm text-muted-foreground">
+                  Ajuste a importância de cada critério para o ranking.
+                </p>
+              </div>
+              <div className="grid gap-6">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="preco">Preço ({weights.preco}%)</Label>
+                  </div>
+                  <Slider
+                    id="preco"
+                    max={100}
+                    step={5}
+                    value={[weights.preco]}
+                    onValueChange={([val]) => setWeights(prev => ({ ...prev, preco: val }))}
+                  />
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="prazo">Prazo ({weights.prazo}%)</Label>
+                  </div>
+                  <Slider
+                    id="prazo"
+                    max={100}
+                    step={5}
+                    value={[weights.prazo]}
+                    onValueChange={([val]) => setWeights(prev => ({ ...prev, prazo: val }))}
+                  />
+                </div>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="estoque">Estoque ({weights.estoque}%)</Label>
+                  </div>
+                  <Slider
+                    id="estoque"
+                    max={100}
+                    step={5}
+                    value={[weights.estoque]}
+                    onValueChange={([val]) => setWeights(prev => ({ ...prev, estoque: val }))}
+                  />
+                </div>
+                <div className="pt-2 border-t border-border">
+                  <p className="text-[10px] text-muted-foreground text-center">
+                    Total: {weights.preco + weights.prazo + weights.estoque}%
+                  </p>
+                  {(weights.preco + weights.prazo + weights.estoque) !== 100 && (
+                    <p className="text-[10px] text-destructive text-center font-semibold">
+                      A soma deve ser 100% para um cálculo preciso.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          </PopoverContent>
+        </Popover>
+      </div>
+
       {cotacoesOrdenadas.map((cotacao, index) => {
         const medal = medalColors[index] || { bg: 'bg-muted', border: 'border-border', text: 'text-muted-foreground', icon: `#${index + 1}` };
         const isSelected = selecionado === cotacao.id;
@@ -43,13 +166,25 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
           <div
             key={cotacao.id}
             className={cn(
-              "p-4 rounded-lg border-2 transition-all",
+              "p-4 rounded-lg border-2 transition-all relative overflow-hidden",
               isSelected 
                 ? "border-primary bg-primary/5 ring-2 ring-primary/20" 
                 : medal.border,
               medal.bg
             )}
           >
+            {/* Score Badge */}
+            <div className="absolute top-0 right-0">
+              <div className={cn(
+                "px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-bl-lg",
+                cotacao.score >= 80 ? "bg-success text-white" : 
+                cotacao.score >= 60 ? "bg-warning text-warning-foreground" : 
+                "bg-destructive text-white"
+              )}>
+                Score: {cotacao.score}/100
+              </div>
+            </div>
+
             <div className="flex items-start gap-4">
               {/* Posição */}
               <div className={cn(
@@ -115,21 +250,28 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
               </div>
 
               {/* Ação */}
-              <Button
-                variant={isSelected ? "default" : "outline"}
-                size="sm"
-                onClick={() => onSelecionar(cotacao.id)}
-                className="shrink-0"
-              >
-                {isSelected ? (
-                  <>
-                    <Check className="w-4 h-4 mr-1" />
-                    Selecionado
-                  </>
-                ) : (
-                  'Selecionar'
+              <div className="flex flex-col items-end gap-2 shrink-0">
+                <Button
+                  variant={isSelected ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => onSelecionar(cotacao.id)}
+                  className="w-24"
+                >
+                  {isSelected ? (
+                    <>
+                      <Check className="w-4 h-4 mr-1" />
+                      Ok
+                    </>
+                  ) : (
+                    'Selecionar'
+                  )}
+                </Button>
+                {index === 0 && !isSelected && (
+                  <Badge variant="outline" className="text-[10px] text-success border-success/30 bg-success/10 py-0">
+                    Melhor Escolha
+                  </Badge>
                 )}
-              </Button>
+              </div>
             </div>
           </div>
         );
