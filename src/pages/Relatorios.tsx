@@ -4,6 +4,7 @@ import {
   TrendingUp,
   Calendar,
   Download,
+  Target
 } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Button } from "@/components/ui/button";
