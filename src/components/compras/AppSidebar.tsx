@@ -257,15 +257,22 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
       )}
     >
       {/* ── Header ── */}
-      <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-border/40 px-3">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary-glow">
-          <Package className="h-4 w-4 text-primary-foreground" />
+      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-border/10 px-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary via-primary-glow to-primary shadow-lg shadow-primary/20 transition-transform hover:scale-105 active:scale-95">
+          <Package className="h-5 w-5 text-primary-foreground" />
         </div>
-        {!collapsed && (
-          <span className="text-sm font-bold tracking-tight text-foreground">
-            Promo Supply
-          </span>
-        )}
+        <AnimatePresence>
+          {!collapsed && (
+            <motion.span 
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="text-[15px] font-black uppercase tracking-tighter text-foreground"
+            >
+              PROMO <span className="text-primary">SUPPLY</span>
+            </motion.span>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* ── Toggle ── */}
