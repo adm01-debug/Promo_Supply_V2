@@ -92,6 +92,62 @@ const DocumentosFiscais = () => {
     e.target.value = "";
   };
 
+  const [isProcessingPdf, setIsProcessingPdf] = useState(false);
+
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.includes("pdf") && !file.type.includes("image")) {
+      toast.error("Apenas arquivos PDF ou Imagem são aceitos");
+      return;
+    }
+
+    setIsProcessingPdf(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      const fileName = `${Date.now()}-${file.name}`;
+      const filePath = `uploads/${user?.id}/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("fiscal-documents")
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // Call AI extraction function
+      const { data: extractedData, error: extractionError } = await supabase.functions.invoke('process-invoice-idp', {
+        body: { filePath }
+      });
+
+      if (extractionError) throw extractionError;
+
+      const { error: dbError } = await supabase.from("fiscal_documents").insert({
+        numero_nf: extractedData.numero_nf,
+        chave_acesso: extractedData.chave_acesso,
+        data_emissao: extractedData.data_emissao,
+        valor_total: extractedData.valor_total,
+        valor_produtos: extractedData.valor_produtos,
+        valor_frete: extractedData.valor_frete,
+        source_type: 'pdf',
+        file_path: filePath,
+        status: "validada",
+        uploaded_by: user?.id || null,
+      });
+
+      if (dbError) throw dbError;
+      queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
+      toast.success(`Nota processada via IA com sucesso!`);
+    } catch (err: any) {
+      console.error(err);
+      toast.error("Erro ao processar com IA: " + err.message);
+    } finally {
+      setIsProcessingPdf(false);
+    }
+
+    e.target.value = "";
+  };
+
   const reconcileMutation = useMutation({
     mutationFn: async (docId: string) => {
       const doc = documents?.find(d => d.id === docId);
