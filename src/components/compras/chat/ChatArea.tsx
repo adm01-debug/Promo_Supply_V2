@@ -90,36 +90,62 @@ export function ChatArea({
 
   return (
     <>
-      {/* Chat Header */}
-      <div className="p-4 border-b flex items-center justify-between">
+      {/* Premium Chat Header */}
+      <div className="p-4 border-b bg-card/50 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={selectedContact.avatar} />
-            <AvatarFallback><Building2 className="w-5 h-5" /></AvatarFallback>
-          </Avatar>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="relative"
+          >
+            <Avatar className="h-10 w-10 border-2 border-primary/10">
+              <AvatarImage src={selectedContact.avatar} />
+              <AvatarFallback className="bg-primary/5 text-primary">
+                <Building2 className="w-5 h-5" />
+              </AvatarFallback>
+            </Avatar>
+            {selectedContact.online && (
+              <span className="absolute bottom-0 right-0 w-3 h-3 bg-success border-2 border-background rounded-full shadow-sm" />
+            )}
+          </motion.div>
           <div>
-            <p className="font-medium">{selectedContact.name}</p>
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              {selectedContact.online ? (
-                <><span className="w-2 h-2 bg-success rounded-full" />Online</>
-              ) : (
-                <><Clock className="w-3 h-3" />Offline</>
+            <div className="flex items-center gap-2">
+              <p className="font-bold tracking-tight text-foreground/90">{selectedContact.name}</p>
+              {selectedContact.online && (
+                <Badge variant="secondary" className="h-4 px-1.5 text-[9px] font-bold uppercase tracking-widest bg-success/10 text-success border-none">
+                  Online
+                </Badge>
               )}
+            </div>
+            <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-tight flex items-center gap-1.5">
+              <Building2 className="w-3 h-3" />
+              {selectedContact.company}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <Button variant="ghost" size="icon" className="h-9 w-9"><Phone className="w-4 h-4" /></Button>
-          <Button variant="ghost" size="icon" className="h-9 w-9"><Video className="w-4 h-4" /></Button>
+          <div className="hidden sm:flex items-center gap-1 mr-2 px-2 py-1 rounded-lg bg-primary/5 border border-primary/10">
+            <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+            <span className="text-[9px] font-black uppercase tracking-tighter text-primary">IA Sync</span>
+          </div>
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all">
+            <Phone className="w-4 h-4" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all">
+            <Video className="w-4 h-4" />
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-9 w-9"><MoreVertical className="w-4 h-4" /></Button>
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl transition-all">
+                <MoreVertical className="w-4 h-4" />
+              </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>Ver perfil</DropdownMenuItem>
-              <DropdownMenuItem>Ver cotações</DropdownMenuItem>
-              <DropdownMenuItem>Arquivar conversa</DropdownMenuItem>
-              <DropdownMenuItem className="text-destructive">Bloquear</DropdownMenuItem>
+            <DropdownMenuContent align="end" className="rounded-xl border-primary/10 shadow-2xl">
+              <DropdownMenuItem className="text-xs font-medium rounded-lg">Ver perfil completo</DropdownMenuItem>
+              <DropdownMenuItem className="text-xs font-medium rounded-lg">Histórico de cotações</DropdownMenuItem>
+              <DropdownMenuItem className="text-xs font-medium rounded-lg">Análise de performance</DropdownMenuItem>
+              <div className="h-px bg-border/50 my-1" />
+              <DropdownMenuItem className="text-xs font-medium rounded-lg text-destructive">Bloquear fornecedor</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
