@@ -91,10 +91,7 @@ const Cotacao = () => {
     }
   };
   
-  const [buscaStatus, setBuscaStatus] = useState<'idle' | 'searching' | 'done'>('idle');
-  const [cotacoesAPI, setCotacoesAPI] = useState<CotacaoAPI[]>([]);
-  const [showManualModal, setShowManualModal] = useState(false);
-  const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string | null>(null);
+  // Status state previously declared above
 
   // Get current solicitacao
   const solicitacao = useMemo(() => {
