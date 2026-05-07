@@ -128,8 +128,29 @@
 
   .dark {
     /* ===== DARK PREMIUM - DEEP SPACE ===== */
-    --background: 240 10% 3.9%;
+    --background: 240 10% 2%;
     --foreground: 0 0% 98%;
+    --card: 240 10% 4%;
+    --card-foreground: 0 0% 98%;
+    --card-elevated: 240 10% 6%;
+    --popover: 240 10% 3%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 250 100% 66%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 250 100% 75%;
+    --secondary: 240 4% 10%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4% 8%;
+    --muted-foreground: 240 5% 60%;
+    --accent: 250 100% 12%;
+    --accent-foreground: 0 0% 98%;
+    --border: 240 3.7% 12%;
+    --input: 240 3.7% 12%;
+    --ring: 250 100% 66%;
+    --glass-background: 240 10% 4% / 0.6;
+    --glass-border: 240 3.7% 15% / 0.4;
+    --sidebar-background: 240 10% 3%;
+    --sidebar-foreground: 0 0% 98%;
 
     --card: 240 10% 6%;
     --card-foreground: 0 0% 98%;

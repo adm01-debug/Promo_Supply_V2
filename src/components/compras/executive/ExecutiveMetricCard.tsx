@@ -55,14 +55,15 @@ export const ExecutiveMetricCard = ({
     >
       <Card
         className={cn(
-          "h-full relative overflow-hidden transition-all duration-300 group border-border/40 hover:border-primary/40",
-          "bg-gradient-to-br from-card to-card/50 backdrop-blur-sm",
-          "dark:bg-gradient-to-br dark:from-white/[0.03] dark:to-transparent",
+          "h-full relative overflow-hidden transition-all duration-500 group",
+          "bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl border-border/40 hover:border-primary/40",
+          "dark:bg-gradient-to-br dark:from-white/[0.05] dark:to-transparent dark:border-white/[0.03]",
+          "hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.3)] dark:hover:shadow-[0_20px_40px_-15px_rgba(var(--primary),0.1)]",
           onClick ? "cursor-pointer active:scale-95" : ""
         )}
         onClick={onClick}
       >
-        <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full blur-3xl -mr-12 -mt-12 group-hover:bg-primary/10 transition-colors" />
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[80px] -mr-16 -mt-16 group-hover:bg-primary/20 transition-all duration-700" />
         
         <CardContent className="p-6 relative">
           <div className="flex items-center justify-between mb-5">
