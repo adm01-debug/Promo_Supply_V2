@@ -303,6 +303,3 @@ export const PurchaseClimateWidget = forwardRef<HTMLDivElement>((_props, ref) =>
   );
 });
 PurchaseClimateWidget.displayName = 'PurchaseClimateWidget';
-  );
-});
-PurchaseClimateWidget.displayName = 'PurchaseClimateWidget';
