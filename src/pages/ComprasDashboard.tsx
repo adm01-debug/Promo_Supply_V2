@@ -44,7 +44,7 @@ const ComprasDashboard = () => {
 
   // Realtime with debounce to avoid excessive re-renders
   useRealtimeSubscription({
-    tables: ['solicitacoes', 'pedidos', 'cotacoes', 'pagamentos', 'notifications'],
+    tables: ['solicitacoes', 'pedidos', 'cotacoes', 'pagamentos', 'notifications', 'approval_workflows', 'approval_steps'],
     debounceMs: 2000,
   });
 
