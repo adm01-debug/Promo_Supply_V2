@@ -222,7 +222,7 @@ const SidebarSection = ({
   <div className="space-y-0.5">
     {/* Section label — hidden when collapsed */}
     {!collapsed && (
-      <p className="px-3 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 select-none">
+      <p className="px-4 pb-2 pt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 select-none">
         {section.label}
       </p>
     )}
