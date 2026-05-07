@@ -411,6 +411,81 @@ export type Database = {
           },
         ]
       }
+      auction_bids: {
+        Row: {
+          amount: number
+          bid_time: string
+          event_id: string
+          fornecedor_id: string
+          id: string
+          invitation_id: string
+          lot_id: string | null
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["bid_status"]
+          triggered_extension: boolean | null
+        }
+        Insert: {
+          amount: number
+          bid_time?: string
+          event_id: string
+          fornecedor_id: string
+          id?: string
+          invitation_id: string
+          lot_id?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["bid_status"]
+          triggered_extension?: boolean | null
+        }
+        Update: {
+          amount?: number
+          bid_time?: string
+          event_id?: string
+          fornecedor_id?: string
+          id?: string
+          invitation_id?: string
+          lot_id?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["bid_status"]
+          triggered_extension?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_bids_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auction_bids_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auction_bids_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "auction_bids_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_invitations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auction_bids_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_event_lots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_logs: {
         Row: {
           action_type: Database["public"]["Enums"]["audit_action_type"]
@@ -3428,6 +3503,386 @@ export type Database = {
           },
         ]
       }
+      sourcing_awards: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          event_id: string
+          fornecedor_id: string
+          id: string
+          justificativa: string
+          lot_id: string | null
+          pedido_id: string | null
+          saving_estimado: number | null
+          valor_adjudicado: number
+          winner_response_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          event_id: string
+          fornecedor_id: string
+          id?: string
+          justificativa: string
+          lot_id?: string | null
+          pedido_id?: string | null
+          saving_estimado?: number | null
+          valor_adjudicado: number
+          winner_response_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          event_id?: string
+          fornecedor_id?: string
+          id?: string
+          justificativa?: string
+          lot_id?: string | null
+          pedido_id?: string | null
+          saving_estimado?: number | null
+          valor_adjudicado?: number
+          winner_response_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_awards_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_awards_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_awards_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "sourcing_awards_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_event_lots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_awards_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_awards_winner_response_id_fkey"
+            columns: ["winner_response_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_responses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sourcing_event_criteria: {
+        Row: {
+          config: Json | null
+          created_at: string
+          event_id: string
+          formula: string
+          id: string
+          nome: string
+          peso: number
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          event_id: string
+          formula?: string
+          id?: string
+          nome: string
+          peso: number
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          event_id?: string
+          formula?: string
+          id?: string
+          nome?: string
+          peso?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_event_criteria_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sourcing_event_lots: {
+        Row: {
+          codigo: string | null
+          created_at: string
+          descricao: string | null
+          especificacoes: Json | null
+          event_id: string
+          id: string
+          nome: string
+          ordem: number
+          preco_referencia: number | null
+          quantidade: number
+          unidade: string
+        }
+        Insert: {
+          codigo?: string | null
+          created_at?: string
+          descricao?: string | null
+          especificacoes?: Json | null
+          event_id: string
+          id?: string
+          nome: string
+          ordem?: number
+          preco_referencia?: number | null
+          quantidade?: number
+          unidade?: string
+        }
+        Update: {
+          codigo?: string | null
+          created_at?: string
+          descricao?: string | null
+          especificacoes?: Json | null
+          event_id?: string
+          id?: string
+          nome?: string
+          ordem?: number
+          preco_referencia?: number | null
+          quantidade?: number
+          unidade?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_event_lots_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sourcing_event_questions: {
+        Row: {
+          ajuda: string | null
+          created_at: string
+          event_id: string
+          id: string
+          obrigatoria: boolean
+          opcoes: Json | null
+          ordem: number
+          pergunta: string
+          peso: number
+          type: Database["public"]["Enums"]["question_type"]
+          validacao: Json | null
+        }
+        Insert: {
+          ajuda?: string | null
+          created_at?: string
+          event_id: string
+          id?: string
+          obrigatoria?: boolean
+          opcoes?: Json | null
+          ordem?: number
+          pergunta: string
+          peso?: number
+          type: Database["public"]["Enums"]["question_type"]
+          validacao?: Json | null
+        }
+        Update: {
+          ajuda?: string | null
+          created_at?: string
+          event_id?: string
+          id?: string
+          obrigatoria?: boolean
+          opcoes?: Json | null
+          ordem?: number
+          pergunta?: string
+          peso?: number
+          type?: Database["public"]["Enums"]["question_type"]
+          validacao?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_event_questions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sourcing_events: {
+        Row: {
+          auction_config: Json | null
+          award_deadline: string | null
+          budget_estimate: number | null
+          category_id: string | null
+          closes_at: string
+          created_at: string
+          currency: string
+          description: string | null
+          evaluation_deadline: string | null
+          id: string
+          metadata: Json | null
+          numero: string
+          organization_id: string | null
+          owner_id: string
+          sealed_bid: boolean
+          starts_at: string | null
+          status: Database["public"]["Enums"]["sourcing_status"]
+          title: string
+          type: Database["public"]["Enums"]["sourcing_type"]
+          updated_at: string
+        }
+        Insert: {
+          auction_config?: Json | null
+          award_deadline?: string | null
+          budget_estimate?: number | null
+          category_id?: string | null
+          closes_at: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          evaluation_deadline?: string | null
+          id?: string
+          metadata?: Json | null
+          numero: string
+          organization_id?: string | null
+          owner_id: string
+          sealed_bid?: boolean
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["sourcing_status"]
+          title: string
+          type: Database["public"]["Enums"]["sourcing_type"]
+          updated_at?: string
+        }
+        Update: {
+          auction_config?: Json | null
+          award_deadline?: string | null
+          budget_estimate?: number | null
+          category_id?: string | null
+          closes_at?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          evaluation_deadline?: string | null
+          id?: string
+          metadata?: Json | null
+          numero?: string
+          organization_id?: string | null
+          owner_id?: string
+          sealed_bid?: boolean
+          starts_at?: string | null
+          status?: Database["public"]["Enums"]["sourcing_status"]
+          title?: string
+          type?: Database["public"]["Enums"]["sourcing_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_events_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_events_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sourcing_invitations: {
+        Row: {
+          declined_at: string | null
+          declined_reason: string | null
+          email_contato: string
+          event_id: string
+          fornecedor_id: string
+          id: string
+          invited_at: string
+          last_reminder_at: string | null
+          nome_contato: string | null
+          reminder_count: number
+          status: Database["public"]["Enums"]["invitation_status"]
+          token: string
+          viewed_at: string | null
+        }
+        Insert: {
+          declined_at?: string | null
+          declined_reason?: string | null
+          email_contato: string
+          event_id: string
+          fornecedor_id: string
+          id?: string
+          invited_at?: string
+          last_reminder_at?: string | null
+          nome_contato?: string | null
+          reminder_count?: number
+          status?: Database["public"]["Enums"]["invitation_status"]
+          token: string
+          viewed_at?: string | null
+        }
+        Update: {
+          declined_at?: string | null
+          declined_reason?: string | null
+          email_contato?: string
+          event_id?: string
+          fornecedor_id?: string
+          id?: string
+          invited_at?: string
+          last_reminder_at?: string | null
+          nome_contato?: string | null
+          reminder_count?: number
+          status?: Database["public"]["Enums"]["invitation_status"]
+          token?: string
+          viewed_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_invitations_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_invitations_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_invitations_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+        ]
+      }
       sourcing_pipeline: {
         Row: {
           actual_saving_value: number | null
@@ -3490,6 +3945,182 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sourcing_response_answers: {
+        Row: {
+          id: string
+          question_id: string
+          response_id: string
+          resposta_choice: Json | null
+          resposta_file_url: string | null
+          resposta_number: number | null
+          resposta_text: string | null
+          score_manual: number | null
+        }
+        Insert: {
+          id?: string
+          question_id: string
+          response_id: string
+          resposta_choice?: Json | null
+          resposta_file_url?: string | null
+          resposta_number?: number | null
+          resposta_text?: string | null
+          score_manual?: number | null
+        }
+        Update: {
+          id?: string
+          question_id?: string
+          response_id?: string
+          resposta_choice?: Json | null
+          resposta_file_url?: string | null
+          resposta_number?: number | null
+          resposta_text?: string | null
+          score_manual?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_response_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_event_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_response_answers_response_id_fkey"
+            columns: ["response_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_responses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sourcing_response_items: {
+        Row: {
+          id: string
+          lot_id: string
+          marca: string | null
+          metadata: Json | null
+          modelo: string | null
+          prazo_dias: number | null
+          preco_total: number
+          preco_unitario: number
+          response_id: string
+          validade_dias: number | null
+        }
+        Insert: {
+          id?: string
+          lot_id: string
+          marca?: string | null
+          metadata?: Json | null
+          modelo?: string | null
+          prazo_dias?: number | null
+          preco_total: number
+          preco_unitario: number
+          response_id: string
+          validade_dias?: number | null
+        }
+        Update: {
+          id?: string
+          lot_id?: string
+          marca?: string | null
+          metadata?: Json | null
+          modelo?: string | null
+          prazo_dias?: number | null
+          preco_total?: number
+          preco_unitario?: number
+          response_id?: string
+          validade_dias?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_response_items_lot_id_fkey"
+            columns: ["lot_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_event_lots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_response_items_response_id_fkey"
+            columns: ["response_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_responses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sourcing_responses: {
+        Row: {
+          created_at: string
+          event_id: string
+          fornecedor_id: string
+          id: string
+          invitation_id: string
+          observacoes: string | null
+          ranking: number | null
+          submitted_at: string | null
+          termos_aceitos: boolean
+          total_preco: number | null
+          total_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          fornecedor_id: string
+          id?: string
+          invitation_id: string
+          observacoes?: string | null
+          ranking?: number | null
+          submitted_at?: string | null
+          termos_aceitos?: boolean
+          total_preco?: number | null
+          total_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          fornecedor_id?: string
+          id?: string
+          invitation_id?: string
+          observacoes?: string | null
+          ranking?: number | null
+          submitted_at?: string | null
+          termos_aceitos?: boolean
+          total_preco?: number | null
+          total_score?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_responses_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_responses_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_responses_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "sourcing_responses_invitation_id_fkey"
+            columns: ["invitation_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_invitations"
             referencedColumns: ["id"]
           },
         ]
@@ -4168,6 +4799,28 @@ export type Database = {
         | "usuario"
         | "configuracao"
         | "relatorio"
+      bid_status: "valid" | "rejected" | "withdrawn" | "winning"
+      invitation_status:
+        | "pending"
+        | "viewed"
+        | "declined"
+        | "submitted"
+        | "expired"
+      question_type:
+        | "text"
+        | "number"
+        | "single_choice"
+        | "multi_choice"
+        | "file"
+        | "date"
+      sourcing_status:
+        | "draft"
+        | "published"
+        | "in_progress"
+        | "evaluation"
+        | "awarded"
+        | "cancelled"
+      sourcing_type: "rfi" | "rfp" | "rfq" | "auction"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4318,6 +4971,31 @@ export const Constants = {
         "configuracao",
         "relatorio",
       ],
+      bid_status: ["valid", "rejected", "withdrawn", "winning"],
+      invitation_status: [
+        "pending",
+        "viewed",
+        "declined",
+        "submitted",
+        "expired",
+      ],
+      question_type: [
+        "text",
+        "number",
+        "single_choice",
+        "multi_choice",
+        "file",
+        "date",
+      ],
+      sourcing_status: [
+        "draft",
+        "published",
+        "in_progress",
+        "evaluation",
+        "awarded",
+        "cancelled",
+      ],
+      sourcing_type: ["rfi", "rfp", "rfq", "auction"],
     },
   },
 } as const

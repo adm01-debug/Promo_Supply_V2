@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
@@ -190,6 +190,61 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
   }, [licitacaoId, invalidate, queryClient]);
 
   return { propostas, isLoading, addProposta, selectWinner, invalidate };
+}
+
+export function useSourcingEvents() {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: events = [], isLoading } = useQuery({
+    queryKey: ['sourcing-events'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('sourcing_events')
+        .select('*, category:categorias(nome)')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const createEvent = useMutation({
+    mutationFn: async (event: any) => {
+      const { data, error } = await supabase.from('sourcing_events').insert(event).select().single();
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['sourcing-events'] });
+      toast.success('Evento de sourcing criado!');
+    },
+    onError: (err: any) => toast.error('Erro: ' + err.message)
+  });
+
+  return { events, isLoading, createEvent };
+}
+
+export function useSourcingEventDetails(eventId: string | null) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const { data: event, isLoading: loadingEvent } = useQuery({
+    queryKey: ['sourcing-event', eventId],
+    queryFn: async () => {
+      if (!eventId) return null;
+      const { data, error } = await supabase
+        .from('sourcing_events')
+        .select('*, category:categorias(nome), lots:sourcing_event_lots(*), questions:sourcing_event_questions(*), criteria:sourcing_event_criteria(*), invitations:sourcing_invitations(*, fornecedor:fornecedores(razao_social)), responses:sourcing_responses(*, fornecedor:fornecedores(razao_social))')
+        .eq('id', eventId)
+        .single();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user && !!eventId,
+  });
+
+  return { event, loadingEvent };
 }
 
 export function useLicitacaoLances(licitacaoId: string | null) {

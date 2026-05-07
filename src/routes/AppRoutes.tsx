@@ -37,6 +37,7 @@ const Licitacoes = lazy(() => import("@/pages/Licitacoes"));
 const RecebimentoOffline = lazy(() => import("@/pages/RecebimentoOffline"));
 const AdminTelemetria = lazy(() => import("@/pages/AdminTelemetria"));
 const DependencyHealth = lazy(() => import("@/pages/admin/DependencyHealth"));
+const Sourcing = lazy(() => import("@/pages/Sourcing"));
 const PortalFornecedor = lazy(() => import("@/pages/PortalFornecedor"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
@@ -135,6 +136,9 @@ export const AnimatedRoutes = () => {
         } />
         <Route path="/catalogo-produtos" element={
           <ProtectedRoute><ModuleErrorBoundary module="default"><CatalogoProdutos /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/sourcing" element={
+          <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><Sourcing /></ModuleErrorBoundary></ProtectedRoute>
         } />
         <Route path="/licitacoes" element={
           <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="default"><Licitacoes /></ModuleErrorBoundary></ProtectedRoute>

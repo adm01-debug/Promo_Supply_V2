@@ -5,7 +5,7 @@ import { ptBR } from "date-fns/locale/pt-BR";
 import {
   Building2, Package, FileText, TrendingUp, Clock,
   CheckCircle, AlertTriangle, DollarSign, Eye, Search,
-  Star, Truck, BarChart3, ShieldCheck,
+  Star, Truck, BarChart3, ShieldCheck, Gavel
 } from 'lucide-react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -236,6 +236,9 @@ export default function PortalFornecedor() {
                 <TabsTrigger value="contratos" className="gap-1.5">
                   <Truck className="w-4 h-4" /> Contratos ({contratos.length})
                 </TabsTrigger>
+                <TabsTrigger value="sourcing" className="gap-1.5">
+                  <Gavel className="w-4 h-4" /> Sourcing (RFx)
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="pedidos">
@@ -364,6 +367,17 @@ export default function PortalFornecedor() {
                         </TableBody>
                       </Table>
                     )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="sourcing">
+                <Card>
+                  <CardContent className="p-12 text-center text-muted-foreground">
+                    <Gavel className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                    <h3 className="font-semibold text-lg text-foreground mb-1">Convites de Sourcing</h3>
+                    <p className="max-w-xs mx-auto">Visualize RFPs, RFQs e Leilões Reversos para os quais este fornecedor foi convidado.</p>
+                    <Button variant="outline" className="mt-4" disabled>Ver via Magic Link</Button>
                   </CardContent>
                 </Card>
               </TabsContent>
