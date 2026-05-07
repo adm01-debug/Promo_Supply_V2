@@ -148,13 +148,14 @@ const SidebarItem = ({
       to={item.href}
       aria-current={active ? "page" : undefined}
       className={cn(
-        "group relative flex items-center gap-3 rounded-lg px-3 py-2 text-[13px] font-medium transition-colors",
-        collapsed && "justify-center px-0",
+        "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-all duration-200",
+        collapsed && "justify-center px-0 mx-2",
         active
-          ? "bg-primary/10 text-primary"
-          : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+          ? "bg-primary/10 text-primary shadow-[inset_0_0_20px_rgba(var(--primary),0.05)]"
+          : "text-muted-foreground hover:bg-muted/50 hover:text-foreground hover:translate-x-0.5"
       )}
     >
+
       {/* Left accent bar */}
       {active && (
         <span className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-[3px] rounded-r-full bg-primary" />
