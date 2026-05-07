@@ -232,16 +232,20 @@ export const ExecutiveDashboard = () => {
       {/* Header */}
       <motion.div variants={itemVariants} className="flex items-center justify-between flex-wrap gap-6">
         <div>
-          <h2 className="text-3xl font-black tracking-tight text-foreground">Dashboard Executivo</h2>
-          <p className="text-muted-foreground font-medium">Visão consolidada de compras — Inteligência em tempo real</p>
+          <h2 className="text-4xl font-black tracking-tight text-foreground bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+            Dashboard Executivo
+          </h2>
+          <p className="text-sm text-muted-foreground font-medium tracking-wide">
+            Inteligência preditiva e visão 360° da operação
+          </p>
         </div>
         <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-3 px-4 py-2 rounded-xl border-border/40 bg-card/50 backdrop-blur-sm shadow-sm ring-1 ring-black/5 dark:ring-white/5">
-            <GitCompare className="h-4 w-4 text-primary" />
-            <Label htmlFor="comparison-mode" className="text-sm font-bold cursor-pointer">Comparar Períodos</Label>
-            <Switch id="comparison-mode" checked={showComparison} onCheckedChange={setShowComparison} />
+          <div className="flex items-center gap-3 px-4 py-2 rounded-2xl border-white/[0.05] bg-card/30 backdrop-blur-xl shadow-2xl ring-1 ring-white/5">
+            <GitCompare className="h-4 w-4 text-primary animate-pulse" />
+            <Label htmlFor="comparison-mode" className="text-xs font-bold cursor-pointer tracking-wider text-muted-foreground uppercase">Comparar Períodos</Label>
+            <Switch id="comparison-mode" checked={showComparison} onCheckedChange={setShowComparison} className="data-[state=checked]:bg-primary" />
           </div>
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-muted/30 border border-border/40">
+          <div className="flex items-center gap-1 p-1 rounded-2xl bg-card/30 backdrop-blur-xl border border-white/[0.05] shadow-2xl">
             {['1m', '3m', '6m', '1y'].map(p => (
               <Button 
                 key={p} 
@@ -249,8 +253,10 @@ export const ExecutiveDashboard = () => {
                 size="sm" 
                 onClick={() => setSelectedPeriod(p)}
                 className={cn(
-                  "rounded-lg px-4 text-xs font-bold transition-all",
-                  selectedPeriod === p ? 'bg-primary text-primary-foreground shadow-glow-primary/20 hover:bg-primary/90' : 'text-muted-foreground hover:text-foreground'
+                  "rounded-xl px-4 text-[10px] font-black transition-all duration-500",
+                  selectedPeriod === p 
+                    ? 'bg-primary text-primary-foreground shadow-[0_0_20px_rgba(var(--primary),0.3)]' 
+                    : 'text-muted-foreground hover:text-foreground hover:bg-white/5'
                 )}
               >
                 {p === '1y' ? '1A' : p.toUpperCase()}

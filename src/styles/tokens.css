@@ -60,7 +60,7 @@
     --border: 220 13% 91%;
     --input: 220 13% 91%;
     --ring: 262 83% 58%;
-    --radius: 0.75rem;
+    --radius: 1.25rem;
 
     /* ===== KPI COLORS ===== */
     --kpi-emerald: 160 84% 39%;
@@ -128,8 +128,29 @@
 
   .dark {
     /* ===== DARK PREMIUM - DEEP SPACE ===== */
-    --background: 240 10% 3.9%;
+    --background: 240 10% 2%;
     --foreground: 0 0% 98%;
+    --card: 240 10% 4%;
+    --card-foreground: 0 0% 98%;
+    --card-elevated: 240 10% 6%;
+    --popover: 240 10% 3%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 250 100% 66%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 250 100% 75%;
+    --secondary: 240 4% 10%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4% 8%;
+    --muted-foreground: 240 5% 60%;
+    --accent: 250 100% 12%;
+    --accent-foreground: 0 0% 98%;
+    --border: 240 3.7% 12%;
+    --input: 240 3.7% 12%;
+    --ring: 250 100% 66%;
+    --glass-background: 240 10% 4% / 0.6;
+    --glass-border: 240 3.7% 15% / 0.4;
+    --sidebar-background: 240 10% 3%;
+    --sidebar-foreground: 0 0% 98%;
 
     --card: 240 10% 6%;
     --card-foreground: 0 0% 98%;
@@ -141,18 +162,18 @@
     /* Refined Primary - Electric Indigo */
     --primary: 250 89% 65%;
     --primary-foreground: 210 40% 98%;
-    --primary-glow: 250 89% 75%;
+    --primary-glow: 250 100% 75%;
 
-    --secondary: 240 4% 16%;
+    --secondary: 240 4% 10%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 240 4% 12%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 240 4% 8%;
+    --muted-foreground: 240 5% 60%;
 
-    --accent: 250 89% 15%;
+    --accent: 250 100% 12%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 84% 45%;
     --destructive-foreground: 210 40% 98%;
 
     --success: 142 71% 45%;
@@ -164,58 +185,58 @@
     --info: 217 91% 60%;
     --info-foreground: 0 0% 100%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 250 89% 65%;
+    --border: 240 3.7% 12%;
+    --input: 240 3.7% 12%;
+    --ring: 250 100% 66%;
 
     /* Dark KPI colors — vivid neon variants */
-    --kpi-emerald: 160 90% 50%;
-    --kpi-emerald-bg: 160 90% 8%;
+    --kpi-emerald: 160 100% 50%;
+    --kpi-emerald-bg: 160 100% 5%;
     --kpi-orange: 25 100% 60%;
-    --kpi-orange-bg: 25 100% 8%;
+    --kpi-orange-bg: 25 100% 5%;
     --kpi-blue: 210 100% 65%;
-    --kpi-blue-bg: 210 100% 8%;
-    --kpi-purple: 270 90% 68%;
-    --kpi-purple-bg: 270 90% 8%;
-    --kpi-green: 152 75% 50%;
-    --kpi-green-bg: 152 75% 8%;
+    --kpi-blue-bg: 210 100% 5%;
+    --kpi-purple: 270 100% 70%;
+    --kpi-purple-bg: 270 100% 5%;
+    --kpi-green: 152 100% 50%;
+    --kpi-green-bg: 152 100% 5%;
     --kpi-cyan: 186 100% 50%;
-    --kpi-cyan-bg: 186 100% 8%;
-    --kpi-red: 0 90% 58%;
-    --kpi-red-bg: 0 90% 8%;
-    --kpi-indigo: 239 90% 72%;
-    --kpi-indigo-bg: 239 90% 8%;
-    --kpi-teal: 175 85% 46%;
-    --kpi-teal-bg: 175 85% 8%;
+    --kpi-cyan-bg: 186 100% 5%;
+    --kpi-red: 0 100% 60%;
+    --kpi-red-bg: 0 100% 5%;
+    --kpi-indigo: 239 100% 75%;
+    --kpi-indigo-bg: 239 100% 5%;
+    --kpi-teal: 175 100% 46%;
+    --kpi-teal-bg: 175 100% 5%;
 
     /* Dark chart colors — brighter for visibility */
-    --chart-1: 250 89% 65%;
+    --chart-1: 250 100% 66%;
     --chart-2: 210 100% 65%;
-    --chart-3: 152 75% 50%;
+    --chart-3: 152 100% 50%;
     --chart-4: 48 96% 53%;
-    --chart-5: 326 85% 68%;
+    --chart-5: 326 100% 70%;
 
     /* Dark sidebar — deeper with gradient feel */
-    --sidebar-background: 240 10% 4%;
-    --sidebar-foreground: 240 5% 90%;
-    --sidebar-primary: 250 89% 65%;
+    --sidebar-background: 240 10% 3%;
+    --sidebar-foreground: 0 0% 98%;
+    --sidebar-primary: 250 100% 66%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 4% 12%;
-    --sidebar-accent-foreground: 240 5% 98%;
-    --sidebar-border: 240 3.7% 12%;
-    --sidebar-ring: 250 89% 65%;
+    --sidebar-accent: 240 4% 10%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 240 3.7% 10%;
+    --sidebar-ring: 250 100% 66%;
 
     /* Dark premium shadows — deeper with colored glows */
-    --shadow-xs: 0 1px 3px 0 hsl(0 0% 0% / 0.5);
-    --shadow-sm: 0 2px 4px 0 hsl(0 0% 0% / 0.6), 0 1px 2px -1px hsl(0 0% 0% / 0.5);
-    --shadow-md: 0 4px 12px -1px hsl(0 0% 0% / 0.7), 0 2px 6px -2px hsl(0 0% 0% / 0.6);
-    --shadow-lg: 0 15px 30px -4px hsl(0 0% 0% / 0.8), 0 8px 12px -4px hsl(0 0% 0% / 0.7);
-    --shadow-xl: 0 30px 60px -8px hsl(0 0% 0% / 0.9), 0 15px 25px -6px hsl(0 0% 0% / 0.8);
-    --shadow-glow-primary: 0 0 30px hsl(var(--primary) / 0.25), 0 0 60px hsl(var(--primary) / 0.1);
+    --shadow-xs: 0 1px 3px 0 hsl(0 0% 0% / 0.7);
+    --shadow-sm: 0 2px 8px 0 hsl(0 0% 0% / 0.8);
+    --shadow-md: 0 8px 16px -4px hsl(0 0% 0% / 0.9);
+    --shadow-lg: 0 20px 40px -10px hsl(0 0% 0% / 1);
+    --shadow-xl: 0 40px 80px -20px hsl(0 0% 0% / 1);
+    --shadow-glow-primary: 0 0 30px hsl(var(--primary) / 0.3), 0 0 60px hsl(var(--primary) / 0.1);
     
     /* Dark premium gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(260 89% 75%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(265 100% 70%) 100%);
     --gradient-subtle: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(var(--background)) 100%);
-    --glass-background: 240 10% 6% / 0.7;
-    --glass-border: 240 3.7% 15.9% / 0.5;
+    --glass-background: 240 10% 4% / 0.6;
+    --glass-border: 240 3.7% 15% / 0.4;
   }
