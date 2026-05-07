@@ -12,6 +12,8 @@ export interface ExecutiveMetrics {
   pendingApprovals: { value: number; urgent: number };
   overdueOrders: { value: number; critical: number };
   contractCompliance: { value: number; target: number };
+  maverickSpend: { value: number; percentage: number };
+  tailSpend: { value: number; percentage: number };
 }
 
 const startOfMonth = () => {
