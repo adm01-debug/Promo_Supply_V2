@@ -37,7 +37,7 @@ const startOfMonth = () => {
 export function useDashboardKPIs() {
   const { data: solicitacoes, isLoading: loadingSol } = useQuery({
     queryKey: ['dashboard-solicitacoes'],
-    queryFn: () => fetchAllRows<{ id: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null }>('solicitacoes', 'id, status, valor_estimado, valor_aprovado, created_at, data_necessidade'),
+    queryFn: () => fetchAllRows<{ id: string; numero: string; titulo: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null }>('solicitacoes', 'id, numero, titulo, status, valor_estimado, valor_aprovado, created_at, data_necessidade'),
     staleTime: 30000,
   });
 
