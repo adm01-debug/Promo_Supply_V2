@@ -110,6 +110,12 @@ const Cotacao = () => {
     return [...adaptedCotacoes, ...cotacoesAPI];
   }, [adaptedCotacoes, cotacoesAPI]);
 
+  const savingsActual = useMemo(() => {
+    if (!solicitacao?.valor_estimado || allCotacoes.length === 0) return 0;
+    const best = [...allCotacoes].sort((a, b) => a.total - b.total)[0];
+    return Math.max(0, solicitacao.valor_estimado - best.total);
+  }, [solicitacao, allCotacoes]);
+
   const handleBuscarCotacoes = async () => {
     setBuscaStatus('searching');
     try {
