@@ -13,6 +13,7 @@ interface MetricCardProps {
   target?: number;
   icon: React.ElementType;
   format?: 'currency' | 'number' | 'percent' | 'days';
+  subtitle?: string;
   onClick?: () => void;
   urgent?: number;
   critical?: number;
