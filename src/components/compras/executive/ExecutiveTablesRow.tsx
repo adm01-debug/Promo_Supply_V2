@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Users, Zap, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { formatCurrency } from './executiveDashboardData';
@@ -37,41 +38,58 @@ export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComp
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {filteredSuppliers.length > 0 ? filteredSuppliers.map((supplier, index) => {
-              const spendChange = ((supplier.spend - supplier.previousSpend) / supplier.previousSpend) * 100;
-              return (
-                <div
-                  key={supplier.name}
-                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                  onClick={() => onSupplierDrillDown(supplier)}
+          <div className="space-y-1">
+            <AnimatePresence mode="popLayout">
+              {filteredSuppliers.length > 0 ? filteredSuppliers.map((supplier, index) => {
+                const spendChange = ((supplier.spend - supplier.previousSpend) / supplier.previousSpend) * 100;
+                return (
+                  <motion.div
+                    key={supplier.name}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2, delay: index * 0.05 }}
+                    className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/60 cursor-pointer transition-all duration-200 group border border-transparent hover:border-border/50 hover:shadow-sm"
+                    onClick={() => onSupplierDrillDown(supplier)}
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary font-bold text-sm transition-transform group-hover:scale-110">
+                      {index + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold truncate group-hover:text-primary transition-colors">{supplier.name}</p>
+                      <p className="text-xs text-muted-foreground">{supplier.orders} pedidos • {supplier.categories[0]}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold">{formatCurrency(supplier.spend)}</p>
+                      {showComparison ? (
+                        <p className={`text-[10px] font-medium flex items-center justify-end gap-1 ${spendChange > 0 ? 'text-success' : 'text-destructive'}`}>
+                          {spendChange > 0 ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
+                          {Math.abs(spendChange).toFixed(1)}%
+                        </p>
+                      ) : (
+                        <p className="text-[10px] text-success font-medium">+{formatCurrency(supplier.savings)}</p>
+                      )}
+                    </div>
+                    <div className="w-12 text-right">
+                      <Badge 
+                        variant={supplier.compliance >= 90 ? 'default' : supplier.compliance >= 85 ? 'secondary' : 'destructive'}
+                        className="h-5 px-1.5 text-[10px] font-bold"
+                      >
+                        {supplier.compliance}%
+                      </Badge>
+                    </div>
+                  </motion.div>
+                );
+              }) : (
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center text-muted-foreground py-8 text-sm italic"
                 >
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{supplier.name}</p>
-                    <p className="text-sm text-muted-foreground">{supplier.orders} pedidos</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium">{formatCurrency(supplier.spend)}</p>
-                    {showComparison ? (
-                      <p className={`text-xs flex items-center justify-end gap-1 ${spendChange > 0 ? 'text-success' : 'text-destructive'}`}>
-                        {spendChange > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-                        {Math.abs(spendChange).toFixed(1)}% vs anterior
-                      </p>
-                    ) : (
-                      <p className="text-sm text-success">+{formatCurrency(supplier.savings)}</p>
-                    )}
-                  </div>
-                  <Badge variant={supplier.compliance >= 90 ? 'default' : supplier.compliance >= 85 ? 'secondary' : 'destructive'}>
-                    {supplier.compliance}%
-                  </Badge>
-                </div>
-              );
-            }) : (
-              <p className="text-center text-muted-foreground py-4">Nenhum fornecedor encontrado para os filtros selecionados</p>
-            )}
+                  Nenhum fornecedor encontrado para os filtros selecionados
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
         </CardContent>
       </Card>
@@ -85,50 +103,67 @@ export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComp
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {filteredBuyers.length > 0 ? filteredBuyers.map((buyer, index) => {
-              const savingsChange = ((buyer.savings - buyer.previousSavings) / buyer.previousSavings) * 100;
-              const ordersChange = ((buyer.orders - buyer.previousOrders) / buyer.previousOrders) * 100;
-              return (
-                <div
-                  key={buyer.name}
-                  className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors"
-                  onClick={() => onBuyerDrillDown(buyer)}
-                >
-                  <div className="flex items-center justify-center w-8 h-8 rounded-full bg-chart-2/20 text-chart-2 font-bold text-sm">
-                    {index + 1}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{buyer.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {buyer.orders} pedidos
-                      {showComparison && (
-                        <span className={ordersChange > 0 ? 'text-success' : 'text-destructive'}>
-                          {' '}({ordersChange > 0 ? '+' : ''}{ordersChange.toFixed(0)}%)
-                        </span>
-                      )}
-                      {' '}• {buyer.avgCycle} dias
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-medium text-success">{formatCurrency(buyer.savings)}</p>
-                    {showComparison ? (
-                      <p className={`text-xs flex items-center justify-end gap-1 ${savingsChange > 0 ? 'text-success' : 'text-destructive'}`}>
-                        {savingsChange > 0 ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-                        {Math.abs(savingsChange).toFixed(1)}%
+          <div className="space-y-1">
+            <AnimatePresence mode="popLayout">
+              {filteredBuyers.length > 0 ? filteredBuyers.map((buyer, index) => {
+                const savingsChange = ((buyer.savings - buyer.previousSavings) / buyer.previousSavings) * 100;
+                const ordersChange = ((buyer.orders - buyer.previousOrders) / buyer.previousOrders) * 100;
+                return (
+                  <motion.div
+                    key={buyer.name}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2, delay: index * 0.05 }}
+                    className="flex items-center gap-4 p-3 rounded-xl hover:bg-muted/60 cursor-pointer transition-all duration-200 group border border-transparent hover:border-border/50 hover:shadow-sm"
+                    onClick={() => onBuyerDrillDown(buyer)}
+                  >
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-chart-2/10 text-chart-2 font-bold text-sm transition-transform group-hover:scale-110">
+                      {index + 1}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-semibold truncate group-hover:text-chart-2 transition-colors">{buyer.name}</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-tight">
+                        {buyer.orders} pedidos
+                        {showComparison && (
+                          <span className={ordersChange > 0 ? 'text-success' : 'text-destructive'}>
+                            {' '}({ordersChange > 0 ? '↑' : '↓'}{Math.abs(ordersChange).toFixed(0)}%)
+                          </span>
+                        )}
+                        {' '}• {buyer.avgCycle}d ciclo
                       </p>
-                    ) : (
-                      <p className="text-sm text-muted-foreground">economia</p>
-                    )}
-                  </div>
-                  <Badge variant={buyer.compliance >= 95 ? 'default' : buyer.compliance >= 90 ? 'secondary' : 'outline'}>
-                    {buyer.compliance}%
-                  </Badge>
-                </div>
-              );
-            }) : (
-              <p className="text-center text-muted-foreground py-4">Nenhum comprador encontrado para os filtros selecionados</p>
-            )}
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-success">{formatCurrency(buyer.savings)}</p>
+                      {showComparison ? (
+                        <p className={`text-[10px] font-medium flex items-center justify-end gap-1 ${savingsChange > 0 ? 'text-success' : 'text-destructive'}`}>
+                          {savingsChange > 0 ? <ArrowUpRight className="h-2.5 w-2.5" /> : <ArrowDownRight className="h-2.5 w-2.5" />}
+                          {Math.abs(savingsChange).toFixed(1)}%
+                        </p>
+                      ) : (
+                        <p className="text-[10px] text-muted-foreground font-medium italic">economia</p>
+                      )}
+                    </div>
+                    <div className="w-12 text-right">
+                      <Badge 
+                        variant={buyer.compliance >= 95 ? 'default' : buyer.compliance >= 90 ? 'secondary' : 'outline'}
+                        className="h-5 px-1.5 text-[10px] font-bold"
+                      >
+                        {buyer.compliance}%
+                      </Badge>
+                    </div>
+                  </motion.div>
+                );
+              }) : (
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-center text-muted-foreground py-8 text-sm italic"
+                >
+                  Nenhum comprador encontrado para os filtros selecionados
+                </motion.p>
+              )}
+            </AnimatePresence>
           </div>
         </CardContent>
       </Card>
