@@ -128,119 +128,181 @@ export const PurchaseClimateWidget = forwardRef<HTMLDivElement>((_props, ref) =>
   const ClimateIcon = config.icon;
 
   return (
-    <Card 
-      className={cn("relative overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-lg", config.borderColor, "border-2")}
-      onClick={() => setShowDetails(!showDetails)}
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="h-full"
     >
-      <div className={cn(
-        "absolute inset-0 opacity-30",
-        climateData.overallLevel === 'excellent' && "bg-gradient-to-br from-emerald-500/20 to-green-500/10",
-        climateData.overallLevel === 'good' && "bg-gradient-to-br from-green-500/20 to-teal-500/10",
-        climateData.overallLevel === 'moderate' && "bg-gradient-to-br from-yellow-500/20 to-amber-500/10",
-        climateData.overallLevel === 'warning' && "bg-gradient-to-br from-orange-500/20 to-red-500/10",
-        climateData.overallLevel === 'critical' && "bg-gradient-to-br from-red-500/20 to-rose-500/10"
-      )} />
-
-      <CardHeader className="pb-2 relative">
-        <CardTitle className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Thermometer className={cn("w-5 h-5", config.color)} />
-            <span className="text-base font-semibold">Clima de Compras</span>
-          </div>
-          <Badge variant="outline" className={cn(config.bgColor, config.color, "border-0")}>
-            {config.emoji} {config.label}
-          </Badge>
-        </CardTitle>
-      </CardHeader>
-
-      <CardContent className="relative space-y-4">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <div className={cn("w-20 h-20 rounded-full flex items-center justify-center", config.bgColor)}>
-              <ClimateIcon className={cn("w-10 h-10", config.color)} />
-            </div>
-            {(climateData.overallLevel === 'critical' || climateData.overallLevel === 'warning') && (
-              <div className={cn("absolute inset-0 rounded-full animate-ping", config.bgColor, "opacity-50")} />
-            )}
-          </div>
-          
-          <div className="flex-1">
-            <div className="flex items-baseline gap-2">
-              <span className={cn("text-4xl font-bold", config.color)}>
-                {Math.round(climateData.overallScore)}
-              </span>
-              <span className="text-muted-foreground text-sm">/100</span>
-              <div className={cn(
-                "flex items-center gap-1 ml-2 text-sm",
-                climateData.trend === 'up' && "text-success",
-                climateData.trend === 'down' && "text-destructive",
-                climateData.trend === 'stable' && "text-muted-foreground"
-              )}>
-                {climateData.trend === 'up' ? <TrendingUp className="w-4 h-4" /> : climateData.trend === 'down' ? <TrendingDown className="w-4 h-4" /> : null}
-                <span>{climateData.trendValue > 0 ? '+' : ''}{climateData.trendValue.toFixed(1)}%</span>
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground mt-1">{config.message}</p>
-            <div className="mt-2"><Progress value={climateData.overallScore} className="h-2" /></div>
-          </div>
-        </div>
-
-        {showDetails && (
-          <div className="pt-4 border-t border-border space-y-3 animate-fade-in">
-            <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">Indicadores Detalhados</p>
-            <TooltipProvider>
-              <div className="grid grid-cols-2 gap-3">
-                {climateData.indicators.map((indicator) => {
-                  const indConfig = getClimateConfig(indicator.status);
-                  const IndIcon = indicator.icon;
-                  return (
-                    <Tooltip key={indicator.name}>
-                      <TooltipTrigger className="w-full text-left cursor-help">
-                        <div className={cn("p-3 rounded-lg border transition-colors", indConfig.bgColor, indConfig.borderColor)}>
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              <IndIcon className={cn("w-4 h-4", indConfig.color)} />
-                              <span className="text-xs font-medium">{indicator.name}</span>
-                            </div>
-                            <span className={cn("text-sm font-bold", indConfig.color)}>{Math.round(indicator.value)}%</span>
-                          </div>
-                          <Progress value={indicator.value} className="h-1.5" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>{indicator.description}</p>
-                        <p className="text-xs text-muted-foreground">Peso: {indicator.weight}%</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  );
-                })}
-              </div>
-            </TooltipProvider>
-
-            {climateData.overallLevel !== 'excellent' && climateData.overallLevel !== 'good' && (
-              <div className="mt-4 p-3 rounded-lg bg-muted/50">
-                <p className="text-xs font-medium text-muted-foreground mb-2">💡 Ações Recomendadas:</p>
-                <ul className="text-xs space-y-1 text-muted-foreground">
-                  {climateData.indicators
-                    .filter(i => i.status === 'critical' || i.status === 'warning')
-                    .slice(0, 3)
-                    .map((ind, idx) => (
-                      <li key={idx} className="flex items-center gap-1">
-                        <span className="w-1 h-1 rounded-full bg-warning" />
-                        Revisar {ind.name.toLowerCase()}: {ind.description.toLowerCase()}
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            )}
-          </div>
+      <Card 
+        className={cn(
+          "relative overflow-hidden cursor-pointer transition-all duration-500 h-full group",
+          config.borderColor, 
+          "border-2 hover:shadow-glow-primary/20",
+          "bg-gradient-to-br from-card to-card/50 backdrop-blur-md"
         )}
+        onClick={() => setShowDetails(!showDetails)}
+      >
+        <div className={cn(
+          "absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500",
+          climateData.overallLevel === 'excellent' && "bg-gradient-to-br from-emerald-500 to-green-500",
+          climateData.overallLevel === 'good' && "bg-gradient-to-br from-green-500 to-teal-500",
+          climateData.overallLevel === 'moderate' && "bg-gradient-to-br from-yellow-500 to-amber-500",
+          climateData.overallLevel === 'warning' && "bg-gradient-to-br from-orange-500 to-red-500",
+          climateData.overallLevel === 'critical' && "bg-gradient-to-br from-red-500 to-rose-500"
+        )} />
 
-        <p className="text-xs text-center text-muted-foreground/60">
-          {showDetails ? 'Clique para minimizar' : 'Clique para ver detalhes'}
-        </p>
-      </CardContent>
-    </Card>
+        <CardHeader className="pb-2 relative z-10">
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Thermometer className={cn("w-5 h-5", config.color)} />
+              <span className="text-base font-bold tracking-tight">Clima de Compras</span>
+            </div>
+            <Badge variant="outline" className={cn(config.bgColor, config.color, "border-0 font-bold px-2.5 py-1 text-[11px] tracking-wider uppercase")}>
+              {config.emoji} {config.label}
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+
+        <CardContent className="relative z-10 space-y-5">
+          <div className="flex items-center gap-5">
+            <div className="relative">
+              <motion.div 
+                animate={{ 
+                  scale: [1, 1.05, 1],
+                  rotate: [0, 5, 0, -5, 0]
+                }}
+                transition={{ 
+                  duration: 6, 
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+                className={cn("w-24 h-24 rounded-full flex items-center justify-center", config.bgColor, "ring-4 ring-white/10")}
+              >
+                <ClimateIcon className={cn("w-12 h-12", config.color)} />
+              </motion.div>
+              {(climateData.overallLevel === 'critical' || climateData.overallLevel === 'warning') && (
+                <div className={cn("absolute inset-0 rounded-full animate-ping", config.bgColor, "opacity-40")} />
+              )}
+            </div>
+            
+            <div className="flex-1">
+              <div className="flex items-baseline gap-2">
+                <span className={cn("text-5xl font-black tracking-tighter", config.color)}>
+                  {Math.round(climateData.overallScore)}
+                </span>
+                <span className="text-muted-foreground/60 text-sm font-medium">/100</span>
+                <div className={cn(
+                  "flex items-center gap-1 ml-2 px-2 py-0.5 rounded-full text-xs font-bold",
+                  climateData.trend === 'up' && "bg-success/10 text-success",
+                  climateData.trend === 'down' && "bg-destructive/10 text-destructive",
+                  climateData.trend === 'stable' && "bg-muted/10 text-muted-foreground"
+                )}>
+                  {climateData.trend === 'up' ? <TrendingUp className="w-3 h-3" /> : climateData.trend === 'down' ? <TrendingDown className="w-3 h-3" /> : null}
+                  <span>{climateData.trendValue > 0 ? '+' : ''}{climateData.trendValue.toFixed(1)}%</span>
+                </div>
+              </div>
+              <p className="text-sm font-medium text-muted-foreground mt-1 leading-snug">{config.message}</p>
+              <div className="mt-3 relative h-2.5 w-full bg-muted/30 rounded-full overflow-hidden">
+                <motion.div 
+                  initial={{ width: 0 }}
+                  animate={{ width: `${climateData.overallScore}%` }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  className={cn("h-full rounded-full", config.bgColor.replace('/10', ''))}
+                />
+              </div>
+            </div>
+          </div>
+
+          <AnimatePresence>
+            {showDetails && (
+              <motion.div 
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="pt-5 border-t border-border/40 space-y-4">
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Indicadores Detalhados</p>
+                  <TooltipProvider>
+                    <div className="grid grid-cols-2 gap-3">
+                      {climateData.indicators.map((indicator, index) => {
+                        const indConfig = getClimateConfig(indicator.status);
+                        const IndIcon = indicator.icon;
+                        return (
+                          <Tooltip key={indicator.name}>
+                            <TooltipTrigger asChild>
+                              <motion.div 
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                                className={cn(
+                                  "p-3 rounded-xl border transition-all duration-300 cursor-help group/ind", 
+                                  indConfig.bgColor, 
+                                  indConfig.borderColor,
+                                  "hover:scale-[1.02]"
+                                )}
+                              >
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-2">
+                                    <IndIcon className={cn("w-4 h-4", indConfig.color)} />
+                                    <span className="text-[11px] font-bold uppercase tracking-tight">{indicator.name}</span>
+                                  </div>
+                                  <span className={cn("text-xs font-black", indConfig.color)}>{Math.round(indicator.value)}%</span>
+                                </div>
+                                <div className="h-1.5 w-full bg-black/5 dark:bg-white/5 rounded-full overflow-hidden">
+                                  <div 
+                                    className={cn("h-full transition-all duration-1000", indConfig.bgColor.replace('/10', ''))} 
+                                    style={{ width: `${indicator.value}%` }}
+                                  />
+                                </div>
+                              </motion.div>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="bg-popover/90 backdrop-blur-md border-border/40 shadow-xl">
+                              <p className="font-bold text-xs">{indicator.description}</p>
+                              <p className="text-[10px] text-muted-foreground font-medium">Peso: {indicator.weight}%</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        );
+                      })}
+                    </div>
+                  </TooltipProvider>
+
+                  {climateData.overallLevel !== 'excellent' && climateData.overallLevel !== 'good' && (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="mt-4 p-4 rounded-xl bg-muted/40 border border-border/40"
+                    >
+                      <p className="text-[10px] font-bold text-muted-foreground mb-2 uppercase tracking-widest">💡 Ações Recomendadas:</p>
+                      <ul className="text-xs space-y-2 text-muted-foreground font-medium">
+                        {climateData.indicators
+                          .filter(i => i.status === 'critical' || i.status === 'warning')
+                          .slice(0, 3)
+                          .map((ind, idx) => (
+                            <li key={idx} className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-warning shadow-[0_0_8px_rgba(var(--warning),0.5)]" />
+                              Revisar {ind.name.toLowerCase()}: {ind.description.toLowerCase()}
+                            </li>
+                          ))}
+                      </ul>
+                    </motion.div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <p className="text-[10px] text-center text-muted-foreground/50 font-bold uppercase tracking-widest pt-1">
+            {showDetails ? 'Ver menos' : 'Ver detalhes'}
+          </p>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+});
+PurchaseClimateWidget.displayName = 'PurchaseClimateWidget';
   );
 });
 PurchaseClimateWidget.displayName = 'PurchaseClimateWidget';
