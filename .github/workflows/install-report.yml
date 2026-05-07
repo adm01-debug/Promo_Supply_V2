@@ -52,6 +52,7 @@ jobs:
           node scripts/install-report.mjs \
             --json \
             --json-file=ci-artifacts/install-report.json \
+            --json-file-overwrite \
             2> >(tee ci-logs/install-report-json-file.log >&2)
 
       - name: Verify install-report byte count
