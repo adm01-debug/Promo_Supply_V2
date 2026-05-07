@@ -210,7 +210,15 @@ const Cotacao = () => {
               <span className="text-muted-foreground">•</span>
               <span className="text-sm text-muted-foreground">{solicitacao.departamento || 'Sem departamento'}</span>
             </div>
-            <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
+              {savingsActual > 0 && (
+                <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 animate-in fade-in zoom-in duration-500">
+                  <TrendingDown className="w-3 h-3 mr-1" />
+                  Saving Potencial: {savingsActual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                </Badge>
+              )}
+            </div>
           </div>
           {hasRole(['admin', 'coordinator']) && (
             <Button
