@@ -195,6 +195,8 @@ export default function Licitacoes() {
       {selectedLicitacao && (
         <LicitacaoDetailDialog licitacao={selectedLicitacao} open={!!detailId} onClose={() => setDetailId(null)} onUpdate={updateLicitacao} fornecedores={fornecedores} />
       )}
+        </>
+      )}
     </div>
   );
 }
