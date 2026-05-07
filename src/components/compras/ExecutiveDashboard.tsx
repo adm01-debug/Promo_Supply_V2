@@ -321,6 +321,20 @@ export const ExecutiveDashboard = () => {
         </div>
       </div>
 
+      {/* Charts and Analysis */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+          <ExecutiveChartsRow 
+            showComparison={showComparison} 
+            filteredCategorySpend={filteredCategorySpend} 
+            onCategoryDrillDown={(data) => setDrillDown({ type: 'category', data })} 
+          />
+        </div>
+        <div className="xl:col-span-1">
+          <PriceVarianceAnalysis />
+        </div>
+      </div>
+
       {/* Secondary KPIs */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <ExecutiveMetricCard title="Saving %" value={activeMetrics.savingsPercent} change={activeMetrics.savingsPercent > 10 ? activeMetrics.savingsPercent - 10 : 0} target={15} icon={Zap} format="percent" showComparison={showComparison} trendData={trendDataSets.savings.map((s, i) => (trendDataSets.spend[i] > 0 ? (s / trendDataSets.spend[i]) * 100 : 0))} />
