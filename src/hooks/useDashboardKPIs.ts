@@ -109,6 +109,7 @@ export function useDashboardKPIs() {
     const wf = workflows || [];
     const cats = categoriasData || [];
     const cot = cotacoes || [];
+    const profs = profilesData || [];
 
     const now = new Date();
     const currentMonthStart = fnsStartOfMonth(now);
@@ -295,7 +296,14 @@ export function useDashboardKPIs() {
 
     const urgentItems = sol
       .filter(s => s.status !== 'concluida' && s.status !== 'cancelada' && s.data_necessidade && (new Date(s.data_necessidade).getTime() - now.getTime()) / (1000 * 60 * 60 * 24) <= 3)
-      .slice(0, 5);
+      .map(s => {
+        const profile = profs.find(p => p.user_id === s.solicitante_id);
+        return {
+          ...s,
+          comprador: profile ? profile.full_name : 'Não Atribuído'
+        };
+      })
+      .slice(0, 10);
 
     return { kpis, pipeline, urgentItems };
   }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows]);
