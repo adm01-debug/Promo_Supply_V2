@@ -62,13 +62,20 @@ export const AuthBrandingPanel = () => (
 
     {/* Logo & Title */}
     <div className="relative z-10">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-xl border border-white/30">
-          <Package className="w-7 h-7 text-primary-foreground" />
-        </div>
+      <div className="flex items-center gap-4 mb-10">
+        <motion.div 
+          whileHover={{ rotate: 10, scale: 1.1 }}
+          className="w-16 h-16 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-md flex items-center justify-center shadow-2xl border border-white/20"
+        >
+          <Package className="w-8 h-8 text-primary-foreground" />
+        </motion.div>
         <div>
-          <h1 className="text-2xl font-bold text-primary-foreground">Promo Supply</h1>
-          <p className="text-primary-foreground/70 text-sm">Sistema de Gestão de Compras</p>
+          <h1 className="text-3xl font-black uppercase tracking-tighter text-primary-foreground leading-none">
+            PROMO <span className="text-primary-glow">SUPPLY</span>
+          </h1>
+          <p className="text-primary-foreground/60 text-[10px] font-bold uppercase tracking-[0.3em] mt-1.5">
+            Enterprise Procurement
+          </p>
         </div>
       </div>
       <div className="max-w-md">
