@@ -91,8 +91,8 @@ export function ChatArea({
 
   return (
     <>
-      {/* Premium Chat Header */}
-      <div className="p-4 border-b bg-card/50 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
+      {/* Ultra-Premium Glass Header */}
+      <div className="p-5 border-b bg-gradient-to-b from-card/95 to-card/80 backdrop-blur-2xl flex items-center justify-between sticky top-0 z-20 shadow-sm border-white/5">
         <div className="flex items-center gap-3">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
