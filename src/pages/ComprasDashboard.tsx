@@ -59,7 +59,7 @@ const ComprasDashboard = () => {
       case 'kpi-aguardando':
         return (
           <EnhancedKpiCard
-            title="Aguardando Cotação"
+            title={t('dashboard.kpis.pending_approval')}
             value={kpis.comparisons.aguardando.current}
             previousValue={kpis.comparisons.aguardando.previous}
             sparklineData={kpis.comparisons.aguardando.sparkline}
@@ -67,19 +67,19 @@ const ComprasDashboard = () => {
             color="orange"
             format="number"
             variant="default"
-            subtitle="Solicitações pendentes"
+            subtitle={t('dashboard.kpis.subtitles.pending')}
           />
         );
       case 'kpi-volume':
         return (
           <EnhancedKpiCard
-            title="Volume do Mês"
+            title={t('dashboard.kpis.total_spend')}
             value={kpis.comparisons.volume.current}
             previousValue={kpis.comparisons.volume.previous}
             sparklineData={kpis.comparisons.volume.sparkline}
             icon={TrendingUp}
             color="blue"
-            subtitle="Total faturado"
+            subtitle={t('dashboard.kpis.subtitles.volume')}
             format="currency"
             variant="default"
           />
@@ -87,13 +87,13 @@ const ComprasDashboard = () => {
       case 'kpi-economia':
         return (
           <EnhancedKpiCard
-            title="Economia Gerada"
+            title={t('dashboard.kpis.saving')}
             value={kpis.comparisons.economia.current}
             previousValue={kpis.comparisons.economia.previous}
             sparklineData={kpis.comparisons.economia.sparkline}
             icon={PiggyBank}
             color="emerald"
-            subtitle={`${kpis.economiaPercentual}% do volume total`}
+            subtitle={`${kpis.economiaPercentual}% ${t('dashboard.kpis.subtitles.economy')}`}
             format="currency"
             variant="default"
           />
@@ -101,13 +101,13 @@ const ComprasDashboard = () => {
       case 'kpi-sla':
         return (
           <EnhancedKpiCard
-            title="SLA de Atendimento"
+            title={t('dashboard.kpis.sla')}
             value={kpis.comparisons.sla.current}
             previousValue={kpis.comparisons.sla.previous}
             sparklineData={kpis.comparisons.sla.sparkline}
             icon={BarChart3}
             color="indigo"
-            subtitle="Nível de serviço"
+            subtitle={t('dashboard.kpis.subtitles.sla')}
             format="percent"
             variant="default"
           />
