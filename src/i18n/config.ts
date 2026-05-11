@@ -54,11 +54,18 @@ const resources = {
         "title": "Painel de Compras",
         "kpis": {
           "total_requests": "Total de Solicitações",
-          "pending_approval": "Pendentes de Aprovação",
+          "pending_approval": "Aguardando Cotação",
           "active_quotes": "Cotações Ativas",
           "completed_orders": "Pedidos Concluídos",
-          "total_spend": "Gasto Total",
-          "saving": "Saving Total"
+          "total_spend": "Volume do Mês",
+          "saving": "Economia Gerada",
+          "sla": "SLA de Atendimento",
+          "subtitles": {
+            "pending": "Solicitações pendentes",
+            "volume": "Total faturado",
+            "economy": "do volume total",
+            "sla": "Nível de serviço"
+          }
         }
       }
     }
