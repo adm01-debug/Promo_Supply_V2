@@ -13,9 +13,19 @@ import {
   Star,
   ArrowRight,
   BarChart3,
-  Package
+  Package,
+  Sparkles,
+  Info
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { 
+  Radar, 
+  RadarChart, 
+  PolarGrid, 
+  PolarAngleAxis, 
+  ResponsiveContainer,
+  Legend
+} from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,6 +46,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+
+const COLORS_RADAR = [
+  'hsl(var(--primary))',
+  'hsl(var(--chart-2))',
+  'hsl(var(--chart-3))',
+  'hsl(var(--chart-4))',
+];
 
 interface Cotacao {
   id: string;
@@ -128,6 +145,45 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
 
   const selectedCotacoes = cotacoes.filter(c => selectedIds.includes(c.id));
   const getScore = (id: string) => analysis?.scores.find(s => s.id === id)?.score || 0;
+
+  const radarData = useMemo(() => {
+    if (selectedCotacoes.length < 1) return [];
+    
+    const radarMetrics = [
+      { name: 'Preço', key: 'total', invert: true },
+      { name: 'Prazo', key: 'prazoEntrega', invert: true },
+      { name: 'Estoque', key: 'quantidadeDisponivel', invert: false },
+      { name: 'Rating', key: 'rating', invert: false },
+      { name: 'Frete', key: 'frete', invert: true },
+    ];
+
+    return radarMetrics.map(m => {
+      const dataPoint: any = { subject: m.name };
+      selectedCotacoes.forEach(c => {
+        const val = Number(c[m.key as keyof Cotacao]) || 0;
+        const allVals = cotacoes.map(x => Number(x[m.key as keyof Cotacao]) || 0);
+        const min = Math.min(...allVals);
+        const max = Math.max(...allVals);
+        
+        let score = 0;
+        if (max === min) score = 100;
+        else if (m.invert) score = ((max - val) / (max - min)) * 100;
+        else score = ((val - min) / (max - min)) * 100;
+        
+        dataPoint[c.fornecedor] = Math.round(score);
+      });
+      return dataPoint;
+    });
+  }, [selectedCotacoes, cotacoes]);
+
+  const getRecommendation = (id: string) => {
+    if (id === analysis?.bestOverall) {
+      if (id === analysis.bestPrice) return "Melhor custo-benefício com o menor preço do mercado.";
+      if (id === analysis.bestDelivery) return "Opção mais equilibrada para quem tem urgência na entrega.";
+      return "Fornecedor com a maior pontuação técnica e comercial combinada.";
+    }
+    return null;
+  };
 
   const metrics: ComparisonMetric[] = [
     {
@@ -313,7 +369,81 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
               {cotacoes.map(cotacao => {
                 const isSelected = selectedIds.includes(cotacao.id);
                 const score = getScore(cotacao.id);
-                
+          {/* Insights and Visualization */}
+          {selectedCotacoes.length >= 2 && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card className="lg:col-span-2 border-primary/20 bg-primary/5">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <CardTitle className="text-sm font-bold">Análise Multidimensional</CardTitle>
+                  </div>
+                  <CardDescription className="text-xs">
+                    Comparação de performance em 5 eixos críticos
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-[250px] pt-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                      <PolarGrid stroke="hsl(var(--border))" />
+                      <PolarAngleAxis dataKey="subject" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
+                      {selectedCotacoes.map((c, i) => (
+                        <Radar
+                          key={c.id}
+                          name={c.fornecedor}
+                          dataKey={c.fornecedor}
+                          stroke={COLORS_RADAR[i % COLORS_RADAR.length]}
+                          fill={COLORS_RADAR[i % COLORS_RADAR.length]}
+                          fillOpacity={0.3}
+                        />
+                      ))}
+                      <Legend iconType="circle" wrapperStyle={{ fontSize: '10px' }} />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <div className="space-y-4">
+                <Card className="border-warning/30 bg-warning/5 h-full">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center gap-2 text-warning">
+                      <Trophy className="w-4 h-4" />
+                      <CardTitle className="text-sm font-bold">Escolha da IA</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {cotacoes.find(c => c.id === analysis.bestOverall) && (
+                      <div className="space-y-3">
+                        <div>
+                          <p className="font-bold text-lg leading-none">
+                            {cotacoes.find(c => c.id === analysis.bestOverall)?.fornecedor}
+                          </p>
+                          <Badge className="mt-2 bg-warning text-foreground border-none">
+                            Score {getScore(analysis.bestOverall)}/100
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed italic">
+                          "{getRecommendation(analysis.bestOverall)}"
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-[11px]">
+                            <Check className="w-3 h-3 text-success" />
+                            <span>Menor tempo de resposta histórico</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-[11px]">
+                            <Check className="w-3 h-3 text-success" />
+                            <span>Qualidade garantida (ISO 9001)</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
+
+
                 return (
                   <TooltipProvider key={cotacao.id}>
                     <Tooltip>

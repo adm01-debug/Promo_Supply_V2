@@ -74,7 +74,10 @@ export const executiveMetrics = {
     previousValue: previousPeriodMetrics.contractCompliance.value,
     change: calculateChange(currentPeriodMetrics.contractCompliance.value, previousPeriodMetrics.contractCompliance.value), 
     target: currentPeriodMetrics.contractCompliance.target 
-  }
+  },
+  maverickSpend: { value: 110250, percentage: 4.5 },
+  tailSpend: { value: 294000, percentage: 12.0 },
+  savingsPercent: 10.0
 };
 
 export const monthlyTrend = [

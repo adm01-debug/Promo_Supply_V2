@@ -28,6 +28,7 @@ import { ExecutivePendingActions } from './executive/ExecutivePendingActions';
 import { ExecutiveDrillDownModal } from './executive/ExecutiveDrillDownModal';
 import { PriceVarianceAnalysis } from './executive/PriceVarianceAnalysis';
 import { KraljicMatrix } from './executive/KraljicMatrix';
+import { ExecutiveAIInsights } from './executive/ExecutiveAIInsights';
 
 export const ExecutiveDashboard = () => {
   const [drillDown, setDrillDown] = useState<DrillDownData | null>(null);
@@ -36,7 +37,12 @@ export const ExecutiveDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
 
-  const { metrics: realMetrics, loading: realDataLoading } = useExecutiveDashboardData();
+  const { 
+    metrics: realMetrics, 
+    spendByCategory: realSpendByCategory, 
+    topSuppliers: realTopSuppliers, 
+    loading: realDataLoading 
+  } = useExecutiveDashboardData();
 
   const activeMetrics = useMemo(() => {
     if (realDataLoading) return { ...executiveMetrics, savingsPercent: 10.0 };
@@ -312,6 +318,14 @@ export const ExecutiveDashboard = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* AI Insights Section */}
+      <ExecutiveAIInsights 
+        metrics={activeMetrics} 
+        spendByCategory={realSpendByCategory || []} 
+        topSuppliers={realTopSuppliers || []}
+        loading={realDataLoading}
+      />
 
       {/* Primary KPIs */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
