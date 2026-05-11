@@ -59,26 +59,27 @@ const ComprasDashboard = () => {
       case 'kpi-aguardando':
         return (
           <EnhancedKpiCard
-            title={t('dashboard.kpis.pending_approval')}
+            title="Aguardando Cotação"
             value={kpis.comparisons.aguardando.current}
             previousValue={kpis.comparisons.aguardando.previous}
             sparklineData={kpis.comparisons.aguardando.sparkline}
             icon={ClipboardList}
-            color="emerald"
+            color="orange"
             format="number"
             variant="default"
+            subtitle="Solicitações pendentes"
           />
         );
       case 'kpi-volume':
         return (
           <EnhancedKpiCard
-            title={t('dashboard.kpis.total_spend')}
+            title="Volume do Mês"
             value={kpis.comparisons.volume.current}
             previousValue={kpis.comparisons.volume.previous}
             sparklineData={kpis.comparisons.volume.sparkline}
             icon={TrendingUp}
-            color="cyan"
-            subtitle="Total"
+            color="blue"
+            subtitle="Total faturado"
             format="currency"
             variant="default"
           />
@@ -86,13 +87,13 @@ const ComprasDashboard = () => {
       case 'kpi-economia':
         return (
           <EnhancedKpiCard
-            title={t('dashboard.kpis.saving')}
+            title="Economia Gerada"
             value={kpis.comparisons.economia.current}
             previousValue={kpis.comparisons.economia.previous}
             sparklineData={kpis.comparisons.economia.sparkline}
             icon={PiggyBank}
             color="emerald"
-            subtitle={`${kpis.economiaPercentual}% do volume`}
+            subtitle={`${kpis.economiaPercentual}% do volume total`}
             format="currency"
             variant="default"
           />
@@ -100,13 +101,13 @@ const ComprasDashboard = () => {
       case 'kpi-sla':
         return (
           <EnhancedKpiCard
-            title="Taxa Entrega"
+            title="SLA de Atendimento"
             value={kpis.comparisons.sla.current}
             previousValue={kpis.comparisons.sla.previous}
             sparklineData={kpis.comparisons.sla.sparkline}
             icon={BarChart3}
-            color="teal"
-            subtitle="No prazo"
+            color="indigo"
+            subtitle="Nível de serviço"
             format="percent"
             variant="default"
           />
