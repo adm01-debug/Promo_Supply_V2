@@ -179,7 +179,7 @@ export function useDashboardKPIs() {
     };
 
     const kpis: DashboardKPIsExtended = {
-      ...currentKpis,
+      ...currentData,
       aguardandoPagamento: pag.filter(p => p.status === 'pendente').length,
       emTransito: ped.filter(p => p.status === 'enviado' || p.status === 'em_transito').length,
       finalizados: ped.filter(p => p.status === 'entregue').length,
@@ -188,33 +188,34 @@ export function useDashboardKPIs() {
       totalFornecedores: forn.filter(f => f.status === 'ativo').length,
       totalPedidos: ped.length,
       pendingApprovals: wf.length,
-      economiaPercentual: currentKpis.volumeMes > 0 ? Math.round((currentKpis.economiaGerada / currentKpis.volumeMes) * 100) : 0,
+      economiaPercentual: currentData.volumeMes > 0 ? Math.round((currentData.economiaGerada / currentData.volumeMes) * 100) : 0,
       comparisons: {
         aguardando: {
-          current: currentKpis.aguardandoCotacao,
-          previous: previousKpis.aguardandoCotacao,
-          trend: previousKpis.aguardandoCotacao > 0 ? ((currentKpis.aguardandoCotacao - previousKpis.aguardandoCotacao) / previousKpis.aguardandoCotacao) * 100 : 0,
+          current: currentData.aguardandoCotacao,
+          previous: previousData.aguardandoCotacao,
+          trend: previousData.aguardandoCotacao > 0 ? ((currentData.aguardandoCotacao - previousData.aguardandoCotacao) / previousData.aguardandoCotacao) * 100 : 0,
           sparkline: generateSparkline('aguardandoCotacao')
         },
         volume: {
-          current: currentKpis.volumeMes,
-          previous: previousKpis.volumeMes,
-          trend: previousKpis.volumeMes > 0 ? ((currentKpis.volumeMes - previousKpis.volumeMes) / previousKpis.volumeMes) * 100 : 0,
+          current: currentData.volumeMes,
+          previous: previousData.volumeMes,
+          trend: previousData.volumeMes > 0 ? ((currentData.volumeMes - previousData.volumeMes) / previousData.volumeMes) * 100 : 0,
           sparkline: generateSparkline('volumeMes')
         },
         economia: {
-          current: currentKpis.economiaGerada,
-          previous: previousKpis.economiaGerada,
-          trend: previousKpis.economiaGerada > 0 ? ((currentKpis.economiaGerada - previousKpis.economiaGerada) / previousKpis.economiaGerada) * 100 : 0,
+          current: currentData.economiaGerada,
+          previous: previousData.economiaGerada,
+          trend: previousData.economiaGerada > 0 ? ((currentData.economiaGerada - previousData.economiaGerada) / previousData.economiaGerada) * 100 : 0,
           sparkline: generateSparkline('economiaGerada')
         },
         sla: {
-          current: currentKpis.taxaEntrega,
-          previous: previousKpis.taxaEntrega,
-          trend: currentKpis.taxaEntrega - previousKpis.taxaEntrega,
+          current: currentData.taxaEntrega,
+          previous: previousData.taxaEntrega,
+          trend: currentData.taxaEntrega - previousData.taxaEntrega,
           sparkline: generateSparkline('taxaEntrega')
         }
-      }
+      },
+      previousPipeline: previousData.pipeline
     };
 
     const pipeline: PipelineData = {
