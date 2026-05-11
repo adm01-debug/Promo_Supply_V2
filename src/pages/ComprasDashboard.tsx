@@ -9,6 +9,7 @@ import {
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { EnhancedKpiCard } from "@/components/compras/EnhancedKpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
 import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
@@ -121,7 +122,7 @@ const ComprasDashboard = () => {
               <BarChart3 className="w-5 h-5 text-primary" />
               Pipeline Visual
             </h2>
-            <PipelineChart data={pipeline} />
+            <PipelineChart data={pipeline} previousData={(kpis as any).previousPipeline} />
           </Card>
         );
       case 'supplier-alerts':
@@ -187,14 +188,18 @@ const ComprasDashboard = () => {
 
   return (
     <MainLayout>
-      <div className="space-y-4 animate-fade-in">
+      <div className="space-y-6 animate-fade-in pb-10">
         <CriticalAlertsBar />
         
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">{t('dashboard.title')}</h1>
-            <p className="text-sm text-muted-foreground">
-              {t('common.welcome')} - {t('common.dashboard')}
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-card/30 p-6 rounded-2xl border border-border/50 backdrop-blur-md">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <h1 className="text-3xl font-black text-foreground tracking-tight uppercase">{t('dashboard.title')}</h1>
+              <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 animate-pulse">Live</Badge>
+            </div>
+            <p className="text-sm text-muted-foreground flex items-center gap-2">
+              <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
+              {t('common.welcome')} - Sistema atualizado em tempo real
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">

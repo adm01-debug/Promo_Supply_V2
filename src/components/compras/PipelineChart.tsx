@@ -15,6 +15,7 @@ interface PipelineData {
 
 interface PipelineChartProps {
   data: PipelineData;
+  previousData?: PipelineData;
 }
 
 const stages = [
@@ -26,14 +27,14 @@ const stages = [
   { key: 'entregue', label: 'Entregue', bgClass: 'bg-success', glowClass: 'dark:shadow-[0_0_12px_hsl(var(--success)/0.4)]', colorVar: '--success', description: 'Pedidos entregues com sucesso' },
 ] as const;
 
-// Previous period mock data for trend comparison
-const previousPeriodData: PipelineData = {
-  solicitacao: 15,
-  cotacao: 10,
-  pedido: 7,
-  pagamento: 4,
-  transito: 3,
-  entregue: 142,
+// Default data in case previousData is not provided
+const defaultPreviousData: PipelineData = {
+  solicitacao: 0,
+  cotacao: 0,
+  pedido: 0,
+  pagamento: 0,
+  transito: 0,
+  entregue: 0,
 };
 
 function getConversionRate(from: number, to: number): number {
@@ -103,7 +104,7 @@ const TrendIndicator = ({ trend, current, previous }: { trend: 'up' | 'down' | '
   );
 };
 
-export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ data }, ref) => {
+export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ data, previousData = defaultPreviousData }, ref) => {
   const [hoveredStage, setHoveredStage] = useState<string | null>(null);
   
   const values = Object.values(data);
@@ -145,7 +146,7 @@ export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ d
       <div className="flex items-end gap-0">
         {stages.map((stage, index) => {
           const value = data[stage.key];
-          const prevValue = previousPeriodData[stage.key];
+          const prevValue = previousData[stage.key] || 0;
           const height = maxSqrt > 0 ? (Math.sqrt(value) / maxSqrt) * 100 : 0;
           const trend = getTrend(value, prevValue);
           const isHovered = hoveredStage === stage.key;

@@ -1,6 +1,7 @@
-import { AlertCircle, Clock, AlertTriangle, ArrowRight } from "lucide-react";
+import { AlertCircle, Clock, AlertTriangle, ArrowRight, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface UrgentItem {
   id: string;
@@ -8,6 +9,7 @@ interface UrgentItem {
   fornecedor: string;
   vencimento: string;
   urgencia: 'critico' | 'alto' | 'medio';
+  status?: string;
 }
 
 interface UrgentItemsListProps {
@@ -46,42 +48,68 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
         const Icon = config.icon;
         
         return (
-          <Link
-            to={`/cotacao?id=${item.id}`}
+          <div
             key={item.id}
             className={cn(
-              "flex items-center gap-4 p-4 rounded-lg border transition-all duration-200 hover:shadow-md group",
-              config.bg,
+              "flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-xl border transition-all duration-300 hover:shadow-lg group relative overflow-hidden bg-card/50 backdrop-blur-sm",
+              config.bg.replace('/10', '/5'),
               config.border
             )}
           >
-            <div className={cn("p-2 rounded-full", config.bg)}>
+            {/* Animated urgency indicator */}
+            <div className={cn("absolute left-0 top-0 bottom-0 w-1", config.badge)} />
+
+            <div className={cn("p-2.5 rounded-xl transition-transform group-hover:scale-110 duration-300", config.bg)}>
               <Icon className={cn("w-5 h-5", config.text)} />
             </div>
             
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-mono text-sm font-semibold text-foreground">
+                <span className="font-mono text-xs font-bold text-muted-foreground uppercase tracking-wider">
                   #{item.id}
                 </span>
-                <span className="text-muted-foreground">|</span>
-                <span className="text-sm text-foreground truncate">{item.produto}</span>
+                <span className="w-1 h-1 rounded-full bg-border" />
+                <h3 className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">
+                  {item.produto}
+                </h3>
               </div>
-              <div className="flex items-center gap-2 mt-1">
-                <span className="text-xs text-muted-foreground">{item.fornecedor}</span>
+              <div className="flex items-center gap-3 mt-1">
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  Vence: <span className="font-medium text-foreground">{item.vencimento}</span>
+                </span>
+                <span className="text-xs text-muted-foreground px-2 py-0.5 rounded-full bg-muted border border-border/50">
+                  {item.fornecedor}
+                </span>
               </div>
             </div>
             
-            <div className="flex items-center gap-3">
-              <span className={cn(
-                "px-2 py-1 rounded text-xs font-semibold text-primary-foreground",
-                config.badge
-              )}>
-                Vence: {item.vencimento}
-              </span>
-              <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="flex items-center gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+              <Button 
+                asChild
+                variant="ghost" 
+                size="sm" 
+                className="h-8 gap-1 text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0"
+              >
+                <Link to={`/cotacao?id=${item.id}`}>
+                  Detalhes
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </Button>
+
+              <Button 
+                asChild
+                variant={item.urgencia === 'critico' ? 'destructive' : 'default'} 
+                size="sm" 
+                className="h-8 gap-1 text-xs font-bold shadow-sm"
+              >
+                <Link to={`/cotacao?id=${item.id}&action=quote`}>
+                  <Zap className="w-3.5 h-3.5 fill-current" />
+                  Citar Agora
+                </Link>
+              </Button>
             </div>
-          </Link>
+          </div>
         );
       })}
     </div>
