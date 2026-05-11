@@ -10,6 +10,7 @@ interface UrgentItem {
   vencimento: string;
   urgencia: 'critico' | 'alto' | 'medio';
   status?: string;
+  comprador?: string;
 }
 
 interface UrgentItemsListProps {
