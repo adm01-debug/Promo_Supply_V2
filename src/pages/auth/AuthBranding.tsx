@@ -68,7 +68,7 @@ export const AuthBrandingPanel = () => (
         </div>
         <div>
           <h1 className="text-2xl font-bold text-primary-foreground">Promo Supply</h1>
-          <p className="text-primary-foreground/70 text-sm">Promo Supply</p>
+          <p className="text-primary-foreground/70 text-sm">Sistema de Gestão de Compras</p>
         </div>
       </div>
       <div className="max-w-md">
