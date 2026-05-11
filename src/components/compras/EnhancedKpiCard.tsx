@@ -262,7 +262,7 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
       whileHover={{ y: -3 }}
       onClick={onClick}
       className={cn(
-        "relative rounded-xl border bg-card text-card-foreground shadow-sm p-4 group cursor-pointer",
+        "relative rounded-xl border bg-card/40 text-card-foreground shadow-sm p-5 group cursor-pointer backdrop-blur-sm",
         "transition-all duration-300 hover:shadow-lg",
         colors.border
       )}
