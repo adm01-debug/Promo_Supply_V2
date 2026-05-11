@@ -27,8 +27,9 @@ const defaultWidgets: DashboardWidget[] = [
   { id: 'kpi-sla', type: 'kpi', title: 'Taxa SLA', visible: true, order: 3, size: 'small' },
 
   // Charts (hierarchy: bigger first)
-  { id: 'chart-pipeline', type: 'chart', title: 'Pipeline', visible: true, order: 4, size: 'large' },
-  { id: 'chart-sla', type: 'chart', title: 'Distribuição SLA', visible: true, order: 5, size: 'large' },
+  { id: 'dashboard-insights', type: 'ai', title: 'Insights de IA', visible: true, order: 4, size: 'full' },
+  { id: 'chart-pipeline', type: 'chart', title: 'Pipeline', visible: true, order: 5, size: 'large' },
+  { id: 'chart-sla', type: 'chart', title: 'Distribuição SLA', visible: true, order: 6, size: 'large' },
 
   // Panels
   { id: 'buyer-performance', type: 'panel', title: 'Performance Comprador', visible: true, order: 6, size: 'large' },
