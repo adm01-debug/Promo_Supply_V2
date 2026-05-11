@@ -28,6 +28,7 @@ import { ExecutivePendingActions } from './executive/ExecutivePendingActions';
 import { ExecutiveDrillDownModal } from './executive/ExecutiveDrillDownModal';
 import { PriceVarianceAnalysis } from './executive/PriceVarianceAnalysis';
 import { KraljicMatrix } from './executive/KraljicMatrix';
+import { ExecutiveAIInsights } from './executive/ExecutiveAIInsights';
 
 export const ExecutiveDashboard = () => {
   const [drillDown, setDrillDown] = useState<DrillDownData | null>(null);
