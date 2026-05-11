@@ -28,22 +28,23 @@ const defaultWidgets: DashboardWidget[] = [
 
   // Charts (hierarchy: bigger first)
   { id: 'dashboard-insights', type: 'ai', title: 'Insights de IA', visible: true, order: 4, size: 'full' },
-  { id: 'chart-pipeline', type: 'chart', title: 'Pipeline', visible: true, order: 5, size: 'large' },
-  { id: 'chart-sla', type: 'chart', title: 'Distribuição SLA', visible: true, order: 6, size: 'large' },
+  { id: 'trend-charts', type: 'chart', title: 'Tendências e Distribuição', visible: true, order: 5, size: 'full' },
+  { id: 'chart-pipeline', type: 'chart', title: 'Pipeline', visible: true, order: 6, size: 'large' },
+  { id: 'chart-sla', type: 'chart', title: 'Distribuição SLA', visible: true, order: 7, size: 'large' },
 
   // Panels
-  { id: 'buyer-performance', type: 'panel', title: 'Performance Comprador', visible: true, order: 6, size: 'large' },
-  { id: 'supplier-ranking', type: 'panel', title: 'Ranking Fornecedores', visible: true, order: 7, size: 'medium' },
-  { id: 'supplier-alerts', type: 'panel', title: 'Alertas Fornecedores', visible: true, order: 8, size: 'medium' },
-  { id: 'savings-goal', type: 'panel', title: 'Meta de Economia', visible: true, order: 9, size: 'medium' },
+  { id: 'buyer-performance', type: 'panel', title: 'Performance Comprador', visible: true, order: 8, size: 'large' },
+  { id: 'supplier-ranking', type: 'panel', title: 'Ranking Fornecedores', visible: true, order: 9, size: 'medium' },
+  { id: 'supplier-alerts', type: 'panel', title: 'Alertas Fornecedores', visible: true, order: 10, size: 'medium' },
+  { id: 'savings-goal', type: 'panel', title: 'Meta de Economia', visible: true, order: 11, size: 'medium' },
 
   // Operational widgets
-  { id: 'delivery-calendar', type: 'calendar', title: 'Calendário Entregas', visible: true, order: 10, size: 'full' },
-  { id: 'urgent-items', type: 'list', title: 'Itens Urgentes', visible: true, order: 11, size: 'medium' },
+  { id: 'delivery-calendar', type: 'calendar', title: 'Calendário Entregas', visible: true, order: 12, size: 'full' },
+  { id: 'urgent-items', type: 'list', title: 'Itens Urgentes', visible: true, order: 13, size: 'medium' },
 
   // AI widgets
-  { id: 'demand-prediction', type: 'ai', title: 'Previsão de Demanda (IA)', visible: true, order: 12, size: 'large' },
-  { id: 'risk-heatmap', type: 'ai', title: 'Análise de Riscos', visible: true, order: 13, size: 'full' },
+  { id: 'demand-prediction', type: 'ai', title: 'Previsão de Demanda (IA)', visible: true, order: 14, size: 'large' },
+  { id: 'risk-heatmap', type: 'ai', title: 'Análise de Riscos', visible: true, order: 15, size: 'full' },
 ];
 
 export const useDashboardLayoutStore = create<DashboardLayoutState>()(
