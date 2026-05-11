@@ -33,6 +33,7 @@ const DeliveryCalendar = lazy(() => import("@/components/compras/DeliveryCalenda
 const DemandPredictionPanel = lazy(() => import("@/components/compras/DemandPredictionPanel").then(m => ({ default: m.DemandPredictionPanel })));
 const RiskHeatMap = lazy(() => import("@/components/compras/RiskHeatMap").then(m => ({ default: m.RiskHeatMap })));
 const DashboardInsights = lazy(() => import("@/components/compras/DashboardInsights").then(m => ({ default: m.DashboardInsights })));
+const TrendAnalysisCharts = lazy(() => import("@/components/compras/TrendAnalysisCharts").then(m => ({ default: m.TrendAnalysisCharts })));
 
 const LazyPanel = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
