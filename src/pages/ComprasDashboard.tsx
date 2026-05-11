@@ -172,6 +172,8 @@ const ComprasDashboard = () => {
         return <LazyPanel><DemandPredictionPanel /></LazyPanel>;
       case 'risk-heatmap':
         return <LazyPanel><RiskHeatMap /></LazyPanel>;
+      case 'dashboard-insights':
+        return <LazyPanel><DashboardInsights /></LazyPanel>;
       default:
         return null;
     }
