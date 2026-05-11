@@ -193,21 +193,21 @@ export function ChatArea({
       <AnimatePresence>
         {typingUsers.length > 0 && (
           <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="px-4 py-2 border-t bg-muted/20 backdrop-blur-sm"
+            initial={{ opacity: 0, y: 15, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="absolute bottom-24 left-6 z-30"
           >
-            <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
-              <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-full">
-                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="flex items-center gap-3 bg-card/90 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-2xl shadow-2xl">
+              <div className="flex items-center gap-1">
+                <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-primary rounded-full" />
+                <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-primary rounded-full" />
+                <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-primary rounded-full" />
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest animate-pulse">
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary/80 animate-pulse">
                 {typingUsers.length === 1
-                  ? `${typingUsers[0]} está digitando...`
-                  : `Múltiplos contatos digitando...`}
+                  ? `${typingUsers[0]} escrevendo...`
+                  : `Múltiplos contatos escrevendo...`}
               </span>
             </div>
           </motion.div>
