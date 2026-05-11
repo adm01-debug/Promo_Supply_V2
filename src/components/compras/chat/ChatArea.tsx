@@ -215,34 +215,45 @@ export function ChatArea({
       </AnimatePresence>
 
       {/* Ultra-premium Input Area */}
-      <div className="p-4 border-t bg-card/50 backdrop-blur-xl">
-        <div className="flex items-end gap-3">
-          <Button variant="ghost" size="icon" className="h-10 w-10 flex-shrink-0 rounded-xl hover:bg-primary/10 hover:text-primary transition-all active:scale-90">
-            <Paperclip className="w-5 h-5" />
-          </Button>
+      <div className="p-5 border-t bg-gradient-to-t from-card to-card/90 backdrop-blur-2xl relative z-20">
+        <div className="flex items-center gap-4">
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <Button variant="ghost" size="icon" className="h-11 w-11 rounded-full bg-muted/40 hover:bg-primary/10 hover:text-primary transition-all shadow-inner border border-white/5">
+              <Paperclip className="w-5 h-5" />
+            </Button>
+          </motion.div>
+          
           <div className="flex-1 relative group">
             <Textarea
-              placeholder="Falar com o fornecedor..."
+              placeholder="Digite sua mensagem de negócio..."
               value={newMessage}
               onChange={onMessageChange}
               onKeyDown={onKeyPress}
-              className="min-h-[46px] max-h-32 resize-none pr-12 rounded-2xl bg-muted/30 border-transparent focus:border-primary/30 focus:ring-primary/10 transition-all font-medium text-sm scrollbar-hide"
+              className={cn(
+                "min-h-[52px] max-h-40 resize-none pr-14 pl-5 py-4 rounded-[1.5rem] bg-muted/50 border-white/5 shadow-inner focus:border-primary/40 focus:ring-primary/10 transition-all font-semibold text-[13px] scrollbar-hide leading-tight",
+                "placeholder:text-muted-foreground/50 placeholder:font-bold placeholder:uppercase placeholder:tracking-wider placeholder:text-[10px]"
+              )}
               rows={1}
               disabled={sendingMessage}
             />
-            <Button variant="ghost" size="icon" className="absolute right-2 bottom-1.5 h-8 w-8 rounded-lg hover:bg-primary/5 group-focus-within:text-primary transition-colors">
-              <Smile className="w-5 h-5 opacity-60" />
-            </Button>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full opacity-40 hover:opacity-100 hover:bg-primary/10 transition-all">
+                <Smile className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
+
           <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
           >
             <Button
               size="icon"
               className={cn(
-                "h-11 w-11 flex-shrink-0 rounded-2xl shadow-lg transition-all duration-300",
-                newMessage.trim() ? "gradient-primary shadow-glow-primary border-none" : "bg-muted text-muted-foreground"
+                "h-12 w-12 flex-shrink-0 rounded-full shadow-2xl transition-all duration-500",
+                newMessage.trim() 
+                  ? "bg-primary text-primary-foreground shadow-primary/30 border-none scale-105" 
+                  : "bg-muted text-muted-foreground opacity-50 border border-white/5"
               )}
               onClick={onSendMessage}
               disabled={!newMessage.trim() || sendingMessage}
@@ -250,7 +261,7 @@ export function ChatArea({
               {sendingMessage ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <Send className={cn("w-5 h-5 transition-transform", newMessage.trim() && "translate-x-0.5 -translate-y-0.5")} />
+                <Send className={cn("w-5 h-5 transition-all duration-300", newMessage.trim() && "translate-x-0.5 -translate-y-0.5 rotate-[15deg]")} />
               )}
             </Button>
           </motion.div>
