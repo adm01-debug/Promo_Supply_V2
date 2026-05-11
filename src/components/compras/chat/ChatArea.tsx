@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import React from "react";
+import { MessageBubble } from "./MessageBubble";
 
 interface Message {
   id: string;
@@ -90,8 +91,8 @@ export function ChatArea({
 
   return (
     <>
-      {/* Premium Chat Header */}
-      <div className="p-4 border-b bg-card/50 backdrop-blur-md flex items-center justify-between sticky top-0 z-10">
+      {/* Ultra-Premium Glass Header */}
+      <div className="p-5 border-b bg-gradient-to-b from-card/95 to-card/80 backdrop-blur-2xl flex items-center justify-between sticky top-0 z-20 shadow-sm border-white/5">
         <div className="flex items-center gap-3">
           <motion.div
             initial={{ scale: 0.9, opacity: 0 }}
@@ -124,9 +125,9 @@ export function ChatArea({
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <div className="hidden sm:flex items-center gap-1 mr-2 px-2 py-1 rounded-lg bg-primary/5 border border-primary/10">
-            <Sparkles className="w-3 h-3 text-primary animate-pulse" />
-            <span className="text-[9px] font-black uppercase tracking-tighter text-primary">IA Sync</span>
+          <div className="hidden sm:flex items-center gap-1.5 mr-3 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]">
+            <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary">IA INSIGHT</span>
           </div>
           <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all">
             <Phone className="w-4 h-4" />
@@ -165,7 +166,7 @@ export function ChatArea({
           </div>
         ) : (
           <div className="space-y-6 pb-4">
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode="popLayout" initial={false}>
               {messages.map((message, index) => {
                 const isMe = message.senderId === 'me';
                 const showDate = index === 0 ||
@@ -173,68 +174,13 @@ export function ChatArea({
                   format(message.timestamp, 'yyyy-MM-dd');
 
                 return (
-                  <motion.div 
+                  <MessageBubble
                     key={message.id}
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ type: "spring", damping: 25, stiffness: 500 }}
-                  >
-                    {showDate && (
-                      <div className="flex justify-center my-6">
-                        <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-[0.2em] bg-muted/30 border-none text-muted-foreground/80 px-3 py-1 rounded-full">
-                          {format(message.timestamp, "dd 'de' MMMM", { locale: ptBR })}
-                        </Badge>
-                      </div>
-                    )}
-                    <div className={cn("flex group", isMe ? "justify-end" : "justify-start")}>
-                      <div className={cn(
-                        "max-w-[80%] space-y-1",
-                        isMe ? "items-end" : "items-start"
-                      )}>
-                        <div className={cn(
-                          "relative rounded-[1.25rem] px-4 py-2.5 shadow-sm transition-all duration-300",
-                          isMe 
-                            ? "bg-primary text-primary-foreground rounded-tr-none hover:shadow-md hover:translate-x-[-2px]" 
-                            : "bg-card border border-border/50 text-foreground rounded-tl-none hover:shadow-md hover:translate-x-[2px]"
-                        )}>
-                          {message.type === 'file' && (
-                            <div className={cn(
-                              "flex items-center gap-3 p-3 rounded-xl mb-2 transition-colors", 
-                              isMe ? "bg-white/10" : "bg-primary/5"
-                            )}>
-                              <div className={cn(
-                                "p-2 rounded-lg",
-                                isMe ? "bg-white/20" : "bg-primary/10 text-primary"
-                              )}>
-                                <FileText className="w-5 h-5" />
-                              </div>
-                              <div className="min-w-0">
-                                <p className="text-sm font-bold truncate leading-none">{message.attachmentName}</p>
-                                <p className={cn("text-[10px] mt-1 opacity-70", isMe ? "text-white" : "text-muted-foreground")}>Documento • 2.4 MB</p>
-                              </div>
-                            </div>
-                          )}
-                          {message.type !== 'file' && (
-                            <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium">{message.content}</p>
-                          )}
-                          <div className={cn("flex items-center gap-1.5 mt-1.5", isMe ? "justify-end" : "justify-start")}>
-                            <span className={cn("text-[9px] font-bold", isMe ? "text-primary-foreground/60" : "text-muted-foreground/60")}>
-                              {format(message.timestamp, 'HH:mm')}
-                            </span>
-                            {isMe && (
-                              <div className="flex">
-                                {message.status === 'read' ? (
-                                  <CheckCheck className="w-3 h-3 text-white" />
-                                ) : (
-                                  <Check className="w-3 h-3 text-white/50" />
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
+                    message={message}
+                    index={index}
+                    isMe={isMe}
+                    showDate={showDate}
+                  />
                 );
               })}
             </AnimatePresence>
@@ -247,21 +193,21 @@ export function ChatArea({
       <AnimatePresence>
         {typingUsers.length > 0 && (
           <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="px-4 py-2 border-t bg-muted/20 backdrop-blur-sm"
+            initial={{ opacity: 0, y: 15, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="absolute bottom-24 left-6 z-30"
           >
-            <div className="flex items-center gap-3 text-sm text-muted-foreground font-medium">
-              <div className="flex items-center gap-1 bg-primary/10 px-2 py-1 rounded-full">
-                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="flex items-center gap-3 bg-card/90 backdrop-blur-xl border border-white/10 px-4 py-2 rounded-2xl shadow-2xl">
+              <div className="flex items-center gap-1">
+                <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 bg-primary rounded-full" />
+                <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 bg-primary rounded-full" />
+                <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 bg-primary rounded-full" />
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest animate-pulse">
+              <span className="text-[10px] font-black uppercase tracking-widest text-primary/80 animate-pulse">
                 {typingUsers.length === 1
-                  ? `${typingUsers[0]} está digitando...`
-                  : `Múltiplos contatos digitando...`}
+                  ? `${typingUsers[0]} escrevendo...`
+                  : `Múltiplos contatos escrevendo...`}
               </span>
             </div>
           </motion.div>
@@ -269,34 +215,45 @@ export function ChatArea({
       </AnimatePresence>
 
       {/* Ultra-premium Input Area */}
-      <div className="p-4 border-t bg-card/50 backdrop-blur-xl">
-        <div className="flex items-end gap-3">
-          <Button variant="ghost" size="icon" className="h-10 w-10 flex-shrink-0 rounded-xl hover:bg-primary/10 hover:text-primary transition-all active:scale-90">
-            <Paperclip className="w-5 h-5" />
-          </Button>
+      <div className="p-5 border-t bg-gradient-to-t from-card to-card/90 backdrop-blur-2xl relative z-20">
+        <div className="flex items-center gap-4">
+          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+            <Button variant="ghost" size="icon" className="h-11 w-11 rounded-full bg-muted/40 hover:bg-primary/10 hover:text-primary transition-all shadow-inner border border-white/5">
+              <Paperclip className="w-5 h-5" />
+            </Button>
+          </motion.div>
+          
           <div className="flex-1 relative group">
             <Textarea
-              placeholder="Falar com o fornecedor..."
+              placeholder="Digite sua mensagem de negócio..."
               value={newMessage}
               onChange={onMessageChange}
               onKeyDown={onKeyPress}
-              className="min-h-[46px] max-h-32 resize-none pr-12 rounded-2xl bg-muted/30 border-transparent focus:border-primary/30 focus:ring-primary/10 transition-all font-medium text-sm scrollbar-hide"
+              className={cn(
+                "min-h-[52px] max-h-40 resize-none pr-14 pl-5 py-4 rounded-[1.5rem] bg-muted/50 border-white/5 shadow-inner focus:border-primary/40 focus:ring-primary/10 transition-all font-semibold text-[13px] scrollbar-hide leading-tight",
+                "placeholder:text-muted-foreground/50 placeholder:font-bold placeholder:uppercase placeholder:tracking-wider placeholder:text-[10px]"
+              )}
               rows={1}
               disabled={sendingMessage}
             />
-            <Button variant="ghost" size="icon" className="absolute right-2 bottom-1.5 h-8 w-8 rounded-lg hover:bg-primary/5 group-focus-within:text-primary transition-colors">
-              <Smile className="w-5 h-5 opacity-60" />
-            </Button>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center">
+              <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full opacity-40 hover:opacity-100 hover:bg-primary/10 transition-all">
+                <Smile className="w-5 h-5" />
+              </Button>
+            </div>
           </div>
+
           <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
           >
             <Button
               size="icon"
               className={cn(
-                "h-11 w-11 flex-shrink-0 rounded-2xl shadow-lg transition-all duration-300",
-                newMessage.trim() ? "gradient-primary shadow-glow-primary border-none" : "bg-muted text-muted-foreground"
+                "h-12 w-12 flex-shrink-0 rounded-full shadow-2xl transition-all duration-500",
+                newMessage.trim() 
+                  ? "bg-primary text-primary-foreground shadow-primary/30 border-none scale-105" 
+                  : "bg-muted text-muted-foreground opacity-50 border border-white/5"
               )}
               onClick={onSendMessage}
               disabled={!newMessage.trim() || sendingMessage}
@@ -304,7 +261,7 @@ export function ChatArea({
               {sendingMessage ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <Send className={cn("w-5 h-5 transition-transform", newMessage.trim() && "translate-x-0.5 -translate-y-0.5")} />
+                <Send className={cn("w-5 h-5 transition-all duration-300", newMessage.trim() && "translate-x-0.5 -translate-y-0.5 rotate-[15deg]")} />
               )}
             </Button>
           </motion.div>
