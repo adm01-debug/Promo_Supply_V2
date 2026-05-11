@@ -65,12 +65,12 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
     }
 
     // 3. Positive Performance
-    if (metrics.contractCompliance > 85) {
+    if (metrics.contractCompliance.value > 85) {
       items.push({
         id: 'compliance',
         type: 'positive',
         title: 'Excelente Compliance',
-        description: `A aderência a contratos está em ${metrics.contractCompliance}%. Isso reduz o maverick spend e garante as melhores condições comerciais.`,
+        description: `A aderência a contratos está em ${metrics.contractCompliance.value}%. Isso reduz o maverick spend e garante as melhores condições comerciais.`,
         impact: 'Alta Maturidade',
         icon: CheckCircle2
       });
