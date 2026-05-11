@@ -262,7 +262,7 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
       whileHover={{ y: -3 }}
       onClick={onClick}
       className={cn(
-        "relative rounded-xl border bg-card text-card-foreground shadow-sm p-4 group cursor-pointer",
+        "relative rounded-xl border bg-card/40 text-card-foreground shadow-sm p-5 group cursor-pointer backdrop-blur-sm",
         "transition-all duration-300 hover:shadow-lg",
         colors.border
       )}
@@ -311,13 +311,13 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
 
       {/* Mini sparkline */}
       {sparklineData && sparklineData.length >= 2 && (
-        <div className="mt-3 pt-3 border-t border-border/30">
+        <div className="mt-4 pt-4 border-t border-border/30">
           <Sparkline
             data={sparklineData}
-            width={200}
-            height={32}
+            width={300}
+            height={48}
             showArea={true}
-            className="w-full"
+            className="w-full opacity-80 group-hover:opacity-100 transition-opacity"
           />
         </div>
       )}

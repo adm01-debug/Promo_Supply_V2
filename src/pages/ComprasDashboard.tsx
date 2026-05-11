@@ -193,7 +193,7 @@ const ComprasDashboard = () => {
 
   const getGridClasses = useCallback((size: string) => {
     switch (size) {
-      case 'small': return 'col-span-1';
+      case 'small': return 'col-span-1 lg:col-span-1';
       case 'medium': return 'col-span-1 lg:col-span-1';
       case 'large': return 'col-span-1 lg:col-span-2';
       case 'full': return 'col-span-full';
