@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import React from "react";
+import { MessageBubble } from "./MessageBubble";
 
 interface Message {
   id: string;
