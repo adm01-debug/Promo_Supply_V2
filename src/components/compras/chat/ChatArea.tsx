@@ -125,9 +125,9 @@ export function ChatArea({
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <div className="hidden sm:flex items-center gap-1 mr-2 px-2 py-1 rounded-lg bg-primary/5 border border-primary/10">
-            <Sparkles className="w-3 h-3 text-primary animate-pulse" />
-            <span className="text-[9px] font-black uppercase tracking-tighter text-primary">IA Sync</span>
+          <div className="hidden sm:flex items-center gap-1.5 mr-3 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]">
+            <Sparkles className="w-3.5 h-3.5 text-primary animate-pulse" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary">IA INSIGHT</span>
           </div>
           <Button variant="ghost" size="icon" className="h-9 w-9 rounded-xl hover:bg-primary/5 hover:text-primary transition-all">
             <Phone className="w-4 h-4" />
