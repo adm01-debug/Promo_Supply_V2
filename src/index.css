@@ -1,18 +1,17 @@
 /* Fonts loaded via <link preload> in index.html — no @import needed */
 
-/* =================================================================
-   PROMO SUPPLY - DESIGN SYSTEM
-   Modular CSS Architecture
-   ================================================================= */
-
-/* Tailwind directives must come first to define the layer system */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Custom CSS layers — imported with layer specification for Tailwind v3 */
+/* Custom CSS layers must be imported before Tailwind so PostCSS keeps them */
 @import './styles/tokens.css' layer(base);
 @import './styles/base.css' layer(base);
 @import './styles/components.css' layer(components);
 @import './styles/utilities.css' layer(utilities);
 @import './styles/animations.css' layer(utilities);
+
+/* =================================================================
+   PROMO SUPPLY - DESIGN SYSTEM
+   Modular CSS Architecture
+   ================================================================= */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
