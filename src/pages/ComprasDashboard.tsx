@@ -127,6 +127,16 @@ const ComprasDashboard = () => {
             <PipelineChart data={pipeline} previousData={(kpis as any).previousPipeline} />
           </Card>
         );
+      case 'trend-charts':
+        return (
+          <LazyPanel>
+            <TrendAnalysisCharts 
+              monthlyTrends={kpis.charts.monthlyTrends}
+              cotacaoStatus={kpis.charts.cotacaoStatus}
+              topCategories={kpis.charts.topCategories}
+            />
+          </LazyPanel>
+        );
       case 'supplier-alerts':
         return <LazyPanel><SupplierAlertsPanel /></LazyPanel>;
       case 'supplier-ranking':
@@ -178,7 +188,7 @@ const ComprasDashboard = () => {
       default:
         return null;
     }
-  }, [loading, kpis, pipeline, urgentItems]);
+  }, [loading, kpis, pipeline, urgentItems, t]);
 
   const getGridClasses = useCallback((size: string) => {
     switch (size) {
