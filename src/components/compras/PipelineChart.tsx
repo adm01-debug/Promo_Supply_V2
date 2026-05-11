@@ -27,14 +27,14 @@ const stages = [
   { key: 'entregue', label: 'Entregue', bgClass: 'bg-success', glowClass: 'dark:shadow-[0_0_12px_hsl(var(--success)/0.4)]', colorVar: '--success', description: 'Pedidos entregues com sucesso' },
 ] as const;
 
-// Previous period mock data for trend comparison
-const previousPeriodData: PipelineData = {
-  solicitacao: 15,
-  cotacao: 10,
-  pedido: 7,
-  pagamento: 4,
-  transito: 3,
-  entregue: 142,
+// Default data in case previousData is not provided
+const defaultPreviousData: PipelineData = {
+  solicitacao: 0,
+  cotacao: 0,
+  pedido: 0,
+  pagamento: 0,
+  transito: 0,
+  entregue: 0,
 };
 
 function getConversionRate(from: number, to: number): number {
