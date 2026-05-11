@@ -89,6 +89,12 @@ export function useDashboardKPIs() {
     staleTime: 30000,
   });
 
+  const { data: profilesData } = useQuery({
+    queryKey: ['dashboard-profiles'],
+    queryFn: () => fetchAllRows<{ user_id: string; full_name: string }>('profiles', 'user_id, full_name'),
+    staleTime: 60000,
+  });
+
   const { data: categoriasData } = useQuery({
     queryKey: ['dashboard-categorias'],
     queryFn: () => fetchAllRows<{ id: string; nome: string }>('categorias', 'id, nome'),
