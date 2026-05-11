@@ -139,6 +139,45 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
   const selectedCotacoes = cotacoes.filter(c => selectedIds.includes(c.id));
   const getScore = (id: string) => analysis?.scores.find(s => s.id === id)?.score || 0;
 
+  const radarData = useMemo(() => {
+    if (selectedCotacoes.length < 1) return [];
+    
+    const radarMetrics = [
+      { name: 'Preço', key: 'total', invert: true },
+      { name: 'Prazo', key: 'prazoEntrega', invert: true },
+      { name: 'Estoque', key: 'quantidadeDisponivel', invert: false },
+      { name: 'Rating', key: 'rating', invert: false },
+      { name: 'Frete', key: 'frete', invert: true },
+    ];
+
+    return radarMetrics.map(m => {
+      const dataPoint: any = { subject: m.name };
+      selectedCotacoes.forEach(c => {
+        const val = Number(c[m.key as keyof Cotacao]) || 0;
+        const allVals = cotacoes.map(x => Number(x[m.key as keyof Cotacao]) || 0);
+        const min = Math.min(...allVals);
+        const max = Math.max(...allVals);
+        
+        let score = 0;
+        if (max === min) score = 100;
+        else if (m.invert) score = ((max - val) / (max - min)) * 100;
+        else score = ((val - min) / (max - min)) * 100;
+        
+        dataPoint[c.fornecedor] = Math.round(score);
+      });
+      return dataPoint;
+    });
+  }, [selectedCotacoes, cotacoes]);
+
+  const getRecommendation = (id: string) => {
+    if (id === analysis?.bestOverall) {
+      if (id === analysis.bestPrice) return "Melhor custo-benefício com o menor preço do mercado.";
+      if (id === analysis.bestDelivery) return "Opção mais equilibrada para quem tem urgência na entrega.";
+      return "Fornecedor com a maior pontuação técnica e comercial combinada.";
+    }
+    return null;
+  };
+
   const metrics: ComparisonMetric[] = [
     {
       label: 'Pontuação Geral',
