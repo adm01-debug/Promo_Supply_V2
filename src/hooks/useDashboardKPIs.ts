@@ -33,6 +33,7 @@ export interface DashboardKPIsExtended extends DashboardKPIs {
     economia: KPIComparison;
     sla: KPIComparison;
   };
+  previousPipeline: PipelineData;
 }
 
 export interface PipelineData {
