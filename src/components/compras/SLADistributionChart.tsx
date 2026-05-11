@@ -9,7 +9,7 @@ import { useSLASettings } from '@/stores/slaSettingsStore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useDashboardKPIs } from '@/hooks/useDashboardKPIs';
+import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 type SLAStatus = 'ok' | 'warning' | 'critical' | 'overdue';
