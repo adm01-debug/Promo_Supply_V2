@@ -33,6 +33,7 @@ const DeliveryCalendar = lazy(() => import("@/components/compras/DeliveryCalenda
 const DemandPredictionPanel = lazy(() => import("@/components/compras/DemandPredictionPanel").then(m => ({ default: m.DemandPredictionPanel })));
 const RiskHeatMap = lazy(() => import("@/components/compras/RiskHeatMap").then(m => ({ default: m.RiskHeatMap })));
 const DashboardInsights = lazy(() => import("@/components/compras/DashboardInsights").then(m => ({ default: m.DashboardInsights })));
+const TrendAnalysisCharts = lazy(() => import("@/components/compras/TrendAnalysisCharts").then(m => ({ default: m.TrendAnalysisCharts })));
 
 const LazyPanel = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
@@ -126,6 +127,16 @@ const ComprasDashboard = () => {
             <PipelineChart data={pipeline} previousData={(kpis as any).previousPipeline} />
           </Card>
         );
+      case 'trend-charts':
+        return (
+          <LazyPanel>
+            <TrendAnalysisCharts 
+              monthlyTrends={kpis.charts.monthlyTrends}
+              cotacaoStatus={kpis.charts.cotacaoStatus}
+              topCategories={kpis.charts.topCategories}
+            />
+          </LazyPanel>
+        );
       case 'supplier-alerts':
         return <LazyPanel><SupplierAlertsPanel /></LazyPanel>;
       case 'supplier-ranking':
@@ -159,7 +170,8 @@ const ComprasDashboard = () => {
                     produto: (item as any).titulo || "Item sem título",
                     fornecedor: item.status || "Pendente",
                     vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
-                    urgencia: diff <= 1 ? 'critico' : diff <= 3 ? 'alto' : 'medio'
+                    urgencia: diff <= 1 ? 'critico' : diff <= 3 ? 'alto' : 'medio',
+                    comprador: (item as any).comprador
                   };
                 })} 
               />
@@ -177,7 +189,7 @@ const ComprasDashboard = () => {
       default:
         return null;
     }
-  }, [loading, kpis, pipeline, urgentItems]);
+  }, [loading, kpis, pipeline, urgentItems, t]);
 
   const getGridClasses = useCallback((size: string) => {
     switch (size) {

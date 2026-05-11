@@ -34,6 +34,11 @@ export interface DashboardKPIsExtended extends DashboardKPIs {
     sla: KPIComparison;
   };
   previousPipeline: PipelineData;
+  charts: {
+    monthlyTrends: { month: string; pedidos: number; cotacoes: number }[];
+    cotacaoStatus: { name: string; value: number; color: string }[];
+    topCategories: { name: string; value: number; percentage: number }[];
+  };
 }
 
 export interface PipelineData {
@@ -48,7 +53,7 @@ export interface PipelineData {
 export function useDashboardKPIs() {
   const { data: solicitacoes, isLoading: loadingSol } = useQuery({
     queryKey: ['dashboard-solicitacoes'],
-    queryFn: () => fetchAllRows<{ id: string; numero: string; titulo: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null }>('solicitacoes', 'id, numero, titulo, status, valor_estimado, valor_aprovado, created_at, data_necessidade'),
+    queryFn: () => fetchAllRows<{ id: string; numero: string; titulo: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null; categoria_id: string | null; solicitante_id: string | null }>('solicitacoes', 'id, numero, titulo, status, valor_estimado, valor_aprovado, created_at, data_necessidade, categoria_id, solicitante_id'),
     staleTime: 30000,
   });
 
@@ -84,12 +89,27 @@ export function useDashboardKPIs() {
     staleTime: 30000,
   });
 
+  const { data: profilesData } = useQuery({
+    queryKey: ['dashboard-profiles'],
+    queryFn: () => fetchAllRows<{ user_id: string; full_name: string }>('profiles', 'user_id, full_name'),
+    staleTime: 60000,
+  });
+
+  const { data: categoriasData } = useQuery({
+    queryKey: ['dashboard-categorias'],
+    queryFn: () => fetchAllRows<{ id: string; nome: string }>('categorias', 'id, nome'),
+    staleTime: 60000,
+  });
+
   const result = useMemo(() => {
     const sol = solicitacoes || [];
     const ped = pedidos || [];
     const pag = pagamentos || [];
     const forn = fornecedores || [];
     const wf = workflows || [];
+    const cats = categoriasData || [];
+    const cot = cotacoes || [];
+    const profs = profilesData || [];
 
     const now = new Date();
     const currentMonthStart = fnsStartOfMonth(now);
@@ -215,7 +235,54 @@ export function useDashboardKPIs() {
           sparkline: generateSparkline('taxaEntrega')
         }
       },
-      previousPipeline: previousData.pipeline
+      previousPipeline: previousData.pipeline,
+      charts: {
+        monthlyTrends: Array.from({ length: 6 }).map((_, i) => {
+          const date = subMonths(now, 5 - i);
+          const monthStart = fnsStartOfMonth(date);
+          const monthEnd = endOfMonth(date);
+          const monthLabel = format(date, 'MMM', { locale: undefined }); // 'MMM' works fine
+
+          const monthPedidos = ped.filter(p => {
+            const d = new Date(p.data_emissao);
+            return isWithinInterval(d, { start: monthStart, end: monthEnd });
+          }).length;
+
+          const monthCotacoes = cot.filter(c => {
+            const d = new Date(c.created_at);
+            return isWithinInterval(d, { start: monthStart, end: monthEnd });
+          }).length;
+
+          return { month: monthLabel.toUpperCase(), pedidos: monthPedidos, cotacoes: monthCotacoes };
+        }),
+        cotacaoStatus: [
+          { name: 'Em Aberto', value: cot.filter(c => c.status === 'pendente' || c.status === 'em_analise').length, color: '#f59e0b' },
+          { name: 'Finalizadas', value: cot.filter(c => c.status === 'selecionada' || c.status === 'aprovada').length, color: '#10b981' },
+          { name: 'Canceladas', value: cot.filter(c => c.status === 'cancelada' || c.status === 'rejeitada').length, color: '#ef4444' },
+        ],
+        topCategories: (() => {
+          const categoryCounts: Record<string, number> = {};
+          sol.forEach(s => {
+            if (s.categoria_id) {
+              categoryCounts[s.categoria_id] = (categoryCounts[s.categoria_id] || 0) + 1;
+            }
+          });
+          
+          const totalWithCategory = Object.values(categoryCounts).reduce((a, b) => a + b, 0);
+          
+          return Object.entries(categoryCounts)
+            .map(([id, count]) => {
+              const cat = cats.find(c => c.id === id);
+              return {
+                name: cat ? cat.nome : 'Outros',
+                value: count,
+                percentage: totalWithCategory > 0 ? Math.round((count / totalWithCategory) * 100) : 0
+              };
+            })
+            .sort((a, b) => b.value - a.value)
+            .slice(0, 5);
+        })()
+      }
     };
 
     const pipeline: PipelineData = {
@@ -229,7 +296,14 @@ export function useDashboardKPIs() {
 
     const urgentItems = sol
       .filter(s => s.status !== 'concluida' && s.status !== 'cancelada' && s.data_necessidade && (new Date(s.data_necessidade).getTime() - now.getTime()) / (1000 * 60 * 60 * 24) <= 3)
-      .slice(0, 5);
+      .map(s => {
+        const profile = profs.find(p => p.user_id === s.solicitante_id);
+        return {
+          ...s,
+          comprador: profile ? profile.full_name : 'Não Atribuído'
+        };
+      })
+      .slice(0, 10);
 
     return { kpis, pipeline, urgentItems };
   }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows]);
