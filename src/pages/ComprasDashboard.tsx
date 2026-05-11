@@ -60,7 +60,9 @@ const ComprasDashboard = () => {
         return (
           <EnhancedKpiCard
             title={t('dashboard.kpis.pending_approval')}
-            value={kpis.aguardandoCotacao}
+            value={kpis.comparisons.aguardando.current}
+            previousValue={kpis.comparisons.aguardando.previous}
+            sparklineData={kpis.comparisons.aguardando.sparkline}
             icon={ClipboardList}
             color="emerald"
             format="number"
@@ -71,7 +73,9 @@ const ComprasDashboard = () => {
         return (
           <EnhancedKpiCard
             title={t('dashboard.kpis.total_spend')}
-            value={kpis.volumeMes}
+            value={kpis.comparisons.volume.current}
+            previousValue={kpis.comparisons.volume.previous}
+            sparklineData={kpis.comparisons.volume.sparkline}
             icon={TrendingUp}
             color="cyan"
             subtitle="Total"
@@ -83,7 +87,9 @@ const ComprasDashboard = () => {
         return (
           <EnhancedKpiCard
             title={t('dashboard.kpis.saving')}
-            value={kpis.economiaGerada}
+            value={kpis.comparisons.economia.current}
+            previousValue={kpis.comparisons.economia.previous}
+            sparklineData={kpis.comparisons.economia.sparkline}
             icon={PiggyBank}
             color="emerald"
             subtitle={`${kpis.economiaPercentual}% do volume`}
@@ -95,7 +101,9 @@ const ComprasDashboard = () => {
         return (
           <EnhancedKpiCard
             title="Taxa Entrega"
-            value={kpis.taxaEntrega}
+            value={kpis.comparisons.sla.current}
+            previousValue={kpis.comparisons.sla.previous}
+            sparklineData={kpis.comparisons.sla.sparkline}
             icon={BarChart3}
             color="teal"
             subtitle="No prazo"
