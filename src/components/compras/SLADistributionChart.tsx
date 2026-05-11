@@ -1,14 +1,16 @@
 import { useMemo, useState, useEffect, forwardRef } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, TooltipProps } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, TooltipProps, Sector } from 'recharts';
 import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AlertCircle, AlertTriangle, CheckCircle, Clock, Calendar } from 'lucide-react';
+import { AlertCircle, AlertTriangle, CheckCircle, Clock, Calendar, Info, TrendingUp } from 'lucide-react';
 import { useSLASettings } from '@/stores/slaSettingsStore';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { useDashboardKPIs } from '@/hooks/useDashboardKPIs';
+import { motion } from 'framer-motion';
 
 type SLAStatus = 'ok' | 'warning' | 'critical' | 'overdue';
 type PeriodFilter = 'week' | 'month' | 'quarter' | 'all';
