@@ -15,6 +15,7 @@ interface PipelineData {
 
 interface PipelineChartProps {
   data: PipelineData;
+  previousData?: PipelineData;
 }
 
 const stages = [
