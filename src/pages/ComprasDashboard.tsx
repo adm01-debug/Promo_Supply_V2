@@ -121,7 +121,7 @@ const ComprasDashboard = () => {
               <BarChart3 className="w-5 h-5 text-primary" />
               Pipeline Visual
             </h2>
-            <PipelineChart data={pipeline} />
+            <PipelineChart data={pipeline} previousData={(kpis as any).previousPipeline} />
           </Card>
         );
       case 'supplier-alerts':
