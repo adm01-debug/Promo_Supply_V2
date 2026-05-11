@@ -2,6 +2,7 @@ import { AlertCircle, Clock, AlertTriangle, ArrowRight, Zap, User, Send } from "
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
 
