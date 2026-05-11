@@ -97,13 +97,17 @@ export function useDashboardKPIs() {
     const previousMonthEnd = endOfMonth(subMonths(now, 1));
 
     // Helper to calculate KPIs for a specific period
-    const calculatePeriodKPIs = (startDate: Date, endDate?: Date) => {
+    const calculatePeriodData = (startDate: Date, endDate?: Date) => {
       const pSol = sol.filter(s => {
         const d = new Date(s.created_at);
         return endDate ? isWithinInterval(d, { start: startDate, end: endDate }) : d >= startDate;
       });
       const pPed = ped.filter(p => {
         const d = new Date(p.data_emissao);
+        return endDate ? isWithinInterval(d, { start: startDate, end: endDate }) : d >= startDate;
+      });
+      const pPag = pag.filter(p => {
+        const d = new Date(p.created_at);
         return endDate ? isWithinInterval(d, { start: startDate, end: endDate }) : d >= startDate;
       });
 
@@ -118,11 +122,20 @@ export function useDashboardKPIs() {
       const entreguesNoPrazo = entregues.filter(p => p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao).length;
       const taxaEntrega = entregues.length > 0 ? Math.round((entreguesNoPrazo / entregues.length) * 100) : 100;
 
-      return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega };
+      const pipeline: PipelineData = {
+        solicitacao: pSol.filter(s => s.status === 'pendente' || s.status === 'em_cotacao').length,
+        cotacao: pSol.filter(s => s.status === 'em_cotacao' || s.status === 'aprovada').length,
+        pedido: pPed.filter(p => p.status === 'pendente' || p.status === 'aprovado').length,
+        pagamento: pPag.filter(p => p.status === 'pendente' || p.status === 'aprovado' || p.status === 'agendado').length,
+        transito: pPed.filter(p => p.status === 'enviado' || p.status === 'em_transito').length,
+        entregue: pPed.filter(p => p.status === 'entregue').length,
+      };
+
+      return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega, pipeline };
     };
 
-    const currentKpis = calculatePeriodKPIs(currentMonthStart);
-    const previousKpis = calculatePeriodKPIs(previousMonthStart, previousMonthEnd);
+    const currentData = calculatePeriodData(currentMonthStart);
+    const previousData = calculatePeriodData(previousMonthStart, previousMonthEnd);
 
     // Sparklines (last 7 days)
     const generateSparkline = (key: 'aguardandoCotacao' | 'volumeMes' | 'economiaGerada' | 'taxaEntrega') => {
