@@ -170,7 +170,8 @@ const ComprasDashboard = () => {
                     produto: (item as any).titulo || "Item sem título",
                     fornecedor: item.status || "Pendente",
                     vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
-                    urgencia: diff <= 1 ? 'critico' : diff <= 3 ? 'alto' : 'medio'
+                    urgencia: diff <= 1 ? 'critico' : diff <= 3 ? 'alto' : 'medio',
+                    comprador: (item as any).comprador
                   };
                 })} 
               />
