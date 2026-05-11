@@ -322,8 +322,8 @@ export const ExecutiveDashboard = () => {
       {/* AI Insights Section */}
       <ExecutiveAIInsights 
         metrics={activeMetrics} 
-        spendByCategory={spendByCategory} 
-        topSuppliers={topSuppliers}
+        spendByCategory={realSpendByCategory || []} 
+        topSuppliers={realTopSuppliers || []}
         loading={realDataLoading}
       />
 
