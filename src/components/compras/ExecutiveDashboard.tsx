@@ -37,7 +37,12 @@ export const ExecutiveDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
 
-  const { metrics: realMetrics, loading: realDataLoading } = useExecutiveDashboardData();
+  const { 
+    metrics: realMetrics, 
+    spendByCategory: realSpendByCategory, 
+    topSuppliers: realTopSuppliers, 
+    loading: realDataLoading 
+  } = useExecutiveDashboardData();
 
   const activeMetrics = useMemo(() => {
     if (realDataLoading) return { ...executiveMetrics, savingsPercent: 10.0 };
