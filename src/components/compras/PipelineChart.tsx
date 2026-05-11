@@ -104,7 +104,7 @@ const TrendIndicator = ({ trend, current, previous }: { trend: 'up' | 'down' | '
   );
 };
 
-export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ data }, ref) => {
+export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ data, previousData = defaultPreviousData }, ref) => {
   const [hoveredStage, setHoveredStage] = useState<string | null>(null);
   
   const values = Object.values(data);
