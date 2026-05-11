@@ -166,7 +166,7 @@ export function ChatArea({
           </div>
         ) : (
           <div className="space-y-6 pb-4">
-            <AnimatePresence mode="popLayout">
+            <AnimatePresence mode="popLayout" initial={false}>
               {messages.map((message, index) => {
                 const isMe = message.senderId === 'me';
                 const showDate = index === 0 ||
@@ -174,68 +174,13 @@ export function ChatArea({
                   format(message.timestamp, 'yyyy-MM-dd');
 
                 return (
-                  <motion.div 
+                  <MessageBubble
                     key={message.id}
-                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ type: "spring", damping: 25, stiffness: 500 }}
-                  >
-                    {showDate && (
-                      <div className="flex justify-center my-6">
-                        <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-[0.2em] bg-muted/30 border-none text-muted-foreground/80 px-3 py-1 rounded-full">
-                          {format(message.timestamp, "dd 'de' MMMM", { locale: ptBR })}
-                        </Badge>
-                      </div>
-                    )}
-                    <div className={cn("flex group", isMe ? "justify-end" : "justify-start")}>
-                      <div className={cn(
-                        "max-w-[80%] space-y-1",
-                        isMe ? "items-end" : "items-start"
-                      )}>
-                        <div className={cn(
-                          "relative rounded-[1.25rem] px-4 py-2.5 shadow-sm transition-all duration-300",
-                          isMe 
-                            ? "bg-primary text-primary-foreground rounded-tr-none hover:shadow-md hover:translate-x-[-2px]" 
-                            : "bg-card border border-border/50 text-foreground rounded-tl-none hover:shadow-md hover:translate-x-[2px]"
-                        )}>
-                          {message.type === 'file' && (
-                            <div className={cn(
-                              "flex items-center gap-3 p-3 rounded-xl mb-2 transition-colors", 
-                              isMe ? "bg-white/10" : "bg-primary/5"
-                            )}>
-                              <div className={cn(
-                                "p-2 rounded-lg",
-                                isMe ? "bg-white/20" : "bg-primary/10 text-primary"
-                              )}>
-                                <FileText className="w-5 h-5" />
-                              </div>
-                              <div className="min-w-0">
-                                <p className="text-sm font-bold truncate leading-none">{message.attachmentName}</p>
-                                <p className={cn("text-[10px] mt-1 opacity-70", isMe ? "text-white" : "text-muted-foreground")}>Documento • 2.4 MB</p>
-                              </div>
-                            </div>
-                          )}
-                          {message.type !== 'file' && (
-                            <p className="text-sm leading-relaxed whitespace-pre-wrap font-medium">{message.content}</p>
-                          )}
-                          <div className={cn("flex items-center gap-1.5 mt-1.5", isMe ? "justify-end" : "justify-start")}>
-                            <span className={cn("text-[9px] font-bold", isMe ? "text-primary-foreground/60" : "text-muted-foreground/60")}>
-                              {format(message.timestamp, 'HH:mm')}
-                            </span>
-                            {isMe && (
-                              <div className="flex">
-                                {message.status === 'read' ? (
-                                  <CheckCheck className="w-3 h-3 text-white" />
-                                ) : (
-                                  <Check className="w-3 h-3 text-white/50" />
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </motion.div>
+                    message={message}
+                    index={index}
+                    isMe={isMe}
+                    showDate={showDate}
+                  />
                 );
               })}
             </AnimatePresence>
