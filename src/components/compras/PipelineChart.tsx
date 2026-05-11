@@ -146,7 +146,7 @@ export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ d
       <div className="flex items-end gap-0">
         {stages.map((stage, index) => {
           const value = data[stage.key];
-          const prevValue = previousPeriodData[stage.key];
+          const prevValue = previousData[stage.key] || 0;
           const height = maxSqrt > 0 ? (Math.sqrt(value) / maxSqrt) * 100 : 0;
           const trend = getTrend(value, prevValue);
           const isHovered = hoveredStage === stage.key;
