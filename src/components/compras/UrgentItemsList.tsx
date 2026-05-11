@@ -1,6 +1,7 @@
-import { AlertCircle, Clock, AlertTriangle, ArrowRight } from "lucide-react";
+import { AlertCircle, Clock, AlertTriangle, ArrowRight, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 interface UrgentItem {
   id: string;
@@ -8,6 +9,7 @@ interface UrgentItem {
   fornecedor: string;
   vencimento: string;
   urgencia: 'critico' | 'alto' | 'medio';
+  status?: string;
 }
 
 interface UrgentItemsListProps {
