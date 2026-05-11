@@ -311,13 +311,13 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
 
       {/* Mini sparkline */}
       {sparklineData && sparklineData.length >= 2 && (
-        <div className="mt-3 pt-3 border-t border-border/30">
+        <div className="mt-4 pt-4 border-t border-border/30">
           <Sparkline
             data={sparklineData}
-            width={200}
-            height={32}
+            width={300}
+            height={48}
             showArea={true}
-            className="w-full"
+            className="w-full opacity-80 group-hover:opacity-100 transition-opacity"
           />
         </div>
       )}
