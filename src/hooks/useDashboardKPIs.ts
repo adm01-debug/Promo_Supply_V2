@@ -34,6 +34,11 @@ export interface DashboardKPIsExtended extends DashboardKPIs {
     sla: KPIComparison;
   };
   previousPipeline: PipelineData;
+  charts: {
+    monthlyTrends: { month: string; pedidos: number; cotacoes: number }[];
+    cotacaoStatus: { name: string; value: number; color: string }[];
+    topCategories: { name: string; value: number; percentage: number }[];
+  };
 }
 
 export interface PipelineData {
@@ -84,12 +89,20 @@ export function useDashboardKPIs() {
     staleTime: 30000,
   });
 
+  const { data: categoriasData } = useQuery({
+    queryKey: ['dashboard-categorias'],
+    queryFn: () => fetchAllRows<{ id: string; nome: string }>('categorias', 'id, nome'),
+    staleTime: 60000,
+  });
+
   const result = useMemo(() => {
     const sol = solicitacoes || [];
     const ped = pedidos || [];
     const pag = pagamentos || [];
     const forn = fornecedores || [];
     const wf = workflows || [];
+    const cats = categoriasData || [];
+    const cot = cotacoes || [];
 
     const now = new Date();
     const currentMonthStart = fnsStartOfMonth(now);
@@ -215,7 +228,54 @@ export function useDashboardKPIs() {
           sparkline: generateSparkline('taxaEntrega')
         }
       },
-      previousPipeline: previousData.pipeline
+      previousPipeline: previousData.pipeline,
+      charts: {
+        monthlyTrends: Array.from({ length: 6 }).map((_, i) => {
+          const date = subMonths(now, 5 - i);
+          const monthStart = fnsStartOfMonth(date);
+          const monthEnd = endOfMonth(date);
+          const monthLabel = format(date, 'MMM', { locale: undefined }); // 'MMM' works fine
+
+          const monthPedidos = ped.filter(p => {
+            const d = new Date(p.data_emissao);
+            return isWithinInterval(d, { start: monthStart, end: monthEnd });
+          }).length;
+
+          const monthCotacoes = cot.filter(c => {
+            const d = new Date(c.created_at);
+            return isWithinInterval(d, { start: monthStart, end: monthEnd });
+          }).length;
+
+          return { month: monthLabel.toUpperCase(), pedidos: monthPedidos, cotacoes: monthCotacoes };
+        }),
+        cotacaoStatus: [
+          { name: 'Em Aberto', value: cot.filter(c => c.status === 'pendente' || c.status === 'em_analise').length, color: '#f59e0b' },
+          { name: 'Finalizadas', value: cot.filter(c => c.status === 'selecionada' || c.status === 'aprovada').length, color: '#10b981' },
+          { name: 'Canceladas', value: cot.filter(c => c.status === 'cancelada' || c.status === 'rejeitada').length, color: '#ef4444' },
+        ],
+        topCategories: (() => {
+          const categoryCounts: Record<string, number> = {};
+          sol.forEach(s => {
+            if (s.categoria_id) {
+              categoryCounts[s.categoria_id] = (categoryCounts[s.categoria_id] || 0) + 1;
+            }
+          });
+          
+          const totalWithCategory = Object.values(categoryCounts).reduce((a, b) => a + b, 0);
+          
+          return Object.entries(categoryCounts)
+            .map(([id, count]) => {
+              const cat = cats.find(c => c.id === id);
+              return {
+                name: cat ? cat.nome : 'Outros',
+                value: count,
+                percentage: totalWithCategory > 0 ? Math.round((count / totalWithCategory) * 100) : 0
+              };
+            })
+            .sort((a, b) => b.value - a.value)
+            .slice(0, 5);
+        })()
+      }
     };
 
     const pipeline: PipelineData = {
