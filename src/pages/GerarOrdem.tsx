@@ -42,6 +42,7 @@ const GerarOrdem = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const solicitacaoId = searchParams.get("solicitacao");
+  const cotacaoId = searchParams.get("cotacao");
 
   const [copiado, setCopiado] = useState<string | null>(null);
   const [mensagemWhatsApp, setMensagemWhatsApp] = useState("");
@@ -50,6 +51,10 @@ const GerarOrdem = () => {
   const [frete, setFrete] = useState(150);
   const [desconto, setDesconto] = useState(0);
   const [observacoes, setObservacoes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { createPedido } = usePedidos();
+  const { cotacoes } = useCotacoes({ solicitacao_id: solicitacaoId || undefined });
 
   // Fetch solicitacao from Supabase
   const { data: solicitacaoData } = useQuery({
