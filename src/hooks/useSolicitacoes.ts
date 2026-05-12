@@ -95,8 +95,8 @@ const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
   cancelada: [],
 };
 
-async function fetchSolicitacoesData(userId: string | undefined, filters?: SolicitacaoFilters) {
-  if (!userId) return { data: [], totalCount: 0 };
+async function fetchSolicitacoesData(userId: string | undefined, organizationId: string | null | undefined, filters?: SolicitacaoFilters) {
+  if (!userId || !organizationId) return { data: [], totalCount: 0 };
 
   const page = filters?.page || 1;
   const pageSize = filters?.pageSize || 100;
@@ -114,6 +114,7 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
       solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
+    .eq('organization_id', organizationId)
     .range(from, to);
 
   if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
@@ -131,21 +132,21 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
 }
 
 export function useSolicitacoes(filters?: SolicitacaoFilters) {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
   const queryClient = useQueryClient();
   const { createWorkflow } = useApprovalWorkflow();
 
   const queryKey = useMemo(() => [
-    'solicitacoes', user?.id,
+    'solicitacoes', user?.id, organizationId,
     filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
     filters?.page, filters?.pageSize,
-  ], [user?.id, filters]);
+  ], [user?.id, organizationId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => fetchSolicitacoesData(user?.id, filters),
-    enabled: !!user,
+    queryFn: () => fetchSolicitacoesData(user?.id, organizationId, filters),
+    enabled: !!user && !!organizationId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
@@ -158,7 +159,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   }, [queryClient]);
 
   const createSolicitacao = useCallback(async (input: CreateSolicitacaoInput) => {
-    if (!user) { toast.error('Você precisa estar logado'); return null; }
+    if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
     
     try {
       // Validação de orçamento
@@ -192,6 +193,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           centro_custo: input.centro_custo, cost_center_id: input.cost_center_id,
           justificativa: input.justificativa,
           categoria_id: input.categoria_id, solicitante_id: user.id,
+          organization_id: organizationId,
         })
         .select().single();
       
