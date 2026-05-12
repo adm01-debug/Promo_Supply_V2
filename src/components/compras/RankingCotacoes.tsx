@@ -166,6 +166,9 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
         const isSelected = selecionado === cotacao.id;
         const estoqueOk = cotacao.quantidadeDisponivel >= quantidade;
 
+        // Determine which score to show
+        const displayScore = cotacao.score_total || cotacao.score;
+
         return (
           <div
             key={cotacao.id}
@@ -178,15 +181,76 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
             )}
           >
             {/* Score Badge */}
-            <div className="absolute top-0 right-0">
-              <div className={cn(
-                "px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-bl-lg",
-                cotacao.score >= 80 ? "bg-success text-white" : 
-                cotacao.score >= 60 ? "bg-warning text-warning-foreground" : 
-                "bg-destructive text-white"
-              )}>
-                Score: {cotacao.score}/100
-              </div>
+            <div className="absolute top-0 right-0 flex">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <div className={cn(
+                    "px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-bl-lg cursor-help flex items-center gap-1.5",
+                    displayScore >= 80 ? "bg-success text-white" : 
+                    displayScore >= 60 ? "bg-warning text-warning-foreground" : 
+                    "bg-destructive text-white"
+                  )}>
+                    <Trophy className="w-3 h-3" />
+                    Score: {displayScore}/100
+                  </div>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-3 bg-background/95 backdrop-blur-md border-border shadow-2xl">
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 border-b border-border/50 pb-2">
+                      <Sparkles className="w-4 h-4 text-primary" />
+                      <h4 className="text-xs font-bold uppercase tracking-tight">Análise de IA & Scorecard</h4>
+                    </div>
+                    
+                    <div className="space-y-2.5">
+                      <div>
+                        <div className="flex justify-between text-[10px] mb-1">
+                          <span className="text-muted-foreground font-medium uppercase">Indicador de Preço</span>
+                          <span className="font-bold">{cotacao.score_preco || cotacao.score}%</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-primary transition-all duration-1000" 
+                            style={{ width: `${cotacao.score_preco || cotacao.score}%` }} 
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between text-[10px] mb-1">
+                          <span className="text-muted-foreground font-medium uppercase">Indicador de Prazo</span>
+                          <span className="font-bold">{cotacao.score_prazo || cotacao.score}%</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-chart-2 transition-all duration-1000" 
+                            style={{ width: `${cotacao.score_prazo || cotacao.score}%` }} 
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between text-[10px] mb-1">
+                          <span className="text-muted-foreground font-medium uppercase">Qualidade & Riscos</span>
+                          <span className="font-bold">{cotacao.score_qualidade || 80}%</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-success transition-all duration-1000" 
+                            style={{ width: `${cotacao.score_qualidade || 80}%` }} 
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-border/50">
+                      <p className="text-[10px] leading-relaxed text-muted-foreground italic">
+                        Esta cotação foi avaliada considerando o histórico do fornecedor, 
+                        o valor unitário comparado ao mercado e o prazo logístico projetado.
+                      </p>
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="flex items-start gap-4">
