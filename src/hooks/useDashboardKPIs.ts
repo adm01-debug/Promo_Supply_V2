@@ -280,10 +280,10 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
           sparkline: generateSparkline('economiaGerada')
         },
         sla: {
-          current: currentData.taxaEntrega,
-          previous: previousData.taxaEntrega,
-          trend: currentData.taxaEntrega - previousData.taxaEntrega,
-          sparkline: generateSparkline('taxaEntrega')
+          current: currentData.taxaSlaReal,
+          previous: previousData.taxaSlaReal,
+          trend: currentData.taxaSlaReal - previousData.taxaSlaReal,
+          sparkline: generateSparkline('taxaSlaReal')
         }
       },
       previousPipeline: previousData.pipeline,
