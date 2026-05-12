@@ -353,7 +353,7 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
                 <Button
                   variant={isSelected ? "default" : "outline"}
                   size="sm"
-                  onClick={() => onSelecionar(cotacao.id)}
+                  onClick={() => handleSelectClick(cotacao.id, index === 0)}
                   className="w-24"
                 >
                   {isSelected ? (
