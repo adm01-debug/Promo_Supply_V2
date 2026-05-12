@@ -67,14 +67,21 @@ export const useApprovalWorkflow = () => {
     try {
       setLoading(true);
       const ruleData = {
-        valor_nome: rule.nome || '', descricao: rule.descricao, valor_min: rule.valor_min || 0,
-        valor_max: rule.valor_max || 999999999, categoria_id: rule.categoria_id,
+        nome: rule.nome || '', 
+        descricao: rule.descricao, 
+        valor_min: rule.valor_min || 0,
+        valor_max: rule.valor_max || 999999999, 
+        categoria_id: rule.categoria_id,
         cost_center_id: rule.cost_center_id,
-        aprovadores: JSON.stringify(rule.aprovadores || []),
+        aprovadores: JSON.stringify(rule.aprovadores || []) as any,
         tempo_limite_horas: rule.tempo_limite_horas || 24,
-        escalacao_automatica: rule.escalacao_automatica || false, escalacao_para: rule.escalacao_para,
-        niveis_aprovacao: rule.niveis_aprovacao || 1, requer_unanimidade: rule.requer_unanimidade || false,
-        ativo: rule.ativo ?? true, prioridade: rule.prioridade || 0, created_by: user?.id
+        escalacao_automatica: rule.escalacao_automatica || false, 
+        escalacao_para: rule.escalacao_para,
+        niveis_aprovacao: rule.niveis_aprovacao || 1, 
+        requer_unanimidade: rule.requer_unanimidade || false,
+        ativo: rule.ativo ?? true, 
+        prioridade: rule.prioridade || 0, 
+        created_by: user?.id
       };
       if (rule.id) {
         const { error } = await supabase.from('approval_rules').update(ruleData).eq('id', rule.id);
