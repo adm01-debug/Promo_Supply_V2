@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { MainLayout } from '@/components/compras/MainLayout';
 import { PageTransition } from '@/components/animations/MotionComponents';
 import { Card } from '@/components/ui/card';
@@ -13,9 +13,12 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useBudgetManagement } from '@/hooks/useBudgetManagement';
 import { useSolicitacoes } from '@/hooks/useSolicitacoes';
 import { 
-  Wallet, Plus, TrendingUp, AlertTriangle, CheckCircle2, Trash2, PiggyBank, BarChart3, Loader2
+  Wallet, Plus, TrendingUp, AlertTriangle, CheckCircle2, Trash2, PiggyBank, BarChart3, Loader2, PieChart
 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend, Cell
+} from 'recharts';
 
 const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
@@ -52,6 +55,15 @@ const Orcamentos = () => {
       },
     });
   };
+
+  const chartData = useMemo(() => {
+    return budgets.map(b => ({
+      name: b.centro_custo || b.departamento,
+      total: Number(b.valor_total),
+      utilizado: Number(b.valor_utilizado) + Number(b.valor_comprometido),
+      disponivel: Math.max(0, Number(b.valor_total) - Number(b.valor_utilizado) - Number(b.valor_comprometido)),
+    }));
+  }, [budgets]);
 
   const getUsageColor = (pct: number) => {
     if (pct >= 90) return 'text-destructive';
@@ -166,6 +178,56 @@ const Orcamentos = () => {
             </motion.div>
           ))}
         </div>
+
+        {/* Charts and Visualizations */}
+        {budgets.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-primary" />
+                Comparativo por Centro de Custo
+              </h3>
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
+                    <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `R$${value / 1000}k`} />
+                    <RechartsTooltip 
+                      formatter={(value: number) => formatCurrency(value)}
+                      contentStyle={{ backgroundColor: 'hsl(var(--card))', borderColor: 'hsl(var(--border))', borderRadius: '8px' }}
+                    />
+                    <Legend />
+                    <Bar dataKey="utilizado" name="Utilizado" stackId="a" fill="hsl(var(--primary))" radius={[0, 0, 0, 0]} />
+                    <Bar dataKey="disponivel" name="Disponível" stackId="a" fill="hsl(var(--muted))" radius={[4, 4, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </Card>
+
+            <Card className="p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <PieChart className="w-5 h-5 text-primary" />
+                Distribuição Orçamentária
+              </h3>
+              <div className="space-y-4">
+                {budgets.slice(0, 5).map((b, i) => {
+                  const pct = (Number(b.valor_total) / summary.totalBudget) * 100;
+                  return (
+                    <div key={b.id} className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span className="font-medium">{b.centro_custo}</span>
+                        <span className="text-muted-foreground">{pct.toFixed(1)}%</span>
+                      </div>
+                      <Progress value={pct} className="h-1.5" />
+                    </div>
+                  );
+                })}
+                {budgets.length > 5 && <p className="text-xs text-center text-muted-foreground">E outros {budgets.length - 5} centros de custo</p>}
+              </div>
+            </Card>
+          </div>
+        )}
 
         {/* Usage bar */}
         {summary.totalBudget > 0 && (
