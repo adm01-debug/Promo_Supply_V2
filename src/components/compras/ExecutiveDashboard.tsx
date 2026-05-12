@@ -10,10 +10,13 @@ import { PurchaseClimateWidget } from './PurchaseClimateWidget';
 import {
   DollarSign, TrendingUp, ShoppingCart, Clock, Users,
   CheckCircle2, XCircle, Target, Zap, AlertTriangle,
-  GitCompare, Filter, X
+  GitCompare, Filter, X, Download, FileSpreadsheet
 } from 'lucide-react';
 import { useExecutiveDashboardData } from '@/hooks/useExecutiveDashboardData';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
+import { exportToCSV } from '@/lib/exportUtils';
+import { toast } from '@/hooks/use-toast';
+
 
 import {
   executiveMetrics, calculateChange, trendDataSets,
