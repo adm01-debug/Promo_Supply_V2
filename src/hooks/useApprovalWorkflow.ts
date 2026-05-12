@@ -159,10 +159,26 @@ export const useApprovalWorkflow = () => {
   const createWorkflow = useCallback(async (solicitacaoId: string, valor: number, categoriaId?: string): Promise<ApprovalWorkflow | null> => {
     try {
       setLoading(true);
+      
+      // Buscar informações da solicitação (incluindo centro de custo)
+      const { data: sol, error: solError } = await supabase
+        .from('solicitacoes')
+        .select('*, cost_center:cost_centers(manager_id)')
+        .eq('id', solicitacaoId)
+        .single();
+      
+      if (solError) throw solError;
+
       const ruleId = await findApplicableRuleRPC(valor, categoriaId);
       let rule: ApprovalRule | null = ruleId ? rules.find(r => r.id === ruleId) || null : null;
       if (!rule) rule = findApplicableRule(valor, categoriaId);
-      if (!rule) { toast.error('Nenhuma regra de aprovação encontrada para este valor'); return null; }
+      
+      // Se não houver regra e não houver gerente de centro de custo, erro.
+      const ccManagerId = (sol.cost_center as any)?.manager_id;
+      if (!rule && !ccManagerId) { 
+        toast.error('Nenhuma regra de aprovação ou gestor de Centro de Custo encontrado'); 
+        return null; 
+      }
 
       const prazoLimite = new Date();
       prazoLimite.setHours(prazoLimite.getHours() + rule.tempo_limite_horas);
