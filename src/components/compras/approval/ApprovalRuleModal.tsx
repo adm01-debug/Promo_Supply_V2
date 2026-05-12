@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { type ApprovalRule } from "@/hooks/useApprovalWorkflow";
+import { useSolicitacoes } from "@/hooks/useSolicitacoes";
 
 const mockUsers = [
   { id: "user-1", nome: "João Silva", cargo: "Gestor" },
@@ -35,6 +36,7 @@ interface Props {
 }
 
 export const ApprovalRuleModal = ({ open, onOpenChange, editingRule, setEditingRule, onSave, loading }: Props) => {
+  const { costCenters } = useSolicitacoes();
   const addApprover = () => {
     if (!editingRule) return;
     const current = editingRule.aprovadores || [];
@@ -99,7 +101,7 @@ export const ApprovalRuleModal = ({ open, onOpenChange, editingRule, setEditingR
                   <SelectTrigger><SelectValue placeholder="Qualquer Centro de Custo" /></SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">Qualquer Centro de Custo</SelectItem>
-                    {mockUsers.map(user => <SelectItem key={user.id} value={user.id}>{user.nome} - {user.cargo}</SelectItem>)}
+                    {costCenters.map(cc => <SelectItem key={cc.id} value={cc.id}>{cc.name} ({cc.code})</SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
