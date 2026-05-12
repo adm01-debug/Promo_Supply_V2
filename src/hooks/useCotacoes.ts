@@ -55,8 +55,8 @@ export interface CotacaoFilters {
   status?: string;
 }
 
-async function fetchCotacoesData(userId: string | undefined, filters?: CotacaoFilters) {
-  if (!userId) return [];
+async function fetchCotacoesData(userId: string | undefined, organizationId: string | null | undefined, filters?: CotacaoFilters) {
+  if (!userId || !organizationId) return [];
 
   let query = supabase
     .from('cotacoes')
@@ -65,7 +65,8 @@ async function fetchCotacoesData(userId: string | undefined, filters?: CotacaoFi
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
       solicitacao:solicitacoes(id, numero, titulo)
     `)
-    .order('score_total', { ascending: false });
+    .order('score_total', { ascending: false })
+    .eq('organization_id', organizationId);
 
   if (filters?.solicitacao_id) query = query.eq('solicitacao_id', filters.solicitacao_id);
   if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
@@ -77,17 +78,17 @@ async function fetchCotacoesData(userId: string | undefined, filters?: CotacaoFi
 }
 
 export function useCotacoes(filters?: CotacaoFilters) {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
   const queryKey = useMemo(() => [
-    'cotacoes', user?.id, filters?.solicitacao_id, filters?.fornecedor_id, filters?.status,
-  ], [user?.id, filters]);
+    'cotacoes', user?.id, organizationId, filters?.solicitacao_id, filters?.fornecedor_id, filters?.status,
+  ], [user?.id, organizationId, filters]);
 
   const { data: cotacoes = [], isLoading, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => fetchCotacoesData(user?.id, filters),
-    enabled: !!user,
+    queryFn: () => fetchCotacoesData(user?.id, organizationId, filters),
+    enabled: !!user && !!organizationId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
@@ -97,7 +98,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
   }, [queryClient]);
 
   const createCotacao = useCallback(async (input: CreateCotacaoInput) => {
-    if (!user) { toast.error('Você precisa estar logado'); return null; }
+    if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
     try {
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'COT', table_name: 'cotacoes' });
       const numero = numData || `COT-${Date.now()}`;
@@ -112,6 +113,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
           valor_frete: input.valor_frete || 0, desconto_percentual: input.desconto_percentual || 0,
           prazo_entrega: input.prazo_entrega || 7, validade_proposta: input.validade_proposta,
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
+          organization_id: organizationId,
         })
         .select().single();
       if (error) throw error;
