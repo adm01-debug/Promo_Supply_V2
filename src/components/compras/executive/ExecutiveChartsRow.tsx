@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Activity, BarChart3, PieChart, TrendingUp, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
