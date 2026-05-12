@@ -22,12 +22,12 @@ export interface FilterValues {
 }
 
 export const useDashboardFilters = () => {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
   const [favorites, setFavorites] = useState<DashboardFilter[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchFavorites = useCallback(async () => {
-    if (!user) return;
+    if (!user || !organizationId) return;
     
     setLoading(true);
     try {
@@ -35,6 +35,7 @@ export const useDashboardFilters = () => {
         .from('dashboard_filter_favorites')
         .select('*')
         .eq('user_id', user.id)
+        .eq('organization_id', organizationId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -47,8 +48,8 @@ export const useDashboardFilters = () => {
   }, [user]);
 
   const saveFavorite = async (name: string, filters: FilterValues) => {
-    if (!user) {
-      toast.error('Você precisa estar logado para salvar filtros');
+    if (!user || !organizationId) {
+      toast.error('Você precisa estar logado em uma organização para salvar filtros');
       return null;
     }
 
@@ -62,7 +63,8 @@ export const useDashboardFilters = () => {
           supplier_filter: filters.supplier,
           period_filter: filters.period,
           show_comparison: filters.showComparison,
-          is_default: false
+          is_default: false,
+          organization_id: organizationId
         })
         .select()
         .single();
