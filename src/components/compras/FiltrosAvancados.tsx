@@ -52,6 +52,7 @@ const initialFilters: AdvancedFilters = {
   fornecedores: [],
   tipos: [],
   prioridades: [],
+  status: [],
 };
 
 const empresasOptions = [
