@@ -1,5 +1,5 @@
 import { useMemo, forwardRef, useState } from 'react';
-import { AlertTriangle, AlertCircle, X, ChevronRight } from 'lucide-react';
+import { AlertTriangle, AlertCircle, X, ChevronRight, ShieldCheck } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +8,6 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useSLASettings } from '@/stores/slaSettingsStore';
 import { motion, AnimatePresence } from 'framer-motion';
-
 
 export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
   const { settings } = useSLASettings();
@@ -40,9 +39,24 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
     staleTime: 30000,
   });
 
+  const { data: workflows } = useQuery({
+    queryKey: ['critical-alerts-approvals'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('approval_workflows')
+        .select('id, status, created_at')
+        .eq('status', 'pending');
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 30000,
+  });
+
   const alerts = useMemo(() => {
     let criticalCount = 0;
     let overdueCount = 0;
+    let pendingApprovals = workflows?.length || 0;
+    
     const criticalItems: string[] = [];
     const overdueItems: string[] = [];
     const now = new Date();
@@ -71,10 +85,10 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
       }
     });
 
-    return { criticalCount, overdueCount, criticalItems, overdueItems };
-  }, [solicitacoes, pedidos, settings.criticalThresholdDays]);
+    return { criticalCount, overdueCount, criticalItems, overdueItems, pendingApprovals };
+  }, [solicitacoes, pedidos, workflows, settings.criticalThresholdDays]);
 
-  const hasAlerts = alerts.criticalCount > 0 || alerts.overdueCount > 0;
+  const hasAlerts = alerts.criticalCount > 0 || alerts.overdueCount > 0 || alerts.pendingApprovals > 0;
 
   if (!hasAlerts || dismissed) return null;
 
@@ -116,11 +130,18 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
                     <Badge variant="outline" className="border-destructive text-destructive text-[9px] h-4 font-black uppercase tracking-wider">SLA CRÍTICO</Badge>
                   </div>
                   
-                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                  <div className="flex flex-wrap items-center gap-4 text-sm">
                     {alerts.overdueCount > 0 && (
                       <span className="flex items-center gap-1.5 text-destructive font-bold">
                         {alerts.overdueCount} Excedido{alerts.overdueCount > 1 ? 's' : ''}: 
                         <span className="text-xs font-mono opacity-80">{alerts.overdueItems.join(', ')}{alerts.overdueCount > 3 ? '...' : ''}</span>
+                      </span>
+                    )}
+
+                    {alerts.pendingApprovals > 0 && (
+                      <span className="flex items-center gap-1.5 text-orange-600 dark:text-orange-400 font-bold">
+                        <ShieldCheck className="h-4 w-4" />
+                        {alerts.pendingApprovals} Aprovações Pendentes
                       </span>
                     )}
                     
