@@ -165,6 +165,41 @@ const ConfiguracoesCentroCusto = () => {
                   <Label>Código</Label>
                   <Input value={form.code} onChange={e => setForm(p => ({ ...p, code: e.target.value }))} placeholder="Ex: CC-001" />
                 </div>
+                <div className="space-y-2">
+                  <Label>Departamento</Label>
+                  <Input value={form.department} onChange={e => setForm(p => ({ ...p, department: e.target.value }))} placeholder="Ex: Financeiro" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Gestor Responsável</Label>
+                  <Select value={form.manager_id} onValueChange={v => setForm(p => ({ ...p, manager_id: v }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione um gestor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {profiles.map(profile => (
+                        <SelectItem key={profile.id} value={profile.id}>
+                          {profile.full_name || 'Sem nome'}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Centro de Custo Pai (Opcional)</Label>
+                  <Select value={form.parent_id} onValueChange={v => setForm(p => ({ ...p, parent_id: v }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Nenhum" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Nenhum</SelectItem>
+                      {costCenters.filter(cc => cc.id !== editingCC?.id).map(cc => (
+                        <SelectItem key={cc.id} value={cc.id}>
+                          {cc.code} - {cc.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="flex items-center gap-2">
                   <Switch checked={form.is_active} onCheckedChange={v => setForm(p => ({ ...p, is_active: v }))} />
                   <Label>Ativo</Label>
