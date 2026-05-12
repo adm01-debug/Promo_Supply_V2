@@ -10,10 +10,13 @@ import { PurchaseClimateWidget } from './PurchaseClimateWidget';
 import {
   DollarSign, TrendingUp, ShoppingCart, Clock, Users,
   CheckCircle2, XCircle, Target, Zap, AlertTriangle,
-  GitCompare, Filter, X
+  GitCompare, Filter, X, Download, FileSpreadsheet
 } from 'lucide-react';
 import { useExecutiveDashboardData } from '@/hooks/useExecutiveDashboardData';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
+import { exportToCSV } from '@/lib/exportUtils';
+import { toast } from '@/hooks/use-toast';
+
 
 import {
   executiveMetrics, calculateChange, trendDataSets,
@@ -43,6 +46,37 @@ export const ExecutiveDashboard = () => {
     topSuppliers: realTopSuppliers, 
     loading: realDataLoading 
   } = useExecutiveDashboardData();
+
+  const handleExport = () => {
+    try {
+      const exportData = [
+        { Metric: 'Total Spend', Value: activeMetrics.totalSpend.value },
+        { Metric: 'Savings', Value: activeMetrics.savings.value },
+        { Metric: 'Savings %', Value: activeMetrics.savingsPercent },
+        { Metric: 'Orders This Month', Value: activeMetrics.ordersThisMonth.value },
+        { Metric: 'Avg Cycle Time (Days)', Value: activeMetrics.avgCycleTime.value },
+        { Metric: 'Contract Compliance %', Value: activeMetrics.contractCompliance.value },
+      ];
+      
+      exportToCSV(exportData, 'Executive_Metrics');
+      
+      if (realSpendByCategory && realSpendByCategory.length > 0) {
+        exportToCSV(realSpendByCategory, 'Spend_By_Category');
+      }
+
+      toast({
+        title: "Relatórios exportados",
+        description: "Os arquivos CSV foram baixados com sucesso.",
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      toast({
+        title: "Erro ao exportar",
+        description: "Não foi possível gerar os arquivos de exportação.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const activeMetrics = useMemo(() => {
     if (realDataLoading) return { ...executiveMetrics, savingsPercent: 10.0 };
@@ -101,6 +135,8 @@ export const ExecutiveDashboard = () => {
       tailSpend: rm.tailSpend
     };
   }, [realMetrics, realDataLoading]);
+
+
 
   useRealtimeSubscription({ tables: ['pedidos', 'solicitacoes', 'cotacoes', 'pagamentos'] });
 
@@ -236,8 +272,13 @@ export const ExecutiveDashboard = () => {
               </Button>
             ))}
           </div>
+          <Button variant="default" size="sm" onClick={handleExport} className="gap-2">
+            <Download className="h-4 w-4" />
+            Exportar
+          </Button>
         </div>
       </div>
+
 
       <ExecutiveFiltersBar
         selectedCategory={selectedCategory}

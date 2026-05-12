@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useCallback, memo } from "react";
+import { useState, lazy, Suspense, useCallback, memo, useEffect } from "react";
 import { 
   ClipboardList, 
   Clock, 
@@ -22,6 +22,8 @@ import { FilterFavoritesManager } from "@/components/compras/FilterFavoritesMana
 import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
+import { useDashboardLayoutStore } from "@/stores/dashboardLayoutStore";
+
 
 // Lazy load heavy panels that are below the fold
 const SLADistributionChart = lazy(() => import("@/components/compras/SLADistributionChart").then(m => ({ default: m.SLADistributionChart })));
@@ -46,7 +48,17 @@ const ComprasDashboard = () => {
   const { kpis, pipeline, urgentItems, loading } = useDashboardKPIs(currentFilters);
   const { t } = useTranslation();
   const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault } = useDashboardFilters();
+  const { loadFromDb, saveToDb, widgets } = useDashboardLayoutStore();
 
+  useEffect(() => {
+    loadFromDb('compras');
+  }, [loadFromDb]);
+
+  useEffect(() => {
+    if (widgets.length > 0) {
+      saveToDb('compras');
+    }
+  }, [widgets, saveToDb]);
 
   // Realtime with debounce to avoid excessive re-renders
   useRealtimeSubscription({

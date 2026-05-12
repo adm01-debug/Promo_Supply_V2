@@ -215,8 +215,20 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
     setWidgets, 
     toggleWidgetVisibility, 
     resizeWidget, 
-    resetLayout 
+    resetLayout,
+    saveToDb
   } = useDashboardLayoutStore();
+
+  const handleToggleVisibility = (id: string) => {
+    toggleWidgetVisibility(id);
+    saveToDb('compras');
+  };
+
+  const handleResize = (id: string, size: DashboardWidget['size']) => {
+    resizeWidget(id, size);
+    saveToDb('compras');
+  };
+
 
   const sortedWidgets = useMemo(() => 
     [...widgets].sort((a, b) => a.order - b.order),
@@ -254,8 +266,9 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
   }, [kpiWidgets, otherWidgets, setWidgets]);
 
   const handleShowHiddenWidget = (widgetId: string) => {
-    toggleWidgetVisibility(widgetId);
+    handleToggleVisibility(widgetId);
   };
+
 
   return (
     <div ref={ref} className={cn("space-y-4", className)}>
@@ -361,7 +374,10 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
           <Reorder.Group
             axis="x"
             values={visibleKpiWidgets}
-            onReorder={(newOrder) => handleReorder('kpi', newOrder)}
+            onReorder={(newOrder) => {
+              handleReorder('kpi', newOrder);
+              saveToDb('compras');
+            }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
           >
             {visibleKpiWidgets.map((widget, index) => (
@@ -369,13 +385,14 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
                 key={widget.id}
                 widget={widget}
                 isEditMode={isEditMode}
-                onToggleVisibility={toggleWidgetVisibility}
-                onResize={resizeWidget}
+                onToggleVisibility={handleToggleVisibility}
+                onResize={handleResize}
               >
                 {renderWidget(widget.id, index)}
               </DraggableWidget>
             ))}
           </Reorder.Group>
+
         </section>
       )}
 
@@ -390,7 +407,10 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
           <Reorder.Group
             axis="y"
             values={visibleOtherWidgets}
-            onReorder={(newOrder) => handleReorder('other', newOrder)}
+            onReorder={(newOrder) => {
+              handleReorder('other', newOrder);
+              saveToDb('compras');
+            }}
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr"
           >
             {visibleOtherWidgets.map((widget, index) => (
@@ -398,14 +418,15 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
                 key={widget.id}
                 widget={widget}
                 isEditMode={isEditMode}
-                onToggleVisibility={toggleWidgetVisibility}
-                onResize={resizeWidget}
+                onToggleVisibility={handleToggleVisibility}
+                onResize={handleResize}
                 className={getGridClasses(widget.size)}
               >
                 {renderWidget(widget.id, index)}
               </DraggableWidget>
             ))}
           </Reorder.Group>
+
         </section>
       )}
 
