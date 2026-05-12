@@ -45,6 +45,15 @@ const ConfiguracoesCentroCusto = () => {
     parent_id: ''
   });
 
+  const { data: profiles = [] } = useQuery({
+    queryKey: ['profiles-list'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('profiles').select('id, full_name').order('full_name');
+      if (error) throw error;
+      return data;
+    }
+  });
+
   const filteredCCs = costCenters.filter(cc => 
     cc.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     cc.code.toLowerCase().includes(searchTerm.toLowerCase())
@@ -53,10 +62,24 @@ const ConfiguracoesCentroCusto = () => {
   const handleOpenDialog = (cc?: CostCenter) => {
     if (cc) {
       setEditingCC(cc);
-      setForm({ name: cc.name, code: cc.code, is_active: cc.is_active });
+      setForm({ 
+        name: cc.name, 
+        code: cc.code, 
+        is_active: cc.is_active,
+        manager_id: cc.manager_id || '',
+        department: cc.department || '',
+        parent_id: cc.parent_id || ''
+      });
     } else {
       setEditingCC(null);
-      setForm({ name: '', code: '', is_active: true });
+      setForm({ 
+        name: '', 
+        code: '', 
+        is_active: true,
+        manager_id: '',
+        department: '',
+        parent_id: ''
+      });
     }
     setIsDialogOpen(true);
   };
@@ -69,17 +92,26 @@ const ConfiguracoesCentroCusto = () => {
 
     setIsSaving(true);
     try {
+      const payload = {
+        name: form.name,
+        code: form.code,
+        is_active: form.is_active,
+        manager_id: form.manager_id || null,
+        department: form.department || null,
+        parent_id: form.parent_id || null
+      };
+
       if (editingCC) {
         const { error } = await supabase
           .from('cost_centers')
-          .update({ name: form.name, code: form.code, is_active: form.is_active })
+          .update(payload)
           .eq('id', editingCC.id);
         if (error) throw error;
         toast.success('Centro de custo atualizado');
       } else {
         const { error } = await supabase
           .from('cost_centers')
-          .insert({ name: form.name, code: form.code, is_active: form.is_active });
+          .insert(payload);
         if (error) throw error;
         toast.success('Centro de custo criado');
       }
