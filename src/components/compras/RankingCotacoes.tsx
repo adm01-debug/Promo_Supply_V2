@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles } from "lucide-react";
+import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -10,6 +10,15 @@ import {
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Cotacao {
   id: string;
