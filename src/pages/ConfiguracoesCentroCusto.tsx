@@ -27,7 +27,8 @@ import { toast } from 'sonner';
 import { 
   Building2, Plus, Edit2, Trash2, Search, CheckCircle2, XCircle, Loader2
 } from 'lucide-react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const ConfiguracoesCentroCusto = () => {
   const { costCenters, loadingCostCenters } = useSolicitacoes();
