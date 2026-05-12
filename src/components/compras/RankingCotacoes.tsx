@@ -40,7 +40,7 @@ interface Cotacao {
 interface RankingCotacoesProps {
   cotacoes: Cotacao[];
   quantidade: number;
-  onSelecionar: (id: string) => void;
+  onSelecionar: (id: string, justificativa?: string) => void;
   selecionado: string | null;
 }
 
