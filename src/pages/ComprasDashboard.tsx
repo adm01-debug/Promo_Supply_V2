@@ -309,6 +309,7 @@ const ComprasDashboard = () => {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+          <div className="flex items-center gap-3">
             <FilterFavoritesManager
               favorites={favorites}
               currentFilters={currentFilters}
@@ -324,6 +325,7 @@ const ComprasDashboard = () => {
               loading={filtersLoading}
             />
             <PurchaseClimateWidget />
+          </div>
           </div>
         </div>
 
