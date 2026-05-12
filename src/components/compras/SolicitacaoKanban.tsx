@@ -193,6 +193,13 @@ function SolicitacaoKanbanCard({
             <Calendar className="w-3 h-3" />
             <span>{new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
           </div>
+          {solicitacao.costCenterCode && (
+            <div className="col-span-2 flex items-center gap-1 text-[10px] text-primary font-medium mt-1">
+              <span className="bg-primary/10 px-1.5 py-0.5 rounded truncate">
+                CC: {solicitacao.costCenterCode}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Value if available */}

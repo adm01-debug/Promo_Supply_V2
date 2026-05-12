@@ -110,7 +110,12 @@ export const SolicitacaoReviewStep = ({ formData, budgetCheck }: SolicitacaoRevi
         {formData.centroCusto && (
           <div>
             <p className="text-muted-foreground">Centro de Custo</p>
-            <p className="font-medium">{formData.centroCusto}</p>
+            <p className="font-medium">
+              {formData.costCenterId ? (
+                // If we're in the modal, we might want to show the selected name
+                formData.centroCusto
+              ) : formData.centroCusto}
+            </p>
           </div>
         )}
         {formData.valorEstimado < 1000 && formData.valorEstimado > 0 && (

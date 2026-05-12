@@ -210,7 +210,15 @@ export const SolicitacaoCard = ({
               <span className="hidden md:inline">•</span>
               <span className="hidden md:inline">Vendedor: {solicitacao.vendedor}</span>
               <span className="hidden sm:inline">•</span>
-              <span className="hidden sm:inline">Prazo: {new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
+               <span className="hidden sm:inline">Prazo: {new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
+               {solicitacao.costCenterName && (
+                 <>
+                   <span className="hidden sm:inline">•</span>
+                   <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-medium text-[10px]">
+                     {solicitacao.costCenterCode}: {solicitacao.costCenterName}
+                   </span>
+                 </>
+               )}
             </div>
           </div>
         </div>

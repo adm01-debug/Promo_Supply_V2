@@ -50,6 +50,8 @@ export const adaptToLegacyFormat = (sol: Solicitacao): MockSolicitacao & { organ
   valorTotal: nullishNum(sol.valor_estimado),
   createdAt: sol.created_at,
   organizationName: sol.organization?.name,
+  costCenterName: sol.cost_center?.name,
+  costCenterCode: sol.cost_center?.code,
 });
 
 export const statusConfig: Record<string, { label: string; color: string; indicatorStatus: "pending" | "processing" | "approved" | "completed" | "warning" | "info" }> = {
