@@ -4737,10 +4737,9 @@ export type Database = {
         Args: { p_fornecedor_id: string }
         Returns: number
       }
-      check_budget_availability: {
-        Args: { p_centro_custo: string; p_valor: number }
-        Returns: Json
-      }
+      check_budget_availability:
+        | { Args: { p_centro_custo: string; p_valor: number }; Returns: Json }
+        | { Args: { p_cost_center_id: string; p_valor: number }; Returns: Json }
       check_escalation: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
       clear_login_lockout: { Args: { _email: string }; Returns: undefined }
