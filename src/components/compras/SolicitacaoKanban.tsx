@@ -318,6 +318,8 @@ export function SolicitacaoKanban({
       PAGO: [],
       EM_TRANSITO: [],
       ENTREGUE: [],
+      REJEITADA: [],
+      CANCELADA: [],
     };
 
     solicitacoes.forEach(sol => {
