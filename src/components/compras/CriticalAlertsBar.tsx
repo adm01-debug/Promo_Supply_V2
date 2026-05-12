@@ -79,76 +79,89 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
   if (!hasAlerts || dismissed) return null;
 
   return (
-    <Alert 
-      ref={ref}
-      variant="destructive" 
-      className="relative border-destructive/50 bg-destructive/10 animate-pulse-slow shadow-lg p-6 rounded-2xl border-2"
-    >
-      <div className="flex items-start gap-3">
-        {alerts.overdueCount > 0 ? (
-          <AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
-        ) : (
-          <AlertTriangle className="h-5 w-5 text-destructive mt-0.5" />
-        )}
-        
-        <div className="flex-1">
-          <AlertTitle className="text-destructive font-black uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
-            <span className="animate-pulse">Ação Imediata Necessária</span>
-            <Badge variant="outline" className="border-destructive text-destructive text-[10px] h-4 font-black">SLA CRÍTICO</Badge>
-          </AlertTitle>
-          <AlertDescription className="text-destructive/90">
-            <div className="flex flex-wrap items-center gap-3">
-              {alerts.overdueCount > 0 && (
-                <div className="flex items-center gap-2">
-                  <Badge variant="destructive" className="gap-1 font-black text-[10px] uppercase">
-                    <AlertCircle className="h-3 w-3" />
-                    {alerts.overdueCount} Excedido{alerts.overdueCount > 1 ? 's' : ''}
-                  </Badge>
-                  <span className="text-[10px] font-medium text-muted-foreground bg-destructive/5 px-1.5 py-0.5 rounded border border-destructive/10">
-                    {alerts.overdueItems.join(', ')}{alerts.overdueCount > 3 ? '...' : ''}
-                  </span>
-                </div>
-              )}
-              
-              {alerts.criticalCount > 0 && (
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="gap-1 border-destructive text-destructive font-black text-[10px] uppercase">
-                    <AlertTriangle className="h-3 w-3" />
-                    {alerts.criticalCount} Próximo{alerts.criticalCount > 1 ? 's' : ''}
-                  </Badge>
-                  <span className="text-[10px] font-medium text-muted-foreground bg-destructive/5 px-1.5 py-0.5 rounded border border-destructive/10">
-                    {alerts.criticalItems.join(', ')}{alerts.criticalCount > 3 ? '...' : ''}
-                  </span>
-                </div>
-              )}
+    <AnimatePresence>
+      {!dismissed && hasAlerts && (
+        <motion.div
+          initial={{ opacity: 0, height: 0, y: -20 }}
+          animate={{ opacity: 1, height: "auto", y: 0 }}
+          exit={{ opacity: 0, height: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+          className="mb-6"
+        >
+          <Alert 
+            ref={ref}
+            variant="destructive" 
+            className="relative border-destructive/50 bg-gradient-to-r from-destructive/10 via-destructive/5 to-transparent shadow-lg p-5 rounded-2xl border-2 overflow-hidden group"
+          >
+            {/* Background pattern */}
+            <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform">
+              <AlertCircle className="w-24 h-24 rotate-12" />
             </div>
-          </AlertDescription>
-        </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            asChild
-            size="sm"
-            variant="destructive"
-            className="h-8 gap-1 font-black uppercase text-[10px] tracking-widest"
-          >
-            <Link to="/solicitacoes">
-              Resolver Agora
-              <ChevronRight className="h-4 w-4" />
-            </Link>
-          </Button>
-          
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/20"
-            onClick={() => setDismissed(true)}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    </Alert>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 relative z-10">
+              <div className="flex-1 flex gap-4 items-start">
+                <div className="p-3 rounded-full bg-destructive/20 text-destructive animate-pulse shrink-0">
+                  {alerts.overdueCount > 0 ? (
+                    <AlertCircle className="h-6 w-6" />
+                  ) : (
+                    <AlertTriangle className="h-6 w-6" />
+                  )}
+                </div>
+                
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <AlertTitle className="text-destructive font-black uppercase tracking-tight text-sm mb-0">
+                      Ação Imediata Necessária
+                    </AlertTitle>
+                    <Badge variant="outline" className="border-destructive text-destructive text-[9px] h-4 font-black uppercase tracking-wider">SLA CRÍTICO</Badge>
+                  </div>
+                  
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    {alerts.overdueCount > 0 && (
+                      <span className="flex items-center gap-1.5 text-destructive font-bold">
+                        {alerts.overdueCount} Excedido{alerts.overdueCount > 1 ? 's' : ''}: 
+                        <span className="text-xs font-mono opacity-80">{alerts.overdueItems.join(', ')}{alerts.overdueCount > 3 ? '...' : ''}</span>
+                      </span>
+                    )}
+                    
+                    {alerts.criticalCount > 0 && (
+                      <span className="flex items-center gap-1.5 text-destructive/80 font-semibold">
+                        {alerts.criticalCount} Próximo{alerts.criticalCount > 1 ? 's' : ''}:
+                        <span className="text-xs font-mono opacity-80">{alerts.criticalItems.join(', ')}{alerts.criticalCount > 3 ? '...' : ''}</span>
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0 mt-2 sm:mt-0">
+                <Button
+                  asChild
+                  size="sm"
+                  variant="destructive"
+                  className="flex-1 sm:flex-none h-9 gap-1 font-black uppercase text-[10px] tracking-widest shadow-lg shadow-destructive/20"
+                >
+                  <Link to="/solicitacoes">
+                    Resolver Agora
+                    <ChevronRight className="h-4 w-4" />
+                  </Link>
+                </Button>
+                
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9 text-destructive/60 hover:text-destructive hover:bg-destructive/10 rounded-full"
+                  onClick={() => setDismissed(true)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </Alert>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
+
 });
 CriticalAlertsBar.displayName = 'CriticalAlertsBar';
