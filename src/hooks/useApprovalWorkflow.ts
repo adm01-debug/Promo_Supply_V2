@@ -181,44 +181,82 @@ export const useApprovalWorkflow = () => {
       }
 
       const prazoLimite = new Date();
-      prazoLimite.setHours(prazoLimite.getHours() + rule.tempo_limite_horas);
+      prazoLimite.setHours(prazoLimite.getHours() + (rule?.tempo_limite_horas || 24));
 
       const { data: workflow, error: workflowError } = await supabase.from('approval_workflows').insert({
-        solicitacao_id: solicitacaoId, rule_id: rule.id, status: 'pending', etapa_atual: 1,
-        total_etapas: rule.aprovadores.length, valor, categoria_id: categoriaId,
+        solicitacao_id: solicitacaoId, 
+        rule_id: rule?.id || null, 
+        status: 'pending', 
+        etapa_atual: 1,
+        total_etapas: (rule?.aprovadores?.length || 0) + (ccManagerId ? 1 : 0), 
+        valor, 
+        categoria_id: categoriaId,
         prazo_limite: prazoLimite.toISOString()
       }).select().single();
+      
       if (workflowError) throw workflowError;
       const typedWorkflow = workflow as ApprovalWorkflow;
 
       const steps = [];
-      for (let index = 0; index < rule.aprovadores.length; index++) {
-        const aprovador = rule.aprovadores[index];
-        const effective = await getEffectiveApprover(aprovador.user_id, categoriaId, valor);
-        const effectiveId = effective?.[0]?.approver_id || aprovador.user_id;
-        const delegationId = effective?.[0]?.delegation_id || null;
+      let stepCounter = 1;
+
+      // Adicionar Gestor do Centro de Custo como primeira etapa se existir
+      if (ccManagerId) {
+        const effective = await getEffectiveApprover(ccManagerId, categoriaId, valor);
+        const effectiveId = effective?.[0]?.approver_id || ccManagerId;
         steps.push({
-          workflow_id: typedWorkflow.id, etapa: index + 1, aprovador_id: aprovador.user_id,
-          aprovador_efetivo_id: effectiveId !== aprovador.user_id ? effectiveId : null,
-          delegacao_id: delegationId,
-          prazo_limite: new Date(Date.now() + (index + 1) * rule.tempo_limite_horas * 60 * 60 * 1000).toISOString()
+          workflow_id: typedWorkflow.id, 
+          etapa: stepCounter++, 
+          aprovador_id: ccManagerId,
+          aprovador_efetivo_id: effectiveId !== ccManagerId ? effectiveId : null,
+          delegacao_id: effective?.[0]?.delegation_id || null,
+          prazo_limite: new Date(Date.now() + (rule?.tempo_limite_horas || 24) * 60 * 60 * 1000).toISOString()
         });
       }
-      const { error: stepsError } = await supabase.from('approval_steps').insert(steps);
-      if (stepsError) throw stepsError;
+
+      // Adicionar aprovadores da regra
+      if (rule) {
+        for (let index = 0; index < rule.aprovadores.length; index++) {
+          const aprovador = rule.aprovadores[index];
+          // Evitar duplicidade se o gestor do CC já for o mesmo aprovador da regra
+          if (aprovador.user_id === ccManagerId) continue;
+
+          const effective = await getEffectiveApprover(aprovador.user_id, categoriaId, valor);
+          const effectiveId = effective?.[0]?.approver_id || aprovador.user_id;
+          steps.push({
+            workflow_id: typedWorkflow.id, 
+            etapa: stepCounter++, 
+            aprovador_id: aprovador.user_id,
+            aprovador_efetivo_id: effectiveId !== aprovador.user_id ? effectiveId : null,
+            delegacao_id: effective?.[0]?.delegation_id || null,
+            prazo_limite: new Date(Date.now() + (index + 2) * (rule.tempo_limite_horas) * 60 * 60 * 1000).toISOString()
+          });
+        }
+      }
+
+      // Atualizar total de etapas real
+      if (steps.length > 0) {
+        await supabase.from('approval_workflows').update({ total_etapas: steps.length }).eq('id', typedWorkflow.id);
+        const { error: stepsError } = await supabase.from('approval_steps').insert(steps);
+        if (stepsError) throw stepsError;
+      }
 
       await supabase.from('approval_history').insert({
         workflow_id: typedWorkflow.id, solicitacao_id: solicitacaoId, acao: 'created',
         usuario_id: user?.id, usuario_nome: user?.email,
-        detalhes: { rule_id: rule.id, rule_nome: rule.nome }
+        detalhes: { rule_id: rule?.id, rule_nome: rule?.nome || 'Aprovação por Centro de Custo' }
       });
 
       toast.success('Workflow de aprovação criado');
       await fetchPendingWorkflows();
       return typedWorkflow;
-    } catch (error) { console.error('Error creating workflow:', error); toast.error('Erro ao criar workflow de aprovação'); return null; }
+    } catch (error) { 
+      console.error('Error creating workflow:', error); 
+      toast.error('Erro ao criar workflow de aprovação'); 
+      return null; 
+    }
     finally { setLoading(false); }
-  }, [user, findApplicableRule, fetchPendingWorkflows]);
+  }, [user, findApplicableRule, fetchPendingWorkflows, getEffectiveApprover, findApplicableRuleRPC, rules]);
 
   const approveStep = useCallback(async (stepId: string, comentario?: string) => {
     try {
