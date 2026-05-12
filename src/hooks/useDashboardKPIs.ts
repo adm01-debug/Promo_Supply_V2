@@ -66,7 +66,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
 
   const { data: pedidos, isLoading: loadingPed } = useQuery({
     queryKey: ['dashboard-pedidos'],
-    queryFn: () => fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string; fornecedor_id: string }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at, fornecedor_id'),
     staleTime: 30000,
   });
 
