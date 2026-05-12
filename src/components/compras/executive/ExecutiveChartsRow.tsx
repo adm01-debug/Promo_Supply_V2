@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Activity, BarChart3, PieChart, TrendingUp, Info } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -40,11 +41,45 @@ const CustomTooltip = ({ active, payload, label, showComparison }: any) => {
 interface ExecutiveChartsRowProps {
   showComparison: boolean;
   filteredCategorySpend: Array<{ name: string; value: number; previousValue: number; percentage: number; orders: number; supplier: string }>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onCategoryDrillDown: (category: any) => void;
+  selectedCategory: string;
+  selectedSupplier: string;
 }
 
-export const ExecutiveChartsRow = ({ showComparison, filteredCategorySpend, onCategoryDrillDown }: ExecutiveChartsRowProps) => {
+export const ExecutiveChartsRow = ({ 
+  showComparison, 
+  filteredCategorySpend, 
+  onCategoryDrillDown,
+  selectedCategory,
+  selectedSupplier
+}: ExecutiveChartsRowProps) => {
+  const filteredTrend = useMemo(() => {
+    // If no specific filter, return default
+    if (selectedCategory === 'all' && selectedSupplier === 'all') return comparisonTrend;
+    
+    // In a real app, this would be an API call with filters
+    // For now, we simulate by applying a multiplier based on the selection to show visual change
+    const multiplier = (selectedCategory !== 'all' ? 0.4 : 1) * (selectedSupplier !== 'all' ? 0.3 : 1);
+    
+    return comparisonTrend.map(item => ({
+      ...item,
+      currentSpend: item.currentSpend * multiplier,
+      previousSpend: item.previousSpend * multiplier,
+      currentSavings: item.currentSavings * multiplier,
+      previousSavings: item.previousSavings * multiplier,
+    }));
+  }, [selectedCategory, selectedSupplier]);
+
+  const filteredMonthlyTrend = useMemo(() => {
+    if (selectedCategory === 'all' && selectedSupplier === 'all') return monthlyTrend;
+    const multiplier = (selectedCategory !== 'all' ? 0.4 : 1) * (selectedSupplier !== 'all' ? 0.3 : 1);
+    return monthlyTrend.map(item => ({
+      ...item,
+      spend: item.spend * multiplier,
+      savings: item.savings * multiplier,
+    }));
+  }, [selectedCategory, selectedSupplier]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Trend Chart */}
@@ -76,7 +111,7 @@ export const ExecutiveChartsRow = ({ showComparison, filteredCategorySpend, onCa
             <div className="h-[300px] w-full mt-4">
               <ResponsiveContainer width="100%" height="100%">
                 {showComparison ? (
-                  <ComposedChart data={comparisonTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <ComposedChart data={filteredTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="currentSpendGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
@@ -121,7 +156,7 @@ export const ExecutiveChartsRow = ({ showComparison, filteredCategorySpend, onCa
                     />
                   </ComposedChart>
                 ) : (
-                  <AreaChart data={monthlyTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <AreaChart data={filteredMonthlyTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                     <defs>
                       <linearGradient id="spendGradient" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
