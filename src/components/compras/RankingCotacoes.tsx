@@ -22,6 +22,10 @@ interface Cotacao {
   condicaoPagamento: string;
   total: number;
   alerta?: string;
+  score_preco?: number;
+  score_prazo?: number;
+  score_qualidade?: number;
+  score_total?: number;
 }
 
 interface RankingCotacoesProps {
