@@ -149,7 +149,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       const totalAprovado = pSol.filter(s => s.valor_aprovado != null).reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
       const economiaGerada = totalEstimado > 0 ? Math.max(0, totalEstimado - totalAprovado) : 0;
       
-      // Calculate SLA: Avg days from solicitation to first quotation
+      // Calculate SLA: Avg days from solicitation to first quotation real
       const completedSlas = pSol.map(s => {
         // Encontrar cotacoes reais relacionadas a esta solicitacao
         const relatedCotacoes = cot.filter(c => c.solicitacao_id === s.id);
