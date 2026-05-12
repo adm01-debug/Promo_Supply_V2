@@ -20,6 +20,7 @@ interface AuthContextType {
   session: Session | null;
   profile: UserProfile | null;
   role: AppRole | null;
+  organizationId: string | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
@@ -35,6 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
+  const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const fetchedUserIdRef = useRef<string | null>(null);
   const isFetchingRef = useRef(false);
@@ -59,6 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       setProfile(profileRes.data ? (profileRes.data as UserProfile) : null);
       setRole(roleRes.data?.role ? (roleRes.data.role as AppRole) : null);
+      setOrganizationId(profileRes.data?.current_organization_id || null);
       fetchedUserIdRef.current = userId;
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -114,6 +117,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         } else {
           setProfile(null);
           setRole(null);
+          setOrganizationId(null);
           fetchedUserIdRef.current = null;
         }
 
@@ -163,6 +167,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setSession(null);
     setProfile(null);
     setRole(null);
+    setOrganizationId(null);
   };
 
   const hasRole = (requiredRole: AppRole | AppRole[]): boolean => {
@@ -187,6 +192,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         session,
         profile,
         role,
+        organizationId,
         loading,
         signIn,
         signUp,
