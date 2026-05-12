@@ -4,27 +4,46 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 
-// Mock dependencies
-vi.mock("@/integrations/supabase/client", () => ({
-  supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn().mockReturnThis(),
-      order: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
-      insert: vi.fn().mockReturnThis(),
-      update: vi.fn().mockReturnThis(),
-      delete: vi.fn().mockReturnThis(),
-      single: vi.fn().mockReturnThis(),
-      on: vi.fn().mockReturnThis(),
-      subscribe: vi.fn().mockReturnThis(),
-    })),
+// Robust Supabase Mock
+const createMockSupabase = () => {
+  const mock: any = {
+    from: vi.fn(),
     rpc: vi.fn(),
-    channel: vi.fn(() => ({
-      on: vi.fn().mockReturnThis(),
-      subscribe: vi.fn().mockReturnThis(),
-    })),
+    channel: vi.fn(),
     removeChannel: vi.fn(),
-  },
+  };
+
+  const createQueryBuilder = () => {
+    const builder: any = {
+      select: vi.fn().mockImplementation(() => builder),
+      order: vi.fn().mockImplementation(() => builder),
+      eq: vi.fn().mockImplementation(() => builder),
+      insert: vi.fn().mockImplementation(() => builder),
+      update: vi.fn().mockImplementation(() => builder),
+      delete: vi.fn().mockImplementation(() => builder),
+      single: vi.fn().mockImplementation(() => builder),
+      in: vi.fn().mockImplementation(() => builder),
+      range: vi.fn().mockImplementation(() => builder),
+      or: vi.fn().mockImplementation(() => builder),
+      then: vi.fn().mockImplementation((cb: any) => Promise.resolve(cb({ data: [], error: null }))),
+    };
+    return builder;
+  };
+
+  mock.from.mockImplementation(() => createQueryBuilder());
+  mock.rpc.mockResolvedValue({ data: null, error: null });
+  mock.channel.mockReturnValue({
+    on: vi.fn().mockReturnThis(),
+    subscribe: vi.fn().mockReturnThis(),
+  });
+
+  return mock;
+};
+
+const mockSupabase = createMockSupabase();
+
+vi.mock("@/integrations/supabase/client", () => ({
+  supabase: mockSupabase,
 }));
 
 vi.mock("@/hooks/useAuth", () => ({
@@ -48,11 +67,7 @@ vi.mock("@/services/auditService", () => ({
 }));
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-  },
+  defaultOptions: { queries: { retry: false } },
 });
 
 const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -66,12 +81,12 @@ describe("useCotacoes hook", () => {
   });
 
   it("should fetch cotacoes correctly", async () => {
-    const { supabase } = await import("@/integrations/supabase/client");
     const mockData = [{ id: "1", numero: "COT-1", status: "pendente" }];
     
-    (supabase.from as any).mockImplementation(() => ({
+    mockSupabase.from.mockImplementation(() => ({
       select: vi.fn().mockReturnThis(),
       order: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
       then: (cb: any) => cb({ data: mockData, error: null }),
     }));
 
@@ -82,15 +97,15 @@ describe("useCotacoes hook", () => {
   });
 
   it("should create a cotacao and log audit", async () => {
-    const { supabase } = await import("@/integrations/supabase/client");
     const { auditHelpers } = await import("@/services/auditService");
     
-    (supabase.rpc as any).mockResolvedValue({ data: "COT-100" });
-    (supabase.from as any).mockImplementation(() => ({
+    mockSupabase.rpc.mockResolvedValue({ data: "COT-100" });
+    const mockInsert = {
       insert: vi.fn().mockReturnThis(),
       select: vi.fn().mockReturnThis(),
       single: vi.fn().mockResolvedValue({ data: { id: "new-id", numero: "COT-100" }, error: null }),
-    }));
+    };
+    mockSupabase.from.mockReturnValue(mockInsert);
 
     const { result } = renderHook(() => useCotacoes(), { wrapper });
 
@@ -111,46 +126,40 @@ describe("useCotacoes hook", () => {
   });
 
   it("should select a cotacao (P2P decision)", async () => {
-    const { supabase } = await import("@/integrations/supabase/client");
     const { auditHelpers } = await import("@/services/auditService");
-    
     const mockCotacoes = [{ id: "cot-1", solicitacao_id: "sol-1" }];
     
-    // Mock existing cotacoes for the find operation
-    (supabase.from as any).mockImplementation((table: string) => {
-      if (table === "cotacoes") {
-        return {
-          select: vi.fn().mockReturnThis(),
-          order: vi.fn().mockReturnThis(),
-          update: vi.fn().mockReturnThis(),
-          eq: vi.fn().mockResolvedValue({ error: null }),
-          then: (cb: any) => cb({ data: mockCotacoes, error: null }),
-        };
-      }
-      return {};
+    mockSupabase.from.mockImplementation((table: string) => {
+      const builder: any = {
+        select: vi.fn().mockReturnThis(),
+        order: vi.fn().mockReturnThis(),
+        update: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockResolvedValue({ error: null }),
+        then: (cb: any) => cb({ data: mockCotacoes, error: null }),
+      };
+      return builder;
     });
 
     const { result } = renderHook(() => useCotacoes(), { wrapper });
 
-    // Wait for initial fetch
     await waitFor(() => expect(result.current.loading).toBe(false));
 
     const success = await result.current.selectCotacao("cot-1", "Melhor preço");
 
     expect(success).toBe(true);
-    expect(supabase.from).toHaveBeenCalledWith("cotacoes");
+    expect(mockSupabase.from).toHaveBeenCalledWith("cotacoes");
     expect(auditHelpers.logApprove).toHaveBeenCalled();
   });
 
   it("should handle errors gracefully during creation", async () => {
-    const { supabase } = await import("@/integrations/supabase/client");
     const { toast } = await import("sonner");
     
-    (supabase.from as any).mockImplementation(() => ({
+    const mockInsert = {
       insert: vi.fn().mockReturnThis(),
       select: vi.fn().mockReturnThis(),
-      single: vi.fn().mockResolvedValue({ data: null, error: { message: "Database Error" } }),
-    }));
+      single: vi.fn().mockResolvedValue({ data: null, error: new Error("Database Error") }),
+    };
+    mockSupabase.from.mockReturnValue(mockInsert);
 
     const { result } = renderHook(() => useCotacoes(), { wrapper });
 
