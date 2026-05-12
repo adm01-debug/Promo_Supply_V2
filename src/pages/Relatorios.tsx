@@ -281,6 +281,10 @@ const Relatorios = () => {
             <AdvancedProcurementKPIs />
           </TabsContent>
 
+          <TabsContent value="cost_centers" className="mt-6">
+            <CostCenterPerformanceAnalysis />
+          </TabsContent>
+
           <TabsContent value="geral" className="mt-6 space-y-6">
             <KPICards stats={stats} isLoading={loadingPedidos} />
 
