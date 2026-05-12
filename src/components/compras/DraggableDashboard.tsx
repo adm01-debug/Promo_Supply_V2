@@ -216,18 +216,21 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
     toggleWidgetVisibility, 
     resizeWidget, 
     resetLayout,
-    saveToDb
+    saveToDb,
+    isLoading: isStoreLoading
   } = useDashboardLayoutStore();
 
-  const handleToggleVisibility = (id: string) => {
+  const handleToggleVisibility = useCallback((id: string) => {
     toggleWidgetVisibility(id);
-    saveToDb('compras');
-  };
+    // Persist immediately on toggle
+    setTimeout(() => saveToDb('compras'), 100);
+  }, [toggleWidgetVisibility, saveToDb]);
 
-  const handleResize = (id: string, size: DashboardWidget['size']) => {
+  const handleResize = useCallback((id: string, size: DashboardWidget['size']) => {
     resizeWidget(id, size);
-    saveToDb('compras');
-  };
+    // Persist immediately on resize
+    setTimeout(() => saveToDb('compras'), 100);
+  }, [resizeWidget, saveToDb]);
 
 
   const sortedWidgets = useMemo(() => 
