@@ -45,7 +45,40 @@ interface ExecutiveChartsRowProps {
   selectedSupplier: string;
 }
 
-export const ExecutiveChartsRow = ({ showComparison, filteredCategorySpend, onCategoryDrillDown }: ExecutiveChartsRowProps) => {
+export const ExecutiveChartsRow = ({ 
+  showComparison, 
+  filteredCategorySpend, 
+  onCategoryDrillDown,
+  selectedCategory,
+  selectedSupplier
+}: ExecutiveChartsRowProps) => {
+  const filteredTrend = useMemo(() => {
+    // If no specific filter, return default
+    if (selectedCategory === 'all' && selectedSupplier === 'all') return comparisonTrend;
+    
+    // In a real app, this would be an API call with filters
+    // For now, we simulate by applying a multiplier based on the selection to show visual change
+    const multiplier = (selectedCategory !== 'all' ? 0.4 : 1) * (selectedSupplier !== 'all' ? 0.3 : 1);
+    
+    return comparisonTrend.map(item => ({
+      ...item,
+      currentSpend: item.currentSpend * multiplier,
+      previousSpend: item.previousSpend * multiplier,
+      currentSavings: item.currentSavings * multiplier,
+      previousSavings: item.previousSavings * multiplier,
+    }));
+  }, [selectedCategory, selectedSupplier]);
+
+  const filteredMonthlyTrend = useMemo(() => {
+    if (selectedCategory === 'all' && selectedSupplier === 'all') return monthlyTrend;
+    const multiplier = (selectedCategory !== 'all' ? 0.4 : 1) * (selectedSupplier !== 'all' ? 0.3 : 1);
+    return monthlyTrend.map(item => ({
+      ...item,
+      spend: item.spend * multiplier,
+      savings: item.savings * multiplier,
+    }));
+  }, [selectedCategory, selectedSupplier]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Trend Chart */}
