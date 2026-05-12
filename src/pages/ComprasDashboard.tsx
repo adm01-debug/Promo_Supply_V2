@@ -176,6 +176,7 @@ const ComprasDashboard = () => {
                     comprador: (item as any).comprador
                   };
                 })} 
+              />
 
                   return {
                     id: (item as any).numero || item.id.substring(0, 8),
