@@ -264,6 +264,18 @@ const Solicitacoes = () => {
       setSelectedIds(new Set());
       return true;
     },
+    onCustomAction: async (actionId, ids) => {
+      if (actionId === 'duplicate') {
+        for (const id of ids) {
+          await duplicateSolicitacao(id);
+        }
+        toast.success(`${ids.length} solicitações duplicadas com sucesso`);
+        refetch();
+        setSelectedIds(new Set());
+        return true;
+      }
+      return false;
+    },
   });
 
   // Convert selected items to BulkItem format for preview

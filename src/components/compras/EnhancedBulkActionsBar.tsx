@@ -8,7 +8,8 @@ import {
   CheckSquare,
   Square,
   Eye,
-  MoreHorizontal
+  MoreHorizontal,
+  Copy
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -42,6 +43,7 @@ interface EnhancedBulkActionsBarProps {
 const defaultActions: Record<string, BulkAction[]> = {
   solicitacoes: [
     { id: 'change-status', label: 'Alterar Status', icon: RefreshCw },
+    { id: 'duplicate', label: 'Duplicar', icon: Copy },
     { id: 'delete', label: 'Excluir', icon: Trash2, variant: 'destructive', requiresConfirmation: true },
   ],
   pedidos: [

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { SolicitacaoReviewStep } from "./solicitacao/SolicitacaoReviewStep";
 import { 
   Plus, Package, Check, Loader2,
@@ -92,11 +92,21 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<NovaSolicitacaoData>(initialFormData);
+  const [formData, setFormData] = useState<NovaSolicitacaoData>(() => {
+    const saved = localStorage.getItem('nova_solicitacao_draft');
+    return saved ? JSON.parse(saved) : initialFormData;
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof NovaSolicitacaoData, string>>>({});
   const [budgetCheck, setBudgetCheck] = useState<BudgetCheckResult | null>(null);
   const [isCheckingBudget, setIsCheckingBudget] = useState(false);
+
+  // Persistence effect
+  useEffect(() => {
+    if (formData !== initialFormData) {
+      localStorage.setItem('nova_solicitacao_draft', JSON.stringify(formData));
+    }
+  }, [formData]);
 
   const updateField = <K extends keyof NovaSolicitacaoData>(
     field: K, 
@@ -239,12 +249,13 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
         description: `${formData.produto} - ${formData.quantidade} un. | R$ ${formData.valorEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
       });
       
+      localStorage.removeItem('nova_solicitacao_draft');
       setFormData(initialFormData);
       setStep(1);
       setBudgetCheck(null);
       setOpen(false);
       onSuccess?.();
-      
+
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : 'Erro desconhecido';
       toast.error('Erro ao criar solicitação: ' + msg);
@@ -298,12 +309,15 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="relative">
           <Plus className="w-4 h-4 mr-2" />
           Nova Solicitação
+          {localStorage.getItem('nova_solicitacao_draft') && (
+            <Badge variant="destructive" className="absolute -top-2 -right-2 h-4 px-1 text-[8px] animate-bounce">RASCUNHO</Badge>
+          )}
         </Button>
       </DialogTrigger>
-      
+
       <DialogContent aria-describedby="dialog-desc" className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
