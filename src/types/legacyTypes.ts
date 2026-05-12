@@ -20,6 +20,8 @@ export interface LegacySolicitacao {
   valorTotal?: number;
   cotacoes?: LegacyCotacao[];
   createdAt: string;
+  costCenterName?: string;
+  costCenterCode?: string;
 }
 
 export interface LegacyCotacao {

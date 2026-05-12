@@ -44,6 +44,7 @@ interface NovaSolicitacaoData {
   prioridade: 'baixa' | 'normal' | 'alta' | 'urgente';
   valorEstimado: number;
   centroCusto: string;
+  costCenterId: string;
   anexos: File[];
 }
 
@@ -58,6 +59,7 @@ const initialFormData: NovaSolicitacaoData = {
   prioridade: 'normal',
   valorEstimado: 0,
   centroCusto: '',
+  costCenterId: '',
   anexos: [],
 };
 
@@ -104,8 +106,8 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
-    // Clear budget check when value or centro custo changes
-    if (field === 'valorEstimado' || field === 'centroCusto') {
+    // Clear budget check when value or cost center changes
+    if (field === 'valorEstimado' || field === 'costCenterId') {
       setBudgetCheck(null);
     }
   };
@@ -130,16 +132,17 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   const validateStep3 = () => {
     const newErrors: Partial<Record<keyof NovaSolicitacaoData, string>> = {};
     if (formData.valorEstimado <= 0) newErrors.valorEstimado = 'Informe o valor estimado';
+    if (!formData.costCenterId) newErrors.costCenterId = 'Selecione o centro de custo';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const checkBudget = async () => {
-    if (!formData.centroCusto || formData.valorEstimado <= 0) return;
+    if (!formData.costCenterId || formData.valorEstimado <= 0) return;
     setIsCheckingBudget(true);
     try {
       const { data, error } = await supabase.rpc('check_budget_availability', {
-        p_centro_custo: formData.centroCusto,
+        p_cost_center_id: formData.costCenterId,
         p_valor: formData.valorEstimado,
       });
       if (error) throw error;
@@ -158,8 +161,8 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     } else if (step === 2 && validateStep2()) {
       setStep(3);
     } else if (step === 3 && validateStep3()) {
-      // Auto-check budget if centro de custo provided
-      if (formData.centroCusto && formData.valorEstimado > 0) {
+      // Auto-check budget if cost center provided
+      if (formData.costCenterId && formData.valorEstimado > 0) {
         await checkBudget();
       }
       setStep(4);
@@ -209,6 +212,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           quantidade: formData.quantidade,
           valor_estimado: formData.valorEstimado > 0 ? formData.valorEstimado : null,
           centro_custo: formData.centroCusto || null,
+          cost_center_id: formData.costCenterId || null,
           data_necessidade: formData.prazoEntrega || null,
           solicitante_id: user.id,
           departamento: formData.empresa,

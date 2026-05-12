@@ -6,6 +6,13 @@ import { toast } from 'sonner';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 import type { Json } from '@/integrations/supabase/types';
 
+export interface CostCenter {
+  id: string;
+  name: string;
+  code: string;
+  is_active: boolean;
+}
+
 export interface Solicitacao {
   id: string;
   numero: string;
@@ -25,6 +32,7 @@ export interface Solicitacao {
   aprovador_id: string | null;
   fornecedor_id: string | null;
   categoria_id: string | null;
+  cost_center_id: string | null;
   departamento: string | null;
   centro_custo: string | null;
   justificativa: string | null;
@@ -35,6 +43,7 @@ export interface Solicitacao {
   fornecedor?: { razao_social: string; nome_fantasia: string | null; } | null;
   categoria?: { nome: string; } | null;
   organization?: { name: string; } | null;
+  cost_center?: { name: string; code: string; } | null;
 }
 
 export interface CreateSolicitacaoInput {
@@ -48,6 +57,7 @@ export interface CreateSolicitacaoInput {
   data_necessidade?: string;
   departamento?: string;
   centro_custo?: string;
+  cost_center_id?: string;
   justificativa?: string;
   categoria_id?: string;
 }
@@ -89,7 +99,8 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
       *,
       fornecedor:fornecedores(razao_social, nome_fantasia),
       categoria:categorias(nome),
-      organization:organizations(name)
+      organization:organizations(name),
+      cost_center:cost_centers(name, code)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
@@ -146,7 +157,8 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           prioridade: input.prioridade || 'media', valor_estimado: input.valor_estimado,
           quantidade: input.quantidade || 1, unidade: input.unidade || 'un',
           data_necessidade: input.data_necessidade, departamento: input.departamento,
-          centro_custo: input.centro_custo, justificativa: input.justificativa,
+          centro_custo: input.centro_custo, cost_center_id: input.cost_center_id,
+          justificativa: input.justificativa,
           categoria_id: input.categoria_id, solicitante_id: user.id,
         })
         .select().single();
@@ -247,16 +259,28 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     });
   }, [solicitacoes, createSolicitacao]);
 
-  // Realtime handled by useRealtimeSubscription in pages that use this hook
+  const { data: costCenters = [], isLoading: loadingCostCenters } = useQuery({
+    queryKey: ['cost-centers'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('cost_centers')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
+      if (error) throw error;
+      return data as CostCenter[];
+    },
+    staleTime: 300_000,
+  });
 
   return {
     solicitacoes, totalCount, loading: isLoading, error: error?.message || null,
+    costCenters, loadingCostCenters,
     refetch, createSolicitacao, updateSolicitacao, updateStatus,
     deleteSolicitacao, bulkDelete, bulkUpdateStatus, duplicateSolicitacao,
   };
 }
 
-// Hook for KPIs — uses optimized paginatedFetch
 export function useSolicitacoesKPIs() {
   const { user } = useAuth();
 

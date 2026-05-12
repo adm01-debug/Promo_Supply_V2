@@ -23,7 +23,7 @@ import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { EnhancedSearch } from "@/components/ui/enhanced-search";
 import { StatusIndicator, PriorityIndicator } from "@/components/ui/status-indicators";
 import { KanbanSkeleton } from "@/components/ui/contextual-skeletons";
-import { useSolicitacoes, type Solicitacao } from "@/hooks/useSolicitacoes";
+import { useSolicitacoes, type Solicitacao, type CostCenter } from "@/hooks/useSolicitacoes";
 import { useBulkOperations, solicitacoesStatusOptions } from "@/hooks/useBulkOperations";
 import { BulkItem, BulkAction } from "@/components/compras/BulkOperationsPreview";
 import { toast } from "sonner";

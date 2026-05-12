@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useProdutos, type Produto } from "@/hooks/useProdutos";
+import { useSolicitacoes } from "@/hooks/useSolicitacoes";
 import {
   Command,
   CommandEmpty,
@@ -40,6 +41,7 @@ interface NovaSolicitacaoData {
   prioridade: 'baixa' | 'normal' | 'alta' | 'urgente';
   valorEstimado: number;
   centroCusto: string;
+  costCenterId: string;
   anexos: File[];
 }
 
@@ -239,6 +241,8 @@ interface Step3Props extends StepProps {
 }
 
 export function Step3Values({ formData, errors, updateField, budgetCheck, isCheckingBudget, checkBudget, isCompressing, handleFileUpload, removeFile }: Step3Props) {
+  const { costCenters, loadingCostCenters } = useSolicitacoes();
+
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
@@ -250,9 +254,27 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
           {errors.valorEstimado && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.valorEstimado}</p>}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="centroCusto">Centro de Custo</Label>
-          <Input id="centroCusto" value={formData.centroCusto} onChange={(e) => updateField('centroCusto', e.target.value)} placeholder="Ex: CC-001" />
-          {formData.centroCusto && formData.valorEstimado > 0 && (
+          <Label htmlFor="costCenterId">Centro de Custo *</Label>
+          <Select 
+            value={formData.costCenterId} 
+            onValueChange={(v) => {
+              updateField('costCenterId', v);
+              const cc = costCenters.find(c => c.id === v);
+              if (cc) updateField('centroCusto', cc.name);
+            }}
+          >
+            <SelectTrigger className={cn(errors.costCenterId && "border-destructive")}>
+              <SelectValue placeholder={loadingCostCenters ? "Carregando..." : "Selecione o centro de custo"} />
+            </SelectTrigger>
+            <SelectContent>
+              {costCenters.map(cc => (
+                <SelectItem key={cc.id} value={cc.id}>{cc.name} ({cc.code})</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {errors.costCenterId && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.costCenterId}</p>}
+          
+          {formData.costCenterId && formData.valorEstimado > 0 && (
             <Button type="button" variant="outline" size="sm" onClick={checkBudget} disabled={isCheckingBudget} className="w-full mt-1">
               {isCheckingBudget ? <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Verificando...</> : <><ShieldCheck className="w-3 h-3 mr-1" /> Verificar Orçamento</>}
             </Button>
