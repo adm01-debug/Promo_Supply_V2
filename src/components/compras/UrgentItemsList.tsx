@@ -124,7 +124,10 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
                     {item.produto}
                   </h3>
                   {item.urgencia === 'critico' && (
-                    <Badge variant="destructive" className="text-[9px] px-1 py-0 h-4 animate-pulse uppercase font-black">SLA Estourado</Badge>
+                    <Badge variant="destructive" className="text-[9px] px-1 py-0 h-4 animate-pulse uppercase font-black">SLA EXCEDIDO</Badge>
+                  )}
+                  {item.urgencia === 'alto' && (
+                    <Badge variant="warning" className="text-[9px] px-1 py-0 h-4 uppercase font-black">SLA CRÍTICO</Badge>
                   )}
                 </div>
                 <div className="flex items-center flex-wrap gap-x-3 gap-y-1 mt-1">
