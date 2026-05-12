@@ -125,8 +125,87 @@ const getRiskLabel = (value: number) => {
 export const RiskHeatMap = () => {
   const [hoveredCell, setHoveredCell] = useState<{ supplier: string; category: string } | null>(null);
 
+  const { data: fornecedores, isLoading: loadingForn } = useQuery({
+    queryKey: ['risk-heatmap-fornecedores'],
+    queryFn: () => fetchAllRows<{ id: string; razao_social: string; avaliacao: number | null; status: string; categorias: { nome: string } }>('fornecedores', 'id, razao_social, avaliacao, status, categorias(nome)'),
+    staleTime: 60000,
+  });
+
+  const { data: pedidos, isLoading: loadingPed } = useQuery({
+    queryKey: ['risk-heatmap-pedidos'],
+    queryFn: () => fetchAllRows<{ fornecedor_id: string; status: string; data_previsao: string; data_entrega: string; valor_total: number }>('pedidos', 'fornecedor_id, status, data_previsao, data_entrega, valor_total'),
+    staleTime: 60000,
+  });
+
+  const riskData = useMemo(() => {
+    if (!fornecedores || !pedidos) return [];
+
+    const totalSpend = pedidos.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 1); // avoid div by zero
+
+    return fornecedores.filter(f => f.status === 'ativo').map(f => {
+      const supplierPeds = pedidos.filter(p => p.fornecedor_id === f.id);
+      const supplierSpend = supplierPeds.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 0);
+      const spendPercent = Math.round((supplierSpend / totalSpend) * 100);
+
+      const delivered = supplierPeds.filter(p => p.status === 'entregue');
+      const onTime = delivered.filter(p => 
+        p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao
+      ).length;
+      
+      const onTimeRate = delivered.length > 0 ? (onTime / delivered.length) * 100 : 90;
+      
+      // Calculate individual risks (0-100, where higher is worse)
+      const deliveryRisk = Math.round(100 - onTimeRate);
+      const qualityRisk = Math.round(100 - (Number(f.avaliacao || 4.5) * 20));
+      const concentrationRisk = Math.min(100, spendPercent * 3); // 33% spend = 100% concentration risk
+      const financialRisk = Math.round(Math.max(10, 40 - (Number(f.avaliacao || 4) * 5))); // Pseudo-financial risk
+      const operationalRisk = Math.round(Math.max(15, deliveryRisk * 0.8 + qualityRisk * 0.2));
+      const geopoliticalRisk = f.categorias?.nome === 'Eletrônicos' || f.categorias?.nome === 'Tecnologia' ? 60 : 15;
+
+      const overallRisk = Math.round(
+        financialRisk * 0.15 + 
+        operationalRisk * 0.25 + 
+        qualityRisk * 0.2 + 
+        deliveryRisk * 0.2 + 
+        concentrationRisk * 0.1 + 
+        geopoliticalRisk * 0.1
+      );
+
+      return {
+        supplierId: f.id,
+        supplierName: f.razao_social,
+        category: (f as any).categorias?.nome || 'Geral',
+        risks: {
+          financial: financialRisk,
+          operational: operationalRisk,
+          quality: qualityRisk,
+          delivery: deliveryRisk,
+          concentration: concentrationRisk,
+          geopolitical: geopoliticalRisk
+        },
+        overallRisk,
+        trend: overallRisk > 40 ? 'worsening' : overallRisk < 20 ? 'improving' : 'stable',
+        volume: spendPercent
+      } as RiskData;
+    });
+  }, [fornecedores, pedidos]);
+
+  if (loadingForn || loadingPed) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
+        </div>
+        <Card className="p-6">
+          <Skeleton className="h-8 w-48 mb-6" />
+          <Skeleton className="h-[400px] w-full rounded-xl" />
+        </Card>
+      </div>
+    );
+  }
+
   // Sort suppliers by overall risk (highest first)
-  const sortedSuppliers = [...mockRiskData].sort((a, b) => b.overallRisk - a.overallRisk);
+  const sortedSuppliers = [...riskData].sort((a, b) => b.overallRisk - a.overallRisk);
 
   return (
     <div className="space-y-6">
