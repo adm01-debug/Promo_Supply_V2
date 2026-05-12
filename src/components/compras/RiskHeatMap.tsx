@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   AlertTriangle,
   TrendingUp,
@@ -20,6 +20,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { fetchAllRows } from "@/lib/paginatedFetch";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface RiskData {
   supplierId: string;
