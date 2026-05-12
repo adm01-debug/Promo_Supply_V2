@@ -320,6 +320,10 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                 <p className="font-medium">{format(new Date(pagamento.data_vencimento), 'dd/MM/yyyy')}</p>
               </div>
               <div className="p-2 rounded bg-muted/50">
+                <p className="text-muted-foreground text-xs">Centro de Custo</p>
+                <p className="font-medium">{pagamento.cost_center?.name || 'Não vinculado'}</p>
+              </div>
+              <div className="p-2 rounded bg-muted/50">
                 <p className="text-muted-foreground text-xs">Forma Pagamento</p>
                 <p className="font-medium">{pagamento.forma_pagamento?.toUpperCase() || 'N/D'}</p>
               </div>
