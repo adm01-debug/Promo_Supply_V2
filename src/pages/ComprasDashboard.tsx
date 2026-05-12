@@ -38,6 +38,7 @@ import { useDashboardLayoutStore } from "@/stores/dashboardLayoutStore";
 import { useAccountFilters } from "@/hooks/useAccountFilters";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 
 // Lazy load heavy panels that are below the fold
