@@ -85,6 +85,13 @@ const tiposOptions = [
   { value: 'FAB_PERSONALIZADO', label: 'Fab. Personalizado' },
 ];
 
+const prioridadesOptions = [
+  { value: 'baixa', label: 'Baixa', color: 'bg-muted/500' },
+  { value: 'normal', label: 'Normal', color: 'bg-info' },
+  { value: 'alta', label: 'Alta', color: 'bg-warning' },
+  { value: 'urgente', label: 'Urgente', color: 'bg-destructive' },
+];
+
 const statusOptions = [
   { value: 'AGUARDANDO_COTACAO', label: 'Pendente' },
   { value: 'EM_COTACAO', label: 'Em Cotação' },
