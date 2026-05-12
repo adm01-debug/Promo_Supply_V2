@@ -135,6 +135,14 @@ export function usePagamentos(filters?: PagamentoFilters) {
         })
         .select().single();
       if (error) throw error;
+      
+      // Audit Log
+      await auditHelpers.logCreate(
+        'pagamento', 
+        data.id, 
+        `Pagamento ${data.numero} registrado para fornecedor ${input.fornecedor_id}`,
+        data
+      );
       toast.success('Pagamento registrado com sucesso!');
       invalidate();
       return data;
