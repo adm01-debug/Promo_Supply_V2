@@ -366,6 +366,15 @@ const Solicitacoes = () => {
               <EnhancedSearch
                 placeholder="Buscar por produto, empresa, ID..."
                 onSearch={handleSearch}
+                results={filteredSolicitacoes.map(s => ({
+                  id: s.id,
+                  title: s.produto,
+                  subtitle: `${s.itemNumber} • ${s.empresa}`,
+                  type: 'solicitacao' as const
+                }))}
+                onSelect={(res) => {
+                  setSearchTerm(res.title);
+                }}
                 recentSearches={['Notebook Dell', 'Material de escritório']}
                 trendingSearches={['Equipamentos TI', 'Suprimentos']}
               />
