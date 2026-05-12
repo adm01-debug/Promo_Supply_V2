@@ -15,6 +15,10 @@ export interface CostCenter {
   manager_id?: string | null;
   parent_id?: string | null;
   department?: string | null;
+  total_budget?: number;
+  committed_amount?: number;
+  used_amount?: number;
+  approval_threshold?: number;
   manager?: { full_name: string | null } | null;
 }
 
