@@ -232,6 +232,19 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
           const noPrazo = entregues.filter(p => p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao).length;
           return entregues.length > 0 ? Math.round((noPrazo / entregues.length) * 100) : 100;
         }
+        if (key === 'taxaSlaReal') {
+          const dailySol = sol.filter(s => {
+            const d = new Date(s.created_at);
+            return isWithinInterval(d, { start: dayStart, end: dayEnd });
+          });
+          const dailySlas = dailySol.map(s => {
+            const related = cot.filter(c => c.solicitacao_id === s.id && ['enviada', 'em_analise', 'selecionada', 'aprovada'].includes(c.status));
+            if (related.length === 0) return null;
+            const firstDate = new Date(Math.min(...related.map(c => new Date(c.created_at).getTime())));
+            return (firstDate.getTime() - new Date(s.created_at).getTime()) / (1000 * 60 * 60 * 24);
+          }).filter(d => d !== null) as number[];
+          return dailySlas.length > 0 ? Math.round((dailySlas.filter(d => d <= 3).length / dailySlas.length) * 100) : 85;
+        }
         return 0;
       });
     };
