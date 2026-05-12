@@ -16,15 +16,9 @@ import {
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-// Mock historical data for prediction
-const historicalDataMock = [
-  { month: 'Jul 2024', totalValue: 45000, totalQuantity: 120 },
-  { month: 'Ago 2024', totalValue: 52000, totalQuantity: 145 },
-  { month: 'Set 2024', totalValue: 48000, totalQuantity: 130 },
-  { month: 'Out 2024', totalValue: 61000, totalQuantity: 165 },
-  { month: 'Nov 2024', totalValue: 58000, totalQuantity: 155 },
-  { month: 'Dez 2024', totalValue: 72000, totalQuantity: 190 },
-];
+import { useQuery } from '@tanstack/react-query';
+import { fetchAllRows } from '@/lib/paginatedFetch';
+import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 
 interface Prediction {
   month: string;
