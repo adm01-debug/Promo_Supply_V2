@@ -55,11 +55,12 @@ export const adaptToLegacyFormat = (sol: Solicitacao): MockSolicitacao & { organ
   costCenterCode: sol.cost_center?.code,
 });
 
-export const statusConfig: Record<string, { label: string; color: string; indicatorStatus: "pending" | "processing" | "approved" | "completed" | "warning" | "info" }> = {
-  AGUARDANDO_COTACAO: { label: 'Aguardando Cotação', color: 'bg-success', indicatorStatus: 'pending' },
+export const statusConfig: Record<string, { label: string; color: string; indicatorStatus: "pending" | "processing" | "approved" | "completed" | "warning" | "info" | "error" }> = {
+  AGUARDANDO_COTACAO: { label: 'Aguardando Cotação', color: 'bg-emerald-500', indicatorStatus: 'pending' },
   EM_COTACAO: { label: 'Em Cotação', color: 'bg-warning', indicatorStatus: 'warning' },
-  FORNECEDOR_SELECIONADO: { label: 'Fornecedor Selecionado', color: 'bg-info', indicatorStatus: 'info' },
-  AGUARDANDO_PAGAMENTO: { label: 'Aguardando Pagamento', color: 'bg-warning', indicatorStatus: 'processing' },
-  PAGO: { label: 'Pago', color: 'bg-cyan-500', indicatorStatus: 'completed' },
-  EM_TRANSITO: { label: 'Em Trânsito', color: 'bg-purple-500', indicatorStatus: 'approved' },
+  FORNECEDOR_SELECIONADO: { label: 'Aprovada', color: 'bg-info', indicatorStatus: 'info' },
+  AGUARDANDO_PAGAMENTO: { label: 'Em Andamento', color: 'bg-warning', indicatorStatus: 'processing' },
+  ENTREGUE: { label: 'Finalizada', color: 'bg-success', indicatorStatus: 'completed' },
+  REJEITADA: { label: 'Rejeitada', color: 'bg-destructive', indicatorStatus: 'error' },
+  CANCELADA: { label: 'Cancelada', color: 'bg-gray-500', indicatorStatus: 'info' },
 };
