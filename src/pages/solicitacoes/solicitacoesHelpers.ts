@@ -10,8 +10,8 @@ export const mapDbStatusToLegacy = (status: Solicitacao['status']): MockSolicita
     'aprovada': 'FORNECEDOR_SELECIONADO',
     'em_andamento': 'AGUARDANDO_PAGAMENTO',
     'concluida': 'ENTREGUE',
-    'rejeitada': 'FORNECEDOR_SELECIONADO',
-    'cancelada': 'PEDIDO_GERADO',
+    'rejeitada': 'REJEITADA',
+    'cancelada': 'CANCELADA',
   };
   return mapping[status] || 'AGUARDANDO_COTACAO';
 };
@@ -26,7 +26,8 @@ export const mapLegacyStatusToDb = (legacyStatus: string): Solicitacao['status']
     'EM_TRANSITO': 'concluida',
     'ENTREGUE': 'concluida',
     'PEDIDO_GERADO': 'em_andamento',
-    'CANCELADO': 'cancelada',
+    'REJEITADA': 'rejeitada',
+    'CANCELADA': 'cancelada',
   };
   return mapping[legacyStatus] || 'pendente';
 };
