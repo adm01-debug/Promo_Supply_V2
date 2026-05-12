@@ -200,6 +200,14 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       // Iniciar Workflow de Aprovação se houver valor ou centro de custo
       if (solData && (input.valor_estimado || input.cost_center_id)) {
         await createWorkflow(solData.id, input.valor_estimado || 0, input.categoria_id || undefined);
+        
+        // Audit Log
+        await auditHelpers.logCreate(
+          'solicitacao', 
+          solData.id, 
+          `Solicitação ${solData.numero} criada por ${user.email}`,
+          solData
+        );
       }
 
       toast.success('Solicitação criada e enviada para aprovação!');
