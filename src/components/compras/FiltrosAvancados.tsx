@@ -377,6 +377,7 @@ export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosA
                   ))}
                 </div>
               </AccordionContent>
+            </AccordionItem>
             {/* Status */}
             <AccordionItem value="status">
               <AccordionTrigger className="hover:no-underline">
