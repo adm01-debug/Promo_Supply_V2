@@ -89,6 +89,7 @@ const sections: NavSection[] = [
       { title: "Licitações", icon: Gavel, href: "/licitacoes" },
       { title: "Compliance", icon: ShieldCheck, href: "/compliance" },
       { title: "Orçamentos", icon: Wallet, href: "/orcamentos" },
+      { title: "Centros de Custo", icon: Building2, href: "/configuracoes-centro-custo" },
       { title: "Docs Fiscais", icon: FileCheck, href: "/documentos-fiscais" },
     ],
   },
