@@ -37,6 +37,7 @@ interface NovaSolicitacaoData {
   empresa: string;
   vendedor: string;
   produto: string;
+  categoriaId: string;
   quantidade: number;
   tipo: 'PE_LISO' | 'FAB_LISO' | 'FAB_PERSONALIZADO';
   prazoEntrega: string;
