@@ -92,7 +92,7 @@ const ComprasDashboard = () => {
           <EnhancedKpiCard
             title={t('dashboard.kpis.saving')}
             value={kpis.economiaPercentual}
-            previousValue={((kpis.comparisons.economia.previous / (kpis as any).previousVolumeMes) * 100) || 0}
+            previousValue={((kpis.comparisons.economia.previous / kpis.comparisons.volume.previous) * 100) || 0}
             sparklineData={kpis.comparisons.economia.sparkline}
             icon={PiggyBank}
             color="emerald"
