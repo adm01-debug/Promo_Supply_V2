@@ -197,9 +197,19 @@ export const UrgencyDetailsSheet = ({
                   </div>
 
                   {slaInfo?.isExceeded && (
-                    <div className="flex items-center gap-2 text-destructive bg-destructive/10 p-2 rounded-lg text-xs font-bold animate-pulse">
-                      <AlertTriangle className="w-4 h-4" />
-                      ATENÇÃO: Este item excedeu o prazo definido!
+                    <div className="flex flex-col gap-2 w-full">
+                      <div className="flex items-center gap-2 text-destructive bg-destructive/10 p-2 rounded-lg text-xs font-bold animate-pulse border border-destructive/20">
+                        <AlertTriangle className="w-4 h-4 shrink-0" />
+                        ALERTA: Item excedeu o SLA de {slaInfo.limit} dias!
+                      </div>
+                      <Button 
+                        size="sm" 
+                        variant="destructive" 
+                        className="h-8 text-[10px] font-black uppercase tracking-widest w-full"
+                        onClick={() => toast.info("Notificação de prioridade máxima enviada para a gerência")}
+                      >
+                        Escalar para Gerência
+                      </Button>
                     </div>
                   )}
                 </div>

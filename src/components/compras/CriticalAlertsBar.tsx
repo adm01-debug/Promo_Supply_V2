@@ -90,8 +90,9 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
         )}
         
         <div className="flex-1">
-          <AlertTitle className="text-destructive font-semibold mb-1">
-            Atenção: Pedidos Precisam de Ação Imediata
+          <AlertTitle className="text-destructive font-semibold mb-1 flex items-center gap-2">
+            <span className="animate-pulse">Atenção: Itens Precisam de Ação Imediata</span>
+            <Badge variant="outline" className="border-destructive text-destructive text-[10px] h-4 font-black">SLA ALERT</Badge>
           </AlertTitle>
           <AlertDescription className="text-destructive/90">
             <div className="flex flex-wrap items-center gap-3">

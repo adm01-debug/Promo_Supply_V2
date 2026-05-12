@@ -151,11 +151,11 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       
       // Calculate SLA: Avg days from solicitation to first quotation
       const completedSlas = pSol.map(s => {
-        // Encontrar cotações reais relacionadas a esta solicitação
+        // Encontrar cotacoes reais relacionadas a esta solicitacao
         const relatedCotacoes = cot.filter(c => c.solicitacao_id === s.id);
         if (relatedCotacoes.length === 0) return null;
         
-        // Pegar a data da primeira cotação real
+        // Pegar a data da primeira cotacao real
         const firstCotDate = new Date(Math.min(...relatedCotacoes.map(c => new Date(c.created_at).getTime())));
         const diff = firstCotDate.getTime() - new Date(s.created_at).getTime();
         return diff / (1000 * 60 * 60 * 24); // em dias
