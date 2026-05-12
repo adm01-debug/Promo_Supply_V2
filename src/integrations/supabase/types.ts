@@ -1232,6 +1232,7 @@ export type Database = {
           desconto_percentual: number | null
           fornecedor_id: string | null
           id: string
+          justificativa_selecao: string | null
           moeda: string | null
           numero: string
           observacoes: string | null
@@ -1261,6 +1262,7 @@ export type Database = {
           desconto_percentual?: number | null
           fornecedor_id?: string | null
           id?: string
+          justificativa_selecao?: string | null
           moeda?: string | null
           numero: string
           observacoes?: string | null
@@ -1290,6 +1292,7 @@ export type Database = {
           desconto_percentual?: number | null
           fornecedor_id?: string | null
           id?: string
+          justificativa_selecao?: string | null
           moeda?: string | null
           numero?: string
           observacoes?: string | null

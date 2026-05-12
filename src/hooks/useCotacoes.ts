@@ -26,6 +26,7 @@ export interface Cotacao {
   score_qualidade: number;
   score_total: number;
   observacoes: string | null;
+  justificativa_selecao: string | null;
   anexos: Json | null;
   avaliador_id: string | null;
   data_avaliacao: string | null;
@@ -147,13 +148,17 @@ export function useCotacoes(filters?: CotacaoFilters) {
     }
   }, [invalidate]);
 
-  const selectCotacao = useCallback(async (id: string) => {
+  const selectCotacao = useCallback(async (id: string, justificativa?: string) => {
     try {
       const cotacao = cotacoes.find(c => c.id === id);
       if (cotacao?.solicitacao_id) {
         await supabase.from('cotacoes').update({ selecionada: false }).eq('solicitacao_id', cotacao.solicitacao_id);
       }
-      const { error } = await supabase.from('cotacoes').update({ selecionada: true, status: 'aprovada' }).eq('id', id);
+      const { error } = await supabase.from('cotacoes').update({ 
+        selecionada: true, 
+        status: 'aprovada',
+        justificativa_selecao: justificativa || null
+      }).eq('id', id);
       if (error) throw error;
 
       // Audit Log
@@ -161,7 +166,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
         'cotacao',
         id,
         `Cotação selecionada como vencedora para solicitação ${cotacao?.solicitacao?.numero}`,
-        { cotacao_id: id }
+        { cotacao_id: id, justificativa }
       );
 
       toast.success('Fornecedor selecionado!');

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { 
   FileText, 
@@ -100,17 +100,25 @@ const GerarOrdem = () => {
     fornecedorSelecionado: '',
   };
 
-  const fornecedor = fornecedoresData[0] || {
-    id: '',
-    razao_social: 'N/A',
-    nome_fantasia: 'N/A',
-    cnpj: 'N/A',
-    email: 'N/A',
-    telefone: 'N/A',
-    tipo: 'N/A',
-  };
+  const selectedCotacao = cotacoes.find(c => c.id === cotacaoId) || cotacoes.find(c => c.selecionada);
+  
+  const fornecedor = useMemo(() => {
+    if (selectedCotacao?.fornecedor_id) {
+      const found = fornecedoresData.find(f => f.id === selectedCotacao.fornecedor_id);
+      if (found) return found;
+    }
+    return fornecedoresData[0] || {
+      id: '',
+      razao_social: 'Selecione um fornecedor',
+      nome_fantasia: 'N/A',
+      cnpj: 'N/A',
+      email: 'N/A',
+      telefone: 'N/A',
+      tipo: 'N/A',
+    };
+  }, [selectedCotacao, fornecedoresData]);
 
-  const ordemNumero = `OC-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`;
+  const ordemNumero = "A DEFINIR";
 
   // Cálculos financeiros
   const subtotal = (solicitacao.valorUnitario || 12) * solicitacao.quantidadeReal;

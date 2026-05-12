@@ -14,6 +14,7 @@ import { CotacaoManualModal, type ManualCotacaoData } from "@/components/compras
 import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
 import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
 import { VisualComparadorCotacoes } from "@/components/compras/VisualComparadorCotacoes";
+import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { OnboardingTour, cotacaoTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
@@ -45,6 +46,7 @@ const Cotacao = () => {
   const [cotacoesAPI, setCotacoesAPI] = useState<CotacaoAPI[]>([]);
   const [showManualModal, setShowManualModal] = useState(false);
   const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string | null>(null);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
 
   // State already declared above
 
@@ -214,6 +216,10 @@ const Cotacao = () => {
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
               <AISupplierSuggestion />
+              <Button variant="outline" size="sm" onClick={() => setShowHistoryModal(true)} className="gap-2">
+                <TrendingDown className="w-4 h-4" />
+                Histórico de Preços
+              </Button>
               {savingsActual > 0 && (
                 <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 animate-in fade-in zoom-in duration-500">
                   <TrendingDown className="w-3 h-3 mr-1" />
@@ -455,6 +461,11 @@ const Cotacao = () => {
         fornecedores={legacyFornecedores}
       />
       
+      <PriceHistoryModal 
+        open={showHistoryModal} 
+        onOpenChange={setShowHistoryModal} 
+      />
+
       {/* Onboarding Tour */}
       {!isTourLoading && (
         <OnboardingTour

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles } from "lucide-react";
+import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -10,6 +10,15 @@ import {
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 
 interface Cotacao {
   id: string;
@@ -31,7 +40,7 @@ interface Cotacao {
 interface RankingCotacoesProps {
   cotacoes: Cotacao[];
   quantidade: number;
-  onSelecionar: (id: string) => void;
+  onSelecionar: (id: string, justificativa?: string) => void;
   selecionado: string | null;
 }
 
@@ -53,6 +62,28 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
     prazo: 20,
     estoque: 20
   });
+  
+  const [justificativa, setJustificativa] = useState("");
+  const [showJustifyModal, setShowJustifyModal] = useState(false);
+  const [pendingSelectionId, setPendingSelectionId] = useState<string | null>(null);
+
+  const handleSelectClick = (cotacaoId: string, isTopRanked: boolean) => {
+    if (isTopRanked) {
+      onSelecionar(cotacaoId);
+    } else {
+      setPendingSelectionId(cotacaoId);
+      setShowJustifyModal(true);
+    }
+  };
+
+  const confirmSelection = () => {
+    if (pendingSelectionId) {
+      onSelecionar(pendingSelectionId, justificativa);
+      setShowJustifyModal(false);
+      setPendingSelectionId(null);
+      setJustificativa("");
+    }
+  };
 
   const calculateScore = (cotacao: Cotacao) => {
     // Encontrar min/max para normalização
@@ -322,7 +353,7 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
                 <Button
                   variant={isSelected ? "default" : "outline"}
                   size="sm"
-                  onClick={() => onSelecionar(cotacao.id)}
+                  onClick={() => handleSelectClick(cotacao.id, index === 0)}
                   className="w-24"
                 >
                   {isSelected ? (
@@ -344,6 +375,37 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
           </div>
         );
       })}
+
+      <Dialog open={showJustifyModal} onOpenChange={setShowJustifyModal}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-primary" />
+              Justificativa de Seleção
+            </DialogTitle>
+            <DialogDescription>
+              Você está selecionando um fornecedor que não é a recomendação principal do sistema. 
+              Por favor, justifique sua escolha para fins de auditoria.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="justificativa">Sua justificativa</Label>
+              <Textarea
+                id="justificativa"
+                placeholder="Ex: Fornecedor possui contrato global, prazo negociado offline, etc."
+                value={justificativa}
+                onChange={(e) => setJustificativa(e.target.value)}
+                className="min-h-[100px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowJustifyModal(false)}>Cancelar</Button>
+            <Button onClick={confirmSelection} disabled={!justificativa.trim()}>Confirmar Seleção</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

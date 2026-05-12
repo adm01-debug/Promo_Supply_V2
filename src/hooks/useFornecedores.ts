@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { auditHelpers } from '@/services/auditService';
 import { toast } from 'sonner';
 
 export interface Fornecedor {
@@ -172,6 +173,14 @@ export function useFornecedores(filters?: FornecedorFilters) {
         .single();
 
       if (error) throw error;
+
+      // Audit Log
+      await auditHelpers.logCreate(
+        'fornecedor', 
+        data.id, 
+        `Fornecedor ${data.razao_social} cadastrado por ${user.email}`,
+        data
+      );
 
       toast.success('Fornecedor cadastrado com sucesso!');
       fetchFornecedores();

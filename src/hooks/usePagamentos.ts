@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { auditHelpers } from '@/services/auditService';
 import type { Json } from '@/integrations/supabase/types';
 
 export interface Pagamento {
@@ -135,6 +136,14 @@ export function usePagamentos(filters?: PagamentoFilters) {
         })
         .select().single();
       if (error) throw error;
+      
+      // Audit Log
+      await auditHelpers.logCreate(
+        'pagamento', 
+        data.id, 
+        `Pagamento ${data.numero} registrado para fornecedor ${input.fornecedor_id}`,
+        data
+      );
       toast.success('Pagamento registrado com sucesso!');
       invalidate();
       return data;
