@@ -40,8 +40,9 @@ const CustomTooltip = ({ active, payload, label, showComparison }: any) => {
 interface ExecutiveChartsRowProps {
   showComparison: boolean;
   filteredCategorySpend: Array<{ name: string; value: number; previousValue: number; percentage: number; orders: number; supplier: string }>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onCategoryDrillDown: (category: any) => void;
+  selectedCategory: string;
+  selectedSupplier: string;
 }
 
 export const ExecutiveChartsRow = ({ showComparison, filteredCategorySpend, onCategoryDrillDown }: ExecutiveChartsRowProps) => {
