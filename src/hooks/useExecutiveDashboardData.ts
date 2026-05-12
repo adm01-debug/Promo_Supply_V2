@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 
 export interface ExecutiveMetrics {
@@ -24,39 +25,70 @@ const startOfMonth = () => {
 };
 
 export function useExecutiveDashboardData() {
+  const { organizationId } = useAuth();
   const { data: pedidos, isLoading: l1 } = useQuery({
-    queryKey: ['exec-pedidos'],
-    queryFn: () => fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at'),
+    queryKey: ['exec-pedidos', organizationId],
+    queryFn: () => {
+      if (!organizationId) return [];
+      return fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at', {
+        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+      });
+    },
     staleTime: 30000,
   });
 
   const { data: solicitacoes, isLoading: l2 } = useQuery({
-    queryKey: ['exec-solicitacoes'],
-    queryFn: () => fetchAllRows<{ id: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_conclusao: string | null; categoria_id: string | null }>('solicitacoes', 'id, status, valor_estimado, valor_aprovado, created_at, data_conclusao, categoria_id'),
+    queryKey: ['exec-solicitacoes', organizationId],
+    queryFn: () => {
+      if (!organizationId) return [];
+      return fetchAllRows<{ id: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_conclusao: string | null; categoria_id: string | null }>('solicitacoes', 'id, status, valor_estimado, valor_aprovado, created_at, data_conclusao, categoria_id', {
+        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+      });
+    },
     staleTime: 30000,
   });
 
   const { data: fornecedores, isLoading: l3 } = useQuery({
-    queryKey: ['exec-fornecedores'],
-    queryFn: () => fetchAllRows<{ id: string; razao_social: string; status: string; avaliacao: number | null }>('fornecedores', 'id, razao_social, status, avaliacao'),
+    queryKey: ['exec-fornecedores', organizationId],
+    queryFn: () => {
+      if (!organizationId) return [];
+      return fetchAllRows<{ id: string; razao_social: string; status: string; avaliacao: number | null }>('fornecedores', 'id, razao_social, status, avaliacao', {
+        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+      });
+    },
     staleTime: 60000,
   });
 
   const { data: contracts, isLoading: l4 } = useQuery({
-    queryKey: ['exec-contracts'],
-    queryFn: () => fetchAllRows<{ id: string; status: string; total_value: number }>('contracts', 'id, status, total_value'),
+    queryKey: ['exec-contracts', organizationId],
+    queryFn: () => {
+      if (!organizationId) return [];
+      return fetchAllRows<{ id: string; status: string; total_value: number }>('contracts', 'id, status, total_value', {
+        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+      });
+    },
     staleTime: 60000,
   });
 
   const { data: workflows, isLoading: l5 } = useQuery({
-    queryKey: ['exec-workflows'],
-    queryFn: () => fetchAllRows<{ id: string; status: string; prazo_limite: string | null }>('approval_workflows', 'id, status, prazo_limite'),
+    queryKey: ['exec-workflows', organizationId],
+    queryFn: () => {
+      if (!organizationId) return [];
+      return fetchAllRows<{ id: string; status: string; prazo_limite: string | null }>('approval_workflows', 'id, status, prazo_limite', {
+        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+      });
+    },
     staleTime: 30000,
   });
 
   const { data: categorias, isLoading: l6 } = useQuery({
-    queryKey: ['exec-categorias'],
-    queryFn: () => fetchAllRows<{ id: string; nome: string; cor: string | null }>('categorias', 'id, nome, cor'),
+    queryKey: ['exec-categorias', organizationId],
+    queryFn: () => {
+      if (!organizationId) return [];
+      return fetchAllRows<{ id: string; nome: string; cor: string | null }>('categorias', 'id, nome, cor', {
+        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+      });
+    },
     staleTime: 120000,
   });
 

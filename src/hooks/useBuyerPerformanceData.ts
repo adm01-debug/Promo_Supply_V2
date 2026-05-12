@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 export interface BuyerData {
   id: string;
@@ -37,17 +38,20 @@ function getMonthsBack(months: number): string {
 }
 
 export function useBuyerPerformanceData(periodMonths: number = 6) {
+  const { organizationId } = useAuth();
   const startDate = getMonthsBack(periodMonths);
   const startOfMonth = getMonthsBack(1);
   const startOfYear = (() => { const d = new Date(); d.setMonth(0, 1); d.setHours(0, 0, 0, 0); return d.toISOString().split('T')[0]; })();
 
   // Fetch profiles (buyers)
   const { data: profiles, isLoading: loadingProfiles } = useQuery({
-    queryKey: ['buyer-perf-profiles'],
+    queryKey: ['buyer-perf-profiles', organizationId],
     queryFn: async () => {
+      if (!organizationId) return [];
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, user_id, full_name, email, department, created_at');
+        .select('id, user_id, full_name, email, department, created_at')
+        .eq('current_organization_id', organizationId);
       if (error) throw error;
       return data || [];
     },
@@ -56,11 +60,13 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
 
   // Fetch cotacoes with period filter
   const { data: cotacoes, isLoading: loadingCot } = useQuery({
-    queryKey: ['buyer-perf-cotacoes', startDate],
+    queryKey: ['buyer-perf-cotacoes', startDate, organizationId],
     queryFn: async () => {
+      if (!organizationId) return [];
       const { data, error } = await supabase
         .from('cotacoes')
         .select('id, valor_unitario, valor_total, selecionada, desconto_percentual, score_preco, solicitacao_id, fornecedor_id, created_at, status')
+        .eq('organization_id', organizationId)
         .gte('created_at', startDate);
       if (error) throw error;
       return data || [];
@@ -70,11 +76,13 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
 
   // Fetch solicitacoes with period filter
   const { data: solicitacoes, isLoading: loadingSol } = useQuery({
-    queryKey: ['buyer-perf-solicitacoes', startDate],
+    queryKey: ['buyer-perf-solicitacoes', startDate, organizationId],
     queryFn: async () => {
+      if (!organizationId) return [];
       const { data, error } = await supabase
         .from('solicitacoes')
         .select('id, valor_estimado, valor_aprovado, descricao, status, created_at, solicitante_id, categoria_id')
+        .eq('organization_id', organizationId)
         .gte('created_at', startDate);
       if (error) throw error;
       return data || [];
@@ -84,11 +92,13 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
 
   // Fetch pedidos with period filter
   const { data: pedidos, isLoading: loadingPed } = useQuery({
-    queryKey: ['buyer-perf-pedidos', startDate],
+    queryKey: ['buyer-perf-pedidos', startDate, organizationId],
     queryFn: async () => {
+      if (!organizationId) return [];
       const { data, error } = await supabase
         .from('pedidos')
         .select('id, valor_total, data_emissao, data_previsao, data_entrega, status, comprador_id, fornecedor_id')
+        .eq('organization_id', organizationId)
         .gte('data_emissao', startDate);
       if (error) throw error;
       return data || [];
@@ -98,11 +108,13 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
 
   // Fetch fornecedores for names
   const { data: fornecedores, isLoading: loadingForn } = useQuery({
-    queryKey: ['buyer-perf-fornecedores'],
+    queryKey: ['buyer-perf-fornecedores', organizationId],
     queryFn: async () => {
+      if (!organizationId) return [];
       const { data, error } = await supabase
         .from('fornecedores')
-        .select('id, razao_social, nome_fantasia, status');
+        .select('id, razao_social, nome_fantasia, status')
+        .eq('organization_id', organizationId);
       if (error) throw error;
       return data || [];
     },
@@ -111,11 +123,13 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
 
   // Fetch categorias for names
   const { data: categorias } = useQuery({
-    queryKey: ['buyer-perf-categorias'],
+    queryKey: ['buyer-perf-categorias', organizationId],
     queryFn: async () => {
+      if (!organizationId) return [];
       const { data, error } = await supabase
         .from('categorias')
-        .select('id, nome');
+        .select('id, nome')
+        .eq('organization_id', organizationId);
       if (error) throw error;
       return data || [];
     },
