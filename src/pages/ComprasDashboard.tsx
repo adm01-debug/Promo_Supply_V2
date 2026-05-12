@@ -36,6 +36,7 @@ const DemandPredictionPanel = lazy(() => import("@/components/compras/DemandPred
 const RiskHeatMap = lazy(() => import("@/components/compras/RiskHeatMap").then(m => ({ default: m.RiskHeatMap })));
 const DashboardInsights = lazy(() => import("@/components/compras/DashboardInsights").then(m => ({ default: m.DashboardInsights })));
 const TrendAnalysisCharts = lazy(() => import("@/components/compras/TrendAnalysisCharts").then(m => ({ default: m.TrendAnalysisCharts })));
+const ActiveSourcingWidget = lazy(() => import("@/components/compras/ActiveSourcingWidget").then(m => ({ default: m.ActiveSourcingWidget })));
 
 const LazyPanel = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
