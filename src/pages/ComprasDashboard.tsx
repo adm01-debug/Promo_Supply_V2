@@ -177,7 +177,6 @@ const ComprasDashboard = () => {
                   };
                 })} 
               />
-
                   return {
                     id: (item as any).numero || item.id.substring(0, 8),
                     produto: (item as any).titulo || "Item sem título",
