@@ -75,7 +75,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
 
   const { data: cotacoes, isLoading: loadingCot } = useQuery({
     queryKey: ['dashboard-cotacoes'],
-    queryFn: () => fetchAllRows<{ id: string; status: string; valor_total: number; selecionada: boolean | null; created_at: string }>('cotacoes', 'id, status, valor_total, selecionada, created_at'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; valor_total: number; selecionada: boolean | null; created_at: string; solicitacao_id: string }>('cotacoes', 'id, status, valor_total, selecionada, created_at, solicitacao_id'),
     staleTime: 30000,
   });
 
