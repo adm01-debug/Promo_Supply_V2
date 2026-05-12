@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useSLASettings } from '@/stores/slaSettingsStore';
+import { motion, AnimatePresence } from 'framer-motion';
+
 
 export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
   const { settings } = useSLASettings();
