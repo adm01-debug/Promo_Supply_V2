@@ -42,62 +42,7 @@ interface RiskData {
   volume: number; // % do total de compras
 }
 
-const mockRiskData: RiskData[] = [
-  {
-    supplierId: "1",
-    supplierName: "XBZ Brindes",
-    category: "Brindes",
-    risks: { financial: 15, operational: 20, quality: 10, delivery: 15, concentration: 35, geopolitical: 5 },
-    overallRisk: 17,
-    trend: 'improving',
-    volume: 32
-  },
-  {
-    supplierId: "2",
-    supplierName: "Asia Import",
-    category: "Importados",
-    risks: { financial: 40, operational: 55, quality: 30, delivery: 65, concentration: 20, geopolitical: 75 },
-    overallRisk: 48,
-    trend: 'worsening',
-    volume: 18
-  },
-  {
-    supplierId: "3",
-    supplierName: "Stricker/Spot",
-    category: "Premium",
-    risks: { financial: 20, operational: 25, quality: 15, delivery: 25, concentration: 15, geopolitical: 10 },
-    overallRisk: 18,
-    trend: 'stable',
-    volume: 22
-  },
-  {
-    supplierId: "4",
-    supplierName: "Só Marcas",
-    category: "Têxteis",
-    risks: { financial: 55, operational: 60, quality: 45, delivery: 70, concentration: 25, geopolitical: 15 },
-    overallRisk: 45,
-    trend: 'worsening',
-    volume: 12
-  },
-  {
-    supplierId: "5",
-    supplierName: "Fornecedor ABC",
-    category: "Eletrônicos",
-    risks: { financial: 75, operational: 80, quality: 65, delivery: 85, concentration: 10, geopolitical: 60 },
-    overallRisk: 63,
-    trend: 'worsening',
-    volume: 8
-  },
-  {
-    supplierId: "6",
-    supplierName: "Tech Solutions",
-    category: "Eletrônicos",
-    risks: { financial: 25, operational: 30, quality: 20, delivery: 30, concentration: 40, geopolitical: 20 },
-    overallRisk: 28,
-    trend: 'improving',
-    volume: 8
-  }
-];
+// Risk data is now fetched from Supabase real data in the component logic
 
 const riskCategories = [
   { key: 'financial', label: 'Financeiro', icon: DollarSign, description: 'Saúde financeira e estabilidade' },
