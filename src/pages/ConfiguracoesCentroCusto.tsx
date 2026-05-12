@@ -254,6 +254,8 @@ const ConfiguracoesCentroCusto = () => {
                     <TableRow key={cc.id}>
                       <TableCell className="font-medium">{cc.code}</TableCell>
                       <TableCell>{cc.name}</TableCell>
+                      <TableCell>{cc.department || '-'}</TableCell>
+                      <TableCell>{cc.manager?.full_name || '-'}</TableCell>
                       <TableCell>
                         {cc.is_active ? (
                           <div className="flex items-center gap-1 text-emerald-500 text-xs font-medium">
