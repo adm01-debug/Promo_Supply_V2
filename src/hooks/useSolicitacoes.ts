@@ -127,6 +127,7 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
 export function useSolicitacoes(filters?: SolicitacaoFilters) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { createWorkflow } = useApprovalWorkflow();
 
   const queryKey = useMemo(() => [
     'solicitacoes', user?.id,
