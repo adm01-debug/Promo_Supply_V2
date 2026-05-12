@@ -175,38 +175,37 @@ function SolicitacaoKanbanCard({
           </div>
         </div>
 
-
-          {/* Details */}
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Building2 className="w-3 h-3" />
-              <span className="truncate">{solicitacao.empresa}</span>
-            </div>
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Package className="w-3 h-3" />
-              <span>{solicitacao.quantidade} un</span>
-            </div>
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <User className="w-3 h-3" />
-              <span className="truncate">{solicitacao.vendedor}</span>
-            </div>
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Calendar className="w-3 h-3" />
-              <span>{new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
-            </div>
+        {/* Details */}
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <Building2 className="w-3 h-3" />
+            <span className="truncate">{solicitacao.empresa}</span>
           </div>
-
-          {/* Value if available */}
-          {solicitacao.valorTotal && (
-            <div className="text-sm font-semibold text-primary">
-              R$ {solicitacao.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-            </div>
-          )}
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <Package className="w-3 h-3" />
+            <span>{solicitacao.quantidade} un</span>
+          </div>
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <User className="w-3 h-3" />
+            <span className="truncate">{solicitacao.vendedor}</span>
+          </div>
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <Calendar className="w-3 h-3" />
+            <span>{new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
+          </div>
         </div>
+
+        {/* Value if available */}
+        {solicitacao.valorTotal && (
+          <div className="text-sm font-semibold text-primary pt-1 border-t border-muted">
+            R$ {solicitacao.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          </div>
+        )}
       </div>
     </Card>
   );
 }
+
 
 // Droppable Column Component
 interface DroppableColumnProps {
