@@ -215,6 +215,7 @@ export type Database = {
           aprovadores: Json
           ativo: boolean
           categoria_id: string | null
+          cost_center_id: string | null
           created_at: string
           created_by: string | null
           descricao: string | null
@@ -234,6 +235,7 @@ export type Database = {
           aprovadores?: Json
           ativo?: boolean
           categoria_id?: string | null
+          cost_center_id?: string | null
           created_at?: string
           created_by?: string | null
           descricao?: string | null
@@ -253,6 +255,7 @@ export type Database = {
           aprovadores?: Json
           ativo?: boolean
           categoria_id?: string | null
+          cost_center_id?: string | null
           created_at?: string
           created_by?: string | null
           descricao?: string | null
@@ -274,6 +277,13 @@ export type Database = {
             columns: ["categoria_id"]
             isOneToOne: false
             referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_rules_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
             referencedColumns: ["id"]
           },
         ]
