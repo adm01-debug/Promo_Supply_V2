@@ -270,7 +270,7 @@ const ComprasDashboard = () => {
               onSave={saveFavorite}
               onDelete={deleteFavorite}
               onSetDefault={setAsDefault}
-              onApply={(filter) => setCurrentFilters({
+              onApply={(filter) => patchFilters({
                 category: filter.category_filter || 'all',
                 supplier: filter.supplier_filter || 'all',
                 period: filter.period_filter || '6m',
