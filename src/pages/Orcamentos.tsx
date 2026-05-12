@@ -264,7 +264,7 @@ const Orcamentos = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-1">
                         <h3 className="font-semibold text-foreground">{budget.departamento}</h3>
-                        <Badge variant="outline">{budget.centro_custo}</Badge>
+                        <Badge variant="outline">{budget.cost_center?.name || budget.centro_custo}</Badge>
                         <Badge variant="secondary">{mesLabel} {budget.ano}</Badge>
                       </div>
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
