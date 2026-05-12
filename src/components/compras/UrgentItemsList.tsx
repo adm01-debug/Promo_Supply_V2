@@ -1,10 +1,11 @@
-import { AlertCircle, Clock, AlertTriangle, ArrowRight, Zap, User, Send } from "lucide-react";
+import { AlertCircle, Clock, AlertTriangle, ArrowRight, Zap, User, Send, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { toast } from "sonner";
+import { UrgencyDetailsSheet } from "./dashboard/UrgencyDetailsSheet";
 
 interface UrgentItem {
   id: string;
@@ -46,6 +47,8 @@ const urgenciaConfig = {
 
 export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
   const [filterBuyer, setFilterBuyer] = useState<string>('all');
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   const buyers = Array.from(new Set(items.map(i => i.comprador).filter(Boolean))) as string[];
 
@@ -53,8 +56,17 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
     ? items 
     : items.filter(i => i.comprador === filterBuyer);
 
-  const handleNotify = (id: string, comprador: string) => {
+  const handleNotify = (e: React.MouseEvent, id: string, comprador: string) => {
+    e.stopPropagation();
     toast.success(`Notificação enviada para ${comprador} sobre o item ${id}`);
+  };
+
+  const handleItemClick = (id: string) => {
+    // Some IDs might be truncated in the list, we need the full UUID for the query
+    // If the id is not a UUID (length 36), we'll try to find it in the items list
+    const fullItem = items.find(item => item.id === id || (item as any).fullId === id);
+    setSelectedItemId(fullItem ? (fullItem as any).dbId || fullItem.id : id);
+    setIsSheetOpen(true);
   };
 
   return (
