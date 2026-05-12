@@ -543,6 +543,7 @@ export type Database = {
           metadata: Json | null
           new_values: Json | null
           old_values: Json | null
+          organization_id: string | null
           user_agent: string | null
           user_email: string | null
           user_id: string | null
@@ -559,6 +560,7 @@ export type Database = {
           metadata?: Json | null
           new_values?: Json | null
           old_values?: Json | null
+          organization_id?: string | null
           user_agent?: string | null
           user_email?: string | null
           user_id?: string | null
@@ -575,12 +577,21 @@ export type Database = {
           metadata?: Json | null
           new_values?: Json | null
           old_values?: Json | null
+          organization_id?: string | null
           user_agent?: string | null
           user_email?: string | null
           user_id?: string | null
           user_name?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       blocked_countries: {
         Row: {
