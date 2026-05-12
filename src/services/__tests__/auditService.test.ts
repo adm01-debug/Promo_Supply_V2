@@ -1,15 +1,7 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { logAuditAction, auditHelpers } from "../auditService";
 
-// Robust Supabase Mock
-const createMockSupabase = () => {
-  const mock: any = {
-    from: vi.fn(),
-    auth: {
-      getUser: vi.fn().mockResolvedValue({ data: { user: { id: "user-1", email: "test@example.com" } } }),
-    },
-  };
-
+const { mockSupabase } = vi.hoisted(() => {
   const createQueryBuilder = () => {
     const builder: any = {
       select: vi.fn().mockImplementation(() => builder),
@@ -21,11 +13,14 @@ const createMockSupabase = () => {
     return builder;
   };
 
-  mock.from.mockImplementation(() => createQueryBuilder());
-  return mock;
-};
-
-const mockSupabase = createMockSupabase();
+  const mock: any = {
+    from: vi.fn().mockImplementation(() => createQueryBuilder()),
+    auth: {
+      getUser: vi.fn().mockResolvedValue({ data: { user: { id: "user-1", email: "test@example.com" } } }),
+    },
+  };
+  return { mockSupabase: mock };
+});
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: mockSupabase,
@@ -40,9 +35,6 @@ describe("auditService", () => {
     await auditHelpers.logCreate("solicitacao", "sol-1", "Created solicitation", { foo: "bar" });
 
     expect(mockSupabase.from).toHaveBeenCalledWith("audit_logs");
-    // Get the insert spy from the builder
-    const insertSpy = mockSupabase.from.mock.results.find((r: any) => r.type === "return" && r.value.insert)?.value.insert;
-    
     expect(mockSupabase.from("audit_logs").insert).toHaveBeenCalledWith([
       expect.objectContaining({
         user_id: "user-1",
