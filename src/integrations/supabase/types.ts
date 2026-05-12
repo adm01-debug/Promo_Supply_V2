@@ -1497,6 +1497,7 @@ export type Database = {
           id: string
           is_default: boolean | null
           name: string
+          organization_id: string | null
           period_filter: string | null
           show_comparison: boolean | null
           supplier_filter: string | null
@@ -1509,6 +1510,7 @@ export type Database = {
           id?: string
           is_default?: boolean | null
           name: string
+          organization_id?: string | null
           period_filter?: string | null
           show_comparison?: boolean | null
           supplier_filter?: string | null
@@ -1521,13 +1523,22 @@ export type Database = {
           id?: string
           is_default?: boolean | null
           name?: string
+          organization_id?: string | null
           period_filter?: string | null
           show_comparison?: boolean | null
           supplier_filter?: string | null
           updated_at?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "dashboard_filter_favorites_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dashboard_layouts: {
         Row: {
@@ -1566,6 +1577,7 @@ export type Database = {
           departamento: string
           id: string
           mes: number | null
+          organization_id: string | null
           updated_at: string
           valor_comprometido: number
           valor_total: number
@@ -1580,6 +1592,7 @@ export type Database = {
           departamento: string
           id?: string
           mes?: number | null
+          organization_id?: string | null
           updated_at?: string
           valor_comprometido?: number
           valor_total?: number
@@ -1594,6 +1607,7 @@ export type Database = {
           departamento?: string
           id?: string
           mes?: number | null
+          organization_id?: string | null
           updated_at?: string
           valor_comprometido?: number
           valor_total?: number
@@ -1605,6 +1619,13 @@ export type Database = {
             columns: ["cost_center_id"]
             isOneToOne: false
             referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "department_budgets_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
