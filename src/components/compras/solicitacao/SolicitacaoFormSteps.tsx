@@ -118,7 +118,7 @@ export function Step1Identification({ formData, errors, updateField }: StepProps
 }
 
 export function Step2Specifications({ formData, errors, updateField }: StepProps) {
-  const { produtos } = useProdutos();
+  const { produtos, categorias } = useProdutos();
   const [open, setOpen] = useState(false);
 
   const onProductSelect = (p: Produto) => {
@@ -126,13 +126,29 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
     if (p.preco_referencia) {
       updateField('valorEstimado', p.preco_referencia);
     }
+    if (p.categoria_id) {
+      updateField('categoriaId', p.categoria_id);
+    }
     setOpen(false);
   };
 
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-      <div className="space-y-2">
-        <Label htmlFor="produto" className="flex items-center gap-2"><Package className="w-4 h-4" />Produto *</Label>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="categoria" className="flex items-center gap-2"><FileText className="w-4 h-4" />Categoria *</Label>
+          <Select value={formData.categoriaId} onValueChange={(v) => updateField('categoriaId', v)}>
+            <SelectTrigger className={cn(errors.categoriaId && "border-destructive")}>
+              <SelectValue placeholder="Selecione a categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              {categorias.map(c => <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          {errors.categoriaId && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.categoriaId}</p>}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="produto" className="flex items-center gap-2"><Package className="w-4 h-4" />Produto *</Label>
         
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
