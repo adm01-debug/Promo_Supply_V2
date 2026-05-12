@@ -9,6 +9,7 @@ import { UrgencyDetailsSheet } from "./dashboard/UrgencyDetailsSheet";
 
 interface UrgentItem {
   id: string;
+  dbId?: string;
   produto: string;
   fornecedor: string;
   vencimento: string;
@@ -61,11 +62,8 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
     toast.success(`Notificação enviada para ${comprador} sobre o item ${id}`);
   };
 
-  const handleItemClick = (id: string) => {
-    // Some IDs might be truncated in the list, we need the full UUID for the query
-    // If the id is not a UUID (length 36), we'll try to find it in the items list
-    const fullItem = items.find(item => item.id === id || (item as any).fullId === id);
-    setSelectedItemId(fullItem ? (fullItem as any).dbId || fullItem.id : id);
+  const handleItemClick = (item: UrgentItem) => {
+    setSelectedItemId(item.dbId || item.id);
     setIsSheetOpen(true);
   };
 
@@ -102,8 +100,9 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
           return (
             <div
               key={item.id}
+              onClick={() => handleItemClick(item)}
               className={cn(
-                "flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-xl border transition-all duration-300 hover:shadow-lg group relative overflow-hidden bg-card/50 backdrop-blur-sm",
+                "flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-xl border transition-all duration-300 hover:shadow-lg group relative overflow-hidden bg-card/50 backdrop-blur-sm cursor-pointer",
                 config.bg.replace('/10', '/5'),
                 config.border
               )}
@@ -148,7 +147,7 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
                   variant="outline" 
                   size="sm" 
                   className="h-8 gap-1 text-xs opacity-0 group-hover:opacity-100 transition-all duration-300"
-                  onClick={() => handleNotify(item.id, item.comprador || 'Comprador')}
+                  onClick={(e) => handleNotify(e, item.id, item.comprador || 'Comprador')}
                 >
                   <Send className="w-3.5 h-3.5" />
                   Notificar
@@ -159,6 +158,7 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
                   variant={item.urgencia === 'critico' ? 'destructive' : 'default'} 
                   size="sm" 
                   className="h-8 gap-1 text-xs font-bold shadow-sm"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <Link to={`/cotacao?id=${item.id}&action=quote`}>
                     <Zap className="w-3.5 h-3.5 fill-current" />
@@ -170,6 +170,12 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
           );
         })}
       </div>
+
+      <UrgencyDetailsSheet 
+        itemId={selectedItemId}
+        isOpen={isSheetOpen}
+        onClose={() => setIsSheetOpen(false)}
+      />
     </div>
   );
 };
