@@ -1,8 +1,9 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 import type { Json } from '@/integrations/supabase/types';
 
@@ -11,6 +12,10 @@ export interface CostCenter {
   name: string;
   code: string;
   is_active: boolean;
+  manager_id?: string | null;
+  parent_id?: string | null;
+  department?: string | null;
+  manager?: { full_name: string | null } | null;
 }
 
 export interface Solicitacao {
@@ -122,6 +127,7 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
 export function useSolicitacoes(filters?: SolicitacaoFilters) {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { createWorkflow } = useApprovalWorkflow();
 
   const queryKey = useMemo(() => [
     'solicitacoes', user?.id,
@@ -147,10 +153,30 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 
   const createSolicitacao = useCallback(async (input: CreateSolicitacaoInput) => {
     if (!user) { toast.error('Você precisa estar logado'); return null; }
+    
     try {
+      // Validação de orçamento
+      if (input.cost_center_id && input.valor_estimado) {
+        const { data: availability, error: budgetError } = await supabase.rpc('check_budget_availability', {
+          p_cost_center_id: input.cost_center_id,
+          p_valor: input.valor_estimado
+        });
+        
+        if (budgetError) {
+          console.error('Erro ao verificar orçamento:', budgetError);
+        } else if (availability && !(availability as any).available) {
+          toast.error((availability as any).message || 'Saldo insuficiente no centro de custo.');
+          if (input.prioridade !== 'urgente') {
+            return null;
+          }
+          toast.info('Solicitação urgente: ignorando restrição orçamentária temporariamente.');
+        }
+      }
+
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'SOL', table_name: 'solicitacoes' });
       const numero = numData || `SOL-${Date.now()}`;
-      const { data, error } = await supabase
+      
+      const { data: solData, error: solError } = await supabase
         .from('solicitacoes')
         .insert({
           numero, titulo: input.titulo, descricao: input.descricao, tipo: input.tipo,
@@ -162,16 +188,23 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           categoria_id: input.categoria_id, solicitante_id: user.id,
         })
         .select().single();
-      if (error) throw error;
-      toast.success('Solicitação criada com sucesso!');
+      
+      if (solError) throw solError;
+
+      // Iniciar Workflow de Aprovação se houver valor ou centro de custo
+      if (solData && (input.valor_estimado || input.cost_center_id)) {
+        await createWorkflow(solData.id, input.valor_estimado || 0, input.categoria_id || undefined);
+      }
+
+      toast.success('Solicitação criada e enviada para aprovação!');
       invalidate();
-      return data;
+      return solData;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
       toast.error('Erro ao criar solicitação: ' + msg);
       return null;
     }
-  }, [user, invalidate]);
+  }, [user, invalidate, createWorkflow]);
 
   const updateSolicitacao = useCallback(async (id: string, updates: Partial<Solicitacao>) => {
     try {
@@ -264,11 +297,14 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('cost_centers')
-        .select('*')
+        .select(`
+          *,
+          manager:profiles(full_name)
+        `)
         .eq('is_active', true)
         .order('name');
       if (error) throw error;
-      return data as CostCenter[];
+      return (data as any) as CostCenter[];
     },
     staleTime: 300_000,
   });

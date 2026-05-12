@@ -27,7 +27,8 @@ import { toast } from 'sonner';
 import { 
   Building2, Plus, Edit2, Trash2, Search, CheckCircle2, XCircle, Loader2
 } from 'lucide-react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueryClient, useQuery } from '@tanstack/react-query';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const ConfiguracoesCentroCusto = () => {
   const { costCenters, loadingCostCenters } = useSolicitacoes();
@@ -36,7 +37,23 @@ const ConfiguracoesCentroCusto = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCC, setEditingCC] = useState<CostCenter | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [form, setForm] = useState({ name: '', code: '', is_active: true });
+  const [form, setForm] = useState({ 
+    name: '', 
+    code: '', 
+    is_active: true,
+    manager_id: '',
+    department: '',
+    parent_id: ''
+  });
+
+  const { data: profiles = [] } = useQuery({
+    queryKey: ['profiles-list'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('profiles').select('id, full_name').order('full_name');
+      if (error) throw error;
+      return data;
+    }
+  });
 
   const filteredCCs = costCenters.filter(cc => 
     cc.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -46,10 +63,24 @@ const ConfiguracoesCentroCusto = () => {
   const handleOpenDialog = (cc?: CostCenter) => {
     if (cc) {
       setEditingCC(cc);
-      setForm({ name: cc.name, code: cc.code, is_active: cc.is_active });
+      setForm({ 
+        name: cc.name, 
+        code: cc.code, 
+        is_active: cc.is_active,
+        manager_id: cc.manager_id || '',
+        department: cc.department || '',
+        parent_id: cc.parent_id || ''
+      });
     } else {
       setEditingCC(null);
-      setForm({ name: '', code: '', is_active: true });
+      setForm({ 
+        name: '', 
+        code: '', 
+        is_active: true,
+        manager_id: '',
+        department: '',
+        parent_id: ''
+      });
     }
     setIsDialogOpen(true);
   };
@@ -62,17 +93,26 @@ const ConfiguracoesCentroCusto = () => {
 
     setIsSaving(true);
     try {
+      const payload = {
+        name: form.name,
+        code: form.code,
+        is_active: form.is_active,
+        manager_id: form.manager_id || null,
+        department: form.department || null,
+        parent_id: form.parent_id || null
+      };
+
       if (editingCC) {
         const { error } = await supabase
           .from('cost_centers')
-          .update({ name: form.name, code: form.code, is_active: form.is_active })
+          .update(payload)
           .eq('id', editingCC.id);
         if (error) throw error;
         toast.success('Centro de custo atualizado');
       } else {
         const { error } = await supabase
           .from('cost_centers')
-          .insert({ name: form.name, code: form.code, is_active: form.is_active });
+          .insert(payload);
         if (error) throw error;
         toast.success('Centro de custo criado');
       }
@@ -125,6 +165,41 @@ const ConfiguracoesCentroCusto = () => {
                   <Label>Código</Label>
                   <Input value={form.code} onChange={e => setForm(p => ({ ...p, code: e.target.value }))} placeholder="Ex: CC-001" />
                 </div>
+                <div className="space-y-2">
+                  <Label>Departamento</Label>
+                  <Input value={form.department} onChange={e => setForm(p => ({ ...p, department: e.target.value }))} placeholder="Ex: Financeiro" />
+                </div>
+                <div className="space-y-2">
+                  <Label>Gestor Responsável</Label>
+                  <Select value={form.manager_id} onValueChange={v => setForm(p => ({ ...p, manager_id: v }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione um gestor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {profiles.map(profile => (
+                        <SelectItem key={profile.id} value={profile.id}>
+                          {profile.full_name || 'Sem nome'}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Centro de Custo Pai (Opcional)</Label>
+                  <Select value={form.parent_id} onValueChange={v => setForm(p => ({ ...p, parent_id: v }))}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Nenhum" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Nenhum</SelectItem>
+                      {costCenters.filter(cc => cc.id !== editingCC?.id).map(cc => (
+                        <SelectItem key={cc.id} value={cc.id}>
+                          {cc.code} - {cc.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="flex items-center gap-2">
                   <Switch checked={form.is_active} onCheckedChange={v => setForm(p => ({ ...p, is_active: v }))} />
                   <Label>Ativo</Label>
@@ -155,6 +230,8 @@ const ConfiguracoesCentroCusto = () => {
                 <TableRow>
                   <TableHead>Código</TableHead>
                   <TableHead>Nome</TableHead>
+                  <TableHead>Departamento</TableHead>
+                  <TableHead>Gestor</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
@@ -177,6 +254,8 @@ const ConfiguracoesCentroCusto = () => {
                     <TableRow key={cc.id}>
                       <TableCell className="font-medium">{cc.code}</TableCell>
                       <TableCell>{cc.name}</TableCell>
+                      <TableCell>{cc.department || '-'}</TableCell>
+                      <TableCell>{cc.manager?.full_name || '-'}</TableCell>
                       <TableCell>
                         {cc.is_active ? (
                           <div className="flex items-center gap-1 text-emerald-500 text-xs font-medium">
