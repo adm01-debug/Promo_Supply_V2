@@ -29,6 +29,9 @@ import { toast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePedidos } from "@/hooks/usePedidos";
+import { useCotacoes } from "@/hooks/useCotacoes";
+import { Loader2 } from "lucide-react";
 
 import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerar-ordem/gerarOrdemHelpers';
 import { generateOrderPDF } from "@/lib/pdfGenerator";
