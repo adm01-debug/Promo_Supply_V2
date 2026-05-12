@@ -1633,6 +1633,42 @@ export type Database = {
           },
         ]
       }
+      financial_audit_logs: {
+        Row: {
+          action: string
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          ip_address: string | null
+          new_data: Json | null
+          old_data: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          ip_address?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          ip_address?: string | null
+          new_data?: Json | null
+          old_data?: Json | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       fiscal_documents: {
         Row: {
           chave_acesso: string | null
@@ -2439,6 +2475,7 @@ export type Database = {
           aprovador_id: string | null
           chave_nf: string | null
           comprovante_url: string | null
+          cost_center_id: string | null
           created_at: string
           created_by: string | null
           dados_bancarios: Json | null
@@ -2462,6 +2499,7 @@ export type Database = {
           aprovador_id?: string | null
           chave_nf?: string | null
           comprovante_url?: string | null
+          cost_center_id?: string | null
           created_at?: string
           created_by?: string | null
           dados_bancarios?: Json | null
@@ -2485,6 +2523,7 @@ export type Database = {
           aprovador_id?: string | null
           chave_nf?: string | null
           comprovante_url?: string | null
+          cost_center_id?: string | null
           created_at?: string
           created_by?: string | null
           dados_bancarios?: Json | null
@@ -2505,6 +2544,13 @@ export type Database = {
           valor_pago?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "pagamentos_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pagamentos_fornecedor_id_fkey"
             columns: ["fornecedor_id"]

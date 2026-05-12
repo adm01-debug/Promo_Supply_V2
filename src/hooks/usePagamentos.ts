@@ -10,6 +10,7 @@ export interface Pagamento {
   numero: string;
   pedido_id: string | null;
   fornecedor_id: string;
+  cost_center_id: string | null;
   valor: number;
   valor_pago: number;
   status: 'pendente' | 'aprovado' | 'agendado' | 'pago' | 'parcial' | 'cancelado' | 'atrasado';
@@ -28,11 +29,13 @@ export interface Pagamento {
   updated_at: string;
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null; } | null;
   pedido?: { id: string; numero: string; } | null;
+  cost_center?: { id: string; name: string; code: string; } | null;
 }
 
 export interface CreatePagamentoInput {
   pedido_id?: string;
   fornecedor_id: string;
+  cost_center_id?: string;
   valor: number;
   data_vencimento: string;
   forma_pagamento?: Pagamento['forma_pagamento'];
@@ -74,7 +77,8 @@ async function fetchPagamentosData(userId: string | undefined, filters?: Pagamen
     .select(`
       *,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
-      pedido:pedidos(id, numero)
+      pedido:pedidos(id, numero),
+      cost_center:cost_centers(id, name, code)
     `, { count: 'exact' })
     .order('data_vencimento', { ascending: true })
     .range(from, to);
@@ -125,6 +129,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
         .insert({
           numero, pedido_id: input.pedido_id, fornecedor_id: input.fornecedor_id,
           valor: input.valor, data_vencimento: input.data_vencimento,
+          cost_center_id: input.cost_center_id,
           forma_pagamento: input.forma_pagamento, numero_nf: input.numero_nf,
           chave_nf: input.chave_nf, observacoes: input.observacoes, created_by: user.id,
         })
