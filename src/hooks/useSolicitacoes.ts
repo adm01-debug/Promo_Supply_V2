@@ -334,23 +334,28 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 }
 
 export function useSolicitacoesKPIs() {
-  const { user } = useAuth();
-
+  const { user, organizationId } = useAuth();
+  
   const { data: kpis = { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 }, isLoading } = useQuery({
-    queryKey: ['solicitacoes-kpis', user?.id],
+    queryKey: ['solicitacoes-kpis', user?.id, organizationId],
     queryFn: async () => {
-      const allData = await fetchAllRows<{ status: string; valor_estimado: number | null }>(
-        'solicitacoes',
-        'status, valor_estimado'
-      );
+      if (!organizationId) return { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 };
+      
+      const { data: allData, error } = await supabase
+        .from('solicitacoes')
+        .select('status, valor_estimado')
+        .eq('organization_id', organizationId);
+      
+      if (error) throw error;
+      const data = allData || [];
 
       return {
-        total: allData.length,
-        pendentes: allData.filter(s => s.status === 'pendente').length,
-        emCotacao: allData.filter(s => s.status === 'em_cotacao').length,
-        aprovadas: allData.filter(s => s.status === 'aprovada').length,
-        concluidas: allData.filter(s => s.status === 'concluida').length,
-        valorTotal: allData.reduce((sum, s) => sum + (s.valor_estimado || 0), 0),
+        total: data.length,
+        pendentes: data.filter(s => s.status === 'pendente').length,
+        emCotacao: data.filter(s => s.status === 'em_cotacao').length,
+        aprovadas: data.filter(s => s.status === 'aprovada').length,
+        concluidas: data.filter(s => s.status === 'concluida').length,
+        valorTotal: data.reduce((sum, s) => sum + (Number(s.valor_estimado) || 0), 0),
       };
     },
     enabled: !!user,
