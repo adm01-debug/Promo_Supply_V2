@@ -10,7 +10,7 @@ import type {
 export type { ApprovalRule, ApprovalDelegation, ApprovalWorkflow, ApprovalStep, ApprovalHistory };
 
 export const useApprovalWorkflow = () => {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
   const [rules, setRules] = useState<ApprovalRule[]>([]);
   const [delegations, setDelegations] = useState<ApprovalDelegation[]>([]);
   const [workflows, setWorkflows] = useState<ApprovalWorkflow[]>([]);
@@ -19,9 +19,11 @@ export const useApprovalWorkflow = () => {
   const [loading, setLoading] = useState(false);
 
   const fetchRules = useCallback(async () => {
+    if (!organizationId) return;
     try {
       const { data, error } = await supabase
         .from('approval_rules').select('*')
+        .eq('organization_id', organizationId)
         .order('prioridade', { ascending: false })
         .order('valor_min', { ascending: true });
       if (error) throw error;
@@ -33,8 +35,11 @@ export const useApprovalWorkflow = () => {
   }, []);
 
   const fetchDelegations = useCallback(async () => {
+    if (!organizationId) return;
     try {
-      const { data, error } = await supabase.from('approval_delegations').select('*').order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('approval_delegations').select('*')
+        .eq('organization_id', organizationId)
+        .order('created_at', { ascending: false });
       if (error) throw error;
       setDelegations((data || []).map(d => ({
         ...d,
@@ -44,18 +49,22 @@ export const useApprovalWorkflow = () => {
   }, []);
 
   const fetchPendingWorkflows = useCallback(async () => {
-    if (!user) return;
+    if (!user || !organizationId) return;
     try {
-      const { data, error } = await supabase.from('approval_workflows').select('*').eq('status', 'pending').order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('approval_workflows').select('*')
+        .eq('status', 'pending')
+        .eq('organization_id', organizationId)
+        .order('created_at', { ascending: false });
       if (error) throw error;
       setWorkflows((data || []) as ApprovalWorkflow[]);
     } catch (error) { console.error('Error fetching workflows:', error); }
   }, [user]);
 
   const fetchPendingSteps = useCallback(async () => {
-    if (!user) return;
+    if (!user || !organizationId) return;
     try {
       const { data, error } = await supabase.from('approval_steps').select('*').eq('status', 'pending')
+        .eq('organization_id', organizationId)
         .or(`aprovador_id.eq.${user.id},aprovador_efetivo_id.eq.${user.id}`)
         .order('prazo_limite', { ascending: true });
       if (error) throw error;
@@ -64,6 +73,7 @@ export const useApprovalWorkflow = () => {
   }, [user]);
 
   const saveRule = useCallback(async (rule: Partial<ApprovalRule>) => {
+    if (!organizationId) return;
     try {
       setLoading(true);
       const ruleData = {
@@ -81,7 +91,8 @@ export const useApprovalWorkflow = () => {
         requer_unanimidade: rule.requer_unanimidade || false,
         ativo: rule.ativo ?? true, 
         prioridade: rule.prioridade || 0, 
-        created_by: user?.id
+        created_by: user?.id,
+        organization_id: organizationId
       };
       if (rule.id) {
         const { error } = await supabase.from('approval_rules').update(ruleData).eq('id', rule.id);
@@ -109,13 +120,15 @@ export const useApprovalWorkflow = () => {
   }, [fetchRules]);
 
   const saveDelegation = useCallback(async (delegation: Partial<ApprovalDelegation>) => {
+    if (!organizationId) return;
     try {
       setLoading(true);
       const delegationData = {
         delegante_id: delegation.delegante_id || '', delegado_id: delegation.delegado_id || '',
         data_inicio: delegation.data_inicio || new Date().toISOString(), data_fim: delegation.data_fim || '',
         motivo: delegation.motivo, categorias_permitidas: JSON.stringify(delegation.categorias_permitidas || []),
-        valor_maximo: delegation.valor_maximo, ativo: delegation.ativo ?? true
+        valor_maximo: delegation.valor_maximo, ativo: delegation.ativo ?? true,
+        organization_id: organizationId
       };
       if (delegation.id) {
         const { error } = await supabase.from('approval_delegations').update(delegationData).eq('id', delegation.id);
@@ -165,6 +178,7 @@ export const useApprovalWorkflow = () => {
   }, []);
 
   const createWorkflow = useCallback(async (solicitacaoId: string, valor: number, categoriaId?: string): Promise<ApprovalWorkflow | null> => {
+    if (!organizationId) return null;
     try {
       setLoading(true);
       
@@ -197,7 +211,8 @@ export const useApprovalWorkflow = () => {
         total_etapas: (rule?.aprovadores?.length || 0) + (ccManagerId ? 1 : 0), 
         valor, 
         categoria_id: categoriaId,
-        prazo_limite: prazoLimite.toISOString()
+        prazo_limite: prazoLimite.toISOString(),
+        organization_id: organizationId
       }).select().single();
       
       if (workflowError) throw workflowError;
@@ -215,7 +230,8 @@ export const useApprovalWorkflow = () => {
           aprovador_id: ccManagerId,
           aprovador_efetivo_id: effectiveId !== ccManagerId ? effectiveId : null,
           delegacao_id: effective?.[0]?.delegation_id || null,
-          prazo_limite: new Date(Date.now() + (rule?.tempo_limite_horas || 24) * 60 * 60 * 1000).toISOString()
+          prazo_limite: new Date(Date.now() + (rule?.tempo_limite_horas || 24) * 60 * 60 * 1000).toISOString(),
+          organization_id: organizationId
         });
       }
 
@@ -232,7 +248,8 @@ export const useApprovalWorkflow = () => {
             aprovador_id: aprovador.user_id,
             aprovador_efetivo_id: effectiveId !== aprovador.user_id ? effectiveId : null,
             delegacao_id: effective?.[0]?.delegation_id || null,
-            prazo_limite: new Date(Date.now() + (index + 2) * (rule.tempo_limite_horas) * 60 * 60 * 1000).toISOString()
+            prazo_limite: new Date(Date.now() + (index + 2) * (rule.tempo_limite_horas) * 60 * 60 * 1000).toISOString(),
+            organization_id: organizationId
           });
         }
       }
@@ -340,7 +357,7 @@ export const useApprovalWorkflow = () => {
   // Realtime subscription is now standard across the app
   // Removed custom subscription here to avoid duplication as useRealtimeSubscription handles it globally
 
-  useEffect(() => { fetchRules(); fetchDelegations(); fetchPendingWorkflows(); fetchPendingSteps(); }, [fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps]);
+  useEffect(() => { fetchRules(); fetchDelegations(); fetchPendingWorkflows(); fetchPendingSteps(); }, [fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps, organizationId]);
   useEffect(() => { const interval = setInterval(checkEscalations, 60000); return () => clearInterval(interval); }, [checkEscalations]);
 
   return {

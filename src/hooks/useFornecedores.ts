@@ -55,13 +55,13 @@ export interface FornecedorFilters {
 }
 
 export function useFornecedores(filters?: FornecedorFilters) {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchFornecedores = useCallback(async () => {
-    if (!user) {
+    if (!user || !organizationId) {
       setFornecedores([]);
       setLoading(false);
       return;
@@ -74,7 +74,8 @@ export function useFornecedores(filters?: FornecedorFilters) {
       let query = supabase
         .from('fornecedores')
         .select('id, codigo, razao_social, nome_fantasia, cnpj, email, telefone, endereco, cidade, estado, cep, website, tipo, segmento, status, avaliacao, condicoes_pagamento, prazo_medio_entrega, integrado_api, api_endpoint, observacoes, limite_credito, saldo_comprometido, created_at, updated_at, created_by')
-        .order('razao_social', { ascending: true });
+        .order('razao_social', { ascending: true })
+        .eq('organization_id', organizationId);
 
       // Apply filters
       if (filters?.tipo && filters.tipo !== 'todos') {
@@ -121,7 +122,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
   // Create new fornecedor
   const createFornecedor = useCallback(async (input: CreateFornecedorInput) => {
-    if (!user) {
+    if (!user || !organizationId) {
       toast.error('Você precisa estar logado');
       return null;
     }
@@ -168,6 +169,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
           condicoes_pagamento: input.condicoes_pagamento,
           observacoes: input.observacoes,
           created_by: user.id,
+          organization_id: organizationId,
         })
         .select()
         .single();
@@ -277,7 +279,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
 // Hook for KPIs
 export function useFornecedoresKPIs() {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
   const [kpis, setKpis] = useState({
     total: 0,
     ativos: 0,
@@ -287,13 +289,14 @@ export function useFornecedoresKPIs() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) return;
+    if (!user || !organizationId) return;
 
     const fetchKPIs = async () => {
       try {
         const { data, error } = await supabase
           .from('fornecedores')
-          .select('status, integrado_api, avaliacao');
+          .select('status, integrado_api, avaliacao')
+          .eq('organization_id', organizationId);
 
         if (error) throw error;
 

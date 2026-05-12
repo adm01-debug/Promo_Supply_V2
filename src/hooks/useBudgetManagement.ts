@@ -17,17 +17,19 @@ export interface PerformanceReport {
 
 export const useBudgetManagement = () => {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
 
   const { data: budgets = [], isLoading } = useQuery({
-    queryKey: ['department-budgets'],
+    queryKey: ['department-budgets', organizationId],
     queryFn: async () => {
+      if (!organizationId) return [];
       const { data, error } = await supabase
         .from('department_budgets')
         .select(`
           *,
           cost_center:cost_centers(name, code)
         `)
+        .eq('organization_id', organizationId)
         .order('departamento', { ascending: true });
       if (error) throw error;
       return data;
@@ -35,9 +37,13 @@ export const useBudgetManagement = () => {
   });
 
   const { data: performanceReport = [], isLoading: loadingReport } = useQuery({
-    queryKey: ['cost-center-performance'],
+    queryKey: ['cost-center-performance', organizationId],
     queryFn: async () => {
-      const { data, error } = await supabase.rpc('get_cost_center_performance_report');
+      if (!organizationId) return [];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { data, error } = await (supabase.rpc as any)('get_cost_center_performance_report', {
+        p_organization_id: organizationId
+      });
       if (error) throw error;
       return data as PerformanceReport[];
     },
@@ -57,12 +63,13 @@ export const useBudgetManagement = () => {
         .insert({
           ...budget,
           created_by: user?.id,
+          organization_id: organizationId,
         });
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['department-budgets'] });
-      queryClient.invalidateQueries({ queryKey: ['cost-center-performance'] });
+      queryClient.invalidateQueries({ queryKey: ['department-budgets', organizationId] });
+      queryClient.invalidateQueries({ queryKey: ['cost-center-performance', organizationId] });
       toast.success('Orçamento criado com sucesso');
     },
     onError: (err: any) => {
@@ -83,8 +90,8 @@ export const useBudgetManagement = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['department-budgets'] });
-      queryClient.invalidateQueries({ queryKey: ['cost-center-performance'] });
+      queryClient.invalidateQueries({ queryKey: ['department-budgets', organizationId] });
+      queryClient.invalidateQueries({ queryKey: ['cost-center-performance', organizationId] });
       toast.success('Orçamento atualizado');
     },
     onError: () => toast.error('Erro ao atualizar orçamento'),
@@ -99,8 +106,8 @@ export const useBudgetManagement = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['department-budgets'] });
-      queryClient.invalidateQueries({ queryKey: ['cost-center-performance'] });
+      queryClient.invalidateQueries({ queryKey: ['department-budgets', organizationId] });
+      queryClient.invalidateQueries({ queryKey: ['cost-center-performance', organizationId] });
       toast.success('Orçamento removido');
     },
     onError: () => toast.error('Erro ao remover orçamento'),

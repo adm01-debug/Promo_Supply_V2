@@ -91,7 +91,7 @@ const STEPS = [
 ];
 
 export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<NovaSolicitacaoData>(() => {
@@ -186,8 +186,8 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   };
 
   const handleSubmit = async () => {
-    if (!user) {
-      toast.error('Você precisa estar logado');
+    if (!user || !organizationId) {
+      toast.error('Você precisa estar logado em uma organização');
       return;
     }
     setIsSubmitting(true);
@@ -229,6 +229,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           solicitante_id: user.id,
           departamento: formData.empresa,
           categoria_id: formData.categoriaId || null,
+          organization_id: organizationId,
         })
         .select('id, numero')
         .single();
