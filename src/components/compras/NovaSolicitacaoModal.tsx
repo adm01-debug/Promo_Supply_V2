@@ -249,12 +249,13 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
         description: `${formData.produto} - ${formData.quantidade} un. | R$ ${formData.valorEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
       });
       
+      localStorage.removeItem('nova_solicitacao_draft');
       setFormData(initialFormData);
       setStep(1);
       setBudgetCheck(null);
       setOpen(false);
       onSuccess?.();
-      
+
     } catch (error: unknown) {
       const msg = error instanceof Error ? error.message : 'Erro desconhecido';
       toast.error('Erro ao criar solicitação: ' + msg);
