@@ -1,4 +1,4 @@
-import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy } from "lucide-react";
+import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy, Clock, AlertTriangle } from "lucide-react";
 import { StatusTimeline } from "@/components/compras/StatusTimeline";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -11,6 +11,8 @@ import { getTipoLabel, getStatusColor } from "@/types/legacyTypes";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
 import { useHapticFeedback } from "@/hooks/useMobileGestures";
 import { toast } from "sonner";
+import { differenceInDays, isPast, parseISO } from "date-fns";
+
 
 interface SolicitacaoCardProps {
   solicitacao: Solicitacao;
