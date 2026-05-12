@@ -12,6 +12,7 @@ export interface UserProfile {
   avatar_url: string | null;
   department: string | null;
   phone: string | null;
+  current_organization_id: string | null;
 }
 
 interface AuthContextType {
