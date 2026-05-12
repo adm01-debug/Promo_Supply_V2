@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { auditHelpers } from '@/services/auditService';
 import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 import type { Json } from '@/integrations/supabase/types';
@@ -108,8 +109,9 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
       *,
       fornecedor:fornecedores(razao_social, nome_fantasia),
       categoria:categorias(nome),
-      organization:organizations(name),
-      cost_center:cost_centers(name, code)
+      cost_center:cost_centers(name, code),
+      aprovador:profiles!solicitacoes_aprovador_id_fkey(full_name),
+      solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
@@ -198,6 +200,14 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       // Iniciar Workflow de Aprovação se houver valor ou centro de custo
       if (solData && (input.valor_estimado || input.cost_center_id)) {
         await createWorkflow(solData.id, input.valor_estimado || 0, input.categoria_id || undefined);
+        
+        // Audit Log
+        await auditHelpers.logCreate(
+          'solicitacao', 
+          solData.id, 
+          `Solicitação ${solData.numero} criada por ${user.email}`,
+          solData
+        );
       }
 
       toast.success('Solicitação criada e enviada para aprovação!');

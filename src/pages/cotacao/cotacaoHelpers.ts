@@ -14,6 +14,10 @@ export interface CotacaoAPI {
   total: number;
   alerta?: string;
   selecionada?: boolean;
+  score_preco?: number;
+  score_prazo?: number;
+  score_qualidade?: number;
+  score_total?: number;
 }
 
 export interface LegacyFornecedor {
@@ -74,6 +78,10 @@ export function adaptCotacoesFromDB(cotacoes: any[]): CotacaoAPI[] {
       condicaoPagamento: nullishStr(c.condicao_pagamento, 'À vista'),
       total: nullishNum(c.valor_total),
       selecionada: nullishBool(c.selecionada),
+      score_preco: nullishNum(c.score_preco),
+      score_prazo: nullishNum(c.score_prazo),
+      score_qualidade: nullishNum(c.score_qualidade),
+      score_total: nullishNum(c.score_total),
     };
   });
 }

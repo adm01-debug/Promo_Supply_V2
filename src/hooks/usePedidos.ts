@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { auditHelpers } from '@/services/auditService';
 import { useEffect } from 'react';
 
 export interface Pedido {
@@ -176,6 +177,14 @@ export function usePedidos(filters?: PedidoFilters) {
         .select().single();
 
       if (error) throw error;
+
+      // Audit Log for Order Creation
+      await auditHelpers.logCreate(
+        'pedido', 
+        data.id, 
+        `Pedido de Compra ${data.numero} gerado para fornecedor ${input.fornecedor_id}`,
+        data
+      );
 
       if (input.itens && input.itens.length > 0) {
         const itensToInsert = input.itens.map(item => ({

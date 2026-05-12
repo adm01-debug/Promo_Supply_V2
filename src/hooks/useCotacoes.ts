@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { auditHelpers } from '@/services/auditService';
 import type { Json } from '@/integrations/supabase/types';
 
 export interface Cotacao {
@@ -113,6 +114,15 @@ export function useCotacoes(filters?: CotacaoFilters) {
         })
         .select().single();
       if (error) throw error;
+      
+      // Audit Log
+      await auditHelpers.logCreate(
+        'cotacao', 
+        data.id, 
+        `Cotação ${data.numero} criada por ${user.email}`,
+        data
+      );
+
       toast.success('Cotação adicionada com sucesso!');
       invalidate();
       return data;
@@ -145,6 +155,15 @@ export function useCotacoes(filters?: CotacaoFilters) {
       }
       const { error } = await supabase.from('cotacoes').update({ selecionada: true, status: 'aprovada' }).eq('id', id);
       if (error) throw error;
+
+      // Audit Log
+      await auditHelpers.logApprove(
+        'cotacao',
+        id,
+        `Cotação selecionada como vencedora para solicitação ${cotacao?.solicitacao?.numero}`,
+        { cotacao_id: id }
+      );
+
       toast.success('Fornecedor selecionado!');
       invalidate();
       return true;

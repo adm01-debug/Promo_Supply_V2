@@ -5047,6 +5047,18 @@ export type Database = {
       is_account_locked: { Args: { _email: string }; Returns: Json }
       is_ip_blocked: { Args: { _ip_address: string }; Returns: boolean }
       is_ip_whitelisted: { Args: { _ip_address: string }; Returns: boolean }
+      log_audit_event: {
+        Args: {
+          p_action: string
+          p_entity_description?: string
+          p_entity_id?: string
+          p_metadata?: Json
+          p_module: string
+          p_new_data?: Json
+          p_old_data?: Json
+        }
+        Returns: string
+      }
       log_login_attempt: {
         Args: {
           _email: string
@@ -5069,6 +5081,7 @@ export type Database = {
         }
         Returns: string
       }
+      mask_sensitive_data: { Args: { data: Json }; Returns: Json }
       recalculate_saldo_comprometido: {
         Args: { p_fornecedor_id: string }
         Returns: number
@@ -5097,6 +5110,15 @@ export type Database = {
         | "usuario"
         | "configuracao"
         | "relatorio"
+      audit_event_type:
+        | "create"
+        | "update"
+        | "delete"
+        | "approve"
+        | "reject"
+        | "auth"
+        | "security"
+        | "export"
       bid_status: "valid" | "rejected" | "withdrawn" | "winning"
       invitation_status:
         | "pending"
@@ -5268,6 +5290,16 @@ export const Constants = {
         "usuario",
         "configuracao",
         "relatorio",
+      ],
+      audit_event_type: [
+        "create",
+        "update",
+        "delete",
+        "approve",
+        "reject",
+        "auth",
+        "security",
+        "export",
       ],
       bid_status: ["valid", "rejected", "withdrawn", "winning"],
       invitation_status: [

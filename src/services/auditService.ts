@@ -1,55 +1,8 @@
 import { supabase } from '@/integrations/supabase/client';
+import { AuditLogEntry, AuditLog, AuditActionType, AuditEntityType } from './auditTypes';
 import type { Json } from '@/integrations/supabase/types';
-export type AuditActionType = 
-  | 'create' 
-  | 'update' 
-  | 'delete' 
-  | 'view' 
-  | 'export' 
-  | 'login' 
-  | 'logout' 
-  | 'approve' 
-  | 'reject' 
-  | 'cancel';
 
-export type AuditEntityType = 
-  | 'solicitacao' 
-  | 'cotacao' 
-  | 'pedido' 
-  | 'pagamento' 
-  | 'fornecedor' 
-  | 'usuario' 
-  | 'configuracao' 
-  | 'relatorio';
-
-export interface AuditLogEntry {
-  action_type: AuditActionType;
-  entity_type: AuditEntityType;
-  entity_id?: string;
-  entity_description?: string;
-  old_values?: Record<string, unknown>;
-  new_values?: Record<string, unknown>;
-  metadata?: Record<string, unknown>;
-}
-
-export interface AuditLog {
-  id: string;
-  user_id: string | null;
-  user_email: string | null;
-  user_name: string | null;
-  action_type: AuditActionType;
-  entity_type: AuditEntityType;
-  entity_id: string | null;
-  entity_description: string | null;
-  old_values: Record<string, unknown> | null;
-  new_values: Record<string, unknown> | null;
-  metadata: Record<string, unknown> | null;
-  ip_address: string | null;
-  user_agent: string | null;
-  created_at: string;
-}
-
-// Action type labels in Portuguese
+// Export labels and colors for UI
 export const actionTypeLabels: Record<AuditActionType, string> = {
   create: 'Criação',
   update: 'Atualização',
@@ -63,7 +16,6 @@ export const actionTypeLabels: Record<AuditActionType, string> = {
   cancel: 'Cancelamento',
 };
 
-// Entity type labels in Portuguese
 export const entityTypeLabels: Record<AuditEntityType, string> = {
   solicitacao: 'Solicitação',
   cotacao: 'Cotação',
@@ -75,7 +27,6 @@ export const entityTypeLabels: Record<AuditEntityType, string> = {
   relatorio: 'Relatório',
 };
 
-// Color scheme for action types
 export const actionTypeColors: Record<AuditActionType, string> = {
   create: 'bg-success/10 text-success border-success/20',
   update: 'bg-primary/10 text-primary border-primary/20',
@@ -94,39 +45,34 @@ export const actionTypeColors: Record<AuditActionType, string> = {
  */
 export const logAuditAction = async (entry: AuditLogEntry): Promise<void> => {
   try {
-    // Get current user if authenticated
     const { data: { user } } = await supabase.auth.getUser();
     
-    // For development/mock phase, use placeholder values
-    const userEmail = user?.email || 'sistema@promobrindes.com.br';
-    const userName = user?.user_metadata?.["full_name"] || 'Sistema';
+    // For systems where profile might have a name
+    const { data: profile } = user ? await supabase.from('profiles').select('full_name').eq('user_id', user.id).maybeSingle() : { data: null };
 
     const insertData = {
       user_id: user?.id || null,
-      user_email: userEmail,
-      user_name: userName,
+      user_email: user?.email || 'sistema@promo.supply',
+      user_name: profile?.full_name || 'Sistema',
       action_type: entry.action_type,
       entity_type: entry.entity_type,
       entity_id: entry.entity_id || null,
       entity_description: entry.entity_description || null,
       old_values: (entry.old_values || null) as Json,
       new_values: (entry.new_values || null) as Json,
-      metadata: (entry.metadata || null) as Json,
-      user_agent: navigator.userAgent,
+      metadata: (entry.metadata || {}) as Json,
+      user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Server',
     };
 
     const { error } = await supabase
       .from('audit_logs')
       .insert([insertData]);
 
-    if (error) {
-      console.error('Erro ao registrar auditoria:', error);
-    }
+    if (error) console.error('Erro ao registrar auditoria:', error);
   } catch (err) {
-    console.error('Erro ao registrar auditoria:', err);
+    console.error('Erro fatal ao registrar auditoria:', err);
   }
 };
-
 
 /**
  * Fetch audit logs with optional filters
@@ -146,40 +92,20 @@ export const fetchAuditLogs = async (options?: {
       .select('*', { count: 'exact' })
       .order('created_at', { ascending: false });
 
-    if (options?.entity_type) {
-      query = query.eq('entity_type', options.entity_type);
-    }
-
-    if (options?.action_type) {
-      query = query.eq('action_type', options.action_type);
-    }
-
-    if (options?.start_date) {
-      query = query.gte('created_at', options.start_date.toISOString());
-    }
-
-    if (options?.end_date) {
-      query = query.lte('created_at', options.end_date.toISOString());
-    }
-
+    if (options?.entity_type) query = query.eq('entity_type', options.entity_type);
+    if (options?.action_type) query = query.eq('action_type', options.action_type);
+    if (options?.start_date) query = query.gte('created_at', options.start_date.toISOString());
+    if (options?.end_date) query = query.lte('created_at', options.end_date.toISOString());
     if (options?.search) {
       query = query.or(`entity_description.ilike.%${options.search}%,user_email.ilike.%${options.search}%,user_name.ilike.%${options.search}%`);
     }
 
-    if (options?.limit) {
-      query = query.limit(options.limit);
-    }
-
-    if (options?.offset) {
-      query = query.range(options.offset, options.offset + (options.limit || 50) - 1);
-    }
+    if (options?.limit) query = query.limit(options.limit);
+    if (options?.offset) query = query.range(options.offset, options.offset + (options.limit || 50) - 1);
 
     const { data, error, count } = await query;
 
-    if (error) {
-      console.error('Erro ao buscar logs de auditoria:', error);
-      return { data: [], count: 0 };
-    }
+    if (error) throw error;
 
     return { 
       data: (data as unknown as AuditLog[]) || [], 
@@ -204,15 +130,17 @@ export const auditHelpers = {
   logDelete: (entityType: AuditEntityType, entityId: string, description: string, oldValues?: Record<string, unknown>) =>
     logAuditAction({ action_type: 'delete', entity_type: entityType, entity_id: entityId, entity_description: description, old_values: oldValues }),
   
-  logView: (entityType: AuditEntityType, entityId: string, description: string) =>
-    logAuditAction({ action_type: 'view', entity_type: entityType, entity_id: entityId, entity_description: description }),
-  
-  logExport: (entityType: AuditEntityType, description: string, metadata?: Record<string, unknown>) =>
-    logAuditAction({ action_type: 'export', entity_type: entityType, entity_description: description, metadata }),
-  
   logApprove: (entityType: AuditEntityType, entityId: string, description: string, metadata?: Record<string, unknown>) =>
     logAuditAction({ action_type: 'approve', entity_type: entityType, entity_id: entityId, entity_description: description, metadata }),
   
   logReject: (entityType: AuditEntityType, entityId: string, description: string, metadata?: Record<string, unknown>) =>
     logAuditAction({ action_type: 'reject', entity_type: entityType, entity_id: entityId, entity_description: description, metadata }),
+
+  logView: (entityType: AuditEntityType, entityId: string, description: string) =>
+    logAuditAction({ action_type: 'view', entity_type: entityType, entity_id: entityId, entity_description: description }),
+
+  logExport: (entityType: AuditEntityType, description: string, metadata?: Record<string, unknown>) =>
+    logAuditAction({ action_type: 'export', entity_type: entityType, entity_description: description, metadata }),
 };
+
+export type { AuditLog, AuditActionType, AuditEntityType };
