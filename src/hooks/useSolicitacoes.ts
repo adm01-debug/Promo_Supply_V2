@@ -268,7 +268,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('cost_centers')
-        .select('*')
+        .select(`
+          *,
+          manager:profiles!cost_centers_manager_id_fkey(full_name)
+        `)
         .eq('is_active', true)
         .order('name');
       if (error) throw error;
