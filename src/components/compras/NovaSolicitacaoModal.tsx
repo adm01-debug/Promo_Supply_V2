@@ -309,12 +309,15 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="relative">
           <Plus className="w-4 h-4 mr-2" />
           Nova Solicitação
+          {localStorage.getItem('nova_solicitacao_draft') && (
+            <Badge variant="destructive" className="absolute -top-2 -right-2 h-4 px-1 text-[8px] animate-bounce">RASCUNHO</Badge>
+          )}
         </Button>
       </DialogTrigger>
-      
+
       <DialogContent aria-describedby="dialog-desc" className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
