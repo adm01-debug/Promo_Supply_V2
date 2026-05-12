@@ -174,6 +174,14 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
       if (error) throw error;
 
+      // Audit Log
+      await auditHelpers.logCreate(
+        'fornecedor', 
+        data.id, 
+        `Fornecedor ${data.razao_social} cadastrado por ${user.email}`,
+        data
+      );
+
       toast.success('Fornecedor cadastrado com sucesso!');
       fetchFornecedores();
       return data;
