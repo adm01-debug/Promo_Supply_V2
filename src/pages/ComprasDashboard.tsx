@@ -104,6 +104,36 @@ const ComprasDashboard = () => {
     saveToDb('compras');
   }, [saveToDb]);
 
+  const { data: categories = [] } = useQuery({
+    queryKey: ['dashboard-filter-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('categorias').select('id, nome').order('nome');
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const { data: suppliers = [] } = useQuery({
+    queryKey: ['dashboard-filter-suppliers'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('fornecedores').select('id, razao_social').eq('status', 'ativo').order('razao_social');
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const hasActiveFilters = currentFilters.category !== 'all' || 
+                          currentFilters.supplier !== 'all' || 
+                          currentFilters.period !== '6m';
+
+  const clearFilters = useCallback(() => {
+    patchFilters({
+      category: 'all',
+      supplier: 'all',
+      period: '6m'
+    });
+  }, [patchFilters]);
+
   // Realtime with debounce to avoid excessive re-renders
   useRealtimeSubscription({
     tables: ['solicitacoes', 'pedidos', 'cotacoes', 'pagamentos', 'notifications', 'approval_workflows', 'approval_steps'],
