@@ -4,15 +4,7 @@ import { vi, describe, it, expect, beforeEach } from "vitest";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import React from "react";
 
-// Robust Supabase Mock
-const createMockSupabase = () => {
-  const mock: any = {
-    from: vi.fn(),
-    rpc: vi.fn(),
-    channel: vi.fn(),
-    removeChannel: vi.fn(),
-  };
-
+const { mockSupabase } = vi.hoisted(() => {
   const createQueryBuilder = () => {
     const builder: any = {
       select: vi.fn().mockImplementation(() => builder),
@@ -32,17 +24,17 @@ const createMockSupabase = () => {
     return builder;
   };
 
-  mock.from.mockImplementation(() => createQueryBuilder());
-  mock.rpc.mockResolvedValue({ data: null, error: null });
-  mock.channel.mockReturnValue({
-    on: vi.fn().mockReturnThis(),
-    subscribe: vi.fn().mockReturnThis(),
-  });
-
-  return mock;
-};
-
-const mockSupabase = createMockSupabase();
+  const mock: any = {
+    from: vi.fn().mockImplementation(() => createQueryBuilder()),
+    rpc: vi.fn().mockResolvedValue({ data: null, error: null }),
+    channel: vi.fn().mockReturnValue({
+      on: vi.fn().mockReturnThis(),
+      subscribe: vi.fn().mockReturnThis(),
+    }),
+    removeChannel: vi.fn(),
+  };
+  return { mockSupabase: mock };
+});
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: mockSupabase,
