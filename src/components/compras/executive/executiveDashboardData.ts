@@ -151,8 +151,8 @@ export const pendingItems = [
   { id: 'APR-003', type: 'Aprovação', item: 'PO #2645 - Bonés', value: 18000, days: 0, priority: 'high', category: 'Bonés', supplier: 'Só Marcas' }
 ];
 
-export const allCategories = categorySpend.map(c => c.name);
-export const allSuppliers = topSuppliers.map(s => s.name);
+export const allCategories = Array.from(new Set(categorySpend.map(c => c.name))).sort();
+export const allSuppliers = Array.from(new Set(topSuppliers.map(s => s.name))).sort();
 
 export const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))', 'hsl(var(--muted))'];
 
@@ -163,9 +163,11 @@ export interface DrillDownData {
 }
 
 export const formatCurrency = (value: number) => {
+  if (value === undefined || value === null) return 'R$ 0,00';
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 };
 
 export const formatNumber = (value: number) => {
+  if (value === undefined || value === null) return '0';
   return new Intl.NumberFormat('pt-BR').format(value);
 };
