@@ -156,6 +156,58 @@ export const TrendAnalysisCharts = ({ monthlyTrends, cotacaoStatus, topCategorie
           </ResponsiveContainer>
         </div>
       </Card>
+
+      {/* Evolução de Economia */}
+      <Card className="p-6 bg-card/50 backdrop-blur-sm border-primary/10 lg:col-span-2">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-emerald-500" />
+            Evolução de Economia Gerada
+          </h3>
+        </div>
+        <div className="h-[300px] w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={monthlyTrends}>
+              <defs>
+                <linearGradient id="colorEconomia" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+              <XAxis 
+                dataKey="month" 
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fill: '#888', fontSize: 10 }}
+              />
+              <YAxis 
+                axisLine={false} 
+                tickLine={false} 
+                tick={{ fill: '#888', fontSize: 10 }}
+                tickFormatter={(value) => `R$ ${value >= 1000 ? (value/1000).toFixed(0) + 'k' : value}`}
+              />
+              <Tooltip 
+                formatter={(value: number) => [
+                  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value),
+                  'Economia'
+                ]}
+                contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px', fontSize: '12px' }}
+                itemStyle={{ color: '#fff' }}
+              />
+              <Area 
+                type="monotone" 
+                dataKey="economia" 
+                name="Economia"
+                stroke="#10b981" 
+                fillOpacity={1} 
+                fill="url(#colorEconomia)" 
+                strokeWidth={3}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
+      </Card>
     </div>
   );
 };
