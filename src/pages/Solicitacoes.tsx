@@ -370,7 +370,8 @@ const Solicitacoes = () => {
                   id: s.id,
                   title: s.produto,
                   subtitle: `${s.itemNumber} • ${s.empresa}`,
-                  type: 'solicitacao' as const
+                  type: 'solicitacao' as const,
+                  href: `/solicitacoes?id=${s.id}`
                 }))}
                 onSelect={(res) => {
                   setSearchTerm(res.title);
