@@ -378,12 +378,13 @@ const Solicitacoes = () => {
                 </SelectTrigger>
                 <SelectContent className="bg-background border border-border z-50">
                   <SelectItem value="todas">Todos os Status</SelectItem>
-                  <SelectItem value="AGUARDANDO_COTACAO">Aguardando Cotação</SelectItem>
+                  <SelectItem value="AGUARDANDO_COTACAO">Pendente</SelectItem>
                   <SelectItem value="EM_COTACAO">Em Cotação</SelectItem>
-                  <SelectItem value="FORNECEDOR_SELECIONADO">Fornecedor Selecionado</SelectItem>
-                  <SelectItem value="AGUARDANDO_PAGAMENTO">Aguardando Pagamento</SelectItem>
-                  <SelectItem value="PAGO">Pago</SelectItem>
-                  <SelectItem value="EM_TRANSITO">Em Trânsito</SelectItem>
+                  <SelectItem value="FORNECEDOR_SELECIONADO">Aprovada</SelectItem>
+                  <SelectItem value="AGUARDANDO_PAGAMENTO">Em Andamento</SelectItem>
+                  <SelectItem value="ENTREGUE">Finalizada</SelectItem>
+                  <SelectItem value="REJEITADA">Rejeitada</SelectItem>
+                  <SelectItem value="CANCELADA">Cancelada</SelectItem>
                 </SelectContent>
               </Select>
 
