@@ -272,8 +272,13 @@ export const ExecutiveDashboard = () => {
               </Button>
             ))}
           </div>
+          <Button variant="default" size="sm" onClick={handleExport} className="gap-2">
+            <Download className="h-4 w-4" />
+            Exportar
+          </Button>
         </div>
       </div>
+
 
       <ExecutiveFiltersBar
         selectedCategory={selectedCategory}
