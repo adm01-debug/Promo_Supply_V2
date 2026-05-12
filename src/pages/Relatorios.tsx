@@ -14,6 +14,7 @@ import { SLABySupplierAnalysis } from "@/components/compras/SLABySupplierAnalysi
 import { KraljicMatrix } from "@/components/compras/executive/KraljicMatrix";
 import { AdvancedProcurementKPIs } from "@/components/compras/AdvancedProcurementKPIs";
 import { DemandPredictionPanel } from "@/components/compras/DemandPredictionPanel";
+import { CostCenterPerformanceAnalysis } from "@/components/compras/CostCenterPerformanceAnalysis";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { exportToCSV } from "@/lib/exportData";
