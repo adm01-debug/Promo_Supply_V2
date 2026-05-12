@@ -4,12 +4,24 @@ import {
   Clock, 
   TrendingUp,
   BarChart3,
-  PiggyBank
+  PiggyBank,
+  Filter,
+  X,
+  ChevronDown,
+  Calendar
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { EnhancedKpiCard } from "@/components/compras/EnhancedKpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
 import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
@@ -24,6 +36,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import { useDashboardLayoutStore } from "@/stores/dashboardLayoutStore";
 import { useAccountFilters } from "@/hooks/useAccountFilters";
+import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
 
 
 // Lazy load heavy panels that are below the fold
