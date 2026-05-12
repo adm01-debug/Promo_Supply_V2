@@ -166,7 +166,6 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           console.error('Erro ao verificar orçamento:', budgetError);
         } else if (availability && !(availability as any).available) {
           toast.error((availability as any).message || 'Saldo insuficiente no centro de custo.');
-          // Permitir prosseguir se for urgente ou se tiver flag de override (não implementado ainda)
           if (input.prioridade !== 'urgente') {
             return null;
           }
@@ -176,7 +175,8 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'SOL', table_name: 'solicitacoes' });
       const numero = numData || `SOL-${Date.now()}`;
-      const { data, error } = await supabase
+      
+      const { data: solData, error: solError } = await supabase
         .from('solicitacoes')
         .insert({
           numero, titulo: input.titulo, descricao: input.descricao, tipo: input.tipo,
@@ -188,16 +188,23 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           categoria_id: input.categoria_id, solicitante_id: user.id,
         })
         .select().single();
-      if (error) throw error;
-      toast.success('Solicitação criada com sucesso!');
+      
+      if (solError) throw solError;
+
+      // Iniciar Workflow de Aprovação se houver valor ou centro de custo
+      if (solData && (input.valor_estimado || input.cost_center_id)) {
+        await createWorkflow(solData.id, input.valor_estimado || 0, input.categoria_id || undefined);
+      }
+
+      toast.success('Solicitação criada e enviada para aprovação!');
       invalidate();
-      return data;
+      return solData;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
       toast.error('Erro ao criar solicitação: ' + msg);
       return null;
     }
-  }, [user, invalidate]);
+  }, [user, invalidate, createWorkflow]);
 
   const updateSolicitacao = useCallback(async (id: string, updates: Partial<Solicitacao>) => {
     try {
