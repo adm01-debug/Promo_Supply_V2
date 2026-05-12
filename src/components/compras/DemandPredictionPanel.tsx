@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { TrendingUp, TrendingDown, Minus, Calendar, BarChart3, AlertTriangle, Lightbulb, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,15 +16,9 @@ import {
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-// Mock historical data for prediction
-const historicalDataMock = [
-  { month: 'Jul 2024', totalValue: 45000, totalQuantity: 120 },
-  { month: 'Ago 2024', totalValue: 52000, totalQuantity: 145 },
-  { month: 'Set 2024', totalValue: 48000, totalQuantity: 130 },
-  { month: 'Out 2024', totalValue: 61000, totalQuantity: 165 },
-  { month: 'Nov 2024', totalValue: 58000, totalQuantity: 155 },
-  { month: 'Dez 2024', totalValue: 72000, totalQuantity: 190 },
-];
+import { useQuery } from '@tanstack/react-query';
+import { fetchAllRows } from '@/lib/paginatedFetch';
+import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
 
 interface Prediction {
   month: string;
@@ -93,22 +87,58 @@ export function DemandPredictionPanel() {
     { value: '12', label: 'Próximo ano' },
   ];
 
+  const { data: pedidos } = useQuery({
+    queryKey: ['demand-prediction-pedidos'],
+    queryFn: () => fetchAllRows<{ valor_total: number; data_emissao: string }>('pedidos', 'valor_total, data_emissao'),
+    staleTime: 60000,
+  });
+
+  const historicalData = useMemo(() => {
+    if (!pedidos) return [];
+    
+    // Calculate last 6 months of real data
+    const now = new Date();
+    return Array.from({ length: 6 }).map((_, i) => {
+      const date = subMonths(now, 6 - i);
+      const monthStart = startOfMonth(date);
+      const monthEnd = endOfMonth(date);
+      const monthLabel = format(date, 'MMM yyyy');
+
+      const monthPedidos = pedidos.filter(p => {
+        const d = new Date(p.data_emissao);
+        return isWithinInterval(d, { start: monthStart, end: monthEnd });
+      });
+
+      return {
+        month: monthLabel,
+        totalValue: monthPedidos.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 0),
+        totalQuantity: monthPedidos.length * 10, // Simulated quantity if not in DB
+      };
+    });
+  }, [pedidos]);
+
   const handlePredict = async () => {
+    if (historicalData.length === 0) {
+      toast({
+        title: 'Sem dados suficientes',
+        description: 'Não há dados históricos de pedidos para gerar a previsão.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
     setPrediction(null);
 
     try {
-      // Prepare historical data
-      const historicalData = historicalDataMock.map(item => ({
-        month: item.month,
-        value: item.totalValue,
-        quantity: item.totalQuantity,
-        category: 'Geral',
-      }));
-
       const { data, error } = await supabase.functions.invoke('ai-demand-prediction', {
         body: {
-          historicalData,
+          historicalData: historicalData.map((item: any) => ({
+            month: item.month,
+            value: item.totalValue,
+            quantity: item.totalQuantity,
+            category: 'Geral',
+          })),
           category: category === 'all' ? 'Todas' : category,
           timeframe: `Próximos ${timeframe} meses`,
         },
@@ -134,7 +164,7 @@ export function DemandPredictionPanel() {
   };
 
   // Combine historical and predicted data for chart
-  const chartData = prediction?.predictions?.map((p, index) => ({
+  const chartData = prediction?.predictions?.map((p: Prediction) => ({
     name: p.month,
     valor: p.predictedValue,
     quantidade: p.predictedQuantity,

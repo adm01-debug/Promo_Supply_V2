@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   AlertTriangle,
   TrendingUp,
@@ -20,6 +20,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { fetchAllRows } from "@/lib/paginatedFetch";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface RiskData {
   supplierId: string;
@@ -38,62 +42,7 @@ interface RiskData {
   volume: number; // % do total de compras
 }
 
-const mockRiskData: RiskData[] = [
-  {
-    supplierId: "1",
-    supplierName: "XBZ Brindes",
-    category: "Brindes",
-    risks: { financial: 15, operational: 20, quality: 10, delivery: 15, concentration: 35, geopolitical: 5 },
-    overallRisk: 17,
-    trend: 'improving',
-    volume: 32
-  },
-  {
-    supplierId: "2",
-    supplierName: "Asia Import",
-    category: "Importados",
-    risks: { financial: 40, operational: 55, quality: 30, delivery: 65, concentration: 20, geopolitical: 75 },
-    overallRisk: 48,
-    trend: 'worsening',
-    volume: 18
-  },
-  {
-    supplierId: "3",
-    supplierName: "Stricker/Spot",
-    category: "Premium",
-    risks: { financial: 20, operational: 25, quality: 15, delivery: 25, concentration: 15, geopolitical: 10 },
-    overallRisk: 18,
-    trend: 'stable',
-    volume: 22
-  },
-  {
-    supplierId: "4",
-    supplierName: "Só Marcas",
-    category: "Têxteis",
-    risks: { financial: 55, operational: 60, quality: 45, delivery: 70, concentration: 25, geopolitical: 15 },
-    overallRisk: 45,
-    trend: 'worsening',
-    volume: 12
-  },
-  {
-    supplierId: "5",
-    supplierName: "Fornecedor ABC",
-    category: "Eletrônicos",
-    risks: { financial: 75, operational: 80, quality: 65, delivery: 85, concentration: 10, geopolitical: 60 },
-    overallRisk: 63,
-    trend: 'worsening',
-    volume: 8
-  },
-  {
-    supplierId: "6",
-    supplierName: "Tech Solutions",
-    category: "Eletrônicos",
-    risks: { financial: 25, operational: 30, quality: 20, delivery: 30, concentration: 40, geopolitical: 20 },
-    overallRisk: 28,
-    trend: 'improving',
-    volume: 8
-  }
-];
+// Risk data is now fetched from Supabase real data in the component logic
 
 const riskCategories = [
   { key: 'financial', label: 'Financeiro', icon: DollarSign, description: 'Saúde financeira e estabilidade' },
@@ -121,8 +70,87 @@ const getRiskLabel = (value: number) => {
 export const RiskHeatMap = () => {
   const [hoveredCell, setHoveredCell] = useState<{ supplier: string; category: string } | null>(null);
 
+  const { data: fornecedores, isLoading: loadingForn } = useQuery({
+    queryKey: ['risk-heatmap-fornecedores'],
+    queryFn: () => fetchAllRows<{ id: string; razao_social: string; avaliacao: number | null; status: string; categorias: { nome: string } }>('fornecedores', 'id, razao_social, avaliacao, status, categorias(nome)'),
+    staleTime: 60000,
+  });
+
+  const { data: pedidos, isLoading: loadingPed } = useQuery({
+    queryKey: ['risk-heatmap-pedidos'],
+    queryFn: () => fetchAllRows<{ fornecedor_id: string; status: string; data_previsao: string; data_entrega: string; valor_total: number }>('pedidos', 'fornecedor_id, status, data_previsao, data_entrega, valor_total'),
+    staleTime: 60000,
+  });
+
+  const riskData = useMemo(() => {
+    if (!fornecedores || !pedidos) return [];
+
+    const totalSpend = pedidos.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 1); // avoid div by zero
+
+    return fornecedores.filter(f => f.status === 'ativo').map(f => {
+      const supplierPeds = pedidos.filter(p => p.fornecedor_id === f.id);
+      const supplierSpend = supplierPeds.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 0);
+      const spendPercent = Math.round((supplierSpend / totalSpend) * 100);
+
+      const delivered = supplierPeds.filter(p => p.status === 'entregue');
+      const onTime = delivered.filter(p => 
+        p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao
+      ).length;
+      
+      const onTimeRate = delivered.length > 0 ? (onTime / delivered.length) * 100 : 90;
+      
+      // Calculate individual risks (0-100, where higher is worse)
+      const deliveryRisk = Math.round(100 - onTimeRate);
+      const qualityRisk = Math.round(100 - (Number(f.avaliacao || 4.5) * 20));
+      const concentrationRisk = Math.min(100, spendPercent * 3); // 33% spend = 100% concentration risk
+      const financialRisk = Math.round(Math.max(10, 40 - (Number(f.avaliacao || 4) * 5))); // Pseudo-financial risk
+      const operationalRisk = Math.round(Math.max(15, deliveryRisk * 0.8 + qualityRisk * 0.2));
+      const geopoliticalRisk = f.categorias?.nome === 'Eletrônicos' || f.categorias?.nome === 'Tecnologia' ? 60 : 15;
+
+      const overallRisk = Math.round(
+        financialRisk * 0.15 + 
+        operationalRisk * 0.25 + 
+        qualityRisk * 0.2 + 
+        deliveryRisk * 0.2 + 
+        concentrationRisk * 0.1 + 
+        geopoliticalRisk * 0.1
+      );
+
+      return {
+        supplierId: f.id,
+        supplierName: f.razao_social,
+        category: (f as any).categorias?.nome || 'Geral',
+        risks: {
+          financial: financialRisk,
+          operational: operationalRisk,
+          quality: qualityRisk,
+          delivery: deliveryRisk,
+          concentration: concentrationRisk,
+          geopolitical: geopoliticalRisk
+        },
+        overallRisk,
+        trend: overallRisk > 40 ? 'worsening' : overallRisk < 20 ? 'improving' : 'stable',
+        volume: spendPercent
+      } as RiskData;
+    });
+  }, [fornecedores, pedidos]);
+
+  if (loadingForn || loadingPed) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
+        </div>
+        <Card className="p-6">
+          <Skeleton className="h-8 w-48 mb-6" />
+          <Skeleton className="h-[400px] w-full rounded-xl" />
+        </Card>
+      </div>
+    );
+  }
+
   // Sort suppliers by overall risk (highest first)
-  const sortedSuppliers = [...mockRiskData].sort((a, b) => b.overallRisk - a.overallRisk);
+  const sortedSuppliers = [...riskData].sort((a, b) => b.overallRisk - a.overallRisk);
 
   return (
     <div className="space-y-6">
@@ -134,7 +162,7 @@ export const RiskHeatMap = () => {
             <span className="text-sm text-muted-foreground">Risco Baixo</span>
           </div>
           <p className="text-2xl font-bold text-success">
-            {mockRiskData.filter(s => s.overallRisk <= 25).length}
+            {riskData.filter(s => s.overallRisk <= 25).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
@@ -144,7 +172,7 @@ export const RiskHeatMap = () => {
             <span className="text-sm text-muted-foreground">Risco Médio</span>
           </div>
           <p className="text-2xl font-bold text-warning">
-            {mockRiskData.filter(s => s.overallRisk > 25 && s.overallRisk <= 50).length}
+            {riskData.filter(s => s.overallRisk > 25 && s.overallRisk <= 50).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
@@ -154,7 +182,7 @@ export const RiskHeatMap = () => {
             <span className="text-sm text-muted-foreground">Risco Alto</span>
           </div>
           <p className="text-2xl font-bold text-warning">
-            {mockRiskData.filter(s => s.overallRisk > 50 && s.overallRisk <= 75).length}
+            {riskData.filter(s => s.overallRisk > 50 && s.overallRisk <= 75).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
@@ -164,7 +192,7 @@ export const RiskHeatMap = () => {
             <span className="text-sm text-muted-foreground">Risco Crítico</span>
           </div>
           <p className="text-2xl font-bold text-destructive">
-            {mockRiskData.filter(s => s.overallRisk > 75).length}
+            {riskData.filter(s => s.overallRisk > 75).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
