@@ -17,6 +17,7 @@ export interface DashboardKPIs {
   pendingApprovals: number;
   economiaGerada: number;
   economiaPercentual: number;
+  avgSla: number;
 }
 
 export interface KPIComparison {
@@ -35,7 +36,7 @@ export interface DashboardKPIsExtended extends DashboardKPIs {
   };
   previousPipeline: PipelineData;
   charts: {
-    monthlyTrends: { month: string; pedidos: number; cotacoes: number }[];
+    monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
     cotacaoStatus: { name: string; value: number; color: string }[];
     topCategories: { name: string; value: number; percentage: number }[];
   };
@@ -130,10 +131,6 @@ export function useDashboardKPIs() {
         const d = new Date(p.created_at);
         return endDate ? isWithinInterval(d, { start: startDate, end: endDate }) : d >= startDate;
       });
-      const pCot = cot.filter(c => {
-        const d = new Date(c.created_at);
-        return endDate ? isWithinInterval(d, { start: startDate, end: endDate }) : d >= startDate;
-      });
 
       const aguardandoCotacao = pSol.filter(s => s.status === 'pendente' || s.status === 'em_cotacao').length;
       const volumeMes = pPed.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 0);
@@ -142,10 +139,8 @@ export function useDashboardKPIs() {
       const totalAprovado = pSol.filter(s => s.valor_aprovado != null).reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
       const economiaGerada = totalEstimado > 0 ? Math.max(0, totalEstimado - totalAprovado) : 0;
       
-      // Calculate SLA: Avg days from solicitation to first quotation
-      // This is a more complex calculation that needs mapping cotacoes to solicitacoes
-      // For now, we'll use a mock average that varies slightly for the trend
-      const avgSla = 2.5; // days
+      // SLA: 2.5 days average mock
+      const avgSla = 2.5;
       
       const entregues = pPed.filter(p => p.status === 'entregue');
       const entreguesNoPrazo = entregues.filter(p => p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao).length;
@@ -161,7 +156,6 @@ export function useDashboardKPIs() {
       };
 
       return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega, avgSla, pipeline };
-    };
     };
 
     const currentData = calculatePeriodData(currentMonthStart);
@@ -251,7 +245,7 @@ export function useDashboardKPIs() {
           const date = subMonths(now, 5 - i);
           const monthStart = fnsStartOfMonth(date);
           const monthEnd = endOfMonth(date);
-          const monthLabel = format(date, 'MMM', { locale: undefined }); // 'MMM' works fine
+          const monthLabel = format(date, 'MMM', { locale: undefined });
 
           const monthPedidos = ped.filter(p => {
             const d = new Date(p.data_emissao);
@@ -263,7 +257,20 @@ export function useDashboardKPIs() {
             return isWithinInterval(d, { start: monthStart, end: monthEnd });
           }).length;
 
-          return { month: monthLabel.toUpperCase(), pedidos: monthPedidos, cotacoes: monthCotacoes };
+          const monthSol = sol.filter(s => {
+            const d = new Date(s.created_at);
+            return isWithinInterval(d, { start: monthStart, end: monthEnd });
+          });
+          const monthEstimado = monthSol.reduce((sum, s) => sum + (Number(s.valor_estimado) || 0), 0);
+          const monthAprovado = monthSol.filter(s => s.valor_aprovado != null).reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
+          const monthEconomia = monthEstimado > 0 ? Math.max(0, monthEstimado - monthAprovado) : 0;
+
+          return { 
+            month: monthLabel.toUpperCase(), 
+            pedidos: monthPedidos, 
+            cotacoes: monthCotacoes,
+            economia: monthEconomia
+          };
         }),
         cotacaoStatus: [
           { name: 'Em Aberto', value: cot.filter(c => c.status === 'pendente' || c.status === 'em_analise').length, color: '#f59e0b' },
@@ -316,7 +323,7 @@ export function useDashboardKPIs() {
       .slice(0, 10);
 
     return { kpis, pipeline, urgentItems };
-  }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows]);
+  }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows, profilesData, categoriasData]);
 
   const loading = loadingSol || loadingPed || loadingPag || loadingCot || loadingForn || loadingWf;
 
