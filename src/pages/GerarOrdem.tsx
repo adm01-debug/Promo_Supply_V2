@@ -29,6 +29,9 @@ import { toast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { usePedidos } from "@/hooks/usePedidos";
+import { useCotacoes } from "@/hooks/useCotacoes";
+import { Loader2 } from "lucide-react";
 
 import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerar-ordem/gerarOrdemHelpers';
 import { generateOrderPDF } from "@/lib/pdfGenerator";
@@ -39,6 +42,7 @@ const GerarOrdem = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const solicitacaoId = searchParams.get("solicitacao");
+  const cotacaoId = searchParams.get("cotacao");
 
   const [copiado, setCopiado] = useState<string | null>(null);
   const [mensagemWhatsApp, setMensagemWhatsApp] = useState("");
@@ -47,6 +51,10 @@ const GerarOrdem = () => {
   const [frete, setFrete] = useState(150);
   const [desconto, setDesconto] = useState(0);
   const [observacoes, setObservacoes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const { createPedido } = usePedidos();
+  const { cotacoes } = useCotacoes({ solicitacao_id: solicitacaoId || undefined });
 
   // Fetch solicitacao from Supabase
   const { data: solicitacaoData } = useQuery({
@@ -144,12 +152,56 @@ const GerarOrdem = () => {
     window.open(url, "_blank");
   };
 
-  const finalizarOrdem = () => {
-    toast({
-      title: "Ordem Gerada!",
-      description: `A ordem ${ordemNumero} foi gerada com sucesso.`,
-    });
-    navigate("/acompanhamento");
+  const finalizarOrdem = async () => {
+    if (!solicitacaoData || !fornecedor.id) {
+      toast({
+        title: "Erro",
+        description: "Dados insuficientes para gerar a ordem.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const selectedCotacao = cotacoes.find(c => c.id === cotacaoId) || cotacoes.find(c => c.selecionada);
+      
+      const pedido = await createPedido({
+        solicitacao_id: solicitacaoId || undefined,
+        cotacao_id: selectedCotacao?.id || undefined,
+        fornecedor_id: fornecedor.id,
+        valor_total: total,
+        valor_frete: frete,
+        desconto: desconto,
+        observacoes: observacoes,
+        itens: [{
+          descricao: solicitacaoData.titulo || 'Produto',
+          quantidade: solicitacaoData.quantidade || 1,
+          unidade: solicitacaoData.unidade || 'un',
+          valor_unitario: solicitacao.valorUnitario
+        }]
+      });
+
+      if (pedido) {
+        // Se houver solicitação, atualiza status
+        if (solicitacaoId) {
+          await supabase
+            .from('solicitacoes')
+            .update({ status: 'em_andamento' })
+            .eq('id', solicitacaoId);
+        }
+
+        toast({
+          title: "Ordem Gerada!",
+          description: `A ordem ${pedido.numero} foi gerada e persistida no banco de dados.`,
+        });
+        navigate("/acompanhamento");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const previewPDF = () => {
@@ -472,10 +524,14 @@ const GerarOrdem = () => {
               <div className="space-y-3">
                 <Button 
                   onClick={finalizarOrdem} 
-                  className="w-full gap-2 gradient-primary"
+                  className="w-full gap-2 gradient-primary h-12 text-lg"
+                  disabled={isSubmitting}
                 >
-                  <Check className="w-4 h-4" />
-                  Finalizar e Salvar OC
+                  {isSubmitting ? (
+                    <><Loader2 className="w-5 h-5 animate-spin" /> Gerando Ordem...</>
+                  ) : (
+                    <><Check className="w-5 h-5" /> Finalizar e Salvar OC</>
+                  )}
                 </Button>
                 <Button 
                   variant="outline" 
