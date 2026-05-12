@@ -151,15 +151,19 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       
       // Calculate SLA: Avg days from solicitation to first quotation
       const completedSlas = pSol.map(s => {
-        const firstCot = cot.find(c => c.solicitacao_id === s.id);
-        if (!firstCot) return null;
-        const diff = new Date(firstCot.created_at).getTime() - new Date(s.created_at).getTime();
-        return diff / (1000 * 60 * 60 * 24); // in days
+        // Encontrar cotações reais relacionadas a esta solicitação
+        const relatedCotacoes = cot.filter(c => c.solicitacao_id === s.id);
+        if (relatedCotacoes.length === 0) return null;
+        
+        // Pegar a data da primeira cotação real
+        const firstCotDate = new Date(Math.min(...relatedCotacoes.map(c => new Date(c.created_at).getTime())));
+        const diff = firstCotDate.getTime() - new Date(s.created_at).getTime();
+        return diff / (1000 * 60 * 60 * 24); // em dias
       }).filter(d => d !== null && d >= 0) as number[];
 
       const avgSla = completedSlas.length > 0 
         ? Number((completedSlas.reduce((a, b) => a + b, 0) / completedSlas.length).toFixed(1)) 
-        : 2.5; // fallback to mock if no data
+        : 2.5;
 
       
       const entregues = pPed.filter(p => p.status === 'entregue');

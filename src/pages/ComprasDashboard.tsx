@@ -168,6 +168,7 @@ const ComprasDashboard = () => {
                   
                   return {
                     id: (item as any).numero || item.id.substring(0, 8),
+                    dbId: item.id,
                     produto: (item as any).titulo || "Item sem título",
                     fornecedor: item.status || "Pendente",
                     vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
