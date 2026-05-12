@@ -92,11 +92,21 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState<NovaSolicitacaoData>(initialFormData);
+  const [formData, setFormData] = useState<NovaSolicitacaoData>(() => {
+    const saved = localStorage.getItem('nova_solicitacao_draft');
+    return saved ? JSON.parse(saved) : initialFormData;
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof NovaSolicitacaoData, string>>>({});
   const [budgetCheck, setBudgetCheck] = useState<BudgetCheckResult | null>(null);
   const [isCheckingBudget, setIsCheckingBudget] = useState(false);
+
+  // Persistence effect
+  useEffect(() => {
+    if (formData !== initialFormData) {
+      localStorage.setItem('nova_solicitacao_draft', JSON.stringify(formData));
+    }
+  }, [formData]);
 
   const updateField = <K extends keyof NovaSolicitacaoData>(
     field: K, 
