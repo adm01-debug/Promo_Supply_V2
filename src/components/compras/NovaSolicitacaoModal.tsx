@@ -228,6 +228,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           data_necessidade: formData.prazoEntrega || null,
           solicitante_id: user.id,
           departamento: formData.empresa,
+          categoria_id: formData.categoriaId || null,
         })
         .select('id, numero')
         .single();
