@@ -230,6 +230,8 @@ const ConfiguracoesCentroCusto = () => {
                 <TableRow>
                   <TableHead>Código</TableHead>
                   <TableHead>Nome</TableHead>
+                  <TableHead>Departamento</TableHead>
+                  <TableHead>Gestor</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
                 </TableRow>
