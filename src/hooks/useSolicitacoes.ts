@@ -108,8 +108,9 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
       *,
       fornecedor:fornecedores(razao_social, nome_fantasia),
       categoria:categorias(nome),
-      organization:organizations(name),
-      cost_center:cost_centers(name, code)
+      cost_center:cost_centers(name, code),
+      aprovador:profiles!solicitacoes_aprovador_id_fkey(full_name),
+      solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
