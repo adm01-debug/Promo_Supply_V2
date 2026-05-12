@@ -34,6 +34,7 @@ interface NovaSolicitacaoData {
   empresa: string;
   vendedor: string;
   produto: string;
+  categoriaId: string;
   quantidade: number;
   tipo: 'PE_LISO' | 'FAB_LISO' | 'FAB_PERSONALIZADO';
   prazoEntrega: string;
@@ -117,7 +118,7 @@ export function Step1Identification({ formData, errors, updateField }: StepProps
 }
 
 export function Step2Specifications({ formData, errors, updateField }: StepProps) {
-  const { produtos } = useProdutos();
+  const { produtos, categorias } = useProdutos();
   const [open, setOpen] = useState(false);
 
   const onProductSelect = (p: Produto) => {
@@ -125,77 +126,94 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
     if (p.preco_referencia) {
       updateField('valorEstimado', p.preco_referencia);
     }
+    if (p.categoria_id) {
+      updateField('categoriaId', p.categoria_id);
+    }
     setOpen(false);
   };
 
   return (
     <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-      <div className="space-y-2">
-        <Label htmlFor="produto" className="flex items-center gap-2"><Package className="w-4 h-4" />Produto *</Label>
-        
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <Button
-              variant="outline"
-              role="combobox"
-              aria-expanded={open}
-              className={cn("w-full justify-between font-normal", !formData.produto && "text-muted-foreground", errors.produto && "border-destructive")}
-            >
-              {formData.produto || "Selecionar ou digitar produto..."}
-              <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[400px] p-0" align="start">
-            <Command>
-              <CommandInput placeholder="Buscar produto no catálogo..." />
-              <CommandList>
-                <CommandEmpty>
-                  <p className="text-sm p-4">Nenhum produto encontrado no catálogo.</p>
-                  <Button 
-                    variant="ghost" 
-                    className="w-full justify-start font-normal text-primary"
-                    onClick={() => setOpen(false)}
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Usar termo pesquisado como nome
-                  </Button>
-                </CommandEmpty>
-                <CommandGroup heading="Sugestões do Catálogo">
-                  {produtos.filter(p => p.ativo).map((p) => (
-                    <CommandItem
-                      key={p.id}
-                      value={p.nome}
-                      onSelect={() => onProductSelect(p)}
-                    >
-                      <Check
-                        className={cn(
-                          "mr-2 h-4 w-4",
-                          formData.produto === p.nome ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      <div className="flex flex-col">
-                        <span>{p.nome}</span>
-                        <span className="text-xs text-muted-foreground">{p.codigo} — Ref: {p.preco_referencia?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                      </div>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-
-        <div className="mt-2">
-          <Input 
-            id="produto-manual" 
-            value={formData.produto} 
-            onChange={(e) => updateField('produto', e.target.value)}
-            placeholder="Ou digite manualmente aqui..." 
-            className={cn("text-xs h-8", errors.produto && "border-destructive")} 
-          />
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="categoria" className="flex items-center gap-2"><FileText className="w-4 h-4" />Categoria *</Label>
+          <Select value={formData.categoriaId} onValueChange={(v) => updateField('categoriaId', v)}>
+            <SelectTrigger className={cn(errors.categoriaId && "border-destructive")}>
+              <SelectValue placeholder="Selecione a categoria" />
+            </SelectTrigger>
+            <SelectContent>
+              {categorias.map(c => <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>)}
+            </SelectContent>
+          </Select>
+          {errors.categoriaId && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.categoriaId}</p>}
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="produto" className="flex items-center gap-2"><Package className="w-4 h-4" />Produto *</Label>
+          
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={open}
+                className={cn("w-full justify-between font-normal", !formData.produto && "text-muted-foreground", errors.produto && "border-destructive")}
+              >
+                {formData.produto || "Selecionar ou digitar produto..."}
+                <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[400px] p-0" align="start">
+              <Command>
+                <CommandInput placeholder="Buscar produto no catálogo..." />
+                <CommandList>
+                  <CommandEmpty>
+                    <p className="text-sm p-4">Nenhum produto encontrado no catálogo.</p>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-start font-normal text-primary"
+                      onClick={() => setOpen(false)}
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Usar termo pesquisado como nome
+                    </Button>
+                  </CommandEmpty>
+                  <CommandGroup heading="Sugestões do Catálogo">
+                    {produtos.filter(p => p.ativo).map((p) => (
+                      <CommandItem
+                        key={p.id}
+                        value={p.nome}
+                        onSelect={() => onProductSelect(p)}
+                      >
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            formData.produto === p.nome ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        <div className="flex flex-col">
+                          <span>{p.nome}</span>
+                          <span className="text-xs text-muted-foreground">{p.codigo} — Ref: {p.preco_referencia?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                        </div>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
 
-        {errors.produto && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.produto}</p>}
+          <div className="mt-2">
+            <Input 
+              id="produto-manual" 
+              value={formData.produto} 
+              onChange={(e) => updateField('produto', e.target.value)}
+              placeholder="Ou digite manualmente aqui..." 
+              className={cn("text-xs h-8", errors.produto && "border-destructive")} 
+            />
+          </div>
+
+          {errors.produto && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.produto}</p>}
+        </div>
       </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
         <div className="space-y-2">

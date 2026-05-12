@@ -40,6 +40,7 @@ export interface AdvancedFilters {
   fornecedores: string[];
   tipos: string[];
   prioridades: string[];
+  status: string[];
 }
 
 const initialFilters: AdvancedFilters = {
@@ -51,6 +52,7 @@ const initialFilters: AdvancedFilters = {
   fornecedores: [],
   tipos: [],
   prioridades: [],
+  status: [],
 };
 
 const empresasOptions = [
@@ -88,6 +90,15 @@ const prioridadesOptions = [
   { value: 'normal', label: 'Normal', color: 'bg-info' },
   { value: 'alta', label: 'Alta', color: 'bg-warning' },
   { value: 'urgente', label: 'Urgente', color: 'bg-destructive' },
+];
+
+const statusOptions = [
+  { value: 'AGUARDANDO_COTACAO', label: 'Pendente' },
+  { value: 'EM_COTACAO', label: 'Em Cotação' },
+  { value: 'FORNECEDOR_SELECIONADO', label: 'Aprovada' },
+  { value: 'AGUARDANDO_PAGAMENTO', label: 'Em Andamento' },
+  { value: 'ENTREGUE', label: 'Finalizada' },
+  { value: 'REJEITADA', label: 'Rejeitada' },
 ];
 
 interface FiltrosAvancadosProps {
@@ -361,6 +372,39 @@ export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosA
                       >
                         <span className={cn("w-2 h-2 rounded-full", prioridade.color)} />
                         {prioridade.label}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            {/* Status */}
+            <AccordionItem value="status">
+              <AccordionTrigger className="hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-primary" />
+                  <span>Status</span>
+                  {localFilters.status.length > 0 && (
+                    <Badge variant="secondary" className="ml-2 text-xs">
+                      {localFilters.status.length}
+                    </Badge>
+                  )}
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="pt-2 space-y-2">
+                  {statusOptions.map(status => (
+                    <div key={status.value} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`status-${status.value}`}
+                        checked={localFilters.status.includes(status.value)}
+                        onCheckedChange={() => toggleArrayValue('status', status.value)}
+                      />
+                      <Label 
+                        htmlFor={`status-${status.value}`} 
+                        className="text-sm cursor-pointer"
+                      >
+                        {status.label}
                       </Label>
                     </div>
                   ))}

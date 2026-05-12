@@ -37,6 +37,7 @@ interface NovaSolicitacaoData {
   empresa: string;
   vendedor: string;
   produto: string;
+  categoriaId: string;
   quantidade: number;
   tipo: 'PE_LISO' | 'FAB_LISO' | 'FAB_PERSONALIZADO';
   prazoEntrega: string;
@@ -52,6 +53,7 @@ const initialFormData: NovaSolicitacaoData = {
   empresa: '',
   vendedor: '',
   produto: '',
+  categoriaId: '',
   quantidade: 0,
   tipo: 'PE_LISO',
   prazoEntrega: '',
@@ -226,6 +228,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           data_necessidade: formData.prazoEntrega || null,
           solicitante_id: user.id,
           departamento: formData.empresa,
+          categoria_id: formData.categoriaId || null,
         })
         .select('id, numero')
         .single();

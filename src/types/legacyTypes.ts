@@ -12,7 +12,7 @@ export interface LegacySolicitacao {
   quantidade: number;
   quantidadeReal: number;
   tipo: 'PE_LISO' | 'FAB_LISO' | 'FAB_PERSONALIZADO';
-  status: 'AGUARDANDO_COTACAO' | 'EM_COTACAO' | 'FORNECEDOR_SELECIONADO' | 'PEDIDO_GERADO' | 'AGUARDANDO_PAGAMENTO' | 'PAGO' | 'EM_TRANSITO' | 'ENTREGUE';
+  status: 'AGUARDANDO_COTACAO' | 'EM_COTACAO' | 'FORNECEDOR_SELECIONADO' | 'PEDIDO_GERADO' | 'AGUARDANDO_PAGAMENTO' | 'PAGO' | 'EM_TRANSITO' | 'ENTREGUE' | 'REJEITADA' | 'CANCELADA';
   vendedor: string;
   prazoEntrega: string;
   fornecedorSelecionado?: string;
@@ -81,7 +81,7 @@ export const getTipoLabel = (tipo: LegacySolicitacao['tipo']) => {
 };
 
 export const getStatusLabel = (status: LegacySolicitacao['status']) => {
-  const labels = {
+  const labels: Record<LegacySolicitacao['status'], string> = {
     AGUARDANDO_COTACAO: 'Aguardando Cotação',
     EM_COTACAO: 'Em Cotação',
     FORNECEDOR_SELECIONADO: 'Fornecedor Selecionado',
@@ -89,13 +89,15 @@ export const getStatusLabel = (status: LegacySolicitacao['status']) => {
     AGUARDANDO_PAGAMENTO: 'Aguardando Pagamento',
     PAGO: 'Pago',
     EM_TRANSITO: 'Em Trânsito',
-    ENTREGUE: 'Entregue',
+    ENTREGUE: 'Finalizada',
+    REJEITADA: 'Rejeitada',
+    CANCELADA: 'Cancelada',
   };
   return labels[status];
 };
 
 export const getStatusColor = (status: LegacySolicitacao['status']) => {
-  const colors = {
+  const colors: Record<LegacySolicitacao['status'], string> = {
     AGUARDANDO_COTACAO: 'bg-emerald-500',
     EM_COTACAO: 'bg-yellow-500',
     FORNECEDOR_SELECIONADO: 'bg-blue-500',
@@ -104,6 +106,8 @@ export const getStatusColor = (status: LegacySolicitacao['status']) => {
     PAGO: 'bg-cyan-500',
     EM_TRANSITO: 'bg-purple-500',
     ENTREGUE: 'bg-green-600',
+    REJEITADA: 'bg-red-500',
+    CANCELADA: 'bg-gray-500',
   };
   return colors[status];
 };

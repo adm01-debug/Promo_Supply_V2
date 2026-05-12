@@ -150,10 +150,13 @@ const Solicitacoes = () => {
       const matchesTiposAdvanced = advancedFilters.tipos.length === 0 || 
         advancedFilters.tipos.includes(s.tipo);
 
+      const matchesStatusAdvanced = advancedFilters.status.length === 0 || 
+        advancedFilters.status.includes(s.status);
+
       return matchesSearch && matchesStatus && matchesTipo && 
         matchesDateFrom && matchesDateTo && 
         matchesValorMin && matchesValorMax && 
-        matchesEmpresas && matchesTiposAdvanced;
+        matchesEmpresas && matchesTiposAdvanced && matchesStatusAdvanced;
     });
   }, [adaptedSolicitacoes, searchTerm, statusFilter, tipoFilter, advancedFilters]);
 
@@ -162,8 +165,9 @@ const Solicitacoes = () => {
     EM_COTACAO: filteredSolicitacoes.filter(s => s.status === 'EM_COTACAO'),
     FORNECEDOR_SELECIONADO: filteredSolicitacoes.filter(s => s.status === 'FORNECEDOR_SELECIONADO'),
     AGUARDANDO_PAGAMENTO: filteredSolicitacoes.filter(s => s.status === 'AGUARDANDO_PAGAMENTO'),
-    PAGO: filteredSolicitacoes.filter(s => s.status === 'PAGO'),
-    EM_TRANSITO: filteredSolicitacoes.filter(s => s.status === 'EM_TRANSITO'),
+    ENTREGUE: filteredSolicitacoes.filter(s => s.status === 'ENTREGUE'),
+    REJEITADA: filteredSolicitacoes.filter(s => s.status === 'REJEITADA'),
+    CANCELADA: filteredSolicitacoes.filter(s => s.status === 'CANCELADA'),
   }), [filteredSolicitacoes]);
 
   // statusConfig imported from solicitacoesHelpers
@@ -172,7 +176,7 @@ const Solicitacoes = () => {
   const stats = useMemo(() => {
     const pending = groupedByStatus.AGUARDANDO_COTACAO.length + groupedByStatus.EM_COTACAO.length;
     const inProgress = groupedByStatus.FORNECEDOR_SELECIONADO.length + groupedByStatus.AGUARDANDO_PAGAMENTO.length;
-    const completed = groupedByStatus.PAGO.length + groupedByStatus.EM_TRANSITO.length;
+    const completed = groupedByStatus.ENTREGUE.length;
     const totalValue = filteredSolicitacoes.reduce((acc, s) => acc + (s.valorTotal || 0), 0);
 
     return [
@@ -365,6 +369,16 @@ const Solicitacoes = () => {
               <EnhancedSearch
                 placeholder="Buscar por produto, empresa, ID..."
                 onSearch={handleSearch}
+                results={filteredSolicitacoes.map(s => ({
+                  id: s.id,
+                  title: s.produto,
+                  subtitle: `${s.itemNumber} • ${s.empresa}`,
+                  type: 'solicitacao' as const,
+                  href: `/solicitacoes?id=${s.id}`
+                }))}
+                onSelect={(res) => {
+                  setSearchTerm(res.title);
+                }}
                 recentSearches={['Notebook Dell', 'Material de escritório']}
                 trendingSearches={['Equipamentos TI', 'Suprimentos']}
               />
@@ -377,12 +391,13 @@ const Solicitacoes = () => {
                 </SelectTrigger>
                 <SelectContent className="bg-background border border-border z-50">
                   <SelectItem value="todas">Todos os Status</SelectItem>
-                  <SelectItem value="AGUARDANDO_COTACAO">Aguardando Cotação</SelectItem>
+                  <SelectItem value="AGUARDANDO_COTACAO">Pendente</SelectItem>
                   <SelectItem value="EM_COTACAO">Em Cotação</SelectItem>
-                  <SelectItem value="FORNECEDOR_SELECIONADO">Fornecedor Selecionado</SelectItem>
-                  <SelectItem value="AGUARDANDO_PAGAMENTO">Aguardando Pagamento</SelectItem>
-                  <SelectItem value="PAGO">Pago</SelectItem>
-                  <SelectItem value="EM_TRANSITO">Em Trânsito</SelectItem>
+                  <SelectItem value="FORNECEDOR_SELECIONADO">Aprovada</SelectItem>
+                  <SelectItem value="AGUARDANDO_PAGAMENTO">Em Andamento</SelectItem>
+                  <SelectItem value="ENTREGUE">Finalizada</SelectItem>
+                  <SelectItem value="REJEITADA">Rejeitada</SelectItem>
+                  <SelectItem value="CANCELADA">Cancelada</SelectItem>
                 </SelectContent>
               </Select>
 
