@@ -50,6 +50,7 @@ const defaultWidgets: DashboardWidget[] = [
   // AI widgets
   { id: 'demand-prediction', type: 'ai', title: 'Previsão de Demanda (IA)', visible: true, order: 14, size: 'large' },
   { id: 'risk-heatmap', type: 'ai', title: 'Análise de Riscos', visible: true, order: 15, size: 'full' },
+  { id: 'active-sourcing', type: 'panel', title: 'RFx Ativos', visible: true, order: 16, size: 'medium' },
 ];
 
 export const useDashboardLayoutStore = create<DashboardLayoutState>()(
