@@ -1304,6 +1304,7 @@ export type Database = {
         Row: {
           ano: number
           centro_custo: string
+          cost_center_id: string | null
           created_at: string
           created_by: string | null
           departamento: string
@@ -1317,6 +1318,7 @@ export type Database = {
         Insert: {
           ano?: number
           centro_custo: string
+          cost_center_id?: string | null
           created_at?: string
           created_by?: string | null
           departamento: string
@@ -1330,6 +1332,7 @@ export type Database = {
         Update: {
           ano?: number
           centro_custo?: string
+          cost_center_id?: string | null
           created_at?: string
           created_by?: string | null
           departamento?: string
@@ -1340,7 +1343,15 @@ export type Database = {
           valor_total?: number
           valor_utilizado?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "department_budgets_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       dependency_health: {
         Row: {
