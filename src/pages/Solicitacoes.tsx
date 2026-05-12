@@ -173,7 +173,7 @@ const Solicitacoes = () => {
   const stats = useMemo(() => {
     const pending = groupedByStatus.AGUARDANDO_COTACAO.length + groupedByStatus.EM_COTACAO.length;
     const inProgress = groupedByStatus.FORNECEDOR_SELECIONADO.length + groupedByStatus.AGUARDANDO_PAGAMENTO.length;
-    const completed = groupedByStatus.PAGO.length + groupedByStatus.EM_TRANSITO.length;
+    const completed = groupedByStatus.ENTREGUE.length;
     const totalValue = filteredSolicitacoes.reduce((acc, s) => acc + (s.valorTotal || 0), 0);
 
     return [
