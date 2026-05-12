@@ -87,22 +87,58 @@ export function DemandPredictionPanel() {
     { value: '12', label: 'Próximo ano' },
   ];
 
+  const { data: pedidos } = useQuery({
+    queryKey: ['demand-prediction-pedidos'],
+    queryFn: () => fetchAllRows<{ valor_total: number; data_emissao: string }>('pedidos', 'valor_total, data_emissao'),
+    staleTime: 60000,
+  });
+
+  const historicalData = useMemo(() => {
+    if (!pedidos) return [];
+    
+    // Calculate last 6 months of real data
+    const now = new Date();
+    return Array.from({ length: 6 }).map((_, i) => {
+      const date = subMonths(now, 6 - i);
+      const monthStart = startOfMonth(date);
+      const monthEnd = endOfMonth(date);
+      const monthLabel = format(date, 'MMM yyyy');
+
+      const monthPedidos = pedidos.filter(p => {
+        const d = new Date(p.data_emissao);
+        return isWithinInterval(d, { start: monthStart, end: monthEnd });
+      });
+
+      return {
+        month: monthLabel,
+        totalValue: monthPedidos.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 0),
+        totalQuantity: monthPedidos.length * 10, // Simulated quantity if not in DB
+      };
+    });
+  }, [pedidos]);
+
   const handlePredict = async () => {
+    if (historicalData.length === 0) {
+      toast({
+        title: 'Sem dados suficientes',
+        description: 'Não há dados históricos de pedidos para gerar a previsão.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setLoading(true);
     setPrediction(null);
 
     try {
-      // Prepare historical data
-      const historicalData = historicalDataMock.map(item => ({
-        month: item.month,
-        value: item.totalValue,
-        quantity: item.totalQuantity,
-        category: 'Geral',
-      }));
-
       const { data, error } = await supabase.functions.invoke('ai-demand-prediction', {
         body: {
-          historicalData,
+          historicalData: historicalData.map(item => ({
+            month: item.month,
+            value: item.totalValue,
+            quantity: item.totalQuantity,
+            category: 'Geral',
+          })),
           category: category === 'all' ? 'Todas' : category,
           timeframe: `Próximos ${timeframe} meses`,
         },
