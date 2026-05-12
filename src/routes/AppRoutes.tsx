@@ -39,6 +39,7 @@ const AdminTelemetria = lazy(() => import("@/pages/AdminTelemetria"));
 const DependencyHealth = lazy(() => import("@/pages/admin/DependencyHealth"));
 const Sourcing = lazy(() => import("@/pages/Sourcing"));
 const PortalFornecedor = lazy(() => import("@/pages/PortalFornecedor"));
+const ConfiguracoesCentroCusto = lazy(() => import("@/pages/ConfiguracoesCentroCusto"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 export const AnimatedRoutes = () => {
@@ -154,6 +155,9 @@ export const AnimatedRoutes = () => {
         } />
         <Route path="/portal-fornecedor" element={
           <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><PortalFornecedor /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/configuracoes-centro-custo" element={
+          <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="default"><ConfiguracoesCentroCusto /></ModuleErrorBoundary></ProtectedRoute>
         } />
 
         <Route path="*" element={<NotFound />} />

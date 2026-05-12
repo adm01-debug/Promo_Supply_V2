@@ -12,7 +12,10 @@ export const useBudgetManagement = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('department_budgets')
-        .select('*')
+        .select(`
+          *,
+          cost_center:cost_centers(name, code)
+        `)
         .order('departamento', { ascending: true });
       if (error) throw error;
       return data;
@@ -21,6 +24,7 @@ export const useBudgetManagement = () => {
 
   const createBudget = useMutation({
     mutationFn: async (budget: {
+      cost_center_id: string;
       centro_custo: string;
       departamento: string;
       ano: number;
@@ -78,9 +82,9 @@ export const useBudgetManagement = () => {
     onError: () => toast.error('Erro ao remover orçamento'),
   });
 
-  const checkAvailability = async (centroCusto: string, valor: number) => {
+  const checkAvailability = async (costCenterId: string, valor: number) => {
     const { data, error } = await supabase.rpc('check_budget_availability', {
-      p_centro_custo: centroCusto,
+      p_cost_center_id: costCenterId,
       p_valor: valor,
     });
     if (error) throw error;
