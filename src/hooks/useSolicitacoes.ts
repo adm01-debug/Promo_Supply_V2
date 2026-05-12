@@ -270,7 +270,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
         .from('cost_centers')
         .select(`
           *,
-          manager:profiles!cost_centers_manager_id_fkey(full_name)
+          manager:profiles(full_name)
         `)
         .eq('is_active', true)
         .order('name');
