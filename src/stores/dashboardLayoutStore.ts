@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface DashboardWidget {
   id: string;
@@ -12,14 +13,18 @@ export interface DashboardWidget {
 
 interface DashboardLayoutState {
   widgets: DashboardWidget[];
+  isLoading: boolean;
   setWidgets: (widgets: DashboardWidget[]) => void;
   toggleWidgetVisibility: (id: string) => void;
   reorderWidgets: (fromIndex: number, toIndex: number) => void;
   resizeWidget: (id: string, size: DashboardWidget['size']) => void;
   resetLayout: () => void;
+  loadFromDb: (dashboardId: string) => Promise<void>;
+  saveToDb: (dashboardId: string) => Promise<void>;
 }
 
 const defaultWidgets: DashboardWidget[] = [
+  // ... keep existing defaultWidgets array
   // KPIs (top row)
   { id: 'kpi-aguardando', type: 'kpi', title: 'Aguard. Cotação', visible: true, order: 0, size: 'small' },
   { id: 'kpi-volume', type: 'kpi', title: 'Volume Mês', visible: true, order: 1, size: 'small' },
@@ -51,6 +56,7 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
   persist(
     (set, get) => ({
       widgets: defaultWidgets,
+      isLoading: false,
       
       setWidgets: (widgets) => set({ widgets }),
       
@@ -74,6 +80,51 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
       })),
       
       resetLayout: () => set({ widgets: defaultWidgets }),
+
+      loadFromDb: async (dashboardId) => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        set({ isLoading: true });
+        try {
+          const { data, error } = await supabase
+            .from('dashboard_layouts')
+            .select('layout')
+            .eq('user_id', user.id)
+            .eq('dashboard_id', dashboardId)
+            .maybeSingle();
+
+          if (error) throw error;
+          if (data?.layout) {
+            set({ widgets: data.layout as DashboardWidget[] });
+          }
+        } catch (error) {
+          console.error('Error loading dashboard layout:', error);
+        } finally {
+          set({ isLoading: false });
+        }
+      },
+
+      saveToDb: async (dashboardId) => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        const { widgets } = get();
+        try {
+          const { error } = await supabase
+            .from('dashboard_layouts')
+            .upsert({
+              user_id: user.id,
+              dashboard_id: dashboardId,
+              layout: widgets,
+              updated_at: new Date().toISOString()
+            }, { onConflict: 'user_id, dashboard_id' });
+
+          if (error) throw error;
+        } catch (error) {
+          console.error('Error saving dashboard layout:', error);
+        }
+      }
     }),
     {
       name: 'dashboard-layout',
