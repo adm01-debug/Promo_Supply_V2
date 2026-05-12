@@ -5,6 +5,7 @@ import {
   FileText, 
   CreditCard, 
   Factory,
+  Building2,
   ChevronLeft,
   ChevronRight,
   Menu,
