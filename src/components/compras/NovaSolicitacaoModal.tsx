@@ -53,6 +53,7 @@ const initialFormData: NovaSolicitacaoData = {
   empresa: '',
   vendedor: '',
   produto: '',
+  categoriaId: '',
   quantidade: 0,
   tipo: 'PE_LISO',
   prazoEntrega: '',
