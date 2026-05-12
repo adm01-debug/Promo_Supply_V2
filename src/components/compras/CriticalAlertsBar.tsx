@@ -80,7 +80,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
     <Alert 
       ref={ref}
       variant="destructive" 
-      className="relative border-destructive/50 bg-destructive/10 animate-pulse-slow"
+      className="relative border-destructive/50 bg-destructive/10 animate-pulse-slow shadow-lg"
     >
       <div className="flex items-start gap-3">
         {alerts.overdueCount > 0 ? (
@@ -90,32 +90,32 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
         )}
         
         <div className="flex-1">
-          <AlertTitle className="text-destructive font-semibold mb-1 flex items-center gap-2">
-            <span className="animate-pulse">Atenção: Itens Precisam de Ação Imediata</span>
-            <Badge variant="outline" className="border-destructive text-destructive text-[10px] h-4 font-black">SLA ALERT</Badge>
+          <AlertTitle className="text-destructive font-black uppercase tracking-widest text-xs mb-1 flex items-center gap-2">
+            <span className="animate-pulse">Ação Imediata Necessária</span>
+            <Badge variant="outline" className="border-destructive text-destructive text-[10px] h-4 font-black">SLA CRÍTICO</Badge>
           </AlertTitle>
           <AlertDescription className="text-destructive/90">
             <div className="flex flex-wrap items-center gap-3">
               {alerts.overdueCount > 0 && (
                 <div className="flex items-center gap-2">
-                  <Badge variant="destructive" className="gap-1">
+                  <Badge variant="destructive" className="gap-1 font-black text-[10px] uppercase">
                     <AlertCircle className="h-3 w-3" />
-                    {alerts.overdueCount} Atrasado{alerts.overdueCount > 1 ? 's' : ''}
+                    {alerts.overdueCount} Excedido{alerts.overdueCount > 1 ? 's' : ''}
                   </Badge>
-                  <span className="text-xs text-muted-foreground">
-                    ({alerts.overdueItems.join(', ')}{alerts.overdueCount > 3 ? '...' : ''})
+                  <span className="text-[10px] font-medium text-muted-foreground bg-destructive/5 px-1.5 py-0.5 rounded border border-destructive/10">
+                    {alerts.overdueItems.join(', ')}{alerts.overdueCount > 3 ? '...' : ''}
                   </span>
                 </div>
               )}
               
               {alerts.criticalCount > 0 && (
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="gap-1 border-destructive text-destructive">
+                  <Badge variant="outline" className="gap-1 border-destructive text-destructive font-black text-[10px] uppercase">
                     <AlertTriangle className="h-3 w-3" />
-                    {alerts.criticalCount} Crítico{alerts.criticalCount > 1 ? 's' : ''}
+                    {alerts.criticalCount} Próximo{alerts.criticalCount > 1 ? 's' : ''}
                   </Badge>
-                  <span className="text-xs text-muted-foreground">
-                    ({alerts.criticalItems.join(', ')}{alerts.criticalCount > 3 ? '...' : ''})
+                  <span className="text-[10px] font-medium text-muted-foreground bg-destructive/5 px-1.5 py-0.5 rounded border border-destructive/10">
+                    {alerts.criticalItems.join(', ')}{alerts.criticalCount > 3 ? '...' : ''}
                   </span>
                 </div>
               )}
@@ -128,10 +128,10 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
             asChild
             size="sm"
             variant="destructive"
-            className="h-8 gap-1"
+            className="h-8 gap-1 font-black uppercase text-[10px] tracking-widest"
           >
             <Link to="/solicitacoes">
-              Ver Pedidos
+              Resolver Agora
               <ChevronRight className="h-4 w-4" />
             </Link>
           </Button>
