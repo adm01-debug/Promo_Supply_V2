@@ -23,8 +23,13 @@ import {
   Package, 
   Building2,
   User,
-  Calendar
+  Calendar,
+  Clock,
+  AlertTriangle,
+  ArrowRight
 } from "lucide-react";
+import { differenceInDays, isPast } from "date-fns";
+
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
