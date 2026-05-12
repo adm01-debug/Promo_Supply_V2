@@ -55,11 +55,9 @@ const ComprasDashboard = () => {
     loadFromDb('compras');
   }, [loadFromDb]);
 
-  useEffect(() => {
-    if (widgets.length > 0) {
-      saveToDb('compras');
-    }
-  }, [widgets, saveToDb]);
+  const handleSaveLayout = useCallback(() => {
+    saveToDb('compras');
+  }, [saveToDb]);
 
   // Realtime with debounce to avoid excessive re-renders
   useRealtimeSubscription({
