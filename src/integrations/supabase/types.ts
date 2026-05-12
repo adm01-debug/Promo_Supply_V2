@@ -5185,20 +5185,35 @@ export type Database = {
         Args: { prefix: string; table_name: string }
         Returns: string
       }
-      get_cost_center_performance_report: {
-        Args: never
-        Returns: {
-          alerts_count: number
-          available_balance: number
-          cost_center_code: string
-          cost_center_id: string
-          cost_center_name: string
-          total_budget: number
-          total_committed: number
-          total_used: number
-          usage_percentage: number
-        }[]
-      }
+      get_cost_center_performance_report:
+        | {
+            Args: never
+            Returns: {
+              alerts_count: number
+              available_balance: number
+              cost_center_code: string
+              cost_center_id: string
+              cost_center_name: string
+              total_budget: number
+              total_committed: number
+              total_used: number
+              usage_percentage: number
+            }[]
+          }
+        | {
+            Args: { p_organization_id: string }
+            Returns: {
+              alerts_count: number
+              available_balance: number
+              cost_center_code: string
+              cost_center_id: string
+              cost_center_name: string
+              total_budget: number
+              total_committed: number
+              total_used: number
+              usage_percentage: number
+            }[]
+          }
       get_effective_approver: {
         Args: {
           p_approver_id: string
