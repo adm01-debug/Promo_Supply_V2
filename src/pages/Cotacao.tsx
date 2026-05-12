@@ -216,6 +216,10 @@ const Cotacao = () => {
             <div className="flex items-center gap-3">
               <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
               <AISupplierSuggestion />
+              <Button variant="outline" size="sm" onClick={() => setShowHistoryModal(true)} className="gap-2">
+                <TrendingDown className="w-4 h-4" />
+                Histórico de Preços
+              </Button>
               {savingsActual > 0 && (
                 <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20 animate-in fade-in zoom-in duration-500">
                   <TrendingDown className="w-3 h-3 mr-1" />
