@@ -11,6 +11,10 @@ export interface CostCenter {
   name: string;
   code: string;
   is_active: boolean;
+  manager_id?: string | null;
+  parent_id?: string | null;
+  department?: string | null;
+  manager?: { full_name: string | null } | null;
 }
 
 export interface Solicitacao {
