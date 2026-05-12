@@ -461,6 +461,11 @@ const Cotacao = () => {
         fornecedores={legacyFornecedores}
       />
       
+      <PriceHistoryModal 
+        open={showHistoryModal} 
+        onOpenChange={setShowHistoryModal} 
+      />
+
       {/* Onboarding Tour */}
       {!isTourLoading && (
         <OnboardingTour
