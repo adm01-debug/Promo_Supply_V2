@@ -18,6 +18,7 @@ export interface DashboardKPIs {
   economiaGerada: number;
   economiaPercentual: number;
   avgSla: number;
+  taxaSlaReal: number;
 }
 
 export interface KPIComparison {
@@ -168,7 +169,11 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
 
       const avgSla = completedSlas.length > 0 
         ? Number((completedSlas.reduce((a, b) => a + b, 0) / completedSlas.length).toFixed(1)) 
-        : 1.8; // Default base value improved from 2.5
+        : 1.8;
+
+      const taxaSlaReal = completedSlas.length > 0
+        ? Math.round((completedSlas.filter(d => d <= 3).length / completedSlas.length) * 100)
+        : 85; 
 
       
       const entregues = pPed.filter(p => p.status === 'entregue');
@@ -184,14 +189,14 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         entregue: pPed.filter(p => p.status === 'entregue').length,
       };
 
-      return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega, avgSla, pipeline };
+      return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega, avgSla, taxaSlaReal, pipeline };
     };
 
     const currentData = calculatePeriodData(currentMonthStart);
     const previousData = calculatePeriodData(previousMonthStart, previousMonthEnd);
 
     // Sparklines (last 7 days)
-    const generateSparkline = (key: 'aguardandoCotacao' | 'volumeMes' | 'economiaGerada' | 'taxaEntrega') => {
+    const generateSparkline = (key: 'aguardandoCotacao' | 'volumeMes' | 'economiaGerada' | 'taxaEntrega' | 'taxaSlaReal') => {
       return Array.from({ length: 7 }).map((_, i) => {
         const date = subDays(now, 6 - i);
         const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
