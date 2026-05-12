@@ -11,8 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBudgetManagement } from '@/hooks/useBudgetManagement';
+import { useSolicitacoes } from '@/hooks/useSolicitacoes';
 import { 
-  Wallet, Plus, TrendingUp, AlertTriangle, CheckCircle2, Trash2, PiggyBank, BarChart3
+  Wallet, Plus, TrendingUp, AlertTriangle, CheckCircle2, Trash2, PiggyBank, BarChart3, Loader2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
@@ -30,13 +31,15 @@ const meses = [
 
 const Orcamentos = () => {
   const { budgets, loading, createBudget, updateBudget, deleteBudget, summary } = useBudgetManagement();
+  const { costCenters, loadingCostCenters } = useSolicitacoes();
   const [isOpen, setIsOpen] = useState(false);
-  const [form, setForm] = useState({ centro_custo: '', departamento: '', ano: new Date().getFullYear().toString(), mes: '', valor_total: '' });
+  const [form, setForm] = useState({ cost_center_id: '', centro_custo: '', departamento: '', ano: new Date().getFullYear().toString(), mes: '', valor_total: '' });
 
   const handleCreate = () => {
     const valor = parseFloat(form.valor_total.replace(/[^\d,]/g, '').replace(',', '.'));
-    if (!form.centro_custo || !form.departamento || isNaN(valor)) return;
+    if (!form.cost_center_id || !form.departamento || isNaN(valor)) return;
     createBudget.mutate({
+      cost_center_id: form.cost_center_id,
       centro_custo: form.centro_custo,
       departamento: form.departamento,
       ano: parseInt(form.ano),
@@ -45,7 +48,7 @@ const Orcamentos = () => {
     }, {
       onSuccess: () => {
         setIsOpen(false);
-        setForm({ centro_custo: '', departamento: '', ano: new Date().getFullYear().toString(), mes: '', valor_total: '' });
+        setForm({ cost_center_id: '', centro_custo: '', departamento: '', ano: new Date().getFullYear().toString(), mes: '', valor_total: '' });
       },
     });
   };
@@ -93,7 +96,22 @@ const Orcamentos = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>Centro de Custo</Label>
-                    <Input value={form.centro_custo} onChange={e => setForm(p => ({ ...p, centro_custo: e.target.value }))} placeholder="CC-001" />
+                    <Select 
+                      value={form.cost_center_id} 
+                      onValueChange={v => {
+                        const cc = costCenters.find(c => c.id === v);
+                        setForm(p => ({ ...p, cost_center_id: v, centro_custo: cc?.name || '' }));
+                      }}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={loadingCostCenters ? "Carregando..." : "Selecione"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {costCenters.map(cc => (
+                          <SelectItem key={cc.id} value={cc.id}>{cc.name} ({cc.code})</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                   <div>
                     <Label>Departamento</Label>
