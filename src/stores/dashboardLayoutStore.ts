@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { supabase } from '@/integrations/supabase/client';
+import { Json } from '@/integrations/supabase/types';
 
 export interface DashboardWidget {
   id: string;
@@ -24,7 +25,6 @@ interface DashboardLayoutState {
 }
 
 const defaultWidgets: DashboardWidget[] = [
-  // ... keep existing defaultWidgets array
   // KPIs (top row)
   { id: 'kpi-aguardando', type: 'kpi', title: 'Aguard. Cotação', visible: true, order: 0, size: 'small' },
   { id: 'kpi-volume', type: 'kpi', title: 'Volume Mês', visible: true, order: 1, size: 'small' },
@@ -96,7 +96,7 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
 
           if (error) throw error;
           if (data?.layout) {
-            set({ widgets: data.layout as DashboardWidget[] });
+            set({ widgets: data.layout as unknown as DashboardWidget[] });
           }
         } catch (error) {
           console.error('Error loading dashboard layout:', error);
@@ -116,7 +116,7 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
             .upsert({
               user_id: user.id,
               dashboard_id: dashboardId,
-              layout: widgets,
+              layout: widgets as unknown as Json,
               updated_at: new Date().toISOString()
             }, { onConflict: 'user_id, dashboard_id' });
 
