@@ -46,11 +46,41 @@ const LazyPanel = ({ children }: { children: React.ReactNode }) => (
 );
 
 const ComprasDashboard = () => {
-  const [currentFilters, setCurrentFilters] = useState({ category: 'all', supplier: 'all', period: '6m', showComparison: true });
-  const { kpis, pipeline, urgentItems, loading } = useDashboardKPIs(currentFilters);
   const { t } = useTranslation();
-  const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault } = useDashboardFilters();
   const { loadFromDb, saveToDb, widgets } = useDashboardLayoutStore();
+  const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault, getDefaultFilter } = useDashboardFilters();
+
+  const filterDefaults = useMemo(() => ({
+    category: 'all',
+    supplier: 'all',
+    period: '6m',
+    showComparison: true
+  }), []);
+
+  const {
+    filters: currentFilters,
+    patchFilters,
+    loading: accountFiltersLoading
+  } = useAccountFilters('compras-dashboard', filterDefaults);
+
+  const { kpis, pipeline, urgentItems, loading: kpisLoading } = useDashboardKPIs(currentFilters);
+  const loading = kpisLoading || accountFiltersLoading;
+
+  const [hasAppliedDefault, setHasAppliedDefault] = useState(false);
+
+  useEffect(() => {
+    if (hasAppliedDefault || favorites.length === 0 || accountFiltersLoading) return;
+    const defaultFilter = getDefaultFilter();
+    if (defaultFilter) {
+      patchFilters({
+        category: defaultFilter.category_filter || 'all',
+        supplier: defaultFilter.supplier_filter || 'all',
+        period: defaultFilter.period_filter || '6m',
+        showComparison: defaultFilter.show_comparison ?? true,
+      });
+    }
+    setHasAppliedDefault(true);
+  }, [favorites.length, getDefaultFilter, hasAppliedDefault, accountFiltersLoading, patchFilters]);
 
   useEffect(() => {
     loadFromDb('compras');
