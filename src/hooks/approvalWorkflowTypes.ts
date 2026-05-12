@@ -5,6 +5,7 @@ export interface ApprovalRule {
   valor_min: number;
   valor_max: number;
   categoria_id?: string;
+  cost_center_id?: string;
   aprovadores: Array<{ user_id: string; ordem: number; nome?: string }>;
   tempo_limite_horas: number;
   escalacao_automatica: boolean;

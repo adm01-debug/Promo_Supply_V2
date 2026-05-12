@@ -94,6 +94,16 @@ export const ApprovalRuleModal = ({ open, onOpenChange, editingRule, setEditingR
                 </Select>
               </div>
               <div className="space-y-2">
+                <Label>Centro de Custo (opcional)</Label>
+                <Select value={editingRule.cost_center_id || 'all'} onValueChange={(v) => setEditingRule({ ...editingRule, cost_center_id: v === 'all' ? undefined : v })}>
+                  <SelectTrigger><SelectValue placeholder="Qualquer Centro de Custo" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Qualquer Centro de Custo</SelectItem>
+                    {mockUsers.map(user => <SelectItem key={user.id} value={user.id}>{user.nome} - {user.cargo}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
                 <Label>Tempo Limite (horas)</Label>
                 <Input type="number" value={editingRule.tempo_limite_horas || 24} onChange={(e) => setEditingRule({ ...editingRule, tempo_limite_horas: Number(e.target.value) })} />
               </div>

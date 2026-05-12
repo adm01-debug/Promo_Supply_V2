@@ -67,8 +67,9 @@ export const useApprovalWorkflow = () => {
     try {
       setLoading(true);
       const ruleData = {
-        nome: rule.nome || '', descricao: rule.descricao, valor_min: rule.valor_min || 0,
+        valor_nome: rule.nome || '', descricao: rule.descricao, valor_min: rule.valor_min || 0,
         valor_max: rule.valor_max || 999999999, categoria_id: rule.categoria_id,
+        cost_center_id: rule.cost_center_id,
         aprovadores: JSON.stringify(rule.aprovadores || []),
         tempo_limite_horas: rule.tempo_limite_horas || 24,
         escalacao_automatica: rule.escalacao_automatica || false, escalacao_para: rule.escalacao_para,
