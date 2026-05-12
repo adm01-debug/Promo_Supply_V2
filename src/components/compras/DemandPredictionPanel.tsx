@@ -164,7 +164,7 @@ export function DemandPredictionPanel() {
   };
 
   // Combine historical and predicted data for chart
-  const chartData = prediction?.predictions?.map((p, index) => ({
+  const chartData = prediction?.predictions?.map((p: Prediction) => ({
     name: p.month,
     valor: p.predictedValue,
     quantidade: p.predictedQuantity,
