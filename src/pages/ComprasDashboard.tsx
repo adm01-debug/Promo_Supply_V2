@@ -42,10 +42,9 @@ const LazyPanel = ({ children }: { children: React.ReactNode }) => (
 );
 
 const ComprasDashboard = () => {
-  const { kpis, pipeline, urgentItems, loading } = useDashboardKPIs();
-  const { t } = useTranslation();
-  const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault } = useDashboardFilters();
   const [currentFilters, setCurrentFilters] = useState({ category: 'all', supplier: 'all', period: '6m', showComparison: true });
+  const { kpis, pipeline, urgentItems, loading } = useDashboardKPIs(currentFilters);
+
 
   // Realtime with debounce to avoid excessive re-renders
   useRealtimeSubscription({
