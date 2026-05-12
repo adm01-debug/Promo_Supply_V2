@@ -155,6 +155,15 @@ export function useCotacoes(filters?: CotacaoFilters) {
       }
       const { error } = await supabase.from('cotacoes').update({ selecionada: true, status: 'aprovada' }).eq('id', id);
       if (error) throw error;
+
+      // Audit Log
+      await auditHelpers.logApprove(
+        'cotacao',
+        id,
+        `Cotação selecionada como vencedora para solicitação ${cotacao?.solicitacao?.numero}`,
+        { cotacao_id: id }
+      );
+
       toast.success('Fornecedor selecionado!');
       invalidate();
       return true;
