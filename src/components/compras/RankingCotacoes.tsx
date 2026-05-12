@@ -62,6 +62,28 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
     prazo: 20,
     estoque: 20
   });
+  
+  const [justificativa, setJustificativa] = useState("");
+  const [showJustifyModal, setShowJustifyModal] = useState(false);
+  const [pendingSelectionId, setPendingSelectionId] = useState<string | null>(null);
+
+  const handleSelectClick = (cotacaoId: string, isTopRanked: boolean) => {
+    if (isTopRanked) {
+      onSelecionar(cotacaoId);
+    } else {
+      setPendingSelectionId(cotacaoId);
+      setShowJustifyModal(true);
+    }
+  };
+
+  const confirmSelection = () => {
+    if (pendingSelectionId) {
+      onSelecionar(pendingSelectionId, justificativa);
+      setShowJustifyModal(false);
+      setPendingSelectionId(null);
+      setJustificativa("");
+    }
+  };
 
   const calculateScore = (cotacao: Cotacao) => {
     // Encontrar min/max para normalização
