@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
@@ -7,7 +7,8 @@ import {
   ShieldAlert, 
   Zap, 
   ArrowRight,
-  Info
+  Info,
+  Loader2
 } from 'lucide-react';
 import { 
   Tooltip,
@@ -17,6 +18,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface CategoryItem {
   id: string;
@@ -25,15 +28,6 @@ interface CategoryItem {
   spend: number;
   risk: 'low' | 'medium' | 'high' | 'critical';
 }
-
-const mockCategories: CategoryItem[] = [
-  { id: '1', name: 'Matéria Prima A', quadrant: 'strategic', spend: 450000, risk: 'high' },
-  { id: '2', name: 'Energia Elétrica', quadrant: 'bottleneck', spend: 85000, risk: 'critical' },
-  { id: '3', name: 'Material de Escritório', quadrant: 'routine', spend: 12000, risk: 'low' },
-  { id: '4', name: 'Hardware/TI', quadrant: 'leverage', spend: 280000, risk: 'medium' },
-  { id: '5', name: 'Logística', quadrant: 'strategic', spend: 320000, risk: 'medium' },
-  { id: '6', name: 'Limpeza/Facilities', quadrant: 'leverage', spend: 45000, risk: 'low' },
-];
 
 const quadrants = {
   leverage: {
@@ -69,14 +63,45 @@ const quadrants = {
 export const KraljicMatrix = () => {
   const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
 
+  const { data: realCategories, isLoading } = useQuery({
+    queryKey: ['kraljic-matrix-data'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('category_strategies')
+        .select('*, categorias(nome)');
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const categories = useMemo((): CategoryItem[] => {
+    if (!realCategories || realCategories.length === 0) {
+      return [
+        { id: '1', name: 'Matéria Prima A', quadrant: 'strategic', spend: 450000, risk: 'high' },
+        { id: '2', name: 'Energia Elétrica', quadrant: 'bottleneck', spend: 85000, risk: 'critical' },
+        { id: '3', name: 'Material de Escritório', quadrant: 'routine', spend: 12000, risk: 'low' },
+        { id: '4', name: 'Hardware/TI', quadrant: 'leverage', spend: 280000, risk: 'medium' },
+      ];
+    }
+
+    return realCategories.map(c => ({
+      id: c.id,
+      name: (c as any).categorias?.nome || 'Sem Categoria',
+      quadrant: c.kraljic_quadrant as any,
+      spend: Number(c.spend_impact || 0),
+      risk: c.risk_level as any
+    }));
+  }, [realCategories]);
+
   return (
     <Card className="h-full">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
             <Target className="h-5 w-5 text-primary" />
-            Matriz de Kraljic - Gestão de Categorias
+            Matriz de Kraljic
           </CardTitle>
+          {isLoading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
@@ -91,20 +116,18 @@ export const KraljicMatrix = () => {
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-2 aspect-square max-h-[400px] relative mt-4">
-          {/* Axis Labels */}
           <div className="absolute -left-8 top-1/2 -rotate-90 text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Risco de Fornecimento</div>
           <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Impacto Financeiro (Spend)</div>
 
           {(['leverage', 'strategic', 'routine', 'bottleneck'] as const).map((q) => {
             const config = quadrants[q];
-            const categoriesInQuadrant = mockCategories.filter(c => c.quadrant === q);
+            const categoriesInQuadrant = categories.filter(c => c.quadrant === q);
             
             return (
               <motion.div 
                 key={q}
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: Object.keys(quadrants).indexOf(q) * 0.1 }}
                 className={cn(
                   "p-3 border rounded-xl flex flex-col gap-2 transition-all duration-300 group overflow-hidden relative shadow-sm hover:shadow-md",
                   config.color,
@@ -165,8 +188,10 @@ export const KraljicMatrix = () => {
         <div className="mt-8 flex flex-col gap-2 p-3 bg-muted/40 rounded-lg border border-border/50">
           <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider mb-1">Recomendação da IA</p>
           <p className="text-[11px] leading-snug text-foreground/80">
-            A categoria <strong>{mockCategories[1].name}</strong> (Gargalo) atingiu nível crítico de risco. 
-            Recomendamos ativar o rascunho de contrato de segurança (Contrato-2026-004) e diversificar base de fornecedores via leilão japonês.
+            Analisando as {categories.length} categorias mapeadas. 
+            {categories.some(c => c.quadrant === 'bottleneck' && c.risk === 'critical') ? 
+              " Existem gargalos com risco crítico detectados. Ative planos de contingência." : 
+              " Portfólio equilibrado. Foque em oportunidades de alavancagem para aumentar o saving."}
           </p>
         </div>
       </CardContent>
