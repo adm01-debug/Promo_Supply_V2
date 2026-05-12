@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { BuscaAutomatica } from "@/components/compras/BuscaAutomatica";
 import { RankingCotacoes } from "@/components/compras/RankingCotacoes";
 import { CotacaoManualModal, type ManualCotacaoData } from "@/components/compras/CotacaoManualModal";
+import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
 import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
 import { VisualComparadorCotacoes } from "@/components/compras/VisualComparadorCotacoes";
 import { MainLayout } from "@/components/compras/MainLayout";
