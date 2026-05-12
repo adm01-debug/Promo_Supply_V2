@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format } from 'date-fns';
+import { useSLASettings } from '@/stores/slaSettingsStore';
 
 export interface DashboardKPIs {
   aguardandoCotacao: number;
@@ -53,6 +54,7 @@ export interface PipelineData {
 }
 
 export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
+  const { settings } = useSLASettings();
   const categoryFilter = filters?.category !== 'all' ? filters?.category : undefined;
   const supplierFilter = filters?.supplier !== 'all' ? filters?.supplier : undefined;
 
@@ -152,8 +154,6 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       
       // Calculate SLA: Avg days from solicitation to first quotation real
       const completedSlas = pSol.map(s => {
-        // Encontrar cotacoes reais relacionadas a esta solicitacao
-        // Filtramos apenas cotações com status 'enviada', 'analise' ou 'selecionada' para garantir que são cotações "reais"
         const relatedCotacoes = cot.filter(c => 
           c.solicitacao_id === s.id && 
           ['enviada', 'em_analise', 'analise', 'selecionada', 'aprovada'].includes(c.status)
@@ -161,7 +161,6 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         
         if (relatedCotacoes.length === 0) return null;
         
-        // Pegar a data da primeira cotacao real recebida
         const firstCotDate = new Date(Math.min(...relatedCotacoes.map(c => new Date(c.created_at).getTime())));
         const diff = firstCotDate.getTime() - new Date(s.created_at).getTime();
         return diff / (1000 * 60 * 60 * 24); // em dias
@@ -172,7 +171,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         : 1.8;
 
       const taxaSlaReal = completedSlas.length > 0
-        ? Math.round((completedSlas.filter(d => d <= 3).length / completedSlas.length) * 100)
+        ? Math.round((completedSlas.filter(d => d <= (settings?.slaThresholdDays || 3)).length / completedSlas.length) * 100)
         : 85; 
 
       
@@ -243,7 +242,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
             const firstDate = new Date(Math.min(...related.map(c => new Date(c.created_at).getTime())));
             return (firstDate.getTime() - new Date(s.created_at).getTime()) / (1000 * 60 * 60 * 24);
           }).filter(d => d !== null) as number[];
-          return dailySlas.length > 0 ? Math.round((dailySlas.filter(d => d <= 3).length / dailySlas.length) * 100) : 85;
+          return dailySlas.length > 0 ? Math.round((dailySlas.filter(d => d <= (settings?.slaThresholdDays || 3)).length / dailySlas.length) * 100) : 85;
         }
         return 0;
       });
