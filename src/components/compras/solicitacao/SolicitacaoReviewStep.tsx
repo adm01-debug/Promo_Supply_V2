@@ -13,6 +13,7 @@ interface NovaSolicitacaoData {
   prioridade: 'baixa' | 'normal' | 'alta' | 'urgente';
   valorEstimado: number;
   centroCusto: string;
+  costCenterId: string;
   anexos: File[];
 }
 
