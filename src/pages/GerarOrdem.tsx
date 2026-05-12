@@ -110,7 +110,7 @@ const GerarOrdem = () => {
     tipo: 'N/A',
   };
 
-  const ordemNumero = `OC-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999)).padStart(4, '0')}`;
+  const ordemNumero = "A DEFINIR";
 
   // Cálculos financeiros
   const subtotal = (solicitacao.valorUnitario || 12) * solicitacao.quantidadeReal;
