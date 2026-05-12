@@ -61,7 +61,30 @@ export interface CreateSolicitacaoInput {
   justificativa?: string;
   categoria_id?: string;
 }
-// ... keep existing code
+
+export interface SolicitacaoFilters {
+  search?: string;
+  status?: string;
+  tipo?: string;
+  prioridade?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  valorMin?: number;
+  valorMax?: number;
+  page?: number;
+  pageSize?: number;
+}
+
+const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
+  pendente: ['em_cotacao', 'aprovada', 'rejeitada', 'cancelada'],
+  em_cotacao: ['aprovada', 'rejeitada', 'cancelada'],
+  aprovada: ['em_andamento', 'cancelada'],
+  em_andamento: ['concluida', 'cancelada'],
+  rejeitada: ['pendente'],
+  concluida: [],
+  cancelada: [],
+};
+
 async function fetchSolicitacoesData(userId: string | undefined, filters?: SolicitacaoFilters) {
   if (!userId) return { data: [], totalCount: 0 };
 
@@ -81,7 +104,47 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
-// ... keep existing code
+
+  if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
+  if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
+  if (filters?.prioridade && filters.prioridade !== 'todas') query = query.eq('prioridade', filters.prioridade);
+  if (filters?.search) query = query.or(`titulo.ilike.%${filters.search}%,numero.ilike.%${filters.search}%,descricao.ilike.%${filters.search}%`);
+  if (filters?.dateFrom) query = query.gte('data_necessidade', filters.dateFrom);
+  if (filters?.dateTo) query = query.lte('data_necessidade', filters.dateTo);
+  if (filters?.valorMin !== undefined) query = query.gte('valor_estimado', filters.valorMin);
+  if (filters?.valorMax !== undefined) query = query.lte('valor_estimado', filters.valorMax);
+
+  const { data, error, count } = await query;
+  if (error) throw error;
+  return { data: (data as Solicitacao[]) || [], totalCount: count || 0 };
+}
+
+export function useSolicitacoes(filters?: SolicitacaoFilters) {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+
+  const queryKey = useMemo(() => [
+    'solicitacoes', user?.id,
+    filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
+    filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
+    filters?.page, filters?.pageSize,
+  ], [user?.id, filters]);
+
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey,
+    queryFn: () => fetchSolicitacoesData(user?.id, filters),
+    enabled: !!user,
+    staleTime: 30_000,
+    refetchOnWindowFocus: false,
+  });
+
+  const solicitacoes = data?.data || [];
+  const totalCount = data?.totalCount || 0;
+
+  const invalidate = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ['solicitacoes'] });
+  }, [queryClient]);
+
   const createSolicitacao = useCallback(async (input: CreateSolicitacaoInput) => {
     if (!user) { toast.error('Você precisa estar logado'); return null; }
     try {
@@ -196,8 +259,6 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
     });
   }, [solicitacoes, createSolicitacao]);
 
-  // Realtime handled by useRealtimeSubscription in pages that use this hook
-
   const { data: costCenters = [], isLoading: loadingCostCenters } = useQuery({
     queryKey: ['cost-centers'],
     queryFn: async () => {
@@ -209,7 +270,7 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
       if (error) throw error;
       return data as CostCenter[];
     },
-    staleTime: 300_000, // 5 minutes
+    staleTime: 300_000,
   });
 
   return {
@@ -220,7 +281,6 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
   };
 }
 
-// Hook for KPIs — uses optimized paginatedFetch
 export function useSolicitacoesKPIs() {
   const { user } = useAuth();
 
