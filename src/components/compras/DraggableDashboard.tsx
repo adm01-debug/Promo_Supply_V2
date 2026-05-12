@@ -266,8 +266,9 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
   }, [kpiWidgets, otherWidgets, setWidgets]);
 
   const handleShowHiddenWidget = (widgetId: string) => {
-    toggleWidgetVisibility(widgetId);
+    handleToggleVisibility(widgetId);
   };
+
 
   return (
     <div ref={ref} className={cn("space-y-4", className)}>
