@@ -18,6 +18,7 @@ export interface DashboardKPIs {
   economiaGerada: number;
   economiaPercentual: number;
   avgSla: number;
+  taxaSlaReal: number;
 }
 
 export interface KPIComparison {
@@ -168,7 +169,11 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
 
       const avgSla = completedSlas.length > 0 
         ? Number((completedSlas.reduce((a, b) => a + b, 0) / completedSlas.length).toFixed(1)) 
-        : 1.8; // Default base value improved from 2.5
+        : 1.8;
+
+      const taxaSlaReal = completedSlas.length > 0
+        ? Math.round((completedSlas.filter(d => d <= 3).length / completedSlas.length) * 100)
+        : 85; 
 
       
       const entregues = pPed.filter(p => p.status === 'entregue');
@@ -184,14 +189,14 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         entregue: pPed.filter(p => p.status === 'entregue').length,
       };
 
-      return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega, avgSla, pipeline };
+      return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega, avgSla, taxaSlaReal, pipeline };
     };
 
     const currentData = calculatePeriodData(currentMonthStart);
     const previousData = calculatePeriodData(previousMonthStart, previousMonthEnd);
 
     // Sparklines (last 7 days)
-    const generateSparkline = (key: 'aguardandoCotacao' | 'volumeMes' | 'economiaGerada' | 'taxaEntrega') => {
+    const generateSparkline = (key: 'aguardandoCotacao' | 'volumeMes' | 'economiaGerada' | 'taxaEntrega' | 'taxaSlaReal') => {
       return Array.from({ length: 7 }).map((_, i) => {
         const date = subDays(now, 6 - i);
         const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
@@ -226,6 +231,19 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
           const entregues = dailyPed.filter(p => p.status === 'entregue');
           const noPrazo = entregues.filter(p => p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao).length;
           return entregues.length > 0 ? Math.round((noPrazo / entregues.length) * 100) : 100;
+        }
+        if (key === 'taxaSlaReal') {
+          const dailySol = sol.filter(s => {
+            const d = new Date(s.created_at);
+            return isWithinInterval(d, { start: dayStart, end: dayEnd });
+          });
+          const dailySlas = dailySol.map(s => {
+            const related = cot.filter(c => c.solicitacao_id === s.id && ['enviada', 'em_analise', 'selecionada', 'aprovada'].includes(c.status));
+            if (related.length === 0) return null;
+            const firstDate = new Date(Math.min(...related.map(c => new Date(c.created_at).getTime())));
+            return (firstDate.getTime() - new Date(s.created_at).getTime()) / (1000 * 60 * 60 * 24);
+          }).filter(d => d !== null) as number[];
+          return dailySlas.length > 0 ? Math.round((dailySlas.filter(d => d <= 3).length / dailySlas.length) * 100) : 85;
         }
         return 0;
       });
@@ -262,10 +280,10 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
           sparkline: generateSparkline('economiaGerada')
         },
         sla: {
-          current: currentData.taxaEntrega,
-          previous: previousData.taxaEntrega,
-          trend: currentData.taxaEntrega - previousData.taxaEntrega,
-          sparkline: generateSparkline('taxaEntrega')
+          current: currentData.taxaSlaReal,
+          previous: previousData.taxaSlaReal,
+          trend: currentData.taxaSlaReal - previousData.taxaSlaReal,
+          sparkline: generateSparkline('taxaSlaReal')
         }
       },
       previousPipeline: previousData.pipeline,

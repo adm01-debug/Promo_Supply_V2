@@ -80,7 +80,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
     <Alert 
       ref={ref}
       variant="destructive" 
-      className="relative border-destructive/50 bg-destructive/10 animate-pulse-slow shadow-lg"
+      className="relative border-destructive/50 bg-destructive/10 animate-pulse-slow shadow-lg p-6 rounded-2xl border-2"
     >
       <div className="flex items-start gap-3">
         {alerts.overdueCount > 0 ? (
@@ -90,7 +90,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
         )}
         
         <div className="flex-1">
-          <AlertTitle className="text-destructive font-black uppercase tracking-widest text-xs mb-1 flex items-center gap-2">
+          <AlertTitle className="text-destructive font-black uppercase tracking-widest text-sm mb-2 flex items-center gap-2">
             <span className="animate-pulse">Ação Imediata Necessária</span>
             <Badge variant="outline" className="border-destructive text-destructive text-[10px] h-4 font-black">SLA CRÍTICO</Badge>
           </AlertTitle>
