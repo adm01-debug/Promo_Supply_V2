@@ -114,6 +114,15 @@ export function useCotacoes(filters?: CotacaoFilters) {
         })
         .select().single();
       if (error) throw error;
+      
+      // Audit Log
+      await auditHelpers.logCreate(
+        'cotacao', 
+        data.id, 
+        `Cotação ${data.numero} criada por ${user.email}`,
+        data
+      );
+
       toast.success('Cotação adicionada com sucesso!');
       invalidate();
       return data;
