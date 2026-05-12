@@ -377,6 +377,38 @@ export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosA
                   ))}
                 </div>
               </AccordionContent>
+            {/* Status */}
+            <AccordionItem value="status">
+              <AccordionTrigger className="hover:no-underline">
+                <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4 text-primary" />
+                  <span>Status</span>
+                  {localFilters.status.length > 0 && (
+                    <Badge variant="secondary" className="ml-2 text-xs">
+                      {localFilters.status.length}
+                    </Badge>
+                  )}
+                </div>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className="pt-2 space-y-2">
+                  {statusOptions.map(status => (
+                    <div key={status.value} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`status-${status.value}`}
+                        checked={localFilters.status.includes(status.value)}
+                        onCheckedChange={() => toggleArrayValue('status', status.value)}
+                      />
+                      <Label 
+                        htmlFor={`status-${status.value}`} 
+                        className="text-sm cursor-pointer"
+                      >
+                        {status.label}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
             </AccordionItem>
           </Accordion>
         </div>
