@@ -162,8 +162,9 @@ const Solicitacoes = () => {
     EM_COTACAO: filteredSolicitacoes.filter(s => s.status === 'EM_COTACAO'),
     FORNECEDOR_SELECIONADO: filteredSolicitacoes.filter(s => s.status === 'FORNECEDOR_SELECIONADO'),
     AGUARDANDO_PAGAMENTO: filteredSolicitacoes.filter(s => s.status === 'AGUARDANDO_PAGAMENTO'),
-    PAGO: filteredSolicitacoes.filter(s => s.status === 'PAGO'),
-    EM_TRANSITO: filteredSolicitacoes.filter(s => s.status === 'EM_TRANSITO'),
+    ENTREGUE: filteredSolicitacoes.filter(s => s.status === 'ENTREGUE'),
+    REJEITADA: filteredSolicitacoes.filter(s => s.status === 'REJEITADA'),
+    CANCELADA: filteredSolicitacoes.filter(s => s.status === 'CANCELADA'),
   }), [filteredSolicitacoes]);
 
   // statusConfig imported from solicitacoesHelpers
