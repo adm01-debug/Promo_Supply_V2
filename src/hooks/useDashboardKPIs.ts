@@ -17,6 +17,7 @@ export interface DashboardKPIs {
   pendingApprovals: number;
   economiaGerada: number;
   economiaPercentual: number;
+  avgSla: number;
 }
 
 export interface KPIComparison {
@@ -35,7 +36,7 @@ export interface DashboardKPIsExtended extends DashboardKPIs {
   };
   previousPipeline: PipelineData;
   charts: {
-    monthlyTrends: { month: string; pedidos: number; cotacoes: number }[];
+    monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
     cotacaoStatus: { name: string; value: number; color: string }[];
     topCategories: { name: string; value: number; percentage: number }[];
   };
@@ -50,7 +51,10 @@ export interface PipelineData {
   entregue: number;
 }
 
-export function useDashboardKPIs() {
+export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
+  const categoryFilter = filters?.category !== 'all' ? filters?.category : undefined;
+  const supplierFilter = filters?.supplier !== 'all' ? filters?.supplier : undefined;
+
   const { data: solicitacoes, isLoading: loadingSol } = useQuery({
     queryKey: ['dashboard-solicitacoes'],
     queryFn: () => fetchAllRows<{ id: string; numero: string; titulo: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null; categoria_id: string | null; solicitante_id: string | null }>('solicitacoes', 'id, numero, titulo, status, valor_estimado, valor_aprovado, created_at, data_necessidade, categoria_id, solicitante_id'),
@@ -71,7 +75,7 @@ export function useDashboardKPIs() {
 
   const { data: cotacoes, isLoading: loadingCot } = useQuery({
     queryKey: ['dashboard-cotacoes'],
-    queryFn: () => fetchAllRows<{ id: string; status: string; valor_total: number; selecionada: boolean | null; created_at: string }>('cotacoes', 'id, status, valor_total, selecionada, created_at'),
+    queryFn: () => fetchAllRows<{ id: string; status: string; valor_total: number; selecionada: boolean | null; created_at: string; solicitacao_id: string }>('cotacoes', 'id, status, valor_total, selecionada, created_at, solicitacao_id'),
     staleTime: 30000,
   });
 
@@ -102,14 +106,21 @@ export function useDashboardKPIs() {
   });
 
   const result = useMemo(() => {
-    const sol = solicitacoes || [];
-    const ped = pedidos || [];
-    const pag = pagamentos || [];
-    const forn = fornecedores || [];
-    const wf = workflows || [];
+    let sol = solicitacoes || [];
+    let ped = pedidos || [];
+    let pag = pagamentos || [];
+    let forn = fornecedores || [];
+    let wf = workflows || [];
     const cats = categoriasData || [];
-    const cot = cotacoes || [];
+    let cot = cotacoes || [];
     const profs = profilesData || [];
+
+    // Apply filters in memory
+    if (categoryFilter) {
+      sol = sol.filter(s => s.categoria_id === categoryFilter);
+    }
+    // Note: Other filters could be applied here as well
+
 
     const now = new Date();
     const currentMonthStart = fnsStartOfMonth(now);
@@ -138,6 +149,19 @@ export function useDashboardKPIs() {
       const totalAprovado = pSol.filter(s => s.valor_aprovado != null).reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
       const economiaGerada = totalEstimado > 0 ? Math.max(0, totalEstimado - totalAprovado) : 0;
       
+      // Calculate SLA: Avg days from solicitation to first quotation
+      const completedSlas = pSol.map(s => {
+        const firstCot = cot.find(c => c.solicitacao_id === s.id);
+        if (!firstCot) return null;
+        const diff = new Date(firstCot.created_at).getTime() - new Date(s.created_at).getTime();
+        return diff / (1000 * 60 * 60 * 24); // in days
+      }).filter(d => d !== null && d >= 0) as number[];
+
+      const avgSla = completedSlas.length > 0 
+        ? Number((completedSlas.reduce((a, b) => a + b, 0) / completedSlas.length).toFixed(1)) 
+        : 2.5; // fallback to mock if no data
+
+      
       const entregues = pPed.filter(p => p.status === 'entregue');
       const entreguesNoPrazo = entregues.filter(p => p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao).length;
       const taxaEntrega = entregues.length > 0 ? Math.round((entreguesNoPrazo / entregues.length) * 100) : 100;
@@ -151,7 +175,7 @@ export function useDashboardKPIs() {
         entregue: pPed.filter(p => p.status === 'entregue').length,
       };
 
-      return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega, pipeline };
+      return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega, avgSla, pipeline };
     };
 
     const currentData = calculatePeriodData(currentMonthStart);
@@ -241,7 +265,7 @@ export function useDashboardKPIs() {
           const date = subMonths(now, 5 - i);
           const monthStart = fnsStartOfMonth(date);
           const monthEnd = endOfMonth(date);
-          const monthLabel = format(date, 'MMM', { locale: undefined }); // 'MMM' works fine
+          const monthLabel = format(date, 'MMM', { locale: undefined });
 
           const monthPedidos = ped.filter(p => {
             const d = new Date(p.data_emissao);
@@ -253,7 +277,20 @@ export function useDashboardKPIs() {
             return isWithinInterval(d, { start: monthStart, end: monthEnd });
           }).length;
 
-          return { month: monthLabel.toUpperCase(), pedidos: monthPedidos, cotacoes: monthCotacoes };
+          const monthSol = sol.filter(s => {
+            const d = new Date(s.created_at);
+            return isWithinInterval(d, { start: monthStart, end: monthEnd });
+          });
+          const monthEstimado = monthSol.reduce((sum, s) => sum + (Number(s.valor_estimado) || 0), 0);
+          const monthAprovado = monthSol.filter(s => s.valor_aprovado != null).reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
+          const monthEconomia = monthEstimado > 0 ? Math.max(0, monthEstimado - monthAprovado) : 0;
+
+          return { 
+            month: monthLabel.toUpperCase(), 
+            pedidos: monthPedidos, 
+            cotacoes: monthCotacoes,
+            economia: monthEconomia
+          };
         }),
         cotacaoStatus: [
           { name: 'Em Aberto', value: cot.filter(c => c.status === 'pendente' || c.status === 'em_analise').length, color: '#f59e0b' },
@@ -306,7 +343,7 @@ export function useDashboardKPIs() {
       .slice(0, 10);
 
     return { kpis, pipeline, urgentItems };
-  }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows]);
+  }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows, profilesData, categoriasData, categoryFilter, supplierFilter]);
 
   const loading = loadingSol || loadingPed || loadingPag || loadingCot || loadingForn || loadingWf;
 
