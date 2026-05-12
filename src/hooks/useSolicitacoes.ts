@@ -151,7 +151,27 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 
   const createSolicitacao = useCallback(async (input: CreateSolicitacaoInput) => {
     if (!user) { toast.error('Você precisa estar logado'); return null; }
+    
     try {
+      // Validação de orçamento
+      if (input.cost_center_id && input.valor_estimado) {
+        const { data: availability, error: budgetError } = await supabase.rpc('check_budget_availability', {
+          p_cost_center_id: input.cost_center_id,
+          p_valor: input.valor_estimado
+        });
+        
+        if (budgetError) {
+          console.error('Erro ao verificar orçamento:', budgetError);
+        } else if (availability && !(availability as any).available) {
+          toast.error((availability as any).message || 'Saldo insuficiente no centro de custo.');
+          // Permitir prosseguir se for urgente ou se tiver flag de override (não implementado ainda)
+          if (input.prioridade !== 'urgente') {
+            return null;
+          }
+          toast.info('Solicitação urgente: ignorando restrição orçamentária temporariamente.');
+        }
+      }
+
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'SOL', table_name: 'solicitacoes' });
       const numero = numData || `SOL-${Date.now()}`;
       const { data, error } = await supabase
