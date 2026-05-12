@@ -122,10 +122,26 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     if (categoryFilter) {
       sol = sol.filter(s => s.categoria_id === categoryFilter);
     }
-    // Note: Other filters could be applied here as well
+    
+    if (supplierFilter) {
+      ped = ped.filter(p => p.fornecedor_id === supplierFilter);
+      cot = cot.filter(c => {
+        // Find if this cotacao belongs to a filtered supplier
+        // Note: we need supplier_id in cotacoes table
+        return (c as any).fornecedor_id === supplierFilter;
+      });
+    }
 
-
+    // Apply period filter
     const now = new Date();
+    let startDate: Date;
+    switch (filters?.period) {
+      case '1m': startDate = subMonths(now, 1); break;
+      case '3m': startDate = subMonths(now, 3); break;
+      case '6m': startDate = subMonths(now, 6); break;
+      case '1y': startDate = subMonths(now, 12); break;
+      default: startDate = subMonths(now, 6);
+    }
     const currentMonthStart = fnsStartOfMonth(now);
     const previousMonthStart = fnsStartOfMonth(subMonths(now, 1));
     const previousMonthEnd = endOfMonth(subMonths(now, 1));
