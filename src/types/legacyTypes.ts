@@ -12,7 +12,7 @@ export interface LegacySolicitacao {
   quantidade: number;
   quantidadeReal: number;
   tipo: 'PE_LISO' | 'FAB_LISO' | 'FAB_PERSONALIZADO';
-  status: 'AGUARDANDO_COTACAO' | 'EM_COTACAO' | 'FORNECEDOR_SELECIONADO' | 'PEDIDO_GERADO' | 'AGUARDANDO_PAGAMENTO' | 'PAGO' | 'EM_TRANSITO' | 'ENTREGUE';
+  status: 'AGUARDANDO_COTACAO' | 'EM_COTACAO' | 'FORNECEDOR_SELECIONADO' | 'PEDIDO_GERADO' | 'AGUARDANDO_PAGAMENTO' | 'PAGO' | 'EM_TRANSITO' | 'ENTREGUE' | 'REJEITADA' | 'CANCELADA';
   vendedor: string;
   prazoEntrega: string;
   fornecedorSelecionado?: string;
