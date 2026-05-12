@@ -26,6 +26,7 @@ export interface Cotacao {
   score_qualidade: number;
   score_total: number;
   observacoes: string | null;
+  justificativa_selecao: string | null;
   anexos: Json | null;
   avaliador_id: string | null;
   data_avaliacao: string | null;
