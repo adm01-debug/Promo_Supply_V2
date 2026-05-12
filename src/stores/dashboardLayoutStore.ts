@@ -97,7 +97,17 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
 
           if (error) throw error;
           if (data?.layout) {
-            set({ widgets: data.layout as unknown as DashboardWidget[] });
+            const savedWidgets = data.layout as unknown as DashboardWidget[];
+            // Merge saved layout with defaults to ensure new widgets are present
+            const mergedWidgets = [...savedWidgets];
+            
+            defaultWidgets.forEach(defaultWidget => {
+              if (!mergedWidgets.find(w => w.id === defaultWidget.id)) {
+                mergedWidgets.push(defaultWidget);
+              }
+            });
+
+            set({ widgets: mergedWidgets.sort((a, b) => a.order - b.order) });
           }
         } catch (error) {
           console.error('Error loading dashboard layout:', error);
