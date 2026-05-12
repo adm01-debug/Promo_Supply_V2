@@ -81,6 +81,20 @@ export const SolicitacaoCard = ({
   const statusColor = getStatusColor(solicitacao.status);
   const haptic = useHapticFeedback();
 
+  // Urgency logic
+  const deadline = new Date(solicitacao.prazoEntrega);
+  const daysRemaining = differenceInDays(deadline, new Date());
+  const isOverdue = isPast(deadline) && solicitacao.status !== 'ENTREGUE';
+  
+  const getUrgencyInfo = () => {
+    if (isOverdue) return { color: "text-destructive", bg: "bg-destructive/10", label: "Atrasado", icon: AlertTriangle };
+    if (daysRemaining <= 2) return { color: "text-red-600", bg: "bg-red-50", label: "Urgente", icon: Clock };
+    if (daysRemaining <= 5) return { color: "text-amber-600", bg: "bg-amber-50", label: "Prioritário", icon: Clock };
+    return { color: "text-emerald-600", bg: "bg-emerald-50", label: "No prazo", icon: CheckCircle };
+  };
+
+  const urgency = getUrgencyInfo();
+
   // Enhanced swipe handlers with haptic feedback
   const handleApprove = () => {
     haptic.success();
@@ -115,6 +129,7 @@ export const SolicitacaoCard = ({
       onDelete();
     }
   };
+
 
   // Swipe actions configuration
   const leftActions = [
