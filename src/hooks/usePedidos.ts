@@ -93,8 +93,8 @@ const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = {
   concluido: [],
 };
 
-async function fetchPedidosData(userId: string | undefined, filters?: PedidoFilters) {
-  if (!userId) return { data: [], totalCount: 0 };
+async function fetchPedidosData(userId: string | undefined, organizationId: string | null | undefined, filters?: PedidoFilters) {
+  if (!userId || !organizationId) return { data: [], totalCount: 0 };
 
   const page = filters?.page || 1;
   const pageSize = filters?.pageSize || 50;
@@ -109,6 +109,7 @@ async function fetchPedidosData(userId: string | undefined, filters?: PedidoFilt
       solicitacao:solicitacoes(id, numero, titulo)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
+    .eq('organization_id', organizationId)
     .range(from, to);
 
   if (filters?.status && filters.status !== 'todos') {
@@ -134,19 +135,19 @@ async function fetchPedidosData(userId: string | undefined, filters?: PedidoFilt
 }
 
 export function usePedidos(filters?: PedidoFilters) {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
   const queryKey = useMemo(() => [
-    'pedidos', user?.id,
+    'pedidos', user?.id, organizationId,
     filters?.status, filters?.fornecedor_id, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.page, filters?.pageSize,
-  ], [user?.id, filters]);
+  ], [user?.id, organizationId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => fetchPedidosData(user?.id, filters),
-    enabled: !!user,
+    queryFn: () => fetchPedidosData(user?.id, organizationId, filters),
+    enabled: !!user && !!organizationId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
@@ -156,7 +157,7 @@ export function usePedidos(filters?: PedidoFilters) {
 
   // Create new pedido
   const createPedido = useCallback(async (input: CreatePedidoInput) => {
-    if (!user) { toast.error('Você precisa estar logado'); return null; }
+    if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
 
     try {
       const { data: numData } = await supabase.rpc('generate_sequential_number', {
@@ -172,7 +173,7 @@ export function usePedidos(filters?: PedidoFilters) {
           valor_frete: input.valor_frete || 0, desconto: input.desconto || 0,
           data_previsao: input.data_previsao, endereco_entrega: input.endereco_entrega,
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
-          comprador_id: user.id,
+          comprador_id: user.id, organization_id: organizationId,
         })
         .select().single();
 
@@ -314,11 +315,13 @@ export function usePedidos(filters?: PedidoFilters) {
 
 // Hook for KPIs
 export function usePedidosKPIs() {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
 
   const { data: kpis = { total: 0, pendentes: 0, emTransito: 0, entregues: 0, valorTotal: 0 }, isLoading } = useQuery({
-    queryKey: ['pedidos-kpis', user?.id],
+    queryKey: ['pedidos-kpis', user?.id, organizationId],
     queryFn: async () => {
+      if (!organizationId) return { total: 0, pendentes: 0, emTransito: 0, entregues: 0, valorTotal: 0 };
+      
       let allData: { status: string; valor_total: number }[] = [];
       let from = 0;
       const pageSize = 1000;
@@ -328,6 +331,7 @@ export function usePedidosKPIs() {
         const { data, error } = await supabase
           .from('pedidos')
           .select('status, valor_total')
+          .eq('organization_id', organizationId)
           .range(from, from + pageSize - 1);
         if (error) throw error;
         if (!data || data.length === 0) { hasMore = false; break; }

@@ -47,13 +47,14 @@ export const logAuditAction = async (entry: AuditLogEntry): Promise<void> => {
   try {
     const { data: { user } } = await supabase.auth.getUser();
     
-    // For systems where profile might have a name
-    const { data: profile } = user ? await supabase.from('profiles').select('full_name').eq('user_id', user.id).maybeSingle() : { data: null };
+    // For systems where profile might have a name and organization
+    const { data: profile } = user ? await supabase.from('profiles').select('full_name, current_organization_id').eq('user_id', user.id).maybeSingle() : { data: null };
 
     const insertData = {
       user_id: user?.id || null,
       user_email: user?.email || 'sistema@promo.supply',
       user_name: profile?.full_name || 'Sistema',
+      organization_id: profile?.current_organization_id || null,
       action_type: entry.action_type,
       entity_type: entry.entity_type,
       entity_id: entry.entity_id || null,
