@@ -105,13 +105,13 @@ const ComprasDashboard = () => {
       case 'kpi-sla':
         return (
           <EnhancedKpiCard
-            title={t('dashboard.kpis.sla')}
-            value={kpis.avgSla}
-            previousValue={2.8} // Mock previous SLA
+            title="Nível de Serviço (SLA)"
+            value={kpis.comparisons.sla.current}
+            previousValue={kpis.comparisons.sla.previous}
             sparklineData={kpis.comparisons.sla.sparkline}
             icon={BarChart3}
             color="indigo"
-            subtitle="Tempo Médio de Atendimento (dias)"
+            subtitle={`${kpis.avgSla} dias (média) | ${kpis.comparisons.sla.current}% no prazo`}
             format="number"
             variant="default"
           />
