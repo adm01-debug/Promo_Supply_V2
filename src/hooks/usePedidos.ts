@@ -178,6 +178,14 @@ export function usePedidos(filters?: PedidoFilters) {
 
       if (error) throw error;
 
+      // Audit Log for Order Creation
+      await auditHelpers.logCreate(
+        'pedido', 
+        data.id, 
+        `Pedido de Compra ${data.numero} gerado para fornecedor ${input.fornecedor_id}`,
+        data
+      );
+
       if (input.itens && input.itens.length > 0) {
         const itensToInsert = input.itens.map(item => ({
           pedido_id: data.id, descricao: item.descricao, quantidade: item.quantidade,
