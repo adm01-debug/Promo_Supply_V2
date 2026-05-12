@@ -106,14 +106,21 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
   });
 
   const result = useMemo(() => {
-    const sol = solicitacoes || [];
-    const ped = pedidos || [];
-    const pag = pagamentos || [];
-    const forn = fornecedores || [];
-    const wf = workflows || [];
+    let sol = solicitacoes || [];
+    let ped = pedidos || [];
+    let pag = pagamentos || [];
+    let forn = fornecedores || [];
+    let wf = workflows || [];
     const cats = categoriasData || [];
-    const cot = cotacoes || [];
+    let cot = cotacoes || [];
     const profs = profilesData || [];
+
+    // Apply filters in memory
+    if (categoryFilter) {
+      sol = sol.filter(s => s.categoria_id === categoryFilter);
+    }
+    // Note: Other filters could be applied here as well
+
 
     const now = new Date();
     const currentMonthStart = fnsStartOfMonth(now);
