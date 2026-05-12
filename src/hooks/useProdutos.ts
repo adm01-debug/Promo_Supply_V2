@@ -28,14 +28,17 @@ export interface Produto {
 }
 
 export function useProdutos() {
+  const { user, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: produtos = [], isLoading } = useQuery({
-    queryKey: ["produtos"],
+    queryKey: ["produtos", organizationId],
     queryFn: async () => {
+      if (!organizationId) return [];
       const { data, error } = await supabase
         .from("produtos")
         .select("*, categorias(nome), fornecedores!produtos_fornecedor_preferencial_id_fkey(razao_social)")
+        .eq('organization_id', organizationId)
         .order("nome");
       if (error) throw error;
       return (data || []).map((p: any) => ({
@@ -48,9 +51,12 @@ export function useProdutos() {
   });
 
   const { data: categorias = [] } = useQuery({
-    queryKey: ["categorias-list"],
+    queryKey: ["categorias-list", organizationId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("categorias").select("id, nome").eq("ativo", true).order("nome");
+      if (!organizationId) return [];
+      const { data, error } = await supabase.from("categorias").select("id, nome").eq("ativo", true)
+        .eq('organization_id', organizationId)
+        .order("nome");
       if (error) throw error;
       return data || [];
     },
@@ -59,12 +65,13 @@ export function useProdutos() {
 
   const createProduto = useMutation({
     mutationFn: async (produto: Partial<Produto>) => {
-      const { data, error } = await supabase.from("produtos").insert(produto as any).select().single();
+      if (!organizationId) throw new Error("Organization ID missing");
+      const { data, error } = await supabase.from("produtos").insert({ ...produto, organization_id: organizationId } as any).select().single();
       if (error) throw error;
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["produtos"] });
+      queryClient.invalidateQueries({ queryKey: ["produtos", organizationId] });
       toast.success("Produto criado com sucesso!");
     },
     onError: (err: Error) => toast.error("Erro ao criar produto: " + err.message),
@@ -77,7 +84,7 @@ export function useProdutos() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["produtos"] });
+      queryClient.invalidateQueries({ queryKey: ["produtos", organizationId] });
       toast.success("Produto atualizado!");
     },
     onError: (err: Error) => toast.error("Erro ao atualizar: " + err.message),
