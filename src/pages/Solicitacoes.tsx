@@ -150,10 +150,13 @@ const Solicitacoes = () => {
       const matchesTiposAdvanced = advancedFilters.tipos.length === 0 || 
         advancedFilters.tipos.includes(s.tipo);
 
+      const matchesStatusAdvanced = advancedFilters.status.length === 0 || 
+        advancedFilters.status.includes(s.status);
+
       return matchesSearch && matchesStatus && matchesTipo && 
         matchesDateFrom && matchesDateTo && 
         matchesValorMin && matchesValorMax && 
-        matchesEmpresas && matchesTiposAdvanced;
+        matchesEmpresas && matchesTiposAdvanced && matchesStatusAdvanced;
     });
   }, [adaptedSolicitacoes, searchTerm, statusFilter, tipoFilter, advancedFilters]);
 
