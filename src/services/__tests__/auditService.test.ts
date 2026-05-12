@@ -1,20 +1,34 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { logAuditAction, auditHelpers } from "../auditService";
 
-// Mock Supabase
-vi.mock("@/integrations/supabase/client", () => ({
-  supabase: {
+// Robust Supabase Mock
+const createMockSupabase = () => {
+  const mock: any = {
+    from: vi.fn(),
     auth: {
       getUser: vi.fn().mockResolvedValue({ data: { user: { id: "user-1", email: "test@example.com" } } }),
     },
-    from: vi.fn(() => ({
-      select: vi.fn().mockReturnThis(),
-      eq: vi.fn().mockReturnThis(),
+  };
+
+  const createQueryBuilder = () => {
+    const builder: any = {
+      select: vi.fn().mockImplementation(() => builder),
+      eq: vi.fn().mockImplementation(() => builder),
       maybeSingle: vi.fn().mockResolvedValue({ data: { full_name: "Test User" }, error: null }),
       insert: vi.fn().mockResolvedValue({ error: null }),
       order: vi.fn().mockReturnThis(),
-    })),
-  },
+    };
+    return builder;
+  };
+
+  mock.from.mockImplementation(() => createQueryBuilder());
+  return mock;
+};
+
+const mockSupabase = createMockSupabase();
+
+vi.mock("@/integrations/supabase/client", () => ({
+  supabase: mockSupabase,
 }));
 
 describe("auditService", () => {
@@ -23,12 +37,13 @@ describe("auditService", () => {
   });
 
   it("should log a create action correctly", async () => {
-    const { supabase } = await import("@/integrations/supabase/client");
-    
     await auditHelpers.logCreate("solicitacao", "sol-1", "Created solicitation", { foo: "bar" });
 
-    expect(supabase.from).toHaveBeenCalledWith("audit_logs");
-    expect(supabase.from("audit_logs").insert).toHaveBeenCalledWith([
+    expect(mockSupabase.from).toHaveBeenCalledWith("audit_logs");
+    // Get the insert spy from the builder
+    const insertSpy = mockSupabase.from.mock.results.find((r: any) => r.type === "return" && r.value.insert)?.value.insert;
+    
+    expect(mockSupabase.from("audit_logs").insert).toHaveBeenCalledWith([
       expect.objectContaining({
         user_id: "user-1",
         user_email: "test@example.com",
@@ -43,13 +58,16 @@ describe("auditService", () => {
   });
 
   it("should handle anonymous users (system actions)", async () => {
-    const { supabase } = await import("@/integrations/supabase/client");
-    (supabase.auth.getUser as any).mockResolvedValue({ data: { user: null } });
-    (supabase.from as any).mockImplementation((table: string) => {
-      if (table === "profiles") {
-        return { select: vi.fn().mockReturnThis(), eq: vi.fn().mockReturnThis(), maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }) };
-      }
-      return { insert: vi.fn().mockResolvedValue({ error: null }) };
+    mockSupabase.auth.getUser.mockResolvedValue({ data: { user: null } });
+    
+    mockSupabase.from.mockImplementation((table: string) => {
+      const builder: any = {
+        select: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockReturnThis(),
+        maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
+        insert: vi.fn().mockResolvedValue({ error: null }),
+      };
+      return builder;
     });
 
     await logAuditAction({
@@ -57,7 +75,7 @@ describe("auditService", () => {
       entity_type: "usuario",
     });
 
-    expect(supabase.from("audit_logs").insert).toHaveBeenCalledWith([
+    expect(mockSupabase.from("audit_logs").insert).toHaveBeenCalledWith([
       expect.objectContaining({
         user_id: null,
         user_email: "sistema@promo.supply",
@@ -67,10 +85,11 @@ describe("auditService", () => {
   });
 
   it("should log errors without crashing", async () => {
-    const { supabase } = await import("@/integrations/supabase/client");
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
     
-    (supabase.from("audit_logs").insert as any).mockResolvedValue({ error: { message: "DB Error" } });
+    mockSupabase.from.mockImplementation(() => ({
+      insert: vi.fn().mockResolvedValue({ error: { message: "DB Error" } }),
+    }));
 
     await auditHelpers.logView("pedido", "ped-1", "Viewed order");
 
