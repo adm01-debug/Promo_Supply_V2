@@ -6,6 +6,13 @@ import { toast } from 'sonner';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 import type { Json } from '@/integrations/supabase/types';
 
+export interface CostCenter {
+  id: string;
+  name: string;
+  code: string;
+  is_active: boolean;
+}
+
 export interface Solicitacao {
   id: string;
   numero: string;
@@ -25,6 +32,7 @@ export interface Solicitacao {
   aprovador_id: string | null;
   fornecedor_id: string | null;
   categoria_id: string | null;
+  cost_center_id: string | null;
   departamento: string | null;
   centro_custo: string | null;
   justificativa: string | null;
@@ -35,6 +43,7 @@ export interface Solicitacao {
   fornecedor?: { razao_social: string; nome_fantasia: string | null; } | null;
   categoria?: { nome: string; } | null;
   organization?: { name: string; } | null;
+  cost_center?: { name: string; code: string; } | null;
 }
 
 export interface CreateSolicitacaoInput {
@@ -48,33 +57,11 @@ export interface CreateSolicitacaoInput {
   data_necessidade?: string;
   departamento?: string;
   centro_custo?: string;
+  cost_center_id?: string;
   justificativa?: string;
   categoria_id?: string;
 }
-
-export interface SolicitacaoFilters {
-  search?: string;
-  status?: string;
-  tipo?: string;
-  prioridade?: string;
-  dateFrom?: string;
-  dateTo?: string;
-  valorMin?: number;
-  valorMax?: number;
-  page?: number;
-  pageSize?: number;
-}
-
-const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
-  pendente: ['em_cotacao', 'aprovada', 'rejeitada', 'cancelada'],
-  em_cotacao: ['aprovada', 'rejeitada', 'cancelada'],
-  aprovada: ['em_andamento', 'cancelada'],
-  em_andamento: ['concluida', 'cancelada'],
-  rejeitada: ['pendente'],
-  concluida: [],
-  cancelada: [],
-};
-
+// ... keep existing code
 async function fetchSolicitacoesData(userId: string | undefined, filters?: SolicitacaoFilters) {
   if (!userId) return { data: [], totalCount: 0 };
 
@@ -89,51 +76,12 @@ async function fetchSolicitacoesData(userId: string | undefined, filters?: Solic
       *,
       fornecedor:fornecedores(razao_social, nome_fantasia),
       categoria:categorias(nome),
-      organization:organizations(name)
+      organization:organizations(name),
+      cost_center:cost_centers(name, code)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
     .range(from, to);
-
-  if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
-  if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
-  if (filters?.prioridade && filters.prioridade !== 'todas') query = query.eq('prioridade', filters.prioridade);
-  if (filters?.search) query = query.or(`titulo.ilike.%${filters.search}%,numero.ilike.%${filters.search}%,descricao.ilike.%${filters.search}%`);
-  if (filters?.dateFrom) query = query.gte('data_necessidade', filters.dateFrom);
-  if (filters?.dateTo) query = query.lte('data_necessidade', filters.dateTo);
-  if (filters?.valorMin !== undefined) query = query.gte('valor_estimado', filters.valorMin);
-  if (filters?.valorMax !== undefined) query = query.lte('valor_estimado', filters.valorMax);
-
-  const { data, error, count } = await query;
-  if (error) throw error;
-  return { data: (data as Solicitacao[]) || [], totalCount: count || 0 };
-}
-
-export function useSolicitacoes(filters?: SolicitacaoFilters) {
-  const { user } = useAuth();
-  const queryClient = useQueryClient();
-
-  const queryKey = useMemo(() => [
-    'solicitacoes', user?.id,
-    filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
-    filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
-    filters?.page, filters?.pageSize,
-  ], [user?.id, filters]);
-
-  const { data, isLoading, error, refetch } = useQuery({
-    queryKey,
-    queryFn: () => fetchSolicitacoesData(user?.id, filters),
-    enabled: !!user,
-    staleTime: 30_000,
-    refetchOnWindowFocus: false,
-  });
-
-  const solicitacoes = data?.data || [];
-  const totalCount = data?.totalCount || 0;
-
-  const invalidate = useCallback(() => {
-    queryClient.invalidateQueries({ queryKey: ['solicitacoes'] });
-  }, [queryClient]);
-
+// ... keep existing code
   const createSolicitacao = useCallback(async (input: CreateSolicitacaoInput) => {
     if (!user) { toast.error('Você precisa estar logado'); return null; }
     try {
@@ -146,7 +94,8 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           prioridade: input.prioridade || 'media', valor_estimado: input.valor_estimado,
           quantidade: input.quantidade || 1, unidade: input.unidade || 'un',
           data_necessidade: input.data_necessidade, departamento: input.departamento,
-          centro_custo: input.centro_custo, justificativa: input.justificativa,
+          centro_custo: input.centro_custo, cost_center_id: input.cost_center_id,
+          justificativa: input.justificativa,
           categoria_id: input.categoria_id, solicitante_id: user.id,
         })
         .select().single();
@@ -249,8 +198,23 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 
   // Realtime handled by useRealtimeSubscription in pages that use this hook
 
+  const { data: costCenters = [], isLoading: loadingCostCenters } = useQuery({
+    queryKey: ['cost-centers'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('cost_centers')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
+      if (error) throw error;
+      return data as CostCenter[];
+    },
+    staleTime: 300_000, // 5 minutes
+  });
+
   return {
     solicitacoes, totalCount, loading: isLoading, error: error?.message || null,
+    costCenters, loadingCostCenters,
     refetch, createSolicitacao, updateSolicitacao, updateStatus,
     deleteSolicitacao, bulkDelete, bulkUpdateStatus, duplicateSolicitacao,
   };
