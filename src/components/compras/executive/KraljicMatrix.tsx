@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
@@ -7,7 +7,8 @@ import {
   ShieldAlert, 
   Zap, 
   ArrowRight,
-  Info
+  Info,
+  Loader2
 } from 'lucide-react';
 import { 
   Tooltip,
@@ -17,6 +18,8 @@ import {
 } from "@/components/ui/tooltip";
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface CategoryItem {
   id: string;
