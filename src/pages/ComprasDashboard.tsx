@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useCallback, memo, useEffect } from "react";
+import { useState, lazy, Suspense, useCallback, memo, useEffect, useRef, useMemo } from "react";
 import { 
   ClipboardList, 
   Clock, 
@@ -23,6 +23,7 @@ import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import { useDashboardLayoutStore } from "@/stores/dashboardLayoutStore";
+import { useAccountFilters } from "@/hooks/useAccountFilters";
 
 
 // Lazy load heavy panels that are below the fold
