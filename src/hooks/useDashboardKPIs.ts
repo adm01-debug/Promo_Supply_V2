@@ -171,7 +171,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         : 1.8;
 
       const taxaSlaReal = completedSlas.length > 0
-        ? Math.round((completedSlas.filter(d => d <= (settings?.slaThresholdDays || 3)).length / completedSlas.length) * 100)
+        ? Math.round((completedSlas.filter(d => d <= (settings?.warningThresholdDays || 3)).length / completedSlas.length) * 100)
         : 85; 
 
       
@@ -242,7 +242,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
             const firstDate = new Date(Math.min(...related.map(c => new Date(c.created_at).getTime())));
             return (firstDate.getTime() - new Date(s.created_at).getTime()) / (1000 * 60 * 60 * 24);
           }).filter(d => d !== null) as number[];
-          return dailySlas.length > 0 ? Math.round((dailySlas.filter(d => d <= (settings?.slaThresholdDays || 3)).length / dailySlas.length) * 100) : 85;
+          return dailySlas.length > 0 ? Math.round((dailySlas.filter(d => d <= (settings?.warningThresholdDays || 3)).length / dailySlas.length) * 100) : 85;
         }
         return 0;
       });
