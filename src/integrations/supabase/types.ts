@@ -1032,6 +1032,33 @@ export type Database = {
           },
         ]
       }
+      cost_centers: {
+        Row: {
+          code: string | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cotacoes: {
         Row: {
           anexos: Json | null
@@ -3393,6 +3420,7 @@ export type Database = {
           aprovador_id: string | null
           categoria_id: string | null
           centro_custo: string | null
+          cost_center_id: string | null
           created_at: string
           data_aprovacao: string | null
           data_conclusao: string | null
@@ -3421,6 +3449,7 @@ export type Database = {
           aprovador_id?: string | null
           categoria_id?: string | null
           centro_custo?: string | null
+          cost_center_id?: string | null
           created_at?: string
           data_aprovacao?: string | null
           data_conclusao?: string | null
@@ -3449,6 +3478,7 @@ export type Database = {
           aprovador_id?: string | null
           categoria_id?: string | null
           centro_custo?: string | null
+          cost_center_id?: string | null
           created_at?: string
           data_aprovacao?: string | null
           data_conclusao?: string | null
@@ -3478,6 +3508,13 @@ export type Database = {
             columns: ["categoria_id"]
             isOneToOne: false
             referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
             referencedColumns: ["id"]
           },
           {
