@@ -141,41 +141,40 @@ function SolicitacaoKanbanCard({
       isOverlay && "shadow-xl rotate-2 scale-105",
       selected && "ring-2 ring-primary bg-primary/5"
     )}>
-      <div className="flex items-start gap-2">
-        {/* Checkbox for selection */}
-        {selectable && !isOverlay && (
-          <div onClick={(e) => e.stopPropagation()} className="shrink-0 mt-1">
-            <Checkbox
-              checked={selected}
-              onCheckedChange={(checked) => onSelectChange?.(checked === true)}
-              className="h-4 w-4"
-            />
-          </div>
-        )}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-start gap-2">
+          {/* Checkbox for selection */}
+          {selectable && !isOverlay && (
+            <div onClick={(e) => e.stopPropagation()} className="shrink-0 mt-1">
+              <Checkbox
+                checked={selected}
+                onCheckedChange={(checked) => onSelectChange?.(checked === true)}
+                className="h-4 w-4"
+              />
+            </div>
+          )}
 
-        {/* Drag Handle */}
-        <div 
-          {...dragHandleProps}
-          className="mt-1 cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-          <GripVertical className="w-4 h-4 text-muted-foreground" />
+          {/* Drag Handle */}
+          <div 
+            {...dragHandleProps}
+            className="mt-1 cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <GripVertical className="w-4 h-4 text-muted-foreground" />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-1 mb-1">
+              <Badge variant="outline" className="font-mono text-[10px] py-0 shrink-0">
+                #{solicitacao.itemNumber || solicitacao.id.slice(0, 4)}
+              </Badge>
+              <Badge variant="outline" className={cn("text-[10px] py-0 px-1 border-transparent", urgency.bg, urgency.color)}>
+                {urgency.label}
+              </Badge>
+            </div>
+            <h4 className="font-medium text-sm truncate leading-tight">{solicitacao.produto}</h4>
+          </div>
         </div>
 
-        <div className="flex-1 min-w-0 space-y-2">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <Badge variant="outline" className="font-mono text-xs shrink-0">
-                  #{solicitacao.itemNumber}
-                </Badge>
-                <Badge variant="secondary" className="text-xs">
-                  {getTipoLabel(solicitacao.tipo)}
-                </Badge>
-              </div>
-              <h4 className="font-medium text-sm truncate">{solicitacao.produto}</h4>
-            </div>
-          </div>
 
           {/* Details */}
           <div className="grid grid-cols-2 gap-2 text-xs">
