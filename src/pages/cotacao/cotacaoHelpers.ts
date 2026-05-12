@@ -14,6 +14,10 @@ export interface CotacaoAPI {
   total: number;
   alerta?: string;
   selecionada?: boolean;
+  score_preco?: number;
+  score_prazo?: number;
+  score_qualidade?: number;
+  score_total?: number;
 }
 
 export interface LegacyFornecedor {
