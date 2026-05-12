@@ -1926,6 +1926,7 @@ export type Database = {
           segmento: string | null
           status: string
           telefone: string | null
+          tenant_id: string | null
           tipo: string
           updated_at: string
           website: string | null
@@ -1955,6 +1956,7 @@ export type Database = {
           segmento?: string | null
           status?: string
           telefone?: string | null
+          tenant_id?: string | null
           tipo?: string
           updated_at?: string
           website?: string | null
@@ -1984,6 +1986,7 @@ export type Database = {
           segmento?: string | null
           status?: string
           telefone?: string | null
+          tenant_id?: string | null
           tipo?: string
           updated_at?: string
           website?: string | null
@@ -1994,6 +1997,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedores_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -2900,6 +2910,7 @@ export type Database = {
           solicitacao_id: string | null
           status: string
           taxa_conversao: number | null
+          tenant_id: string | null
           transportadora: string | null
           updated_at: string
           valor_frete: number | null
@@ -2926,6 +2937,7 @@ export type Database = {
           solicitacao_id?: string | null
           status?: string
           taxa_conversao?: number | null
+          tenant_id?: string | null
           transportadora?: string | null
           updated_at?: string
           valor_frete?: number | null
@@ -2952,6 +2964,7 @@ export type Database = {
           solicitacao_id?: string | null
           status?: string
           taxa_conversao?: number | null
+          tenant_id?: string | null
           transportadora?: string | null
           updated_at?: string
           valor_frete?: number | null
@@ -2991,6 +3004,13 @@ export type Database = {
             columns: ["solicitacao_id"]
             isOneToOne: false
             referencedRelation: "solicitacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -3687,6 +3707,7 @@ export type Database = {
           quantidade: number
           solicitante_id: string | null
           status: string
+          tenant_id: string | null
           tipo: string
           titulo: string
           unidade: string | null
@@ -3716,6 +3737,7 @@ export type Database = {
           quantidade?: number
           solicitante_id?: string | null
           status?: string
+          tenant_id?: string | null
           tipo?: string
           titulo: string
           unidade?: string | null
@@ -3745,6 +3767,7 @@ export type Database = {
           quantidade?: number
           solicitante_id?: string | null
           status?: string
+          tenant_id?: string | null
           tipo?: string
           titulo?: string
           unidade?: string | null
@@ -3786,6 +3809,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -4771,6 +4801,42 @@ export type Database = {
           },
         ]
       }
+      tenants: {
+        Row: {
+          cnpj: string | null
+          created_at: string
+          id: string
+          name: string
+          plan: string
+          settings: Json
+          slug: string
+          status: Database["public"]["Enums"]["tenant_status"]
+          updated_at: string
+        }
+        Insert: {
+          cnpj?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          plan?: string
+          settings?: Json
+          slug: string
+          status?: Database["public"]["Enums"]["tenant_status"]
+          updated_at?: string
+        }
+        Update: {
+          cnpj?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          plan?: string
+          settings?: Json
+          slug?: string
+          status?: Database["public"]["Enums"]["tenant_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_filter_preferences: {
         Row: {
           created_at: string
@@ -4853,6 +4919,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_tenants: {
+        Row: {
+          is_default: boolean
+          joined_at: string
+          role: Database["public"]["Enums"]["app_role"]
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          is_default?: boolean
+          joined_at?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          is_default?: boolean
+          joined_at?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_tenants_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_tour_preferences: {
         Row: {
@@ -4994,6 +5092,7 @@ export type Database = {
       check_escalation: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
       clear_login_lockout: { Args: { _email: string }; Returns: undefined }
+      current_tenant_id: { Args: never; Returns: string }
       find_approval_rule: {
         Args: { p_categoria_id?: string; p_valor: number }
         Returns: string
@@ -5144,6 +5243,7 @@ export type Database = {
         | "awarded"
         | "cancelled"
       sourcing_type: "rfi" | "rfp" | "rfq" | "auction"
+      tenant_status: "active" | "suspended" | "trial" | "churned"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -5329,6 +5429,7 @@ export const Constants = {
         "cancelled",
       ],
       sourcing_type: ["rfi", "rfp", "rfq", "auction"],
+      tenant_status: ["active", "suspended", "trial", "churned"],
     },
   },
 } as const
