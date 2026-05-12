@@ -121,6 +121,7 @@ export type Database = {
           delegante_id: string
           id: string
           motivo: string | null
+          organization_id: string | null
           updated_at: string
           valor_maximo: number | null
         }
@@ -134,6 +135,7 @@ export type Database = {
           delegante_id: string
           id?: string
           motivo?: string | null
+          organization_id?: string | null
           updated_at?: string
           valor_maximo?: number | null
         }
@@ -147,10 +149,19 @@ export type Database = {
           delegante_id?: string
           id?: string
           motivo?: string | null
+          organization_id?: string | null
           updated_at?: string
           valor_maximo?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "approval_delegations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       approval_hierarchy: {
         Row: {
@@ -259,6 +270,7 @@ export type Database = {
           id: string
           niveis_aprovacao: number
           nome: string
+          organization_id: string | null
           prioridade: number
           requer_unanimidade: boolean
           tempo_limite_horas: number
@@ -279,6 +291,7 @@ export type Database = {
           id?: string
           niveis_aprovacao?: number
           nome: string
+          organization_id?: string | null
           prioridade?: number
           requer_unanimidade?: boolean
           tempo_limite_horas?: number
@@ -299,6 +312,7 @@ export type Database = {
           id?: string
           niveis_aprovacao?: number
           nome?: string
+          organization_id?: string | null
           prioridade?: number
           requer_unanimidade?: boolean
           tempo_limite_horas?: number
@@ -321,6 +335,13 @@ export type Database = {
             referencedRelation: "cost_centers"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "approval_rules_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
         ]
       }
       approval_steps: {
@@ -335,6 +356,7 @@ export type Database = {
           id: string
           lembrete_enviado: boolean
           notificado_em: string | null
+          organization_id: string | null
           prazo_limite: string | null
           status: string
           workflow_id: string
@@ -350,6 +372,7 @@ export type Database = {
           id?: string
           lembrete_enviado?: boolean
           notificado_em?: string | null
+          organization_id?: string | null
           prazo_limite?: string | null
           status?: string
           workflow_id: string
@@ -365,6 +388,7 @@ export type Database = {
           id?: string
           lembrete_enviado?: boolean
           notificado_em?: string | null
+          organization_id?: string | null
           prazo_limite?: string | null
           status?: string
           workflow_id?: string
@@ -375,6 +399,13 @@ export type Database = {
             columns: ["delegacao_id"]
             isOneToOne: false
             referencedRelation: "approval_delegations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_steps_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
           {
@@ -394,6 +425,7 @@ export type Database = {
           escalado_para: string | null
           etapa_atual: number
           id: string
+          organization_id: string | null
           prazo_limite: string | null
           rule_id: string | null
           solicitacao_id: string | null
@@ -409,6 +441,7 @@ export type Database = {
           escalado_para?: string | null
           etapa_atual?: number
           id?: string
+          organization_id?: string | null
           prazo_limite?: string | null
           rule_id?: string | null
           solicitacao_id?: string | null
@@ -424,6 +457,7 @@ export type Database = {
           escalado_para?: string | null
           etapa_atual?: number
           id?: string
+          organization_id?: string | null
           prazo_limite?: string | null
           rule_id?: string | null
           solicitacao_id?: string | null
@@ -438,6 +472,13 @@ export type Database = {
             columns: ["categoria_id"]
             isOneToOne: false
             referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approval_workflows_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
           {
@@ -746,6 +787,7 @@ export type Database = {
           descricao: string | null
           id: string
           nome: string
+          organization_id: string | null
           updated_at: string
         }
         Insert: {
@@ -755,6 +797,7 @@ export type Database = {
           descricao?: string | null
           id?: string
           nome: string
+          organization_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -764,9 +807,18 @@ export type Database = {
           descricao?: string | null
           id?: string
           nome?: string
+          organization_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "categorias_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       category_strategies: {
         Row: {
