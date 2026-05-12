@@ -1036,28 +1036,45 @@ export type Database = {
         Row: {
           code: string | null
           created_at: string
+          department: string | null
           id: string
           is_active: boolean | null
+          manager_id: string | null
           name: string
+          parent_id: string | null
           updated_at: string
         }
         Insert: {
           code?: string | null
           created_at?: string
+          department?: string | null
           id?: string
           is_active?: boolean | null
+          manager_id?: string | null
           name: string
+          parent_id?: string | null
           updated_at?: string
         }
         Update: {
           code?: string | null
           created_at?: string
+          department?: string | null
           id?: string
           is_active?: boolean | null
+          manager_id?: string | null
           name?: string
+          parent_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cost_centers_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       cotacoes: {
         Row: {
@@ -4748,9 +4765,10 @@ export type Database = {
         Args: { p_fornecedor_id: string }
         Returns: number
       }
-      check_budget_availability:
-        | { Args: { p_centro_custo: string; p_valor: number }; Returns: Json }
-        | { Args: { p_cost_center_id: string; p_valor: number }; Returns: Json }
+      check_budget_availability: {
+        Args: { p_cost_center_id: string; p_valor: number }
+        Returns: Json
+      }
       check_escalation: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
       clear_login_lockout: { Args: { _email: string }; Returns: undefined }
