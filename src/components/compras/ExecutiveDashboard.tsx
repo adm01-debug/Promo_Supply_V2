@@ -386,6 +386,8 @@ export const ExecutiveDashboard = () => {
             showComparison={showComparison} 
             filteredCategorySpend={filteredCategorySpend} 
             onCategoryDrillDown={(data) => setDrillDown({ type: 'category', data })} 
+            selectedCategory={selectedCategory}
+            selectedSupplier={selectedSupplier}
           />
         </div>
         <div className="xl:col-span-1 grid grid-cols-1 gap-6">
