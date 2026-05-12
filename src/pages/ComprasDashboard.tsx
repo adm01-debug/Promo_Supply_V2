@@ -91,27 +91,27 @@ const ComprasDashboard = () => {
         return (
           <EnhancedKpiCard
             title={t('dashboard.kpis.saving')}
-            value={kpis.comparisons.economia.current}
-            previousValue={kpis.comparisons.economia.previous}
+            value={kpis.economiaPercentual}
+            previousValue={((kpis.comparisons.economia.previous / (kpis as any).previousVolumeMes) * 100) || 0}
             sparklineData={kpis.comparisons.economia.sparkline}
             icon={PiggyBank}
             color="emerald"
-            subtitle={`${kpis.economiaPercentual}% ${t('dashboard.kpis.subtitles.economy')}`}
-            format="currency"
-            variant="default"
+            subtitle={`${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.economiaGerada)} economizados`}
+            format="percent"
+            variant="featured"
           />
         );
       case 'kpi-sla':
         return (
           <EnhancedKpiCard
             title={t('dashboard.kpis.sla')}
-            value={kpis.comparisons.sla.current}
-            previousValue={kpis.comparisons.sla.previous}
+            value={kpis.avgSla}
+            previousValue={2.8} // Mock previous SLA
             sparklineData={kpis.comparisons.sla.sparkline}
             icon={BarChart3}
             color="indigo"
-            subtitle={t('dashboard.kpis.subtitles.sla')}
-            format="percent"
+            subtitle="Tempo Médio de Atendimento (dias)"
+            format="number"
             variant="default"
           />
         );
