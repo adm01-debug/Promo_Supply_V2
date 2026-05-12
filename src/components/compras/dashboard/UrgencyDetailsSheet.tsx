@@ -122,7 +122,7 @@ export const UrgencyDetailsSheet = ({
               <div className="flex items-center justify-between">
                 <Badge 
                   variant={slaInfo?.isExceeded ? "destructive" : "outline"}
-                  className="animate-pulse"
+                  className={cn(slaInfo?.isExceeded && "animate-pulse")}
                 >
                   {slaInfo?.isExceeded ? "SLA EXCEDIDO" : "DENTRO DO SLA"}
                 </Badge>
