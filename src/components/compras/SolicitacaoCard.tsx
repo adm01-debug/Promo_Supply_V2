@@ -183,17 +183,24 @@ export const SolicitacaoCard = ({
 
           {/* Info Principal */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className="font-mono text-xs sm:text-sm font-bold text-primary">#{solicitacao.id}</span>
-              <span className="text-muted-foreground hidden sm:inline">|</span>
-              <span className="font-semibold text-foreground text-sm truncate">{solicitacao.empresa}</span>
-              {(solicitacao as any).organizationName && (
-                <Badge variant="outline" className="text-[10px] py-0 bg-primary/5 text-primary border-primary/20">
-                  {(solicitacao as any).organizationName}
-                </Badge>
-              )}
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-mono text-xs sm:text-sm font-bold text-primary">#{solicitacao.id}</span>
+                <span className="text-muted-foreground hidden sm:inline">|</span>
+                <span className="font-semibold text-foreground text-sm truncate">{solicitacao.empresa}</span>
+                {(solicitacao as any).organizationName && (
+                  <Badge variant="outline" className="text-[10px] py-0 bg-primary/5 text-primary border-primary/20">
+                    {(solicitacao as any).organizationName}
+                  </Badge>
+                )}
+              </div>
+              
+              <Badge variant="outline" className={cn("text-[10px] sm:text-xs py-0 gap-1 font-medium border-transparent shrink-0", urgency.bg, urgency.color)}>
+                <urgency.icon className="w-3 h-3" />
+                {urgency.label}
+              </Badge>
             </div>
-            
+
             <p className="text-sm text-foreground mb-2 line-clamp-2">{solicitacao.produto}</p>
             
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-muted-foreground">
