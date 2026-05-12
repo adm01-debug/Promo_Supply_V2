@@ -524,10 +524,14 @@ const GerarOrdem = () => {
               <div className="space-y-3">
                 <Button 
                   onClick={finalizarOrdem} 
-                  className="w-full gap-2 gradient-primary"
+                  className="w-full gap-2 gradient-primary h-12 text-lg"
+                  disabled={isSubmitting}
                 >
-                  <Check className="w-4 h-4" />
-                  Finalizar e Salvar OC
+                  {isSubmitting ? (
+                    <><Loader2 className="w-5 h-5 animate-spin" /> Gerando Ordem...</>
+                  ) : (
+                    <><Check className="w-5 h-5" /> Finalizar e Salvar OC</>
+                  )}
                 </Button>
                 <Button 
                   variant="outline" 
