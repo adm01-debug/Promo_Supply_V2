@@ -149,8 +149,18 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       const totalAprovado = pSol.filter(s => s.valor_aprovado != null).reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
       const economiaGerada = totalEstimado > 0 ? Math.max(0, totalEstimado - totalAprovado) : 0;
       
-      // SLA: 2.5 days average mock
-      const avgSla = 2.5;
+      // Calculate SLA: Avg days from solicitation to first quotation
+      const completedSlas = pSol.map(s => {
+        const firstCot = cot.find(c => c.solicitacao_id === s.id);
+        if (!firstCot) return null;
+        const diff = new Date(firstCot.created_at).getTime() - new Date(s.created_at).getTime();
+        return diff / (1000 * 60 * 60 * 24); // in days
+      }).filter(d => d !== null && d >= 0) as number[];
+
+      const avgSla = completedSlas.length > 0 
+        ? Number((completedSlas.reduce((a, b) => a + b, 0) / completedSlas.length).toFixed(1)) 
+        : 2.5; // fallback to mock if no data
+
       
       const entregues = pPed.filter(p => p.status === 'entregue');
       const entreguesNoPrazo = entregues.filter(p => p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao).length;
