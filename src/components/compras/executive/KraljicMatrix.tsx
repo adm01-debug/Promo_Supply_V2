@@ -87,9 +87,9 @@ export const KraljicMatrix = () => {
     return realCategories.map(c => ({
       id: c.id,
       name: (c as any).categorias?.nome || 'Sem Categoria',
-      quadrant: c.quadrant as any,
-      spend: Number(c.annual_spend || 0),
-      risk: c.supply_risk as any
+      quadrant: c.kraljic_quadrant as any,
+      spend: Number(c.spend_impact || 0),
+      risk: c.risk_level as any
     }));
   }, [realCategories]);
 
