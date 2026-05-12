@@ -162,7 +162,7 @@ export const RiskHeatMap = () => {
             <span className="text-sm text-muted-foreground">Risco Baixo</span>
           </div>
           <p className="text-2xl font-bold text-success">
-            {mockRiskData.filter(s => s.overallRisk <= 25).length}
+            {riskData.filter(s => s.overallRisk <= 25).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
@@ -172,7 +172,7 @@ export const RiskHeatMap = () => {
             <span className="text-sm text-muted-foreground">Risco Médio</span>
           </div>
           <p className="text-2xl font-bold text-warning">
-            {mockRiskData.filter(s => s.overallRisk > 25 && s.overallRisk <= 50).length}
+            {riskData.filter(s => s.overallRisk > 25 && s.overallRisk <= 50).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
@@ -182,7 +182,7 @@ export const RiskHeatMap = () => {
             <span className="text-sm text-muted-foreground">Risco Alto</span>
           </div>
           <p className="text-2xl font-bold text-warning">
-            {mockRiskData.filter(s => s.overallRisk > 50 && s.overallRisk <= 75).length}
+            {riskData.filter(s => s.overallRisk > 50 && s.overallRisk <= 75).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
@@ -192,7 +192,7 @@ export const RiskHeatMap = () => {
             <span className="text-sm text-muted-foreground">Risco Crítico</span>
           </div>
           <p className="text-2xl font-bold text-destructive">
-            {mockRiskData.filter(s => s.overallRisk > 75).length}
+            {riskData.filter(s => s.overallRisk > 75).length}
           </p>
           <p className="text-xs text-muted-foreground">fornecedores</p>
         </Card>
