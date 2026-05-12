@@ -600,6 +600,44 @@ export type Database = {
         }
         Relationships: []
       }
+      budget_audit_logs: {
+        Row: {
+          action: string
+          budget_id: string | null
+          created_at: string
+          id: string
+          new_data: Json | null
+          old_data: Json | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          budget_id?: string | null
+          created_at?: string
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          budget_id?: string | null
+          created_at?: string
+          id?: string
+          new_data?: Json | null
+          old_data?: Json | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_audit_logs_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "department_budgets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categorias: {
         Row: {
           ativo: boolean | null
@@ -4786,6 +4824,20 @@ export type Database = {
       generate_sequential_number: {
         Args: { prefix: string; table_name: string }
         Returns: string
+      }
+      get_cost_center_performance_report: {
+        Args: never
+        Returns: {
+          alerts_count: number
+          available_balance: number
+          cost_center_code: string
+          cost_center_id: string
+          cost_center_name: string
+          total_budget: number
+          total_committed: number
+          total_used: number
+          usage_percentage: number
+        }[]
       }
       get_effective_approver: {
         Args: {

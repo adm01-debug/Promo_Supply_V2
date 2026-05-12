@@ -3,6 +3,18 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
 
+export interface PerformanceReport {
+  cost_center_id: string;
+  cost_center_name: string;
+  cost_center_code: string;
+  total_budget: number;
+  total_committed: number;
+  total_used: number;
+  available_balance: number;
+  usage_percentage: number;
+  alerts_count: number;
+}
+
 export const useBudgetManagement = () => {
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -19,6 +31,15 @@ export const useBudgetManagement = () => {
         .order('departamento', { ascending: true });
       if (error) throw error;
       return data;
+    },
+  });
+
+  const { data: performanceReport = [], isLoading: loadingReport } = useQuery({
+    queryKey: ['cost-center-performance'],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc('get_cost_center_performance_report');
+      if (error) throw error;
+      return data as PerformanceReport[];
     },
   });
 
@@ -41,6 +62,7 @@ export const useBudgetManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['department-budgets'] });
+      queryClient.invalidateQueries({ queryKey: ['cost-center-performance'] });
       toast.success('Orçamento criado com sucesso');
     },
     onError: (err: any) => {
@@ -62,6 +84,7 @@ export const useBudgetManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['department-budgets'] });
+      queryClient.invalidateQueries({ queryKey: ['cost-center-performance'] });
       toast.success('Orçamento atualizado');
     },
     onError: () => toast.error('Erro ao atualizar orçamento'),
@@ -77,6 +100,7 @@ export const useBudgetManagement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['department-budgets'] });
+      queryClient.invalidateQueries({ queryKey: ['cost-center-performance'] });
       toast.success('Orçamento removido');
     },
     onError: () => toast.error('Erro ao remover orçamento'),
@@ -108,7 +132,8 @@ export const useBudgetManagement = () => {
 
   return {
     budgets,
-    loading: isLoading,
+    performanceReport,
+    loading: isLoading || loadingReport,
     createBudget,
     updateBudget,
     deleteBudget,

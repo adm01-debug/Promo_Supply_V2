@@ -165,13 +165,15 @@ const Orcamentos = () => {
             { label: 'Utilizado', value: formatCurrency(summary.totalUsed), icon: BarChart3, color: 'text-info' },
             { label: 'Disponível', value: formatCurrency(summary.available), icon: CheckCircle2, color: summary.available < 0 ? 'text-destructive' : 'text-success' },
           ].map((kpi, i) => (
-            <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>
-              <Card className="p-4">
+            <motion.div key={i} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}>
+              <Card className="p-4 bg-card/50 backdrop-blur-sm border-primary/10 hover:border-primary/30 transition-colors">
                 <div className="flex items-center gap-3">
-                  <kpi.icon className={`w-8 h-8 ${kpi.color}`} />
+                  <div className={`p-2 rounded-lg bg-background shadow-inner`}>
+                    <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
+                  </div>
                   <div>
-                    <p className="text-lg font-bold text-foreground">{kpi.value}</p>
-                    <p className="text-xs text-muted-foreground">{kpi.label}</p>
+                    <p className="text-lg font-bold text-foreground leading-tight">{kpi.value}</p>
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">{kpi.label}</p>
                   </div>
                 </div>
               </Card>
