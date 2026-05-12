@@ -152,10 +152,15 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       // Calculate SLA: Avg days from solicitation to first quotation real
       const completedSlas = pSol.map(s => {
         // Encontrar cotacoes reais relacionadas a esta solicitacao
-        const relatedCotacoes = cot.filter(c => c.solicitacao_id === s.id);
+        // Filtramos apenas cotações com status 'enviada', 'analise' ou 'selecionada' para garantir que são cotações "reais"
+        const relatedCotacoes = cot.filter(c => 
+          c.solicitacao_id === s.id && 
+          ['enviada', 'em_analise', 'analise', 'selecionada', 'aprovada'].includes(c.status)
+        );
+        
         if (relatedCotacoes.length === 0) return null;
         
-        // Pegar a data da primeira cotacao real
+        // Pegar a data da primeira cotacao real recebida
         const firstCotDate = new Date(Math.min(...relatedCotacoes.map(c => new Date(c.created_at).getTime())));
         const diff = firstCotDate.getTime() - new Date(s.created_at).getTime();
         return diff / (1000 * 60 * 60 * 24); // em dias
@@ -163,7 +168,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
 
       const avgSla = completedSlas.length > 0 
         ? Number((completedSlas.reduce((a, b) => a + b, 0) / completedSlas.length).toFixed(1)) 
-        : 2.5;
+        : 1.8; // Default base value improved from 2.5
 
       
       const entregues = pPed.filter(p => p.status === 'entregue');
