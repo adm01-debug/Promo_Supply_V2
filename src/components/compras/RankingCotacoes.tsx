@@ -375,6 +375,37 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
           </div>
         );
       })}
+
+      <Dialog open={showJustifyModal} onOpenChange={setShowJustifyModal}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MessageSquare className="w-5 h-5 text-primary" />
+              Justificativa de Seleção
+            </DialogTitle>
+            <DialogDescription>
+              Você está selecionando um fornecedor que não é a recomendação principal do sistema. 
+              Por favor, justifique sua escolha para fins de auditoria.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="justificativa">Sua justificativa</Label>
+              <Textarea
+                id="justificativa"
+                placeholder="Ex: Fornecedor possui contrato global, prazo negociado offline, etc."
+                value={justificativa}
+                onChange={(e) => setJustificativa(e.target.value)}
+                className="min-h-[100px]"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowJustifyModal(false)}>Cancelar</Button>
+            <Button onClick={confirmSelection} disabled={!justificativa.trim()}>Confirmar Seleção</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
