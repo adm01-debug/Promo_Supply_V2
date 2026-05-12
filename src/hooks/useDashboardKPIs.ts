@@ -333,7 +333,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       .slice(0, 10);
 
     return { kpis, pipeline, urgentItems };
-  }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows, profilesData, categoriasData]);
+  }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows, profilesData, categoriasData, categoryFilter, supplierFilter]);
 
   const loading = loadingSol || loadingPed || loadingPag || loadingCot || loadingForn || loadingWf;
 
