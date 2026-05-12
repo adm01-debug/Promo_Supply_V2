@@ -152,6 +152,41 @@ export type Database = {
         }
         Relationships: []
       }
+      approval_hierarchy: {
+        Row: {
+          cost_center_id: string | null
+          created_at: string | null
+          id: string
+          max_approval_amount: number | null
+          superior_id: string | null
+          user_id: string
+        }
+        Insert: {
+          cost_center_id?: string | null
+          created_at?: string | null
+          id?: string
+          max_approval_amount?: number | null
+          superior_id?: string | null
+          user_id: string
+        }
+        Update: {
+          cost_center_id?: string | null
+          created_at?: string | null
+          id?: string
+          max_approval_amount?: number | null
+          superior_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approval_hierarchy_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       approval_history: {
         Row: {
           acao: string
@@ -648,6 +683,50 @@ export type Database = {
           },
         ]
       }
+      budget_transactions: {
+        Row: {
+          amount: number
+          cost_center_id: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          reference_id: string | null
+          reference_type: string | null
+          type: string
+        }
+        Insert: {
+          amount: number
+          cost_center_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          type: string
+        }
+        Update: {
+          amount?: number
+          cost_center_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_transactions_cost_center_id_fkey"
+            columns: ["cost_center_id"]
+            isOneToOne: false
+            referencedRelation: "cost_centers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categorias: {
         Row: {
           ativo: boolean | null
@@ -1082,7 +1161,9 @@ export type Database = {
       }
       cost_centers: {
         Row: {
+          approval_threshold: number | null
           code: string | null
+          committed_amount: number | null
           created_at: string
           department: string | null
           id: string
@@ -1090,10 +1171,14 @@ export type Database = {
           manager_id: string | null
           name: string
           parent_id: string | null
+          total_budget: number | null
           updated_at: string
+          used_amount: number | null
         }
         Insert: {
+          approval_threshold?: number | null
           code?: string | null
+          committed_amount?: number | null
           created_at?: string
           department?: string | null
           id?: string
@@ -1101,10 +1186,14 @@ export type Database = {
           manager_id?: string | null
           name: string
           parent_id?: string | null
+          total_budget?: number | null
           updated_at?: string
+          used_amount?: number | null
         }
         Update: {
+          approval_threshold?: number | null
           code?: string | null
+          committed_amount?: number | null
           created_at?: string
           department?: string | null
           id?: string
@@ -1112,7 +1201,9 @@ export type Database = {
           manager_id?: string | null
           name?: string
           parent_id?: string | null
+          total_budget?: number | null
           updated_at?: string
+          used_amount?: number | null
         }
         Relationships: [
           {
