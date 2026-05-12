@@ -43,7 +43,9 @@ const ConfiguracoesCentroCusto = () => {
     is_active: true,
     manager_id: '',
     department: '',
-    parent_id: ''
+    parent_id: '',
+    total_budget: '',
+    approval_threshold: ''
   });
 
   const { data: profiles = [] } = useQuery({
@@ -69,7 +71,9 @@ const ConfiguracoesCentroCusto = () => {
         is_active: cc.is_active,
         manager_id: cc.manager_id || '',
         department: cc.department || '',
-        parent_id: cc.parent_id || ''
+        parent_id: cc.parent_id || '',
+        total_budget: cc.total_budget?.toString() || '',
+        approval_threshold: cc.approval_threshold?.toString() || ''
       });
     } else {
       setEditingCC(null);
@@ -79,7 +83,9 @@ const ConfiguracoesCentroCusto = () => {
         is_active: true,
         manager_id: '',
         department: '',
-        parent_id: ''
+        parent_id: '',
+        total_budget: '',
+        approval_threshold: ''
       });
     }
     setIsDialogOpen(true);
@@ -99,7 +105,9 @@ const ConfiguracoesCentroCusto = () => {
         is_active: form.is_active,
         manager_id: form.manager_id || null,
         department: form.department || null,
-        parent_id: form.parent_id || null
+        parent_id: form.parent_id || null,
+        total_budget: form.total_budget ? parseFloat(form.total_budget) : 0,
+        approval_threshold: form.approval_threshold ? parseFloat(form.approval_threshold) : 0
       };
 
       if (editingCC) {
@@ -161,13 +169,25 @@ const ConfiguracoesCentroCusto = () => {
                   <Label>Nome</Label>
                   <Input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder="Ex: Marketing" />
                 </div>
-                <div className="space-y-2">
-                  <Label>Código</Label>
-                  <Input value={form.code} onChange={e => setForm(p => ({ ...p, code: e.target.value }))} placeholder="Ex: CC-001" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Código</Label>
+                    <Input value={form.code} onChange={e => setForm(p => ({ ...p, code: e.target.value }))} placeholder="Ex: CC-001" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Departamento</Label>
+                    <Input value={form.department} onChange={e => setForm(p => ({ ...p, department: e.target.value }))} placeholder="Ex: Financeiro" />
+                  </div>
                 </div>
-                <div className="space-y-2">
-                  <Label>Departamento</Label>
-                  <Input value={form.department} onChange={e => setForm(p => ({ ...p, department: e.target.value }))} placeholder="Ex: Financeiro" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Orçamento Total (R$)</Label>
+                    <Input type="number" value={form.total_budget} onChange={e => setForm(p => ({ ...p, total_budget: e.target.value }))} placeholder="0.00" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Alçada de Aprovação (R$)</Label>
+                    <Input type="number" value={form.approval_threshold} onChange={e => setForm(p => ({ ...p, approval_threshold: e.target.value }))} placeholder="0.00" />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label>Gestor Responsável</Label>
@@ -230,7 +250,8 @@ const ConfiguracoesCentroCusto = () => {
                 <TableRow>
                   <TableHead>Código</TableHead>
                   <TableHead>Nome</TableHead>
-                  <TableHead>Departamento</TableHead>
+                  <TableHead>Orçamento</TableHead>
+                  <TableHead>Disponível</TableHead>
                   <TableHead>Gestor</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Ações</TableHead>
@@ -253,8 +274,22 @@ const ConfiguracoesCentroCusto = () => {
                   filteredCCs.map((cc) => (
                     <TableRow key={cc.id}>
                       <TableCell className="font-medium">{cc.code}</TableCell>
-                      <TableCell>{cc.name}</TableCell>
-                      <TableCell>{cc.department || '-'}</TableCell>
+                      <TableCell>
+                        <div>
+                          <div className="font-medium">{cc.name}</div>
+                          <div className="text-[10px] text-muted-foreground uppercase">{cc.department || '-'}</div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="text-sm">
+                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cc.total_budget || 0)}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className={`text-sm font-bold ${(cc.total_budget || 0) - (cc.committed_amount || 0) - (cc.used_amount || 0) < 0 ? 'text-destructive' : 'text-emerald-600'}`}>
+                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format((cc.total_budget || 0) - (cc.committed_amount || 0) - (cc.used_amount || 0))}
+                        </div>
+                      </TableCell>
                       <TableCell>{cc.manager?.full_name || '-'}</TableCell>
                       <TableCell>
                         {cc.is_active ? (
