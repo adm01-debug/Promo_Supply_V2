@@ -74,7 +74,8 @@ export function useFornecedores(filters?: FornecedorFilters) {
       let query = supabase
         .from('fornecedores')
         .select('id, codigo, razao_social, nome_fantasia, cnpj, email, telefone, endereco, cidade, estado, cep, website, tipo, segmento, status, avaliacao, condicoes_pagamento, prazo_medio_entrega, integrado_api, api_endpoint, observacoes, limite_credito, saldo_comprometido, created_at, updated_at, created_by')
-        .order('razao_social', { ascending: true });
+        .order('razao_social', { ascending: true })
+        .eq('organization_id', organizationId);
 
       // Apply filters
       if (filters?.tipo && filters.tipo !== 'todos') {
