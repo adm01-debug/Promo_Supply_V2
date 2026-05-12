@@ -40,6 +40,7 @@ export interface AdvancedFilters {
   fornecedores: string[];
   tipos: string[];
   prioridades: string[];
+  status: string[];
 }
 
 const initialFilters: AdvancedFilters = {
