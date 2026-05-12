@@ -1,14 +1,17 @@
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { logAuditAction, auditHelpers } from "../auditService";
 
-const { mockSupabase } = vi.hoisted(() => {
+// Better Supabase Mock for service
+const { mockSupabase, insertSpy } = vi.hoisted(() => {
+  const insertSpy = vi.fn().mockResolvedValue({ error: null });
+  
   const createQueryBuilder = () => {
     const builder: any = {
       select: vi.fn().mockImplementation(() => builder),
       eq: vi.fn().mockImplementation(() => builder),
       maybeSingle: vi.fn().mockResolvedValue({ data: { full_name: "Test User" }, error: null }),
-      insert: vi.fn().mockResolvedValue({ error: null }),
-      order: vi.fn().mockReturnThis(),
+      insert: insertSpy,
+      order: vi.fn().mockImplementation(() => builder),
     };
     return builder;
   };
@@ -19,7 +22,7 @@ const { mockSupabase } = vi.hoisted(() => {
       getUser: vi.fn().mockResolvedValue({ data: { user: { id: "user-1", email: "test@example.com" } } }),
     },
   };
-  return { mockSupabase: mock };
+  return { mockSupabase: mock, insertSpy };
 });
 
 vi.mock("@/integrations/supabase/client", () => ({
@@ -29,13 +32,14 @@ vi.mock("@/integrations/supabase/client", () => ({
 describe("auditService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    insertSpy.mockResolvedValue({ error: null });
   });
 
   it("should log a create action correctly", async () => {
     await auditHelpers.logCreate("solicitacao", "sol-1", "Created solicitation", { foo: "bar" });
 
     expect(mockSupabase.from).toHaveBeenCalledWith("audit_logs");
-    expect(mockSupabase.from("audit_logs").insert).toHaveBeenCalledWith([
+    expect(insertSpy).toHaveBeenCalledWith([
       expect.objectContaining({
         user_id: "user-1",
         user_email: "test@example.com",
@@ -52,12 +56,13 @@ describe("auditService", () => {
   it("should handle anonymous users (system actions)", async () => {
     mockSupabase.auth.getUser.mockResolvedValue({ data: { user: null } });
     
+    // For profiles fetch in logAuditAction
     mockSupabase.from.mockImplementation((table: string) => {
       const builder: any = {
         select: vi.fn().mockReturnThis(),
         eq: vi.fn().mockReturnThis(),
         maybeSingle: vi.fn().mockResolvedValue({ data: null, error: null }),
-        insert: vi.fn().mockResolvedValue({ error: null }),
+        insert: insertSpy,
       };
       return builder;
     });
@@ -67,7 +72,7 @@ describe("auditService", () => {
       entity_type: "usuario",
     });
 
-    expect(mockSupabase.from("audit_logs").insert).toHaveBeenCalledWith([
+    expect(insertSpy).toHaveBeenCalledWith([
       expect.objectContaining({
         user_id: null,
         user_email: "sistema@promo.supply",
@@ -78,10 +83,7 @@ describe("auditService", () => {
 
   it("should log errors without crashing", async () => {
     const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    
-    mockSupabase.from.mockImplementation(() => ({
-      insert: vi.fn().mockResolvedValue({ error: { message: "DB Error" } }),
-    }));
+    insertSpy.mockResolvedValue({ error: { message: "DB Error" } });
 
     await auditHelpers.logView("pedido", "ped-1", "Viewed order");
 
