@@ -39,12 +39,13 @@ export const DashboardInsights = () => {
 
     // Opportunity: Savings
     if (kpis.economiaPercentual < 15) {
+      const potentialExtraSaving = Math.round(kpis.volumeMes * 0.03); // Assuming we can save 3% more
       result.push({
         id: '1',
         type: 'opportunity',
         title: 'Otimização de Negociação',
-        description: 'Seu saving atual de ' + kpis.economiaPercentual + '% está abaixo do benchmark de 18% para sua categoria principal.',
-        impact: 'Potencial de +R$ 45.000 em economia mensal.',
+        description: `Seu saving atual de ${kpis.economiaPercentual}% está abaixo do benchmark de 18% para sua categoria principal.`,
+        impact: `Potencial de +R$ ${potentialExtraSaving.toLocaleString('pt-BR')} em economia mensal adicional.`,
         action: 'Revisar cotações em aberto',
         icon: Target,
         color: 'blue'
@@ -52,32 +53,46 @@ export const DashboardInsights = () => {
     }
 
     // Warning: SLA
-    if (kpis.taxaEntrega < 90) {
+    if (kpis.taxaSlaReal < 85) {
+      const slaTrend = kpis.comparisons.sla.trend;
       result.push({
         id: '2',
         type: 'warning',
-        title: 'Risco de Lead Time',
-        description: 'A taxa de entrega no prazo caiu 4% nos últimos 7 dias.',
-        impact: 'Possível impacto na produção para o próximo mês.',
-        action: 'Analisar fornecedores críticos',
+        title: 'Risco de Lead Time (SLA)',
+        description: `O cumprimento do SLA está em ${kpis.taxaSlaReal}%. ${slaTrend < 0 ? `Houve uma queda de ${Math.abs(Math.round(slaTrend))}%` : 'A tendência é de estabilidade'}, mas ainda abaixo da meta.`,
+        impact: 'Atrasos nas entregas podem impactar a operação.',
+        action: 'Analisar gargalos no SLA',
         icon: AlertTriangle,
         color: 'orange'
       });
     }
 
     // Info: Volume
-    if (kpis.comparisons.volume.trend > 10) {
+    const volumeTrend = Math.round(kpis.comparisons.volume.trend);
+    if (volumeTrend > 5) {
       result.push({
         id: '3',
         type: 'info',
         title: 'Aumento de Demanda',
-        description: 'O volume de compras deste mês é 12% superior ao histórico.',
-        impact: 'Aproveite o volume para negociar descontos progressivos.',
+        description: `O volume de compras deste mês é ${volumeTrend}% superior ao período anterior.`,
+        impact: 'O aumento de volume permite negociar melhores condições com fornecedores estratégicos.',
         action: 'Ver pedidos volumosos',
         icon: TrendingUp,
         color: 'purple'
       });
+    } else if (volumeTrend < -5) {
+      result.push({
+        id: '3',
+        type: 'info',
+        title: 'Queda na Demanda',
+        description: `O volume de compras deste mês é ${Math.abs(volumeTrend)}% inferior ao período anterior.`,
+        impact: 'Atenção aos estoques mínimos e contratos de fornecimento fixo.',
+        action: 'Analisar tendência de volume',
+        icon: TrendingDown,
+        color: 'blue'
+      });
     }
+
 
     // Success: Compliance
     result.push({

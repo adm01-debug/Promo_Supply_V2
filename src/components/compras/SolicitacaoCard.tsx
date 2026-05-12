@@ -1,4 +1,4 @@
-import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy } from "lucide-react";
+import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy, Clock, AlertTriangle } from "lucide-react";
 import { StatusTimeline } from "@/components/compras/StatusTimeline";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -11,6 +11,8 @@ import { getTipoLabel, getStatusColor } from "@/types/legacyTypes";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
 import { useHapticFeedback } from "@/hooks/useMobileGestures";
 import { toast } from "sonner";
+import { differenceInDays, isPast, parseISO } from "date-fns";
+
 
 interface SolicitacaoCardProps {
   solicitacao: Solicitacao;
@@ -79,6 +81,20 @@ export const SolicitacaoCard = ({
   const statusColor = getStatusColor(solicitacao.status);
   const haptic = useHapticFeedback();
 
+  // Urgency logic
+  const deadline = new Date(solicitacao.prazoEntrega);
+  const daysRemaining = differenceInDays(deadline, new Date());
+  const isOverdue = isPast(deadline) && solicitacao.status !== 'ENTREGUE';
+  
+  const getUrgencyInfo = () => {
+    if (isOverdue) return { color: "text-destructive", bg: "bg-destructive/10", label: "Atrasado", icon: AlertTriangle };
+    if (daysRemaining <= 2) return { color: "text-red-600", bg: "bg-red-50", label: "Urgente", icon: Clock };
+    if (daysRemaining <= 5) return { color: "text-amber-600", bg: "bg-amber-50", label: "Prioritário", icon: Clock };
+    return { color: "text-emerald-600", bg: "bg-emerald-50", label: "No prazo", icon: CheckCircle };
+  };
+
+  const urgency = getUrgencyInfo();
+
   // Enhanced swipe handlers with haptic feedback
   const handleApprove = () => {
     haptic.success();
@@ -113,6 +129,7 @@ export const SolicitacaoCard = ({
       onDelete();
     }
   };
+
 
   // Swipe actions configuration
   const leftActions = [
@@ -166,17 +183,24 @@ export const SolicitacaoCard = ({
 
           {/* Info Principal */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
-              <span className="font-mono text-xs sm:text-sm font-bold text-primary">#{solicitacao.id}</span>
-              <span className="text-muted-foreground hidden sm:inline">|</span>
-              <span className="font-semibold text-foreground text-sm truncate">{solicitacao.empresa}</span>
-              {(solicitacao as any).organizationName && (
-                <Badge variant="outline" className="text-[10px] py-0 bg-primary/5 text-primary border-primary/20">
-                  {(solicitacao as any).organizationName}
-                </Badge>
-              )}
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-mono text-xs sm:text-sm font-bold text-primary">#{solicitacao.id}</span>
+                <span className="text-muted-foreground hidden sm:inline">|</span>
+                <span className="font-semibold text-foreground text-sm truncate">{solicitacao.empresa}</span>
+                {(solicitacao as any).organizationName && (
+                  <Badge variant="outline" className="text-[10px] py-0 bg-primary/5 text-primary border-primary/20">
+                    {(solicitacao as any).organizationName}
+                  </Badge>
+                )}
+              </div>
+              
+              <Badge variant="outline" className={cn("text-[10px] sm:text-xs py-0 gap-1 font-medium border-transparent shrink-0", urgency.bg, urgency.color)}>
+                <urgency.icon className="w-3 h-3" />
+                {urgency.label}
+              </Badge>
             </div>
-            
+
             <p className="text-sm text-foreground mb-2 line-clamp-2">{solicitacao.produto}</p>
             
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-muted-foreground">

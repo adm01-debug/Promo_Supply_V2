@@ -23,8 +23,13 @@ import {
   Package, 
   Building2,
   User,
-  Calendar
+  Calendar,
+  Clock,
+  AlertTriangle,
+  ArrowRight
 } from "lucide-react";
+import { differenceInDays, isPast } from "date-fns";
+
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -114,6 +119,21 @@ function SolicitacaoKanbanCard({
   selected,
   onSelectChange
 }: SolicitacaoKanbanCardProps) {
+  // Urgency logic
+  const deadline = new Date(solicitacao.prazoEntrega);
+  const daysRemaining = differenceInDays(deadline, new Date());
+  const isOverdue = isPast(deadline) && solicitacao.status !== 'ENTREGUE';
+  
+  const getUrgencyInfo = () => {
+    if (isOverdue) return { color: "text-destructive", bg: "bg-destructive/10", label: "Atrasado", icon: AlertTriangle };
+    if (daysRemaining <= 2) return { color: "text-red-600", bg: "bg-red-50", label: "Urgente", icon: Clock };
+    if (daysRemaining <= 5) return { color: "text-amber-600", bg: "bg-amber-50", label: "Prioritário", icon: Clock };
+    return { color: "text-emerald-600", bg: "bg-emerald-50", label: "No prazo", icon: Clock };
+  };
+
+  const urgency = getUrgencyInfo();
+
+
   return (
     <Card className={cn(
       "p-3 cursor-pointer hover:shadow-md transition-all border-l-4",
@@ -121,73 +141,71 @@ function SolicitacaoKanbanCard({
       isOverlay && "shadow-xl rotate-2 scale-105",
       selected && "ring-2 ring-primary bg-primary/5"
     )}>
-      <div className="flex items-start gap-2">
-        {/* Checkbox for selection */}
-        {selectable && !isOverlay && (
-          <div onClick={(e) => e.stopPropagation()} className="shrink-0 mt-1">
-            <Checkbox
-              checked={selected}
-              onCheckedChange={(checked) => onSelectChange?.(checked === true)}
-              className="h-4 w-4"
-            />
-          </div>
-        )}
-
-        {/* Drag Handle */}
-        <div 
-          {...dragHandleProps}
-          className="mt-1 cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted opacity-0 group-hover:opacity-100 transition-opacity"
-        >
-          <GripVertical className="w-4 h-4 text-muted-foreground" />
-        </div>
-
-        <div className="flex-1 min-w-0 space-y-2">
-          {/* Header */}
-          <div className="flex items-start justify-between gap-2">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <Badge variant="outline" className="font-mono text-xs shrink-0">
-                  #{solicitacao.itemNumber}
-                </Badge>
-                <Badge variant="secondary" className="text-xs">
-                  {getTipoLabel(solicitacao.tipo)}
-                </Badge>
-              </div>
-              <h4 className="font-medium text-sm truncate">{solicitacao.produto}</h4>
-            </div>
-          </div>
-
-          {/* Details */}
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Building2 className="w-3 h-3" />
-              <span className="truncate">{solicitacao.empresa}</span>
-            </div>
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Package className="w-3 h-3" />
-              <span>{solicitacao.quantidade} un</span>
-            </div>
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <User className="w-3 h-3" />
-              <span className="truncate">{solicitacao.vendedor}</span>
-            </div>
-            <div className="flex items-center gap-1 text-muted-foreground">
-              <Calendar className="w-3 h-3" />
-              <span>{new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
-            </div>
-          </div>
-
-          {/* Value if available */}
-          {solicitacao.valorTotal && (
-            <div className="text-sm font-semibold text-primary">
-              R$ {solicitacao.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-start gap-2">
+          {/* Checkbox for selection */}
+          {selectable && !isOverlay && (
+            <div onClick={(e) => e.stopPropagation()} className="shrink-0 mt-1">
+              <Checkbox
+                checked={selected}
+                onCheckedChange={(checked) => onSelectChange?.(checked === true)}
+                className="h-4 w-4"
+              />
             </div>
           )}
+
+          {/* Drag Handle */}
+          <div 
+            {...dragHandleProps}
+            className="mt-1 cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted opacity-0 group-hover:opacity-100 transition-opacity"
+          >
+            <GripVertical className="w-4 h-4 text-muted-foreground" />
+          </div>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-1 mb-1">
+              <Badge variant="outline" className="font-mono text-[10px] py-0 shrink-0">
+                #{solicitacao.itemNumber || solicitacao.id.slice(0, 4)}
+              </Badge>
+              <Badge variant="outline" className={cn("text-[10px] py-0 px-1 border-transparent", urgency.bg, urgency.color)}>
+                {urgency.label}
+              </Badge>
+            </div>
+            <h4 className="font-medium text-sm truncate leading-tight">{solicitacao.produto}</h4>
+          </div>
         </div>
+
+        {/* Details */}
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <Building2 className="w-3 h-3" />
+            <span className="truncate">{solicitacao.empresa}</span>
+          </div>
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <Package className="w-3 h-3" />
+            <span>{solicitacao.quantidade} un</span>
+          </div>
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <User className="w-3 h-3" />
+            <span className="truncate">{solicitacao.vendedor}</span>
+          </div>
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <Calendar className="w-3 h-3" />
+            <span>{new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
+          </div>
+        </div>
+
+        {/* Value if available */}
+        {solicitacao.valorTotal && (
+          <div className="text-sm font-semibold text-primary pt-1 border-t border-muted">
+            R$ {solicitacao.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+          </div>
+        )}
       </div>
     </Card>
   );
 }
+
 
 // Droppable Column Component
 interface DroppableColumnProps {
