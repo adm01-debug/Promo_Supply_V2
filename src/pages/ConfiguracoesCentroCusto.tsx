@@ -36,7 +36,14 @@ const ConfiguracoesCentroCusto = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingCC, setEditingCC] = useState<CostCenter | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-  const [form, setForm] = useState({ name: '', code: '', is_active: true });
+  const [form, setForm] = useState({ 
+    name: '', 
+    code: '', 
+    is_active: true,
+    manager_id: '',
+    department: '',
+    parent_id: ''
+  });
 
   const filteredCCs = costCenters.filter(cc => 
     cc.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
