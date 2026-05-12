@@ -201,6 +201,8 @@ const ComprasDashboard = () => {
         return <LazyPanel><RiskHeatMap /></LazyPanel>;
       case 'dashboard-insights':
         return <LazyPanel><DashboardInsights /></LazyPanel>;
+      case 'active-sourcing':
+        return <LazyPanel><ActiveSourcingWidget /></LazyPanel>;
       default:
         return null;
     }
