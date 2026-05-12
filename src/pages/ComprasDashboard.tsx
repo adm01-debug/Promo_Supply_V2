@@ -1,15 +1,28 @@
-import { useState, lazy, Suspense, useCallback, memo, useEffect } from "react";
+import { useState, lazy, Suspense, useCallback, memo, useEffect, useRef, useMemo } from "react";
 import { 
   ClipboardList, 
   Clock, 
   TrendingUp,
   BarChart3,
-  PiggyBank
+  PiggyBank,
+  Filter,
+  X,
+  ChevronDown,
+  Calendar
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { EnhancedKpiCard } from "@/components/compras/EnhancedKpiCard";
 import { PipelineChart } from "@/components/compras/PipelineChart";
 import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
@@ -23,6 +36,10 @@ import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import { useDashboardLayoutStore } from "@/stores/dashboardLayoutStore";
+import { useAccountFilters } from "@/hooks/useAccountFilters";
+import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery } from "@tanstack/react-query";
 
 
 // Lazy load heavy panels that are below the fold
@@ -45,11 +62,41 @@ const LazyPanel = ({ children }: { children: React.ReactNode }) => (
 );
 
 const ComprasDashboard = () => {
-  const [currentFilters, setCurrentFilters] = useState({ category: 'all', supplier: 'all', period: '6m', showComparison: true });
-  const { kpis, pipeline, urgentItems, loading } = useDashboardKPIs(currentFilters);
   const { t } = useTranslation();
-  const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault } = useDashboardFilters();
   const { loadFromDb, saveToDb, widgets } = useDashboardLayoutStore();
+  const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault, getDefaultFilter } = useDashboardFilters();
+
+  const filterDefaults = useMemo(() => ({
+    category: 'all',
+    supplier: 'all',
+    period: '6m',
+    showComparison: true
+  }), []);
+
+  const {
+    filters: currentFilters,
+    patchFilters,
+    loading: accountFiltersLoading
+  } = useAccountFilters('compras-dashboard', filterDefaults);
+
+  const { kpis, pipeline, urgentItems, loading: kpisLoading } = useDashboardKPIs(currentFilters);
+  const loading = kpisLoading || accountFiltersLoading;
+
+  const [hasAppliedDefault, setHasAppliedDefault] = useState(false);
+
+  useEffect(() => {
+    if (hasAppliedDefault || favorites.length === 0 || accountFiltersLoading) return;
+    const defaultFilter = getDefaultFilter();
+    if (defaultFilter) {
+      patchFilters({
+        category: defaultFilter.category_filter || 'all',
+        supplier: defaultFilter.supplier_filter || 'all',
+        period: defaultFilter.period_filter || '6m',
+        showComparison: defaultFilter.show_comparison ?? true,
+      });
+    }
+    setHasAppliedDefault(true);
+  }, [favorites.length, getDefaultFilter, hasAppliedDefault, accountFiltersLoading, patchFilters]);
 
   useEffect(() => {
     loadFromDb('compras');
@@ -58,6 +105,36 @@ const ComprasDashboard = () => {
   const handleSaveLayout = useCallback(() => {
     saveToDb('compras');
   }, [saveToDb]);
+
+  const { data: categories = [] } = useQuery({
+    queryKey: ['dashboard-filter-categories'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('categorias').select('id, nome').order('nome');
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const { data: suppliers = [] } = useQuery({
+    queryKey: ['dashboard-filter-suppliers'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('fornecedores').select('id, razao_social').eq('status', 'ativo').order('razao_social');
+      if (error) throw error;
+      return data;
+    }
+  });
+
+  const hasActiveFilters = currentFilters.category !== 'all' || 
+                          currentFilters.supplier !== 'all' || 
+                          currentFilters.period !== '6m';
+
+  const clearFilters = useCallback(() => {
+    patchFilters({
+      category: 'all',
+      supplier: 'all',
+      period: '6m'
+    });
+  }, [patchFilters]);
 
   // Realtime with debounce to avoid excessive re-renders
   useRealtimeSubscription({
@@ -221,34 +298,149 @@ const ComprasDashboard = () => {
       <div className="space-y-6 animate-fade-in pb-10">
         <CriticalAlertsBar />
         
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 bg-card/30 p-6 rounded-2xl border border-border/50 backdrop-blur-md">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-black text-foreground tracking-tight uppercase">{t('dashboard.title')}</h1>
-              <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 animate-pulse">Live</Badge>
+        {/* Dashboard Toolbar with Filters */}
+        <div className="flex flex-col gap-4 bg-card/30 p-6 rounded-2xl border border-border/50 backdrop-blur-md">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <h1 className="text-3xl font-black text-foreground tracking-tight uppercase">{t('dashboard.title')}</h1>
+                <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 animate-pulse">Live</Badge>
+              </div>
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
+                {t('common.welcome')} - Sistema atualizado em tempo real
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground flex items-center gap-2">
-              <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
-              {t('common.welcome')} - Sistema atualizado em tempo real
-            </p>
+            
+            <div className="flex items-center gap-3">
+              <FilterFavoritesManager
+                favorites={favorites}
+                currentFilters={currentFilters}
+                onSave={saveFavorite}
+                onDelete={deleteFavorite}
+                onSetDefault={setAsDefault}
+                onApply={(filter) => patchFilters({
+                  category: filter.category_filter || 'all',
+                  supplier: filter.supplier_filter || 'all',
+                  period: filter.period_filter || '6m',
+                  showComparison: filter.show_comparison ?? true,
+                })}
+                loading={filtersLoading}
+              />
+              <PurchaseClimateWidget />
+            </div>
           </div>
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-            <FilterFavoritesManager
-              favorites={favorites}
-              currentFilters={currentFilters}
-              onSave={saveFavorite}
-              onDelete={deleteFavorite}
-              onSetDefault={setAsDefault}
-              onApply={(filter) => setCurrentFilters({
-                category: filter.category_filter || 'all',
-                supplier: filter.supplier_filter || 'all',
-                period: filter.period_filter || '6m',
-                showComparison: filter.show_comparison ?? true,
-              })}
-              loading={filtersLoading}
-            />
-            <PurchaseClimateWidget />
+
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Período</Label>
+              <Select value={currentFilters.period} onValueChange={(v) => patchFilters({ period: v })}>
+                <SelectTrigger className="bg-background/50 h-10 border-muted-foreground/20">
+                  <Calendar className="w-4 h-4 mr-2 text-primary" />
+                  <SelectValue placeholder="Período" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1m">Último Mês</SelectItem>
+                  <SelectItem value="3m">Últimos 3 Meses</SelectItem>
+                  <SelectItem value="6m">Últimos 6 Meses</SelectItem>
+                  <SelectItem value="1y">Último Ano</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Categoria</Label>
+              <Select value={currentFilters.category} onValueChange={(v) => patchFilters({ category: v })}>
+                <SelectTrigger className="bg-background/50 h-10 border-muted-foreground/20">
+                  <Filter className="w-4 h-4 mr-2 text-primary" />
+                  <SelectValue placeholder="Todas as Categorias" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todas as Categorias</SelectItem>
+                  {categories.map((cat: any) => (
+                    <SelectItem key={cat.id} value={cat.id}>{cat.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Fornecedor</Label>
+              <Select value={currentFilters.supplier} onValueChange={(v) => patchFilters({ supplier: v })}>
+                <SelectTrigger className="bg-background/50 h-10 border-muted-foreground/20">
+                  <Filter className="w-4 h-4 mr-2 text-primary" />
+                  <SelectValue placeholder="Todos os Fornecedores" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os Fornecedores</SelectItem>
+                  {suppliers.map((sup: any) => (
+                    <SelectItem key={sup.id} value={sup.id}>{sup.razao_social}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex items-end">
+              <AnimatePresence>
+                {hasActiveFilters && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="w-full"
+                  >
+                    <Button 
+                      variant="ghost" 
+                      onClick={clearFilters}
+                      className="w-full h-10 text-muted-foreground hover:text-destructive gap-2"
+                    >
+                      <X className="w-4 h-4" />
+                      Limpar Filtros
+                    </Button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
+
+          <AnimatePresence>
+            {hasActiveFilters && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="flex flex-wrap gap-2 mt-2 pt-4 border-t border-dashed border-border/50">
+                  <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mt-1.5">Filtros Ativos:</span>
+                  {currentFilters.period !== '6m' && (
+                    <Badge variant="secondary" className="pl-3 pr-1 py-1 rounded-full gap-1">
+                      {currentFilters.period === '1m' ? '1 Mês' : currentFilters.period === '3m' ? '3 Meses' : currentFilters.period === '1y' ? '1 Ano' : currentFilters.period}
+                      <Button variant="ghost" size="icon" className="h-4 w-4 ml-1 rounded-full" onClick={() => patchFilters({ period: '6m' })}>
+                        <X className="h-2 w-2" />
+                      </Button>
+                    </Badge>
+                  )}
+                  {currentFilters.category !== 'all' && (
+                    <Badge variant="secondary" className="pl-3 pr-1 py-1 rounded-full gap-1">
+                      {categories.find((c: any) => c.id === currentFilters.category)?.nome || 'Categoria'}
+                      <Button variant="ghost" size="icon" className="h-4 w-4 ml-1 rounded-full" onClick={() => patchFilters({ category: 'all' })}>
+                        <X className="h-2 w-2" />
+                      </Button>
+                    </Badge>
+                  )}
+                  {currentFilters.supplier !== 'all' && (
+                    <Badge variant="secondary" className="pl-3 pr-1 py-1 rounded-full gap-1">
+                      {suppliers.find((s: any) => s.id === currentFilters.supplier)?.razao_social || 'Fornecedor'}
+                      <Button variant="ghost" size="icon" className="h-4 w-4 ml-1 rounded-full" onClick={() => patchFilters({ supplier: 'all' })}>
+                        <X className="h-2 w-2" />
+                      </Button>
+                    </Badge>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <DraggableDashboard
