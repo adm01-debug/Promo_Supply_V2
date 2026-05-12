@@ -160,7 +160,6 @@ export const useApprovalWorkflow = () => {
     try {
       setLoading(true);
       
-      // Buscar informações da solicitação (incluindo centro de custo)
       const { data: sol, error: solError } = await supabase
         .from('solicitacoes')
         .select('*, cost_center:cost_centers(manager_id)')
@@ -173,7 +172,6 @@ export const useApprovalWorkflow = () => {
       let rule: ApprovalRule | null = ruleId ? rules.find(r => r.id === ruleId) || null : null;
       if (!rule) rule = findApplicableRule(valor, categoriaId);
       
-      // Se não houver regra e não houver gerente de centro de custo, erro.
       const ccManagerId = (sol.cost_center as any)?.manager_id;
       if (!rule && !ccManagerId) { 
         toast.error('Nenhuma regra de aprovação ou gestor de Centro de Custo encontrado'); 
@@ -200,7 +198,6 @@ export const useApprovalWorkflow = () => {
       const steps = [];
       let stepCounter = 1;
 
-      // Adicionar Gestor do Centro de Custo como primeira etapa se existir
       if (ccManagerId) {
         const effective = await getEffectiveApprover(ccManagerId, categoriaId, valor);
         const effectiveId = effective?.[0]?.approver_id || ccManagerId;
@@ -214,11 +211,9 @@ export const useApprovalWorkflow = () => {
         });
       }
 
-      // Adicionar aprovadores da regra
       if (rule) {
         for (let index = 0; index < rule.aprovadores.length; index++) {
           const aprovador = rule.aprovadores[index];
-          // Evitar duplicidade se o gestor do CC já for o mesmo aprovador da regra
           if (aprovador.user_id === ccManagerId) continue;
 
           const effective = await getEffectiveApprover(aprovador.user_id, categoriaId, valor);
@@ -234,7 +229,6 @@ export const useApprovalWorkflow = () => {
         }
       }
 
-      // Atualizar total de etapas real
       if (steps.length > 0) {
         await supabase.from('approval_workflows').update({ total_etapas: steps.length }).eq('id', typedWorkflow.id);
         const { error: stepsError } = await supabase.from('approval_steps').insert(steps);
