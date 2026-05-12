@@ -152,12 +152,56 @@ const GerarOrdem = () => {
     window.open(url, "_blank");
   };
 
-  const finalizarOrdem = () => {
-    toast({
-      title: "Ordem Gerada!",
-      description: `A ordem ${ordemNumero} foi gerada com sucesso.`,
-    });
-    navigate("/acompanhamento");
+  const finalizarOrdem = async () => {
+    if (!solicitacaoData || !fornecedor.id) {
+      toast({
+        title: "Erro",
+        description: "Dados insuficientes para gerar a ordem.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const selectedCotacao = cotacoes.find(c => c.id === cotacaoId) || cotacoes.find(c => c.selecionada);
+      
+      const pedido = await createPedido({
+        solicitacao_id: solicitacaoId || undefined,
+        cotacao_id: selectedCotacao?.id || undefined,
+        fornecedor_id: fornecedor.id,
+        valor_total: total,
+        valor_frete: frete,
+        desconto: desconto,
+        observacoes: observacoes,
+        itens: [{
+          descricao: solicitacaoData.titulo || 'Produto',
+          quantidade: solicitacaoData.quantidade || 1,
+          unidade: solicitacaoData.unidade || 'un',
+          valor_unitario: solicitacao.valorUnitario
+        }]
+      });
+
+      if (pedido) {
+        // Se houver solicitação, atualiza status
+        if (solicitacaoId) {
+          await supabase
+            .from('solicitacoes')
+            .update({ status: 'em_andamento' })
+            .eq('id', solicitacaoId);
+        }
+
+        toast({
+          title: "Ordem Gerada!",
+          description: `A ordem ${pedido.numero} foi gerada e persistida no banco de dados.`,
+        });
+        navigate("/acompanhamento");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const previewPDF = () => {
