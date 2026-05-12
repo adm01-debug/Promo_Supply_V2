@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trophy, Check, AlertTriangle, Truck, Settings2 } from "lucide-react";
+import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
