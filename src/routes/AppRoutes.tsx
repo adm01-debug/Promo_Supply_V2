@@ -186,7 +186,6 @@ export const AnimatedRoutes = () => {
         <Route path="/admin/sourcing-pipeline" element={
           <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><SourcingPipeline /></ModuleErrorBoundary></ProtectedRoute>
         } />
-const WorkflowDesigner = lazy(() => import("@/pages/admin/WorkflowAdmin"));
         <Route path="/admin/workflows" element={
           <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><WorkflowDesigner /></ModuleErrorBoundary></ProtectedRoute>
         } />
