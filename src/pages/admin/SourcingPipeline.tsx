@@ -200,7 +200,6 @@ const SourcingPipeline = () => {
         </Card>
       </div>
     </MainLayout>
-    </div>
   );
 };
 
