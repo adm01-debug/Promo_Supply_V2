@@ -1,9 +1,13 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+const logger = new EdgeLogger("ai-supplier-risk");
+
 
 async function verifyAuthUser(req: Request): Promise<string> {
   const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
