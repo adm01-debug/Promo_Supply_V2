@@ -52,6 +52,7 @@ const App = () => {
       </QueryClientProvider>
     </ThemeProvider>
   </div>
-);
+  );
+};
 
 export default App;
