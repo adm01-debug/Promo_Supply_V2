@@ -116,6 +116,9 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('send-push-notification', requestId);
+
   try {
     // SECURITY: Validate user authentication
     await verifyAuthUser(req);
@@ -126,7 +129,7 @@ Deno.serve(async (req) => {
     const vapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY');
 
     if (!vapidPublicKey || !vapidPrivateKey) {
-      console.error('VAPID keys not configured');
+      logger.error('VAPID keys not configured');
       return new Response(
         JSON.stringify({ error: 'VAPID keys not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -136,7 +139,7 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const body: PushPayload = await req.json();
 
-    console.log('Received push notification request:', JSON.stringify(body));
+    logger.info('Received push notification request');
 
     const { title, message, type, priority, data, action_url, action_label, user_ids } = body;
 
