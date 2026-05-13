@@ -56,6 +56,7 @@ export type Database = {
           ip_address: string | null
           last_activity: string
           session_token: string
+          tenant_id: string
           user_agent: string | null
           user_id: string
         }
@@ -67,6 +68,7 @@ export type Database = {
           ip_address?: string | null
           last_activity?: string
           session_token: string
+          tenant_id: string
           user_agent?: string | null
           user_id: string
         }
@@ -78,10 +80,19 @@ export type Database = {
           ip_address?: string | null
           last_activity?: string
           session_token?: string
+          tenant_id?: string
           user_agent?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "active_sessions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       allowed_countries: {
         Row: {
@@ -655,6 +666,7 @@ export type Database = {
           new_values: Json | null
           old_values: Json | null
           organization_id: string | null
+          tenant_id: string
           user_agent: string | null
           user_email: string | null
           user_id: string | null
@@ -672,6 +684,7 @@ export type Database = {
           new_values?: Json | null
           old_values?: Json | null
           organization_id?: string | null
+          tenant_id: string
           user_agent?: string | null
           user_email?: string | null
           user_id?: string | null
@@ -689,6 +702,7 @@ export type Database = {
           new_values?: Json | null
           old_values?: Json | null
           organization_id?: string | null
+          tenant_id?: string
           user_agent?: string | null
           user_email?: string | null
           user_id?: string | null
@@ -700,6 +714,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
@@ -2860,6 +2881,7 @@ export type Database = {
           read: boolean | null
           sent_email: boolean | null
           sent_push: boolean | null
+          tenant_id: string
           title: string
           type: string
           user_id: string
@@ -2875,6 +2897,7 @@ export type Database = {
           read?: boolean | null
           sent_email?: boolean | null
           sent_push?: boolean | null
+          tenant_id: string
           title: string
           type: string
           user_id: string
@@ -2890,11 +2913,20 @@ export type Database = {
           read?: boolean | null
           sent_email?: boolean | null
           sent_push?: boolean | null
+          tenant_id?: string
           title?: string
           type?: string
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "notifications_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       order_contracts: {
         Row: {
