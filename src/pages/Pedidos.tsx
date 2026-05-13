@@ -326,7 +326,8 @@ const Pedidos = () => {
       <PriceHistoryModal open={priceHistoryOpen} onOpenChange={setPriceHistoryOpen} />
       {receivingPedido && <ReceivingModal open={!!receivingPedido} onOpenChange={(open) => !open && setReceivingPedido(null)} pedidoId={receivingPedido.id} pedidoNumero={receivingPedido.numero} items={receivingItems} onSuccess={() => refetch()} />}
       <OrderPreviewModal pedido={previewPedido} open={!!previewPedido} onOpenChange={(open) => !open && setPreviewPedido(null)} onConfirmSend={previewPedido?.status === 'aprovado' ? () => { handleUpdateStatus(previewPedido.id, 'enviado'); setPreviewPedido(null); } : undefined} />
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
