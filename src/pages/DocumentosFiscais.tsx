@@ -323,7 +323,8 @@ const DocumentosFiscais = () => {
           </CardContent>
         </Card>
       </div>
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
