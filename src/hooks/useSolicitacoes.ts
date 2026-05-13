@@ -163,8 +163,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           centro_custo: input.centro_custo, cost_center_id: input.cost_center_id,
           justificativa: input.justificativa,
           categoria_id: input.categoria_id, solicitante_id: user.id,
-          organization_id: organizationId,
-          tenant_id: organizationId as any,
+          tenant_id: tenantId,
         } as any)
         .select().single();
       
