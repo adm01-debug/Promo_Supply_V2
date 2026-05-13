@@ -166,7 +166,7 @@ export function usePedidos(filters?: PedidoFilters) {
           pedido_id: data.id, descricao: item.descricao, quantidade: item.quantidade,
           unidade: item.unidade || 'un', valor_unitario: item.valor_unitario,
           valor_total: item.quantidade * item.valor_unitario,
-          tenant_id: organizationId as any,
+          tenant_id: tenantId,
         }));
         await supabase.from('pedido_itens').insert(itensToInsert as any);
       }
