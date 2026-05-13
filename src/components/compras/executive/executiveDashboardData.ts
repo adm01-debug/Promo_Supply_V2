@@ -12,14 +12,14 @@ export const currentPeriodMetrics = {
 };
 
 export const previousPeriodMetrics = {
-  totalSpend: { value: 2178000 },
-  savings: { value: 207000 },
-  ordersThisMonth: { value: 165 },
-  avgCycleTime: { value: 4.95 },
-  supplierCount: { value: 44 },
-  pendingApprovals: { value: 15 },
+  totalSpend: { value: 11178000 },
+  savings: { value: 1207000 },
+  ordersThisMonth: { value: 765 },
+  avgCycleTime: { value: 4.45 },
+  supplierCount: { value: 214 },
+  pendingApprovals: { value: 12 },
   overdueOrders: { value: 8 },
-  contractCompliance: { value: 82.8 }
+  contractCompliance: { value: 92.4 }
 };
 
 export const calculateChange = (current: number, previous: number) => {
