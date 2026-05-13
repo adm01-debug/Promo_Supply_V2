@@ -1,25 +1,25 @@
 // Mock data constants for the Executive Dashboard
 
 export const currentPeriodMetrics = {
-  totalSpend: { value: 2450000, target: 2500000 },
-  savings: { value: 245000, target: 200000 },
-  ordersThisMonth: { value: 156, target: 170 },
-  avgCycleTime: { value: 4.2, target: 5.0 },
-  supplierCount: { value: 48, target: 50 },
-  pendingApprovals: { value: 12, urgent: 3 },
-  overdueOrders: { value: 5, critical: 2 },
-  contractCompliance: { value: 87, target: 90 }
+  totalSpend: { value: 12450000, target: 12500000 },
+  savings: { value: 1845000, target: 1500000 },
+  ordersThisMonth: { value: 856, target: 800 },
+  avgCycleTime: { value: 3.8, target: 4.5 },
+  supplierCount: { value: 248, target: 200 },
+  pendingApprovals: { value: 8, urgent: 1 },
+  overdueOrders: { value: 3, critical: 0 },
+  contractCompliance: { value: 96, target: 95 }
 };
 
 export const previousPeriodMetrics = {
-  totalSpend: { value: 2178000 },
-  savings: { value: 207000 },
-  ordersThisMonth: { value: 165 },
-  avgCycleTime: { value: 4.95 },
-  supplierCount: { value: 44 },
-  pendingApprovals: { value: 15 },
+  totalSpend: { value: 11178000 },
+  savings: { value: 1207000 },
+  ordersThisMonth: { value: 765 },
+  avgCycleTime: { value: 4.45 },
+  supplierCount: { value: 214 },
+  pendingApprovals: { value: 12 },
   overdueOrders: { value: 8 },
-  contractCompliance: { value: 82.8 }
+  contractCompliance: { value: 92.4 }
 };
 
 export const calculateChange = (current: number, previous: number) => {
@@ -75,9 +75,9 @@ export const executiveMetrics = {
     change: calculateChange(currentPeriodMetrics.contractCompliance.value, previousPeriodMetrics.contractCompliance.value), 
     target: currentPeriodMetrics.contractCompliance.target 
   },
-  maverickSpend: { value: 110250, percentage: 4.5 },
-  tailSpend: { value: 294000, percentage: 12.0 },
-  savingsPercent: 10.0
+  maverickSpend: { value: 125250, percentage: 1.2 },
+  tailSpend: { value: 594000, percentage: 4.8 },
+  savingsPercent: 14.8
 };
 
 export const monthlyTrend = [
