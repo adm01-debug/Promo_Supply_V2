@@ -3709,6 +3709,143 @@ export type Database = {
           },
         ]
       }
+      punchout_catalogs: {
+        Row: {
+          created_at: string
+          fornecedor_id: string
+          id: string
+          identity: string
+          is_active: boolean
+          last_test_at: string | null
+          last_test_status: string | null
+          protocol: string
+          setup_url: string
+          shared_secret_encrypted: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          fornecedor_id: string
+          id?: string
+          identity: string
+          is_active?: boolean
+          last_test_at?: string | null
+          last_test_status?: string | null
+          protocol: string
+          setup_url: string
+          shared_secret_encrypted: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          fornecedor_id?: string
+          id?: string
+          identity?: string
+          is_active?: boolean
+          last_test_at?: string | null
+          last_test_status?: string | null
+          protocol?: string
+          setup_url?: string
+          shared_secret_encrypted?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "punchout_catalogs_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "punchout_catalogs_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "punchout_catalogs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      punchout_sessions: {
+        Row: {
+          buyer_cookie: string
+          cart_payload: Json | null
+          catalog_id: string
+          closed_at: string | null
+          created_at: string
+          created_solicitacao_id: string | null
+          id: string
+          raw_request_xml: string | null
+          raw_response_xml: string | null
+          return_url: string
+          status: string
+          tenant_id: string
+          user_id: string
+        }
+        Insert: {
+          buyer_cookie: string
+          cart_payload?: Json | null
+          catalog_id: string
+          closed_at?: string | null
+          created_at?: string
+          created_solicitacao_id?: string | null
+          id?: string
+          raw_request_xml?: string | null
+          raw_response_xml?: string | null
+          return_url: string
+          status?: string
+          tenant_id: string
+          user_id: string
+        }
+        Update: {
+          buyer_cookie?: string
+          cart_payload?: Json | null
+          catalog_id?: string
+          closed_at?: string | null
+          created_at?: string
+          created_solicitacao_id?: string | null
+          id?: string
+          raw_request_xml?: string | null
+          raw_response_xml?: string | null
+          return_url?: string
+          status?: string
+          tenant_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "punchout_sessions_catalog_id_fkey"
+            columns: ["catalog_id"]
+            isOneToOne: false
+            referencedRelation: "punchout_catalogs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "punchout_sessions_created_solicitacao_id_fkey"
+            columns: ["created_solicitacao_id"]
+            isOneToOne: false
+            referencedRelation: "solicitacoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "punchout_sessions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       push_subscriptions: {
         Row: {
           auth: string
