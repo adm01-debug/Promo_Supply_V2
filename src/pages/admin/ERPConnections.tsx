@@ -18,6 +18,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
+import { cn } from "@/lib/utils";
 
 const ERPConnections = () => {
   const { organizationId } = useAuth();
@@ -49,6 +50,8 @@ const ERPConnections = () => {
 
   const syncMutation = useMutation({
     mutationFn: async ({ connectionId, entity }: { connectionId: string, entity: string }) => {
+      if (!organizationId) throw new Error("ID da organização não encontrado");
+      
       const { data, error } = await supabase.functions.invoke('erp-sync', {
         body: { action: 'pull', connectionId, entity },
         headers: { 'x-tenant-id': organizationId }
