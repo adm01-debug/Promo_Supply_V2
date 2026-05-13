@@ -194,18 +194,18 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     const previousMonthStart = fnsStartOfMonth(subMonths(now, 1));
     const previousMonthEnd = endOfMonth(subMonths(now, 1));
 
-    const calculatePeriodData = (sol: any[], ped: any[], pag: any[], cot: any[], startDate: Date, endDate?: Date) => {
-      const pSol = sol.filter(s => {
+    const calculatePeriodData = (solData: any[], pedData: any[], pagData: any[], cotData: any[], start: Date, end?: Date) => {
+      const pSol = solData.filter(s => {
         const d = new Date(s.created_at);
-        return endDate ? isWithinInterval(d, { start: startDate, end: endDate }) : d >= startDate;
+        return end ? isWithinInterval(d, { start: start, end: end }) : d >= start;
       });
-      const pPed = ped.filter(p => {
+      const pPed = pedData.filter(p => {
         const d = new Date(p.data_emissao);
-        return endDate ? isWithinInterval(d, { start: startDate, end: endDate }) : d >= startDate;
+        return end ? isWithinInterval(d, { start: start, end: end }) : d >= start;
       });
-      const pPag = pag.filter(p => {
+      const pPag = pagData.filter(p => {
         const d = new Date(p.created_at);
-        return endDate ? isWithinInterval(d, { start: startDate, end: endDate }) : d >= startDate;
+        return end ? isWithinInterval(d, { start: start, end: end }) : d >= start;
       });
 
       const aguardandoCotacao = pSol.filter(s => s.status === 'pendente' || s.status === 'em_cotacao').length;
@@ -216,7 +216,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       const economiaGerada = totalEstimado > 0 ? Math.max(0, totalEstimado - totalAprovado) : 0;
       
       const completedSlas = pSol.map(s => {
-        const relatedCotacoes = cot.filter(c => 
+        const relatedCotacoes = cotData.filter(c => 
           c.solicitacao_id === s.id && 
           ['enviada', 'em_analise', 'analise', 'selecionada', 'aprovada'].includes(c.status)
         );
@@ -249,7 +249,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       };
 
       return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega, avgSla, taxaSlaReal, pipeline };
-    }, [settings?.warningThresholdDays]);
+    };
 
     const currentData = calculatePeriodData(sol, ped, pag, cot, currentMonthStart);
     const previousData = calculatePeriodData(sol, ped, pag, cot, previousMonthStart, previousMonthEnd);
