@@ -3219,6 +3219,7 @@ export type Database = {
           quantidade_recebida: number | null
           tenant_id: string
           unidade: string | null
+          unspsc_code: string | null
           valor_total: number
           valor_unitario: number
         }
@@ -3232,6 +3233,7 @@ export type Database = {
           quantidade_recebida?: number | null
           tenant_id: string
           unidade?: string | null
+          unspsc_code?: string | null
           valor_total: number
           valor_unitario: number
         }
@@ -3245,6 +3247,7 @@ export type Database = {
           quantidade_recebida?: number | null
           tenant_id?: string
           unidade?: string | null
+          unspsc_code?: string | null
           valor_total?: number
           valor_unitario?: number
         }
@@ -3269,6 +3272,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedido_itens_unspsc_code_fkey"
+            columns: ["unspsc_code"]
+            isOneToOne: false
+            referencedRelation: "unspsc_codes"
+            referencedColumns: ["code"]
           },
         ]
       }
@@ -5400,6 +5410,51 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      unspsc_codes: {
+        Row: {
+          code: string
+          created_at: string
+          level: number
+          nome: string
+          nome_en: string | null
+          parent_code: string | null
+          tenant_id: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          level: number
+          nome: string
+          nome_en?: string | null
+          parent_code?: string | null
+          tenant_id?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          level?: number
+          nome?: string
+          nome_en?: string | null
+          parent_code?: string | null
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unspsc_codes_parent_code_fkey"
+            columns: ["parent_code"]
+            isOneToOne: false
+            referencedRelation: "unspsc_codes"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "unspsc_codes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_filter_preferences: {
         Row: {
