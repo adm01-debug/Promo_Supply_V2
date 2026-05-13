@@ -137,7 +137,7 @@ export default function SSOConfig() {
                       defaultValue={samlConfig?.idp_metadata_url || ''}
                       onBlur={(e) => upsertConfigMutation.mutate({ protocol: 'saml', idp_metadata_url: e.target.value })}
                     />
-                    <Button variant="outline" onClick={() => window.open(samlConfig?.idp_metadata_url, '_blank')} disabled={!samlConfig?.idp_metadata_url}>
+                    <Button variant="outline" onClick={() => samlConfig?.idp_metadata_url && window.open(samlConfig.idp_metadata_url, '_blank')} disabled={!samlConfig?.idp_metadata_url}>
                       <ExternalLink className="h-4 w-4" />
                     </Button>
                   </div>
