@@ -285,6 +285,10 @@ const Relatorios = () => {
             </TabsTrigger>
           </TabsList>
 
+          <TabsContent value="spend" className="mt-6">
+            <SpendAnalytics />
+          </TabsContent>
+
           <TabsContent value="kpis" className="mt-6">
             <AdvancedProcurementKPIs />
           </TabsContent>
