@@ -153,7 +153,7 @@ const Sourcing = () => {
                           <div className="font-bold text-lg">
                             {event.budget_estimate?.toLocaleString('pt-BR', { style: 'currency', currency: event.currency })}
                           </div>
-                          <Button variant="ghost" size="sm" className="gap-2">
+                          <Button variant="ghost" size="sm" className="gap-2" onClick={() => navigate(`/sourcing/${event.id}`)}>
                             Ver Detalhes
                             <ArrowRight className="w-4 h-4" />
                           </Button>
