@@ -3350,6 +3350,7 @@ export type Database = {
           full_name: string | null
           id: string
           phone: string | null
+          tenant_id: string | null
           updated_at: string
           user_id: string
         }
@@ -3362,6 +3363,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+          tenant_id?: string | null
           updated_at?: string
           user_id: string
         }
@@ -3374,6 +3376,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+          tenant_id?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -3383,6 +3386,13 @@ export type Database = {
             columns: ["current_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
         ]
