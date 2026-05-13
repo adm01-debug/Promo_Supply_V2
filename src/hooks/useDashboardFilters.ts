@@ -48,7 +48,7 @@ export const useDashboardFilters = () => {
   }, [user]);
 
   const saveFavorite = async (name: string, filters: FilterValues) => {
-    if (!user || !organizationId) {
+    if (!user || !tenantId) {
       toast.error('Você precisa estar logado em uma organização para salvar filtros');
       return null;
     }
@@ -64,7 +64,7 @@ export const useDashboardFilters = () => {
           period_filter: filters.period,
           show_comparison: filters.showComparison,
           is_default: false,
-          organization_id: organizationId
+          tenant_id: tenantId
         })
         .select()
         .single();
