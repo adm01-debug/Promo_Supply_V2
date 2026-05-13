@@ -443,6 +443,7 @@ export default function Contratos() {
           contract={selectedContract}
         />
       )}
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 }
