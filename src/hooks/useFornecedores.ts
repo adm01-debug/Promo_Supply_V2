@@ -68,7 +68,10 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
       const { data, error: fetchError } = await query;
 
-      if (fetchError) throw fetchError;
+      if (fetchError) {
+        logger.error('Erro ao buscar fornecedores', { error: fetchError });
+        throw fetchError;
+      }
 
       setFornecedores((data as Fornecedor[]) || []);
     } catch (err: unknown) {

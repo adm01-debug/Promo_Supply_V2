@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { logger } from '@/lib/logger';
 import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
 import type { Database } from '@/integrations/supabase/types';
@@ -128,6 +129,7 @@ export function usePedidos(filters?: PedidoFilters) {
     if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
 
     try {
+      logger.info('Iniciando criação de pedido de compra', { solicitacaoId: input.solicitacao_id, fornecedorId: input.fornecedor_id, valorTotal: input.valor_total });
       const { data: numData } = await supabase.rpc('generate_sequential_number', {
         prefix: 'PED', table_name: 'pedidos'
       });
@@ -145,7 +147,10 @@ export function usePedidos(filters?: PedidoFilters) {
         })
         .select().single();
 
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao inserir pedido no banco', { error, input });
+        throw error;
+      }
 
       // Audit Log for Order Creation
       await auditHelpers.logCreate(
@@ -164,11 +169,13 @@ export function usePedidos(filters?: PedidoFilters) {
         await supabase.from('pedido_itens').insert(itensToInsert);
       }
 
+      logger.info('Pedido criado com sucesso', { id: data.id, numero: data.numero });
       toast.success('Pedido criado com sucesso!');
       queryClient.invalidateQueries({ queryKey: ['pedidos'] });
       return data;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao criar pedido', { error: msg, input });
       toast.error('Erro ao criar pedido: ' + msg);
       return null;
     }
@@ -177,13 +184,18 @@ export function usePedidos(filters?: PedidoFilters) {
   // Update pedido
   const updatePedido = useCallback(async (id: string, updates: Partial<Pedido>) => {
     try {
+      logger.info('Atualizando pedido', { id, updates });
       const { error } = await supabase.from('pedidos').update(updates).eq('id', id);
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao atualizar pedido no banco', { error, id, updates });
+        throw error;
+      }
       toast.success('Pedido atualizado!');
       queryClient.invalidateQueries({ queryKey: ['pedidos'] });
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao atualizar pedido', { error: msg, id });
       toast.error('Erro ao atualizar: ' + msg);
       return false;
     }
@@ -192,6 +204,7 @@ export function usePedidos(filters?: PedidoFilters) {
   // Update status with transition validation
   const updateStatus = useCallback(async (id: string, newStatus: Pedido['status']) => {
     const pedido = pedidos.find(p => p.id === id);
+    logger.info('Alterando status do pedido', { id, oldStatus: pedido?.status, newStatus });
     if (!pedido) { toast.error('Pedido não encontrado'); return false; }
 
     const allowed = VALID_PEDIDO_TRANSITIONS[pedido.status];
@@ -242,13 +255,19 @@ export function usePedidos(filters?: PedidoFilters) {
   // Delete pedido
   const deletePedido = useCallback(async (id: string) => {
     try {
+      logger.info('Excluindo pedido', { id });
       const { error } = await supabase.from('pedidos').delete().eq('id', id);
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao excluir pedido no banco', { error, id });
+        throw error;
+      }
+      logger.info('Pedido excluído com sucesso', { id });
       toast.success('Pedido excluído!');
       queryClient.invalidateQueries({ queryKey: ['pedidos'] });
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao excluir pedido', { error: msg, id });
       toast.error('Erro ao excluir: ' + msg);
       return false;
     }
