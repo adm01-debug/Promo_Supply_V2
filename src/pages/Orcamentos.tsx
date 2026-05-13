@@ -307,7 +307,8 @@ const Orcamentos = () => {
           </div>
         )}
       </PageTransition>
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
