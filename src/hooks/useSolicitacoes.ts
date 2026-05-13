@@ -96,21 +96,21 @@ async function fetchSolicitacoesData(userId: string | undefined, tenantId: strin
 }
 
 export function useSolicitacoes(filters?: SolicitacaoFilters) {
-  const { user, organizationId } = useAuth();
+  const { user, tenantId } = useAuth();
   const queryClient = useQueryClient();
   const { createWorkflow } = useApprovalWorkflow();
 
   const queryKey = useMemo(() => [
-    'solicitacoes', user?.id, organizationId,
+    'solicitacoes', user?.id, tenantId,
     filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
     filters?.page, filters?.pageSize,
-  ], [user?.id, organizationId, filters]);
+  ], [user?.id, tenantId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => fetchSolicitacoesData(user?.id, organizationId, filters),
-    enabled: !!user && !!organizationId,
+    queryFn: () => fetchSolicitacoesData(user?.id, tenantId, filters),
+    enabled: !!user && !!tenantId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
