@@ -63,7 +63,7 @@ const SourcingPipeline = () => {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Category Mgmt & Sourcing Pipeline</h1>
             <p className="text-muted-foreground">Gestão estratégica de categorias, funil de projetos e tracker de savings</p>
-        </div>
+          </div>
         <div className="flex gap-2">
           <Badge variant="outline" className="px-3 py-1 bg-primary/5"><Target className="w-3 h-3 mr-1" /> Meta Q2: R$ 2.5M</Badge>
           <Badge variant="outline" className="px-3 py-1 text-green-500 border-green-500 bg-green-50">Realizado: R$ {totalNegotiatedSaving.toLocaleString()}</Badge>
