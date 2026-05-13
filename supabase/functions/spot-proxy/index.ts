@@ -764,14 +764,19 @@ Deno.serve(async (req) => {
     });
   }
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('spot-proxy', requestId);
+
   try {
     const supabase = getSupabaseAdmin();
 
     // Verify authentication BEFORE processing
-    await verifyAuth(req, supabase);
+    const userId = await verifyAuth(req, supabase);
 
     const body = await readJsonBody(req);
     const action = readRequestAction(body);
+
+    logger.info("Executing SPOT action", { action, userId });
 
     let result: unknown;
 
