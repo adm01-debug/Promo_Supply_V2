@@ -838,7 +838,11 @@ Deno.serve(async (req) => {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
     const status = error instanceof HttpError ? error.status : 500;
-    console.error("SPOT proxy error:", msg);
+    if (typeof logger !== 'undefined') {
+      logger.error("SPOT proxy error", { error: msg, action: typeof action !== 'undefined' ? action : 'unknown' });
+    } else {
+      console.error("SPOT proxy error:", msg);
+    }
 
     return new Response(JSON.stringify({ error: msg }), {
       status,
