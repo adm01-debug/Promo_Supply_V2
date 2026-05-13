@@ -3,10 +3,13 @@ import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
 };
 
-const logger = new EdgeLogger("ai-supplier-risk");
+const getLogger = (req: Request) => {
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  return new EdgeLogger("ai-supplier-risk", requestId);
+};
 
 
 async function verifyAuthUser(req: Request): Promise<string> {
@@ -33,6 +36,7 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const logger = getLogger(req);
     // SECURITY: Validate user authentication
     const userId = await verifyAuthUser(req);
     logger.info("Iniciando análise de risco de fornecedor", { userId });

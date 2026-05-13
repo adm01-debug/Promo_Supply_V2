@@ -1,8 +1,9 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-request-id',
 }
 
 Deno.serve(async (req) => {
@@ -12,7 +13,10 @@ Deno.serve(async (req) => {
   }
 
   try {
-    console.log('Starting approval escalation check...');
+    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+    const logger = new EdgeLogger('check-approval-escalations', requestId);
+
+    logger.info('Starting approval escalation check...');
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -43,11 +47,11 @@ Deno.serve(async (req) => {
       .is('decidido_em', null);
 
     if (stepsError) {
-      console.error('Error fetching expired steps:', stepsError);
+      logger.error('Error fetching expired steps', { error: stepsError });
       throw stepsError;
     }
 
-    console.log(`Found ${expiredSteps?.length || 0} expired approval steps`);
+    logger.info(`Found expired approval steps`, { count: expiredSteps?.length || 0 });
 
     const escalatedWorkflows: string[] = [];
     const reminders: string[] = [];
@@ -63,7 +67,7 @@ Deno.serve(async (req) => {
       
       // Check if automatic escalation is enabled
       if (rule?.escalacao_automatica && rule?.escalacao_para) {
-        console.log(`Escalating workflow ${workflow.id} to ${rule.escalacao_para}`);
+        logger.info(`Escalating workflow`, { workflowId: workflow.id, escalateTo: rule.escalacao_para });
         
         // Update workflow with escalation
         const { error: updateWorkflowError } = await supabase
@@ -77,7 +81,7 @@ Deno.serve(async (req) => {
           .eq('id', workflow.id);
 
         if (updateWorkflowError) {
-          console.error(`Error escalating workflow ${workflow.id}:`, updateWorkflowError);
+          logger.error(`Error escalating workflow`, { workflowId: workflow.id, error: updateWorkflowError });
           continue;
         }
 
@@ -129,14 +133,14 @@ Deno.serve(async (req) => {
           });
 
         if (notifError) {
-          console.error(`Error creating notification:`, notifError);
+          logger.error(`Error creating notification`, { error: notifError });
         }
 
         escalatedWorkflows.push(workflow.id);
       } else {
         // Send reminder if not already sent
         if (!step.lembrete_enviado) {
-          console.log(`Sending reminder for step ${step.id}`);
+          logger.info(`Sending reminder for step`, { stepId: step.id });
           
           // Update step to mark reminder as sent
           const { error: reminderError } = await supabase
@@ -223,15 +227,19 @@ Deno.serve(async (req) => {
       timestamp: now
     };
 
-    console.log('Escalation check completed:', result);
+    logger.info('Escalation check completed', { result });
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
-    console.error('Error in escalation check:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    if (typeof logger !== 'undefined') {
+      logger.error('Error in escalation check', { error: errorMessage });
+    } else {
+      console.error('Error in escalation check:', error);
+    }
     return new Response(JSON.stringify({ 
       error: errorMessage,
       success: false 

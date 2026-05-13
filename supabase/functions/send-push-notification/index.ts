@@ -1,8 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-request-id',
 };
 
 interface PushPayload {
@@ -115,6 +116,9 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('send-push-notification', requestId);
+
   try {
     // SECURITY: Validate user authentication
     await verifyAuthUser(req);
@@ -125,7 +129,7 @@ Deno.serve(async (req) => {
     const vapidPrivateKey = Deno.env.get('VAPID_PRIVATE_KEY');
 
     if (!vapidPublicKey || !vapidPrivateKey) {
-      console.error('VAPID keys not configured');
+      logger.error('VAPID keys not configured');
       return new Response(
         JSON.stringify({ error: 'VAPID keys not configured' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -135,7 +139,7 @@ Deno.serve(async (req) => {
     const supabase = createClient(supabaseUrl, supabaseKey);
     const body: PushPayload = await req.json();
 
-    console.log('Received push notification request:', JSON.stringify(body));
+    logger.info('Received push notification request');
 
     const { title, message, type, priority, data, action_url, action_label, user_ids } = body;
 
@@ -148,11 +152,11 @@ Deno.serve(async (req) => {
     const { data: subscriptions, error: subError } = await query;
 
     if (subError) {
-      console.error('Error fetching subscriptions:', subError);
+      logger.error('Error fetching subscriptions', { error: subError });
       throw subError;
     }
 
-    console.log(`Found ${subscriptions?.length || 0} subscriptions to notify`);
+    logger.info(`Found subscriptions to notify`, { count: subscriptions?.length || 0 });
 
     const uniqueUserIds = [...new Set((subscriptions || []).map(s => s.user_id))];
     
@@ -170,7 +174,7 @@ Deno.serve(async (req) => {
       });
 
       if (notifError) {
-        console.error(`Error creating notification for user ${userId}:`, notifError);
+        logger.error(`Error creating notification`, { userId, error: notifError });
       }
     }
 
@@ -211,7 +215,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    console.log(`Push notification complete: ${sentCount} sent, ${failedCount} failed`);
+    logger.info(`Push notification completed`, { sentCount, failedCount });
 
     return new Response(
       JSON.stringify({
@@ -224,7 +228,11 @@ Deno.serve(async (req) => {
     );
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error in send-push-notification:', error);
+    if (typeof logger !== 'undefined') {
+      logger.error('Error in send-push-notification', { error: errorMessage });
+    } else {
+      console.error('Error in send-push-notification:', error);
+    }
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(
       JSON.stringify({ error: errorMessage }),

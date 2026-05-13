@@ -1,9 +1,10 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-request-id",
 };
 
 const SPOT_BASE = "https://www.spotgifts.com.br";
@@ -763,14 +764,19 @@ Deno.serve(async (req) => {
     });
   }
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('spot-proxy', requestId);
+
   try {
     const supabase = getSupabaseAdmin();
 
     // Verify authentication BEFORE processing
-    await verifyAuth(req, supabase);
+    const userId = await verifyAuth(req, supabase);
 
     const body = await readJsonBody(req);
     const action = readRequestAction(body);
+
+    logger.info("Executing SPOT action", { action, userId });
 
     let result: unknown;
 
@@ -837,7 +843,11 @@ Deno.serve(async (req) => {
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
     const status = error instanceof HttpError ? error.status : 500;
-    console.error("SPOT proxy error:", msg);
+    if (typeof logger !== 'undefined') {
+      logger.error("SPOT proxy error", { error: msg, action: typeof action !== 'undefined' ? action : 'unknown' });
+    } else {
+      console.error("SPOT proxy error:", msg);
+    }
 
     return new Response(JSON.stringify({ error: msg }), {
       status,

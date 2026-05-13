@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-request-id",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
 };
 
@@ -690,12 +690,14 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   try {
     if (req.method === "GET") return await handleGet(req);
     if (req.method === "POST") return await handlePost(req);
     return json({ error: "Method not allowed" }, 405);
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : String(error);
+    console.error(`[${requestId}] Dependency health error:`, msg);
     return json({ error: msg }, 500);
   }
 });

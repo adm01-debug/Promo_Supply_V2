@@ -4,16 +4,20 @@ import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-request-id",
 };
 
-const logger = new EdgeLogger("ai-negotiation");
+const getLogger = (req: Request) => {
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  return new EdgeLogger("ai-negotiation", requestId);
+};
 
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
+    const logger = getLogger(req);
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       logger.warn("Tentativa de acesso sem Authorization header");

@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { logger } from '@/lib/logger';
 
 export type AppRole = 'admin' | 'coordinator' | 'buyer' | 'finance' | 'viewer';
 
@@ -45,6 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     // Deduplicate: skip if already fetched for this user or currently fetching
     if (fetchedUserIdRef.current === userId || isFetchingRef.current) return;
     isFetchingRef.current = true;
+    logger.debug('Fetching auth user data', { userId });
 
     try {
       const [profileRes, roleRes] = await Promise.all([
@@ -53,18 +55,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       ]);
 
       if (profileRes.error) {
-        console.error('Error fetching profile:', profileRes.error);
+        logger.error('Error fetching profile', { error: profileRes.error, userId });
       }
       if (roleRes.error) {
-        console.error('Error fetching role:', roleRes.error);
+        logger.error('Error fetching role', { error: roleRes.error, userId });
       }
 
       setProfile(profileRes.data ? (profileRes.data as UserProfile) : null);
       setRole(roleRes.data?.role ? (roleRes.data.role as AppRole) : null);
       setOrganizationId(profileRes.data?.current_organization_id || null);
       fetchedUserIdRef.current = userId;
+      logger.info('Auth user data loaded successfully', { userId, role: roleRes.data?.role });
     } catch (error) {
-      console.error('Error fetching user data:', error);
+      logger.error('Error fetching user data', { error, userId });
     } finally {
       isFetchingRef.current = false;
     }
@@ -85,7 +88,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       if (mounted) setLoading(false);
     }).catch((error: unknown) => {
-      console.error('Error getting session:', error);
+      logger.error('Error getting initial session', { error });
       if (mounted) setLoading(false);
     });
 
@@ -140,6 +143,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       email: normalizedEmail,
       password,
     });
+    if (error) logger.warn('Sign in failed', { email: normalizedEmail, error: error.message });
+    else logger.info('Sign in successful', { email: normalizedEmail });
     return { error: error as Error | null };
   };
 
@@ -161,6 +166,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signOut = async () => {
+    const userId = user?.id;
+    logger.info('Signing out', { userId });
     fetchedUserIdRef.current = null;
     await supabase.auth.signOut();
     setUser(null);
