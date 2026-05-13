@@ -1,8 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-request-id',
 };
 
 interface PushPayload {
@@ -148,11 +149,11 @@ Deno.serve(async (req) => {
     const { data: subscriptions, error: subError } = await query;
 
     if (subError) {
-      console.error('Error fetching subscriptions:', subError);
+      logger.error('Error fetching subscriptions', { error: subError });
       throw subError;
     }
 
-    console.log(`Found ${subscriptions?.length || 0} subscriptions to notify`);
+    logger.info(`Found subscriptions to notify`, { count: subscriptions?.length || 0 });
 
     const uniqueUserIds = [...new Set((subscriptions || []).map(s => s.user_id))];
     
@@ -170,7 +171,7 @@ Deno.serve(async (req) => {
       });
 
       if (notifError) {
-        console.error(`Error creating notification for user ${userId}:`, notifError);
+        logger.error(`Error creating notification`, { userId, error: notifError });
       }
     }
 
@@ -211,7 +212,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    console.log(`Push notification complete: ${sentCount} sent, ${failedCount} failed`);
+    logger.info(`Push notification completed`, { sentCount, failedCount });
 
     return new Response(
       JSON.stringify({
@@ -224,7 +225,11 @@ Deno.serve(async (req) => {
     );
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error in send-push-notification:', error);
+    if (typeof logger !== 'undefined') {
+      logger.error('Error in send-push-notification', { error: errorMessage });
+    } else {
+      console.error('Error in send-push-notification:', error);
+    }
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(
       JSON.stringify({ error: errorMessage }),
