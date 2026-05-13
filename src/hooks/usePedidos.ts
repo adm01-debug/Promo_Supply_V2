@@ -62,8 +62,8 @@ const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = {
   concluido: [],
 };
 
-async function fetchPedidosData(userId: string | undefined, organizationId: string | null | undefined, filters?: PedidoFilters) {
-  if (!userId || !organizationId) return { data: [], totalCount: 0 };
+async function fetchPedidosData(userId: string | undefined, tenantId: string | null | undefined, filters?: PedidoFilters) {
+  if (!userId || !tenantId) return { data: [], totalCount: 0 };
 
   const page = filters?.page || 1;
   const pageSize = filters?.pageSize || 50;
@@ -78,7 +78,7 @@ async function fetchPedidosData(userId: string | undefined, organizationId: stri
       solicitacao:solicitacoes(id, numero, titulo)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
-    .eq('organization_id', organizationId)
+    .eq('tenant_id', tenantId)
     .range(from, to);
 
   if (filters?.status && filters.status !== 'todos') {
@@ -104,19 +104,19 @@ async function fetchPedidosData(userId: string | undefined, organizationId: stri
 }
 
 export function usePedidos(filters?: PedidoFilters) {
-  const { user, organizationId } = useAuth();
+  const { user, tenantId } = useAuth();
   const queryClient = useQueryClient();
 
   const queryKey = useMemo(() => [
-    'pedidos', user?.id, organizationId,
+    'pedidos', user?.id, tenantId,
     filters?.status, filters?.fornecedor_id, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.page, filters?.pageSize,
-  ], [user?.id, organizationId, filters]);
+  ], [user?.id, tenantId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => fetchPedidosData(user?.id, organizationId, filters),
-    enabled: !!user && !!organizationId,
+    queryFn: () => fetchPedidosData(user?.id, tenantId, filters),
+    enabled: !!user && !!tenantId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
@@ -126,7 +126,7 @@ export function usePedidos(filters?: PedidoFilters) {
 
   // Create new pedido
   const createPedido = useCallback(async (input: CreatePedidoInput) => {
-    if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
+    if (!user || !tenantId) { toast.error('Você precisa estar logado em uma organização'); return null; }
 
     try {
       logger.info('Iniciando criação de pedido de compra', { solicitacaoId: input.solicitacao_id, fornecedorId: input.fornecedor_id, valorTotal: input.valor_total });
@@ -143,8 +143,8 @@ export function usePedidos(filters?: PedidoFilters) {
           valor_frete: input.valor_frete || 0, desconto: input.desconto || 0,
           data_previsao: input.data_previsao, endereco_entrega: input.endereco_entrega,
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
-          comprador_id: user.id, organization_id: organizationId,
-          tenant_id: organizationId as any,
+          comprador_id: user.id,
+          tenant_id: tenantId,
         } as any)
         .select().single();
 
@@ -166,7 +166,7 @@ export function usePedidos(filters?: PedidoFilters) {
           pedido_id: data.id, descricao: item.descricao, quantidade: item.quantidade,
           unidade: item.unidade || 'un', valor_unitario: item.valor_unitario,
           valor_total: item.quantidade * item.valor_unitario,
-          tenant_id: organizationId as any,
+          tenant_id: tenantId,
         }));
         await supabase.from('pedido_itens').insert(itensToInsert as any);
       }

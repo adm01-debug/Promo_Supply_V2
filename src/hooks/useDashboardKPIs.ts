@@ -56,19 +56,19 @@ export interface PipelineData {
 }
 
 export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
-  const { organizationId } = useAuth();
+  const { tenantId } = useAuth();
   const { settings } = useSLASettings();
   const categoryFilter = filters?.category !== 'all' ? filters?.category : undefined;
   const supplierFilter = filters?.supplier !== 'all' ? filters?.supplier : undefined;
 
   const { data: solicitacoes, isLoading: loadingSol } = useQuery({
-    queryKey: ['dashboard-solicitacoes', organizationId],
+    queryKey: ['dashboard-solicitacoes', tenantId],
     queryFn: async () => {
-      if (!organizationId) return [];
+      if (!tenantId) return [];
       logger.debug('Fetching dashboard solicitacoes');
       try {
         return await fetchAllRows<{ id: string; numero: string; titulo: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null; categoria_id: string | null; solicitante_id: string | null }>('solicitacoes', 'id, numero, titulo, status, valor_estimado, valor_aprovado, created_at, data_necessidade, categoria_id, solicitante_id', {
-          filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+          filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
         });
       } catch (error) {
         logger.error('Error fetching dashboard solicitacoes', { error });
@@ -80,11 +80,11 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
   });
 
   const { data: pedidos, isLoading: loadingPed } = useQuery({
-    queryKey: ['dashboard-pedidos', organizationId],
+    queryKey: ['dashboard-pedidos', tenantId],
     queryFn: () => {
-      if (!organizationId) return [];
+      if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string; fornecedor_id: string }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at, fornecedor_id', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -92,11 +92,11 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
   });
 
   const { data: pagamentos, isLoading: loadingPag } = useQuery({
-    queryKey: ['dashboard-pagamentos', organizationId],
+    queryKey: ['dashboard-pagamentos', tenantId],
     queryFn: () => {
-      if (!organizationId) return [];
+      if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor: number; valor_pago: number | null; data_vencimento: string; created_at: string }>('pagamentos', 'id, status, valor, valor_pago, data_vencimento, created_at', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -104,11 +104,11 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
   });
 
   const { data: cotacoes, isLoading: loadingCot } = useQuery({
-    queryKey: ['dashboard-cotacoes', organizationId],
+    queryKey: ['dashboard-cotacoes', tenantId],
     queryFn: () => {
-      if (!organizationId) return [];
+      if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor_total: number; selecionada: boolean | null; created_at: string; solicitacao_id: string }>('cotacoes', 'id, status, valor_total, selecionada, created_at, solicitacao_id', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -116,24 +116,24 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
   });
 
   const { data: fornecedores, isLoading: loadingForn } = useQuery({
-    queryKey: ['dashboard-fornecedores', organizationId],
+    queryKey: ['dashboard-fornecedores', tenantId],
     queryFn: () => {
-      if (!organizationId) return [];
+      if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string }>('fornecedores', 'id, status', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
   });
 
   const { data: workflows, isLoading: loadingWf } = useQuery({
-    queryKey: ['dashboard-workflows', organizationId],
+    queryKey: ['dashboard-workflows', tenantId],
     queryFn: () => {
-      if (!organizationId) return [];
+      if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string }>('approval_workflows', 'id, status', {
         filters: [
           { column: 'status', operator: 'eq', value: 'pending' },
-          { column: 'organization_id', operator: 'eq', value: organizationId }
+          { column: 'tenant_id', operator: 'eq', value: tenantId }
         ],
       });
     },
@@ -142,22 +142,22 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
   });
 
   const { data: profilesData } = useQuery({
-    queryKey: ['dashboard-profiles', organizationId],
+    queryKey: ['dashboard-profiles', tenantId],
     queryFn: () => {
-      if (!organizationId) return [];
+      if (!tenantId) return [];
       return fetchAllRows<{ user_id: string; full_name: string }>('profiles', 'user_id, full_name', {
-        filters: [{ column: 'current_organization_id', operator: 'eq', value: organizationId }]
+        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
   });
 
   const { data: categoriasData } = useQuery({
-    queryKey: ['dashboard-categorias', organizationId],
+    queryKey: ['dashboard-categorias', tenantId],
     queryFn: () => {
-      if (!organizationId) return [];
+      if (!tenantId) return [];
       return fetchAllRows<{ id: string; nome: string }>('categorias', 'id, nome', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,

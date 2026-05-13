@@ -59,8 +59,8 @@ const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
   cancelada: [],
 };
 
-async function fetchSolicitacoesData(userId: string | undefined, organizationId: string | null | undefined, filters?: SolicitacaoFilters) {
-  if (!userId || !organizationId) return { data: [], totalCount: 0 };
+async function fetchSolicitacoesData(userId: string | undefined, tenantId: string | null | undefined, filters?: SolicitacaoFilters) {
+  if (!userId || !tenantId) return { data: [], totalCount: 0 };
 
   const page = filters?.page || 1;
   const pageSize = filters?.pageSize || 100;
@@ -78,7 +78,7 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
       solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
-    .eq('organization_id', organizationId)
+    .eq('tenant_id', tenantId)
     .range(from, to);
 
   if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
@@ -96,21 +96,21 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
 }
 
 export function useSolicitacoes(filters?: SolicitacaoFilters) {
-  const { user, organizationId } = useAuth();
+  const { user, tenantId } = useAuth();
   const queryClient = useQueryClient();
   const { createWorkflow } = useApprovalWorkflow();
 
   const queryKey = useMemo(() => [
-    'solicitacoes', user?.id, organizationId,
+    'solicitacoes', user?.id, tenantId,
     filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
     filters?.page, filters?.pageSize,
-  ], [user?.id, organizationId, filters]);
+  ], [user?.id, tenantId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => fetchSolicitacoesData(user?.id, organizationId, filters),
-    enabled: !!user && !!organizationId,
+    queryFn: () => fetchSolicitacoesData(user?.id, tenantId, filters),
+    enabled: !!user && !!tenantId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
@@ -123,7 +123,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   }, [queryClient]);
 
   const createSolicitacao = useCallback(async (input: CreateSolicitacaoInput) => {
-    if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
+    if (!user || !tenantId) { toast.error('Você precisa estar logado em uma organização'); return null; }
     
     try {
       logger.info('Criando nova solicitação', { titulo: input.titulo, tipo: input.tipo });
@@ -163,8 +163,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           centro_custo: input.centro_custo, cost_center_id: input.cost_center_id,
           justificativa: input.justificativa,
           categoria_id: input.categoria_id, solicitante_id: user.id,
-          organization_id: organizationId,
-          tenant_id: organizationId as any,
+          tenant_id: tenantId,
         } as any)
         .select().single();
       
@@ -196,7 +195,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       toast.error('Erro ao criar solicitação: ' + msg);
       return null;
     }
-  }, [user, organizationId, invalidate, createWorkflow]);
+  }, [user, tenantId, invalidate, createWorkflow]);
 
   const updateSolicitacao = useCallback(async (id: string, updates: Partial<Solicitacao>) => {
     try {
@@ -310,17 +309,17 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 }
 
 export function useSolicitacoesKPIs() {
-  const { user, organizationId } = useAuth();
+  const { user, tenantId } = useAuth();
   
   const { data: kpis = { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 }, isLoading } = useQuery({
-    queryKey: ['solicitacoes-kpis', user?.id, organizationId],
+    queryKey: ['solicitacoes-kpis', user?.id, tenantId],
     queryFn: async () => {
-      if (!organizationId) return { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 };
+      if (!tenantId) return { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 };
       
       const { data: allData, error } = await supabase
         .from('solicitacoes')
         .select('status, valor_estimado')
-        .eq('organization_id', organizationId);
+        .eq('tenant_id', tenantId);
       
       if (error) throw error;
       const data = allData || [];
