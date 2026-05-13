@@ -274,7 +274,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
 // Hook for KPIs
 export function useFornecedoresKPIs() {
-  const { user, organizationId } = useAuth();
+  const { user, tenantId } = useAuth();
   const [kpis, setKpis] = useState({
     total: 0,
     ativos: 0,
