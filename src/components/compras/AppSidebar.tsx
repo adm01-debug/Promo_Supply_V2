@@ -32,7 +32,8 @@ import {
   RotateCcw,
   Gavel,
   LogOut,
-  Settings
+  Settings,
+  Settings2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
