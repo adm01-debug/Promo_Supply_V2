@@ -146,7 +146,7 @@ const AuctionRoom = () => {
                   {lances.length}
                 </div>
                 <div className="text-[10px] text-muted-foreground mt-1">
-                  {lances.length > 0 ? `Último há ${Math.round((new Date().getTime() - new Date(lances[0].created_at).getTime()) / 1000)}s` : 'Aguardando lances'}
+                  {lances.length > 0 ? `Último há ${Math.round((new Date().getTime() - new Date(lances[0].created_at || new Date()).getTime()) / 1000)}s` : 'Aguardando lances'}
                 </div>
               </Card>
             </div>
