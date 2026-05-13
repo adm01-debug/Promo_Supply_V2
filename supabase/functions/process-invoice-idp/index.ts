@@ -19,6 +19,8 @@ serve(async (req) => {
     const { filePath } = await req.json();
     if (!filePath) throw new Error("filePath is required");
 
+    logger.info("Iniciando processamento de nota fiscal", { filePath });
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
@@ -29,27 +31,15 @@ serve(async (req) => {
       .from("fiscal-documents")
       .download(filePath);
 
-    if (downloadError) throw downloadError;
+    if (downloadError) {
+      logger.error("Erro ao baixar arquivo do storage", { error: downloadError, filePath });
+      throw downloadError;
+    }
+
+    logger.info("Arquivo baixado com sucesso, simulando extração IA", { byteLength: fileData.size });
 
     // Use Lovable AI Gateway to process document
-    // We'll simulate the AI call here with a well-structured prompt for a vision model
-    // In a real scenario, we'd pass the file to an LLM with Vision capabilities
-    
-    // For the sake of the demo and 10/10 excellence, we'll implement the logic 
-    // that would interact with the AI gateway.
-    
-    const extractionPrompt = `
-      Extract the following fields from this invoice image/PDF:
-      - Invoice Number (nNF)
-      - Access Key (chNFe)
-      - Date of Issue (dhEmi)
-      - Total Value (vNF)
-      - Items (description, quantity, unit price, total price)
-      
-      Return as JSON.
-    `;
-
-    // Simulate AI response for this specific task
+    // Simulate AI response
     const mockExtractedData = {
       numero_nf: `PDF-${Math.floor(Math.random() * 100000)}`,
       chave_acesso: "35231200000000000000000000000000000000000000",
@@ -59,14 +49,18 @@ serve(async (req) => {
       valor_frete: 50.50,
       items: [
         { descricao: "Extracted Item 1", quantidade: 10, valor_unitario: 120.00, valor_total: 1200.00 }
-      ]
+      ],
+      requestId: logger.getRequestId()
     };
+
+    logger.info("Extração concluída", { extractedKeys: Object.keys(mockExtractedData) });
 
     return new Response(JSON.stringify(mockExtractedData), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
   } catch (error) {
+    logger.error("Erro fatal no processamento IDP", { error: error.message });
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
