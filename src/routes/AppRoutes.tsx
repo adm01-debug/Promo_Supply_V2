@@ -39,6 +39,7 @@ const AdminTelemetria = lazy(() => import("@/pages/AdminTelemetria"));
 const DependencyHealth = lazy(() => import("@/pages/admin/DependencyHealth"));
 const SSOConfig = lazy(() => import("@/pages/admin/SSOConfig"));
 const Sourcing = lazy(() => import("@/pages/Sourcing"));
+const PunchOutCatalogs = lazy(() => import("@/pages/admin/PunchOutCatalogs"));
 const RFxCreate = lazy(() => import("@/pages/sourcing/RFxCreate"));
 const RFxDetails = lazy(() => import("@/pages/sourcing/RFxDetails"));
 const AuctionRoom = lazy(() => import("@/pages/sourcing/AuctionRoom"));
@@ -168,6 +169,9 @@ export const AnimatedRoutes = () => {
         } />
         <Route path="/admin/sso" element={
           <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><SSOConfig /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/admin/punchout" element={
+          <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><PunchOutCatalogs /></ModuleErrorBoundary></ProtectedRoute>
         } />
         <Route path="/portal-fornecedor" element={
           <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><PortalFornecedor /></ModuleErrorBoundary></ProtectedRoute>
