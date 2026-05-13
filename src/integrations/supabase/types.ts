@@ -2291,6 +2291,8 @@ export type Database = {
           processing_id: string | null
           reconciliation_notes: string | null
           reconciliation_status: string | null
+          sefaz_protocol: string | null
+          sefaz_status: string | null
           serie: string | null
           source_type: string | null
           status: string
@@ -2302,6 +2304,7 @@ export type Database = {
           valor_impostos: number | null
           valor_produtos: number | null
           valor_total: number
+          xml_content: string | null
           xml_url: string | null
         }
         Insert: {
@@ -2318,6 +2321,8 @@ export type Database = {
           processing_id?: string | null
           reconciliation_notes?: string | null
           reconciliation_status?: string | null
+          sefaz_protocol?: string | null
+          sefaz_status?: string | null
           serie?: string | null
           source_type?: string | null
           status?: string
@@ -2329,6 +2334,7 @@ export type Database = {
           valor_impostos?: number | null
           valor_produtos?: number | null
           valor_total?: number
+          xml_content?: string | null
           xml_url?: string | null
         }
         Update: {
@@ -2345,6 +2351,8 @@ export type Database = {
           processing_id?: string | null
           reconciliation_notes?: string | null
           reconciliation_status?: string | null
+          sefaz_protocol?: string | null
+          sefaz_status?: string | null
           serie?: string | null
           source_type?: string | null
           status?: string
@@ -2356,6 +2364,7 @@ export type Database = {
           valor_impostos?: number | null
           valor_produtos?: number | null
           valor_total?: number
+          xml_content?: string | null
           xml_url?: string | null
         }
         Relationships: [
@@ -2389,6 +2398,71 @@ export type Database = {
           },
           {
             foreignKeyName: "fiscal_documents_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fiscal_events: {
+        Row: {
+          action: string
+          created_at: string
+          document_id: string | null
+          error_message: string | null
+          external_id: string | null
+          id: string
+          pdf_url: string | null
+          processed_at: string | null
+          protocol: string | null
+          request_payload: Json | null
+          response_payload: Json | null
+          status: string
+          tenant_id: string
+          type: string
+          updated_at: string
+          xml_url: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          document_id?: string | null
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          pdf_url?: string | null
+          processed_at?: string | null
+          protocol?: string | null
+          request_payload?: Json | null
+          response_payload?: Json | null
+          status: string
+          tenant_id: string
+          type: string
+          updated_at?: string
+          xml_url?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          document_id?: string | null
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          pdf_url?: string | null
+          processed_at?: string | null
+          protocol?: string | null
+          request_payload?: Json | null
+          response_payload?: Json | null
+          status?: string
+          tenant_id?: string
+          type?: string
+          updated_at?: string
+          xml_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fiscal_events_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
