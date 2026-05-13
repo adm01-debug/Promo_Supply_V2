@@ -1,14 +1,15 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-request-id",
 };
 
 const SLOW_QUERY_THRESHOLD_MS = 3000;
 const VERY_SLOW_QUERY_THRESHOLD_MS = 8000;
 
-function emitTelemetry(meta: {
+function emitTelemetry(logger: EdgeLogger, meta: {
   operation: string;
   table?: string;
   rpcName?: string;
@@ -69,7 +70,7 @@ function emitTelemetry(meta: {
           })
           .then(({ error: insertErr }) => {
             if (insertErr)
-              console.warn("[telemetry-persist] Insert failed:", insertErr.message);
+              logger.warn("[telemetry-persist] Insert failed", { error: insertErr.message });
           });
       }
     } catch (_e) {
@@ -92,6 +93,9 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
+
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('external-db-bridge', requestId);
 
   try {
     const {
@@ -224,7 +228,7 @@ Deno.serve(async (req) => {
     const status = classifyStatus(durationMs, hasError);
     const recordCount = Array.isArray(result.data) ? result.data.length : undefined;
 
-    emitTelemetry({
+    emitTelemetry(logger, {
       operation,
       table,
       rpcName,
@@ -254,7 +258,11 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
-    console.error("[external-db-bridge] Error:", err);
+    if (typeof logger !== 'undefined') {
+      logger.error("Error in external-db-bridge", { error: err.message });
+    } else {
+      console.error("[external-db-bridge] Error:", err);
+    }
     return new Response(
       JSON.stringify({ error: err.message || "Internal server error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
