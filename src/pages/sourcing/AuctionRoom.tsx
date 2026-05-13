@@ -66,7 +66,7 @@ const AuctionRoom = () => {
 
   const chartData = useMemo(() => {
     return [...lances].reverse().map(l => ({
-      time: format(new Date(l.created_at), 'HH:mm:ss'),
+      time: format(new Date(l.created_at || new Date()), 'HH:mm:ss'),
       value: l.valor_lance,
       supplier: l.fornecedor?.razao_social
     }));
