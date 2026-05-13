@@ -112,16 +112,16 @@ export const OrderPreviewModal = ({ pedido, open, onOpenChange, onConfirmSend }:
                 <span className="text-muted-foreground">Subtotal:</span>
                 <span className="text-foreground">{formatCurrency(pedido.valor_total - (pedido.valor_frete || 0) + (pedido.desconto || 0))}</span>
               </div>
-              {pedido.valor_frete > 0 && (
+              {(pedido.valor_frete || 0) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Frete:</span>
-                  <span className="text-foreground">{formatCurrency(pedido.valor_frete)}</span>
+                  <span className="text-foreground">{formatCurrency(pedido.valor_frete || 0)}</span>
                 </div>
               )}
-              {pedido.desconto > 0 && (
+              {(pedido.desconto || 0) > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Desconto:</span>
-                  <span className="text-success">-{formatCurrency(pedido.desconto)}</span>
+                  <span className="text-success">-{formatCurrency(pedido.desconto || 0)}</span>
                 </div>
               )}
               <Separator />

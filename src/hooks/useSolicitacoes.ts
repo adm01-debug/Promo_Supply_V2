@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
 import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 import { fetchAllRows } from '@/lib/paginatedFetch';
-import type { Json } from '@/integrations/supabase/types';
+import type { Json, Database } from '@/integrations/supabase/types';
 
 export type CostCenter = Database['public']['Tables']['cost_centers']['Row'] & {
   manager?: { full_name: string | null } | null;

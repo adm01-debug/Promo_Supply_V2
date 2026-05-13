@@ -244,9 +244,9 @@ export function DevolucaoDetailModal({ devolucao, open, onClose }: { devolucao: 
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div><span className="text-muted-foreground">Fornecedor:</span> <span className="font-medium">{devolucao.fornecedor?.nome_fantasia || devolucao.fornecedor?.razao_social || '—'}</span></div>
             <div><span className="text-muted-foreground">Pedido:</span> <span className="font-medium">{devolucao.pedido?.numero || '—'}</span></div>
-            <div><span className="text-muted-foreground">Motivo:</span> <span className="font-medium">{MOTIVO_LABELS[devolucao.motivo] || devolucao.motivo}</span></div>
-            <div><span className="text-muted-foreground">Resolução:</span> <span className="font-medium">{RESOLUCAO_LABELS[devolucao.resolucao] || devolucao.resolucao}</span></div>
-            <div><span className="text-muted-foreground">Valor:</span> <span className="font-semibold text-primary">R$ {devolucao.valor_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span></div>
+            <div><span className="text-muted-foreground">Motivo:</span> <span className="font-medium">{MOTIVO_LABELS[devolucao.motivo as keyof typeof MOTIVO_LABELS] || devolucao.motivo}</span></div>
+            <div><span className="text-muted-foreground">Resolução:</span> <span className="font-medium">{RESOLUCAO_LABELS[devolucao.resolucao as keyof typeof RESOLUCAO_LABELS] || devolucao.resolucao}</span></div>
+            <div><span className="text-muted-foreground">Valor:</span> <span className="font-semibold text-primary">R$ {(devolucao.valor_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span></div>
             <div><span className="text-muted-foreground">Data:</span> <span className="font-medium">{format(new Date(devolucao.data_solicitacao), "dd/MM/yyyy", { locale: ptBR })}</span></div>
           </div>
 

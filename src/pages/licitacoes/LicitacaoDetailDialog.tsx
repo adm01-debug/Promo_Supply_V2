@@ -56,8 +56,8 @@ export function LicitacaoDetailDialog({
       valor_proposta: parseFloat(propostaForm.valor_proposta) || 0,
       prazo_entrega: parseInt(propostaForm.prazo_entrega) || 0,
       observacoes: propostaForm.observacoes || null,
-      score_preco: licitacao.valor_estimado > 0
-        ? Math.max(0, 100 - ((parseFloat(propostaForm.valor_proposta) || 0) / licitacao.valor_estimado - 1) * 100)
+      score_preco: (licitacao.valor_estimado || 0) > 0
+        ? Math.max(0, 100 - ((parseFloat(propostaForm.valor_proposta) || 0) / (licitacao.valor_estimado || 0) - 1) * 100)
         : 50,
     });
     if (result) {
@@ -93,7 +93,7 @@ export function LicitacaoDetailDialog({
             </div>
             <div>
               <p className="text-muted-foreground">Valor Estimado</p>
-              <p className="font-medium">{formatCurrency(licitacao.valor_estimado)}</p>
+              <p className="font-medium">{formatCurrency(licitacao.valor_estimado || 0)}</p>
             </div>
             <div>
               <p className="text-muted-foreground">Abertura</p>
@@ -236,10 +236,10 @@ export function LicitacaoDetailDialog({
                 <div>
                   <p className="font-semibold">Vencedor Homologado</p>
                   <p className="text-sm text-muted-foreground">
-                    {licitacao.fornecedor_vencedor?.razao_social || 'Fornecedor'} — {formatCurrency(licitacao.valor_vencedor)}
-                    {licitacao.valor_estimado > 0 && (
+                    {licitacao.fornecedor_vencedor?.razao_social || 'Fornecedor'} — {formatCurrency(licitacao.valor_vencedor || 0)}
+                    {(licitacao.valor_estimado || 0) > 0 && (
                       <span className="ml-2 text-primary font-medium">
-                        (Economia: {((1 - licitacao.valor_vencedor / licitacao.valor_estimado) * 100).toFixed(1)}%)
+                        (Economia: {((1 - (licitacao.valor_vencedor || 0) / (licitacao.valor_estimado || 1)) * 100).toFixed(1)}%)
                       </span>
                     )}
                   </p>

@@ -34,8 +34,8 @@ export const adaptToLegacy = (f: Fornecedor): LegacyFornecedor => ({
   email: nullishStr(f.email),
   telefone: nullishStr(f.telefone),
   whatsapp: nullishStr(f.telefone),
-  apiIntegrada: f.integrado_api,
-  rating: Math.round(f.avaliacao),
+  apiIntegrada: !!f.integrado_api,
+  rating: Math.round(f.avaliacao || 0),
   totalMes: 0,
   ultimaCompra: '-',
 });

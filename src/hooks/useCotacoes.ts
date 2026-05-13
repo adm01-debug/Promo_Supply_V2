@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
-import type { Json } from '@/integrations/supabase/types';
+import type { Json, Database } from '@/integrations/supabase/types';
 
 export type Cotacao = Database['public']['Tables']['cotacoes']['Row'] & {
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null; } | null;

@@ -48,7 +48,7 @@ export function ReverseAuctionRoom({ licitacao, userFornecedorId }: ReverseAucti
     return () => clearInterval(interval);
   }, [licitacao.data_encerramento]);
 
-  const bestBid = licitacao.current_best_bid || licitacao.valor_estimado;
+  const bestBid = licitacao.current_best_bid || licitacao.valor_estimado || 0;
   const nextMinBid = bestBid - (licitacao.lance_minimo_decremento || 0.01);
 
   const handlePlaceBid = async () => {
@@ -90,7 +90,7 @@ export function ReverseAuctionRoom({ licitacao, userFornecedorId }: ReverseAucti
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground uppercase font-semibold">Valor Estimado</p>
-                <p className="text-lg font-bold">{formatCurrency(licitacao.valor_estimado)}</p>
+                <p className="text-lg font-bold">{formatCurrency(licitacao.valor_estimado || 0)}</p>
               </div>
               <div className="space-y-1">
                 <p className="text-xs text-muted-foreground uppercase font-semibold">Melhor Lance Atual</p>
@@ -257,7 +257,7 @@ export function ReverseAuctionRoom({ licitacao, userFornecedorId }: ReverseAucti
             </div>
             <div className="flex justify-between">
               <span>Decremento Mínimo:</span>
-              <span className="font-bold">{formatCurrency(licitacao.lance_minimo_decremento)}</span>
+              <span className="font-bold">{formatCurrency(licitacao.lance_minimo_decremento || 0)}</span>
             </div>
             <div className="flex justify-between">
               <span>Início:</span>
