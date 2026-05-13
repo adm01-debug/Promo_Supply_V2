@@ -32,7 +32,7 @@ export interface FornecedorFilters {
 }
 
 export function useFornecedores(filters?: FornecedorFilters) {
-  const { user, organizationId } = useAuth();
+  const { user, tenantId } = useAuth();
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
