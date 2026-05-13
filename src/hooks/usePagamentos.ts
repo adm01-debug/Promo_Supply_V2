@@ -2,6 +2,7 @@ import { useCallback, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { logger } from '@/lib/logger';
 import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
 import type { Json, Database } from '@/integrations/supabase/types';
@@ -102,6 +103,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
   const createPagamento = useCallback(async (input: CreatePagamentoInput) => {
     if (!user) { toast.error('Você precisa estar logado'); return null; }
     try {
+      logger.info('Registrando novo pagamento', { pedidoId: input.pedido_id, fornecedorId: input.fornecedor_id, valor: input.valor });
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'PAG', table_name: 'pagamentos' });
       const numero = numData || `PAG-${Date.now()}`;
       const { data, error } = await supabase
@@ -114,7 +116,10 @@ export function usePagamentos(filters?: PagamentoFilters) {
           chave_nf: input.chave_nf, observacoes: input.observacoes, created_by: user.id,
         })
         .select().single();
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao inserir pagamento no banco', { error, input });
+        throw error;
+      }
       
       // Audit Log
       await auditHelpers.logCreate(
@@ -123,11 +128,13 @@ export function usePagamentos(filters?: PagamentoFilters) {
         `Pagamento ${data.numero} registrado para fornecedor ${input.fornecedor_id}`,
         data
       );
+      logger.info('Pagamento registrado com sucesso', { id: data.id, numero: data.numero });
       toast.success('Pagamento registrado com sucesso!');
       invalidate();
       return data;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao registrar pagamento', { error: msg, input });
       toast.error('Erro ao registrar pagamento: ' + msg);
       return null;
     }
@@ -136,6 +143,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
   const updatePagamento = useCallback(async (id: string, updates: Partial<Pagamento>) => {
     if (updates.status) {
       const current = pagamentos.find(p => p.id === id);
+      logger.info('Atualizando pagamento', { id, currentStatus: current?.status, updates });
       if (current) {
         const allowed = VALID_PAGAMENTO_TRANSITIONS[current.status];
         if (allowed && !allowed.includes(updates.status)) {
@@ -146,12 +154,16 @@ export function usePagamentos(filters?: PagamentoFilters) {
     }
     try {
       const { error } = await supabase.from('pagamentos').update(updates).eq('id', id);
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao atualizar pagamento no banco', { error, id, updates });
+        throw error;
+      }
       toast.success('Pagamento atualizado!');
       invalidate();
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao atualizar pagamento', { error: msg, id });
       toast.error('Erro ao atualizar: ' + msg);
       return false;
     }
@@ -199,13 +211,19 @@ export function usePagamentos(filters?: PagamentoFilters) {
 
   const deletePagamento = useCallback(async (id: string) => {
     try {
+      logger.info('Excluindo registro de pagamento', { id });
       const { error } = await supabase.from('pagamentos').delete().eq('id', id);
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao excluir pagamento no banco', { error, id });
+        throw error;
+      }
+      logger.info('Pagamento excluído com sucesso', { id });
       toast.success('Pagamento excluído!');
       invalidate();
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao excluir pagamento', { error: msg, id });
       toast.error('Erro ao excluir: ' + msg);
       return false;
     }
