@@ -38,6 +38,9 @@ const RecebimentoOffline = lazy(() => import("@/pages/RecebimentoOffline"));
 const AdminTelemetria = lazy(() => import("@/pages/AdminTelemetria"));
 const DependencyHealth = lazy(() => import("@/pages/admin/DependencyHealth"));
 const Sourcing = lazy(() => import("@/pages/Sourcing"));
+const RFxCreate = lazy(() => import("@/pages/sourcing/RFxCreate"));
+const RFxDetails = lazy(() => import("@/pages/sourcing/RFxDetails"));
+const AuctionRoom = lazy(() => import("@/pages/sourcing/AuctionRoom"));
 const PortalFornecedor = lazy(() => import("@/pages/PortalFornecedor"));
 const ConfiguracoesCentroCusto = lazy(() => import("@/pages/ConfiguracoesCentroCusto"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
@@ -140,6 +143,15 @@ export const AnimatedRoutes = () => {
         } />
         <Route path="/sourcing" element={
           <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><Sourcing /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/sourcing/novo" element={
+          <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><RFxCreate /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/sourcing/:id" element={
+          <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><RFxDetails /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/sourcing/:id/auction" element={
+          <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><AuctionRoom /></ModuleErrorBoundary></ProtectedRoute>
         } />
         <Route path="/licitacoes" element={
           <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="default"><Licitacoes /></ModuleErrorBoundary></ProtectedRoute>

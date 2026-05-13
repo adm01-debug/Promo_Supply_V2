@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 
 const Sourcing = () => {
+  const navigate = useNavigate();
   const { events, isLoading } = useSourcingEvents();
   const [activeTab, setActiveTab] = useState("all");
 
@@ -54,7 +56,7 @@ const Sourcing = () => {
             <h1 className="text-2xl font-bold text-foreground">Strategic Sourcing (RFx)</h1>
             <p className="text-muted-foreground">Gerencie eventos complexos de RFI, RFP, RFQ e Leilões Reversos.</p>
           </div>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => navigate("/sourcing/novo")}>
             <Plus className="w-4 h-4" />
             Novo Evento
           </Button>
@@ -131,7 +133,7 @@ const Sourcing = () => {
               ) : events.length > 0 ? (
                 <div className="grid grid-cols-1 gap-4">
                   {events.map((event: any) => (
-                    <Card key={event.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <Card key={event.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/sourcing/${event.id}`)}>
                       <div className="flex items-start justify-between">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
@@ -151,7 +153,7 @@ const Sourcing = () => {
                           <div className="font-bold text-lg">
                             {event.budget_estimate?.toLocaleString('pt-BR', { style: 'currency', currency: event.currency })}
                           </div>
-                          <Button variant="ghost" size="sm" className="gap-2">
+                          <Button variant="ghost" size="sm" className="gap-2" onClick={() => navigate(`/sourcing/${event.id}`)}>
                             Ver Detalhes
                             <ArrowRight className="w-4 h-4" />
                           </Button>

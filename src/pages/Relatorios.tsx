@@ -5,7 +5,8 @@ import {
   Calendar,
   Download,
   Target,
-  Building2
+  Building2,
+  Layers
 } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
@@ -17,6 +18,7 @@ import { KraljicMatrix } from "@/components/compras/executive/KraljicMatrix";
 import { AdvancedProcurementKPIs } from "@/components/compras/AdvancedProcurementKPIs";
 import { DemandPredictionPanel } from "@/components/compras/DemandPredictionPanel";
 import { CostCenterPerformanceAnalysis } from "@/components/compras/CostCenterPerformanceAnalysis";
+import { SpendAnalytics } from "@/components/compras/SpendAnalytics";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { exportToCSV } from "@/lib/exportData";
@@ -256,10 +258,14 @@ const Relatorios = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-5 h-auto p-1">
+          <TabsList className="w-full grid grid-cols-6 h-auto p-1">
             <TabsTrigger value="geral" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
               <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Visão</span> Geral
+            </TabsTrigger>
+            <TabsTrigger value="spend" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              Spend
             </TabsTrigger>
             <TabsTrigger value="kpis" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
               <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -278,6 +284,10 @@ const Relatorios = () => {
               <span className="hidden sm:inline">Previsão</span> IA
             </TabsTrigger>
           </TabsList>
+
+          <TabsContent value="spend" className="mt-6">
+            <SpendAnalytics />
+          </TabsContent>
 
           <TabsContent value="kpis" className="mt-6">
             <AdvancedProcurementKPIs />
