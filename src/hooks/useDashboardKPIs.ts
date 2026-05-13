@@ -130,7 +130,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         ],
       });
     },
-    staleTime: 30000,
+    staleTime: 60000,
+    gcTime: 300000,
   });
 
   const { data: profilesData } = useQuery({
