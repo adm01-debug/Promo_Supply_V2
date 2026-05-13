@@ -48,6 +48,7 @@ const PortalFornecedor = lazy(() => import("@/pages/PortalFornecedor"));
 const ConfiguracoesCentroCusto = lazy(() => import("@/pages/ConfiguracoesCentroCusto"));
 const FiscalDashboard = lazy(() => import("@/pages/admin/FiscalDashboard"));
 const SourcingPipeline = lazy(() => import("@/pages/admin/SourcingPipeline"));
+const WorkflowDesigner = lazy(() => import("@/pages/admin/WorkflowAdmin"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 export const AnimatedRoutes = () => {
@@ -184,6 +185,10 @@ export const AnimatedRoutes = () => {
         } />
         <Route path="/admin/sourcing-pipeline" element={
           <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><SourcingPipeline /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+const WorkflowDesigner = lazy(() => import("@/pages/admin/WorkflowAdmin"));
+        <Route path="/admin/workflows" element={
+          <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><WorkflowDesigner /></ModuleErrorBoundary></ProtectedRoute>
         } />
         <Route path="/portal-fornecedor" element={
           <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><PortalFornecedor /></ModuleErrorBoundary></ProtectedRoute>
