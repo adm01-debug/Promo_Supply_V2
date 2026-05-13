@@ -149,8 +149,8 @@ const Auth = () => {
     e.preventDefault();
     setErrors({});
 
-    if (isPasswordLeaked) {
-      toast.error('Esta senha foi encontrada em vazamentos de dados. Escolha outra senha.');
+    if (isPasswordLeaked && signupPassword.length >= 8) {
+      toast.error('Esta senha foi encontrada em vazamentos de dados (Pwned Passwords). Por sua segurança, escolha outra senha.');
       return;
     }
 
