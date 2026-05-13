@@ -488,7 +488,8 @@ const Aprovacoes = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
