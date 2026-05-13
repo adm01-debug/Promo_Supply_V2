@@ -37,13 +37,13 @@ function emitTelemetry(logger: EdgeLogger, meta: {
     ` count=${meta.countMode ?? "-"}`;
 
   if (meta.status === "very_slow") {
-    console.warn(`⚠️ VERY SLOW QUERY: ${line}`);
+    logger.warn(`VERY SLOW QUERY: ${line}`);
   } else if (meta.status === "slow") {
-    console.warn(`⚠️ SLOW QUERY: ${line}`);
+    logger.warn(`SLOW QUERY: ${line}`);
   } else if (meta.status === "error") {
-    console.error(line + ` error=${meta.error}`);
+    logger.error(line + ` error=${meta.error}`);
   } else {
-    console.info(line);
+    logger.info(line);
   }
 
   // Fire-and-forget persistence (only for non-ok)
