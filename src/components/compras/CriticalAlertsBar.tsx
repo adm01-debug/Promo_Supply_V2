@@ -55,7 +55,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
   const alerts = useMemo(() => {
     let criticalCount = 0;
     let overdueCount = 0;
-    let pendingApprovals = workflows?.length || 0;
+    const pendingApprovals = workflows?.length || 0;
     
     const criticalItems: string[] = [];
     const overdueItems: string[] = [];

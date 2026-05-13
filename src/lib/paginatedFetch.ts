@@ -19,8 +19,7 @@ export async function fetchAllRows<T = Record<string, unknown>>(
   let hasMore = true;
 
   while (hasMore) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let query = (supabase as any).from(table).select(select).range(from, from + pageSize - 1);
+    let query = supabase.from(table as never).select(select).range(from, from + pageSize - 1);
 
     if (options?.filters) {
       for (const filter of options.filters) {
