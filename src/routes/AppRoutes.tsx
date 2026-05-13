@@ -37,6 +37,7 @@ const Licitacoes = lazy(() => import("@/pages/Licitacoes"));
 const RecebimentoOffline = lazy(() => import("@/pages/RecebimentoOffline"));
 const AdminTelemetria = lazy(() => import("@/pages/AdminTelemetria"));
 const DependencyHealth = lazy(() => import("@/pages/admin/DependencyHealth"));
+const SSOConfig = lazy(() => import("@/pages/admin/SSOConfig"));
 const Sourcing = lazy(() => import("@/pages/Sourcing"));
 const RFxCreate = lazy(() => import("@/pages/sourcing/RFxCreate"));
 const RFxDetails = lazy(() => import("@/pages/sourcing/RFxDetails"));
