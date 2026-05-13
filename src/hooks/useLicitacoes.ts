@@ -21,6 +21,7 @@ export function useLicitacoes() {
   const { data: licitacoes = [], isLoading } = useQuery({
     queryKey: ['licitacoes', tenantId],
     queryFn: async () => {
+      if (!tenantId) return [];
       const { data, error } = await supabase
         .from('licitacoes')
         .select('*, fornecedor_vencedor:fornecedores!licitacoes_fornecedor_vencedor_id_fkey(razao_social)')
@@ -41,11 +42,19 @@ export function useLicitacoes() {
     try {
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'LIC', table_name: 'licitacoes' });
       const numero = numData || `LIC-${Date.now()}`;
+      
       const { data, error } = await supabase
         .from('licitacoes')
-        .insert({ ...input, numero, created_by: user.id, responsavel_id: user.id, tenant_id: tenantId })
+        .insert({ 
+          ...input, 
+          numero, 
+          created_by: user.id, 
+          responsavel_id: user.id, 
+          tenant_id: tenantId 
+        } as any)
         .select()
         .single();
+      
       if (error) throw error;
       toast.success(`Licitação ${numero} criada!`);
       invalidate();
@@ -110,10 +119,11 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
   }, [queryClient, licitacaoId]);
 
   const addProposta = useCallback(async (input: Partial<LicitacaoProposta>) => {
+    if (!licitacaoId) return null;
     try {
       const { data, error } = await supabase
         .from('licitacao_propostas')
-        .insert({ ...input, licitacao_id: licitacaoId })
+        .insert({ ...input, licitacao_id: licitacaoId } as any)
         .select()
         .single();
       if (error) throw error;
@@ -127,6 +137,7 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
   }, [licitacaoId, invalidate]);
 
   const selectWinner = useCallback(async (propostaId: string, fornecedorId: string, valor: number) => {
+    if (!licitacaoId) return false;
     try {
       // Mark winner
       await supabase.from('licitacao_propostas').update({ vencedora: false }).eq('licitacao_id', licitacaoId);
@@ -225,6 +236,7 @@ export function useLicitacaoLances(licitacaoId: string | null) {
   });
 
   const placeBid = useCallback(async (valor: number, fornecedorId: string) => {
+    if (!licitacaoId) return false;
     try {
       const { error } = await supabase.from('licitacao_lances').insert({
         licitacao_id: licitacaoId,
@@ -244,7 +256,7 @@ export function useLicitacaoLances(licitacaoId: string | null) {
 
   // Subscribe to real-time bids
   const subscribeToBids = useCallback(() => {
-    if (!licitacaoId) return;
+    if (!licitacaoId) return () => {};
     const channel = supabase
       .channel(`licitacao-bids-${licitacaoId}`)
       .on(
