@@ -1,5 +1,4 @@
-import { Linter } from 'eslint';
-
+/** @type {import('eslint').Linter.FlatConfig[]} */
 export default [
   {
     files: ['src/**/*.ts', 'src/**/*.tsx'],
@@ -7,4 +6,4 @@ export default [
       'no-console': ['error', { allow: ['warn', 'error'] }],
     },
   },
-] as Linter.FlatConfig[];
+];
