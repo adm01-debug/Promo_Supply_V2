@@ -25,7 +25,13 @@ const queryClient = new QueryClient({
   },
 });
 
-const App = () => (
+const App = () => {
+  useEffect(() => {
+    logger.info("Aplicação inicializada");
+  }, []);
+
+  return (
+
   <div className="min-h-screen">
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <QueryClientProvider client={queryClient}>
