@@ -56,19 +56,19 @@ export interface PipelineData {
 }
 
 export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
-  const { organizationId } = useAuth();
+  const { tenantId } = useAuth();
   const { settings } = useSLASettings();
   const categoryFilter = filters?.category !== 'all' ? filters?.category : undefined;
   const supplierFilter = filters?.supplier !== 'all' ? filters?.supplier : undefined;
 
   const { data: solicitacoes, isLoading: loadingSol } = useQuery({
-    queryKey: ['dashboard-solicitacoes', organizationId],
+    queryKey: ['dashboard-solicitacoes', tenantId],
     queryFn: async () => {
-      if (!organizationId) return [];
+      if (!tenantId) return [];
       logger.debug('Fetching dashboard solicitacoes');
       try {
         return await fetchAllRows<{ id: string; numero: string; titulo: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null; categoria_id: string | null; solicitante_id: string | null }>('solicitacoes', 'id, numero, titulo, status, valor_estimado, valor_aprovado, created_at, data_necessidade, categoria_id, solicitante_id', {
-          filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+          filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
         });
       } catch (error) {
         logger.error('Error fetching dashboard solicitacoes', { error });
