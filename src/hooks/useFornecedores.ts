@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { logger } from '@/lib/logger';
 import { auditHelpers } from '@/services/auditService';
 import { toast } from 'sonner';
 import type { Database } from '@/integrations/supabase/types';
@@ -44,6 +45,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
     }
 
     try {
+      logger.debug('Buscando fornecedores', { filters });
       setLoading(true);
       setError(null);
 
@@ -66,12 +68,15 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
       const { data, error: fetchError } = await query;
 
-      if (fetchError) throw fetchError;
+      if (fetchError) {
+        logger.error('Erro ao buscar fornecedores', { error: fetchError });
+        throw fetchError;
+      }
 
       setFornecedores((data as Fornecedor[]) || []);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error fetching fornecedores:', err);
+      logger.error('Erro fatal ao buscar fornecedores', { error: errorMessage });
       setError(errorMessage);
       toast.error('Erro ao carregar fornecedores');
     } finally {
@@ -118,6 +123,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
     }
 
     try {
+      logger.info('Criando novo fornecedor', { razaoSocial: input.razao_social, cnpj: input.cnpj });
       // Generate codigo
       const { data: codeData } = await supabase.rpc('generate_sequential_number', {
         prefix: 'FOR',
@@ -150,7 +156,10 @@ export function useFornecedores(filters?: FornecedorFilters) {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao inserir fornecedor no banco', { error, input });
+        throw error;
+      }
 
       // Audit Log
       await auditHelpers.logCreate(
@@ -160,12 +169,13 @@ export function useFornecedores(filters?: FornecedorFilters) {
         data
       );
 
+      logger.info('Fornecedor cadastrado com sucesso', { id: data.id, razaoSocial: data.razao_social });
       toast.success('Fornecedor cadastrado com sucesso!');
       fetchFornecedores();
       return data;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error creating fornecedor:', err);
+      logger.error('Erro fatal ao cadastrar fornecedor', { error: errorMessage, input });
       toast.error('Erro ao cadastrar fornecedor: ' + errorMessage);
       return null;
     }
@@ -174,19 +184,23 @@ export function useFornecedores(filters?: FornecedorFilters) {
   // Update fornecedor
   const updateFornecedor = useCallback(async (id: string, updates: Partial<Fornecedor>) => {
     try {
+      logger.info('Atualizando fornecedor', { id, updates });
       const { error } = await supabase
         .from('fornecedores')
         .update(updates)
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao atualizar fornecedor no banco', { error, id, updates });
+        throw error;
+      }
 
       toast.success('Fornecedor atualizado!');
       fetchFornecedores();
       return true;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error updating fornecedor:', err);
+      logger.error('Erro fatal ao atualizar fornecedor', { error: errorMessage, id });
       toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
@@ -195,19 +209,24 @@ export function useFornecedores(filters?: FornecedorFilters) {
   // Delete fornecedor
   const deleteFornecedor = useCallback(async (id: string) => {
     try {
+      logger.info('Excluindo fornecedor', { id });
       const { error } = await supabase
         .from('fornecedores')
         .delete()
         .eq('id', id);
 
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao excluir fornecedor no banco', { error, id });
+        throw error;
+      }
+      logger.info('Fornecedor excluído com sucesso', { id });
 
       toast.success('Fornecedor excluído!');
       fetchFornecedores();
       return true;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error deleting fornecedor:', err);
+      logger.error('Erro fatal ao excluir fornecedor', { error: errorMessage, id });
       toast.error('Erro ao excluir: ' + errorMessage);
       return false;
     }

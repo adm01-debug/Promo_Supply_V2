@@ -7,6 +7,7 @@ import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion"
 import { SupplierRiskAnalysis } from "@/components/compras/SupplierRiskAnalysis";
 import { PriceComparator } from "@/components/compras/PriceComparator";
 import { FornecedorMobileCard } from "@/components/fornecedores/FornecedorMobileCard";
+import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { OnboardingTour, fornecedorTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { Card } from "@/components/ui/card";
@@ -188,7 +189,8 @@ const Fornecedores = () => {
   }
 
   return (
-    <MainLayout>
+    <ModuleErrorBoundary module="fornecedores">
+      <MainLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-tour="fornecedor-header">
@@ -476,7 +478,8 @@ const Fornecedores = () => {
           onSkip={skipTour}
         />
       )}
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 

@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -53,7 +54,8 @@ export default function Devolucoes() {
   const { creditos, saldoTotal, loading: creditosLoading } = useCreditosFornecedor();
 
   return (
-    <MainLayout>
+    <ModuleErrorBoundary module="devolucoes">
+      <MainLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -233,6 +235,7 @@ export default function Devolucoes() {
       {/* Modals */}
       <NovaDevolucaoModal open={showNewModal} onClose={() => setShowNewModal(false)} />
       <DevolucaoDetailModal devolucao={selectedDev} open={!!selectedDev} onClose={() => setSelectedDev(null)} />
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 }

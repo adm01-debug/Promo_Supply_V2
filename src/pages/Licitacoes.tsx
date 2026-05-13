@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/ui/page-header';
+import { ModuleErrorBoundary } from '@/components/ModuleErrorBoundary';
+import { MainLayout } from '@/components/compras/MainLayout';
 import { useLicitacoes } from '@/hooks/useLicitacoes';
 import { useFornecedores } from '@/hooks/useFornecedores';
 import { LicitacaoDetailDialog, modalidadeLabels, statusConfig } from './licitacoes/LicitacaoDetailDialog';
@@ -71,7 +73,9 @@ export default function Licitacoes() {
   const selectedLicitacao = licitacoes.find(l => l.id === detailId);
 
   return (
-    <div className="space-y-6">
+    <ModuleErrorBoundary module="cotacoes">
+      <MainLayout>
+        <div className="space-y-6">
       <PageHeader 
         title={activeAuctionId ? "Sala de Leilão" : "Licitações"} 
         description={activeAuctionId ? "Acompanhamento em tempo real e lances" : "Gerenciamento de processos licitatórios e propostas"} 
@@ -217,6 +221,8 @@ export default function Licitacoes() {
       )}
         </>
       )}
-    </div>
+        </div>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 }

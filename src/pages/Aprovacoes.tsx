@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { DynamicApprovalMatrix } from "@/components/compras/DynamicApprovalMatrix";
 import { PendingApprovalsList } from "@/components/compras/PendingApprovalsList";
 import { useApprovalWorkflow } from "@/hooks/useApprovalWorkflow";
@@ -115,7 +116,8 @@ const Aprovacoes = () => {
   }, []);
 
   return (
-    <MainLayout>
+    <ModuleErrorBoundary module="aprovacoes">
+      <MainLayout>
       <div className="space-y-6">
         {/* Header */}
         <div>
@@ -486,7 +488,8 @@ const Aprovacoes = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 

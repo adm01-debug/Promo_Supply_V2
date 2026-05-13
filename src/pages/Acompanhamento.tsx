@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useRef } from "react";
 import { useAccountFilters } from "@/hooks/useAccountFilters";
 import { useClearFiltersFlow } from "@/hooks/useClearFiltersFlow";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
+import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { Eye, Search, Filter, Package, Clock, Building2, User, Calendar, Truck, LayoutList, LayoutGrid, AlertTriangle, AlertCircle, CheckCircle2, Timer } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
@@ -135,7 +136,8 @@ const Acompanhamento = () => {
   };
 
   return (
-    <MainLayout>
+    <ModuleErrorBoundary module="solicitacoes">
+      <MainLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -302,7 +304,8 @@ const Acompanhamento = () => {
         </DialogContent>
       </Dialog>
       {clearFlow.ConfirmDialog}
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 

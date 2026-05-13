@@ -7,6 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
+import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
 import { useBulkOperations, pagamentosStatusOptions } from "@/hooks/useBulkOperations";
 import { BulkAction, BulkItem } from "@/components/compras/BulkOperationsPreview";
@@ -326,7 +327,8 @@ const Pagamentos = () => {
   );
 
   return (
-    <MainLayout>
+    <ModuleErrorBoundary module="pagamentos">
+      <MainLayout>
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -425,7 +427,8 @@ const Pagamentos = () => {
         statusOptions={pagamentosStatusOptions}
         availableActions={bulkActions}
       />
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 

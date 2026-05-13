@@ -18,6 +18,7 @@ import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal"
 import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { PageHeader, PageHeaderStats } from "@/components/ui/page-header";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { EnhancedSearch } from "@/components/ui/enhanced-search";
@@ -333,7 +334,8 @@ const Solicitacoes = () => {
   }
 
   return (
-    <MainLayout>
+    <ModuleErrorBoundary module="solicitacoes">
+      <MainLayout>
       <div className="space-y-6">
         {/* Page Header com novo componente */}
         <div data-tour="solicitacoes-header">
@@ -549,7 +551,8 @@ const Solicitacoes = () => {
         />
       )}
       {clearFlow.ConfirmDialog}
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 

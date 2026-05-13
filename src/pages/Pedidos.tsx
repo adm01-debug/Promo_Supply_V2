@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { OnboardingTour, pedidosTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
@@ -170,7 +171,8 @@ const Pedidos = () => {
   }
 
   return (
-    <MainLayout>
+    <ModuleErrorBoundary module="pedidos">
+      <MainLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="pedidos-header">
@@ -324,7 +326,8 @@ const Pedidos = () => {
       <PriceHistoryModal open={priceHistoryOpen} onOpenChange={setPriceHistoryOpen} />
       {receivingPedido && <ReceivingModal open={!!receivingPedido} onOpenChange={(open) => !open && setReceivingPedido(null)} pedidoId={receivingPedido.id} pedidoNumero={receivingPedido.numero} items={receivingItems} onSuccess={() => refetch()} />}
       <OrderPreviewModal pedido={previewPedido} open={!!previewPedido} onOpenChange={(open) => !open && setPreviewPedido(null)} onConfirmSend={previewPedido?.status === 'aprovado' ? () => { handleUpdateStatus(previewPedido.id, 'enviado'); setPreviewPedido(null); } : undefined} />
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 

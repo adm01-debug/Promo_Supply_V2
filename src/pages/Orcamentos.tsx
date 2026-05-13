@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { MainLayout } from '@/components/compras/MainLayout';
+import { ModuleErrorBoundary } from '@/components/ModuleErrorBoundary';
 import { PageTransition } from '@/components/animations/MotionComponents';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -86,7 +87,8 @@ const Orcamentos = () => {
   }
 
   return (
-    <MainLayout>
+    <ModuleErrorBoundary module="orcamentos">
+      <MainLayout>
       <PageTransition className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -305,7 +307,8 @@ const Orcamentos = () => {
           </div>
         )}
       </PageTransition>
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
