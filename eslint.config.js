@@ -23,6 +23,7 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      "no-console": ["error", { "allow": ["warn", "error"] }],
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "dot-notation": "off",
       "@typescript-eslint/dot-notation": ["error", { allowIndexSignaturePropertyAccess: false }],
