@@ -49,7 +49,7 @@ const WorkflowAdmin = () => {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" className="gap-2">
+          <Button variant="outline" className="gap-2" onClick={() => navigate("/auditoria")}>
             <History className="h-4 w-4" /> Logs de Auditoria
           </Button>
           <Button className="gap-2">
