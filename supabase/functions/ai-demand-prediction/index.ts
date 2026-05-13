@@ -1,8 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
 };
 
 async function verifyAuthUser(req: Request): Promise<string> {
@@ -29,6 +30,9 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+    const logger = new EdgeLogger('ai-demand-prediction', requestId);
+
     // SECURITY: Validate user authentication
     await verifyAuthUser(req);
 
@@ -86,7 +90,7 @@ ${JSON.stringify(historicalData, null, 2)}
 
 Por favor, analise os padrões e forneça previsões detalhadas.`;
 
-    console.log("Calling Lovable AI for demand prediction...");
+    logger.info("Calling Lovable AI for demand prediction");
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -105,7 +109,7 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("AI Gateway error:", response.status, errorText);
+      logger.error("AI Gateway error", { status: response.status, response: errorText });
       
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
@@ -139,7 +143,7 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
         predictions = JSON.parse(content);
       }
     } catch (_parseError) {
-      console.error("Error parsing AI response:", _parseError);
+      logger.error("Error parsing AI response", { error: _parseError });
       predictions = {
         predictions: [],
         seasonalPatterns: [],
@@ -149,14 +153,18 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
       };
     }
 
-    console.log("Demand prediction generated successfully");
+    logger.info("Demand prediction generated successfully");
 
     return new Response(JSON.stringify(predictions), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
-    console.error("Error in ai-demand-prediction:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    if (typeof logger !== 'undefined') {
+      logger.error("Error in ai-demand-prediction", { error: errorMessage });
+    } else {
+      console.error("Error in ai-demand-prediction:", error);
+    }
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(JSON.stringify({ error: errorMessage }), {
       status,
