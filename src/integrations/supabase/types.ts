@@ -6306,6 +6306,343 @@ export type Database = {
         }
         Relationships: []
       }
+      workflow_approvals: {
+        Row: {
+          approver_id: string | null
+          comment: string | null
+          created_at: string
+          decided_at: string | null
+          id: string
+          instance_id: string
+          node_id: string
+          role_required: Database["public"]["Enums"]["app_role"] | null
+          status: string
+          tenant_id: string
+        }
+        Insert: {
+          approver_id?: string | null
+          comment?: string | null
+          created_at?: string
+          decided_at?: string | null
+          id?: string
+          instance_id: string
+          node_id: string
+          role_required?: Database["public"]["Enums"]["app_role"] | null
+          status?: string
+          tenant_id: string
+        }
+        Update: {
+          approver_id?: string | null
+          comment?: string | null
+          created_at?: string
+          decided_at?: string | null
+          id?: string
+          instance_id?: string
+          node_id?: string
+          role_required?: Database["public"]["Enums"]["app_role"] | null
+          status?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_approvals_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_instances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_approvals_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_approvals_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_edges: {
+        Row: {
+          condition_expression: string | null
+          created_at: string
+          id: string
+          source_node_id: string
+          target_node_id: string
+          template_id: string
+          tenant_id: string
+        }
+        Insert: {
+          condition_expression?: string | null
+          created_at?: string
+          id?: string
+          source_node_id: string
+          target_node_id: string
+          template_id: string
+          tenant_id: string
+        }
+        Update: {
+          condition_expression?: string | null
+          created_at?: string
+          id?: string
+          source_node_id?: string
+          target_node_id?: string
+          template_id?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_edges_source_node_id_fkey"
+            columns: ["source_node_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_edges_target_node_id_fkey"
+            columns: ["target_node_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_edges_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_edges_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_instances: {
+        Row: {
+          completed_at: string | null
+          context: Json
+          current_node_id: string | null
+          entity_id: string
+          entity_type: string
+          id: string
+          started_at: string
+          status: Database["public"]["Enums"]["workflow_status"]
+          template_id: string
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          completed_at?: string | null
+          context?: Json
+          current_node_id?: string | null
+          entity_id: string
+          entity_type: string
+          id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["workflow_status"]
+          template_id: string
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          completed_at?: string | null
+          context?: Json
+          current_node_id?: string | null
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["workflow_status"]
+          template_id?: string
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_instances_current_node_id_fkey"
+            columns: ["current_node_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_instances_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_instances_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_logs: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          instance_id: string
+          message: string | null
+          node_id: string | null
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          instance_id: string
+          message?: string | null
+          node_id?: string | null
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          instance_id?: string
+          message?: string | null
+          node_id?: string | null
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_logs_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_instances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_logs_node_id_fkey"
+            columns: ["node_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_nodes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_logs_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_nodes: {
+        Row: {
+          config: Json
+          created_at: string
+          id: string
+          label: string
+          position_x: number
+          position_y: number
+          template_id: string
+          tenant_id: string
+          type: Database["public"]["Enums"]["workflow_node_type"]
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          id?: string
+          label: string
+          position_x?: number
+          position_y?: number
+          template_id: string
+          tenant_id: string
+          type: Database["public"]["Enums"]["workflow_node_type"]
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          id?: string
+          label?: string
+          position_x?: number
+          position_y?: number
+          template_id?: string
+          tenant_id?: string
+          type?: Database["public"]["Enums"]["workflow_node_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_nodes_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_nodes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_templates: {
+        Row: {
+          config: Json
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          tenant_id: string
+          trigger_type: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          tenant_id: string
+          trigger_type: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          tenant_id?: string
+          trigger_type?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_templates_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       supplier_compliance_summary: {
@@ -6333,6 +6670,14 @@ export type Database = {
         Returns: Json
       }
       check_escalation: { Args: never; Returns: undefined }
+      check_workflow_sod: {
+        Args: {
+          p_approver_id: string
+          p_entity_id: string
+          p_instance_id: string
+        }
+        Returns: boolean
+      }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
       clear_login_lockout: { Args: { _email: string }; Returns: undefined }
       current_tenant_id: { Args: never; Returns: string }
@@ -6516,6 +6861,19 @@ export type Database = {
         | "cancelled"
       sourcing_type: "rfi" | "rfp" | "rfq" | "auction"
       tenant_status: "active" | "suspended" | "trial" | "churned"
+      workflow_node_type:
+        | "start"
+        | "end"
+        | "approval"
+        | "condition"
+        | "action"
+        | "delay"
+      workflow_status:
+        | "pending"
+        | "running"
+        | "completed"
+        | "failed"
+        | "cancelled"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -6712,6 +7070,21 @@ export const Constants = {
       ],
       sourcing_type: ["rfi", "rfp", "rfq", "auction"],
       tenant_status: ["active", "suspended", "trial", "churned"],
+      workflow_node_type: [
+        "start",
+        "end",
+        "approval",
+        "condition",
+        "action",
+        "delay",
+      ],
+      workflow_status: [
+        "pending",
+        "running",
+        "completed",
+        "failed",
+        "cancelled",
+      ],
     },
   },
 } as const
