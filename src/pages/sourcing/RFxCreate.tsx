@@ -95,7 +95,7 @@ const RFxCreate = () => {
               event_id: event.id,
               nome: lot.title,
               descricao: lot.description,
-              preco_alvo: parseFloat(lot.target_price) || null
+              preco_referencia: parseFloat(lot.target_price) || null
             }))
           );
         }
