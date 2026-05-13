@@ -80,7 +80,8 @@ const DocumentosFiscais = () => {
         valor_desconto: vDesc,
         status: "validada",
         uploaded_by: user?.id || null,
-      });
+        tenant_id: '00000000-0000-0000-0000-000000000000' as any, // Default to legacy for manual uploads initially
+      } as any);
 
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
@@ -134,7 +135,8 @@ const DocumentosFiscais = () => {
         file_path: filePath,
         status: "validada",
         uploaded_by: user?.id || null,
-      });
+        tenant_id: '00000000-0000-0000-0000-000000000000' as any,
+      } as any);
 
       if (dbError) throw dbError;
       queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });

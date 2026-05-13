@@ -164,7 +164,8 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           justificativa: input.justificativa,
           categoria_id: input.categoria_id, solicitante_id: user.id,
           organization_id: organizationId,
-        })
+          tenant_id: organizationId as any,
+        } as any)
         .select().single();
       
       if (solError) {

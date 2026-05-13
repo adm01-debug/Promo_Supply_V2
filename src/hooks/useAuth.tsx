@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useRef, useCallback, Re
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import { toast } from 'sonner';
 
 export type AppRole = 'admin' | 'coordinator' | 'buyer' | 'finance' | 'viewer';
 
@@ -22,10 +23,13 @@ interface AuthContextType {
   profile: UserProfile | null;
   role: AppRole | null;
   organizationId: string | null;
+  tenantId: string | null;
+  availableTenants: { id: string; name: string; slug: string }[];
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  switchTenant: (tenantId: string) => Promise<void>;
   hasRole: (requiredRole: AppRole | AppRole[]) => boolean;
   isAdmin: boolean;
 }
@@ -38,6 +42,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [role, setRole] = useState<AppRole | null>(null);
   const [organizationId, setOrganizationId] = useState<string | null>(null);
+  const [tenantId, setTenantId] = useState<string | null>(null);
+  const [availableTenants, setAvailableTenants] = useState<{ id: string; name: string; slug: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const fetchedUserIdRef = useRef<string | null>(null);
   const isFetchingRef = useRef(false);
@@ -49,9 +55,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logger.debug('Fetching auth user data', { userId });
 
     try {
-      const [profileRes, roleRes] = await Promise.all([
+      const [profileRes, roleRes, tenantRes, availableTenantsRes] = await Promise.all([
         supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
+        supabase.rpc('current_tenant_id'),
+        supabase.from('user_tenants').select('tenant:tenants(id, name, slug)').eq('user_id', userId),
       ]);
 
       if (profileRes.error) {
@@ -60,12 +68,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (roleRes.error) {
         logger.error('Error fetching role', { error: roleRes.error, userId });
       }
+      if (tenantRes.error) {
+        logger.error('Error fetching current tenant', { error: tenantRes.error, userId });
+      }
 
       setProfile(profileRes.data ? (profileRes.data as UserProfile) : null);
       setRole(roleRes.data?.role ? (roleRes.data.role as AppRole) : null);
       setOrganizationId(profileRes.data?.current_organization_id || null);
+      setTenantId(tenantRes.data || null);
+      
+      if (availableTenantsRes.data) {
+        const tenants = (availableTenantsRes.data as any[]).map(ut => ut.tenant);
+        setAvailableTenants(tenants);
+      }
+
       fetchedUserIdRef.current = userId;
-      logger.info('Auth user data loaded successfully', { userId, role: roleRes.data?.role });
+      logger.info('Auth user data loaded successfully', { userId, role: roleRes.data?.role, tenantId: tenantRes.data });
     } catch (error) {
       logger.error('Error fetching user data', { error, userId });
     } finally {
@@ -121,6 +139,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setProfile(null);
           setRole(null);
           setOrganizationId(null);
+          setTenantId(null);
+          setAvailableTenants([]);
           fetchedUserIdRef.current = null;
         }
 
@@ -175,6 +195,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setProfile(null);
     setRole(null);
     setOrganizationId(null);
+    setTenantId(null);
+    setAvailableTenants([]);
+  };
+
+  const switchTenant = async (newTenantId: string) => {
+    if (!user) return;
+    try {
+      setLoading(true);
+      logger.info('Switching tenant', { userId: user.id, newTenantId });
+      
+      // Update default tenant for user
+      const { error } = await supabase
+        .from('user_tenants')
+        .update({ is_default: false })
+        .eq('user_id', user.id);
+        
+      if (error) throw error;
+      
+      const { error: updateError } = await supabase
+        .from('user_tenants')
+        .update({ is_default: true })
+        .eq('user_id', user.id)
+        .eq('tenant_id', newTenantId);
+        
+      if (updateError) throw updateError;
+
+      // Clear refs to force re-fetch
+      fetchedUserIdRef.current = null;
+      await fetchUserData(user.id);
+      
+      toast.success('Organização alterada com sucesso!');
+    } catch (error) {
+      logger.error('Error switching tenant', { error, newTenantId });
+      toast.error('Erro ao alterar organização');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const hasRole = (requiredRole: AppRole | AppRole[]): boolean => {
@@ -200,10 +257,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         profile,
         role,
         organizationId,
+        tenantId,
+        availableTenants,
         loading,
         signIn,
         signUp,
         signOut,
+        switchTenant,
         hasRole,
         isAdmin,
       }}

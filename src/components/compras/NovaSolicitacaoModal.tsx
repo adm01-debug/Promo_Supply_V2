@@ -230,7 +230,8 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           departamento: formData.empresa,
           categoria_id: formData.categoriaId || null,
           organization_id: organizationId,
-        })
+          tenant_id: organizationId as any,
+        } as any)
         .select('id, numero')
         .single();
 

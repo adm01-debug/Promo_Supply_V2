@@ -114,7 +114,8 @@ export function usePagamentos(filters?: PagamentoFilters) {
           cost_center_id: input.cost_center_id,
           forma_pagamento: input.forma_pagamento, numero_nf: input.numero_nf,
           chave_nf: input.chave_nf, observacoes: input.observacoes, created_by: user.id,
-        })
+          tenant_id: (user as any).organization_id || '00000000-0000-0000-0000-000000000000',
+        } as any)
         .select().single();
       if (error) {
         logger.error('Erro ao inserir pagamento no banco', { error, input });

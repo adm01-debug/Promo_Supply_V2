@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AccessibilityPanel } from "@/components/accessibility/AdvancedAccessibility";
 import { FeedbackSettingsPanel } from "@/components/settings/FeedbackSettingsPanel";
+import { TenantSwitcher } from "@/components/admin/TenantSwitcher";
 import { Keyboard, HelpCircle, Command, Settings2, Accessibility } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -49,6 +50,7 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
 
       <ThemeToggle />
       <LanguageSwitcher />
+      <TenantSwitcher />
 
       <Suspense fallback={null}>
         <DependencyHealthBadge />
