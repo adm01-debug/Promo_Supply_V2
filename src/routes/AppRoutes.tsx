@@ -166,6 +166,9 @@ export const AnimatedRoutes = () => {
         <Route path="/admin/dependency-health" element={
           <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><DependencyHealth /></ModuleErrorBoundary></ProtectedRoute>
         } />
+        <Route path="/admin/sso" element={
+          <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><SSOConfig /></ModuleErrorBoundary></ProtectedRoute>
+        } />
         <Route path="/portal-fornecedor" element={
           <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><PortalFornecedor /></ModuleErrorBoundary></ProtectedRoute>
         } />
