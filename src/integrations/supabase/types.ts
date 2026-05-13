@@ -6486,6 +6486,64 @@ export type Database = {
           },
         ]
       }
+      workflow_audit_log: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          event_type: string
+          id: string
+          instance_id: string | null
+          new_state: Json | null
+          old_state: Json | null
+          task_id: string | null
+          tenant_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          instance_id?: string | null
+          new_state?: Json | null
+          old_state?: Json | null
+          task_id?: string | null
+          tenant_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          instance_id?: string | null
+          new_state?: Json | null
+          old_state?: Json | null
+          task_id?: string | null
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_audit_log_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_instances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_audit_log_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_audit_log_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workflow_edges: {
         Row: {
           condition_expression: string | null
@@ -6708,6 +6766,116 @@ export type Database = {
           },
           {
             foreignKeyName: "workflow_nodes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_sod_rules: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          incompatible_roles: Database["public"]["Enums"]["app_role"][]
+          is_active: boolean
+          name: string
+          severity: string
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          incompatible_roles: Database["public"]["Enums"]["app_role"][]
+          is_active?: boolean
+          name: string
+          severity: string
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          incompatible_roles?: Database["public"]["Enums"]["app_role"][]
+          is_active?: boolean
+          name?: string
+          severity?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_sod_rules_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_tasks: {
+        Row: {
+          assigned_to_role: Database["public"]["Enums"]["app_role"] | null
+          assigned_to_user: string | null
+          comments: string | null
+          completed_at: string | null
+          completed_by: string | null
+          created_at: string
+          description: string | null
+          due_at: string | null
+          id: string
+          instance_id: string
+          node_id: string
+          outcome: string | null
+          status: string
+          tenant_id: string
+          title: string
+        }
+        Insert: {
+          assigned_to_role?: Database["public"]["Enums"]["app_role"] | null
+          assigned_to_user?: string | null
+          comments?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          instance_id: string
+          node_id: string
+          outcome?: string | null
+          status?: string
+          tenant_id: string
+          title: string
+        }
+        Update: {
+          assigned_to_role?: Database["public"]["Enums"]["app_role"] | null
+          assigned_to_user?: string | null
+          comments?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          instance_id?: string
+          node_id?: string
+          outcome?: string | null
+          status?: string
+          tenant_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_tasks_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "workflow_instances"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "workflow_tasks_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
