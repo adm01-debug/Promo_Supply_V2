@@ -56,6 +56,7 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
       return data || [];
     },
     staleTime: 60000,
+    gcTime: 300000,
   });
 
   // Fetch cotacoes with period filter
@@ -71,7 +72,8 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 30000,
+    staleTime: 60000,
+    gcTime: 300000,
   });
 
   // Fetch solicitacoes with period filter

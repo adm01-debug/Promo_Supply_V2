@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { fetchAllRows } from '@/lib/paginatedFetch';
-import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format } from 'date-fns';
+import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format, differenceInDays } from 'date-fns';
 import { useSLASettings } from '@/stores/slaSettingsStore';
 
 export interface DashboardKPIs {
@@ -68,7 +68,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
-    staleTime: 30000,
+    staleTime: 60000,
+    gcTime: 300000,
   });
 
   const { data: pedidos, isLoading: loadingPed } = useQuery({
@@ -79,7 +80,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
-    staleTime: 30000,
+    staleTime: 60000,
+    gcTime: 300000,
   });
 
   const { data: pagamentos, isLoading: loadingPag } = useQuery({
@@ -90,7 +92,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
-    staleTime: 30000,
+    staleTime: 60000,
+    gcTime: 300000,
   });
 
   const { data: cotacoes, isLoading: loadingCot } = useQuery({
@@ -101,7 +104,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
-    staleTime: 30000,
+    staleTime: 60000,
+    gcTime: 300000,
   });
 
   const { data: fornecedores, isLoading: loadingForn } = useQuery({
@@ -126,7 +130,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         ],
       });
     },
-    staleTime: 30000,
+    staleTime: 60000,
+    gcTime: 300000,
   });
 
   const { data: profilesData } = useQuery({
@@ -189,8 +194,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     const previousMonthStart = fnsStartOfMonth(subMonths(now, 1));
     const previousMonthEnd = endOfMonth(subMonths(now, 1));
 
-    // Helper to calculate KPIs for a specific period
-    const calculatePeriodData = (startDate: Date, endDate?: Date) => {
+    const calculatePeriodData = useCallback((sol: any[], ped: any[], pag: any[], cot: any[], startDate: Date, endDate?: Date) => {
       const pSol = sol.filter(s => {
         const d = new Date(s.created_at);
         return endDate ? isWithinInterval(d, { start: startDate, end: endDate }) : d >= startDate;
@@ -211,7 +215,6 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       const totalAprovado = pSol.filter(s => s.valor_aprovado != null).reduce((sum, s) => sum + (Number(s.valor_aprovado) || 0), 0);
       const economiaGerada = totalEstimado > 0 ? Math.max(0, totalEstimado - totalAprovado) : 0;
       
-      // Calculate SLA: Avg days from solicitation to first quotation real
       const completedSlas = pSol.map(s => {
         const relatedCotacoes = cot.filter(c => 
           c.solicitacao_id === s.id && 
@@ -221,8 +224,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         if (relatedCotacoes.length === 0) return null;
         
         const firstCotDate = new Date(Math.min(...relatedCotacoes.map(c => new Date(c.created_at).getTime())));
-        const diff = firstCotDate.getTime() - new Date(s.created_at).getTime();
-        return diff / (1000 * 60 * 60 * 24); // em dias
+        return differenceInDays(firstCotDate, new Date(s.created_at));
       }).filter(d => d !== null && d >= 0) as number[];
 
       const avgSla = completedSlas.length > 0 
@@ -233,7 +235,6 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         ? Math.round((completedSlas.filter(d => d <= (settings?.warningThresholdDays || 3)).length / completedSlas.length) * 100)
         : 85; 
 
-      
       const entregues = pPed.filter(p => p.status === 'entregue');
       const entreguesNoPrazo = entregues.filter(p => p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao).length;
       const taxaEntrega = entregues.length > 0 ? Math.round((entreguesNoPrazo / entregues.length) * 100) : 100;
@@ -248,10 +249,10 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       };
 
       return { aguardandoCotacao, volumeMes, economiaGerada, taxaEntrega, avgSla, taxaSlaReal, pipeline };
-    };
+    }, [settings?.warningThresholdDays]);
 
-    const currentData = calculatePeriodData(currentMonthStart);
-    const previousData = calculatePeriodData(previousMonthStart, previousMonthEnd);
+    const currentData = calculatePeriodData(sol, ped, pag, cot, currentMonthStart);
+    const previousData = calculatePeriodData(sol, ped, pag, cot, previousMonthStart, previousMonthEnd);
 
     // Sparklines (last 7 days)
     const generateSparkline = (key: 'aguardandoCotacao' | 'volumeMes' | 'economiaGerada' | 'taxaEntrega' | 'taxaSlaReal') => {
