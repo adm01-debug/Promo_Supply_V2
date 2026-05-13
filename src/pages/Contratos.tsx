@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -151,7 +152,8 @@ export default function Contratos() {
   };
 
   return (
-    <MainLayout>
+    <ModuleErrorBoundary module="contratos">
+      <MainLayout>
       <div className="space-y-6 p-6">
         {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
