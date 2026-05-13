@@ -129,6 +129,66 @@ const resources = {
         }
       }
     }
+  },
+  es: {
+    translation: {
+      "common": {
+        "loading": "Cargando...",
+        "save": "Guardar",
+        "cancel": "Cancelar",
+        "delete": "Eliminar",
+        "edit": "Editar",
+        "search": "Buscar",
+        "actions": "Acciones",
+        "confirm": "Confirmar",
+        "success": "Éxito",
+        "error": "Error",
+        "warning": "Aviso",
+        "info": "Información",
+        "status": "Estado",
+        "date": "Fecha",
+        "total": "Total",
+        "value": "Valor",
+        "quantity": "Cantidad",
+        "unit": "Unidad",
+        "description": "Descripción",
+        "observations": "Observaciones",
+        "attachments": "Adjuntos",
+        "history": "Historial",
+        "notifications": "Notificaciones",
+        "profile": "Perfil",
+        "settings": "Configuraciones",
+        "logout": "Salir",
+        "login": "Entrar",
+        "back": "Volver",
+        "next": "Siguiente",
+        "finish": "Finalizar",
+        "all": "Todos",
+        "none": "Ninguno",
+        "yes": "Sí",
+        "no": "No",
+        "welcome": "Bienvenido",
+        "dashboard": "Tablero",
+        "procurement": "Compras",
+        "suppliers": "Proveedores",
+        "products": "Productos",
+        "contracts": "Contratos",
+        "reports": "Informes",
+        "audit": "Auditoría",
+        "security": "Seguridad"
+      },
+      "dashboard": {
+        "title": "Tablero de Compras",
+        "kpis": {
+          "total_requests": "Total Solicitudes",
+          "pending_approval": "Pendiente Aprobación",
+          "active_quotes": "Cotizaciones Activas",
+          "completed_orders": "Pedidos Completados",
+          "total_spend": "Gasto Total",
+          "saving": "Ahorro Total"
+        }
+      }
+    }
   }
 };
 
