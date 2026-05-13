@@ -213,8 +213,8 @@ async function persist<T extends FiltersRecord>(
   legacyKey: string,
 ): Promise<void> {
   if (userId) {
-    await supabase.from('user_filter_preferences').upsert(
-      [{ user_id: userId, scope, filters: filters as unknown as never }],
+    await supabase.from('user_filter_preferences' as any).upsert(
+      [{ user_id: userId, scope, filters: filters as unknown as any }],
       { onConflict: 'user_id,scope' },
     );
   } else {
