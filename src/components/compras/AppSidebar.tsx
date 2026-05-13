@@ -120,9 +120,12 @@ const sections: NavSection[] = [
     items: [
       { title: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badge: 4 },
       { title: "Auditoria", icon: History, href: "/auditoria" },
+      { title: "Workflows", icon: Settings2, href: "/admin/workflows" },
       { title: "Segurança", icon: Shield, href: "/seguranca" },
       { title: "PunchOut", icon: ShoppingCart, href: "/admin/punchout" },
       { title: "ERP Sync", icon: RefreshCw, href: "/admin/erp" },
+      { title: "Sourcing Pipeline", icon: TrendingUp, href: "/admin/sourcing-pipeline" },
+      { title: "Fiscal", icon: FileCheck, href: "/admin/fiscal" },
     ],
   },
 ];
