@@ -1,8 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
 };
 
 Deno.serve(async (req) => {
@@ -16,7 +17,10 @@ Deno.serve(async (req) => {
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    console.log("Starting cotação follow-up check...");
+    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+    const logger = new EdgeLogger('check-cotacao-followup', requestId);
+
+    logger.info("Starting cotação follow-up check...");
 
     const now = new Date();
     const cutoff48h = new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString();
@@ -29,7 +33,7 @@ Deno.serve(async (req) => {
       .lt("created_at", cutoff48h);
 
     if (fetchError) {
-      console.error("Error fetching stale cotações:", fetchError);
+      logger.error("Error fetching stale cotações", { error: fetchError });
       throw fetchError;
     }
 
@@ -113,10 +117,10 @@ Deno.serve(async (req) => {
 
             if (emailRes.ok) {
               emailsSent++;
-              console.log(`Email sent to ${profile.email} for cotação ${cotacao.numero}`);
+              logger.info(`Email sent successfully for cotação ${cotacao.numero}`, { email: profile.email });
             } else {
               const errBody = await emailRes.text();
-              console.warn(`Email failed for ${profile.email}: ${errBody}`);
+              logger.warn(`Email delivery failed for ${profile.email}`, { response: errBody });
             }
           }
         } catch (emailErr) {
@@ -125,15 +129,19 @@ Deno.serve(async (req) => {
       }
     }
 
-    console.log(`Follow-up check complete: ${followUpsSent} notifications, ${emailsSent} emails sent`);
+    logger.info(`Follow-up check complete`, { followUpsSent, emailsSent, totalStale: staleCotacoes?.length });
 
     return new Response(
       JSON.stringify({ followUpsSent, emailsSent, totalStale: staleCotacoes?.length || 0 }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
-    console.error("Error in check-cotacao-followup:", error);
     const msg = error instanceof Error ? error.message : "Unknown error";
+    if (typeof logger !== 'undefined') {
+      logger.error("Error in check-cotacao-followup", { error: msg, stack: error instanceof Error ? error.stack : undefined });
+    } else {
+      console.error("Error in check-cotacao-followup:", error);
+    }
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
