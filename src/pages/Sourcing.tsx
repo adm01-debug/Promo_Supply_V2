@@ -133,7 +133,7 @@ const Sourcing = () => {
               ) : events.length > 0 ? (
                 <div className="grid grid-cols-1 gap-4">
                   {events.map((event: any) => (
-                    <Card key={event.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer">
+                    <Card key={event.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate(`/sourcing/${event.id}`)}>
                       <div className="flex items-start justify-between">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
