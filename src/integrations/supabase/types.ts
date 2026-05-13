@@ -1308,6 +1308,7 @@ export type Database = {
           contract_type: string
           created_at: string
           created_by: string | null
+          currency: string
           description: string | null
           end_date: string
           id: string
@@ -1340,6 +1341,7 @@ export type Database = {
           contract_type?: string
           created_at?: string
           created_by?: string | null
+          currency?: string
           description?: string | null
           end_date: string
           id?: string
@@ -1372,6 +1374,7 @@ export type Database = {
           contract_type?: string
           created_at?: string
           created_by?: string | null
+          currency?: string
           description?: string | null
           end_date?: string
           id?: string
@@ -1397,6 +1400,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "contracts_currency_fkey"
+            columns: ["currency"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
           {
             foreignKeyName: "contracts_organization_id_fkey"
             columns: ["organization_id"]
@@ -1492,6 +1502,7 @@ export type Database = {
           avaliador_id: string | null
           condicao_pagamento: string | null
           created_at: string
+          currency: string
           data_avaliacao: string | null
           desconto_percentual: number | null
           fornecedor_id: string | null
@@ -1523,6 +1534,7 @@ export type Database = {
           avaliador_id?: string | null
           condicao_pagamento?: string | null
           created_at?: string
+          currency?: string
           data_avaliacao?: string | null
           desconto_percentual?: number | null
           fornecedor_id?: string | null
@@ -1554,6 +1566,7 @@ export type Database = {
           avaliador_id?: string | null
           condicao_pagamento?: string | null
           created_at?: string
+          currency?: string
           data_avaliacao?: string | null
           desconto_percentual?: number | null
           fornecedor_id?: string | null
@@ -1581,6 +1594,13 @@ export type Database = {
           valor_unitario?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "cotacoes_currency_fkey"
+            columns: ["currency"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
           {
             foreignKeyName: "cotacoes_fornecedor_id_fkey"
             columns: ["fornecedor_id"]
@@ -1710,6 +1730,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      currencies: {
+        Row: {
+          code: string
+          created_at: string
+          decimal_places: number
+          is_active: boolean
+          name: string
+          symbol: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          decimal_places?: number
+          is_active?: boolean
+          name: string
+          symbol: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          decimal_places?: number
+          is_active?: boolean
+          name?: string
+          symbol?: string
+        }
+        Relationships: []
       }
       dashboard_filter_favorites: {
         Row: {
@@ -2237,6 +2284,51 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "tenants"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      exchange_rates: {
+        Row: {
+          base_currency: string
+          created_at: string
+          id: string
+          quote_currency: string
+          rate: number
+          rate_date: string
+          source: string
+        }
+        Insert: {
+          base_currency: string
+          created_at?: string
+          id?: string
+          quote_currency: string
+          rate: number
+          rate_date: string
+          source?: string
+        }
+        Update: {
+          base_currency?: string
+          created_at?: string
+          id?: string
+          quote_currency?: string
+          rate?: number
+          rate_date?: string
+          source?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exchange_rates_base_currency_fkey"
+            columns: ["base_currency"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "exchange_rates_quote_currency_fkey"
+            columns: ["quote_currency"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
           },
         ]
       }
@@ -3557,6 +3649,7 @@ export type Database = {
           condicao_pagamento: string | null
           cotacao_id: string | null
           created_at: string
+          currency: string
           data_emissao: string
           data_entrega: string | null
           data_previsao: string | null
@@ -3584,6 +3677,7 @@ export type Database = {
           condicao_pagamento?: string | null
           cotacao_id?: string | null
           created_at?: string
+          currency?: string
           data_emissao?: string
           data_entrega?: string | null
           data_previsao?: string | null
@@ -3611,6 +3705,7 @@ export type Database = {
           condicao_pagamento?: string | null
           cotacao_id?: string | null
           created_at?: string
+          currency?: string
           data_emissao?: string
           data_entrega?: string | null
           data_previsao?: string | null
@@ -3638,6 +3733,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "cotacoes"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedidos_currency_fkey"
+            columns: ["currency"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
           },
           {
             foreignKeyName: "pedidos_fornecedor_id_fkey"
@@ -3887,6 +3989,7 @@ export type Database = {
           full_name: string | null
           id: string
           phone: string | null
+          preferred_locale: string
           tenant_id: string | null
           updated_at: string
           user_id: string
@@ -3900,6 +4003,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+          preferred_locale?: string
           tenant_id?: string | null
           updated_at?: string
           user_id: string
@@ -3913,6 +4017,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           phone?: string | null
+          preferred_locale?: string
           tenant_id?: string | null
           updated_at?: string
           user_id?: string
@@ -6003,6 +6108,8 @@ export type Database = {
         Row: {
           cnpj: string | null
           created_at: string
+          default_currency: string
+          default_locale: string
           id: string
           name: string
           plan: string
@@ -6014,6 +6121,8 @@ export type Database = {
         Insert: {
           cnpj?: string | null
           created_at?: string
+          default_currency?: string
+          default_locale?: string
           id?: string
           name: string
           plan?: string
@@ -6025,6 +6134,8 @@ export type Database = {
         Update: {
           cnpj?: string | null
           created_at?: string
+          default_currency?: string
+          default_locale?: string
           id?: string
           name?: string
           plan?: string
@@ -6033,7 +6144,15 @@ export type Database = {
           status?: Database["public"]["Enums"]["tenant_status"]
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "tenants_default_currency_fkey"
+            columns: ["default_currency"]
+            isOneToOne: false
+            referencedRelation: "currencies"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       unspsc_codes: {
         Row: {
@@ -6684,6 +6803,10 @@ export type Database = {
       find_approval_rule: {
         Args: { p_categoria_id?: string; p_valor: number }
         Returns: string
+      }
+      fx_convert: {
+        Args: { _amount: number; _date?: string; _from: string; _to: string }
+        Returns: number
       }
       generate_sequential_number: {
         Args: { prefix: string; table_name: string }
