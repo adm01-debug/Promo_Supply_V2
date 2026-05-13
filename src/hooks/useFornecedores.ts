@@ -151,8 +151,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
           condicoes_pagamento: input.condicoes_pagamento,
           observacoes: input.observacoes,
           created_by: user.id,
-          organization_id: organizationId,
-          tenant_id: organizationId as any,
+          tenant_id: tenantId,
         } as any)
         .select()
         .single();
