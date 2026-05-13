@@ -158,8 +158,7 @@ export const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--
 
 export interface DrillDownData {
   type: 'category' | 'supplier' | 'buyer' | 'pending';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+  data: Record<string, unknown>;
 }
 
 export const formatCurrency = (value: number) => {
