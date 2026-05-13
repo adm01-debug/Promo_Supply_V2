@@ -38,6 +38,12 @@ export const LanguageSwitcher = () => {
         >
           English
         </DropdownMenuItem>
+        <DropdownMenuItem 
+          onClick={() => changeLanguage("es")}
+          className={currentLanguage === 'es' ? 'bg-accent' : ''}
+        >
+          Español
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
