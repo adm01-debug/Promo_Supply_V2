@@ -199,6 +199,7 @@ const SourcingPipeline = () => {
           </CardContent>
         </Card>
       </div>
+    </MainLayout>
     </div>
   );
 };
