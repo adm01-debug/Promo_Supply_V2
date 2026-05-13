@@ -104,19 +104,19 @@ async function fetchPedidosData(userId: string | undefined, tenantId: string | n
 }
 
 export function usePedidos(filters?: PedidoFilters) {
-  const { user, organizationId } = useAuth();
+  const { user, tenantId } = useAuth();
   const queryClient = useQueryClient();
 
   const queryKey = useMemo(() => [
-    'pedidos', user?.id, organizationId,
+    'pedidos', user?.id, tenantId,
     filters?.status, filters?.fornecedor_id, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.page, filters?.pageSize,
-  ], [user?.id, organizationId, filters]);
+  ], [user?.id, tenantId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => fetchPedidosData(user?.id, organizationId, filters),
-    enabled: !!user && !!organizationId,
+    queryFn: () => fetchPedidosData(user?.id, tenantId, filters),
+    enabled: !!user && !!tenantId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
