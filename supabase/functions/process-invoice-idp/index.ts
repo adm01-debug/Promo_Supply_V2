@@ -4,10 +4,8 @@ import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
 };
-
-const logger = new EdgeLogger("process-invoice-idp");
 
 
 serve(async (req) => {
@@ -16,6 +14,9 @@ serve(async (req) => {
   }
 
   try {
+    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+    const logger = new EdgeLogger('process-invoice-idp', requestId);
+
     const { filePath } = await req.json();
     if (!filePath) throw new Error("filePath is required");
 
@@ -60,7 +61,11 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    logger.error("Erro fatal no processamento IDP", { error: error.message });
+    if (typeof logger !== 'undefined') {
+      logger.error("Erro fatal no processamento IDP", { error: error.message });
+    } else {
+      console.error("Erro fatal no processamento IDP:", error);
+    }
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
