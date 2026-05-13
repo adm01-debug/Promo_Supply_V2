@@ -78,7 +78,7 @@ async function fetchSolicitacoesData(userId: string | undefined, tenantId: strin
       solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
-    .eq('organization_id', organizationId)
+    .eq('tenant_id', tenantId)
     .range(from, to);
 
   if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
