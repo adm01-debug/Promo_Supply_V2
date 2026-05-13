@@ -121,6 +121,8 @@ const sections: NavSection[] = [
       { title: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badge: 4 },
       { title: "Auditoria", icon: History, href: "/auditoria" },
       { title: "Segurança", icon: Shield, href: "/seguranca" },
+      { title: "PunchOut", icon: ShoppingCart, href: "/admin/punchout" },
+      { title: "ERP Sync", icon: RefreshCw, href: "/admin/erp" },
     ],
   },
 ];
