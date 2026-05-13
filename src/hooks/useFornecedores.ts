@@ -38,7 +38,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
   const [error, setError] = useState<string | null>(null);
 
   const fetchFornecedores = useCallback(async () => {
-    if (!user || !organizationId) {
+    if (!user || !tenantId) {
       setFornecedores([]);
       setLoading(false);
       return;
@@ -53,7 +53,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
         .from('fornecedores')
         .select('id, codigo, razao_social, nome_fantasia, cnpj, email, telefone, endereco, cidade, estado, cep, website, tipo, segmento, status, avaliacao, condicoes_pagamento, prazo_medio_entrega, integrado_api, api_endpoint, observacoes, limite_credito, saldo_comprometido, created_at, updated_at, created_by')
         .order('razao_social', { ascending: true })
-        .eq('organization_id', organizationId);
+        .eq('tenant_id', tenantId);
 
       // Apply filters
       if (filters?.tipo && filters.tipo !== 'todos') {
