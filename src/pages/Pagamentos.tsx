@@ -427,7 +427,8 @@ const Pagamentos = () => {
         statusOptions={pagamentosStatusOptions}
         availableActions={bulkActions}
       />
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
