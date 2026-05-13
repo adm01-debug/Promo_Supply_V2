@@ -144,6 +144,15 @@ export const AnimatedRoutes = () => {
         <Route path="/sourcing" element={
           <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><Sourcing /></ModuleErrorBoundary></ProtectedRoute>
         } />
+        <Route path="/sourcing/novo" element={
+          <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><RFxCreate /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/sourcing/:id" element={
+          <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><RFxDetails /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/sourcing/:id/auction" element={
+          <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><AuctionRoom /></ModuleErrorBoundary></ProtectedRoute>
+        } />
         <Route path="/licitacoes" element={
           <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="default"><Licitacoes /></ModuleErrorBoundary></ProtectedRoute>
         } />
