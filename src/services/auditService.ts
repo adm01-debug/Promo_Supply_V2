@@ -45,8 +45,15 @@ export const actionTypeColors: Record<AuditActionType, string> = {
  */
 export const logAuditAction = async (entry: AuditLogEntry): Promise<void> => {
   try {
-    // Reduzimos o custo de fetch server-side confiando no trigger do banco para user_id/organization_id
-    // Mas ainda enviamos dados descritivos para facilitar a visualização
+    // Pegamos o tenantId atual do localStorage ou session se disponível (fallback)
+    // O ideal é que o hook useAuth forneça isso, mas em serviços puros 
+    // podemos tentar ler o contexto via rpc ou claim.
+    // Para resolver o erro de build imediato de 'tenant_id missing', 
+    // vamos primeiro buscar o contexto.
+    
+    const { data: tenantRes } = await supabase.rpc('current_tenant_id');
+    const tenant_id = tenantRes || '00000000-0000-0000-0000-000000000000';
+
     const insertData = {
       action_type: entry.action_type,
       entity_type: entry.entity_type,
@@ -56,15 +63,16 @@ export const logAuditAction = async (entry: AuditLogEntry): Promise<void> => {
       new_values: (entry.new_values || null) as Json,
       metadata: (entry.metadata || {}) as Json,
       user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'Server',
+      tenant_id: tenant_id,
     };
 
     const { error } = await supabase
       .from('audit_logs')
       .insert([insertData]);
 
-    if (error) console.error('Erro ao registrar auditoria:', error);
+    if (error) logger.error('Erro ao registrar auditoria', { error, entry });
   } catch (err) {
-    console.error('Erro fatal ao registrar auditoria:', err);
+    logger.error('Erro fatal ao registrar auditoria', { error: err });
   }
 };
 
