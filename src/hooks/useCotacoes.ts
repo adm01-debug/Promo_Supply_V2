@@ -2,6 +2,7 @@ import { useCallback, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { logger } from '@/lib/logger';
 import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
 import type { Json, Database } from '@/integrations/supabase/types';
@@ -75,6 +76,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
   const createCotacao = useCallback(async (input: CreateCotacaoInput) => {
     if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
     try {
+      logger.info('Adicionando nova cotação', { solicitacaoId: input.solicitacao_id, fornecedorId: input.fornecedor_id });
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'COT', table_name: 'cotacoes' });
       const numero = numData || `COT-${Date.now()}`;
       const quantidade = input.quantidade || 1;
@@ -91,7 +93,10 @@ export function useCotacoes(filters?: CotacaoFilters) {
           organization_id: organizationId,
         })
         .select().single();
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao inserir cotação no banco', { error, input });
+        throw error;
+      }
       
       // Audit Log
       await auditHelpers.logCreate(
@@ -101,11 +106,14 @@ export function useCotacoes(filters?: CotacaoFilters) {
         data
       );
 
+      logger.info('Cotação criada com sucesso', { id: data.id, numero: data.numero });
+
       toast.success('Cotação adicionada com sucesso!');
       invalidate();
       return data;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao adicionar cotação', { error: msg, input });
       toast.error('Erro ao adicionar cotação: ' + msg);
       return null;
     }
@@ -128,6 +136,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
   const selectCotacao = useCallback(async (id: string, justificativa?: string) => {
     try {
       const cotacao = cotacoes.find(c => c.id === id);
+      logger.info('Selecionando cotação vencedora', { cotacaoId: id, solicitacaoId: cotacao?.solicitacao_id });
       if (cotacao?.solicitacao_id) {
         await supabase.from('cotacoes').update({ selecionada: false }).eq('solicitacao_id', cotacao.solicitacao_id);
       }
@@ -136,7 +145,10 @@ export function useCotacoes(filters?: CotacaoFilters) {
         status: 'aprovada',
         justificativa_selecao: justificativa || null
       }).eq('id', id);
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao atualizar status da cotação selecionada', { error, cotacaoId: id });
+        throw error;
+      }
 
       // Audit Log
       await auditHelpers.logApprove(
@@ -146,11 +158,13 @@ export function useCotacoes(filters?: CotacaoFilters) {
         { cotacao_id: id, justificativa }
       );
 
+      logger.info('Fornecedor selecionado com sucesso', { cotacaoId: id });
       toast.success('Fornecedor selecionado!');
       invalidate();
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao selecionar cotação', { error: msg, cotacaoId: id });
       toast.error('Erro ao selecionar: ' + msg);
       return false;
     }
@@ -159,12 +173,17 @@ export function useCotacoes(filters?: CotacaoFilters) {
   const deleteCotacao = useCallback(async (id: string) => {
     try {
       const { error } = await supabase.from('cotacoes').delete().eq('id', id);
-      if (error) throw error;
+      if (error) {
+        logger.error('Erro ao excluir cotação', { error, cotacaoId: id });
+        throw error;
+      }
+      logger.info('Cotação excluída com sucesso', { cotacaoId: id });
       toast.success('Cotação excluída!');
       invalidate();
       return true;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao excluir cotação', { error: msg, cotacaoId: id });
       toast.error('Erro ao excluir: ' + msg);
       return false;
     }
