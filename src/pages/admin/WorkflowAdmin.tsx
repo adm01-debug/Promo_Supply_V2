@@ -240,7 +240,8 @@ const WorkflowAdmin = () => {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </MainLayout>
   );
 };
 
