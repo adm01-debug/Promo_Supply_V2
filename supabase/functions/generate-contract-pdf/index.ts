@@ -1,8 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
 };
 
 function escapeHtml(str: string): string {
@@ -24,8 +25,13 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+    const logger = new EdgeLogger('generate-contract-pdf', requestId);
+
     const { contract_id } = await req.json();
     if (!contract_id) throw new Error("contract_id é obrigatório");
+
+    logger.info("Generating contract HTML", { contractId: contract_id });
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -197,6 +203,9 @@ Deno.serve(async (req) => {
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
+    if (typeof logger !== 'undefined') {
+      logger.error("Error generating contract PDF", { error: msg });
+    }
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
