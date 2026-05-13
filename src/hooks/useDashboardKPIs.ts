@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { fetchAllRows } from '@/lib/paginatedFetch';
-import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format } from 'date-fns';
+import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format, differenceInDays } from 'date-fns';
 import { useSLASettings } from '@/stores/slaSettingsStore';
 
 export interface DashboardKPIs {
