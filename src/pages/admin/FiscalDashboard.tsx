@@ -134,9 +134,9 @@ const FiscalDashboard = () => {
             </TableBody>
           </Table>
         </CardContent>
-        </Card>
-      </div>
-    </MainLayout>
+      </Card>
+    </div>
+  </MainLayout>
   );
 };
 
