@@ -1,8 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
 };
 
 Deno.serve(async (req) => {
@@ -15,7 +16,10 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    console.log("Generating weekly procurement report...");
+    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+    const logger = new EdgeLogger('weekly-report', requestId);
+
+    logger.info("Generating weekly procurement report...");
 
     const now = new Date();
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
@@ -75,7 +79,7 @@ Deno.serve(async (req) => {
       notificationsSent++;
     }
 
-    console.log(`Weekly report sent to ${notificationsSent} users`);
+    logger.info(`Weekly report sent to users`, { notificationsSent });
 
     return new Response(
       JSON.stringify({
@@ -94,8 +98,12 @@ Deno.serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
-    console.error("Error in weekly-report:", error);
     const msg = error instanceof Error ? error.message : "Unknown error";
+    if (typeof logger !== 'undefined') {
+      logger.error("Error in weekly-report", { error: msg });
+    } else {
+      console.error("Error in weekly-report:", error);
+    }
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
