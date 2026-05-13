@@ -257,10 +257,14 @@ const Relatorios = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-5 h-auto p-1">
+          <TabsList className="w-full grid grid-cols-6 h-auto p-1">
             <TabsTrigger value="geral" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
               <BarChart3 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Visão</span> Geral
+            </TabsTrigger>
+            <TabsTrigger value="spend" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
+              <Layers className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              Spend
             </TabsTrigger>
             <TabsTrigger value="kpis" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
               <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
