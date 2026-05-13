@@ -56,7 +56,7 @@ const Sourcing = () => {
             <h1 className="text-2xl font-bold text-foreground">Strategic Sourcing (RFx)</h1>
             <p className="text-muted-foreground">Gerencie eventos complexos de RFI, RFP, RFQ e Leilões Reversos.</p>
           </div>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => navigate("/sourcing/novo")}>
             <Plus className="w-4 h-4" />
             Novo Evento
           </Button>
