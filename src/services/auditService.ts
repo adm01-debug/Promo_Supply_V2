@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { AuditLogEntry, AuditLog, AuditActionType, AuditEntityType } from './auditTypes';
 import type { Json } from '@/integrations/supabase/types';
+import { logger } from '@/lib/logger';
 
 // Export labels and colors for UI
 export const actionTypeLabels: Record<AuditActionType, string> = {
