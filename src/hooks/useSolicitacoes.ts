@@ -123,7 +123,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   }, [queryClient]);
 
   const createSolicitacao = useCallback(async (input: CreateSolicitacaoInput) => {
-    if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
+    if (!user || !tenantId) { toast.error('Você precisa estar logado em uma organização'); return null; }
     
     try {
       logger.info('Criando nova solicitação', { titulo: input.titulo, tipo: input.tipo });
