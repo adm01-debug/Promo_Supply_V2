@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { ErrorBoundary, ErrorFallback } from '@/components/ui/error-boundary';
+import { logger } from '@/lib/logger';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, RefreshCw, Home, ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -155,13 +156,18 @@ export function ModuleErrorBoundary({
   }, [navigate]);
 
   const handleError = React.useCallback((error: Error, errorInfo: React.ErrorInfo) => {
-    // Log error to console in development
+    // Log structured error
+    logger.error(`[ModuleErrorBoundary] Error in module: ${module}`, {
+      error: error.message,
+      stack: error.stack,
+      componentStack: errorInfo.componentStack,
+      module
+    });
+    
+    // In development, also log to console for easier debugging
     if (import.meta.env.DEV) {
       console.error(`[${module}] Error:`, error, errorInfo);
     }
-    
-    // In production, you could send to error tracking service
-    // e.g., Sentry.captureException(error, { extra: { module, errorInfo } });
   }, [module]);
 
   return (

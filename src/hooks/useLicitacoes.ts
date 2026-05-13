@@ -3,58 +3,16 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import type { Database } from '@/integrations/supabase/types';
 
-export interface Licitacao {
-  id: string;
-  numero: string;
-  titulo: string;
-  descricao: string | null;
-  modalidade: string;
-  tipo: string;
-  status: string;
-  data_publicacao: string | null;
-  data_abertura: string | null;
-  data_encerramento: string | null;
-  valor_estimado: number;
-  valor_vencedor: number | null;
-  current_best_bid: number | null;
-  lance_minimo_decremento: number;
-  is_live: boolean;
-  fornecedor_vencedor_id: string | null;
-  objeto: string | null;
-  edital_url: string | null;
-  documentos_exigidos: any;
-  criterios_avaliacao: any;
-  observacoes: string | null;
-  responsavel_id: string | null;
-  created_by: string | null;
-  created_at: string;
-  updated_at: string;
+export type Licitacao = Database['public']['Tables']['licitacoes']['Row'] & {
   fornecedor_vencedor?: { razao_social: string } | null;
   propostas_count?: number;
-}
+};
 
-export interface LicitacaoProposta {
-  id: string;
-  licitacao_id: string;
-  fornecedor_id: string;
-  valor_proposta: number;
-  desconto_percentual: number;
-  prazo_entrega: number;
-  score_tecnico: number;
-  score_preco: number;
-  score_total: number;
-  documentos: any;
-  observacoes: string | null;
-  status: string;
-  data_submissao: string;
-  vencedora: boolean;
-  desclassificada: boolean;
-  motivo_desclassificacao: string | null;
-  created_at: string;
-  updated_at: string;
+export type LicitacaoProposta = Database['public']['Tables']['licitacao_propostas']['Row'] & {
   fornecedor?: { razao_social: string; cnpj: string | null } | null;
-}
+};
 
 export function useLicitacoes() {
   const { user } = useAuth();

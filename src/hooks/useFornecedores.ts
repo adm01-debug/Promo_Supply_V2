@@ -3,33 +3,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { auditHelpers } from '@/services/auditService';
 import { toast } from 'sonner';
+import type { Database } from '@/integrations/supabase/types';
 
-export interface Fornecedor {
-  id: string;
-  codigo: string;
-  razao_social: string;
-  nome_fantasia: string | null;
-  cnpj: string | null;
-  email: string | null;
-  telefone: string | null;
-  endereco: string | null;
-  cidade: string | null;
-  estado: string | null;
-  cep: string | null;
-  website: string | null;
-  tipo: 'nacional' | 'internacional' | 'local';
-  segmento: string | null;
-  avaliacao: number;
-  prazo_medio_entrega: number;
-  condicoes_pagamento: string | null;
-  integrado_api: boolean;
-  api_endpoint: string | null;
-  status: 'ativo' | 'inativo' | 'bloqueado' | 'pendente';
-  observacoes: string | null;
-  created_by: string | null;
-  created_at: string;
-  updated_at: string;
-}
+export type Fornecedor = Database['public']['Tables']['fornecedores']['Row'];
 
 export interface CreateFornecedorInput {
   razao_social: string;

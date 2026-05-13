@@ -59,7 +59,7 @@ const ConfiguracoesCentroCusto = () => {
 
   const filteredCCs = costCenters.filter(cc => 
     cc.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
-    cc.code.toLowerCase().includes(searchTerm.toLowerCase())
+    (cc.code || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleOpenDialog = (cc?: CostCenter) => {
@@ -67,8 +67,8 @@ const ConfiguracoesCentroCusto = () => {
       setEditingCC(cc);
       setForm({ 
         name: cc.name, 
-        code: cc.code, 
-        is_active: cc.is_active,
+        code: cc.code || '', 
+        is_active: !!cc.is_active,
         manager_id: cc.manager_id || '',
         department: cc.department || '',
         parent_id: cc.parent_id || '',

@@ -1,33 +1,12 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
-import { useEffect } from 'react';
+import type { Database } from '@/integrations/supabase/types';
 
-export interface Pedido {
-  id: string;
-  numero: string;
-  solicitacao_id: string | null;
-  cotacao_id: string | null;
-  fornecedor_id: string;
-  valor_total: number;
-  valor_frete: number;
-  desconto: number;
-  status: 'pendente' | 'aprovado' | 'enviado' | 'em_transito' | 'entregue' | 'parcial' | 'cancelado';
-  data_emissao: string;
-  data_previsao: string | null;
-  data_entrega: string | null;
-  codigo_rastreamento: string | null;
-  transportadora: string | null;
-  endereco_entrega: string | null;
-  condicao_pagamento: string | null;
-  observacoes: string | null;
-  comprador_id: string | null;
-  aprovador_id: string | null;
-  created_at: string;
-  updated_at: string;
+export type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
   fornecedor?: {
     id: string;
     razao_social: string;
@@ -38,20 +17,9 @@ export interface Pedido {
     numero: string;
     titulo: string;
   } | null;
-}
+};
 
-export interface PedidoItem {
-  id: string;
-  pedido_id: string;
-  produto_id: string | null;
-  descricao: string;
-  quantidade: number;
-  unidade: string;
-  valor_unitario: number;
-  valor_total: number;
-  quantidade_recebida: number;
-  created_at: string;
-}
+export type PedidoItem = Database['public']['Tables']['pedido_itens']['Row'];
 
 export interface CreatePedidoInput {
   solicitacao_id?: string;

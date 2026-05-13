@@ -147,7 +147,7 @@ export default function Licitacoes() {
                     <TableCell className="font-medium max-w-[200px] truncate">{lic.titulo}</TableCell>
                     <TableCell className="hidden md:table-cell">{modalidadeLabels[lic.modalidade] || lic.modalidade}</TableCell>
                     <TableCell><Badge variant={statusConfig[lic.status]?.variant || 'secondary'}>{statusConfig[lic.status]?.label || lic.status}</Badge></TableCell>
-                    <TableCell className="hidden md:table-cell text-right">{formatCurrency(lic.valor_estimado)}</TableCell>
+                    <TableCell className="hidden md:table-cell text-right">{formatCurrency(lic.valor_estimado || 0)}</TableCell>
                     <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
                       {lic.data_abertura ? format(new Date(lic.data_abertura), 'dd/MM/yyyy', { locale: ptBR }) : '—'}
                     </TableCell>

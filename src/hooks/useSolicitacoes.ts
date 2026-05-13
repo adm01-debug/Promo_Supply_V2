@@ -7,55 +7,18 @@ import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
 import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 import { fetchAllRows } from '@/lib/paginatedFetch';
-import type { Json } from '@/integrations/supabase/types';
+import type { Json, Database } from '@/integrations/supabase/types';
 
-export interface CostCenter {
-  id: string;
-  name: string;
-  code: string;
-  is_active: boolean;
-  manager_id?: string | null;
-  parent_id?: string | null;
-  department?: string | null;
-  total_budget?: number;
-  committed_amount?: number;
-  used_amount?: number;
-  approval_threshold?: number;
+export type CostCenter = Database['public']['Tables']['cost_centers']['Row'] & {
   manager?: { full_name: string | null } | null;
-}
+};
 
-export interface Solicitacao {
-  id: string;
-  numero: string;
-  titulo: string;
-  descricao: string | null;
-  tipo: 'material' | 'servico' | 'equipamento' | 'urgente' | 'contrato';
-  status: 'pendente' | 'em_cotacao' | 'aprovada' | 'rejeitada' | 'em_andamento' | 'concluida' | 'cancelada';
-  prioridade: 'baixa' | 'media' | 'alta' | 'urgente';
-  valor_estimado: number | null;
-  valor_aprovado: number | null;
-  quantidade: number;
-  unidade: string | null;
-  data_necessidade: string | null;
-  data_aprovacao: string | null;
-  data_conclusao: string | null;
-  solicitante_id: string | null;
-  aprovador_id: string | null;
-  fornecedor_id: string | null;
-  categoria_id: string | null;
-  cost_center_id: string | null;
-  departamento: string | null;
-  centro_custo: string | null;
-  justificativa: string | null;
-  observacoes: string | null;
-  anexos: Json | null;
-  created_at: string;
-  updated_at: string;
+export type Solicitacao = Database['public']['Tables']['solicitacoes']['Row'] & {
   fornecedor?: { razao_social: string; nome_fantasia: string | null; } | null;
   categoria?: { nome: string; } | null;
   organization?: { name: string; } | null;
   cost_center?: { name: string; code: string; } | null;
-}
+};
 
 export interface CreateSolicitacaoInput {
   titulo: string;

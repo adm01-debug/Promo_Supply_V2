@@ -4,37 +4,12 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
-import type { Json } from '@/integrations/supabase/types';
+import type { Json, Database } from '@/integrations/supabase/types';
 
-export interface Cotacao {
-  id: string;
-  numero: string;
-  solicitacao_id: string | null;
-  fornecedor_id: string | null;
-  valor_unitario: number;
-  quantidade: number;
-  valor_total: number;
-  valor_frete: number;
-  desconto_percentual: number;
-  prazo_entrega: number;
-  validade_proposta: string | null;
-  condicao_pagamento: string | null;
-  status: 'pendente' | 'analisando' | 'aprovada' | 'rejeitada' | 'expirada';
-  selecionada: boolean;
-  score_preco: number;
-  score_prazo: number;
-  score_qualidade: number;
-  score_total: number;
-  observacoes: string | null;
-  justificativa_selecao: string | null;
-  anexos: Json | null;
-  avaliador_id: string | null;
-  data_avaliacao: string | null;
-  created_at: string;
-  updated_at: string;
+export type Cotacao = Database['public']['Tables']['cotacoes']['Row'] & {
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null; } | null;
   solicitacao?: { id: string; numero: string; titulo: string; } | null;
-}
+};
 
 export interface CreateCotacaoInput {
   solicitacao_id?: string;

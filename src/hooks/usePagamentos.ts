@@ -4,34 +4,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
-import type { Json } from '@/integrations/supabase/types';
+import type { Json, Database } from '@/integrations/supabase/types';
 
-export interface Pagamento {
-  id: string;
-  numero: string;
-  pedido_id: string | null;
-  fornecedor_id: string;
-  cost_center_id: string | null;
-  valor: number;
-  valor_pago: number;
-  status: 'pendente' | 'aprovado' | 'agendado' | 'pago' | 'parcial' | 'cancelado' | 'atrasado';
-  data_vencimento: string;
-  data_pagamento: string | null;
-  forma_pagamento: 'boleto' | 'pix' | 'transferencia' | 'cartao' | 'cheque' | null;
-  dados_bancarios: Json | null;
-  numero_nf: string | null;
-  chave_nf: string | null;
-  aprovador_id: string | null;
-  data_aprovacao: string | null;
-  observacoes: string | null;
-  comprovante_url: string | null;
-  created_by: string | null;
-  created_at: string;
-  updated_at: string;
+export type Pagamento = Database['public']['Tables']['pagamentos']['Row'] & {
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null; } | null;
   pedido?: { id: string; numero: string; } | null;
   cost_center?: { id: string; name: string; code: string; } | null;
-}
+};
 
 export interface CreatePagamentoInput {
   pedido_id?: string;
