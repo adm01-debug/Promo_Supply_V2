@@ -1,8 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
 };
 
 async function verifyAuthUser(req: Request): Promise<string> {
@@ -29,6 +30,9 @@ Deno.serve(async (req) => {
   }
 
   try {
+    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+    const logger = new EdgeLogger('ai-supplier-suggestion', requestId);
+
     // SECURITY: Validate user authentication
     await verifyAuthUser(req);
 
@@ -85,7 +89,7 @@ ${suppliers ? JSON.stringify(suppliers, null, 2) : "Nenhum fornecedor cadastrado
 
 Por favor, analise e forneça suas recomendações.`;
 
-    console.log("Calling Lovable AI for supplier suggestions...");
+    logger.info("Calling Lovable AI for supplier suggestions");
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -104,7 +108,7 @@ Por favor, analise e forneça suas recomendações.`;
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("AI Gateway error:", response.status, errorText);
+      logger.error("AI Gateway error", { status: response.status, response: errorText });
       
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded. Please try again later." }), {
@@ -138,7 +142,7 @@ Por favor, analise e forneça suas recomendações.`;
         suggestions = JSON.parse(content);
       }
     } catch (_parseError) {
-      console.error("Error parsing AI response:", _parseError);
+      logger.error("Error parsing AI response", { error: _parseError });
       suggestions = {
         recommendations: [],
         marketInsights: content,
@@ -146,14 +150,18 @@ Por favor, analise e forneça suas recomendações.`;
       };
     }
 
-    console.log("AI suggestions generated successfully");
+    logger.info("AI suggestions generated successfully");
 
     return new Response(JSON.stringify(suggestions), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
-    console.error("Error in ai-supplier-suggestion:", error);
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    if (typeof logger !== 'undefined') {
+      logger.error("Error in ai-supplier-suggestion", { error: errorMessage });
+    } else {
+      console.error("Error in ai-supplier-suggestion:", error);
+    }
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(JSON.stringify({ error: errorMessage }), {
       status,
