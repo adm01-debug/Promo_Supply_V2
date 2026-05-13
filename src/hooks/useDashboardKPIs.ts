@@ -231,7 +231,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         ? Number((completedSlas.reduce((a, b) => a + b, 0) / completedSlas.length).toFixed(1)) 
         : 1.8;
 
-      const taxaSlaReal = completedSla.length > 0
+      const taxaSlaReal = completedSlas.length > 0
         ? Math.round((completedSlas.filter(d => d <= (settings?.warningThresholdDays || 3)).length / completedSlas.length) * 100)
         : 85; 
 
