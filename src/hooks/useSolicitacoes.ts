@@ -59,8 +59,8 @@ const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
   cancelada: [],
 };
 
-async function fetchSolicitacoesData(userId: string | undefined, organizationId: string | null | undefined, filters?: SolicitacaoFilters) {
-  if (!userId || !organizationId) return { data: [], totalCount: 0 };
+async function fetchSolicitacoesData(userId: string | undefined, tenantId: string | null | undefined, filters?: SolicitacaoFilters) {
+  if (!userId || !tenantId) return { data: [], totalCount: 0 };
 
   const page = filters?.page || 1;
   const pageSize = filters?.pageSize || 100;
