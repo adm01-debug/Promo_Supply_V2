@@ -477,7 +477,8 @@ const Cotacao = () => {
           onSkip={skipTour}
         />
       )}
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
