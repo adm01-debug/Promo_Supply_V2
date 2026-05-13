@@ -1,18 +1,22 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+const logger = new EdgeLogger("ai-negotiation");
+
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    // Auth verification
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
+      logger.warn("Tentativa de acesso sem Authorization header");
       return new Response(JSON.stringify({ error: "Não autorizado" }), {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -26,14 +30,24 @@ serve(async (req) => {
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
+      logger.error("Erro na autenticação do usuário", { authError });
       return new Response(JSON.stringify({ error: "Sessão inválida" }), {
         status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
     const { cotacoes, solicitacao, historico_precos } = await req.json();
+    logger.info("Iniciando análise de negociação", { 
+      userId: user.id, 
+      solicitacaoId: solicitacao?.id, 
+      numCotacoes: cotacoes?.length 
+    });
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
+    if (!LOVABLE_API_KEY) {
+      logger.error("LOVABLE_API_KEY não configurada");
+      throw new Error("LOVABLE_API_KEY is not configured");
+    }
 
     const systemPrompt = `Você é um especialista em negociação de compras corporativas. Analise as cotações recebidas e forneça:
 1. Análise comparativa detalhada
@@ -101,17 +115,19 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
     if (!response.ok) {
       if (response.status === 429) {
+        logger.warn("AI Gateway Rate Limit excedido");
         return new Response(JSON.stringify({ error: "Limite de requisições excedido. Tente novamente em alguns minutos." }), {
           status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       if (response.status === 402) {
+        logger.warn("AI Gateway Créditos Insuficientes");
         return new Response(JSON.stringify({ error: "Créditos insuficientes. Adicione créditos ao workspace." }), {
           status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       const t = await response.text();
-      console.error("AI gateway error:", response.status, t);
+      logger.error("Erro no AI Gateway", { status: response.status, response: t });
       throw new Error("AI gateway error");
     }
 
@@ -129,11 +145,13 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
       };
     }
 
+    logger.info("Análise concluída com sucesso", { requestId: logger.getRequestId() });
+
     return new Response(JSON.stringify(analysis), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
-    console.error("ai-negotiation error:", e);
+    logger.error("Erro fatal na função ai-negotiation", { error: e.message });
     return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Erro desconhecido" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
