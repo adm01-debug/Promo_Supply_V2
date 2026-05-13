@@ -235,6 +235,7 @@ export default function Devolucoes() {
       {/* Modals */}
       <NovaDevolucaoModal open={showNewModal} onClose={() => setShowNewModal(false)} />
       <DevolucaoDetailModal devolucao={selectedDev} open={!!selectedDev} onClose={() => setSelectedDev(null)} />
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 }
