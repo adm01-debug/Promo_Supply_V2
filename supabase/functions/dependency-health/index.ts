@@ -690,12 +690,14 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   try {
     if (req.method === "GET") return await handleGet(req);
     if (req.method === "POST") return await handlePost(req);
     return json({ error: "Method not allowed" }, 405);
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : String(error);
+    console.error(`[${requestId}] Dependency health error:`, msg);
     return json({ error: msg }, 500);
   }
 });
