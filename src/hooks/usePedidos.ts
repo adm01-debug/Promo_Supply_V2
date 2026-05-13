@@ -143,8 +143,8 @@ export function usePedidos(filters?: PedidoFilters) {
           valor_frete: input.valor_frete || 0, desconto: input.desconto || 0,
           data_previsao: input.data_previsao, endereco_entrega: input.endereco_entrega,
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
-          comprador_id: user.id, organization_id: organizationId,
-          tenant_id: organizationId as any,
+          comprador_id: user.id,
+          tenant_id: tenantId,
         } as any)
         .select().single();
 
