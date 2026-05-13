@@ -91,24 +91,36 @@ const RFxCreate = () => {
         // Create lots
         if (formData.lots.length > 0) {
           await supabase.from('sourcing_event_lots').insert(
-            formData.lots.map(lot => ({ ...lot, event_id: event.id }))
+            formData.lots.map(lot => ({ 
+              event_id: event.id,
+              nome: lot.title,
+              descricao: lot.description,
+              preco_alvo: parseFloat(lot.target_price) || null
+            }))
           );
         }
 
         // Create criteria
         if (formData.criteria.length > 0) {
           await supabase.from('sourcing_event_criteria').insert(
-            formData.criteria.map(c => ({ ...c, event_id: event.id }))
+            formData.criteria.map(c => ({ 
+              event_id: event.id,
+              nome: c.label,
+              peso: c.weight,
+              config: { type: c.type }
+            }))
           );
         }
 
         // Create invitations
         if (formData.invitations.length > 0) {
+          const selectedSuppliers = suppliers.filter(s => formData.invitations.includes(s.id));
           await supabase.from('sourcing_invitations').insert(
-            formData.invitations.map(sid => ({ 
+            selectedSuppliers.map(s => ({ 
               event_id: event.id, 
-              fornecedor_id: sid,
-              invite_token: crypto.randomUUID()
+              fornecedor_id: s.id,
+              email_contato: (s as any).email || 'contato@fornecedor.com',
+              token: crypto.randomUUID()
             }))
           );
         }
