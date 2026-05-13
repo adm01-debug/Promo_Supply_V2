@@ -221,6 +221,8 @@ export default function Licitacoes() {
       )}
         </>
       )}
-    </div>
+        </div>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 }
