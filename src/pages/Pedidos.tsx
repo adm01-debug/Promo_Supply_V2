@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MainLayout } from "@/components/compras/MainLayout";
+import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { OnboardingTour, pedidosTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
@@ -170,7 +171,8 @@ const Pedidos = () => {
   }
 
   return (
-    <MainLayout>
+    <ModuleErrorBoundary module="pedidos">
+      <MainLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="pedidos-header">
