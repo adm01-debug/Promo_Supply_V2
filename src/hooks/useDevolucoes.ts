@@ -3,68 +3,19 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import type { Database } from '@/integrations/supabase/types';
 
-export interface Devolucao {
-  id: string;
-  numero: string;
-  pedido_id: string | null;
-  fornecedor_id: string | null;
-  solicitante_id: string | null;
-  status: 'rascunho' | 'solicitada' | 'aprovada' | 'em_transito' | 'recebida_fornecedor' | 'credito_emitido' | 'reposicao_enviada' | 'concluida' | 'rejeitada' | 'cancelada';
-  tipo: 'devolucao' | 'troca' | 'garantia';
-  motivo: 'defeito' | 'divergencia' | 'avaria_transporte' | 'prazo_vencido' | 'quantidade_errada' | 'especificacao_errada' | 'outro';
-  motivo_detalhe: string | null;
-  valor_total: number;
-  data_solicitacao: string;
-  data_aprovacao: string | null;
-  data_envio: string | null;
-  data_recebimento_fornecedor: string | null;
-  aprovador_id: string | null;
-  codigo_rastreamento: string | null;
-  transportadora: string | null;
-  nf_devolucao: string | null;
-  resolucao: 'credito' | 'reposicao' | 'reembolso' | 'desconto_futuro';
-  observacoes: string | null;
-  created_at: string;
-  updated_at: string;
+type Devolucao = Database['public']['Tables']['devolucoes']['Row'] & {
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null } | null;
   pedido?: { id: string; numero: string } | null;
-}
+};
 
-export interface DevolucaoItem {
-  id: string;
-  devolucao_id: string;
-  pedido_item_id: string | null;
-  descricao: string;
-  quantidade: number;
-  quantidade_aceita: number | null;
-  valor_unitario: number;
-  valor_total: number;
-  motivo: string;
-  estado_item: string;
-  fotos: string[];
-  created_at: string;
-}
+type DevolucaoItem = Database['public']['Tables']['devolucao_itens']['Row'];
 
-export interface CreditoFornecedor {
-  id: string;
-  fornecedor_id: string;
-  devolucao_id: string | null;
-  tipo: string;
-  valor: number;
-  valor_utilizado: number;
-  saldo: number;
-  status: 'ativo' | 'utilizado' | 'expirado' | 'cancelado';
-  descricao: string | null;
-  data_emissao: string;
-  data_validade: string | null;
-  utilizado_em_pagamento_id: string | null;
-  created_by: string | null;
-  created_at: string;
-  updated_at: string;
+type CreditoFornecedor = Database['public']['Tables']['creditos_fornecedor']['Row'] & {
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null } | null;
   devolucao?: { id: string; numero: string } | null;
-}
+};
 
 export interface CreateDevolucaoInput {
   pedido_id?: string;
