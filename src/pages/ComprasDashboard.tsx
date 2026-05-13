@@ -450,7 +450,8 @@ const ComprasDashboard = () => {
           getGridClasses={getGridClasses}
         />
       </div>
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
