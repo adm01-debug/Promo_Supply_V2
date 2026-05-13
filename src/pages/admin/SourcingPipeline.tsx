@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Target, TrendingUp, Briefcase, CheckCircle2, AlertCircle, Clock, Filter } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { MainLayout } from "@/components/compras/MainLayout";
 
 const SourcingPipeline = () => {
   const { data: projects, isLoading: projectsLoading } = useQuery({
@@ -56,12 +57,13 @@ const SourcingPipeline = () => {
   const totalNegotiatedSaving = savings?.reduce((acc, s) => acc + (Number(s.actual_saving) || 0), 0) || 0;
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Category Mgmt & Sourcing Pipeline</h1>
-          <p className="text-muted-foreground">Gestão estratégica de categorias, funil de projetos e tracker de savings</p>
-        </div>
+    <MainLayout>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Category Mgmt & Sourcing Pipeline</h1>
+            <p className="text-muted-foreground">Gestão estratégica de categorias, funil de projetos e tracker de savings</p>
+          </div>
         <div className="flex gap-2">
           <Badge variant="outline" className="px-3 py-1 bg-primary/5"><Target className="w-3 h-3 mr-1" /> Meta Q2: R$ 2.5M</Badge>
           <Badge variant="outline" className="px-3 py-1 text-green-500 border-green-500 bg-green-50">Realizado: R$ {totalNegotiatedSaving.toLocaleString()}</Badge>
@@ -196,8 +198,9 @@ const SourcingPipeline = () => {
             </Table>
           </CardContent>
         </Card>
+        </div>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { FileText, Send, CheckCircle2, AlertCircle, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { MainLayout } from "@/components/compras/MainLayout";
 
 const FiscalDashboard = () => {
   const { data: events, isLoading } = useQuery({
@@ -37,10 +38,11 @@ const FiscalDashboard = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Painel Fiscal e-Invoicing</h1>
+    <MainLayout>
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Painel Fiscal e-Invoicing</h1>
           <p className="text-muted-foreground">Monitoramento de documentos fiscais eletrônicos (NFe, NFSe, CTe, MDFe)</p>
         </div>
         <div className="flex gap-2">
@@ -134,6 +136,7 @@ const FiscalDashboard = () => {
         </CardContent>
       </Card>
     </div>
+  </MainLayout>
   );
 };
 
