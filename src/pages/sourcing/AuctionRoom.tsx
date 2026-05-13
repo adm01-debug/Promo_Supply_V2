@@ -205,7 +205,7 @@ const AuctionRoom = () => {
                           {l.valor_lance === bestBid && <Trophy className="w-3 h-3 text-emerald-600" />}
                           <span className="text-xs font-bold truncate max-w-[100px]">{l.fornecedor?.razao_social}</span>
                         </div>
-                        <span className="text-[10px] text-muted-foreground block">{format(new Date(l.created_at), 'HH:mm:ss')}</span>
+                        <span className="text-[10px] text-muted-foreground block">{format(new Date(l.created_at || new Date()), 'HH:mm:ss')}</span>
                       </div>
                       <div className="text-right">
                         <span className={`text-sm font-bold ${l.valor_lance === bestBid ? 'text-emerald-600' : ''}`}>
