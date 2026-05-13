@@ -478,7 +478,8 @@ const Fornecedores = () => {
           onSkip={skipTour}
         />
       )}
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
