@@ -152,7 +152,8 @@ export function useFornecedores(filters?: FornecedorFilters) {
           observacoes: input.observacoes,
           created_by: user.id,
           organization_id: organizationId,
-        })
+          tenant_id: organizationId as any,
+        } as any)
         .select()
         .single();
 

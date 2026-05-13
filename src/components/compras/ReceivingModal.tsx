@@ -139,7 +139,8 @@ export function ReceivingModal({
               endereco_entrega: originalPedido.endereco_entrega,
               observacoes: `Pedido complementar ref. ${pedidoNumero} — saldo de recebimento parcial`,
               data_previsao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-            })
+              tenant_id: (originalPedido as any).tenant_id || '00000000-0000-0000-0000-000000000000',
+            } as any)
             .select("id")
             .single();
 
@@ -147,8 +148,9 @@ export function ReceivingModal({
             await supabase.from("pedido_itens").insert(
               complementaryItems.map((item) => ({
                 pedido_id: newPedido.id,
+                tenant_id: (originalPedido as any).tenant_id || '00000000-0000-0000-0000-000000000000',
                 ...item,
-              }))
+              })) as any
             );
             toast.info(`Pedido complementar ${numero} criado com ${complementaryItems.length} item(ns) pendente(s)`);
           }
