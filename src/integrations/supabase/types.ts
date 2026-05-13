@@ -2089,6 +2089,157 @@ export type Database = {
           },
         ]
       }
+      erp_connections: {
+        Row: {
+          auth_type: string
+          base_url: string
+          created_at: string
+          credentials_encrypted: string
+          erp_type: string
+          id: string
+          is_active: boolean
+          last_sync_at: string | null
+          settings: Json | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          auth_type: string
+          base_url: string
+          created_at?: string
+          credentials_encrypted: string
+          erp_type: string
+          id?: string
+          is_active?: boolean
+          last_sync_at?: string | null
+          settings?: Json | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          auth_type?: string
+          base_url?: string
+          created_at?: string
+          credentials_encrypted?: string
+          erp_type?: string
+          id?: string
+          is_active?: boolean
+          last_sync_at?: string | null
+          settings?: Json | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "erp_connections_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      erp_field_mappings: {
+        Row: {
+          connection_id: string
+          entity: string
+          id: string
+          is_required: boolean | null
+          source_field: string
+          target_field: string
+          transform_fn: string | null
+        }
+        Insert: {
+          connection_id: string
+          entity: string
+          id?: string
+          is_required?: boolean | null
+          source_field: string
+          target_field: string
+          transform_fn?: string | null
+        }
+        Update: {
+          connection_id?: string
+          entity?: string
+          id?: string
+          is_required?: boolean | null
+          source_field?: string
+          target_field?: string
+          transform_fn?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "erp_field_mappings_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "erp_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      erp_sync_log: {
+        Row: {
+          connection_id: string
+          created_at: string
+          direction: string
+          duration_ms: number | null
+          entity: string
+          error_message: string | null
+          external_id: string | null
+          id: string
+          record_id: string | null
+          request_payload: Json | null
+          response_payload: Json | null
+          status: string
+          tenant_id: string
+        }
+        Insert: {
+          connection_id: string
+          created_at?: string
+          direction: string
+          duration_ms?: number | null
+          entity: string
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          record_id?: string | null
+          request_payload?: Json | null
+          response_payload?: Json | null
+          status: string
+          tenant_id: string
+        }
+        Update: {
+          connection_id?: string
+          created_at?: string
+          direction?: string
+          duration_ms?: number | null
+          entity?: string
+          error_message?: string | null
+          external_id?: string | null
+          id?: string
+          record_id?: string | null
+          request_payload?: Json | null
+          response_payload?: Json | null
+          status?: string
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "erp_sync_log_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "erp_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "erp_sync_log_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       financial_audit_logs: {
         Row: {
           action: string
