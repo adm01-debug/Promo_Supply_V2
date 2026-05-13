@@ -284,14 +284,14 @@ export function useFornecedoresKPIs() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user || !organizationId) return;
+    if (!user || !tenantId) return;
 
     const fetchKPIs = async () => {
       try {
         const { data, error } = await supabase
           .from('fornecedores')
           .select('status, integrado_api, avaliacao')
-          .eq('organization_id', organizationId);
+          .eq('tenant_id', tenantId);
 
         if (error) throw error;
 
