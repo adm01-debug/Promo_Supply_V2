@@ -278,9 +278,8 @@ const Auditoria = () => {
                   </TableRow>
                 ) : (
                   logs.map((log) => (
-                    <>
-                      <TableRow 
-                        key={log.id} 
+                    <Fragment key={log.id}>
+                      <TableRow
                         className="cursor-pointer hover:bg-muted/50"
                         onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
                       >
