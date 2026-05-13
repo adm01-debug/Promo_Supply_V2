@@ -15,21 +15,21 @@ export type LicitacaoProposta = Database['public']['Tables']['licitacao_proposta
 };
 
 export function useLicitacoes() {
-  const { user } = useAuth();
+  const { user, tenantId } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: licitacoes = [], isLoading } = useQuery({
-    queryKey: ['licitacoes'],
+    queryKey: ['licitacoes', tenantId],
     queryFn: async () => {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('licitacoes')
         .select('*, fornecedor_vencedor:fornecedores!licitacoes_fornecedor_vencedor_id_fkey(razao_social)')
+        .eq('tenant_id', tenantId)
         .order('created_at', { ascending: false });
       if (error) throw error;
       return (data || []) as Licitacao[];
     },
-    enabled: !!user,
-    staleTime: 30_000,
+    enabled: !!user && !!tenantId,
   });
 
   const invalidate = useCallback(() => {
@@ -37,13 +37,13 @@ export function useLicitacoes() {
   }, [queryClient]);
 
   const createLicitacao = useCallback(async (input: Partial<Licitacao>) => {
-    if (!user) { toast.error('Login necessário'); return null; }
+    if (!user || !tenantId) { toast.error('Login necessário'); return null; }
     try {
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'LIC', table_name: 'licitacoes' });
       const numero = numData || `LIC-${Date.now()}`;
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('licitacoes')
-        .insert({ ...input, numero, created_by: user.id, responsavel_id: user.id })
+        .insert({ ...input, numero, created_by: user.id, responsavel_id: user.id, tenant_id: tenantId })
         .select()
         .single();
       if (error) throw error;
@@ -54,11 +54,11 @@ export function useLicitacoes() {
       toast.error('Erro: ' + (err instanceof Error ? err.message : 'desconhecido'));
       return null;
     }
-  }, [user, invalidate]);
+  }, [user, tenantId, invalidate]);
 
   const updateLicitacao = useCallback(async (id: string, updates: Partial<Licitacao>) => {
     try {
-      const { error } = await (supabase as any).from('licitacoes').update(updates).eq('id', id);
+      const { error } = await supabase.from('licitacoes').update(updates).eq('id', id);
       if (error) throw error;
       toast.success('Licitação atualizada!');
       invalidate();
@@ -71,7 +71,7 @@ export function useLicitacoes() {
 
   const deleteLicitacao = useCallback(async (id: string) => {
     try {
-      const { error } = await (supabase as any).from('licitacoes').delete().eq('id', id);
+      const { error } = await supabase.from('licitacoes').delete().eq('id', id);
       if (error) throw error;
       toast.success('Licitação excluída!');
       invalidate();
@@ -93,7 +93,7 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
     queryKey: ['licitacao-propostas', licitacaoId],
     queryFn: async () => {
       if (!licitacaoId) return [];
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('licitacao_propostas')
         .select('*, fornecedor:fornecedores(razao_social, cnpj)')
         .eq('licitacao_id', licitacaoId)
@@ -111,7 +111,7 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
 
   const addProposta = useCallback(async (input: Partial<LicitacaoProposta>) => {
     try {
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('licitacao_propostas')
         .insert({ ...input, licitacao_id: licitacaoId })
         .select()
@@ -129,10 +129,10 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
   const selectWinner = useCallback(async (propostaId: string, fornecedorId: string, valor: number) => {
     try {
       // Mark winner
-      await (supabase as any).from('licitacao_propostas').update({ vencedora: false }).eq('licitacao_id', licitacaoId);
-      await (supabase as any).from('licitacao_propostas').update({ vencedora: true, status: 'vencedora' }).eq('id', propostaId);
+      await supabase.from('licitacao_propostas').update({ vencedora: false }).eq('licitacao_id', licitacaoId);
+      await supabase.from('licitacao_propostas').update({ vencedora: true, status: 'vencedora' }).eq('id', propostaId);
       // Update licitação
-      await (supabase as any).from('licitacoes').update({
+      await supabase.from('licitacoes').update({
         fornecedor_vencedor_id: fornecedorId,
         valor_vencedor: valor,
         status: 'homologada',
