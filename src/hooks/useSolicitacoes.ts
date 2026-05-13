@@ -309,17 +309,17 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 }
 
 export function useSolicitacoesKPIs() {
-  const { user, organizationId } = useAuth();
+  const { user, tenantId } = useAuth();
   
   const { data: kpis = { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 }, isLoading } = useQuery({
-    queryKey: ['solicitacoes-kpis', user?.id, organizationId],
+    queryKey: ['solicitacoes-kpis', user?.id, tenantId],
     queryFn: async () => {
-      if (!organizationId) return { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 };
+      if (!tenantId) return { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 };
       
       const { data: allData, error } = await supabase
         .from('solicitacoes')
         .select('status, valor_estimado')
-        .eq('organization_id', organizationId);
+        .eq('tenant_id', tenantId);
       
       if (error) throw error;
       const data = allData || [];
