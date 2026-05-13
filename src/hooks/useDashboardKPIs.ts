@@ -441,5 +441,5 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
 
   const loading = loadingSol || loadingPed || loadingPag || loadingCot || loadingForn || loadingWf;
 
-  return { ...result, loading };
+  return { ...result, loading, isLoading: loading };
 }
