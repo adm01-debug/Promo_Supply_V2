@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Target, TrendingUp, Briefcase, CheckCircle2, AlertCircle, Clock, Filter } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { MainLayout } from "@/components/compras/MainLayout";
 
 const SourcingPipeline = () => {
   const { data: projects, isLoading: projectsLoading } = useQuery({
