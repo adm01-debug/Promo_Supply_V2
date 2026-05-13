@@ -313,7 +313,8 @@ const Relatorios = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
