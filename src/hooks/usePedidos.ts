@@ -126,7 +126,7 @@ export function usePedidos(filters?: PedidoFilters) {
 
   // Create new pedido
   const createPedido = useCallback(async (input: CreatePedidoInput) => {
-    if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
+    if (!user || !tenantId) { toast.error('Você precisa estar logado em uma organização'); return null; }
 
     try {
       logger.info('Iniciando criação de pedido de compra', { solicitacaoId: input.solicitacao_id, fornecedorId: input.fornecedor_id, valorTotal: input.valor_total });
