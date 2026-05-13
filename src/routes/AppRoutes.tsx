@@ -46,6 +46,7 @@ const RFxDetails = lazy(() => import("@/pages/sourcing/RFxDetails"));
 const AuctionRoom = lazy(() => import("@/pages/sourcing/AuctionRoom"));
 const PortalFornecedor = lazy(() => import("@/pages/PortalFornecedor"));
 const ConfiguracoesCentroCusto = lazy(() => import("@/pages/ConfiguracoesCentroCusto"));
+const FiscalDashboard = lazy(() => import("@/pages/admin/FiscalDashboard"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 export const AnimatedRoutes = () => {
@@ -176,6 +177,9 @@ export const AnimatedRoutes = () => {
         } />
         <Route path="/admin/erp" element={
           <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><ERPConnections /></ModuleErrorBoundary></ProtectedRoute>
+        } />
+        <Route path="/admin/fiscal" element={
+          <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><FiscalDashboard /></ModuleErrorBoundary></ProtectedRoute>
         } />
         <Route path="/portal-fornecedor" element={
           <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><PortalFornecedor /></ModuleErrorBoundary></ProtectedRoute>
