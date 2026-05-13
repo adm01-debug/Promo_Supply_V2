@@ -91,7 +91,8 @@ export function useCotacoes(filters?: CotacaoFilters) {
           prazo_entrega: input.prazo_entrega || 7, validade_proposta: input.validade_proposta,
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
           organization_id: organizationId,
-        })
+          tenant_id: organizationId as any,
+        } as any)
         .select().single();
       if (error) {
         logger.error('Erro ao inserir cotação no banco', { error, input });

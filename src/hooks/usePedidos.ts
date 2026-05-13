@@ -144,7 +144,8 @@ export function usePedidos(filters?: PedidoFilters) {
           data_previsao: input.data_previsao, endereco_entrega: input.endereco_entrega,
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
           comprador_id: user.id, organization_id: organizationId,
-        })
+          tenant_id: organizationId as any,
+        } as any)
         .select().single();
 
       if (error) {
@@ -165,8 +166,9 @@ export function usePedidos(filters?: PedidoFilters) {
           pedido_id: data.id, descricao: item.descricao, quantidade: item.quantidade,
           unidade: item.unidade || 'un', valor_unitario: item.valor_unitario,
           valor_total: item.quantidade * item.valor_unitario,
+          tenant_id: organizationId as any,
         }));
-        await supabase.from('pedido_itens').insert(itensToInsert);
+        await supabase.from('pedido_itens').insert(itensToInsert as any);
       }
 
       logger.info('Pedido criado com sucesso', { id: data.id, numero: data.numero });
