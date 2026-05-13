@@ -103,7 +103,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
   // Create new fornecedor
   const createFornecedor = useCallback(async (input: CreateFornecedorInput) => {
-    if (!user || !organizationId) {
+    if (!user || !tenantId) {
       toast.error('Você precisa estar logado');
       return null;
     }
