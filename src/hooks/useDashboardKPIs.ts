@@ -194,7 +194,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     const previousMonthStart = fnsStartOfMonth(subMonths(now, 1));
     const previousMonthEnd = endOfMonth(subMonths(now, 1));
 
-    const calculatePeriodData = useCallback((sol: any[], ped: any[], pag: any[], cot: any[], startDate: Date, endDate?: Date) => {
+    const calculatePeriodData = (sol: any[], ped: any[], pag: any[], cot: any[], startDate: Date, endDate?: Date) => {
       const pSol = sol.filter(s => {
         const d = new Date(s.created_at);
         return endDate ? isWithinInterval(d, { start: startDate, end: endDate }) : d >= startDate;
