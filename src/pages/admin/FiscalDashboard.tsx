@@ -40,9 +40,9 @@ const FiscalDashboard = () => {
   return (
     <MainLayout>
       <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Painel Fiscal e-Invoicing</h1>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Painel Fiscal e-Invoicing</h1>
           <p className="text-muted-foreground">Monitoramento de documentos fiscais eletrônicos (NFe, NFSe, CTe, MDFe)</p>
         </div>
         <div className="flex gap-2">
