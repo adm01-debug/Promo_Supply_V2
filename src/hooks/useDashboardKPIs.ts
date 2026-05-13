@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format, differenceInDays } from 'date-fns';
 import { useSLASettings } from '@/stores/slaSettingsStore';
+import { logger } from '@/lib/logger';
 
 export interface DashboardKPIs {
   aguardandoCotacao: number;
@@ -62,11 +63,17 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
 
   const { data: solicitacoes, isLoading: loadingSol } = useQuery({
     queryKey: ['dashboard-solicitacoes', organizationId],
-    queryFn: () => {
+    queryFn: async () => {
       if (!organizationId) return [];
-      return fetchAllRows<{ id: string; numero: string; titulo: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null; categoria_id: string | null; solicitante_id: string | null }>('solicitacoes', 'id, numero, titulo, status, valor_estimado, valor_aprovado, created_at, data_necessidade, categoria_id, solicitante_id', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
-      });
+      logger.debug('Fetching dashboard solicitacoes');
+      try {
+        return await fetchAllRows<{ id: string; numero: string; titulo: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null; categoria_id: string | null; solicitante_id: string | null }>('solicitacoes', 'id, numero, titulo, status, valor_estimado, valor_aprovado, created_at, data_necessidade, categoria_id, solicitante_id', {
+          filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
+        });
+      } catch (error) {
+        logger.error('Error fetching dashboard solicitacoes', { error });
+        throw error;
+      }
     },
     staleTime: 60000,
     gcTime: 300000,
@@ -157,6 +164,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
   });
 
   const result = useMemo(() => {
+    logger.debug('Recalculating dashboard KPIs');
     let sol = solicitacoes || [];
     let ped = pedidos || [];
     let pag = pagamentos || [];
