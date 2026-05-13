@@ -4124,6 +4124,47 @@ export type Database = {
           },
         ]
       }
+      scim_provisioning_log: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          operation: string
+          payload: Json | null
+          status: string
+          target_email: string | null
+          tenant_id: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          operation: string
+          payload?: Json | null
+          status: string
+          target_email?: string | null
+          tenant_id: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          operation?: string
+          payload?: Json | null
+          status?: string
+          target_email?: string | null
+          tenant_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scim_provisioning_log_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       security_logs: {
         Row: {
           created_at: string
@@ -5153,6 +5194,56 @@ export type Database = {
           session_cookie?: string
         }
         Relationships: []
+      }
+      sso_configurations: {
+        Row: {
+          created_at: string
+          default_role: Database["public"]["Enums"]["app_role"]
+          email_domains: string[]
+          id: string
+          idp_metadata_url: string | null
+          is_active: boolean
+          protocol: string
+          scim_token_hash: string | null
+          scim_token_last4: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_role?: Database["public"]["Enums"]["app_role"]
+          email_domains: string[]
+          id?: string
+          idp_metadata_url?: string | null
+          is_active?: boolean
+          protocol: string
+          scim_token_hash?: string | null
+          scim_token_last4?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_role?: Database["public"]["Enums"]["app_role"]
+          email_domains?: string[]
+          id?: string
+          idp_metadata_url?: string | null
+          is_active?: boolean
+          protocol?: string
+          scim_token_hash?: string | null
+          scim_token_last4?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sso_configurations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       supplier_bonifications: {
         Row: {
