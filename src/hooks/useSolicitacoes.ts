@@ -163,6 +163,8 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
     
     try {
+      logger.info('Criando nova solicitação', { titulo: input.titulo, tipo: input.tipo });
+
       // Validação de orçamento
       if (input.cost_center_id && input.valor_estimado) {
         const { data: availability, error: budgetError } = await supabase.rpc('check_budget_availability', {
@@ -171,8 +173,12 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
         });
         
         if (budgetError) {
-          console.error('Erro ao verificar orçamento:', budgetError);
+          logger.error('Erro ao verificar orçamento', { error: budgetError, costCenterId: input.cost_center_id });
         } else if (availability && !(availability as any).available) {
+          logger.warn('Saldo insuficiente no centro de custo', { 
+            costCenterId: input.cost_center_id, 
+            valor: input.valor_estimado 
+          });
           toast.error((availability as any).message || 'Saldo insuficiente no centro de custo.');
           if (input.prioridade !== 'urgente') {
             return null;
@@ -198,7 +204,10 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
         })
         .select().single();
       
-      if (solError) throw solError;
+      if (solError) {
+        logger.error('Erro ao inserir solicitação no banco', { error: solError });
+        throw solError;
+      }
 
       // Iniciar Workflow de Aprovação se houver valor ou centro de custo
       if (solData && (input.valor_estimado || input.cost_center_id)) {
@@ -213,15 +222,17 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
         );
       }
 
+      logger.info('Solicitação criada com sucesso', { id: solData?.id, numero: solData?.numero });
       toast.success('Solicitação criada e enviada para aprovação!');
       invalidate();
       return solData;
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro desconhecido';
+      logger.error('Erro fatal ao criar solicitação', { error: msg });
       toast.error('Erro ao criar solicitação: ' + msg);
       return null;
     }
-  }, [user, invalidate, createWorkflow]);
+  }, [user, organizationId, invalidate, createWorkflow]);
 
   const updateSolicitacao = useCallback(async (id: string, updates: Partial<Solicitacao>) => {
     try {
