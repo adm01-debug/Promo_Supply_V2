@@ -5,7 +5,8 @@ import {
   Calendar,
   Download,
   Target,
-  Building2
+  Building2,
+  Layers
 } from "lucide-react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
