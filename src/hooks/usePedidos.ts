@@ -62,8 +62,8 @@ const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = {
   concluido: [],
 };
 
-async function fetchPedidosData(userId: string | undefined, organizationId: string | null | undefined, filters?: PedidoFilters) {
-  if (!userId || !organizationId) return { data: [], totalCount: 0 };
+async function fetchPedidosData(userId: string | undefined, tenantId: string | null | undefined, filters?: PedidoFilters) {
+  if (!userId || !tenantId) return { data: [], totalCount: 0 };
 
   const page = filters?.page || 1;
   const pageSize = filters?.pageSize || 50;
@@ -78,7 +78,7 @@ async function fetchPedidosData(userId: string | undefined, organizationId: stri
       solicitacao:solicitacoes(id, numero, titulo)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
-    .eq('organization_id', organizationId)
+    .eq('tenant_id', tenantId)
     .range(from, to);
 
   if (filters?.status && filters.status !== 'todos') {
