@@ -62,7 +62,7 @@ const RFxCreate = () => {
   const { data: suppliers = [] } = useQuery({
     queryKey: ['fornecedores'],
     queryFn: async () => {
-      const { data } = await supabase.from('fornecedores').select('id, razao_social, nome_fantasia');
+      const { data } = await supabase.from('fornecedores').select('id, razao_social, nome_fantasia, email');
       return data || [];
     }
   });
