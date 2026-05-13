@@ -1,14 +1,14 @@
 // Mock data constants for the Executive Dashboard
 
 export const currentPeriodMetrics = {
-  totalSpend: { value: 2450000, target: 2500000 },
-  savings: { value: 245000, target: 200000 },
-  ordersThisMonth: { value: 156, target: 170 },
-  avgCycleTime: { value: 4.2, target: 5.0 },
-  supplierCount: { value: 48, target: 50 },
-  pendingApprovals: { value: 12, urgent: 3 },
-  overdueOrders: { value: 5, critical: 2 },
-  contractCompliance: { value: 87, target: 90 }
+  totalSpend: { value: 12450000, target: 12500000 },
+  savings: { value: 1845000, target: 1500000 },
+  ordersThisMonth: { value: 856, target: 800 },
+  avgCycleTime: { value: 3.8, target: 4.5 },
+  supplierCount: { value: 248, target: 200 },
+  pendingApprovals: { value: 8, urgent: 1 },
+  overdueOrders: { value: 3, critical: 0 },
+  contractCompliance: { value: 96, target: 95 }
 };
 
 export const previousPeriodMetrics = {
