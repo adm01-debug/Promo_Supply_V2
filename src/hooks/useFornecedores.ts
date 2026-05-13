@@ -5,7 +5,7 @@ import { auditHelpers } from '@/services/auditService';
 import { toast } from 'sonner';
 import type { Database } from '@/integrations/supabase/types';
 
-type Fornecedor = Database['public']['Tables']['fornecedores']['Row'];
+export type Fornecedor = Database['public']['Tables']['fornecedores']['Row'];
 
 export interface CreateFornecedorInput {
   razao_social: string;

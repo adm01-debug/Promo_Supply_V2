@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
 import type { Json, Database } from '@/integrations/supabase/types';
 
-type Pagamento = Database['public']['Tables']['pagamentos']['Row'] & {
+export type Pagamento = Database['public']['Tables']['pagamentos']['Row'] & {
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null; } | null;
   pedido?: { id: string; numero: string; } | null;
   cost_center?: { id: string; name: string; code: string; } | null;

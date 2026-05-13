@@ -5,14 +5,14 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import type { Database } from '@/integrations/supabase/types';
 
-type Devolucao = Database['public']['Tables']['devolucoes']['Row'] & {
+export type Devolucao = Database['public']['Tables']['devolucoes']['Row'] & {
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null } | null;
   pedido?: { id: string; numero: string } | null;
 };
 
-type DevolucaoItem = Database['public']['Tables']['devolucao_itens']['Row'];
+export type DevolucaoItem = Database['public']['Tables']['devolucao_itens']['Row'];
 
-type CreditoFornecedor = Database['public']['Tables']['creditos_fornecedor']['Row'] & {
+export type CreditoFornecedor = Database['public']['Tables']['creditos_fornecedor']['Row'] & {
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null } | null;
   devolucao?: { id: string; numero: string } | null;
 };

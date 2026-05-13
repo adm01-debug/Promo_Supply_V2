@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { auditHelpers } from '@/services/auditService';
 import type { Database } from '@/integrations/supabase/types';
 
-type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
+export type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
   fornecedor?: {
     id: string;
     razao_social: string;
@@ -19,7 +19,7 @@ type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
   } | null;
 };
 
-type PedidoItem = Database['public']['Tables']['pedido_itens']['Row'];
+export type PedidoItem = Database['public']['Tables']['pedido_itens']['Row'];
 
 export interface CreatePedidoInput {
   solicitacao_id?: string;

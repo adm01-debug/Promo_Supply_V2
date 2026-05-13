@@ -5,12 +5,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import type { Database } from '@/integrations/supabase/types';
 
-type Licitacao = Database['public']['Tables']['licitacoes']['Row'] & {
+export type Licitacao = Database['public']['Tables']['licitacoes']['Row'] & {
   fornecedor_vencedor?: { razao_social: string } | null;
   propostas_count?: number;
 };
 
-type LicitacaoProposta = Database['public']['Tables']['licitacao_propostas']['Row'] & {
+export type LicitacaoProposta = Database['public']['Tables']['licitacao_propostas']['Row'] & {
   fornecedor?: { razao_social: string; cnpj: string | null } | null;
 };
 
