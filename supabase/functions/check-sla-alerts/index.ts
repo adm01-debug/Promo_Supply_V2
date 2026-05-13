@@ -1,8 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-request-id',
 };
 
 interface AlertResult {
@@ -43,7 +44,10 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    console.log('Starting SLA and alerts check...');
+    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+    const logger = new EdgeLogger('check-sla-alerts', requestId);
+
+    logger.info('Starting SLA and alerts check...');
 
     const now = new Date();
     const today = now.toISOString().split('T')[0];
@@ -68,10 +72,10 @@ Deno.serve(async (req) => {
       .gt('data_previsao', today);
 
     if (ordersWarningError) {
-      console.error('Error checking order SLA warnings:', ordersWarningError);
+      logger.error('Error checking order SLA warnings', { error: ordersWarningError });
     } else {
       result.sla_warnings = ordersWarning?.length || 0;
-      console.log(`Found ${result.sla_warnings} orders with SLA warnings`);
+      logger.info(`Found ${result.sla_warnings} orders with SLA warnings`);
 
       for (const order of ordersWarning || []) {
         if (order.comprador_id) {
@@ -99,10 +103,10 @@ Deno.serve(async (req) => {
       .lte('data_previsao', today);
 
     if (ordersCriticalError) {
-      console.error('Error checking critical SLA:', ordersCriticalError);
+      logger.error('Error checking critical SLA', { error: ordersCriticalError });
     } else {
       result.sla_critical = ordersCritical?.length || 0;
-      console.log(`Found ${result.sla_critical} orders with critical SLA`);
+      logger.info(`Found ${result.sla_critical} orders with critical SLA`);
 
       for (const order of ordersCritical || []) {
         if (order.comprador_id) {
@@ -132,10 +136,10 @@ Deno.serve(async (req) => {
       .limit(20);
 
     if (approvalsError) {
-      console.error('Error checking pending approvals:', approvalsError);
+      logger.error('Error checking pending approvals', { error: approvalsError });
     } else {
       result.pending_approvals = pendingApprovals?.length || 0;
-      console.log(`Found ${result.pending_approvals} pending approvals`);
+      logger.info(`Found ${result.pending_approvals} pending approvals`);
 
       const { data: approvers } = await supabase
         .from('user_roles')
@@ -170,10 +174,10 @@ Deno.serve(async (req) => {
       .lt('data_vencimento', today);
 
     if (paymentsError) {
-      console.error('Error checking overdue payments:', paymentsError);
+      logger.error('Error checking overdue payments', { error: paymentsError });
     } else {
       result.overdue_payments = overduePayments?.length || 0;
-      console.log(`Found ${result.overdue_payments} overdue payments`);
+      logger.info(`Found ${result.overdue_payments} overdue payments`);
 
       const { data: financeUsers } = await supabase
         .from('user_roles')
@@ -200,7 +204,7 @@ Deno.serve(async (req) => {
       }
     }
 
-    console.log('Alert check complete:', result);
+    logger.info('Alert check complete', { result });
 
     return new Response(
       JSON.stringify({
@@ -212,7 +216,11 @@ Deno.serve(async (req) => {
     );
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Error in check-sla-alerts:', error);
+    if (typeof logger !== 'undefined') {
+      logger.error('Error in check-sla-alerts', { error: errorMessage, stack: error instanceof Error ? error.stack : undefined });
+    } else {
+      console.error('Error in check-sla-alerts:', error);
+    }
     return new Response(
       JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
