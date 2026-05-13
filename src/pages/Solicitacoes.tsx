@@ -551,7 +551,8 @@ const Solicitacoes = () => {
         />
       )}
       {clearFlow.ConfirmDialog}
-    </MainLayout>
+      </MainLayout>
+    </ModuleErrorBoundary>
   );
 };
 
