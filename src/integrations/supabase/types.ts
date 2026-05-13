@@ -4486,6 +4486,72 @@ export type Database = {
           },
         ]
       }
+      savings_tracker: {
+        Row: {
+          actual_saving: number | null
+          baseline_value: number
+          created_at: string
+          currency: string | null
+          finance_notes: string | null
+          id: string
+          negotiated_value: number
+          project_id: string | null
+          realized_date: string | null
+          tenant_id: string
+          title: string
+          type: Database["public"]["Enums"]["saving_type"]
+          updated_at: string
+          validated_by_finance: boolean | null
+        }
+        Insert: {
+          actual_saving?: number | null
+          baseline_value: number
+          created_at?: string
+          currency?: string | null
+          finance_notes?: string | null
+          id?: string
+          negotiated_value: number
+          project_id?: string | null
+          realized_date?: string | null
+          tenant_id: string
+          title: string
+          type?: Database["public"]["Enums"]["saving_type"]
+          updated_at?: string
+          validated_by_finance?: boolean | null
+        }
+        Update: {
+          actual_saving?: number | null
+          baseline_value?: number
+          created_at?: string
+          currency?: string | null
+          finance_notes?: string | null
+          id?: string
+          negotiated_value?: number
+          project_id?: string | null
+          realized_date?: string | null
+          tenant_id?: string
+          title?: string
+          type?: Database["public"]["Enums"]["saving_type"]
+          updated_at?: string
+          validated_by_finance?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "savings_tracker_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "sourcing_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "savings_tracker_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scim_provisioning_log: {
         Row: {
           created_at: string
@@ -5208,6 +5274,69 @@ export type Database = {
           },
           {
             foreignKeyName: "sourcing_pipeline_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sourcing_projects: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          description: string | null
+          end_date: string | null
+          estimated_spend: number | null
+          id: string
+          owner_id: string | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["sourcing_project_status"]
+          target_saving_pct: number | null
+          tenant_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          estimated_spend?: number | null
+          id?: string
+          owner_id?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["sourcing_project_status"]
+          target_saving_pct?: number | null
+          tenant_id: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          description?: string | null
+          end_date?: string | null
+          estimated_spend?: number | null
+          id?: string
+          owner_id?: string | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["sourcing_project_status"]
+          target_saving_pct?: number | null
+          tenant_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sourcing_projects_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sourcing_projects_tenant_id_fkey"
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
@@ -6369,6 +6498,15 @@ export type Database = {
         | "multi_choice"
         | "file"
         | "date"
+      saving_type: "negotiated" | "avoidance" | "process" | "specification"
+      sourcing_project_status:
+        | "backlog"
+        | "planning"
+        | "execution"
+        | "negotiation"
+        | "implementation"
+        | "completed"
+        | "cancelled"
       sourcing_status:
         | "draft"
         | "published"
@@ -6553,6 +6691,16 @@ export const Constants = {
         "multi_choice",
         "file",
         "date",
+      ],
+      saving_type: ["negotiated", "avoidance", "process", "specification"],
+      sourcing_project_status: [
+        "backlog",
+        "planning",
+        "execution",
+        "negotiation",
+        "implementation",
+        "completed",
+        "cancelled",
       ],
       sourcing_status: [
         "draft",
