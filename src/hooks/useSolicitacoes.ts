@@ -195,7 +195,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       toast.error('Erro ao criar solicitação: ' + msg);
       return null;
     }
-  }, [user, organizationId, invalidate, createWorkflow]);
+  }, [user, tenantId, invalidate, createWorkflow]);
 
   const updateSolicitacao = useCallback(async (id: string, updates: Partial<Solicitacao>) => {
     try {
