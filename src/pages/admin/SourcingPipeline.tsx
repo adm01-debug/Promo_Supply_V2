@@ -57,7 +57,8 @@ const SourcingPipeline = () => {
   const totalNegotiatedSaving = savings?.reduce((acc, s) => acc + (Number(s.actual_saving) || 0), 0) || 0;
 
   return (
-    <div className="p-6 space-y-6">
+    <MainLayout>
+      <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Category Mgmt & Sourcing Pipeline</h1>
