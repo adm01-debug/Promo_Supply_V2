@@ -88,6 +88,10 @@ class Logger {
   public debug(message: string, context?: Record<string, unknown>) {
     this.log('debug', message, context);
   }
+
+  public getRequestId() {
+    return this.requestId;
+  }
 }
 
 export const logger = Logger.getInstance();
