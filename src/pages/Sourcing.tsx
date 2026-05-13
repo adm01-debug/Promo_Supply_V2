@@ -21,6 +21,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 
 const Sourcing = () => {
+  const navigate = useNavigate();
   const { events, isLoading } = useSourcingEvents();
   const [activeTab, setActiveTab] = useState("all");
 
