@@ -862,6 +862,7 @@ export type Database = {
       categorias: {
         Row: {
           ativo: boolean | null
+          codigo_unspsc: string | null
           cor: string | null
           created_at: string
           descricao: string | null
@@ -873,6 +874,7 @@ export type Database = {
         }
         Insert: {
           ativo?: boolean | null
+          codigo_unspsc?: string | null
           cor?: string | null
           created_at?: string
           descricao?: string | null
@@ -884,6 +886,7 @@ export type Database = {
         }
         Update: {
           ativo?: boolean | null
+          codigo_unspsc?: string | null
           cor?: string | null
           created_at?: string
           descricao?: string | null
@@ -894,6 +897,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "categorias_codigo_unspsc_fkey"
+            columns: ["codigo_unspsc"]
+            isOneToOne: false
+            referencedRelation: "unspsc_codes"
+            referencedColumns: ["code"]
+          },
           {
             foreignKeyName: "categorias_organization_id_fkey"
             columns: ["organization_id"]
@@ -5823,6 +5833,7 @@ export type Database = {
         Returns: number
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
+      suggest_unspsc_code: { Args: { item_name: string }; Returns: string }
       user_belongs_to_tenant: {
         Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
