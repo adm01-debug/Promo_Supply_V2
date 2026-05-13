@@ -22,12 +22,12 @@ export interface FilterValues {
 }
 
 export const useDashboardFilters = () => {
-  const { user, organizationId } = useAuth();
+  const { user, tenantId } = useAuth();
   const [favorites, setFavorites] = useState<DashboardFilter[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchFavorites = useCallback(async () => {
-    if (!user || !organizationId) return;
+    if (!user || !tenantId) return;
     
     setLoading(true);
     try {
@@ -35,7 +35,7 @@ export const useDashboardFilters = () => {
         .from('dashboard_filter_favorites')
         .select('*')
         .eq('user_id', user.id)
-        .eq('organization_id', organizationId)
+        .eq('tenant_id', tenantId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
