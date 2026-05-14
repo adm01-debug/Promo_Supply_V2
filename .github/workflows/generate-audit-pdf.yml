@@ -1,0 +1,44 @@
+name: Generate Audit PDF
+
+on:
+  push:
+    paths:
+      - 'audit_report.md'
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  generate-pdf:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Generate PDF
+        uses: baileyjm02/markdown-to-pdf@v1.2.0
+        with:
+          input_path: audit_report.md
+          output_dir: .
+          build_html: false
+
+      - name: Rename output if necessary
+        run: |
+          if [ -f "audit_report.pdf" ]; then
+            echo "PDF generated successfully."
+          elif [ -f "audit_report.md.pdf" ]; then
+            mv audit_report.md.pdf audit_report.pdf
+          fi
+
+      - name: Commit and Push PDF
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add audit_report.pdf
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: auto-generate audit_report.pdf [skip ci]"
+            git push
+          fi
