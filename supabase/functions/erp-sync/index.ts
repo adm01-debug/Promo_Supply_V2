@@ -8,6 +8,9 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger("erp-sync", requestId);
+
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -25,7 +28,6 @@ serve(async (req) => {
       throw new Error("Missing tenant ID");
     }
 
-    // 1. Buscar configuração da conexão
     const { data: connection, error: connError } = await supabaseClient
       .from("erp_connections")
       .select("*")
@@ -37,18 +39,14 @@ serve(async (req) => {
       throw new Error("Invalid ERP connection");
     }
 
-    // 2. Lógica simplificada de sync (Mock para demonstração)
-    // Em produção, aqui seriam feitos os fetches para SAP/TOTVS
-    console.log(`Syncing ${entity} for connection ${connection.erp_type}...`);
+    logger.info(`Syncing ${entity} for connection ${connection.erp_type}...`);
 
     const startTime = Date.now();
     let status = "success";
     let errorMsg = null;
 
-    // Simulação de chamada externa
     await new Promise(resolve => setTimeout(resolve, 1000));
 
-    // 3. Registrar Log
     await supabaseClient.from("erp_sync_log").insert({
       tenant_id: tenantId,
       connection_id: connectionId,

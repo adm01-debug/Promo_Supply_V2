@@ -8,6 +8,9 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger("workflow-engine", requestId);
+
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
