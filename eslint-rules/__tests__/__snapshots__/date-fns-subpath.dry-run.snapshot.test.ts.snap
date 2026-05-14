@@ -193,3 +193,229 @@ exports[`local/date-fns-subpath — autofix dry-run snapshots > matches snapshot
 ",
 }
 `;
+
+exports[`local/date-fns-subpath — autofix dry-run snapshots matches snapshot for "single-locale-barrel" 1`] = `
+{
+  "fixed": true,
+  "input": 
+"import { ptBR } from "date-fns/locale";
+"
+,
+  "messages": [
+    {
+      "column": 1,
+      "fixable": true,
+      "line": 1,
+      "message": "Import the specific locale subpath, e.g. \`from "date-fns/locale/pt-BR"\`.",
+      "messageId": "barrelLocale",
+      "ruleId": "local/date-fns-subpath",
+      "severity": 2,
+    },
+  ],
+  "output": 
+"import { ptBR } from "date-fns/locale/pt-BR";
+"
+,
+}
+`;
+
+exports[`local/date-fns-subpath — autofix dry-run snapshots matches snapshot for "multi-locale-barrel" 1`] = `
+{
+  "fixed": true,
+  "input": 
+"import { ptBR, enUS, frCA } from "date-fns/locale";
+"
+,
+  "messages": [
+    {
+      "column": 1,
+      "fixable": true,
+      "line": 1,
+      "message": "Import the specific locale subpath, e.g. \`from "date-fns/locale/pt-BR"\`.",
+      "messageId": "barrelLocale",
+      "ruleId": "local/date-fns-subpath",
+      "severity": 2,
+    },
+  ],
+  "output": 
+"import { ptBR } from "date-fns/locale/pt-BR";
+import { enUS } from "date-fns/locale/en-US";
+import { frCA } from "date-fns/locale/fr-CA";
+"
+,
+}
+`;
+
+exports[`local/date-fns-subpath — autofix dry-run snapshots matches snapshot for "locale-with-alias" 1`] = `
+{
+  "fixed": true,
+  "input": 
+"import { ptBR as defaultLocale } from "date-fns/locale";
+"
+,
+  "messages": [
+    {
+      "column": 1,
+      "fixable": true,
+      "line": 1,
+      "message": "Import the specific locale subpath, e.g. \`from "date-fns/locale/pt-BR"\`.",
+      "messageId": "barrelLocale",
+      "ruleId": "local/date-fns-subpath",
+      "severity": 2,
+    },
+  ],
+  "output": 
+"import { ptBR as defaultLocale } from "date-fns/locale/pt-BR";
+"
+,
+}
+`;
+
+exports[`local/date-fns-subpath — autofix dry-run snapshots matches snapshot for "kebab-locale" 1`] = `
+{
+  "fixed": true,
+  "input": 
+"import { beTarask, jaHira, srLatn } from "date-fns/locale";
+"
+,
+  "messages": [
+    {
+      "column": 1,
+      "fixable": true,
+      "line": 1,
+      "message": "Import the specific locale subpath, e.g. \`from "date-fns/locale/pt-BR"\`.",
+      "messageId": "barrelLocale",
+      "ruleId": "local/date-fns-subpath",
+      "severity": 2,
+    },
+  ],
+  "output": 
+"import { beTarask } from "date-fns/locale/be-tarask";
+import { jaHira } from "date-fns/locale/ja-Hira";
+import { srLatn } from "date-fns/locale/sr-Latn";
+"
+,
+}
+`;
+
+exports[`local/date-fns-subpath — autofix dry-run snapshots matches snapshot for "function-barrel" 1`] = `
+{
+  "fixed": true,
+  "input": 
+"import { format, parseISO, addDays } from "date-fns";
+"
+,
+  "messages": [
+    {
+      "column": 1,
+      "fixable": true,
+      "line": 1,
+      "message": "Import from a date-fns subpath instead, e.g. \`from "date-fns/format"\`. Top-level barrel imports break tree-shaking.",
+      "messageId": "barrel",
+      "ruleId": "local/date-fns-subpath",
+      "severity": 2,
+    },
+  ],
+  "output": 
+"import { format } from "date-fns/format";
+import { parseISO } from "date-fns/parseISO";
+import { addDays } from "date-fns/addDays";
+"
+,
+}
+`;
+
+exports[`local/date-fns-subpath — autofix dry-run snapshots matches snapshot for "mixed-barrel-and-locale" 1`] = `
+{
+  "fixed": true,
+  "input": 
+"import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+"
+,
+  "messages": [
+    {
+      "column": 1,
+      "fixable": true,
+      "line": 1,
+      "message": "Import from a date-fns subpath instead, e.g. \`from "date-fns/format"\`. Top-level barrel imports break tree-shaking.",
+      "messageId": "barrel",
+      "ruleId": "local/date-fns-subpath",
+      "severity": 2,
+    },
+    {
+      "column": 1,
+      "fixable": true,
+      "line": 2,
+      "message": "Import the specific locale subpath, e.g. \`from "date-fns/locale/pt-BR"\`.",
+      "messageId": "barrelLocale",
+      "ruleId": "local/date-fns-subpath",
+      "severity": 2,
+    },
+  ],
+  "output": 
+"import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
+"
+,
+}
+`;
+
+exports[`local/date-fns-subpath — autofix dry-run snapshots matches snapshot for "type-only-locale-barrel" 1`] = `
+{
+  "fixed": false,
+  "input": 
+"import type { Locale } from "date-fns/locale";
+"
+,
+  "messages": [
+    {
+      "column": 13,
+      "fixable": false,
+      "line": 1,
+      "message": "Parsing error: Unexpected token {",
+      "messageId": null,
+      "ruleId": null,
+      "severity": 2,
+    },
+  ],
+  "output": 
+"import type { Locale } from "date-fns/locale";
+"
+,
+}
+`;
+
+exports[`local/date-fns-subpath — autofix dry-run snapshots matches snapshot for "unknown-locale-unfixable" 1`] = `
+{
+  "fixed": false,
+  "input": 
+"import { notARealLocale } from "date-fns/locale";
+"
+,
+  "messages": [
+    {
+      "column": 1,
+      "fixable": false,
+      "line": 1,
+      "message": "Import the specific locale subpath, e.g. \`from "date-fns/locale/pt-BR"\`.",
+      "messageId": "barrelLocale",
+      "ruleId": "local/date-fns-subpath",
+      "severity": 2,
+    },
+    {
+      "column": 10,
+      "fixable": false,
+      "line": 1,
+      "message": "Unknown date-fns locale "notARealLocale" (not in built-in subpath map) — fix manually.",
+      "messageId": "unfixable",
+      "ruleId": "local/date-fns-subpath",
+      "severity": 2,
+    },
+  ],
+  "output": 
+"import { notARealLocale } from "date-fns/locale";
+"
+,
+}
+`;
