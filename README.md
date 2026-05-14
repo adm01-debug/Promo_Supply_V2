@@ -1,7 +1,12 @@
 # Welcome to your Lovable project
 
+## 📑 Quick Access: Audit Report
+- **Markdown Version:** [audit_report.md](./audit_report.md)
+- **PDF Version:** [audit_report.pdf](./audit_report.pdf) (Generated automatically on updates)
+
 [![Verify date-fns](https://github.com/OWNER/REPO/actions/workflows/verify-date-fns.yml/badge.svg?branch=main)](https://github.com/OWNER/REPO/actions/workflows/verify-date-fns.yml)
 [![Smoke date-fns](https://github.com/OWNER/REPO/actions/workflows/smoke-date-fns.yml/badge.svg?branch=main)](https://github.com/OWNER/REPO/actions/workflows/smoke-date-fns.yml)
+[![Audit PDF Generation](https://github.com/OWNER/REPO/actions/workflows/generate-audit-pdf.yml/badge.svg?branch=main)](https://github.com/OWNER/REPO/actions/workflows/generate-audit-pdf.yml)
 
 > Replace `OWNER/REPO` above with your GitHub `owner/repo` slug (e.g. `acme/united-code-flow`) so the badges resolve to your repository's workflow runs.
 
