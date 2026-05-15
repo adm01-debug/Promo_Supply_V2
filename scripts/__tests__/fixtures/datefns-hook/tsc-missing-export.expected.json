@@ -1,7 +1,0 @@
-{
-  "step": "tsc",
-  "exitCode": 2,
-  "failureModeBucket": "TSC_MISSING_EXPORT",
-  "failureModeContains": ["TSC_MISSING_EXPORT", "TS2305"],
-  "imports": ["date-fns/format", "date-fns/parseISO"]
-}

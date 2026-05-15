@@ -1,5 +1,0 @@
-// Fixture: shapes the generator's static scanner CANNOT see.
-// These must NOT appear in the manifest, but must surface via
-// detectUnsupportedDateFnsUsage().
-const { format } = require("date-fns/format");
-const mod = await import("date-fns/parseISO");

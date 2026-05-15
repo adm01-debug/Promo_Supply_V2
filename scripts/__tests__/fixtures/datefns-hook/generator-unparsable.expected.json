@@ -1,7 +1,0 @@
-{
-  "step": "generator",
-  "exitCode": 99,
-  "failureModeBucket": "GENERATOR_DRIFT",
-  "failureModeContains": ["GENERATOR_DRIFT", "exited 99", "no recognized signal"],
-  "imports": []
-}

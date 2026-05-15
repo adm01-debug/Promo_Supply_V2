@@ -1,7 +1,0 @@
-{
-  "step": "generator",
-  "exitCode": 1,
-  "failureModeBucket": "GENERATOR_DRIFT",
-  "failureModeContains": ["GENERATOR_DRIFT", "out of sync"],
-  "imports": ["date-fns/locale/pt-BR", "date-fns/formatDistanceToNow"]
-}

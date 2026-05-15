@@ -1,9 +1,0 @@
-// Fixture: inline `//` and block `/* */` comments inside the brace list.
-import {
-  // primary formatter
-  format, /* used everywhere */
-  /*
-   * secondary
-   */
-  formatDistanceToNow, // relative time helper
-} from "date-fns/formatters";

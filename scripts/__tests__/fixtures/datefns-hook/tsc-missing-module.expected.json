@@ -1,7 +1,0 @@
-{
-  "step": "tsc",
-  "exitCode": 1,
-  "failureModeBucket": "TSC_MISSING_MODULE",
-  "failureModeContains": ["TSC_MISSING_MODULE", "TS2307"],
-  "imports": ["date-fns/locale/pt-BR", "date-fns/locale/zh-CN"]
-}
