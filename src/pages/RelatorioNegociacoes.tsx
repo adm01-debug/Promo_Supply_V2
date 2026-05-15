@@ -22,7 +22,6 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { BuyerDrilldownModal } from "@/components/compras/BuyerDrilldownModal";
 import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
 import {
@@ -88,7 +87,7 @@ const RelatorioNegociacoes = () => {
   };
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -380,7 +379,7 @@ const RelatorioNegociacoes = () => {
         onOpenChange={setDrilldownOpen} 
         comprador={selectedBuyer} 
       />
-    </MainLayout>
+    
   );
 };
 

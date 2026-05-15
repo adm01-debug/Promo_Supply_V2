@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -57,7 +56,7 @@ export default function AdminTelemetriaPage() {
   };
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6 p-6 max-w-7xl mx-auto">
         <div className="flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
@@ -161,6 +160,6 @@ export default function AdminTelemetriaPage() {
           </CardContent>
         </Card>
       </div>
-    </MainLayout>
+    
   );
 }

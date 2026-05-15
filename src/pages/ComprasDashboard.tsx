@@ -30,7 +30,6 @@ import { CriticalAlertsBar } from "@/components/compras/CriticalAlertsBar";
 import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidget";
 import { DraggableDashboard } from "@/components/compras/DraggableDashboard";
 import { useDashboardKPIs } from "@/hooks/useDashboardKPIs";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { FilterFavoritesManager } from "@/components/compras/FilterFavoritesManager";
 import { useDashboardFilters } from "@/hooks/useDashboardFilters";
@@ -310,7 +309,7 @@ const ComprasDashboard = () => {
 
   return (
     <ModuleErrorBoundary module="dashboard">
-      <MainLayout>
+      
       <div className="space-y-6 animate-fade-in pb-10">
         <CriticalAlertsBar />
         
@@ -464,7 +463,7 @@ const ComprasDashboard = () => {
           getGridClasses={getGridClasses}
         />
       </div>
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 };

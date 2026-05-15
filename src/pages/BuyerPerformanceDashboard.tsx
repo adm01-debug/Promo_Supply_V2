@@ -29,7 +29,6 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { BuyerPerformanceAlerts } from "@/components/compras/BuyerPerformanceAlerts";
 import { useBuyerAlertsStore } from "@/stores/buyerAlertsStore";
 import { useBuyerPerformanceData } from "@/hooks/useBuyerPerformanceData";
@@ -76,20 +75,20 @@ const BuyerPerformanceDashboard = () => {
 
   if (loading) {
     return (
-      <MainLayout>
+      
         <DashboardSkeleton />
-      </MainLayout>
+      
     );
   }
 
   if (!buyer || buyers.length === 0) {
     return (
-      <MainLayout>
+      
         <div className="space-y-6">
           <h1 className="text-2xl font-bold text-foreground">Dashboard de Desempenho</h1>
           <EmptyState />
         </div>
-      </MainLayout>
+      
     );
   }
 
@@ -146,7 +145,7 @@ const BuyerPerformanceDashboard = () => {
   };
 
   return (
-    <MainLayout>
+    
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -504,7 +503,7 @@ const BuyerPerformanceDashboard = () => {
           </>
         )}
       </div>
-    </MainLayout>
+    
   );
 };
 

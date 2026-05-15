@@ -15,7 +15,6 @@ import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion"
 import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
 import { VisualComparadorCotacoes } from "@/components/compras/VisualComparadorCotacoes";
 import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { ModuleErrorBoundary, withModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { OnboardingTour, cotacaoTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
@@ -174,20 +173,20 @@ const Cotacao = () => {
   // Loading state
   if (loadingSolicitacoes) {
     return (
-      <MainLayout>
+      
         <div className="space-y-6">
           <Skeleton className="h-8 w-64" />
           <Skeleton className="h-32 w-full" />
           <Skeleton className="h-48 w-full" />
         </div>
-      </MainLayout>
+      
     );
   }
 
   // No solicitacao found
   if (!solicitacao) {
     return (
-      <MainLayout>
+      
         <div className="space-y-6">
           <h1 className="text-2xl font-bold text-foreground">Cotação de Fornecedores</h1>
           <IllustratedEmptyState
@@ -197,7 +196,7 @@ const Cotacao = () => {
             action={{ label: "Ver Solicitações", onClick: () => window.location.href = '/solicitacoes' }}
           />
         </div>
-      </MainLayout>
+      
     );
   }
 
@@ -205,7 +204,7 @@ const Cotacao = () => {
 
   return (
     <ModuleErrorBoundary module="cotacoes">
-      <MainLayout>
+      
       <div className="space-y-6">
         {/* Page Header */}
         <div className="flex items-start justify-between">
@@ -477,7 +476,7 @@ const Cotacao = () => {
           onSkip={skipTour}
         />
       )}
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 };

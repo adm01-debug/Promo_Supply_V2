@@ -4,7 +4,6 @@ import { useClearFiltersFlow } from "@/hooks/useClearFiltersFlow";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { Eye, Search, Filter, Package, Clock, Building2, User, Calendar, Truck, LayoutList, LayoutGrid, AlertTriangle, AlertCircle, CheckCircle2, Timer } from "lucide-react";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -137,7 +136,7 @@ const Acompanhamento = () => {
 
   return (
     <ModuleErrorBoundary module="solicitacoes">
-      <MainLayout>
+      
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -304,7 +303,7 @@ const Acompanhamento = () => {
         </DialogContent>
       </Dialog>
       {clearFlow.ConfirmDialog}
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 };

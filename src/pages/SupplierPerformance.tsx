@@ -8,7 +8,6 @@ import {
   Users
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { SupplierScorecard } from "@/components/compras/SupplierScorecard";
 import { RiskHeatMap } from "@/components/compras/RiskHeatMap";
 import { SupplierRankingPanel } from "@/components/compras/SupplierRankingPanel";
@@ -18,7 +17,7 @@ const SupplierPerformance = () => {
   const [activeTab, setActiveTab] = useState("scorecard");
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -71,7 +70,7 @@ const SupplierPerformance = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </MainLayout>
+    
   );
 };
 

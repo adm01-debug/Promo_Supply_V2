@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -77,10 +76,10 @@ const AuctionRoom = () => {
     return Math.min(...lances.map(l => l.valor_lance));
   }, [lances, event?.budget_estimate]);
 
-  if (loadingEvent) return <MainLayout><Skeleton className="h-96 w-full" /></MainLayout>;
+  if (loadingEvent) return <Skeleton className="h-96 w-full" />;
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -242,7 +241,7 @@ const AuctionRoom = () => {
           </div>
         </div>
       </div>
-    </MainLayout>
+    
   );
 };
 

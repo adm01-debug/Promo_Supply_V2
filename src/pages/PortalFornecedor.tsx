@@ -71,7 +71,7 @@ export default function PortalFornecedor() {
   // If no supplier selected, show selector
   if (!selectedFornecedorId) {
     return (
-      <MainLayout>
+      
         <div className="space-y-6">
           <PageHeader
             title="Portal do Fornecedor"
@@ -125,12 +125,12 @@ export default function PortalFornecedor() {
             </div>
           )}
         </div>
-      </MainLayout>
+      
     );
   }
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <PageHeader
@@ -385,6 +385,6 @@ export default function PortalFornecedor() {
           </>
         )}
       </div>
-    </MainLayout>
+    
   );
 }

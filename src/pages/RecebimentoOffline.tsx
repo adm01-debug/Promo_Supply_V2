@@ -17,7 +17,6 @@ import { PageHeader } from "@/components/ui/page-header";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
@@ -257,7 +256,7 @@ export default function RecebimentoOffline() {
   const unsyncedCount = offlineEntries.filter(e => !e.synced).length;
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6 p-4 md:p-6 max-w-4xl mx-auto">
         {/* Offline Banner */}
         <div className={cn(
@@ -382,6 +381,6 @@ export default function RecebimentoOffline() {
           />
         )}
       </div>
-    </MainLayout>
+    
   );
 }

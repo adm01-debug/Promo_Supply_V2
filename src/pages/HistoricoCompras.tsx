@@ -28,7 +28,6 @@ import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { exportToCSV } from "@/lib/exportData";
 import { toast } from "sonner";
 import { usePurchaseHistory, type PurchaseRecord } from "@/hooks/usePurchaseHistory";
@@ -279,11 +278,11 @@ const HistoricoCompras = () => {
   };
 
   if (isLoading) {
-    return (<MainLayout><div className="space-y-6"><Skeleton className="h-10 w-64" /><div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">{[1, 2, 3, 4, 5, 6].map((i) => <Skeleton key={i} className="h-20" />)}</div><Skeleton className="h-96" /></div></MainLayout>);
+    return (<div className="space-y-6"><Skeleton className="h-10 w-64" /><div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">{[1, 2, 3, 4, 5, 6].map((i) => <Skeleton key={i} className="h-20" />)}</div><Skeleton className="h-96" /></div>);
   }
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -482,7 +481,7 @@ const HistoricoCompras = () => {
         <HistoricoDrilldownModal open={drilldownOpen} onOpenChange={setDrilldownOpen} drilldownType={drilldownType} drilldownData={drilldownData} drilldownRecords={drilldownRecords} />
       </div>
       {ConfirmDialog}
-    </MainLayout>
+    
   );
 };
 

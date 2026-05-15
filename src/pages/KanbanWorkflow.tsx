@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -84,7 +83,7 @@ const KanbanWorkflow = () => {
   };
 
   return (
-    <MainLayout>
+    
       <div className="space-y-4 p-4 md:p-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -184,7 +183,7 @@ const KanbanWorkflow = () => {
           })}
         </div>
       </div>
-    </MainLayout>
+    
   );
 };
 

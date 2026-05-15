@@ -17,7 +17,6 @@ import { SolicitacaoKanban } from "@/components/compras/SolicitacaoKanban";
 import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
 import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { ModuleErrorBoundary, withModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { PageHeader, PageHeaderStats } from "@/components/ui/page-header";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
@@ -320,7 +319,7 @@ const Solicitacoes = () => {
   // Loading skeleton using contextual skeleton
   if (loading) {
     return (
-      <MainLayout>
+      
         <div className="space-y-6">
           <PageHeader
             title="Solicitações"
@@ -329,13 +328,13 @@ const Solicitacoes = () => {
           />
           <KanbanSkeleton columns={6} />
         </div>
-      </MainLayout>
+      
     );
   }
 
   return (
     <ModuleErrorBoundary module="solicitacoes">
-      <MainLayout>
+      
       <div className="space-y-6">
         {/* Page Header com novo componente */}
         <div data-tour="solicitacoes-header">
@@ -551,7 +550,7 @@ const Solicitacoes = () => {
         />
       )}
       {clearFlow.ConfirmDialog}
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 };

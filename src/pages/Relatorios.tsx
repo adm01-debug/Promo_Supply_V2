@@ -8,7 +8,6 @@ import {
   Building2,
   Layers
 } from "lucide-react";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -225,7 +224,7 @@ const Relatorios = () => {
 
   return (
     <ModuleErrorBoundary module="relatorios">
-      <MainLayout>
+      
       <div className="space-y-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
@@ -323,7 +322,7 @@ const Relatorios = () => {
           </TabsContent>
         </Tabs>
       </div>
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 };

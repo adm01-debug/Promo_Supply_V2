@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { PenaltyEscalationConfigPanel } from "@/components/compras/PenaltyEscalationConfigPanel";
 import { SupplierBonificationsPanel } from "@/components/compras/SupplierBonificationsPanel";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -58,7 +57,7 @@ export default function ComplianceDashboard() {
   const { infractors, compliant, totalPenaltyValue, avgOnTimeRate } = computeComplianceKPIs(data);
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6 p-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
@@ -374,6 +373,6 @@ export default function ComplianceDashboard() {
         {/* Penalty Escalation Config stays below */}
         <PenaltyEscalationConfigPanel />
       </div>
-    </MainLayout>
+    
   );
 }

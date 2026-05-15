@@ -74,7 +74,7 @@ export default function Licitacoes() {
 
   return (
     <ModuleErrorBoundary module="cotacoes">
-      <MainLayout>
+      
         <div className="space-y-6">
       <PageHeader 
         title={activeAuctionId ? "Sala de Leilão" : "Licitações"} 
@@ -222,7 +222,7 @@ export default function Licitacoes() {
         </>
       )}
         </div>
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 }

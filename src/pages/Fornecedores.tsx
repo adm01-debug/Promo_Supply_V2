@@ -1,6 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
 import Fuse from "fuse.js";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { FornecedorModal } from "@/components/compras/FornecedorModal";
 import { HistoricoComprasModal } from "@/components/compras/HistoricoComprasModal";
 import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
@@ -167,7 +166,7 @@ const Fornecedores = () => {
 
   if (loading) {
     return (
-      <MainLayout>
+      
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <div className="space-y-2">
@@ -184,13 +183,13 @@ const Fornecedores = () => {
           <CardGridSkeleton cards={1} columns={1} />
           <TableSkeleton rows={6} columns={7} />
         </div>
-      </MainLayout>
+      
     );
   }
 
   return (
     <ModuleErrorBoundary module="fornecedores">
-      <MainLayout>
+      
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4" data-tour="fornecedor-header">
@@ -478,7 +477,7 @@ const Fornecedores = () => {
           onSkip={skipTour}
         />
       )}
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 };

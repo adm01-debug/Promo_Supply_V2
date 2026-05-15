@@ -16,7 +16,6 @@ import {
   Percent,
   StickyNote
 } from "lucide-react";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -233,7 +232,7 @@ const GerarOrdem = () => {
   };
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
@@ -554,7 +553,7 @@ const GerarOrdem = () => {
           </div>
         </div>
       </div>
-    </MainLayout>
+    
   );
 };
 

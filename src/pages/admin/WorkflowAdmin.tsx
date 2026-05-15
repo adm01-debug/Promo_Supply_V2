@@ -7,7 +7,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Play, Shield, Settings2, History, AlertTriangle, CheckCircle2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { useNavigate } from "react-router-dom";
 
 const WorkflowAdmin = () => {
@@ -39,7 +38,7 @@ const WorkflowAdmin = () => {
   });
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
@@ -241,7 +240,7 @@ const WorkflowAdmin = () => {
         </TabsContent>
       </Tabs>
       </div>
-    </MainLayout>
+    
   );
 };
 

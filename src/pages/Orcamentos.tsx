@@ -74,7 +74,7 @@ const Orcamentos = () => {
 
   if (loading) {
     return (
-      <MainLayout>
+      
         <div className="space-y-4">
           <Skeleton className="h-10 w-64" />
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -82,13 +82,13 @@ const Orcamentos = () => {
           </div>
           <Skeleton className="h-96" />
         </div>
-      </MainLayout>
+      
     );
   }
 
   return (
     <ModuleErrorBoundary module="orcamentos">
-      <MainLayout>
+      
       <PageTransition className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -307,7 +307,7 @@ const Orcamentos = () => {
           </div>
         )}
       </PageTransition>
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 };

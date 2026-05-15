@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -114,7 +113,7 @@ const NegociacaoIA = () => {
   };
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6 p-4 md:p-6">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -311,7 +310,7 @@ const NegociacaoIA = () => {
           </Card>
         )}
       </div>
-    </MainLayout>
+    
   );
 };
 

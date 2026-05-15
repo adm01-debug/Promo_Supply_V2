@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,7 +33,7 @@ export default function Devolucoes() {
 
   return (
     <ModuleErrorBoundary module="devolucoes">
-      <MainLayout>
+      
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -214,7 +213,7 @@ export default function Devolucoes() {
       {/* Modals */}
       <NovaDevolucaoModal open={showNewModal} onClose={() => setShowNewModal(false)} />
       <DevolucaoDetailModal devolucao={selectedDev} open={!!selectedDev} onClose={() => setSelectedDev(null)} />
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 }

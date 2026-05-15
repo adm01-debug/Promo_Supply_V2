@@ -3,7 +3,6 @@ import {
   Package, Search, Plus, Edit2, Tag, Building2, DollarSign,
   TrendingUp, TrendingDown, Filter, X, Grid3X3, List,
 } from "lucide-react";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -103,7 +102,7 @@ const CatalogoProdutos = () => {
   };
 
   return (
-    <MainLayout>
+    
       <PageHeader
         title="Catálogo de Produtos"
         description="Gerencie produtos com preços de referência e histórico"
@@ -392,7 +391,7 @@ const CatalogoProdutos = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </MainLayout>
+    
   );
 };
 

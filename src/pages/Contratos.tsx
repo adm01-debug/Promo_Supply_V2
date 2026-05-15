@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
@@ -153,7 +152,7 @@ export default function Contratos() {
 
   return (
     <ModuleErrorBoundary module="contratos">
-      <MainLayout>
+      
       <div className="space-y-6 p-6">
         {/* Header */}
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -443,7 +442,7 @@ export default function Contratos() {
           contract={selectedContract}
         />
       )}
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 }

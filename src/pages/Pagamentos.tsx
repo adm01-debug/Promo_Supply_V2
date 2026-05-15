@@ -1,5 +1,4 @@
 import { useState, useMemo, useCallback } from "react";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -161,7 +160,7 @@ const Pagamentos = () => {
 
   if (loading) {
     return (
-      <MainLayout>
+      
         <div className="space-y-6">
           <div className="h-8 w-48 bg-muted animate-pulse rounded" />
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
@@ -169,7 +168,7 @@ const Pagamentos = () => {
           </div>
           <TableSkeleton rows={6} columns={7} />
         </div>
-      </MainLayout>
+      
     );
   }
 
@@ -328,7 +327,7 @@ const Pagamentos = () => {
 
   return (
     <ModuleErrorBoundary module="pagamentos">
-      <MainLayout>
+      
       <div className="space-y-4">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
@@ -427,7 +426,7 @@ const Pagamentos = () => {
         statusOptions={pagamentosStatusOptions}
         availableActions={bulkActions}
       />
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 };
