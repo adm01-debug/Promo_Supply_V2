@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -80,9 +80,9 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
     if (contract && open) {
       fetchContractDetails();
     }
-  }, [contract, open]);
+  }, [contract, open, fetchContractDetails]);
 
-  const fetchContractDetails = async () => {
+  const fetchContractDetails = useCallback(async () => {
     setLoading(true);
     try {
       const [itemsRes, historyRes, ordersRes, penaltiesRes, docsRes] = await Promise.all([
@@ -103,7 +103,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
     } finally {
       setLoading(false);
     }
-  };
+  }, [contract.id]);
 
   const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
