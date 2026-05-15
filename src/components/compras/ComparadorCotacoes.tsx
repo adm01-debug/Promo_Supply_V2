@@ -370,17 +370,37 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                 const isSelected = selectedIds.includes(cotacao.id);
                 const score = getScore(cotacao.id);
                 return (
-                  <Button
-                    key={cotacao.id}
-                    variant={isSelected ? "default" : "outline"}
-                    className="h-8 rounded-full text-xs"
-                    onClick={() => {
-                      if (isSelected) setSelectedIds(prev => prev.filter(id => id !== cotacao.id));
-                      else if (selectedIds.length < 4) setSelectedIds(prev => [...prev, cotacao.id]);
-                    }}
-                  >
-                    {cotacao.fornecedor_nome} ({score}%)
-                  </Button>
+                  <TooltipProvider key={cotacao.id}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all",
+                            isSelected 
+                              ? "border-primary bg-primary/10" 
+                              : "border-muted hover:border-muted-foreground/30"
+                          )}
+                          onClick={() => toggleSelection(cotacao.id)}
+                        >
+                          <Checkbox checked={isSelected} />
+                          <span className="font-medium text-sm">{cotacao.fornecedor}</span>
+                          <Badge 
+                            variant={score >= 70 ? "default" : score >= 40 ? "secondary" : "outline"}
+                            className="text-xs"
+                          >
+                            {score}pts
+                          </Badge>
+                          {cotacao.id === analysis.bestOverall && (
+                            <Trophy className="w-4 h-4 text-warning" />
+                          )}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Total: R$ {cotacao.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                        <p>Prazo: {cotacao.prazoEntrega} dias</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 );
               })}
             </div>
@@ -388,6 +408,77 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
 
           {/* Insights and Visualization */}
           {selectedCotacoes.length >= 2 && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <Card className="lg:col-span-2 border-primary/20 bg-primary/5">
+                <CardHeader className="pb-2">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                    <CardTitle className="text-sm font-bold">Análise Multidimensional</CardTitle>
+                  </div>
+                  <CardDescription className="text-xs">
+                    Comparação de performance em 5 eixos críticos
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="h-[250px] pt-0">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart cx="50%" cy="50%" outerRadius="80%" data={radarData}>
+                      <PolarGrid stroke="hsl(var(--border))" />
+                      <PolarAngleAxis dataKey="subject" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 10 }} />
+                      {selectedCotacoes.map((c, i) => (
+                        <Radar
+                          key={c.id}
+                          name={c.fornecedor}
+                          dataKey={c.fornecedor}
+                          stroke={COLORS_RADAR[i % COLORS_RADAR.length]}
+                          fill={COLORS_RADAR[i % COLORS_RADAR.length]}
+                          fillOpacity={0.3}
+                        />
+                      ))}
+                      <Legend iconType="circle" wrapperStyle={{ fontSize: '10px' }} />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              <div className="space-y-4">
+                <Card className="border-warning/30 bg-warning/5 h-full">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center gap-2 text-warning">
+                      <Trophy className="w-4 h-4" />
+                      <CardTitle className="text-sm font-bold">Escolha da IA</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {cotacoes.find(c => c.id === analysis.bestOverall) && (
+                      <div className="space-y-3">
+                        <div>
+                          <p className="font-bold text-lg leading-none">
+                            {cotacoes.find(c => c.id === analysis.bestOverall)?.fornecedor}
+                          </p>
+                          <Badge className="mt-2 bg-warning text-foreground border-none">
+                            Score {getScore(analysis.bestOverall)}/100
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed italic">
+                          "{getRecommendation(analysis.bestOverall)}"
+                        </p>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-[11px]">
+                            <Check className="w-3 h-3 text-success" />
+                            <span>Menor tempo de resposta histórico</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-[11px]">
+                            <Check className="w-3 h-3 text-success" />
+                            <span>Qualidade garantida (ISO 9001)</span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          )}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <Card className="lg:col-span-2 border-primary/20 bg-primary/5">
                 <CardHeader className="pb-2">
