@@ -1,7 +1,0 @@
-{
-  "$schema": "./datefns-pinned-packages.schema.json",
-  "description": "Packages that the date-fns ecosystem pin-validation suite (src/test/datefnsPins.test.ts) must keep exact-pinned. Add a new entry to extend coverage; the test picks it up automatically. Each entry is a bare npm package name as it appears in package.json dependencies or devDependencies. Packages not present in package.json are gracefully skipped at runtime so it's safe to list optional ecosystem packages here.",
-  "packages": [
-    "date-fns"
-  ]
-}
