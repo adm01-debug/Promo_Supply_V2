@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { memo } from "react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,7 @@ import { useSourcingEventDetails } from "@/hooks/useLicitacoes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 
-const RFxDetails = () => {
+const RFxDetails = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { event, loadingEvent } = useSourcingEventDetails(id || null);
@@ -289,5 +290,7 @@ const RFxDetails = () => {
     </MainLayout>
   );
 };
+
+});
 
 export default RFxDetails;
