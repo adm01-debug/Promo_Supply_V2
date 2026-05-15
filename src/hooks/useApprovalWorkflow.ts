@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
+import { logger } from '@/lib/logger';
 import type {
   ApprovalRule, ApprovalDelegation, ApprovalWorkflow,
   ApprovalStep, ApprovalHistory,
@@ -31,7 +32,7 @@ export const useApprovalWorkflow = () => {
         ...rule,
         aprovadores: typeof rule.aprovadores === 'string' ? JSON.parse(rule.aprovadores) : rule.aprovadores || []
       })) as ApprovalRule[]);
-    } catch (error) { console.error('Error fetching approval rules:', error); }
+    } catch (error) { logger.error('Error fetching approval rules', { error }); }
   }, []);
 
   const fetchDelegations = useCallback(async () => {
@@ -45,7 +46,7 @@ export const useApprovalWorkflow = () => {
         ...d,
         categorias_permitidas: typeof d.categorias_permitidas === 'string' ? JSON.parse(d.categorias_permitidas) : d.categorias_permitidas || []
       })) as ApprovalDelegation[]);
-    } catch (error) { console.error('Error fetching delegations:', error); }
+    } catch (error) { logger.error('Error fetching delegations', { error }); }
   }, []);
 
   const fetchPendingWorkflows = useCallback(async () => {
@@ -57,7 +58,7 @@ export const useApprovalWorkflow = () => {
         .order('created_at', { ascending: false });
       if (error) throw error;
       setWorkflows((data || []) as ApprovalWorkflow[]);
-    } catch (error) { console.error('Error fetching workflows:', error); }
+    } catch (error) { logger.error('Error fetching workflows', { error }); }
   }, [user]);
 
   const fetchPendingSteps = useCallback(async () => {
@@ -69,7 +70,7 @@ export const useApprovalWorkflow = () => {
         .order('prazo_limite', { ascending: true });
       if (error) throw error;
       setPendingSteps((data || []) as ApprovalStep[]);
-    } catch (error) { console.error('Error fetching pending steps:', error); }
+    } catch (error) { logger.error('Error fetching pending steps', { error }); }
   }, [user]);
 
   const saveRule = useCallback(async (rule: Partial<ApprovalRule>) => {
@@ -104,7 +105,7 @@ export const useApprovalWorkflow = () => {
         toast.success('Regra criada com sucesso');
       }
       await fetchRules();
-    } catch (error) { console.error('Error saving rule:', error); toast.error('Erro ao salvar regra'); }
+    } catch (error) { logger.error('Error saving rule', { error }); toast.error('Erro ao salvar regra'); }
     finally { setLoading(false); }
   }, [user, fetchRules]);
 
@@ -115,7 +116,7 @@ export const useApprovalWorkflow = () => {
       if (error) throw error;
       toast.success('Regra excluída com sucesso');
       await fetchRules();
-    } catch (error) { console.error('Error deleting rule:', error); toast.error('Erro ao excluir regra'); }
+    } catch (error) { logger.error('Error deleting rule', { error }); toast.error('Erro ao excluir regra'); }
     finally { setLoading(false); }
   }, [fetchRules]);
 
