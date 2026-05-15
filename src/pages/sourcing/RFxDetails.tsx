@@ -73,8 +73,8 @@ const RFxDetails = memo(() => {
     }
   };
 
-  const responseRate = event.invitations?.length > 0 
-    ? Math.round((event.responses?.length || 0) / event.invitations.length * 100) 
+  const responseRate = (event.invitations && event.invitations.length > 0)
+    ? Math.round((event.responses?.length || 0) / (event.invitations?.length || 1) * 100) 
     : 0;
 
   return (
@@ -185,7 +185,7 @@ const RFxDetails = memo(() => {
 
               <TabsContent value="responses" className="mt-6">
                 <div className="space-y-4">
-                  {event.responses?.length > 0 ? (
+                  {event.responses && event.responses.length > 0 ? (
                     event.responses.map((resp: { id: string; fornecedor?: { razao_social: string }; created_at: string; valor_total: number; score_total: number }) => (
                       <Card key={resp.id} className="p-4 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
@@ -277,7 +277,7 @@ const RFxDetails = memo(() => {
                 <div className="flex justify-between text-sm font-bold">
                   <span className="text-foreground">Melhor Oferta:</span>
                   <span className="text-emerald-600">
-                    {event.responses?.length > 0 
+                    {event.responses && event.responses.length > 0 
                       ? Math.min(...event.responses.map((r: { valor_total: number }) => r.valor_total)).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
                       : '-'}
                   </span>
