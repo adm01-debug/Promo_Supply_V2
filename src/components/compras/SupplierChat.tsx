@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/dialog";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { useContactNotes } from "@/hooks/useContactNotes";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { ptBR } from "date-fns/locale/pt-BR";

@@ -7,7 +7,7 @@ import {
 import { useImageCompression } from "@/hooks/useImageCompression";
 import { formatBytes } from "@/lib/imageCompression";
 import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth";
 import DOMPurify from "dompurify";
 import { solicitacaoSchema, type SolicitacaoFormData as NovaSolicitacaoData } from "@/schemas/solicitacao.schema";
 import {

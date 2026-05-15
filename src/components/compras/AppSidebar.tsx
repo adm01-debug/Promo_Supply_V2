@@ -42,7 +42,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
 import { PrefetchLink } from "@/components/PrefetchLink";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth";
 
 interface NavItemDef {
   title: string;
