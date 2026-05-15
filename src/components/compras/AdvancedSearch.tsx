@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { VisuallyHidden } from "@/components/accessibility/VisuallyHidden";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 import { useRecentlyViewed, type RecentItem } from "@/hooks/useRecentlyViewed";
 import { normalizeText } from "@/hooks/useFuseSearch";
 import {
@@ -119,7 +120,7 @@ export function AdvancedSearch() {
       allResults.sort((a, b) => (b.score || 0) - (a.score || 0));
       setResults(allResults);
     } catch (error) {
-      console.error('Search error:', error);
+      logger.error('Search error:', { error });
     } finally {
       setIsLoading(false);
     }
