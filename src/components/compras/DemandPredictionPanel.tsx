@@ -18,7 +18,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 import { fetchAllRows } from '@/lib/paginatedFetch';
-import { format, subMonths, startOfMonth, endOfMonth, isWithinInterval } from 'date-fns';
+import { format } from 'date-fns/format';
+import { subMonths } from 'date-fns/subMonths';
+import { startOfMonth } from 'date-fns/startOfMonth';
+import { endOfMonth } from 'date-fns/endOfMonth';
+import { isWithinInterval } from 'date-fns/isWithinInterval';
 
 interface Prediction {
   month: string;
