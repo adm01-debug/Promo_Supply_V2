@@ -62,7 +62,7 @@ const MFAEnroll = ({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: (
           <>
             {qrCode ? (
               <div className="flex flex-col items-center gap-4">
-                <img src={qrCode} alt="QR Code MFA" className="w-48 h-48 rounded-lg border" />
+                <img src={qrCode} alt="QR Code MFA" className="w-48 h-48 rounded-lg border" loading="lazy" />
                 <div className="text-center">
                   <Label className="text-xs text-muted-foreground">Chave manual:</Label>
                   <code className="block text-xs bg-muted px-3 py-1.5 rounded mt-1 select-all">{secret}</code>

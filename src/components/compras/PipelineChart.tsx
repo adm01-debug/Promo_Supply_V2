@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { forwardRef, useState } from "react";
+import { forwardRef, useState, memo } from "react";
 import { ArrowRight, TrendingUp, TrendingDown, Minus, Info } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
@@ -104,7 +104,7 @@ const TrendIndicator = ({ trend, current, previous }: { trend: 'up' | 'down' | '
   );
 };
 
-export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ data, previousData = defaultPreviousData }, ref) => {
+export const PipelineChart = memo(forwardRef<HTMLDivElement, PipelineChartProps>(({ data, previousData = defaultPreviousData }, ref) => {
   const [hoveredStage, setHoveredStage] = useState<string | null>(null);
   
   const values = Object.values(data);
@@ -277,6 +277,6 @@ export const PipelineChart = forwardRef<HTMLDivElement, PipelineChartProps>(({ d
       </div>
     </div>
   );
-});
+}));
 
 PipelineChart.displayName = 'PipelineChart';
