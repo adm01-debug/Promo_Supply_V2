@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -133,7 +132,7 @@ const RFxCreate = () => {
   };
 
   return (
-    <MainLayout>
+    
       <div className="max-w-4xl mx-auto space-y-6 pb-20">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/sourcing")}>
@@ -443,7 +442,7 @@ const RFxCreate = () => {
           </div>
         </div>
       </div>
-    </MainLayout>
+    
   );
 };
 

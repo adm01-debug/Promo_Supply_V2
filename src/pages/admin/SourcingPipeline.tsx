@@ -6,7 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Target, TrendingUp, Briefcase, CheckCircle2, AlertCircle, Clock, Filter } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { MainLayout } from "@/components/compras/MainLayout";
 
 const SourcingPipeline = () => {
   const { data: projects, isLoading: projectsLoading } = useQuery({
@@ -57,7 +56,7 @@ const SourcingPipeline = () => {
   const totalNegotiatedSaving = savings?.reduce((acc, s) => acc + (Number(s.actual_saving) || 0), 0) || 0;
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
@@ -200,7 +199,7 @@ const SourcingPipeline = () => {
         </Card>
         </div>
       </div>
-    </MainLayout>
+    
   );
 };
 

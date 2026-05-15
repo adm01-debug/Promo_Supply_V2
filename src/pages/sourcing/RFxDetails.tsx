@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { memo } from "react";
-import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,7 +27,7 @@ const RFxDetails = memo(() => {
 
   if (loadingEvent) {
     return (
-      <MainLayout>
+      
         <div className="space-y-6">
           <Skeleton className="h-12 w-48" />
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -36,19 +35,19 @@ const RFxDetails = memo(() => {
             <Skeleton className="h-48" />
           </div>
         </div>
-      </MainLayout>
+      
     );
   }
 
   if (!event) {
     return (
-      <MainLayout>
+      
         <div className="flex flex-col items-center justify-center h-[60vh] space-y-4">
           <AlertCircle className="w-12 h-12 text-muted-foreground" />
           <h2 className="text-xl font-semibold">Evento não encontrado</h2>
           <Button onClick={() => navigate("/sourcing")}>Voltar para Lista</Button>
         </div>
-      </MainLayout>
+      
     );
   }
 
@@ -78,7 +77,7 @@ const RFxDetails = memo(() => {
     : 0;
 
   return (
-    <MainLayout>
+    
       <div className="space-y-6">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/sourcing")}>
@@ -287,7 +286,7 @@ const RFxDetails = memo(() => {
           </div>
         </div>
       </div>
-    </MainLayout>
+    
   );
 });
 
