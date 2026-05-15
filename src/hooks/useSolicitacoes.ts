@@ -295,7 +295,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
         .eq('is_active', true)
         .order('name');
       if (error) throw error;
-      return (data as any) as CostCenter[];
+      return (data || []) as CostCenter[];
     },
     staleTime: 300_000,
   });
