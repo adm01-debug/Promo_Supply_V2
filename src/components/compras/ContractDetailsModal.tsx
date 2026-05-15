@@ -76,12 +76,6 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    if (contract && open) {
-      fetchContractDetails();
-    }
-  }, [contract, open, fetchContractDetails]);
-
   const fetchContractDetails = useCallback(async () => {
     setLoading(true);
     try {
@@ -104,6 +98,12 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
       setLoading(false);
     }
   }, [contract.id]);
+
+  useEffect(() => {
+    if (contract && open) {
+      fetchContractDetails();
+    }
+  }, [contract, open, fetchContractDetails]);
 
   const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
