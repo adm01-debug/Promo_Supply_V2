@@ -3,15 +3,22 @@ import { logger } from "@/lib/logger";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import { ThemeProvider } from "next-themes";
 import { PageLoader } from "@/components/PageLoader";
-import { ErrorBoundary } from "@/components/ui/error-boundary";
 import { AccessibilityProvider } from "@/components/accessibility/AdvancedAccessibility";
 import { AnimatedRoutes } from "@/routes/AppRoutes";
+import { useNProgress } from "@/hooks/useNProgress";
+
+const AppContent = () => {
+  useNProgress();
+  return <AnimatedRoutes />;
+};
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,6 +32,11 @@ const queryClient = new QueryClient({
   },
 });
 
+const persister = createSyncStoragePersister({
+  storage: window.localStorage,
+  key: 'PROMO_SUPPLY_CACHE',
+});
+
 const App = () => {
   useEffect(() => {
     logger.info("Aplicação inicializada");
@@ -34,7 +46,10 @@ const App = () => {
     <AuthProvider>
       <div className="min-h-screen">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <QueryClientProvider client={queryClient}>
+          <PersistQueryClientProvider 
+            client={queryClient}
+            persistOptions={{ persister, maxAge: 1000 * 60 * 60 * 24 }} // 24 hours
+          >
             <AccessibilityProvider>
               <TooltipProvider>
                 <Toaster />
@@ -42,12 +57,12 @@ const App = () => {
                 <PWAInstallPrompt />
                 <BrowserRouter>
                   <Suspense fallback={<PageLoader />}>
-                    <AnimatedRoutes />
+                    <AppContent />
                   </Suspense>
                 </BrowserRouter>
               </TooltipProvider>
             </AccessibilityProvider>
-          </QueryClientProvider>
+          </PersistQueryClientProvider>
         </ThemeProvider>
       </div>
     </AuthProvider>
