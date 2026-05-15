@@ -161,9 +161,6 @@ export function AdvancedSearch() {
       }
     }
   }, [results, selectedIndex, query, searchHistory, activeCategory, handleSelect]);
-    setOpen(false);
-    navigate(result.href);
-  }, [query, saveToHistory, addRecentItem, navigate]);
 
   const groupedResults = useMemo(() => {
     const groups: Record<string, SearchResult[]> = {};
