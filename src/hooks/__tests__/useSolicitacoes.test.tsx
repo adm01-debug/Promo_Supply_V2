@@ -85,13 +85,15 @@ describe("useSolicitacoes hook", () => {
     });
 
     mockSupabase.from.mockImplementation((table: string) => {
-      const builder: any = {
+      let builder: any;
+      builder = {
         insert: vi.fn().mockImplementation(() => builder),
         select: vi.fn().mockImplementation(() => builder),
         single: vi.fn().mockResolvedValue({ data: { id: "sol-1", numero: "SOL-001" }, error: null }),
-        eq: vi.fn().mockReturnThis(),
-        order: vi.fn().mockReturnThis(),
+        eq: vi.fn().mockImplementation(() => builder),
+        order: vi.fn().mockImplementation(() => builder),
         range: vi.fn().mockResolvedValue({ data: [], count: 0 }),
+        then: vi.fn().mockImplementation((cb: any) => Promise.resolve(cb({ data: [], error: null }))),
       };
       return builder;
     });

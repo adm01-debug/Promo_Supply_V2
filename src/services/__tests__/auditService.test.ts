@@ -18,6 +18,7 @@ const { mockSupabase, insertSpy } = vi.hoisted(() => {
 
   const mock: any = {
     from: vi.fn().mockImplementation(() => createQueryBuilder()),
+    rpc: vi.fn().mockResolvedValue({ data: "tenant-1", error: null }),
     auth: {
       getUser: vi.fn().mockResolvedValue({ data: { user: { id: "user-1", email: "test@example.com" } } }),
     },
@@ -27,6 +28,15 @@ const { mockSupabase, insertSpy } = vi.hoisted(() => {
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: mockSupabase,
+}));
+
+vi.mock("@/lib/logger", () => ({
+  logger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+  },
 }));
 
 describe("auditService", () => {
@@ -52,11 +62,11 @@ describe("auditService", () => {
   });
 
   it("should log errors without crashing", async () => {
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { logger } = await import("@/lib/logger");
     insertSpy.mockResolvedValue({ error: { message: "DB Error" } });
 
     await auditHelpers.logView("pedido", "ped-1", "Viewed order");
 
-    expect(consoleSpy).toHaveBeenCalledWith("Erro ao registrar auditoria:", expect.objectContaining({ message: "DB Error" }));
+    expect(logger.error).toHaveBeenCalledWith("Erro ao registrar auditoria", expect.objectContaining({ error: { message: "DB Error" } }));
   });
 });
