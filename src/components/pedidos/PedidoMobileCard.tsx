@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
 import { cn } from "@/lib/utils";
-import type { Pedido } from "@/hooks/usePedidos";
+import type { Pedido } from "@/features/pedidos";
 
 interface PedidoMobileCardProps {
   pedido: Pedido;

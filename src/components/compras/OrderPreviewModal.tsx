@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { FileText, Printer, Building2, Calendar, DollarSign, Package } from 'lucide-react';
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
-import type { Pedido } from '@/hooks/usePedidos';
+import type { Pedido } from '@/features/pedidos';
 
 interface OrderPreviewModalProps {
   pedido: Pedido | null;

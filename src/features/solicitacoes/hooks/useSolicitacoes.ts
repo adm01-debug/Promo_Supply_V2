@@ -8,7 +8,7 @@ import { auditHelpers } from '@/services/auditService';
 import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 import type { Json, Database } from '@/integrations/supabase/types';
-import { CreateSolicitacaoSchema, type CreateSolicitacaoInput } from '@/schemas/solicitacao.schemas';
+import { CreateSolicitacaoSchema, type CreateSolicitacaoInput } from '@/features/solicitacoes';
 
 export type CostCenter = Database['public']['Tables']['cost_centers']['Row'] & {
   manager?: { full_name: string | null } | null;

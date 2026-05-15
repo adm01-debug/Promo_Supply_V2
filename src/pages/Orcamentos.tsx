@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useBudgetManagement } from '@/hooks/useBudgetManagement';
-import { useSolicitacoes } from '@/hooks/useSolicitacoes';
+import { useSolicitacoes } from '@/features/solicitacoes';
 import { 
   Wallet, Plus, TrendingUp, AlertTriangle, CheckCircle2, Trash2, PiggyBank, BarChart3, Loader2, PieChart
 } from 'lucide-react';
