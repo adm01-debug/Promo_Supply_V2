@@ -11,13 +11,17 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import { ThemeProvider } from "next-themes";
 import { PageLoader } from "@/components/PageLoader";
-import { AccessibilityProvider } from "@/components/accessibility/AdvancedAccessibility";
+import { AccessibilityProvider, AccessibilityPanel, SkipToContent } from "@/components/accessibility/AdvancedAccessibility";
 import { AnimatedRoutes } from "@/routes/AppRoutes";
 import { useNProgress } from "@/hooks/useNProgress";
 
 const AppContent = () => {
   useNProgress();
-  return <AnimatedRoutes />;
+  return (
+    <main id="main-content" className="relative">
+      <AnimatedRoutes />
+    </main>
+  );
 };
 
 const queryClient = new QueryClient({
@@ -52,9 +56,11 @@ const App = () => {
           >
             <AccessibilityProvider>
               <TooltipProvider>
+                <SkipToContent />
                 <Toaster />
                 <Sonner />
                 <PWAInstallPrompt />
+                <AccessibilityPanel />
                 <BrowserRouter>
                   <Suspense fallback={<PageLoader />}>
                     <AppContent />
