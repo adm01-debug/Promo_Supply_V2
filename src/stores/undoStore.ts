@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { logger } from '@/lib/logger';
 
 export interface UndoAction {
   id: string;
@@ -61,7 +62,7 @@ export const useUndoStore = create<UndoStore>((set, get) => ({
       
       return true;
     } catch (error) {
-      console.error('Undo failed:', error);
+      logger.error('Undo failed', { error });
       return false;
     }
   },
@@ -84,7 +85,7 @@ export const useUndoStore = create<UndoStore>((set, get) => ({
       
       return true;
     } catch (error) {
-      console.error('Redo failed:', error);
+      logger.error('Redo failed', { error });
       return false;
     }
   },
