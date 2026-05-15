@@ -41,6 +41,7 @@ import { useAccountFilters } from "@/hooks/useAccountFilters";
 import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
+import { performanceMonitor } from "@/lib/performance";
 
 
 // Lazy load heavy panels that are below the fold
@@ -63,6 +64,13 @@ const LazyPanel = ({ children }: { children: React.ReactNode }) => (
 );
 
 const ComprasDashboard = () => {
+  useEffect(() => {
+    performanceMonitor.mark('dashboard-mount');
+    return () => {
+      performanceMonitor.measure('dashboard-session-duration', 'dashboard-mount', 'dashboard-unmount');
+    };
+  }, []);
+
   const { t } = useTranslation();
   const { loadFromDb, saveToDb, widgets } = useDashboardLayoutStore();
   const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault, getDefaultFilter } = useDashboardFilters();
@@ -82,6 +90,12 @@ const ComprasDashboard = () => {
 
   const { kpis, pipeline, urgentItems, loading: kpisLoading } = useDashboardKPIs(currentFilters);
   const loading = kpisLoading || accountFiltersLoading;
+
+  useEffect(() => {
+    if (!loading) {
+      performanceMonitor.measure('dashboard-data-load', 'dashboard-mount', 'dashboard-data-ready');
+    }
+  }, [loading]);
 
   const [hasAppliedDefault, setHasAppliedDefault] = useState(false);
 
@@ -359,7 +373,7 @@ const ComprasDashboard = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todas as Categorias</SelectItem>
-                  {categories.map((cat: any) => (
+                  {categories.map((cat: { id: string; nome: string }) => (
                     <SelectItem key={cat.id} value={cat.id}>{cat.nome}</SelectItem>
                   ))}
                 </SelectContent>
@@ -375,7 +389,7 @@ const ComprasDashboard = () => {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos os Fornecedores</SelectItem>
-                  {suppliers.map((sup: any) => (
+                  {suppliers.map((sup: { id: string; razao_social: string }) => (
                     <SelectItem key={sup.id} value={sup.id}>{sup.razao_social}</SelectItem>
                   ))}
                 </SelectContent>
