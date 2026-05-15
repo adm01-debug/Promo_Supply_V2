@@ -93,7 +93,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
       setPenalties(penaltiesRes.data || []);
       setDocuments(docsRes.data || []);
     } catch (error) {
-      console.error('Error fetching contract details:', error);
+      logger.error('Error fetching contract details', { error });
     } finally {
       setLoading(false);
     }
@@ -147,7 +147,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
       }
       toast.success("PDF gerado com sucesso!");
     } catch (err: unknown) {
-      console.error('Error generating PDF:', err);
+      logger.error('Error generating PDF', { error: err });
       toast.error("Erro ao gerar PDF do contrato");
     } finally {
       setGeneratingPdf(false);
