@@ -277,6 +277,6 @@ export const PipelineChart = memo(forwardRef<HTMLDivElement, PipelineChartProps>
       </div>
     </div>
   );
-});
+}));
 
 PipelineChart.displayName = 'PipelineChart';
