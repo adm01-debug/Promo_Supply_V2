@@ -42,6 +42,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useState, useEffect } from "react";
 import { PrefetchLink } from "@/components/PrefetchLink";
+import { useAuth } from "@/hooks/useAuth";
 
 interface NavItemDef {
   title: string;
@@ -255,6 +256,7 @@ interface AppSidebarProps {
 
 export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
   const { pathname } = useLocation();
+  const { signOut } = useAuth();
 
   return (
     <aside
@@ -318,19 +320,19 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
         {!collapsed && (
           <>
             <PrefetchLink
-              to="/settings"
+              to="/seguranca"
               className="flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary"
             >
               <Settings className="h-[18px] w-[18px]" />
-              Configurações
+              Segurança
             </PrefetchLink>
-            <PrefetchLink
-              to="/logout"
-              className="flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:bg-destructive/5 hover:text-destructive"
+            <button
+              onClick={() => signOut()}
+              className="w-full flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:bg-destructive/5 hover:text-destructive"
             >
               <LogOut className="h-[18px] w-[18px]" />
               Sair da conta
-            </PrefetchLink>
+            </button>
           </>
         )}
 
@@ -339,22 +341,22 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
                 <PrefetchLink
-                  to="/settings"
+                  to="/seguranca"
                   className="flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary"
                 >
                   <Settings className="h-[18px] w-[18px]" />
                 </PrefetchLink>
               </TooltipTrigger>
-              <TooltipContent side="right">Configurações</TooltipContent>
+              <TooltipContent side="right">Segurança</TooltipContent>
             </Tooltip>
             <Tooltip delayDuration={0}>
               <TooltipTrigger asChild>
-                <PrefetchLink
-                  to="/logout"
+                <button
+                  onClick={() => signOut()}
                   className="flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-all hover:bg-destructive/5 hover:text-destructive"
                 >
                   <LogOut className="h-[18px] w-[18px]" />
-                </PrefetchLink>
+                </button>
               </TooltipTrigger>
               <TooltipContent side="right">Sair</TooltipContent>
             </Tooltip>

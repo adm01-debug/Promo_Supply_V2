@@ -16,31 +16,10 @@ import {
   Clock, Eye
 } from "lucide-react";
 import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
 import { Skeleton } from "@/components/ui/skeleton";
 import { NovaDevolucaoModal, DevolucaoDetailModal, MOTIVO_LABELS } from "./devolucoes/DevolucoesModals";
 import { STATUS_MAP, CREDITO_STATUS_MAP } from "./devolucoes/devolucoesData";
-
-function KpiCard({ title, value, subtitle, icon: Icon, color }: { title: string; value: string | number; subtitle?: string; icon: React.ElementType; color: string }) {
-  return (
-    <Card className="border-border/50 bg-card/80 backdrop-blur-sm">
-      <CardContent className="p-4">
-        <div className="flex items-center gap-3">
-          <div className={`p-2.5 rounded-xl ${color}`}>
-            <Icon className="w-5 h-5" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-muted-foreground font-medium">{title}</p>
-            <p className="text-xl font-bold text-foreground">{value}</p>
-            {subtitle && <p className="text-[10px] text-muted-foreground">{subtitle}</p>}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-
+import { EnhancedKpiCard } from "@/components/compras/EnhancedKpiCard";
 
 export default function Devolucoes() {
   const [statusFilter, setStatusFilter] = useState("todos");
@@ -78,12 +57,12 @@ export default function Devolucoes() {
             Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-xl" />)
           ) : (
             <>
-              <KpiCard title="Total Devoluções" value={kpis.total} icon={RotateCcw} color="bg-primary/15 text-primary" />
-              <KpiCard title="Abertas" value={kpis.abertas} icon={AlertTriangle} color="bg-kpi-warning/15 text-kpi-warning" />
-              <KpiCard title="Em Trânsito" value={kpis.emTransito} icon={Truck} color="bg-info/15 text-info" />
-              <KpiCard title="Concluídas" value={kpis.concluidas} icon={CheckCircle2} color="bg-kpi-success/15 text-kpi-success" />
-              <KpiCard title="Valor Total" value={`R$ ${(kpis.valorTotal / 1000).toFixed(1)}k`} icon={TrendingDown} color="bg-kpi-danger/15 text-kpi-danger" />
-              <KpiCard title="Créditos Ativos" value={`R$ ${(saldoTotal / 1000).toFixed(1)}k`} subtitle="Saldo disponível" icon={CreditCard} color="bg-violet-500/15 text-violet-400" />
+              <EnhancedKpiCard title="Total Devoluções" value={kpis.total} icon={RotateCcw} color="blue" variant="compact" />
+              <EnhancedKpiCard title="Abertas" value={kpis.abertas} icon={AlertTriangle} color="orange" variant="compact" />
+              <EnhancedKpiCard title="Em Trânsito" value={kpis.emTransito} icon={Truck} color="blue" variant="compact" />
+              <EnhancedKpiCard title="Concluídas" value={kpis.concluidas} icon={CheckCircle2} color="emerald" variant="compact" />
+              <EnhancedKpiCard title="Valor Total" value={kpis.valorTotal} format="currency" icon={TrendingDown} color="red" variant="compact" />
+              <EnhancedKpiCard title="Créditos Ativos" value={saldoTotal} format="currency" icon={CreditCard} color="indigo" variant="compact" subtitle="Saldo disponível" />
             </>
           )}
         </div>
