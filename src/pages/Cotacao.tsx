@@ -482,4 +482,4 @@ const Cotacao = () => {
   );
 };
 
-export default Cotacao;
+export default withModuleErrorBoundary(Cotacao, 'cotacoes');

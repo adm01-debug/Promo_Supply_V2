@@ -556,4 +556,4 @@ const Solicitacoes = () => {
   );
 };
 
-export default Solicitacoes;
+export default withModuleErrorBoundary(Solicitacoes, 'solicitacoes');

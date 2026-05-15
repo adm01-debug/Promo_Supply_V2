@@ -331,4 +331,4 @@ const Pedidos = () => {
   );
 };
 
-export default Pedidos;
+export default withModuleErrorBoundary(Pedidos, 'pedidos');

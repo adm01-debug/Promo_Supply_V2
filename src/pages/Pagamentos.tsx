@@ -432,4 +432,4 @@ const Pagamentos = () => {
   );
 };
 
-export default Pagamentos;
+export default withModuleErrorBoundary(Pagamentos, 'pagamentos');
