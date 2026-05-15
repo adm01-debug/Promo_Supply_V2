@@ -13,6 +13,12 @@ import { ThemeProvider } from "next-themes";
 import { PageLoader } from "@/components/PageLoader";
 import { AccessibilityProvider } from "@/components/accessibility/AdvancedAccessibility";
 import { AnimatedRoutes } from "@/routes/AppRoutes";
+import { useNProgress } from "@/hooks/useNProgress";
+
+const AppContent = () => {
+  useNProgress();
+  return <AnimatedRoutes />;
+};
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -51,7 +57,7 @@ const App = () => {
                 <PWAInstallPrompt />
                 <BrowserRouter>
                   <Suspense fallback={<PageLoader />}>
-                    <AnimatedRoutes />
+                    <AppContent />
                   </Suspense>
                 </BrowserRouter>
               </TooltipProvider>
