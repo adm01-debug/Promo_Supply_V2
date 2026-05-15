@@ -21,7 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useSolicitacoes, type CostCenter } from '@/hooks/useSolicitacoes';
+import { useSolicitacoes, type CostCenter } from '@/features/solicitacoes';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { 

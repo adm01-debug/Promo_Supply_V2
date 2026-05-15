@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { memo } from "react";
 import { MainLayout } from "@/components/compras/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,7 @@ import { useSourcingEventDetails } from "@/hooks/useLicitacoes";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Progress } from "@/components/ui/progress";
 
-const RFxDetails = () => {
+const RFxDetails = memo(() => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { event, loadingEvent } = useSourcingEventDetails(id || null);
@@ -72,8 +73,8 @@ const RFxDetails = () => {
     }
   };
 
-  const responseRate = event.invitations?.length > 0 
-    ? Math.round((event.responses?.length || 0) / event.invitations.length * 100) 
+  const responseRate = (event.invitations && event.invitations.length > 0)
+    ? Math.round((event.responses?.length || 0) / (event.invitations?.length || 1) * 100) 
     : 0;
 
   return (
@@ -127,7 +128,7 @@ const RFxDetails = () => {
                       Critérios de Seleção
                     </h3>
                     <div className="space-y-4">
-                      {event.criteria?.map((c: any) => (
+                      {event.criteria?.map((c: { id: string; nome: string; peso: number }) => (
                         <div key={c.id} className="flex items-center justify-between">
                           <span className="text-sm">{c.nome}</span>
                           <Badge variant="secondary">{c.peso}%</Badge>
@@ -161,7 +162,7 @@ const RFxDetails = () => {
 
               <TabsContent value="items" className="mt-6">
                 <div className="space-y-4">
-                  {event.lots?.map((lot: any) => (
+                  {event.lots?.map((lot: { id: string; nome: string; descricao: string; preco_referencia: number }) => (
                     <Card key={lot.id} className="p-6">
                       <div className="flex justify-between items-start">
                         <div>
@@ -184,8 +185,8 @@ const RFxDetails = () => {
 
               <TabsContent value="responses" className="mt-6">
                 <div className="space-y-4">
-                  {event.responses?.length > 0 ? (
-                    event.responses.map((resp: any) => (
+                  {event.responses && event.responses.length > 0 ? (
+                    event.responses.map((resp: { id: string; fornecedor?: { razao_social: string }; created_at: string; valor_total: number; score_total: number }) => (
                       <Card key={resp.id} className="p-4 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
@@ -238,11 +239,11 @@ const RFxDetails = () => {
                 <div className="grid grid-cols-2 gap-4 pt-4 border-t">
                   <div>
                     <span className="text-xs text-muted-foreground block">Visualizações</span>
-                    <span className="text-lg font-bold">{event.invitations?.filter((i:any) => i.viewed_at).length || 0}</span>
+                    <span className="text-lg font-bold">{event.invitations?.filter((i: { viewed_at: string | null }) => i.viewed_at).length || 0}</span>
                   </div>
                   <div>
                     <span className="text-xs text-muted-foreground block">Declinados</span>
-                    <span className="text-lg font-bold text-destructive">{event.invitations?.filter((i:any) => i.declined_at).length || 0}</span>
+                    <span className="text-lg font-bold text-destructive">{event.invitations?.filter((i: { declined_at: string | null }) => i.declined_at).length || 0}</span>
                   </div>
                 </div>
               </div>
@@ -276,8 +277,8 @@ const RFxDetails = () => {
                 <div className="flex justify-between text-sm font-bold">
                   <span className="text-foreground">Melhor Oferta:</span>
                   <span className="text-emerald-600">
-                    {event.responses?.length > 0 
-                      ? Math.min(...event.responses.map((r:any) => r.valor_total)).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
+                    {event.responses && event.responses.length > 0 
+                      ? Math.min(...event.responses.map((r: { valor_total: number }) => r.valor_total)).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
                       : '-'}
                   </span>
                 </div>
@@ -288,6 +289,6 @@ const RFxDetails = () => {
       </div>
     </MainLayout>
   );
-};
+});
 
 export default RFxDetails;

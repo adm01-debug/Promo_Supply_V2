@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useProdutos, type Produto } from "@/hooks/useProdutos";
-import { useSolicitacoes } from "@/hooks/useSolicitacoes";
+import { useSolicitacoes } from "@/features/solicitacoes";
 import {
   Command,
   CommandEmpty,

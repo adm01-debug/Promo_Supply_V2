@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
-import { type Pedido } from "@/hooks/usePedidos";
+import { type Pedido } from "@/features/pedidos";
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   pendente: { label: 'Pendente', color: 'bg-warning/10 text-warning border-yellow-500/20' },

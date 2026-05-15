@@ -27,7 +27,7 @@ import { PedidoDetailsDialog } from "@/pages/pedidos/PedidoDetailsDialog";
 import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import { differenceInDays } from "date-fns/differenceInDays";
-import { usePedidos, usePedidosKPIs, type Pedido } from "@/hooks/usePedidos";
+import { usePedidos, usePedidosKPIs, type Pedido } from "@/features/pedidos";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";

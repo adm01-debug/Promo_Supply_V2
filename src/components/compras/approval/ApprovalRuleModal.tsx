@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { type ApprovalRule } from "@/hooks/useApprovalWorkflow";
-import { useSolicitacoes } from "@/hooks/useSolicitacoes";
+import { useSolicitacoes } from "@/features/solicitacoes";
 
 const mockUsers = [
   { id: "user-1", nome: "João Silva", cargo: "Gestor" },

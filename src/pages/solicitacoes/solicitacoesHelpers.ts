@@ -1,4 +1,4 @@
-import type { Solicitacao } from "@/hooks/useSolicitacoes";
+import type { Solicitacao } from "@/features/solicitacoes";
 import type { Solicitacao as MockSolicitacao } from "@/types/legacyTypes";
 import { nullishStr, nullishNum } from "@/lib/dbMapping";
 

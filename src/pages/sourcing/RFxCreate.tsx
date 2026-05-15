@@ -78,7 +78,7 @@ const RFxCreate = () => {
       const event = await createEvent.mutateAsync({
         title: formData.title,
         description: formData.description,
-        type: formData.type.toLowerCase(),
+        type: formData.type.toLowerCase() as any,
         category_id: formData.category_id || null,
         budget_estimate: parseFloat(formData.budget_estimate) || 0,
         currency: formData.currency,
