@@ -149,6 +149,17 @@ export default defineConfig(({ mode }) => ({
         chunkFileNames: "assets/[name]-[hash].js",
         entryFileNames: "assets/[name]-[hash].js",
         assetFileNames: "assets/[name]-[hash][extname]",
+        manualChunks: (id) => {
+          if (id.includes("node_modules")) {
+            if (id.includes("framer-motion")) return "vendor-motion";
+            if (id.includes("lucide-react")) return "vendor-icons";
+            if (id.includes("@radix-ui")) return "vendor-ui";
+            if (id.includes("@tanstack")) return "vendor-query";
+            if (id.includes("recharts")) return "vendor-charts";
+            if (id.includes("jspdf")) return "vendor-pdf";
+            return "vendor";
+          }
+        },
       },
       treeshake: {
         moduleSideEffects: false,
