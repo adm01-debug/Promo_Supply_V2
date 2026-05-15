@@ -13,8 +13,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHeader } from '@/components/ui/page-header';
-import { ModuleErrorBoundary } from '@/components/ModuleErrorBoundary';
-import { MainLayout } from '@/components/compras/MainLayout';
+import { ModuleErrorBoundary } from '@/features/layout/components/ModuleErrorBoundary';
+import { MainLayout } from '@/features/layout/components/MainLayout';
 import { useLicitacoes } from '@/hooks/useLicitacoes';
 import { useFornecedores } from '@/hooks/useFornecedores';
 import { LicitacaoDetailDialog, modalidadeLabels, statusConfig } from './licitacoes/LicitacaoDetailDialog';

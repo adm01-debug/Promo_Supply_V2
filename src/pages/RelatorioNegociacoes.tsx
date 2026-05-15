@@ -22,7 +22,7 @@ import {
   SelectValue 
 } from "@/components/ui/select";
 import { Progress } from "@/components/ui/progress";
-import { MainLayout } from "@/components/compras/MainLayout";
+import { MainLayout } from "@/features/layout/components/MainLayout";
 import { BuyerDrilldownModal } from "@/components/compras/BuyerDrilldownModal";
 import { SavingsGoalPanel } from "@/components/compras/SavingsGoalPanel";
 import {

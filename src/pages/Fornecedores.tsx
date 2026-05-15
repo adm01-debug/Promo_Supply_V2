@@ -1,13 +1,13 @@
 import { useState, useMemo, useCallback } from "react";
 import Fuse from "fuse.js";
-import { MainLayout } from "@/components/compras/MainLayout";
+import { MainLayout } from "@/features/layout/components/MainLayout";
 import { FornecedorModal } from "@/components/compras/FornecedorModal";
 import { HistoricoComprasModal } from "@/components/compras/HistoricoComprasModal";
 import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
 import { SupplierRiskAnalysis } from "@/components/compras/SupplierRiskAnalysis";
 import { PriceComparator } from "@/components/compras/PriceComparator";
 import { FornecedorMobileCard } from "@/components/fornecedores/FornecedorMobileCard";
-import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { OnboardingTour, fornecedorTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { Card } from "@/components/ui/card";

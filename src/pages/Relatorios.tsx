@@ -8,8 +8,8 @@ import {
   Building2,
   Layers
 } from "lucide-react";
-import { MainLayout } from "@/components/compras/MainLayout";
-import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { MainLayout } from "@/features/layout/components/MainLayout";
+import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";

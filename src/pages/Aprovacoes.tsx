@@ -1,7 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MainLayout } from "@/components/compras/MainLayout";
-import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { MainLayout } from "@/features/layout/components/MainLayout";
+import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { DynamicApprovalMatrix } from "@/components/compras/DynamicApprovalMatrix";
 import { PendingApprovalsList } from "@/components/compras/PendingApprovalsList";
 import { useApprovalWorkflow } from "@/hooks/useApprovalWorkflow";

@@ -3,7 +3,7 @@ import {
   Package, Search, Plus, Edit2, Tag, Building2, DollarSign,
   TrendingUp, TrendingDown, Filter, X, Grid3X3, List,
 } from "lucide-react";
-import { MainLayout } from "@/components/compras/MainLayout";
+import { MainLayout } from "@/features/layout/components/MainLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

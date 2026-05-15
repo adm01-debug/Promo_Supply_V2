@@ -1,7 +1,7 @@
-import { MainLayout } from '@/components/compras/MainLayout';
+import { MainLayout } from '@/features/layout/components/MainLayout';
 import { ExecutiveDashboard } from '@/components/compras/ExecutiveDashboard';
 import { OnboardingTour, useOnboardingTour, dashboardTourSteps } from '@/components/onboarding/OnboardingTour';
-import { withModuleErrorBoundary } from '@/components/ModuleErrorBoundary';
+import { withModuleErrorBoundary } from '@/features/layout/components/ModuleErrorBoundary';
 
 const DashboardExecutivo = () => {
   const { isOpen, complete, skip } = useOnboardingTour('dashboard-executivo');

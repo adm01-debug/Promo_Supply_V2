@@ -12,7 +12,7 @@ import { useAuth } from '@/features/auth';
 import { useWebAuthn } from '@/hooks/useWebAuthn';
 import { useAccountLockout } from '@/hooks/useAccountLockout';
 import { PasswordStrengthIndicator } from '@/components/security/PasswordStrengthIndicator';
-import { ThemeToggle } from '@/components/ThemeToggle';
+import { ThemeToggle } from '@/features/layout/components/ThemeToggle';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';

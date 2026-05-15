@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MainLayout } from '@/components/compras/MainLayout';
+import { MainLayout } from '@/features/layout/components/MainLayout';
 import { PageTransition } from '@/components/animations/MotionComponents';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

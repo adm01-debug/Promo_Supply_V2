@@ -17,7 +17,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth";
-import { MainLayout } from "@/components/compras/MainLayout";
+import { MainLayout } from "@/features/layout/components/MainLayout";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";

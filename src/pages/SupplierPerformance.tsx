@@ -8,7 +8,7 @@ import {
   Users
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MainLayout } from "@/components/compras/MainLayout";
+import { MainLayout } from "@/features/layout/components/MainLayout";
 import { SupplierScorecard } from "@/components/compras/SupplierScorecard";
 import { RiskHeatMap } from "@/components/compras/RiskHeatMap";
 import { SupplierRankingPanel } from "@/components/compras/SupplierRankingPanel";

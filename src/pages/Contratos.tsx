@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { MainLayout } from "@/components/compras/MainLayout";
-import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { MainLayout } from "@/features/layout/components/MainLayout";
+import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

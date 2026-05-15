@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { FileText, Send, CheckCircle2, AlertCircle, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { MainLayout } from "@/components/compras/MainLayout";
+import { MainLayout } from "@/features/layout/components/MainLayout";
 
 const FiscalDashboard = () => {
   const { data: events, isLoading } = useQuery({

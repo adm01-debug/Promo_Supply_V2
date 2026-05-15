@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
-import { MainLayout } from "@/components/compras/MainLayout";
-import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { MainLayout } from "@/features/layout/components/MainLayout";
+import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";

@@ -10,7 +10,7 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "@/features/auth";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import { ThemeProvider } from "next-themes";
-import { PageLoader } from "@/components/PageLoader";
+import { PageLoader } from "@/features/layout/components/PageLoader";
 import { AccessibilityProvider, AccessibilityPanel, SkipToContent } from "@/components/accessibility/AdvancedAccessibility";
 import { AnimatedRoutes } from "@/routes/AppRoutes";
 import { useNProgress } from "@/hooks/useNProgress";

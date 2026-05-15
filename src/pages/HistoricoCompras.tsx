@@ -28,7 +28,7 @@ import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
-import { MainLayout } from "@/components/compras/MainLayout";
+import { MainLayout } from "@/features/layout/components/MainLayout";
 import { exportToCSV } from "@/lib/exportData";
 import { toast } from "sonner";
 import { usePurchaseHistory, type PurchaseRecord } from "@/hooks/usePurchaseHistory";

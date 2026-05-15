@@ -15,8 +15,8 @@ import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion"
 import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
 import { VisualComparadorCotacoes } from "@/components/compras/VisualComparadorCotacoes";
 import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";
-import { MainLayout } from "@/components/compras/MainLayout";
-import { ModuleErrorBoundary, withModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { MainLayout } from "@/features/layout/components/MainLayout";
+import { ModuleErrorBoundary, withModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { OnboardingTour, cotacaoTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { useSolicitacoes } from "@/features/solicitacoes";

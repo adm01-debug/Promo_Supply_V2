@@ -1,7 +1,7 @@
 import { lazy } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
-import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
+import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Lazy load all pages
