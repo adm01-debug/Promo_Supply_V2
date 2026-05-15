@@ -550,7 +550,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
               </div>
             </div>
           )}
-
+          
           {/* Comparison Table */}
           {selectedCotacoes.length >= 2 ? (
             <ScrollArea className="w-full">
