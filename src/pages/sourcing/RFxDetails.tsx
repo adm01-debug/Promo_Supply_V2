@@ -289,8 +289,6 @@ const RFxDetails = memo(() => {
       </div>
     </MainLayout>
   );
-};
-
 });
 
 export default RFxDetails;
