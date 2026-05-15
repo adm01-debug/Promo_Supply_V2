@@ -1,8 +1,9 @@
 import { lazy } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
+import { Shell } from "@/features/layout/components/Shell";
 
 // Lazy load all pages
 const ComprasDashboard = lazy(() => import("@/pages/ComprasDashboard"));
@@ -59,168 +60,57 @@ export const AnimatedRoutes = () => {
     <div className="w-full min-h-screen">
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route path="/auth" element={
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Auth />
-            </motion.div>
-          } />
+          <Route path="/auth" element={<Auth />} />
 
-          <Route path="/" element={
-            <ProtectedRoute>
-              <ModuleErrorBoundary module="dashboard">
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <ComprasDashboard />
-                </motion.div>
-              </ModuleErrorBoundary>
-            </ProtectedRoute>
-          } />
-          {/* ... other routes follow the same pattern if needed, but the MainLayout already handles most of this */}
-          {/* Actually, since MainLayout handles animations, let's keep Routes simple and optimize MainLayout instead */}
-          <Route path="/compras" element={
-            <ProtectedRoute><ModuleErrorBoundary module="dashboard"><ComprasDashboard /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/cotacao" element={
-            <ProtectedRoute><ModuleErrorBoundary module="cotacoes"><Cotacao /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/cotacao/:id" element={
-            <ProtectedRoute><ModuleErrorBoundary module="cotacoes"><Cotacao /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/solicitacoes" element={
-            <ProtectedRoute><ModuleErrorBoundary module="solicitacoes"><Solicitacoes /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/pedidos" element={
-            <ProtectedRoute><ModuleErrorBoundary module="pedidos"><Pedidos /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/pagamentos" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator', 'finance']}><ModuleErrorBoundary module="pagamentos"><Pagamentos /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/fornecedores" element={
-            <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><Fornecedores /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/acompanhamento" element={
-            <ProtectedRoute><ModuleErrorBoundary module="pedidos"><Acompanhamento /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/gerar-ordem" element={
-            <ProtectedRoute><ModuleErrorBoundary module="pedidos"><GerarOrdem /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/relatorios" element={
-            <ProtectedRoute><ModuleErrorBoundary module="relatorios"><Relatorios /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/relatorios/negociacoes" element={
-            <ProtectedRoute><ModuleErrorBoundary module="relatorios"><RelatorioNegociacoes /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/aprovacoes" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="solicitacoes"><Aprovacoes /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/supplier-performance" element={
-            <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><SupplierPerformance /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/dashboard-executivo" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="dashboard"><DashboardExecutivo /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/buyer-performance" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="dashboard"><BuyerPerformanceDashboard /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/historico-compras" element={
-            <ProtectedRoute><ModuleErrorBoundary module="pedidos"><HistoricoCompras /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/contratos" element={
-            <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><Contratos /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/compliance" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="fornecedores"><ComplianceDashboard /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/auditoria" element={
-            <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="relatorios"><Auditoria /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/seguranca" element={
-            <ProtectedRoute><ModuleErrorBoundary module="default"><Seguranca /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/catalogo-spot" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="fornecedores"><CatalogoSpot /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/qualificacao-fornecedores" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="fornecedores"><QualificacaoFornecedores /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/orcamentos" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator', 'finance']}><ModuleErrorBoundary module="default"><Orcamentos /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/negociacao-ia" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><NegociacaoIA /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/kanban" element={
-            <ProtectedRoute><ModuleErrorBoundary module="solicitacoes"><KanbanWorkflow /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/documentos-fiscais" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer', 'finance']}><ModuleErrorBoundary module="default"><DocumentosFiscais /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/recompra-inteligente" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="pedidos"><RecompraInteligente /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/devolucoes" element={
-            <ProtectedRoute><ModuleErrorBoundary module="pedidos"><Devolucoes /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/catalogo-produtos" element={
-            <ProtectedRoute><ModuleErrorBoundary module="default"><CatalogoProdutos /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/sourcing" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><Sourcing /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/sourcing/novo" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><RFxCreate /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/sourcing/:id" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><RFxDetails /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/sourcing/:id/auction" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator', 'buyer']}><ModuleErrorBoundary module="cotacoes"><AuctionRoom /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/licitacoes" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="default"><Licitacoes /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/recebimento" element={
-            <ProtectedRoute><ModuleErrorBoundary module="pedidos"><RecebimentoOffline /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/admin/telemetria" element={
-            <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><AdminTelemetria /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/admin/dependency-health" element={
-            <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><DependencyHealth /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/admin/sso" element={
-            <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><SSOConfig /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/admin/punchout" element={
-            <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><PunchOutCatalogs /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/admin/erp" element={
-            <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><ERPConnections /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/admin/fiscal" element={
-            <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><FiscalDashboard /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/admin/sourcing-pipeline" element={
-            <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><SourcingPipeline /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/admin/workflows" element={
-            <ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><WorkflowDesigner /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/portal-fornecedor" element={
-            <ProtectedRoute><ModuleErrorBoundary module="fornecedores"><PortalFornecedor /></ModuleErrorBoundary></ProtectedRoute>
-          } />
-          <Route path="/configuracoes-centro-custo" element={
-            <ProtectedRoute requiredRole={['admin', 'coordinator']}><ModuleErrorBoundary module="default"><ConfiguracoesCentroCusto /></ModuleErrorBoundary></ProtectedRoute>
-          } />
+          {/* Protected Routes wrapped in Shell */}
+          <Route element={<ProtectedRoute><Shell /></ProtectedRoute>}>
+            <Route path="/" element={<Navigate to="/compras" replace />} />
+            <Route path="/compras" element={<ModuleErrorBoundary module="dashboard"><ComprasDashboard /></ModuleErrorBoundary>} />
+            <Route path="/cotacao" element={<ModuleErrorBoundary module="cotacoes"><Cotacao /></ModuleErrorBoundary>} />
+            <Route path="/cotacao/:id" element={<ModuleErrorBoundary module="cotacoes"><Cotacao /></ModuleErrorBoundary>} />
+            <Route path="/solicitacoes" element={<ModuleErrorBoundary module="solicitacoes"><Solicitacoes /></ModuleErrorBoundary>} />
+            <Route path="/pedidos" element={<ModuleErrorBoundary module="pedidos"><Pedidos /></ModuleErrorBoundary>} />
+            <Route path="/pagamentos" element={<ModuleErrorBoundary module="pagamentos"><Pagamentos /></ModuleErrorBoundary>} />
+            <Route path="/fornecedores" element={<ModuleErrorBoundary module="fornecedores"><Fornecedores /></ModuleErrorBoundary>} />
+            <Route path="/acompanhamento" element={<ModuleErrorBoundary module="pedidos"><Acompanhamento /></ModuleErrorBoundary>} />
+            <Route path="/gerar-ordem" element={<ModuleErrorBoundary module="pedidos"><GerarOrdem /></ModuleErrorBoundary>} />
+            <Route path="/relatorios" element={<ModuleErrorBoundary module="relatorios"><Relatorios /></ModuleErrorBoundary>} />
+            <Route path="/relatorios/negociacoes" element={<ModuleErrorBoundary module="relatorios"><RelatorioNegociacoes /></ModuleErrorBoundary>} />
+            <Route path="/aprovacoes" element={<ModuleErrorBoundary module="solicitacoes"><Aprovacoes /></ModuleErrorBoundary>} />
+            <Route path="/supplier-performance" element={<ModuleErrorBoundary module="fornecedores"><SupplierPerformance /></ModuleErrorBoundary>} />
+            <Route path="/dashboard-executivo" element={<ModuleErrorBoundary module="dashboard"><DashboardExecutivo /></ModuleErrorBoundary>} />
+            <Route path="/buyer-performance" element={<ModuleErrorBoundary module="dashboard"><BuyerPerformanceDashboard /></ModuleErrorBoundary>} />
+            <Route path="/historico-compras" element={<ModuleErrorBoundary module="pedidos"><HistoricoCompras /></ModuleErrorBoundary>} />
+            <Route path="/contratos" element={<ModuleErrorBoundary module="fornecedores"><Contratos /></ModuleErrorBoundary>} />
+            <Route path="/compliance" element={<ModuleErrorBoundary module="fornecedores"><ComplianceDashboard /></ModuleErrorBoundary>} />
+            <Route path="/auditoria" element={<ModuleErrorBoundary module="relatorios"><Auditoria /></ModuleErrorBoundary>} />
+            <Route path="/seguranca" element={<ModuleErrorBoundary module="default"><Seguranca /></ModuleErrorBoundary>} />
+            <Route path="/catalogo-spot" element={<ModuleErrorBoundary module="fornecedores"><CatalogoSpot /></ModuleErrorBoundary>} />
+            <Route path="/qualificacao-fornecedores" element={<ModuleErrorBoundary module="fornecedores"><QualificacaoFornecedores /></ModuleErrorBoundary>} />
+            <Route path="/orcamentos" element={<ModuleErrorBoundary module="default"><Orcamentos /></ModuleErrorBoundary>} />
+            <Route path="/negociacao-ia" element={<ModuleErrorBoundary module="cotacoes"><NegociacaoIA /></ModuleErrorBoundary>} />
+            <Route path="/kanban" element={<ModuleErrorBoundary module="solicitacoes"><KanbanWorkflow /></ModuleErrorBoundary>} />
+            <Route path="/documentos-fiscais" element={<ModuleErrorBoundary module="default"><DocumentosFiscais /></ModuleErrorBoundary>} />
+            <Route path="/recompra-inteligente" element={<ModuleErrorBoundary module="pedidos"><RecompraInteligente /></ModuleErrorBoundary>} />
+            <Route path="/devolucoes" element={<ModuleErrorBoundary module="pedidos"><Devolucoes /></ModuleErrorBoundary>} />
+            <Route path="/catalogo-produtos" element={<ModuleErrorBoundary module="default"><CatalogoProdutos /></ModuleErrorBoundary>} />
+            <Route path="/sourcing" element={<ModuleErrorBoundary module="cotacoes"><Sourcing /></ModuleErrorBoundary>} />
+            <Route path="/sourcing/novo" element={<ModuleErrorBoundary module="cotacoes"><RFxCreate /></ModuleErrorBoundary>} />
+            <Route path="/sourcing/:id" element={<ModuleErrorBoundary module="cotacoes"><RFxDetails /></ModuleErrorBoundary>} />
+            <Route path="/sourcing/:id/auction" element={<ModuleErrorBoundary module="cotacoes"><AuctionRoom /></ModuleErrorBoundary>} />
+            <Route path="/licitacoes" element={<ModuleErrorBoundary module="default"><Licitacoes /></ModuleErrorBoundary>} />
+            <Route path="/recebimento" element={<ModuleErrorBoundary module="pedidos"><RecebimentoOffline /></ModuleErrorBoundary>} />
+            <Route path="/admin/telemetria" element={<ModuleErrorBoundary module="default"><AdminTelemetria /></ModuleErrorBoundary>} />
+            <Route path="/admin/dependency-health" element={<ModuleErrorBoundary module="default"><DependencyHealth /></ModuleErrorBoundary>} />
+            <Route path="/admin/sso" element={<ModuleErrorBoundary module="default"><SSOConfig /></ModuleErrorBoundary>} />
+            <Route path="/admin/punchout" element={<ModuleErrorBoundary module="default"><PunchOutCatalogs /></ModuleErrorBoundary>} />
+            <Route path="/admin/erp" element={<ModuleErrorBoundary module="default"><ERPConnections /></ModuleErrorBoundary>} />
+            <Route path="/admin/fiscal" element={<ModuleErrorBoundary module="default"><FiscalDashboard /></ModuleErrorBoundary>} />
+            <Route path="/admin/sourcing-pipeline" element={<ModuleErrorBoundary module="default"><SourcingPipeline /></ModuleErrorBoundary>} />
+            <Route path="/admin/workflows" element={<ModuleErrorBoundary module="default"><WorkflowDesigner /></ModuleErrorBoundary>} />
+            <Route path="/portal-fornecedor" element={<ModuleErrorBoundary module="fornecedores"><PortalFornecedor /></ModuleErrorBoundary>} />
+            <Route path="/configuracoes-centro-custo" element={<ModuleErrorBoundary module="default"><ConfiguracoesCentroCusto /></ModuleErrorBoundary>} />
+          </Route>
 
           <Route path="*" element={<NotFound />} />
         </Routes>
