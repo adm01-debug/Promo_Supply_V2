@@ -1,0 +1,14 @@
+src/hooks/useProdutos.ts
+src/pages/NegociacaoIA.tsx
+src/pages/GerarOrdem.tsx
+src/pages/Cotacao.tsx
+src/pages/RecebimentoOffline.tsx
+src/App.tsx
+src/components/pagamentos/PagamentoDetailModal.tsx
+src/components/compras/scorecard/supplierScorecardData.ts
+src/pages/admin/DependencyHealth.tsx
+src/components/compras/AppSidebar.tsx
+src/components/admin/TenantSwitcher.tsx
+src/pages/admin/ERPConnections.tsx
+src/components/compras/SupplierChat.tsx
+src/components/compras/NovaSolicitacaoModal.tsx
