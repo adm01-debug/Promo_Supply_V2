@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { MainLayout } from "@/components/compras/MainLayout";
-import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { ModuleErrorBoundary, withModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { OnboardingTour, pedidosTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";

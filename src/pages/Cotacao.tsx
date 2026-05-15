@@ -16,7 +16,7 @@ import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
 import { VisualComparadorCotacoes } from "@/components/compras/VisualComparadorCotacoes";
 import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";
 import { MainLayout } from "@/components/compras/MainLayout";
-import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { ModuleErrorBoundary, withModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { OnboardingTour, cotacaoTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { useSolicitacoes } from "@/hooks/useSolicitacoes";

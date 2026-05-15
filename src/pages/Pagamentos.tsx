@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
-import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { ModuleErrorBoundary, withModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
 import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
 import { useBulkOperations, pagamentosStatusOptions } from "@/hooks/useBulkOperations";
 import { BulkAction, BulkItem } from "@/components/compras/BulkOperationsPreview";
