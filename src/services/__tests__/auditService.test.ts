@@ -41,7 +41,9 @@ describe("auditService", () => {
   });
 
   it("should handle anonymous users (system actions)", async () => {
-    mockSupabase.auth?.getUser?.mockResolvedValue({ data: { user: null } });
+    if (mockSupabase.auth?.getUser) {
+      mockSupabase.auth.getUser.mockResolvedValue({ data: { user: null } });
+    }
     await logAuditAction({
       action_type: "login",
       entity_type: "usuario",
