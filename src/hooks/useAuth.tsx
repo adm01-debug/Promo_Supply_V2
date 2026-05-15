@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setTenantId(tenantRes.data || null);
       
       if (availableTenantsRes.data) {
-        const tenants = (availableTenantsRes.data as any[]).map(ut => ut.tenant);
+        const tenants = availableTenantsRes.data.map((ut: any) => ut.tenant) as { id: string; name: string; slug: string }[];
         setAvailableTenants(tenants);
       }
 
