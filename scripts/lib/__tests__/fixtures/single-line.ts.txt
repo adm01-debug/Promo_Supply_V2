@@ -1,5 +1,0 @@
-// Fixture: simplest possible single-line static imports.
-// `.ts.txt` extension keeps these out of tsc/vitest's normal compile path
-// (and out of the generator's src/ scan) while still being readable as text.
-import { format } from "date-fns/format";
-import { parseISO } from "date-fns/parseISO";

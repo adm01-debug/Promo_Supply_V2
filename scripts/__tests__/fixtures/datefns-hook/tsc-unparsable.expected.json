@@ -1,7 +1,0 @@
-{
-  "step": "tsc",
-  "exitCode": 13,
-  "failureModeBucket": "TSC_MISSING_EXPORT",
-  "failureModeContains": ["TSC_MISSING_EXPORT", "exited 13", "no recognized signal"],
-  "imports": []
-}

@@ -27,7 +27,7 @@ export default tseslint.config(
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
       "dot-notation": "off",
       "@typescript-eslint/dot-notation": ["error", { allowIndexSignaturePropertyAccess: false }],
-      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
       "no-restricted-imports": ["error", {
         paths: [
           {

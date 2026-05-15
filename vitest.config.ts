@@ -1,7 +1,7 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
-import DateFnsFixPreviewReporter from "./src/test/reporters/datefnsFixPreview";
+
 
 export default defineConfig({
   plugins: [react()],
@@ -23,7 +23,7 @@ export default defineConfig({
     // per-package "installed → would-install" table so the developer sees
     // exactly what `rm -rf node_modules && bun install --frozen-lockfile`
     // would change BEFORE running it.
-    reporters: ["default", new DateFnsFixPreviewReporter()],
+    reporters: ["default"],
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
