@@ -66,7 +66,7 @@ export const apiClient = {
   /**
    * Wrapper for Supabase RPC calls
    */
-  rpc: async <T>(fn: string, params?: any, options?: ApiOptions) => {
+  rpc: async <T>(fn: any, params?: any, options?: ApiOptions) => {
     return apiClient.execute<T>(supabase.rpc(fn, params) as any, { 
       ...options, 
       context: `RPC:${fn}` 
@@ -76,7 +76,7 @@ export const apiClient = {
   /**
    * Wrapper for standard table queries
    */
-  from: (table: string) => {
+  from: (table: any) => {
     const baseQuery = supabase.from(table);
     
     return {
@@ -86,7 +86,6 @@ export const apiClient = {
           context: `SELECT:${table}`
         });
       },
-      // Extendable to insert, update, delete as needed
     };
   }
 };
