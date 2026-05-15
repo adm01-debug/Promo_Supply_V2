@@ -180,6 +180,7 @@ export interface SourcingEvent {
   award_deadline: string | null;
   budget_estimate: number | null;
   currency: string;
+  sealed_bid?: boolean;
 }
 
 export function useSourcingEvents() {
