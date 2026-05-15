@@ -118,7 +118,7 @@ export const AccessibilityPanel: React.FC = () => {
   const { settings, updateSettings, resetSettings, announceToScreenReader } = useAccessibility();
   const [open, setOpen] = useState(false);
 
-  const handleChange = (key: keyof AccessibilitySettings, value: any) => {
+  const handleChange = (key: keyof AccessibilitySettings, value: string | number | boolean) => {
     updateSettings({ [key]: value });
     announceToScreenReader(`${key} alterado para ${value}`);
   };

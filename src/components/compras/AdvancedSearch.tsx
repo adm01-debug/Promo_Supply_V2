@@ -130,20 +130,29 @@ export function AdvancedSearch() {
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     const totalItems = results.length + (query ? 0 : searchHistory.length);
     switch (e.key) {
-      case 'ArrowDown': e.preventDefault(); setSelectedIndex(prev => (prev + 1) % Math.max(1, totalItems)); break;
-      case 'ArrowUp': e.preventDefault(); setSelectedIndex(prev => (prev - 1 + totalItems) % Math.max(1, totalItems)); break;
-      case 'Enter': e.preventDefault();
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedIndex(prev => (prev + 1) % Math.max(1, totalItems));
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedIndex(prev => (prev - 1 + totalItems) % Math.max(1, totalItems));
+        break;
+      case 'Enter':
+        e.preventDefault();
         if (results[selectedIndex]) handleSelect(results[selectedIndex]);
         else if (!query && searchHistory[selectedIndex]) setQuery(searchHistory[selectedIndex]);
         break;
-      case 'Tab': e.preventDefault();
+      case 'Tab': {
+        e.preventDefault();
         const categories: SearchCategory[] = ['all', 'pages', 'solicitacoes', 'pedidos', 'fornecedores', 'pagamentos', 'contratos'];
         const currentIdx = categories.indexOf(activeCategory);
         const nextIdx = e.shiftKey ? (currentIdx - 1 + categories.length) % categories.length : (currentIdx + 1) % categories.length;
         setActiveCategory(categories[nextIdx]);
         break;
+      }
     }
-  }, [results, selectedIndex, query, searchHistory, activeCategory]);
+  }, [results, selectedIndex, query, searchHistory, activeCategory, handleSelect]);
 
   const handleSelect = useCallback((result: SearchResult) => {
     saveToHistory(query);
