@@ -58,11 +58,11 @@ export default function Devolucoes() {
           ) : (
             <>
               <EnhancedKpiCard title="Total Devoluções" value={kpis.total} icon={RotateCcw} color="blue" variant="compact" />
-              <EnhancedKpiCard title="Abertas" value={kpis.abertas} icon={AlertTriangle} color="amber" variant="compact" />
+              <EnhancedKpiCard title="Abertas" value={kpis.abertas} icon={AlertTriangle} color="orange" variant="compact" />
               <EnhancedKpiCard title="Em Trânsito" value={kpis.emTransito} icon={Truck} color="blue" variant="compact" />
               <EnhancedKpiCard title="Concluídas" value={kpis.concluidas} icon={CheckCircle2} color="emerald" variant="compact" />
-              <EnhancedKpiCard title="Valor Total" value={`R$ ${(kpis.valorTotal / 1000).toFixed(1)}k`} icon={TrendingDown} color="rose" variant="compact" />
-              <EnhancedKpiCard title="Créditos Ativos" value={`R$ ${(saldoTotal / 1000).toFixed(1)}k`} subtitle="Saldo disponível" icon={CreditCard} color="indigo" variant="compact" />
+              <EnhancedKpiCard title="Valor Total" value={kpis.valorTotal} format="currency" icon={TrendingDown} color="red" variant="compact" />
+              <EnhancedKpiCard title="Créditos Ativos" value={saldoTotal} format="currency" icon={CreditCard} color="indigo" variant="compact" subtitle="Saldo disponível" />
             </>
           )}
         </div>
