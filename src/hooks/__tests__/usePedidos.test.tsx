@@ -120,12 +120,12 @@ describe("usePedidos hook", () => {
 
     mockSupabase.from.mockImplementation((table: string) => {
       const builder: any = {
-        select: vi.fn().mockReturnThis(),
-        order: vi.fn().mockReturnThis(),
-        range: vi.fn().mockReturnThis(),
-        update: vi.fn().mockReturnThis(),
-        eq: vi.fn().mockResolvedValue({ error: null }),
-        then: (cb: any) => cb({ data: mockPedidos, count: 2, error: null }),
+        select: vi.fn().mockReturnValue(builder),
+        order: vi.fn().mockReturnValue(builder),
+        range: vi.fn().mockReturnValue(builder),
+        update: vi.fn().mockReturnValue(builder),
+        eq: vi.fn().mockReturnValue(builder),
+        then: vi.fn().mockImplementation((cb: any) => Promise.resolve(cb({ data: mockPedidos, count: 2, error: null }))),
       };
       return builder;
     });

@@ -18,6 +18,7 @@ const { mockSupabase, insertSpy } = vi.hoisted(() => {
 
   const mock: any = {
     from: vi.fn().mockImplementation(() => createQueryBuilder()),
+    rpc: vi.fn().mockResolvedValue({ data: "tenant-1", error: null }),
     auth: {
       getUser: vi.fn().mockResolvedValue({ data: { user: { id: "user-1", email: "test@example.com" } } }),
     },
