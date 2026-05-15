@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 import { toast } from "sonner";
 import { UrgencyDetailsSheet } from "./dashboard/UrgencyDetailsSheet";
 
@@ -46,26 +46,30 @@ const urgenciaConfig = {
   },
 };
 
-export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
+export const UrgentItemsList = memo(({ items }: UrgentItemsListProps) => {
   const [filterBuyer, setFilterBuyer] = useState<string>('all');
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
 
-  const buyers = Array.from(new Set(items.map(i => i.comprador).filter(Boolean))) as string[];
+  const buyers = useMemo(() => 
+    Array.from(new Set(items.map(i => i.comprador).filter(Boolean))) as string[]
+  , [items]);
 
-  const filteredItems = filterBuyer === 'all' 
-    ? items 
-    : items.filter(i => i.comprador === filterBuyer);
+  const filteredItems = useMemo(() => 
+    filterBuyer === 'all' 
+      ? items 
+      : items.filter(i => i.comprador === filterBuyer)
+  , [items, filterBuyer]);
 
-  const handleNotify = (e: React.MouseEvent, id: string, comprador: string) => {
+  const handleNotify = useCallback((e: React.MouseEvent, id: string, comprador: string) => {
     e.stopPropagation();
     toast.success(`Notificação enviada para ${comprador} sobre o item ${id}`);
-  };
+  }, []);
 
-  const handleItemClick = (item: UrgentItem) => {
+  const handleItemClick = useCallback((item: UrgentItem) => {
     setSelectedItemId(item.dbId || item.id);
     setIsSheetOpen(true);
-  };
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -181,4 +185,6 @@ export const UrgentItemsList = ({ items }: UrgentItemsListProps) => {
       />
     </div>
   );
-};
+});
+
+UrgentItemsList.displayName = 'UrgentItemsList';

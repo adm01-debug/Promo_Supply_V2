@@ -1,6 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -12,6 +13,16 @@ const getLogger = (req: Request) => {
   return new EdgeLogger("ai-negotiation", requestId);
 };
 
+const NegotiationInputSchema = z.object({
+  cotacoes: z.array(z.any()).min(1, "É necessário pelo menos uma cotação para análise"),
+  solicitacao: z.object({
+    id: z.string().uuid(),
+    titulo: z.string(),
+    valor_estimado: z.number().optional().nullable(),
+    quantidade: z.number().optional().nullable(),
+  }),
+  historico_precos: z.array(z.any()).optional().nullable(),
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
@@ -40,7 +51,20 @@ serve(async (req) => {
       });
     }
 
-    const { cotacoes, solicitacao, historico_precos } = await req.json();
+    const body = await req.json();
+    const validatedData = NegotiationInputSchema.safeParse(body);
+
+    if (!validatedData.success) {
+      logger.warn("Validação de input falhou", { errors: validatedData.error.format() });
+      return new Response(JSON.stringify({ 
+        error: "Dados de entrada inválidos", 
+        details: validatedData.error.format() 
+      }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { cotacoes, solicitacao, historico_precos } = validatedData.data;
     logger.info("Iniciando análise de negociação", { 
       userId: user.id, 
       solicitacaoId: solicitacao?.id, 

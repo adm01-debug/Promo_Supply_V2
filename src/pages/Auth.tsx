@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FloatingInput } from '@/components/ui/floating-input';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/features/auth';
 import { useWebAuthn } from '@/hooks/useWebAuthn';
 import { useAccountLockout } from '@/hooks/useAccountLockout';
 import { PasswordStrengthIndicator } from '@/components/security/PasswordStrengthIndicator';

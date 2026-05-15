@@ -3,18 +3,10 @@ import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import { toast } from 'sonner';
-import type { AppRole } from './authRoles';
+import type { AppRole } from '../types/authRoles';
+import { UserProfileSchema, type UserProfile, type Tenant } from '../schemas/auth.schemas';
 
-export interface UserProfile {
-  id: string;
-  user_id: string;
-  full_name: string | null;
-  email: string | null;
-  avatar_url: string | null;
-  department: string | null;
-  phone: string | null;
-  current_organization_id: string | null;
-}
+export type { UserProfile };
 
 interface AuthContextType {
   user: User | null;
@@ -23,7 +15,7 @@ interface AuthContextType {
   role: AppRole | null;
   organizationId: string | null;
   tenantId: string | null;
-  availableTenants: { id: string; name: string; slug: string }[];
+  availableTenants: Tenant[];
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
@@ -42,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<AppRole | null>(null);
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [tenantId, setTenantId] = useState<string | null>(null);
-  const [availableTenants, setAvailableTenants] = useState<{ id: string; name: string; slug: string }[]>([]);
+  const [availableTenants, setAvailableTenants] = useState<Tenant[]>([]);
   const [loading, setLoading] = useState(true);
   const fetchedUserIdRef = useRef<string | null>(null);
   const isFetchingRef = useRef(false);
@@ -71,13 +63,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         logger.error('Error fetching current tenant', { error: tenantRes.error, userId });
       }
 
-      setProfile(profileRes.data ? (profileRes.data as UserProfile) : null);
+      if (profileRes.data) {
+        const validatedProfile = UserProfileSchema.safeParse(profileRes.data);
+        if (validatedProfile.success) {
+          setProfile(validatedProfile.data);
+        } else {
+          logger.error('Profile validation failed', { error: validatedProfile.error, data: profileRes.data });
+          setProfile(profileRes.data as UserProfile); // Fallback but logged
+        }
+      } else {
+        setProfile(null);
+      }
       setRole(roleRes.data?.role ? (roleRes.data.role as AppRole) : null);
       setOrganizationId(profileRes.data?.current_organization_id || null);
       setTenantId(tenantRes.data || null);
       
       if (availableTenantsRes.data) {
-        const tenants = availableTenantsRes.data.map((ut: any) => ut.tenant) as { id: string; name: string; slug: string }[];
+        const tenants = availableTenantsRes.data
+          .map((ut: any) => ut.tenant)
+          .filter(Boolean) as Tenant[];
         setAvailableTenants(tenants);
       }
 
