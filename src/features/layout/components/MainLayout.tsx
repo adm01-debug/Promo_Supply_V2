@@ -33,7 +33,6 @@ interface MainLayoutProps {
   children: React.ReactNode;
 }
 
-// Hook for swipe-back navigation on mobile
 function useSwipeBack() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -95,7 +94,6 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
     await new Promise(resolve => setTimeout(resolve, 500));
   }, [queryClient]);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [location.pathname]);
@@ -107,12 +105,10 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
       <KeyboardShortcutsDialog />
 
-      {/* Desktop Sidebar */}
       <div className="hidden md:block" id="main-navigation" data-tour="sidebar">
         <AppSidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -126,7 +122,6 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
         )}
       </AnimatePresence>
 
-      {/* Mobile Sidebar */}
       <div className={cn(
         "fixed left-0 top-0 z-40 h-screen w-64 bg-card border-r border-border transform transition-transform duration-300 ease-out md:hidden",
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
@@ -134,14 +129,10 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
         <AppSidebar collapsed={false} onToggle={() => setMobileMenuOpen(false)} />
       </div>
 
-      {/* Main Content */}
       <div className={cn("transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]", sidebarCollapsed ? "md:ml-[68px]" : "md:ml-64")}>
-        {/* Sticky Header */}
         <header className="sticky top-0 z-30 h-16 md:h-16 border-b border-border/10 bg-card/60 backdrop-blur-2xl dark:bg-[hsl(228,28%,6%,0.6)]">
           <div className="h-full px-4 md:px-6 flex items-center justify-between gap-4 md:gap-6">
-            {/* LEFT: Mobile nav controls + Desktop back button */}
             <div className="flex items-center gap-1 shrink-0">
-              {/* Mobile: hamburger or back+hamburger */}
               <div className="md:hidden flex items-center">
                 {isHome ? (
                   <Button
@@ -169,17 +160,13 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
                   </div>
                 )}
               </div>
-
-              {/* Desktop: contextual back button */}
               <SmartBackButton className="hidden md:flex" />
             </div>
 
-            {/* CENTER: Search */}
             <div className="flex flex-1 max-w-xl" data-tour="global-search">
               <AdvancedSearch />
             </div>
 
-            {/* RIGHT: Actions */}
             <HeaderActions
               onOpenCommandPalette={() => setCommandPaletteOpen(true)}
               onRestartTour={restartTour}
@@ -187,10 +174,8 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
           </div>
         </header>
 
-        {/* Page content with animated transitions */}
         <MobileRefreshWrapper onRefresh={handleRefresh} className="min-h-[calc(100vh-3.5rem)]">
           <main id="main-content" className="p-4 md:p-6" tabIndex={-1}>
-            {/* Breadcrumbs */}
             {!isHome && (
               <motion.div
                 className="mb-3"
@@ -203,7 +188,6 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
               </motion.div>
             )}
 
-            {/* Page content with fade-in */}
             <motion.div
               key={location.pathname}
               initial={{ opacity: 0 }}
