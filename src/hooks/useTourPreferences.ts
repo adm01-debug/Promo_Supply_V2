@@ -217,11 +217,13 @@ export const useAllTourPreferences = () => {
     if (!user?.id) return;
 
     try {
-      await supabase
+      const { error } = await supabase
         .from('user_tour_preferences')
         .delete()
         .eq('user_id', user.id)
         .eq('tour_key', tourKey);
+      
+      if (error) throw error;
 
       setPreferences(prev => prev.filter(p => p.tourKey !== tourKey));
     } catch (error) {
@@ -233,10 +235,12 @@ export const useAllTourPreferences = () => {
     if (!user?.id) return;
 
     try {
-      await supabase
+      const { error } = await supabase
         .from('user_tour_preferences')
         .delete()
         .eq('user_id', user.id);
+      
+      if (error) throw error;
 
       setPreferences([]);
     } catch (error) {
