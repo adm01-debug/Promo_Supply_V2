@@ -127,6 +127,14 @@ export function AdvancedSearch() {
 
   useEffect(() => { performSearch(debouncedQuery, activeCategory); }, [debouncedQuery, activeCategory, performSearch]);
 
+  const handleSelect = useCallback((result: SearchResult) => {
+    saveToHistory(query);
+    const typeMap: Record<string, RecentItem['type']> = { pages: 'page', solicitacoes: 'solicitacao', pedidos: 'pedido', fornecedores: 'fornecedor', pagamentos: 'pagamento', contratos: 'contrato' };
+    addRecentItem({ id: result.id, type: typeMap[result.type] || 'page', title: result.title, subtitle: result.subtitle, url: result.href });
+    setOpen(false);
+    navigate(result.href);
+  }, [query, saveToHistory, addRecentItem, navigate]);
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     const totalItems = results.length + (query ? 0 : searchHistory.length);
     switch (e.key) {
@@ -153,11 +161,6 @@ export function AdvancedSearch() {
       }
     }
   }, [results, selectedIndex, query, searchHistory, activeCategory, handleSelect]);
-
-  const handleSelect = useCallback((result: SearchResult) => {
-    saveToHistory(query);
-    const typeMap: Record<string, RecentItem['type']> = { pages: 'page', solicitacoes: 'solicitacao', pedidos: 'pedido', fornecedores: 'fornecedor', pagamentos: 'pagamento', contratos: 'contrato' };
-    addRecentItem({ id: result.id, type: typeMap[result.type] || 'page', title: result.title, subtitle: result.subtitle, url: result.href });
     setOpen(false);
     navigate(result.href);
   }, [query, saveToHistory, addRecentItem, navigate]);

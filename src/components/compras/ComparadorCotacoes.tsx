@@ -158,7 +158,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
     ];
 
     return radarMetrics.map(m => {
-      const dataPoint: any = { subject: m.name };
+      const dataPoint: Record<string, string | number> = { subject: m.name };
       selectedCotacoes.forEach(c => {
         const val = Number(c[m.key as keyof Cotacao]) || 0;
         const allVals = cotacoes.map(x => Number(x[m.key as keyof Cotacao]) || 0);
@@ -369,6 +369,23 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
               {cotacoes.map(cotacao => {
                 const isSelected = selectedIds.includes(cotacao.id);
                 const score = getScore(cotacao.id);
+                return (
+                  <Button
+                    key={cotacao.id}
+                    variant={isSelected ? "default" : "outline"}
+                    className="h-8 rounded-full text-xs"
+                    onClick={() => {
+                      if (isSelected) setSelectedIds(prev => prev.filter(id => id !== cotacao.id));
+                      else if (selectedIds.length < 4) setSelectedIds(prev => [...prev, cotacao.id]);
+                    }}
+                  >
+                    {cotacao.fornecedor_nome} ({score}%)
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Insights and Visualization */}
           {selectedCotacoes.length >= 2 && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
