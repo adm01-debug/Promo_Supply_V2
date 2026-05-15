@@ -107,12 +107,13 @@ const CatalogoProdutos = () => {
         icon={Package}
         title={t("catalog.title", "Catálogo de Produtos")}
         description={t("catalog.subtitle", "Gerencie produtos, preços e categorias")}
-        actions={
-          <Button onClick={openCreate} size="sm">
-            <Plus className="h-4 w-4 mr-2" />
-            {t("common.new", "Novo")}
-          </Button>
-        }
+        actions={[
+          {
+            label: t("common.new", "Novo"),
+            icon: Plus,
+            onClick: openCreate,
+          },
+        ]}
       />
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
