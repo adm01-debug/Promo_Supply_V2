@@ -269,7 +269,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         volumeMes: Array(7).fill(0),
         economiaGerada: Array(7).fill(0),
         taxaEntrega: Array(7).fill(0),
-        taxaSlaReal: Array(7).fill(85)
+        taxaSlaReal: Array(7).fill(0)
       };
 
       const days = Array.from({ length: 7 }).map((_, i) => {
@@ -280,19 +280,26 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         };
       });
 
-      // Volume Mes
+      // Temporary arrays to hold data for rate calculations
+      const dailyDeliveryStats = Array.from({ length: 7 }, () => ({ total: 0, noPrazo: 0 }));
+      const dailySlaStats = Array.from({ length: 7 }, () => ({ total: 0, withinSla: 0 }));
+
+      // Volume Mes and Delivery Rate
       ped.forEach(p => {
         const d = new Date(p.data_emissao);
         const dayIdx = days.findIndex(day => isWithinInterval(d, { start: day.start, end: day.end }));
         if (dayIdx !== -1) {
           sparklines.volumeMes[dayIdx] += (Number(p.valor_total) || 0);
           if (p.status === 'entregue') {
-            // Logic for taxaEntrega could be complex here, keeping it simpler for sparkline
+            dailyDeliveryStats[dayIdx].total++;
+            if (p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao) {
+              dailyDeliveryStats[dayIdx].noPrazo++;
+            }
           }
         }
       });
 
-      // Aguardando Cotacao
+      // Aguardando Cotacao, Economia and SLA
       sol.forEach(s => {
         const d = new Date(s.created_at);
         const dayIdx = days.findIndex(day => isWithinInterval(d, { start: day.start, end: day.end }));
@@ -305,8 +312,29 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
           if (estimated > 0 && approved !== null) {
             sparklines.economiaGerada[dayIdx] += Math.max(0, estimated - approved);
           }
+
+          // SLA calc
+          const related = cot.filter(c => c.solicitacao_id === s.id && ['enviada', 'em_analise', 'selecionada', 'aprovada'].includes(c.status));
+          if (related.length > 0) {
+            dailySlaStats[dayIdx].total++;
+            const firstDate = new Date(Math.min(...related.map(c => new Date(c.created_at).getTime())));
+            const diff = (firstDate.getTime() - new Date(s.created_at).getTime()) / (1000 * 60 * 60 * 24);
+            if (diff <= (settings?.warningThresholdDays || 3)) {
+              dailySlaStats[dayIdx].withinSla++;
+            }
+          }
         }
       });
+
+      // Finalize rates
+      for (let i = 0; i < 7; i++) {
+        sparklines.taxaEntrega[i] = dailyDeliveryStats[i].total > 0 
+          ? Math.round((dailyDeliveryStats[i].noPrazo / dailyDeliveryStats[i].total) * 100) 
+          : 100;
+        sparklines.taxaSlaReal[i] = dailySlaStats[i].total > 0 
+          ? Math.round((dailySlaStats[i].withinSla / dailySlaStats[i].total) * 100) 
+          : 85;
+      }
 
       return sparklines;
     };
