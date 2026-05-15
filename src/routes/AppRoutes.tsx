@@ -1,7 +1,8 @@
 import { lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ModuleErrorBoundary } from "@/components/ModuleErrorBoundary";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Lazy load all pages
 const ComprasDashboard = lazy(() => import("@/pages/ComprasDashboard"));
