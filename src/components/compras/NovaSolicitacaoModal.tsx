@@ -8,6 +8,8 @@ import { useImageCompression } from "@/hooks/useImageCompression";
 import { formatBytes } from "@/lib/imageCompression";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import DOMPurify from "dompurify";
+import { solicitacaoSchema, type SolicitacaoFormData as NovaSolicitacaoData } from "@/schemas/solicitacao.schema";
 import {
   Dialog,
   DialogContent,
@@ -16,38 +18,8 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { toast } from "@/lib/feedbackToast";
-import { cn } from "@/lib/utils";
-import { Step1Identification, Step2Specifications, Step3Values } from "./solicitacao/SolicitacaoFormSteps";
+// ... keep existing imports
 
-interface NovaSolicitacaoData {
-  empresa: string;
-  vendedor: string;
-  produto: string;
-  categoriaId: string;
-  quantidade: number;
-  tipo: 'PE_LISO' | 'FAB_LISO' | 'FAB_PERSONALIZADO';
-  prazoEntrega: string;
-  observacoes: string;
-  prioridade: 'baixa' | 'normal' | 'alta' | 'urgente';
-  valorEstimado: number;
-  centroCusto: string;
-  costCenterId: string;
-  anexos: File[];
-}
 
 const initialFormData: NovaSolicitacaoData = {
   empresa: '',
