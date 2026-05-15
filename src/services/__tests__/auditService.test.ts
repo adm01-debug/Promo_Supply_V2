@@ -30,6 +30,15 @@ vi.mock("@/integrations/supabase/client", () => ({
   supabase: mockSupabase,
 }));
 
+vi.mock("@/lib/logger", () => ({
+  logger: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
 describe("auditService", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -53,11 +62,11 @@ describe("auditService", () => {
   });
 
   it("should log errors without crashing", async () => {
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const { logger } = await import("@/lib/logger");
     insertSpy.mockResolvedValue({ error: { message: "DB Error" } });
 
     await auditHelpers.logView("pedido", "ped-1", "Viewed order");
 
-    expect(consoleSpy).toHaveBeenCalledWith("Erro ao registrar auditoria:", expect.objectContaining({ message: "DB Error" }));
+    expect(logger.error).toHaveBeenCalledWith("Erro ao registrar auditoria", expect.objectContaining({ error: { message: "DB Error" } }));
   });
 });
