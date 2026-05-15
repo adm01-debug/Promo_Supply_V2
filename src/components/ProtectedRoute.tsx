@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 import { Navigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
-import type { AppRole } from '@/hooks/authRoles';
+import { useAuth } from '@/features/auth';
+import type { AppRole } from '@/features/auth';
 
 interface ProtectedRouteProps {
   children: ReactNode;

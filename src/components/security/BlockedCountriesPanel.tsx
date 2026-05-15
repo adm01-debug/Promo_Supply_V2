@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/features/auth';
 import { COMMON_COUNTRIES } from '@/hooks/useGeoRestriction';
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";

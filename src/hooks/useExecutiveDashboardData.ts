@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/features/auth';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 
 export interface ExecutiveMetrics {

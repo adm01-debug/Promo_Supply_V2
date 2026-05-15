@@ -21,7 +21,7 @@ import { PasskeyManager } from '@/components/security/PasskeyManager';
 import { NotificationSettingsPanel } from '@/components/notifications/NotificationSettingsPanel';
 import { TourSettingsPanel } from '@/components/settings/TourSettingsPanel';
 import { useSecurityLogs } from '@/hooks/useSecurityLogs';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/features/auth';
 
 const Seguranca = () => {
   const { isAdmin } = useAuth();

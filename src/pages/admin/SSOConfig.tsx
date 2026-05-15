@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Shield, Key, Globe, Plus, Trash2, Check, AlertTriangle, ExternalLink, Users } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/features/auth';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';

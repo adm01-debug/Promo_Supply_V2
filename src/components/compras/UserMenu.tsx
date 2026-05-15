@@ -10,8 +10,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useAuth } from '@/hooks/useAuth';
-import { roleLabels, roleColors } from '@/hooks/authRoles';
+import { useAuth } from '@/features/auth';
+import { roleLabels, roleColors } from '@/features/auth';
 import { cn } from '@/lib/utils';
 
 export const UserMenu = () => {

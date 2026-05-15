@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { usePermissions } from '@/hooks/usePermissions';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '@/features/auth';
 
 interface PermissionGateProps {
   children: ReactNode;
