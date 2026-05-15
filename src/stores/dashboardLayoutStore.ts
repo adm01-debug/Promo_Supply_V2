@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { supabase } from '@/integrations/supabase/client';
 import { Json } from '@/integrations/supabase/types';
+import { logger } from '@/lib/logger';
 
 export interface DashboardWidget {
   id: string;
@@ -110,7 +111,7 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
             set({ widgets: mergedWidgets.sort((a, b) => a.order - b.order) });
           }
         } catch (error) {
-          console.error('Error loading dashboard layout:', error);
+          logger.error('Error loading dashboard layout:', { error });
         } finally {
           set({ isLoading: false });
         }
@@ -133,7 +134,7 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
 
           if (error) throw error;
         } catch (error) {
-          console.error('Error saving dashboard layout:', error);
+          logger.error('Error saving dashboard layout:', { error });
         }
       }
     }),
