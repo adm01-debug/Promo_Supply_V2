@@ -20,6 +20,9 @@ const { mockSupabase } = vi.hoisted(() => {
       gte: vi.fn().mockImplementation(() => builder),
       lte: vi.fn().mockImplementation(() => builder),
       then: vi.fn().mockImplementation((cb: any) => Promise.resolve(cb({ data: [], error: null }))),
+      or: vi.fn().mockImplementation(() => builder),
+      gte: vi.fn().mockImplementation(() => builder),
+      lte: vi.fn().mockImplementation(() => builder),
     };
     return builder;
   };
