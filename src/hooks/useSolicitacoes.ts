@@ -8,6 +8,7 @@ import { auditHelpers } from '@/services/auditService';
 import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 import type { Json, Database } from '@/integrations/supabase/types';
+import { CreateSolicitacaoSchema, type CreateSolicitacaoInput } from '@/schemas/solicitacao.schemas';
 
 export type CostCenter = Database['public']['Tables']['cost_centers']['Row'] & {
   manager?: { full_name: string | null } | null;
@@ -20,21 +21,8 @@ export type Solicitacao = Database['public']['Tables']['solicitacoes']['Row'] & 
   cost_center?: { name: string; code: string; } | null;
 };
 
-export interface CreateSolicitacaoInput {
-  titulo: string;
-  descricao?: string;
-  tipo: Solicitacao['tipo'];
-  prioridade?: Solicitacao['prioridade'];
-  valor_estimado?: number;
-  quantidade?: number;
-  unidade?: string;
-  data_necessidade?: string;
-  departamento?: string;
-  centro_custo?: string;
-  cost_center_id?: string;
-  justificativa?: string;
-  categoria_id?: string;
-}
+// Using types from schema
+export type { CreateSolicitacaoInput };
 
 export interface SolicitacaoFilters {
   search?: string;
@@ -125,6 +113,13 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   const createSolicitacao = useCallback(async (input: CreateSolicitacaoInput) => {
     if (!user || !tenantId) { toast.error('Você precisa estar logado em uma organização'); return null; }
     
+    const validated = CreateSolicitacaoSchema.safeParse(input);
+    if (!validated.success) {
+      const errorMsg = validated.error.errors[0]?.message || 'Dados inválidos';
+      toast.error(errorMsg);
+      return null;
+    }
+
     try {
       logger.info('Criando nova solicitação', { titulo: input.titulo, tipo: input.tipo });
 
@@ -156,15 +151,23 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       const { data: solData, error: solError } = await supabase
         .from('solicitacoes')
         .insert({
-          numero, titulo: input.titulo, descricao: input.descricao, tipo: input.tipo,
-          prioridade: input.prioridade || 'media', valor_estimado: input.valor_estimado,
-          quantidade: input.quantidade || 1, unidade: input.unidade || 'un',
-          data_necessidade: input.data_necessidade, departamento: input.departamento,
-          centro_custo: input.centro_custo, cost_center_id: input.cost_center_id,
-          justificativa: input.justificativa,
-          categoria_id: input.categoria_id, solicitante_id: user.id,
+          numero, 
+          titulo: validated.data.titulo, 
+          descricao: validated.data.descricao, 
+          tipo: validated.data.tipo as any, // Database enum type
+          prioridade: validated.data.prioridade as any,
+          valor_estimado: validated.data.valor_estimado,
+          quantidade: validated.data.quantidade, 
+          unidade: validated.data.unidade,
+          data_necessidade: validated.data.data_necessidade, 
+          departamento: validated.data.departamento,
+          centro_custo: validated.data.centro_custo, 
+          cost_center_id: validated.data.cost_center_id,
+          justificativa: validated.data.justificativa,
+          categoria_id: validated.data.categoria_id, 
+          solicitante_id: user.id,
           tenant_id: tenantId,
-        } as any)
+        })
         .select().single();
       
       if (solError) {
