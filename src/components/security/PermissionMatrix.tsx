@@ -7,7 +7,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from "@/lib/feedbackToast";
 import { usePermissions, moduleLabels, actionLabels, Permission } from '@/hooks/usePermissions';
-import { useAuth, AppRole, roleLabels, roleColors } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
+import { AppRole, roleLabels, roleColors } from '@/hooks/authRoles';
 import { supabase } from '@/integrations/supabase/client';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
