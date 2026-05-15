@@ -158,7 +158,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
     ];
 
     return radarMetrics.map(m => {
-      const dataPoint: any = { subject: m.name };
+      const dataPoint: Record<string, string | number> = { subject: m.name };
       selectedCotacoes.forEach(c => {
         const val = Number(c[m.key as keyof Cotacao]) || 0;
         const allVals = cotacoes.map(x => Number(x[m.key as keyof Cotacao]) || 0);
@@ -369,6 +369,43 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
               {cotacoes.map(cotacao => {
                 const isSelected = selectedIds.includes(cotacao.id);
                 const score = getScore(cotacao.id);
+                return (
+                  <TooltipProvider key={cotacao.id}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all",
+                            isSelected 
+                              ? "border-primary bg-primary/10" 
+                              : "border-muted hover:border-muted-foreground/30"
+                          )}
+                          onClick={() => toggleSelection(cotacao.id)}
+                        >
+                          <Checkbox checked={isSelected} />
+                          <span className="font-medium text-sm">{cotacao.fornecedor}</span>
+                          <Badge 
+                            variant={score >= 70 ? "default" : score >= 40 ? "secondary" : "outline"}
+                            className="text-xs"
+                          >
+                            {score}pts
+                          </Badge>
+                          {cotacao.id === analysis.bestOverall && (
+                            <Trophy className="w-4 h-4 text-warning" />
+                          )}
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Total: R$ {cotacao.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                        <p>Prazo: {cotacao.prazoEntrega} dias</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Insights and Visualization */}
           {selectedCotacoes.length >= 2 && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -442,44 +479,6 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
               </div>
             </div>
           )}
-
-
-                return (
-                  <TooltipProvider key={cotacao.id}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          className={cn(
-                            "flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all",
-                            isSelected 
-                              ? "border-primary bg-primary/10" 
-                              : "border-muted hover:border-muted-foreground/30"
-                          )}
-                          onClick={() => toggleSelection(cotacao.id)}
-                        >
-                          <Checkbox checked={isSelected} />
-                          <span className="font-medium text-sm">{cotacao.fornecedor}</span>
-                          <Badge 
-                            variant={score >= 70 ? "default" : score >= 40 ? "secondary" : "outline"}
-                            className="text-xs"
-                          >
-                            {score}pts
-                          </Badge>
-                          {cotacao.id === analysis.bestOverall && (
-                            <Trophy className="w-4 h-4 text-warning" />
-                          )}
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Total: R$ {cotacao.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-                        <p>Prazo: {cotacao.prazoEntrega} dias</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                );
-              })}
-            </div>
-          </div>
 
           {/* Comparison Table */}
           {selectedCotacoes.length >= 2 ? (
