@@ -1,3 +1,3 @@
 export * from './hooks/useAuth';
 export * from './types/authRoles';
-export * from './schemas/auth.schemas';
+export { UserProfileSchema, TenantSchema, type Tenant } from './schemas/auth.schemas';
