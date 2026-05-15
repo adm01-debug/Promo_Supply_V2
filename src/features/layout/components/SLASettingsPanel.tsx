@@ -202,7 +202,7 @@ export const SLASettingsPanel = forwardRef<HTMLDivElement>((_props, ref) => {
                 <SupplierThresholdConfig
                   globalThreshold={localSettings.supplierSLAThreshold}
                   supplierConfigs={localSettings.supplierAlertConfigs}
-                  onConfigChange={(configs) =>
+                  onConfigChange={(configs: any) =>
                     setLocalSettings({
                       ...localSettings,
                       supplierAlertConfigs: configs,
