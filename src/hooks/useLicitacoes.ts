@@ -176,7 +176,10 @@ export interface SourcingEvent {
   invitations?: any[];
   responses?: any[];
   created_at: string;
-  end_date: string | null;
+  closes_at: string;
+  award_deadline: string | null;
+  budget_estimate: number | null;
+  currency: string;
 }
 
 export function useSourcingEvents() {
@@ -191,7 +194,7 @@ export function useSourcingEvents() {
         .select('*, category:categorias(nome)')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return (data || []) as SourcingEvent[];
+      return (data || []) as unknown as SourcingEvent[];
     },
     enabled: !!user,
   });
@@ -200,7 +203,7 @@ export function useSourcingEvents() {
     mutationFn: async (event: Partial<SourcingEvent>) => {
       const { data, error } = await supabase.from('sourcing_events').insert(event as any).select().single();
       if (error) throw error;
-      return data as SourcingEvent;
+      return data as unknown as SourcingEvent;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sourcing-events'] });
@@ -226,7 +229,7 @@ export function useSourcingEventDetails(eventId: string | null) {
         .eq('id', eventId)
         .single();
       if (error) throw error;
-      return data as SourcingEvent;
+      return data as unknown as SourcingEvent;
     },
     enabled: !!user && !!eventId,
   });
