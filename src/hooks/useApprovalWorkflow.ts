@@ -141,7 +141,7 @@ export const useApprovalWorkflow = () => {
         toast.success('Delegação criada com sucesso');
       }
       await fetchDelegations();
-    } catch (error) { console.error('Error saving delegation:', error); toast.error('Erro ao salvar delegação'); }
+    } catch (error) { logger.error('Error saving delegation', { error }); toast.error('Erro ao salvar delegação'); }
     finally { setLoading(false); }
   }, [fetchDelegations]);
 
@@ -152,7 +152,7 @@ export const useApprovalWorkflow = () => {
       if (error) throw error;
       toast.success('Delegação excluída com sucesso');
       await fetchDelegations();
-    } catch (error) { console.error('Error deleting delegation:', error); toast.error('Erro ao excluir delegação'); }
+    } catch (error) { logger.error('Error deleting delegation', { error }); toast.error('Erro ao excluir delegação'); }
     finally { setLoading(false); }
   }, [fetchDelegations]);
 
@@ -167,7 +167,7 @@ export const useApprovalWorkflow = () => {
       const { data, error } = await supabase.rpc('find_approval_rule', { p_valor: valor, p_categoria_id: categoriaId || undefined });
       if (error) throw error;
       return data as string | null;
-    } catch (error: unknown) { console.error('Error finding approval rule via RPC:', error); return null; }
+    } catch (error: unknown) { logger.error('Error finding approval rule via RPC', { error }); return null; }
   }, []);
 
   const getEffectiveApprover = useCallback(async (approverId: string, categoriaId?: string, valor?: number) => {
@@ -175,7 +175,7 @@ export const useApprovalWorkflow = () => {
       const { data, error } = await supabase.rpc('get_effective_approver', { p_approver_id: approverId, p_categoria_id: categoriaId || undefined, p_valor: valor || undefined });
       if (error) throw error;
       return data as Array<{ approver_id: string; delegation_id: string | null }> | null;
-    } catch (error: unknown) { console.error('Error getting effective approver:', error); return null; }
+    } catch (error: unknown) { logger.error('Error getting effective approver', { error }); return null; }
   }, []);
 
   const createWorkflow = useCallback(async (solicitacaoId: string, valor: number, categoriaId?: string): Promise<ApprovalWorkflow | null> => {
@@ -271,7 +271,7 @@ export const useApprovalWorkflow = () => {
       await fetchPendingWorkflows();
       return typedWorkflow;
     } catch (error) { 
-      console.error('Error creating workflow:', error); 
+      logger.error('Error creating workflow', { error }); 
       toast.error('Erro ao criar workflow de aprovação'); 
       return null; 
     }
@@ -303,7 +303,7 @@ export const useApprovalWorkflow = () => {
       });
       toast.success('Aprovação registrada com sucesso');
       await fetchPendingSteps(); await fetchPendingWorkflows();
-    } catch (error) { console.error('Error approving step:', error); toast.error('Erro ao aprovar'); }
+    } catch (error) { logger.error('Error approving step', { error }); toast.error('Erro ao aprovar'); }
     finally { setLoading(false); }
   }, [user, fetchPendingSteps, fetchPendingWorkflows]);
 
@@ -320,7 +320,7 @@ export const useApprovalWorkflow = () => {
       });
       toast.success('Rejeição registrada');
       await fetchPendingSteps(); await fetchPendingWorkflows();
-    } catch (error) { console.error('Error rejecting step:', error); toast.error('Erro ao rejeitar'); }
+    } catch (error) { logger.error('Error rejecting step', { error }); toast.error('Erro ao rejeitar'); }
     finally { setLoading(false); }
   }, [user, fetchPendingSteps, fetchPendingWorkflows]);
 
@@ -329,7 +329,7 @@ export const useApprovalWorkflow = () => {
       const { data, error } = await supabase.from('approval_history').select('*').eq('workflow_id', workflowId).order('created_at', { ascending: true });
       if (error) throw error;
       return (data || []) as ApprovalHistory[];
-    } catch (error) { console.error('Error fetching history:', error); return []; }
+    } catch (error) { logger.error('Error fetching history', { error }); return []; }
   }, []);
 
   const fetchAllHistory = useCallback(async () => {
@@ -337,7 +337,7 @@ export const useApprovalWorkflow = () => {
       const { data, error } = await supabase.from('approval_history').select('*').order('created_at', { ascending: false }).limit(100);
       if (error) throw error;
       setAllHistory((data || []) as ApprovalHistory[]);
-    } catch (error) { console.error('Error fetching all history:', error); }
+    } catch (error) { logger.error('Error fetching all history', { error }); }
   }, []);
 
   const checkEscalations = useCallback(async () => {
@@ -352,7 +352,7 @@ export const useApprovalWorkflow = () => {
         await supabase.from('approval_history').insert({ workflow_id: workflow.id, solicitacao_id: workflow.solicitacao_id, acao: 'escalated', detalhes: { escalado_para: rule.escalacao_para, motivo: 'Prazo expirado' } });
       }
       await fetchPendingWorkflows(); await fetchPendingSteps();
-    } catch (error) { console.error('Error checking escalations:', error); }
+    } catch (error) { logger.error('Error checking escalations', { error }); }
   }, [fetchPendingWorkflows, fetchPendingSteps]);
 
   // Realtime subscription is now standard across the app
