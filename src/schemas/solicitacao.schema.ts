@@ -7,16 +7,18 @@ export const solicitacaoSchema = z.object({
   categoriaId: z.string().min(1, "Selecione a categoria"),
   quantidade: z.number().int().positive("A quantidade deve ser maior que zero"),
   tipo: z.enum(['PE_LISO', 'FAB_LISO', 'FAB_PERSONALIZADO']),
-  prazoEntrega: z.string().refine((val) => {
+  prazoEntrega: z.string().min(1, "Informe o prazo de entrega").refine((val) => {
     const date = new Date(val);
-    return !isNaN(date.getTime()) && date >= new Date(new Date().setHours(0, 0, 0, 0));
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return !isNaN(date.getTime()) && date >= today;
   }, "O prazo de entrega deve ser uma data futura"),
-  observacoes: z.string().max(2000, "As observações não podem exceder 2000 caracteres").optional(),
+  observacoes: z.string().max(2000, "As observações não podem exceder 2000 caracteres").optional().default(""),
   prioridade: z.enum(['baixa', 'normal', 'alta', 'urgente']),
   valorEstimado: z.number().nonnegative("O valor estimado não pode ser negativo"),
-  centroCusto: z.string().optional(),
+  centroCusto: z.string().optional().default(""),
   costCenterId: z.string().min(1, "Selecione o centro de custo"),
-  anexos: z.array(z.any()).optional(),
+  anexos: z.array(z.any()).optional().default([]),
 });
 
 export type SolicitacaoFormData = z.infer<typeof solicitacaoSchema>;
