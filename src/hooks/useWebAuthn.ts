@@ -66,7 +66,7 @@ export function useWebAuthn() {
       setCredentials(data || []);
       return data || [];
     } catch (error) {
-      console.error('Error fetching credentials:', error);
+      logger.error('Error fetching credentials', { error });
       return [];
     }
   }, []);
@@ -153,7 +153,7 @@ export function useWebAuthn() {
       await fetchCredentials();
       return { success: true };
     } catch (error: unknown) {
-      console.error('WebAuthn registration error:', error);
+      logger.error('WebAuthn registration error', { error });
       
       const err = error as Error & { name?: string };
       if (err.name === 'NotAllowedError') {
@@ -250,7 +250,7 @@ export function useWebAuthn() {
           });
 
           if (verifyError) {
-            console.error('OTP verification error:', verifyError);
+            logger.error('OTP verification error', { error: verifyError });
             // Try alternative approach - direct session refresh
           }
         }
@@ -259,7 +259,7 @@ export function useWebAuthn() {
       toast.success('Login realizado com sucesso!');
       return { success: true, userId: finishData.userId };
     } catch (error: unknown) {
-      console.error('WebAuthn authentication error:', error);
+      logger.error('WebAuthn authentication error', { error });
       
       const err = error as Error & { name?: string };
       if (err.name === 'NotAllowedError') {
@@ -290,7 +290,7 @@ export function useWebAuthn() {
       await fetchCredentials();
       return { success: true };
     } catch (error: unknown) {
-      console.error('Error deleting credential:', error);
+      logger.error('Error deleting credential', { error });
       toast.error('Falha ao remover passkey');
       const err = error as Error;
       return { success: false, error: err };
