@@ -2,11 +2,11 @@ import { memo, lazy, Suspense } from "react";
 import { useLocation } from "react-router-dom";
 
 const DependencyHealthBadge = lazy(() => import("@/components/admin/DependencyHealthBadge"));
-import { RealNotificationCenter } from "@/components/compras/RealNotificationCenter";
-import { SLASettingsPanel } from "@/components/compras/SLASettingsPanel";
-import { UserMenu } from "@/components/compras/UserMenu";
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { RealNotificationCenter } from "./RealNotificationCenter";
+import { SLASettingsPanel } from "./SLASettingsPanel";
+import { UserMenu } from "./UserMenu";
+import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 import { AccessibilityPanel } from "@/components/accessibility/AdvancedAccessibility";
 import { FeedbackSettingsPanel } from "@/components/settings/FeedbackSettingsPanel";
 import { TenantSwitcher } from "@/components/admin/TenantSwitcher";
@@ -26,7 +26,6 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
 
   return (
     <div className="flex items-center gap-1 sm:gap-2">
-      {/* Command Palette Button */}
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
@@ -56,7 +55,6 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
         <DependencyHealthBadge />
       </Suspense>
 
-      {/* Accessibility Settings */}
       <Popover>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -73,7 +71,6 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
         </PopoverContent>
       </Popover>
 
-      {/* Feedback Settings */}
       <Popover>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -90,7 +87,6 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
         </PopoverContent>
       </Popover>
 
-      {/* Keyboard shortcuts */}
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
@@ -106,7 +102,6 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
         <TooltipContent><p>Atalhos de teclado (Shift + ?)</p></TooltipContent>
       </Tooltip>
 
-      {/* Help / Restart Tour */}
       {isDashboard && (
         <Tooltip>
           <TooltipTrigger asChild>
