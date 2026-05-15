@@ -38,6 +38,8 @@ vi.mock("@/integrations/supabase/client", () => ({
 vi.mock("@/hooks/useAuth", () => ({
   useAuth: () => ({
     user: { id: "user-1", email: "requester@example.com" },
+    tenantId: "tenant-1",
+    organizationId: "org-1",
   }),
 }));
 
