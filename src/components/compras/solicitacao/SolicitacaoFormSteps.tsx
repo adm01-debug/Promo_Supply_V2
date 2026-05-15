@@ -30,21 +30,8 @@ import {
 import { cn } from "@/lib/utils";
 import { formatBytes } from "@/lib/imageCompression";
 
-interface NovaSolicitacaoData {
-  empresa: string;
-  vendedor: string;
-  produto: string;
-  categoriaId: string;
-  quantidade: number;
-  tipo: 'PE_LISO' | 'FAB_LISO' | 'FAB_PERSONALIZADO';
-  prazoEntrega: string;
-  observacoes: string;
-  prioridade: 'baixa' | 'normal' | 'alta' | 'urgente';
-  valorEstimado: number;
-  centroCusto: string;
-  costCenterId: string;
-  anexos: File[];
-}
+import { type SolicitacaoFormData as NovaSolicitacaoData } from "@/schemas/solicitacao.schema";
+
 
 interface BudgetCheckResult {
   available: boolean;
