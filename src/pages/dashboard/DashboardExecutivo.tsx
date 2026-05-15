@@ -7,7 +7,7 @@ const DashboardExecutivo = () => {
   const { isOpen, complete, skip } = useOnboardingTour('dashboard-executivo');
 
   return (
-    
+    <>
       <ExecutiveDashboard />
       <OnboardingTour
         steps={dashboardTourSteps}
@@ -15,7 +15,7 @@ const DashboardExecutivo = () => {
         onComplete={complete}
         onSkip={skip}
       />
-    
+    </>
   );
 };
 
