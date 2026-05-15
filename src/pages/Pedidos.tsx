@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MainLayout } from "@/features/layout/components/MainLayout";
 import { ModuleErrorBoundary, withModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { OnboardingTour, pedidosTourSteps } from "@/components/onboarding/OnboardingTour";
 import { useTourPreferences } from "@/hooks/useTourPreferences";
@@ -157,7 +156,7 @@ const Pedidos = () => {
 
   if (loading) {
     return (
-      <MainLayout>
+      
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <div className="space-y-2"><div className="h-8 w-64 bg-muted animate-pulse rounded" /><div className="h-4 w-48 bg-muted animate-pulse rounded" /></div>
@@ -166,13 +165,13 @@ const Pedidos = () => {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">{[...Array(5)].map((_, i) => <KPICardSkeleton key={i} />)}</div>
           <TableSkeleton rows={8} columns={6} />
         </div>
-      </MainLayout>
+      
     );
   }
 
   return (
     <ModuleErrorBoundary module="pedidos">
-      <MainLayout>
+      
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="pedidos-header">
@@ -326,7 +325,7 @@ const Pedidos = () => {
       <PriceHistoryModal open={priceHistoryOpen} onOpenChange={setPriceHistoryOpen} />
       {receivingPedido && <ReceivingModal open={!!receivingPedido} onOpenChange={(open) => !open && setReceivingPedido(null)} pedidoId={receivingPedido.id} pedidoNumero={receivingPedido.numero} items={receivingItems} onSuccess={() => refetch()} />}
       <OrderPreviewModal pedido={previewPedido} open={!!previewPedido} onOpenChange={(open) => !open && setPreviewPedido(null)} onConfirmSend={previewPedido?.status === 'aprovado' ? () => { handleUpdateStatus(previewPedido.id, 'enviado'); setPreviewPedido(null); } : undefined} />
-      </MainLayout>
+      
     </ModuleErrorBoundary>
   );
 };
