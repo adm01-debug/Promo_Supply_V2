@@ -306,7 +306,7 @@ export function useFornecedoresKPIs() {
 
         setKpis(stats);
       } catch (err) {
-        console.error('Error fetching KPIs:', err);
+        logger.error('Error fetching KPIs', { error: err });
       } finally {
         setLoading(false);
       }

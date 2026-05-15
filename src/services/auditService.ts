@@ -115,7 +115,7 @@ export const fetchAuditLogs = async (options?: {
       count: count || 0 
     };
   } catch (err) {
-    console.error('Erro ao buscar logs de auditoria:', err);
+    logger.error('Erro ao buscar logs de auditoria', { error: err });
     return { data: [], count: 0 };
   }
 };

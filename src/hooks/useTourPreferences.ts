@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import { logger } from '@/lib/logger';
 
 interface TourPreference {
   tourKey: string;
@@ -99,7 +100,7 @@ export const useTourPreferences = (tourKey: string) => {
       
       setPreference(prev => prev ? { ...prev, completed: true, completedAt: new Date().toISOString() } : null);
     } catch (error) {
-      console.error('Error saving tour completion:', error);
+      logger.error('Error saving tour completion', { error });
       localStorage.setItem(`tour_${tourKey}`, JSON.stringify({ completed: true, skipped: false }));
     }
   }, [user?.id, tourKey]);
@@ -130,7 +131,7 @@ export const useTourPreferences = (tourKey: string) => {
       
       setPreference(prev => prev ? { ...prev, skipped: true, skippedAt: new Date().toISOString() } : null);
     } catch (error) {
-      console.error('Error saving tour skip:', error);
+      logger.error('Error saving tour skip', { error });
       localStorage.setItem(`tour_${tourKey}`, JSON.stringify({ completed: false, skipped: true }));
     }
   }, [user?.id, tourKey]);
@@ -155,7 +156,7 @@ export const useTourPreferences = (tourKey: string) => {
       setPreference(null);
       setIsOpen(true);
     } catch (error) {
-      console.error('Error restarting tour:', error);
+      logger.error('Error restarting tour', { error });
       localStorage.removeItem(`tour_${tourKey}`);
       setIsOpen(true);
     }
@@ -202,7 +203,7 @@ export const useAllTourPreferences = () => {
         skippedAt: item.skipped_at,
       })));
     } catch (error) {
-      console.error('Error fetching all tour preferences:', error);
+      logger.error('Error fetching all tour preferences', { error });
     } finally {
       setIsLoading(false);
     }
@@ -216,15 +217,17 @@ export const useAllTourPreferences = () => {
     if (!user?.id) return;
 
     try {
-      await supabase
+      const { error } = await supabase
         .from('user_tour_preferences')
         .delete()
         .eq('user_id', user.id)
         .eq('tour_key', tourKey);
+      
+      if (error) throw error;
 
       setPreferences(prev => prev.filter(p => p.tourKey !== tourKey));
     } catch (error) {
-      console.error('Error resetting tour:', error);
+      logger.error('Error resetting tour', { error });
     }
   }, [user?.id]);
 
@@ -232,14 +235,16 @@ export const useAllTourPreferences = () => {
     if (!user?.id) return;
 
     try {
-      await supabase
+      const { error } = await supabase
         .from('user_tour_preferences')
         .delete()
         .eq('user_id', user.id);
+      
+      if (error) throw error;
 
       setPreferences([]);
     } catch (error) {
-      console.error('Error resetting all tours:', error);
+      logger.error('Error resetting all tours', { error });
     }
   }, [user?.id]);
 

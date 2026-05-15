@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Dialog,
   DialogContent,
@@ -41,6 +41,7 @@ import { differenceInDays } from "date-fns/differenceInDays";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
+import { logger } from "@/lib/logger";
 import type { Contract, ContractItem, ContractPenalty, ContractDocument, StatusConfig, TypeConfig } from "@/types/contract";
 import { Input } from "@/components/ui/input";
 import { ContractSLAReadonlyTab, ContractPenaltiesTab } from "./contract/ContractDetailsTabs";
@@ -76,13 +77,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    if (contract && open) {
-      fetchContractDetails();
-    }
-  }, [contract, open]);
-
-  const fetchContractDetails = async () => {
+  const fetchContractDetails = useCallback(async () => {
     setLoading(true);
     try {
       const [itemsRes, historyRes, ordersRes, penaltiesRes, docsRes] = await Promise.all([
@@ -99,11 +94,17 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
       setPenalties(penaltiesRes.data || []);
       setDocuments(docsRes.data || []);
     } catch (error) {
-      console.error('Error fetching contract details:', error);
+      logger.error('Error fetching contract details', { error });
     } finally {
       setLoading(false);
     }
-  };
+  }, [contract.id]);
+
+  useEffect(() => {
+    if (contract && open) {
+      fetchContractDetails();
+    }
+  }, [contract, open, fetchContractDetails]);
 
   const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -147,7 +148,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
       }
       toast.success("PDF gerado com sucesso!");
     } catch (err: unknown) {
-      console.error('Error generating PDF:', err);
+      logger.error('Error generating PDF', { error: err });
       toast.error("Erro ao gerar PDF do contrato");
     } finally {
       setGeneratingPdf(false);

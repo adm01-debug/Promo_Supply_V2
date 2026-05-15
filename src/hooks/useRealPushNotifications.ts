@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { logger } from '@/lib/logger';
 import { RealtimeChannel } from '@supabase/supabase-js';
 
 export interface Notification {
@@ -134,11 +135,11 @@ export function useRealPushNotifications() {
         });
 
         if (error) {
-          console.error('Error saving push subscription:', error);
+          logger.error('Error saving push subscription', { error });
         }
       }
     } catch (error) {
-      console.error('Error registering push subscription:', error);
+      logger.error('Error registering push subscription', { error });
     }
   }, [user]);
 
@@ -165,7 +166,7 @@ export function useRealPushNotifications() {
       setNotifications(typedNotifications);
       setUnreadCount(typedNotifications.filter(n => !n.read).length);
     } catch (error) {
-      console.error('Error loading notifications:', error);
+      logger.error('Error loading notifications', { error });
     }
   }, [user]);
 
@@ -201,7 +202,7 @@ export function useRealPushNotifications() {
         setPreferences(newPrefs as NotificationPreferences);
       }
     } catch (error) {
-      console.error('Error loading preferences:', error);
+      logger.error('Error loading preferences', { error });
     }
   }, [user]);
 
@@ -225,7 +226,7 @@ export function useRealPushNotifications() {
         description: 'Suas preferências de notificação foram salvas.',
       });
     } catch (error) {
-      console.error('Error updating preferences:', error);
+      logger.error('Error updating preferences', { error });
       toast({
         title: 'Erro',
         description: 'Não foi possível salvar as preferências.',
@@ -252,7 +253,7 @@ export function useRealPushNotifications() {
       );
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (error) {
-      console.error('Error marking notification as read:', error);
+      logger.error('Error marking notification as read', { error });
     }
   }, [user]);
 
@@ -272,7 +273,7 @@ export function useRealPushNotifications() {
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
       setUnreadCount(0);
     } catch (error) {
-      console.error('Error marking all as read:', error);
+      logger.error('Error marking all as read', { error });
     }
   }, [user]);
 
@@ -296,7 +297,7 @@ export function useRealPushNotifications() {
         setUnreadCount(prev => Math.max(0, prev - 1));
       }
     } catch (error) {
-      console.error('Error removing notification:', error);
+      logger.error('Error removing notification', { error });
     }
   }, [user, notifications]);
 
@@ -315,7 +316,7 @@ export function useRealPushNotifications() {
       setNotifications([]);
       setUnreadCount(0);
     } catch (error) {
-      console.error('Error clearing notifications:', error);
+      logger.error('Error clearing notifications', { error });
     }
   }, [user]);
 
@@ -474,6 +475,6 @@ function playNotificationSound(priority: 'low' | 'medium' | 'high' | 'critical')
       }, index * (duration * 1000 + 50));
     });
   } catch (e) {
-    console.warn('Could not play notification sound:', e);
+    logger.warn('Could not play notification sound', { error: e });
   }
 }
