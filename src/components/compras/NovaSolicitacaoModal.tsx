@@ -8,6 +8,8 @@ import { useImageCompression } from "@/hooks/useImageCompression";
 import { formatBytes } from "@/lib/imageCompression";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import DOMPurify from "dompurify";
+import { solicitacaoSchema, type SolicitacaoFormData as NovaSolicitacaoData } from "@/schemas/solicitacao.schema";
 import {
   Dialog,
   DialogContent,
@@ -17,37 +19,11 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/lib/feedbackToast";
 import { cn } from "@/lib/utils";
 import { Step1Identification, Step2Specifications, Step3Values } from "./solicitacao/SolicitacaoFormSteps";
-
-interface NovaSolicitacaoData {
-  empresa: string;
-  vendedor: string;
-  produto: string;
-  categoriaId: string;
-  quantidade: number;
-  tipo: 'PE_LISO' | 'FAB_LISO' | 'FAB_PERSONALIZADO';
-  prazoEntrega: string;
-  observacoes: string;
-  prioridade: 'baixa' | 'normal' | 'alta' | 'urgente';
-  valorEstimado: number;
-  centroCusto: string;
-  costCenterId: string;
-  anexos: File[];
-}
 
 const initialFormData: NovaSolicitacaoData = {
   empresa: '',
@@ -64,9 +40,6 @@ const initialFormData: NovaSolicitacaoData = {
   costCenterId: '',
   anexos: [],
 };
-
-
-
 
 interface BudgetCheckResult {
   available: boolean;
@@ -103,7 +76,6 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   const [budgetCheck, setBudgetCheck] = useState<BudgetCheckResult | null>(null);
   const [isCheckingBudget, setIsCheckingBudget] = useState(false);
 
-  // Persistence effect
   useEffect(() => {
     if (formData !== initialFormData) {
       localStorage.setItem('nova_solicitacao_draft', JSON.stringify(formData));
@@ -118,33 +90,28 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
     }
-    // Clear budget check when value or cost center changes
     if (field === 'valorEstimado' || field === 'costCenterId') {
       setBudgetCheck(null);
     }
   };
 
-  const validateStep1 = () => {
-    const newErrors: Partial<Record<keyof NovaSolicitacaoData, string>> = {};
-    if (!formData.empresa) newErrors.empresa = 'Selecione a empresa';
-    if (!formData.vendedor) newErrors.vendedor = 'Selecione o vendedor';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const validateWithSchema = (currentStep: number) => {
+    const result = solicitacaoSchema.safeParse(formData);
+    if (result.success) return true;
 
-  const validateStep2 = () => {
     const newErrors: Partial<Record<keyof NovaSolicitacaoData, string>> = {};
-    if (!formData.produto) newErrors.produto = 'Informe o produto';
-    if (formData.quantidade <= 0) newErrors.quantidade = 'Quantidade deve ser maior que 0';
-    if (!formData.prazoEntrega) newErrors.prazoEntrega = 'Informe o prazo de entrega';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    result.error.issues.forEach(issue => {
+      const path = issue.path[0] as keyof NovaSolicitacaoData;
+      // Filter errors by step
+      if (currentStep === 1 && (path === 'empresa' || path === 'vendedor')) {
+        newErrors[path] = issue.message;
+      } else if (currentStep === 2 && (path === 'produto' || path === 'quantidade' || path === 'prazoEntrega')) {
+        newErrors[path] = issue.message;
+      } else if (currentStep === 3 && (path === 'valorEstimado' || path === 'costCenterId')) {
+        newErrors[path] = issue.message;
+      }
+    });
 
-  const validateStep3 = () => {
-    const newErrors: Partial<Record<keyof NovaSolicitacaoData, string>> = {};
-    if (formData.valorEstimado <= 0) newErrors.valorEstimado = 'Informe o valor estimado';
-    if (!formData.costCenterId) newErrors.costCenterId = 'Selecione o centro de custo';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -168,16 +135,13 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
   };
 
   const handleNext = async () => {
-    if (step === 1 && validateStep1()) {
-      setStep(2);
-    } else if (step === 2 && validateStep2()) {
-      setStep(3);
-    } else if (step === 3 && validateStep3()) {
-      // Auto-check budget if cost center provided
-      if (formData.costCenterId && formData.valorEstimado > 0) {
-        await checkBudget();
+    if (validateWithSchema(step)) {
+      if (step === 3) {
+        if (formData.costCenterId && formData.valorEstimado > 0) {
+          await checkBudget();
+        }
       }
-      setStep(4);
+      setStep(prev => prev + 1);
     }
   };
 
@@ -193,7 +157,10 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     setIsSubmitting(true);
     
     try {
-      // Generate sequential number from database
+      // Sanitização de inputs
+      const sanitizedTitulo = DOMPurify.sanitize(formData.produto);
+      const sanitizedDescricao = DOMPurify.sanitize(formData.observacoes || '');
+
       const { data: numData } = await supabase.rpc('generate_sequential_number', {
         prefix: 'SOL',
         table_name: 'solicitacoes',
@@ -217,8 +184,8 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
         .from('solicitacoes')
         .insert({
           numero,
-          titulo: formData.produto,
-          descricao: formData.observacoes || `${formData.tipo} — Empresa: ${formData.empresa}, Vendedor: ${formData.vendedor}`,
+          titulo: sanitizedTitulo,
+          descricao: sanitizedDescricao || `${formData.tipo} — Empresa: ${formData.empresa}, Vendedor: ${formData.vendedor}`,
           tipo: tipoMap[formData.tipo] || 'material',
           prioridade: prioridadeMap[formData.prioridade] || 'media',
           quantidade: formData.quantidade,
@@ -237,8 +204,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
 
       if (error) throw error;
 
-      // Upload attachments to Storage
-      if (formData.anexos.length > 0 && data?.id) {
+      if (formData.anexos && formData.anexos.length > 0 && data?.id) {
         for (const file of formData.anexos) {
           const filePath = `solicitacoes/${data.id}/${Date.now()}-${file.name}`;
           const { error: uploadError } = await supabase.storage
@@ -251,7 +217,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
       }
       
       toast.success(`Solicitação ${data.numero} criada com sucesso!`, {
-        description: `${formData.produto} - ${formData.quantidade} un. | R$ ${formData.valorEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+        description: `${sanitizedTitulo} - ${formData.quantidade} un. | R$ ${formData.valorEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
       });
       
       localStorage.removeItem('nova_solicitacao_draft');
@@ -280,12 +246,12 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
     const processedFiles = await compressAndReplace(files);
-    updateField('anexos', [...formData.anexos, ...processedFiles]);
+    updateField('anexos', [...(formData.anexos || []), ...processedFiles]);
     e.target.value = '';
   }, [compressAndReplace, formData.anexos]);
 
   const removeFile = (index: number) => {
-    updateField('anexos', formData.anexos.filter((_, i) => i !== index));
+    updateField('anexos', (formData.anexos || []).filter((_, i) => i !== index));
   };
 
   const handleOpenChange = (newOpen: boolean) => {
@@ -296,19 +262,6 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
       setErrors({});
       setBudgetCheck(null);
     }
-  };
-
-  const prioridadeConfig = {
-    baixa: { label: 'Baixa', color: 'bg-muted-foreground' },
-    normal: { label: 'Normal', color: 'bg-info' },
-    alta: { label: 'Alta', color: 'bg-warning' },
-    urgente: { label: 'Urgente', color: 'bg-destructive' },
-  };
-
-  const tipoConfig = {
-    PE_LISO: { label: 'Pronta Entrega Liso', description: 'Produto em estoque, sem personalização' },
-    FAB_LISO: { label: 'Fabricação Liso', description: 'Fabricação sob demanda, sem personalização' },
-    FAB_PERSONALIZADO: { label: 'Fabricação Personalizado', description: 'Fabricação com arte personalizada' },
   };
 
   return (
@@ -331,7 +284,6 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           </DialogTitle>
         </DialogHeader>
 
-        {/* Progress Steps - 4 etapas */}
         <div className="flex items-center justify-between mb-4">
           {STEPS.map((s, i) => {
             const Icon = s.icon;

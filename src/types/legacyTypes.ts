@@ -22,7 +22,9 @@ export interface LegacySolicitacao {
   createdAt: string;
   costCenterName?: string;
   costCenterCode?: string;
+  organizationName?: string;
 }
+
 
 export interface LegacyCotacao {
   id: string;

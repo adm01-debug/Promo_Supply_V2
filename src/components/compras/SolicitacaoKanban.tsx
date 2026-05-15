@@ -28,7 +28,8 @@ import {
   AlertTriangle,
   ArrowRight
 } from "lucide-react";
-import { differenceInDays, isPast } from "date-fns";
+import { differenceInDays } from "date-fns/differenceInDays";
+import { isPast } from "date-fns/isPast";
 
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
