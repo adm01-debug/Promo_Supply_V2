@@ -4,6 +4,7 @@ import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shell } from "@/features/layout/components/Shell";
+import { RouteSkeleton } from "@/components/navigation/RouteSkeleton";
 
 // Lazy load all pages
 const ComprasDashboard = lazy(() => import("@/pages/dashboard/ComprasDashboard"));
