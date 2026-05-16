@@ -88,23 +88,28 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
 
   if (!backTarget) return null;
 
+  const handleBack = () => {
+    if (window.navigator.vibrate) window.navigator.vibrate(10);
+    navigate(backTarget.path);
+  };
+
   if (compact) {
     return (
       <motion.div
-        initial={{ opacity: 0, x: -8 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.15 }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.2, type: "spring", stiffness: 300, damping: 25 }}
       >
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => {
-            if (window.navigator.vibrate) window.navigator.vibrate(10);
-            navigate(backTarget.path);
-          }}
-          className={cn("h-8 w-8 text-muted-foreground hover:text-foreground", className)}
+          onClick={handleBack}
+          className={cn(
+            "h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted/80 rounded-full",
+            "active:scale-90 transition-all",
+            className
+          )}
           aria-label={`Voltar para ${backTarget.label}`}
-          title={`Voltar para ${backTarget.label} (Alt + Seta Esquerda)`}
         >
           <ChevronLeft className="h-5 w-5" />
         </Button>
@@ -114,31 +119,28 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -8 }}
+      initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.15 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
     >
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => {
-              if (window.navigator.vibrate) window.navigator.vibrate(10);
-              navigate(backTarget.path);
-            }}
+            onClick={handleBack}
             className={cn(
-              "gap-1.5 text-muted-foreground hover:text-foreground h-8 px-2.5 rounded-lg",
-              "hover:bg-muted/60 active:scale-[0.97] transition-all",
+              "gap-2 text-muted-foreground hover:text-foreground h-9 px-3 rounded-full",
+              "hover:bg-muted/80 active:scale-[0.96] transition-all group",
               className
             )}
             aria-label={`Voltar para ${backTarget.label}`}
           >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="text-xs font-medium">{backTarget.label}</span>
+            <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+            <span className="text-xs font-semibold tracking-tight uppercase">{backTarget.label}</span>
           </Button>
         </TooltipTrigger>
-        <TooltipContent side="bottom" className="text-xs">
+        <TooltipContent side="bottom" align="start" className="text-[10px] font-bold uppercase tracking-widest bg-foreground text-background">
           Voltar para {backTarget.label}
         </TooltipContent>
       </Tooltip>

@@ -32,17 +32,17 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
             variant="outline"
             size="sm"
             onClick={onOpenCommandPalette}
-            className="hidden md:flex items-center gap-2 text-muted-foreground hover:text-foreground"
+            className="hidden md:flex items-center gap-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-all active:scale-[0.98]"
             aria-label="Abrir Command Palette"
           >
             <Command className="w-4 h-4" />
-            <span className="text-xs">Buscar...</span>
-            <kbd className="ml-2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
-              <span className="text-xs">⌘</span>K
+            <span className="text-xs font-medium">Buscar...</span>
+            <kbd className="ml-2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[9px] font-bold text-muted-foreground/70 uppercase">
+              <span className="text-[10px]">⌘</span>K
             </kbd>
           </Button>
         </TooltipTrigger>
-        <TooltipContent>
+        <TooltipContent className="bg-foreground text-background font-bold text-[10px] uppercase tracking-widest">
           <p>Busca rápida (Ctrl+K / ⌘K)</p>
         </TooltipContent>
       </Tooltip>
@@ -59,12 +59,19 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
         <Tooltip>
           <TooltipTrigger asChild>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon" className="hidden md:flex" aria-label="Configurações de acessibilidade">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="hidden md:flex hover:bg-muted/80 rounded-full transition-all active:scale-90" 
+                aria-label="Configurações de acessibilidade"
+              >
                 <Accessibility className="w-4 h-4" />
               </Button>
             </PopoverTrigger>
           </TooltipTrigger>
-          <TooltipContent><p>Acessibilidade</p></TooltipContent>
+          <TooltipContent className="bg-foreground text-background font-bold text-[10px] uppercase tracking-widest">
+            <p>Acessibilidade</p>
+          </TooltipContent>
         </Tooltip>
         <PopoverContent className="w-96 p-0" align="end">
           <AccessibilityPanel />
@@ -93,23 +100,33 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
             variant="ghost"
             size="icon"
             onClick={() => window.dispatchEvent(new CustomEvent('show-keyboard-shortcuts'))}
-            className="hidden md:flex"
+            className="hidden md:flex hover:bg-muted/80 rounded-full transition-all active:scale-90"
             aria-label="Atalhos de teclado"
           >
             <Keyboard className="w-4 h-4" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent><p>Atalhos de teclado (Shift + ?)</p></TooltipContent>
+        <TooltipContent className="bg-foreground text-background font-bold text-[10px] uppercase tracking-widest">
+          <p>Atalhos de teclado (Shift + ?)</p>
+        </TooltipContent>
       </Tooltip>
 
       {isDashboard && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button variant="ghost" size="icon" onClick={onRestartTour} className="hidden md:flex" aria-label="Ver tour de introdução">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={onRestartTour} 
+              className="hidden md:flex hover:bg-muted/80 rounded-full transition-all active:scale-90" 
+              aria-label="Ver tour de introdução"
+            >
               <HelpCircle className="w-4 h-4" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent><p>Ver tour de introdução</p></TooltipContent>
+          <TooltipContent className="bg-foreground text-background font-bold text-[10px] uppercase tracking-widest">
+            <p>Ver tutorial do sistema</p>
+          </TooltipContent>
         </Tooltip>
       )}
 
