@@ -1,21 +1,21 @@
-import * as React from "react";
+import { motion, HTMLMotionProps } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-export interface AtomProps extends React.HTMLAttributes<HTMLElement> {
-  as?: React.ElementType;
+interface AtomProps extends HTMLMotionProps<"div"> {
+  children?: React.ReactNode;
 }
 
-const Atom = React.forwardRef<HTMLElement, AtomProps>(
-  ({ as: Component = "div", className, ...props }, ref) => {
-    return (
-      <Component
-        ref={ref}
-        className={cn("transition-all duration-300", className)}
-        {...props}
-      />
-    );
-  }
-);
-Atom.displayName = "Atom";
-
-export { Atom };
+export const Atom = ({ className, children, ...props }: AtomProps) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 5 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 5 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+      className={cn("atom-container", className)}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  );
+};
