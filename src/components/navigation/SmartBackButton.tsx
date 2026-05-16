@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils';
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigation } from '@/hooks/useNavigation';
+import { haptics } from '@/lib/haptics';
+
 
 
 /**
@@ -102,7 +104,8 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
   if (!backTarget) return null;
 
   const handleBack = () => {
-    if (window.navigator.vibrate) window.navigator.vibrate(10);
+    haptics.light();
+
     
     // Elite logic: if we have history, go back. 
     // If not (e.g. user opened a link directly), go to logical parent.
