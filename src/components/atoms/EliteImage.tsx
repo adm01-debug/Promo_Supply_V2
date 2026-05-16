@@ -48,12 +48,10 @@ export const EliteImage: React.FC<EliteImageProps> = ({
       <motion.img
         src={src}
         alt={alt}
-        className={cn(
-          "transition-opacity duration-700 ease-out",
-          loaded ? "opacity-100" : "opacity-0",
-          className
-        )}
-        onLoad={() => setLoaded(true)}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: loaded ? 1 : 0 }}
+        transition={{ duration: 0.7 }}
+        className={cn(className)}
         {...props}
       />
 
