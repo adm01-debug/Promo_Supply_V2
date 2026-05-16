@@ -49,7 +49,7 @@ export class BaseApiService {
 
       return data;
     } catch (error) {
-      logger.error(`[API Error] ${method} ${url}:`, error);
+      logger.error(`[API Error] ${method} ${url}:`, { error });
       throw error;
     }
   }
