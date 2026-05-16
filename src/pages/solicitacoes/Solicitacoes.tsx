@@ -240,4 +240,4 @@ const Solicitacoes = () => {
   );
 };
 
-export default withModuleErrorBoundary(Solicitacoes, { module: 'solicitacoes' });
+export default Solicitacoes;
