@@ -1,30 +1,28 @@
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useAccountFilters } from '@/hooks/useAccountFilters';
 import { useClearFiltersFlow } from '@/hooks/useClearFiltersFlow';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useDashboardFilters, DashboardFilter } from '@/hooks/useDashboardFilters';
 import { PurchaseClimateWidget } from './PurchaseClimateWidget';
 import {
-  DollarSign, TrendingUp, ShoppingCart, Target, GitCompare, Download, BarChart3,
-  ShieldCheck, Brain, Sparkles, Filter, X
+  DollarSign, TrendingUp, ShoppingCart, Target, GitCompare, Download,
+  ShieldCheck, Brain, Sparkles
 } from 'lucide-react';
 import { useExecutiveDashboardData } from '@/hooks/useExecutiveDashboardData';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
-import { exportToCSV } from '@/lib/exportUtils';
-import { toast } from '@/hooks/use-toast';
 import { ElitePageWrapper } from '@/components/organisms/ElitePageWrapper';
 import { EliteButton } from '@/components/atoms/EliteButton';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
 import {
   executiveMetrics, calculateChange, 
   categorySpend, topSuppliers, buyerPerformance, pendingItems,
-  formatCurrency, type DrillDownData
+  type DrillDownData
 } from './executive/executiveDashboardData';
 import { ExecutiveMetricCard } from './executive/ExecutiveMetricCard';
 import { ExecutiveFiltersBar } from './executive/ExecutiveFiltersBar';
@@ -109,7 +107,7 @@ export const ExecutiveDashboard = () => {
   const currentFilters = { category: selectedCategory, supplier: selectedSupplier, period: selectedPeriod, showComparison };
   const hasActiveFilters = selectedCategory !== 'all' || selectedSupplier !== 'all';
 
-  const clearFlow = useClearFiltersFlow({
+  const { requestClear, ConfirmDialog } = useClearFiltersFlow({
     scope: 'executive-dashboard',
     screenLabel: 'Dashboard Executivo',
     describeActiveFilters: () => [
@@ -120,8 +118,9 @@ export const ExecutiveDashboard = () => {
     applySnapshot: (s: any) => {
       setSelectedCategory(s.selectedCategory); setSelectedSupplier(s.selectedSupplier);
     },
-    performClear: async () => {
+    performClear: () => {
       setSelectedCategory('all'); setSelectedSupplier('all');
+      return [];
     },
   });
 
@@ -205,7 +204,7 @@ export const ExecutiveDashboard = () => {
           onCategoryChange={setSelectedCategory}
           onSupplierChange={setSelectedSupplier}
           hasActiveFilters={hasActiveFilters}
-          onClearFilters={clearFlow.requestClear}
+          onClearFilters={requestClear}
           favorites={favorites}
           currentFilters={currentFilters}
           onSave={saveFavorite}
@@ -263,8 +262,18 @@ export const ExecutiveDashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
            <div className="lg:col-span-2 space-y-8">
-              <ExecutiveAIInsights metrics={activeMetrics as any} spendByCategory={realSpendByCategory || []} topSuppliers={realTopSuppliers || []} />
-              <ExecutiveChartsRow showComparison={showComparison} filteredCategorySpend={filteredCategorySpend} onCategoryDrillDown={handleCategoryDrillDown} selectedCategory={selectedCategory} selectedSupplier={selectedSupplier} />
+              <ExecutiveAIInsights 
+                metrics={activeMetrics as any} 
+                spendByCategory={realSpendByCategory || []} 
+                topSuppliers={(realTopSuppliers || []).map(s => ({ name: s.name, rating: 4.5 }))} 
+              />
+              <ExecutiveChartsRow 
+                showComparison={showComparison} 
+                filteredCategorySpend={filteredCategorySpend} 
+                onCategoryDrillDown={handleCategoryDrillDown} 
+                selectedCategory={selectedCategory} 
+                selectedSupplier={selectedSupplier} 
+              />
               <PriceVarianceAnalysis />
            </div>
            <div className="space-y-8">
@@ -286,7 +295,13 @@ export const ExecutiveDashboard = () => {
            </div>
         </div>
 
-        <ExecutiveTablesRow filteredSuppliers={filteredSuppliers} filteredBuyers={filteredBuyers} />
+        <ExecutiveTablesRow 
+          filteredSuppliers={filteredSuppliers} 
+          filteredBuyers={filteredBuyers} 
+          showComparison={showComparison}
+          onSupplierDrillDown={(s) => setDrillDown({ type: 'supplier', data: s })}
+          onBuyerDrillDown={(b) => setDrillDown({ type: 'buyer', data: b })}
+        />
         
         <div className="pt-8">
            <KraljicMatrix />
@@ -297,6 +312,7 @@ export const ExecutiveDashboard = () => {
         drillDown={drillDown}
         onClose={() => setDrillDown(null)}
       />
+      {ConfirmDialog}
     </ElitePageWrapper>
   );
 };
