@@ -12,6 +12,7 @@ import { haptics } from '@/lib/haptics';
  * Intelligent route mapping for hierarchical navigation.
  */
 const parentRoutes: Record<string, string> = {
+  '/compras': '/',
   '/cotacao': '/',
   '/solicitacoes': '/',
   '/pedidos': '/',
@@ -40,7 +41,6 @@ const parentRoutes: Record<string, string> = {
   '/recompra-inteligente': '/pedidos',
   '/devolucoes': '/pedidos',
   '/catalogo-produtos': '/',
-  '/admin/telemetria': '/',
   '/recebimento': '/pedidos',
   '/portal-fornecedor': '/',
   '/configuracoes-centro-custo': '/',
@@ -53,7 +53,6 @@ const parentRoutes: Record<string, string> = {
   '/admin/punchout': '/',
   '/admin/sourcing-pipeline': '/',
   '/admin/fiscal': '/',
-  '/compras': '/',
 };
 
 const routeLabels: Record<string, string> = {
