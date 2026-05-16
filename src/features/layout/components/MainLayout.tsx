@@ -113,12 +113,13 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
 
               
               {/* Desktop & Mobile Smart Back Button - Always present in header when not home */}
-              <AnimatePresence>
+              <AnimatePresence mode="wait">
                 {!isHome && (
                   <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
+                    initial={{ opacity: 0, x: -20, filter: "blur(10px)" }}
+                    animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
+                    exit={{ opacity: 0, x: -20, filter: "blur(10px)" }}
+                    transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
                     className="flex items-center"
                   >
                     <SmartBackButton compact={false} className="hidden md:flex" />

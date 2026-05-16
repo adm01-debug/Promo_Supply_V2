@@ -4,6 +4,16 @@
    (Imported into @layer utilities via index.css)
    ================================================================= */
 
+#nprogress .bar {
+  background: linear-gradient(90deg, #8b5cf6, #d946ef) !important;
+  height: 3px !important;
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.5) !important;
+}
+
+#nprogress .peg {
+  box-shadow: 0 0 10px #d946ef, 0 0 5px #8b5cf6 !important;
+}
+
 /* ===== INTERACTIVE COMPONENTS ===== */
   .btn-interactive {
     @apply transition-all duration-200;

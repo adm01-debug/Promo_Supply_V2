@@ -96,42 +96,52 @@ export const PWAInstallPrompt = forwardRef<HTMLDivElement>((_props, _ref) => {
 
       {/* Install Prompt */}
       {showInstallPrompt && (
-        <div className="fixed bottom-4 right-4 z-50 max-w-sm animate-in slide-in-from-bottom-5">
-          <Card className="border-primary/20 shadow-lg">
-            <CardHeader className="pb-2">
+        <div className="fixed bottom-20 md:bottom-8 right-4 z-50 max-w-sm animate-in slide-in-from-bottom-5">
+          <Card className="border-white/10 bg-[#0a0a0c]/80 backdrop-blur-2xl shadow-2xl rounded-3xl overflow-hidden relative group">
+            <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/10 via-transparent to-fuchsia-500/10 opacity-50" />
+            
+            <CardHeader className="pb-2 relative z-10">
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <Download className="h-5 w-5 text-primary" />
+                <div className="flex items-center gap-3">
+                  <div className="p-2.5 rounded-2xl bg-gradient-to-br from-violet-600 to-fuchsia-600 shadow-lg shadow-violet-500/20">
+                    <Download className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <CardTitle className="text-base">Instalar App</CardTitle>
-                    <CardDescription className="text-xs">
-                      Acesso rápido e offline
+                    <CardTitle className="text-base font-black uppercase tracking-tight text-white">Instalar App</CardTitle>
+                    <CardDescription className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                      Experiência Elite Native
                     </CardDescription>
                   </div>
                 </div>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-6 w-6 -mt-1 -mr-1"
+                  className="h-8 w-8 -mt-1 -mr-1 rounded-xl hover:bg-white/5 text-zinc-500"
                   onClick={dismissPrompt}
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
             </CardHeader>
-            <CardContent className="pb-3">
-              <p className="text-xs text-muted-foreground mb-3">
-                Instale o Promo Supply na sua tela inicial para acesso rápido, 
-                mesmo sem internet.
+            <CardContent className="pb-5 relative z-10">
+              <p className="text-xs text-zinc-400 mb-5 leading-relaxed font-medium">
+                Adicione o <span className="text-white font-bold">Promo Brindes</span> à sua tela inicial para acesso instantâneo e performance superior.
               </p>
-              <div className="flex gap-2">
-                <Button onClick={handleInstall} size="sm" className="flex-1">
-                  <Download className="h-4 w-4 mr-1" />
-                  Instalar
+              <div className="flex gap-3">
+                <Button 
+                  onClick={handleInstall} 
+                  size="sm" 
+                  className="flex-1 h-11 rounded-2xl bg-white text-black hover:bg-zinc-200 font-black uppercase tracking-widest text-[10px] shadow-lg shadow-white/5"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Instalar Agora
                 </Button>
-                <Button variant="outline" size="sm" onClick={dismissPrompt}>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={dismissPrompt}
+                  className="h-11 px-5 rounded-2xl border-white/10 hover:bg-white/5 text-zinc-400 font-black uppercase tracking-widest text-[10px]"
+                >
                   Depois
                 </Button>
               </div>

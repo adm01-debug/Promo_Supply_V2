@@ -45,7 +45,8 @@ export const ModernBreadcrumbs = ({ className }: BreadcrumbsProps) => {
   const crumbs = useMemo(() => {
     return pathnames.map((value, index) => {
       const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-      const label = routeLabels[value] || value.charAt(0).toUpperCase() + value.slice(1);
+      const isId = value.length > 20 || !isNaN(Number(value));
+      const label = isId ? `#${value.slice(0, 6)}...` : (routeLabels[value] || value.charAt(0).toUpperCase() + value.slice(1));
       return { to, label };
     });
   }, [pathnames]);

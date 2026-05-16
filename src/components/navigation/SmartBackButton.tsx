@@ -105,13 +105,18 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
     const hasOpenDialog = !!document.querySelector('[role="dialog"][data-state="open"], [cmdk-root], [data-radix-popper-content-wrapper]');
     if (hasOpenDialog) return { path: 'close-modal', label: 'Fechar' };
 
+    // ID extraction from path
+    const pathParts = path.split('/').filter(Boolean);
+    const lastPart = pathParts[pathParts.length - 1];
+    const isId = lastPart && (lastPart.length > 20 || !isNaN(Number(lastPart)));
+
     const parent = parentRoutes[path] 
       ?? parentRoutes[path.split('/').slice(0, -1).join('/')]
       ?? '/';
 
     return {
       path: parent,
-      label: routeLabels[parent] || 'Início',
+      label: isId ? 'Voltar' : (routeLabels[parent] || 'Início'),
     };
   }, [location.pathname]);
 
