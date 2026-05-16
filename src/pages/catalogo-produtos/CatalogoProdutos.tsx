@@ -345,6 +345,43 @@ const CatalogoProdutos = () => {
             <DialogTitle>{editing ? "Editar Produto" : "Novo Produto"}</DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
+            <div className="md:col-span-2 flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors relative group">
+              {formData.imagem_url ? (
+                <div className="relative w-full aspect-video max-h-48 rounded-lg overflow-hidden border">
+                  <img src={formData.imagem_url} alt="Preview" className="w-full h-full object-contain" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      onClick={() => setFormData(prev => ({ ...prev, imagem_url: undefined }))}
+                    >
+                      <X className="w-4 h-4 mr-2" /> Remover
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center space-y-2">
+                  <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto">
+                    {isUploading ? <Loader2 className="w-6 h-6 text-primary animate-spin" /> : <ImageIcon className="w-6 h-6 text-primary" />}
+                  </div>
+                  <div>
+                    <Label htmlFor="image-upload" className="cursor-pointer text-primary hover:underline font-medium">
+                      Clique para enviar uma imagem
+                    </Label>
+                    <p className="text-xs text-muted-foreground">PNG, JPG ou WebP até 5MB</p>
+                  </div>
+                  <Input 
+                    id="image-upload" 
+                    type="file" 
+                    className="hidden" 
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, onImageSelect)}
+                    disabled={isUploading}
+                  />
+                </div>
+              )}
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="codigo">Código</Label>
               <Input
