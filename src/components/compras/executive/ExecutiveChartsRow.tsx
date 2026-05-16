@@ -88,7 +88,7 @@ export const ExecutiveChartsRow = ({
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Card className="h-full hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
+        <Card className="h-full border-white/5 bg-white/[0.03] backdrop-blur-2xl rounded-[2.5rem] hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-300 overflow-hidden group">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg flex items-center gap-2">
               <div className="p-1.5 rounded-lg bg-primary/10 text-primary">

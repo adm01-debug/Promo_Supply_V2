@@ -94,13 +94,13 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
 
   if (loading) {
     return (
-      <Card className="border-primary/20 bg-card/50 backdrop-blur-xl">
+      <Card className="border-violet-500/20 bg-white/[0.03] backdrop-blur-2xl">
         <CardContent className="p-8 flex flex-col items-center justify-center space-y-4">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
           >
-            <Sparkles className="h-8 w-8 text-primary opacity-50" />
+            <Sparkles className="h-8 w-8 text-violet-400 opacity-50" />
           </motion.div>
           <p className="text-sm text-muted-foreground animate-pulse">IA analisando dados em tempo real...</p>
         </CardContent>
@@ -109,17 +109,17 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
   }
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl overflow-hidden relative">
-      <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-        <Sparkles className="h-24 w-24 text-primary" />
+    <Card className="border-white/5 bg-white/[0.03] backdrop-blur-2xl overflow-hidden relative rounded-[2.5rem]">
+      <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+        <Sparkles className="h-24 w-24 text-violet-500" />
       </div>
-      
+
       <CardHeader className="flex flex-row items-center space-y-0 pb-4">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-lg bg-primary/10">
             <Sparkles className="h-5 w-5 text-primary" />
           </div>
-          <CardTitle className="text-lg font-bold">Insights Inteligentes (Beta)</CardTitle>
+          <CardTitle className="text-lg font-black text-white uppercase tracking-tight">AI Strategic Insights</CardTitle>
         </div>
       </CardHeader>
 
@@ -154,7 +154,7 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
                 
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-sm leading-none">{insight.title}</h4>
+                    <h4 className="font-bold text-sm leading-none text-zinc-100">{insight.title}</h4>
                     <span className={cn(
                       "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider",
                       insight.type === 'opportunity' && "bg-blue-500/20 text-blue-500",
@@ -170,7 +170,7 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
                   </p>
                   
                   {insight.action && (
-                    <button className="flex items-center gap-1 text-[11px] font-bold text-primary hover:gap-2 transition-all mt-2">
+                    <button className="flex items-center gap-1 text-[11px] font-bold text-violet-400 hover:gap-2 transition-all mt-2">
                       {insight.action} <ArrowRight className="h-3 w-3" />
                     </button>
                   )}
