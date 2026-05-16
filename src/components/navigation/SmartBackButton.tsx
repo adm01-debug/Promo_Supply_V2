@@ -12,6 +12,7 @@ import { haptics } from '@/lib/haptics';
  * Intelligent route mapping for hierarchical navigation.
  */
 const parentRoutes: Record<string, string> = {
+  '/compras': '/',
   '/cotacao': '/',
   '/solicitacoes': '/',
   '/pedidos': '/',
@@ -40,12 +41,18 @@ const parentRoutes: Record<string, string> = {
   '/recompra-inteligente': '/pedidos',
   '/devolucoes': '/pedidos',
   '/catalogo-produtos': '/',
-  '/admin/telemetria': '/',
   '/recebimento': '/pedidos',
   '/portal-fornecedor': '/',
-  '/configuracoes': '/',
-  '/buyer': '/',
-  '/admin': '/',
+  '/configuracoes-centro-custo': '/',
+  '/sourcing': '/',
+  '/sourcing/novo': '/sourcing',
+  '/sourcing/:id': '/sourcing',
+  '/admin/telemetria': '/',
+  '/admin/workflows': '/',
+  '/admin/erp': '/',
+  '/admin/punchout': '/',
+  '/admin/sourcing-pipeline': '/',
+  '/admin/fiscal': '/',
 };
 
 const routeLabels: Record<string, string> = {
@@ -143,12 +150,15 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
             aria-label={`Voltar para ${backTarget.label}`}
           >
             {compact ? (
-              <ChevronLeft className="h-6 w-6 transition-transform group-hover:-translate-x-0.5" />
+              <ChevronLeft className="h-6 w-6 transition-transform group-hover:-translate-x-1" />
             ) : (
-              <>
-                <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-                <span className="text-[10px] font-black uppercase tracking-widest">{backTarget.label}</span>
-              </>
+              <div className="flex items-center gap-2">
+                <div className="relative h-4 w-4 overflow-hidden">
+                   <ArrowLeft className="h-4 w-4 transition-transform duration-500 group-hover:-translate-x-6" />
+                   <ArrowLeft className="h-4 w-4 absolute top-0 left-6 transition-transform duration-500 group-hover:-translate-x-6 text-primary" />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em]">{backTarget.label}</span>
+              </div>
             )}
             
             {/* Gloss effect */}
