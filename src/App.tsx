@@ -43,6 +43,8 @@ const persister = createSyncStoragePersister({
 });
 
 const App = () => {
+  usePerformanceMonitor();
+
   useEffect(() => {
     logger.info("Aplicação inicializada");
   }, []);

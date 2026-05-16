@@ -16,7 +16,7 @@ export class BaseApiService {
   private static async request<T>(url: string, options: RequestOptions = {}): Promise<T> {
     const { method = 'GET', headers = {}, body, cache: useCache = false } = options;
     
-    const cacheKey = `${method}:${url}:${JSON.stringify(body)}`;
+    const cacheKey = `${method}:${url}:${body ? JSON.stringify(body) : ''}`;
     
     if (useCache && method === 'GET') {
       const cached = cache.get(cacheKey);
