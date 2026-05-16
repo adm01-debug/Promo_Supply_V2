@@ -43,9 +43,17 @@ const parentRoutes: Record<string, string> = {
   '/admin/telemetria': '/',
   '/recebimento': '/pedidos',
   '/portal-fornecedor': '/',
-  '/configuracoes': '/',
-  '/buyer': '/',
-  '/admin': '/',
+  '/configuracoes-centro-custo': '/',
+  '/sourcing': '/',
+  '/sourcing/novo': '/sourcing',
+  '/sourcing/:id': '/sourcing',
+  '/admin/telemetria': '/',
+  '/admin/workflows': '/',
+  '/admin/erp': '/',
+  '/admin/punchout': '/',
+  '/admin/sourcing-pipeline': '/',
+  '/admin/fiscal': '/',
+  '/compras': '/',
 };
 
 const routeLabels: Record<string, string> = {
