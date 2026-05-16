@@ -88,7 +88,7 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
     if (path === '/' || path === '/compras') return null;
 
     // Check for open modals via DOM (standard pattern in the app)
-    const hasOpenDialog = !!document.querySelector('[role="dialog"][data-state="open"], [cmdk-root]');
+    const hasOpenDialog = !!document.querySelector('[role="dialog"][data-state="open"], [cmdk-root], [data-radix-popper-content-wrapper]');
     if (hasOpenDialog) return { path: 'close-modal', label: 'Fechar' };
 
     const parent = parentRoutes[path] 
@@ -97,7 +97,7 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
 
     return {
       path: parent,
-      label: routeLabels[parent] || 'Voltar',
+      label: routeLabels[parent] || 'Início',
     };
   }, [location.pathname]);
 

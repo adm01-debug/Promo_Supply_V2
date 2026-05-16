@@ -264,16 +264,16 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     key={`recent-${item.id}`}
                     value={`${item.label} ${item.keywords?.join(" ") || ""}`}
                     onSelect={() => handleSelect(item)}
-                    className="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
+                    className="flex items-center gap-3 px-3 py-2.5 cursor-pointer hover:bg-accent/50 transition-colors rounded-lg mx-1 my-0.5"
                   >
-                    <div className="p-1.5 rounded-md bg-muted text-muted-foreground">
+                    <div className="p-1.5 rounded-md bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary transition-colors">
                       <History className="h-4 w-4" />
                     </div>
                     <div className="flex-1 flex items-center justify-between">
-                      <span className="font-medium">{item.label}</span>
+                      <span className="font-semibold">{item.label}</span>
                       <div className="flex items-center gap-2">
                         {item.shortcut && (
-                          <CommandShortcut className="text-[10px]">
+                          <CommandShortcut className="text-[10px] bg-muted/50 px-1.5 py-0.5 rounded border border-border/40">
                             {item.shortcut}
                           </CommandShortcut>
                         )}
