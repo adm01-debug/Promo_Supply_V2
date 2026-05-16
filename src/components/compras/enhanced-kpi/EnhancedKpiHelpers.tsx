@@ -87,7 +87,7 @@ DeltaIndicator.displayName = 'DeltaIndicator';
 export const TargetProgressRing = ({ progress, size = 44, strokeWidth = 4, color }: any) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
-  const colors = colorClasses[color] || colorClasses.violet;
+  const colors = colorClasses[color] || colorClasses['violet'];
 
   return (
     <Tooltip>
