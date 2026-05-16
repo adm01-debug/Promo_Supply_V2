@@ -8,6 +8,7 @@ import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { useGlobalUndo } from "@/hooks/useGlobalUndo";
 import { useSessionIdleTimeout } from "@/hooks/useSessionIdleTimeout";
 import { useScrollRestoration } from "@/hooks/useScrollRestoration";
+import { useFormDirty } from "@/hooks/useFormDirty";
 import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
 import { Breadcrumbs } from "./Breadcrumbs";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
