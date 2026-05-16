@@ -86,6 +86,23 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const [mounted, setMounted] = React.useState(false);
   const { theme, setTheme } = useTheme();
   const [search, setSearch] = React.useState("");
+  const [recentIds, setRecentIds] = React.useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem("command-palette-recent");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const saveToRecent = (id: string) => {
+    setRecentIds(prev => {
+      const filtered = prev.filter(i => i !== id);
+      const updated = [id, ...filtered].slice(0, 5);
+      localStorage.setItem("command-palette-recent", JSON.stringify(updated));
+      return updated;
+    });
+  };
 
   // Prevent hydration mismatch
   React.useEffect(() => {
@@ -186,12 +203,19 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const handleSelect = (item: CommandItemType) => {
     onOpenChange(false);
     setSearch("");
+    saveToRecent(item.id);
     if (item.href) {
       navigate(item.href);
     } else if (item.action) {
       item.action();
     }
   };
+
+  const recentItems = React.useMemo(() => {
+    return recentIds
+      .map(id => allItems.find(item => item.id === id))
+      .filter((item): item is CommandItemType => !!item);
+  }, [recentIds, allItems]);
 
   // Group filtered items
   const groupedItems = React.useMemo(() => {
@@ -232,6 +256,35 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
               </p>
             </div>
           </CommandEmpty>
+          {search === "" && recentItems.length > 0 && (
+            <>
+              <CommandGroup heading="Recentemente Usados">
+                {recentItems.map((item) => (
+                  <CommandItem
+                    key={`recent-${item.id}`}
+                    value={`${item.label} ${item.keywords?.join(" ") || ""}`}
+                    onSelect={() => handleSelect(item)}
+                    className="flex items-center gap-3 px-3 py-2.5 cursor-pointer"
+                  >
+                    <div className="p-1.5 rounded-md bg-muted text-muted-foreground">
+                      <History className="h-4 w-4" />
+                    </div>
+                    <div className="flex-1 flex items-center justify-between">
+                      <span className="font-medium">{item.label}</span>
+                      <div className="flex items-center gap-2">
+                        {item.shortcut && (
+                          <CommandShortcut className="text-[10px]">
+                            {item.shortcut}
+                          </CommandShortcut>
+                        )}
+                      </div>
+                    </div>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+              <CommandSeparator />
+            </>
+          )}
 
           {Object.entries(groupedItems).map(([group, items], groupIndex) => (
             <React.Fragment key={group}>
