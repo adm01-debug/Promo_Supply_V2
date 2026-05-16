@@ -156,13 +156,6 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
                 <div className="flex flex-col gap-2">
                   <Breadcrumbs variant="pills" className="hidden md:flex" />
                   <Breadcrumbs variant="compact" className="md:hidden" />
-                  
-                  {/* Visual Page Title in Content Area */}
-                  <div className="mt-2 flex items-center justify-between">
-                    <h2 className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground/40 select-none">
-                      Navegação
-                    </h2>
-                  </div>
                 </div>
               </motion.div>
             )}
