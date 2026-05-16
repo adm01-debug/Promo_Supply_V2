@@ -69,7 +69,7 @@ const Fornecedores = () => {
 
   // Fuse.js for fuzzy search
   const fornecedoresFuse = useMemo(() => {
-    const preparedFornecedores = fornecedores.map(f => ({
+    const preparedFornecedores = (fornecedores as LegacyFornecedor[]).map((f: LegacyFornecedor) => ({
       ...f,
       normalizedNomeFantasia: normalizeText(f.nomeFantasia),
       normalizedRazaoSocial: normalizeText(f.razaoSocial),
