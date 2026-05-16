@@ -356,7 +356,8 @@ const ComprasDashboard = () => {
                 loading={filtersLoading}
               />
               <PurchaseClimateWidget />
-            </div>
+          </div>
+        </motion.div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
