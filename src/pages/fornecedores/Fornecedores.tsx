@@ -69,7 +69,7 @@ const Fornecedores = () => {
 
   // Fuse.js for fuzzy search
   const fornecedoresFuse = useMemo(() => {
-    const preparedFornecedores = fornecedores.map(f => ({
+    const preparedFornecedores = (fornecedores as LegacyFornecedor[]).map((f: LegacyFornecedor) => ({
       ...f,
       normalizedNomeFantasia: normalizeText(f.nomeFantasia),
       normalizedRazaoSocial: normalizeText(f.razaoSocial),
@@ -108,7 +108,7 @@ const Fornecedores = () => {
         }
       });
       
-      filtered = merged.length > 0 ? merged : fornecedores.filter(f =>
+      filtered = merged.length > 0 ? merged : (fornecedores as LegacyFornecedor[]).filter((f: LegacyFornecedor) =>
         f.nomeFantasia.toLowerCase().includes(search.toLowerCase()) ||
         f.razaoSocial.toLowerCase().includes(search.toLowerCase()) ||
         f.cnpj.includes(search)
@@ -117,7 +117,7 @@ const Fornecedores = () => {
     
     // Type filter
     if (tipoFilter !== "todos") {
-      filtered = filtered.filter(f => f.tipo === tipoFilter);
+      filtered = filtered.filter((f: LegacyFornecedor) => f.tipo === tipoFilter);
     }
     
     return filtered;

@@ -410,7 +410,7 @@ const CatalogoSpot = () => {
               <CardContent className="pt-4">
                 <h4 className="text-sm font-medium mb-3">Legenda de Status</h4>
                 <div className="flex flex-wrap gap-3">
-                  {Object.entries(STATUS_CONFIG).map(([status, cfg]) => (
+                  {Object.entries(STATUS_CONFIG).map(([status, cfg]: [string, any]) => (
                     <Badge key={status} variant={cfg.variant} className="text-xs">
                       {cfg.label}
                     </Badge>

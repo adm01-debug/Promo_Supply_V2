@@ -120,7 +120,7 @@ export default function Licitacoes() {
           <SelectTrigger className="w-full sm:w-48"><Filter className="w-4 h-4 mr-2" /><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todos os status</SelectItem>
-            {Object.entries(statusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
+            {Object.entries(statusConfig).map(([k, v]: [string, any]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
@@ -187,7 +187,7 @@ export default function Licitacoes() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2"><Label>Modalidade</Label>
                 <Select value={newForm.modalidade} onValueChange={v => setNewForm(f => ({ ...f, modalidade: v }))}><SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{Object.entries(modalidadeLabels).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
+                  <SelectContent>{Object.entries(modalidadeLabels).map(([k, v]: [string, any]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
                 </Select></div>
               <div className="space-y-2"><Label>Tipo</Label>
                 <Select value={newForm.tipo} onValueChange={v => setNewForm(f => ({ ...f, tipo: v }))}><SelectTrigger><SelectValue /></SelectTrigger>

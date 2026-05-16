@@ -23,7 +23,7 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/features/cotacoes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { type CotacaoAPI, adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch } from "./cotacaoHelpers";
+import { type CotacaoAPI, type LegacyFornecedor, adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch } from "./cotacaoHelpers";
 
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
@@ -425,7 +425,7 @@ const Cotacao = () => {
             </p>
             
             <div className="flex flex-wrap gap-2">
-              {legacyFornecedores.filter(f => !f.apiIntegrada).slice(0, 5).map(f => (
+              {legacyFornecedores.filter((f: LegacyFornecedor) => !f.apiIntegrada).slice(0, 5).map((f: LegacyFornecedor) => (
                 <Badge 
                   key={f.id} 
                   variant="outline" 

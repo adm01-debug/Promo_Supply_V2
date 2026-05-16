@@ -83,7 +83,7 @@ export default function AdminTelemetriaPage() {
             <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Database className="h-4 w-4" />Tabelas Mais Problemáticas</CardTitle></CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {stats.topOffenders.map(([name, s]) => (
+                {stats.topOffenders.map(([name, s]: [string, any]) => (
                   <div key={name} className="p-3 rounded-lg border border-border/50 bg-muted/30">
                     <p className="font-mono text-sm font-medium truncate" title={name}>{name}</p>
                     <div className="flex items-center gap-2 mt-1"><span className="text-xs text-muted-foreground">{s.count}× alertas</span><span className="text-xs text-destructive">max {formatDuration(s.maxMs)}</span></div>

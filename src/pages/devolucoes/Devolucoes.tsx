@@ -85,7 +85,7 @@ export default function Devolucoes() {
                 <SelectTrigger className="w-[180px]"><SelectValue placeholder="Status" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="todos">Todos</SelectItem>
-                  {Object.entries(STATUS_MAP).map(([k, v]) => (
+                  {Object.entries(STATUS_MAP).map(([k, v]: [string, any]) => (
                     <SelectItem key={k} value={k}>{v.label}</SelectItem>
                   ))}
                 </SelectContent>

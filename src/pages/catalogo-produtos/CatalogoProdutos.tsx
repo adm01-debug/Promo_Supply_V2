@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   Package, Search, Plus, Edit2, Tag, Building2, DollarSign,
-  TrendingUp, TrendingDown, Filter, X, Grid3X3, List,
+  TrendingUp, TrendingDown, Filter, X, Grid3X3, List, ImageIcon,
+  Upload, Loader2
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,9 @@ import { cn } from "@/lib/utils";
 import { useProdutos, type Produto } from "@/hooks/useProdutos";
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/ui/page-header";
+import { useAutoImageCompression } from "@/hooks/useImageCompression";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const formatCurrency = (v: number | null) =>
   v != null ? v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "—";
@@ -49,6 +53,42 @@ const CatalogoProdutos = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Partial<Produto> | null>(null);
   const [formData, setFormData] = useState<Partial<Produto>>(emptyProduct);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const { handleFileChange: handleImageUpload } = useAutoImageCompression({
+    maxWidth: 800,
+    maxHeight: 800,
+    quality: 0.8
+  });
+
+  const onImageSelect = useCallback(async (files: File[]) => {
+    if (files.length === 0) return;
+    
+    setIsUploading(true);
+    const file = files[0];
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `products/${fileName}`;
+
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      setFormData(prev => ({ ...prev, imagem_url: publicUrl }));
+      toast.success("Imagem enviada com sucesso!");
+    } catch (error: any) {
+      toast.error("Erro ao enviar imagem: " + error.message);
+    } finally {
+      setIsUploading(false);
+    }
+  }, []);
 
   const filtered = useMemo(() => {
     return produtos.filter((p) => {
@@ -214,12 +254,22 @@ const CatalogoProdutos = () => {
           {filtered.map((p) => {
             const variation = priceVariation(p);
             return (
-              <Card key={p.id} className="p-4 space-y-2">
-                <div className="flex items-start justify-between">
-                  <div className="min-w-0">
-                    <p className="font-semibold truncate">{p.nome}</p>
-                    <p className="text-xs text-muted-foreground">{p.codigo}</p>
+              <Card key={p.id} className="p-0 overflow-hidden group hover:border-primary/50 transition-colors">
+                {p.imagem_url ? (
+                  <div className="aspect-video w-full relative overflow-hidden bg-muted">
+                    <img src={p.imagem_url} alt={p.nome} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                   </div>
+                ) : (
+                  <div className="aspect-video w-full flex items-center justify-center bg-muted/30">
+                    <ImageIcon className="w-8 h-8 text-muted-foreground/30" />
+                  </div>
+                )}
+                <div className="p-4 space-y-2">
+                  <div className="flex items-start justify-between">
+                    <div className="min-w-0">
+                      <p className="font-semibold truncate">{p.nome}</p>
+                      <p className="text-xs text-muted-foreground">{p.codigo}</p>
+                    </div>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -251,7 +301,8 @@ const CatalogoProdutos = () => {
                     {p.ativo ? "Ativo" : "Inativo"}
                   </Badge>
                 </div>
-              </Card>
+              </div>
+            </Card>
             );
           })}
         </div>
@@ -305,6 +356,43 @@ const CatalogoProdutos = () => {
             <DialogTitle>{editing ? "Editar Produto" : "Novo Produto"}</DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
+            <div className="md:col-span-2 flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors relative group">
+              {formData.imagem_url ? (
+                <div className="relative w-full aspect-video max-h-48 rounded-lg overflow-hidden border">
+                  <img src={formData.imagem_url} alt="Preview" className="w-full h-full object-contain" />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <Button 
+                      variant="destructive" 
+                      size="sm" 
+                      onClick={() => setFormData(prev => ({ ...prev, imagem_url: undefined }))}
+                    >
+                      <X className="w-4 h-4 mr-2" /> Remover
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center space-y-2">
+                  <div className="p-3 bg-primary/10 rounded-full w-fit mx-auto">
+                    {isUploading ? <Loader2 className="w-6 h-6 text-primary animate-spin" /> : <ImageIcon className="w-6 h-6 text-primary" />}
+                  </div>
+                  <div>
+                    <Label htmlFor="image-upload" className="cursor-pointer text-primary hover:underline font-medium">
+                      Clique para enviar uma imagem
+                    </Label>
+                    <p className="text-xs text-muted-foreground">PNG, JPG ou WebP até 5MB</p>
+                  </div>
+                  <Input 
+                    id="image-upload" 
+                    type="file" 
+                    className="hidden" 
+                    accept="image/*"
+                    onChange={(e) => handleImageUpload(e, onImageSelect)}
+                    disabled={isUploading}
+                  />
+                </div>
+              )}
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="codigo">Código</Label>
               <Input
