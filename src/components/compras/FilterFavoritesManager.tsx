@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Star, Save, Trash2, Check, ChevronDown, Bookmark } from 'lucide-react';
+import { Star, Save, Trash2, Check, ChevronDown, Bookmark, Loader2 } from 'lucide-react';
 import { DashboardFilter, FilterValues } from '@/hooks/useDashboardFilters';
 import { cn } from '@/lib/utils';
 
