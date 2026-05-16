@@ -26,6 +26,9 @@ const routeLabels: Record<string, string> = {
   "historico-compras": "Histórico",
   "gerar-ordem": "Gerar Ordem",
   "negociacoes": "Negociações",
+  "configuracoes": "Configurações",
+  "buyer": "Área do Comprador",
+  "admin": "Administração",
 };
 
 export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) {
@@ -44,8 +47,8 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
           <Link
             to="/"
             className={cn(
-              "flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-all duration-200",
-              variant === "pills" && "bg-muted/40 px-2.5 py-1.5 rounded-lg hover:bg-muted"
+              "flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-all duration-200 active:scale-[0.98]",
+              variant === "pills" && "bg-muted/40 px-2.5 py-1.5 rounded-lg hover:bg-muted shadow-sm"
             )}
           >
             <Home className="h-3.5 w-3.5" />
@@ -77,8 +80,8 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
                 <Link
                   to={to}
                   className={cn(
-                    "text-muted-foreground hover:text-foreground transition-all duration-200 truncate max-w-[140px]",
-                    variant === "pills" && "bg-muted/40 px-2.5 py-1.5 rounded-lg hover:bg-muted"
+                    "text-muted-foreground hover:text-foreground transition-all duration-200 truncate max-w-[140px] active:scale-[0.98]",
+                    variant === "pills" && "bg-muted/40 px-2.5 py-1.5 rounded-lg hover:bg-muted shadow-sm"
                   )}
                 >
                   {label}
