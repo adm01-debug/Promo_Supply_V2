@@ -2,6 +2,8 @@ import { Link, useLocation } from "react-router-dom";
 import { ChevronRight, Home } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { useNavigation } from "@/hooks/useNavigation";
+
 
 interface BreadcrumbsProps {
   className?: string;
@@ -33,7 +35,9 @@ const routeLabels: Record<string, string> = {
 
 export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) {
   const location = useLocation();
+  const { breadcrumbLabel } = useNavigation();
   const pathnames = location.pathname.split("/").filter((x) => x);
+
 
   if (location.pathname === "/" || location.pathname === "/compras") return null;
 
@@ -59,7 +63,9 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
         {pathnames.map((value, index) => {
           const last = index === pathnames.length - 1;
           const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-          const label = routeLabels[value] || value.charAt(0).toUpperCase() + value.slice(1);
+          const isCustomLabel = last && breadcrumbLabel;
+          const label = isCustomLabel ? breadcrumbLabel : (routeLabels[value] || value.charAt(0).toUpperCase() + value.slice(1));
+
 
           return (
             <li key={to} className="flex items-center gap-1.5">

@@ -5,6 +5,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { cn } from '@/lib/utils';
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigation } from '@/hooks/useNavigation';
+
 
 /**
  * Smart contextual mapping: each route knows its logical parent.
@@ -81,6 +83,7 @@ interface SmartBackButtonProps {
 export function SmartBackButton({ className, compact = false }: SmartBackButtonProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { canGoBack } = useNavigation();
 
   const backTarget = useMemo(() => {
     const path = location.pathname;
@@ -100,7 +103,14 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
 
   const handleBack = () => {
     if (window.navigator.vibrate) window.navigator.vibrate(10);
-    navigate(backTarget.path);
+    
+    // Elite logic: if we have history, go back. 
+    // If not (e.g. user opened a link directly), go to logical parent.
+    if (canGoBack) {
+      navigate(-1);
+    } else {
+      navigate(backTarget.path);
+    }
   };
 
   if (compact) {

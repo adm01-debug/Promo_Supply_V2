@@ -16,6 +16,8 @@ import { AnimatedRoutes } from "@/routes/AppRoutes";
 import { useNProgress } from "@/hooks/useNProgress";
 import { GlobalErrorBoundary } from "@/components/feedback/GlobalErrorBoundary";
 import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
+import { NavigationProvider } from "@/hooks/useNavigation";
+
 
 const AppContent = () => {
   useNProgress();
@@ -66,11 +68,13 @@ const App = () => {
                 <PWAInstallPrompt />
                 <AccessibilityPanel />
                 <BrowserRouter>
-                  <GlobalErrorBoundary>
-                    <Suspense fallback={<PageLoader />}>
-                      <AppContent />
-                    </Suspense>
-                  </GlobalErrorBoundary>
+                  <NavigationProvider>
+                    <GlobalErrorBoundary>
+                      <Suspense fallback={<PageLoader />}>
+                        <AppContent />
+                      </Suspense>
+                    </GlobalErrorBoundary>
+                  </NavigationProvider>
                 </BrowserRouter>
               </TooltipProvider>
             </AccessibilityProvider>
