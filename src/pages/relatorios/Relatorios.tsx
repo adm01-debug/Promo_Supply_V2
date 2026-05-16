@@ -295,15 +295,15 @@ const Relatorios = () => {
           </TabsList>
 
           <TabsContent value="spend" className="mt-6">
-            <SpendAnalytics />
+            <LazyReportPanel><SpendAnalytics /></LazyReportPanel>
           </TabsContent>
 
           <TabsContent value="kpis" className="mt-6">
-            <AdvancedProcurementKPIs />
+            <LazyReportPanel><AdvancedProcurementKPIs /></LazyReportPanel>
           </TabsContent>
 
           <TabsContent value="cost_centers" className="mt-6">
-            <CostCenterPerformanceAnalysis />
+            <LazyReportPanel><CostCenterPerformanceAnalysis /></LazyReportPanel>
           </TabsContent>
 
           <TabsContent value="geral" className="mt-6 space-y-6">
