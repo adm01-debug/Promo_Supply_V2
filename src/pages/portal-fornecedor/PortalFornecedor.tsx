@@ -261,7 +261,7 @@ export default function PortalFornecedor() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {pedidos.map(p => (
+                          {(pedidos as any[]).map(p => (
                             <TableRow key={p.id}>
                               <TableCell className="font-mono text-xs">{p.numero}</TableCell>
                               <TableCell>
