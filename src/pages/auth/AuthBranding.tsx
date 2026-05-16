@@ -100,8 +100,14 @@ export const AuthBrandingPanel = () => (
       <FeatureCard icon={Shield} title="Segurança Avançada" description="Autenticação robusta e controle de acesso" delay={300} />
     </div>
 
-    <p className="relative z-10 text-primary-foreground/50 text-sm">
-      © 2026 Promo Supply. Todos os direitos reservados.
-    </p>
+    <div className="relative z-10 space-y-4">
+      <p className="text-primary-foreground/40 text-[9px] leading-relaxed italic max-w-xs">
+        Este sistema é propriedade intelectual exclusiva da Promo Brindes, sendo protegido pela Lei nº 9.609/98 e demais normas aplicáveis. 
+        É proibida sua reprodução, cópia, modificação, distribuição ou uso não autorizado.
+      </p>
+      <p className="text-primary-foreground/50 text-sm">
+        © 2026 Promo Supply. Todos os direitos reservados.
+      </p>
+    </div>
   </div>
 );
