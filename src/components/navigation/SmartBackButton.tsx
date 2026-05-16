@@ -3,11 +3,14 @@ import { ArrowLeft, ChevronLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigation } from '@/hooks/useNavigation';
 import { haptics } from '@/lib/haptics';
 
+/**
+ * Intelligent route mapping for hierarchical navigation.
+ */
 const parentRoutes: Record<string, string> = {
   '/cotacao': '/',
   '/solicitacoes': '/',
@@ -84,6 +87,10 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
     const path = location.pathname;
     if (path === '/' || path === '/compras') return null;
 
+    // Check for open modals via DOM (standard pattern in the app)
+    const hasOpenDialog = !!document.querySelector('[role="dialog"][data-state="open"], [cmdk-root]');
+    if (hasOpenDialog) return { path: 'close-modal', label: 'Fechar' };
+
     const parent = parentRoutes[path] 
       ?? parentRoutes[path.split('/').slice(0, -1).join('/')]
       ?? '/';
@@ -94,16 +101,24 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
     };
   }, [location.pathname]);
 
-  if (!backTarget) return null;
-
-  const handleBack = () => {
+  const handleBack = useCallback(() => {
     haptics.light();
+    
+    // Logic for closing modals first if they are open
+    const closeButton = document.querySelector('[role="dialog"][data-state="open"] button[aria-label="Close"], [cmdk-root] button[aria-label="Close"]') as HTMLButtonElement;
+    if (closeButton) {
+      closeButton.click();
+      return;
+    }
+
     if (canGoBack) {
       navigate(-1);
-    } else {
+    } else if (backTarget && backTarget.path !== 'close-modal') {
       navigate(backTarget.path);
     }
-  };
+  }, [canGoBack, navigate, backTarget]);
+
+  if (!backTarget) return null;
 
   return (
     <motion.div
@@ -122,7 +137,7 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
               "group relative overflow-hidden transition-all duration-300",
               compact ? "h-11 w-11 rounded-2xl bg-muted/20 hover:bg-primary/10 text-muted-foreground hover:text-primary" 
                       : "gap-2 px-4 h-11 rounded-2xl bg-muted/20 hover:bg-primary/10 text-muted-foreground hover:text-primary",
-              "active:scale-90",
+              "active:scale-90 ring-primary/20 focus-visible:ring-2",
               className
             )}
             aria-label={`Voltar para ${backTarget.label}`}
@@ -143,9 +158,9 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
         <TooltipContent 
           side="bottom" 
           align="start" 
-          className="text-[10px] font-black uppercase tracking-[0.2em] bg-foreground text-background border-none px-3 py-1.5"
+          className="text-[10px] font-black uppercase tracking-[0.2em] bg-foreground text-background border-none px-3 py-1.5 z-[100]"
         >
-          Retornar para {backTarget.label}
+          {backTarget.path === 'close-modal' ? 'Fechar janela' : `Retornar para ${backTarget.label}`}
         </TooltipContent>
       </Tooltip>
     </motion.div>

@@ -67,11 +67,11 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
               to="/"
               className={cn(
                 "flex items-center gap-1.5 transition-all duration-200 active:scale-[0.98]",
-                variant === "pills" && "bg-muted/40 px-2.5 py-1.5 rounded-lg hover:bg-muted shadow-sm"
+                variant === "pills" && "bg-muted/40 px-3 py-1.5 rounded-xl hover:bg-muted shadow-sm border border-border/5"
               )}
             >
               <Home className="h-3.5 w-3.5" />
-              {variant !== "compact" && <span className="text-[10px] font-bold uppercase tracking-wider">Início</span>}
+              {variant !== "compact" && <span className="text-[10px] font-black uppercase tracking-[0.2em]">Início</span>}
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
@@ -116,8 +116,8 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
                 {last ? (
                   <BreadcrumbPage
                     className={cn(
-                      "font-bold text-foreground truncate max-w-[180px]",
-                      variant === "pills" && "bg-primary/10 text-primary px-3 py-1.5 rounded-lg border border-primary/20"
+                      "font-black text-foreground truncate max-w-[200px] uppercase tracking-wider",
+                      variant === "pills" && "bg-primary/10 text-primary px-4 py-1.5 rounded-xl border border-primary/20 shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]"
                     )}
                   >
                     <motion.span
@@ -132,8 +132,8 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
                     <Link
                       to={to}
                       className={cn(
-                        "transition-all duration-200 truncate max-w-[140px] active:scale-[0.98]",
-                        variant === "pills" && "bg-muted/40 px-2.5 py-1.5 rounded-lg hover:bg-muted shadow-sm"
+                        "transition-all duration-200 truncate max-w-[140px] active:scale-[0.98] font-bold uppercase tracking-widest",
+                        variant === "pills" && "bg-muted/40 px-3 py-1.5 rounded-xl hover:bg-muted shadow-sm border border-border/5"
                       )}
                     >
                       {label}

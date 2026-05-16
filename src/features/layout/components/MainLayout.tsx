@@ -23,8 +23,9 @@ import { HeaderActions } from "./HeaderActions";
 import { SupplierChat } from "./SupplierChat";
 import { GuidedBuyingAssistant } from "./GuidedBuyingAssistant";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -101,13 +102,35 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
                     variant="ghost"
                     size="icon"
                     onClick={() => setMobileMenuOpen(true)}
-                    className="h-10 w-10 rounded-xl"
+                    className="h-11 w-11 rounded-2xl bg-muted/20"
+                    aria-label="Abrir menu"
                   >
                     <Menu className="w-5 h-5" />
                   </Button>
                 )}
               </div>
-              {!isHome && <SmartBackButton className="hidden md:flex" />}
+              
+              {/* Desktop Smart Back Button - Always present in header when not home */}
+              <AnimatePresence>
+                {!isHome && (
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="hidden md:flex items-center"
+                  >
+                    <SmartBackButton />
+                    <Separator orientation="vertical" className="mx-4 h-6 bg-border/40" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Sidebar toggle for desktop when collapsed */}
+              {isHome && (
+                <div className="hidden md:block">
+                  <Package className="w-6 h-6 text-primary animate-pulse-gentle" />
+                </div>
+              )}
             </div>
 
             <div className="flex-1 max-w-2xl hidden sm:block">
@@ -125,13 +148,22 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
           <main id="main-content" className="p-4 md:p-8 max-w-[1600px] mx-auto" tabIndex={-1}>
             {!isHome && (
               <motion.div
-                className="mb-6"
+                className="mb-8"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
               >
-                <Breadcrumbs variant="pills" className="hidden md:flex" />
-                <Breadcrumbs variant="compact" className="md:hidden" />
+                <div className="flex flex-col gap-2">
+                  <Breadcrumbs variant="pills" className="hidden md:flex" />
+                  <Breadcrumbs variant="compact" className="md:hidden" />
+                  
+                  {/* Visual Page Title in Content Area */}
+                  <div className="mt-2 flex items-center justify-between">
+                    <h2 className="text-sm font-black uppercase tracking-[0.3em] text-muted-foreground/40 select-none">
+                      Navegação
+                    </h2>
+                  </div>
+                </div>
               </motion.div>
             )}
 
@@ -139,9 +171,13 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
               <motion.div
                 key={location.pathname}
                 initial={{ opacity: 0, y: 15, scale: 0.99 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -10, scale: 0.99 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, y: -10, scale: 0.98, filter: "blur(4px)" }}
+                transition={{ 
+                  duration: 0.4, 
+                  ease: [0.22, 1, 0.36, 1],
+                  opacity: { duration: 0.3 }
+                }}
                 className="w-full h-full"
               >
                 {children}
