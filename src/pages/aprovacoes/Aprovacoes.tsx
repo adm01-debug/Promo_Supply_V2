@@ -99,11 +99,11 @@ const Aprovacoes = () => {
 
   // Cálculo de métricas agregadas
   const metricas = useMemo(() => {
-    const totalAprovacoes = approvalTrendData.reduce((acc, d) => acc + d.aprovadas + d.rejeitadas, 0);
-    const totalAprovadas = approvalTrendData.reduce((acc, d) => acc + d.aprovadas, 0);
-    const totalRejeitadas = approvalTrendData.reduce((acc, d) => acc + d.rejeitadas, 0);
-    const tempoMedioGeral = approvalTrendData.reduce((acc, d) => acc + d.tempoMedio, 0) / approvalTrendData.length;
-    const taxaAprovacao = (totalAprovadas / totalAprovacoes) * 100;
+    const totalAprovacoes = approvalTrendData.reduce((acc: number, d) => acc + d.aprovadas + d.rejeitadas, 0);
+    const totalAprovadas = approvalTrendData.reduce((acc: number, d) => acc + d.aprovadas, 0);
+    const totalRejeitadas = approvalTrendData.reduce((acc: number, d) => acc + d.rejeitadas, 0);
+    const tempoMedioGeral = approvalTrendData.reduce((acc: number, d) => acc + d.tempoMedio, 0) / approvalTrendData.length;
+    const taxaAprovacao = totalAprovacoes > 0 ? (totalAprovadas / totalAprovacoes) * 100 : 0;
     
     return {
       totalAprovacoes,
