@@ -60,6 +60,10 @@ const Pagamentos = () => {
     pagamentos.filter(p => p.status === 'pago'),
     [pagamentos]
   );
+  const selectedForSchedule = useMemo(() =>
+    pagamentos.filter(p => selectedIds.includes(p.id) && ['pendente', 'aprovado'].includes(p.status)),
+    [pagamentos, selectedIds]
+  );
 
   const currentList = activeTab === 'pendentes' ? pagamentosPendentes : pagamentosPagos;
   const filteredPagamentos = useMemo(() => applyAdvancedFilters(currentList, filters), [currentList, filters]);
