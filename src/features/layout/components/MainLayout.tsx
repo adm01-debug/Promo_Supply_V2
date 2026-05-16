@@ -185,7 +185,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2, delay: 0.05 }}
               >
-                <Breadcrumbs className="hidden md:flex" />
+                <Breadcrumbs variant="pills" className="hidden md:flex" />
                 <Breadcrumbs variant="compact" className="md:hidden" />
               </motion.div>
             )}
