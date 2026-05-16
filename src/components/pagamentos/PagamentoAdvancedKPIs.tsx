@@ -10,6 +10,7 @@ import { differenceInDays } from "date-fns/differenceInDays";
 import { subMonths } from "date-fns/subMonths";
 import { startOfMonth } from "date-fns/startOfMonth";
 import { endOfMonth } from "date-fns/endOfMonth";
+import { motion } from "framer-motion";
 import type { Pagamento } from "@/hooks/usePagamentos";
 import { ExecutiveMetricCard } from "@/components/compras/executive/ExecutiveMetricCard";
 import { cn } from "@/lib/utils";
