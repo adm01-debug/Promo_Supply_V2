@@ -324,11 +324,11 @@ const Relatorios = () => {
           </TabsContent>
 
           <TabsContent value="estrategia" className="mt-6">
-            <KraljicMatrix />
+            <LazyReportPanel><KraljicMatrix /></LazyReportPanel>
           </TabsContent>
 
           <TabsContent value="previsao" className="mt-6">
-            <DemandPredictionPanel />
+            <LazyReportPanel><DemandPredictionPanel /></LazyReportPanel>
           </TabsContent>
         </Tabs>
       </div>
