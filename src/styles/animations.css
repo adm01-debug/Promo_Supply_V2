@@ -4,6 +4,26 @@
    (Imported into @layer utilities via index.css)
    ================================================================= */
 
+  @keyframes bg-drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+  }
+
+  @keyframes bg-drift-reverse {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-40px, 30px) scale(0.95); }
+    66% { transform: translate(25px, -15px) scale(1.05); }
+  }
+
+  .animate-bg-drift {
+    animation: bg-drift 20s ease-in-out infinite;
+  }
+
+  .animate-bg-drift-reverse {
+    animation: bg-drift-reverse 25s ease-in-out infinite;
+  }
+
 /* ===== ENTRY / EXIT ===== */
   .animate-enter {
     animation: enter 0.3s ease-out forwards;
