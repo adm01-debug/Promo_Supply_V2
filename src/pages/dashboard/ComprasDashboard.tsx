@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useCallback, memo, useEffect, useRef, useMemo } from "react";
+import { useState, lazy, Suspense, useCallback, memo, useEffect, useMemo } from "react";
 import { 
   ClipboardList, 
   Clock, 
@@ -7,7 +7,6 @@ import {
   PiggyBank,
   Filter,
   X,
-  ChevronDown,
   Calendar
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -15,7 +14,6 @@ import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
 import { InteractiveCard } from "@/components/ui/interactive-card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -33,7 +31,6 @@ import { DraggableDashboard } from "@/components/compras/DraggableDashboard";
 import { useDashboardKPIs } from "@/hooks/useDashboardKPIs";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { FilterFavoritesManager } from "@/components/compras/FilterFavoritesManager";
-import { useDashboardFilters } from "@/hooks/useDashboardFilters";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import { useDashboardLayoutStore } from "@/stores/dashboardLayoutStore";
@@ -42,10 +39,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import { performanceMonitor } from "@/lib/performance";
+import { EliteButton } from "@/components/atoms/EliteButton";
+import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
 
-
-// Lazy load heavy panels that are below the fold
+// Lazy load heavy panels
 const SLADistributionChart = lazy(() => import("@/components/compras/SLADistributionChart").then(m => ({ default: m.SLADistributionChart })));
+const TrendAnalysisCharts = lazy(() => import("@/components/compras/TrendAnalysisCharts").then(m => ({ default: m.TrendAnalysisCharts })));
 const SupplierAlertsPanel = lazy(() => import("@/components/compras/SupplierAlertsPanel").then(m => ({ default: m.SupplierAlertsPanel })));
 const SupplierRankingPanel = lazy(() => import("@/components/compras/SupplierRankingPanel").then(m => ({ default: m.SupplierRankingPanel })));
 const BuyerPerformancePanel = lazy(() => import("@/components/compras/BuyerPerformancePanel").then(m => ({ default: m.BuyerPerformancePanel })));
@@ -54,27 +53,17 @@ const DeliveryCalendar = lazy(() => import("@/components/compras/DeliveryCalenda
 const DemandPredictionPanel = lazy(() => import("@/components/compras/DemandPredictionPanel").then(m => ({ default: m.DemandPredictionPanel })));
 const RiskHeatMap = lazy(() => import("@/components/compras/RiskHeatMap").then(m => ({ default: m.RiskHeatMap })));
 const DashboardInsights = lazy(() => import("@/components/compras/DashboardInsights").then(m => ({ default: m.DashboardInsights })));
-const TrendAnalysisCharts = lazy(() => import("@/components/compras/TrendAnalysisCharts").then(m => ({ default: m.TrendAnalysisCharts })));
 const ActiveSourcingWidget = lazy(() => import("@/components/compras/ActiveSourcingWidget").then(m => ({ default: m.ActiveSourcingWidget })));
 
 const LazyPanel = ({ children }: { children: React.ReactNode }) => (
-  <Suspense fallback={<Skeleton className="h-64 w-full rounded-xl" />}>
+  <Suspense fallback={<Skeleton variant="card" />}>
     {children}
   </Suspense>
 );
 
 const ComprasDashboard = () => {
-  useEffect(() => {
-    performanceMonitor.mark('dashboard-mount');
-    return () => {
-      performanceMonitor.measure('dashboard-session-duration', 'dashboard-mount', 'dashboard-unmount');
-    };
-  }, []);
-
   const { t } = useTranslation();
-  const { loadFromDb, saveToDb, widgets } = useDashboardLayoutStore();
-  const { favorites, loading: filtersLoading, saveFavorite, deleteFavorite, setAsDefault, getDefaultFilter } = useDashboardFilters();
-
+  const { loadFromDb, saveToDb } = useDashboardLayoutStore();
   const filterDefaults = useMemo(() => ({
     category: 'all',
     supplier: 'all',
@@ -92,34 +81,8 @@ const ComprasDashboard = () => {
   const loading = kpisLoading || accountFiltersLoading;
 
   useEffect(() => {
-    if (!loading) {
-      performanceMonitor.measure('dashboard-data-load', 'dashboard-mount', 'dashboard-data-ready');
-    }
-  }, [loading]);
-
-  const [hasAppliedDefault, setHasAppliedDefault] = useState(false);
-
-  useEffect(() => {
-    if (hasAppliedDefault || favorites.length === 0 || accountFiltersLoading) return;
-    const defaultFilter = getDefaultFilter();
-    if (defaultFilter) {
-      patchFilters({
-        category: defaultFilter.category_filter || 'all',
-        supplier: defaultFilter.supplier_filter || 'all',
-        period: defaultFilter.period_filter || '6m',
-        showComparison: defaultFilter.show_comparison ?? true,
-      });
-    }
-    setHasAppliedDefault(true);
-  }, [favorites.length, getDefaultFilter, hasAppliedDefault, accountFiltersLoading, patchFilters]);
-
-  useEffect(() => {
     loadFromDb('compras');
   }, [loadFromDb]);
-
-  const handleSaveLayout = useCallback(() => {
-    saveToDb('compras');
-  }, [saveToDb]);
 
   const { data: categories = [] } = useQuery({
     queryKey: ['dashboard-filter-categories'],
@@ -144,23 +107,16 @@ const ComprasDashboard = () => {
                           currentFilters.period !== '6m';
 
   const clearFilters = useCallback(() => {
-    patchFilters({
-      category: 'all',
-      supplier: 'all',
-      period: '6m'
-    });
+    patchFilters({ category: 'all', supplier: 'all', period: '6m' });
   }, [patchFilters]);
 
-  // Realtime with debounce to avoid excessive re-renders
   useRealtimeSubscription({
-    tables: ['solicitacoes', 'pedidos', 'cotacoes', 'pagamentos', 'notifications', 'approval_workflows', 'approval_steps'],
+    tables: ['solicitacoes', 'pedidos', 'cotacoes', 'pagamentos'],
     debounceMs: 2000,
   });
 
-  const getWidgetComponent = useCallback((widgetId: string, index: number = 0) => {
-    if (loading && ['kpi-aguardando', 'kpi-volume', 'kpi-economia', 'kpi-sla'].includes(widgetId)) {
-      return <Skeleton className="h-32 w-full rounded-xl" />;
-    }
+  const getWidgetComponent = useCallback((widgetId: string) => {
+    if (loading) return <Skeleton variant="card" />;
 
     switch (widgetId) {
       case 'kpi-aguardando':
@@ -227,16 +183,41 @@ const ComprasDashboard = () => {
             />
           </InteractiveCard>
         );
-      case 'chart-sla':
-        return <LazyPanel><SLADistributionChart /></LazyPanel>;
       case 'chart-pipeline':
         return (
-          <Card className="p-6 h-full">
-            <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
+          <Card className="p-6 h-full border-border/40 bg-card/50 backdrop-blur-sm">
+            <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2 uppercase tracking-tight">
               <BarChart3 className="w-5 h-5 text-primary" />
               Pipeline Visual
             </h2>
             <PipelineChart data={pipeline} previousData={(kpis as any).previousPipeline} />
+          </Card>
+        );
+      case 'urgent-items':
+        return (
+          <Card className="p-6 h-full border-border/40 bg-card/50 backdrop-blur-sm">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2 uppercase tracking-tight">
+                <Clock className="w-5 h-5 text-destructive" />
+                Urgências ({urgentItems.length})
+              </h2>
+              <EliteButton variant="ghost" size="sm" onClick={() => {}}>
+                Ver Todos
+              </EliteButton>
+            </div>
+            {urgentItems.length > 0 ? (
+              <UrgentItemsList items={urgentItems.map(item => ({
+                id: (item as any).numero || item.id.substring(0, 8),
+                dbId: item.id,
+                produto: (item as any).titulo || "Item sem título",
+                fornecedor: item.status || "Pendente",
+                vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
+                urgencia: 'alto',
+                comprador: (item as any).comprador
+              }))} />
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-12">Nenhum item urgente detectado.</p>
+            )}
           </Card>
         );
       case 'trend-charts':
@@ -249,121 +230,57 @@ const ComprasDashboard = () => {
             />
           </LazyPanel>
         );
-      case 'supplier-alerts':
-        return <LazyPanel><SupplierAlertsPanel /></LazyPanel>;
-      case 'supplier-ranking':
-        return <LazyPanel><SupplierRankingPanel /></LazyPanel>;
-      case 'buyer-performance':
-        return <LazyPanel><BuyerPerformancePanel /></LazyPanel>;
-      case 'savings-goal':
-        return <LazyPanel><SavingsGoalPanel /></LazyPanel>;
-      case 'delivery-calendar':
-        return <LazyPanel><DeliveryCalendar /></LazyPanel>;
-      case 'urgent-items':
-        return (
-          <Card className="p-6 h-full">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Clock className="w-5 h-5 text-destructive" />
-                Itens Urgentes ({urgentItems.length})
-              </h2>
-              <Link to="/solicitacoes" className="text-sm text-primary hover:underline">Ver Todos</Link>
-            </div>
-            {urgentItems.length > 0 ? (
-              <UrgentItemsList 
-                items={urgentItems.map(item => {
-                  const now = new Date();
-                  const diff = item.data_necessidade 
-                    ? Math.ceil((new Date(item.data_necessidade).getTime() - now.getTime()) / (1000 * 60 * 60 * 24)) 
-                    : 5;
-                  
-                  return {
-                    id: (item as any).numero || item.id.substring(0, 8),
-                    dbId: item.id,
-                    produto: (item as any).titulo || "Item sem título",
-                    fornecedor: item.status || "Pendente",
-                    vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
-                    urgencia: diff <= 0 ? 'critico' : diff <= 1 ? 'alto' : 'medio',
-                    comprador: (item as any).comprador
-                  };
-                })} 
-              />
-            ) : (
-              <p className="text-sm text-muted-foreground text-center py-12">Nenhum item urgente detectado.</p>
-            )}
-          </Card>
-        );
-      case 'demand-prediction':
-        return <LazyPanel><DemandPredictionPanel /></LazyPanel>;
-      case 'risk-heatmap':
-        return <LazyPanel><RiskHeatMap /></LazyPanel>;
-      case 'dashboard-insights':
-        return <LazyPanel><DashboardInsights /></LazyPanel>;
-      case 'active-sourcing':
-        return <LazyPanel><ActiveSourcingWidget /></LazyPanel>;
-      default:
-        return null;
+      case 'supplier-alerts': return <LazyPanel><SupplierAlertsPanel /></LazyPanel>;
+      case 'supplier-ranking': return <LazyPanel><SupplierRankingPanel /></LazyPanel>;
+      case 'buyer-performance': return <LazyPanel><BuyerPerformancePanel /></LazyPanel>;
+      case 'savings-goal': return <LazyPanel><SavingsGoalPanel /></LazyPanel>;
+      case 'delivery-calendar': return <LazyPanel><DeliveryCalendar /></LazyPanel>;
+      case 'demand-prediction': return <LazyPanel><DemandPredictionPanel /></LazyPanel>;
+      case 'risk-heatmap': return <LazyPanel><RiskHeatMap /></LazyPanel>;
+      case 'dashboard-insights': return <LazyPanel><DashboardInsights /></LazyPanel>;
+      case 'active-sourcing': return <LazyPanel><ActiveSourcingWidget /></LazyPanel>;
+      default: return null;
     }
   }, [loading, kpis, pipeline, urgentItems, t]);
 
-  const getGridClasses = useCallback((size: string) => {
-    switch (size) {
-      case 'small': return 'col-span-1 lg:col-span-1';
-      case 'medium': return 'col-span-1 lg:col-span-1';
-      case 'large': return 'col-span-1 lg:col-span-2';
-      case 'full': return 'col-span-full';
-      default: return 'col-span-1';
-    }
-  }, []);
-
   return (
     <ModuleErrorBoundary module="dashboard">
-      
-      <div className="space-y-6 animate-fade-in pb-10">
+      <div className="space-y-8 pb-10">
         <CriticalAlertsBar />
         
-        {/* Dashboard Toolbar with Filters */}
-        <div className="flex flex-col gap-4 bg-card/30 p-6 rounded-2xl border border-border/50 backdrop-blur-md">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col gap-6 bg-card/40 p-8 rounded-[2rem] border border-border/40 backdrop-blur-xl shadow-2xl shadow-primary/5"
+        >
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <h1 className="text-3xl font-black text-foreground tracking-tight uppercase">{t('dashboard.title')}</h1>
-                <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 animate-pulse">Live</Badge>
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-inner">
+                <BarChart3 className="w-7 h-7" />
               </div>
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
-                {t('common.welcome')} - Sistema atualizado em tempo real
-              </p>
+              <div>
+                <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">{t('dashboard.title')}</h1>
+                <p className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mt-2 opacity-80 flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
+                  Supply Intelligence Hub
+                </p>
+              </div>
             </div>
             
             <div className="flex items-center gap-3">
-              <FilterFavoritesManager
-                favorites={favorites}
-                currentFilters={currentFilters}
-                onSave={saveFavorite}
-                onDelete={deleteFavorite}
-                onSetDefault={setAsDefault}
-                onApply={(filter) => patchFilters({
-                  category: filter.category_filter || 'all',
-                  supplier: filter.supplier_filter || 'all',
-                  period: filter.period_filter || '6m',
-                  showComparison: filter.show_comparison ?? true,
-                })}
-                loading={filtersLoading}
-              />
               <PurchaseClimateWidget />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Período</Label>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-2">
+            <div className="flex flex-col gap-2">
+              <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Período</Label>
               <Select value={currentFilters.period} onValueChange={(v) => patchFilters({ period: v })}>
-                <SelectTrigger className="bg-background/50 h-10 border-muted-foreground/20">
+                <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl hover:bg-background/60 transition-all">
                   <Calendar className="w-4 h-4 mr-2 text-primary" />
                   <SelectValue placeholder="Período" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl border-border/50">
                   <SelectItem value="1m">Último Mês</SelectItem>
                   <SelectItem value="3m">Últimos 3 Meses</SelectItem>
                   <SelectItem value="6m">Últimos 6 Meses</SelectItem>
@@ -372,32 +289,32 @@ const ComprasDashboard = () => {
               </Select>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Categoria</Label>
+            <div className="flex flex-col gap-2">
+              <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Categoria</Label>
               <Select value={currentFilters.category} onValueChange={(v) => patchFilters({ category: v })}>
-                <SelectTrigger className="bg-background/50 h-10 border-muted-foreground/20">
+                <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl hover:bg-background/60 transition-all">
                   <Filter className="w-4 h-4 mr-2 text-primary" />
-                  <SelectValue placeholder="Todas as Categorias" />
+                  <SelectValue placeholder="Todas" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl border-border/50">
                   <SelectItem value="all">Todas as Categorias</SelectItem>
-                  {categories.map((cat: { id: string; nome: string }) => (
+                  {categories.map((cat: any) => (
                     <SelectItem key={cat.id} value={cat.id}>{cat.nome}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Fornecedor</Label>
+            <div className="flex flex-col gap-2">
+              <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Fornecedor</Label>
               <Select value={currentFilters.supplier} onValueChange={(v) => patchFilters({ supplier: v })}>
-                <SelectTrigger className="bg-background/50 h-10 border-muted-foreground/20">
+                <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl hover:bg-background/60 transition-all">
                   <Filter className="w-4 h-4 mr-2 text-primary" />
-                  <SelectValue placeholder="Todos os Fornecedores" />
+                  <SelectValue placeholder="Todos" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl border-border/50">
                   <SelectItem value="all">Todos os Fornecedores</SelectItem>
-                  {suppliers.map((sup: { id: string; razao_social: string }) => (
+                  {suppliers.map((sup: any) => (
                     <SelectItem key={sup.id} value={sup.id}>{sup.razao_social}</SelectItem>
                   ))}
                 </SelectContent>
@@ -407,74 +324,39 @@ const ComprasDashboard = () => {
             <div className="flex items-end">
               <AnimatePresence>
                 {hasActiveFilters && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    className="w-full"
+                  <EliteButton 
+                    variant="ghost" 
+                    onClick={clearFilters}
+                    className="w-full text-xs font-bold text-muted-foreground hover:text-destructive h-12"
                   >
-                    <Button 
-                      variant="ghost" 
-                      onClick={clearFilters}
-                      className="w-full h-10 text-muted-foreground hover:text-destructive gap-2"
-                    >
-                      <X className="w-4 h-4" />
-                      Limpar Filtros
-                    </Button>
-                  </motion.div>
+                    <X className="w-4 h-4 mr-2" />
+                    LIMPAR FILTROS
+                  </EliteButton>
                 )}
               </AnimatePresence>
             </div>
           </div>
+        </motion.div>
 
-          <AnimatePresence>
-            {hasActiveFilters && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="flex flex-wrap gap-2 mt-2 pt-4 border-t border-dashed border-border/50">
-                  <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest mt-1.5">Filtros Ativos:</span>
-                  {currentFilters.period !== '6m' && (
-                    <Badge variant="secondary" className="pl-3 pr-1 py-1 rounded-full gap-1">
-                      {currentFilters.period === '1m' ? '1 Mês' : currentFilters.period === '3m' ? '3 Meses' : currentFilters.period === '1y' ? '1 Ano' : currentFilters.period}
-                      <Button variant="ghost" size="icon" className="h-4 w-4 ml-1 rounded-full" onClick={() => patchFilters({ period: '6m' })}>
-                        <X className="h-2 w-2" />
-                      </Button>
-                    </Badge>
-                  )}
-                  {currentFilters.category !== 'all' && (
-                    <Badge variant="secondary" className="pl-3 pr-1 py-1 rounded-full gap-1">
-                      {categories.find((c: any) => c.id === currentFilters.category)?.nome || 'Categoria'}
-                      <Button variant="ghost" size="icon" className="h-4 w-4 ml-1 rounded-full" onClick={() => patchFilters({ category: 'all' })}>
-                        <X className="h-2 w-2" />
-                      </Button>
-                    </Badge>
-                  )}
-                  {currentFilters.supplier !== 'all' && (
-                    <Badge variant="secondary" className="pl-3 pr-1 py-1 rounded-full gap-1">
-                      {suppliers.find((s: any) => s.id === currentFilters.supplier)?.razao_social || 'Fornecedor'}
-                      <Button variant="ghost" size="icon" className="h-4 w-4 ml-1 rounded-full" onClick={() => patchFilters({ supplier: 'all' })}>
-                        <X className="h-2 w-2" />
-                      </Button>
-                    </Badge>
-                  )}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+        <EliteCardGrid columns={4} className="mb-8">
+          {['kpi-aguardando', 'kpi-volume', 'kpi-economia', 'kpi-sla'].map(id => (
+            <div key={id}>{getWidgetComponent(id)}</div>
+          ))}
+        </EliteCardGrid>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 space-y-8">
+            {getWidgetComponent('chart-pipeline')}
+            {getWidgetComponent('trend-charts')}
+          </div>
+          <div className="space-y-8">
+            {getWidgetComponent('urgent-items')}
+            {getWidgetComponent('dashboard-insights')}
+          </div>
         </div>
-
-        <DraggableDashboard
-          renderWidget={getWidgetComponent}
-          getGridClasses={getGridClasses}
-        />
       </div>
-      
     </ModuleErrorBoundary>
   );
 };
 
-export default ComprasDashboard;
+export default memo(ComprasDashboard);
