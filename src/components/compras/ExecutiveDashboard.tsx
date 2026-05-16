@@ -161,14 +161,14 @@ export const ExecutiveDashboard = () => {
       <div className="space-y-8 pb-10">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-inner">
+            <div className="w-14 h-14 bg-violet-500/10 rounded-2xl flex items-center justify-center text-violet-400 shadow-inner">
               <TrendingUp className="w-7 h-7" />
             </div>
             <div>
               <h1 className="text-3xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Executive Dashboard</h1>
               <div className="flex items-center gap-2 mt-2">
                  <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest border-violet-500/30 text-violet-300">Real-time Intelligence</Badge>
-                 <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">• Global Procurement Control</span>
+                 <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Global Procurement Control</span>
               </div>
             </div>
           </div>
@@ -176,7 +176,7 @@ export const ExecutiveDashboard = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/5 bg-white/[0.02] backdrop-blur-xl">
               <GitCompare className="h-4 w-4 text-violet-400" />
-              <Label htmlFor="comparison-mode" className="text-[10px] font-black uppercase tracking-widest cursor-pointer">Comparing</Label>
+              <Label htmlFor="comparison-mode" className="text-[10px] font-black uppercase tracking-widest cursor-pointer text-zinc-300">Comparing</Label>
               <Switch id="comparison-mode" checked={showComparison} onCheckedChange={setShowComparison} />
             </div>
             <div className="bg-white/[0.03] p-1 rounded-xl flex border border-white/5">
@@ -186,13 +186,16 @@ export const ExecutiveDashboard = () => {
                    variant={selectedPeriod === p ? 'secondary' : 'ghost'} 
                    size="sm" 
                    onClick={() => setSelectedPeriod(p)}
-                   className="rounded-lg px-3 font-bold text-[9px] uppercase tracking-widest h-8"
+                   className={cn(
+                     "rounded-lg px-3 font-bold text-[9px] uppercase tracking-widest h-8",
+                     selectedPeriod === p ? "bg-violet-500 text-white" : "text-zinc-400 hover:text-white"
+                   )}
                  >
                    {p === '1y' ? '1A' : p.toUpperCase()}
                  </Button>
                ))}
             </div>
-            <EliteButton variant="default" size="sm" onClick={() => {}} className="h-11 px-6">
+            <EliteButton variant="default" size="sm" onClick={() => {}} className="h-11 px-6 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none shadow-lg shadow-violet-500/20">
               <Download className="w-4 h-4 mr-2" /> EXPORT REPORT
             </EliteButton>
           </div>
@@ -287,10 +290,10 @@ export const ExecutiveDashboard = () => {
                    <Sparkles className="w-5 h-5 text-violet-400" />
                    <h3 className="font-black uppercase tracking-tight text-white">Strategic Intelligence</h3>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed font-medium mb-6">
+                <p className="text-xs text-zinc-400 leading-relaxed font-medium mb-6">
                   Sua matriz de risco Kraljic foi atualizada com base nos dados de mercado deste mês. Recomendamos revisar os fornecedores críticos.
                 </p>
-                <EliteButton variant="outline" className="w-full rounded-2xl h-12 text-[10px] font-black uppercase tracking-[0.2em]">VER MATRIZ KRALJIC</EliteButton>
+                <EliteButton variant="outline" className="w-full rounded-2xl h-12 text-[10px] font-black uppercase tracking-[0.2em] border-white/10 hover:bg-white/5 text-zinc-300">VER MATRIZ KRALJIC</EliteButton>
               </Card>
            </div>
         </div>
