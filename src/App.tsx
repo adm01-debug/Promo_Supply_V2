@@ -15,6 +15,7 @@ import { AccessibilityProvider, AccessibilityPanel, SkipToContent } from "@/comp
 import { AnimatedRoutes } from "@/routes/AppRoutes";
 import { useNProgress } from "@/hooks/useNProgress";
 import { GlobalErrorBoundary } from "@/components/feedback/GlobalErrorBoundary";
+import { usePerformanceMonitor } from "@/hooks/usePerformanceMonitor";
 
 const AppContent = () => {
   useNProgress();
@@ -43,6 +44,8 @@ const persister = createSyncStoragePersister({
 });
 
 const App = () => {
+  usePerformanceMonitor();
+
   useEffect(() => {
     logger.info("Aplicação inicializada");
   }, []);
