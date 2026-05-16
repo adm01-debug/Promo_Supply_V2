@@ -94,7 +94,7 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
 
   if (loading) {
     return (
-      <Card className="border-violet-500/20 bg-white/[0.03] backdrop-blur-2xl">
+      <Card className="border-violet-500/20 bg-white/[0.03] backdrop-blur-2xl rounded-[2.5rem]">
         <CardContent className="p-8 flex flex-col items-center justify-center space-y-4">
           <motion.div
             animate={{ rotate: 360 }}
@@ -102,7 +102,7 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
           >
             <Sparkles className="h-8 w-8 text-violet-400 opacity-50" />
           </motion.div>
-          <p className="text-sm text-muted-foreground animate-pulse">IA analisando dados em tempo real...</p>
+          <p className="text-sm text-zinc-400 animate-pulse">IA analisando dados em tempo real...</p>
         </CardContent>
       </Card>
     );
@@ -113,11 +113,11 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
       <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
         <Sparkles className="h-24 w-24 text-violet-500" />
       </div>
-
+      
       <CardHeader className="flex flex-row items-center space-y-0 pb-4">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Sparkles className="h-5 w-5 text-primary" />
+          <div className="p-2 rounded-lg bg-violet-500/10">
+            <Sparkles className="h-5 w-5 text-violet-400" />
           </div>
           <CardTitle className="text-lg font-black text-white uppercase tracking-tight">AI Strategic Insights</CardTitle>
         </div>
@@ -133,12 +133,12 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ delay: index * 0.1 }}
               className={cn(
-                "group relative p-4 rounded-xl border transition-all duration-300",
-                "hover:shadow-lg hover:shadow-primary/5 hover:translate-x-1",
-                insight.type === 'opportunity' && "border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10",
-                insight.type === 'warning' && "border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10",
-                insight.type === 'positive' && "border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10",
-                insight.type === 'info' && "border-primary/20 bg-primary/5 hover:bg-primary/10"
+                "group relative p-4 rounded-xl border border-white/5 transition-all duration-300",
+                "hover:shadow-lg hover:shadow-violet-500/5 hover:translate-x-1",
+                insight.type === 'opportunity' && "bg-blue-500/5 hover:bg-blue-500/10",
+                insight.type === 'warning' && "bg-amber-500/5 hover:bg-amber-500/10",
+                insight.type === 'positive' && "bg-emerald-500/5 hover:bg-emerald-500/10",
+                insight.type === 'info' && "bg-violet-500/5 hover:bg-violet-500/10"
               )}
             >
               <div className="flex gap-4">
@@ -147,7 +147,7 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
                   insight.type === 'opportunity' && "bg-blue-500/20 text-blue-500",
                   insight.type === 'warning' && "bg-amber-500/20 text-amber-500",
                   insight.type === 'positive' && "bg-emerald-500/20 text-emerald-500",
-                  insight.type === 'info' && "bg-primary/20 text-primary"
+                  insight.type === 'info' && "bg-violet-500/20 text-violet-400"
                 )}>
                   <insight.icon className="h-4 w-4" />
                 </div>
@@ -160,12 +160,12 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
                       insight.type === 'opportunity' && "bg-blue-500/20 text-blue-500",
                       insight.type === 'warning' && "bg-amber-500/20 text-amber-500",
                       insight.type === 'positive' && "bg-emerald-500/20 text-emerald-500",
-                      insight.type === 'info' && "bg-primary/20 text-primary"
+                      insight.type === 'info' && "bg-violet-500/20 text-violet-400"
                     )}>
                       {insight.impact}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed pr-8">
+                  <p className="text-xs text-zinc-400 leading-relaxed pr-8">
                     {insight.description}
                   </p>
                   
