@@ -62,9 +62,11 @@ const App = () => {
                 <PWAInstallPrompt />
                 <AccessibilityPanel />
                 <BrowserRouter>
-                  <Suspense fallback={<PageLoader />}>
-                    <AppContent />
-                  </Suspense>
+                  <GlobalErrorBoundary>
+                    <Suspense fallback={<PageLoader />}>
+                      <AppContent />
+                    </Suspense>
+                  </GlobalErrorBoundary>
                 </BrowserRouter>
               </TooltipProvider>
             </AccessibilityProvider>
