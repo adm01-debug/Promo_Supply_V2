@@ -10,7 +10,7 @@ export function useRenderProfiler(componentName: string) {
   const startTime = useRef(performance.now());
 
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
+    if (import.meta.env.DEV) {
       renderCount.current++;
       const now = performance.now();
       const duration = now - startTime.current;
