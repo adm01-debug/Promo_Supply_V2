@@ -59,19 +59,19 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
   const shouldTruncate = pathnames.length > MAX_VISIBLE;
 
   return (
-    <Breadcrumb className={cn("print:hidden", className)}>
-      <BreadcrumbList>
+    <Breadcrumb className={cn("print:hidden py-1", className)}>
+      <BreadcrumbList className="gap-2">
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
             <Link
               to="/"
               className={cn(
-                "flex items-center gap-1.5 transition-all duration-200 active:scale-[0.98]",
-                variant === "pills" && "bg-muted/40 px-3 py-1.5 rounded-xl hover:bg-muted shadow-sm border border-border/5"
+                "flex items-center gap-1.5 transition-all duration-300 active:scale-[0.92] group",
+                variant === "pills" && "bg-background/40 backdrop-blur-md px-4 py-2 rounded-2xl hover:bg-primary/10 hover:text-primary shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-border/20"
               )}
             >
-              <Home className="h-3.5 w-3.5" />
-              {variant !== "compact" && <span className="text-[10px] font-black uppercase tracking-[0.2em]">Início</span>}
+              <Home className="h-4 w-4 transition-transform group-hover:scale-110" />
+              {variant !== "compact" && <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 group-hover:opacity-100">Início</span>}
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>
@@ -116,13 +116,14 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
                 {last ? (
                   <BreadcrumbPage
                     className={cn(
-                      "font-black text-foreground truncate max-w-[200px] uppercase tracking-wider",
-                      variant === "pills" && "bg-primary/10 text-primary px-4 py-1.5 rounded-xl border border-primary/20 shadow-[0_0_15px_rgba(var(--primary-rgb),0.1)]"
+                      "font-black text-foreground truncate max-w-[220px] uppercase tracking-wider",
+                      variant === "pills" && "bg-primary/10 text-primary px-5 py-2 rounded-2xl border border-primary/20 shadow-[0_8px_16px_rgba(var(--primary-rgb),0.12)] backdrop-blur-sm"
                     )}
                   >
                     <motion.span
-                      initial={{ opacity: 0, y: 2 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      initial={{ opacity: 0, x: -5 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
                     >
                       {label}
                     </motion.span>
@@ -132,11 +133,11 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
                     <Link
                       to={to}
                       className={cn(
-                        "transition-all duration-200 truncate max-w-[140px] active:scale-[0.98] font-bold uppercase tracking-widest",
-                        variant === "pills" && "bg-muted/40 px-3 py-1.5 rounded-xl hover:bg-muted shadow-sm border border-border/5"
+                        "transition-all duration-300 truncate max-w-[150px] active:scale-[0.92] font-bold uppercase tracking-widest group",
+                        variant === "pills" && "bg-background/40 backdrop-blur-md px-4 py-2 rounded-2xl hover:bg-primary/5 shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-border/20"
                       )}
                     >
-                      {label}
+                      <span className="opacity-70 group-hover:opacity-100 transition-opacity">{label}</span>
                     </Link>
                   </BreadcrumbLink>
                 )}

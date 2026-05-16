@@ -11,7 +11,8 @@ import {
   ShoppingCart,
   TrendingUp,
   Settings,
-  FileSignature
+  FileSignature,
+  ChevronLeft
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
