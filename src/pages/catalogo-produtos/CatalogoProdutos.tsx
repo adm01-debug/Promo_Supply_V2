@@ -1,7 +1,8 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import {
   Package, Search, Plus, Edit2, Tag, Building2, DollarSign,
-  TrendingUp, TrendingDown, Filter, X, Grid3X3, List,
+  TrendingUp, TrendingDown, Filter, X, Grid3X3, List, ImageIcon,
+  Upload, Loader2
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -25,6 +26,9 @@ import { cn } from "@/lib/utils";
 import { useProdutos, type Produto } from "@/hooks/useProdutos";
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/ui/page-header";
+import { useAutoImageCompression } from "@/hooks/useImageCompression";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const formatCurrency = (v: number | null) =>
   v != null ? v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "—";
