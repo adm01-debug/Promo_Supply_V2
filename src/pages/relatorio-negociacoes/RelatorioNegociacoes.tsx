@@ -50,7 +50,7 @@ import {
   economiaPorFornecedor,
   COLORS,
   type CompradorType,
-} from './relatorio-negociacoes/relatorioNegociacoesData';
+} from './relatorioNegociacoesData';
 
 const RelatorioNegociacoes = () => {
   const [periodo, setPeriodo] = useState("6m");

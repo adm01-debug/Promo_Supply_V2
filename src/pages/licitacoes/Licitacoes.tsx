@@ -17,7 +17,7 @@ import { ModuleErrorBoundary } from '@/features/layout/components/ModuleErrorBou
 import { MainLayout } from '@/features/layout/components/MainLayout';
 import { useLicitacoes } from '@/hooks/useLicitacoes';
 import { useFornecedores } from '@/hooks/useFornecedores';
-import { LicitacaoDetailDialog, modalidadeLabels, statusConfig } from './licitacoes/LicitacaoDetailDialog';
+import { LicitacaoDetailDialog, modalidadeLabels, statusConfig } from './LicitacaoDetailDialog';
 import { ReverseAuctionRoom } from '@/components/licitacoes/ReverseAuctionRoom';
 
 function formatCurrency(value: number) {

@@ -39,7 +39,7 @@ import { normalizeText } from "@/hooks/useFuseSearch";
 import { 
   type LegacyFornecedor, adaptToLegacy, 
   getTipoLabel, getTipoBadgeColor, getProdutoLabel 
-} from './fornecedores/fornecedorHelpers';
+} from './fornecedorHelpers';
 const Fornecedores = () => {
   const isMobile = useIsMobile();
   const [search, setSearch] = useState("");

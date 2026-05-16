@@ -38,7 +38,7 @@ const signupSchema = z.object({
   path: ['confirmPassword'],
 });
 
-import { AuthBackground, AuthBrandingPanel } from './auth/AuthBranding';
+import { AuthBackground, AuthBrandingPanel } from './AuthBranding';
 
 const Auth = () => {
   const navigate = useNavigate();

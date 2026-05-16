@@ -36,11 +36,11 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell,
 } from "recharts";
 
-import { COLORS } from "./historico/HistoricoHelpers";
-import { HistoricoProdutosTab } from "./historico/HistoricoProdutosTab";
-import { HistoricoFornecedoresTab } from "./historico/HistoricoFornecedoresTab";
-import { HistoricoRegistrosTab } from "./historico/HistoricoRegistrosTab";
-import { HistoricoDrilldownModal } from "./historico/HistoricoDrilldownModal";
+import { COLORS } from "./HistoricoHelpers";
+import { HistoricoProdutosTab } from "./HistoricoProdutosTab";
+import { HistoricoFornecedoresTab } from "./HistoricoFornecedoresTab";
+import { HistoricoRegistrosTab } from "./HistoricoRegistrosTab";
+import { HistoricoDrilldownModal } from "./HistoricoDrilldownModal";
 
 interface DrilldownData {
   name?: string; month?: string; category?: string; supplier?: string;

@@ -1,4 +1,4 @@
-import { BuyerComparisonView } from "./buyer/BuyerComparisonView";
+import { BuyerComparisonView } from "./BuyerComparisonView";
 import { useState, useMemo } from "react";
 import {
   User,
@@ -40,7 +40,7 @@ import {
 import {
   COLORS, PERIOD_MAP, getMetricStatus, MetricStatusIcon,
   DashboardSkeleton, EmptyState, exportBuyerCSV,
-} from "./buyer/buyerDashboardHelpers";
+} from "./buyerDashboardHelpers";
 
 const BuyerPerformanceDashboard = () => {
   const [periodo, setPeriodo] = useState("6m");

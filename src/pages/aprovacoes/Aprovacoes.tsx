@@ -54,7 +54,7 @@ import {
   statusDistribution,
   weeklyTrend,
   COLORS,
-} from './aprovacoes/aprovacoesData';
+} from './aprovacoesData';
 
 const Aprovacoes = () => {
   const [periodo, setPeriodo] = useState("6m");
