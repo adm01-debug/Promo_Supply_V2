@@ -9,21 +9,24 @@ export function NavigationProgressBar() {
 
   useEffect(() => {
     setIsNavigating(true);
-    setProgress(30);
+    setProgress(15);
 
-    const t1 = setTimeout(() => setProgress(70), 80);
-    const t2 = setTimeout(() => setProgress(100), 200);
+    const t1 = setTimeout(() => setProgress(45), 100);
+    const t2 = setTimeout(() => setProgress(85), 250);
     const t3 = setTimeout(() => {
-      setIsNavigating(false);
-      setProgress(0);
-    }, 350);
+      setProgress(100);
+      setTimeout(() => {
+        setIsNavigating(false);
+        setProgress(0);
+      }, 150);
+    }, 450);
 
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
     };
-  }, [location.pathname]);
+  }, [location.pathname, location.search]);
 
   return (
     <AnimatePresence>

@@ -8,7 +8,7 @@ export const KPICardSkeleton = () => (
     className="rounded-xl border bg-card p-5 space-y-3"
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3 }}
+    transition={{ duration: 0.2, ease: "easeOut" }}
   >
     <div className="flex items-start justify-between">
       <div className="space-y-2 flex-1">
@@ -41,14 +41,14 @@ export const DashboardSkeleton = () => (
     <ShimmerSkeleton className="h-12 w-full rounded-lg" />
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
       {[...Array(4)].map((_, i) => (
-        <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: i * 0.05 }}>
+        <motion.div key={i} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2, delay: i * 0.03 }}>
           <KPICardSkeleton />
         </motion.div>
       ))}
     </div>
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {[...Array(2)].map((_, i) => (
-        <motion.div key={i} className="rounded-xl border bg-card p-6 space-y-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 + i * 0.1 }}>
+        <motion.div key={i} className="rounded-xl border bg-card p-6 space-y-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: 0.15 + i * 0.05 }}>
           <div className="flex items-center justify-between">
             <ShimmerSkeleton className="h-5 w-32" />
             <ShimmerSkeleton className="h-8 w-24 rounded-md" />
@@ -58,7 +58,7 @@ export const DashboardSkeleton = () => (
       ))}
     </div>
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <motion.div className="lg:col-span-2 rounded-xl border bg-card p-6 space-y-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.4 }}>
+      <motion.div className="lg:col-span-2 rounded-xl border bg-card p-6 space-y-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: 0.25 }}>
         <ShimmerSkeleton className="h-5 w-40" />
         <div className="space-y-3">
           {[...Array(5)].map((_, i) => (
@@ -73,7 +73,7 @@ export const DashboardSkeleton = () => (
           ))}
         </div>
       </motion.div>
-      <motion.div className="rounded-xl border bg-card p-6 space-y-4" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.5 }}>
+      <motion.div className="rounded-xl border bg-card p-6 space-y-4" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, delay: 0.3 }}>
         <ShimmerSkeleton className="h-5 w-32" />
         <ShimmerSkeleton className="h-[180px] w-full rounded-lg" />
       </motion.div>
@@ -83,7 +83,7 @@ export const DashboardSkeleton = () => (
 
 // Table Skeleton
 export const TableSkeleton = ({ rows = 5, columns = 5 }: { rows?: number; columns?: number }) => (
-  <motion.div className="rounded-xl border bg-card overflow-hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+  <motion.div className="rounded-xl border bg-card overflow-hidden" initial={{ opacity: 0, scale: 0.995 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.2 }}>
     <div className="border-b p-4 flex items-center justify-between gap-4">
       <ShimmerSkeleton className="h-10 w-64 rounded-md" />
       <div className="flex gap-2">
@@ -98,7 +98,7 @@ export const TableSkeleton = ({ rows = 5, columns = 5 }: { rows?: number; column
       </div>
     </div>
     {[...Array(rows)].map((_, rowIndex) => (
-      <motion.div key={rowIndex} className={cn("p-4 flex gap-4 items-center", rowIndex !== rows - 1 && "border-b")} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.2, delay: rowIndex * 0.03 }}>
+      <motion.div key={rowIndex} className={cn("p-4 flex gap-4 items-center", rowIndex !== rows - 1 && "border-b")} initial={{ opacity: 0, x: -5 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.15, delay: rowIndex * 0.02 }}>
         <ShimmerSkeleton className="h-4 w-4 rounded" />
         {[...Array(columns)].map((_, colIndex) => (
           <ShimmerSkeleton key={colIndex} className={cn("h-4 flex-1", colIndex === 0 && "max-w-[120px]", colIndex === columns - 1 && "max-w-[80px]")} />

@@ -1,24 +1,35 @@
-import { useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
-const scrollPositions = new Map<string, number>();
-
-export function useScrollRestoration() {
+/**
+ * Hook to manage scroll restoration.
+ * Saves and restores scroll position for each route.
+ */
+export const useScrollRestoration = () => {
   const location = useLocation();
-  const prevPathRef = useRef(location.pathname);
+  const [scrollPositions, setScrollPositions] = useState<Record<string, number>>({});
 
   useEffect(() => {
-    // Save scroll position of the page we're leaving
-    const prevPath = prevPathRef.current;
-    if (prevPath !== location.pathname) {
-      scrollPositions.set(prevPath, window.scrollY);
-    }
-    prevPathRef.current = location.pathname;
+    // Save current position before unmounting or location change
+    const handleScroll = () => {
+      setScrollPositions(prev => ({
+        ...prev,
+        [location.pathname]: window.scrollY
+      }));
+    };
 
-    // Restore scroll position for the new page (or scroll to top)
-    const saved = scrollPositions.get(location.pathname);
-    requestAnimationFrame(() => {
-      window.scrollTo(0, saved ?? 0);
-    });
+    window.addEventListener("scroll", handleScroll);
+    
+    // Restore position for current path
+    const savedPosition = scrollPositions[location.pathname];
+    if (savedPosition !== undefined) {
+      window.scrollTo(0, savedPosition);
+    } else {
+      window.scrollTo(0, 0);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, [location.pathname]);
-}
+};

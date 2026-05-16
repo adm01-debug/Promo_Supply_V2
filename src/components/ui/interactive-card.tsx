@@ -15,16 +15,16 @@ export const InteractiveCard = React.forwardRef<HTMLDivElement, InteractiveCardP
     return (
       <motion.div
         ref={ref}
-        whileHover={hoverScale ? { y: -4, scale: 1.01 } : {}}
-        whileTap={{ scale: 0.98 }}
+        whileHover={hoverScale ? { y: -6, scale: 1.02 } : {}}
+        whileTap={{ scale: 0.96 }}
         className={cn(
-          "transition-shadow duration-300",
-          hoverShadow && "hover:shadow-xl hover:shadow-primary/5",
+          "transition-all duration-300 ease-out",
+          hoverShadow && "hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/20",
           className
         )}
         {...props}
       >
-        <Card className="h-full border-border/50 bg-card/50 backdrop-blur-sm">
+        <Card className="h-full border-border/50 bg-card/50 backdrop-blur-md transition-colors hover:bg-card/80">
           {children}
         </Card>
       </motion.div>
