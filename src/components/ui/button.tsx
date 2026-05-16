@@ -5,22 +5,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.98] focus-visible:scale-[1.02] active:brightness-95 hover:translate-y-[-1px] active:translate-y-[0px] shadow-sm hover:shadow-md",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-bold uppercase tracking-widest ring-offset-background transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/50 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 active:scale-[0.95] active:brightness-95 hover:translate-y-[-2px] active:translate-y-[0px] relative overflow-hidden group",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-md",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:border-accent",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+        default: "bg-white text-black hover:bg-zinc-100 hover:shadow-[0_8px_20px_rgba(255,255,255,0.1)]",
+        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:shadow-[0_8px_20px_rgba(239,68,68,0.2)]",
+        outline: "border border-white/10 bg-white/5 backdrop-blur-md text-zinc-100 hover:bg-white/10 hover:border-white/20",
+        secondary: "bg-violet-600 text-white hover:bg-violet-500 hover:shadow-[0_8px_20px_rgba(139,92,246,0.3)] border-none",
+        ghost: "text-zinc-400 hover:bg-white/5 hover:text-white",
+        link: "text-violet-400 underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10",
+        default: "h-11 px-6 py-2",
+        sm: "h-9 rounded-lg px-4",
+        lg: "h-14 rounded-2xl px-10 text-base",
+        icon: "h-11 w-11 rounded-xl",
       },
     },
     defaultVariants: {
