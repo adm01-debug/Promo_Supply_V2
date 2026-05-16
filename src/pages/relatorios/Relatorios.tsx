@@ -8,19 +8,17 @@ import {
   Building2,
   Layers,
   PieChart as PieChartIcon,
-  Search,
-  ChevronRight,
-  Info,
-  Sparkles
+  Sparkles,
+  Info
 } from "lucide-react";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { exportToCSV } from "@/lib/exportData";
 import { toast } from "sonner";
 import { subMonths } from "date-fns/subMonths";
 import { format } from "date-fns/format";
