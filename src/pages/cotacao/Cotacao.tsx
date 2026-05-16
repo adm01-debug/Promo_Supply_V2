@@ -32,7 +32,7 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/features/cotacoes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { adaptCotacoesFromDB, simulateAPISearch } from "./cotacaoHelpers";
+import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch } from "./cotacaoHelpers";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
