@@ -56,31 +56,31 @@ export const ModernBreadcrumbs = ({ className }: BreadcrumbsProps) => {
   return (
     <nav 
       aria-label="Breadcrumb" 
-      className={cn("flex items-center space-x-1 text-xs text-muted-foreground/60", className)}
+      className={cn("flex items-center space-x-2 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/40", className)}
     >
       <Link
         to="/"
-        className="flex items-center hover:text-primary transition-colors duration-200"
+        className="flex items-center hover:text-white transition-all duration-300 group"
       >
-        <Home className="h-3.5 w-3.5" />
+        <Home className="h-3.5 w-3.5 group-hover:scale-110 group-hover:text-violet-400 transition-transform" />
       </Link>
 
       {crumbs.map((crumb, index) => (
         <React.Fragment key={crumb.to}>
-          <ChevronRight className="h-3 w-3 shrink-0 opacity-40" />
+          <ChevronRight className="h-3 w-3 shrink-0 opacity-20" />
           <motion.div
-            initial={{ opacity: 0, x: -5 }}
+            initial={{ opacity: 0, x: -8 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.3, delay: index * 0.05 }}
+            transition={{ duration: 0.5, delay: index * 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
             {index === crumbs.length - 1 ? (
-              <span className="font-bold text-foreground/90 truncate max-w-[120px] sm:max-w-none">
+              <span className="text-white font-black truncate max-w-[120px] sm:max-w-none bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
                 {crumb.label}
               </span>
             ) : (
               <Link
                 to={crumb.to}
-                className="hover:text-primary transition-colors duration-200 truncate max-w-[80px] sm:max-w-none"
+                className="hover:text-violet-300 transition-all duration-300 truncate max-w-[80px] sm:max-w-none"
               >
                 {crumb.label}
               </Link>

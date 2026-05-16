@@ -144,7 +144,7 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
         initial={{ opacity: 0, x: -10 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -10 }}
-        transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="flex items-center"
       >
         <Tooltip>
@@ -154,38 +154,41 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
               size={compact ? "icon" : "sm"}
               onClick={handleBack}
               className={cn(
-                "group relative overflow-hidden transition-all duration-300",
-                compact ? "h-10 w-10 rounded-xl bg-white/5 hover:bg-violet-500/20 text-muted-foreground hover:text-violet-300" 
-                        : "gap-2 px-3 h-10 rounded-xl bg-white/5 hover:bg-violet-500/20 text-muted-foreground hover:text-violet-300",
-                "active:scale-95 border border-white/5 shadow-lg",
-                scrolled && "bg-violet-500/10 border-violet-500/20"
+                "group relative overflow-hidden transition-all duration-500",
+                compact ? "h-11 w-11 rounded-2xl bg-white/[0.03] hover:bg-violet-500/10 text-muted-foreground hover:text-white" 
+                        : "gap-2.5 px-4 h-11 rounded-2xl bg-white/[0.03] hover:bg-violet-500/10 text-muted-foreground hover:text-white",
+                "active:scale-95 border border-white/[0.05] hover:border-violet-500/20 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.5)]",
+                scrolled && "bg-violet-500/10 border-violet-500/20 backdrop-blur-md"
               )}
               aria-label={`Voltar para ${backTarget.label}`}
             >
-              <div className="flex items-center gap-2">
-                <ChevronLeft className={cn("h-5 w-5 transition-transform group-hover:-translate-x-1", !compact && "h-4 w-4")} />
+              <div className="flex items-center gap-2.5 relative z-10">
+                <ChevronLeft className={cn("h-5 w-5 transition-transform duration-500 group-hover:-translate-x-1.5", !compact && "h-4 w-4")} />
                 {!compact && (
-                  <span className="text-[11px] font-bold uppercase tracking-wider">{backTarget.label}</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em]">{backTarget.label}</span>
                 )}
               </div>
               
-              {/* Glass shimmer */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity" />
+              {/* Premium Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-violet-600/0 via-violet-600/5 to-fuchsia-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              {/* Glass Reflection */}
+              <div className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent group-hover:left-[100%] transition-all duration-1000 ease-in-out" />
             </Button>
           </TooltipTrigger>
           <TooltipContent 
             side="bottom" 
             align="start" 
-            className="text-[10px] font-bold uppercase tracking-widest bg-zinc-900 text-white border-white/10 px-3 py-1.5"
+            className="text-[9px] font-black uppercase tracking-[0.25em] bg-[#0a0a0c] text-white border-white/10 px-4 py-2 rounded-xl backdrop-blur-xl shadow-2xl"
           >
-            {backTarget.path === 'close-modal' ? 'Fechar janela' : `Retornar para ${backTarget.label}`}
+            {backTarget.path === 'close-modal' ? 'Fechar Janela' : `Voltar para ${backTarget.label}`}
           </TooltipContent>
         </Tooltip>
       </motion.div>
 
       {!compact && (
-        <div className="hidden lg:flex items-center gap-4">
-          <div className="w-px h-6 bg-white/10" />
+        <div className="hidden lg:flex items-center gap-6 ml-2">
+          <div className="w-[1px] h-4 bg-gradient-to-b from-transparent via-white/10 to-transparent" />
           <ModernBreadcrumbs />
         </div>
       )}
