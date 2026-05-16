@@ -13,8 +13,6 @@ import { useHapticFeedback } from "@/hooks/useMobileGestures";
 import { toast } from "sonner";
 import { differenceInDays } from "date-fns/differenceInDays";
 import { isPast } from "date-fns/isPast";
-import { parseISO } from "date-fns/parseISO";
-
 
 interface SolicitacaoCardProps {
   solicitacao: Solicitacao;
@@ -34,37 +32,34 @@ const statusActions: Record<string, {
   secondary: { label: string; icon: React.ElementType } | null;
 }> = {
   AGUARDANDO_COTACAO: {
-    primary: { label: 'Cotar', icon: BarChart3, href: '/cotacao' },
-    secondary: { label: 'Ver', icon: Eye },
+    primary: { label: 'Quote Now', icon: BarChart3, href: '/cotacao' },
+    secondary: { label: 'View', icon: Eye },
   },
   EM_COTACAO: {
-    primary: { label: 'Ver Cotações', icon: BarChart3, href: '/cotacao' },
-    secondary: { label: 'Selecionar', icon: Check },
+    primary: { label: 'View Quotes', icon: BarChart3, href: '/cotacao' },
+    secondary: { label: 'Select', icon: Check },
   },
   FORNECEDOR_SELECIONADO: {
-    primary: { label: 'Gerar Pedido', icon: FileText },
-    secondary: { label: 'Ver', icon: Eye },
+    primary: { label: 'Generate PO', icon: FileText },
+    secondary: { label: 'View', icon: Eye },
   },
   AGUARDANDO_PAGAMENTO: {
-    primary: { label: 'Pagar', icon: FileText },
-    secondary: { label: 'Ver', icon: Eye },
+    primary: { label: 'Pay Now', icon: FileText },
+    secondary: { label: 'View', icon: Eye },
   },
   PAGO: {
-    primary: { label: 'Acompanhar', icon: Eye },
+    primary: { label: 'Track Order', icon: Eye },
     secondary: null,
   },
   EM_TRANSITO: {
-    primary: { label: 'Rastrear', icon: Eye },
+    primary: { label: 'Track Delivery', icon: Eye },
     secondary: null,
   },
   PEDIDO_GERADO: {
-    primary: { label: 'Ver Pedido', icon: Eye },
+    primary: { label: 'View Order', icon: Eye },
     secondary: null,
   },
-  ENTREGUE: {
-    primary: { label: 'Ver Detalhes', icon: Eye },
-    secondary: null,
-  },
+  ENTREGUE: { label: 'View Details', icon: Eye } as any,
 };
 
 export const SolicitacaoCard = ({ 
@@ -83,63 +78,34 @@ export const SolicitacaoCard = ({
   const statusColor = getStatusColor(solicitacao.status);
   const haptic = useHapticFeedback();
 
-  // Urgency logic
   const deadline = new Date(solicitacao.prazoEntrega);
   const daysRemaining = differenceInDays(deadline, new Date());
   const isOverdue = isPast(deadline) && solicitacao.status !== 'ENTREGUE';
   
   const getUrgencyInfo = () => {
-    if (isOverdue) return { color: "text-destructive", bg: "bg-destructive/10", label: "Atrasado", icon: AlertTriangle };
-    if (daysRemaining <= 2) return { color: "text-red-600", bg: "bg-red-50", label: "Urgente", icon: Clock };
-    if (daysRemaining <= 5) return { color: "text-amber-600", bg: "bg-amber-50", label: "Prioritário", icon: Clock };
-    return { color: "text-emerald-600", bg: "bg-emerald-50", label: "No prazo", icon: CheckCircle };
+    if (isOverdue) return { color: "text-rose-400", bg: "bg-rose-500/10", label: "Overdue", icon: AlertTriangle };
+    if (daysRemaining <= 2) return { color: "text-rose-400", bg: "bg-rose-500/10", label: "Urgent", icon: Clock };
+    if (daysRemaining <= 5) return { color: "text-amber-400", bg: "bg-amber-500/10", label: "Priority", icon: Clock };
+    return { color: "text-emerald-400", bg: "bg-emerald-500/10", label: "On Schedule", icon: CheckCircle };
   };
 
   const urgency = getUrgencyInfo();
 
-  // Enhanced swipe handlers with haptic feedback
   const handleApprove = () => {
     haptic.success();
     if (onApprove) {
       onApprove();
     } else {
-      toast.success(`Solicitação #${solicitacao.id} aprovada`);
+      toast.success(`Request #${solicitacao.id} approved`);
     }
   };
 
-  const handleReject = () => {
-    haptic.error();
-    if (onReject) {
-      onReject();
-    } else {
-      toast.error(`Solicitação #${solicitacao.id} rejeitada`);
-    }
-  };
-
-  const handleArchive = () => {
-    haptic.mediumTap();
-    if (onArchive) {
-      onArchive();
-    } else {
-      toast.info(`Solicitação #${solicitacao.id} arquivada`);
-    }
-  };
-
-  const handleDelete = () => {
-    haptic.error();
-    if (onDelete) {
-      onDelete();
-    }
-  };
-
-
-  // Swipe actions configuration
   const leftActions = [
     {
       id: 'approve',
       icon: <CheckCircle className="w-5 h-5" />,
       label: 'Aprovar',
-      color: 'bg-success',
+      color: 'bg-emerald-500',
       onClick: handleApprove,
     },
   ];
@@ -149,123 +115,115 @@ export const SolicitacaoCard = ({
       id: 'archive',
       icon: <Archive className="w-5 h-5" />,
       label: 'Arquivar',
-      color: 'bg-muted-foreground',
-      onClick: handleArchive,
+      color: 'bg-zinc-600',
+      onClick: () => {
+        haptic.mediumTap();
+        onArchive ? onArchive() : toast.info(`Request #${solicitacao.id} archived`);
+      },
     },
     {
       id: 'reject',
       icon: <XCircle className="w-5 h-5" />,
       label: 'Rejeitar',
-      color: 'bg-destructive',
-      onClick: handleReject,
+      color: 'bg-rose-500',
+      onClick: () => {
+        haptic.error();
+        onReject ? onReject() : toast.error(`Request #${solicitacao.id} rejected`);
+      },
     },
   ];
 
   const cardContent = (
     <Card 
       className={cn(
-        "p-3 md:p-4 hover:shadow-md transition-all duration-200 border-l-4",
-        statusColor.replace('bg-', 'border-l-'),
-        selected && "ring-2 ring-primary bg-primary/5"
+        "p-5 md:p-6 transition-all duration-300 border-white/5 bg-white/[0.03] backdrop-blur-2xl rounded-[2rem] hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-1 relative group",
+        selected && "ring-2 ring-violet-500/50 bg-violet-500/5"
       )}
     >
-      <div className="flex flex-col gap-3">
-        {/* Header row with checkbox and ID */}
-        <div className="flex items-start gap-3">
-          {/* Checkbox for selection */}
+      <div className="absolute top-0 left-0 w-1 h-full rounded-l-[2rem] opacity-70" style={{ backgroundColor: statusColor.includes('#') ? statusColor : 'var(--violet-500)' }} />
+      
+      <div className="flex flex-col gap-5">
+        <div className="flex items-start gap-4">
           {selectable && (
             <div className="shrink-0 pt-0.5" onClick={(e) => e.stopPropagation()}>
               <Checkbox
                 checked={selected}
                 onCheckedChange={(checked) => onSelectChange?.(checked === true)}
-                className="h-5 w-5"
+                className="h-5 w-5 border-white/20 data-[state=checked]:bg-violet-500"
               />
             </div>
           )}
 
-          {/* Info Principal */}
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-mono text-xs sm:text-sm font-bold text-primary">#{solicitacao.id}</span>
-                <span className="text-muted-foreground hidden sm:inline">|</span>
-                <span className="font-semibold text-foreground text-sm truncate">{solicitacao.empresa}</span>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="font-black text-xs font-mono text-violet-400 uppercase tracking-widest">#{solicitacao.id}</span>
+                <span className="font-bold text-white text-base truncate">{solicitacao.empresa}</span>
                 {(solicitacao as any).organizationName && (
-                  <Badge variant="outline" className="text-[10px] py-0 bg-primary/5 text-primary border-primary/20">
+                  <Badge className="text-[9px] font-black uppercase tracking-widest py-0.5 bg-violet-500/10 text-violet-400 border-none">
                     {(solicitacao as any).organizationName}
                   </Badge>
                 )}
               </div>
               
-              <Badge variant="outline" className={cn("text-[10px] sm:text-xs py-0 gap-1 font-medium border-transparent shrink-0", urgency.bg, urgency.color)}>
+              <Badge className={cn("text-[10px] font-black uppercase tracking-widest py-1 px-3 gap-1.5 border-none rounded-full", urgency.bg, urgency.color)}>
                 <urgency.icon className="w-3 h-3" />
                 {urgency.label}
               </Badge>
             </div>
 
-            <p className="text-sm text-foreground mb-2 line-clamp-2">{solicitacao.produto}</p>
+            <p className="text-sm font-medium text-zinc-100 mb-4 line-clamp-2 leading-relaxed">{solicitacao.produto}</p>
             
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-muted-foreground">
-              <span>{solicitacao.quantidade} un</span>
-              <span className="hidden sm:inline">•</span>
-              <Badge variant="outline" className="text-xs">{getTipoLabel(solicitacao.tipo)}</Badge>
-              <span className="hidden md:inline">•</span>
-              <span className="hidden md:inline">Vendedor: {solicitacao.vendedor}</span>
-              <span className="hidden sm:inline">•</span>
-               <span className="hidden sm:inline">Prazo: {new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
+            <div className="flex flex-wrap items-center gap-4 text-[10px] font-black uppercase tracking-widest text-zinc-500">
+              <span className="text-zinc-300">{solicitacao.quantidade} UNITS</span>
+              <Badge variant="outline" className="text-[9px] border-white/10 text-zinc-400">{getTipoLabel(solicitacao.tipo)}</Badge>
+              <span className="hidden md:inline">BY: {solicitacao.vendedor}</span>
+               <span className="hidden sm:inline">DUE: {new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
                {solicitacao.costCenterName && (
-                 <>
-                   <span className="hidden sm:inline">•</span>
-                   <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-md font-medium text-[10px]">
-                     {solicitacao.costCenterCode}: {solicitacao.costCenterName}
-                   </span>
-                 </>
+                 <span className="bg-white/5 text-violet-300 px-2 py-1 rounded-lg border border-white/5 lowercase italic font-medium">
+                   {solicitacao.costCenterCode}: {solicitacao.costCenterName}
+                 </span>
                )}
             </div>
           </div>
         </div>
 
-        {/* Info adicional por status */}
         {solicitacao.status === 'EM_COTACAO' && solicitacao.cotacoes && (
-          <div className="mt-2 p-2 bg-warning/10 rounded-md">
-            <span className="text-xs text-warning font-medium">
-              {solicitacao.cotacoes.length} cotações recebidas | Melhor: R$ {Math.min(...solicitacao.cotacoes.map(c => c.valorUnitario)).toFixed(2)}/un
+          <div className="p-3 bg-violet-500/5 rounded-2xl border border-violet-500/10 flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-widest text-violet-400">
+              {solicitacao.cotacoes.length} Proposals Received
             </span>
+            <span className="text-xs font-black text-white">Best: R$ {Math.min(...solicitacao.cotacoes.map(c => c.valorUnitario)).toFixed(2)}/un</span>
           </div>
         )}
 
         {solicitacao.status === 'FORNECEDOR_SELECIONADO' && solicitacao.fornecedorSelecionado && (
-          <div className="mt-2 p-2 bg-info/10 rounded-md">
-            <span className="text-xs text-info font-medium">
-              Fornecedor: {solicitacao.fornecedorSelecionado} | R$ {solicitacao.valorUnitario?.toFixed(2)}/un | Total: R$ {solicitacao.valorTotal?.toLocaleString('pt-BR')}
+          <div className="p-3 bg-emerald-500/5 rounded-2xl border border-emerald-500/10 flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400">
+              Supplier: {solicitacao.fornecedorSelecionado}
             </span>
+            <span className="text-xs font-black text-white">Total: R$ {solicitacao.valorTotal?.toLocaleString('pt-BR')}</span>
           </div>
         )}
 
-        {/* Visual Status Timeline (UX-005) */}
-        <div className="mt-2">
+        <div className="py-2 border-y border-white/5">
           <StatusTimeline currentStatus={solicitacao.status.toLowerCase()} compact />
         </div>
 
-        {/* Swipe hint for mobile */}
-        <div className="md:hidden text-[10px] text-muted-foreground/60 text-center">
-          ← Deslize para ações rápidas →
-        </div>
-
-        {/* Ações - responsive layout */}
-        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
+        <div className="flex items-center gap-3 pt-1">
           {onDuplicate && (
-            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="h-8 sm:h-9 text-xs" title="Duplicar">
-              <Copy className="w-3.5 h-3.5 mr-1" />
-              <span className="hidden sm:inline">Duplicar</span>
+            <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="h-10 rounded-xl text-zinc-500 hover:text-white hover:bg-white/5 font-black text-[10px] tracking-widest uppercase" title="Duplicate">
+              <Copy className="w-3.5 h-3.5 mr-2" />
+              Duplicate
             </Button>
           )}
 
+          <div className="flex-1" />
+
           {actions?.secondary && (
-            <Button variant="outline" size="sm" className="flex-1 sm:flex-none text-xs sm:text-sm h-8 sm:h-9">
-              <actions.secondary.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
-              <span className="hidden sm:inline">{actions.secondary.label}</span>
-              <span className="sm:hidden">Ver</span>
+            <Button variant="ghost" size="sm" className="h-10 px-4 rounded-xl text-zinc-400 hover:text-white hover:bg-white/5 font-black text-[10px] tracking-widest uppercase">
+              <actions.secondary.icon className="w-4 h-4 mr-2" />
+              {actions.secondary.label}
             </Button>
           )}
           
@@ -274,23 +232,20 @@ export const SolicitacaoCard = ({
               size="sm" 
               asChild={!!actions.primary.href}
               className={cn(
-                "flex-1 sm:flex-none text-xs sm:text-sm h-8 sm:h-9",
-                solicitacao.status === 'AGUARDANDO_COTACAO' && "bg-success hover:bg-success/80",
-                solicitacao.status === 'EM_COTACAO' && "bg-yellow-600 hover:bg-yellow-700",
-                solicitacao.status === 'FORNECEDOR_SELECIONADO' && "bg-info hover:bg-blue-700",
-                solicitacao.status === 'AGUARDANDO_PAGAMENTO' && "bg-warning hover:bg-orange-700",
+                "h-10 px-6 rounded-xl font-black text-[10px] tracking-[0.15em] uppercase border-none shadow-lg shadow-violet-500/20",
+                solicitacao.status === 'AGUARDANDO_COTACAO' ? "bg-emerald-600 hover:bg-emerald-500 shadow-emerald-500/20" : "bg-violet-600 hover:bg-violet-500"
               )}
             >
               {actions.primary.href ? (
                 <Link to={`${actions.primary.href}?id=${solicitacao.id}`}>
-                  <actions.primary.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
+                  <actions.primary.icon className="w-4 h-4 mr-2" />
                   {actions.primary.label}
                 </Link>
               ) : (
-                <>
-                  <actions.primary.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4 mr-1" />
+                <button>
+                  <actions.primary.icon className="w-4 h-4 mr-2" />
                   {actions.primary.label}
-                </>
+                </button>
               )}
             </Button>
           )}
@@ -299,10 +254,9 @@ export const SolicitacaoCard = ({
     </Card>
   );
 
-  // Always wrap with SwipeableListItem for mobile swipe actions
   return (
     <SwipeableListItem 
-      onDelete={onDelete ? handleDelete : undefined} 
+      onDelete={onDelete ? () => { haptic.error(); onDelete(); } : undefined} 
       onEdit={onEdit}
       leftActions={leftActions}
       rightActions={rightActions}
