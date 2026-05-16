@@ -18,15 +18,17 @@ export const useNProgress = () => {
 
   useEffect(() => {
     nprogress.start();
+    
+    // Use a small delay to ensure visual feedback even for fast loads
     const timer = setTimeout(() => {
       nprogress.done();
-    }, 100);
+    }, 250);
 
     return () => {
       clearTimeout(timer);
       nprogress.done();
     };
-  }, [location.pathname]);
+  }, [location.pathname, location.search]);
 
   return null;
 };
