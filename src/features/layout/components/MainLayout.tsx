@@ -60,7 +60,8 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background pb-16 md:pb-0 overflow-x-hidden">
+    <div className="min-h-screen text-zinc-100 pb-16 md:pb-0 overflow-x-hidden selection:bg-violet-500/30">
+      <EliteBackground />
       <NavigationProgressBar />
       <SkipLinks />
       <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
