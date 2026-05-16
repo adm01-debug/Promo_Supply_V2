@@ -24,11 +24,12 @@ import { SupplierChat } from "./SupplierChat";
 import { GuidedBuyingAssistant } from "./GuidedBuyingAssistant";
 import { BackToTop } from "@/components/navigation/BackToTop";
 import { cn } from "@/lib/utils";
-import { Menu, X, Package } from "lucide-react";
+import { Menu, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
+import { EliteBackground } from "@/components/layout/EliteBackground";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -59,7 +60,8 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background pb-16 md:pb-0 overflow-x-hidden">
+    <div className="min-h-screen text-zinc-100 pb-16 md:pb-0 overflow-x-hidden selection:bg-violet-500/30">
+      <EliteBackground />
       <NavigationProgressBar />
       <SkipLinks />
       <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
@@ -82,7 +84,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       </AnimatePresence>
 
       <div className={cn(
-        "fixed left-0 top-0 z-40 h-screen w-72 bg-card border-r border-border/50 transform transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] md:hidden",
+        "fixed left-0 top-0 z-40 h-screen w-72 bg-[#05020a]/95 border-r border-white/5 transform transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] md:hidden",
         mobileMenuOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
       )}>
         <AppSidebar collapsed={false} onToggle={() => setMobileMenuOpen(false)} />
@@ -92,7 +94,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
         "transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]", 
         sidebarCollapsed ? "md:ml-[68px]" : "md:ml-64"
       )}>
-        <header className="sticky top-0 z-30 h-16 md:h-20 border-b border-border/5 shadow-sm bg-background/60 backdrop-blur-2xl print:hidden flex items-center">
+        <header className="sticky top-0 z-30 h-16 md:h-20 border-b border-white/5 shadow-sm bg-white/[0.01] backdrop-blur-2xl print:hidden flex items-center">
           <div className="w-full px-4 md:px-8 flex items-center justify-between gap-6">
             <div className="flex items-center gap-3">
               <div className="md:hidden flex items-center gap-2">

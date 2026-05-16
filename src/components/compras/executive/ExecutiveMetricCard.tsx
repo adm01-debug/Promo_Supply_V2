@@ -58,18 +58,18 @@ export const ExecutiveMetricCard = ({
       <Card
         className={cn(
           "relative overflow-hidden cursor-pointer transition-all duration-500",
-          "hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] hover:-translate-y-2 active:scale-[0.98]",
-          "border-border/40 bg-card/40 backdrop-blur-xl rounded-[2rem]",
-          onClick ? "hover:border-primary/40" : ""
+          "hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-2 active:scale-[0.98]",
+          "border-white/5 bg-white/[0.03] backdrop-blur-2xl rounded-[2.5rem]",
+          onClick ? "hover:border-violet-500/40 hover:bg-white/[0.05]" : ""
         )}
         onClick={onClick}
       >
         {/* Elite Ambient Glow */}
-        <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-32 h-32 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
         
         <CardContent className="p-8">
           <div className="flex items-center justify-between mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+            <div className="w-12 h-12 rounded-2xl bg-violet-500/10 flex items-center justify-center text-violet-400 shadow-inner">
               <Icon className="h-6 w-6" />
             </div>
             
@@ -79,7 +79,7 @@ export const ExecutiveMetricCard = ({
                   data={trendData}
                   width={60}
                   height={20}
-                  color={isGoodChange ? 'hsl(var(--success))' : isBadChange ? 'hsl(var(--destructive))' : 'hsl(var(--primary))'}
+                  color={isGoodChange ? '#10b981' : isBadChange ? '#ef4444' : '#8b5cf6'}
                 />
               )}
               
@@ -87,7 +87,7 @@ export const ExecutiveMetricCard = ({
                 <Badge 
                   className={cn(
                     "flex items-center gap-1 font-black text-[10px] rounded-lg px-2 py-1 border-none shadow-sm",
-                    isGoodChange ? "bg-success/20 text-success" : isBadChange ? "bg-destructive/20 text-destructive" : "bg-muted text-muted-foreground"
+                    isGoodChange ? "bg-emerald-500/20 text-emerald-400" : isBadChange ? "bg-rose-500/20 text-rose-400" : "bg-white/10 text-zinc-400"
                   )}
                 >
                   {isPositive ? <ArrowUpRight className="h-3 w-3" /> : isNegative ? <ArrowDownRight className="h-3 w-3" /> : null}
@@ -99,27 +99,27 @@ export const ExecutiveMetricCard = ({
 
           <div className="space-y-6">
             <div>
-              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">{title}</p>
+              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1">{title}</p>
               <div className="flex items-baseline gap-2">
-                <p className="text-3xl font-black text-foreground tracking-tighter leading-none">
+                <p className="text-3xl font-black text-white tracking-tighter leading-none">
                   {formatValue(value)}
                 </p>
                 {isGoodChange && (
-                  <TrendingUp className="h-4 w-4 text-success animate-pulse" />
+                  <TrendingUp className="h-4 w-4 text-emerald-400 animate-pulse" />
                 )}
               </div>
-              {subtitle && <p className="text-[10px] font-bold text-muted-foreground/60 mt-2 uppercase tracking-wide">{subtitle}</p>}
+              {subtitle && <p className="text-[10px] font-bold text-zinc-500/60 mt-2 uppercase tracking-wide">{subtitle}</p>}
             </div>
 
             {showComparison && previousValue !== undefined && (
-              <div className="p-3 rounded-2xl bg-muted/30 flex items-center justify-between text-[10px] font-bold transition-all hover:bg-muted/50 border border-border/10">
-                <div className="flex items-center gap-2 text-muted-foreground uppercase tracking-widest">
+              <div className="p-3 rounded-2xl bg-white/[0.02] flex items-center justify-between text-[10px] font-bold transition-all hover:bg-white/[0.04] border border-white/5">
+                <div className="flex items-center gap-2 text-zinc-500 uppercase tracking-widest">
                   <Calendar className="h-3.5 w-3.5 opacity-50" />
                   <span>BASELINE</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="opacity-80">{formatValue(previousValue)}</span>
-                  <span className={isGoodChange ? 'text-success' : isBadChange ? 'text-destructive' : ''}>
+                  <span className="opacity-80 text-zinc-300">{formatValue(previousValue)}</span>
+                  <span className={isGoodChange ? 'text-emerald-400' : isBadChange ? 'text-rose-400' : 'text-zinc-400'}>
                     {change !== undefined ? `${change > 0 ? '+' : ''}${change.toFixed(1)}%` : ''}
                   </span>
                 </div>
@@ -129,17 +129,17 @@ export const ExecutiveMetricCard = ({
             {target && (
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                  <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="flex items-center gap-2 text-zinc-500">
                     <Target className="h-3.5 w-3.5" />
                     <span>TARGET INDEX</span>
                   </div>
-                  <span className={isAboveTarget ? 'text-success' : 'text-primary'}>
+                  <span className={isAboveTarget ? 'text-emerald-400' : 'text-violet-400'}>
                     {targetProgress?.toFixed(0)}%
                   </span>
                 </div>
-                <div className="relative h-1.5 w-full rounded-full bg-muted/30 overflow-hidden">
+                <div className="relative h-1.5 w-full rounded-full bg-white/[0.05] overflow-hidden">
                   <motion.div 
-                    className={cn("h-full rounded-full", isAboveTarget ? 'bg-success' : 'bg-primary')}
+                    className={cn("h-full rounded-full", isAboveTarget ? 'bg-emerald-500' : 'bg-gradient-to-r from-violet-500 to-fuchsia-500')}
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(targetProgress || 0, 100)}%` }}
                     transition={{ duration: 1, ease: "circOut" }}
@@ -150,13 +150,13 @@ export const ExecutiveMetricCard = ({
 
             <div className="flex flex-wrap gap-2">
               {urgent !== undefined && urgent > 0 && (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-destructive/10 text-destructive rounded-full text-[9px] font-black uppercase">
-                  <div className="w-1 h-1 rounded-full bg-destructive animate-ping" />
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-500/10 text-rose-400 rounded-full text-[9px] font-black uppercase">
+                  <div className="w-1 h-1 rounded-full bg-rose-500 animate-ping" />
                   {urgent} URGENTE
                 </div>
               )}
               {critical !== undefined && critical > 0 && (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-500/10 text-orange-600 rounded-full text-[9px] font-black uppercase">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-[9px] font-black uppercase">
                   <AlertTriangle className="h-3 w-3" />
                   {critical} CRÍTICO
                 </div>

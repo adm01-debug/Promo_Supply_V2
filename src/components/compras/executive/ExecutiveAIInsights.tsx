@@ -94,32 +94,32 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
 
   if (loading) {
     return (
-      <Card className="border-primary/20 bg-card/50 backdrop-blur-xl">
+      <Card className="border-violet-500/20 bg-white/[0.03] backdrop-blur-2xl rounded-[2.5rem]">
         <CardContent className="p-8 flex flex-col items-center justify-center space-y-4">
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
           >
-            <Sparkles className="h-8 w-8 text-primary opacity-50" />
+            <Sparkles className="h-8 w-8 text-violet-400 opacity-50" />
           </motion.div>
-          <p className="text-sm text-muted-foreground animate-pulse">IA analisando dados em tempo real...</p>
+          <p className="text-sm text-zinc-400 animate-pulse">IA analisando dados em tempo real...</p>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-card/80 to-card/40 backdrop-blur-xl overflow-hidden relative">
-      <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-        <Sparkles className="h-24 w-24 text-primary" />
+    <Card className="border-white/5 bg-white/[0.03] backdrop-blur-2xl overflow-hidden relative rounded-[2.5rem]">
+      <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+        <Sparkles className="h-24 w-24 text-violet-500" />
       </div>
       
       <CardHeader className="flex flex-row items-center space-y-0 pb-4">
         <div className="flex items-center gap-2">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Sparkles className="h-5 w-5 text-primary" />
+          <div className="p-2 rounded-lg bg-violet-500/10">
+            <Sparkles className="h-5 w-5 text-violet-400" />
           </div>
-          <CardTitle className="text-lg font-bold">Insights Inteligentes (Beta)</CardTitle>
+          <CardTitle className="text-lg font-black text-white uppercase tracking-tight">AI Strategic Insights</CardTitle>
         </div>
       </CardHeader>
 
@@ -133,12 +133,12 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ delay: index * 0.1 }}
               className={cn(
-                "group relative p-4 rounded-xl border transition-all duration-300",
-                "hover:shadow-lg hover:shadow-primary/5 hover:translate-x-1",
-                insight.type === 'opportunity' && "border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10",
-                insight.type === 'warning' && "border-amber-500/20 bg-amber-500/5 hover:bg-amber-500/10",
-                insight.type === 'positive' && "border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10",
-                insight.type === 'info' && "border-primary/20 bg-primary/5 hover:bg-primary/10"
+                "group relative p-4 rounded-xl border border-white/5 transition-all duration-300",
+                "hover:shadow-lg hover:shadow-violet-500/5 hover:translate-x-1",
+                insight.type === 'opportunity' && "bg-blue-500/5 hover:bg-blue-500/10",
+                insight.type === 'warning' && "bg-amber-500/5 hover:bg-amber-500/10",
+                insight.type === 'positive' && "bg-emerald-500/5 hover:bg-emerald-500/10",
+                insight.type === 'info' && "bg-violet-500/5 hover:bg-violet-500/10"
               )}
             >
               <div className="flex gap-4">
@@ -147,30 +147,30 @@ export const ExecutiveAIInsights = ({ metrics, spendByCategory, topSuppliers, lo
                   insight.type === 'opportunity' && "bg-blue-500/20 text-blue-500",
                   insight.type === 'warning' && "bg-amber-500/20 text-amber-500",
                   insight.type === 'positive' && "bg-emerald-500/20 text-emerald-500",
-                  insight.type === 'info' && "bg-primary/20 text-primary"
+                  insight.type === 'info' && "bg-violet-500/20 text-violet-400"
                 )}>
                   <insight.icon className="h-4 w-4" />
                 </div>
                 
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-sm leading-none">{insight.title}</h4>
+                    <h4 className="font-bold text-sm leading-none text-zinc-100">{insight.title}</h4>
                     <span className={cn(
                       "text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider",
                       insight.type === 'opportunity' && "bg-blue-500/20 text-blue-500",
                       insight.type === 'warning' && "bg-amber-500/20 text-amber-500",
                       insight.type === 'positive' && "bg-emerald-500/20 text-emerald-500",
-                      insight.type === 'info' && "bg-primary/20 text-primary"
+                      insight.type === 'info' && "bg-violet-500/20 text-violet-400"
                     )}>
                       {insight.impact}
                     </span>
                   </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed pr-8">
+                  <p className="text-xs text-zinc-400 leading-relaxed pr-8">
                     {insight.description}
                   </p>
                   
                   {insight.action && (
-                    <button className="flex items-center gap-1 text-[11px] font-bold text-primary hover:gap-2 transition-all mt-2">
+                    <button className="flex items-center gap-1 text-[11px] font-bold text-violet-400 hover:gap-2 transition-all mt-2">
                       {insight.action} <ArrowRight className="h-3 w-3" />
                     </button>
                   )}

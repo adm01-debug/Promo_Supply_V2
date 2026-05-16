@@ -168,7 +168,7 @@ const SidebarItem = ({
         "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-all duration-300",
         collapsed && "justify-center px-0",
         active
-          ? "bg-primary/10 text-primary shadow-sm"
+          ? "bg-violet-500/10 text-violet-300 shadow-sm"
           : "text-muted-foreground hover:bg-muted/80 hover:text-foreground hover:translate-x-1 hover:shadow-sm"
       )}
     >
@@ -176,14 +176,14 @@ const SidebarItem = ({
       {active && (
         <motion.span 
           layoutId="sidebar-active-indicator"
-          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[4px] rounded-r-full bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" 
+          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[4px] rounded-r-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.5)]" 
         />
       )}
 
       <Icon
         className={cn(
           "h-[18px] w-[18px] shrink-0 transition-colors",
-          active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+          active ? "text-violet-400" : "text-zinc-500 group-hover:text-zinc-100"
         )}
       />
 
@@ -262,13 +262,13 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
     <aside
       data-tour="sidebar"
       className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border/40 bg-card/80 backdrop-blur-xl transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-white/5 bg-white/[0.02] backdrop-blur-3xl transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
         collapsed ? "w-[68px]" : "w-64"
       )}
     >
       {/* ── Header ── */}
-      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-border/10 px-4">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary via-primary-glow to-primary shadow-lg shadow-primary/20 transition-transform hover:scale-105 active:scale-95">
+      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-white/5 px-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-500/20 transition-transform hover:scale-105 active:scale-95">
           <Package className="h-5 w-5 text-primary-foreground" />
         </div>
         <AnimatePresence>
@@ -277,9 +277,10 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="text-[15px] font-black uppercase tracking-tighter text-foreground"
+              className="text-[15px] font-black uppercase tracking-tighter text-white"
+              style={{ fontFamily: 'Outfit, sans-serif' }}
             >
-              PROMO <span className="text-primary">SUPPLY</span>
+              PROMO <span className="text-violet-400">BRINDES</span>
             </motion.span>
           )}
         </AnimatePresence>

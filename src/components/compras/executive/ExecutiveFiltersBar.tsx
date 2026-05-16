@@ -9,6 +9,7 @@ import { Filter, X, Search, Sparkles } from 'lucide-react';
 import { FilterFavoritesManager } from '../FilterFavoritesManager';
 import { type DashboardFilter } from '@/hooks/useDashboardFilters';
 import { allCategories, allSuppliers } from './executiveDashboardData';
+import { cn } from '@/lib/utils';
 
 interface Props {
   selectedCategory: string;
@@ -37,40 +38,40 @@ export const ExecutiveFiltersBar = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
     >
-      <Card className="border-none shadow-sm bg-card/50 backdrop-blur-md">
+      <Card className="border-white/5 bg-white/[0.02] backdrop-blur-xl rounded-[1.5rem]">
         <CardContent className="p-4">
           <div className="flex items-center gap-6 flex-wrap">
-            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-primary/5 text-primary border border-primary/10">
+            <div className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-violet-500/10 text-violet-400 border border-violet-500/20 shadow-lg shadow-violet-500/5">
               <Filter className="h-4 w-4" />
-              <span className="text-xs font-bold uppercase tracking-widest">Painel de Filtros</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Filter Engine</span>
             </div>
 
-            <div className="flex items-center gap-3">
-              <div className="flex flex-col gap-1">
-                <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Categoria de Compra</Label>
+            <div className="flex items-center gap-4">
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-[9px] font-black uppercase text-zinc-500 tracking-widest ml-1">Purchasing Category</Label>
                 <Select value={selectedCategory} onValueChange={onCategoryChange}>
-                  <SelectTrigger className="w-[180px] h-10 bg-background/50 border-muted-foreground/20 hover:border-primary/50 transition-all rounded-xl focus:ring-primary/20">
+                  <SelectTrigger className="w-[190px] h-11 bg-white/[0.03] border-white/10 hover:border-violet-500/40 transition-all rounded-xl focus:ring-violet-500/20 text-xs font-bold text-zinc-200">
                     <SelectValue placeholder="Todas" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background/95 backdrop-blur-md border shadow-2xl z-50 rounded-xl">
-                    <SelectItem value="all" className="rounded-lg">Todas as Categorias</SelectItem>
+                  <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl z-50 rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
+                    <SelectItem value="all" className="rounded-lg text-xs font-bold focus:bg-violet-500/20 focus:text-violet-200 py-2.5">Todas as Categorias</SelectItem>
                     {allCategories.map(cat => (
-                      <SelectItem key={cat} value={cat} className="rounded-lg">{cat}</SelectItem>
+                      <SelectItem key={cat} value={cat} className="rounded-lg text-xs font-bold focus:bg-violet-500/20 focus:text-violet-200 py-2.5">{cat}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
 
-              <div className="flex flex-col gap-1">
-                <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Fornecedor Estratégico</Label>
+              <div className="flex flex-col gap-1.5">
+                <Label className="text-[9px] font-black uppercase text-zinc-500 tracking-widest ml-1">Strategic Supplier</Label>
                 <Select value={selectedSupplier} onValueChange={onSupplierChange}>
-                  <SelectTrigger className="w-[180px] h-10 bg-background/50 border-muted-foreground/20 hover:border-primary/50 transition-all rounded-xl focus:ring-primary/20">
+                  <SelectTrigger className="w-[190px] h-11 bg-white/[0.03] border-white/10 hover:border-violet-500/40 transition-all rounded-xl focus:ring-violet-500/20 text-xs font-bold text-zinc-200">
                     <SelectValue placeholder="Todos" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background/95 backdrop-blur-md border shadow-2xl z-50 rounded-xl">
-                    <SelectItem value="all" className="rounded-lg">Todos os Fornecedores</SelectItem>
+                  <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl z-50 rounded-2xl shadow-[0_30px_60px_rgba(0,0,0,0.5)]">
+                    <SelectItem value="all" className="rounded-lg text-xs font-bold focus:bg-violet-500/20 focus:text-violet-200 py-2.5">Todos os Fornecedores</SelectItem>
                     {allSuppliers.map(sup => (
-                      <SelectItem key={sup} value={sup} className="rounded-lg">{sup}</SelectItem>
+                      <SelectItem key={sup} value={sup} className="rounded-lg text-xs font-bold focus:bg-violet-500/20 focus:text-violet-200 py-2.5">{sup}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -89,20 +90,20 @@ export const ExecutiveFiltersBar = ({
                       variant="ghost" 
                       size="sm" 
                       onClick={onClearFilters} 
-                      className="h-10 px-4 rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/5 transition-all group"
+                      className="h-11 px-5 rounded-xl text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all group font-black text-[10px] tracking-widest"
                     >
                       <X className="h-4 w-4 mr-2 group-hover:rotate-90 transition-transform" />
-                      <span className="text-xs font-bold">LIMPAR</span>
+                      LIMPAR
                     </Button>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
 
-            <div className="ml-auto flex items-center gap-3">
-              <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-success/5 text-success border border-success/10 animate-pulse-slow">
+            <div className="ml-auto flex items-center gap-4">
+              <div className="hidden lg:flex items-center gap-2.5 px-4 py-2 rounded-xl bg-emerald-500/5 text-emerald-400 border border-emerald-500/10 animate-pulse-slow">
                 <Sparkles className="h-3.5 w-3.5" />
-                <span className="text-[10px] font-bold uppercase tracking-tight">IA Sugestões Ativas</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.15em]">AI Smart Optimization</span>
               </div>
               
               <FilterFavoritesManager
@@ -125,32 +126,32 @@ export const ExecutiveFiltersBar = ({
                 exit={{ opacity: 0, height: 0 }}
                 className="overflow-hidden"
               >
-                <div className="flex items-center gap-2 mt-4 pt-4 border-t border-dashed">
-                  <span className="text-[10px] font-bold uppercase text-muted-foreground tracking-widest">Filtros Ativos:</span>
-                  <div className="flex flex-wrap gap-2">
+                <div className="flex items-center gap-3 mt-5 pt-5 border-t border-dashed border-white/5">
+                  <span className="text-[9px] font-black uppercase text-zinc-500 tracking-[0.2em]">Active Filters:</span>
+                  <div className="flex flex-wrap gap-2.5">
                     {selectedCategory !== 'all' && (
-                      <Badge variant="secondary" className="pl-3 pr-1 py-1 rounded-full bg-primary/10 text-primary border-none hover:bg-primary/20 transition-colors">
-                        <span className="text-[11px] font-semibold">{selectedCategory}</span>
+                      <Badge className="pl-4 pr-1.5 py-1.5 rounded-full bg-violet-500/10 text-violet-300 border border-violet-500/20 hover:bg-violet-500/20 transition-all shadow-lg shadow-violet-500/5">
+                        <span className="text-[11px] font-bold tracking-tight uppercase">{selectedCategory}</span>
                         <Button 
                           variant="ghost" 
                           size="icon" 
-                          className="h-5 w-5 ml-1.5 rounded-full hover:bg-primary/20"
+                          className="h-5 w-5 ml-2 rounded-full hover:bg-white/10 text-violet-300"
                           onClick={() => onCategoryChange('all')}
                         >
-                          <X className="h-3 w-3" />
+                          <X className="h-3.5 w-3.5" />
                         </Button>
                       </Badge>
                     )}
                     {selectedSupplier !== 'all' && (
-                      <Badge variant="secondary" className="pl-3 pr-1 py-1 rounded-full bg-chart-2/10 text-chart-2 border-none hover:bg-chart-2/20 transition-colors">
-                        <span className="text-[11px] font-semibold">{selectedSupplier}</span>
+                      <Badge className="pl-4 pr-1.5 py-1.5 rounded-full bg-fuchsia-500/10 text-fuchsia-300 border border-fuchsia-500/20 hover:bg-fuchsia-500/20 transition-all shadow-lg shadow-fuchsia-500/5">
+                        <span className="text-[11px] font-bold tracking-tight uppercase">{selectedSupplier}</span>
                         <Button 
                           variant="ghost" 
                           size="icon" 
-                          className="h-5 w-5 ml-1.5 rounded-full hover:bg-chart-2/20"
+                          className="h-5 w-5 ml-2 rounded-full hover:bg-white/10 text-fuchsia-300"
                           onClick={() => onSupplierChange('all')}
                         >
-                          <X className="h-3 w-3" />
+                          <X className="h-3.5 w-3.5" />
                         </Button>
                       </Badge>
                     )}
