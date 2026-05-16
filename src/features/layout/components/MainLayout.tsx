@@ -95,38 +95,38 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
         sidebarCollapsed ? "md:ml-[68px]" : "md:ml-64"
       )}>
         <header className="sticky top-0 z-30 h-16 md:h-20 border-b border-white/5 shadow-sm bg-white/[0.01] backdrop-blur-2xl print:hidden flex items-center">
-          <div className="w-full px-4 md:px-8 flex items-center justify-between gap-6">
+          <div className="w-full px-4 md:px-8 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="md:hidden flex items-center gap-2">
-                {!isHome ? (
-                  <SmartBackButton compact className="flex" />
-                ) : (
+                {isHome && (
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => setMobileMenuOpen(true)}
-                    className="h-11 w-11 rounded-2xl bg-muted/20"
+                    className="h-10 w-10 rounded-xl bg-white/5 border border-white/5"
                     aria-label="Abrir menu"
                   >
-                    <Menu className="w-5 h-5" />
+                    <Menu className="w-5 h-5 text-violet-400" />
                   </Button>
                 )}
               </div>
+
               
-              {/* Desktop Smart Back Button - Always present in header when not home */}
+              {/* Desktop & Mobile Smart Back Button - Always present in header when not home */}
               <AnimatePresence>
                 {!isHome && (
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
-                    className="hidden md:flex items-center"
+                    className="flex items-center"
                   >
-                    <SmartBackButton />
-                    <Separator orientation="vertical" className="mx-4 h-6 bg-border/40" />
+                    <SmartBackButton compact={false} className="hidden md:flex" />
+                    <SmartBackButton compact={true} className="md:hidden" />
                   </motion.div>
                 )}
               </AnimatePresence>
+
 
               {/* Sidebar toggle for desktop when collapsed */}
               {isHome && (
@@ -151,17 +151,15 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
           <main id="main-content" className="p-4 md:p-8 max-w-[1600px] mx-auto" tabIndex={-1}>
             {!isHome && (
               <motion.div
-                className="mb-8"
+                className="mb-6 md:hidden"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 }}
               >
-                <div className="flex flex-col gap-2">
-                  <Breadcrumbs variant="pills" className="hidden md:flex" />
-                  <Breadcrumbs variant="compact" className="md:hidden" />
-                </div>
+                <Breadcrumbs variant="compact" />
               </motion.div>
             )}
+
 
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
