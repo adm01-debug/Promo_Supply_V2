@@ -40,6 +40,8 @@ const parentRoutes: Record<string, string> = {
   '/devolucoes': '/pedidos',
   '/catalogo-produtos': '/',
   '/admin/telemetria': '/',
+  '/recebimento': '/pedidos',
+  '/portal-fornecedor': '/',
 };
 
 const routeLabels: Record<string, string> = {
@@ -57,6 +59,7 @@ const routeLabels: Record<string, string> = {
   '/dashboard-executivo': 'Executivo',
   '/kanban': 'Kanban',
   '/catalogo-produtos': 'Catálogo',
+  '/portal-fornecedor': 'Portal',
 };
 
 interface SmartBackButtonProps {
@@ -95,9 +98,13 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => navigate(backTarget.path)}
+          onClick={() => {
+            if (window.navigator.vibrate) window.navigator.vibrate(10);
+            navigate(backTarget.path);
+          }}
           className={cn("h-8 w-8 text-muted-foreground hover:text-foreground", className)}
           aria-label={`Voltar para ${backTarget.label}`}
+          title={`Voltar para ${backTarget.label} (Alt + Seta Esquerda)`}
         >
           <ChevronLeft className="h-5 w-5" />
         </Button>
@@ -116,7 +123,10 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate(backTarget.path)}
+            onClick={() => {
+              if (window.navigator.vibrate) window.navigator.vibrate(10);
+              navigate(backTarget.path);
+            }}
             className={cn(
               "gap-1.5 text-muted-foreground hover:text-foreground h-8 px-2.5 rounded-lg",
               "hover:bg-muted/60 active:scale-[0.97] transition-all",
