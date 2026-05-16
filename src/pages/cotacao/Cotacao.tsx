@@ -300,7 +300,7 @@ const Cotacao = () => {
       <CotacaoManualModal 
         open={showManualModal} 
         onOpenChange={setShowManualModal} 
-        fornecedores={fornecedores}
+        fornecedores={adaptFornecedoresToLegacy(fornecedores)}
         onSave={(data) => {
           createCotacao({
             solicitacao_id: solicitacao.id,
