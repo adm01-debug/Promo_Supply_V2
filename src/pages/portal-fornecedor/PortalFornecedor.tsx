@@ -305,7 +305,7 @@ export default function PortalFornecedor() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {cotacoes.map(c => (
+                          {(cotacoes as any[]).map(c => (
                             <TableRow key={c.id}>
                               <TableCell className="font-mono text-xs">{c.numero}</TableCell>
                               <TableCell className="text-sm">
