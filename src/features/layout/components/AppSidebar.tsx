@@ -273,15 +273,20 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
         </div>
         <AnimatePresence>
           {!collapsed && (
-            <motion.span 
+            <motion.div
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -10 }}
-              className="text-[15px] font-black uppercase tracking-tighter text-white"
+              className="flex flex-col leading-none"
               style={{ fontFamily: 'Outfit, sans-serif' }}
             >
-              PROMO <span className="text-violet-400">BRINDES</span>
-            </motion.span>
+              <span className="text-[15px] font-black uppercase tracking-tighter text-white">
+                PROMO <span className="text-violet-400">BRINDES</span>
+              </span>
+              <span className="text-[9px] tracking-[0.22em] uppercase text-zinc-500 font-semibold mt-1">
+                Enterprise Solutions
+              </span>
+            </motion.div>
           )}
         </AnimatePresence>
       </div>
