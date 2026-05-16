@@ -21,7 +21,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetError
         Ocorreu um erro inesperado na aplicação. Nossa equipe técnica já foi notificada.
       </p>
       
-      {process.env.NODE_ENV === 'development' && (
+      {process.env['NODE_ENV'] === 'development' && (
         <pre className="bg-muted p-4 rounded-lg text-left text-xs mb-8 max-w-full overflow-auto max-h-[200px] border border-border">
           {error.message}
           {"\n\n"}
