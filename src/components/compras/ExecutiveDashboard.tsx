@@ -165,21 +165,21 @@ export const ExecutiveDashboard = () => {
               <TrendingUp className="w-7 h-7" />
             </div>
             <div>
-              <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">Executive Dashboard</h1>
+              <h1 className="text-3xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Executive Dashboard</h1>
               <div className="flex items-center gap-2 mt-2">
-                 <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">Real-time Intelligence</Badge>
+                 <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest border-violet-500/30 text-violet-300">Real-time Intelligence</Badge>
                  <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">• Global Procurement Control</span>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border/40 bg-card/40 backdrop-blur-xl">
-              <GitCompare className="h-4 w-4 text-primary" />
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-white/5 bg-white/[0.02] backdrop-blur-xl">
+              <GitCompare className="h-4 w-4 text-violet-400" />
               <Label htmlFor="comparison-mode" className="text-[10px] font-black uppercase tracking-widest cursor-pointer">Comparing</Label>
               <Switch id="comparison-mode" checked={showComparison} onCheckedChange={setShowComparison} />
             </div>
-            <div className="bg-muted/30 p-1 rounded-xl flex">
+            <div className="bg-white/[0.03] p-1 rounded-xl flex border border-white/5">
                {['1m', '3m', '6m', '1y'].map(p => (
                  <Button 
                    key={p} 
@@ -279,13 +279,13 @@ export const ExecutiveDashboard = () => {
            <div className="space-y-8">
               <ExecutivePendingActions items={filteredPendingItems} />
               <PurchaseClimateWidget />
-              <Card className="p-8 rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+              <Card className="p-8 rounded-[2.5rem] border-white/5 bg-white/[0.03] backdrop-blur-2xl shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-5 rotate-12">
-                   <Brain className="w-24 h-24 text-primary" />
+                   <Brain className="w-24 h-24 text-violet-500" />
                 </div>
                 <div className="flex items-center gap-3 mb-6">
-                   <Sparkles className="w-5 h-5 text-primary" />
-                   <h3 className="font-black uppercase tracking-tight text-foreground">Strategic Intelligence</h3>
+                   <Sparkles className="w-5 h-5 text-violet-400" />
+                   <h3 className="font-black uppercase tracking-tight text-white">Strategic Intelligence</h3>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed font-medium mb-6">
                   Sua matriz de risco Kraljic foi atualizada com base nos dados de mercado deste mês. Recomendamos revisar os fornecedores críticos.
