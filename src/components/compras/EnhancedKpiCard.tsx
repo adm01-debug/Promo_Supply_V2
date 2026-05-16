@@ -5,6 +5,7 @@ import { useMemo, forwardRef } from "react";
 import { Sparkline } from "@/components/ui/sparkline";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
+import { Card, CardContent } from "@/components/ui/card";
 import { 
   type KpiColor, colorClasses, 
   AnimatedCounter, DeltaIndicator, TargetProgressRing 
@@ -28,7 +29,7 @@ export interface EnhancedKpiCardProps {
   showComparison?: boolean;
   animate?: boolean;
 }
-// Components (AnimatedCounter, DeltaIndicator, TargetProgressRing) imported from enhanced-kpi/EnhancedKpiHelpers
+
 export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(({ 
   title, 
   value, 
@@ -41,11 +42,11 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
   sparklineData,
   variant = 'default',
   onClick,
-  periodLabel = 'vs período anterior',
+  periodLabel = 'vs previous period',
   showComparison = true,
   animate = true
 }, ref) => {
-  const colors = colorClasses[color];
+  const colors = colorClasses[color] || colorClasses['violet'];
   
   const targetProgress = useMemo(() => {
     if (!target) return null;
@@ -63,264 +64,95 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
     }
   };
 
-  // Featured variant - larger, more prominent
-  if (variant === 'featured') {
-    return (
-      <motion.div
-        ref={ref}
-        initial={animate ? { opacity: 0, y: 20, scale: 0.95 } : false}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        whileHover={{ y: -4, scale: 1.01 }}
-        whileTap={{ scale: 0.99 }}
-        onClick={onClick}
-        className={cn(
-          "relative rounded-2xl border-2 bg-card text-card-foreground shadow-lg p-5 group overflow-hidden cursor-pointer",
-          "transition-all duration-300 hover:shadow-xl",
-          colors.border
-        )}
-      >
-        {/* Decorative gradient */}
-        <div 
-          className={cn(
-            "absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500",
-            "bg-gradient-to-br",
-            colors.gradient
-          )}
-          style={{ opacity: 0.03 }}
-        />
+  const commonCardClasses = cn(
+    "relative overflow-hidden cursor-pointer transition-all duration-500",
+    "border-white/5 bg-white/[0.03] backdrop-blur-2xl rounded-[2rem]",
+    "hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-1 active:scale-[0.98]",
+    colors.border
+  );
 
-        {/* Sparkle decoration */}
-        <motion.div 
-          className="absolute top-3 right-3"
-          animate={{ rotate: [0, 180, 360], scale: [1, 1.1, 1] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-        >
-          <Sparkles className={cn("w-4 h-4 opacity-30", colors.text)} />
-        </motion.div>
-
-        <div className="relative z-10">
-          <div className="flex items-start justify-between gap-4">
-            <div className="space-y-2 flex-1">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                {title}
-              </p>
-              
-              <div className="flex items-baseline gap-3">
-                <span className={cn(
-                  "text-3xl md:text-4xl font-black tracking-tight",
-                  colors.text
-                )}>
-                  {animate ? <AnimatedCounter value={value} format={format} /> : formatValue(value)}
-                </span>
-                
-                {showComparison && previousValue !== undefined && (
-                  <DeltaIndicator 
-                    currentValue={value} 
-                    previousValue={previousValue}
-                  />
-                )}
-              </div>
-
-              {subtitle && (
-                <p className="text-sm text-muted-foreground">{subtitle}</p>
-              )}
-
-              {/* Comparison tooltip */}
-              {showComparison && previousValue !== undefined && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <p className="text-xs text-muted-foreground/70 flex items-center gap-1 cursor-help">
-                      <Info className="w-3 h-3" />
-                      {periodLabel}: {formatValue(previousValue)}
-                    </p>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Valor do período anterior: <strong>{formatValue(previousValue)}</strong></p>
-                    <p>Variação: <strong>{((value - previousValue) / previousValue * 100).toFixed(1)}%</strong></p>
-                  </TooltipContent>
-                </Tooltip>
-              )}
-            </div>
-
-            <div className="flex flex-col items-end gap-3">
-              <motion.div 
-                className={cn(
-                  "p-3 rounded-xl shadow-lg",
-                  "bg-gradient-to-br",
-                  colors.gradient
-                )}
-                whileHover={{ scale: 1.1, rotate: 5 }}
-              >
-                <Icon className="w-6 h-6 text-primary-foreground" />
-              </motion.div>
-              
-              {targetProgress !== null && (
-                <TargetProgressRing progress={targetProgress} color={color} />
-              )}
-            </div>
-          </div>
-
-          {/* Sparkline */}
-          {sparklineData && sparklineData.length >= 2 && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="mt-4 pt-4 border-t border-border/30"
-            >
-              <Sparkline
-                data={sparklineData}
-                width={200}
-                height={40}
-                showArea={true}
-                animate={animate}
-                className="w-full"
-              />
-            </motion.div>
-          )}
-
-          {/* Target info */}
-          {target && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="mt-3"
-            >
-              <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                <span className="flex items-center gap-1">
-                  <Target className="w-3 h-3" />
-                  {target.label || 'Meta'}
-                </span>
-                <span className="font-medium">{formatValue(target.value)}</span>
-              </div>
-              <Progress 
-                value={Math.min(targetProgress || 0, 100)} 
-                className="h-1.5"
-              />
-            </motion.div>
-          )}
-        </div>
-
-        {/* Click indicator */}
-        {onClick && (
-          <motion.div 
-            className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity"
-            whileHover={{ x: 2 }}
-          >
-            <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
-          </motion.div>
-        )}
-      </motion.div>
-    );
-  }
-
-  // Compact variant
-  if (variant === 'compact') {
-    return (
-      <motion.div
-        ref={ref}
-        initial={animate ? { opacity: 0, y: 10 } : false}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -2 }}
-        onClick={onClick}
-        className={cn(
-          "relative rounded-lg border bg-card p-3 group cursor-pointer",
-          "transition-all duration-200 hover:shadow-md",
-          colors.border
-        )}
-      >
-        <div className="flex items-center gap-3">
-          <div className={cn("p-2 rounded-lg shrink-0", colors.bg)}>
-            <Icon className={cn("w-4 h-4", colors.text)} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs text-muted-foreground truncate">{title}</p>
-            <div className="flex items-center gap-2">
-              <span className={cn("text-lg font-bold", colors.text)}>
-                {formatValue(value)}
-              </span>
-              {showComparison && previousValue !== undefined && (
-                <DeltaIndicator 
-                  currentValue={value} 
-                  previousValue={previousValue}
-                />
-              )}
-            </div>
-          </div>
-        </div>
-      </motion.div>
-    );
-  }
-
-  // Default variant
   return (
     <motion.div
       ref={ref}
-      initial={animate ? { opacity: 0, y: 20 } : false}
+      initial={animate ? { opacity: 0, y: 15 } : false}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -3 }}
-      onClick={onClick}
-      className={cn(
-        "relative rounded-xl border bg-card/40 text-card-foreground shadow-sm p-5 group cursor-pointer backdrop-blur-sm",
-        "transition-all duration-300 hover:shadow-lg",
-        colors.border
-      )}
+      transition={{ duration: 0.4 }}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="space-y-1.5 flex-1">
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-            {title}
-          </p>
-          
-          <div className="flex items-baseline gap-2">
-            <span className={cn("text-2xl font-bold", colors.text)}>
-              {animate ? <AnimatedCounter value={value} format={format} /> : formatValue(value)}
-            </span>
+      <Card className={commonCardClasses} onClick={onClick}>
+        <div className={cn(
+          "absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl pointer-events-none opacity-20",
+          colors.bg
+        )} />
+        
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-5">
+            <div className={cn(
+              "w-12 h-12 rounded-2xl flex items-center justify-center shadow-inner",
+              colors.bg,
+              colors.text
+            )}>
+              <Icon className="h-6 w-6" />
+            </div>
             
-            {showComparison && previousValue !== undefined && (
-              <DeltaIndicator 
-                currentValue={value} 
-                previousValue={previousValue}
-              />
+            <div className="flex items-center gap-3">
+              {sparklineData && sparklineData.length >= 2 && (
+                <div className="opacity-60 group-hover:opacity-100 transition-opacity">
+                  <Sparkline
+                    data={sparklineData}
+                    width={60}
+                    height={20}
+                    color={colors.text.includes('emerald') ? '#10b981' : colors.text.includes('rose') ? '#ef4444' : '#8b5cf6'}
+                  />
+                </div>
+              )}
+              
+              {showComparison && previousValue !== undefined && (
+                <DeltaIndicator currentValue={value} previousValue={previousValue} />
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div>
+              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1">{title}</p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-black text-white tracking-tighter leading-none">
+                  {animate ? <AnimatedCounter value={value} format={format} /> : formatValue(value)}
+                </span>
+                {targetProgress && targetProgress >= 100 && (
+                  <Sparkles className="h-4 w-4 text-emerald-400 animate-pulse" />
+                )}
+              </div>
+              {subtitle && <p className="text-[10px] font-bold text-zinc-500/60 mt-2 uppercase tracking-wide">{subtitle}</p>}
+            </div>
+
+            {target && (
+              <div className="space-y-3">
+                <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                  <div className="flex items-center gap-2 text-zinc-500">
+                    <Target className="h-3.5 w-3.5" />
+                    <span>{target.label || 'TARGET INDEX'}</span>
+                  </div>
+                  <span className={cn(targetProgress && targetProgress >= 100 ? 'text-emerald-400' : colors.text)}>
+                    {targetProgress?.toFixed(0)}%
+                  </span>
+                </div>
+                <div className="relative h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
+                  <motion.div 
+                    className={cn(
+                      "h-full rounded-full",
+                      targetProgress && targetProgress >= 100 ? 'bg-emerald-500' : cn("bg-gradient-to-r", colors.gradient)
+                    )}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min(targetProgress || 0, 100)}%` }}
+                    transition={{ duration: 1.5, ease: "circOut" }}
+                  />
+                </div>
+              </div>
             )}
           </div>
-
-          {subtitle && (
-            <p className="text-xs text-muted-foreground">{subtitle}</p>
-          )}
-        </div>
-
-        <div className={cn("p-2.5 rounded-xl", colors.bg)}>
-          <Icon className={cn("w-5 h-5", colors.text)} />
-        </div>
-      </div>
-
-      {/* Target progress bar */}
-      {target && (
-        <div className="mt-3 space-y-1">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Meta: {formatValue(target.value)}</span>
-            <span className={targetProgress && targetProgress >= 100 ? 'text-success' : ''}>
-              {targetProgress?.toFixed(0)}%
-            </span>
-          </div>
-          <Progress value={Math.min(targetProgress || 0, 100)} className="h-1.5" />
-        </div>
-      )}
-
-      {/* Mini sparkline */}
-      {sparklineData && sparklineData.length >= 2 && (
-        <div className="mt-4 pt-4 border-t border-border/30">
-          <Sparkline
-            data={sparklineData}
-            width={300}
-            height={48}
-            showArea={true}
-            className="w-full opacity-80 group-hover:opacity-100 transition-opacity"
-          />
-        </div>
-      )}
+        </CardContent>
+      </Card>
     </motion.div>
   );
 });
