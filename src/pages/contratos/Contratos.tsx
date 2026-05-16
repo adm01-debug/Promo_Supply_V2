@@ -261,9 +261,9 @@ export default function Contratos() {
         </div>
       </ElitePageWrapper>
 
-      <ContractModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} onSave={() => { setIsCreateModalOpen(false); fetchContracts(); }} />
-      <ContractModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} contract={selectedContract} onSave={() => { setIsEditModalOpen(false); fetchContracts(); }} />
-      <ContractDetailsModal open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen} contract={selectedContract} />
+      <ContractModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} onSuccess={() => { setIsCreateModalOpen(false); fetchContracts(); }} />
+      <ContractModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} contract={selectedContract ?? undefined} onSuccess={() => { setIsEditModalOpen(false); fetchContracts(); }} />
+      {selectedContract && <ContractDetailsModal open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen} contract={selectedContract} />}
     </ModuleErrorBoundary>
   );
 }
