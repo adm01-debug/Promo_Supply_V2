@@ -42,7 +42,7 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
       aria-label="Breadcrumb" 
       className={cn("flex items-center text-sm", className)}
     >
-      <ol className="flex items-center gap-1.5 flex-wrap">
+      <ol className="flex items-center gap-1.5 flex-wrap print:hidden">
         <li>
           <Link
             to="/"
