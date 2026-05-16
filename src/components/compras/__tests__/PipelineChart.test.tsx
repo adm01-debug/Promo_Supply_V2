@@ -51,9 +51,9 @@ describe('PipelineChart', () => {
     );
 
     // 80/100 = 80%
-    expect(screen.getByText('80%')).toBeInTheDocument();
-    // 30 delivered out of (100+80+60+50+40+30) = 360? 
-    // No, total active is (100+80+60+50+40) = 330
+    const conversionRates = screen.getAllByText('80%');
+    expect(conversionRates.length).toBeGreaterThan(0);
+    
     // Overall conversion in code: totalCompleted / (totalActive + totalCompleted)
     // 30 / 360 = ~8%
     expect(screen.getByText('8% conclusão')).toBeInTheDocument();
