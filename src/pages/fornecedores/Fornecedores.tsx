@@ -108,7 +108,7 @@ const Fornecedores = () => {
         }
       });
       
-      filtered = merged.length > 0 ? merged : fornecedores.filter(f =>
+      filtered = merged.length > 0 ? merged : (fornecedores as LegacyFornecedor[]).filter((f: LegacyFornecedor) =>
         f.nomeFantasia.toLowerCase().includes(search.toLowerCase()) ||
         f.razaoSocial.toLowerCase().includes(search.toLowerCase()) ||
         f.cnpj.includes(search)
