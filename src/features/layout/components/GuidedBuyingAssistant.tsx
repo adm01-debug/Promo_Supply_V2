@@ -58,7 +58,7 @@ export function GuidedBuyingAssistant() {
                 Guided Buying
                 <Sparkles className="h-3 w-3 text-warning animate-pulse" />
               </CardTitle>
-              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">Inteligência Promo Supply</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">Inteligência Promo Brindes</p>
             </div>
           </div>
           <div className="flex items-center gap-1">
