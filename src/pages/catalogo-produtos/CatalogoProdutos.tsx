@@ -301,7 +301,8 @@ const CatalogoProdutos = () => {
                     {p.ativo ? "Ativo" : "Inativo"}
                   </Badge>
                 </div>
-              </Card>
+              </div>
+            </Card>
             );
           })}
         </div>
