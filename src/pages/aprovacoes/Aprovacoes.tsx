@@ -9,51 +9,24 @@ import {
   Settings,
   History,
   BarChart3,
-  TrendingUp,
-  TrendingDown,
-  Clock,
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-  ArrowUpRight,
-  Users,
-  Timer,
-  Target
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  TooltipProps,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-  PieChart,
-  Pie,
-  Cell
-} from "recharts";
-import { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
+  ApprovalTrendChart,
+  StatusDistributionChart,
+  BottleneckAnalysis,
+  ApprovalKPIs,
+} from "@/features/aprovacoes";
 
 import {
   approvalHistory,
   approvalStats,
   approvalTrendData,
-  approvalByValueRange,
-  approvalByApprover,
-  bottleneckData,
   statusDistribution,
-  weeklyTrend,
-  COLORS,
+  bottleneckData,
 } from './aprovacoesData';
 
 const Aprovacoes = () => {
