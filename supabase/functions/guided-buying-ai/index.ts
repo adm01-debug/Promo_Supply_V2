@@ -78,13 +78,7 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    if (typeof logger !== 'undefined') {
-      logger.error("Error in guided-buying-ai", { error: errorMessage });
-    }
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    logger.error("Error in guided-buying-ai", { error: error instanceof Error ? error.message : "Unknown error" });
+    return errorResponse(error);
   }
 });
