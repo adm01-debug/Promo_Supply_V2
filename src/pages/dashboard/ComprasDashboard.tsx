@@ -326,18 +326,20 @@ const ComprasDashboard = () => {
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col gap-4 bg-card/40 p-6 rounded-3xl border border-border/40 backdrop-blur-xl shadow-2xl shadow-primary/5"
+          className="flex flex-col gap-6 bg-card/40 p-8 rounded-[2rem] border border-border/40 backdrop-blur-xl shadow-2xl shadow-primary/5"
         >
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <h1 className="text-3xl font-black text-foreground tracking-tight uppercase">{t('dashboard.title')}</h1>
-                <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 animate-pulse">Live</Badge>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary rotate-3">
+                  <BarChart3 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">{t('dashboard.title')}</h1>
+                  <p className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mt-1 opacity-80">Intelligence Hub</p>
+                </div>
+                <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 animate-pulse ml-2 h-5 px-1.5 text-[9px]">LIVE</Badge>
               </div>
-              <p className="text-sm text-muted-foreground flex items-center gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-success"></span>
-                {t('common.welcome')} - Sistema atualizado em tempo real
-              </p>
             </div>
             
             <div className="flex items-center gap-3">
@@ -356,19 +358,18 @@ const ComprasDashboard = () => {
                 loading={filtersLoading}
               />
               <PurchaseClimateWidget />
-          </div>
-        </motion.div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-2">
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Período</Label>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 pt-2">
+            <div className="flex flex-col gap-2">
+              <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Período</Label>
               <Select value={currentFilters.period} onValueChange={(v) => patchFilters({ period: v })}>
-                <SelectTrigger className="bg-background/50 h-10 border-muted-foreground/20">
+                <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl hover:bg-background/60 transition-all">
                   <Calendar className="w-4 h-4 mr-2 text-primary" />
                   <SelectValue placeholder="Período" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl border-border/50">
                   <SelectItem value="1m">Último Mês</SelectItem>
                   <SelectItem value="3m">Últimos 3 Meses</SelectItem>
                   <SelectItem value="6m">Últimos 6 Meses</SelectItem>
@@ -377,14 +378,14 @@ const ComprasDashboard = () => {
               </Select>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Categoria</Label>
+            <div className="flex flex-col gap-2">
+              <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Categoria</Label>
               <Select value={currentFilters.category} onValueChange={(v) => patchFilters({ category: v })}>
-                <SelectTrigger className="bg-background/50 h-10 border-muted-foreground/20">
+                <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl hover:bg-background/60 transition-all">
                   <Filter className="w-4 h-4 mr-2 text-primary" />
                   <SelectValue placeholder="Todas as Categorias" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl border-border/50">
                   <SelectItem value="all">Todas as Categorias</SelectItem>
                   {categories.map((cat: { id: string; nome: string }) => (
                     <SelectItem key={cat.id} value={cat.id}>{cat.nome}</SelectItem>
@@ -393,14 +394,14 @@ const ComprasDashboard = () => {
               </Select>
             </div>
 
-            <div className="flex flex-col gap-1.5">
-              <Label className="text-[10px] font-bold uppercase text-muted-foreground ml-1">Fornecedor</Label>
+            <div className="flex flex-col gap-2">
+              <Label className="text-[10px] font-black uppercase text-muted-foreground tracking-widest ml-1">Fornecedor</Label>
               <Select value={currentFilters.supplier} onValueChange={(v) => patchFilters({ supplier: v })}>
-                <SelectTrigger className="bg-background/50 h-10 border-muted-foreground/20">
+                <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl hover:bg-background/60 transition-all">
                   <Filter className="w-4 h-4 mr-2 text-primary" />
                   <SelectValue placeholder="Todos os Fornecedores" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="rounded-xl border-border/50">
                   <SelectItem value="all">Todos os Fornecedores</SelectItem>
                   {suppliers.map((sup: { id: string; razao_social: string }) => (
                     <SelectItem key={sup.id} value={sup.id}>{sup.razao_social}</SelectItem>
@@ -411,6 +412,22 @@ const ComprasDashboard = () => {
 
             <div className="flex items-end">
               <AnimatePresence>
+                {hasActiveFilters && (
+                  <motion.button
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    onClick={clearFilters}
+                    className="flex items-center gap-2 text-xs font-bold text-muted-foreground hover:text-destructive transition-colors h-12 px-4"
+                  >
+                    <X className="w-4 h-4" />
+                    LIMPAR FILTROS
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </motion.div>
                 {hasActiveFilters && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
