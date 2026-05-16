@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, lazy, Suspense } from "react";
 import {
   BarChart3,
   TrendingUp,
@@ -12,12 +12,7 @@ import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBou
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SLABySupplierAnalysis } from "@/components/compras/SLABySupplierAnalysis";
-import { KraljicMatrix } from "@/components/compras/executive/KraljicMatrix";
-import { AdvancedProcurementKPIs } from "@/components/compras/AdvancedProcurementKPIs";
-import { DemandPredictionPanel } from "@/components/compras/DemandPredictionPanel";
-import { CostCenterPerformanceAnalysis } from "@/components/compras/CostCenterPerformanceAnalysis";
-import { SpendAnalytics } from "@/components/compras/SpendAnalytics";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { exportToCSV } from "@/lib/exportData";
@@ -26,6 +21,15 @@ import { subMonths } from "date-fns/subMonths";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
+
+// Heavy components lazy loading
+const SLABySupplierAnalysis = lazy(() => import("@/components/compras/SLABySupplierAnalysis").then(m => ({ default: m.SLABySupplierAnalysis })));
+const KraljicMatrix = lazy(() => import("@/components/compras/executive/KraljicMatrix").then(m => ({ default: m.KraljicMatrix })));
+const AdvancedProcurementKPIs = lazy(() => import("@/components/compras/AdvancedProcurementKPIs").then(m => ({ default: m.AdvancedProcurementKPIs })));
+const DemandPredictionPanel = lazy(() => import("@/components/compras/DemandPredictionPanel").then(m => ({ default: m.DemandPredictionPanel })));
+const CostCenterPerformanceAnalysis = lazy(() => import("@/components/compras/CostCenterPerformanceAnalysis").then(m => ({ default: m.CostCenterPerformanceAnalysis })));
+const SpendAnalytics = lazy(() => import("@/components/compras/SpendAnalytics").then(m => ({ default: m.SpendAnalytics })));
+
 import {
   KPICards,
   VolumeChart,
@@ -33,6 +37,12 @@ import {
   DistributionCharts,
   SupplierPerformanceTable,
 } from "./RelatoriosCharts";
+
+const LazyReportPanel = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={<Skeleton className="h-[400px] w-full rounded-xl" />}>
+    {children}
+  </Suspense>
+);
 
 const PERIOD_MAP: Record<string, number> = { "1m": 1, "3m": 3, "6m": 6, "12m": 12 };
 
@@ -285,15 +295,15 @@ const Relatorios = () => {
           </TabsList>
 
           <TabsContent value="spend" className="mt-6">
-            <SpendAnalytics />
+            <LazyReportPanel><SpendAnalytics /></LazyReportPanel>
           </TabsContent>
 
           <TabsContent value="kpis" className="mt-6">
-            <AdvancedProcurementKPIs />
+            <LazyReportPanel><AdvancedProcurementKPIs /></LazyReportPanel>
           </TabsContent>
 
           <TabsContent value="cost_centers" className="mt-6">
-            <CostCenterPerformanceAnalysis />
+            <LazyReportPanel><CostCenterPerformanceAnalysis /></LazyReportPanel>
           </TabsContent>
 
           <TabsContent value="geral" className="mt-6 space-y-6">
@@ -309,16 +319,16 @@ const Relatorios = () => {
               distribuicaoStatus={stats.distribuicaoStatus}
             />
 
-            <SLABySupplierAnalysis />
+            <LazyReportPanel><SLABySupplierAnalysis /></LazyReportPanel>
             <SupplierPerformanceTable data={stats.fornecedorPerformance} />
           </TabsContent>
 
           <TabsContent value="estrategia" className="mt-6">
-            <KraljicMatrix />
+            <LazyReportPanel><KraljicMatrix /></LazyReportPanel>
           </TabsContent>
 
           <TabsContent value="previsao" className="mt-6">
-            <DemandPredictionPanel />
+            <LazyReportPanel><DemandPredictionPanel /></LazyReportPanel>
           </TabsContent>
         </Tabs>
       </div>

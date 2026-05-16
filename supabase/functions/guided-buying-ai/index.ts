@@ -1,24 +1,27 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://esm.sh/zod@3.22.4";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { corsHeaders, validateBody, errorResponse } from "../_shared/validation.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
-};
+const requestSchema = z.object({
+  message: z.string().min(1),
+  history: z.array(z.any()).optional().default([]),
+  context: z.record(z.any()).optional().default({}),
+});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('guided-buying-ai', requestId);
+
   try {
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('guided-buying-ai', requestId);
+    const { message, history, context } = await validateBody(req, requestSchema);
 
-    const { message, history, context } = await req.json();
-
-    logger.info("Guided buying request received", { messageLength: message?.length });
+    logger.info("Guided buying request received", { messageLength: message.length });
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -75,13 +78,7 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    if (typeof logger !== 'undefined') {
-      logger.error("Error in guided-buying-ai", { error: errorMessage });
-    }
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    logger.error("Error in guided-buying-ai", { error: error instanceof Error ? error.message : "Unknown error" });
+    return errorResponse(error);
   }
 });

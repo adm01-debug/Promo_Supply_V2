@@ -1,10 +1,11 @@
-import { MainLayout } from '@/features/layout/components/MainLayout';
 import { ExecutiveDashboard } from '@/components/compras/ExecutiveDashboard';
 import { OnboardingTour, useOnboardingTour, dashboardTourSteps } from '@/components/onboarding/OnboardingTour';
 import { withModuleErrorBoundary } from '@/features/layout/components/ModuleErrorBoundary';
+import { useRenderProfiler } from '@/hooks/useRenderProfiler';
 
 const DashboardExecutivo = () => {
   const { isOpen, complete, skip } = useOnboardingTour('dashboard-executivo');
+  useRenderProfiler('DashboardExecutivo');
 
   return (
     <>
