@@ -6,10 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useDashboardFilters, DashboardFilter } from '@/hooks/useDashboardFilters';
-import { PurchaseClimateWidget } from '../PurchaseClimateWidget';
+import { PurchaseClimateWidget } from './PurchaseClimateWidget';
 import {
-  DollarSign, TrendingUp, ShoppingCart, Clock, Users,
-  CheckCircle2, Target, GitCompare, Download, BarChart3,
+  DollarSign, TrendingUp, ShoppingCart, Target, GitCompare, Download, BarChart3,
   ShieldCheck, Brain, Sparkles, Filter, X
 } from 'lucide-react';
 import { useExecutiveDashboardData } from '@/hooks/useExecutiveDashboardData';
@@ -44,12 +43,18 @@ export const ExecutiveDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
 
-  const { metrics: realMetrics, loading: realDataLoading } = useExecutiveDashboardData();
+  const { 
+    metrics: realMetrics, 
+    spendByCategory: realSpendByCategory, 
+    topSuppliers: realTopSuppliers,
+    loading: realDataLoading 
+  } = useExecutiveDashboardData();
 
   const activeMetrics = useMemo(() => {
     if (realDataLoading) return { ...executiveMetrics, savingsPercent: 10.0 };
     const rm = realMetrics;
     return {
+      ...executiveMetrics,
       totalSpend: {
         value: rm.totalSpend.value || executiveMetrics.totalSpend.value,
         previousValue: executiveMetrics.totalSpend.previousValue,
@@ -69,17 +74,11 @@ export const ExecutiveDashboard = () => {
         change: rm.ordersThisMonth.value > 0 ? calculateChange(rm.ordersThisMonth.value, executiveMetrics.ordersThisMonth.previousValue) : executiveMetrics.ordersThisMonth.change,
         target: rm.ordersThisMonth.target || executiveMetrics.ordersThisMonth.target
       },
-      avgCycleTime: {
-        value: rm.avgCycleTime.value || executiveMetrics.avgCycleTime.value,
-        previousValue: executiveMetrics.avgCycleTime.previousValue,
-        change: rm.avgCycleTime.value > 0 ? calculateChange(rm.avgCycleTime.value, executiveMetrics.avgCycleTime.previousValue) : executiveMetrics.avgCycleTime.change,
-        target: rm.avgCycleTime.target || executiveMetrics.avgCycleTime.target
-      },
-      supplierCount: {
-        value: rm.supplierCount.value || executiveMetrics.supplierCount.value,
-        previousValue: executiveMetrics.supplierCount.previousValue,
-        change: rm.supplierCount.value > 0 ? calculateChange(rm.supplierCount.value, executiveMetrics.supplierCount.previousValue) : executiveMetrics.supplierCount.change,
-        target: rm.supplierCount.target || executiveMetrics.supplierCount.target
+      contractCompliance: {
+        value: rm.contractCompliance.value || executiveMetrics.contractCompliance.value,
+        previousValue: executiveMetrics.contractCompliance.previousValue,
+        change: rm.contractCompliance.value > 0 ? calculateChange(rm.contractCompliance.value, executiveMetrics.contractCompliance.previousValue) : executiveMetrics.contractCompliance.change,
+        target: rm.contractCompliance.target || executiveMetrics.contractCompliance.target
       },
       pendingApprovals: {
         value: rm.pendingApprovals.value,
@@ -93,14 +92,6 @@ export const ExecutiveDashboard = () => {
         change: calculateChange(rm.overdueOrders.value || 1, executiveMetrics.overdueOrders.previousValue || 1),
         critical: rm.overdueOrders.critical
       },
-      contractCompliance: {
-        value: rm.contractCompliance.value || executiveMetrics.contractCompliance.value,
-        previousValue: executiveMetrics.contractCompliance.previousValue,
-        change: rm.contractCompliance.value > 0 ? calculateChange(rm.contractCompliance.value, executiveMetrics.contractCompliance.previousValue) : executiveMetrics.contractCompliance.change,
-        target: rm.contractCompliance.target || executiveMetrics.contractCompliance.target
-      },
-      maverickSpend: rm.maverickSpend,
-      tailSpend: rm.tailSpend
     };
   }, [realMetrics, realDataLoading]);
 
@@ -134,10 +125,41 @@ export const ExecutiveDashboard = () => {
     },
   });
 
+  const filteredCategorySpend = useMemo(() => {
+    let data = categorySpend;
+    if (selectedCategory !== 'all') data = data.filter(c => c.name === selectedCategory);
+    if (selectedSupplier !== 'all') data = data.filter(c => c.supplier === selectedSupplier);
+    return data;
+  }, [selectedCategory, selectedSupplier]);
+
+  const filteredSuppliers = useMemo(() => {
+    let data = topSuppliers;
+    if (selectedSupplier !== 'all') data = data.filter(s => s.name === selectedSupplier);
+    if (selectedCategory !== 'all') data = data.filter(s => s.categories.includes(selectedCategory));
+    return data;
+  }, [selectedCategory, selectedSupplier]);
+
+  const filteredBuyers = useMemo(() => {
+    let data = buyerPerformance;
+    if (selectedCategory !== 'all') data = data.filter(b => b.categories.includes(selectedCategory));
+    if (selectedSupplier !== 'all') data = data.filter(b => b.suppliers.includes(selectedSupplier));
+    return data;
+  }, [selectedCategory, selectedSupplier]);
+
+  const filteredPendingItems = useMemo(() => {
+    let data = pendingItems;
+    if (selectedCategory !== 'all') data = data.filter(p => p.category === selectedCategory);
+    if (selectedSupplier !== 'all') data = data.filter(p => p.supplier === selectedSupplier);
+    return data;
+  }, [selectedCategory, selectedSupplier]);
+
+  const handleCategoryDrillDown = (category: any) => {
+     setSelectedCategory(category.name);
+  };
+
   return (
     <ElitePageWrapper>
       <div className="space-y-8 pb-10">
-        {/* Elite Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-inner">
@@ -241,18 +263,12 @@ export const ExecutiveDashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
            <div className="lg:col-span-2 space-y-8">
-              <ExecutiveAIInsights metrics={activeMetrics as any} />
-              <ExecutiveChartsRow showComparison={showComparison} categoryData={categorySpend} trendData={[]} />
+              <ExecutiveAIInsights metrics={activeMetrics as any} spendByCategory={realSpendByCategory || []} topSuppliers={realTopSuppliers || []} />
+              <ExecutiveChartsRow showComparison={showComparison} filteredCategorySpend={filteredCategorySpend} onCategoryDrillDown={handleCategoryDrillDown} selectedCategory={selectedCategory} selectedSupplier={selectedSupplier} />
               <PriceVarianceAnalysis />
            </div>
            <div className="space-y-8">
-              <ExecutivePendingActions 
-                pendingApprovals={activeMetrics.pendingApprovals.value}
-                urgentApprovals={activeMetrics.pendingApprovals.urgent}
-                overdueOrders={activeMetrics.overdueOrders.value}
-                criticalOrders={activeMetrics.overdueOrders.critical}
-                onAction={(type) => setDrillDown({ type, data: pendingItems })}
-              />
+              <ExecutivePendingActions items={filteredPendingItems} />
               <PurchaseClimateWidget />
               <Card className="p-8 rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl shadow-2xl relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-8 opacity-5 rotate-12">
@@ -260,7 +276,7 @@ export const ExecutiveDashboard = () => {
                 </div>
                 <div className="flex items-center gap-3 mb-6">
                    <Sparkles className="w-5 h-5 text-primary" />
-                   <h3 className="font-black uppercase tracking-tight">Strategic Intelligence</h3>
+                   <h3 className="font-black uppercase tracking-tight text-foreground">Strategic Intelligence</h3>
                 </div>
                 <p className="text-xs text-muted-foreground leading-relaxed font-medium mb-6">
                   Sua matriz de risco Kraljic foi atualizada com base nos dados de mercado deste mês. Recomendamos revisar os fornecedores críticos.
@@ -270,21 +286,17 @@ export const ExecutiveDashboard = () => {
            </div>
         </div>
 
-        <ExecutiveTablesRow topSuppliers={topSuppliers} buyerPerformance={buyerPerformance} />
+        <ExecutiveTablesRow filteredSuppliers={filteredSuppliers} filteredBuyers={filteredBuyers} />
         
         <div className="pt-8">
            <KraljicMatrix />
         </div>
       </div>
 
-      {drillDown && (
-        <ExecutiveDrillDownModal
-          open={!!drillDown}
-          onOpenChange={(open) => !open && setDrillDown(null)}
-          title={drillDown.type === 'pending' ? 'Aprovações Pendentes' : 'Pedidos Atrasados'}
-          data={drillDown.data}
-        />
-      )}
+      <ExecutiveDrillDownModal
+        drillDown={drillDown}
+        onClose={() => setDrillDown(null)}
+      />
     </ElitePageWrapper>
   );
 };
