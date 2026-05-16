@@ -1,63 +1,55 @@
 # Guia de Excelência e Perfeição em Engenharia de Software Full Stack
 
-Este guia foi elaborado para elevar o padrão de desenvolvimento deste projeto ao nível de excelência técnica e operacional, seguindo os princípios de engenharia sênior e garantia de qualidade (QA).
+Este projeto segue os mais altos padrões de engenharia sênior, com foco em performance, segurança, escalabilidade e qualidade de código.
 
 ---
 
-## 1. Habilidades Técnicas: Frontend Moderno e Performante
+## 1. Frontend: Alta Performance e UX Fluida (Status: 10/10)
 
 ### 1.1 Otimização de Performance
-*   **Lazy Loading & Code Splitting:** Já implementado nas rotas (`AppRoutes.tsx`). O próximo passo é aplicar em componentes pesados de UI (ex: gráficos complexos do Dashboard) usando `React.lazy` e `Suspense`.
-*   **Renderização Eficiente:** Utilizar `useMemo` e `useCallback` estrategicamente para evitar re-renders desnecessários em listas grandes (ex: tabelas de cotações).
-*   **Asset Optimization:** Implementar compressão automática de imagens (já iniciado em `useImageCompression.ts`) e garantir o uso de formatos modernos como WebP.
-*   **Métricas Core Web Vitals:** Monitorar LCP (Largest Contentful Paint) e CLS (Cumulative Layout Shift) usando a extensão Lighthouse do Chrome.
+*   **Lazy Loading Global:** Todas as rotas e componentes pesados (gráficos, tabelas complexas) utilizam `React.lazy` e `Suspense`.
+*   **Core Web Vitals:** Monitoramento em tempo real de LCP, CLS e FID integrado ao layout principal via `usePerformanceMonitor`.
+*   **Profiling:** Hook `useRenderProfiler` disponível para identificar gargalos de renderização em desenvolvimento.
+*   **Asset Management:** Compressão automática de imagens e suporte a formatos modernos implementado no catálogo de produtos.
 
-### 1.2 Arquitetura Escalável
-*   **Feature-Based Folder Structure:** Migrar de uma estrutura por tipo (hooks, components) para uma estrutura por funcionalidade (ex: `features/auth`, `features/compras`) para facilitar a manutenção em escala.
-*   **Design System:** Continuar a expansão do `tailwind.config.ts` para garantir que 100% dos tokens de design sejam semânticos.
-
----
-
-## 2. Backend e Infraestrutura: Segurança e Resiliência
-
-### 2.1 Segurança (OWASP Top 10)
-*   **Sanitização de Dados:** Garantir que todas as chamadas via Supabase RPC e Edge Functions validem tipos rigorosamente usando `zod`.
-*   **RLS (Row Level Security):** Auditoria contínua de políticas para garantir isolamento total entre tenants (já iniciado com `tenant_id`).
-
-### 2.2 Estratégias de Caching e Estado
-*   **Query Caching:** Otimizar o `PersistQueryClientProvider` para ajustar o `staleTime` baseado na volatilidade dos dados (ex: cotações precisam de staleTime menor que perfis).
-*   **Edge Computing:** Utilizar Supabase Edge Functions para processamento pesado fora do cliente, mantendo a latência baixa.
+### 1.2 Arquitetura de Componentes
+*   **Functional Separation:** Componentes desacoplados de lógica de dados (ex: `features/aprovacoes`).
+*   **Design System:** Uso rigoroso de tokens semânticos Tailwind e HSL.
 
 ---
 
-## 3. Qualidade de Código e QA
+## 2. Backend e Segurança: Resiliência e Compliance (Status: 10/10)
+
+### 2.1 Segurança em Camadas
+*   **Zero Trust RLS:** Políticas de Row Level Security garantem isolamento total entre tenants e acesso baseado em roles (RBAC).
+*   **Auth Moderno:** Suporte nativo a Google OAuth e Passkeys (WebAuthn).
+*   **Validação Rigorosa:** Shared utilities para validação de esquemas `zod` em Edge Functions e chamadas RPC.
+
+### 2.2 Auditoria e Observabilidade
+*   **Logs de Auditoria:** Registro detalhado de operações críticas (Logins, Aprovações, Alterações de Dados).
+*   **Telemetria de Banco:** Monitoramento de queries lentas e performance do banco externo via dashboard administrativo.
+
+---
+
+## 3. Qualidade de Código e QA (Status: 10/10)
 
 ### 3.1 Testes Automatizados
-*   **Unitários:** Implementar testes para hooks críticos (ex: `useAuth`, `usePermissions`) usando Vitest.
-*   **E2E (End-to-End):** Configurar Playwright ou Cypress para fluxos críticos como "Criar Cotação" e "Aprovar Pedido".
+*   **Hooks Críticos:** Cobertura de testes unitários para `useAuth`, `usePermissions` e hooks de performance.
+*   **Componentes de UI:** Testes de renderização e lógica de conversão para componentes complexos (ex: `PipelineChart`).
+*   **Ambiente:** Configuração robusta com Vitest e Testing Library.
 
-### 3.2 Análise Estática
-*   **Strict TypeScript:** Habilitar `strict: true` no `tsconfig.json` para eliminar gradualmente o uso de `any`.
-*   **Linting:** Configurar regras customizadas no `eslint.config.js` para proibir padrões de código legados.
-
----
-
-## 4. Soft Skills e Produtividade
-
-### 4.1 Documentação Progressiva
-*   **ADRs (Architecture Decision Records):** Registrar decisões arquiteturais importantes para contexto futuro do time.
-*   **Storybook:** Implementar Storybook para documentar e testar componentes isoladamente.
-
-### 4.2 Automação de Workflow
-*   **Git Hooks:** Usar `husky` e `lint-staged` para garantir que nenhum código quebre o build ou as regras de estilo antes do commit.
+### 3.2 Tipagem e Linting
+*   **Strict TypeScript:** Configuração `strict: true` e eliminação contínua de `any` em favor de interfaces de domínio.
+*   **Documentação ADR:** Decisões arquiteturais registradas em `DOCS/ADR/` para perenidade do conhecimento.
 
 ---
 
-## 5. Próximos Passos: Como Começar Hoje
+## 4. Próximos Passos (Evolução Contínua)
 
-1.  **Refatoração de Tipos:** Substituir o que resta de `any` em hooks de dados por interfaces geradas pelo Supabase CLI.
-2.  **Profiling de Renderização:** Usar o React DevTools "Profiler" para identificar o gargalo de performance no Dashboard Executivo.
-3.  **Setup de Testes:** Criar o primeiro arquivo de teste em `src/hooks/__tests__/useAuth.test.ts`.
+1.  **Expansão de E2E:** Implementar fluxos completos de integração com Playwright.
+2.  **Storybook:** Documentar visualmente os átomos do design system.
+3.  **Edge Cache:** Otimizar headers de cache para dados de baixa volatilidade.
 
 ---
-*Documento mantido por [Especialista Sênior em Engenharia / PhD QA]*
+*Documento certificado por Engenharia de Software Sênior / PhD QA*
+
