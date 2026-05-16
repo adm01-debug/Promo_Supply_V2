@@ -1,5 +1,5 @@
 import React from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, RefreshCcw, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ interface GlobalErrorBoundaryProps {
   children: React.ReactNode;
 }
 
-const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetErrorBoundary: () => void }) => {
+const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
   const navigate = useNavigate();
 
   return (
@@ -21,7 +21,7 @@ const ErrorFallback = ({ error, resetErrorBoundary }: { error: Error; resetError
         Ocorreu um erro inesperado na aplicação. Nossa equipe técnica já foi notificada.
       </p>
       
-      {process.env['NODE_ENV'] === 'development' && (
+      {process.env['NODE_ENV'] === 'development' && error instanceof Error && (
         <pre className="bg-muted p-4 rounded-lg text-left text-xs mb-8 max-w-full overflow-auto max-h-[200px] border border-border">
           {error.message}
           {"\n\n"}

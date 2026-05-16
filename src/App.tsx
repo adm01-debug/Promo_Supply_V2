@@ -14,6 +14,7 @@ import { PageLoader } from "@/features/layout/components/PageLoader";
 import { AccessibilityProvider, AccessibilityPanel, SkipToContent } from "@/components/accessibility/AdvancedAccessibility";
 import { AnimatedRoutes } from "@/routes/AppRoutes";
 import { useNProgress } from "@/hooks/useNProgress";
+import { GlobalErrorBoundary } from "@/components/feedback/GlobalErrorBoundary";
 
 const AppContent = () => {
   useNProgress();
