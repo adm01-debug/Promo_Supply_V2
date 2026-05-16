@@ -2,12 +2,11 @@ import { useState, useEffect } from "react";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { DigitalSignature } from "@/components/compras/DigitalSignature";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs";
 import {
   Table,
   TableBody,
@@ -27,41 +26,36 @@ import {
   FileText,
   Plus,
   Search,
-  AlertTriangle,
   CheckCircle2,
-  Clock,
-  XCircle,
-  RefreshCw,
   Eye,
   Edit,
   Trash2,
   FileSignature,
   Building2,
   DollarSign,
+  Filter,
+  History,
+  ShieldCheck,
+  MoreHorizontal
 } from "lucide-react";
 import { format } from "date-fns/format";
 import { differenceInDays } from "date-fns/differenceInDays";
-import { addDays } from "date-fns/addDays";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
 import { ContractModal } from "@/components/compras/ContractModal";
 import { ContractDetailsModal } from "@/components/compras/ContractDetailsModal";
-import type { Contract, StatusConfig, TypeConfig } from "@/types/contract";
+import type { Contract } from "@/types/contract";
+import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
+import { EliteButton } from "@/components/atoms/EliteButton";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-const statusConfig: Record<string, StatusConfig> = {
+const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   draft: { label: "Rascunho", color: "bg-muted text-muted-foreground", icon: FileText },
-  pending_approval: { label: "Aguard. Aprovação", color: "bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning", icon: Clock },
-  active: { label: "Ativo", color: "bg-success/10 text-success dark:bg-success/15 dark:text-success", icon: CheckCircle2 },
-  expired: { label: "Expirado", color: "bg-destructive/10 text-destructive dark:bg-destructive/15 dark:text-destructive", icon: XCircle },
-  cancelled: { label: "Cancelado", color: "bg-muted text-foreground dark:bg-muted dark:text-muted-foreground", icon: XCircle },
-  renewed: { label: "Renovado", color: "bg-info/10 text-info dark:bg-info/15 dark:text-info", icon: RefreshCw },
-};
-
-const typeConfig: Record<string, TypeConfig> = {
-  service: { label: "Serviço", color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400" },
-  supply: { label: "Fornecimento", color: "bg-info/10 text-info dark:bg-info/15 dark:text-info" },
-  framework: { label: "Acordo-Quadro", color: "bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning" },
+  pending_approval: { label: "Aguard. Aprovação", color: "bg-warning/10 text-warning", icon: History },
+  active: { label: "Ativo", color: "bg-success/10 text-success", icon: CheckCircle2 },
+  expired: { label: "Expirado", color: "bg-destructive/10 text-destructive", icon: ShieldCheck },
 };
 
 export default function Contratos() {
@@ -75,374 +69,201 @@ export default function Contratos() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  useEffect(() => {
-    fetchContracts();
-  }, []);
+  useEffect(() => { fetchContracts(); }, []);
 
   const fetchContracts = async () => {
     try {
-      const { data, error } = await supabase
-        .from('contracts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
+      const { data, error } = await supabase.from('contracts').select('*').order('created_at', { ascending: false });
       if (error) throw error;
       setContracts(data || []);
-    } catch (error) {
-      console.error('Error fetching contracts:', error);
-      toast.error("Erro ao carregar contratos");
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
   const filteredContracts = contracts.filter(contract => {
-    const matchesSearch = 
-      contract.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch = contract.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contract.contract_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contract.supplier_name.toLowerCase().includes(searchTerm.toLowerCase());
-    
     const matchesStatus = statusFilter === "all" || contract.status === statusFilter;
     const matchesType = typeFilter === "all" || contract.contract_type === typeFilter;
-
     return matchesSearch && matchesStatus && matchesType;
   });
 
-  const getDaysUntilExpiry = (endDate: string) => {
-    return differenceInDays(new Date(endDate), new Date());
-  };
-
   const getExpiryBadge = (endDate: string, status: string) => {
     if (status !== 'active') return null;
-    const days = getDaysUntilExpiry(endDate);
-    
-    if (days < 0) {
-      return <Badge variant="destructive" className="text-xs">Expirado há {Math.abs(days)} dias</Badge>;
-    } else if (days <= 30) {
-      return <Badge className="bg-warning/10 text-warning dark:bg-warning/15 dark:text-warning text-xs">Expira em {days} dias</Badge>;
-    } else if (days <= 90) {
-      return <Badge className="bg-info/10 text-info dark:bg-info/15 dark:text-info text-xs">Expira em {days} dias</Badge>;
-    }
+    const days = differenceInDays(new Date(endDate), new Date());
+    if (days < 0) return <Badge variant="destructive" className="text-[9px] font-black uppercase">Expirado</Badge>;
+    if (days <= 30) return <Badge className="bg-warning/10 text-warning border-none text-[9px] font-black uppercase">Expira em {days}d</Badge>;
     return null;
   };
 
-  // Calculate KPIs
   const activeContracts = contracts.filter(c => c.status === 'active');
-  const expiringContracts = activeContracts.filter(c => getDaysUntilExpiry(c.end_date) <= 30);
   const totalValue = activeContracts.reduce((sum, c) => sum + Number(c.total_value), 0);
 
-  const handleDeleteContract = async (contractId: string) => {
-    if (!confirm("Tem certeza que deseja excluir este contrato?")) return;
-    
-    try {
-      const { error } = await supabase
-        .from('contracts')
-        .delete()
-        .eq('id', contractId);
-
-      if (error) throw error;
-      
-      toast.success("Contrato excluído com sucesso");
-      fetchContracts();
-    } catch (error) {
-      console.error('Error deleting contract:', error);
-      toast.error("Erro ao excluir contrato");
-    }
-  };
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <KPICardSkeleton />
+        <TableSkeleton rows={8} columns={6} />
+      </div>
+    );
+  }
 
   return (
     <ModuleErrorBoundary module="contratos">
-      
-      <div className="space-y-6 p-6">
-        {/* Header */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <FileSignature className="w-7 h-7 text-primary" />
-              Gestão de Contratos
-            </h1>
-            <p className="text-sm text-muted-foreground">
-              Gerencie contratos com fornecedores, renovações e vencimentos
-            </p>
+      <ElitePageWrapper>
+        <div className="space-y-8 pb-10">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-600 shadow-inner">
+                <FileSignature className="w-7 h-7" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">Contratos</h1>
+                <div className="flex items-center gap-2 mt-2">
+                   <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">{contracts.length} Ativos</Badge>
+                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">• Legal & Compliance</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <DigitalSignature />
+              <EliteButton variant="default" onClick={() => setIsCreateModalOpen(true)} className="h-11 px-6">
+                <Plus className="w-4 h-4 mr-2" /> NOVO CONTRATO
+              </EliteButton>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <DigitalSignature />
-            <Button onClick={() => setIsCreateModalOpen(true)} className="gap-2">
-              <Plus className="w-4 h-4" />
-              Novo Contrato
-            </Button>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Card className="p-6 border-border/40 bg-card/40 backdrop-blur-xl rounded-3xl">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-2xl bg-primary/10 text-primary"><FileText className="w-6 h-6" /></div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Total</p>
+                  <p className="text-2xl font-black text-foreground">{contracts.length}</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-6 border-border/40 bg-card/40 backdrop-blur-xl rounded-3xl">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-2xl bg-success/10 text-success"><CheckCircle2 className="w-6 h-6" /></div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Vigentes</p>
+                  <p className="text-2xl font-black text-foreground">{activeContracts.length}</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-6 border-border/40 bg-card/40 backdrop-blur-xl rounded-3xl">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-600"><DollarSign className="w-6 h-6" /></div>
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Equity Value</p>
+                  <p className="text-2xl font-black text-foreground">R$ {(totalValue / 1000).toFixed(0)}K</p>
+                </div>
+              </div>
+            </Card>
           </div>
-        </div>
 
-        {/* KPI Cards */}
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
-          <Card>
-            <CardContent className="p-3 sm:p-4">
-              <div className="flex items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="text-xs sm:text-sm text-muted-foreground truncate">Total Contratos</p>
-                  <p className="text-xl sm:text-2xl font-bold">{contracts.length}</p>
-                </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-3 sm:p-4">
-              <div className="flex items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="text-xs sm:text-sm text-muted-foreground truncate">Ativos</p>
-                  <p className="text-xl sm:text-2xl font-bold text-success">{activeContracts.length}</p>
-                </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-success/10 dark:bg-success/15 flex items-center justify-center shrink-0">
-                  <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6 text-success" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-3 sm:p-4">
-              <div className="flex items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="text-xs sm:text-sm text-muted-foreground truncate">A Vencer</p>
-                  <p className="text-xl sm:text-2xl font-bold text-warning">{expiringContracts.length}</p>
-                </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-warning/10 dark:bg-warning/15 flex items-center justify-center shrink-0">
-                  <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-warning" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-3 sm:p-4">
-              <div className="flex items-center justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="text-xs sm:text-sm text-muted-foreground truncate">Valor Total</p>
-                  <p className="text-lg sm:text-2xl font-bold truncate">
-                    {totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                  </p>
-                </div>
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-info/10 dark:bg-info/15 flex items-center justify-center shrink-0">
-                  <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-info" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Filters */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Buscar por título, número ou fornecedor..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-card/40 p-6 rounded-[2rem] border border-border/40 backdrop-blur-xl shadow-xl shadow-primary/5"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="md:col-span-2 relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input 
+                  placeholder="Pesquisar por título ou fornecedor..." 
+                  value={searchTerm} 
+                  onChange={(e) => setSearchTerm(e.target.value)} 
+                  className="pl-12 bg-background/40 border-border/50 h-12 rounded-xl" 
                 />
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full md:w-48">
+                <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl">
+                  <Filter className="w-4 h-4 mr-2 text-primary" />
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os Status</SelectItem>
-                  <SelectItem value="draft">Rascunho</SelectItem>
-                  <SelectItem value="pending_approval">Aguard. Aprovação</SelectItem>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value="all">Todos Status</SelectItem>
                   <SelectItem value="active">Ativo</SelectItem>
-                  <SelectItem value="expired">Expirado</SelectItem>
-                  <SelectItem value="cancelled">Cancelado</SelectItem>
-                  <SelectItem value="renewed">Renovado</SelectItem>
+                  <SelectItem value="draft">Rascunho</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={typeFilter} onValueChange={setTypeFilter}>
-                <SelectTrigger className="w-full md:w-48">
+                <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl">
+                  <Building2 className="w-4 h-4 mr-2 text-primary" />
                   <SelectValue placeholder="Tipo" />
                 </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os Tipos</SelectItem>
+                <SelectContent className="rounded-xl">
+                  <SelectItem value="all">Todos Tipos</SelectItem>
                   <SelectItem value="service">Serviço</SelectItem>
                   <SelectItem value="supply">Fornecimento</SelectItem>
-                  <SelectItem value="framework">Acordo-Quadro</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-          </CardContent>
-        </Card>
+          </motion.div>
 
-        {/* Alerts for expiring contracts */}
-        {expiringContracts.length > 0 && (
-          <Card className="border-warning/20 dark:border-warning/30 bg-warning/5 dark:bg-amber-900/10">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-warning mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-warning dark:text-warning">
-                    Atenção: {expiringContracts.length} contrato(s) a vencer
-                  </h3>
-                  <p className="text-sm text-amber-700 dark:text-warning">
-                    {expiringContracts.map(c => c.title).join(', ')}
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Contracts Table */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5" />
-              Contratos ({filteredContracts.length})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="grid grid-cols-1 gap-4">
-                <TableSkeleton rows={5} columns={7} />
-              </div>
-            ) : filteredContracts.length === 0 ? (
-              <IllustratedEmptyState
-                type="documents"
-                title="Nenhum contrato encontrado"
-                description={contracts.length === 0 
-                  ? "Comece criando seu primeiro contrato para gerenciar suas parcerias"
-                  : "Tente ajustar os filtros de busca para encontrar o contrato desejado"}
-                action={contracts.length === 0 ? { label: "Criar Contrato", onClick: () => setIsCreateModalOpen(true) } : undefined}
-              />
-            ) : (
-              <div className="overflow-x-auto">
-                <Table aria-label="Tabela de dados">
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Contrato</TableHead>
-                      <TableHead>Fornecedor</TableHead>
-                      <TableHead>Tipo</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Vigência</TableHead>
-                      <TableHead className="text-right">Valor</TableHead>
-                      <TableHead className="text-right">Ações</TableHead>
+          <Card className="rounded-[2rem] border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden shadow-2xl">
+            <Table>
+              <TableHeader className="bg-muted/30">
+                <TableRow className="hover:bg-transparent border-border/10">
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest py-5 pl-8">Dossiê Contratual</TableHead>
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest">Parceiro</TableHead>
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest">Vigência</TableHead>
+                  <TableHead className="text-[10px] font-black uppercase tracking-widest text-right">Valor Equity</TableHead>
+                  <TableHead className="w-20 pr-8"></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredContracts.map((contract) => {
+                  const status = statusConfig[contract.status] || statusConfig["draft"];
+                  return (
+                    <TableRow key={contract.id} className="group border-border/5 hover:bg-primary/5 transition-colors cursor-pointer" onClick={() => { setSelectedContract(contract); setIsDetailsModalOpen(true); }}>
+                      <TableCell className="pl-8">
+                        <div>
+                          <p className="font-bold text-foreground leading-none">{contract.title}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                             <Badge variant="outline" className={cn("text-[8px] font-black uppercase border-none px-2", status.color)}>
+                               {status.label}
+                             </Badge>
+                             {getExpiryBadge(contract.end_date, contract.status)}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                         <div className="flex items-center gap-2">
+                           <Building2 className="w-4 h-4 text-muted-foreground" />
+                           <span className="text-sm font-semibold">{contract.supplier_name}</span>
+                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tighter">
+                          Até {format(new Date(contract.end_date), "dd MMM yyyy", { locale: ptBR })}
+                        </p>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <span className="font-black text-foreground">
+                          {Number(contract.total_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        </span>
+                      </TableCell>
+                      <TableCell className="pr-8">
+                         <EliteButton variant="ghost" size="icon" className="h-10 w-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                           <MoreHorizontal className="w-4 h-4" />
+                         </EliteButton>
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredContracts.map((contract) => {
-                      const status = statusConfig[contract.status] || statusConfig["draft"];
-                      const type = typeConfig[contract.contract_type] || typeConfig["service"];
-                      const StatusIcon = status.icon;
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Card>
+        </div>
+      </ElitePageWrapper>
 
-                      return (
-                        <TableRow key={contract.id} className="hover:bg-muted/50">
-                          <TableCell>
-                            <div>
-                              <p className="font-medium">{contract.title}</p>
-                              <p className="text-xs text-muted-foreground">{contract.contract_number}</p>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <Building2 className="w-4 h-4 text-muted-foreground" />
-                              <span>{contract.supplier_name}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge className={type.color}>{type.label}</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex flex-col gap-1">
-                              <Badge className={`${status.color} flex items-center gap-1 w-fit`}>
-                                <StatusIcon className="w-3 h-3" />
-                                {status.label}
-                              </Badge>
-                              {getExpiryBadge(contract.end_date, contract.status)}
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <div className="text-sm">
-                              <p>{format(new Date(contract.start_date), "dd/MM/yyyy", { locale: ptBR })}</p>
-                              <p className="text-muted-foreground">
-                                até {format(new Date(contract.end_date), "dd/MM/yyyy", { locale: ptBR })}
-                              </p>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-right font-medium">
-                            {Number(contract.total_value).toLocaleString('pt-BR', { 
-                              style: 'currency', 
-                              currency: 'BRL' 
-                            })}
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <div className="flex items-center justify-end gap-1">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => {
-                                  setSelectedContract(contract);
-                                  setIsDetailsModalOpen(true);
-                                }}
-                              >
-                                <Eye className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => {
-                                  setSelectedContract(contract);
-                                  setIsEditModalOpen(true);
-                                }}
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="text-destructive hover:text-destructive"
-                                onClick={() => handleDeleteContract(contract.id)}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Modals */}
-      <ContractModal
-        open={isCreateModalOpen}
-        onOpenChange={setIsCreateModalOpen}
-        onSuccess={fetchContracts}
-      />
-
-      <ContractModal
-        open={isEditModalOpen}
-        onOpenChange={setIsEditModalOpen}
-        contract={selectedContract ?? undefined}
-        onSuccess={fetchContracts}
-      />
-
-      {selectedContract && (
-        <ContractDetailsModal
-          open={isDetailsModalOpen}
-          onOpenChange={setIsDetailsModalOpen}
-          contract={selectedContract}
-        />
-      )}
-      
+      <ContractModal open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen} onSave={() => { setIsCreateModalOpen(false); fetchContracts(); }} />
+      <ContractModal open={isEditModalOpen} onOpenChange={setIsEditModalOpen} contract={selectedContract} onSave={() => { setIsEditModalOpen(false); fetchContracts(); }} />
+      <ContractDetailsModal open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen} contract={selectedContract} />
     </ModuleErrorBoundary>
   );
 }

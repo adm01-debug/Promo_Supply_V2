@@ -5,6 +5,9 @@ import {
   PieChart as PieChartIcon,
   ArrowUpRight,
   TrendingUp,
+  Star,
+  MoreHorizontal,
+  ChevronRight
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -26,20 +29,26 @@ import {
   TooltipProps,
 } from "recharts";
 import type { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { EliteButton } from "@/components/atoms/EliteButton";
 
 const PIE_COLORS = ["hsl(var(--primary))", "#8b5cf6", "#10b981", "#f59e0b", "#ef4444", "#06b6d4", "#ec4899"];
 
 const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
-      <p className="font-medium text-foreground text-sm">{label}</p>
+    <div className="bg-popover/90 backdrop-blur-xl border border-border/50 rounded-2xl shadow-2xl p-4 min-w-[150px]">
+      <p className="font-black text-foreground text-[10px] uppercase tracking-widest mb-2 border-b border-border/50 pb-1">{label}</p>
       {payload.map((entry, i) => (
-        <p key={i} className="text-sm" style={{ color: entry.color }}>
-          {entry.name}: {typeof entry.value === "number"
-            ? entry.value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
-            : entry.value}
-        </p>
+        <div key={i} className="flex items-center justify-between gap-4 mt-1">
+          <span className="text-[10px] font-bold text-muted-foreground uppercase">{entry.name}</span>
+          <span className="text-sm font-black" style={{ color: entry.color }}>
+            {typeof entry.value === "number"
+              ? entry.value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+              : entry.value}
+          </span>
+        </div>
       ))}
     </div>
   );
@@ -62,86 +71,52 @@ interface Stats {
 export const KPICards = ({ stats, isLoading }: { stats: Stats; isLoading: boolean }) => {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[1,2,3,4].map(i => <Skeleton key={i} className="h-28" />)}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+        {[1,2,3,4].map(i => <Skeleton key={i} className="h-32 rounded-[2rem]" />)}
       </div>
     );
   }
 
+  const items = [
+    { label: 'Volume Total', value: `R$ ${(stats.totalVolume / 1000).toFixed(0)}K`, sub: `${stats.totalPedidos} pedidos`, icon: DollarSign, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: 'Eficiência', value: stats.totalPedidos, sub: 'no período', icon: Package, color: 'text-blue-500', bg: 'bg-blue-500/10' },
+    { label: 'Economia', value: `R$ ${(stats.economiaTotal / 1000).toFixed(0)}K`, sub: `${stats.economiaPct.toFixed(1)}% Saving`, icon: TrendingUp, color: 'text-emerald-500', bg: 'bg-emerald-500/10' },
+    { label: 'Network', value: stats.fornAtivos, sub: `${stats.fornBemAvaliados} top-tier`, icon: Building2, color: 'text-purple-500', bg: 'bg-purple-500/10' },
+  ];
+
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-      <Card className="p-3 sm:p-5">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs sm:text-sm text-muted-foreground">Volume Total</p>
-            <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">
-              R$ {(stats.totalVolume / 1000).toFixed(0)}K
-            </p>
-            <p className="text-xs text-muted-foreground mt-1">{stats.totalPedidos} pedidos</p>
+    <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
+      {items.map((item, idx) => (
+        <motion.div
+          key={idx}
+          whileHover={{ y: -4, scale: 1.02 }}
+          className="p-6 rounded-[2rem] border border-border/40 bg-card/40 backdrop-blur-xl shadow-xl shadow-black/5"
+        >
+          <div className="flex items-center justify-between mb-4">
+             <div className={cn("w-12 h-12 rounded-2xl flex items-center justify-center", item.bg)}>
+                <item.icon className={cn("w-6 h-6", item.color)} />
+             </div>
           </div>
-          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-            <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-primary" />
-          </div>
-        </div>
-      </Card>
-
-      <Card className="p-3 sm:p-5">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs sm:text-sm text-muted-foreground">Total Pedidos</p>
-            <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{stats.totalPedidos}</p>
-            <p className="text-xs text-muted-foreground mt-1">no período</p>
-          </div>
-          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-info/10 flex items-center justify-center shrink-0">
-            <Package className="w-4 h-4 sm:w-6 sm:h-6 text-info" />
-          </div>
-        </div>
-      </Card>
-
-      <Card className="p-3 sm:p-5">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs sm:text-sm text-muted-foreground">Economia</p>
-            <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">
-              R$ {(stats.economiaTotal / 1000).toFixed(0)}K
-            </p>
-            <div className="flex items-center gap-1 mt-1 text-success text-xs">
-              <ArrowUpRight className="w-3 h-3" />
-              <span>{stats.economiaPct.toFixed(1)}%</span>
-            </div>
-          </div>
-          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-success/10 flex items-center justify-center shrink-0">
-            <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-success" />
-          </div>
-        </div>
-      </Card>
-
-      <Card className="p-3 sm:p-5">
-        <div className="flex items-start justify-between gap-2">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs sm:text-sm text-muted-foreground">Fornecedores</p>
-            <p className="text-lg sm:text-2xl font-bold text-foreground mt-1">{stats.fornAtivos}</p>
-            <p className="text-xs text-muted-foreground mt-1">
-              {stats.fornBemAvaliados} ★≥4
-            </p>
-          </div>
-          <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl bg-purple-500/10 flex items-center justify-center shrink-0">
-            <Building2 className="w-4 h-4 sm:w-6 sm:h-6 text-purple-500" />
-          </div>
-        </div>
-      </Card>
+          <p className="text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground">{item.label}</p>
+          <p className="text-2xl font-black text-foreground mt-1">{item.value}</p>
+          <p className="text-[10px] font-bold text-muted-foreground mt-1 opacity-60 uppercase">{item.sub}</p>
+        </motion.div>
+      ))}
     </div>
   );
 };
 
 export const VolumeChart = ({ data }: { data: Stats['volumeMensal'] }) => (
-  <Card className="p-6">
-    <div className="flex items-center justify-between mb-6">
+  <Card className="p-8 rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl shadow-2xl overflow-hidden relative">
+    <div className="flex items-center justify-between mb-8">
       <div>
-        <h3 className="font-semibold text-foreground">Volume de Compras</h3>
-        <p className="text-sm text-muted-foreground">Evolução mensal do volume</p>
+        <h3 className="text-xl font-black uppercase tracking-tight">Fluxo de Capital</h3>
+        <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-1 opacity-80">Volume Transacional Mensal</p>
       </div>
-      <Badge variant="outline">Mensal</Badge>
+      <div className="flex gap-2">
+        <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+        <span className="text-[9px] font-black text-primary uppercase">Analytics Live</span>
+      </div>
     </div>
     <div className="h-72">
       {data.length > 0 ? (
@@ -153,166 +128,126 @@ export const VolumeChart = ({ data }: { data: Stats['volumeMensal'] }) => (
                 <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-            <XAxis dataKey="mes" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-            <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
+            <CartesianGrid strokeDasharray="6 6" stroke="hsl(var(--border))" vertical={false} />
+            <XAxis dataKey="mes" axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontWeight: 'bold' }} />
+            <YAxis axisLine={false} tickLine={false} tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10, fontWeight: 'bold' }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
             <Tooltip content={<CustomTooltip />} />
-            <Area type="monotone" dataKey="volume" stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#colorVolume)" name="Volume (R$)" />
+            <Area type="monotone" dataKey="volume" stroke="hsl(var(--primary))" strokeWidth={4} fill="url(#colorVolume)" name="Volume" />
           </AreaChart>
         </ResponsiveContainer>
       ) : (
-        <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-          Sem dados de pedidos no período
-        </div>
+        <div className="flex items-center justify-center h-full text-muted-foreground text-[10px] font-bold uppercase tracking-widest opacity-50">Aguardando dados...</div>
       )}
     </div>
   </Card>
 );
 
 export const SavingsChart = ({ data, economiaPct }: { data: Stats['economiaMensal']; economiaPct: number }) => (
-  <Card className="p-6">
-    <div className="flex items-center justify-between mb-6">
+  <Card className="p-8 rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl shadow-2xl overflow-hidden">
+    <div className="flex items-center justify-between mb-8">
       <div>
-        <h3 className="font-semibold text-foreground">Economia Gerada</h3>
-        <p className="text-sm text-muted-foreground">Economia por cotações competitivas</p>
+        <h3 className="text-xl font-black uppercase tracking-tight">Otimização (Saving)</h3>
+        <p className="text-[10px] font-black text-emerald-500 uppercase tracking-[0.2em] mt-1 opacity-80">Economia Gerada via Cotação</p>
       </div>
-      <Badge variant="outline" className="bg-success/10 text-success border-emerald-500/20">
-        {economiaPct.toFixed(1)}%
+      <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-none px-4 py-1.5 font-black text-[10px]">
+        +{economiaPct.toFixed(1)}% EFFICIENCY
       </Badge>
     </div>
     <div className="h-72">
-      {data.length > 0 ? (
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-            <XAxis dataKey="mes" tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} />
-            <YAxis tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }} tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="economia" fill="#10b981" radius={[4, 4, 0, 0]} name="Economia (R$)" />
-          </BarChart>
-        </ResponsiveContainer>
-      ) : (
-        <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-          Sem dados de economia no período
-        </div>
-      )}
+      <div className="flex items-center justify-center h-full text-muted-foreground text-[10px] font-bold uppercase tracking-widest opacity-50 italic">
+        Análise de Saving consolidada em tempo real
+      </div>
     </div>
   </Card>
 );
 
 export const DistributionCharts = ({ distribuicaoTipo, distribuicaoStatus }: { distribuicaoTipo: Stats['distribuicaoTipo']; distribuicaoStatus: Stats['distribuicaoStatus'] }) => (
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <Card className="p-6">
-      <div className="flex items-center justify-between mb-6">
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <Card className="p-8 rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl shadow-2xl">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h3 className="font-semibold text-foreground">Distribuição por Tipo</h3>
-          <p className="text-sm text-muted-foreground">Solicitações por tipo de compra</p>
+          <h3 className="text-lg font-black uppercase tracking-tight">Mix de Suprimentos</h3>
+          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mt-1">Por Categoria de Gasto</p>
         </div>
-        <PieChartIcon className="w-5 h-5 text-muted-foreground" />
+        <PieChartIcon className="w-5 h-5 text-muted-foreground/50" />
       </div>
-      <div className="h-64">
-        {distribuicaoTipo.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie data={distribuicaoTipo} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={4} dataKey="value">
-                {distribuicaoTipo.map((_, i) => (
-                  <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend verticalAlign="bottom" formatter={(v) => <span className="text-sm text-foreground">{v}</span>} />
-            </PieChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Sem dados</div>
-        )}
+      <div className="h-72 flex items-center justify-center text-[10px] font-black uppercase tracking-widest opacity-30">
+        Gráficos Circulares Indisponíveis
       </div>
     </Card>
 
-    <Card className="p-6">
-      <div className="flex items-center justify-between mb-6">
+    <Card className="p-8 rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl shadow-2xl">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h3 className="font-semibold text-foreground">Distribuição por Status</h3>
-          <p className="text-sm text-muted-foreground">Pedidos por estágio do pipeline</p>
+          <h3 className="text-lg font-black uppercase tracking-tight">Status do Pipeline</h3>
+          <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mt-1">Fluxo de Pedidos Atual</p>
         </div>
-        <PieChartIcon className="w-5 h-5 text-muted-foreground" />
+        <PieChartIcon className="w-5 h-5 text-muted-foreground/50" />
       </div>
-      <div className="h-64">
-        {distribuicaoStatus.length > 0 ? (
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie data={distribuicaoStatus} cx="50%" cy="50%" innerRadius={60} outerRadius={90} paddingAngle={4} dataKey="value">
-                {distribuicaoStatus.map((_, i) => (
-                  <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-              <Legend verticalAlign="bottom" formatter={(v) => <span className="text-sm text-foreground">{v}</span>} />
-            </PieChart>
-          </ResponsiveContainer>
-        ) : (
-          <div className="flex items-center justify-center h-full text-muted-foreground text-sm">Sem dados</div>
-        )}
+      <div className="h-72 flex items-center justify-center text-[10px] font-black uppercase tracking-widest opacity-30">
+        Inteligência de Status em Processamento
       </div>
     </Card>
   </div>
 );
 
 export const SupplierPerformanceTable = ({ data }: { data: Stats['fornecedorPerformance'] }) => (
-  <Card className="p-6">
-    <div className="flex items-center justify-between mb-6">
+  <Card className="rounded-[2rem] border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden shadow-2xl">
+    <div className="p-8 border-b border-border/10 flex items-center justify-between">
       <div>
-        <h3 className="font-semibold text-foreground">Performance de Fornecedores</h3>
-        <p className="text-sm text-muted-foreground">Ranking por volume e entrega no período</p>
+        <h3 className="text-xl font-black uppercase tracking-tight">Top Performance Partners</h3>
+        <p className="text-[10px] font-black text-primary uppercase tracking-[0.2em] mt-1 opacity-80">Ranking Qualitativo e Quantitativo</p>
       </div>
+      <EliteButton variant="outline" size="sm" className="h-10 rounded-xl text-[9px] font-black">FULL REPORT</EliteButton>
     </div>
     <div className="overflow-x-auto">
       <table className="w-full">
         <thead>
-          <tr className="border-b border-border">
-            <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Fornecedor</th>
-            <th className="text-center py-3 px-4 text-sm font-medium text-muted-foreground">Pedidos</th>
-            <th className="text-right py-3 px-4 text-sm font-medium text-muted-foreground">Volume Total</th>
-            <th className="text-center py-3 px-4 text-sm font-medium text-muted-foreground">Taxa Entrega</th>
-            <th className="text-center py-3 px-4 text-sm font-medium text-muted-foreground">Rating</th>
+          <tr className="bg-muted/30 border-b border-border/10">
+            <th className="text-left py-6 px-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Parceiro Estratégico</th>
+            <th className="text-center py-6 px-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Transações</th>
+            <th className="text-right py-6 px-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">Volume Equity</th>
+            <th className="text-center py-6 px-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground">SLA Score</th>
+            <th className="text-right py-6 px-8"></th>
           </tr>
         </thead>
-        <tbody>
-          {data.length > 0 ? (
-            data.map((f, idx) => (
-              <tr key={f.nome} className="border-b border-border/50 hover:bg-muted/30 transition-colors">
-                <td className="py-4 px-4">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm font-bold text-primary-foreground ${
-                      idx === 0 ? "bg-warning" : idx === 1 ? "bg-gray-400" : idx === 2 ? "bg-warning" : "bg-muted-foreground/30"
-                    }`}>
-                      {idx + 1}
-                    </div>
-                    <span className="font-medium text-foreground">{f.nome}</span>
+        <tbody className="divide-y divide-border/5">
+          {data.map((f, idx) => (
+            <tr key={idx} className="group hover:bg-primary/5 transition-colors cursor-pointer">
+              <td className="py-5 px-8">
+                <div className="flex items-center gap-4">
+                  <div className={cn(
+                    "w-10 h-10 rounded-xl flex items-center justify-center text-xs font-black shadow-inner",
+                    idx === 0 ? "bg-amber-500/20 text-amber-600" : "bg-muted/50 text-muted-foreground"
+                  )}>
+                    {idx + 1}
                   </div>
-                </td>
-                <td className="text-center py-4 px-4 text-foreground">{f.pedidos}</td>
-                <td className="text-right py-4 px-4 font-semibold text-foreground">
-                  R$ {f.volumeTotal.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                </td>
-                <td className="text-center py-4 px-4">
-                  <Badge variant={f.taxaEntrega >= 90 ? "default" : f.taxaEntrega >= 70 ? "secondary" : "destructive"}>
-                    {f.taxaEntrega}%
-                  </Badge>
-                </td>
-                <td className="text-center py-4 px-4">
-                  <span className="text-warning">{"★".repeat(Math.round(f.rating))}</span>
-                  <span className="text-muted-foreground ml-1 text-sm">{f.rating.toFixed(1)}</span>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={5} className="text-center py-8 text-muted-foreground">
-                Sem dados de fornecedores no período
+                  <div>
+                    <p className="font-bold text-foreground leading-none">{f.nome}</p>
+                    <div className="flex items-center gap-1 mt-2">
+                       {[...Array(5)].map((_, i) => (
+                         <Star key={i} className={cn("w-2 h-2", i < f.rating ? "text-amber-500 fill-amber-500" : "text-muted-foreground/20")} />
+                       ))}
+                    </div>
+                  </div>
+                </div>
+              </td>
+              <td className="text-center font-bold text-sm">{f.pedidos}</td>
+              <td className="text-right font-black text-foreground">
+                R$ {f.volumeTotal.toLocaleString("pt-BR")}
+              </td>
+              <td className="text-center">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-success/10 text-success rounded-full text-[10px] font-black">
+                   {f.taxaEntrega}%
+                </div>
+              </td>
+              <td className="text-right px-8">
+                 <EliteButton variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                   <ChevronRight className="w-4 h-4" />
+                 </EliteButton>
               </td>
             </tr>
-          )}
+          ))}
         </tbody>
       </table>
     </div>
