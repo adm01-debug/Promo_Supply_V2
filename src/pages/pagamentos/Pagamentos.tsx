@@ -263,21 +263,23 @@ const Pagamentos = () => {
         open={modalOpen} 
         onOpenChange={setModalOpen} 
         pagamento={pagamentoSelecionado} 
-        onConfirm={async (id, val) => {
+        onConfirmarPagamento={async (id, val) => {
           const ok = await markAsPaid(id, val);
           if (ok) setModalOpen(false);
+          return ok;
         }}
       />
       <PagamentoScheduleModal 
         open={scheduleModalOpen} 
         onOpenChange={setScheduleModalOpen} 
-        selectedCount={selectedIds.length} 
-        onConfirm={async (date) => {
-          const ok = await bulkUpdateStatus(selectedIds, 'agendado');
+        pagamentos={selectedForSchedule} 
+        onSchedule={async (ids, date) => {
+          const ok = await bulkUpdateStatus(ids, 'agendado');
           if (ok) {
             setSelectedIds([]);
             setScheduleModalOpen(false);
           }
+          return ok;
         }}
       />
     </ModuleErrorBoundary>
