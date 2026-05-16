@@ -308,6 +308,10 @@ export default {
         },
 
         // Feedback
+        "flash-highlight": {
+          "0%": { backgroundColor: "hsl(var(--primary) / 0.2)" },
+          "100%": { backgroundColor: "transparent" },
+        },
         "flash-success": {
           "0%, 100%": { backgroundColor: "transparent" },
           "50%": { backgroundColor: "hsl(var(--success) / 0.2)" },
@@ -325,6 +329,11 @@ export default {
         "ping-slow": {
           "0%": { transform: "scale(1)", opacity: "1" },
           "75%, 100%": { transform: "scale(1.5)", opacity: "0" },
+        },
+        shake: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "10%, 30%, 50%, 70%, 90%": { transform: "translateX(-2px)" },
+          "20%, 40%, 60%, 80%": { transform: "translateX(2px)" },
         },
       },
 
@@ -357,12 +366,14 @@ export default {
         "border-glow": "border-glow 2s ease-in-out infinite",
 
         // Feedback
+        "flash-highlight": "flash-highlight 1.5s ease-out",
         "flash-success": "flash-success 0.5s ease-in-out",
         "flash-error": "flash-error 0.5s ease-in-out",
 
         // Loaders
         "spin-slow": "spin-slow 3s linear infinite",
         "ping-slow": "ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite",
+        shake: "shake 0.4s cubic-bezier(.36,.07,.19,.97) both",
       },
     },
   },
