@@ -308,6 +308,10 @@ export default {
         },
 
         // Feedback
+        "flash-highlight": {
+          "0%": { backgroundColor: "hsl(var(--primary) / 0.2)" },
+          "100%": { backgroundColor: "transparent" },
+        },
         "flash-success": {
           "0%, 100%": { backgroundColor: "transparent" },
           "50%": { backgroundColor: "hsl(var(--success) / 0.2)" },
@@ -362,6 +366,7 @@ export default {
         "border-glow": "border-glow 2s ease-in-out infinite",
 
         // Feedback
+        "flash-highlight": "flash-highlight 1.5s ease-out",
         "flash-success": "flash-success 0.5s ease-in-out",
         "flash-error": "flash-error 0.5s ease-in-out",
 
