@@ -117,7 +117,7 @@ const Fornecedores = () => {
     
     // Type filter
     if (tipoFilter !== "todos") {
-      filtered = filtered.filter(f => f.tipo === tipoFilter);
+      filtered = filtered.filter((f: LegacyFornecedor) => f.tipo === tipoFilter);
     }
     
     return filtered;
