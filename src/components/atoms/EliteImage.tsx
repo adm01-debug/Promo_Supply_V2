@@ -10,7 +10,6 @@ interface EliteImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 /**
  * Atom: EliteImage
  * Premium image loader with shimmer skeleton and fade-in transition.
- * Optimizes Web Vitals (LCP) by managing loading states elegantly.
  */
 export const EliteImage: React.FC<EliteImageProps> = ({ 
   src, 
@@ -45,13 +44,14 @@ export const EliteImage: React.FC<EliteImageProps> = ({
         )}
       </AnimatePresence>
 
-      <motion.img
+      <img
         src={src}
         alt={alt}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: loaded ? 1 : 0 }}
-        transition={{ duration: 0.7 }}
-        className={cn(className)}
+        className={cn(
+          "transition-opacity duration-700 ease-out",
+          loaded ? "opacity-100" : "opacity-0",
+          className
+        )}
         {...props}
       />
 
