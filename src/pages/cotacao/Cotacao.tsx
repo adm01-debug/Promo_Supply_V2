@@ -11,14 +11,18 @@ import {
   TrendingDown,
   Brain,
   History,
-  Info
+  Info,
+  ArrowRight,
+  TrendingUp,
+  Filter
 } from "lucide-react";
 import { useAuth } from "@/features/auth";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { useSearchParams } from "react-router-dom";
 import ReactMarkdown from 'react-markdown';
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { BuscaAutomatica } from "@/components/compras/BuscaAutomatica";
 import { RankingCotacoes } from "@/components/compras/RankingCotacoes";
 import { CotacaoManualModal } from "@/components/compras/CotacaoManualModal";
@@ -36,6 +40,7 @@ import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch } fro
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
@@ -71,11 +76,11 @@ const Cotacao = () => {
     try {
       await new Promise(resolve => setTimeout(resolve, 2000));
       const best = [...allCotacoes].sort((a, b) => a.total - b.total)[0];
-      const analysis = `**Promo AI Insight:**
+      const analysis = `**Promo AI Strategic Insight:**
       
-1.  **Custo-Benefício:** O fornecedor **${best.fornecedor}** garante economia de **15%** vs. média.
-2.  **Risco:** Compliance nível gold, sem atrasos registrados nos últimos 6 meses.
-3.  **Veredito:** Recomendamos a aprovação imediata para manter o SLA de produção.`;
+1.  **Cost Efficiency:** Supplier **${best.fornecedor}** guarantees **15%** savings vs. market average.
+2.  **Risk Profile:** Gold-level compliance achieved, zero delivery delays in the last 6 months.
+3.  **Final Verdict:** Immediate approval recommended to maintain production SLA.`;
       setAiAnalysis(analysis);
     } finally {
       setIsAiAnalyzing(false);
@@ -92,7 +97,7 @@ const Cotacao = () => {
       const results = await simulateAPISearch(fornecedores, solicitacao?.quantidade || 100);
       setCotacoesAPI(results);
       setBuscaStatus('done');
-      toast.success(`${results.length} cotações otimizadas encontradas`);
+      toast.success(`${results.length} optimized quotes discovered`);
     } catch {
       setBuscaStatus('idle');
     }
@@ -102,7 +107,7 @@ const Cotacao = () => {
     setIsRunningFollowUp(true);
     try {
       await supabase.functions.invoke('check-cotacao-followup');
-      toast.success('Follow-up executado com inteligência');
+      toast.success('Smart follow-up executed');
     } finally {
       setIsRunningFollowUp(false);
     }
@@ -111,8 +116,8 @@ const Cotacao = () => {
   if (loadingSolicitacoes) {
     return (
       <div className="space-y-6">
-        <div className="h-8 w-64 bg-muted animate-pulse rounded-xl" />
-        <div className="h-48 w-full bg-muted animate-pulse rounded-3xl" />
+        <div className="h-8 w-64 bg-white/5 animate-pulse rounded-xl" />
+        <div className="h-48 w-full bg-white/5 animate-pulse rounded-[2.5rem]" />
       </div>
     );
   }
@@ -122,9 +127,9 @@ const Cotacao = () => {
       <ElitePageWrapper>
         <IllustratedEmptyState
           type="orders"
-          title="Fila de Cotação Vazia"
-          description="Selecione uma demanda no cockpit para iniciar o processo competitivo."
-          action={{ label: "Ir para Solicitações", onClick: () => window.location.href = '/solicitacoes' }}
+          title="Empty Quote Queue"
+          description="Select a demand in the requests cockpit to start the competitive process."
+          action={{ label: "Go to Requests", onClick: () => window.location.href = '/solicitacoes' }}
         />
       </ElitePageWrapper>
     );
@@ -133,66 +138,71 @@ const Cotacao = () => {
   return (
     <ModuleErrorBoundary module="cotacoes">
       <ElitePageWrapper>
-        <div className="space-y-8 pb-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-amber-500/10 rounded-2xl flex items-center justify-center text-amber-600 shadow-inner">
-                <Search className="w-7 h-7" />
+        <div className="space-y-10 pb-20">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 bg-amber-500/10 rounded-[2rem] flex items-center justify-center text-amber-400 shadow-inner">
+                <Search className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">Cotação</h1>
-                <div className="flex items-center gap-2 mt-2">
-                   <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">#{solicitacao.numero}</Badge>
-                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">• Mercado Competitivo</span>
+                <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Quotation Cockpit</h1>
+                <div className="flex items-center gap-3 mt-3">
+                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-amber-500/30 text-amber-400 px-3 py-1">#{solicitacao.numero}</Badge>
+                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Competitive Market Analysis</span>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
               {hasRole(['admin', 'coordinator']) && (
-                <EliteButton variant="outline" onClick={handleRunFollowUp} loading={isRunningFollowUp} className="h-11 px-4">
+                <EliteButton variant="outline" onClick={handleRunFollowUp} loading={isRunningFollowUp} className="h-11 px-5 rounded-xl border-white/10 hover:bg-white/5 font-black text-[10px] tracking-widest uppercase text-zinc-400">
                   <Bell className="w-4 h-4 mr-2" /> FOLLOW-UP
                 </EliteButton>
               )}
-              <EliteButton onClick={() => setShowManualModal(true)} className="h-11 px-6">
-                <Plus className="w-4 h-4 mr-2" /> NOVA COTAÇÃO
+              <EliteButton onClick={() => setShowManualModal(true)} className="h-11 px-8 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none shadow-lg shadow-violet-500/20 font-black text-[10px] tracking-widest uppercase">
+                <Plus className="w-4 h-4 mr-2" /> ADD QUOTE
               </EliteButton>
             </div>
           </div>
 
           <motion.div 
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-primary/5 p-8 rounded-[2rem] border border-primary/20 backdrop-blur-xl relative overflow-hidden"
+            className="bg-white/[0.03] p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-2xl relative overflow-hidden shadow-2xl"
           >
-            <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12">
-              <Package className="w-32 h-32 text-primary" />
+            <div className="absolute top-0 right-0 p-8 opacity-5 rotate-12">
+              <Package className="w-40 h-40 text-violet-500" />
             </div>
             
-            <div className="flex flex-col md:flex-row gap-8 relative z-10">
+            <div className="flex flex-col md:flex-row gap-10 relative z-10">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-4">
-                  <h2 className="text-xl font-black uppercase text-foreground">{solicitacao.titulo}</h2>
-                  <Badge className="bg-primary text-primary-foreground rounded-md px-2 py-0.5 text-[9px] font-black">{solicitacao.tipo}</Badge>
+                <div className="flex items-center gap-4 mb-6">
+                  <h2 className="text-2xl font-black uppercase text-white tracking-tight leading-none">{solicitacao.titulo}</h2>
+                  <Badge className="bg-violet-500/10 text-violet-400 border border-violet-500/20 rounded-lg px-3 py-1 text-[10px] font-black uppercase tracking-widest">{solicitacao.tipo}</Badge>
                 </div>
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                  <div>
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Quantidade</p>
-                    <p className="text-sm font-bold text-foreground">{solicitacao.quantidade} {solicitacao.unidade}</p>
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                  <div className="space-y-1">
+                    <Label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Quantity</Label>
+                    <p className="text-lg font-bold text-zinc-100">{solicitacao.quantidade} {solicitacao.unidade}</p>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Target Price</p>
-                    <p className="text-sm font-bold text-primary">
+                  <div className="space-y-1">
+                    <Label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Target Price</Label>
+                    <p className="text-lg font-black text-violet-400">
                       {solicitacao.valor_estimado ? solicitacao.valor_estimado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'TBD'}
                     </p>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Prioridade</p>
-                    <Badge variant="outline" className="border-amber-500/50 text-amber-600 font-bold uppercase text-[9px]">{solicitacao.prioridade}</Badge>
+                  <div className="space-y-1">
+                    <Label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Priority</Label>
+                    <div>
+                       <Badge className={cn(
+                         "font-black uppercase text-[9px] tracking-widest border-none px-3 py-1",
+                         solicitacao.prioridade === 'urgente' ? "bg-rose-500/20 text-rose-400" : "bg-amber-500/20 text-amber-400"
+                       )}>{solicitacao.prioridade}</Badge>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Departamento</p>
-                    <p className="text-sm font-bold text-foreground">{solicitacao.departamento || 'OPERACIONAL'}</p>
+                  <div className="space-y-1">
+                    <Label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Department</Label>
+                    <p className="text-sm font-bold text-zinc-300">{solicitacao.departamento || 'OPERATIONAL'}</p>
                   </div>
                 </div>
               </div>
@@ -202,24 +212,27 @@ const Cotacao = () => {
           <AnimatePresence mode="wait">
             {(isAiAnalyzing || aiAnalysis) && (
               <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden"
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.4 }}
               >
-                <Card className="p-6 border-indigo-500/30 bg-indigo-500/5 relative">
-                  <div className="flex gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-500">
-                      {isAiAnalyzing ? <Loader2 className="w-5 h-5 animate-spin" /> : <Brain className="w-5 h-5" />}
+                <Card className="p-8 border-violet-500/20 bg-violet-500/5 backdrop-blur-xl relative rounded-[2rem] overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                    <Sparkles className="h-24 w-24 text-violet-400" />
+                  </div>
+                  <div className="flex gap-6">
+                    <div className="w-12 h-12 rounded-[1.25rem] bg-violet-500/20 flex items-center justify-center text-violet-400 shadow-lg shadow-violet-500/10 shrink-0">
+                      {isAiAnalyzing ? <Loader2 className="w-6 h-6 animate-spin" /> : <Brain className="w-6 h-6" />}
                     </div>
                     <div className="flex-1">
-                      <p className="text-[10px] font-black text-indigo-500 uppercase tracking-widest mb-2 flex items-center gap-2">
-                        Promo Intelligence <Sparkles className="w-3 h-3" />
+                      <p className="text-[11px] font-black text-violet-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+                        Promo Strategic Intelligence <Sparkles className="w-3.5 h-3.5" />
                       </p>
                       {isAiAnalyzing ? (
-                        <p className="text-sm text-indigo-700/70 font-medium">Processando cenários competitivos e matriz de risco...</p>
+                        <p className="text-sm text-violet-300/70 font-bold uppercase tracking-widest animate-pulse">Processing competitive scenarios and risk matrix...</p>
                       ) : (
-                        <div className="prose prose-sm prose-indigo dark:prose-invert max-w-none font-medium">
+                        <div className="prose prose-sm prose-invert max-w-none font-medium text-zinc-300 leading-relaxed">
                           <ReactMarkdown>{aiAnalysis || ''}</ReactMarkdown>
                         </div>
                       )}
@@ -231,19 +244,21 @@ const Cotacao = () => {
           </AnimatePresence>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
-              <Card className="rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl overflow-hidden shadow-2xl">
-                <div className="p-6 border-b border-border/10 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Trophy className="w-5 h-5 text-amber-500" />
-                    <h3 className="font-black uppercase tracking-tight text-foreground">Cockpit de Cotação ({allCotacoes.length})</h3>
+            <div className="lg:col-span-2 space-y-10">
+              <Card className="rounded-[2.5rem] border-white/5 bg-white/[0.03] backdrop-blur-3xl overflow-hidden shadow-2xl">
+                <div className="p-8 border-b border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className="p-2.5 rounded-xl bg-amber-500/10 text-amber-400 shadow-inner">
+                      <Trophy className="w-6 h-6" />
+                    </div>
+                    <h3 className="font-black uppercase tracking-tight text-white text-lg">Quotation Benchmarking ({allCotacoes.length})</h3>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                     <ComparadorCotacoes cotacoes={cotacoesAPI} quantidade={solicitacao.quantidade} onSelecionar={setFornecedorSelecionado} />
                     <VisualComparadorCotacoes cotacoes={cotacoesAPI} quantidade={solicitacao.quantidade} onSelecionar={setFornecedorSelecionado} />
                   </div>
                 </div>
-                <div className="p-6">
+                <div className="p-8">
                   {allCotacoes.length > 0 ? (
                     <RankingCotacoes 
                       cotacoes={allCotacoes}
@@ -252,42 +267,56 @@ const Cotacao = () => {
                       selecionado={fornecedorSelecionado}
                     />
                   ) : (
-                    <div className="py-12 text-center">
-                      <p className="text-sm text-muted-foreground mb-6">Aguardando ofertas para análise comparativa.</p>
-                      <EliteButton variant="outline" onClick={handleBuscarCotacoes} loading={buscaStatus === 'searching'}>
-                        <RefreshCw className="w-4 h-4 mr-2" /> INICIAR BUSCA AUTO
+                    <div className="py-20 text-center space-y-6">
+                      <div className="w-16 h-16 bg-white/5 rounded-[2rem] flex items-center justify-center mx-auto text-zinc-600">
+                         <Package className="w-8 h-8 opacity-20" />
+                      </div>
+                      <p className="text-sm font-bold uppercase tracking-[0.2em] text-zinc-500">Awaiting offers for competitive analysis</p>
+                      <EliteButton variant="outline" onClick={handleBuscarCotacoes} loading={buscaStatus === 'searching'} className="rounded-xl h-12 px-8 border-white/10 text-zinc-400 hover:text-violet-400 font-black tracking-widest uppercase text-[10px]">
+                        <RefreshCw className="w-4 h-4 mr-2" /> START AUTO SEARCH
                       </EliteButton>
                     </div>
                   )}
                 </div>
               </Card>
 
-              <Card className="p-6 rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl shadow-xl">
+              <Card className="p-8 rounded-[2.5rem] border-white/5 bg-white/[0.02] backdrop-blur-2xl shadow-xl overflow-hidden">
+                 <div className="flex items-center gap-4 mb-8">
+                    <div className="p-2.5 rounded-xl bg-violet-500/10 text-violet-400">
+                      <RefreshCw className="w-5 h-5" />
+                    </div>
+                    <h3 className="font-black uppercase tracking-tight text-white">Automated Inquiry Status</h3>
+                 </div>
                  <BuscaAutomatica status={buscaStatus} resultados={cotacoesAPI} />
               </Card>
             </div>
 
-            <div className="space-y-8">
-              <Card className="p-6 rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl shadow-xl">
-                <div className="flex items-center gap-3 mb-6">
-                  <History className="w-5 h-5 text-primary" />
-                  <h3 className="font-black uppercase tracking-tight text-foreground">Market Intelligence</h3>
+            <div className="space-y-10">
+              <Card className="p-8 rounded-[2.5rem] border-white/5 bg-white/[0.03] backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity rotate-12">
+                   <History className="w-40 h-40 text-violet-500" />
                 </div>
-                <div className="space-y-4">
-                  <EliteButton variant="outline" className="w-full justify-start h-14 rounded-2xl" onClick={() => setShowHistoryModal(true)}>
-                    <TrendingDown className="w-5 h-5 mr-4 text-emerald-500" />
+                <div className="flex items-center gap-4 mb-8 relative z-10">
+                  <div className="p-2.5 rounded-xl bg-violet-500/10 text-violet-400">
+                    <Brain className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-black uppercase tracking-tight text-white">Market Intelligence</h3>
+                </div>
+                <div className="space-y-5 relative z-10">
+                  <EliteButton variant="outline" className="w-full justify-start h-16 rounded-2xl border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-violet-500/40 transition-all group" onClick={() => setShowHistoryModal(true)}>
+                    <TrendingDown className="w-6 h-6 mr-5 text-emerald-400 group-hover:scale-110 transition-transform" />
                     <div className="text-left">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">Histórico</p>
-                      <p className="text-xs font-bold">Análise de preços passados</p>
+                      <p className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500">Historical Benchmarks</p>
+                      <p className="text-xs font-bold text-zinc-200">Price Variation Analysis</p>
                     </div>
                   </EliteButton>
                   <AISupplierSuggestion />
                 </div>
-                <div className="mt-8 p-4 bg-muted/30 rounded-2xl border border-border/50">
-                  <div className="flex gap-3">
-                    <Info className="w-4 h-4 text-primary shrink-0" />
-                    <p className="text-[10px] leading-relaxed text-muted-foreground font-medium">
-                      O sistema monitora variações de mercado em tempo real. Ative a busca automática para capturar as melhores oportunidades globais.
+                <div className="mt-10 p-5 bg-white/[0.02] rounded-2xl border border-white/5 relative z-10">
+                  <div className="flex gap-4">
+                    <Info className="w-5 h-5 text-violet-400 shrink-0 mt-0.5" />
+                    <p className="text-[10px] leading-relaxed text-zinc-500 font-bold uppercase tracking-wider">
+                      System monitors market fluctuations in real-time. Enable auto-search to capture peak global opportunities.
                     </p>
                   </div>
                 </div>
