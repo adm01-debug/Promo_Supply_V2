@@ -468,6 +468,13 @@ const Auth = () => {
               </CardContent>
             </Tabs>
           </Card>
+          
+          <div className="mt-8 px-4">
+            <p className="text-[10px] text-muted-foreground/50 leading-relaxed text-center italic max-w-sm mx-auto">
+              Este sistema é propriedade intelectual exclusiva da Promo Brindes, sendo protegido pela Lei nº 9.609/98 e demais normas aplicáveis. 
+              É proibida sua reprodução, cópia, modificação, distribuição ou uso não autorizado.
+            </p>
+          </div>
 
           {/* Footer for mobile */}
           <p className="text-center text-muted-foreground text-xs mt-6 lg:hidden">
