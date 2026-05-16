@@ -425,7 +425,7 @@ const Cotacao = () => {
             </p>
             
             <div className="flex flex-wrap gap-2">
-              {legacyFornecedores.filter(f => !f.apiIntegrada).slice(0, 5).map(f => (
+              {legacyFornecedores.filter((f: LegacyFornecedor) => !f.apiIntegrada).slice(0, 5).map((f: LegacyFornecedor) => (
                 <Badge 
                   key={f.id} 
                   variant="outline" 
