@@ -74,6 +74,8 @@ export function BottomNavigation() {
   const [moreSheetOpen, setMoreSheetOpen] = React.useState(false);
   const { data: badges = { solicitacoes: 0, pedidos: 0, pagamentos: 0, aprovacoes: 0 } } = useNavBadges();
 
+  const isHome = location.pathname === '/' || location.pathname === '/compras';
+
   const isActive = (path: string) => {
     if (path === '/') {
       return location.pathname === '/' || location.pathname === '/compras';
@@ -83,7 +85,6 @@ export function BottomNavigation() {
 
   const isMoreActive = moreNavItems.some(item => isActive(item.path));
   
-  // Calcular badge total para o botão "Mais"
   const moreBadgeCount = moreNavItems.reduce((acc, item) => {
     if (item.badgeKey && badges[item.badgeKey]) {
       return acc + badges[item.badgeKey];
@@ -96,6 +97,10 @@ export function BottomNavigation() {
     setMoreSheetOpen(false);
   };
 
+  const handleBack = () => {
+    navigate(-1);
+  };
+
   return (
     <>
       {/* Bottom Navigation Bar */}
@@ -105,9 +110,17 @@ export function BottomNavigation() {
         animate={{ y: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
       >
-        {/* Safe area padding for iOS */}
         <div className="pb-safe">
           <div className="flex items-center justify-around h-14 sm:h-16 px-1 sm:px-2">
+            {/* Conditional Back Button for Mobile */}
+            {!isHome && (
+              <NavButton
+                item={{ id: 'back', label: 'Voltar', icon: <motion.div animate={{ x: [0, -2, 0] }} transition={{ repeat: Infinity, duration: 2 }}><ChevronLeft className="w-5 h-5" /></motion.div>, path: 'back' }}
+                isActive={false}
+                onClick={handleBack}
+              />
+            )}
+
             {mainNavItems.map((item) => (
               <NavButton
                 key={item.id}
@@ -118,7 +131,6 @@ export function BottomNavigation() {
               />
             ))}
             
-            {/* More button */}
             <NavButton
               item={{ id: 'more', label: 'Mais', icon: <MoreHorizontal className="w-5 h-5" />, path: '' }}
               isActive={isMoreActive || moreSheetOpen}
