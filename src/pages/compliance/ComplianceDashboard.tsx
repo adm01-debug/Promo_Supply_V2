@@ -25,7 +25,7 @@ import {
   getComplianceStatus,
   computeComplianceKPIs,
   sortComplianceData,
-} from "./compliance/complianceHelpers";
+} from "./complianceHelpers";
 
 export default function ComplianceDashboard() {
   const [data, setData] = useState<ComplianceData[]>([]);

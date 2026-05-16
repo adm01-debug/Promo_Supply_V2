@@ -16,8 +16,8 @@ import {
 } from "lucide-react";
 import { format } from "date-fns/format";
 import { Skeleton } from "@/components/ui/skeleton";
-import { NovaDevolucaoModal, DevolucaoDetailModal, MOTIVO_LABELS } from "./devolucoes/DevolucoesModals";
-import { STATUS_MAP, CREDITO_STATUS_MAP } from "./devolucoes/devolucoesData";
+import { NovaDevolucaoModal, DevolucaoDetailModal, MOTIVO_LABELS } from "./DevolucoesModals";
+import { STATUS_MAP, CREDITO_STATUS_MAP } from "./devolucoesData";
 import { EnhancedKpiCard } from "@/components/compras/EnhancedKpiCard";
 
 export default function Devolucoes() {

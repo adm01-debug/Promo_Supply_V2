@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
-import { ReceivingFormView } from "./recebimento/ReceivingFormView";
+import { ReceivingFormView } from "./ReceivingFormView";
 
 import {
   type PendingOrder,
@@ -30,7 +30,7 @@ import {
   OFFLINE_STORAGE_KEY,
   getOfflineEntries,
   saveOfflineEntries,
-} from "./recebimento/recebimentoHelpers";
+} from "./recebimentoHelpers";
 
 export default function RecebimentoOffline() {
   const { user } = useAuth();

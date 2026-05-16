@@ -21,7 +21,7 @@ import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import {
   type AcompanhamentoPedido, calcularSLA, getStatusLabel, getTipoLabel,
   getStatusBadgeColor, mapPedidoStatus, gerarEtapasPipeline, gerarEtapasEnhanced,
-} from "./acompanhamento/AcompanhamentoHelpers";
+} from "./AcompanhamentoHelpers";
 
 const Acompanhamento = () => {
   const [searchTerm, setSearchTerm] = useState("");

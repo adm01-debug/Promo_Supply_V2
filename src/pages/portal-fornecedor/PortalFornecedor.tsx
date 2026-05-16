@@ -26,7 +26,7 @@ import {
   statusPedido,
   statusCotacao,
   formatCurrency,
-} from './portal-fornecedor/portalFornecedorData';
+} from './portalFornecedorData';
 
 export default function PortalFornecedor() {
   const { user } = useAuth();

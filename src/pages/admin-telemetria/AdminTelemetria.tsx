@@ -15,7 +15,7 @@ import { format } from "date-fns/format";
 import {
   type TelemetryRow, type SeverityFilter, type TimeFilter,
   formatDuration, formatTime, getTimeThreshold, computeStats, exportCSV, exportPDF,
-} from "./admin-telemetria/telemetriaHelpers";
+} from "./telemetriaHelpers";
 
 export default function AdminTelemetriaPage() {
   const [severityFilter, setSeverityFilter] = useState<SeverityFilter>("all");

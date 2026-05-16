@@ -38,7 +38,7 @@ import { OnboardingTour, solicitacoesTourSteps } from "@/components/onboarding/O
 import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import type { Solicitacao as MockSolicitacao } from "@/types/legacyTypes";
-import { mapDbStatusToLegacy, mapLegacyStatusToDb, adaptToLegacyFormat, statusConfig } from "./solicitacoes/solicitacoesHelpers";
+import { mapDbStatusToLegacy, mapLegacyStatusToDb, adaptToLegacyFormat, statusConfig } from "./solicitacoesHelpers";
 
 const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");

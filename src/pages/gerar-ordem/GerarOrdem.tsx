@@ -32,7 +32,7 @@ import { usePedidos } from "@/features/pedidos";
 import { useCotacoes } from "@/features/cotacoes";
 import { Loader2 } from "lucide-react";
 
-import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerar-ordem/gerarOrdemHelpers';
+import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerarOrdemHelpers';
 import { generateOrderPDF } from "@/lib/pdfGenerator";
 import { useAuth } from "@/features/auth";
 
