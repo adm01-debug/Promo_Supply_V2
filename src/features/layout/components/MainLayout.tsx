@@ -22,6 +22,7 @@ import { NavigationProgressBar } from "@/components/navigation/NavigationProgres
 import { HeaderActions } from "./HeaderActions";
 import { SupplierChat } from "./SupplierChat";
 import { GuidedBuyingAssistant } from "./GuidedBuyingAssistant";
+import { BackToTop } from "@/components/navigation/BackToTop";
 import { cn } from "@/lib/utils";
 import { Menu, X, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -182,6 +183,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
 
       <BottomNavigation />
       <QuickActionsFAB />
+      <BackToTop />
       <SupplierChat />
       <GuidedBuyingAssistant />
       <CelebrationOverlay />
