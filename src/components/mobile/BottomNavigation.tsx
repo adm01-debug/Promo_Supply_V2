@@ -114,13 +114,16 @@ export function BottomNavigation() {
         <div className="pb-safe">
           <div className="flex items-center justify-around h-14 sm:h-16 px-1 sm:px-2">
             {/* Conditional Back Button for Mobile */}
-            {!isHome && (
-              <NavButton
-                item={{ id: 'back', label: 'Voltar', icon: <motion.div animate={{ x: [0, -2, 0] }} transition={{ repeat: Infinity, duration: 2 }}><ChevronLeft className="w-5 h-5" /></motion.div>, path: 'back' }}
-                isActive={false}
-                onClick={handleBack}
-              />
-            )}
+            <AnimatePresence>
+              {!isHome && (
+                <NavButton
+                  key="back-button"
+                  item={{ id: 'back', label: 'Voltar', icon: <motion.div animate={{ x: [0, -2, 0] }} transition={{ repeat: Infinity, duration: 2 }}><ChevronLeft className="w-5 h-5" /></motion.div>, path: 'back' }}
+                  isActive={false}
+                  onClick={handleBack}
+                />
+              )}
+            </AnimatePresence>
 
             {mainNavItems.map((item) => (
               <NavButton
@@ -219,6 +222,9 @@ interface NavButtonProps {
 function NavButton({ item, isActive, onClick, badgeCount = 0 }: NavButtonProps) {
   return (
     <motion.button
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.8 }}
       className={cn(
         "flex flex-col items-center justify-center gap-0.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl min-w-[52px] sm:min-w-[60px] transition-colors relative touch-target-sm",
         isActive 
