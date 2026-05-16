@@ -61,7 +61,7 @@ export const PWAInstallPrompt = forwardRef<HTMLDivElement>((_props, _ref) => {
     if (outcome === 'accepted') {
       toast({
         title: "App Instalado!",
-        description: "O Promo Supply foi adicionado à sua tela inicial.",
+        description: "O Promo Brindes foi adicionado à sua tela inicial.",
       });
     }
 
@@ -130,7 +130,7 @@ export const PWAInstallPrompt = forwardRef<HTMLDivElement>((_props, _ref) => {
             </CardHeader>
             <CardContent className="pb-8 pt-2 px-8 relative z-10">
               <p className="text-sm text-zinc-400 mb-8 leading-relaxed font-medium">
-                Adicione o <span className="text-white font-black">PROMO SUPPLY</span> à sua homescreen para acesso instantâneo e performance ultra-fluida.
+                Adicione o <span className="text-white font-black">PROMO BRINDES</span> à sua homescreen para acesso instantâneo e performance ultra-fluida.
               </p>
               <div className="flex flex-col gap-3">
                 <Button 

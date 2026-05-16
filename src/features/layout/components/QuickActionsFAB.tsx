@@ -170,7 +170,7 @@ export function QuickActionsFAB() {
                 <div className="mt-2 pt-2 border-t border-primary/5 px-3 pb-1">
                   <div className="flex items-center gap-2 text-primary">
                     <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Promo Supply AI</span>
+                    <span className="text-[10px] font-black uppercase tracking-[0.2em]">Promo Brindes AI</span>
                   </div>
                 </div>
               </div>
