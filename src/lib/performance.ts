@@ -72,7 +72,7 @@ export const performanceMonitor = {
       try {
         const observer = new PerformanceObserver((entryList) => {
           for (const entry of entryList.getEntries()) {
-            const delay = entry.processingStart - entry.startTime;
+            const delay = (entry as any).processingStart - entry.startTime;
             logger.info(`FID (First Input Delay): ${delay.toFixed(2)}ms`);
           }
         });
