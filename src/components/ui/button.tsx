@@ -50,12 +50,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || loading}
         {...props}
       >
+        <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
         {loading && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent" />
           </div>
         )}
-        {children}
+        <span className="relative z-10 flex items-center gap-2">{children}</span>
       </Comp>
     );
   },
