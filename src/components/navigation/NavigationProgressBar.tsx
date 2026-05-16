@@ -32,7 +32,7 @@ export function NavigationProgressBar() {
     <AnimatePresence>
       {isNavigating && (
         <motion.div
-          className="fixed top-0 left-0 right-0 z-[60] h-[2px]"
+          className="fixed top-0 left-0 right-0 z-[60] h-[2px] print:hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

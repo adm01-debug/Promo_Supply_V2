@@ -66,6 +66,10 @@ const routeLabels: Record<string, string> = {
   '/configuracoes': 'Configurações',
   '/buyer': 'Comprador',
   '/admin': 'Admin',
+  '/relatorios/negociacoes': 'Negociações',
+  '/supplier-performance': 'Performance',
+  '/historico-compras': 'Histórico',
+  '/negociacao-ia': 'Negociação IA',
 };
 
 interface SmartBackButtonProps {

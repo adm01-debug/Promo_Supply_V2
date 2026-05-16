@@ -133,7 +133,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       </div>
 
       <div className={cn("transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]", sidebarCollapsed ? "md:ml-[68px]" : "md:ml-64")}>
-        <header className="sticky top-0 z-30 h-16 md:h-16 border-b border-border/10 bg-card/60 backdrop-blur-2xl dark:bg-[hsl(228,28%,6%,0.6)]">
+        <header className="sticky top-0 z-30 h-16 md:h-16 border-b border-border/10 bg-card/60 backdrop-blur-2xl dark:bg-[hsl(228,28%,6%,0.6)] print:hidden">
           <div className="h-full px-4 md:px-6 flex items-center justify-between gap-4 md:gap-6">
             <div className="flex items-center gap-1 shrink-0">
               <div className="md:hidden flex items-center">
