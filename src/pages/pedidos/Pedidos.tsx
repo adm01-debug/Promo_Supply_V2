@@ -5,13 +5,13 @@ import {
   CheckCircle2, Truck, Package, X, ArrowUpDown, ChevronDown, RefreshCw, Trash2, BarChart3,
   Filter, MoreHorizontal, Copy, List
 } from "lucide-react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
-import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -22,23 +22,21 @@ import { PedidosKPIs } from "@/pages/pedidos/PedidosKPIs";
 import { PedidoDetailsDialog } from "@/pages/pedidos/PedidoDetailsDialog";
 import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
-import { differenceInDays } from "date-fns/differenceInDays";
 import { usePedidos, usePedidosKPIs, type Pedido } from "@/features/pedidos";
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";
-import { exportToCSV, pedidoColumns } from "@/lib/exportData";
+import { exportToCSV } from "@/lib/exportData";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
 
-const statusConfig: Record<string, { label: string; color: string; icon: typeof CheckCircle2 }> = {
-  pendente: { label: 'Pendente', color: 'bg-warning/10 text-warning border-yellow-500/20', icon: Clock },
-  aprovado: { label: 'Aprovado', color: 'bg-info/10 text-info border-blue-500/20', icon: CheckCircle2 },
-  enviado: { label: 'Enviado', color: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20', icon: FileText },
-  em_transito: { label: 'Em Trânsito', color: 'bg-purple-500/10 text-purple-600 border-purple-500/20', icon: Truck },
-  entregue: { label: 'Entregue', color: 'bg-success/10 text-success border-green-500/20', icon: CheckCircle2 },
-  cancelado: { label: 'Cancelado', color: 'bg-destructive/10 text-destructive border-red-500/20', icon: X },
+const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
+  pendente: { label: 'Pendente', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
+  aprovado: { label: 'Aprovado', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20', icon: CheckCircle2 },
+  enviado: { label: 'Enviado', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },
+  em_transito: { label: 'Em Trânsito', color: 'bg-purple-500/10 text-purple-400 border-purple-500/20', icon: Truck },
+  entregue: { label: 'Entregue', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
+  cancelado: { label: 'Cancelado', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: X },
 };
 
 const Pedidos = () => {
@@ -50,10 +48,9 @@ const Pedidos = () => {
   const [selectedPedido, setSelectedPedido] = useState<Pedido | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [priceHistoryOpen, setPriceHistoryOpen] = useState(false);
 
   const isMobile = useIsMobile();
-  const { pedidos, loading, refetch, updateStatus } = usePedidos();
+  const { pedidos, loading, refetch } = usePedidos();
   const { kpis } = usePedidosKPIs();
   const { fornecedores } = useFornecedores();
 
@@ -82,11 +79,6 @@ const Pedidos = () => {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   }, []);
 
-  const handleSort = (field: typeof sortField) => {
-    if (sortField === field) setSortDirection(prev => prev === 'asc' ? 'desc' : 'asc');
-    else { setSortField(field); setSortDirection('desc'); }
-  };
-
   const handleViewDetails = (pedido: Pedido) => { setSelectedPedido(pedido); setDetailsOpen(true); };
 
   const handleExportPDF = () => {
@@ -95,7 +87,7 @@ const Pedidos = () => {
       fornecedor: p.fornecedor?.razao_social || '', valor_total: p.valor_total,
     }));
     exportToCSV(exportData, [], 'pedidos');
-    toast.success(`Exportado com sucesso`);
+    toast.success(`Data exported successfully`);
   };
 
   if (loading) {
@@ -110,143 +102,167 @@ const Pedidos = () => {
   return (
     <ModuleErrorBoundary module="pedidos">
       <ElitePageWrapper>
-        <div className="space-y-8 pb-10">
-          {/* Elite Header */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-600 shadow-inner">
-                <FileText className="w-7 h-7" />
+        <div className="space-y-10 pb-20">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 bg-blue-500/10 rounded-[2rem] flex items-center justify-center text-blue-400 shadow-inner">
+                <FileText className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">Pedidos de Compra</h1>
-                <div className="flex items-center gap-2 mt-2">
-                   <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">{filteredPedidos.length} Pedidos</Badge>
-                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">• Fulfillment Hub</span>
+                <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Purchase Orders</h1>
+                <div className="flex items-center gap-3 mt-3">
+                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-blue-500/30 text-blue-300 px-3 py-1">{filteredPedidos.length} Total Orders</Badge>
+                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Logistics & Fulfillment Hub</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <EliteButton variant="outline" size="sm" onClick={() => refetch()} className="h-11 px-4">
+            <div className="flex items-center gap-4">
+              <EliteButton variant="outline" size="sm" onClick={() => refetch()} className="h-11 px-5 rounded-xl border-white/10 hover:bg-white/5 font-black text-[10px] tracking-widest uppercase text-zinc-400">
                 <RefreshCw className="w-4 h-4 mr-2" /> REFRESH
               </EliteButton>
-              <EliteButton variant="default" size="sm" onClick={handleExportPDF} className="h-11 px-6">
-                <Download className="w-4 h-4 mr-2" /> EXPORTAR
+              <EliteButton variant="default" size="sm" onClick={handleExportPDF} className="h-11 px-8 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none shadow-lg shadow-violet-500/20 font-black text-[10px] tracking-widest uppercase">
+                <Download className="w-4 h-4 mr-2" /> EXPORT DATA
               </EliteButton>
             </div>
           </div>
 
           <PedidosKPIs kpis={kpis} />
 
-          {/* Elite Filters */}
           <motion.div 
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-card/40 p-6 rounded-[2rem] border border-border/40 backdrop-blur-xl shadow-xl shadow-primary/5"
+            className="bg-white/[0.02] p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-2xl shadow-2xl"
           >
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="md:col-span-2 relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                <Input 
-                  placeholder="Pesquisar pedidos..." 
-                  value={search} 
-                  onChange={(e) => setSearch(e.target.value)} 
-                  className="pl-12 bg-background/40 border-border/50 h-12 rounded-xl focus:bg-background transition-all" 
-                />
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Global Search</Label>
+                <div className="relative">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 group-focus-within:text-violet-400 transition-colors" />
+                  <Input 
+                    placeholder="Search by ID or supplier..." 
+                    value={search} 
+                    onChange={(e) => setSearch(e.target.value)} 
+                    className="pl-12 bg-white/[0.03] border-white/10 h-12 rounded-xl focus:bg-white/[0.05] transition-all text-white font-bold" 
+                  />
+                </div>
               </div>
               
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl">
-                  <Filter className="w-4 h-4 mr-2 text-primary" />
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  <SelectItem value="all">Todos os Status</SelectItem>
-                  {Object.entries(statusConfig).map(([key, config]) => (
-                    <SelectItem key={key} value={key}>{config.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Fulfillment Status</Label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="bg-white/[0.03] h-12 border-white/10 rounded-xl text-zinc-200 font-bold">
+                    <div className="flex items-center gap-2">
+                      <Filter className="w-4 h-4 text-violet-400" />
+                      <SelectValue placeholder="All Status" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl rounded-2xl">
+                    <SelectItem value="all" className="text-xs font-bold py-2.5">All Orders</SelectItem>
+                    {Object.entries(statusConfig).map(([key, config]) => (
+                      <SelectItem key={key} value={key} className="text-xs font-bold py-2.5">{config.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <Select value={fornecedorFilter} onValueChange={setFornecedorFilter}>
-                <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl">
-                  <Building2 className="w-4 h-4 mr-2 text-primary" />
-                  <SelectValue placeholder="Fornecedor" />
-                </SelectTrigger>
-                <SelectContent className="rounded-xl">
-                  <SelectItem value="all">Todos Fornecedores</SelectItem>
-                  {fornecedores.map(f => (
-                    <SelectItem key={f.id} value={f.id}>{f.razao_social}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Provider Entity</Label>
+                <Select value={fornecedorFilter} onValueChange={setFornecedorFilter}>
+                  <SelectTrigger className="bg-white/[0.03] h-12 border-white/10 rounded-xl text-zinc-200 font-bold">
+                    <div className="flex items-center gap-2">
+                      <Building2 className="w-4 h-4 text-violet-400" />
+                      <SelectValue placeholder="All Suppliers" />
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl rounded-2xl">
+                    <SelectItem value="all" className="text-xs font-bold py-2.5">All Suppliers</SelectItem>
+                    {fornecedores.map(f => (
+                      <SelectItem key={f.id} value={f.id} className="text-xs font-bold py-2.5">{f.razao_social}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </motion.div>
 
-          <Card className="rounded-[2rem] border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden shadow-2xl">
-            {isMobile ? (
-              <div className="p-4 space-y-4">
-                {filteredPedidos.map((pedido) => (
-                  <PedidoMobileCard key={pedido.id} pedido={pedido} onView={handleViewDetails} />
-                ))}
-              </div>
-            ) : (
-              <Table>
-                <TableHeader className="bg-muted/30">
-                  <TableRow className="hover:bg-transparent border-border/10">
-                    <TableHead className="w-12"><Checkbox checked={selectedIds.length === filteredPedidos.length} onCheckedChange={handleSelectAll} /></TableHead>
-                    <TableHead className="text-[10px] font-black uppercase tracking-widest py-5">Número</TableHead>
-                    <TableHead className="text-[10px] font-black uppercase tracking-widest">Fornecedor</TableHead>
-                    <TableHead className="text-[10px] font-black uppercase tracking-widest">Status</TableHead>
-                    <TableHead className="text-[10px] font-black uppercase tracking-widest text-right">Valor Total</TableHead>
-                    <TableHead className="w-20"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredPedidos.map((pedido) => {
-                    const config = statusConfig[pedido.status] || statusConfig["pendente"];
-                    const StatusIcon = config.icon;
-                    return (
-                      <TableRow 
-                        key={pedido.id} 
-                        className="group border-border/5 hover:bg-primary/5 transition-colors cursor-pointer"
-                        onClick={() => handleViewDetails(pedido)}
-                      >
-                        <TableCell onClick={(e) => e.stopPropagation()}><Checkbox checked={selectedIds.includes(pedido.id)} onCheckedChange={() => handleSelectOne(pedido.id)} /></TableCell>
-                        <TableCell>
-                          <span className="font-mono font-bold text-primary group-hover:underline underline-offset-4">{pedido.numero}</span>
-                          <p className="text-[10px] text-muted-foreground font-medium">{format(new Date(pedido.data_emissao), 'dd MMM yyyy')}</p>
-                        </TableCell>
-                        <TableCell>
-                           <div className="flex items-center gap-2">
-                             <div className="w-8 h-8 rounded-lg bg-muted/50 flex items-center justify-center text-xs font-bold text-muted-foreground uppercase">
-                               {pedido.fornecedor?.razao_social?.slice(0, 2)}
-                             </div>
-                             <span className="text-sm font-semibold">{pedido.fornecedor?.razao_social}</span>
-                           </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={cn("rounded-full px-3 py-1 border-none", config.color)}>
-                            <StatusIcon className="w-3 h-3 mr-2" />
-                            {config.label}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <span className="font-black text-foreground">
-                            {pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                          </span>
-                        </TableCell>
-                        <TableCell>
-                          <EliteButton variant="ghost" size="icon" className="h-10 w-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </EliteButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            )}
+          <Card className="rounded-[2.5rem] border-white/5 bg-white/[0.03] backdrop-blur-3xl overflow-hidden shadow-2xl">
+            <CardContent className="p-0">
+              {isMobile ? (
+                <div className="p-5 space-y-5">
+                  {filteredPedidos.map((pedido) => (
+                    <PedidoMobileCard key={pedido.id} pedido={pedido} onView={handleViewDetails} />
+                  ))}
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader className="bg-white/[0.02]">
+                    <TableRow className="hover:bg-transparent border-white/5">
+                      <TableHead className="w-14 pl-6"><Checkbox checked={selectedIds.length === filteredPedidos.length} onCheckedChange={handleSelectAll} className="border-white/20" /></TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 py-6">Reference</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Supplier Entity</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Logistics State</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-right pr-10">Total Volume</TableHead>
+                      <TableHead className="w-20 pr-6"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <AnimatePresence mode="popLayout">
+                      {filteredPedidos.map((pedido, index) => {
+                        const config = statusConfig[pedido.status] || statusConfig["pendente"];
+                        const StatusIcon = config.icon;
+                        return (
+                          <motion.tr 
+                            key={pedido.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: index * 0.03 }}
+                            className="group border-white/5 hover:bg-white/[0.02] transition-all cursor-pointer relative"
+                            onClick={() => handleViewDetails(pedido)}
+                          >
+                            <TableCell className="pl-6" onClick={(e) => e.stopPropagation()}>
+                              <Checkbox checked={selectedIds.includes(pedido.id)} onCheckedChange={() => handleSelectOne(pedido.id)} className="border-white/20" />
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex flex-col">
+                                <span className="font-black text-violet-400 group-hover:text-violet-300 transition-colors tracking-widest text-sm">#{pedido.numero}</span>
+                                <span className="text-[10px] text-zinc-500 font-black uppercase mt-1">{format(new Date(pedido.data_emissao), 'dd MMM yyyy')}</span>
+                              </div>
+                            </TableCell>
+                            <TableCell>
+                               <div className="flex items-center gap-3">
+                                 <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-[10px] font-black text-zinc-400 uppercase border border-white/5 shadow-inner">
+                                   {pedido.fornecedor?.razao_social?.slice(0, 2)}
+                                 </div>
+                                 <span className="text-sm font-bold text-zinc-200">{pedido.fornecedor?.razao_social}</span>
+                               </div>
+                            </TableCell>
+                            <TableCell>
+                              <Badge className={cn("rounded-full px-4 py-1.5 border-none font-black text-[10px] uppercase tracking-widest gap-2 shadow-lg", config.color)}>
+                                <StatusIcon className="w-3 h-3" />
+                                {config.label}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-right pr-10">
+                              <span className="font-black text-white text-base tracking-tighter">
+                                {pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                              </span>
+                            </TableCell>
+                            <TableCell className="pr-6">
+                              <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-all">
+                                <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-white/5 text-zinc-500 hover:text-white">
+                                  <MoreHorizontal className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </motion.tr>
+                        );
+                      })}
+                    </AnimatePresence>
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
           </Card>
         </div>
       </ElitePageWrapper>
