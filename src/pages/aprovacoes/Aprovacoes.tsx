@@ -187,34 +187,34 @@ const Aprovacoes = () => {
                 Histórico de Aprovações
               </h2>
               <div className="space-y-3">
-                {(allHistory.length > 0 ? allHistory : approvalHistory).map((item: any) => (
+                {(allHistory.length > 0 ? (allHistory as any[]) : approvalHistory).map((item) => (
                   <div 
                     key={item.id} 
                     className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
                   >
                     <div className="flex items-center gap-4">
                       <div>
-                        <p className="font-mono text-sm">{item.solicitacao || item.solicitacao_id?.substring(0, 8)}</p>
+                        <p className="font-mono text-sm">{(item as any).solicitacao || (item as any).solicitacao_id?.substring(0, 8)}</p>
                         <p className="text-xs text-muted-foreground">
-                          {item.valor ? `R$ ${item.valor.toLocaleString('pt-BR')}` : item.acao}
+                          {(item as any).valor ? `R$ ${(item as any).valor.toLocaleString('pt-BR')}` : (item as any).acao}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">
                       <Badge 
                         variant={
-                          item.acao === "Aprovado" || item.acao === "aprovado" ? "default" : 
-                          item.acao === "Rejeitado" || item.acao === "rejeitado" ? "destructive" : 
-                          item.acao === "escalado_automatico" ? "secondary" :
+                          (item as any).acao === "Aprovado" || (item as any).acao === "aprovado" ? "default" : 
+                          (item as any).acao === "Rejeitado" || (item as any).acao === "rejeitado" ? "destructive" : 
+                          (item as any).acao === "escalado_automatico" ? "secondary" :
                           "outline"
                         }
                       >
-                        {item.acao === "escalado_automatico" ? "Escalado" : item.acao}
+                        {(item as any).acao === "escalado_automatico" ? "Escalado" : (item as any).acao}
                       </Badge>
                       <div className="text-right">
-                        <p className="text-sm">{item.por || item.usuario_nome || "Sistema"}</p>
+                        <p className="text-sm">{(item as any).por || (item as any).usuario_nome || "Sistema"}</p>
                         <p className="text-xs text-muted-foreground">
-                          {item.data || new Date(item.created_at).toLocaleString('pt-BR')}
+                          {(item as any).data || ((item as any).created_at ? new Date((item as any).created_at).toLocaleString('pt-BR') : '')}
                         </p>
                       </div>
                     </div>
