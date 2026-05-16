@@ -131,7 +131,17 @@ const Aprovacoes = () => {
                 Histórico de Aprovações
               </h2>
               <div className="space-y-3">
-                {(allHistory.length > 0 ? (allHistory as ApprovalHistoryItem[]) : (approvalHistory as ApprovalHistoryItem[])).map((item) => (
+                {(allHistory.length > 0 
+                  ? allHistory.map(h => ({
+                      id: h.id,
+                      solicitacao: h.solicitacao_id?.substring(0, 8) || 'N/A',
+                      valor: (h as any).detalhes?.valor || 0,
+                      acao: h.acao,
+                      por: h.usuario_nome || 'Sistema',
+                      data: new Date(h.created_at).toLocaleString('pt-BR')
+                    }))
+                  : (approvalHistory as ApprovalHistoryItem[])
+                ).map((item) => (
                   <div 
                     key={item.id} 
                     className="flex items-center justify-between p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
@@ -147,13 +157,13 @@ const Aprovacoes = () => {
                     <div className="flex items-center gap-4">
                       <Badge 
                         variant={
-                          item.acao === "Aprovado" || item.acao === "aprovado" ? "default" : 
-                          item.acao === "Rejeitado" || item.acao === "rejeitado" ? "destructive" : 
-                          item.acao === "escalado_automatico" ? "secondary" :
+                          item.acao === "approved" || item.acao === "Aprovado" ? "default" : 
+                          item.acao === "rejected" || item.acao === "Rejeitado" ? "destructive" : 
+                          item.acao === "escalated" || item.acao === "escalado_automatico" ? "secondary" :
                           "outline"
                         }
                       >
-                        {item.acao === "escalado_automatico" ? "Escalado" : item.acao}
+                        {item.acao === "escalated" ? "Escalado" : item.acao}
                       </Badge>
                       <div className="text-right">
                         <p className="text-sm">{item.por}</p>
