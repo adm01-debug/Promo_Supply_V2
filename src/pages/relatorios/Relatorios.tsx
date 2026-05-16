@@ -319,7 +319,7 @@ const Relatorios = () => {
               distribuicaoStatus={stats.distribuicaoStatus}
             />
 
-            <SLABySupplierAnalysis />
+            <LazyReportPanel><SLABySupplierAnalysis /></LazyReportPanel>
             <SupplierPerformanceTable data={stats.fornecedorPerformance} />
           </TabsContent>
 
