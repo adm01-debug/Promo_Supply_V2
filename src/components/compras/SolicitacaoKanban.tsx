@@ -91,6 +91,7 @@ function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, select
   };
 
   const urgency = getUrgencyInfo();
+  const config = statusConfig[solicitacao.status as Solicitacao['status']];
 
   return (
     <Card className={cn(
@@ -98,7 +99,7 @@ function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, select
       isOverlay && "shadow-2xl rotate-2 scale-105 border-violet-500/30",
       selected && "ring-2 ring-violet-500/50 bg-violet-500/5"
     )}>
-      <div className="absolute top-0 left-0 w-0.5 h-full opacity-50 bg-violet-500" style={{ backgroundColor: statusConfig[solicitacao.status]?.color.includes('bg-') ? undefined : 'var(--violet-500)' }} />
+      <div className="absolute top-0 left-0 w-0.5 h-full opacity-50 bg-violet-500" style={{ backgroundColor: config?.color.includes('bg-') ? undefined : 'var(--violet-500)' }} />
       
       <div className="flex flex-col gap-3">
         <div className="flex items-start gap-3">
@@ -146,7 +147,7 @@ function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, select
 }
 
 function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds, onSelectChange }: any) {
-  const config = statusConfig[status];
+  const config = statusConfig[status as Solicitacao['status']];
   
   return (
     <div className={cn(
@@ -155,8 +156,8 @@ function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds
     )}>
       <div className="p-5 flex items-center justify-between border-b border-white/5">
         <div className="flex items-center gap-3">
-          <div className={cn("w-2 h-2 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]", config.color.replace('bg-', 'bg-'))} />
-          <h3 className="font-black text-xs text-white uppercase tracking-widest">{config.label}</h3>
+          <div className={cn("w-2 h-2 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]", config?.color.replace('bg-', 'bg-'))} />
+          <h3 className="font-black text-xs text-white uppercase tracking-widest">{config?.label}</h3>
         </div>
         <Badge className="text-[10px] font-black bg-white/5 text-zinc-400 border-none rounded-lg px-2 h-5">
           {solicitacoes.length}
@@ -164,7 +165,7 @@ function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds
       </div>
 
       <ScrollArea className="flex-1 p-4 scrollbar-thin">
-        <SortableContext items={solicitacoes.map(s => s.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext items={solicitacoes.map((s: any) => s.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-3 min-h-[150px]">
             {solicitacoes.length === 0 ? (
               <div className={cn(
@@ -175,13 +176,13 @@ function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds
                 {isOver ? "Drop Here" : "Empty Stage"}
               </div>
             ) : (
-              solicitacoes.map(solicitacao => (
+              solicitacoes.map((solicitacao: any) => (
                 <SortableItem 
                   key={solicitacao.id} 
                   solicitacao={solicitacao}
                   selectable={selectable}
                   selected={selectedIds?.has(solicitacao.id)}
-                  onSelectChange={(selected) => onSelectChange?.(solicitacao.id, selected)}
+                  onSelectChange={(selected: boolean) => onSelectChange?.(solicitacao.id, selected)}
                 />
               ))
             )}
