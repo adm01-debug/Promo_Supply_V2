@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -10,8 +10,10 @@ import { differenceInDays } from "date-fns/differenceInDays";
 import { subMonths } from "date-fns/subMonths";
 import { startOfMonth } from "date-fns/startOfMonth";
 import { endOfMonth } from "date-fns/endOfMonth";
-import { format } from "date-fns/format";
+import { motion } from "framer-motion";
 import type { Pagamento } from "@/hooks/usePagamentos";
+import { ExecutiveMetricCard } from "@/components/compras/executive/ExecutiveMetricCard";
+import { cn } from "@/lib/utils";
 
 interface PagamentoAdvancedKPIsProps {
   pagamentos: Pagamento[];
@@ -34,7 +36,6 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
       return dias > 0 && dias <= 7;
     });
 
-    // DPO - Days Payable Outstanding
     const pagosComDatas = pagos.filter(p => p.data_pagamento && p.data_vencimento);
     const dpo = pagosComDatas.length > 0
       ? Math.round(pagosComDatas.reduce((sum, p) => {
@@ -44,16 +45,12 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
         }, 0) / pagosComDatas.length)
       : 0;
 
-    // % On Time
     const onTime = pagosComDatas.filter(p => p.data_pagamento! <= p.data_vencimento).length;
     const onTimeRate = pagosComDatas.length > 0 ? Math.round((onTime / pagosComDatas.length) * 100) : 100;
 
-    // Valor pendente
     const valorPendente = pendentes.reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0);
     const valorVencido = vencidos.reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0);
-    const valorPago = pagos.reduce((s, p) => s + p.valor, 0);
 
-    // Forecast 30/60/90 dias
     const forecast30 = pendentes.filter(p => {
       const d = differenceInDays(new Date(p.data_vencimento), hoje);
       return d >= 0 && d <= 30;
@@ -69,10 +66,7 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
       return d > 60 && d <= 90;
     }).reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0);
 
-    // Aging buckets
     const aging = {
-      current: pendentes.filter(p => differenceInDays(new Date(p.data_vencimento), hoje) > 0)
-        .reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0),
       d0_7: vencidos.filter(p => Math.abs(differenceInDays(new Date(p.data_vencimento), hoje)) <= 7)
         .reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0),
       d8_15: vencidos.filter(p => { const d = Math.abs(differenceInDays(new Date(p.data_vencimento), hoje)); return d > 7 && d <= 15; })
@@ -83,143 +77,87 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
         .reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0),
     };
 
-    // MoM comparison
     const pagosMesAtual = pagos.filter(p => p.data_pagamento && new Date(p.data_pagamento) >= mesAtual)
       .reduce((s, p) => s + p.valor, 0);
-    const pagosMesAnterior = pagos.filter(p => p.data_pagamento && new Date(p.data_pagamento) >= mesAnterior && new Date(p.data_pagamento) <= fimMesAnterior)
-      .reduce((s, p) => s + p.valor, 0);
-    const momVariation = pagosMesAnterior > 0 ? ((pagosMesAtual - pagosMesAnterior) / pagosMesAnterior * 100) : 0;
 
     return {
       pendentes: pendentes.length, vencidos: vencidos.length, venceHoje: venceHoje.length,
-      vence7d: vence7d.length, dpo, onTimeRate, valorPendente, valorVencido, valorPago,
-      forecast30, forecast60, forecast90, aging, pagosMesAtual, momVariation,
+      vence7d: vence7d.length, dpo, onTimeRate, valorPendente, valorVencido,
+      forecast30, forecast60, forecast90, aging, pagosMesAtual,
     };
   }, [pagamentos]);
 
   const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   return (
-    <div className="space-y-4">
-      {/* Row 1: Main KPIs */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-        <Card className="p-3">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-warning/10"><Clock className="h-4 w-4 text-warning" /></div>
-            <span className="text-xs text-muted-foreground">Pendentes</span>
-          </div>
-          <p className="text-xl font-bold">{kpis.pendentes}</p>
-          <p className="text-xs text-muted-foreground">{fmt(kpis.valorPendente)}</p>
-        </Card>
-
-        <Card className="p-3">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-destructive/10"><AlertTriangle className="h-4 w-4 text-destructive" /></div>
-            <span className="text-xs text-muted-foreground">Vencidos</span>
-          </div>
-          <p className="text-xl font-bold text-destructive">{kpis.vencidos}</p>
-          <p className="text-xs text-destructive">{fmt(kpis.valorVencido)}</p>
-        </Card>
-
-        <Card className="p-3">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-success/10"><CheckCircle2 className="h-4 w-4 text-success" /></div>
-            <span className="text-xs text-muted-foreground">Pago (Mês)</span>
-          </div>
-          <p className="text-xl font-bold text-success">{fmt(kpis.pagosMesAtual)}</p>
-          <div className="flex items-center gap-1 text-xs">
-            {kpis.momVariation >= 0 
-              ? <TrendingUp className="h-3 w-3 text-destructive" />
-              : <TrendingDown className="h-3 w-3 text-success" />
-            }
-            <span className={kpis.momVariation >= 0 ? "text-destructive" : "text-success"}>
-              {Math.abs(kpis.momVariation).toFixed(1)}% MoM
-            </span>
-          </div>
-        </Card>
-
-        <Card className="p-3">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-info/10"><Timer className="h-4 w-4 text-info" /></div>
-            <span className="text-xs text-muted-foreground">DPO</span>
-          </div>
-          <p className="text-xl font-bold">{kpis.dpo}d</p>
-          <p className="text-xs text-muted-foreground">Dias para pagar</p>
-        </Card>
-
-        <Card className="p-3">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-purple-500/10"><Percent className="h-4 w-4 text-purple-600" /></div>
-            <span className="text-xs text-muted-foreground">No Prazo</span>
-          </div>
-          <p className="text-xl font-bold">{kpis.onTimeRate}%</p>
-          <Progress value={kpis.onTimeRate} className="h-1.5 mt-1" />
-        </Card>
-
-        <Card className="p-3">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="p-1.5 rounded-md bg-warning/10"><Calendar className="h-4 w-4 text-warning" /></div>
-            <span className="text-xs text-muted-foreground">Vence Hoje</span>
-          </div>
-          <p className="text-xl font-bold text-warning">{kpis.venceHoje}</p>
-          <p className="text-xs text-muted-foreground">+{kpis.vence7d} em 7 dias</p>
-        </Card>
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
+        <ExecutiveMetricCard title="Pending" value={kpis.pendentes} icon={Clock} subtitle={fmt(kpis.valorPendente)} delay={0} />
+        <ExecutiveMetricCard title="Overdue" value={kpis.vencidos} icon={AlertTriangle} subtitle={fmt(kpis.valorVencido)} delay={1} urgent={kpis.vencidos} />
+        <ExecutiveMetricCard title="Paid (Month)" value={kpis.pagosMesAtual} icon={CheckCircle2} format="currency" delay={2} />
+        <ExecutiveMetricCard title="DPO" value={kpis.dpo} icon={Timer} subtitle="Avg days to pay" delay={3} />
+        <ExecutiveMetricCard title="On Time" value={kpis.onTimeRate} icon={Percent} format="percent" delay={4} />
+        <ExecutiveMetricCard title="Due Today" value={kpis.venceHoje} icon={Calendar} subtitle={`+${kpis.vence7d} in 7 days`} delay={5} />
       </div>
 
-      {/* Row 2: Aging + Forecast */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {/* Aging Report */}
-        <Card className="p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-semibold">Aging Report (Vencidos)</span>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <Card className="rounded-[2rem] border-white/5 bg-white/[0.03] backdrop-blur-2xl overflow-hidden shadow-2xl">
+          <div className="p-6 border-b border-white/5 flex items-center gap-3">
+             <BarChart3 className="w-5 h-5 text-violet-400" />
+             <h3 className="font-black uppercase tracking-tight text-white">Aging Report (Overdue)</h3>
           </div>
-          <div className="space-y-2">
+          <CardContent className="p-8 space-y-6">
             {[
-              { label: "0-7 dias", value: kpis.aging.d0_7, color: "bg-warning" },
-              { label: "8-15 dias", value: kpis.aging.d8_15, color: "bg-warning" },
-              { label: "16-30 dias", value: kpis.aging.d16_30, color: "bg-destructive" },
-              { label: "30+ dias", value: kpis.aging.d30plus, color: "bg-red-700" },
+              { label: "0-7 days", value: kpis.aging.d0_7, color: "bg-amber-400" },
+              { label: "8-15 days", value: kpis.aging.d8_15, color: "bg-amber-500" },
+              { label: "16-30 days", value: kpis.aging.d16_30, color: "bg-rose-500" },
+              { label: "30+ days", value: kpis.aging.d30plus, color: "bg-rose-700" },
             ].map((bucket) => {
               const total = kpis.valorVencido || 1;
               const pct = (bucket.value / total) * 100;
               return (
-                <div key={bucket.label} className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground w-16">{bucket.label}</span>
-                  <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                    <div className={`h-full rounded-full ${bucket.color}`} style={{ width: `${Math.min(pct, 100)}%` }} />
+                <div key={bucket.label} className="space-y-2">
+                  <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+                    <span className="text-zinc-500">{bucket.label}</span>
+                    <span className="text-zinc-300">{fmt(bucket.value)}</span>
                   </div>
-                  <span className="text-xs font-medium w-24 text-right">{fmt(bucket.value)}</span>
+                  <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                    <motion.div 
+                      className={cn("h-full", bucket.color)} 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min(pct, 100)}%` }}
+                      transition={{ duration: 1.5, ease: "circOut" }}
+                    />
+                  </div>
                 </div>
               );
             })}
-          </div>
+          </CardContent>
         </Card>
 
-        {/* Forecast */}
-        <Card className="p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-semibold">Forecast de Saída</span>
+        <Card className="rounded-[2rem] border-white/5 bg-white/[0.03] backdrop-blur-2xl overflow-hidden shadow-2xl">
+          <div className="p-6 border-b border-white/5 flex items-center gap-3">
+             <TrendingUp className="w-5 h-5 text-emerald-400" />
+             <h3 className="font-black uppercase tracking-tight text-white">Cash Out Forecast</h3>
           </div>
-          <div className="space-y-3">
+          <CardContent className="p-8 space-y-5">
             {[
-              { label: "Próx. 30 dias", value: kpis.forecast30, color: "text-info" },
-              { label: "31-60 dias", value: kpis.forecast60, color: "text-purple-600" },
-              { label: "61-90 dias", value: kpis.forecast90, color: "text-indigo-600" },
+              { label: "Next 30 days", value: kpis.forecast30, color: "text-emerald-400" },
+              { label: "31-60 days", value: kpis.forecast60, color: "text-violet-400" },
+              { label: "61-90 days", value: kpis.forecast90, color: "text-fuchsia-400" },
             ].map((period) => (
-              <div key={period.label} className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
-                <span className="text-sm text-muted-foreground">{period.label}</span>
-                <span className={`text-sm font-bold ${period.color}`}>{fmt(period.value)}</span>
+              <div key={period.label} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 transition-all hover:bg-white/[0.04]">
+                <span className="text-xs font-black uppercase tracking-widest text-zinc-500">{period.label}</span>
+                <span className={cn("text-base font-black tracking-tighter", period.color)}>{fmt(period.value)}</span>
               </div>
             ))}
-            <div className="flex items-center justify-between pt-2 border-t">
-              <span className="text-sm font-medium">Total 90 dias</span>
-              <span className="text-base font-bold text-primary">
+            <div className="flex items-center justify-between pt-6 mt-2 border-t border-white/5">
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Total 90-Day Outlook</span>
+              <span className="text-xl font-black text-white tracking-tighter">
                 {fmt(kpis.forecast30 + kpis.forecast60 + kpis.forecast90)}
               </span>
             </div>
-          </div>
+          </CardContent>
         </Card>
       </div>
     </div>
