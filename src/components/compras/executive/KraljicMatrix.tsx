@@ -31,30 +31,30 @@ interface CategoryItem {
 
 const quadrants = {
   leverage: {
-    title: 'Alavancagem (Leverage)',
+    title: 'Leverage',
     icon: TrendingDown,
-    color: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400',
+    color: 'bg-emerald-500/5 border-emerald-500/20 text-emerald-400',
     strategy: 'Maximizar lucro, explorar concorrência, leilões reversos.',
     description: 'Alto impacto financeiro, baixo risco de fornecimento.'
   },
   strategic: {
-    title: 'Estratégico (Strategic)',
+    title: 'Strategic',
     icon: Target,
-    color: 'bg-blue-500/10 border-blue-500/30 text-blue-700 dark:text-blue-400',
+    color: 'bg-blue-500/5 border-blue-500/20 text-blue-400',
     strategy: 'Parcerias de longo prazo, colaboração, inovação conjunta.',
     description: 'Alto impacto financeiro, alto risco de fornecimento.'
   },
   routine: {
-    title: 'Não Crítico (Routine)',
+    title: 'Routine',
     icon: Zap,
-    color: 'bg-slate-500/10 border-slate-500/30 text-slate-700 dark:text-slate-400',
+    color: 'bg-zinc-500/5 border-zinc-500/20 text-zinc-400',
     strategy: 'Simplificar processos, automação, catálogos e-procurement.',
     description: 'Baixo impacto financeiro, baixo risco de fornecimento.'
   },
   bottleneck: {
-    title: 'Gargalo (Bottleneck)',
+    title: 'Bottleneck',
     icon: ShieldAlert,
-    color: 'bg-amber-500/10 border-amber-500/30 text-amber-700 dark:text-amber-400',
+    color: 'bg-amber-500/5 border-amber-500/20 text-amber-400',
     strategy: 'Garantir volume, estoque de segurança, contratos fixos.',
     description: 'Baixo impacto financeiro, alto risco de fornecimento.'
   }
@@ -94,30 +94,32 @@ export const KraljicMatrix = () => {
   }, [realCategories]);
 
   return (
-    <Card className="h-full">
+    <Card className="h-full border-white/5 bg-white/[0.03] backdrop-blur-2xl rounded-[2.5rem] overflow-hidden">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Target className="h-5 w-5 text-primary" />
-            Matriz de Kraljic
+          <CardTitle className="text-lg flex items-center gap-3 font-black text-white uppercase tracking-tight">
+            <div className="p-2 rounded-lg bg-violet-500/10 text-violet-400">
+              <Target className="h-5 w-5" />
+            </div>
+            Kraljic Strategy Matrix
           </CardTitle>
-          {isLoading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
+          {isLoading && <Loader2 className="h-4 w-4 animate-spin text-violet-400" />}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger>
-                <Info className="h-4 w-4 text-muted-foreground" />
+                <Info className="h-4 w-4 text-zinc-500" />
               </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>Mapeamento estratégico de categorias com base no impacto financeiro (Spend) e risco de fornecimento.</p>
+              <TooltipContent className="max-w-xs bg-[#05020a] border-white/10 text-zinc-300">
+                <p className="text-[10px] font-bold uppercase tracking-widest">Strategic mapping of categories based on financial impact (Spend) and supply risk.</p>
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-2 aspect-square max-h-[400px] relative mt-4">
-          <div className="absolute -left-8 top-1/2 -rotate-90 text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Risco de Fornecimento</div>
-          <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Impacto Financeiro (Spend)</div>
+        <div className="grid grid-cols-2 gap-3 aspect-square max-h-[450px] relative mt-6 mb-12">
+          <div className="absolute -left-10 top-1/2 -rotate-90 text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 whitespace-nowrap">Supply Risk</div>
+          <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 whitespace-nowrap">Financial Impact (Spend)</div>
 
           {(['leverage', 'strategic', 'routine', 'bottleneck'] as const).map((q) => {
             const config = quadrants[q];
@@ -129,22 +131,22 @@ export const KraljicMatrix = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className={cn(
-                  "p-3 border rounded-xl flex flex-col gap-2 transition-all duration-300 group overflow-hidden relative shadow-sm hover:shadow-md",
+                  "p-4 border rounded-2xl flex flex-col gap-2 transition-all duration-500 group overflow-hidden relative shadow-sm",
                   config.color,
-                  hoveredCategory && categoriesInQuadrant.some(c => c.id === hoveredCategory) ? "ring-2 ring-primary/50 shadow-lg" : "opacity-90 hover:opacity-100"
+                  hoveredCategory && categoriesInQuadrant.some(c => c.id === hoveredCategory) ? "ring-2 ring-violet-500/50 shadow-[0_0_20px_rgba(139,92,246,0.2)]" : "opacity-80 hover:opacity-100"
                 )}
               >
                 <div className="flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-1.5">
-                    <config.icon className="h-3.5 w-3.5" />
-                    <span className="text-[10px] font-bold uppercase tracking-tight">{config.title.split(' ')[0]}</span>
+                  <div className="flex items-center gap-2">
+                    <config.icon className="h-4 w-4" />
+                    <span className="text-[11px] font-black uppercase tracking-widest">{config.title}</span>
                   </div>
-                  <Badge variant="outline" className="text-[10px] h-4 px-1 bg-background/50 border-none font-mono">
+                  <Badge className="text-[10px] font-black h-5 px-2 bg-white/10 text-white border-none rounded-lg">
                     {categoriesInQuadrant.length}
                   </Badge>
                 </div>
                 
-                <div className="flex flex-wrap gap-1 mt-1 relative z-10">
+                <div className="flex flex-wrap gap-1.5 mt-2 relative z-10">
                   {categoriesInQuadrant.map(c => (
                     <TooltipProvider key={c.id}>
                       <Tooltip>
@@ -154,18 +156,22 @@ export const KraljicMatrix = () => {
                             onMouseEnter={() => setHoveredCategory(c.id)}
                             onMouseLeave={() => setHoveredCategory(null)}
                             className={cn(
-                              "h-6 px-2 rounded-md bg-background/80 flex items-center text-[10px] font-medium cursor-help border border-transparent hover:border-primary/30 transition-colors truncate max-w-full shadow-sm",
-                              hoveredCategory === c.id ? "bg-background border-primary shadow-sm" : ""
+                              "h-7 px-3 rounded-xl bg-white/5 backdrop-blur-md flex items-center text-[10px] font-black uppercase tracking-tight cursor-help border border-white/5 hover:border-violet-500/30 transition-all truncate max-w-full shadow-lg",
+                              hoveredCategory === c.id ? "bg-white/10 border-violet-500/50 text-white" : "text-zinc-300"
                             )}
                           >
                             {c.name}
                           </motion.div>
                         </TooltipTrigger>
-                        <TooltipContent>
-                          <div className="space-y-1 py-1">
-                            <p className="font-bold">{c.name}</p>
-                            <p className="text-xs">Spend: R$ {(c.spend/1000).toFixed(0)}k</p>
-                            <p className="text-xs capitalize">Risco: {c.risk}</p>
+                        <TooltipContent className="bg-[#05020a] border-white/10">
+                          <div className="space-y-1.5 py-1">
+                            <p className="font-black text-white text-[11px] uppercase tracking-widest">{c.name}</p>
+                            <div className="space-y-0.5">
+                               <p className="text-[10px] text-zinc-400 font-bold">Spend: <span className="text-zinc-100">R$ {(c.spend/1000).toFixed(0)}k</span></p>
+                               <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-tighter">Risk Level: <span className={cn(
+                                 c.risk === 'critical' ? 'text-rose-400' : 'text-amber-400'
+                               )}>{c.risk}</span></p>
+                            </div>
                           </div>
                         </TooltipContent>
                       </Tooltip>
@@ -173,25 +179,26 @@ export const KraljicMatrix = () => {
                   ))}
                 </div>
 
-                <div className="mt-auto pt-2 border-t border-current/10 hidden group-hover:block animate-in fade-in slide-in-from-bottom-1 duration-300 relative z-10">
-                  <p className="text-[9px] leading-tight font-semibold italic flex items-center gap-1">
-                    <ArrowRight className="h-2 w-2" /> Estratégia: {config.strategy}
+                <div className="mt-auto pt-3 border-t border-white/5 hidden group-hover:block animate-in fade-in slide-in-from-bottom-2 duration-500 relative z-10">
+                  <p className="text-[9px] leading-relaxed font-black uppercase tracking-wider text-zinc-400 flex items-start gap-2">
+                    <ArrowRight className="h-3 w-3 mt-0.5 shrink-0 text-violet-400" /> 
+                    <span>STRATEGY: <span className="text-zinc-200 normal-case font-medium">{config.strategy}</span></span>
                   </p>
                 </div>
 
-                <config.icon className="absolute -bottom-4 -right-4 h-20 w-20 opacity-5 rotate-12 transition-transform group-hover:rotate-0" />
+                <config.icon className="absolute -bottom-6 -right-6 h-24 w-24 opacity-[0.03] rotate-12 transition-transform group-hover:rotate-0 group-hover:opacity-[0.08]" />
               </motion.div>
             );
           })}
         </div>
 
-        <div className="mt-8 flex flex-col gap-2 p-3 bg-muted/40 rounded-lg border border-border/50">
-          <p className="text-[10px] font-bold uppercase text-muted-foreground tracking-wider mb-1">Recomendação da IA</p>
-          <p className="text-[11px] leading-snug text-foreground/80">
+        <div className="mt-4 flex flex-col gap-2 p-4 bg-white/[0.02] rounded-[2rem] border border-white/5">
+          <p className="text-[10px] font-black uppercase text-violet-400 tracking-[0.2em] mb-1">AI Strategic Advisory</p>
+          <p className="text-[11px] leading-relaxed text-zinc-400 font-medium">
             Analisando as {categories.length} categorias mapeadas. 
             {categories.some(c => c.quadrant === 'bottleneck' && c.risk === 'critical') ? 
-              " Existem gargalos com risco crítico detectados. Ative planos de contingência." : 
-              " Portfólio equilibrado. Foque em oportunidades de alavancagem para aumentar o saving."}
+              " Existem gargalos com risco crítico detectados na cadeia de suprimentos. Ative planos de contingência e busque diversificação imediata." : 
+              " Portfólio equilibrado. Recomendamos focar em oportunidades de alavancagem para consolidar volumes e maximizar economias contratuais."}
           </p>
         </div>
       </CardContent>
