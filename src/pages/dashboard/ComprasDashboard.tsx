@@ -319,11 +319,15 @@ const ComprasDashboard = () => {
   return (
     <ModuleErrorBoundary module="dashboard">
       
-      <div className="space-y-6 animate-fade-in pb-10">
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-10">
         <CriticalAlertsBar />
         
         {/* Dashboard Toolbar with Filters */}
-        <div className="flex flex-col gap-4 bg-card/30 p-6 rounded-2xl border border-border/50 backdrop-blur-md">
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-col gap-4 bg-card/40 p-6 rounded-3xl border border-border/40 backdrop-blur-xl shadow-2xl shadow-primary/5"
+        >
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
