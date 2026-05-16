@@ -13,6 +13,7 @@ import {
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Card } from "@/components/ui/card";
+import { InteractiveCard } from "@/components/ui/interactive-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -164,59 +165,67 @@ const ComprasDashboard = () => {
     switch (widgetId) {
       case 'kpi-aguardando':
         return (
-          <EnhancedKpiCard
-            title={t('dashboard.kpis.pending_approval')}
-            value={kpis.comparisons.aguardando.current}
-            previousValue={kpis.comparisons.aguardando.previous}
-            sparklineData={kpis.comparisons.aguardando.sparkline}
-            icon={ClipboardList}
-            color="orange"
-            format="number"
-            variant="default"
-            subtitle={t('dashboard.kpis.subtitles.pending')}
-          />
+          <InteractiveCard>
+            <EnhancedKpiCard
+              title={t('dashboard.kpis.pending_approval')}
+              value={kpis.comparisons.aguardando.current}
+              previousValue={kpis.comparisons.aguardando.previous}
+              sparklineData={kpis.comparisons.aguardando.sparkline}
+              icon={ClipboardList}
+              color="orange"
+              format="number"
+              variant="default"
+              subtitle={t('dashboard.kpis.subtitles.pending')}
+            />
+          </InteractiveCard>
         );
       case 'kpi-volume':
         return (
-          <EnhancedKpiCard
-            title={t('dashboard.kpis.total_spend')}
-            value={kpis.comparisons.volume.current}
-            previousValue={kpis.comparisons.volume.previous}
-            sparklineData={kpis.comparisons.volume.sparkline}
-            icon={TrendingUp}
-            color="blue"
-            subtitle={t('dashboard.kpis.subtitles.volume')}
-            format="currency"
-            variant="default"
-          />
+          <InteractiveCard>
+            <EnhancedKpiCard
+              title={t('dashboard.kpis.total_spend')}
+              value={kpis.comparisons.volume.current}
+              previousValue={kpis.comparisons.volume.previous}
+              sparklineData={kpis.comparisons.volume.sparkline}
+              icon={TrendingUp}
+              color="blue"
+              subtitle={t('dashboard.kpis.subtitles.volume')}
+              format="currency"
+              variant="default"
+            />
+          </InteractiveCard>
         );
       case 'kpi-economia':
         return (
-          <EnhancedKpiCard
-            title={t('dashboard.kpis.saving')}
-            value={kpis.economiaPercentual}
-            previousValue={((kpis.comparisons.economia.previous / kpis.comparisons.volume.previous) * 100) || 0}
-            sparklineData={kpis.comparisons.economia.sparkline}
-            icon={PiggyBank}
-            color="emerald"
-            subtitle={`${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.economiaGerada)} economizados`}
-            format="percent"
-            variant="featured"
-          />
+          <InteractiveCard>
+            <EnhancedKpiCard
+              title={t('dashboard.kpis.saving')}
+              value={kpis.economiaPercentual}
+              previousValue={((kpis.comparisons.economia.previous / kpis.comparisons.volume.previous) * 100) || 0}
+              sparklineData={kpis.comparisons.economia.sparkline}
+              icon={PiggyBank}
+              color="emerald"
+              subtitle={`${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.economiaGerada)} economizados`}
+              format="percent"
+              variant="featured"
+            />
+          </InteractiveCard>
         );
       case 'kpi-sla':
         return (
-          <EnhancedKpiCard
-            title="Nível de Serviço (SLA)"
-            value={kpis.comparisons.sla.current}
-            previousValue={kpis.comparisons.sla.previous}
-            sparklineData={kpis.comparisons.sla.sparkline}
-            icon={BarChart3}
-            color="indigo"
-            subtitle={`${kpis.avgSla} dias (média) | ${kpis.comparisons.sla.current}% no prazo`}
-            format="number"
-            variant="default"
-          />
+          <InteractiveCard>
+            <EnhancedKpiCard
+              title="Nível de Serviço (SLA)"
+              value={kpis.comparisons.sla.current}
+              previousValue={kpis.comparisons.sla.previous}
+              sparklineData={kpis.comparisons.sla.sparkline}
+              icon={BarChart3}
+              color="indigo"
+              subtitle={`${kpis.avgSla} dias (média) | ${kpis.comparisons.sla.current}% no prazo`}
+              format="number"
+              variant="default"
+            />
+          </InteractiveCard>
         );
       case 'chart-sla':
         return <LazyPanel><SLADistributionChart /></LazyPanel>;
