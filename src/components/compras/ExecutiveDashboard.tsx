@@ -6,20 +6,24 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { useDashboardFilters, DashboardFilter } from '@/hooks/useDashboardFilters';
-import { PurchaseClimateWidget } from './PurchaseClimateWidget';
+import { PurchaseClimateWidget } from '../PurchaseClimateWidget';
 import {
   DollarSign, TrendingUp, ShoppingCart, Clock, Users,
-  CheckCircle2, XCircle, Target, Zap, AlertTriangle,
-  GitCompare, Filter, X, Download, FileSpreadsheet
+  CheckCircle2, Target, GitCompare, Download, BarChart3,
+  ShieldCheck, Brain, Sparkles, Filter, X
 } from 'lucide-react';
 import { useExecutiveDashboardData } from '@/hooks/useExecutiveDashboardData';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import { exportToCSV } from '@/lib/exportUtils';
 import { toast } from '@/hooks/use-toast';
-
+import { ElitePageWrapper } from '@/components/organisms/ElitePageWrapper';
+import { EliteButton } from '@/components/atoms/EliteButton';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 import {
-  executiveMetrics, calculateChange, trendDataSets,
+  executiveMetrics, calculateChange, 
   categorySpend, topSuppliers, buyerPerformance, pendingItems,
   formatCurrency, type DrillDownData
 } from './executive/executiveDashboardData';
@@ -40,43 +44,7 @@ export const ExecutiveDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedSupplier, setSelectedSupplier] = useState<string>('all');
 
-  const { 
-    metrics: realMetrics, 
-    spendByCategory: realSpendByCategory, 
-    topSuppliers: realTopSuppliers, 
-    loading: realDataLoading 
-  } = useExecutiveDashboardData();
-
-  const handleExport = () => {
-    try {
-      const exportData = [
-        { Metric: 'Total Spend', Value: activeMetrics.totalSpend.value },
-        { Metric: 'Savings', Value: activeMetrics.savings.value },
-        { Metric: 'Savings %', Value: activeMetrics.savingsPercent },
-        { Metric: 'Orders This Month', Value: activeMetrics.ordersThisMonth.value },
-        { Metric: 'Avg Cycle Time (Days)', Value: activeMetrics.avgCycleTime.value },
-        { Metric: 'Contract Compliance %', Value: activeMetrics.contractCompliance.value },
-      ];
-      
-      exportToCSV(exportData, 'Executive_Metrics');
-      
-      if (realSpendByCategory && realSpendByCategory.length > 0) {
-        exportToCSV(realSpendByCategory, 'Spend_By_Category');
-      }
-
-      toast({
-        title: "Relatórios exportados",
-        description: "Os arquivos CSV foram baixados com sucesso.",
-      });
-    } catch (error) {
-      console.error('Export error:', error);
-      toast({
-        title: "Erro ao exportar",
-        description: "Não foi possível gerar os arquivos de exportação.",
-        variant: "destructive"
-      });
-    }
-  };
+  const { metrics: realMetrics, loading: realDataLoading } = useExecutiveDashboardData();
 
   const activeMetrics = useMemo(() => {
     if (realDataLoading) return { ...executiveMetrics, savingsPercent: 10.0 };
@@ -136,24 +104,9 @@ export const ExecutiveDashboard = () => {
     };
   }, [realMetrics, realDataLoading]);
 
-
-
   useRealtimeSubscription({ tables: ['pedidos', 'solicitacoes', 'cotacoes', 'pagamentos'] });
 
   const { favorites, loading: favoritesLoading, saveFavorite, deleteFavorite, setAsDefault, getDefaultFilter } = useDashboardFilters();
-
-  const [hasAppliedDefault, setHasAppliedDefault] = useState(false);
-  useEffect(() => {
-    if (hasAppliedDefault || favorites.length === 0) return;
-    const defaultFilter = getDefaultFilter();
-    if (defaultFilter) {
-      setSelectedCategory(defaultFilter.category_filter ?? 'all');
-      setSelectedSupplier(defaultFilter.supplier_filter ?? 'all');
-      setSelectedPeriod(defaultFilter.period_filter ?? '6m');
-      setShowComparison(defaultFilter.show_comparison ?? true);
-    }
-    setHasAppliedDefault(true);
-  }, [favorites.length, getDefaultFilter, hasAppliedDefault]);
 
   const applyFilter = (filter: DashboardFilter) => {
     setSelectedCategory(filter.category_filter ?? 'all');
@@ -165,250 +118,173 @@ export const ExecutiveDashboard = () => {
   const currentFilters = { category: selectedCategory, supplier: selectedSupplier, period: selectedPeriod, showComparison };
   const hasActiveFilters = selectedCategory !== 'all' || selectedSupplier !== 'all';
 
-  // Account-based persistence
-  const accountDefaults = useMemo(() => ({
-    selectedCategory: 'all', selectedSupplier: 'all', selectedPeriod: '6m', showComparison: true,
-  }), []);
-  const acct = useAccountFilters('executive-dashboard', accountDefaults);
-  const hydratedAcctRef = useRef(false);
-  useEffect(() => {
-    if (acct.loading || hydratedAcctRef.current) return;
-    hydratedAcctRef.current = true;
-    setSelectedCategory(acct.filters.selectedCategory);
-    setSelectedSupplier(acct.filters.selectedSupplier);
-    setSelectedPeriod(acct.filters.selectedPeriod);
-    setShowComparison(acct.filters.showComparison);
-  }, [acct.loading, acct.filters]);
-  useEffect(() => {
-    if (!hydratedAcctRef.current) return;
-    acct.patchFilters({ selectedCategory, selectedSupplier, selectedPeriod, showComparison });
-  }, [selectedCategory, selectedSupplier, selectedPeriod, showComparison, acct]);
-
-  const clearFlow = useClearFiltersFlow<{
-    selectedCategory: string; selectedSupplier: string; selectedPeriod: string; showComparison: boolean;
-  }>({
+  const clearFlow = useClearFiltersFlow({
     scope: 'executive-dashboard',
     screenLabel: 'Dashboard Executivo',
     describeActiveFilters: () => [
-      { key: 'selectedCategory', label: 'Categoria', value: selectedCategory },
-      { key: 'selectedSupplier', label: 'Fornecedor', value: selectedSupplier },
+      { key: 'category', label: 'Categoria', value: selectedCategory },
+      { key: 'supplier', label: 'Fornecedor', value: selectedSupplier },
     ],
     takeSnapshot: () => ({ selectedCategory, selectedSupplier, selectedPeriod, showComparison }),
-    applySnapshot: (s) => {
+    applySnapshot: (s: any) => {
       setSelectedCategory(s.selectedCategory); setSelectedSupplier(s.selectedSupplier);
-      setSelectedPeriod(s.selectedPeriod); setShowComparison(s.showComparison);
     },
     performClear: async () => {
       setSelectedCategory('all'); setSelectedSupplier('all');
-      return acct.clearFilters();
     },
   });
-  const clearFilters = clearFlow.requestClear;
-
-  const filteredCategorySpend = useMemo(() => {
-    let data = categorySpend;
-    if (selectedCategory !== 'all') data = data.filter(c => c.name === selectedCategory);
-    if (selectedSupplier !== 'all') data = data.filter(c => c.supplier === selectedSupplier);
-    return data;
-  }, [selectedCategory, selectedSupplier]);
-
-  const filteredSuppliers = useMemo(() => {
-    let data = topSuppliers;
-    if (selectedSupplier !== 'all') data = data.filter(s => s.name === selectedSupplier);
-    if (selectedCategory !== 'all') data = data.filter(s => s.categories.includes(selectedCategory));
-    return data;
-  }, [selectedCategory, selectedSupplier]);
-
-  const filteredBuyers = useMemo(() => {
-    let data = buyerPerformance;
-    if (selectedCategory !== 'all') data = data.filter(b => b.categories.includes(selectedCategory));
-    if (selectedSupplier !== 'all') data = data.filter(b => b.suppliers.includes(selectedSupplier));
-    return data;
-  }, [selectedCategory, selectedSupplier]);
-
-  const filteredPendingItems = useMemo(() => {
-    let data = pendingItems;
-    if (selectedCategory !== 'all') data = data.filter(p => p.category === selectedCategory);
-    if (selectedSupplier !== 'all') data = data.filter(p => p.supplier === selectedSupplier);
-    return data;
-  }, [selectedCategory, selectedSupplier]);
-
-  const filteredMetrics = useMemo(() => {
-    const totalSpend = filteredCategorySpend.reduce((acc, c) => acc + c.value, 0);
-    const previousSpend = filteredCategorySpend.reduce((acc, c) => acc + c.previousValue, 0);
-    const totalOrders = filteredCategorySpend.reduce((acc, c) => acc + c.orders, 0);
-    const totalSavings = filteredSuppliers.reduce((acc, s) => acc + s.savings, 0);
-    return { totalSpend, previousSpend, totalOrders, totalSavings, spendChange: previousSpend > 0 ? ((totalSpend - previousSpend) / previousSpend) * 100 : 0 };
-  }, [filteredCategorySpend, filteredSuppliers]);
-
-  const getPeriodLabel = () => {
-    const m: Record<string, string> = { '1m': 'Último Mês', '3m': 'Últimos 3 Meses', '6m': 'Últimos 6 Meses', '1y': 'Último Ano' };
-    return m[selectedPeriod] || 'Período Atual';
-  };
-  const getPreviousPeriodLabel = () => {
-    const m: Record<string, string> = { '1m': 'Mês Anterior', '3m': '3 Meses Anteriores', '6m': '6 Meses Anteriores', '1y': 'Ano Anterior' };
-    return m[selectedPeriod] || 'Período Anterior';
-  };
 
   return (
-    <div className="space-y-6" data-tour="dashboard-content">
-      {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h2 className="text-2xl font-bold">Dashboard Executivo</h2>
-          <p className="text-muted-foreground">Visão consolidada de compras - Atualizado em tempo real</p>
-        </div>
-        <div className="flex items-center gap-4 flex-wrap">
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-card">
-            <GitCompare className="h-4 w-4 text-muted-foreground" />
-            <Label htmlFor="comparison-mode" className="text-sm cursor-pointer">Comparar Períodos</Label>
-            <Switch id="comparison-mode" checked={showComparison} onCheckedChange={setShowComparison} />
+    <ElitePageWrapper>
+      <div className="space-y-8 pb-10">
+        {/* Elite Header */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center text-primary shadow-inner">
+              <TrendingUp className="w-7 h-7" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">Executive Dashboard</h1>
+              <div className="flex items-center gap-2 mt-2">
+                 <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">Real-time Intelligence</Badge>
+                 <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">• Global Procurement Control</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-1">
-            {['1m', '3m', '6m', '1y'].map(p => (
-              <Button key={p} variant="outline" size="sm" onClick={() => setSelectedPeriod(p)}
-                className={selectedPeriod === p ? 'bg-primary text-primary-foreground' : ''}>
-                {p === '1y' ? '1A' : p.toUpperCase()}
-              </Button>
-            ))}
+
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border/40 bg-card/40 backdrop-blur-xl">
+              <GitCompare className="h-4 w-4 text-primary" />
+              <Label htmlFor="comparison-mode" className="text-[10px] font-black uppercase tracking-widest cursor-pointer">Comparing</Label>
+              <Switch id="comparison-mode" checked={showComparison} onCheckedChange={setShowComparison} />
+            </div>
+            <div className="bg-muted/30 p-1 rounded-xl flex">
+               {['1m', '3m', '6m', '1y'].map(p => (
+                 <Button 
+                   key={p} 
+                   variant={selectedPeriod === p ? 'secondary' : 'ghost'} 
+                   size="sm" 
+                   onClick={() => setSelectedPeriod(p)}
+                   className="rounded-lg px-3 font-bold text-[9px] uppercase tracking-widest h-8"
+                 >
+                   {p === '1y' ? '1A' : p.toUpperCase()}
+                 </Button>
+               ))}
+            </div>
+            <EliteButton variant="default" size="sm" onClick={() => {}} className="h-11 px-6">
+              <Download className="w-4 h-4 mr-2" /> EXPORT REPORT
+            </EliteButton>
           </div>
-          <Button variant="default" size="sm" onClick={handleExport} className="gap-2">
-            <Download className="h-4 w-4" />
-            Exportar
-          </Button>
         </div>
-      </div>
 
+        <ExecutiveFiltersBar
+          selectedCategory={selectedCategory}
+          selectedSupplier={selectedSupplier}
+          onCategoryChange={setSelectedCategory}
+          onSupplierChange={setSelectedSupplier}
+          hasActiveFilters={hasActiveFilters}
+          onClearFilters={clearFlow.requestClear}
+          favorites={favorites}
+          currentFilters={currentFilters}
+          onSave={saveFavorite}
+          onDelete={deleteFavorite}
+          onSetDefault={setAsDefault}
+          onApply={applyFilter}
+          favoritesLoading={favoritesLoading}
+        />
 
-      <ExecutiveFiltersBar
-        selectedCategory={selectedCategory}
-        selectedSupplier={selectedSupplier}
-        onCategoryChange={setSelectedCategory}
-        onSupplierChange={setSelectedSupplier}
-        hasActiveFilters={hasActiveFilters}
-        onClearFilters={clearFilters}
-        favorites={favorites}
-        currentFilters={currentFilters}
-        onSave={saveFavorite}
-        onDelete={deleteFavorite}
-        onSetDefault={setAsDefault}
-        onApply={applyFilter}
-        favoritesLoading={favoritesLoading}
-      />
-
-      {/* Period Comparison Summary */}
-      {showComparison && (
-        <Card className="border-primary/20 bg-primary/5">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-4 flex-wrap">
-              <GitCompare className="h-5 w-5 text-primary" />
-              <div className="flex-1">
-                <p className="font-medium text-primary">Modo Comparativo Ativo</p>
-                <p className="text-sm text-muted-foreground">
-                  Comparando <span className="font-medium">{getPeriodLabel()}</span> vs <span className="font-medium">{getPreviousPeriodLabel()}</span>
-                </p>
-              </div>
-              <div className="flex gap-4 text-sm">
-                <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-primary" /><span>Atual</span></div>
-                <div className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-muted-foreground/50" /><span>Anterior</span></div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Filtered Summary */}
-      {hasActiveFilters && (
-        <Card className="border-chart-2/30 bg-chart-2/5">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-3">
-                <Filter className="h-5 w-5 text-chart-2" />
-                <div>
-                  <p className="font-medium text-chart-2">Dados Filtrados</p>
-                  <p className="text-sm text-muted-foreground">
-                    Exibindo resultados para
-                    {selectedCategory !== 'all' && <span className="font-medium"> {selectedCategory}</span>}
-                    {selectedCategory !== 'all' && selectedSupplier !== 'all' && ' de'}
-                    {selectedSupplier !== 'all' && <span className="font-medium"> {selectedSupplier}</span>}
-                  </p>
-                </div>
-              </div>
-              <div className="flex gap-6">
-                <div className="text-center"><p className="text-xs text-muted-foreground">Spend Filtrado</p><p className="font-bold text-lg">{formatCurrency(filteredMetrics.totalSpend)}</p></div>
-                <div className="text-center"><p className="text-xs text-muted-foreground">Pedidos</p><p className="font-bold text-lg">{filteredMetrics.totalOrders}</p></div>
-                <div className="text-center"><p className="text-xs text-muted-foreground">Variação</p><p className={`font-bold text-lg ${filteredMetrics.spendChange >= 0 ? 'text-success' : 'text-destructive'}`}>{filteredMetrics.spendChange >= 0 ? '+' : ''}{filteredMetrics.spendChange.toFixed(1)}%</p></div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Critical Alerts */}
-      {(activeMetrics.pendingApprovals.urgent > 0 || activeMetrics.overdueOrders.critical > 0) && (
-        <Card className="border-destructive bg-destructive/5">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-4">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-              <div className="flex-1">
-                <p className="font-medium text-destructive">Atenção Requerida</p>
-                <p className="text-sm text-muted-foreground">{activeMetrics.pendingApprovals.urgent} aprovações urgentes e {activeMetrics.overdueOrders.critical} pedidos críticos</p>
-              </div>
-              <Button variant="destructive" size="sm" onClick={() => setDrillDown({ type: 'pending', data: filteredPendingItems })}>Ver Detalhes</Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* AI Insights Section */}
-      <ExecutiveAIInsights 
-        metrics={activeMetrics} 
-        spendByCategory={realSpendByCategory || []} 
-        topSuppliers={realTopSuppliers || []}
-        loading={realDataLoading}
-      />
-
-      {/* Primary KPIs */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-1"><PurchaseClimateWidget /></div>
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <ExecutiveMetricCard title="Spend Total" value={activeMetrics.totalSpend.value} previousValue={activeMetrics.totalSpend.previousValue} change={activeMetrics.totalSpend.change} target={activeMetrics.totalSpend.target} icon={DollarSign} format="currency" showComparison={showComparison} trendData={trendDataSets.spend} delay={0} />
-          <ExecutiveMetricCard title="Economia Realizada" value={activeMetrics.savings.value} previousValue={activeMetrics.savings.previousValue} change={activeMetrics.savings.change} target={activeMetrics.savings.target} icon={TrendingUp} format="currency" showComparison={showComparison} trendData={trendDataSets.savings} delay={1} />
-          <ExecutiveMetricCard title="Pedidos no Mês" value={activeMetrics.ordersThisMonth.value} previousValue={activeMetrics.ordersThisMonth.previousValue} change={activeMetrics.ordersThisMonth.change} target={activeMetrics.ordersThisMonth.target} icon={ShoppingCart} showComparison={showComparison} trendData={trendDataSets.orders} delay={2} />
-          <ExecutiveMetricCard title="Tempo Médio Ciclo" value={activeMetrics.avgCycleTime.value} previousValue={activeMetrics.avgCycleTime.previousValue} change={activeMetrics.avgCycleTime.change} target={activeMetrics.avgCycleTime.target} icon={Clock} format="days" showComparison={showComparison} invertChange trendData={trendDataSets.cycleTime} delay={3} />
-        </div>
-      </div>
-
-      {/* Charts and Analysis */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2">
-          <ExecutiveChartsRow 
-            showComparison={showComparison} 
-            filteredCategorySpend={filteredCategorySpend} 
-            onCategoryDrillDown={(data) => setDrillDown({ type: 'category', data })} 
-            selectedCategory={selectedCategory}
-            selectedSupplier={selectedSupplier}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <ExecutiveMetricCard
+            title="Total Spend"
+            value={activeMetrics.totalSpend.value}
+            previousValue={activeMetrics.totalSpend.previousValue}
+            change={activeMetrics.totalSpend.change}
+            target={activeMetrics.totalSpend.target}
+            icon={DollarSign}
+            format="currency"
+            showComparison={showComparison}
+            delay={0}
+          />
+          <ExecutiveMetricCard
+            title="Total Savings"
+            value={activeMetrics.savings.value}
+            previousValue={activeMetrics.savings.previousValue}
+            change={activeMetrics.savings.change}
+            target={activeMetrics.savings.target}
+            icon={TrendingUp}
+            format="currency"
+            subtitle={`${activeMetrics.savingsPercent.toFixed(1)}% optimization`}
+            showComparison={showComparison}
+            delay={1}
+          />
+          <ExecutiveMetricCard
+            title="Orders Volume"
+            value={activeMetrics.ordersThisMonth.value}
+            previousValue={activeMetrics.ordersThisMonth.previousValue}
+            change={activeMetrics.ordersThisMonth.change}
+            icon={ShoppingCart}
+            showComparison={showComparison}
+            delay={2}
+          />
+          <ExecutiveMetricCard
+            title="Contract Compliance"
+            value={activeMetrics.contractCompliance.value}
+            previousValue={activeMetrics.contractCompliance.previousValue}
+            change={activeMetrics.contractCompliance.change}
+            target={activeMetrics.contractCompliance.target}
+            icon={ShieldCheck}
+            format="percent"
+            showComparison={showComparison}
+            delay={3}
           />
         </div>
-        <div className="xl:col-span-1 grid grid-cols-1 gap-6">
-          <PriceVarianceAnalysis />
-          <KraljicMatrix />
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+           <div className="lg:col-span-2 space-y-8">
+              <ExecutiveAIInsights metrics={activeMetrics as any} />
+              <ExecutiveChartsRow showComparison={showComparison} categoryData={categorySpend} trendData={[]} />
+              <PriceVarianceAnalysis />
+           </div>
+           <div className="space-y-8">
+              <ExecutivePendingActions 
+                pendingApprovals={activeMetrics.pendingApprovals.value}
+                urgentApprovals={activeMetrics.pendingApprovals.urgent}
+                overdueOrders={activeMetrics.overdueOrders.value}
+                criticalOrders={activeMetrics.overdueOrders.critical}
+                onAction={(type) => setDrillDown({ type, data: pendingItems })}
+              />
+              <PurchaseClimateWidget />
+              <Card className="p-8 rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-8 opacity-5 rotate-12">
+                   <Brain className="w-24 h-24 text-primary" />
+                </div>
+                <div className="flex items-center gap-3 mb-6">
+                   <Sparkles className="w-5 h-5 text-primary" />
+                   <h3 className="font-black uppercase tracking-tight">Strategic Intelligence</h3>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed font-medium mb-6">
+                  Sua matriz de risco Kraljic foi atualizada com base nos dados de mercado deste mês. Recomendamos revisar os fornecedores críticos.
+                </p>
+                <EliteButton variant="outline" className="w-full rounded-2xl h-12 text-[10px] font-black uppercase tracking-[0.2em]">VER MATRIZ KRALJIC</EliteButton>
+              </Card>
+           </div>
+        </div>
+
+        <ExecutiveTablesRow topSuppliers={topSuppliers} buyerPerformance={buyerPerformance} />
+        
+        <div className="pt-8">
+           <KraljicMatrix />
         </div>
       </div>
 
-      {/* Secondary KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <ExecutiveMetricCard title="Aderência Contrato" value={activeMetrics.contractCompliance.value} change={activeMetrics.contractCompliance.change} target={activeMetrics.contractCompliance.target} icon={Target} format="percent" showComparison={showComparison} />
-        <ExecutiveMetricCard title="Maverick Spend" value={activeMetrics.maverickSpend?.value || 0} change={-2.4} subtitle={`${activeMetrics.maverickSpend?.percentage || 0}% do total`} icon={AlertTriangle} format="currency" showComparison={showComparison} invertChange />
-        <ExecutiveMetricCard title="Tail Spend" value={activeMetrics.tailSpend?.value || 0} change={1.5} subtitle={`${activeMetrics.tailSpend?.percentage || 0}% do total`} icon={Zap} format="currency" showComparison={showComparison} />
-        <ExecutiveMetricCard title="Saving %" value={activeMetrics.savingsPercent} change={activeMetrics.savingsPercent > 10 ? activeMetrics.savingsPercent - 10 : 0} target={15} icon={Zap} format="percent" showComparison={showComparison} trendData={trendDataSets.savings.map((s, i) => (trendDataSets.spend[i] > 0 ? (s / trendDataSets.spend[i]) * 100 : 0))} />
-        <ExecutiveMetricCard title="Base de Fornecedores" value={activeMetrics.supplierCount.value} previousValue={activeMetrics.supplierCount.previousValue} change={activeMetrics.supplierCount.change} target={activeMetrics.supplierCount.target} icon={Users} showComparison={showComparison} trendData={trendDataSets.suppliers} />
-      </div>
-
-      <ExecutiveTablesRow filteredSuppliers={filteredSuppliers} filteredBuyers={filteredBuyers} showComparison={showComparison} onSupplierDrillDown={(s) => setDrillDown({ type: 'supplier', data: s })} onBuyerDrillDown={(b) => setDrillDown({ type: 'buyer', data: b })} />
-      <ExecutivePendingActions items={filteredPendingItems} />
-      <ExecutiveDrillDownModal drillDown={drillDown} onClose={() => setDrillDown(null)} />
-      {clearFlow.ConfirmDialog}
-    </div>
+      {drillDown && (
+        <ExecutiveDrillDownModal
+          open={!!drillDown}
+          onOpenChange={(open) => !open && setDrillDown(null)}
+          title={drillDown.type === 'pending' ? 'Aprovações Pendentes' : 'Pedidos Atrasados'}
+          data={drillDown.data}
+        />
+      )}
+    </ElitePageWrapper>
   );
 };
