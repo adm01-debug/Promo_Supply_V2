@@ -53,6 +53,42 @@ const CatalogoProdutos = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Partial<Produto> | null>(null);
   const [formData, setFormData] = useState<Partial<Produto>>(emptyProduct);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const { handleFileChange: handleImageUpload } = useAutoImageCompression({
+    maxWidth: 800,
+    maxHeight: 800,
+    quality: 0.8
+  });
+
+  const onImageSelect = useCallback(async (files: File[]) => {
+    if (files.length === 0) return;
+    
+    setIsUploading(true);
+    const file = files[0];
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const filePath = `products/${fileName}`;
+
+    try {
+      const { error: uploadError } = await supabase.storage
+        .from('product-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('product-images')
+        .getPublicUrl(filePath);
+
+      setFormData(prev => ({ ...prev, imagem_url: publicUrl }));
+      toast.success("Imagem enviada com sucesso!");
+    } catch (error: any) {
+      toast.error("Erro ao enviar imagem: " + error.message);
+    } finally {
+      setIsUploading(false);
+    }
+  }, []);
 
   const filtered = useMemo(() => {
     return produtos.filter((p) => {
