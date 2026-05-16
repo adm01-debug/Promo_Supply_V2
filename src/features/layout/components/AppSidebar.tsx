@@ -268,7 +268,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
     >
       {/* ── Header ── */}
       <div className="flex h-16 shrink-0 items-center gap-3 border-b border-border/10 px-4">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary via-primary-glow to-primary shadow-lg shadow-primary/20 transition-transform hover:scale-105 active:scale-95">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-500/20 transition-transform hover:scale-105 active:scale-95">
           <Package className="h-5 w-5 text-primary-foreground" />
         </div>
         <AnimatePresence>
