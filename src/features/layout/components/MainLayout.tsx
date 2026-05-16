@@ -23,8 +23,9 @@ import { HeaderActions } from "./HeaderActions";
 import { SupplierChat } from "./SupplierChat";
 import { GuidedBuyingAssistant } from "./GuidedBuyingAssistant";
 import { cn } from "@/lib/utils";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 
