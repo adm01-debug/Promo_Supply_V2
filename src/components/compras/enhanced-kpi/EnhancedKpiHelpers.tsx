@@ -4,23 +4,24 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect, useMemo, forwardRef } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-export type KpiColor = 'emerald' | 'orange' | 'blue' | 'purple' | 'green' | 'cyan' | 'red' | 'indigo' | 'teal';
+export type KpiColor = 'emerald' | 'orange' | 'blue' | 'purple' | 'green' | 'cyan' | 'red' | 'indigo' | 'teal' | 'violet' | 'fuchsia';
 
-export const colorClasses: Record<KpiColor, { 
+export const colorClasses: Record<string, { 
   bg: string; text: string; border: string; gradient: string;
 }> = {
-  emerald: { bg: 'bg-[hsl(var(--kpi-emerald-bg))]', text: 'text-[hsl(var(--kpi-emerald))]', border: 'border-[hsl(var(--kpi-emerald)/0.2)]', gradient: 'from-[hsl(var(--kpi-emerald))] to-[hsl(var(--kpi-emerald)/0.7)]' },
-  orange: { bg: 'bg-[hsl(var(--kpi-orange-bg))]', text: 'text-[hsl(var(--kpi-orange))]', border: 'border-[hsl(var(--kpi-orange)/0.2)]', gradient: 'from-[hsl(var(--kpi-orange))] to-[hsl(var(--kpi-orange)/0.7)]' },
-  blue: { bg: 'bg-[hsl(var(--kpi-blue-bg))]', text: 'text-[hsl(var(--kpi-blue))]', border: 'border-[hsl(var(--kpi-blue)/0.2)]', gradient: 'from-[hsl(var(--kpi-blue))] to-[hsl(var(--kpi-blue)/0.7)]' },
-  purple: { bg: 'bg-[hsl(var(--kpi-purple-bg))]', text: 'text-[hsl(var(--kpi-purple))]', border: 'border-[hsl(var(--kpi-purple)/0.2)]', gradient: 'from-[hsl(var(--kpi-purple))] to-[hsl(var(--kpi-purple)/0.7)]' },
-  green: { bg: 'bg-[hsl(var(--kpi-green-bg))]', text: 'text-[hsl(var(--kpi-green))]', border: 'border-[hsl(var(--kpi-green)/0.2)]', gradient: 'from-[hsl(var(--kpi-green))] to-[hsl(var(--kpi-green)/0.7)]' },
-  cyan: { bg: 'bg-[hsl(var(--kpi-cyan-bg))]', text: 'text-[hsl(var(--kpi-cyan))]', border: 'border-[hsl(var(--kpi-cyan)/0.2)]', gradient: 'from-[hsl(var(--kpi-cyan))] to-[hsl(var(--kpi-cyan)/0.7)]' },
-  red: { bg: 'bg-[hsl(var(--kpi-red-bg))]', text: 'text-[hsl(var(--kpi-red))]', border: 'border-[hsl(var(--kpi-red)/0.2)]', gradient: 'from-[hsl(var(--kpi-red))] to-[hsl(var(--kpi-red)/0.7)]' },
-  indigo: { bg: 'bg-[hsl(var(--kpi-indigo-bg))]', text: 'text-[hsl(var(--kpi-indigo))]', border: 'border-[hsl(var(--kpi-indigo)/0.2)]', gradient: 'from-[hsl(var(--kpi-indigo))] to-[hsl(var(--kpi-indigo)/0.7)]' },
-  teal: { bg: 'bg-[hsl(var(--kpi-teal-bg))]', text: 'text-[hsl(var(--kpi-teal))]', border: 'border-[hsl(var(--kpi-teal)/0.2)]', gradient: 'from-[hsl(var(--kpi-teal))] to-[hsl(var(--kpi-teal)/0.7)]' },
+  emerald: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20', gradient: 'from-emerald-600 to-emerald-400' },
+  orange: { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/20', gradient: 'from-orange-600 to-orange-400' },
+  blue: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/20', gradient: 'from-blue-600 to-blue-400' },
+  purple: { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/20', gradient: 'from-purple-600 to-purple-400' },
+  violet: { bg: 'bg-violet-500/10', text: 'text-violet-400', border: 'border-violet-500/20', gradient: 'from-violet-600 to-violet-400' },
+  fuchsia: { bg: 'bg-fuchsia-500/10', text: 'text-fuchsia-400', border: 'border-fuchsia-500/20', gradient: 'from-fuchsia-600 to-fuchsia-400' },
+  green: { bg: 'bg-green-500/10', text: 'text-green-400', border: 'border-green-500/20', gradient: 'from-green-600 to-green-400' },
+  cyan: { bg: 'bg-cyan-500/10', text: 'text-cyan-400', border: 'border-cyan-500/20', gradient: 'from-cyan-600 to-cyan-400' },
+  red: { bg: 'bg-rose-500/10', text: 'text-rose-400', border: 'border-rose-500/20', gradient: 'from-rose-600 to-rose-400' },
+  indigo: { bg: 'bg-indigo-500/10', text: 'text-indigo-400', border: 'border-indigo-500/20', gradient: 'from-indigo-600 to-indigo-400' },
+  teal: { bg: 'bg-teal-500/10', text: 'text-teal-400', border: 'border-teal-500/20', gradient: 'from-teal-600 to-teal-400' },
 };
 
-// Animated counter component
 export const AnimatedCounter = forwardRef<HTMLSpanElement, { value: number; format?: 'number' | 'currency' | 'percent' }>(({ value, format = 'number' }, ref) => {
   const [displayValue, setDisplayValue] = useState(0);
 
@@ -35,13 +36,11 @@ export const AnimatedCounter = forwardRef<HTMLSpanElement, { value: number; form
       const progress = currentStep / steps;
       const easeOut = 1 - Math.pow(1 - progress, 3);
       setDisplayValue(Math.round(value * easeOut));
-
       if (currentStep >= steps) {
         clearInterval(timer);
         setDisplayValue(value);
       }
     }, stepDuration);
-
     return () => clearInterval(timer);
   }, [value]);
 
@@ -52,12 +51,10 @@ export const AnimatedCounter = forwardRef<HTMLSpanElement, { value: number; form
       default: return val.toLocaleString('pt-BR');
     }
   };
-
   return <span ref={ref}>{formatValue(displayValue)}</span>;
 });
 AnimatedCounter.displayName = 'AnimatedCounter';
 
-// Delta indicator component
 export const DeltaIndicator = forwardRef<HTMLDivElement, {
   currentValue: number;
   previousValue: number;
@@ -68,14 +65,14 @@ export const DeltaIndicator = forwardRef<HTMLDivElement, {
   const isNeutral = Math.abs(delta) < 0.5;
 
   const colorClass = useMemo(() => {
-    if (isNeutral) return 'bg-muted text-muted-foreground';
-    if (invertColors) return isPositive ? 'bg-destructive/15 text-destructive' : 'bg-success/15 text-success';
-    return isPositive ? 'bg-success/15 text-success' : 'bg-destructive/15 text-destructive';
+    if (isNeutral) return 'bg-white/10 text-zinc-400';
+    if (invertColors) return isPositive ? 'bg-rose-500/20 text-rose-400' : 'bg-emerald-500/20 text-emerald-400';
+    return isPositive ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400';
   }, [isPositive, isNeutral, invertColors]);
 
   return (
     <motion.div ref={ref} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-      className={cn("inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full", colorClass)}>
+      className={cn("inline-flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-lg uppercase tracking-tight", colorClass)}>
       <AnimatePresence mode="wait">
         {isPositive && !isNeutral && <motion.div key="up" initial={{ rotate: 45 }} animate={{ rotate: 0 }}><TrendingUp className="w-3 h-3" /></motion.div>}
         {!isPositive && !isNeutral && <motion.div key="down" initial={{ rotate: -45 }} animate={{ rotate: 0 }}><TrendingDown className="w-3 h-3" /></motion.div>}
@@ -87,31 +84,28 @@ export const DeltaIndicator = forwardRef<HTMLDivElement, {
 });
 DeltaIndicator.displayName = 'DeltaIndicator';
 
-// Target progress ring
-export const TargetProgressRing = ({ progress, size = 44, strokeWidth = 4, color }: { 
-  progress: number; size?: number; strokeWidth?: number; color: KpiColor;
-}) => {
+export const TargetProgressRing = ({ progress, size = 44, strokeWidth = 4, color }: any) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
-  const colors = colorClasses[color];
+  const colors = colorClasses[color] || colorClasses['violet'];
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <div className="relative cursor-help" style={{ width: size, height: size }}>
           <svg className="transform -rotate-90" width={size} height={size}>
-            <circle className="text-muted/30" strokeWidth={strokeWidth} stroke="currentColor" fill="transparent" r={radius} cx={size / 2} cy={size / 2} />
+            <circle className="text-white/5" strokeWidth={strokeWidth} stroke="currentColor" fill="transparent" r={radius} cx={size / 2} cy={size / 2} />
             <motion.circle className={colors.text} strokeWidth={strokeWidth} strokeLinecap="round" stroke="currentColor" fill="transparent" r={radius} cx={size / 2} cy={size / 2}
               initial={{ strokeDashoffset: circumference }}
               animate={{ strokeDashoffset: circumference - (Math.min(progress, 100) / 100) * circumference }}
-              transition={{ duration: 1, ease: "easeOut" }}
+              transition={{ duration: 1.5, ease: "circOut" }}
               style={{ strokeDasharray: circumference }}
             />
           </svg>
-          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-foreground">{Math.round(progress)}%</span>
+          <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white">{Math.round(progress)}%</span>
         </div>
       </TooltipTrigger>
-      <TooltipContent><p>{progress >= 100 ? '✅ Meta atingida!' : `${Math.round(progress)}% da meta`}</p></TooltipContent>
+      <TooltipContent className="bg-[#05020a] border-white/10 text-zinc-300"><p className="text-[10px] font-black uppercase tracking-widest">{progress >= 100 ? 'Target Achieved' : `${Math.round(progress)}% of Target`}</p></TooltipContent>
     </Tooltip>
   );
 };

@@ -6,7 +6,8 @@ import {
   Building2,
   User,
   Tag,
-  RotateCcw
+  RotateCcw,
+  Sparkles
 } from "lucide-react";
 import {
   Sheet,
@@ -55,30 +56,9 @@ const initialFilters: AdvancedFilters = {
   status: [],
 };
 
-const empresasOptions = [
-  'Promo Supply',
-  'Gift Solutions',
-  'Marketing Promo',
-  'Brindes Express',
-  'Corporate Gifts',
-];
-
-const vendedoresOptions = [
-  'João Silva',
-  'Maria Santos',
-  'Carlos Oliveira',
-  'Ana Costa',
-  'Pedro Lima',
-];
-
-const fornecedoresOptions = [
-  'ABC Ltda',
-  'Distribuidora XYZ',
-  'Importadora 123',
-  'Fábrica Premium',
-  'Atacado Brasil',
-];
-
+const empresasOptions = ['Promo Supply', 'Gift Solutions', 'Marketing Promo', 'Brindes Express', 'Corporate Gifts'];
+const vendedoresOptions = ['João Silva', 'Maria Santos', 'Carlos Oliveira', 'Ana Costa', 'Pedro Lima'];
+const fornecedoresOptions = ['ABC Ltda', 'Distribuidora XYZ', 'Importadora 123', 'Fábrica Premium', 'Atacado Brasil'];
 const tiposOptions = [
   { value: 'PE_LISO', label: 'P.E. Liso' },
   { value: 'FAB_LISO', label: 'Fab. Liso' },
@@ -86,10 +66,10 @@ const tiposOptions = [
 ];
 
 const prioridadesOptions = [
-  { value: 'baixa', label: 'Baixa', color: 'bg-muted/500' },
-  { value: 'normal', label: 'Normal', color: 'bg-info' },
-  { value: 'alta', label: 'Alta', color: 'bg-warning' },
-  { value: 'urgente', label: 'Urgente', color: 'bg-destructive' },
+  { value: 'baixa', label: 'Baixa', color: 'bg-zinc-600' },
+  { value: 'normal', label: 'Normal', color: 'bg-indigo-500' },
+  { value: 'alta', label: 'Alta', color: 'bg-amber-500' },
+  { value: 'urgente', label: 'Urgente', color: 'bg-rose-500' },
 ];
 
 const statusOptions = [
@@ -111,18 +91,13 @@ export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosA
   const [open, setOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState<AdvancedFilters>(filters);
 
-  const updateFilter = <K extends keyof AdvancedFilters>(
-    key: K, 
-    value: AdvancedFilters[K]
-  ) => {
+  const updateFilter = <K extends keyof AdvancedFilters>(key: K, value: AdvancedFilters[K]) => {
     setLocalFilters(prev => ({ ...prev, [key]: value }));
   };
 
   const toggleArrayValue = (key: keyof AdvancedFilters, value: string) => {
     const current = localFilters[key] as string[];
-    const newValue = current.includes(value)
-      ? current.filter(v => v !== value)
-      : [...current, value];
+    const newValue = current.includes(value) ? current.filter(v => v !== value) : [...current, value];
     updateFilter(key, newValue as AdvancedFilters[typeof key]);
   };
 
@@ -149,12 +124,15 @@ export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosA
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="relative">
-          <Filter className="w-4 h-4" />
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="h-12 w-12 rounded-xl bg-white/[0.03] border-white/5 hover:border-violet-500/40 relative shadow-lg"
+        >
+          <Filter className="w-5 h-5 text-violet-400" />
           {activeFiltersCount > 0 && (
             <Badge 
-              variant="destructive" 
-              className="absolute -top-1 -right-1 h-4 w-4 p-0 text-[10px] flex items-center justify-center"
+              className="absolute -top-2 -right-2 h-5 w-5 p-0 text-[10px] flex items-center justify-center bg-violet-500 border-none rounded-full"
             >
               {activeFiltersCount}
             </Badge>
@@ -162,69 +140,65 @@ export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosA
         </Button>
       </SheetTrigger>
       
-      <SheetContent className="w-[400px] sm:w-[540px]">
-        <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-primary" />
-            Filtros Avançados
+      <SheetContent className="w-[400px] sm:w-[540px] bg-[#0a0a0f]/95 border-white/10 backdrop-blur-3xl">
+        <SheetHeader className="pb-6 border-b border-white/5">
+          <SheetTitle className="flex items-center gap-3 text-white font-black uppercase tracking-tight">
+            <div className="p-2 rounded-lg bg-violet-500/10 text-violet-400">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            Advanced Filtering
           </SheetTitle>
         </SheetHeader>
 
         <div className="py-6 space-y-4 overflow-y-auto max-h-[calc(100vh-200px)]">
-          <Accordion type="multiple" defaultValue={['periodo', 'valor']} className="w-full">
-            {/* Date Range */}
-            <AccordionItem value="periodo">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-primary" />
-                  <span>Período</span>
+          <Accordion type="multiple" defaultValue={['periodo', 'valor']} className="w-full space-y-4">
+            <AccordionItem value="periodo" className="border-white/5">
+              <AccordionTrigger className="hover:no-underline py-4 hover:bg-white/[0.02] px-4 rounded-xl">
+                <div className="flex items-center gap-3 text-white font-black uppercase tracking-widest text-xs">
+                  <Calendar className="w-4 h-4 text-violet-400" />
+                  Timeframe
                   {(localFilters.dateRange.from || localFilters.dateRange.to) && (
-                    <Badge variant="secondary" className="ml-2 text-xs">Ativo</Badge>
+                    <Badge className="bg-violet-500/10 text-violet-400 border-none rounded-full px-2 text-[9px] uppercase tracking-widest">Active</Badge>
                   )}
                 </div>
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="px-4">
                 <div className="grid grid-cols-2 gap-4 pt-2">
                   <div className="space-y-2">
-                    <Label className="text-xs">Data Inicial</Label>
+                    <Label className="text-[9px] font-black uppercase text-zinc-600">Start Date</Label>
                     <Input
                       type="date"
                       value={localFilters.dateRange.from}
-                      onChange={(e) => updateFilter('dateRange', {
-                        ...localFilters.dateRange,
-                        from: e.target.value
-                      })}
+                      onChange={(e) => updateFilter('dateRange', { ...localFilters.dateRange, from: e.target.value })}
+                      className="bg-white/5 border-white/10 rounded-xl h-10 text-zinc-300"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs">Data Final</Label>
+                    <Label className="text-[9px] font-black uppercase text-zinc-600">End Date</Label>
                     <Input
                       type="date"
                       value={localFilters.dateRange.to}
-                      onChange={(e) => updateFilter('dateRange', {
-                        ...localFilters.dateRange,
-                        to: e.target.value
-                      })}
+                      onChange={(e) => updateFilter('dateRange', { ...localFilters.dateRange, to: e.target.value })}
+                      className="bg-white/5 border-white/10 rounded-xl h-10 text-zinc-300"
                     />
                   </div>
                 </div>
               </AccordionContent>
             </AccordionItem>
 
-            {/* Value Range */}
-            <AccordionItem value="valor">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-primary" />
-                  <span>Faixa de Valor</span>
+            <AccordionItem value="valor" className="border-white/5">
+              <AccordionTrigger className="hover:no-underline py-4 hover:bg-white/[0.02] px-4 rounded-xl">
+                <div className="flex items-center gap-3 text-white font-black uppercase tracking-widest text-xs">
+                  <DollarSign className="w-4 h-4 text-violet-400" />
+                  Value Range
                   {(localFilters.valorMin > 0 || localFilters.valorMax < 100000) && (
-                    <Badge variant="secondary" className="ml-2 text-xs">Ativo</Badge>
+                    <Badge className="bg-violet-500/10 text-violet-400 border-none rounded-full px-2 text-[9px] uppercase tracking-widest">Active</Badge>
                   )}
                 </div>
               </AccordionTrigger>
-              <AccordionContent>
-                <div className="pt-2 space-y-4">
-                  <div className="flex justify-between text-sm">
+              <AccordionContent className="px-4">
+                <div className="pt-2 space-y-6">
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-zinc-500">
                     <span>R$ {localFilters.valorMin.toLocaleString('pt-BR')}</span>
                     <span>R$ {localFilters.valorMax.toLocaleString('pt-BR')}</span>
                   </div>
@@ -237,174 +211,54 @@ export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosA
                       updateFilter('valorMin', min);
                       updateFilter('valorMax', max);
                     }}
+                    className="py-4"
                   />
                 </div>
               </AccordionContent>
             </AccordionItem>
 
-            {/* Empresas */}
-            <AccordionItem value="empresas">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-primary" />
-                  <span>Empresas</span>
-                  {localFilters.empresas.length > 0 && (
-                    <Badge variant="secondary" className="ml-2 text-xs">
-                      {localFilters.empresas.length}
-                    </Badge>
-                  )}
+            <AccordionItem value="empresas" className="border-white/5">
+              <AccordionTrigger className="hover:no-underline py-4 hover:bg-white/[0.02] px-4 rounded-xl">
+                <div className="flex items-center gap-3 text-white font-black uppercase tracking-widest text-xs">
+                  <Building2 className="w-4 h-4 text-violet-400" />
+                  Entities
                 </div>
               </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="px-4">
                 <div className="pt-2 space-y-2">
                   {empresasOptions.map(empresa => (
-                    <div key={empresa} className="flex items-center gap-2">
+                    <div key={empresa} className="flex items-center gap-3">
                       <Checkbox
                         id={`empresa-${empresa}`}
                         checked={localFilters.empresas.includes(empresa)}
                         onCheckedChange={() => toggleArrayValue('empresas', empresa)}
                       />
-                      <Label 
-                        htmlFor={`empresa-${empresa}`} 
-                        className="text-sm cursor-pointer"
-                      >
-                        {empresa}
-                      </Label>
+                      <Label htmlFor={`empresa-${empresa}`} className="text-xs font-medium text-zinc-300 cursor-pointer">{empresa}</Label>
                     </div>
                   ))}
                 </div>
               </AccordionContent>
             </AccordionItem>
 
-            {/* Vendedores */}
-            <AccordionItem value="vendedores">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4 text-primary" />
-                  <span>Vendedores</span>
-                  {localFilters.vendedores.length > 0 && (
-                    <Badge variant="secondary" className="ml-2 text-xs">
-                      {localFilters.vendedores.length}
-                    </Badge>
-                  )}
+            <AccordionItem value="prioridades" className="border-white/5">
+              <AccordionTrigger className="hover:no-underline py-4 hover:bg-white/[0.02] px-4 rounded-xl">
+                <div className="flex items-center gap-3 text-white font-black uppercase tracking-widest text-xs">
+                  <Tag className="w-4 h-4 text-violet-400" />
+                  Priorities
                 </div>
               </AccordionTrigger>
-              <AccordionContent>
-                <div className="pt-2 space-y-2">
-                  {vendedoresOptions.map(vendedor => (
-                    <div key={vendedor} className="flex items-center gap-2">
-                      <Checkbox
-                        id={`vendedor-${vendedor}`}
-                        checked={localFilters.vendedores.includes(vendedor)}
-                        onCheckedChange={() => toggleArrayValue('vendedores', vendedor)}
-                      />
-                      <Label 
-                        htmlFor={`vendedor-${vendedor}`} 
-                        className="text-sm cursor-pointer"
-                      >
-                        {vendedor}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-
-            {/* Tipos */}
-            <AccordionItem value="tipos">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <Tag className="w-4 h-4 text-primary" />
-                  <span>Tipos</span>
-                  {localFilters.tipos.length > 0 && (
-                    <Badge variant="secondary" className="ml-2 text-xs">
-                      {localFilters.tipos.length}
-                    </Badge>
-                  )}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="pt-2 space-y-2">
-                  {tiposOptions.map(tipo => (
-                    <div key={tipo.value} className="flex items-center gap-2">
-                      <Checkbox
-                        id={`tipo-${tipo.value}`}
-                        checked={localFilters.tipos.includes(tipo.value)}
-                        onCheckedChange={() => toggleArrayValue('tipos', tipo.value)}
-                      />
-                      <Label 
-                        htmlFor={`tipo-${tipo.value}`} 
-                        className="text-sm cursor-pointer"
-                      >
-                        {tipo.label}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-
-            {/* Prioridades */}
-            <AccordionItem value="prioridades">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <Tag className="w-4 h-4 text-primary" />
-                  <span>Prioridades</span>
-                  {localFilters.prioridades.length > 0 && (
-                    <Badge variant="secondary" className="ml-2 text-xs">
-                      {localFilters.prioridades.length}
-                    </Badge>
-                  )}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
+              <AccordionContent className="px-4">
                 <div className="pt-2 space-y-2">
                   {prioridadesOptions.map(prioridade => (
-                    <div key={prioridade.value} className="flex items-center gap-2">
+                    <div key={prioridade.value} className="flex items-center gap-3">
                       <Checkbox
                         id={`prioridade-${prioridade.value}`}
                         checked={localFilters.prioridades.includes(prioridade.value)}
                         onCheckedChange={() => toggleArrayValue('prioridades', prioridade.value)}
                       />
-                      <Label 
-                        htmlFor={`prioridade-${prioridade.value}`} 
-                        className="text-sm cursor-pointer flex items-center gap-2"
-                      >
+                      <Label htmlFor={`prioridade-${prioridade.value}`} className="text-xs font-medium text-zinc-300 cursor-pointer flex items-center gap-2">
                         <span className={cn("w-2 h-2 rounded-full", prioridade.color)} />
                         {prioridade.label}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            {/* Status */}
-            <AccordionItem value="status">
-              <AccordionTrigger className="hover:no-underline">
-                <div className="flex items-center gap-2">
-                  <Tag className="w-4 h-4 text-primary" />
-                  <span>Status</span>
-                  {localFilters.status.length > 0 && (
-                    <Badge variant="secondary" className="ml-2 text-xs">
-                      {localFilters.status.length}
-                    </Badge>
-                  )}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="pt-2 space-y-2">
-                  {statusOptions.map(status => (
-                    <div key={status.value} className="flex items-center gap-2">
-                      <Checkbox
-                        id={`status-${status.value}`}
-                        checked={localFilters.status.includes(status.value)}
-                        onCheckedChange={() => toggleArrayValue('status', status.value)}
-                      />
-                      <Label 
-                        htmlFor={`status-${status.value}`} 
-                        className="text-sm cursor-pointer"
-                      >
-                        {status.label}
                       </Label>
                     </div>
                   ))}
@@ -414,13 +268,13 @@ export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosA
           </Accordion>
         </div>
 
-        <SheetFooter className="border-t pt-4">
-          <Button variant="outline" onClick={handleReset} className="gap-2">
-            <RotateCcw className="w-4 h-4" />
-            Limpar
+        <SheetFooter className="border-t border-white/5 pt-6 gap-3">
+          <Button variant="ghost" onClick={handleReset} className="h-12 rounded-xl font-black uppercase tracking-widest text-[10px] text-zinc-500 hover:text-white hover:bg-white/5">
+            <RotateCcw className="w-4 h-4 mr-2" />
+            Reset
           </Button>
-          <Button onClick={handleApply}>
-            Aplicar Filtros
+          <Button onClick={handleApply} className="h-12 rounded-xl font-black uppercase tracking-widest text-[10px] bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none shadow-lg shadow-violet-500/20 px-8">
+            Apply Filters
           </Button>
         </SheetFooter>
       </SheetContent>

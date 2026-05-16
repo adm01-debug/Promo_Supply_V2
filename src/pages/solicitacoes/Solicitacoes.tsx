@@ -1,34 +1,32 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useAccountFilters } from "@/hooks/useAccountFilters";
 import { useClearFiltersFlow } from "@/hooks/useClearFiltersFlow";
-import { exportToCSV, solicitacaoColumns } from "@/lib/exportData";
 import { 
   ClipboardList,
   LayoutGrid,
   List,
   Plus,
-  Search,
   Filter,
-  ArrowRight
+  BarChart3,
+  TrendingUp,
+  Package,
+  TrendingDown
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
 import { SolicitacaoKanban } from "@/components/compras/SolicitacaoKanban";
 import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
 import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
-import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
-import { PageHeader, PageHeaderStats } from "@/components/ui/page-header";
+import { PageHeaderStats } from "@/components/ui/page-header";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { EnhancedSearch } from "@/components/ui/enhanced-search";
 import { KanbanSkeleton } from "@/components/ui/contextual-skeletons";
-import { useSolicitacoes, type Solicitacao } from "@/features/solicitacoes";
-import { useBulkOperations } from "@/hooks/useBulkOperations";
-import { BulkItem, BulkAction } from "@/components/compras/BulkOperationsPreview";
-import { toast } from "sonner";
+import { useSolicitacoes } from "@/features/solicitacoes";
 import {
   Select,
   SelectContent,
@@ -36,13 +34,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
 import { mapLegacyStatusToDb, adaptToLegacyFormat } from "./solicitacoesHelpers";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
 import { motion, AnimatePresence } from "framer-motion";
+import { ExecutiveMetricCard } from "@/components/compras/executive/ExecutiveMetricCard";
 
 const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,7 +48,6 @@ const Solicitacoes = () => {
   const [tipoFilter, setTipoFilter] = useState("todos");
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(initialFilters);
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('kanban');
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const accountDefaults = useMemo(() => ({
     searchTerm: "", statusFilter: "todas", tipoFilter: "todos",
@@ -73,7 +70,7 @@ const Solicitacoes = () => {
     acct.patchFilters({ searchTerm, statusFilter, tipoFilter, advancedFilters });
   }, [searchTerm, statusFilter, tipoFilter, advancedFilters, acct]);
 
-  const { solicitacoes, loading, updateStatus, bulkDelete, bulkUpdateStatus, refetch, duplicateSolicitacao } = useSolicitacoes({
+  const { solicitacoes, loading, updateStatus, refetch } = useSolicitacoes({
     search: searchTerm || undefined,
     status: statusFilter !== 'todas' ? mapLegacyStatusToDb(statusFilter) : undefined,
   });
@@ -112,11 +109,11 @@ const Solicitacoes = () => {
     const pending = filteredSolicitacoes.filter(s => ['AGUARDANDO_COTACAO', 'EM_COTACAO'].includes(s.status)).length;
     const totalValue = filteredSolicitacoes.reduce((acc, s) => acc + (s.valorTotal || 0), 0);
 
-    return [
-      { label: 'Total', value: filteredSolicitacoes.length },
-      { label: 'Pendentes', value: pending, trend: pending > 0 ? { value: 8, direction: 'up' as const } : undefined },
-      { label: 'Valor Estimado', value: `R$ ${totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 0 })}` },
-    ];
+    return {
+      total: filteredSolicitacoes.length,
+      pending: pending,
+      value: totalValue
+    };
   }, [filteredSolicitacoes]);
 
   const handleStatusChange = useCallback(async (id: string, newLegacyStatus: string) => {
@@ -127,7 +124,6 @@ const Solicitacoes = () => {
   if (loading) {
     return (
       <div className="space-y-6">
-        <PageHeader title="Solicitações" description="Carregando..." icon={ClipboardList} />
         <KanbanSkeleton columns={6} />
       </div>
     );
@@ -136,61 +132,101 @@ const Solicitacoes = () => {
   return (
     <ModuleErrorBoundary module="solicitacoes">
       <ElitePageWrapper>
-        <div className="space-y-8 pb-10">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-indigo-500/10 rounded-2xl flex items-center justify-center text-indigo-600 shadow-inner">
-                <ClipboardList className="w-7 h-7" />
+        <div className="space-y-10 pb-20">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+            <div className="flex items-center gap-5">
+              <div className="w-16 h-16 bg-violet-500/10 rounded-[2rem] flex items-center justify-center text-violet-400 shadow-inner">
+                <ClipboardList className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">Solicitações</h1>
-                <div className="flex items-center gap-2 mt-2">
-                   <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">{filteredSolicitacoes.length} Registros</Badge>
-                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">• Procurement Cycle</span>
+                <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Purchasing Flow</h1>
+                <div className="flex items-center gap-3 mt-3">
+                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-violet-500/30 text-violet-300 px-3 py-1">{filteredSolicitacoes.length} Active Records</Badge>
+                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Total Procurement Cycle</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
-              <EliteButton 
-                variant="outline" 
-                size="sm" 
-                onClick={() => setViewMode(prev => prev === 'kanban' ? 'list' : 'kanban')}
-                className="gap-2 h-11 px-4"
-              >
-                {viewMode === 'kanban' ? <List className="w-4 h-4" /> : <LayoutGrid className="w-4 h-4" />}
-                {viewMode === 'kanban' ? 'VER LISTA' : 'VER KANBAN'}
-              </EliteButton>
+            <div className="flex items-center gap-4">
+              <div className="bg-white/[0.03] p-1 rounded-2xl border border-white/5 flex">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setViewMode('kanban')}
+                  className={cn(
+                    "rounded-xl px-5 font-black text-[10px] uppercase tracking-widest h-11 gap-2",
+                    viewMode === 'kanban' ? "bg-violet-500 text-white" : "text-zinc-400 hover:text-white"
+                  )}
+                >
+                  <LayoutGrid className="w-4 h-4" /> KANBAN
+                </Button>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setViewMode('list')}
+                  className={cn(
+                    "rounded-xl px-5 font-black text-[10px] uppercase tracking-widest h-11 gap-2",
+                    viewMode === 'list' ? "bg-violet-500 text-white" : "text-zinc-400 hover:text-white"
+                  )}
+                >
+                  <List className="w-4 h-4" /> LIST
+                </Button>
+              </div>
               <NovaSolicitacaoModal onSuccess={refetch} />
             </div>
           </div>
 
-          <PageHeaderStats stats={stats} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <ExecutiveMetricCard
+              title="Total Requests"
+              value={stats.total}
+              icon={Package}
+              delay={0}
+            />
+            <ExecutiveMetricCard
+              title="Pending Quotation"
+              value={stats.pending}
+              icon={BarChart3}
+              delay={1}
+              urgent={stats.pending > 5 ? stats.pending : 0}
+            />
+            <ExecutiveMetricCard
+              title="Estimated Volume"
+              value={stats.value}
+              icon={TrendingUp}
+              format="currency"
+              delay={2}
+            />
+          </div>
 
           <motion.div 
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-card/40 p-6 rounded-[2rem] border border-border/40 backdrop-blur-xl"
+            className="bg-white/[0.02] p-8 rounded-[2.5rem] border border-white/5 backdrop-blur-2xl shadow-2xl"
           >
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="md:col-span-2">
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Global Smart Search</Label>
                 <EnhancedSearch
-                  placeholder="Busca inteligente..."
+                  placeholder="ID, item or company name..."
                   onSearch={(q) => setSearchTerm(q)}
-                  className="bg-background/40 border-border/50 h-12 rounded-xl"
+                  className="bg-white/[0.03] border-white/10 h-12 rounded-xl text-white font-bold"
                 />
               </div>
-              <div className="flex flex-col gap-2">
+              <div>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Status Filter</Label>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="bg-background/40 h-12 border-border/50 rounded-xl">
-                    <Filter className="w-4 h-4 mr-2 text-primary" />
-                    <SelectValue placeholder="Status" />
+                  <SelectTrigger className="bg-white/[0.03] h-12 border-white/10 rounded-xl text-zinc-200 font-bold">
+                    <div className="flex items-center gap-2">
+                      <Filter className="w-4 h-4 text-violet-400" />
+                      <SelectValue placeholder="All Status" />
+                    </div>
                   </SelectTrigger>
-                  <SelectContent className="rounded-xl">
-                    <SelectItem value="todas">Todos os Status</SelectItem>
-                    <SelectItem value="AGUARDANDO_COTACAO">Pendente</SelectItem>
-                    <SelectItem value="EM_COTACAO">Em Cotação</SelectItem>
-                    <SelectItem value="FORNECEDOR_SELECIONADO">Aprovada</SelectItem>
+                  <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl rounded-2xl">
+                    <SelectItem value="todas" className="text-xs font-bold py-2.5">All Requests</SelectItem>
+                    <SelectItem value="AGUARDANDO_COTACAO" className="text-xs font-bold py-2.5">Pending</SelectItem>
+                    <SelectItem value="EM_COTACAO" className="text-xs font-bold py-2.5">In Quotation</SelectItem>
+                    <SelectItem value="FORNECEDOR_SELECIONADO" className="text-xs font-bold py-2.5">Approved</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -207,7 +243,7 @@ const Solicitacoes = () => {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.4 }}
               >
                 <SolicitacaoKanban 
                   solicitacoes={filteredSolicitacoes} 
@@ -220,7 +256,7 @@ const Solicitacoes = () => {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.4 }}
               >
                 <EliteCardGrid columns={1}>
                   {filteredSolicitacoes.length > 0 ? (
@@ -228,7 +264,7 @@ const Solicitacoes = () => {
                       <SolicitacaoCard key={s.id} solicitacao={s} />
                     ))
                   ) : (
-                    <IllustratedEmptyState type="orders" title="Sem resultados" description="Tente ajustar seus filtros." />
+                    <IllustratedEmptyState type="orders" title="No matching records" description="Adjust your filters to refine the results." />
                   )}
                 </EliteCardGrid>
               </motion.div>

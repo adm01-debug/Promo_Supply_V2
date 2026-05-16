@@ -26,7 +26,9 @@ import {
   Calendar,
   Clock,
   AlertTriangle,
-  ArrowRight
+  ArrowRight,
+  TrendingUp,
+  Sparkles
 } from "lucide-react";
 import { differenceInDays } from "date-fns/differenceInDays";
 import { isPast } from "date-fns/isPast";
@@ -48,51 +50,23 @@ interface SolicitacaoKanbanProps {
 }
 
 const statusConfig: Record<Solicitacao['status'], { label: string; color: string; bgColor: string }> = {
-  AGUARDANDO_COTACAO: { label: 'Aguardando Cotação', color: 'bg-emerald-500', bgColor: 'bg-emerald-500/10' },
-  EM_COTACAO: { label: 'Em Cotação', color: 'bg-warning', bgColor: 'bg-warning/10' },
-  FORNECEDOR_SELECIONADO: { label: 'Fornecedor Selecionado', color: 'bg-info', bgColor: 'bg-info/10' },
-  PEDIDO_GERADO: { label: 'Pedido Gerado', color: 'bg-indigo-500', bgColor: 'bg-indigo-500/10' },
-  AGUARDANDO_PAGAMENTO: { label: 'Aguardando Pagamento', color: 'bg-warning', bgColor: 'bg-warning/10' },
-  PAGO: { label: 'Pago', color: 'bg-cyan-500', bgColor: 'bg-cyan-500/10' },
-  EM_TRANSITO: { label: 'Em Trânsito', color: 'bg-purple-500', bgColor: 'bg-purple-500/10' },
-  ENTREGUE: { label: 'Finalizada', color: 'bg-success', bgColor: 'bg-success/10' },
-  REJEITADA: { label: 'Rejeitada', color: 'bg-destructive', bgColor: 'bg-destructive/10' },
-  CANCELADA: { label: 'Cancelada', color: 'bg-gray-500', bgColor: 'bg-gray-500/10' },
+  AGUARDANDO_COTACAO: { label: 'Pending Quote', color: 'bg-emerald-500', bgColor: 'bg-emerald-500/10' },
+  EM_COTACAO: { label: 'In Quotation', color: 'bg-amber-500', bgColor: 'bg-amber-500/10' },
+  FORNECEDOR_SELECIONADO: { label: 'Approved', color: 'bg-violet-500', bgColor: 'bg-violet-500/10' },
+  PEDIDO_GERADO: { label: 'PO Created', color: 'bg-fuchsia-500', bgColor: 'bg-fuchsia-500/10' },
+  AGUARDANDO_PAGAMENTO: { label: 'Payment Pending', color: 'bg-amber-500', bgColor: 'bg-amber-500/10' },
+  PAGO: { label: 'Paid', color: 'bg-cyan-500', bgColor: 'bg-cyan-500/10' },
+  EM_TRANSITO: { label: 'In Transit', color: 'bg-indigo-500', bgColor: 'bg-indigo-500/10' },
+  ENTREGUE: { label: 'Delivered', color: 'bg-emerald-500', bgColor: 'bg-emerald-500/10' },
+  REJEITADA: { label: 'Rejected', color: 'bg-rose-500', bgColor: 'bg-rose-500/10' },
+  CANCELADA: { label: 'Cancelled', color: 'bg-zinc-600', bgColor: 'bg-zinc-600/10' },
 };
 
-// Sortable Item Component
-interface SortableItemProps {
-  solicitacao: Solicitacao;
-  isDragging?: boolean;
-  selectable?: boolean;
-  selected?: boolean;
-  onSelectChange?: (selected: boolean) => void;
-}
-
-function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectChange }: SortableItemProps) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging: isSorting,
-  } = useSortable({ id: solicitacao.id });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
+function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectChange }: any) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging: isSorting } = useSortable({ id: solicitacao.id });
+  const style = { transform: CSS.Transform.toString(transform), transition };
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={cn(
-        "group",
-        (isDragging || isSorting) && "opacity-50"
-      )}
-    >
+    <div ref={setNodeRef} style={style} className={cn("group", (isDragging || isSorting) && "opacity-50")}>
       <SolicitacaoKanbanCard 
         solicitacao={solicitacao} 
         dragHandleProps={{ ...attributes, ...listeners }}
@@ -104,110 +78,66 @@ function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectC
   );
 }
 
-// Kanban Card Component
-interface SolicitacaoKanbanCardProps {
-  solicitacao: Solicitacao;
-  dragHandleProps?: React.HTMLAttributes<HTMLDivElement>;
-  isOverlay?: boolean;
-  selectable?: boolean;
-  selected?: boolean;
-  onSelectChange?: (selected: boolean) => void;
-}
-
-function SolicitacaoKanbanCard({ 
-  solicitacao, 
-  dragHandleProps, 
-  isOverlay,
-  selectable,
-  selected,
-  onSelectChange
-}: SolicitacaoKanbanCardProps) {
-  // Urgency logic
+function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, selectable, selected, onSelectChange }: any) {
   const deadline = new Date(solicitacao.prazoEntrega);
   const daysRemaining = differenceInDays(deadline, new Date());
   const isOverdue = isPast(deadline) && solicitacao.status !== 'ENTREGUE';
   
   const getUrgencyInfo = () => {
-    if (isOverdue) return { color: "text-destructive", bg: "bg-destructive/10", label: "Atrasado", icon: AlertTriangle };
-    if (daysRemaining <= 2) return { color: "text-red-600", bg: "bg-red-50", label: "Urgente", icon: Clock };
-    if (daysRemaining <= 5) return { color: "text-amber-600", bg: "bg-amber-50", label: "Prioritário", icon: Clock };
-    return { color: "text-emerald-600", bg: "bg-emerald-50", label: "No prazo", icon: Clock };
+    if (isOverdue) return { color: "text-rose-400", bg: "bg-rose-500/10", label: "Overdue" };
+    if (daysRemaining <= 2) return { color: "text-rose-400", bg: "bg-rose-500/10", label: "Urgent" };
+    if (daysRemaining <= 5) return { color: "text-amber-400", bg: "bg-amber-500/10", label: "Priority" };
+    return { color: "text-emerald-400", bg: "bg-emerald-500/10", label: "No prazo" };
   };
 
   const urgency = getUrgencyInfo();
-
+  const config = statusConfig[solicitacao.status as Solicitacao['status']];
 
   return (
     <Card className={cn(
-      "p-3 cursor-pointer hover:shadow-md transition-all border-l-4",
-      statusConfig[solicitacao.status]?.color.replace('bg-', 'border-'),
-      isOverlay && "shadow-xl rotate-2 scale-105",
-      selected && "ring-2 ring-primary bg-primary/5"
+      "p-4 cursor-grab active:cursor-grabbing hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-300 border-white/5 bg-white/[0.04] backdrop-blur-xl rounded-2xl relative overflow-hidden group",
+      isOverlay && "shadow-2xl rotate-2 scale-105 border-violet-500/30",
+      selected && "ring-2 ring-violet-500/50 bg-violet-500/5"
     )}>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-start gap-2">
-          {/* Checkbox for selection */}
+      <div className="absolute top-0 left-0 w-0.5 h-full opacity-50 bg-violet-500" style={{ backgroundColor: config?.color.includes('bg-') ? undefined : 'var(--violet-500)' }} />
+      
+      <div className="flex flex-col gap-3">
+        <div className="flex items-start gap-3">
           {selectable && !isOverlay && (
-            <div onClick={(e) => e.stopPropagation()} className="shrink-0 mt-1">
-              <Checkbox
-                checked={selected}
-                onCheckedChange={(checked) => onSelectChange?.(checked === true)}
-                className="h-4 w-4"
-              />
+            <div onClick={(e) => e.stopPropagation()} className="shrink-0 mt-0.5">
+              <Checkbox checked={selected} onCheckedChange={(checked) => onSelectChange?.(checked === true)} className="h-4 w-4 border-white/20" />
             </div>
           )}
 
-          {/* Drag Handle */}
-          <div 
-            {...dragHandleProps}
-            className="mt-1 cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            <GripVertical className="w-4 h-4 text-muted-foreground" />
-          </div>
-
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-1 mb-1">
-              <Badge variant="outline" className="font-mono text-[10px] py-0 shrink-0">
-                #{solicitacao.itemNumber || solicitacao.id.slice(0, 4)}
-              </Badge>
-              <Badge variant="outline" className={cn("text-[10px] py-0 px-1 border-transparent", urgency.bg, urgency.color)}>
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <span className="font-black font-mono text-[9px] text-violet-400 uppercase tracking-widest">#{solicitacao.itemNumber || solicitacao.id.slice(0, 4)}</span>
+              <Badge className={cn("text-[8px] font-black uppercase tracking-tighter py-0.5 px-1.5 border-none rounded-full", urgency.bg, urgency.color)}>
                 {urgency.label}
               </Badge>
             </div>
-            <h4 className="font-medium text-sm truncate leading-tight">{solicitacao.produto}</h4>
+            <h4 className="font-bold text-zinc-100 text-sm truncate leading-tight group-hover:text-violet-400 transition-colors">{solicitacao.produto}</h4>
           </div>
         </div>
 
-        {/* Details */}
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <Building2 className="w-3 h-3" />
+        <div className="grid grid-cols-1 gap-1.5 text-[10px] font-bold uppercase tracking-tight text-zinc-500">
+          <div className="flex items-center gap-2">
+            <Building2 className="w-3 h-3 text-zinc-600" />
             <span className="truncate">{solicitacao.empresa}</span>
           </div>
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <Package className="w-3 h-3" />
-            <span>{solicitacao.quantidade} un</span>
+          <div className="flex items-center gap-2">
+            <Package className="w-3 h-3 text-zinc-600" />
+            <span>{solicitacao.quantidade} UNITS</span>
           </div>
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <User className="w-3 h-3" />
-            <span className="truncate">{solicitacao.vendedor}</span>
+          <div className="flex items-center gap-2">
+            <Calendar className="w-3 h-3 text-zinc-600" />
+            <span>DUE: {new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
           </div>
-          <div className="flex items-center gap-1 text-muted-foreground">
-            <Calendar className="w-3 h-3" />
-            <span>{new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}</span>
-          </div>
-          {solicitacao.costCenterCode && (
-            <div className="col-span-2 flex items-center gap-1 text-[10px] text-primary font-medium mt-1">
-              <span className="bg-primary/10 px-1.5 py-0.5 rounded truncate">
-                CC: {solicitacao.costCenterCode}
-              </span>
-            </div>
-          )}
         </div>
 
-        {/* Value if available */}
         {solicitacao.valorTotal && (
-          <div className="text-sm font-semibold text-primary pt-1 border-t border-muted">
+          <div className="text-xs font-black text-white pt-2 border-t border-white/5 mt-1 flex justify-between items-center">
+            <span className="text-zinc-500 text-[9px] uppercase tracking-widest">VALUE</span>
             R$ {solicitacao.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
           </div>
         )}
@@ -216,67 +146,43 @@ function SolicitacaoKanbanCard({
   );
 }
 
-
-// Droppable Column Component
-interface DroppableColumnProps {
-  status: Solicitacao['status'];
-  solicitacoes: Solicitacao[];
-  isOver?: boolean;
-  selectable?: boolean;
-  selectedIds?: Set<string>;
-  onSelectChange?: (id: string, selected: boolean) => void;
-}
-
-function DroppableColumn({ 
-  status, 
-  solicitacoes, 
-  isOver,
-  selectable,
-  selectedIds,
-  onSelectChange
-}: DroppableColumnProps) {
-  const config = statusConfig[status];
+function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds, onSelectChange }: any) {
+  const config = statusConfig[status as Solicitacao['status']];
   
   return (
     <div className={cn(
-      "flex-shrink-0 w-72 flex flex-col rounded-lg border transition-colors",
-      isOver ? "border-primary bg-primary/5" : "border-border bg-card"
+      "flex-shrink-0 w-80 flex flex-col rounded-[2rem] border transition-all duration-500 h-[calc(100vh-280px)]",
+      isOver ? "border-violet-500/50 bg-violet-500/5 scale-[1.02]" : "border-white/5 bg-white/[0.01] backdrop-blur-2xl"
     )}>
-      {/* Column Header */}
-      <div className={cn("p-3 rounded-t-lg", config.bgColor)}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className={cn("w-3 h-3 rounded-full", config.color)} />
-            <h3 className="font-semibold text-sm">{config.label}</h3>
-          </div>
-          <Badge variant="secondary" className="text-xs">
-            {solicitacoes.length}
-          </Badge>
+      <div className="p-5 flex items-center justify-between border-b border-white/5">
+        <div className="flex items-center gap-3">
+          <div className={cn("w-2 h-2 rounded-full shadow-[0_0_8px_rgba(139,92,246,0.5)]", config?.color.replace('bg-', 'bg-'))} />
+          <h3 className="font-black text-xs text-white uppercase tracking-widest">{config?.label}</h3>
         </div>
+        <Badge className="text-[10px] font-black bg-white/5 text-zinc-400 border-none rounded-lg px-2 h-5">
+          {solicitacoes.length}
+        </Badge>
       </div>
 
-      {/* Column Content */}
-      <ScrollArea className="flex-1 p-2">
-        <SortableContext 
-          items={solicitacoes.map(s => s.id)} 
-          strategy={verticalListSortingStrategy}
-        >
-          <div className="space-y-2 min-h-[100px]">
+      <ScrollArea className="flex-1 p-4 scrollbar-thin">
+        <SortableContext items={solicitacoes.map((s: any) => s.id)} strategy={verticalListSortingStrategy}>
+          <div className="space-y-3 min-h-[150px]">
             {solicitacoes.length === 0 ? (
               <div className={cn(
-                "h-24 rounded-lg border-2 border-dashed flex items-center justify-center text-sm text-muted-foreground",
-                isOver && "border-primary bg-primary/10"
+                "h-32 rounded-2xl border-2 border-dashed border-white/5 flex flex-col items-center justify-center text-[10px] font-black uppercase tracking-[0.2em] text-zinc-600 transition-colors",
+                isOver && "border-violet-500/30 text-violet-400 bg-violet-500/5"
               )}>
-                {isOver ? "Soltar aqui" : "Sem itens"}
+                <Package className="w-6 h-6 mb-2 opacity-20" />
+                {isOver ? "Drop Here" : "Empty Stage"}
               </div>
             ) : (
-              solicitacoes.map(solicitacao => (
+              solicitacoes.map((solicitacao: any) => (
                 <SortableItem 
                   key={solicitacao.id} 
                   solicitacao={solicitacao}
                   selectable={selectable}
                   selected={selectedIds?.has(solicitacao.id)}
-                  onSelectChange={(selected) => onSelectChange?.(solicitacao.id, selected)}
+                  onSelectChange={(selected: boolean) => onSelectChange?.(solicitacao.id, selected)}
                 />
               ))
             )}
@@ -287,133 +193,69 @@ function DroppableColumn({
   );
 }
 
-export function SolicitacaoKanban({ 
-  solicitacoes, 
-  onStatusChange,
-  selectable,
-  selectedIds,
-  onSelectChange
-}: SolicitacaoKanbanProps) {
+export function SolicitacaoKanban({ solicitacoes, onStatusChange, selectable, selectedIds, onSelectChange }: SolicitacaoKanbanProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [overId, setOverId] = useState<string | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
-    })
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  // Group solicitacoes by status
   const groupedByStatus = useMemo(() => {
     const groups: Record<Solicitacao['status'], Solicitacao[]> = {
-      AGUARDANDO_COTACAO: [],
-      EM_COTACAO: [],
-      FORNECEDOR_SELECIONADO: [],
-      PEDIDO_GERADO: [],
-      AGUARDANDO_PAGAMENTO: [],
-      PAGO: [],
-      EM_TRANSITO: [],
-      ENTREGUE: [],
-      REJEITADA: [],
-      CANCELADA: [],
+      AGUARDANDO_COTACAO: [], EM_COTACAO: [], FORNECEDOR_SELECIONADO: [],
+      PEDIDO_GERADO: [], AGUARDANDO_PAGAMENTO: [], PAGO: [],
+      EM_TRANSITO: [], ENTREGUE: [], REJEITADA: [], CANCELADA: [],
     };
-
-    solicitacoes.forEach(sol => {
-      if (groups[sol.status]) {
-        groups[sol.status].push(sol);
-      }
-    });
-
+    solicitacoes.forEach(sol => { if (groups[sol.status]) groups[sol.status].push(sol); });
     return groups;
   }, [solicitacoes]);
 
-  const activeSolicitacao = activeId 
-    ? solicitacoes.find(s => s.id === activeId) 
-    : null;
+  const activeSolicitacao = activeId ? solicitacoes.find(s => s.id === activeId) : null;
 
-  // Find which column a solicitacao belongs to
   const findColumn = (id: string): Solicitacao['status'] | null => {
-    // Check if it's a column id
-    if (id in statusConfig) {
-      return id as Solicitacao['status'];
-    }
-    
-    // Find in grouped items
+    if (id in statusConfig) return id as Solicitacao['status'];
     for (const [status, items] of Object.entries(groupedByStatus)) {
-      if (items.some(item => item.id === id)) {
-        return status as Solicitacao['status'];
-      }
+      if (items.some(item => item.id === id)) return status as Solicitacao['status'];
     }
     return null;
   };
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
-  };
-
-  const handleDragOver = (event: DragOverEvent) => {
-    const { over } = event;
-    setOverId(over?.id as string | null);
-  };
-
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    
-    setActiveId(null);
-    setOverId(null);
-
+    setActiveId(null); setOverId(null);
     if (!over) return;
 
     const activeColumn = findColumn(active.id as string);
     let overColumn = findColumn(over.id as string);
 
-    // If dropped on an item, get its column
-    if (!overColumn && over.id) {
-      overColumn = findColumn(over.id as string);
-    }
-
-    // If dropped on a column directly
-    if (over.id in statusConfig) {
-      overColumn = over.id as Solicitacao['status'];
-    }
-
     if (activeColumn && overColumn && activeColumn !== overColumn) {
       const solicitacao = solicitacoes.find(s => s.id === active.id);
       if (solicitacao) {
         onStatusChange(active.id as string, overColumn);
-        toast.success(`Status atualizado`, {
-          description: `${solicitacao.produto} movido para ${statusConfig[overColumn].label}`,
+        toast.success(`Pipeline Updated`, {
+          description: `${solicitacao.produto} moved to ${statusConfig[overColumn].label}`,
         });
       }
     }
   };
 
-  // Mostrar todos os status relevantes para o fluxo completo
   const visibleStatuses: Solicitacao['status'][] = [
-    'AGUARDANDO_COTACAO',
-    'EM_COTACAO',
-    'FORNECEDOR_SELECIONADO',
-    'PEDIDO_GERADO',
-    'AGUARDANDO_PAGAMENTO',
-    'PAGO',
-    'EM_TRANSITO',
-    'ENTREGUE',
+    'AGUARDANDO_COTACAO', 'EM_COTACAO', 'FORNECEDOR_SELECIONADO',
+    'PEDIDO_GERADO', 'AGUARDANDO_PAGAMENTO', 'PAGO',
+    'EM_TRANSITO', 'ENTREGUE',
   ];
 
   return (
     <DndContext
       sensors={sensors}
       collisionDetection={closestCorners}
-      onDragStart={handleDragStart}
-      onDragOver={handleDragOver}
+      onDragStart={(e) => setActiveId(e.active.id as string)}
+      onDragOver={(e) => setOverId(e.over?.id as string | null)}
       onDragEnd={handleDragEnd}
     >
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      <div className="flex gap-6 overflow-x-auto pb-8 snap-x">
         {visibleStatuses.map(status => (
           <DroppableColumn
             key={status}
@@ -427,13 +269,10 @@ export function SolicitacaoKanban({
         ))}
       </div>
 
-      <DragOverlay>
+      <DragOverlay dropAnimation={null}>
         {activeSolicitacao && (
           <div className="w-72">
-            <SolicitacaoKanbanCard 
-              solicitacao={activeSolicitacao} 
-              isOverlay 
-            />
+            <SolicitacaoKanbanCard solicitacao={activeSolicitacao} isOverlay />
           </div>
         )}
       </DragOverlay>
