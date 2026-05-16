@@ -1,39 +1,28 @@
 import { useState, useMemo, useCallback } from "react";
-import Fuse from "fuse.js";
 import { FornecedorModal } from "@/components/compras/FornecedorModal";
 import { HistoricoComprasModal } from "@/components/compras/HistoricoComprasModal";
 import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
 import { SupplierRiskAnalysis } from "@/components/compras/SupplierRiskAnalysis";
 import { PriceComparator } from "@/components/compras/PriceComparator";
-import { FornecedorMobileCard } from "@/components/fornecedores/FornecedorMobileCard";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
-import { useTourPreferences } from "@/hooks/useTourPreferences";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { TableSkeleton, CardGridSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
-import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
+import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { 
   Search, 
   Plus, 
-  Edit, 
-  History, 
   Star, 
-  Phone, 
-  Mail, 
-  MessageCircle,
   Plug,
   Users,
-  TrendingUp,
   Filter,
-  MoreHorizontal
+  MoreHorizontal,
+  Building2
 } from "lucide-react";
-import { useFornecedores, useFornecedoresKPIs, type Fornecedor } from "@/hooks/useFornecedores";
+import { useFornecedores, useFornecedoresKPIs } from "@/hooks/useFornecedores";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { toast } from "@/lib/feedbackToast";
-import { normalizeText } from "@/hooks/useFuseSearch";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -41,7 +30,7 @@ import { cn } from "@/lib/utils";
 
 import { 
   type LegacyFornecedor, adaptToLegacy, 
-  getTipoLabel, getTipoBadgeColor, getProdutoLabel 
+  getTipoLabel, getTipoBadgeColor
 } from './fornecedorHelpers';
 
 const Fornecedores = () => {
@@ -49,7 +38,6 @@ const Fornecedores = () => {
   const [search, setSearch] = useState("");
   const [tipoFilter, setTipoFilter] = useState<string>("todos");
   const [modalOpen, setModalOpen] = useState(false);
-  const [historicoModalOpen, setHistoricoModalOpen] = useState(false);
   const [selectedFornecedor, setSelectedFornecedor] = useState<LegacyFornecedor | null>(null);
 
   const { fornecedores: dbFornecedores, loading, createFornecedor, updateFornecedor } = useFornecedores({ search: search || undefined });
@@ -75,6 +63,36 @@ const Fornecedores = () => {
   const handleOpenModal = (fornecedor?: LegacyFornecedor) => {
     setSelectedFornecedor(fornecedor || null);
     setModalOpen(true);
+  };
+
+  const handleSaveFornecedor = async (data: Partial<LegacyFornecedor>) => {
+    if (selectedFornecedor) {
+      const dbRecord = dbFornecedores.find(f => f.id === selectedFornecedor.id);
+      if (dbRecord) {
+        await updateFornecedor(dbRecord.id, {
+          razao_social: data.razaoSocial || dbRecord.razao_social,
+          nome_fantasia: data.nomeFantasia,
+          cnpj: data.cnpj,
+          email: data.email,
+          telefone: data.telefone,
+          tipo: data.tipo === 'IMPORTADORA' ? 'internacional' : 
+                data.tipo === 'DISTRIBUIDORA' ? 'local' : 'nacional',
+          segmento: data.ramos?.[0],
+        });
+      }
+    } else {
+      await createFornecedor({
+        razao_social: data.razaoSocial || 'Novo Fornecedor',
+        nome_fantasia: data.nomeFantasia,
+        cnpj: data.cnpj,
+        email: data.email,
+        telefone: data.telefone,
+        tipo: data.tipo === 'IMPORTADORA' ? 'internacional' : 
+              data.tipo === 'DISTRIBUIDORA' ? 'local' : 'nacional',
+        segmento: data.ramos?.[0],
+      });
+    }
+    setModalOpen(false);
   };
 
   if (loading) {
@@ -184,7 +202,6 @@ const Fornecedores = () => {
                 <TableRow className="hover:bg-transparent border-border/10">
                   <TableHead className="text-[10px] font-black uppercase tracking-widest py-5 pl-8">Parceiro</TableHead>
                   <TableHead className="text-[10px] font-black uppercase tracking-widest">Tipo</TableHead>
-                  <TableHead className="text-[10px] font-black uppercase tracking-widest">Capacidades</TableHead>
                   <TableHead className="text-[10px] font-black uppercase tracking-widest text-center">Desempenho</TableHead>
                   <TableHead className="text-[10px] font-black uppercase tracking-widest text-center">Conexão</TableHead>
                   <TableHead className="w-20 pr-8"></TableHead>
@@ -208,13 +225,6 @@ const Fornecedores = () => {
                       <Badge variant="outline" className={cn("rounded-full px-3 py-0.5 border-none", getTipoBadgeColor(fornecedor.tipo))}>
                         {getTipoLabel(fornecedor.tipo)}
                       </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-1">
-                        {fornecedor.ramos.slice(0, 2).map(ramo => (
-                          <Badge key={ramo} variant="secondary" className="text-[9px] font-black uppercase tracking-tighter rounded-md px-1.5">{ramo}</Badge>
-                        ))}
-                      </div>
                     </TableCell>
                     <TableCell className="text-center">
                        <div className="flex items-center justify-center gap-0.5">
