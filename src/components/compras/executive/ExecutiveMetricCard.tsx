@@ -65,11 +65,11 @@ export const ExecutiveMetricCard = ({
         onClick={onClick}
       >
         {/* Elite Ambient Glow */}
-        <div className="absolute -top-12 -right-12 w-32 h-32 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 w-32 h-32 bg-violet-500/10 rounded-full blur-3xl pointer-events-none" />
         
         <CardContent className="p-8">
           <div className="flex items-center justify-between mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-inner">
+            <div className="w-12 h-12 rounded-2xl bg-violet-500/10 flex items-center justify-center text-violet-400 shadow-inner">
               <Icon className="h-6 w-6" />
             </div>
             
@@ -79,7 +79,7 @@ export const ExecutiveMetricCard = ({
                   data={trendData}
                   width={60}
                   height={20}
-                  color={isGoodChange ? 'hsl(var(--success))' : isBadChange ? 'hsl(var(--destructive))' : 'hsl(var(--primary))'}
+                  color={isGoodChange ? '#10b981' : isBadChange ? '#ef4444' : '#8b5cf6'}
                 />
               )}
               
@@ -112,7 +112,7 @@ export const ExecutiveMetricCard = ({
             </div>
 
             {showComparison && previousValue !== undefined && (
-              <div className="p-3 rounded-2xl bg-muted/30 flex items-center justify-between text-[10px] font-bold transition-all hover:bg-muted/50 border border-border/10">
+              <div className="p-3 rounded-2xl bg-white/[0.02] flex items-center justify-between text-[10px] font-bold transition-all hover:bg-white/[0.04] border border-white/5">
                 <div className="flex items-center gap-2 text-muted-foreground uppercase tracking-widest">
                   <Calendar className="h-3.5 w-3.5 opacity-50" />
                   <span>BASELINE</span>
@@ -133,7 +133,7 @@ export const ExecutiveMetricCard = ({
                     <Target className="h-3.5 w-3.5" />
                     <span>TARGET INDEX</span>
                   </div>
-                  <span className={isAboveTarget ? 'text-success' : 'text-primary'}>
+                  <span className={isAboveTarget ? 'text-success' : 'text-violet-400'}>
                     {targetProgress?.toFixed(0)}%
                   </span>
                 </div>
