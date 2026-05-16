@@ -19,6 +19,7 @@ import {
   StatusDistributionChart,
   BottleneckAnalysis,
   ApprovalKPIs,
+  type ApprovalHistoryItem,
 } from "@/features/aprovacoes";
 
 import {
