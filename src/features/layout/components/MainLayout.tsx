@@ -83,6 +83,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   useSessionIdleTimeout();
   useScrollRestoration();
   useSwipeBack();
+  usePerformanceMonitor();
 
   const { open: commandPaletteOpen, setOpen: setCommandPaletteOpen } = useCommandPalette();
 
