@@ -5,7 +5,6 @@ import {
   Search, 
   Plus, 
   Trophy, 
-  Clock, 
   Loader2, 
   Bell, 
   Sparkles, 
@@ -22,7 +21,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BuscaAutomatica } from "@/components/compras/BuscaAutomatica";
 import { RankingCotacoes } from "@/components/compras/RankingCotacoes";
-import { CotacaoManualModal, type ManualCotacaoData } from "@/components/compras/CotacaoManualModal";
+import { CotacaoManualModal } from "@/components/compras/CotacaoManualModal";
 import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
 import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
 import { VisualComparadorCotacoes } from "@/components/compras/VisualComparadorCotacoes";
@@ -33,12 +32,10 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/features/cotacoes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch } from "./cotacaoHelpers";
+import { adaptCotacoesFromDB, simulateAPISearch } from "./cotacaoHelpers";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
-import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
 
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
@@ -47,7 +44,7 @@ const Cotacao = () => {
   
   const { solicitacoes, loading: loadingSolicitacoes } = useSolicitacoes();
   const { fornecedores } = useFornecedores();
-  const { cotacoes, createCotacao, selectCotacao } = useCotacoes({
+  const { cotacoes, createCotacao } = useCotacoes({
     solicitacao_id: solicitacaoId || undefined,
   });
   
@@ -264,6 +261,10 @@ const Cotacao = () => {
                   )}
                 </div>
               </Card>
+
+              <Card className="p-6 rounded-[2rem] border-border/40 bg-card/40 backdrop-blur-xl shadow-xl">
+                 <BuscaAutomatica status={buscaStatus} resultados={cotacoesAPI} />
+              </Card>
             </div>
 
             <div className="space-y-8">
@@ -299,6 +300,7 @@ const Cotacao = () => {
       <CotacaoManualModal 
         open={showManualModal} 
         onOpenChange={setShowManualModal} 
+        fornecedores={fornecedores}
         onSave={(data) => {
           createCotacao({
             solicitacao_id: solicitacao.id,
@@ -311,7 +313,7 @@ const Cotacao = () => {
           setShowManualModal(false);
         }} 
       />
-      <PriceHistoryModal open={showHistoryModal} onOpenChange={setShowHistoryModal} productId={solicitacao.titulo} />
+      <PriceHistoryModal open={showHistoryModal} onOpenChange={setShowHistoryModal} />
     </ModuleErrorBoundary>
   );
 };
