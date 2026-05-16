@@ -1,113 +1,64 @@
-import { ShoppingBag, TrendingUp, Shield, Sparkles, Package } from "lucide-react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { ShoppingBag, TrendingUp, Package } from "lucide-react";
 
-const FloatingShape = ({ className, delay = 0 }: { className?: string; delay?: number }) => (
-  <div
-    className={cn(
-      "absolute rounded-full bg-gradient-to-br from-primary/20 to-primary/5 blur-3xl animate-float",
-      className
-    )}
-    style={{ animationDelay: `${delay}s` }}
-  />
+export const AuthBackground = () => (
+  <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div className="absolute top-[-10%] left-[-10%] w-[55%] h-[55%] rounded-full blur-[140px] bg-violet-900/25" />
+    <div className="absolute bottom-[-15%] right-[15%] w-[45%] h-[45%] rounded-full blur-[140px] bg-fuchsia-900/15" />
+    <div className="absolute top-[35%] right-[-5%] w-[35%] h-[35%] rounded-full blur-[120px] bg-purple-800/15" />
+  </div>
 );
 
-const FeatureCard = ({ icon: Icon, title, description, delay }: {
+const FeatureRow = ({ icon: Icon, title, description }: {
   icon: typeof ShoppingBag;
   title: string;
   description: string;
-  delay: number;
 }) => (
-  <div
-    className="flex items-start gap-3 p-4 rounded-xl border animate-fade-in"
-    style={{
-      animationDelay: `${delay}ms`,
-      background: 'linear-gradient(135deg, hsl(265 90% 66% / 0.08) 0%, hsl(0 0% 100% / 0.03) 100%)',
-      borderColor: 'hsl(265 90% 66% / 0.15)',
-      backdropFilter: 'blur(12px)',
-    }}
-  >
-    <div className="p-2 rounded-lg" style={{ background: 'hsl(265 90% 66% / 0.2)' }}>
-      <Icon className="w-5 h-5 text-primary-foreground" />
+  <div className="group flex items-center gap-5 p-4 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-violet-500/20 transition-all">
+    <div className="w-12 h-12 shrink-0 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-300 group-hover:scale-110 transition-transform">
+      <Icon className="w-6 h-6" strokeWidth={1.5} />
     </div>
     <div>
-      <h3 className="font-semibold text-primary-foreground text-sm">{title}</h3>
-      <p className="text-primary-foreground/60 text-xs mt-0.5">{description}</p>
+      <h3 className="font-semibold text-zinc-100 text-[15px]">{title}</h3>
+      <p className="text-sm text-zinc-500 mt-0.5">{description}</p>
     </div>
   </div>
 );
 
-export const AuthBackground = () => (
-  <>
-    <FloatingShape className="w-96 h-96 -top-48 -left-48" delay={0} />
-    <FloatingShape className="w-64 h-64 top-1/2 -right-32" delay={2} />
-    <FloatingShape className="w-80 h-80 -bottom-40 left-1/4" delay={4} />
-  </>
-);
-
 export const AuthBrandingPanel = () => (
-  <div
-    className="hidden lg:flex lg:w-1/2 xl:w-[55%] relative p-12 flex-col justify-between overflow-hidden"
-    style={{
-      background: 'linear-gradient(145deg, hsl(265 90% 20%) 0%, hsl(228 28% 6%) 50%, hsl(265 60% 12%) 100%)',
-    }}
-  >
-    {/* Animated grid pattern */}
-    <div className="absolute inset-0 opacity-[0.07]" style={{
-      backgroundImage: `linear-gradient(hsl(265 90% 66% / 0.3) 1px, transparent 1px), linear-gradient(90deg, hsl(265 90% 66% / 0.3) 1px, transparent 1px)`,
-      backgroundSize: '60px 60px',
-    }} />
-    <div className="absolute top-1/4 left-1/3 w-[500px] h-[500px] rounded-full opacity-20" style={{
-      background: 'radial-gradient(circle, hsl(265 90% 66% / 0.6) 0%, transparent 70%)',
-    }} />
-
-    {/* Logo & Title */}
-    <div className="relative z-10">
-      <div className="flex items-center gap-4 mb-10">
-        <motion.div 
-          whileHover={{ rotate: 10, scale: 1.1 }}
-          className="w-16 h-16 rounded-2xl bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-md flex items-center justify-center shadow-2xl border border-white/20"
-        >
-          <Package className="w-8 h-8 text-primary-foreground" />
-        </motion.div>
-        <div>
-          <h1 className="text-3xl font-black uppercase tracking-tighter text-primary-foreground leading-none">
-            PROMO <span className="text-primary-glow">SUPPLY</span>
-          </h1>
-          <p className="text-primary-foreground/60 text-[10px] font-bold uppercase tracking-[0.3em] mt-1.5">
-            Enterprise Procurement
-          </p>
-        </div>
+  <div className="relative hidden lg:flex flex-col justify-between w-[55%] p-16 z-10">
+    <div className="flex items-center gap-3">
+      <div className="w-11 h-11 bg-gradient-to-br from-violet-500 to-fuchsia-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/30">
+        <Package className="w-6 h-6 text-white" strokeWidth={1.75} />
       </div>
-      <div className="max-w-md">
-        <h2 className="text-4xl font-bold text-primary-foreground mb-4 leading-tight">
-          Gerencie suas compras com
-          <span className="relative inline-block ml-2">
-            inteligência
-            <Sparkles className="absolute -top-2 -right-6 w-5 h-5 text-yellow-300 animate-pulse" />
-          </span>
-        </h2>
-        <p className="text-primary-foreground/80 text-lg">
-          Plataforma completa para gestão de solicitações, cotações, fornecedores e pagamentos.
+      <div>
+        <h1 className="text-xl font-bold tracking-tight text-white leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>
+          PROMO <span className="text-violet-400">SUPPLY</span>
+        </h1>
+        <p className="text-[10px] tracking-[0.22em] uppercase text-zinc-500 font-semibold mt-1">
+          Enterprise Procurement
         </p>
       </div>
     </div>
 
-    {/* Features */}
-    <div className="relative z-10 space-y-4">
-      <FeatureCard icon={ShoppingBag} title="Gestão Completa" description="Controle todo o ciclo de compras em um só lugar" delay={100} />
-      <FeatureCard icon={TrendingUp} title="Análises em Tempo Real" description="Dashboards e KPIs para tomada de decisão" delay={200} />
-      <FeatureCard icon={Shield} title="Segurança Avançada" description="Autenticação robusta e controle de acesso" delay={300} />
+    <div className="max-w-xl">
+      <h2 className="text-5xl font-bold leading-[1.1] mb-6 text-white" style={{ fontFamily: 'Outfit, sans-serif' }}>
+        Gerencie suas compras com{' '}
+        <span className="bg-clip-text text-transparent bg-gradient-to-r from-violet-400 to-fuchsia-400">
+          inteligência
+        </span>
+      </h2>
+      <p className="text-zinc-400 text-lg leading-relaxed mb-12 max-w-md">
+        Plataforma completa para gestão de solicitações, cotações, fornecedores e pagamentos.
+      </p>
+
+      <div className="space-y-4">
+        <FeatureRow icon={ShoppingBag} title="Gestão Completa" description="Controle todo o ciclo de compras em um só lugar" />
+        <FeatureRow icon={TrendingUp} title="Análises em Tempo Real" description="Dashboards e KPIs para tomada de decisão" />
+      </div>
     </div>
 
-    <div className="relative z-10 space-y-4">
-      <p className="text-primary-foreground/40 text-[9px] leading-relaxed italic max-w-xs">
-        Este sistema é propriedade intelectual exclusiva da Promo Brindes, sendo protegido pela Lei nº 9.609/98 e demais normas aplicáveis. 
-        É proibida sua reprodução, cópia, modificação, distribuição ou uso não autorizado.
-      </p>
-      <p className="text-primary-foreground/50 text-sm">
-        © 2026 Promo Supply. Todos os direitos reservados.
-      </p>
+    <div className="text-xs text-zinc-600">
+      © 2026 Promo Supply. Todos os direitos reservados.
     </div>
   </div>
 );
