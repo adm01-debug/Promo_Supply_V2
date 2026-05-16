@@ -40,6 +40,8 @@ const parentRoutes: Record<string, string> = {
   '/devolucoes': '/pedidos',
   '/catalogo-produtos': '/',
   '/admin/telemetria': '/',
+  '/recebimento': '/pedidos',
+  '/portal-fornecedor': '/',
 };
 
 const routeLabels: Record<string, string> = {
@@ -57,6 +59,7 @@ const routeLabels: Record<string, string> = {
   '/dashboard-executivo': 'Executivo',
   '/kanban': 'Kanban',
   '/catalogo-produtos': 'Catálogo',
+  '/portal-fornecedor': 'Portal',
 };
 
 interface SmartBackButtonProps {
