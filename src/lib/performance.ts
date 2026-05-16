@@ -84,11 +84,30 @@ export const performanceMonitor = {
     }
   },
 
+  trackFCP: () => {
+    if (typeof window !== 'undefined' && 'PerformanceObserver' in window) {
+      try {
+        const observer = new PerformanceObserver((entryList) => {
+          for (const entry of entryList.getEntries()) {
+            if (entry.name === 'first-contentful-paint') {
+              logger.info(`FCP (First Contentful Paint): ${entry.startTime.toFixed(2)}ms`);
+            }
+          }
+        });
+        observer.observe({ type: 'paint', buffered: true });
+        return observer;
+      } catch (e) {
+        logger.debug('FCP observation not supported');
+      }
+    }
+  },
+
   initAll: () => {
     const observers = [
       performanceMonitor.trackLCP(),
       performanceMonitor.trackCLS(),
-      performanceMonitor.trackFID()
+      performanceMonitor.trackFID(),
+      performanceMonitor.trackFCP()
     ].filter(Boolean);
 
     return () => {
