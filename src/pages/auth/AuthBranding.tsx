@@ -32,10 +32,10 @@ export const AuthBrandingPanel = () => (
       </div>
       <div>
         <h1 className="text-xl font-bold tracking-tight text-white leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>
-          PROMO <span className="text-violet-400">SUPPLY</span>
+          PROMO <span className="text-violet-400">BRINDES</span>
         </h1>
         <p className="text-[10px] tracking-[0.22em] uppercase text-zinc-500 font-semibold mt-1">
-          Enterprise Procurement
+          Enterprise Solutions
         </p>
       </div>
     </div>
@@ -58,7 +58,7 @@ export const AuthBrandingPanel = () => (
     </div>
 
     <div className="text-xs text-zinc-600">
-      © 2026 Promo Supply. Todos os direitos reservados.
+      © 2026 Promo Brindes. Todos os direitos reservados.
     </div>
   </div>
 );
