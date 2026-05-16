@@ -68,6 +68,24 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
   const [showJustifyModal, setShowJustifyModal] = useState(false);
   const [pendingSelectionId, setPendingSelectionId] = useState<string | null>(null);
 
+  const confirmSelection = () => {
+    if (pendingSelectionId) {
+      onSelecionar(pendingSelectionId, justificativa);
+      setShowJustifyModal(false);
+      setPendingSelectionId(null);
+      setJustificativa("");
+    }
+  };
+
+  const handleSelectClick = (cotacaoId: string, isTopRanked: boolean) => {
+    if (isTopRanked) {
+      onSelecionar(cotacaoId);
+    } else {
+      setPendingSelectionId(cotacaoId);
+      setShowJustifyModal(true);
+    }
+  };
+
   const calculateScore = (cotacao: Cotacao) => {
     const minTotal = Math.min(...cotacoes.map(c => c.total));
     const maxTotal = Math.max(...cotacoes.map(c => c.total));
