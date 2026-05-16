@@ -254,12 +254,22 @@ const CatalogoProdutos = () => {
           {filtered.map((p) => {
             const variation = priceVariation(p);
             return (
-              <Card key={p.id} className="p-4 space-y-2">
-                <div className="flex items-start justify-between">
-                  <div className="min-w-0">
-                    <p className="font-semibold truncate">{p.nome}</p>
-                    <p className="text-xs text-muted-foreground">{p.codigo}</p>
+              <Card key={p.id} className="p-0 overflow-hidden group hover:border-primary/50 transition-colors">
+                {p.imagem_url ? (
+                  <div className="aspect-video w-full relative overflow-hidden bg-muted">
+                    <img src={p.imagem_url} alt={p.nome} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                   </div>
+                ) : (
+                  <div className="aspect-video w-full flex items-center justify-center bg-muted/30">
+                    <ImageIcon className="w-8 h-8 text-muted-foreground/30" />
+                  </div>
+                )}
+                <div className="p-4 space-y-2">
+                  <div className="flex items-start justify-between">
+                    <div className="min-w-0">
+                      <p className="font-semibold truncate">{p.nome}</p>
+                      <p className="text-xs text-muted-foreground">{p.codigo}</p>
+                    </div>
                   <Button
                     variant="ghost"
                     size="icon"
