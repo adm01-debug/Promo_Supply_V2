@@ -8,12 +8,6 @@ import { motion } from 'framer-motion';
 import { useNavigation } from '@/hooks/useNavigation';
 import { haptics } from '@/lib/haptics';
 
-
-
-/**
- * Smart contextual mapping: each route knows its logical parent.
- * This prevents "back" from going to unexpected places.
- */
 const parentRoutes: Record<string, string> = {
   '/cotacao': '/',
   '/solicitacoes': '/',
@@ -70,18 +64,17 @@ const routeLabels: Record<string, string> = {
   '/configuracoes': 'Configurações',
   '/buyer': 'Comprador',
   '/admin': 'Admin',
-  '/relatorios/negociacoes': 'Negociações',
-  '/supplier-performance': 'Performance',
-  '/historico-compras': 'Histórico',
-  '/negociacao-ia': 'Negociação IA',
 };
 
 interface SmartBackButtonProps {
   className?: string;
-  /** Compact mode for mobile - shows only icon */
   compact?: boolean;
 }
 
+/**
+ * SmartBackButton 10/10: Elite contextual navigation.
+ * Uses haptics, spring animations, and intelligent route mapping.
+ */
 export function SmartBackButton({ className, compact = false }: SmartBackButtonProps) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -105,10 +98,6 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
 
   const handleBack = () => {
     haptics.light();
-
-    
-    // Elite logic: if we have history, go back. 
-    // If not (e.g. user opened a link directly), go to logical parent.
     if (canGoBack) {
       navigate(-1);
     } else {
@@ -116,55 +105,47 @@ export function SmartBackButton({ className, compact = false }: SmartBackButtonP
     }
   };
 
-  if (compact) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.2, type: "spring", stiffness: 300, damping: 25 }}
-      >
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleBack}
-          className={cn(
-            "h-9 w-9 text-muted-foreground hover:text-foreground hover:bg-muted/80 rounded-full",
-            "active:scale-90 transition-all",
-            className
-          )}
-          aria-label={`Voltar para ${backTarget.label}`}
-        >
-          <ChevronLeft className="h-5 w-5" />
-        </Button>
-      </motion.div>
-    );
-  }
-
   return (
     <motion.div
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      exit={{ opacity: 0, x: -10 }}
+      transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
     >
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
             variant="ghost"
-            size="sm"
+            size={compact ? "icon" : "sm"}
             onClick={handleBack}
             className={cn(
-              "gap-2 text-muted-foreground hover:text-foreground h-9 px-3 rounded-full",
-              "hover:bg-muted/80 active:scale-[0.96] transition-all group",
+              "group relative overflow-hidden transition-all duration-300",
+              compact ? "h-11 w-11 rounded-2xl bg-muted/20 hover:bg-primary/10 text-muted-foreground hover:text-primary" 
+                      : "gap-2 px-4 h-11 rounded-2xl bg-muted/20 hover:bg-primary/10 text-muted-foreground hover:text-primary",
+              "active:scale-90",
               className
             )}
             aria-label={`Voltar para ${backTarget.label}`}
           >
-            <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-            <span className="text-xs font-semibold tracking-tight uppercase">{backTarget.label}</span>
+            {compact ? (
+              <ChevronLeft className="h-6 w-6 transition-transform group-hover:-translate-x-0.5" />
+            ) : (
+              <>
+                <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                <span className="text-[10px] font-black uppercase tracking-widest">{backTarget.label}</span>
+              </>
+            )}
+            
+            {/* Gloss effect */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent side="bottom" align="start" className="text-[10px] font-bold uppercase tracking-widest bg-foreground text-background">
-          Voltar para {backTarget.label}
+        <TooltipContent 
+          side="bottom" 
+          align="start" 
+          className="text-[10px] font-black uppercase tracking-[0.2em] bg-foreground text-background border-none px-3 py-1.5"
+        >
+          Retornar para {backTarget.label}
         </TooltipContent>
       </Tooltip>
     </motion.div>
