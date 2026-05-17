@@ -184,7 +184,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       cot = cot.filter(c => {
         // Find if this cotacao belongs to a filtered supplier
         // Note: we need supplier_id in cotacoes table
-        return (c as any).fornecedor_id === supplierFilter;
+        return (c as any).organization_id === supplierFilter;
       });
     }
 
