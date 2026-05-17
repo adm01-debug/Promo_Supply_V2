@@ -4,11 +4,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { usePedidos } from "@/features/pedidos";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { type Pedido } from "@/features/pedidos";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -37,6 +40,33 @@ interface Props {
 }
 
 export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
+  const { updateStatus } = usePedidos();
+  const queryClient = useQueryClient();
+  
+  const handleUpdateStatus = async (newStatus: Pedido['status']) => {
+    if (!pedido) return;
+    const success = await updateStatus(pedido.id, newStatus);
+    if (success) {
+      // Pedido is updated in react-query cache by hook
+    }
+  };
+
+  const handleUpdateItemProdStatus = async (itemId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from('pedido_itens')
+        .update({ status_producao: newStatus } as any)
+        .eq('id', itemId);
+      
+      if (error) throw error;
+      
+      queryClient.invalidateQueries({ queryKey: ['pedido-itens-extended', pedido?.id] });
+      toast.success('Estado de produção atualizado');
+    } catch (err: any) {
+      toast.error('Erro ao atualizar produção: ' + err.message);
+    }
+  };
+
   const { data: itens = [] } = useQuery({
     queryKey: ['pedido-itens-extended', pedido?.id],
     queryFn: async () => {
@@ -83,9 +113,31 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                <Badge className={cn("px-5 py-2 rounded-full font-black text-[10px] tracking-widest uppercase border-none", config.color)}>
                  {config.label}
                </Badge>
-               <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer">
-                 <Zap className="w-4 h-4" />
-               </div>
+               <DropdownMenu>
+                 <DropdownMenuTrigger asChild>
+                   <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer">
+                     <Zap className="w-4 h-4" />
+                   </div>
+                 </DropdownMenuTrigger>
+                 <DropdownMenuContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl p-2 min-w-[200px]">
+                   <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600 px-3 py-2">Change Vector State</p>
+                   {Object.entries(statusConfig).map(([key, cfg]) => {
+                     const Icon = cfg.icon;
+                     return (
+                       <DropdownMenuItem 
+                         key={key} 
+                         onClick={() => handleUpdateStatus(key as Pedido['status'])}
+                         className="flex items-center gap-3 py-3 px-3 rounded-xl hover:bg-white/5 cursor-pointer transition-all group"
+                       >
+                         <div className={cn("p-2 rounded-lg border border-white/5", cfg.color.split(' ')[0])}>
+                           <Icon className="w-3.5 h-3.5" />
+                         </div>
+                         <span className="text-xs font-bold text-zinc-300 group-hover:text-white uppercase tracking-tighter">{cfg.label}</span>
+                       </DropdownMenuItem>
+                     );
+                   })}
+                 </DropdownMenuContent>
+               </DropdownMenu>
             </div>
           </div>
         </DialogHeader>
@@ -265,10 +317,14 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                                   const isActive = statusProd === step.id;
                                   const isPast = prodSteps.findIndex(s => s.id === statusProd) > idx;
                                   return (
-                                    <div key={step.id} className="relative z-10 flex flex-col items-center group">
+                                    <div 
+                                      key={step.id} 
+                                      className="relative z-10 flex flex-col items-center group cursor-pointer"
+                                      onClick={() => handleUpdateItemProdStatus(item.id, step.id)}
+                                    >
                                       <div className={cn(
-                                        "w-3 h-3 rounded-full border-2 transition-all",
-                                        isActive ? "bg-violet-500 border-white scale-125 shadow-[0_0_10px_rgba(139,92,246,0.5)]" : 
+                                        "w-4 h-4 rounded-full border-2 transition-all hover:scale-125",
+                                        isActive ? "bg-violet-500 border-white scale-110 shadow-[0_0_10px_rgba(139,92,246,0.5)]" : 
                                         isPast ? "bg-emerald-500 border-emerald-500/50" : "bg-zinc-800 border-white/10"
                                       )} />
                                       <span className={cn(
