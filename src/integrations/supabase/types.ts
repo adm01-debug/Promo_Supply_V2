@@ -2287,6 +2287,106 @@ export type Database = {
           },
         ]
       }
+      estoque: {
+        Row: {
+          created_at: string | null
+          estoque_maximo: number | null
+          estoque_minimo: number | null
+          id: string
+          localizacao: string
+          organization_id: string
+          ponto_pedido: number | null
+          produto_id: string
+          quantidade_atual: number
+          ultimo_inventario: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          estoque_maximo?: number | null
+          estoque_minimo?: number | null
+          id?: string
+          localizacao?: string
+          organization_id: string
+          ponto_pedido?: number | null
+          produto_id: string
+          quantidade_atual?: number
+          ultimo_inventario?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          estoque_maximo?: number | null
+          estoque_minimo?: number | null
+          id?: string
+          localizacao?: string
+          organization_id?: string
+          ponto_pedido?: number | null
+          produto_id?: string
+          quantidade_atual?: number
+          ultimo_inventario?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      estoque_movimentacoes: {
+        Row: {
+          created_at: string | null
+          data_movimentacao: string | null
+          estoque_id: string
+          id: string
+          motivo: string | null
+          organization_id: string
+          quantidade: number
+          referencia_id: string | null
+          referencia_tipo: string | null
+          tipo: string
+          usuario_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          data_movimentacao?: string | null
+          estoque_id: string
+          id?: string
+          motivo?: string | null
+          organization_id: string
+          quantidade: number
+          referencia_id?: string | null
+          referencia_tipo?: string | null
+          tipo: string
+          usuario_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          data_movimentacao?: string | null
+          estoque_id?: string
+          id?: string
+          motivo?: string | null
+          organization_id?: string
+          quantidade?: number
+          referencia_id?: string | null
+          referencia_tipo?: string | null
+          tipo?: string
+          usuario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "estoque_movimentacoes_estoque_id_fkey"
+            columns: ["estoque_id"]
+            isOneToOne: false
+            referencedRelation: "estoque"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       exchange_rates: {
         Row: {
           base_currency: string
