@@ -24,47 +24,46 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchAllRows } from "@/lib/paginatedFetch";
 import { Skeleton } from "@/components/ui/skeleton";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface RiskData {
   supplierId: string;
   supplierName: string;
   category: string;
   risks: {
-    financial: number;      // 0-100
-    operational: number;    // 0-100
-    quality: number;        // 0-100
-    delivery: number;       // 0-100
-    concentration: number;  // 0-100
-    geopolitical: number;   // 0-100
+    financial: number;
+    operational: number;
+    quality: number;
+    delivery: number;
+    concentration: number;
+    geopolitical: number;
   };
   overallRisk: number;
   trend: 'improving' | 'worsening' | 'stable';
-  volume: number; // % do total de compras
+  volume: number;
 }
 
-// Risk data is now fetched from Supabase real data in the component logic
-
 const riskCategories = [
-  { key: 'financial', label: 'Financeiro', icon: DollarSign, description: 'Saúde financeira e estabilidade' },
-  { key: 'operational', label: 'Operacional', icon: Zap, description: 'Capacidade e processos' },
-  { key: 'quality', label: 'Qualidade', icon: Shield, description: 'Conformidade e defeitos' },
-  { key: 'delivery', label: 'Entrega', icon: Clock, description: 'Pontualidade e SLA' },
-  { key: 'concentration', label: 'Concentração', icon: Package, description: 'Dependência do fornecedor' },
-  { key: 'geopolitical', label: 'Geopolítico', icon: MapPin, description: 'Riscos regionais/internacionais' }
+  { key: 'financial', label: 'Finance', icon: DollarSign, description: 'Financial health & stability' },
+  { key: 'operational', label: 'Ops', icon: Zap, description: 'Operational capacity & processes' },
+  { key: 'quality', label: 'Quality', icon: Shield, description: 'Compliance & defect history' },
+  { key: 'delivery', label: 'Logistics', icon: Clock, description: 'SLA & On-time performance' },
+  { key: 'concentration', label: 'Reliance', icon: Package, description: 'Supplier dependency ratio' },
+  { key: 'geopolitical', label: 'Geo-Risk', icon: MapPin, description: 'Regional & international risk' }
 ];
 
 const getRiskColor = (value: number) => {
-  if (value <= 25) return { bg: 'bg-success', text: 'text-success', light: 'bg-success/20' };
-  if (value <= 50) return { bg: 'bg-warning', text: 'text-warning', light: 'bg-warning/20' };
-  if (value <= 75) return { bg: 'bg-warning', text: 'text-warning', light: 'bg-warning/20' };
-  return { bg: 'bg-destructive', text: 'text-destructive', light: 'bg-destructive/20' };
+  if (value <= 25) return { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/20' };
+  if (value <= 50) return { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/20' };
+  if (value <= 75) return { bg: 'bg-orange-500/10', text: 'text-orange-400', border: 'border-orange-500/20' };
+  return { bg: 'bg-rose-500/10', text: 'text-rose-400', border: 'border-rose-500/20' };
 };
 
 const getRiskLabel = (value: number) => {
-  if (value <= 25) return 'Baixo';
-  if (value <= 50) return 'Médio';
-  if (value <= 75) return 'Alto';
-  return 'Crítico';
+  if (value <= 25) return 'LOW';
+  if (value <= 50) return 'MED';
+  if (value <= 75) return 'HIGH';
+  return 'CRIT';
 };
 
 export const RiskHeatMap = () => {
@@ -84,50 +83,26 @@ export const RiskHeatMap = () => {
 
   const riskData = useMemo(() => {
     if (!fornecedores || !pedidos) return [];
-
-    const totalSpend = pedidos.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 1); // avoid div by zero
-
+    const totalSpend = pedidos.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 1);
     return fornecedores.filter(f => f.status === 'ativo').map(f => {
       const supplierPeds = pedidos.filter(p => p.fornecedor_id === f.id);
       const supplierSpend = supplierPeds.reduce((sum, p) => sum + (Number(p.valor_total) || 0), 0);
       const spendPercent = Math.round((supplierSpend / totalSpend) * 100);
-
       const delivered = supplierPeds.filter(p => p.status === 'entregue');
-      const onTime = delivered.filter(p => 
-        p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao
-      ).length;
-      
+      const onTime = delivered.filter(p => p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao).length;
       const onTimeRate = delivered.length > 0 ? (onTime / delivered.length) * 100 : 90;
-      
-      // Calculate individual risks (0-100, where higher is worse)
       const deliveryRisk = Math.round(100 - onTimeRate);
       const qualityRisk = Math.round(100 - (Number(f.avaliacao || 4.5) * 20));
-      const concentrationRisk = Math.min(100, spendPercent * 3); // 33% spend = 100% concentration risk
-      const financialRisk = Math.round(Math.max(10, 40 - (Number(f.avaliacao || 4) * 5))); // Pseudo-financial risk
+      const concentrationRisk = Math.min(100, spendPercent * 3);
+      const financialRisk = Math.round(Math.max(10, 40 - (Number(f.avaliacao || 4) * 5)));
       const operationalRisk = Math.round(Math.max(15, deliveryRisk * 0.8 + qualityRisk * 0.2));
       const geopoliticalRisk = f.categorias?.nome === 'Eletrônicos' || f.categorias?.nome === 'Tecnologia' ? 60 : 15;
-
-      const overallRisk = Math.round(
-        financialRisk * 0.15 + 
-        operationalRisk * 0.25 + 
-        qualityRisk * 0.2 + 
-        deliveryRisk * 0.2 + 
-        concentrationRisk * 0.1 + 
-        geopoliticalRisk * 0.1
-      );
-
+      const overallRisk = Math.round(financialRisk * 0.15 + operationalRisk * 0.25 + qualityRisk * 0.2 + deliveryRisk * 0.2 + concentrationRisk * 0.1 + geopoliticalRisk * 0.1);
       return {
         supplierId: f.id,
         supplierName: f.razao_social,
-        category: (f as any).categorias?.nome || 'Geral',
-        risks: {
-          financial: financialRisk,
-          operational: operationalRisk,
-          quality: qualityRisk,
-          delivery: deliveryRisk,
-          concentration: concentrationRisk,
-          geopolitical: geopoliticalRisk
-        },
+        category: (f as any).categorias?.nome || 'General',
+        risks: { financial: financialRisk, operational: operationalRisk, quality: qualityRisk, delivery: deliveryRisk, concentration: concentrationRisk, geopolitical: geopoliticalRisk },
         overallRisk,
         trend: overallRisk > 40 ? 'worsening' : overallRisk < 20 ? 'improving' : 'stable',
         volume: spendPercent
@@ -138,71 +113,36 @@ export const RiskHeatMap = () => {
   if (loadingForn || loadingPed) {
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[1,2,3,4].map(i => <Skeleton key={i} className="h-24 w-full rounded-xl" />)}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[1,2,3,4].map(i => <Skeleton key={i} className="h-24 bg-white/5 rounded-2xl" />)}
         </div>
-        <Card className="p-6">
-          <Skeleton className="h-8 w-48 mb-6" />
-          <Skeleton className="h-[400px] w-full rounded-xl" />
-        </Card>
+        <Skeleton className="h-[500px] w-full bg-white/5 rounded-[2.5rem]" />
       </div>
     );
   }
 
-  // Sort suppliers by overall risk (highest first)
   const sortedSuppliers = [...riskData].sort((a, b) => b.overallRisk - a.overallRisk);
 
   return (
-    <div className="space-y-6">
-      {/* Risk Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="p-4 border-emerald-500/30 bg-success/5">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-3 h-3 rounded-full bg-success" />
-            <span className="text-sm text-muted-foreground">Risco Baixo</span>
-          </div>
-          <p className="text-2xl font-bold text-success">
-            {riskData.filter(s => s.overallRisk <= 25).length}
-          </p>
-          <p className="text-xs text-muted-foreground">fornecedores</p>
-        </Card>
-        <Card className="p-4 border-amber-500/30 bg-warning/5">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-3 h-3 rounded-full bg-warning" />
-            <span className="text-sm text-muted-foreground">Risco Médio</span>
-          </div>
-          <p className="text-2xl font-bold text-warning">
-            {riskData.filter(s => s.overallRisk > 25 && s.overallRisk <= 50).length}
-          </p>
-          <p className="text-xs text-muted-foreground">fornecedores</p>
-        </Card>
-        <Card className="p-4 border-orange-500/30 bg-warning/5">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-3 h-3 rounded-full bg-warning" />
-            <span className="text-sm text-muted-foreground">Risco Alto</span>
-          </div>
-          <p className="text-2xl font-bold text-warning">
-            {riskData.filter(s => s.overallRisk > 50 && s.overallRisk <= 75).length}
-          </p>
-          <p className="text-xs text-muted-foreground">fornecedores</p>
-        </Card>
-        <Card className="p-4 border-red-500/30 bg-destructive/5">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-3 h-3 rounded-full bg-destructive" />
-            <span className="text-sm text-muted-foreground">Risco Crítico</span>
-          </div>
-          <p className="text-2xl font-bold text-destructive">
-            {riskData.filter(s => s.overallRisk > 75).length}
-          </p>
-          <p className="text-xs text-muted-foreground">fornecedores</p>
-        </Card>
+    <div className="space-y-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {[
+          { label: 'Low Risk', count: riskData.filter(s => s.overallRisk <= 25).length, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
+          { label: 'Moderate', count: riskData.filter(s => s.overallRisk > 25 && s.overallRisk <= 50).length, color: 'text-amber-400', bg: 'bg-amber-500/10' },
+          { label: 'High Risk', count: riskData.filter(s => s.overallRisk > 50 && s.overallRisk <= 75).length, color: 'text-orange-500', bg: 'bg-orange-500/10' },
+          { label: 'Critical', count: riskData.filter(s => s.overallRisk > 75).length, color: 'text-rose-400', bg: 'bg-rose-500/10' }
+        ].map((item, i) => (
+          <Card key={i} className={cn("p-6 border-white/5 backdrop-blur-3xl rounded-[2rem] flex flex-col items-center", item.bg)}>
+            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-2">{item.label}</span>
+            <p className={cn("text-3xl font-black", item.color)}>{item.count}</p>
+          </Card>
+        ))}
       </div>
 
-      {/* Heat Map */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-primary" />
-          Mapa de Calor de Riscos
+      <Card className="p-8 bg-white/[0.02] border-white/5 rounded-[2.5rem] backdrop-blur-3xl overflow-hidden shadow-2xl">
+        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 mb-8 flex items-center gap-3">
+          <Zap className="w-4 h-4 text-amber-400" />
+          Intelligence Risk Matrix
         </h3>
 
         <div className="overflow-x-auto">
@@ -210,119 +150,82 @@ export const RiskHeatMap = () => {
             <table className="w-full">
               <thead>
                 <tr>
-                  <th className="text-left p-2 text-sm font-medium text-muted-foreground w-40">
-                    Fornecedor
-                  </th>
+                  <th className="text-left py-6 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Partner Entity</th>
                   {riskCategories.map(cat => (
-                    <th key={cat.key} className="p-2 text-center">
+                    <th key={cat.key} className="p-4 text-center">
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button type="button" className="flex flex-col items-center gap-1 cursor-help w-full bg-transparent border-0">
-                            <cat.icon className="w-4 h-4 text-muted-foreground" />
-                            <span className="text-xs text-muted-foreground">{cat.label}</span>
-                          </button>
+                          <div className="flex flex-col items-center gap-2 cursor-help opacity-60 hover:opacity-100 transition-opacity">
+                            <cat.icon className="w-4 h-4 text-zinc-400" />
+                            <span className="text-[9px] font-black uppercase tracking-widest">{cat.label}</span>
+                          </div>
                         </TooltipTrigger>
-                        <TooltipContent>
-                          <p>{cat.description}</p>
+                        <TooltipContent className="bg-[#0a0a0f] border-white/10 p-3 rounded-xl">
+                          <p className="text-xs font-bold text-white uppercase tracking-widest">{cat.description}</p>
                         </TooltipContent>
                       </Tooltip>
                     </th>
                   ))}
-                  <th className="p-2 text-center text-sm font-medium text-muted-foreground">
-                    Geral
-                  </th>
-                  <th className="p-2 text-center text-sm font-medium text-muted-foreground">
-                    Volume
-                  </th>
+                  <th className="p-4 text-center text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Composite</th>
+                  <th className="p-4 text-center text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Network Vol</th>
                 </tr>
               </thead>
               <tbody>
                 {sortedSuppliers.map(supplier => {
                   const overallColor = getRiskColor(supplier.overallRisk);
-                  
                   return (
-                    <tr key={supplier.supplierId} className="border-t border-border">
-                      <td className="p-2">
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium text-sm text-foreground truncate max-w-[120px]">
+                    <tr key={supplier.supplierId} className="border-t border-white/5 group hover:bg-white/[0.01] transition-colors">
+                      <td className="py-6 px-4">
+                        <div className="flex items-center gap-3">
+                          <span className="font-black text-xs text-white uppercase tracking-tight truncate max-w-[150px]">
                             {supplier.supplierName}
                           </span>
-                          {supplier.trend === 'improving' && (
-                            <TrendingDown className="w-3 h-3 text-success" />
-                          )}
-                          {supplier.trend === 'worsening' && (
-                            <TrendingUp className="w-3 h-3 text-destructive" />
-                          )}
+                          {supplier.trend === 'improving' && <TrendingDown className="w-3 h-3 text-emerald-400" />}
+                          {supplier.trend === 'worsening' && <TrendingUp className="w-3 h-3 text-rose-400" />}
                         </div>
-                        <Badge variant="outline" className="text-[9px] mt-1">
+                        <Badge variant="outline" className="text-[8px] mt-2 font-black uppercase tracking-[0.2em] border-zinc-800 text-zinc-500">
                           {supplier.category}
                         </Badge>
                       </td>
-                      
                       {riskCategories.map(cat => {
                         const value = supplier.risks[cat.key as keyof typeof supplier.risks];
                         const color = getRiskColor(value);
-                        const isHovered = hoveredCell?.supplier === supplier.supplierId && 
-                                         hoveredCell?.category === cat.key;
-                        
                         return (
                           <td key={cat.key} className="p-2">
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <button
-                                  type="button"
+                                <motion.div
+                                  whileHover={{ scale: 1.1 }}
                                   className={cn(
-                                    "w-12 h-12 mx-auto rounded-lg flex items-center justify-center transition-all cursor-pointer border-0 bg-transparent",
-                                    color.light,
-                                    isHovered && "ring-2 ring-primary scale-110"
+                                    "w-12 h-12 mx-auto rounded-xl flex items-center justify-center transition-all cursor-crosshair border border-transparent",
+                                    color.bg,
+                                    hoveredCell?.supplier === supplier.supplierId && hoveredCell?.category === cat.key && "ring-1 ring-white/20 border-white/10"
                                   )}
-                                  onMouseEnter={() => setHoveredCell({ 
-                                    supplier: supplier.supplierId, 
-                                    category: cat.key 
-                                  })}
+                                  onMouseEnter={() => setHoveredCell({ supplier: supplier.supplierId, category: cat.key })}
                                   onMouseLeave={() => setHoveredCell(null)}
                                 >
-                                  <span className={cn("text-sm font-bold", color.text)}>
-                                    {value}
-                                  </span>
-                                </button>
+                                  <span className={cn("text-xs font-black", color.text)}>{value}</span>
+                                </motion.div>
                               </TooltipTrigger>
-                              <TooltipContent>
-                                <div className="space-y-1">
-                                  <p className="font-medium">{supplier.supplierName}</p>
-                                  <p className="text-sm">{cat.label}: {getRiskLabel(value)}</p>
-                                  <p className="text-xs text-muted-foreground">{cat.description}</p>
-                                </div>
+                              <TooltipContent className="bg-[#0a0a0f] border-white/10 p-3 rounded-xl shadow-2xl">
+                                <p className="text-[10px] font-black text-zinc-500 uppercase mb-1">{cat.label}</p>
+                                <p className={cn("text-xs font-black", color.text)}>EXPOSURE: {getRiskLabel(value)} ({value})</p>
                               </TooltipContent>
                             </Tooltip>
                           </td>
                         );
                       })}
-                      
-                      {/* Overall Risk */}
                       <td className="p-2">
-                        <div className={cn(
-                          "w-14 h-12 mx-auto rounded-lg flex flex-col items-center justify-center",
-                          overallColor.light
-                        )}>
-                          <span className={cn("text-lg font-bold", overallColor.text)}>
-                            {supplier.overallRisk}
-                          </span>
-                          <span className={cn("text-[9px]", overallColor.text)}>
-                            {getRiskLabel(supplier.overallRisk)}
-                          </span>
+                        <div className={cn("w-16 h-12 mx-auto rounded-xl flex flex-col items-center justify-center border", overallColor.bg, overallColor.border)}>
+                          <span className={cn("text-lg font-black", overallColor.text)}>{supplier.overallRisk}</span>
+                          <span className={cn("text-[8px] font-black tracking-widest", overallColor.text)}>{getRiskLabel(supplier.overallRisk)}</span>
                         </div>
                       </td>
-                      
-                      {/* Volume */}
-                      <td className="p-2 text-center">
-                        <div className="flex flex-col items-center">
-                          <span className="text-sm font-medium text-foreground">{supplier.volume}%</span>
-                          <div className="w-12 h-1.5 bg-muted rounded-full mt-1 overflow-hidden">
-                            <div 
-                              className="h-full bg-primary rounded-full"
-                              style={{ width: `${supplier.volume}%` }}
-                            />
+                      <td className="p-4 text-center">
+                        <div className="flex flex-col items-center gap-2">
+                          <span className="text-[10px] font-black text-white">{supplier.volume}%</span>
+                          <div className="w-16 h-1 bg-white/5 rounded-full overflow-hidden">
+                            <motion.div initial={{ width: 0 }} animate={{ width: `${supplier.volume}%` }} className="h-full bg-emerald-500" />
                           </div>
                         </div>
                       </td>
@@ -333,63 +236,32 @@ export const RiskHeatMap = () => {
             </table>
           </TooltipProvider>
         </div>
-
-        {/* Legend */}
-        <div className="mt-6 pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground mb-2">Legenda de Risco:</p>
-          <div className="flex items-center gap-6">
-            {[
-              { range: '0-25', label: 'Baixo', color: 'bg-success' },
-              { range: '26-50', label: 'Médio', color: 'bg-warning' },
-              { range: '51-75', label: 'Alto', color: 'bg-warning' },
-              { range: '76-100', label: 'Crítico', color: 'bg-destructive' }
-            ].map(item => (
-              <div key={item.label} className="flex items-center gap-2">
-                <div className={cn("w-3 h-3 rounded", item.color)} />
-                <span className="text-xs text-muted-foreground">
-                  {item.label} ({item.range})
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
       </Card>
 
-      {/* Risk Alerts */}
-      <Card className="p-6 border-red-500/30 bg-destructive/5">
-        <h3 className="text-lg font-semibold text-destructive mb-4 flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5" />
-          Alertas de Risco Prioritários
+      <Card className="p-8 border-rose-500/20 bg-rose-500/[0.02] rounded-[2.5rem] backdrop-blur-3xl shadow-2xl">
+        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-rose-400 mb-8 flex items-center gap-3">
+          <AlertTriangle className="w-4 h-4" />
+          Critical Exposure Alerts
         </h3>
-        <div className="space-y-3">
-          {sortedSuppliers
-            .filter(s => s.overallRisk > 50)
-            .map(supplier => (
-              <div key={supplier.supplierId} className="flex items-start gap-3 p-3 rounded-lg bg-background/50">
-                <div className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center",
-                  getRiskColor(supplier.overallRisk).light
-                )}>
-                  <AlertTriangle className={cn("w-4 h-4", getRiskColor(supplier.overallRisk).text)} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <AnimatePresence>
+            {sortedSuppliers.filter(s => s.overallRisk > 50).map((supplier, i) => (
+              <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }} key={supplier.supplierId} className="flex items-start gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/5 group hover:border-rose-500/20 transition-all">
+                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center", getRiskColor(supplier.overallRisk).bg)}>
+                  <AlertTriangle className={cn("w-5 h-5", getRiskColor(supplier.overallRisk).text)} />
                 </div>
                 <div className="flex-1">
-                  <p className="font-medium text-foreground">{supplier.supplierName}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {Object.entries(supplier.risks)
-                      .filter(([_, v]) => v > 50)
-                      .map(([k]) => riskCategories.find(c => c.key === k)?.label)
-                      .join(', ')} acima do limite
+                  <p className="font-black text-white uppercase text-xs tracking-tight group-hover:text-rose-400 transition-colors">{supplier.supplierName}</p>
+                  <p className="text-[10px] text-zinc-500 font-black uppercase tracking-widest mt-1">
+                    {Object.entries(supplier.risks).filter(([_, v]) => v > 50).map(([k]) => riskCategories.find(c => c.key === k)?.label).join(' • ')} Critical
                   </p>
                 </div>
-                <Badge className={cn(
-                  "text-[10px]",
-                  getRiskColor(supplier.overallRisk).light,
-                  getRiskColor(supplier.overallRisk).text
-                )}>
-                  Risco {supplier.overallRisk}
+                <Badge variant="outline" className={cn("text-[9px] font-black border-none px-3 py-1", getRiskColor(supplier.overallRisk).bg, getRiskColor(supplier.overallRisk).text)}>
+                  RISK {supplier.overallRisk}
                 </Badge>
-              </div>
+              </motion.div>
             ))}
+          </AnimatePresence>
         </div>
       </Card>
     </div>
