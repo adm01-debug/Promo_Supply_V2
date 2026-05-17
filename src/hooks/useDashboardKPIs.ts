@@ -6,6 +6,7 @@ import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterva
 import { useRealtimeSubscription } from './useRealtimeSubscription';
 import { useSLASettings } from '@/stores/slaSettingsStore';
 import { logger } from '@/lib/logger';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface DashboardKPIs {
   aguardandoCotacao: number;
