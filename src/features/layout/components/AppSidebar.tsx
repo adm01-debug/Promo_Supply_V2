@@ -33,7 +33,8 @@ import {
   Gavel,
   LogOut,
   Settings,
-  Settings2
+  Settings2,
+  Boxes
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
@@ -80,6 +81,7 @@ const sections: NavSection[] = [
       { title: "Recebimento", icon: ClipboardCheck, href: "/recebimento" },
       { title: "Devoluções", icon: RotateCcw, href: "/devolucoes" },
       { title: "Catálogo", icon: Package, href: "/catalogo-produtos" },
+      { title: "Estoque", icon: Boxes, href: "/estoque" },
     ],
   },
   {
