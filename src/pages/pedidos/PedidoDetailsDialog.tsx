@@ -8,9 +8,10 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { usePedidos } from "@/features/pedidos";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { type Pedido } from "@/features/pedidos";
+import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -40,12 +41,29 @@ interface Props {
 
 export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
   const { updateStatus } = usePedidos();
+  const queryClient = useQueryClient();
   
   const handleUpdateStatus = async (newStatus: Pedido['status']) => {
     if (!pedido) return;
     const success = await updateStatus(pedido.id, newStatus);
     if (success) {
       // Pedido is updated in react-query cache by hook
+    }
+  };
+
+  const handleUpdateItemProdStatus = async (itemId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from('pedido_itens')
+        .update({ status_producao: newStatus } as any)
+        .eq('id', itemId);
+      
+      if (error) throw error;
+      
+      queryClient.invalidateQueries({ queryKey: ['pedido-itens-extended', pedido?.id] });
+      toast.success('Estado de produção atualizado');
+    } catch (err: any) {
+      toast.error('Erro ao atualizar produção: ' + err.message);
     }
   };
 
@@ -299,10 +317,14 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                                   const isActive = statusProd === step.id;
                                   const isPast = prodSteps.findIndex(s => s.id === statusProd) > idx;
                                   return (
-                                    <div key={step.id} className="relative z-10 flex flex-col items-center group">
+                                    <div 
+                                      key={step.id} 
+                                      className="relative z-10 flex flex-col items-center group cursor-pointer"
+                                      onClick={() => handleUpdateItemProdStatus(item.id, step.id)}
+                                    >
                                       <div className={cn(
-                                        "w-3 h-3 rounded-full border-2 transition-all",
-                                        isActive ? "bg-violet-500 border-white scale-125 shadow-[0_0_10px_rgba(139,92,246,0.5)]" : 
+                                        "w-4 h-4 rounded-full border-2 transition-all hover:scale-125",
+                                        isActive ? "bg-violet-500 border-white scale-110 shadow-[0_0_10px_rgba(139,92,246,0.5)]" : 
                                         isPast ? "bg-emerald-500 border-emerald-500/50" : "bg-zinc-800 border-white/10"
                                       )} />
                                       <span className={cn(
