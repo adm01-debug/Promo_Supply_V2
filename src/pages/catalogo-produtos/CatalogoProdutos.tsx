@@ -24,6 +24,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { useProdutos, type Produto } from "@/hooks/useProdutos";
+import { ProductSupplierManager } from "@/components/compras/ProductSupplierManager";
 import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/ui/page-header";
 import { useAutoImageCompression } from "@/hooks/useImageCompression";
@@ -356,6 +357,14 @@ const CatalogoProdutos = () => {
             <DialogTitle>{editing ? "Editar Produto" : "Novo Produto"}</DialogTitle>
           </DialogHeader>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
+            {editing?.id && (
+              <div className="md:col-span-2 mb-4">
+                <ProductSupplierManager 
+                  produtoId={editing.id} 
+                  produtoNome={editing.nome || ""} 
+                />
+              </div>
+            )}
             <div className="md:col-span-2 flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors relative group">
               {formData.imagem_url ? (
                 <div className="relative w-full aspect-video max-h-48 rounded-lg overflow-hidden border">
