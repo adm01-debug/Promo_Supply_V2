@@ -94,7 +94,7 @@ const Cotacao = () => {
   const handleBuscarCotacoes = async () => {
     setBuscaStatus('searching');
     try {
-      const results = await simulateAPISearch(fornecedores, solicitacao?.quantidade || 100);
+      const results = await simulateAPISearch(fornecedores, solicitacao?.quantidade || 100, solicitacao?.produto_id);
       setCotacoesAPI(results);
       setBuscaStatus('done');
       toast.success(`${results.length} optimized quotes discovered`);
