@@ -93,7 +93,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
           prazo_entrega: input.prazo_entrega || 7, validade_proposta: input.validade_proposta,
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
           organization_id: organizationId,
-          tenant_id: organizationId as any,
+          tenant_id: organizationId,
         } as any)
         .select().single();
       if (error) {
