@@ -54,6 +54,7 @@ const DemandPredictionPanel = lazy(() => import("@/components/compras/DemandPred
 const RiskHeatMap = lazy(() => import("@/components/compras/RiskHeatMap").then(m => ({ default: m.RiskHeatMap })));
 const DashboardInsights = lazy(() => import("@/components/compras/DashboardInsights").then(m => ({ default: m.DashboardInsights })));
 const ActiveSourcingWidget = lazy(() => import("@/components/compras/ActiveSourcingWidget").then(m => ({ default: m.ActiveSourcingWidget })));
+const SourcingIntelligenceWidget = lazy(() => import("@/components/compras/SourcingIntelligenceWidget").then(m => ({ default: m.SourcingIntelligenceWidget })));
 
 const LazyPanel = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<Skeleton variant="card" />}>
@@ -239,6 +240,7 @@ const ComprasDashboard = () => {
       case 'risk-heatmap': return <LazyPanel><RiskHeatMap /></LazyPanel>;
       case 'dashboard-insights': return <LazyPanel><DashboardInsights /></LazyPanel>;
       case 'active-sourcing': return <LazyPanel><ActiveSourcingWidget /></LazyPanel>;
+      case 'sourcing-intelligence': return <LazyPanel><SourcingIntelligenceWidget /></LazyPanel>;
       default: return null;
     }
   }, [loading, kpis, pipeline, urgentItems, t]);
@@ -348,6 +350,7 @@ const ComprasDashboard = () => {
           <div className="lg:col-span-3 space-y-8">
             {getWidgetComponent('chart-pipeline')}
             {getWidgetComponent('trend-charts')}
+            {getWidgetComponent('sourcing-intelligence')}
             {getWidgetComponent('dashboard-insights')}
           </div>
           <div className="space-y-8">

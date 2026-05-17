@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { 
   FileText, Search, Download, Building2, Calendar, Clock,
   CheckCircle2, Truck, Package, X, ArrowUpDown, ChevronDown, RefreshCw, Trash2, BarChart3,
-  Filter, MoreHorizontal, Copy, List
+  Filter, MoreHorizontal, Copy, List, Zap, Activity
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -39,6 +39,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
   em_transito: { label: 'IN TRANSIT', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
   entregue: { label: 'FULFILLED', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
   cancelado: { label: 'VOIDED', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: X },
+  parcial: { label: 'PARTIAL', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Package },
 };
 
 const Pedidos = () => {
@@ -136,13 +137,23 @@ const Pedidos = () => {
         <div className="space-y-10 pb-20">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
             <div className="flex items-center gap-5">
-              <div className="w-16 h-16 bg-violet-500/10 rounded-[2rem] flex items-center justify-center text-violet-400 shadow-inner border border-violet-500/10">
+              <div className="w-16 h-16 bg-violet-500/10 rounded-[2rem] flex items-center justify-center text-violet-400 shadow-inner border border-violet-500/10 relative group">
                 <FileText className="w-8 h-8" />
+                <motion.div 
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="absolute -top-1 -right-1 w-5 h-5 bg-fuchsia-500 rounded-full flex items-center justify-center border-2 border-[#0a0a0f]"
+                >
+                  <Zap className="w-3 h-3 text-white" />
+                </motion.div>
               </div>
               <div>
                 <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Surveillance Core</h1>
                 <div className="flex items-center gap-3 mt-3">
                    <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-violet-500/30 text-violet-300 px-3 py-1">{filteredPedidos.length} Active Orders</Badge>
+                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-fuchsia-500/30 text-fuchsia-300 px-3 py-1 flex gap-2">
+                     <Activity className="w-3 h-3" /> 4 New Handoffs
+                   </Badge>
                    <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Fulfillment Neural Network</span>
                 </div>
               </div>
@@ -233,6 +244,7 @@ const Pedidos = () => {
                       <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 py-6">Reference</TableHead>
                       <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Supplier Entity</TableHead>
                       <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Logistics State</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">SLA Health</TableHead>
                       <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-right pr-10">Total Volume</TableHead>
                       <TableHead className="w-20 pr-6"></TableHead>
                     </TableRow>
@@ -273,6 +285,26 @@ const Pedidos = () => {
                                 <StatusIcon className="w-3 h-3" />
                                 {config.label}
                               </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <div className="w-24 h-1.5 rounded-full bg-white/5 overflow-hidden">
+                                  <motion.div 
+                                    initial={{ width: 0 }}
+                                    animate={{ width: index % 3 === 0 ? '40%' : '85%' }}
+                                    className={cn(
+                                      "h-full rounded-full",
+                                      index % 3 === 0 ? "bg-amber-500" : "bg-emerald-500"
+                                    )} 
+                                  />
+                                </div>
+                                <span className={cn(
+                                  "text-[10px] font-black uppercase tracking-tighter",
+                                  index % 3 === 0 ? "text-amber-400" : "text-emerald-400"
+                                )}>
+                                  {index % 3 === 0 ? "ATTENTION" : "ON TRACK"}
+                                </span>
+                              </div>
                             </TableCell>
                             <TableCell className="text-right pr-10">
                               <span className="font-black text-white text-base tracking-tighter">
