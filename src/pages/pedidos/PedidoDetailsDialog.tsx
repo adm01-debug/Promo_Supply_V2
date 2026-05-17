@@ -1,4 +1,4 @@
-import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle } from "lucide-react";
+import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,14 +7,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { type Pedido } from "@/features/pedidos";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
-const statusConfig: Record<string, { label: string; color: string }> = {
-  pendente: { label: 'Pendente', color: 'bg-warning/10 text-warning border-yellow-500/20' },
-  aprovado: { label: 'Aprovado', color: 'bg-info/10 text-info border-blue-500/20' },
-  enviado: { label: 'Enviado', color: 'bg-indigo-500/10 text-indigo-600 border-indigo-500/20' },
-  em_transito: { label: 'Em Trânsito', color: 'bg-purple-500/10 text-purple-600 border-purple-500/20' },
-  entregue: { label: 'Entregue', color: 'bg-success/10 text-success border-green-500/20' },
-  cancelado: { label: 'Cancelado', color: 'bg-destructive/10 text-destructive border-red-500/20' },
+const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
+  pendente: { label: 'PENDING', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
+  aprovado: { label: 'APPROVED', color: 'bg-sky-500/10 text-sky-400 border-sky-500/20', icon: CheckCircle2 },
+  enviado: { label: 'DISPATCHED', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },
+  em_transito: { label: 'IN TRANSIT', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
+  entregue: { label: 'FULFILLED', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
+  cancelado: { label: 'VOIDED', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: Info },
 };
 
 interface Props {
@@ -25,92 +27,160 @@ interface Props {
 
 export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
   if (!pedido) return null;
+  const config = statusConfig[pedido.status] || statusConfig["pendente"];
+  const StatusIcon = config.icon;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent aria-describedby="dialog-desc" className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-primary" />
-            Detalhes do Pedido
-          </DialogTitle>
+      <DialogContent aria-describedby="dialog-desc" className="max-w-4xl p-0 bg-[#0a0a0f] border-white/5 rounded-[2.5rem] overflow-hidden backdrop-blur-3xl shadow-2xl">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-sky-600" />
+        
+        <DialogHeader className="p-8 pb-0">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center border shadow-inner", config.color)}>
+                <StatusIcon className="w-7 h-7" />
+              </div>
+              <div>
+                <DialogTitle className="text-3xl font-black text-white tracking-tighter uppercase font-mono">
+                   {pedido.numero}
+                </DialogTitle>
+                <p className="text-[10px] text-zinc-500 font-black uppercase tracking-[0.2em] mt-1.5 flex items-center gap-2">
+                   <Calendar className="w-3 h-3" />
+                   Issued: {format(new Date(pedido.data_emissao), 'dd MMM yyyy')}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+               <Badge className={cn("px-5 py-2 rounded-full font-black text-[10px] tracking-widest uppercase border-none", config.color)}>
+                 {config.label}
+               </Badge>
+               <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/5 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer">
+                 <Zap className="w-4 h-4" />
+               </div>
+            </div>
+          </div>
         </DialogHeader>
 
-        <div className="space-y-6">
-          <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
-            <div>
-              <p className="text-2xl font-bold text-primary font-mono">{pedido.numero}</p>
-              <p className="text-sm text-muted-foreground">
-                Emitido em {format(new Date(pedido.data_emissao), 'dd/MM/yyyy', { locale: ptBR })}
-              </p>
-            </div>
-            <Badge variant="outline" className={statusConfig[pedido.status]?.color}>
-              {statusConfig[pedido.status]?.label}
-            </Badge>
-          </div>
-
-          <Tabs defaultValue="geral">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="geral">Geral</TabsTrigger>
-              <TabsTrigger value="financeiro">Financeiro</TabsTrigger>
-              <TabsTrigger value="timeline">Timeline</TabsTrigger>
+        <div className="p-8">
+          <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="w-full grid grid-cols-3 bg-white/[0.03] border border-white/5 h-14 p-1 rounded-2xl mb-8">
+              <TabsTrigger value="overview" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">SURVEILLANCE</TabsTrigger>
+              <TabsTrigger value="financial" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">FINANCIALS</TabsTrigger>
+              <TabsTrigger value="history" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">AUDIT LOG</TabsTrigger>
             </TabsList>
 
-            <TabsContent value="geral" className="space-y-4 mt-4">
-              <Card className="p-4">
-                <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <Building2 className="w-4 h-4 text-primary" />Fornecedor
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div><p className="text-xs text-muted-foreground">Razão Social</p><p className="font-medium">{pedido.fornecedor?.razao_social || '-'}</p></div>
-                  <div><p className="text-xs text-muted-foreground">Nome Fantasia</p><p className="font-medium">{pedido.fornecedor?.nome_fantasia || '-'}</p></div>
-                </div>
-                <div className="flex gap-2 mt-3">
-                  <Button variant="outline" size="sm"><Mail className="w-4 h-4 mr-2" />E-mail</Button>
-                  <Button variant="outline" size="sm"><MessageCircle className="w-4 h-4 mr-2" />WhatsApp</Button>
-                </div>
-              </Card>
-              <Card className="p-4">
-                <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-primary" />Datas
-                </h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div><p className="text-xs text-muted-foreground">Data de Emissão</p><p className="font-medium">{format(new Date(pedido.data_emissao), "dd/MM/yyyy", { locale: ptBR })}</p></div>
-                  <div><p className="text-xs text-muted-foreground">Previsão de Entrega</p><p className="font-medium">{pedido.data_previsao ? format(new Date(pedido.data_previsao), "dd/MM/yyyy", { locale: ptBR }) : '-'}</p></div>
-                  {pedido.data_entrega && <div><p className="text-xs text-muted-foreground">Data de Entrega</p><p className="font-medium text-success">{format(new Date(pedido.data_entrega), "dd/MM/yyyy", { locale: ptBR })}</p></div>}
-                </div>
-              </Card>
-              {pedido.observacoes && <Card className="p-4"><h3 className="font-semibold text-foreground mb-2">Observações</h3><p className="text-sm text-muted-foreground">{pedido.observacoes}</p></Card>}
-            </TabsContent>
+            <AnimatePresence mode="wait">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
+                <TabsContent value="overview" className="mt-0 space-y-6 focus-visible:ring-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 flex items-center gap-2">
+                        <Building2 className="w-4 h-4 text-violet-400" />
+                        Supplier Entity
+                      </h3>
+                      <div className="space-y-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center font-black text-zinc-400 uppercase tracking-tighter">
+                            {pedido.fornecedor?.razao_social?.slice(0, 2)}
+                          </div>
+                          <div>
+                            <p className="font-black text-white uppercase text-sm tracking-tight leading-tight">{pedido.fornecedor?.razao_social || 'REDACTED ENTITY'}</p>
+                            <p className="text-[10px] text-zinc-600 font-black uppercase mt-1 tracking-widest">Authorized Provider</p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3 pt-2">
+                          <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
+                            <Mail className="w-3.5 h-3.5 mr-2" /> ENCRYPTED MAIL
+                          </Button>
+                          <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
+                            <MessageCircle className="w-3.5 h-3.5 mr-2" /> COMMS HUB
+                          </Button>
+                        </div>
+                      </div>
+                    </Card>
 
-            <TabsContent value="financeiro" className="space-y-4 mt-4">
-              <Card className="p-4">
-                <h3 className="font-semibold text-foreground mb-3 flex items-center gap-2">
-                  <DollarSign className="w-4 h-4 text-primary" />Resumo Financeiro
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Subtotal</span>
-                    <span className="font-medium">{(pedido.valor_total - (pedido.valor_frete || 0) + (pedido.desconto || 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                    <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-violet-400" />
+                        Neural Timeline
+                      </h3>
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-1">
+                          <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Emission Cycle</p>
+                          <p className="font-black text-white text-sm uppercase">{format(new Date(pedido.data_emissao), "dd MMM yyyy")}</p>
+                        </div>
+                        <div className="space-y-1">
+                          <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Neural Forecast</p>
+                          <p className="font-black text-sky-400 text-sm uppercase">{pedido.data_previsao ? format(new Date(pedido.data_previsao), "dd MMM yyyy") : 'UNSCHEDULED'}</p>
+                        </div>
+                        {pedido.data_entrega && (
+                          <div className="col-span-2 pt-2 border-t border-white/5">
+                            <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">Confirmation Vector</p>
+                            <p className="font-black text-emerald-400 text-sm uppercase flex items-center gap-2">
+                               <CheckCircle2 className="w-4 h-4" />
+                               Fulfilled on {format(new Date(pedido.data_entrega), "dd MMM yyyy")}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </Card>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Frete</span>
-                    <span className="font-medium">{(pedido.valor_frete || 0) > 0 ? (pedido.valor_frete || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'Grátis'}</span>
-                  </div>
-                  <div className="flex justify-between font-bold text-lg border-t pt-2">
-                    <span>Total</span>
-                    <span className="text-primary">{pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                  </div>
-                </div>
-              </Card>
-            </TabsContent>
 
-            <TabsContent value="timeline" className="mt-4">
-              <Card className="p-4">
-                <p className="text-sm text-muted-foreground">Timeline do pedido será exibida aqui.</p>
-              </Card>
-            </TabsContent>
+                  {pedido.observacoes && (
+                    <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-3 flex items-center gap-2">
+                        <Info className="w-4 h-4 text-violet-400" />
+                        Executive Briefing
+                      </h3>
+                      <p className="text-xs text-zinc-300 font-bold leading-relaxed">{pedido.observacoes}</p>
+                    </Card>
+                  )}
+                </TabsContent>
+
+                <TabsContent value="financial" className="mt-0 space-y-6 focus-visible:ring-0">
+                  <Card className="p-8 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-8 flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-emerald-400" />
+                      Financial Intelligence
+                    </h3>
+                    <div className="space-y-6">
+                      <div className="flex justify-between items-center text-zinc-500 font-black uppercase tracking-widest text-[10px]">
+                        <span>Gross Subtotal</span>
+                        <span className="text-white text-sm">{(pedido.valor_total - (pedido.valor_frete || 0) + (pedido.desconto || 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                      </div>
+                      <div className="flex justify-between items-center text-zinc-500 font-black uppercase tracking-widest text-[10px]">
+                        <span>Logistics Overhead</span>
+                        <span className={cn("text-sm", (pedido.valor_frete || 0) > 0 ? "text-white" : "text-emerald-400")}>{(pedido.valor_frete || 0) > 0 ? (pedido.valor_frete || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'ZERO COST'}</span>
+                      </div>
+                      <div className="pt-6 border-t border-white/10 flex justify-between items-end">
+                        <div className="space-y-1">
+                           <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">Net Liquidity Value</p>
+                           <p className="text-4xl font-black text-white tracking-tighter">{pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                        </div>
+                        <Badge variant="outline" className="mb-1 text-[10px] font-black border-emerald-500/30 text-emerald-400 px-4 py-1.5 uppercase tracking-widest bg-emerald-500/10">
+                           SECURED ASSET
+                        </Badge>
+                      </div>
+                    </div>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="history" className="mt-0 focus-visible:ring-0">
+                  <Card className="p-12 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl text-center">
+                    <Clock className="w-12 h-12 text-zinc-700 mx-auto mb-6 opacity-30" />
+                    <h4 className="text-xs font-black text-zinc-500 uppercase tracking-[0.3em]">Neural History Stream</h4>
+                    <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest mt-2">Initializing historical audit log vectors...</p>
+                  </Card>
+                </TabsContent>
+              </motion.div>
+            </AnimatePresence>
           </Tabs>
+        </div>
+
+        <div className="p-8 pt-0 flex justify-end gap-3">
+           <Button variant="ghost" onClick={() => onOpenChange(false)} className="rounded-xl font-black text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white hover:bg-white/5">CLOSE BRIEFING</Button>
+           <Button className="rounded-xl px-8 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none font-black text-[10px] uppercase tracking-widest shadow-lg shadow-violet-500/20">AUTHORIZE RE-DISPATCH</Button>
         </div>
       </DialogContent>
     </Dialog>
