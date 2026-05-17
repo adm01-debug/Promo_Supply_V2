@@ -352,7 +352,7 @@ const CatalogoProdutos = () => {
       )}
 
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editing ? "Editar Produto" : "Novo Produto"}</DialogTitle>
           </DialogHeader>
