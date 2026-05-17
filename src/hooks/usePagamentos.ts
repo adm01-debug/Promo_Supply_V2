@@ -114,7 +114,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
           cost_center_id: input.cost_center_id,
           forma_pagamento: input.forma_pagamento, numero_nf: input.numero_nf,
           chave_nf: input.chave_nf, observacoes: input.observacoes, created_by: user.id,
-          tenant_id: organizationId || '00000000-0000-0000-0000-000000000000',
+          tenant_id: organizationId,
           organization_id: organizationId,
         } as any)
         .select().single();

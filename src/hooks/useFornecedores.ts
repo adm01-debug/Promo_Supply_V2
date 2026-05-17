@@ -53,7 +53,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
         .from('fornecedores')
         .select('id, codigo, razao_social, nome_fantasia, cnpj, email, telefone, endereco, cidade, estado, cep, website, tipo, segmento, status, avaliacao, condicoes_pagamento, prazo_medio_entrega, integrado_api, api_endpoint, observacoes, limite_credito, saldo_comprometido, created_at, updated_at, created_by')
         .order('razao_social', { ascending: true })
-        .eq('tenant_id', tenantId);
+        .eq('organization_id', tenantId);
 
       // Apply filters
       if (filters?.tipo && filters.tipo !== 'todos') {
@@ -151,6 +151,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
           condicoes_pagamento: input.condicoes_pagamento,
           observacoes: input.observacoes,
           created_by: user.id,
+          organization_id: tenantId,
           tenant_id: tenantId,
         } as any)
         .select()
@@ -291,7 +292,7 @@ export function useFornecedoresKPIs() {
         const { data, error } = await supabase
           .from('fornecedores')
           .select('status, integrado_api, avaliacao')
-          .eq('tenant_id', tenantId);
+          .eq('organization_id', tenantId);
 
         if (error) throw error;
 

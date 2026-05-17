@@ -38,7 +38,7 @@ export function useProdutoFornecedores(produtoId?: string) {
           )
         `)
         .eq("produto_id", produtoId)
-        .eq("tenant_id", tenantId);
+        .eq("organization_id", tenantId);
 
       if (error) throw error;
       
@@ -60,8 +60,8 @@ export function useProdutoFornecedores(produtoId?: string) {
         .from("produto_fornecedores")
         .insert({
           ...input,
+          organization_id: tenantId,
           tenant_id: tenantId,
-          organization_id: organizationId
         } as any)
         .select()
         .single();
