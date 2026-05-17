@@ -4988,6 +4988,7 @@ export type Database = {
           observacoes: string | null
           organization_id: string | null
           prioridade: string
+          produto_id: string | null
           quantidade: number
           solicitante_id: string | null
           status: string
@@ -5018,6 +5019,7 @@ export type Database = {
           observacoes?: string | null
           organization_id?: string | null
           prioridade?: string
+          produto_id?: string | null
           quantidade?: number
           solicitante_id?: string | null
           status?: string
@@ -5048,6 +5050,7 @@ export type Database = {
           observacoes?: string | null
           organization_id?: string | null
           prioridade?: string
+          produto_id?: string | null
           quantidade?: number
           solicitante_id?: string | null
           status?: string
@@ -5093,6 +5096,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
             referencedColumns: ["id"]
           },
           {
