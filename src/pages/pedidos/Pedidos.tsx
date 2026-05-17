@@ -20,6 +20,8 @@ import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { PedidoMobileCard } from "@/components/pedidos/PedidoMobileCard";
 import { PedidosKPIs } from "@/pages/pedidos/PedidosKPIs";
 import { PedidoDetailsDialog } from "@/pages/pedidos/PedidoDetailsDialog";
+import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
+import { type BulkItem, type BulkAction } from "@/components/compras/BulkOperationsPreview";
 import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import { usePedidos, usePedidosKPIs, type Pedido } from "@/features/pedidos";
@@ -50,9 +52,38 @@ const Pedidos = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const isMobile = useIsMobile();
-  const { pedidos, loading, refetch } = usePedidos();
+  const { pedidos, loading, refetch, bulkUpdateStatus, bulkDelete } = usePedidos();
   const { kpis } = usePedidosKPIs();
   const { fornecedores } = useFornecedores();
+
+  const bulkItems = useMemo((): BulkItem[] => {
+    return pedidos
+      .filter(p => selectedIds.includes(p.id))
+      .map(p => ({
+        id: p.id,
+        title: p.numero,
+        subtitle: p.fornecedor?.razao_social || 'REDACTED',
+        status: p.status,
+        value: p.valor_total
+      }));
+  }, [pedidos, selectedIds]);
+
+  const handleBulkExecute = async (action: BulkAction, itemIds: string[], options?: Record<string, any>) => {
+    if (action.id === 'change-status' || action.targetStatus) {
+      const targetStatus = (options?.targetStatus as Pedido['status']) || action.targetStatus;
+      if (targetStatus) {
+        const success = await bulkUpdateStatus(itemIds, targetStatus);
+        if (success) setSelectedIds([]);
+        return success;
+      }
+    }
+    if (action.id === 'delete') {
+      const success = await bulkDelete(itemIds);
+      if (success) setSelectedIds([]);
+      return success;
+    }
+    return false;
+  };
 
   const filteredPedidos = useMemo(() => {
     let result = pedidos.filter(pedido => {
@@ -266,6 +297,21 @@ const Pedidos = () => {
           </Card>
         </div>
       </ElitePageWrapper>
+
+      <EnhancedBulkActionsBar
+        entityType="pedidos"
+        selectedItems={bulkItems}
+        totalCount={filteredPedidos.length}
+        onSelectAll={handleSelectAll}
+        onDeselectAll={() => setSelectedIds([])}
+        onExecute={handleBulkExecute}
+        isAllSelected={selectedIds.length === filteredPedidos.length && filteredPedidos.length > 0}
+        statusOptions={Object.entries(statusConfig).map(([val, cfg]) => ({
+          value: val,
+          label: cfg.label,
+          color: cfg.color.split(' ')[0]
+        }))}
+      />
 
       <PedidoDetailsDialog open={detailsOpen} onOpenChange={setDetailsOpen} pedido={selectedPedido} />
     </ModuleErrorBoundary>
