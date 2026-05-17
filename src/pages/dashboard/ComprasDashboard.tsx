@@ -86,7 +86,7 @@ const ComprasDashboard = () => {
   }, [loadFromDb]);
 
   const { data: categories = [] } = useQuery({
-    queryKey: ['dashboard-filter-categories'],
+    queryKey: ['dashboard-filter-categories', currentFilters.category],
     queryFn: async () => {
       const { data, error } = await supabase.from('categorias').select('id, nome').order('nome');
       if (error) throw error;
@@ -95,7 +95,7 @@ const ComprasDashboard = () => {
   });
 
   const { data: suppliers = [] } = useQuery({
-    queryKey: ['dashboard-filter-suppliers'],
+    queryKey: ['dashboard-filter-suppliers', currentFilters.supplier],
     queryFn: async () => {
       const { data, error } = await supabase.from('fornecedores').select('id, razao_social').eq('status', 'ativo').order('razao_social');
       if (error) throw error;
