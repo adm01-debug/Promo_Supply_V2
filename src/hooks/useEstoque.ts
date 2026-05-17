@@ -65,7 +65,7 @@ export function useEstoque() {
         .insert({
           ...mov,
           organization_id: organizationId,
-        })
+        } as any)
         .select()
         .single();
 
@@ -88,7 +88,7 @@ export function useEstoque() {
         .insert({
           ...item,
           organization_id: organizationId,
-        })
+        } as any)
         .select()
         .single();
 
