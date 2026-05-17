@@ -5,72 +5,93 @@ import {
   TrendingUp,
   Award,
   Shield,
-  Users
+  Users,
+  Network,
+  Zap
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SupplierScorecard } from "@/components/compras/SupplierScorecard";
 import { RiskHeatMap } from "@/components/compras/RiskHeatMap";
 import { SupplierRankingPanel } from "@/components/compras/SupplierRankingPanel";
 import { SupplierAlertsPanel } from "@/components/compras/SupplierAlertsPanel";
+import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
+import { Badge } from "@/components/ui/badge";
+import { motion, AnimatePresence } from "framer-motion";
 
 const SupplierPerformance = () => {
   const [activeTab, setActiveTab] = useState("scorecard");
 
   return (
-    
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-              <Users className="w-7 h-7 text-primary" />
-              Performance de Fornecedores
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Scorecard, análise de riscos e métricas de desempenho
-            </p>
+    <ElitePageWrapper>
+      <div className="space-y-10 pb-20">
+        {/* Elite Header */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 bg-sky-500/10 rounded-[2rem] flex items-center justify-center text-sky-400 shadow-inner border border-sky-500/10">
+              <Zap className="w-8 h-8" />
+            </div>
+            <div>
+              <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>
+                Intelligence Hub
+              </h1>
+              <div className="flex items-center gap-3 mt-3">
+                 <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-sky-500/30 text-sky-400 px-3 py-1">Advanced Performance Analytics</Badge>
+                 <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Neural Network Monitoring</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* Elite Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="w-full grid grid-cols-4 h-auto p-1">
-            <TabsTrigger value="scorecard" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
-              <Award className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          <TabsList className="w-full grid grid-cols-4 h-16 p-1.5 bg-white/[0.02] border border-white/5 rounded-[1.5rem] backdrop-blur-3xl">
+            <TabsTrigger value="scorecard" className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest rounded-xl data-[state=active]:bg-white/[0.05] data-[state=active]:text-emerald-400 transition-all">
+              <Award className="w-4 h-4" />
               <span className="hidden sm:inline">Scorecard</span>
             </TabsTrigger>
-            <TabsTrigger value="heatmap" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
-              <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <TabsTrigger value="heatmap" className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest rounded-xl data-[state=active]:bg-white/[0.05] data-[state=active]:text-amber-400 transition-all">
+              <AlertTriangle className="w-4 h-4" />
               <span className="hidden sm:inline">Risk Map</span>
             </TabsTrigger>
-            <TabsTrigger value="ranking" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
-              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Ranking</span>
+            <TabsTrigger value="ranking" className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest rounded-xl data-[state=active]:bg-white/[0.05] data-[state=active]:text-sky-400 transition-all">
+              <TrendingUp className="w-4 h-4" />
+              <span className="hidden sm:inline">Rankings</span>
             </TabsTrigger>
-            <TabsTrigger value="alerts" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-2">
-              <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Alertas</span>
+            <TabsTrigger value="alerts" className="flex items-center gap-3 text-[10px] font-black uppercase tracking-widest rounded-xl data-[state=active]:bg-white/[0.05] data-[state=active]:text-rose-400 transition-all">
+              <Shield className="w-4 h-4" />
+              <span className="hidden sm:inline">Surveillance</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="scorecard" className="mt-6">
-            <SupplierScorecard />
-          </TabsContent>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: "circOut" }}
+              className="mt-10"
+            >
+              <TabsContent value="scorecard" className="mt-0 focus-visible:ring-0">
+                <SupplierScorecard />
+              </TabsContent>
 
-          <TabsContent value="heatmap" className="mt-6">
-            <RiskHeatMap />
-          </TabsContent>
+              <TabsContent value="heatmap" className="mt-0 focus-visible:ring-0">
+                <RiskHeatMap />
+              </TabsContent>
 
-          <TabsContent value="ranking" className="mt-6">
-            <SupplierRankingPanel />
-          </TabsContent>
+              <TabsContent value="ranking" className="mt-0 focus-visible:ring-0">
+                <SupplierRankingPanel />
+              </TabsContent>
 
-          <TabsContent value="alerts" className="mt-6">
-            <SupplierAlertsPanel />
-          </TabsContent>
+              <TabsContent value="alerts" className="mt-0 focus-visible:ring-0">
+                <SupplierAlertsPanel />
+              </TabsContent>
+            </motion.div>
+          </AnimatePresence>
         </Tabs>
       </div>
-    
+    </ElitePageWrapper>
   );
 };
 
