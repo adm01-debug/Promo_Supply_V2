@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Sparkles, TrendingDown, AlertTriangle, CheckCircle, Loader2, Brain, Target, DollarSign, History, Clock } from "lucide-react";
+import { 
+  Sparkles, TrendingDown, AlertTriangle, CheckCircle, 
+  Loader2, Brain, Target, DollarSign, History, Clock,
+  ArrowRight, ShieldCheck, Zap, Info
+} from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth";
