@@ -463,10 +463,10 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         return {
           ...s,
           comprador: profile ? profile.full_name : 'Não Atribuído',
-          urgencia: hasCriticalProduction ? 'crítico' : 'alto'
+          urgencia: hasCriticalProduction ? 'critico' : 'alto'
         };
       })
-      .sort((a, b) => (a.urgencia === 'crítico' ? -1 : 1))
+      .sort((a, b) => (a.urgencia === 'critico' ? -1 : 1))
       .slice(0, 10);
 
     return { kpis, pipeline, urgentItems };
