@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { motion, AnimatePresence } from "framer-motion";
 
 interface SupplierScore {
   id: string;
@@ -29,26 +30,26 @@ const WEIGHTS = {
 
 const getRankIcon = (position: number) => {
   switch (position) {
-    case 0: return <Trophy className="h-5 w-5 text-warning" />;
-    case 1: return <Medal className="h-5 w-5 text-muted-foreground" />;
-    case 2: return <Medal className="h-5 w-5 text-warning" />;
-    default: return <span className="text-sm font-bold text-muted-foreground w-5 text-center">{position + 1}</span>;
+    case 0: return <Trophy className="h-5 w-5 text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.3)]" />;
+    case 1: return <Medal className="h-5 w-5 text-zinc-400" />;
+    case 2: return <Medal className="h-5 w-5 text-orange-600" />;
+    default: return <span className="text-[10px] font-black text-zinc-600 w-5 text-center">{position + 1}</span>;
   }
 };
 
 const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
   switch (trend) {
-    case 'up': return <TrendingUp className="h-4 w-4 text-success" />;
-    case 'down': return <TrendingDown className="h-4 w-4 text-destructive" />;
-    default: return <span className="text-xs text-muted-foreground">—</span>;
+    case 'up': return <TrendingUp className="h-4 w-4 text-emerald-400" />;
+    case 'down': return <TrendingDown className="h-4 w-4 text-rose-400" />;
+    default: return <span className="text-[10px] text-zinc-600 font-black">—</span>;
   }
 };
 
 const getScoreColor = (score: number) => {
-  if (score >= 90) return 'text-success';
-  if (score >= 80) return 'text-primary';
-  if (score >= 70) return 'text-warning';
-  return 'text-destructive';
+  if (score >= 90) return 'text-emerald-400';
+  if (score >= 80) return 'text-sky-400';
+  if (score >= 70) return 'text-amber-400';
+  return 'text-rose-400';
 };
 
 interface SupplierRankItemProps {
@@ -60,65 +61,71 @@ interface SupplierRankItemProps {
 
 const SupplierRankItem = ({ supplier, position, isExpanded, onToggle }: SupplierRankItemProps) => {
   return (
-    <div 
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "p-3 rounded-lg border transition-all cursor-pointer hover:shadow-sm",
-        position === 0 && "border-yellow-500/30 bg-warning/5",
-        position === 1 && "border-gray-400/30 bg-gray-400/5",
-        position === 2 && "border-amber-600/30 bg-warning/5",
-        position > 2 && "border-border bg-muted/30"
+        "p-5 rounded-2xl border transition-all cursor-pointer group",
+        position === 0 && "border-amber-500/20 bg-amber-500/[0.02]",
+        position === 1 && "border-white/10 bg-white/[0.01]",
+        position === 2 && "border-orange-600/20 bg-orange-600/[0.01]",
+        position > 2 && "border-white/5 bg-transparent",
+        isExpanded && "border-emerald-500/30 bg-white/[0.03]"
       )}
       onClick={onToggle}
     >
-      <div className="flex items-center gap-3">
-        <div className="flex items-center justify-center w-6">{getRankIcon(position)}</div>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-white/[0.02] border border-white/5">{getRankIcon(position)}</div>
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <span className="font-medium text-sm truncate">{supplier.name}</span>
+          <div className="flex items-center gap-3">
+            <span className="font-black text-xs text-white uppercase tracking-tight group-hover:text-emerald-400 transition-colors">{supplier.name}</span>
             {getTrendIcon(supplier.trend)}
           </div>
-          <span className="text-xs text-muted-foreground">{supplier.totalOrders} pedidos</span>
+          <span className="text-[9px] text-zinc-500 font-black uppercase tracking-widest">{supplier.totalOrders} Global Orders</span>
         </div>
         <div className="text-right">
-          <span className={cn("text-xl font-bold", getScoreColor(supplier.overallScore))}>
+          <span className={cn("text-2xl font-black", getScoreColor(supplier.overallScore))}>
             {supplier.overallScore.toFixed(1)}
           </span>
-          <p className="text-xs text-muted-foreground">pontos</p>
+          <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Points</p>
         </div>
       </div>
 
-      {isExpanded && (
-        <div className="mt-3 pt-3 border-t border-border space-y-2">
-          <div className="grid grid-cols-3 gap-2 text-xs">
-            {[
-              { icon: CheckCircle, label: 'SLA', weight: WEIGHTS.sla, score: supplier.slaScore },
-              { icon: Clock, label: 'Prazo', weight: WEIGHTS.delivery, score: supplier.deliveryScore },
-              { icon: Star, label: 'Qualidade', weight: WEIGHTS.quality, score: supplier.qualityScore },
-            ].map(({ icon: Icon, label, weight, score }) => (
-              <TooltipProvider key={label}>
-                <Tooltip>
-                  <TooltipTrigger className="w-full text-left cursor-help">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <Icon className="h-3 w-3" />
-                        <span>{label} ({(weight * 100).toFixed(0)}%)</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Progress value={score} className="h-1.5 flex-1" />
-                        <span className={cn("font-medium", getScoreColor(score))}>
-                          {score.toFixed(1)}
-                        </span>
-                      </div>
+      <AnimatePresence>
+        {isExpanded && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="mt-6 pt-6 border-t border-white/5 space-y-4 overflow-hidden"
+          >
+            <div className="grid grid-cols-3 gap-6">
+              {[
+                { icon: CheckCircle, label: 'SLA', weight: WEIGHTS.sla, score: supplier.slaScore, color: 'text-sky-400' },
+                { icon: Clock, label: 'Delivery', weight: WEIGHTS.delivery, score: supplier.deliveryScore, color: 'text-amber-400' },
+                { icon: Star, label: 'Quality', weight: WEIGHTS.quality, score: supplier.qualityScore, color: 'text-emerald-400' },
+              ].map(({ icon: Icon, label, weight, score, color }) => (
+                <div key={label} className="space-y-2">
+                  <div className="flex items-center justify-between text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                    <div className="flex items-center gap-1.5">
+                      <Icon className={cn("h-3 w-3", color)} />
+                      <span>{label}</span>
                     </div>
-                  </TooltipTrigger>
-                  <TooltipContent><p>{label} do fornecedor</p></TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+                    <span>{(weight * 100).toFixed(0)}%</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Progress value={score} className="h-1 bg-white/5 flex-1" />
+                    <span className={cn("text-[10px] font-black", getScoreColor(score))}>
+                      {score.toFixed(1)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 
@@ -157,26 +164,16 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
   const supplierData = useMemo<SupplierScore[]>(() => {
     const forn = fornecedores || [];
     const peds = pedidos || [];
-
     return forn.map(f => {
       const supplierPeds = peds.filter(p => p.fornecedor_id === f.id);
       const totalOrders = supplierPeds.length;
-      
       const delivered = supplierPeds.filter(p => p.status === 'entregue');
-      const onTime = delivered.filter(p => 
-        p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao
-      ).length;
-      
+      const onTime = delivered.filter(p => p.data_entrega && p.data_previsao && p.data_entrega <= p.data_previsao).length;
       const deliveryScore = delivered.length > 0 ? (onTime / delivered.length) * 100 : 80;
-      const qualityScore = Number(f.avaliacao || 0) * 20; // 1-5 scale to 0-100
+      const qualityScore = Number(f.avaliacao || 0) * 20;
       const slaScore = totalOrders > 0 ? Math.min(100, deliveryScore + 5) : 75;
-      
       const overallScore = slaScore * WEIGHTS.sla + deliveryScore * WEIGHTS.delivery + qualityScore * WEIGHTS.quality;
-      
-      // Simple trend based on recent delivery performance
-      const trend: 'up' | 'down' | 'stable' = 
-        deliveryScore >= 90 ? 'up' : deliveryScore < 70 ? 'down' : 'stable';
-
+      const trend: 'up' | 'down' | 'stable' = deliveryScore >= 90 ? 'up' : deliveryScore < 70 ? 'down' : 'stable';
       return {
         id: f.id,
         name: f.razao_social,
@@ -192,51 +189,51 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
 
   if (isLoading) {
     return (
-      <Card ref={ref}>
-        <CardHeader><Skeleton className="h-6 w-32" /></CardHeader>
-        <CardContent className="space-y-3">
-          {[1,2,3].map(i => <Skeleton key={i} className="h-16" />)}
+      <Card ref={ref} className="bg-white/[0.02] border-white/5 rounded-[2.5rem]">
+        <CardHeader><Skeleton className="h-6 w-32 bg-white/5" /></CardHeader>
+        <CardContent className="space-y-4">
+          {[1,2,3].map(i => <Skeleton key={i} className="h-20 bg-white/5 rounded-2xl" />)}
         </CardContent>
       </Card>
     );
   }
 
   const topPerformer = supplierData[0];
-  const avgScore = supplierData.length > 0 
-    ? supplierData.reduce((sum, s) => sum + s.overallScore, 0) / supplierData.length 
-    : 0;
+  const avgScore = supplierData.length > 0 ? supplierData.reduce((sum, s) => sum + s.overallScore, 0) / supplierData.length : 0;
 
   return (
-    <Card ref={ref}>
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between flex-wrap gap-2">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <Trophy className="h-5 w-5 text-warning" />
-            Ranking
+    <Card ref={ref} className="bg-white/[0.02] border-white/5 rounded-[2.5rem] backdrop-blur-3xl overflow-hidden shadow-2xl">
+      <CardHeader className="pb-8">
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <CardTitle className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-3">
+            <Trophy className="h-4 w-4 text-amber-400" />
+            Performance Rankings
           </CardTitle>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <Select value={periodDays.toString()} onValueChange={(v) => setPeriodDays(Number(v))}>
-              <SelectTrigger className="h-8 w-[130px] text-xs">
-                <Calendar className="h-3 w-3 mr-1" />
+              <SelectTrigger className="h-9 w-[150px] bg-white/[0.03] border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest text-zinc-300">
+                <Calendar className="h-3 w-3 mr-2 text-emerald-400" />
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="7">7 dias</SelectItem>
-                <SelectItem value="30">30 dias</SelectItem>
-                <SelectItem value="90">90 dias</SelectItem>
+              <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-xl">
+                <SelectItem value="7" className="text-xs font-bold">7 Days</SelectItem>
+                <SelectItem value="30" className="text-xs font-bold">30 Days</SelectItem>
+                <SelectItem value="90" className="text-xs font-bold">90 Days</SelectItem>
               </SelectContent>
             </Select>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Badge variant="outline" className="gap-1 cursor-help"><Info className="h-3 w-3" /></Badge>
+                  <div className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/[0.03] border border-white/5 text-zinc-500 cursor-help hover:text-white transition-colors">
+                    <Info className="h-4 w-4" />
+                  </div>
                 </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p className="font-medium mb-1">Pesos:</p>
-                  <ul className="text-xs space-y-1">
-                    <li>• SLA: {(WEIGHTS.sla * 100)}%</li>
-                    <li>• Prazo: {(WEIGHTS.delivery * 100)}%</li>
-                    <li>• Qualidade: {(WEIGHTS.quality * 100)}%</li>
+                <TooltipContent className="bg-[#0a0a0f] border-white/10 p-4 rounded-2xl shadow-2xl">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-3">Ranking Weights</p>
+                  <ul className="text-[10px] font-black uppercase tracking-widest space-y-2">
+                    <li className="flex justify-between gap-6"><span>SLA COMPLIANCE</span> <span className="text-sky-400">{(WEIGHTS.sla * 100)}%</span></li>
+                    <li className="flex justify-between gap-6"><span>LOGISTICS PRECISION</span> <span className="text-amber-400">{(WEIGHTS.delivery * 100)}%</span></li>
+                    <li className="flex justify-between gap-6"><span>PRODUCT QUALITY</span> <span className="text-emerald-400">{(WEIGHTS.quality * 100)}%</span></li>
                   </ul>
                 </TooltipContent>
               </Tooltip>
@@ -244,24 +241,22 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-8">
         {supplierData.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-lg bg-warning/10 border border-yellow-500/20">
-                <p className="text-xs text-muted-foreground">Melhor Fornecedor</p>
-                <p className="font-semibold text-sm truncate">{topPerformer?.name}</p>
-                <p className="text-lg font-bold text-warning">{topPerformer?.overallScore.toFixed(1)} pts</p>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-6 rounded-2xl bg-amber-500/[0.05] border border-amber-500/20 text-center">
+                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-amber-500/60 mb-2">Alpha Partner</p>
+                <p className="font-black text-xs text-white uppercase tracking-tight truncate mb-2">{topPerformer?.name}</p>
+                <p className="text-3xl font-black text-amber-400">{topPerformer?.overallScore.toFixed(1)} <span className="text-xs">PTS</span></p>
               </div>
-              <div className="p-3 rounded-lg bg-muted/50 border border-border">
-                <p className="text-xs text-muted-foreground">Média Geral</p>
-                <p className="font-semibold text-sm">{supplierData.length} fornecedores</p>
-                <p className={cn("text-lg font-bold", getScoreColor(avgScore))}>
-                  {avgScore.toFixed(1)} pts
-                </p>
+              <div className="p-6 rounded-2xl bg-white/[0.03] border border-white/5 text-center">
+                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-2">Network Average</p>
+                <p className="font-black text-xs text-zinc-400 uppercase tracking-tight mb-2">{supplierData.length} Partners</p>
+                <p className={cn("text-3xl font-black", getScoreColor(avgScore))}>{avgScore.toFixed(1)} <span className="text-xs">PTS</span></p>
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {supplierData.map((supplier, index) => (
                 <SupplierRankItem
                   key={supplier.id}
@@ -274,9 +269,9 @@ export const SupplierRankingPanel = forwardRef<HTMLDivElement>((_props, ref) => 
             </div>
           </>
         ) : (
-          <p className="text-sm text-muted-foreground text-center py-8">
-            Nenhum fornecedor ativo encontrado
-          </p>
+          <div className="text-center py-16 text-zinc-600 font-black uppercase tracking-[0.2em] text-xs">
+            No active partners in network
+          </div>
         )}
       </CardContent>
     </Card>
