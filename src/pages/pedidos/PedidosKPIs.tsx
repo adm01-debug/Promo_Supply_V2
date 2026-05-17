@@ -12,36 +12,41 @@ interface KPIs {
 export const PedidosKPIs = ({ kpis }: { kpis: KPIs }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6" data-tour="pedidos-kpis">
     <ExecutiveMetricCard
-      title="Total Orders"
+      title="Global Orders"
       value={kpis.total}
       icon={FileText}
       delay={0}
+      subtitle="Network Volume"
     />
     <ExecutiveMetricCard
-      title="Pending"
+      title="Pending Approval"
       value={kpis.pendentes}
       icon={Clock}
       delay={1}
-      urgent={kpis.pendentes > 3 ? kpis.pendentes : 0}
+      urgent={kpis.pendentes > 0 ? kpis.pendentes : 0}
+      subtitle="Critical Actions"
     />
     <ExecutiveMetricCard
-      title="In Transit"
+      title="Neural Transit"
       value={kpis.emTransito}
       icon={Truck}
       delay={2}
+      subtitle="Real-time Tracking"
     />
     <ExecutiveMetricCard
-      title="Delivered"
+      title="Fulfillment"
       value={kpis.entregues}
       icon={CheckCircle2}
       delay={3}
+      subtitle="Successfully Completed"
     />
     <ExecutiveMetricCard
-      title="Total Volume"
+      title="Network Volume"
       value={kpis.valorTotal}
       icon={DollarSign}
       format="currency"
       delay={4}
+      subtitle="Financial Liquidity"
     />
   </div>
 );
