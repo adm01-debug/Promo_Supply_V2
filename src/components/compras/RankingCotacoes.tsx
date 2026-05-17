@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles, MessageSquare, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles, MessageSquare, ArrowUpRight, ArrowDownRight, TrendingDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
@@ -111,6 +111,14 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
   }));
 
   const cotacoesOrdenadas = [...cotacoesComScore].sort((a, b) => b.score - a.score);
+  
+  const cheapestId = useMemo(() => {
+    return [...cotacoes].sort((a, b) => a.total - b.total)[0]?.id;
+  }, [cotacoes]);
+
+  const fastestId = useMemo(() => {
+    return [...cotacoes].sort((a, b) => a.prazoEntrega - b.prazoEntrega)[0]?.id;
+  }, [cotacoes]);
 
   return (
     <div className="space-y-4">
@@ -264,6 +272,16 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
                       <Badge variant="outline" className={cn("text-[9px] font-black uppercase tracking-widest border-white/10 text-zinc-500", medal.border, medal.text)}>
                         {medal.label}
                       </Badge>
+                      {cotacao.id === cheapestId && (
+                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest border-emerald-500/30 text-emerald-400 bg-emerald-500/5">
+                          <TrendingDown className="w-3 h-3 mr-1" /> Best Value
+                        </Badge>
+                      )}
+                      {cotacao.id === fastestId && (
+                        <Badge variant="outline" className="text-[9px] font-black uppercase tracking-widest border-amber-500/30 text-amber-400 bg-amber-500/5">
+                          <Clock className="w-3 h-3 mr-1" /> Fastest Delivery
+                        </Badge>
+                      )}
                     </div>
                   </div>
 

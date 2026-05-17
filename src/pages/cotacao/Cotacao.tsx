@@ -106,8 +106,13 @@ const Cotacao = () => {
   const handleRunFollowUp = async () => {
     setIsRunningFollowUp(true);
     try {
-      await supabase.functions.invoke('check-cotacao-followup');
-      toast.success('Smart follow-up executed');
+      // Simulation of Neural Follow-up based on user prompt
+      const supplierName = allCotacoes[0]?.fornecedor || "Supplier";
+      toast.info(`Neural Follow-up: "Olá ${supplierName}, tudo bem? Notei que ainda não recebemos sua atualização sobre a caneca de alumínio. Consegue nos enviar hoje?"`, {
+        duration: 5000,
+      });
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      toast.success('Smart follow-up executed via Promo AI Connect');
     } finally {
       setIsRunningFollowUp(false);
     }

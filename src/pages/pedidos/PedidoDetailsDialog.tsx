@@ -1,4 +1,4 @@
-import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap, Package, ShoppingBag, Palette, MapPin, ClipboardCheck, ArrowRight } from "lucide-react";
+import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap, Package, ShoppingBag, Palette, MapPin, ClipboardCheck, ArrowRight, AlertTriangle } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -311,14 +311,22 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                               <p className="text-[10px] text-zinc-500 font-black uppercase mt-1 tracking-widest">
                                 Quantity: {item.quantidade} {item.unidade} • Lead Time: {item.produto?.lead_time_dias || 0} Days
                               </p>
+                              {item.descricao?.toLowerCase().includes('boné') && (
+                                <Badge variant="outline" className="mt-3 px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest border-rose-500/20 text-rose-400 bg-rose-500/5">
+                                  <AlertTriangle className="w-3.5 h-3.5 mr-2" />
+                                  Critical: 1st Piece Audit Required
+                                </Badge>
+                              )}
                             </div>
 
-                            <div className="flex-1 bg-white/[0.03] p-5 rounded-2xl border border-white/5">
-                              <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-4 flex items-center justify-between">
+                            <div className="flex-1 bg-white/[0.03] p-5 rounded-2xl border border-white/5 relative group/pipeline">
+                              <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-6 flex items-center justify-between">
                                 PRODUCTION PIPELINE
-                                <span className="text-violet-400">STRICT MONITORING</span>
+                                <span className={cn("transition-colors", statusProd === 'primeira_peca' ? "text-rose-400 animate-pulse" : "text-violet-400")}>
+                                  {statusProd === 'primeira_peca' ? 'AWAITING 1ST PIECE APPROVAL' : 'STRICT MONITORING'}
+                                </span>
                               </p>
-                              <div className="flex items-center justify-between gap-1 relative">
+                              <div className="flex items-center justify-between gap-1 relative h-10">
                                 <div className="absolute top-1/2 left-0 w-full h-[2px] bg-white/5 -translate-y-1/2" />
                                 {prodSteps.map((step, idx) => {
                                   const isActive = statusProd === step.id;
@@ -326,17 +334,19 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                                   return (
                                     <div 
                                       key={step.id} 
-                                      className="relative z-10 flex flex-col items-center group cursor-pointer"
+                                      className="relative z-10 flex flex-col items-center group/step cursor-pointer"
                                       onClick={() => handleUpdateItemProdStatus(item.id, step.id)}
                                     >
                                       <div className={cn(
-                                        "w-4 h-4 rounded-full border-2 transition-all hover:scale-125",
-                                        isActive ? "bg-violet-500 border-white scale-110 shadow-[0_0_10px_rgba(139,92,246,0.5)]" : 
+                                        "w-5 h-5 rounded-full border-2 transition-all hover:scale-125 flex items-center justify-center",
+                                        isActive ? "bg-violet-500 border-white scale-125 shadow-[0_0_15px_rgba(139,92,246,0.5)]" : 
                                         isPast ? "bg-emerald-500 border-emerald-500/50" : "bg-zinc-800 border-white/10"
-                                      )} />
+                                      )}>
+                                        {isPast && <CheckCircle2 className="w-2.5 h-2.5 text-white" />}
+                                      </div>
                                       <span className={cn(
-                                        "absolute -bottom-6 text-[7px] font-black whitespace-nowrap uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity",
-                                        isActive ? "opacity-100 text-white" : "text-zinc-600"
+                                        "absolute -bottom-8 text-[7px] font-black whitespace-nowrap uppercase tracking-tighter transition-all",
+                                        isActive ? "opacity-100 translate-y-0 text-white" : "opacity-0 translate-y-1 group-hover/step:opacity-100 group-hover/step:translate-y-0 text-zinc-600"
                                       )}>
                                         {step.label}
                                       </span>
