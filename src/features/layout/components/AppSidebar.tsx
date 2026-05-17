@@ -281,10 +281,10 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               style={{ fontFamily: 'Outfit, sans-serif' }}
             >
               <span className="text-[15px] font-black uppercase tracking-tighter text-white">
-                PROMO <span className="text-violet-400">BRINDES</span>
+                PROMO <span className="text-violet-400">SUPPLY</span>
               </span>
               <span className="text-[9px] tracking-[0.22em] uppercase text-zinc-500 font-semibold mt-1">
-                Enterprise Solutions
+                Gestão de Compras
               </span>
             </motion.div>
           )}
