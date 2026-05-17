@@ -1,10 +1,11 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shell } from "@/features/layout/components/Shell";
 import { RouteSkeleton } from "@/components/navigation/RouteSkeleton";
+import { PageLoader } from "@/features/layout/components/PageLoader";
 
 // Lazy load all pages
 const ComprasDashboard = lazy(() => import("@/pages/dashboard/ComprasDashboard"));
@@ -62,7 +63,11 @@ export const AnimatedRoutes = () => {
     <div className="w-full min-h-screen">
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route path="/auth" element={<Auth />} />
+          <Route path="/auth" element={
+            <Suspense fallback={<PageLoader />}>
+              <Auth />
+            </Suspense>
+          } />
 
           {/* Protected Routes wrapped in Shell */}
           <Route element={<ProtectedRoute><Shell /></ProtectedRoute>}>
@@ -115,7 +120,11 @@ export const AnimatedRoutes = () => {
             <Route path="/configuracoes-centro-custo" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><ConfiguracoesCentroCusto /></RouteSkeleton></ModuleErrorBoundary>} />
           </Route>
 
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={
+            <Suspense fallback={<PageLoader />}>
+              <NotFound />
+            </Suspense>
+          } />
         </Routes>
       </AnimatePresence>
     </div>

@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const fetchedUserIdRef = useRef<string | null>(null);
   const isFetchingRef = useRef(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const fetchUserData = useCallback(async (userId: string) => {
     // Deduplicate: skip if already fetched for this user or currently fetching
@@ -107,7 +108,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         await fetchUserData(session.user.id);
       }
 
-      if (mounted) setLoading(false);
+      if (mounted) {
+        // Delay setting loading to false slightly to prevent flicker
+        timeoutRef.current = setTimeout(() => {
+          if (mounted) setLoading(false);
+        }, 100);
+      }
     }).catch((error: unknown) => {
       logger.error('Error getting initial session', { error });
       if (mounted) setLoading(false);
@@ -149,6 +155,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       mounted = false;
       subscription.unsubscribe();
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [fetchUserData]);
 
