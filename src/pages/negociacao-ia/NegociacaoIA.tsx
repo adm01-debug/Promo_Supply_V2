@@ -111,11 +111,6 @@ const NegociacaoIA = () => {
     },
   });
 
-  const riskColor = (risk?: string) => {
-    if (risk === "baixo") return "text-success";
-    if (risk === "medio") return "text-warning";
-    return "text-destructive";
-  };
 
   return (
       <motion.div 
