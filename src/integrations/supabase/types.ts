@@ -4026,6 +4026,73 @@ export type Database = {
         }
         Relationships: []
       }
+      produto_fornecedores: {
+        Row: {
+          codigo_no_fornecedor: string | null
+          created_at: string | null
+          fornecedor_id: string
+          id: string
+          lead_time_estimado: number | null
+          organization_id: string | null
+          preco_custo: number | null
+          preferencial: boolean | null
+          produto_id: string
+          tenant_id: string
+          ultima_cotacao_id: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          codigo_no_fornecedor?: string | null
+          created_at?: string | null
+          fornecedor_id: string
+          id?: string
+          lead_time_estimado?: number | null
+          organization_id?: string | null
+          preco_custo?: number | null
+          preferencial?: boolean | null
+          produto_id: string
+          tenant_id: string
+          ultima_cotacao_id?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          codigo_no_fornecedor?: string | null
+          created_at?: string | null
+          fornecedor_id?: string
+          id?: string
+          lead_time_estimado?: number | null
+          organization_id?: string | null
+          preco_custo?: number | null
+          preferencial?: boolean | null
+          produto_id?: string
+          tenant_id?: string
+          ultima_cotacao_id?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "produto_fornecedores_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produto_fornecedores_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+          {
+            foreignKeyName: "produto_fornecedores_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       produtos: {
         Row: {
           ativo: boolean | null
@@ -4921,6 +4988,7 @@ export type Database = {
           observacoes: string | null
           organization_id: string | null
           prioridade: string
+          produto_id: string | null
           quantidade: number
           solicitante_id: string | null
           status: string
@@ -4951,6 +5019,7 @@ export type Database = {
           observacoes?: string | null
           organization_id?: string | null
           prioridade?: string
+          produto_id?: string | null
           quantidade?: number
           solicitante_id?: string | null
           status?: string
@@ -4981,6 +5050,7 @@ export type Database = {
           observacoes?: string | null
           organization_id?: string | null
           prioridade?: string
+          produto_id?: string | null
           quantidade?: number
           solicitante_id?: string | null
           status?: string
@@ -5026,6 +5096,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "solicitacoes_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
             referencedColumns: ["id"]
           },
           {

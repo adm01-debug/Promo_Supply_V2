@@ -101,24 +101,57 @@ export const ProductionRoutingEngine: React.FC<ProductionRoutineProps> = ({ item
   );
 };
 
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+
 export const SourcingIntelligenceBanner: React.FC<{ items: any[] }> = ({ items }) => {
+  // Fetch real supplier ecosystems for the first few items
+  const { data: backups = [] } = useQuery({
+    queryKey: ['sourcing-alternatives', items.map(i => i.produto_id)],
+    queryFn: async () => {
+      const results = [];
+      for (const item of items) {
+        if (!item.produto_id) continue;
+        const { data, count } = await supabase
+          .from('produto_fornecedores')
+          .select('id', { count: 'exact' })
+          .eq('produto_id', item.produto_id);
+        
+        results.push({
+          produto_id: item.produto_id,
+          descricao: item.descricao,
+          count: count || 0
+        });
+      }
+      return results;
+    },
+    enabled: items.length > 0
+  });
+
   return (
     <div className="mt-6 p-5 rounded-2xl bg-white/[0.02] border border-white/5">
       <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-4 flex items-center gap-2">
         <Target className="w-4 h-4 text-violet-400" />
-        Sourcing Intelligence (Alternatives)
+        Sourcing Intelligence (Ecosystem)
       </h4>
       <div className="space-y-3">
-        {items.slice(0, 2).map((item, idx) => (
+        {backups.map((item: any, idx) => (
           <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all cursor-help group">
             <div className="flex items-center gap-3">
               <Factory className="w-4 h-4 text-zinc-600 group-hover:text-violet-400 transition-colors" />
               <div>
-                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-tighter">Backups for: {item.descricao}</p>
-                <p className="text-[9px] text-zinc-600 font-bold uppercase mt-0.5">3 qualified suppliers found in database</p>
+                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-tighter">Database: {item.descricao}</p>
+                <p className="text-[9px] text-zinc-600 font-bold uppercase mt-0.5">
+                  {item.count > 0 ? `${item.count} parceiro(s) vinculado(s)` : 'Nenhum parceiro direto vinculado'}
+                </p>
               </div>
             </div>
-            <Badge variant="outline" className="text-[8px] font-black uppercase border-emerald-500/20 text-emerald-400/80">98% Match</Badge>
+            <Badge variant="outline" className={cn(
+              "text-[8px] font-black uppercase",
+              item.count > 0 ? "border-emerald-500/20 text-emerald-400/80" : "border-amber-500/20 text-amber-400/80"
+            )}>
+              {item.count > 0 ? 'Active' : 'Missing'}
+            </Badge>
           </div>
         ))}
       </div>

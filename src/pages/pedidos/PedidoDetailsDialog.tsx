@@ -147,7 +147,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
           <Tabs defaultValue="overview" className="w-full">
             <TabsList className="w-full grid grid-cols-4 bg-white/[0.03] border border-white/5 h-14 p-1 rounded-2xl mb-8">
               <TabsTrigger value="overview" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">SURVEILLANCE</TabsTrigger>
-              <TabsTrigger value="itens" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">ASSETS/PROD</TabsTrigger>
+              <TabsTrigger value="itens" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">ASSETS & PRODUCTION</TabsTrigger>
               <TabsTrigger value="financial" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">FINANCIALS</TabsTrigger>
               <TabsTrigger value="history" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">AUDIT LOG</TabsTrigger>
             </TabsList>
@@ -307,7 +307,14 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                                   </Badge>
                                 )}
                               </div>
-                              <h4 className="text-lg font-black text-white uppercase tracking-tight">{item.descricao}</h4>
+                              <div className="flex items-center justify-between">
+                                <h4 className="text-lg font-black text-white uppercase tracking-tight">{item.descricao}</h4>
+                                {item.produto_id && (
+                                  <Badge variant="outline" className="px-2 py-0.5 rounded-md text-[9px] font-black border-violet-500/20 text-violet-400 bg-violet-500/5">
+                                    CATALOG LINKED
+                                  </Badge>
+                                )}
+                              </div>
                               <p className="text-[10px] text-zinc-500 font-black uppercase mt-1 tracking-widest">
                                 Quantity: {item.quantidade} {item.unidade} • Lead Time: {item.produto?.lead_time_dias || 0} Days
                               </p>
