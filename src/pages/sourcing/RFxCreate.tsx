@@ -59,9 +59,24 @@ const RFxCreate = () => {
   });
 
   const { data: suppliers = [] } = useQuery({
-    queryKey: ['fornecedores'],
+    queryKey: ['fornecedores-by-category', formData.category_id],
     queryFn: async () => {
-      const { data } = await supabase.from('fornecedores').select('id, razao_social, nome_fantasia, email');
+      let query = supabase.from('fornecedores').select('id, razao_social, nome_fantasia, email');
+      
+      if (formData.category_id) {
+        // Buscar fornecedores que atendem esta categoria
+        const { data: catSuppliers } = await supabase
+          .from('fornecedor_categorias')
+          .select('fornecedor_id')
+          .eq('categoria_id', formData.category_id);
+        
+        if (catSuppliers && catSuppliers.length > 0) {
+          const ids = catSuppliers.map(cs => cs.fornecedor_id);
+          query = query.in('id', ids);
+        }
+      }
+      
+      const { data } = await query;
       return data || [];
     }
   });

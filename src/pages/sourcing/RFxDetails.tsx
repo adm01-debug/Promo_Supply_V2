@@ -14,7 +14,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Clock,
-  ArrowRight
+  ArrowRight,
+  Brain
 } from "lucide-react";
 import { useSourcingEventDetails } from "@/hooks/useLicitacoes";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -281,6 +282,29 @@ const RFxDetails = memo(() => {
                       : '-'}
                   </span>
                 </div>
+              </div>
+            </Card>
+
+            <Card className="p-6 border-violet-500/20 bg-violet-500/5">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Brain className="w-4 h-4 text-violet-400" />
+                Inteligência de Compras
+              </h3>
+              <div className="space-y-4">
+                <div className="p-3 bg-white/5 rounded-lg border border-white/10">
+                  <p className="text-xs text-muted-foreground mb-2">Análise de IA:</p>
+                  <p className="text-[13px] leading-relaxed">
+                    {event.responses && event.responses.length > 0 
+                      ? `Identificamos que o fornecedor ${[...event.responses].sort((a,b) => a.valor_total - b.valor_total)[0]?.fornecedor?.razao_social} possui a melhor oferta financeira, com um saving de ${(((event.budget_estimate || 0) - Math.min(...event.responses.map((r: any) => r.valor_total))) / (event.budget_estimate || 1) * 100).toFixed(1)}% em relação ao budget.`
+                      : "Aguardando propostas para realizar análise comparativa de Lead Time e Preço."}
+                  </p>
+                </div>
+                <Button className="w-full gap-2 bg-violet-600 hover:bg-violet-700 h-9 text-xs">
+                  Gerar Tabela Comparativa Automática
+                </Button>
+                <Button variant="outline" className="w-full gap-2 h-9 text-xs">
+                  Cobrar Fornecedores Pendentes (WhatsApp)
+                </Button>
               </div>
             </Card>
           </div>
