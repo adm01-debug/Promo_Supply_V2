@@ -35,9 +35,9 @@ import {
 } from "./scorecard/supplierScorecardData";
 
 const TrendIcon = ({ trend }: { trend: SupplierScore['trend'] }) => {
-  if (trend === 'up') return <TrendingUp className="w-4 h-4 text-success" />;
-  if (trend === 'down') return <TrendingDown className="w-4 h-4 text-destructive" />;
-  return <Minus className="w-4 h-4 text-muted-foreground" />;
+  if (trend === 'up') return <TrendingUp className="w-4 h-4 text-emerald-400" />;
+  if (trend === 'down') return <TrendingDown className="w-4 h-4 text-rose-400" />;
+  return <Minus className="w-4 h-4 text-zinc-500" />;
 };
 
 export const SupplierScorecard = () => {
@@ -58,102 +58,73 @@ export const SupplierScorecard = () => {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-20" />)}
+          {[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-24 bg-white/5 rounded-xl" />)}
         </div>
-        <Skeleton className="h-64" />
+        <Skeleton className="h-64 bg-white/5 rounded-2xl" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
-      {/* Filters */}
-      <div className="flex items-center gap-4">
+    <div className="space-y-8">
+      <div className="flex items-center gap-4 bg-white/[0.02] p-4 rounded-2xl border border-white/5">
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-muted-foreground" />
+          <Filter className="w-4 h-4 text-zinc-500" />
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-[140px]">
+            <SelectTrigger className="w-[160px] bg-white/[0.03] border-white/10 rounded-lg text-xs font-black uppercase tracking-widest text-zinc-300">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="7">Últimos 7 dias</SelectItem>
-              <SelectItem value="30">Últimos 30 dias</SelectItem>
-              <SelectItem value="90">Últimos 90 dias</SelectItem>
-              <SelectItem value="365">Último ano</SelectItem>
+            <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-xl">
+              <SelectItem value="7" className="text-xs font-bold">Last 7 Days</SelectItem>
+              <SelectItem value="30" className="text-xs font-bold">Last 30 Days</SelectItem>
+              <SelectItem value="90" className="text-xs font-bold">Last 90 Days</SelectItem>
+              <SelectItem value="365" className="text-xs font-bold">Last Year</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Categoria" />
+          <SelectTrigger className="w-[200px] bg-white/[0.03] border-white/10 rounded-lg text-xs font-black uppercase tracking-widest text-zinc-300">
+            <SelectValue placeholder="All Categories" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas Categorias</SelectItem>
+          <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-xl">
+            <SelectItem value="all" className="text-xs font-bold">All Categories</SelectItem>
             {categories.map(cat => (
-              <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+              <SelectItem key={cat} value={cat} className="text-xs font-bold">{cat}</SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-4">
-          <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <Award className="w-4 h-4" />
-            <span className="text-sm">Score Médio</span>
-          </div>
-          <p className="text-2xl font-bold text-foreground">
-            {filteredSuppliers.length > 0
-              ? Math.round(filteredSuppliers.reduce((acc, s) => acc + s.overallScore, 0) / filteredSuppliers.length)
-              : '—'}
-          </p>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <CheckCircle className="w-4 h-4 text-success" />
-            <span className="text-sm">Baixo Risco</span>
-          </div>
-          <p className="text-2xl font-bold text-success">
-            {filteredSuppliers.filter(s => s.riskLevel === 'low').length}
-          </p>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <AlertTriangle className="w-4 h-4 text-warning" />
-            <span className="text-sm">Risco Médio/Alto</span>
-          </div>
-          <p className="text-2xl font-bold text-warning">
-            {filteredSuppliers.filter(s => s.riskLevel === 'medium' || s.riskLevel === 'high').length}
-          </p>
-        </Card>
-        <Card className="p-4">
-          <div className="flex items-center gap-2 text-muted-foreground mb-2">
-            <XCircle className="w-4 h-4 text-destructive" />
-            <span className="text-sm">Críticos</span>
-          </div>
-          <p className="text-2xl font-bold text-destructive">
-            {filteredSuppliers.filter(s => s.riskLevel === 'critical').length}
-          </p>
-        </Card>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {[
+          { label: "Avg Partner Score", val: filteredSuppliers.length > 0 ? Math.round(filteredSuppliers.reduce((acc, s) => acc + s.overallScore, 0) / filteredSuppliers.length) : '—', icon: Award, color: "text-emerald-400" },
+          { label: "Low Risk Partners", val: filteredSuppliers.filter(s => s.riskLevel === 'low').length, icon: CheckCircle, color: "text-emerald-400" },
+          { label: "Moderate Risk", val: filteredSuppliers.filter(s => s.riskLevel === 'medium' || s.riskLevel === 'high').length, icon: AlertTriangle, color: "text-amber-400" },
+          { label: "Critical Partners", val: filteredSuppliers.filter(s => s.riskLevel === 'critical').length, icon: XCircle, color: "text-rose-400" }
+        ].map((item, i) => (
+          <Card key={i} className="p-6 bg-white/[0.02] border-white/5 rounded-2xl flex flex-col items-center justify-center text-center">
+            <div className="flex items-center gap-2 text-zinc-500 mb-3 uppercase text-[9px] font-black tracking-[0.2em]">
+              <item.icon className={cn("w-4 h-4", item.color)} />
+              {item.label}
+            </div>
+            <p className="text-4xl font-black text-white">{item.val}</p>
+          </Card>
+        ))}
       </div>
 
-      {/* Scorecard Table */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-primary" />
-          Scorecard de Fornecedores
-          <Badge variant="outline" className="ml-2 text-xs">{filteredSuppliers.length} fornecedores</Badge>
+      <Card className="p-8 bg-white/[0.02] border-white/5 rounded-[2rem] backdrop-blur-3xl overflow-hidden shadow-2xl">
+        <h3 className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 mb-8 flex items-center gap-3">
+          <BarChart3 className="w-4 h-4 text-emerald-400" />
+          Partner Performance Scorecard
+          <Badge variant="outline" className="text-[10px] font-black border-emerald-500/30 text-emerald-400">{filteredSuppliers.length} Total</Badge>
         </h3>
 
         {filteredSuppliers.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-30" />
-            <p className="font-medium">Nenhum fornecedor com dados no período</p>
-            <p className="text-sm mt-1">Tente ampliar o período de análise</p>
+          <div className="text-center py-20 text-zinc-600 font-black uppercase tracking-[0.2em] text-xs">
+            No partner data found
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-4">
             {filteredSuppliers.map((supplier, index) => {
               const riskBadge = getRiskBadge(supplier.riskLevel);
               const scoreDiff = supplier.overallScore - supplier.previousScore;
@@ -162,130 +133,71 @@ export const SupplierScorecard = () => {
                 <div
                   key={supplier.id}
                   className={cn(
-                    "p-4 rounded-lg border transition-all cursor-pointer hover:border-primary/50",
-                    selectedSupplier?.id === supplier.id && "border-primary bg-primary/5"
+                    "p-6 rounded-2xl border transition-all cursor-pointer hover:bg-white/[0.03] group",
+                    selectedSupplier?.id === supplier.id ? "bg-white/[0.05] border-emerald-500/30" : "border-white/5 bg-transparent"
                   )}
-                  onClick={() => setSelectedSupplier(
-                    selectedSupplier?.id === supplier.id ? null : supplier
-                  )}
+                  onClick={() => setSelectedSupplier(selectedSupplier?.id === supplier.id ? null : supplier)}
                 >
-                  <div className="flex items-center gap-4">
-                    {/* Rank */}
+                  <div className="flex items-center gap-6">
                     <div className={cn(
-                      "w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold",
-                      index === 0 && "bg-warning/20 text-warning",
-                      index === 1 && "bg-slate-400/20 text-muted-foreground",
-                      index === 2 && "bg-warning/20 text-warning",
-                      index > 2 && "bg-muted text-muted-foreground"
+                      "w-12 h-12 rounded-xl flex items-center justify-center text-lg font-black",
+                      index === 0 && "bg-amber-500/10 text-amber-500",
+                      index === 1 && "bg-zinc-500/10 text-zinc-400",
+                      index === 2 && "bg-orange-600/10 text-orange-600",
+                      index > 2 && "bg-white/[0.03] text-zinc-600"
                     )}>
-                      {index + 1}
+                      #{index + 1}
                     </div>
 
-                    {/* Info */}
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-medium text-foreground">{supplier.name}</h4>
-                        <Badge variant="outline" className="text-[10px]">
-                          {supplier.category}
-                        </Badge>
-                        <Badge variant="outline" className={cn("text-[10px]", riskBadge.className)}>
-                          Risco {riskBadge.label}
+                      <div className="flex items-center gap-3 mb-2 flex-wrap">
+                        <h4 className="font-black text-white uppercase tracking-tight group-hover:text-emerald-400 transition-colors">{supplier.name}</h4>
+                        <Badge variant="outline" className="text-[9px] font-black uppercase border-zinc-700 text-zinc-500 px-3">{supplier.category}</Badge>
+                        <Badge variant="outline" className={cn("text-[9px] font-black uppercase border-none px-3", riskBadge.className)}>
+                          RISK: {riskBadge.label}
                         </Badge>
                       </div>
-                      <div className="flex items-center gap-4 mt-1 text-xs text-muted-foreground">
-                        <span className="flex items-center gap-1">
-                          <Package className="w-3 h-3" />
-                          {supplier.ordersCompleted} pedidos
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Clock className="w-3 h-3" />
-                          {supplier.avgDeliveryDays.toFixed(1)} dias
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <AlertTriangle className="w-3 h-3" />
-                          {supplier.defectRate}% defeitos
-                        </span>
+                      <div className="flex items-center gap-6 text-[10px] text-zinc-500 font-black uppercase tracking-widest">
+                        <span className="flex items-center gap-1.5"><Package className="w-3 h-3" /> {supplier.ordersCompleted} Orders</span>
+                        <span className="flex items-center gap-1.5"><Clock className="w-3 h-3" /> {supplier.avgDeliveryDays.toFixed(1)} Days Avg</span>
+                        <span className="flex items-center gap-1.5"><AlertTriangle className="w-3 h-3" /> {supplier.defectRate}% Defect Rate</span>
                       </div>
                     </div>
 
-                    {/* Score */}
-                    <div className="flex items-center gap-3">
-                      <div className="text-right">
-                        <div className={cn("text-2xl font-bold", getScoreColor(supplier.overallScore))}>
-                          {supplier.overallScore}
-                        </div>
-                        <div className="flex items-center gap-1 text-xs">
-                          <TrendIcon trend={supplier.trend} />
-                          <span className={cn(
-                            scoreDiff > 0 && "text-success",
-                            scoreDiff < 0 && "text-destructive",
-                            scoreDiff === 0 && "text-muted-foreground"
-                          )}>
-                            {scoreDiff > 0 ? `+${scoreDiff}` : scoreDiff}
-                          </span>
-                        </div>
+                    <div className="text-right">
+                      <div className={cn("text-3xl font-black", getScoreColor(supplier.overallScore))}>
+                        {supplier.overallScore}
                       </div>
-                      <div className="w-20">
-                        <Progress
-                          value={supplier.overallScore}
-                          className={cn("h-2", `[&>div]:${getScoreBg(supplier.overallScore)}`)}
-                        />
+                      <div className="flex items-center justify-end gap-1 text-[10px] font-black uppercase tracking-widest mt-1">
+                        <TrendIcon trend={supplier.trend} />
+                        <span className={cn(
+                          scoreDiff > 0 ? "text-emerald-400" : scoreDiff < 0 ? "text-rose-400" : "text-zinc-500"
+                        )}>
+                          {scoreDiff > 0 ? `+${scoreDiff}` : scoreDiff}
+                        </span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Expanded Details */}
                   {selectedSupplier?.id === supplier.id && (
-                    <div className="mt-4 pt-4 border-t border-border">
-                      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                        {Object.entries(supplier.metrics).map(([key, value]) => {
-                          const labels: Record<string, string> = {
-                            slaCompliance: "SLA",
-                            deliveryTime: "Entrega",
-                            quality: "Qualidade",
-                            pricing: "Preço",
-                            communication: "Comunicação",
-                            flexibility: "Flexibilidade",
-                          };
-                          return (
-                            <div key={key} className="text-center">
-                              <p className="text-xs text-muted-foreground mb-1">{labels[key]}</p>
-                              <p className={cn("text-lg font-semibold", getScoreColor(value))}>
-                                {value}
-                              </p>
-                              <Progress value={value} className="h-1 mt-1" />
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      {supplier.riskFactors.length > 0 && (
-                        <div className="mt-4 p-3 rounded-lg bg-destructive/10 border border-red-500/20">
-                          <p className="text-xs font-medium text-destructive mb-2 flex items-center gap-1">
-                            <AlertTriangle className="w-3 h-3" />
-                            Fatores de Risco
-                          </p>
-                          <div className="flex flex-wrap gap-2">
-                            {supplier.riskFactors.map((factor, i) => (
-                              <Badge key={i} variant="outline" className="text-[10px] border-red-500/30 text-destructive">
-                                {factor}
-                              </Badge>
-                            ))}
+                    <div className="mt-6 pt-6 border-t border-white/5 grid grid-cols-2 md:grid-cols-6 gap-6">
+                      {Object.entries(supplier.metrics).map(([key, value]) => {
+                        const labels: Record<string, string> = {
+                          slaCompliance: "SLA",
+                          deliveryTime: "Delivery",
+                          quality: "Quality",
+                          pricing: "Price",
+                          communication: "Comms",
+                          flexibility: "Flex",
+                        };
+                        return (
+                          <div key={key} className="space-y-2">
+                            <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">{labels[key]}</p>
+                            <p className={cn("text-xl font-black", getScoreColor(value))}>{value}</p>
+                            <Progress value={value} className="h-1 bg-white/5" />
                           </div>
-                        </div>
-                      )}
-
-                      {supplier.certifications.length > 0 && (
-                        <div className="mt-3 flex items-center gap-2">
-                          <Star className="w-4 h-4 text-warning" />
-                          <span className="text-xs text-muted-foreground">Certificações:</span>
-                          {supplier.certifications.map((cert, i) => (
-                            <Badge key={i} variant="secondary" className="text-[10px]">
-                              {cert}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
+                        );
+                      })}
                     </div>
                   )}
                 </div>
