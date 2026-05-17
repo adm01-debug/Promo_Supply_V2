@@ -120,7 +120,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string }>('fornecedores', 'id, status', {
-          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId as string }]
       });
     },
     staleTime: 60000,
@@ -146,7 +146,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ user_id: string; full_name: string }>('profiles', 'user_id, full_name', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
+        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId as string }]
       });
     },
     staleTime: 60000,
@@ -157,7 +157,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; nome: string }>('categorias', 'id, nome', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
+        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId as string }]
       });
     },
     staleTime: 60000,
