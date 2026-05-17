@@ -45,8 +45,8 @@ const VALID_PAGAMENTO_TRANSITIONS: Record<string, string[]> = {
   atrasado: ['pago', 'cancelado'],
 };
 
-async function fetchPagamentosData(userId: string | undefined, filters?: PagamentoFilters) {
-  if (!userId) return { data: [], totalCount: 0 };
+async function fetchPagamentosData(userId: string | undefined, organizationId: string | null | undefined, filters?: PagamentoFilters) {
+  if (!userId || !organizationId) return { data: [], totalCount: 0 };
 
   const page = filters?.page || 1;
   const pageSize = filters?.pageSize || 50;
@@ -62,7 +62,7 @@ async function fetchPagamentosData(userId: string | undefined, filters?: Pagamen
       cost_center:cost_centers(id, name, code)
     `, { count: 'exact' })
     .order('data_vencimento', { ascending: true })
-    .eq('organization_id', (userId as any).organization_id || '00000000-0000-0000-0000-000000000000') // Placeholder
+    .eq('organization_id', organizationId)
 
   if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
   if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
@@ -76,19 +76,19 @@ async function fetchPagamentosData(userId: string | undefined, filters?: Pagamen
 }
 
 export function usePagamentos(filters?: PagamentoFilters) {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
   const queryKey = useMemo(() => [
-    'pagamentos', user?.id,
+    'pagamentos', user?.id, organizationId,
     filters?.status, filters?.fornecedor_id, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.page, filters?.pageSize,
-  ], [user?.id, filters]);
+  ], [user?.id, organizationId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => fetchPagamentosData(user?.id, filters),
-    enabled: !!user,
+    queryFn: () => fetchPagamentosData(user?.id, organizationId, filters),
+    enabled: !!user && !!organizationId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
@@ -114,7 +114,8 @@ export function usePagamentos(filters?: PagamentoFilters) {
           cost_center_id: input.cost_center_id,
           forma_pagamento: input.forma_pagamento, numero_nf: input.numero_nf,
           chave_nf: input.chave_nf, observacoes: input.observacoes, created_by: user.id,
-          tenant_id: (user as any).organization_id || '00000000-0000-0000-0000-000000000000',
+          tenant_id: organizationId || '00000000-0000-0000-0000-000000000000',
+          organization_id: organizationId,
         } as any)
         .select().single();
       if (error) {
@@ -265,11 +266,13 @@ export function usePagamentos(filters?: PagamentoFilters) {
 
 // Hook for KPIs
 export function usePagamentosKPIs() {
-  const { user } = useAuth();
+  const { user, organizationId } = useAuth();
 
   const { data: kpis = { total: 0, pendentes: 0, atrasados: 0, pagos: 0, valorPendente: 0, valorPago: 0 }, isLoading } = useQuery({
-    queryKey: ['pagamentos-kpis', user?.id],
+    queryKey: ['pagamentos-kpis', user?.id, organizationId],
     queryFn: async () => {
+      if (!organizationId) return { total: 0, pendentes: 0, atrasados: 0, pagos: 0, valorPendente: 0, valorPago: 0 };
+      
       let allData: { status: string; valor: number; valor_pago: number | null; data_vencimento: string }[] = [];
       let from = 0;
       const pageSize = 1000;
@@ -277,7 +280,7 @@ export function usePagamentosKPIs() {
 
       while (hasMore) {
         const { data, error } = await supabase
-          .from('pagamentos').select('status, valor, valor_pago, data_vencimento').range(from, from + pageSize - 1);
+          .from('pagamentos').select('status, valor, valor_pago, data_vencimento').eq('organization_id', organizationId).range(from, from + pageSize - 1);
         if (error) throw error;
         if (!data || data.length === 0) { hasMore = false; break; }
         allData = [...allData, ...data];
