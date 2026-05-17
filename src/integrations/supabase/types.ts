@@ -2662,6 +2662,52 @@ export type Database = {
           },
         ]
       }
+      fornecedor_categorias: {
+        Row: {
+          categoria_id: string
+          created_at: string | null
+          fornecedor_id: string
+          id: string
+          tenant_id: string | null
+        }
+        Insert: {
+          categoria_id: string
+          created_at?: string | null
+          fornecedor_id: string
+          id?: string
+          tenant_id?: string | null
+        }
+        Update: {
+          categoria_id?: string
+          created_at?: string | null
+          fornecedor_id?: string
+          id?: string
+          tenant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fornecedor_categorias_categoria_id_fkey"
+            columns: ["categoria_id"]
+            isOneToOne: false
+            referencedRelation: "categorias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedor_categorias_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "fornecedores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fornecedor_categorias_fornecedor_id_fkey"
+            columns: ["fornecedor_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_compliance_summary"
+            referencedColumns: ["fornecedor_id"]
+          },
+        ]
+      }
       fornecedores: {
         Row: {
           api_endpoint: string | null
