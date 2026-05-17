@@ -57,7 +57,7 @@ export const ProductSupplierManager = ({ produtoId, produtoNome }: ProductSuppli
       const { data, error } = await supabase
         .from("fornecedores")
         .select("id, razao_social")
-        .eq("tenant_id", tenantId);
+        .eq("tenant_id", tenantId || "");
       if (error) throw error;
       return data;
     },
