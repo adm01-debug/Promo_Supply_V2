@@ -96,7 +96,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor: number; valor_pago: number | null; data_vencimento: string; created_at: string }>('pagamentos', 'id, status, valor, valor_pago, data_vencimento, created_at', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -108,7 +108,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor_total: number; selecionada: boolean | null; created_at: string; solicitacao_id: string }>('cotacoes', 'id, status, valor_total, selecionada, created_at, solicitacao_id', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -120,7 +120,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string }>('fornecedores', 'id, status', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -133,7 +133,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       return fetchAllRows<{ id: string; status: string }>('approval_workflows', 'id, status', {
         filters: [
           { column: 'status', operator: 'eq', value: 'pending' },
-          { column: 'tenant_id', operator: 'eq', value: tenantId }
+          { column: 'organization_id', operator: 'eq', value: tenantId }
         ],
       });
     },
@@ -146,7 +146,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ user_id: string; full_name: string }>('profiles', 'user_id, full_name', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -157,7 +157,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; nome: string }>('categorias', 'id, nome', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,

@@ -46,10 +46,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logger.debug('Fetching auth user data', { userId });
 
     try {
-      const [profileRes, roleRes, tenantRes, availableTenantsRes] = await Promise.all([
+      const [profileRes, roleRes, tenantIdRes, availableTenantsRes] = await Promise.all([
         supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
-        supabase.rpc('current_tenant_id'),
+        supabase.rpc('current_tenant_id'), // Renomeado internamente para refletir o que é
         supabase.from('user_tenants').select('tenant:tenants(id, name, slug)').eq('user_id', userId),
       ]);
 
@@ -59,8 +59,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (roleRes.error) {
         logger.error('Error fetching role', { error: roleRes.error, userId });
       }
-      if (tenantRes.error) {
-        logger.error('Error fetching current tenant', { error: tenantRes.error, userId });
+      if (tenantIdRes.error) {
+        logger.error('Error fetching current tenant', { error: tenantIdRes.error, userId });
       }
 
       if (profileRes.data) {
@@ -76,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       setRole(roleRes.data?.role ? (roleRes.data.role as AppRole) : null);
       setOrganizationId(profileRes.data?.current_organization_id || null);
-      setTenantId(tenantRes.data || null);
+      setTenantId(tenantIdRes.data || null);
       
       if (availableTenantsRes.data) {
         const tenants = availableTenantsRes.data
@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       fetchedUserIdRef.current = userId;
-      logger.info('Auth user data loaded successfully', { userId, role: roleRes.data?.role, tenantId: tenantRes.data });
+      logger.info('Auth user data loaded successfully', { userId, role: roleRes.data?.role, tenantId: tenantIdRes.data });
     } catch (error) {
       logger.error('Error fetching user data', { error, userId });
     } finally {
