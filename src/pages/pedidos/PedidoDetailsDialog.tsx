@@ -1,4 +1,4 @@
-import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap, Package, ShoppingBag, Palette, MapPin } from "lucide-react";
+import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap, Package, ShoppingBag, Palette, MapPin, ClipboardCheck, ArrowRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,7 @@ import { type Pedido } from "@/features/pedidos";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { ProductionRoutingEngine, SourcingIntelligenceBanner } from "@/components/compras/ProductionRoutingEngine";
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   pendente: { label: 'PENDING', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
@@ -155,31 +156,37 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
                 <TabsContent value="overview" className="mt-0 space-y-6 focus-visible:ring-0">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
-                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 flex items-center gap-2">
-                        <Building2 className="w-4 h-4 text-violet-400" />
-                        Supplier Entity
-                      </h3>
-                      <div className="space-y-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center font-black text-zinc-400 uppercase tracking-tighter">
-                            {pedido.fornecedor?.razao_social?.slice(0, 2)}
+                    <div className="space-y-6">
+                      <ProductionRoutingEngine items={itens} />
+
+                      <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 flex items-center gap-2">
+                          <Building2 className="w-4 h-4 text-violet-400" />
+                          Supplier Entity
+                        </h3>
+                        <div className="space-y-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center font-black text-zinc-400 uppercase tracking-tighter">
+                              {pedido.fornecedor?.razao_social?.slice(0, 2)}
+                            </div>
+                            <div>
+                              <p className="font-black text-white uppercase text-sm tracking-tight leading-tight">{pedido.fornecedor?.razao_social || 'REDACTED ENTITY'}</p>
+                              <p className="text-[10px] text-zinc-600 font-black uppercase mt-1 tracking-widest">Authorized Provider</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-black text-white uppercase text-sm tracking-tight leading-tight">{pedido.fornecedor?.razao_social || 'REDACTED ENTITY'}</p>
-                            <p className="text-[10px] text-zinc-600 font-black uppercase mt-1 tracking-widest">Authorized Provider</p>
+                          <div className="grid grid-cols-2 gap-3 pt-2">
+                            <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
+                              <Mail className="w-3.5 h-3.5 mr-2" /> ENCRYPTED MAIL
+                            </Button>
+                            <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
+                              <MessageCircle className="w-3.5 h-3.5 mr-2" /> COMMS HUB
+                            </Button>
                           </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-3 pt-2">
-                          <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
-                            <Mail className="w-3.5 h-3.5 mr-2" /> ENCRYPTED MAIL
-                          </Button>
-                          <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
-                            <MessageCircle className="w-3.5 h-3.5 mr-2" /> COMMS HUB
-                          </Button>
-                        </div>
-                      </div>
-                    </Card>
+                        
+                        <SourcingIntelligenceBanner items={itens} />
+                      </Card>
+                    </div>
 
                     <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
                       <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-8 flex items-center gap-2">
