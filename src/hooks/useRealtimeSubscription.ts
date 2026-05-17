@@ -1,16 +1,16 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
-import type { RealtimeChannel } from '@supabase/supabase-js';
+import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 
 type TableName = 'solicitacoes' | 'pedidos' | 'cotacoes' | 'pagamentos' | 'notifications' | 'fornecedores' | 'contracts' | 'approval_workflows' | 'approval_steps';
 
 interface RealtimeOptions {
   tables: TableName[];
   queryKeysToInvalidate?: string[][];
-  onInsert?: (payload: any) => void;
-  onUpdate?: (payload: any) => void;
-  onDelete?: (payload: any) => void;
+  onInsert?: (payload: RealtimePostgresChangesPayload<any>) => void;
+  onUpdate?: (payload: RealtimePostgresChangesPayload<any>) => void;
+  onDelete?: (payload: RealtimePostgresChangesPayload<any>) => void;
   enabled?: boolean;
   /** Debounce interval in ms (default 1000) to batch rapid changes */
   debounceMs?: number;
@@ -66,7 +66,7 @@ export function useRealtimeSubscription({
       channel = channel.on(
         'postgres_changes',
         { event: '*', schema: 'public', table },
-        (payload) => {
+        (payload: RealtimePostgresChangesPayload<any>) => {
           // Queue table for batch invalidation
           pendingTablesRef.current.add(table);
 

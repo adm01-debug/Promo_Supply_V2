@@ -1,10 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useCallback } from 'react';
 import { useAuth } from '@/features/auth';
 import { fetchAllRows } from '@/lib/paginatedFetch';
-import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format, differenceInDays } from 'date-fns';
+import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format, differenceInDays, startOfDay, endOfDay } from 'date-fns';
+import { useRealtimeSubscription } from './useRealtimeSubscription';
 import { useSLASettings } from '@/stores/slaSettingsStore';
 import { logger } from '@/lib/logger';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface DashboardKPIs {
   aguardandoCotacao: number;
@@ -57,6 +59,7 @@ export interface PipelineData {
 
 export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
   const { tenantId } = useAuth();
+  const queryClient = useQueryClient();
   const { settings } = useSLASettings();
   const categoryFilter = filters?.category !== 'all' ? filters?.category : undefined;
   const supplierFilter = filters?.supplier !== 'all' ? filters?.supplier : undefined;
@@ -68,7 +71,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       logger.debug('Fetching dashboard solicitacoes');
       try {
         return await fetchAllRows<{ id: string; numero: string; titulo: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null; categoria_id: string | null; solicitante_id: string | null }>('solicitacoes', 'id, numero, titulo, status, valor_estimado, valor_aprovado, created_at, data_necessidade, categoria_id, solicitante_id', {
-          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId as string }]
         });
       } catch (error) {
         logger.error('Error fetching dashboard solicitacoes', { error });
@@ -84,7 +87,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string; fornecedor_id: string; solicitacao_id: string | null }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at, fornecedor_id, solicitacao_id', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
+        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId as string }]
       });
     },
     staleTime: 60000,
@@ -96,7 +99,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor: number; valor_pago: number | null; data_vencimento: string; created_at: string }>('pagamentos', 'id, status, valor, valor_pago, data_vencimento, created_at', {
-          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId as string }]
       });
     },
     staleTime: 60000,
@@ -108,7 +111,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor_total: number; selecionada: boolean | null; created_at: string; solicitacao_id: string }>('cotacoes', 'id, status, valor_total, selecionada, created_at, solicitacao_id', {
-          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId as string }]
       });
     },
     staleTime: 60000,
@@ -120,7 +123,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string }>('fornecedores', 'id, status', {
-          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId as string }]
       });
     },
     staleTime: 60000,
@@ -133,7 +136,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       return fetchAllRows<{ id: string; status: string }>('approval_workflows', 'id, status', {
         filters: [
           { column: 'status', operator: 'eq', value: 'pending' },
-          { column: 'organization_id', operator: 'eq', value: tenantId }
+          { column: 'organization_id', operator: 'eq', value: tenantId as string }
         ],
       });
     },
@@ -146,7 +149,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ user_id: string; full_name: string }>('profiles', 'user_id, full_name', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
+        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId as string }]
       });
     },
     staleTime: 60000,
@@ -157,7 +160,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; nome: string }>('categorias', 'id, nome', {
-        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
+        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId as string }]
       });
     },
     staleTime: 60000,
@@ -275,8 +278,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       const days = Array.from({ length: 7 }).map((_, i) => {
         const d = subDays(now, 6 - i);
         return {
-          start: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0),
-          end: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999)
+          start: startOfDay(d),
+          end: endOfDay(d)
         };
       });
 
@@ -346,7 +349,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       aguardandoPagamento: pag.filter(p => p.status === 'pendente').length,
       emTransito: ped.filter(p => p.status === 'enviado' || p.status === 'em_transito').length,
       finalizados: ped.filter(p => p.status === 'entregue').length,
-      atrasados: ped.filter(p => p.data_previsao && p.data_previsao < now.toISOString().split('T')[0] && p.status !== 'entregue' && p.status !== 'cancelado').length,
+      atrasados: ped.filter(p => p.data_previsao && p.data_previsao < format(now, 'yyyy-MM-dd') && p.status !== 'entregue' && p.status !== 'cancelado').length,
       totalSolicitacoes: sol.length,
       totalFornecedores: forn.filter(f => f.status === 'ativo').length,
       totalPedidos: ped.length,
@@ -473,6 +476,13 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
   }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows, profilesData, categoriasData, categoryFilter, supplierFilter]);
 
   const loading = loadingSol || loadingPed || loadingPag || loadingCot || loadingForn || loadingWf;
+
+  useRealtimeSubscription({
+    tables: ['solicitacoes', 'pedidos', 'cotacoes', 'pagamentos', 'fornecedores', 'approval_workflows'],
+    onInsert: () => queryClient.invalidateQueries({ queryKey: ['dashboard-solicitacoes'] }),
+    onUpdate: () => queryClient.invalidateQueries({ queryKey: ['dashboard-solicitacoes'] }),
+    onDelete: () => queryClient.invalidateQueries({ queryKey: ['dashboard-solicitacoes'] }),
+  });
 
   return { ...result, loading, isLoading: loading };
 }
