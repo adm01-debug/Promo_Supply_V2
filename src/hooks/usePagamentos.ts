@@ -62,7 +62,7 @@ async function fetchPagamentosData(userId: string | undefined, filters?: Pagamen
       cost_center:cost_centers(id, name, code)
     `, { count: 'exact' })
     .order('data_vencimento', { ascending: true })
-    .range(from, to);
+    .eq('organization_id', (userId as any).organization_id || '00000000-0000-0000-0000-000000000000') // Placeholder
 
   if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
   if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
