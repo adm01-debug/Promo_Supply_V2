@@ -1,4 +1,4 @@
-import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap } from "lucide-react";
+import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap, Package, ShoppingBag, Palette, MapPin } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { type Pedido } from "@/features/pedidos";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -35,6 +37,23 @@ interface Props {
 }
 
 export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
+  const { data: itens = [] } = useQuery({
+    queryKey: ['pedido-itens-extended', pedido?.id],
+    queryFn: async () => {
+      if (!pedido?.id) return [];
+      const { data, error } = await supabase
+        .from('pedido_itens')
+        .select(`
+          *,
+          produto:produtos(*)
+        `)
+        .eq('pedido_id', pedido.id);
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!pedido?.id && open
+  });
+
   if (!pedido) return null;
   const config = statusConfig[pedido.status] || statusConfig["pendente"];
   const StatusIcon = config.icon;
@@ -73,8 +92,9 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
 
         <div className="p-8">
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="w-full grid grid-cols-3 bg-white/[0.03] border border-white/5 h-14 p-1 rounded-2xl mb-8">
+            <TabsList className="w-full grid grid-cols-4 bg-white/[0.03] border border-white/5 h-14 p-1 rounded-2xl mb-8">
               <TabsTrigger value="overview" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">SURVEILLANCE</TabsTrigger>
+              <TabsTrigger value="itens" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">ASSETS/PROD</TabsTrigger>
               <TabsTrigger value="financial" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">FINANCIALS</TabsTrigger>
               <TabsTrigger value="history" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">AUDIT LOG</TabsTrigger>
             </TabsList>
@@ -190,6 +210,83 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                       <p className="text-xs text-zinc-300 font-bold leading-relaxed">{pedido.observacoes}</p>
                     </Card>
                   )}
+                </TabsContent>
+
+                <TabsContent value="itens" className="mt-0 space-y-6 focus-visible:ring-0">
+                  <div className="grid grid-cols-1 gap-6">
+                    {itens.map((item: any) => {
+                      const tipo = item.produto?.tipo_produto || 'fabricado';
+                      const statusProd = item.status_producao || 'pendente';
+                      
+                      const tipoConfig = {
+                        importado: { icon: ShoppingBag, label: 'PRONTA ENTREGA (IMPORT)', color: 'text-sky-400', bg: 'bg-sky-500/10' },
+                        fabricado: { icon: Package, label: 'LISO (FABRICAÇÃO)', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+                        personalizado: { icon: Palette, label: 'PERSONALIZADO (DIRETO)', color: 'text-fuchsia-400', bg: 'bg-fuchsia-500/10' },
+                      }[tipo as 'importado' | 'fabricado' | 'personalizado'];
+
+                      const prodSteps = [
+                        { id: 'pendente', label: 'QUEUED' },
+                        { id: 'primeira_peca', label: '1ST PIECE AUDIT' },
+                        { id: 'em_producao', label: 'PRODUCTION' },
+                        { id: 'personalizando', label: 'CUSTOMIZING' },
+                        { id: 'concluido', label: 'VERIFIED' },
+                      ];
+
+                      return (
+                        <Card key={item.id} className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
+                          <div className="flex flex-col md:flex-row gap-6">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-4">
+                                <Badge className={cn("px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest border-none", tipoConfig.bg, tipoConfig.color)}>
+                                  <tipoConfig.icon className="w-3.5 h-3.5 mr-2" />
+                                  {tipoConfig.label}
+                                </Badge>
+                                {item.produto?.localizacao_coleta && (
+                                  <Badge variant="outline" className="px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest border-white/10 text-zinc-400">
+                                    <MapPin className="w-3.5 h-3.5 mr-2" />
+                                    {item.produto.localizacao_coleta}
+                                  </Badge>
+                                )}
+                              </div>
+                              <h4 className="text-lg font-black text-white uppercase tracking-tight">{item.descricao}</h4>
+                              <p className="text-[10px] text-zinc-500 font-black uppercase mt-1 tracking-widest">
+                                Quantity: {item.quantidade} {item.unidade} • Lead Time: {item.produto?.lead_time_dias || 0} Days
+                              </p>
+                            </div>
+
+                            <div className="flex-1 bg-white/[0.03] p-5 rounded-2xl border border-white/5">
+                              <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-4 flex items-center justify-between">
+                                PRODUCTION PIPELINE
+                                <span className="text-violet-400">STRICT MONITORING</span>
+                              </p>
+                              <div className="flex items-center justify-between gap-1 relative">
+                                <div className="absolute top-1/2 left-0 w-full h-[2px] bg-white/5 -translate-y-1/2" />
+                                {prodSteps.map((step, idx) => {
+                                  const isActive = statusProd === step.id;
+                                  const isPast = prodSteps.findIndex(s => s.id === statusProd) > idx;
+                                  return (
+                                    <div key={step.id} className="relative z-10 flex flex-col items-center group">
+                                      <div className={cn(
+                                        "w-3 h-3 rounded-full border-2 transition-all",
+                                        isActive ? "bg-violet-500 border-white scale-125 shadow-[0_0_10px_rgba(139,92,246,0.5)]" : 
+                                        isPast ? "bg-emerald-500 border-emerald-500/50" : "bg-zinc-800 border-white/10"
+                                      )} />
+                                      <span className={cn(
+                                        "absolute -bottom-6 text-[7px] font-black whitespace-nowrap uppercase tracking-tighter opacity-0 group-hover:opacity-100 transition-opacity",
+                                        isActive ? "opacity-100 text-white" : "text-zinc-600"
+                                      )}>
+                                        {step.label}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      );
+                    })}
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="financial" className="mt-0 space-y-6 focus-visible:ring-0">
