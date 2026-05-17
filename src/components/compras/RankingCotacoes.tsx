@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles, MessageSquare, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles, MessageSquare, ArrowUpRight, ArrowDownRight, TrendingDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
