@@ -1,8 +1,9 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo, useCallback } from 'react';
 import { useAuth } from '@/features/auth';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format, differenceInDays, startOfDay, endOfDay } from 'date-fns';
+import { useRealtimeSubscription } from './useRealtimeSubscription';
 import { useSLASettings } from '@/stores/slaSettingsStore';
 import { logger } from '@/lib/logger';
 
@@ -57,6 +58,7 @@ export interface PipelineData {
 
 export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
   const { tenantId } = useAuth();
+  const queryClient = useQueryClient();
   const { settings } = useSLASettings();
   const categoryFilter = filters?.category !== 'all' ? filters?.category : undefined;
   const supplierFilter = filters?.supplier !== 'all' ? filters?.supplier : undefined;
@@ -473,6 +475,13 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
   }, [solicitacoes, pedidos, pagamentos, cotacoes, fornecedores, workflows, profilesData, categoriasData, categoryFilter, supplierFilter]);
 
   const loading = loadingSol || loadingPed || loadingPag || loadingCot || loadingForn || loadingWf;
+
+  useRealtimeSubscription({
+    tables: ['solicitacoes', 'pedidos', 'cotacoes', 'pagamentos', 'fornecedores', 'approval_workflows'],
+    onInsert: () => queryClient.invalidateQueries({ queryKey: ['dashboard-solicitacoes'] }),
+    onUpdate: () => queryClient.invalidateQueries({ queryKey: ['dashboard-solicitacoes'] }),
+    onDelete: () => queryClient.invalidateQueries({ queryKey: ['dashboard-solicitacoes'] }),
+  });
 
   return { ...result, loading, isLoading: loading };
 }
