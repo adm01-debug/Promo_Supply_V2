@@ -36,6 +36,7 @@ const DocumentosFiscais = lazy(() => import("@/pages/documentos/DocumentosFiscai
 const RecompraInteligente = lazy(() => import("@/pages/recompra/RecompraInteligente"));
 const Devolucoes = lazy(() => import("@/pages/devolucoes/Devolucoes"));
 const CatalogoProdutos = lazy(() => import("@/pages/catalogo-produtos/CatalogoProdutos"));
+const GestaoEstoque = lazy(() => import("@/pages/estoque/GestaoEstoque"));
 const Licitacoes = lazy(() => import("@/pages/licitacoes/Licitacoes"));
 const RecebimentoOffline = lazy(() => import("@/pages/recebimento/RecebimentoOffline"));
 const AdminTelemetria = lazy(() => import("@/pages/admin-telemetria/AdminTelemetria"));
@@ -95,6 +96,7 @@ export const AnimatedRoutes = () => {
             <Route path="/recompra-inteligente" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="dashboard"><RecompraInteligente /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/devolucoes" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="table"><Devolucoes /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/catalogo-produtos" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><CatalogoProdutos /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/estoque" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><GestaoEstoque /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/sourcing" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="table"><Sourcing /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/sourcing/novo" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="form"><RFxCreate /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/sourcing/:id" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><RFxDetails /></RouteSkeleton></ModuleErrorBoundary>} />
