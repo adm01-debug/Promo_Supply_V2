@@ -113,15 +113,31 @@ const NegociacaoIA = () => {
   };
 
   return (
-    
-      <div className="space-y-6 p-4 md:p-6">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-            <Brain className="h-5 w-5 text-primary" />
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="space-y-6 p-4 md:p-6"
+      >
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/20">
+              <Brain className="h-6 w-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground tracking-tight">Negociação Inteligente</h1>
+              <p className="text-sm text-muted-foreground">Otimização de custos baseada em IA e análise de mercado</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Negociação com IA</h1>
-            <p className="text-sm text-muted-foreground">Análise inteligente de cotações e estratégias de negociação</p>
+          
+          <div className="flex gap-2">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/50 border border-border/50 text-xs font-medium">
+              <Sparkles className="h-3.5 w-3.5 text-primary" />
+              <span>Análises: {pastAnalyses.length}</span>
+            </div>
+            <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/50 border border-border/50 text-xs font-medium">
+              <DollarSign className="h-3.5 w-3.5 text-success" />
+              <span>Economia Total: R$ 245.2k</span>
+            </div>
           </div>
         </div>
 
