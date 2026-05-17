@@ -31,7 +31,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Star, Plus, Trash2, Building2, Truck, DollarSign, Clock } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
+const formatCurrency = (v: number | null) =>
+  v != null ? v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "—";
 
 interface ProductSupplierManagerProps {
   produtoId: string;
@@ -104,7 +105,7 @@ export const ProductSupplierManager = ({ produtoId, produtoNome }: ProductSuppli
                 <Label className="text-[10px] uppercase font-black tracking-widest text-zinc-500">Selecionar Fornecedor</Label>
                 <Select 
                   value={newLink.fornecedor_id} 
-                  onValueChange={(v) => setNewLink({...newLink, fornecedor_id: v})}
+                  onValueChange={(v) => setNewLink({...newLink, fornecedor_id: v as string})}
                 >
                   <SelectTrigger className="bg-white/5 border-white/10 h-12">
                     <SelectValue placeholder="Escolha um fornecedor..." />
