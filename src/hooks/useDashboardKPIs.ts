@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo, useCallback } from 'react';
 import { useAuth } from '@/features/auth';
 import { fetchAllRows } from '@/lib/paginatedFetch';
-import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format, differenceInDays } from 'date-fns';
+import { subMonths, startOfMonth as fnsStartOfMonth, endOfMonth, isWithinInterval, subDays, format, differenceInDays, startOfDay, endOfDay } from 'date-fns';
 import { useSLASettings } from '@/stores/slaSettingsStore';
 import { logger } from '@/lib/logger';
 
@@ -275,8 +275,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       const days = Array.from({ length: 7 }).map((_, i) => {
         const d = subDays(now, 6 - i);
         return {
-          start: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, 0, 0, 0),
-          end: new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999)
+          start: startOfDay(d),
+          end: endOfDay(d)
         };
       });
 
@@ -346,7 +346,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       aguardandoPagamento: pag.filter(p => p.status === 'pendente').length,
       emTransito: ped.filter(p => p.status === 'enviado' || p.status === 'em_transito').length,
       finalizados: ped.filter(p => p.status === 'entregue').length,
-      atrasados: ped.filter(p => p.data_previsao && p.data_previsao < now.toISOString().split('T')[0] && p.status !== 'entregue' && p.status !== 'cancelado').length,
+      atrasados: ped.filter(p => p.data_previsao && p.data_previsao < format(now, 'yyyy-MM-dd') && p.status !== 'entregue' && p.status !== 'cancelado').length,
       totalSolicitacoes: sol.length,
       totalFornecedores: forn.filter(f => f.status === 'ativo').length,
       totalPedidos: ped.length,

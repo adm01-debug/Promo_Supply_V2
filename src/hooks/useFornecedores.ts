@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { format } from 'date-fns';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
@@ -130,7 +131,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
         table_name: 'fornecedores'
       });
 
-      const codigo = codeData || `FOR-${Date.now()}`;
+      const codigo = codeData || `FOR-${format(new Date(), 'yyyyMMddHHmmss')}`;
 
       const { data, error } = await supabase
         .from('fornecedores')

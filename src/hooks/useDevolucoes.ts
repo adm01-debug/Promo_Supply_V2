@@ -1,4 +1,5 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
+import { format } from 'date-fns';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
@@ -80,7 +81,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
     if (!user) { toast.error('Você precisa estar logado'); return null; }
     try {
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'DEV', table_name: 'devolucoes' });
-      const numero = numData || `DEV-${Date.now()}`;
+      const numero = numData || `DEV-${format(new Date(), 'yyyyMMddHHmmss')}`;
       const valorTotal = input.itens.reduce((s, i) => s + i.quantidade * i.valor_unitario, 0);
 
       const { data, error } = await supabase.from('devolucoes').insert({

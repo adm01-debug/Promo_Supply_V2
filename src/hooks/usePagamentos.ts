@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useEffect } from 'react';
+import { format } from 'date-fns';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
@@ -105,7 +106,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
     try {
       logger.info('Registrando novo pagamento', { pedidoId: input.pedido_id, fornecedorId: input.fornecedor_id, valor: input.valor });
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'PAG', table_name: 'pagamentos' });
-      const numero = numData || `PAG-${Date.now()}`;
+      const numero = numData || `PAG-${format(new Date(), 'yyyyMMddHHmmss')}`;
       const { data, error } = await supabase
         .from('pagamentos')
         .insert({
@@ -288,7 +289,7 @@ export function usePagamentosKPIs() {
         from += pageSize;
       }
 
-      const hoje = new Date().toISOString().split('T')[0];
+      const hoje = format(new Date(), 'yyyy-MM-dd');
       return {
         total: allData.length,
         pendentes: allData.filter(p => p.status === 'pendente' || p.status === 'aprovado' || p.status === 'agendado').length,
