@@ -59,7 +59,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
       let query = supabase
         .from('devolucoes')
         .select(`*, fornecedor:fornecedores(id, razao_social, nome_fantasia), pedido:pedidos(id, numero)`)
-        .eq('organization_id', user?.user_metadata?.organization_id || user?.id)
+        .eq('organization_id' as any, user?.user_metadata?.organization_id || user?.id)
         .order('created_at', { ascending: false });
 
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
@@ -95,9 +95,9 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
         observacoes: input.observacoes,
         valor_total: valorTotal,
         status: 'solicitada',
-        organization_id: user?.user_metadata?.organization_id || user?.id,
-        tenant_id: user?.user_metadata?.organization_id || user?.id,
-      }).select().single();
+        ['organization_id' as any]: user?.user_metadata?.organization_id || user?.id,
+        ['tenant_id' as any]: user?.user_metadata?.organization_id || user?.id,
+      } as any).select().single();
       if (error) throw error;
 
       if (input.itens.length > 0) {
@@ -150,9 +150,9 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
           saldo: dev.valor_total,
           descricao: `Crédito ref. devolução ${dev.numero}`,
           created_by: user?.id,
-          organization_id: user?.user_metadata?.organization_id || user?.id,
-          tenant_id: user?.user_metadata?.organization_id || user?.id,
-        });
+          ['organization_id' as any]: user?.user_metadata?.organization_id || user?.id,
+          ['tenant_id' as any]: user?.user_metadata?.organization_id || user?.id,
+        } as any);
         toast.success('Crédito gerado automaticamente!');
       }
 
@@ -206,7 +206,7 @@ export function useCreditosFornecedor(fornecedorId?: string) {
         .select(`*, fornecedor:fornecedores(id, razao_social, nome_fantasia), devolucao:devolucoes(id, numero)`)
         .order('created_at', { ascending: false });
       if (fornecedorId) query = query.eq('fornecedor_id', fornecedorId);
-      query = query.eq('organization_id', user?.user_metadata?.organization_id || user?.id);
+      query = query.eq('organization_id' as any, user?.user_metadata?.organization_id || user?.id);
       const { data, error } = await query;
       if (error) throw error;
       return (data || []) as unknown as CreditoFornecedor[];
@@ -259,7 +259,7 @@ export function useDevolucoesKPIs() {
   const { data: kpis = { total: 0, abertas: 0, emTransito: 0, concluidas: 0, valorTotal: 0, taxaDevolucao: 0 }, isLoading } = useQuery({
     queryKey: ['devolucoes-kpis', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase.from('devolucoes').select('status, valor_total').eq('organization_id', user?.user_metadata?.organization_id || user?.id);
+      const { data, error } = await supabase.from('devolucoes').select('status, valor_total').eq('organization_id' as any, user?.user_metadata?.organization_id || user?.id);
       if (error) throw error;
       const all = data || [];
       const abertas = all.filter(d => ['rascunho', 'solicitada', 'aprovada'].includes(d.status)).length;
