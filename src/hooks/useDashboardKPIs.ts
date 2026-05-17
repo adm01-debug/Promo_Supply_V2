@@ -68,7 +68,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       logger.debug('Fetching dashboard solicitacoes');
       try {
         return await fetchAllRows<{ id: string; numero: string; titulo: string; status: string; valor_estimado: number | null; valor_aprovado: number | null; created_at: string; data_necessidade: string | null; categoria_id: string | null; solicitante_id: string | null }>('solicitacoes', 'id, numero, titulo, status, valor_estimado, valor_aprovado, created_at, data_necessidade, categoria_id, solicitante_id', {
-          filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
         });
       } catch (error) {
         logger.error('Error fetching dashboard solicitacoes', { error });
@@ -84,7 +84,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string; fornecedor_id: string; solicitacao_id: string | null }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at, fornecedor_id, solicitacao_id', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -96,7 +96,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor: number; valor_pago: number | null; data_vencimento: string; created_at: string }>('pagamentos', 'id, status, valor, valor_pago, data_vencimento, created_at', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -108,7 +108,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string; valor_total: number; selecionada: boolean | null; created_at: string; solicitacao_id: string }>('cotacoes', 'id, status, valor_total, selecionada, created_at, solicitacao_id', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -120,7 +120,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; status: string }>('fornecedores', 'id, status', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+          filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -133,7 +133,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       return fetchAllRows<{ id: string; status: string }>('approval_workflows', 'id, status', {
         filters: [
           { column: 'status', operator: 'eq', value: 'pending' },
-          { column: 'tenant_id', operator: 'eq', value: tenantId }
+          { column: 'organization_id', operator: 'eq', value: tenantId }
         ],
       });
     },
@@ -146,7 +146,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ user_id: string; full_name: string }>('profiles', 'user_id, full_name', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -157,7 +157,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: () => {
       if (!tenantId) return [];
       return fetchAllRows<{ id: string; nome: string }>('categorias', 'id, nome', {
-        filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
+        filters: [{ column: 'organization_id', operator: 'eq', value: tenantId }]
       });
     },
     staleTime: 60000,
@@ -184,7 +184,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       cot = cot.filter(c => {
         // Find if this cotacao belongs to a filtered supplier
         // Note: we need supplier_id in cotacoes table
-        return (c as any).fornecedor_id === supplierFilter;
+        return (c as any).organization_id === supplierFilter;
       });
     }
 

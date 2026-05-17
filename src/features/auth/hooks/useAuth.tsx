@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode, useMemo } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
@@ -46,10 +46,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logger.debug('Fetching auth user data', { userId });
 
     try {
-      const [profileRes, roleRes, tenantRes, availableTenantsRes] = await Promise.all([
+      const [profileRes, roleRes, tenantIdRes, availableTenantsRes] = await Promise.all([
         supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
-        supabase.rpc('current_tenant_id'),
+        supabase.rpc('current_tenant_id'), // Renomeado internamente para refletir o que é
         supabase.from('user_tenants').select('tenant:tenants(id, name, slug)').eq('user_id', userId),
       ]);
 
@@ -59,8 +59,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (roleRes.error) {
         logger.error('Error fetching role', { error: roleRes.error, userId });
       }
-      if (tenantRes.error) {
-        logger.error('Error fetching current tenant', { error: tenantRes.error, userId });
+      if (tenantIdRes.error) {
+        logger.error('Error fetching current tenant', { error: tenantIdRes.error, userId });
       }
 
       if (profileRes.data) {
@@ -75,8 +75,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setProfile(null);
       }
       setRole(roleRes.data?.role ? (roleRes.data.role as AppRole) : null);
-      setOrganizationId(profileRes.data?.current_organization_id || null);
-      setTenantId(tenantRes.data || null);
+      setOrganizationId(profileRes.data?.current_organization_id || tenantIdRes.data || null);
+      setTenantId(tenantIdRes.data || null);
       
       if (availableTenantsRes.data) {
         const tenants = availableTenantsRes.data
@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       fetchedUserIdRef.current = userId;
-      logger.info('Auth user data loaded successfully', { userId, role: roleRes.data?.role, tenantId: tenantRes.data });
+      logger.info('Auth user data loaded successfully', { userId, role: roleRes.data?.role, tenantId: tenantIdRes.data });
     } catch (error) {
       logger.error('Error fetching user data', { error, userId });
     } finally {
@@ -113,30 +113,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (mounted) setLoading(false);
     });
 
-    // Then listen for changes — CRITICAL: never await inside onAuthStateChange
-    // to prevent deadlocks that block subsequent auth events
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (!mounted) return;
+        
+        // Optimistic session/user update
         setSession(session);
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          // Fire-and-forget via setTimeout to avoid blocking the auth event loop
-          if (event === 'SIGNED_IN') {
-            setLoading(true);
-            setTimeout(() => {
-              if (!mounted) return;
-              fetchUserData(session.user.id).finally(() => {
-                if (mounted) setLoading(false);
-              });
-            }, 0);
-          }
-
-          if (event === 'TOKEN_REFRESHED') {
-            setTimeout(() => {
-              if (mounted) void fetchUserData(session.user.id);
-            }, 0);
+          if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            // For sign-in, we might want to show a loader if profile is missing
+            if (event === 'SIGNED_IN') setLoading(true);
+            
+            try {
+              await fetchUserData(session.user.id);
+            } finally {
+              if (mounted) setLoading(false);
+            }
           }
         } else {
           setProfile(null);
@@ -145,10 +139,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setTenantId(null);
           setAvailableTenants([]);
           fetchedUserIdRef.current = null;
-        }
-
-        if (event === 'SIGNED_OUT') {
-          setLoading(false);
+          if (event === 'SIGNED_OUT') {
+            setLoading(false);
+          }
         }
       }
     );
@@ -237,7 +230,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const hasRole = (requiredRole: AppRole | AppRole[]): boolean => {
+  const hasRole = useCallback((requiredRole: AppRole | AppRole[]): boolean => {
     if (!role) return false;
     
     // Admin has access to everything
@@ -248,9 +241,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     
     return role === requiredRole;
-  };
+  }, [role]);
 
-  const isAdmin = role === 'admin';
+  const isAdmin = useMemo(() => role === 'admin', [role]);
 
   return (
     <AuthContext.Provider
