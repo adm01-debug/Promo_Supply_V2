@@ -3670,12 +3670,16 @@ export type Database = {
       pedido_itens: {
         Row: {
           created_at: string
+          data_previsao_producao: string | null
           descricao: string
           id: string
           pedido_id: string | null
           produto_id: string | null
           quantidade: number
           quantidade_recebida: number | null
+          status_producao:
+            | Database["public"]["Enums"]["status_producao_enum"]
+            | null
           tenant_id: string
           unidade: string | null
           unspsc_code: string | null
@@ -3684,12 +3688,16 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          data_previsao_producao?: string | null
           descricao: string
           id?: string
           pedido_id?: string | null
           produto_id?: string | null
           quantidade?: number
           quantidade_recebida?: number | null
+          status_producao?:
+            | Database["public"]["Enums"]["status_producao_enum"]
+            | null
           tenant_id: string
           unidade?: string | null
           unspsc_code?: string | null
@@ -3698,12 +3706,16 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          data_previsao_producao?: string | null
           descricao?: string
           id?: string
           pedido_id?: string | null
           produto_id?: string | null
           quantidade?: number
           quantidade_recebida?: number | null
+          status_producao?:
+            | Database["public"]["Enums"]["status_producao_enum"]
+            | null
           tenant_id?: string
           unidade?: string | null
           unspsc_code?: string | null
@@ -3983,12 +3995,15 @@ export type Database = {
           fornecedor_preferencial_id: string | null
           id: string
           imagem_url: string | null
+          lead_time_dias: number | null
+          localizacao_coleta: string | null
           nome: string
           organization_id: string | null
           preco_medio: number | null
           preco_referencia: number | null
           tags: string[] | null
           tenant_id: string
+          tipo_produto: Database["public"]["Enums"]["tipo_produto_enum"] | null
           ultimo_preco: number | null
           unidade: string
           updated_at: string
@@ -4007,12 +4022,15 @@ export type Database = {
           fornecedor_preferencial_id?: string | null
           id?: string
           imagem_url?: string | null
+          lead_time_dias?: number | null
+          localizacao_coleta?: string | null
           nome: string
           organization_id?: string | null
           preco_medio?: number | null
           preco_referencia?: number | null
           tags?: string[] | null
           tenant_id: string
+          tipo_produto?: Database["public"]["Enums"]["tipo_produto_enum"] | null
           ultimo_preco?: number | null
           unidade?: string
           updated_at?: string
@@ -4031,12 +4049,15 @@ export type Database = {
           fornecedor_preferencial_id?: string | null
           id?: string
           imagem_url?: string | null
+          lead_time_dias?: number | null
+          localizacao_coleta?: string | null
           nome?: string
           organization_id?: string | null
           preco_medio?: number | null
           preco_referencia?: number | null
           tags?: string[] | null
           tenant_id?: string
+          tipo_produto?: Database["public"]["Enums"]["tipo_produto_enum"] | null
           ultimo_preco?: number | null
           unidade?: string
           updated_at?: string
@@ -7251,7 +7272,14 @@ export type Database = {
         | "awarded"
         | "cancelled"
       sourcing_type: "rfi" | "rfp" | "rfq" | "auction"
+      status_producao_enum:
+        | "pendente"
+        | "primeira_peca"
+        | "em_producao"
+        | "personalizando"
+        | "concluido"
       tenant_status: "active" | "suspended" | "trial" | "churned"
+      tipo_produto_enum: "importado" | "fabricado" | "personalizado"
       workflow_node_type:
         | "start"
         | "end"
@@ -7460,7 +7488,15 @@ export const Constants = {
         "cancelled",
       ],
       sourcing_type: ["rfi", "rfp", "rfq", "auction"],
+      status_producao_enum: [
+        "pendente",
+        "primeira_peca",
+        "em_producao",
+        "personalizando",
+        "concluido",
+      ],
       tenant_status: ["active", "suspended", "trial", "churned"],
+      tipo_produto_enum: ["importado", "fabricado", "personalizado"],
       workflow_node_type: [
         "start",
         "end",
