@@ -17,6 +17,8 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
   em_transito: { label: 'IN TRANSIT', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
   entregue: { label: 'FULFILLED', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
   cancelado: { label: 'VOIDED', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: Info },
+};
+
 const statusSteps = [
   { id: 'pendente', label: 'PENDING', icon: Clock, color: 'text-amber-400', bg: 'bg-amber-400' },
   { id: 'aprovado', label: 'APPROVED', icon: CheckCircle2, color: 'text-sky-400', bg: 'bg-sky-400' },
