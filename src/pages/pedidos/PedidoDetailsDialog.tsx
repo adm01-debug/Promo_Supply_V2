@@ -62,6 +62,8 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
       if (error) throw error;
       
       queryClient.invalidateQueries({ queryKey: ['pedido-itens-extended', pedido?.id] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-solicitacoes'] });
+      queryClient.invalidateQueries({ queryKey: ['dashboard-pedidos'] });
       toast.success('Estado de produção atualizado');
     } catch (err: any) {
       toast.error('Erro ao atualizar produção: ' + err.message);
