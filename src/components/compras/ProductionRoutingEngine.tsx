@@ -10,11 +10,24 @@ interface ProductionRoutineProps {
 }
 
 export const ProductionRoutingEngine: React.FC<ProductionRoutineProps> = ({ items }) => {
-  // Logic to detect specialized routines
-  const hasPersonalized = items.some(item => item.produto?.tipo_produto === 'personalizado' || item.descricao.toLowerCase().includes('personalizado') || item.descricao.toLowerCase().includes('boné'));
+  // Logic to detect specialized routines based on Promobrink workflows
+  const hasCap = items.some(item => item.descricao?.toLowerCase().includes('boné') || item.produto?.nome?.toLowerCase().includes('boné'));
+  const hasPersonalized = hasCap || items.some(item => item.produto?.tipo_produto === 'personalizado' || item.descricao?.toLowerCase().includes('personalizado'));
   const hasHighLeadTime = items.some(item => (item.produto?.lead_time_dias || 0) > 15);
   
-  const routine = hasPersonalized ? {
+  const routine = hasCap ? {
+    title: "ROTINA ESPECIAL: FABRICAÇÃO DE BONÉS",
+    description: "Item de longo lead-time detectado. Requer aprovação crítica de 1ª peça.",
+    color: "text-rose-400",
+    bg: "bg-rose-500/10",
+    border: "border-rose-500/20",
+    icon: Factory,
+    steps: [
+      { label: "Layout Aprovado", status: "completed" },
+      { label: "1ª Peça (Amostra)", status: "pending" },
+      { label: "Produção em Massa", status: "upcoming" }
+    ]
+  } : hasPersonalized ? {
     title: "ROTINA ESPECIAL: PERSONALIZAÇÃO PREMIUM",
     description: "Este pedido exige acompanhamento de primeira peça e validação de layout.",
     color: "text-fuchsia-400",
