@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode, useMemo } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
@@ -230,7 +230,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const hasRole = (requiredRole: AppRole | AppRole[]): boolean => {
+  const hasRole = useCallback((requiredRole: AppRole | AppRole[]): boolean => {
     if (!role) return false;
     
     // Admin has access to everything
@@ -241,9 +241,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
     
     return role === requiredRole;
-  };
+  }, [role]);
 
-  const isAdmin = role === 'admin';
+  const isAdmin = useMemo(() => role === 'admin', [role]);
 
   return (
     <AuthContext.Provider
