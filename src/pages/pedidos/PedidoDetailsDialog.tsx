@@ -17,7 +17,14 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
   em_transito: { label: 'IN TRANSIT', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
   entregue: { label: 'FULFILLED', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
   cancelado: { label: 'VOIDED', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: Info },
-};
+const statusSteps = [
+  { id: 'pendente', label: 'PENDING', icon: Clock, color: 'text-amber-400', bg: 'bg-amber-400' },
+  { id: 'aprovado', label: 'APPROVED', icon: CheckCircle2, color: 'text-sky-400', bg: 'bg-sky-400' },
+  { id: 'enviado', label: 'DISPATCHED', icon: FileText, color: 'text-indigo-400', bg: 'bg-indigo-400' },
+  { id: 'em_transito', label: 'IN TRANSIT', icon: Truck, color: 'text-violet-400', bg: 'bg-violet-400' },
+  { id: 'entregue', label: 'FULFILLED', icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-400' },
+];
+
 
 interface Props {
   open: boolean;
@@ -101,30 +108,75 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                     </Card>
 
                     <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
-                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-violet-400" />
-                        Neural Timeline
+                      <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-8 flex items-center gap-2">
+                        <Zap className="w-4 h-4 text-violet-400" />
+                        Neural Fulfillment Timeline
                       </h3>
-                      <div className="grid grid-cols-2 gap-6">
-                        <div className="space-y-1">
-                          <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Emission Cycle</p>
-                          <p className="font-black text-white text-sm uppercase">{format(new Date(pedido.data_emissao), "dd MMM yyyy")}</p>
+                      
+                      <div className="relative">
+                        {/* Status Timeline */}
+                        <div className="space-y-8 relative">
+                          {statusSteps.map((step, index) => {
+                            const isCompleted = statusSteps.findIndex(s => s.id === pedido.status) >= index;
+                            const isCurrent = pedido.status === step.id;
+                            const isCancelled = pedido.status === 'cancelado';
+                            
+                            return (
+                              <div key={step.id} className="relative flex items-start gap-4">
+                                {index < statusSteps.length - 1 && (
+                                  <div 
+                                    className={cn(
+                                      "absolute left-5 top-10 w-[2px] h-[calc(100%+8px)] transition-all duration-500",
+                                      isCompleted && !isCurrent ? "bg-gradient-to-b from-violet-500 to-fuchsia-500" : "bg-white/5"
+                                    )} 
+                                  />
+                                )}
+                                
+                                <div className={cn(
+                                  "relative z-10 w-10 h-10 rounded-xl flex items-center justify-center border transition-all duration-500 shadow-lg",
+                                  isCurrent ? cn("scale-110 border-white/20", step.bg, "shadow-violet-500/20") : 
+                                  isCompleted ? "bg-white/5 border-white/10" : "bg-zinc-900/50 border-white/5 opacity-40"
+                                )}>
+                                  <step.icon className={cn("w-5 h-5", isCurrent ? "text-white" : isCompleted ? step.color : "text-zinc-600")} />
+                                  
+                                  {isCurrent && (
+                                    <motion.div
+                                      layoutId="active-glow"
+                                      className="absolute inset-0 rounded-xl bg-white/20 blur-md"
+                                      animate={{ opacity: [0.2, 0.5, 0.2] }}
+                                      transition={{ duration: 2, repeat: Infinity }}
+                                    />
+                                  )}
+                                </div>
+                                
+                                <div className="pt-1.5 flex-1">
+                                  <div className="flex items-center justify-between">
+                                    <p className={cn(
+                                      "text-[10px] font-black tracking-widest uppercase transition-colors",
+                                      isCurrent ? "text-white" : isCompleted ? "text-zinc-300" : "text-zinc-600"
+                                    )}>
+                                      {step.label}
+                                    </p>
+                                    {isCurrent && (
+                                      <Badge variant="outline" className="text-[8px] font-black uppercase border-violet-500/30 text-violet-400 px-2 py-0 animate-pulse">
+                                        ACTIVE STATE
+                                      </Badge>
+                                    )}
+                                  </div>
+                                  <p className={cn(
+                                    "text-[9px] font-bold mt-1 uppercase",
+                                    isCurrent ? "text-zinc-400" : "text-zinc-700"
+                                  )}>
+                                    {isCurrent ? "Vigilance Active" : isCompleted ? "Cycle Verified" : "Pending Vector"}
+                                  </p>
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
-                        <div className="space-y-1">
-                          <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Neural Forecast</p>
-                          <p className="font-black text-sky-400 text-sm uppercase">{pedido.data_previsao ? format(new Date(pedido.data_previsao), "dd MMM yyyy") : 'UNSCHEDULED'}</p>
-                        </div>
-                        {pedido.data_entrega && (
-                          <div className="col-span-2 pt-2 border-t border-white/5">
-                            <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest mb-1">Confirmation Vector</p>
-                            <p className="font-black text-emerald-400 text-sm uppercase flex items-center gap-2">
-                               <CheckCircle2 className="w-4 h-4" />
-                               Fulfilled on {format(new Date(pedido.data_entrega), "dd MMM yyyy")}
-                            </p>
-                          </div>
-                        )}
                       </div>
                     </Card>
+
                   </div>
 
                   {pedido.observacoes && (
