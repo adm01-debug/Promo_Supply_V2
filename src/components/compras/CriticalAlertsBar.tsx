@@ -1,5 +1,5 @@
 import { useMemo, forwardRef, useState } from 'react';
-import { AlertTriangle, AlertCircle, X, ChevronRight, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, AlertCircle, X, ChevronRight, ShieldCheck, Zap } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
