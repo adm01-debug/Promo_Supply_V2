@@ -30,6 +30,9 @@ import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion"
 import { ComparadorCotacoes } from "@/components/compras/ComparadorCotacoes";
 import { VisualComparadorCotacoes } from "@/components/compras/VisualComparadorCotacoes";
 import { PriceHistoryModal } from "@/components/compras/PriceHistoryModal";
+import { StrategicQuoteTable } from "@/components/compras/StrategicQuoteTable";
+import { NeuralFollowUpMonitor } from "@/components/compras/NeuralFollowUpMonitor";
+import { SupplierEcosystemSection } from "@/components/compras/SupplierEcosystemSection";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { useSolicitacoes } from "@/features/solicitacoes";
 import { useFornecedores } from "@/hooks/useFornecedores";
@@ -248,6 +251,8 @@ const Cotacao = () => {
             )}
           </AnimatePresence>
 
+          <StrategicQuoteTable cotacoes={allCotacoes} quantidade={solicitacao.quantidade} />
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-10">
               <Card className="rounded-[2.5rem] border-white/5 bg-white/[0.03] backdrop-blur-3xl overflow-hidden shadow-2xl">
@@ -294,6 +299,18 @@ const Cotacao = () => {
                  </div>
                  <BuscaAutomatica status={buscaStatus} resultados={cotacoesAPI} />
               </Card>
+
+              {solicitacao.produto_id && (
+                <SupplierEcosystemSection 
+                  produtoId={solicitacao.produto_id} 
+                  produtoNome={solicitacao.titulo} 
+                />
+              )}
+
+              <NeuralFollowUpMonitor 
+                supplierName={allCotacoes[0]?.fornecedor || "Strategic Partner"} 
+                itemName={solicitacao.titulo} 
+              />
             </div>
 
             <div className="space-y-10">

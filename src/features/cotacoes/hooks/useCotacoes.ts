@@ -9,7 +9,9 @@ import type { Json, Database } from '@/integrations/supabase/types';
 
 export type Cotacao = Database['public']['Tables']['cotacoes']['Row'] & {
   fornecedor?: { id: string; razao_social: string; nome_fantasia: string | null; } | null;
-  solicitacao?: { id: string; numero: string; titulo: string; } | null;
+  solicitacao?: { id: string; numero: string; titulo: string; produto_id?: string | null; } | null;
+  last_follow_up_at?: string | null;
+  follow_up_status?: string | null;
 };
 
 export interface CreateCotacaoInput {
@@ -39,7 +41,7 @@ async function fetchCotacoesData(userId: string | undefined, organizationId: str
     .select(`
       *,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
-      solicitacao:solicitacoes(id, numero, titulo)
+      solicitacao:solicitacoes(id, numero, titulo, produto_id)
     `)
     .order('score_total', { ascending: false })
     .eq('organization_id', organizationId);

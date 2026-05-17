@@ -1505,9 +1505,11 @@ export type Database = {
           currency: string
           data_avaliacao: string | null
           desconto_percentual: number | null
+          follow_up_status: string | null
           fornecedor_id: string | null
           id: string
           justificativa_selecao: string | null
+          last_follow_up_at: string | null
           moeda: string | null
           numero: string
           observacoes: string | null
@@ -1537,9 +1539,11 @@ export type Database = {
           currency?: string
           data_avaliacao?: string | null
           desconto_percentual?: number | null
+          follow_up_status?: string | null
           fornecedor_id?: string | null
           id?: string
           justificativa_selecao?: string | null
+          last_follow_up_at?: string | null
           moeda?: string | null
           numero: string
           observacoes?: string | null
@@ -1569,9 +1573,11 @@ export type Database = {
           currency?: string
           data_avaliacao?: string | null
           desconto_percentual?: number | null
+          follow_up_status?: string | null
           fornecedor_id?: string | null
           id?: string
           justificativa_selecao?: string | null
+          last_follow_up_at?: string | null
           moeda?: string | null
           numero?: string
           observacoes?: string | null
