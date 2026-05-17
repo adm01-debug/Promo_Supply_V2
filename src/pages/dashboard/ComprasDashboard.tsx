@@ -344,14 +344,14 @@ const ComprasDashboard = () => {
           ))}
         </EliteCardGrid>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="lg:col-span-3 space-y-8">
             {getWidgetComponent('chart-pipeline')}
             {getWidgetComponent('trend-charts')}
+            {getWidgetComponent('dashboard-insights')}
           </div>
           <div className="space-y-8">
             {getWidgetComponent('urgent-items')}
-            {getWidgetComponent('dashboard-insights')}
           </div>
         </div>
       </div>
