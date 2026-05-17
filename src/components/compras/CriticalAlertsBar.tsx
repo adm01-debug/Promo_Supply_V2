@@ -1,5 +1,5 @@
 import { useMemo, forwardRef, useState } from 'react';
-import { AlertTriangle, AlertCircle, X, ChevronRight, ShieldCheck } from 'lucide-react';
+import { AlertTriangle, AlertCircle, X, ChevronRight, ShieldCheck, Zap } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,7 +31,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('pedidos')
-        .select('id, numero, status, data_previsao')
+        .select('id, numero, status, data_previsao, solicitacao_id')
         .not('status', 'in', '(entregue,cancelado)');
       if (error) throw error;
       return data || [];
@@ -55,10 +55,12 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
   const alerts = useMemo(() => {
     let criticalCount = 0;
     let overdueCount = 0;
+    let prodAuditCount = 0;
     const pendingApprovals = workflows?.length || 0;
     
     const criticalItems: string[] = [];
     const overdueItems: string[] = [];
+    const prodAuditItems: string[] = [];
     const now = new Date();
     const nowDate = now.toISOString().split('T')[0];
 
@@ -77,18 +79,24 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
       }
     });
 
-    // Check overdue pedidos
+    // Check overdue pedidos and production audits
     (pedidos || []).forEach((ped) => {
       if (ped.data_previsao && ped.data_previsao < nowDate) {
         overdueCount++;
         if (overdueItems.length < 3) overdueItems.push(ped.numero);
       }
+      
+      // Check for first piece audit status
+      if ((ped as any).status_producao === 'primeira_peca') {
+        prodAuditCount++;
+        if (prodAuditItems.length < 3) prodAuditItems.push(ped.numero);
+      }
     });
 
-    return { criticalCount, overdueCount, criticalItems, overdueItems, pendingApprovals };
+    return { criticalCount, overdueCount, prodAuditCount, criticalItems, overdueItems, prodAuditItems, pendingApprovals };
   }, [solicitacoes, pedidos, workflows, settings.criticalThresholdDays]);
 
-  const hasAlerts = alerts.criticalCount > 0 || alerts.overdueCount > 0 || alerts.pendingApprovals > 0;
+  const hasAlerts = alerts.criticalCount > 0 || alerts.overdueCount > 0 || alerts.pendingApprovals > 0 || alerts.prodAuditCount > 0;
 
   if (!hasAlerts || dismissed) return null;
 
@@ -135,6 +143,13 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
                       <span className="flex items-center gap-1.5 text-destructive font-bold">
                         {alerts.overdueCount} Excedido{alerts.overdueCount > 1 ? 's' : ''}: 
                         <span className="text-xs font-mono opacity-80">{alerts.overdueItems.join(', ')}{alerts.overdueCount > 3 ? '...' : ''}</span>
+                      </span>
+                    )}
+
+                    {alerts.prodAuditCount > 0 && (
+                      <span className="flex items-center gap-1.5 text-fuchsia-600 dark:text-fuchsia-400 font-black">
+                        <Zap className="h-4 w-4 animate-pulse" />
+                        {alerts.prodAuditCount} Auditorias de 1ª Peça Pendentes
                       </span>
                     )}
 

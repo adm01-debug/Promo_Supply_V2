@@ -83,7 +83,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryKey: ['dashboard-pedidos', tenantId],
     queryFn: () => {
       if (!tenantId) return [];
-      return fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string; fornecedor_id: string }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at, fornecedor_id', {
+      return fetchAllRows<{ id: string; status: string; valor_total: number; data_emissao: string; data_previsao: string | null; data_entrega: string | null; created_at: string; fornecedor_id: string; solicitacao_id: string | null }>('pedidos', 'id, status, valor_total, data_emissao, data_previsao, data_entrega, created_at, fornecedor_id, solicitacao_id', {
         filters: [{ column: 'tenant_id', operator: 'eq', value: tenantId }]
       });
     },
@@ -451,14 +451,22 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     };
 
     const urgentItems = sol
-      .filter(s => s.status !== 'concluida' && s.status !== 'cancelada' && s.data_necessidade && (new Date(s.data_necessidade).getTime() - now.getTime()) / (1000 * 60 * 60 * 24) <= 3)
+      .filter(s => {
+        // High priority for items with specific production status (Primeira Peça)
+        const isAwaitingFirstPiece = ped.some(p => p.solicitacao_id === s.id && (p as any).status_producao === 'primeira_peca');
+        const isUrgentDue = s.status !== 'concluida' && s.status !== 'cancelada' && s.data_necessidade && (new Date(s.data_necessidade).getTime() - now.getTime()) / (1000 * 60 * 60 * 24) <= 3;
+        return isAwaitingFirstPiece || isUrgentDue;
+      })
       .map(s => {
         const profile = profs.find(p => p.user_id === s.solicitante_id);
+        const hasCriticalProduction = ped.some(p => p.solicitacao_id === s.id && (p as any).status_producao === 'primeira_peca');
         return {
           ...s,
-          comprador: profile ? profile.full_name : 'Não Atribuído'
+          comprador: profile ? profile.full_name : 'Não Atribuído',
+          urgencia: hasCriticalProduction ? 'critico' : 'alto'
         };
       })
+      .sort((a, b) => (a.urgencia === 'critico' ? -1 : 1))
       .slice(0, 10);
 
     return { kpis, pipeline, urgentItems };
