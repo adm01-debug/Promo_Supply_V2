@@ -113,30 +113,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (mounted) setLoading(false);
     });
 
-    // Then listen for changes — CRITICAL: never await inside onAuthStateChange
-    // to prevent deadlocks that block subsequent auth events
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (!mounted) return;
+        
+        // Optimistic session/user update
         setSession(session);
         setUser(session?.user ?? null);
 
         if (session?.user) {
-          // Fire-and-forget via setTimeout to avoid blocking the auth event loop
-          if (event === 'SIGNED_IN') {
-            setLoading(true);
-            setTimeout(() => {
-              if (!mounted) return;
-              fetchUserData(session.user.id).finally(() => {
-                if (mounted) setLoading(false);
-              });
-            }, 0);
-          }
-
-          if (event === 'TOKEN_REFRESHED') {
-            setTimeout(() => {
-              if (mounted) void fetchUserData(session.user.id);
-            }, 0);
+          if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            // For sign-in, we might want to show a loader if profile is missing
+            if (event === 'SIGNED_IN') setLoading(true);
+            
+            try {
+              await fetchUserData(session.user.id);
+            } finally {
+              if (mounted) setLoading(false);
+            }
           }
         } else {
           setProfile(null);
@@ -145,10 +139,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setTenantId(null);
           setAvailableTenants([]);
           fetchedUserIdRef.current = null;
-        }
-
-        if (event === 'SIGNED_OUT') {
-          setLoading(false);
+          if (event === 'SIGNED_OUT') {
+            setLoading(false);
+          }
         }
       }
     );

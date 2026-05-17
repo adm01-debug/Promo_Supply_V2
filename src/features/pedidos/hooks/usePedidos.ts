@@ -78,7 +78,7 @@ async function fetchPedidosData(userId: string | undefined, tenantId: string | n
       solicitacao:solicitacoes(id, numero, titulo)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
-    .eq('tenant_id', tenantId)
+    .eq('organization_id', tenantId)
     .range(from, to);
 
   if (filters?.status && filters.status !== 'todos') {
