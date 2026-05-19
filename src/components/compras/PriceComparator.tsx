@@ -37,6 +37,7 @@ export function PriceComparator() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [productName, setProductName] = useState('');
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState('100');
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
 
@@ -53,11 +54,25 @@ export function PriceComparator() {
     staleTime: 60000,
   });
 
+  // Fetch available products for selection
+  const { data: products = [] } = useQuery({
+    queryKey: ['price-comparator-products'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('produtos')
+        .select('id, nome, categoria')
+        .limit(100);
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 60000,
+  });
+
   const handleCompare = async () => {
-    if (!productName.trim()) {
+    if (!productName.trim() && !selectedProductId) {
       toast({
         title: 'Produto necessário',
-        description: 'Por favor, informe o nome do produto.',
+        description: 'Por favor, selecione ou informe o nome do produto.',
         variant: 'destructive',
       });
       return;
@@ -67,12 +82,30 @@ export function PriceComparator() {
     setComparison(null);
 
     try {
+      let linkedData: any[] = [];
+      
+      // If a product is selected, fetch its linked suppliers and prices
+      if (selectedProductId) {
+        const { data, error } = await supabase
+          .from('produto_fornecedores')
+          .select('*')
+          .eq('produto_id', selectedProductId);
+        
+        if (!error && data) {
+          linkedData = data;
+        }
+      }
+
       const qty = parseInt(quantity) || 100;
-      const result = generateQuotesFromSuppliers(fornecedores, productName, qty);
+      const displayProductName = selectedProductId 
+        ? products.find(p => p.id === selectedProductId)?.nome || productName 
+        : productName;
+
+      const result = generateQuotesFromSuppliers(fornecedores, displayProductName, qty, linkedData);
       setComparison(result);
       toast({
         title: 'Comparação concluída',
-        description: `${result.quotes.length} cotações encontradas para "${productName}"`,
+        description: `${result.quotes.length} cotações processadas para "${displayProductName}"`,
       });
     } catch (error) {
       console.error('Error comparing prices:', error);
@@ -113,14 +146,37 @@ export function PriceComparator() {
 
         <div className="flex-1 overflow-hidden flex flex-col gap-4">
           {/* Search Form */}
-          <div className="flex gap-3">
-            <div className="flex-1">
-              <Label htmlFor="product">Produto</Label>
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+            <div className="md:col-span-5">
+              <Label htmlFor="product">Produto Base</Label>
+              <Select 
+                value={selectedProductId || ""} 
+                onValueChange={(v) => {
+                  setSelectedProductId(v);
+                  const p = products.find(prod => prod.id === v);
+                  if (p) setProductName(p.nome);
+                }}
+              >
+                <SelectTrigger id="product" className="mt-1">
+                  <SelectValue placeholder="Selecione um produto cadastrado..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {products.map(p => (
+                    <SelectItem key={p.id} value={p.id}>{p.nome}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="md:col-span-3">
+              <Label htmlFor="manual-product">Ou busca manual</Label>
               <Input
-                id="product"
-                placeholder="Ex: Caneta esferográfica, Mochila executiva..."
+                id="manual-product"
+                placeholder="Nome do produto..."
                 value={productName}
-                onChange={(e) => setProductName(e.target.value)}
+                onChange={(e) => {
+                  setProductName(e.target.value);
+                  if (selectedProductId) setSelectedProductId(null);
+                }}
                 className="mt-1"
               />
             </div>
