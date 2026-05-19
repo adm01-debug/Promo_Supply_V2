@@ -47,9 +47,19 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
   
   const handleUpdateStatus = async (newStatus: Pedido['status']) => {
     if (!pedido) return;
+    
+    // Optimistic toast with status-specific message
+    const config = statusConfig[newStatus] || statusConfig["pendente"];
+    toast.info(`Atualizando pedido para ${config.label}...`, {
+      icon: <config.icon className="w-4 h-4" />,
+    });
+
     const success = await updateStatus(pedido.id, newStatus);
     if (success) {
-      // Pedido is updated in react-query cache by hook
+      toast.success(`Pedido ${pedido.numero} agora está ${config.label}`, {
+        description: "A linha do tempo foi atualizada em tempo real.",
+        icon: <config.icon className="w-4 h-4 text-emerald-400" />,
+      });
     }
   };
 
