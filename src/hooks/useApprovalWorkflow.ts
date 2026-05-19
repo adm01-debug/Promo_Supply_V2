@@ -300,13 +300,15 @@ export const useApprovalWorkflow = () => {
 
       const { data: allSteps } = await supabase.from('approval_steps').select('*').eq('workflow_id', step.workflow_id);
       const allOtherSteps = allSteps?.filter(s => s.id !== stepId) || [];
-      const allApproved = allOtherSteps.every(s => s.status === 'approved');
+      const allApproved = allOtherSteps.every(s => s.status === 'approved' || s.status === 'skipped');
 
       if (allApproved) {
-        await supabase.from('approval_workflows').update({ status: 'approved', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
-        
-        // Finalized!
-        toast.success('Aprovação finalizada! Solicitação liberada.');
+        // Double check status consistency - avoid race condition
+        const { data: currentWorkflow } = await supabase.from('approval_workflows').select('status').eq('id', step.workflow_id).single();
+        if (currentWorkflow?.status === 'pending') {
+          await supabase.from('approval_workflows').update({ status: 'approved', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
+          toast.success('Aprovação finalizada! Solicitação liberada.');
+        }
       } else {
         // If not requiring unanimity, move to next sequential step
         // In this complex system, we usually have sequential steps, but let's ensure the logic holds
@@ -337,6 +339,12 @@ export const useApprovalWorkflow = () => {
       if (stepError) throw stepError;
       await supabase.from('approval_steps').update({ status: 'rejected', aprovador_efetivo_id: user?.id, comentario, decidido_em: new Date().toISOString() }).eq('id', stepId);
       await supabase.from('approval_workflows').update({ status: 'rejected', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
+      
+      // Mark all other pending steps of this workflow as cancelled/skipped to prevent UI ghosting
+      await supabase.from('approval_steps').update({ status: 'skipped', comentario: 'Workflow rejected at previous step' })
+        .eq('workflow_id', step.workflow_id)
+        .eq('status', 'pending');
+        
       await supabase.from('approval_history').insert({
         workflow_id: step.workflow_id, step_id: stepId, acao: 'rejected',
         usuario_id: user?.id, usuario_nome: user?.email, detalhes: { comentario }
