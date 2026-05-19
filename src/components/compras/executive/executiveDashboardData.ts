@@ -120,12 +120,13 @@ export const trendDataSets = {
 };
 
 export const categorySpend = [
-  { name: 'Mochilas', value: 450000, previousValue: 380000, percentage: 18.4, orders: 45, supplier: 'XBZ Brindes' },
-  { name: 'Canetas', value: 380000, previousValue: 350000, percentage: 15.5, orders: 120, supplier: 'Stricker' },
-  { name: 'Camisetas', value: 320000, previousValue: 290000, percentage: 13.1, orders: 38, supplier: 'Asia Import' },
-  { name: 'Bonés', value: 280000, previousValue: 260000, percentage: 11.4, orders: 52, supplier: 'Só Marcas' },
-  { name: 'Cadernos', value: 250000, previousValue: 230000, percentage: 10.2, orders: 65, supplier: 'Spot Gifts' },
-  { name: 'Outros', value: 770000, previousValue: 668000, percentage: 31.4, orders: 180, supplier: 'XBZ Brindes' }
+  { name: 'Mochilas', value: 450000, previousValue: 380000, percentage: 18.4, orders: 45, supplier: 'XBZ Brindes', risk: 'low' },
+  { name: 'Canetas', value: 380000, previousValue: 350000, percentage: 15.5, orders: 120, supplier: 'Stricker', risk: 'medium' },
+  { name: 'Camisetas', value: 320000, previousValue: 290000, percentage: 13.1, orders: 38, supplier: 'Asia Import', risk: 'low' },
+  { name: 'Bonés', value: 280000, previousValue: 260000, percentage: 11.4, orders: 52, supplier: 'Só Marcas', risk: 'medium' },
+  { name: 'Cadernos', value: 250000, previousValue: 230000, percentage: 10.2, orders: 65, supplier: 'Spot Gifts', risk: 'high' },
+  { name: 'Tecnologia', value: 1250000, previousValue: 1100000, percentage: 45.2, orders: 12, supplier: 'Dell', risk: 'critical' },
+  { name: 'Outros', value: 770000, previousValue: 668000, percentage: 31.4, orders: 180, supplier: 'XBZ Brindes', risk: 'low' }
 ];
 
 export const topSuppliers = [
