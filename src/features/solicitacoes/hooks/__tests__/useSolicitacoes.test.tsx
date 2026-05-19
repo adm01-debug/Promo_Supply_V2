@@ -4,6 +4,18 @@ import { useSolicitacoes } from '../useSolicitacoes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 
+// Mock Auth Context
+const mockAuthContext = {
+  user: { id: 'test-user' },
+  session: { access_token: 'test-token' },
+  userRole: 'admin',
+  loading: false,
+};
+
+vi.mock('../../auth/hooks/useAuth', () => ({
+  useAuth: () => mockAuthContext,
+}));
+
 // Wrapper for React Query
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -30,9 +42,6 @@ describe('useSolicitacoes Hook', () => {
     });
 
     await act(async () => {
-      // Simulation of creating a request
-      const mockData = { titulo: 'Teste', prioridade: 'alta' };
-      // This is a simplified test as the actual hook depends on Supabase
       expect(result.current.solicitacoes).toBeInstanceOf(Array);
     });
   });
