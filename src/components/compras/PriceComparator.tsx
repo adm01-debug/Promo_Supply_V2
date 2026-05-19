@@ -263,7 +263,7 @@ export function PriceComparator() {
                         <Button 
                           className="h-12 px-6 rounded-xl bg-white text-black hover:bg-zinc-200 font-black text-[10px] uppercase tracking-widest gap-2 shadow-xl shadow-white/10"
                           onClick={() => {
-                            toast.success("Plano de Compra Gerado", {
+                            sonnerToast.success("Plano de Compra Gerado", {
                               description: "A IA está consolidando os dados para a diretoria.",
                             });
                           }}
