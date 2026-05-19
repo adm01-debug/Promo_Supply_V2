@@ -265,7 +265,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
   };
 }
 
-// Hook for KPIs
+// Hook for KPIs optimized with RPC
 export function usePagamentosKPIs() {
   const { user, organizationId } = useAuth();
 
@@ -274,33 +274,25 @@ export function usePagamentosKPIs() {
     queryFn: async () => {
       if (!organizationId) return { total: 0, pendentes: 0, atrasados: 0, pagos: 0, valorPendente: 0, valorPago: 0 };
       
-      let allData: { status: string; valor: number; valor_pago: number | null; data_vencimento: string }[] = [];
-      let from = 0;
-      const pageSize = 1000;
-      let hasMore = true;
+      const { data, error } = await supabase.rpc('get_pagamentos_kpis', { 
+        p_organization_id: organizationId 
+      });
 
-      while (hasMore) {
-        const { data, error } = await supabase
-          .from('pagamentos').select('status, valor, valor_pago, data_vencimento').eq('organization_id', organizationId).range(from, from + pageSize - 1);
-        if (error) throw error;
-        if (!data || data.length === 0) { hasMore = false; break; }
-        allData = [...allData, ...data];
-        if (data.length < pageSize) hasMore = false;
-        from += pageSize;
+      if (error) {
+        logger.error('Error fetching Pagamentos KPIs via RPC', { error });
+        throw error;
       }
 
-      const hoje = format(new Date(), 'yyyy-MM-dd');
-      return {
-        total: allData.length,
-        pendentes: allData.filter(p => p.status === 'pendente' || p.status === 'aprovado' || p.status === 'agendado').length,
-        atrasados: allData.filter(p => (p.status === 'pendente' || p.status === 'aprovado') && p.data_vencimento < hoje).length,
-        pagos: allData.filter(p => p.status === 'pago').length,
-        valorPendente: allData.filter(p => p.status !== 'pago' && p.status !== 'cancelado')
-          .reduce((sum, p) => sum + (p.valor - (p.valor_pago || 0)), 0),
-        valorPago: allData.filter(p => p.status === 'pago').reduce((sum, p) => sum + p.valor, 0),
+      return data as { 
+        total: number; 
+        pendentes: number; 
+        atrasados: number; 
+        pagos: number; 
+        valorPendente: number; 
+        valorPago: number; 
       };
     },
-    enabled: !!user,
+    enabled: !!user && !!organizationId,
     staleTime: 60_000,
   });
 
