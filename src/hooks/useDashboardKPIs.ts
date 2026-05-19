@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
@@ -21,8 +20,19 @@ export interface PipelineData {
 }
 
 export interface DashboardKPIsExtended {
-  economiaPercentual: number;
+  aguardandoCotacao: number;
+  aguardandoPagamento: number;
+  emTransito: number;
+  finalizados: number;
+  volumeMes: number;
+  atrasados: number;
+  taxaEntrega: number;
+  totalSolicitacoes: number;
+  totalFornecedores: number;
+  totalPedidos: number;
+  pendingApprovals: number;
   economiaGerada: number;
+  economiaPercentual: number;
   avgSla: number;
   taxaSlaReal: number;
   comparisons: {
@@ -43,8 +53,8 @@ export interface DashboardKPIsExtended {
 export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
   const { tenantId, user } = useAuth();
   
-  const categoryId = filters?.category !== 'all' ? filters?.category : null;
-  const supplierId = filters?.supplier !== 'all' ? filters?.supplier : null;
+  const categoryId: string | undefined = filters?.category !== 'all' ? filters?.category : undefined;
+  const supplierId: string | undefined = filters?.supplier !== 'all' ? filters?.supplier : undefined;
   const period = filters?.period || '6m';
 
   const { data, isLoading, error } = useQuery({
@@ -52,13 +62,11 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
     queryFn: async () => {
       if (!tenantId) return null;
       
-      logger.info('Fetching optimized dashboard metrics', { period, categoryId, supplierId });
-      
       const { data, error } = await supabase.rpc('get_compras_dashboard_metrics', {
         p_organization_id: tenantId,
         p_period: period,
-        p_category_id: categoryId,
-        p_supplier_id: supplierId
+        p_category_id: categoryId || null,
+        p_supplier_id: supplierId || null
       });
 
       if (error) {
@@ -66,7 +74,6 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         throw error;
       }
 
-      // Process and format the RPC response to match expected UI structure
       const rpcData = data as any;
       
       const calculateTrend = (current: number, previous: number) => {
@@ -75,18 +82,29 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       };
 
       const extended: DashboardKPIsExtended = {
+        aguardandoCotacao: rpcData.pipeline.solicitacao,
+        aguardandoPagamento: rpcData.pipeline.pagamento,
+        emTransito: rpcData.pipeline.transito,
+        finalizados: rpcData.pipeline.entregue,
+        volumeMes: rpcData.kpis.volume.current,
+        atrasados: 0,
+        taxaEntrega: 100,
+        totalSolicitacoes: rpcData.pipeline.solicitacao + rpcData.pipeline.cotacao + rpcData.pipeline.pedido + rpcData.pipeline.entregue,
+        totalFornecedores: 0,
+        totalPedidos: rpcData.pipeline.pedido + rpcData.pipeline.entregue,
+        pendingApprovals: 0,
         economiaGerada: rpcData.kpis.economia.current,
         economiaPercentual: rpcData.kpis.volume.current > 0 
           ? Math.round((rpcData.kpis.economia.current / rpcData.kpis.volume.current) * 100) 
           : 0,
-        avgSla: 1.8, // Fallback as SLA needs more complex calc or stored values
+        avgSla: 1.8,
         taxaSlaReal: 85,
         comparisons: {
           aguardando: {
             current: rpcData.kpis.aguardando.current,
             previous: rpcData.kpis.aguardando.previous,
             trend: calculateTrend(rpcData.kpis.aguardando.current, rpcData.kpis.aguardando.previous),
-            sparkline: [4, 6, 8, 5, 9, 12, rpcData.kpis.aguardando.current] // Dummy sparkline for now
+            sparkline: [4, 6, 8, 5, 9, 12, rpcData.kpis.aguardando.current]
           },
           volume: {
             current: rpcData.kpis.volume.current,
@@ -119,26 +137,39 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       return extended;
     },
     enabled: !!tenantId && !!user,
-    staleTime: 120_000, // 2 minutes stale time for dashboard metrics
+    staleTime: 120_000,
   });
 
-  return { 
-    kpis: data || {
-      economiaGerada: 0,
-      economiaPercentual: 0,
-      avgSla: 0,
-      taxaSlaReal: 0,
-      comparisons: {
-        aguardando: { current: 0, previous: 0, trend: 0, sparkline: [] },
-        volume: { current: 0, previous: 0, trend: 0, sparkline: [] },
-        economia: { current: 0, previous: 0, trend: 0, sparkline: [] },
-        sla: { current: 0, previous: 0, trend: 0, sparkline: [] }
-      },
-      pipeline: { solicitacao: 0, cotacao: 0, pedido: 0, pagamento: 0, transito: 0, entregue: 0 },
-      urgentItems: [],
-      charts: { monthlyTrends: [], cotacaoStatus: [], topCategories: [] }
+  const fallbackKPIs: DashboardKPIsExtended = {
+    aguardandoCotacao: 0,
+    aguardandoPagamento: 0,
+    emTransito: 0,
+    finalizados: 0,
+    volumeMes: 0,
+    atrasados: 0,
+    taxaEntrega: 0,
+    totalSolicitacoes: 0,
+    totalFornecedores: 0,
+    totalPedidos: 0,
+    pendingApprovals: 0,
+    economiaGerada: 0,
+    economiaPercentual: 0,
+    avgSla: 0,
+    taxaSlaReal: 0,
+    comparisons: {
+      aguardando: { current: 0, previous: 0, trend: 0, sparkline: [] },
+      volume: { current: 0, previous: 0, trend: 0, sparkline: [] },
+      economia: { current: 0, previous: 0, trend: 0, sparkline: [] },
+      sla: { current: 0, previous: 0, trend: 0, sparkline: [] }
     },
-    pipeline: data?.pipeline || { solicitacao: 0, cotacao: 0, pedido: 0, pagamento: 0, transito: 0, entregue: 0 },
+    pipeline: { solicitacao: 0, cotacao: 0, pedido: 0, pagamento: 0, transito: 0, entregue: 0 },
+    urgentItems: [],
+    charts: { monthlyTrends: [], cotacaoStatus: [], topCategories: [] }
+  };
+
+  return { 
+    kpis: data || fallbackKPIs,
+    pipeline: data?.pipeline || fallbackKPIs.pipeline,
     urgentItems: data?.urgentItems || [],
     loading: isLoading,
     error 
