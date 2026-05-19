@@ -203,9 +203,9 @@ export const BulkPlanningConsole = () => {
                     <h5 className="font-black text-xs text-white uppercase tracking-widest">Pronto para execução massiva</h5>
                     <p className="text-[10px] text-zinc-500 font-medium">Os disparos serão realizados via IA para todos os fornecedores homologados.</p>
                   </div>
-                  <EliteButton variant="outline" className="h-10 text-[9px] font-black uppercase tracking-[0.2em] border-white/10 text-zinc-300">
+                  <Button variant="outline" className="h-10 text-[9px] font-black uppercase tracking-[0.2em] border-white/10 text-zinc-300">
                     REVISAR FILAS
-                  </EliteButton>
+                  </Button>
                 </div>
               </Card>
             </div>
