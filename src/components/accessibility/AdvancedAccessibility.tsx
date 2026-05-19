@@ -10,6 +10,7 @@ import {
   Contrast,
   MousePointer2,
   Keyboard,
+  Check,
   RotateCcw
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
