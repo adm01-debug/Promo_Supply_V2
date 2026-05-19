@@ -30,13 +30,20 @@ export interface ComparisonResult {
 export function generateQuotesFromSuppliers(
   fornecedores: any[],
   productName: string,
-  qty: number
+  qty: number,
+  linkedProductSuppliers: any[] = []
 ): ComparisonResult {
-  const quotes: PriceQuote[] = fornecedores.slice(0, 6).map((f, index) => {
-    const basePrice = 25 + Math.random() * 50;
-    const unitPrice = Number((basePrice * (0.85 + Math.random() * 0.3)).toFixed(2));
+  const quotes: PriceQuote[] = fornecedores.map((f, index) => {
+    // Check if we have real data linked for this supplier and product
+    const linkedData = linkedProductSuppliers.find(ls => ls.fornecedor_id === f.id);
+    
+    // If we have linked data, use it; otherwise, use randomized/estimated data based on supplier general stats
+    const unitPrice = linkedData?.preco_custo 
+      ? Number(linkedData.preco_custo) 
+      : Number(( (25 + Math.random() * 50) * (0.85 + Math.random() * 0.3)).toFixed(2));
+    
     const totalPrice = Number((unitPrice * qty).toFixed(2));
-    const avgPrice = 40 * qty;
+    const avgPrice = unitPrice * 1.2 * qty; // Estimated market average
     const savings = Number((avgPrice - totalPrice).toFixed(2));
     const savingsPercent = Number(((savings / avgPrice) * 100).toFixed(1));
 
@@ -45,23 +52,19 @@ export function generateQuotesFromSuppliers(
       supplierName: f.nome_fantasia || f.razao_social,
       unitPrice,
       totalPrice,
-      deliveryDays: f.prazo_medio_entrega || Math.floor(3 + Math.random() * 12),
+      deliveryDays: linkedData?.lead_time_estimado || f.prazo_medio_entrega || Math.floor(3 + Math.random() * 12),
       paymentTerms: f.condicoes_pagamento || ['30 dias', '28/56 dias', 'À vista -5%', '30/60/90 dias'][Math.floor(Math.random() * 4)],
       stock: Math.floor(50 + Math.random() * 500),
       rating: Number(f.avaliacao || (3.5 + Math.random() * 1.5).toFixed(1)),
       onTimeDelivery: Math.floor(85 + Math.random() * 15),
       savings,
       savingsPercent,
-      recommended: index === 0,
+      recommended: false,
       pros: [
+        linkedData ? 'Preço contratado em sistema' : 'Preço estimado sob demanda',
         'Bom histórico de entregas',
-        'Preço competitivo',
-        'Qualidade consistente',
-      ].slice(0, 2 + Math.floor(Math.random() * 2)),
-      cons: [
-        'Prazo de entrega longo',
-        'Estoque limitado',
-      ].slice(0, Math.floor(Math.random() * 2)),
+      ].slice(0, 2),
+      cons: [],
     };
   });
 
