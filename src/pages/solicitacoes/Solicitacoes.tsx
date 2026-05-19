@@ -27,6 +27,9 @@ import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { EnhancedSearch } from "@/components/ui/enhanced-search";
 import { KanbanSkeleton } from "@/components/ui/contextual-skeletons";
 import { useSolicitacoes } from "@/features/solicitacoes";
+import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
+import { type BulkItem, type BulkAction } from "@/components/compras/BulkOperationsPreview";
+import { statusConfig as uiStatusConfig } from "./solicitacoesHelpers";
 import {
   Select,
   SelectContent,
@@ -48,6 +51,7 @@ const Solicitacoes = () => {
   const [tipoFilter, setTipoFilter] = useState("todos");
   const [advancedFilters, setAdvancedFilters] = useState<AdvancedFilters>(initialFilters);
   const [viewMode, setViewMode] = useState<'list' | 'kanban'>('kanban');
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const accountDefaults = useMemo(() => ({
     searchTerm: "", statusFilter: "todas", tipoFilter: "todos",
@@ -70,7 +74,7 @@ const Solicitacoes = () => {
     acct.patchFilters({ searchTerm, statusFilter, tipoFilter, advancedFilters });
   }, [searchTerm, statusFilter, tipoFilter, advancedFilters, acct]);
 
-  const { solicitacoes, loading, updateStatus, refetch } = useSolicitacoes({
+  const { solicitacoes, loading, updateStatus, bulkDelete, bulkUpdateStatus, refetch } = useSolicitacoes({
     search: searchTerm || undefined,
     status: statusFilter !== 'todas' ? mapLegacyStatusToDb(statusFilter) : undefined,
   });
@@ -120,6 +124,58 @@ const Solicitacoes = () => {
     const dbStatus = mapLegacyStatusToDb(newLegacyStatus);
     await updateStatus(id, dbStatus);
   }, [updateStatus]);
+
+  const handleSelectChange = useCallback((id: string, selected: boolean) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (selected) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  }, []);
+
+  const handleSelectAll = useCallback(() => {
+    setSelectedIds(new Set(filteredSolicitacoes.map(s => s.id)));
+  }, [filteredSolicitacoes]);
+
+  const handleDeselectAll = useCallback(() => {
+    setSelectedIds(new Set());
+  }, []);
+
+  const handleBulkExecute = useCallback(async (action: BulkAction, itemIds: string[], options?: Record<string, unknown>) => {
+    if (action.id === 'delete') {
+      return await bulkDelete(itemIds);
+    }
+    if (action.id === 'change-status' && options?.targetStatus) {
+      const dbStatus = mapLegacyStatusToDb(options.targetStatus as string);
+      return await bulkUpdateStatus(itemIds, dbStatus);
+    }
+    if (action.targetStatus) {
+      const dbStatus = mapLegacyStatusToDb(action.targetStatus);
+      return await bulkUpdateStatus(itemIds, dbStatus);
+    }
+    return false;
+  }, [bulkDelete, bulkUpdateStatus]);
+
+  const bulkSelectedItems = useMemo((): BulkItem[] => {
+    return filteredSolicitacoes
+      .filter(s => selectedIds.has(s.id))
+      .map(s => ({
+        id: s.id,
+        title: s.produto,
+        subtitle: s.empresa,
+        status: s.status,
+        value: s.valorTotal,
+      }));
+  }, [filteredSolicitacoes, selectedIds]);
+
+  const bulkStatusOptions = useMemo(() => {
+    return Object.entries(uiStatusConfig).map(([value, config]) => ({
+      value,
+      label: config.label,
+      color: config.color,
+    }));
+  }, []);
 
   if (loading) {
     return (
@@ -248,6 +304,9 @@ const Solicitacoes = () => {
                 <SolicitacaoKanban 
                   solicitacoes={filteredSolicitacoes} 
                   onStatusChange={handleStatusChange} 
+                  selectable
+                  selectedIds={selectedIds}
+                  onSelectChange={handleSelectChange}
                 />
               </motion.div>
             ) : (
@@ -261,7 +320,13 @@ const Solicitacoes = () => {
                 <EliteCardGrid columns={1}>
                   {filteredSolicitacoes.length > 0 ? (
                     filteredSolicitacoes.map(s => (
-                      <SolicitacaoCard key={s.id} solicitacao={s} />
+                      <SolicitacaoCard 
+                        key={s.id} 
+                        solicitacao={s} 
+                        selectable
+                        selected={selectedIds.has(s.id)}
+                        onSelectChange={(selected) => handleSelectChange(s.id, selected)}
+                      />
                     ))
                   ) : (
                     <IllustratedEmptyState type="orders" title="Nenhum registro encontrado" description="Ajuste seus filtros para refinar os resultados." />
@@ -269,6 +334,16 @@ const Solicitacoes = () => {
                 </EliteCardGrid>
               </motion.div>
             )}
+            <EnhancedBulkActionsBar
+              entityType="solicitacoes"
+              selectedItems={bulkSelectedItems}
+              totalCount={filteredSolicitacoes.length}
+              onSelectAll={handleSelectAll}
+              onDeselectAll={handleDeselectAll}
+              onExecute={handleBulkExecute}
+              isAllSelected={selectedIds.size === filteredSolicitacoes.length && filteredSolicitacoes.length > 0}
+              statusOptions={bulkStatusOptions}
+            />
           </AnimatePresence>
         </div>
       </ElitePageWrapper>
