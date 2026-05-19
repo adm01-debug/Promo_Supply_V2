@@ -4,6 +4,7 @@ import {
   Plus, Package, Check, Loader2,
   Building2, DollarSign, ShieldCheck, ArrowRight, ArrowLeft,
 } from "lucide-react";
+import { EliteButton } from "@/components/atoms/EliteButton";
 import { useImageCompression } from "@/hooks/useImageCompression";
 import { formatBytes } from "@/lib/imageCompression";
 import { supabase } from "@/integrations/supabase/client";
