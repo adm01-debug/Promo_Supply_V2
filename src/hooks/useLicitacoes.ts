@@ -15,7 +15,7 @@ export type LicitacaoProposta = Database['public']['Tables']['licitacao_proposta
 };
 
 export function useLicitacoes() {
-  const { user, tenantId } = useAuth();
+  const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: licitacoes = [], isLoading } = useQuery({
@@ -50,7 +50,8 @@ export function useLicitacoes() {
           numero, 
           created_by: user.id, 
           responsavel_id: user.id, 
-          tenant_id: tenantId 
+          tenant_id: tenantId,
+          organization_id: organizationId || tenantId
         } as any)
         .select()
         .single();
@@ -184,7 +185,7 @@ export interface SourcingEvent {
 }
 
 export function useSourcingEvents() {
-  const { user } = useAuth();
+  const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: events = [], isLoading } = useQuery({
@@ -202,7 +203,11 @@ export function useSourcingEvents() {
 
   const createEvent = useMutation({
     mutationFn: async (event: Partial<SourcingEvent>) => {
-      const { data, error } = await supabase.from('sourcing_events').insert(event as any).select().single();
+      const { data, error } = await supabase.from('sourcing_events').insert({
+        ...event,
+        organization_id: organizationId || tenantId,
+        tenant_id: tenantId || organizationId
+      } as any).select().single();
       if (error) throw error;
       return data as unknown as SourcingEvent;
     },
