@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { 
   Sparkles, TrendingDown, TrendingUp, AlertTriangle, CheckCircle, 
   Loader2, Brain, Target, DollarSign, History, Clock,
-  ArrowRight, ShieldCheck, Zap, Info
+  ArrowRight, ShieldCheck, Zap, Info, MessageSquare, Mail, Calculator
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +15,7 @@ import { useAuth } from "@/features/auth";
 import { toast } from "sonner";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
+import { StrategicQuoteTable } from "@/components/compras/StrategicQuoteTable";
 
 interface NegotiationAnalysis {
   resumo: string;
@@ -30,6 +31,7 @@ interface NegotiationAnalysis {
     argumentos: string[];
     risco?: "baixo" | "medio" | "alto";
     confianca_negociacao?: number;
+    tipo_negociacao?: string;
   }[];
   analise_detalhada: string;
 }
@@ -215,10 +217,24 @@ const NegociacaoIA = () => {
                         ))}
                       </div>
                     </motion.div>
-                  )}
+                  <div className="mt-8 pt-6 border-t border-white/5">
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 ml-1">Comparativo Estratégico de Propostas</p>
+                    <StrategicQuoteTable 
+                      cotacoes={cotacoes.map(c => ({
+                        id: c.id,
+                        fornecedor: (c as any).fornecedor?.nome_fantasia || (c as any).fornecedor?.razao_social || "Fornecedor",
+                        total: Number(c.valor_total),
+                        lead_time: Number(c.prazo_entrega),
+                        rating: (c as any).fornecedor?.avaliacao || 4.2
+                      }))} 
+                      quantidade={solicitacoes?.find(s => s.id === selectedSolicitacao)?.quantidade || 1} 
+                    />
+                  </div>
+                )}
                 </AnimatePresence>
 
-                <Button
+                <div className="pt-4">
+                  <Button
                   onClick={() => analyzeMutation.mutate()}
                   disabled={!selectedSolicitacao || !cotacoes?.length || analyzeMutation.isPending}
                   className="w-full h-12 text-base font-bold shadow-lg shadow-primary/20 group relative overflow-hidden"
@@ -322,81 +338,110 @@ const NegociacaoIA = () => {
                       )}
 
                       <div className="space-y-4">
-                        <h3 className="text-sm font-bold flex items-center gap-2 px-1">
-                          <Target className="h-4 w-4 text-primary" />
-                          Estratégias por Fornecedor
-                        </h3>
+                        <div className="flex items-center justify-between px-1">
+                          <h3 className="text-sm font-bold flex items-center gap-2">
+                            <Target className="h-4 w-4 text-primary" />
+                            Estratégias por Fornecedor
+                          </h3>
+                          <Badge variant="outline" className="text-[9px] font-black uppercase border-primary/20 text-primary">
+                            Plano de Ação Sugerido
+                          </Badge>
+                        </div>
+
                         <div className="grid gap-4 md:grid-cols-2">
                           {analysis.sugestoes.map((s, i) => (
                             <motion.div
                               key={i}
-                              whileHover={{ y: -2 }}
-                              className="group p-5 rounded-2xl bg-background/40 border border-border/50 hover:border-primary/20 transition-all shadow-sm"
+                              whileHover={{ y: -4, scale: 1.01 }}
+                              className="group p-6 rounded-3xl bg-background/40 border border-white/5 hover:border-primary/30 transition-all shadow-2xl relative overflow-hidden"
                             >
-                              <div className="flex items-center justify-between mb-3">
+                              {/* Background Pattern */}
+                              <div className="absolute -top-10 -right-10 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
+                                <Brain className="h-32 w-32" />
+                              </div>
+
+                              <div className="flex items-start justify-between mb-4 relative z-10">
                                 <div className="space-y-1">
-                                  <span className="font-bold text-sm tracking-tight">{s.fornecedor}</span>
-                                  {s.confianca_negociacao && (
-                                    <div className="flex items-center gap-1.5">
+                                  <h4 className="font-black text-sm tracking-tight text-white uppercase">{s.fornecedor}</h4>
+                                  <div className="flex items-center gap-2">
+                                    <div className="flex items-center gap-1">
                                       <div className="h-1 w-12 bg-muted rounded-full overflow-hidden">
-                                        <div className="h-full bg-primary" style={{ width: `${s.confianca_negociacao}%` }} />
+                                        <div className="h-full bg-primary" style={{ width: `${s.confianca_negociacao || 85}%` }} />
                                       </div>
-                                      <span className="text-[9px] text-muted-foreground">{s.confianca_negociacao}% confiança</span>
+                                      <span className="text-[9px] font-black text-zinc-500 uppercase tracking-tighter">{(s.confianca_negociacao || 85)}% confiança</span>
                                     </div>
-                                  )}
+                                    <span className="text-zinc-700">•</span>
+                                    <span className="text-[9px] font-black text-primary uppercase tracking-widest">{s.tipo_negociacao || 'Tático'}</span>
+                                  </div>
                                 </div>
                                 {s.risco && (
                                   <Badge 
-                                    className="text-[10px] px-2 py-0 h-5"
-                                    variant={s.risco === "baixo" ? "default" : s.risco === "medio" ? "secondary" : "destructive"}
+                                    className={cn(
+                                      "text-[10px] px-3 py-1 font-black uppercase tracking-tighter border-none",
+                                      s.risco === "baixo" ? "bg-emerald-500/10 text-emerald-400" : s.risco === "medio" ? "bg-amber-500/10 text-amber-400" : "bg-rose-500/10 text-rose-400"
+                                    )}
                                   >
-                                    Risco {s.risco.toUpperCase()}
+                                    RISCO {s.risco}
                                   </Badge>
                                 )}
                               </div>
-                              <p className="text-xs text-muted-foreground leading-relaxed mb-4 line-clamp-2 group-hover:line-clamp-none transition-all">
-                                {s.estrategia}
+
+                              <p className="text-[11px] text-muted-foreground leading-relaxed mb-6 font-medium italic group-hover:text-foreground/90 transition-colors">
+                                "{s.estrategia}"
                               </p>
                               
-                              <div className="grid grid-cols-2 gap-2 mb-4">
+                              <div className="grid grid-cols-2 gap-3 mb-6">
                                 {s.valor_contraproposta && (
-                                  <div className="p-2.5 rounded-lg bg-success/5 border border-success/10">
-                                    <p className="text-[8px] font-black uppercase text-success/70 mb-0.5">Meta Ideal</p>
-                                    <p className="text-xs font-bold text-success">
+                                  <div className="p-3 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 group-hover:bg-emerald-500/10 transition-colors">
+                                    <p className="text-[9px] font-black uppercase text-emerald-400 tracking-widest mb-1 flex items-center gap-1">
+                                      <Target className="h-3 w-3" /> Meta Ideal
+                                    </p>
+                                    <p className="text-sm font-black text-white">
                                       R$ {Number(s.valor_contraproposta).toLocaleString("pt-BR")}
                                     </p>
                                   </div>
                                 )}
                                 {s.valor_ponto_recuo && (
-                                  <div className="p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/10">
-                                    <p className="text-[8px] font-black uppercase text-amber-500/70 mb-0.5">Ponto Recuo</p>
-                                    <p className="text-xs font-bold text-amber-500">
+                                  <div className="p-3 rounded-2xl bg-rose-500/5 border border-rose-500/10 group-hover:bg-rose-500/10 transition-colors">
+                                    <p className="text-[9px] font-black uppercase text-rose-400 tracking-widest mb-1 flex items-center gap-1">
+                                      <AlertTriangle className="h-3 w-3" /> Recuo Máx.
+                                    </p>
+                                    <p className="text-sm font-black text-white">
                                       R$ {Number(s.valor_ponto_recuo).toLocaleString("pt-BR")}
                                     </p>
                                   </div>
                                 )}
                               </div>
 
-                              <div className="space-y-2 mb-5">
-                                <p className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground/60 flex items-center gap-1">
-                                  <ArrowRight className="h-3 w-3" /> Argumentos de Negociação
+                              <div className="space-y-3 mb-6">
+                                <p className="text-[10px] font-black uppercase tracking-widest text-zinc-500 flex items-center gap-2">
+                                  <Zap className="h-3.5 w-3.5 text-primary" /> Key Arguments
                                 </p>
-                                <div className="space-y-1.5">
+                                <div className="space-y-2">
                                   {s.argumentos.map((a, j) => (
-                                    <div key={j} className="text-[11px] flex items-start gap-2 text-foreground/80 bg-secondary/20 p-2 rounded-md">
-                                      <Info className="h-3 w-3 mt-0.5 text-primary shrink-0" />
+                                    <div key={j} className="text-[10px] font-bold flex items-start gap-3 text-zinc-300 bg-white/[0.03] p-3 rounded-xl border border-white/5 hover:bg-white/[0.05] transition-all">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0 shadow-[0_0_8px_rgba(139,92,246,0.5)]" />
                                       {a}
                                     </div>
                                   ))}
                                 </div>
                               </div>
 
-                              <div className="flex gap-2">
-                                <Button size="sm" variant="outline" className="flex-1 text-[10px] font-bold h-8 border-primary/20 hover:bg-primary/5">
-                                  WhatsApp AI
+                              <div className="flex gap-3 relative z-10">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="flex-1 text-[10px] font-black uppercase tracking-widest h-10 rounded-xl border-white/10 hover:bg-white/5 text-zinc-400 hover:text-white"
+                                  onClick={() => toast.info(`Preparando script de WhatsApp para ${s.fornecedor}...`)}
+                                >
+                                  <MessageSquare className="h-3.5 w-3.5 mr-2 text-emerald-400" /> WhatsApp
                                 </Button>
-                                <Button size="sm" className="flex-1 text-[10px] font-bold h-8 shadow-sm">
-                                  E-mail Tático
+                                <Button 
+                                  size="sm" 
+                                  className="flex-1 text-[10px] font-black uppercase tracking-widest h-10 rounded-xl bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/20"
+                                  onClick={() => toast.info(`Gerando e-mail tático para ${s.fornecedor}...`)}
+                                >
+                                  <Mail className="h-3.5 w-3.5 mr-2" /> E-mail
                                 </Button>
                               </div>
                             </motion.div>
@@ -405,12 +450,14 @@ const NegociacaoIA = () => {
                       </div>
 
                       {analysis.analise_detalhada && (
-                        <Card className="bg-muted/30 border-none shadow-none">
-                          <CardHeader className="py-3 px-4">
-                            <CardTitle className="text-sm font-bold">Racional Técnico</CardTitle>
+                        <Card className="bg-white/[0.01] border border-white/5 rounded-3xl overflow-hidden shadow-none">
+                          <CardHeader className="py-4 px-6 border-b border-white/5 bg-white/[0.01]">
+                            <CardTitle className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 flex items-center gap-2">
+                              <Calculator className="h-4 w-4" /> Racional Técnico & TCO
+                            </CardTitle>
                           </CardHeader>
-                          <CardContent className="px-4 pb-4">
-                            <div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-wrap text-xs text-muted-foreground">
+                          <CardContent className="p-6">
+                            <div className="prose prose-invert prose-sm max-w-none text-[11px] leading-relaxed text-zinc-400 font-medium whitespace-pre-wrap">
                               {analysis.analise_detalhada}
                             </div>
                           </CardContent>
