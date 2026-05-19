@@ -31,6 +31,7 @@ import { useQuery } from '@tanstack/react-query';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 
 import { type PriceQuote, type ComparisonResult, generateQuotesFromSuppliers } from './price-comparator/priceComparatorHelpers';
+import { StrategicQuoteTable } from './StrategicQuoteTable';
 
 export function PriceComparator() {
   const { toast } = useToast();
@@ -125,6 +126,13 @@ export function PriceComparator() {
     recommended: q.recommended,
   })) || [];
 
+  const strategicData = comparison ? comparison.quotes.map(q => ({
+    fornecedor: q.supplierName,
+    total: q.totalPrice,
+    lead_time: q.deliveryDays,
+    rating: q.rating
+  })) : [];
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -205,6 +213,14 @@ export function PriceComparator() {
           {comparison && (
             <ScrollArea className="flex-1">
               <div className="space-y-6 pr-4">
+                {/* Strategic Cards Integration */}
+                <div className="space-y-3">
+                  <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1">Análise Estratégica de Aquisição</Label>
+                  <StrategicQuoteTable cotacoes={strategicData} quantidade={parseInt(quantity) || 100} />
+                </div>
+
+                <Separator className="bg-white/5" />
+
                 {/* Summary Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   <Card className="bg-success/5 dark:bg-success/15 border-success/20 dark:border-success/30">
