@@ -145,6 +145,7 @@ export function usePedidos(filters?: PedidoFilters) {
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
           comprador_id: user.id,
           tenant_id: tenantId,
+          organization_id: tenantId,
         } as any)
         .select().single();
 
@@ -167,6 +168,7 @@ export function usePedidos(filters?: PedidoFilters) {
           unidade: item.unidade || 'un', valor_unitario: item.valor_unitario,
           valor_total: item.quantidade * item.valor_unitario,
           tenant_id: tenantId,
+          organization_id: tenantId,
         }));
         await supabase.from('pedido_itens').insert(itensToInsert as any);
       }

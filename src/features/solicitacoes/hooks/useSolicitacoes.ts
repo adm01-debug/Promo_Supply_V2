@@ -167,6 +167,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           categoria_id: validated.data.categoria_id, 
           solicitante_id: user.id,
           tenant_id: tenantId,
+          organization_id: tenantId,
         })
         .select().single();
       
