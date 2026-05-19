@@ -1,7 +1,9 @@
-import { AuditLogEntry, AuditEntityType, AuditActionType } from './auditTypes';
+import { AuditLogEntry, AuditLog, AuditActionType, AuditEntityType } from './auditTypes';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
 import type { Json } from '@/integrations/supabase/types';
+
+export type { AuditLog, AuditActionType, AuditEntityType };
 
 /**
  * Service for handling audit logs.
@@ -117,6 +119,7 @@ class AuditService {
 
 export const auditService = new AuditService();
 export const auditHelpers = auditService.helpers;
+export const fetchAuditLogs = auditService.fetchLogs.bind(auditService);
 
 // UI Label Mappings
 export const actionTypeLabels: Record<AuditActionType, string> = {
