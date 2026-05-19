@@ -368,10 +368,3 @@ export const useApprovalWorkflow = () => {
     createWorkflow, approveStep, rejectStep, fetchHistory
   };
 };
-    rules, delegations, workflows, pendingSteps, allHistory, loading,
-    saveRule, deleteRule, saveDelegation, deleteDelegation,
-    findApplicableRule, findApplicableRuleRPC, getEffectiveApprover,
-    createWorkflow, approveStep, rejectStep, fetchHistory, fetchAllHistory, checkEscalations,
-    refetch: useCallback(() => { fetchRules(); fetchDelegations(); fetchPendingWorkflows(); fetchPendingSteps(); }, [fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps])
-  };
-};
