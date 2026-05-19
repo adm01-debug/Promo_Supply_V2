@@ -20,12 +20,16 @@ interface NegotiationAnalysis {
   resumo: string;
   melhor_cotacao?: string;
   economia_estimada?: number;
+  oportunidade_score?: number;
+  contexto_mercado?: string;
   sugestoes: {
     fornecedor: string;
     estrategia: string;
     valor_contraproposta?: number;
+    valor_ponto_recuo?: number;
     argumentos: string[];
-    risco?: string;
+    risco?: "baixo" | "medio" | "alto";
+    confianca_negociacao?: number;
   }[];
   analise_detalhada: string;
 }
