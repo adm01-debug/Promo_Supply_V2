@@ -4,12 +4,13 @@ import { useSolicitacoes } from '../useSolicitacoes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 
-// Mock Auth Context - Using the absolute path matching the import in the hook
-vi.mock('@/features/auth/hooks/useAuth', () => ({
+// Mock Auth - Matching the exact import in useSolicitacoes.ts: import { useAuth } from '@/features/auth';
+vi.mock('@/features/auth', () => ({
   useAuth: () => ({
-    user: { id: 'test-user' },
+    user: { id: 'test-user', email: 'test@example.com' },
     session: { access_token: 'test-token' },
     userRole: 'admin',
+    organizationId: 'test-org',
     loading: false,
   }),
 }));
@@ -18,8 +19,20 @@ vi.mock('@/features/auth/hooks/useAuth', () => ({
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
     from: vi.fn(() => ({
-      select: vi.fn(() => ({ data: [], error: null })),
-      insert: vi.fn(() => ({ data: null, error: null })),
+      select: vi.fn(() => ({ 
+        count: vi.fn(() => ({ data: [], error: null, count: 0 })),
+        order: vi.fn(() => ({ 
+          eq: vi.fn(() => ({ 
+            range: vi.fn(() => Promise.resolve({ data: [], error: null, count: 0 })) 
+          })) 
+        }))
+      })),
+      insert: vi.fn(() => ({ 
+        select: vi.fn(() => ({ 
+          single: vi.fn(() => Promise.resolve({ data: null, error: null })) 
+        })) 
+      })),
+      rpc: vi.fn(() => Promise.resolve({ data: null, error: null })),
     })),
   },
 }));
