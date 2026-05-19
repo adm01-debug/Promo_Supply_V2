@@ -97,9 +97,18 @@ export const BulkPlanningConsole = () => {
               <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Valor Planejado</p>
               <p className="text-sm font-black text-white">{formatCurrency(totalSelectedValue)}</p>
             </div>
-            <Button size="sm" className="bg-violet-600 hover:bg-violet-500 text-[10px] font-black uppercase tracking-widest h-10 px-6 rounded-xl shadow-lg shadow-violet-500/20 border-none">
-              Disparar Cotações ({selectedItems.size})
+            <Button size="sm" className="bg-violet-600 hover:bg-violet-500 text-[10px] font-black uppercase tracking-[0.2em] h-11 px-8 rounded-2xl shadow-xl shadow-violet-500/20 border-none group/btn relative overflow-hidden">
+              <span className="relative z-10 flex items-center gap-2">
+                Disparar Cotações ({selectedItems.size})
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </span>
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12"
+                animate={{ left: ['-100%', '200%'] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut", repeatDelay: 1 }}
+              />
             </Button>
+
           </div>
         </div>
       </CardHeader>
@@ -113,17 +122,27 @@ export const BulkPlanningConsole = () => {
             </div>
             <ScrollArea className="flex-1">
               <div className="p-3 space-y-2">
-                {mockPlanningData.map((plan) => (
+                {mockPlanningData.map((plan, idx) => (
                   <motion.div
                     key={plan.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
                     onClick={() => toggleItem(plan.id)}
                     className={cn(
-                      "p-4 rounded-2xl cursor-pointer transition-all border border-transparent",
+                      "p-4 rounded-2xl cursor-pointer transition-all border border-transparent relative overflow-hidden",
                       selectedItems.has(plan.id) 
-                        ? "bg-violet-500/10 border-violet-500/20" 
+                        ? "bg-violet-500/10 border-violet-500/20 shadow-[inset_0_0_20px_rgba(139,92,246,0.05)]" 
                         : "hover:bg-white/5"
                     )}
                   >
+                    {selectedItems.has(plan.id) && (
+                      <motion.div 
+                        layoutId="active-indicator"
+                        className="absolute left-0 top-0 bottom-0 w-1 bg-violet-500"
+                      />
+                    )}
+
                     <div className="flex items-center justify-between mb-2">
                       <h4 className="font-bold text-sm text-white">{plan.category}</h4>
                       <Badge className={cn(
@@ -156,16 +175,22 @@ export const BulkPlanningConsole = () => {
                     <p className="text-2xl font-black text-emerald-400 tracking-tighter">{formatCurrency(projectedSavings)}</p>
                   </div>
                 </div>
-                <div className="p-4 rounded-2xl bg-white/[0.03] border border-white/5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Brain className="h-4 w-4 text-violet-400" />
-                    <span className="text-[10px] font-black text-white uppercase tracking-widest">IA Strategic Insight</span>
+                <div className="p-5 rounded-3xl bg-gradient-to-br from-violet-500/10 to-transparent border border-white/5 relative group/insight">
+                  <div className="absolute top-0 right-0 p-4 opacity-0 group-hover/insight:opacity-100 transition-opacity">
+                    <Sparkles className="h-4 h-4 text-violet-400 animate-pulse" />
                   </div>
-                  <p className="text-[11px] text-zinc-400 leading-relaxed italic">
-                    "Identificamos que consolidar os pedidos de {selectedItems.size} categorias pode atrair fornecedores de Tier 1, aumentando a economia em até 12.5%."
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-8 h-8 rounded-xl bg-violet-500/20 flex items-center justify-center">
+                      <Brain className="h-4 w-4 text-violet-400" />
+                    </div>
+                    <span className="text-[10px] font-black text-white uppercase tracking-[0.2em]">IA Strategic Insight</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-300 leading-relaxed italic font-medium">
+                    "Detectamos uma correlação de 94% entre os fornecedores de {selectedItems.size} categorias. Otimização de frete estimada em <span className="text-emerald-400 font-black">R$ 4.2k</span>."
                   </p>
                 </div>
               </div>
+
 
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
