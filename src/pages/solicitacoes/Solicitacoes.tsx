@@ -10,7 +10,8 @@ import {
   BarChart3,
   TrendingUp,
   Package,
-  TrendingDown
+  TrendingDown,
+  GitBranch
 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +45,15 @@ import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExecutiveMetricCard } from "@/components/compras/executive/ExecutiveMetricCard";
+import { DynamicApprovalMatrix } from "@/components/compras/DynamicApprovalMatrix";
+import { 
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -206,6 +216,27 @@ const Solicitacoes = () => {
 
             <div className="flex items-center gap-4">
               <div className="bg-white/[0.03] p-1 rounded-2xl border border-white/5 flex">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="rounded-xl px-5 font-black text-[10px] uppercase tracking-widest h-11 gap-2 text-zinc-400 hover:text-white"
+                    >
+                      <GitBranch className="w-4 h-4" /> REGRAS
+                    </Button>
+                  </SheetTrigger>
+                  <SheetContent className="sm:max-w-4xl bg-[#0a0a0f] border-white/10 overflow-y-auto">
+                    <SheetHeader className="mb-6">
+                      <SheetTitle className="text-2xl font-black text-white uppercase tracking-tight">Matriz de Aprovação</SheetTitle>
+                      <SheetDescription className="text-zinc-500 font-bold uppercase text-[10px] tracking-widest">
+                        Configure as regras e delegações para o fluxo de aprovação
+                      </SheetDescription>
+                    </SheetHeader>
+                    <DynamicApprovalMatrix />
+                  </SheetContent>
+                </Sheet>
+
                 <Button 
                   variant="ghost" 
                   size="sm" 
