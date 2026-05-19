@@ -1,11 +1,10 @@
 import { Suspense, useEffect } from "react";
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { logger } from "@/lib/logger";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient } from "@tanstack/react-query";
-import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
-import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { queryClient, persister } from "@/lib/query-client";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "@/features/auth";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
@@ -28,22 +27,6 @@ const AppContent = () => {
   );
 };
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 30_000,
-      gcTime: 5 * 60_000,
-      refetchOnWindowFocus: false,
-      retry: 1,
-      retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
-    },
-  },
-});
-
-const persister = createSyncStoragePersister({
-  storage: window.localStorage,
-  key: 'PROMO_SUPPLY_CACHE',
-});
 
 const App = () => {
   usePerformanceMonitor();
