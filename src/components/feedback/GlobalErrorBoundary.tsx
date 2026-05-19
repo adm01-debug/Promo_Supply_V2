@@ -3,6 +3,7 @@ import { ErrorBoundary, FallbackProps } from "react-error-boundary";
 import { Button } from "@/components/ui/button";
 import { AlertTriangle, RefreshCcw, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { logger } from "@/lib/logger";
 
 interface GlobalErrorBoundaryProps {
   children: React.ReactNode;
@@ -55,9 +56,17 @@ const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
 };
 
 export const GlobalErrorBoundary: React.FC<GlobalErrorBoundaryProps> = ({ children }) => {
+
   return (
     <ErrorBoundary
       FallbackComponent={ErrorFallback}
+      onError={(error, info) => {
+        logger.error("Global Error Caught", {
+          error: error.message,
+          stack: error.stack,
+          componentStack: info.componentStack,
+        });
+      }}
       onReset={() => {
         // Reset state here if needed
       }}

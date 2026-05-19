@@ -1,7 +1,12 @@
 /**
  * Centralized logging utility for Edge Functions.
- * Enforces JSON structured logging for observability.
+ * Enforces JSON structured logging for observability and persistence.
  */
+
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
 export type LogLevel = 'info' | 'warn' | 'error' | 'debug';
 
@@ -12,6 +17,7 @@ export interface LogEntry {
   context?: Record<string, unknown>;
   requestId?: string;
   functionName?: string;
+  userId?: string;
 }
 
 export class EdgeLogger {
@@ -23,7 +29,7 @@ export class EdgeLogger {
     this.requestId = requestId || crypto.randomUUID();
   }
 
-  private log(level: LogLevel, message: string, context?: Record<string, unknown>) {
+  private async log(level: LogLevel, message: string, context?: Record<string, unknown>) {
     const entry: LogEntry = {
       message,
       level,
@@ -44,6 +50,29 @@ export class EdgeLogger {
         break;
       default:
         console.log(output);
+    }
+
+    // Persist critical logs to database if credentials are available
+    if (level === 'error' || level === 'warn') {
+      await this.persistLog(entry);
+    }
+  }
+
+  private async persistLog(entry: LogEntry) {
+    if (!supabaseUrl || !supabaseServiceKey) return;
+
+    try {
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+      await supabase.from("telemetry_logs").insert({
+        level: entry.level,
+        message: `[${entry.functionName}] ${entry.message}`,
+        context: entry.context,
+        request_id: entry.requestId,
+        url: `edge-function://${entry.functionName}`,
+      });
+    } catch (err) {
+      // Silent fail for logging errors to avoid recursion
+      console.error("Failed to persist log to telemetry_logs:", err.message);
     }
   }
 

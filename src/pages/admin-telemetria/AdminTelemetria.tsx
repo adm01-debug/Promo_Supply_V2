@@ -8,9 +8,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Activity, AlertTriangle, Clock, Database, RefreshCw, Zap, Trash2, Download, FileText, CalendarIcon, Play, Shield } from "lucide-react";
+import { Activity, AlertTriangle, Clock, Database, RefreshCw, Zap, Trash2, Download, FileText, CalendarIcon, Play, Shield, Terminal } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TelemetryCharts } from "@/components/admin/telemetry/TelemetryCharts";
+import { AppLogsView } from "@/components/admin/telemetry/AppLogsView";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { format } from "date-fns/format";
 import {
@@ -159,87 +161,106 @@ export default function AdminTelemetriaPage() {
           </motion.div>
         )}
 
-        {stats.topOffenders.length > 0 && (
-          <Card>
-            <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Database className="h-4 w-4" />Tabelas Mais Problemáticas</CardTitle></CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {stats.topOffenders.map(([name, s]: [string, any]) => (
-                  <div key={name} className="p-3 rounded-lg border border-border/50 bg-muted/30">
-                    <p className="font-mono text-sm font-medium truncate" title={name}>{name}</p>
-                    <div className="flex items-center gap-2 mt-1"><span className="text-xs text-muted-foreground">{s.count}× alertas</span><span className="text-xs text-destructive">max {formatDuration(s.maxMs)}</span></div>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">média: {formatDuration(Math.round(s.totalMs / s.count))}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        <Tabs defaultValue="queries" className="space-y-6">
+          <TabsList className="bg-muted/50 p-1 border border-border/50">
+            <TabsTrigger value="queries" className="gap-2">
+              <Database className="h-4 w-4" />
+              Telemetria de Queries
+            </TabsTrigger>
+            <TabsTrigger value="logs" className="gap-2">
+              <Terminal className="h-4 w-4" />
+              Logs da Aplicação
+            </TabsTrigger>
+          </TabsList>
 
-        <TelemetryCharts rows={rows} timeFilter={timeFilter} />
-
-        <div className="flex items-center gap-3 flex-wrap">
-          <Select value={severityFilter} onValueChange={(v) => setSeverityFilter(v as SeverityFilter)}>
-            <SelectTrigger className="w-44"><SelectValue placeholder="Severidade" /></SelectTrigger>
-            <SelectContent><SelectItem value="all">Todas</SelectItem><SelectItem value="slow">🟡 Lentas</SelectItem><SelectItem value="very_slow">🔴 Muito Lentas</SelectItem><SelectItem value="error">❌ Erros</SelectItem></SelectContent>
-          </Select>
-          <Select value={timeFilter} onValueChange={(v) => setTimeFilter(v as TimeFilter)}>
-            <SelectTrigger className="w-44"><SelectValue placeholder="Período" /></SelectTrigger>
-            <SelectContent><SelectItem value="1h">Última hora</SelectItem><SelectItem value="6h">Últimas 6h</SelectItem><SelectItem value="24h">Últimas 24h</SelectItem><SelectItem value="7d">Últimos 7 dias</SelectItem><SelectItem value="custom">📅 Personalizado</SelectItem></SelectContent>
-          </Select>
-          {timeFilter === "custom" && (
-            <div className="flex items-center gap-2">
-              <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><CalendarIcon className="h-3 w-3 mr-1" />{customDateFrom ? format(customDateFrom, "dd/MM/yyyy") : "De"}</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateFrom} onSelect={setCustomDateFrom} /></PopoverContent></Popover>
-              <span className="text-xs text-muted-foreground">até</span>
-              <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><CalendarIcon className="h-3 w-3 mr-1" />{customDateTo ? format(customDateTo, "dd/MM/yyyy") : "Até"}</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateTo} onSelect={setCustomDateTo} /></PopoverContent></Popover>
-            </div>
-          )}
-          <span className="text-xs text-muted-foreground ml-auto">{rows.length} registros · auto-refresh 30s</span>
-        </div>
-
-        <Card>
-          <CardContent className="p-0">
-            {isLoading ? (
-              <div className="p-4 space-y-3">{Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}</div>
-            ) : rows.length === 0 ? (
-              <div className="text-center py-16 text-muted-foreground"><Activity className="h-12 w-12 mx-auto mb-3 opacity-30" /><p className="font-medium">Nenhuma query lenta registrada</p><p className="text-sm mt-1">Isso é bom! O sistema está performando bem.</p></div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead><tr className="border-b bg-muted/30">
-                    <th className="text-left p-3 font-medium text-muted-foreground">Quando</th>
-                    <th className="text-left p-3 font-medium text-muted-foreground">Operação</th>
-                    <th className="text-left p-3 font-medium text-muted-foreground">Tabela/RPC</th>
-                    <th className="text-right p-3 font-medium text-muted-foreground">Duração</th>
-                    <th className="text-left p-3 font-medium text-muted-foreground">Severidade</th>
-                    <th className="text-right p-3 font-medium text-muted-foreground">Registros</th>
-                    <th className="text-left p-3 font-medium text-muted-foreground hidden lg:table-cell">Detalhes</th>
-                  </tr></thead>
-                  <tbody>
-                    {rows.map((r) => (
-                      <tr key={r.id} className="border-b hover:bg-muted/20 transition-colors">
-                        <td className="p-3 text-xs text-muted-foreground whitespace-nowrap">{formatTime(r.created_at)}</td>
-                        <td className="p-3 font-medium">{r.operation}</td>
-                        <td className="p-3 font-mono text-xs">{r.rpc_name || r.table_name || "—"}</td>
-                        <td className="p-3 text-right font-mono font-bold">{formatDuration(r.duration_ms)}</td>
-                        <td className="p-3">{getSeverityBadge(r.severity)}</td>
-                        <td className="p-3 text-right">{r.record_count ?? "—"}</td>
-                        <td className="p-3 hidden lg:table-cell">
-                          <div className="flex gap-1 flex-wrap">
-                            {r.query_limit && <Badge variant="outline" className="text-[10px]">limit: {r.query_limit}</Badge>}
-                            {r.query_offset != null && r.query_offset > 0 && <Badge variant="outline" className="text-[10px]">offset: {r.query_offset}</Badge>}
-                            {r.count_mode && <Badge variant="outline" className="text-[10px]">count: {r.count_mode}</Badge>}
-                            {r.error_message && <Badge variant="destructive" className="text-[10px] max-w-[200px] truncate" title={r.error_message}>{r.error_message}</Badge>}
-                          </div>
-                        </td>
-                      </tr>
+          <TabsContent value="queries" className="space-y-6">
+            {stats.topOffenders.length > 0 && (
+              <Card>
+                <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Database className="h-4 w-4" />Tabelas Mais Problemáticas</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {stats.topOffenders.map(([name, s]: [string, any]) => (
+                      <div key={name} className="p-3 rounded-lg border border-border/50 bg-muted/30">
+                        <p className="font-mono text-sm font-medium truncate" title={name}>{name}</p>
+                        <div className="flex items-center gap-2 mt-1"><span className="text-xs text-muted-foreground">{s.count}× alertas</span><span className="text-xs text-destructive">max {formatDuration(s.maxMs)}</span></div>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">média: {formatDuration(Math.round(s.totalMs / s.count))}</p>
+                      </div>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </div>
+                </CardContent>
+              </Card>
             )}
-          </CardContent>
-        </Card>
+
+            <TelemetryCharts rows={rows} timeFilter={timeFilter} />
+
+            <div className="flex items-center gap-3 flex-wrap">
+              <Select value={severityFilter} onValueChange={(v) => setSeverityFilter(v as SeverityFilter)}>
+                <SelectTrigger className="w-44"><SelectValue placeholder="Severidade" /></SelectTrigger>
+                <SelectContent><SelectItem value="all">Todas</SelectItem><SelectItem value="slow">🟡 Lentas</SelectItem><SelectItem value="very_slow">🔴 Muito Lentas</SelectItem><SelectItem value="error">❌ Erros</SelectItem></SelectContent>
+              </Select>
+              <Select value={timeFilter} onValueChange={(v) => setTimeFilter(v as TimeFilter)}>
+                <SelectTrigger className="w-44"><SelectValue placeholder="Período" /></SelectTrigger>
+                <SelectContent><SelectItem value="1h">Última hora</SelectItem><SelectItem value="6h">Últimas 6h</SelectItem><SelectItem value="24h">Últimas 24h</SelectItem><SelectItem value="7d">Últimos 7 dias</SelectItem><SelectItem value="custom">📅 Personalizado</SelectItem></SelectContent>
+              </Select>
+              {timeFilter === "custom" && (
+                <div className="flex items-center gap-2">
+                  <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><CalendarIcon className="h-3 w-3 mr-1" />{customDateFrom ? format(customDateFrom, "dd/MM/yyyy") : "De"}</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateFrom} onSelect={setCustomDateFrom} /></PopoverContent></Popover>
+                  <span className="text-xs text-muted-foreground">até</span>
+                  <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><CalendarIcon className="h-3 w-3 mr-1" />{customDateTo ? format(customDateTo, "dd/MM/yyyy") : "Até"}</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateTo} onSelect={setCustomDateTo} /></PopoverContent></Popover>
+                </div>
+              )}
+              <span className="text-xs text-muted-foreground ml-auto">{rows.length} registros · auto-refresh 30s</span>
+            </div>
+
+            <Card>
+              <CardContent className="p-0">
+                {isLoading ? (
+                  <div className="p-4 space-y-3">{Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}</div>
+                ) : rows.length === 0 ? (
+                  <div className="text-center py-16 text-muted-foreground"><Activity className="h-12 w-12 mx-auto mb-3 opacity-30" /><p className="font-medium">Nenhuma query lenta registrada</p><p className="text-sm mt-1">Isso é bom! O sistema está performando bem.</p></div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead><tr className="border-b bg-muted/30">
+                        <th className="text-left p-3 font-medium text-muted-foreground">Quando</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Operação</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Tabela/RPC</th>
+                        <th className="text-right p-3 font-medium text-muted-foreground">Duração</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground">Severidade</th>
+                        <th className="text-right p-3 font-medium text-muted-foreground">Registros</th>
+                        <th className="text-left p-3 font-medium text-muted-foreground hidden lg:table-cell">Detalhes</th>
+                      </tr></thead>
+                      <tbody>
+                        {rows.map((r) => (
+                          <tr key={r.id} className="border-b hover:bg-muted/20 transition-colors">
+                            <td className="p-3 text-xs text-muted-foreground whitespace-nowrap">{formatTime(r.created_at)}</td>
+                            <td className="p-3 font-medium">{r.operation}</td>
+                            <td className="p-3 font-mono text-xs">{r.rpc_name || r.table_name || "—"}</td>
+                            <td className="p-3 text-right font-mono font-bold">{formatDuration(r.duration_ms)}</td>
+                            <td className="p-3">{getSeverityBadge(r.severity)}</td>
+                            <td className="p-3 text-right">{r.record_count ?? "—"}</td>
+                            <td className="p-3 hidden lg:table-cell">
+                              <div className="flex gap-1 flex-wrap">
+                                {r.query_limit && <Badge variant="outline" className="text-[10px]">limit: {r.query_limit}</Badge>}
+                                {r.query_offset != null && r.query_offset > 0 && <Badge variant="outline" className="text-[10px]">offset: {r.query_offset}</Badge>}
+                                {r.count_mode && <Badge variant="outline" className="text-[10px]">count: {r.count_mode}</Badge>}
+                                {r.error_message && <Badge variant="destructive" className="text-[10px] max-w-[200px] truncate" title={r.error_message}>{r.error_message}</Badge>}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="logs">
+            <AppLogsView />
+          </TabsContent>
+        </Tabs>
       </div>
     
   );

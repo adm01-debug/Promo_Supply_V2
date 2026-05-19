@@ -6354,6 +6354,45 @@ export type Database = {
           },
         ]
       }
+      telemetry_logs: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       tenants: {
         Row: {
           cnpj: string | null
@@ -7399,6 +7438,7 @@ export type Database = {
         | "declined"
         | "submitted"
         | "expired"
+      log_level: "info" | "warn" | "error" | "debug"
       question_type:
         | "text"
         | "number"
@@ -7612,6 +7652,7 @@ export const Constants = {
         "submitted",
         "expired",
       ],
+      log_level: ["info", "warn", "error", "debug"],
       question_type: [
         "text",
         "number",
