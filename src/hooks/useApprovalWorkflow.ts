@@ -52,12 +52,12 @@ export const useApprovalWorkflow = () => {
   const fetchPendingWorkflows = useCallback(async () => {
     if (!user || !organizationId) return;
     try {
-      const { data, error } = await supabase.from('approval_workflows').select('*')
+      const { data, error } = await supabase.from('approval_workflows').select('*, solicitacoes:solicitacoes(numero, titulo, prioridade, solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)), categorias:categorias(nome)')
         .eq('status', 'pending')
         .eq('organization_id', organizationId)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      setWorkflows((data || []) as ApprovalWorkflow[]);
+      setWorkflows((data || []) as any);
     } catch (error) { logger.error('Error fetching workflows', { error }); }
   }, [user]);
 
@@ -362,6 +362,12 @@ export const useApprovalWorkflow = () => {
   useEffect(() => { const interval = setInterval(checkEscalations, 60000); return () => clearInterval(interval); }, [checkEscalations]);
 
   return {
+    rules, delegations, workflows, pendingSteps, allHistory, loading,
+    fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps, fetchAllHistory,
+    saveRule, deleteRule, saveDelegation, deleteDelegation,
+    createWorkflow, approveStep, rejectStep, fetchHistory
+  };
+};
     rules, delegations, workflows, pendingSteps, allHistory, loading,
     saveRule, deleteRule, saveDelegation, deleteDelegation,
     findApplicableRule, findApplicableRuleRPC, getEffectiveApprover,

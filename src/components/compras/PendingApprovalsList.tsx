@@ -57,7 +57,7 @@ import {
 import { RejectModal, DetailsModal } from "./pending-approvals/ApprovalModals";
 
 export const PendingApprovalsList = () => {
-  const { pendingSteps, approveStep, rejectStep, loading: workflowLoading } = useApprovalWorkflow();
+  const { pendingSteps, workflows, allHistory, approveStep, rejectStep, loading: workflowLoading, fetchAllHistory } = useApprovalWorkflow();
   const [selectedApproval, setSelectedApproval] = useState<PendingApprovalItem | null>(null);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
@@ -70,25 +70,33 @@ export const PendingApprovalsList = () => {
 
   // Map pendingSteps to the format expected by the UI
   const approvals: PendingApprovalItem[] = useMemo(() => {
-    return pendingSteps.map((step: any) => ({
-      id: step.id,
-      workflow_id: step.workflow_id,
-      solicitacao_id: step.solicitacao_id || step.workflow_id, // Fallback if missing
-      solicitacao_numero: step.workflow_id?.substring(0, 8) || "SOL-...",
-      descricao: "Aprovação pendente",
-      solicitante: "Sistema",
-      valor: 0,
-      data_solicitacao: step.created_at,
-      prazo_limite: step.prazo_limite,
-      etapa_atual: step.etapa,
-      total_etapas: 3,
-      urgente: false,
-      escalado: !!step.delegacao_id,
-      categoria: "Geral",
-      aprovadores_anteriores: []
-    }));
-  }, [pendingSteps]);
-  
+    return pendingSteps.map((step: any) => {
+      const workflow = workflows.find(w => w.id === step.workflow_id);
+      const history = allHistory.filter(h => h.workflow_id === step.workflow_id && h.acao === 'approved');
+      
+      return {
+        id: step.id,
+        workflow_id: step.workflow_id,
+        solicitacao_id: workflow?.solicitacao_id || step.solicitacao_id || step.workflow_id,
+        solicitacao_numero: (workflow as any)?.solicitacoes?.numero || workflow?.id?.substring(0, 8) || "SOL-...",
+        descricao: (workflow as any)?.solicitacoes?.titulo || "Aprovação pendente",
+        solicitante: (workflow as any)?.solicitacoes?.solicitante?.full_name || "Sistema",
+        valor: workflow?.valor || 0,
+        data_solicitacao: workflow?.created_at || step.created_at,
+        prazo_limite: step.prazo_limite,
+        etapa_atual: step.etapa,
+        total_etapas: workflow?.total_etapas || 1,
+        urgente: (workflow as any)?.solicitacoes?.prioridade === 'urgente',
+        escalado: !!step.delegacao_id,
+        categoria: (workflow as any)?.categorias?.nome || "Geral",
+        aprovadores_anteriores: history.map(h => h.usuario_nome || 'Aprovador')
+      };
+    });
+  }, [pendingSteps, workflows, allHistory]);
+  useEffect(() => {
+    fetchAllHistory();
+  }, [fetchAllHistory]);
+
   const { 
     unreadCount,
     permissionGranted,
