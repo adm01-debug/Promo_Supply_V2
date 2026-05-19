@@ -7274,7 +7274,15 @@ export type Database = {
         Args: { _email: string; _minutes?: number }
         Returns: number
       }
+      get_fornecedores_kpis: {
+        Args: { p_organization_id: string }
+        Returns: Json
+      }
       get_my_organization: { Args: never; Returns: string }
+      get_pagamentos_kpis: {
+        Args: { p_organization_id: string }
+        Returns: Json
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
