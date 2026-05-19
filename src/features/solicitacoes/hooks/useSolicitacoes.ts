@@ -311,6 +311,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   };
 }
 
+// Hook for KPIs optimized with RPC
 export function useSolicitacoesKPIs() {
   const { user, tenantId } = useAuth();
   
@@ -319,24 +320,25 @@ export function useSolicitacoesKPIs() {
     queryFn: async () => {
       if (!tenantId) return { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 };
       
-      const { data: allData, error } = await supabase
-        .from('solicitacoes')
-        .select('status, valor_estimado')
-        .eq('tenant_id', tenantId);
+      const { data, error } = await supabase.rpc('get_solicitacoes_kpis', { 
+        p_organization_id: tenantId 
+      });
       
-      if (error) throw error;
-      const data = allData || [];
+      if (error) {
+        logger.error('Error fetching Solicitacoes KPIs via RPC', { error });
+        throw error;
+      }
 
-      return {
-        total: data.length,
-        pendentes: data.filter(s => s.status === 'pendente').length,
-        emCotacao: data.filter(s => s.status === 'em_cotacao').length,
-        aprovadas: data.filter(s => s.status === 'aprovada').length,
-        concluidas: data.filter(s => s.status === 'concluida').length,
-        valorTotal: data.reduce((sum, s) => sum + (Number(s.valor_estimado) || 0), 0),
+      return data as {
+        total: number;
+        pendentes: number;
+        emCotacao: number;
+        aprovadas: number;
+        concluidas: number;
+        valorTotal: number;
       };
     },
-    enabled: !!user,
+    enabled: !!user && !!tenantId,
     staleTime: 60_000,
   });
 
