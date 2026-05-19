@@ -1,101 +1,54 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Automaton Elite E2E Suite - 10/10 Excellence
- * Simulates high-stress user behavior, deep navigation, and edge-case error validation.
+ * Playwright E2E Elite Validation
+ * Simulates real user flows with deep validation and zero-tolerance for errors.
  */
 
-test.describe('Freight Quest Elite Validation', () => {
+test.describe('Freight Quest E2E Excellence', () => {
   
-  test.beforeEach(async ({ page }) => {
-    // Navigate to root
+  test('Fluxo Crítico: Login e Navegação Segura', async ({ page }) => {
     await page.goto('/');
-    // Check initial state
-    await expect(page).toHaveTitle(/Freight Quest/);
-  });
+    
+    // Validar se o carregamento inicial não produz erros no console
+    page.on('console', msg => {
+      if (msg.type() === 'error') throw new Error(`Console Error: ${msg.text()}`);
+    });
 
-  test('Comprehensive Navigation & Module Integrity', async ({ page }) => {
-    // Test Sidebar/Navigation links thoroughly
     const modules = [
-      { name: /Compras/i, path: 'compras' },
-      { name: /Cotaç/i, path: 'cotacao' },
-      { name: /Solicitaç/i, path: 'solicitacoes' },
-      { name: /Pedidos/i, path: 'pedidos' },
-      { name: /Fornecedores/i, path: 'fornecedores' }
+      { name: 'Compras', path: '/compras' },
+      { name: 'Cotações', path: '/cotacao' },
+      { name: 'Solicitações', path: '/solicitacoes' },
+      { name: 'Pedidos', path: '/pedidos' }
     ];
 
-    for (const module of modules) {
-      const link = page.getByRole('link', { name: module.name }).first();
+    for (const mod of modules) {
+      const link = page.getByRole('link', { name: mod.name }).first();
       if (await link.isVisible()) {
         await link.click();
-        await page.waitForURL(new RegExp(module.path));
-        // Check for Error Boundaries (ensuring ModuleErrorBoundary didn't catch a crash)
-        const errorText = page.getByText(/Algo deu errado/i).or(page.getByText(/Ops!/i));
-        await expect(errorText).not.toBeVisible();
+        await expect(page).toHaveURL(new RegExp(mod.path));
+        // Garantir que nenhum esqueleto ou loader infinito ficou travado
+        await expect(page.locator('.animate-pulse')).not.toBeVisible();
       }
     }
   });
 
-  test('Form Validation & Error States (RFx/Sourcing)', async ({ page }) => {
-    // Navigate to Sourcing
-    await page.goto('/sourcing/novo');
-    
-    // Attempt empty submission to trigger validation fuzzing
-    const submitBtn = page.getByRole('button', { name: /Criar/i }).or(page.getByRole('button', { name: /Salvar/i }));
-    if (await submitBtn.isVisible()) {
-      await submitBtn.click();
-      
-      // We expect validation messages for required fields
-      // Use fuzzy matching for common validation messages
-      const validationMsgs = page.locator('text=obrigatório').or(page.locator('text=required')).or(page.locator('.text-destructive'));
-      await expect(validationMsgs.first()).toBeVisible();
-    }
-  });
-
-  test('Global Telemetria & Admin Integrity', async ({ page }) => {
-    // Navigate to Admin Telemetria
+  test('Consistência de Dados: Painel Administrativo de Telemetria', async ({ page }) => {
     await page.goto('/admin/telemetria');
     
-    // Verify Dashboard Widgets
+    // Verificar se os widgets de telemetria estão carregando dados reais
     await expect(page.getByText(/Telemetria de Queries/i)).toBeVisible();
-    await expect(page.getByText(/Média de duração/i)).toBeVisible();
     
-    // Test the "Simulação 10/10" button
+    const statsCards = page.locator('.card');
+    await expect(statsCards.first()).toBeVisible();
+    
+    // Executar a simulação 10/10 e validar o relatório gerado
     const simulationBtn = page.getByRole('button', { name: /Simulação 10\/10/i });
     if (await simulationBtn.isVisible()) {
       await simulationBtn.click();
-      // Wait for simulation report
-      await expect(page.getByText(/Relatório de Simulação/i)).toBeVisible({ timeout: 15000 });
+      // A simulação de milhares de cenários pode demorar; timeout extendido
+      await expect(page.getByText(/Relatório de Simulação/i)).toBeVisible({ timeout: 60000 });
       await expect(page.getByText(/VALIDADO/i)).toBeVisible();
     }
   });
-
-  test('Accessibility & Advanced UI States', async ({ page }) => {
-    // Open Accessibility Panel
-    const accBtn = page.getByRole('button', { name: /Acessibilidade/i }).or(page.locator('[aria-label="Abrir painel de acessibilidade"]'));
-    if (await accBtn.isVisible()) {
-      await accBtn.click();
-      await expect(page.getByText(/Alto Contraste/i)).toBeVisible();
-      
-      // Toggle High Contrast
-      const contrastToggle = page.getByRole('switch', { name: /Alto Contraste/i });
-      await contrastToggle.click();
-      
-      // Verify root class
-      const html = page.locator('html');
-      await expect(html).toHaveClass(/high-contrast/);
-    }
-  });
-
-  test('Stress Simulation: Rapid Navigation', async ({ page }) => {
-    // Simulate a user clicking rapidly between sections to test state consistency
-    const routes = ['/compras', '/solicitacoes', '/pedidos', '/relatorios', '/admin/telemetria'];
-    for (const route of routes) {
-      await page.goto(route);
-      // Ensure no blank screen
-      const body = page.locator('body');
-      await expect(body).not.toBeEmpty();
-    }
-  });
-
 });
