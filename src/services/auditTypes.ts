@@ -41,9 +41,9 @@ export interface AuditLog {
   entity_type: AuditEntityType;
   entity_id: string | null;
   entity_description: string | null;
-  old_values: Record<string, unknown> | null;
-  new_values: Record<string, unknown> | null;
-  metadata: Record<string, unknown> | null;
+  old_values: Json | null;
+  new_values: Json | null;
+  metadata: Json | null;
   ip_address: string | null;
   user_agent: string | null;
   created_at: string;
