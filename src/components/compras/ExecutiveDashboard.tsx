@@ -33,6 +33,7 @@ import { ExecutiveDrillDownModal } from './executive/ExecutiveDrillDownModal';
 import { PriceVarianceAnalysis } from './executive/PriceVarianceAnalysis';
 import { KraljicMatrix } from './executive/KraljicMatrix';
 import { ExecutiveAIInsights } from './executive/ExecutiveAIInsights';
+import { BulkPlanningConsole } from './BulkPlanningConsole';
 
 export const ExecutiveDashboard = () => {
   const [drillDown, setDrillDown] = useState<DrillDownData | null>(null);
@@ -270,6 +271,7 @@ export const ExecutiveDashboard = () => {
                 spendByCategory={realSpendByCategory || []} 
                 topSuppliers={(realTopSuppliers || []).map(s => ({ name: s.name, rating: 4.5 }))} 
               />
+              <BulkPlanningConsole />
               <ExecutiveChartsRow 
                 showComparison={showComparison} 
                 filteredCategorySpend={filteredCategorySpend} 
