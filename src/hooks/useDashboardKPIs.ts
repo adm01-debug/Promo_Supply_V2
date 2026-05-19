@@ -53,8 +53,9 @@ export interface DashboardKPIsExtended {
 export function useDashboardKPIs(filters?: { category?: string | null; supplier?: string | null; period?: string | null }) {
   const { tenantId, user } = useAuth();
   
-  const categoryId = (filters?.category && filters.category !== 'all') ? filters.category : null;
-  const supplierId = (filters?.supplier && filters.supplier !== 'all') ? filters.supplier : null;
+  // Use explicit types and undefined instead of null to satisfy strict TS checks
+  const categoryId: string | undefined = (filters?.category && filters.category !== 'all') ? filters.category : undefined;
+  const supplierId: string | undefined = (filters?.supplier && filters.supplier !== 'all') ? filters.supplier : undefined;
   const period = filters?.period || '6m';
 
   const { data, isLoading, error } = useQuery({
@@ -65,8 +66,8 @@ export function useDashboardKPIs(filters?: { category?: string | null; supplier?
       const { data, error } = await supabase.rpc('get_compras_dashboard_metrics', {
         p_organization_id: tenantId,
         p_period: period,
-        p_category_id: categoryId,
-        p_supplier_id: supplierId
+        p_category_id: categoryId || null,
+        p_supplier_id: supplierId || null
       });
 
       if (error) {
