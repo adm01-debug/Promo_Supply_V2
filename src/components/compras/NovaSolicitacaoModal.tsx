@@ -276,39 +276,44 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
         </Button>
       </DialogTrigger>
 
-      <DialogContent aria-describedby="dialog-desc" className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Package className="w-5 h-5 text-primary" />
+      <DialogContent aria-describedby="dialog-desc" className="w-[95vw] max-w-2xl max-h-[85vh] overflow-y-auto p-0 bg-[#0a0a0f] border-white/5 rounded-[2.5rem] overflow-hidden backdrop-blur-3xl shadow-2xl">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-sky-600" />
+        
+        <DialogHeader className="p-8 pb-4">
+          <DialogTitle className="flex items-center gap-4 text-2xl font-black text-white tracking-tighter uppercase font-mono">
+            <div className="w-12 h-12 bg-violet-500/10 rounded-2xl flex items-center justify-center text-violet-400 border border-violet-500/10 shadow-inner">
+              <Package className="w-6 h-6" />
+            </div>
             Nova Solicitação de Compra
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex items-center justify-between mb-4">
+        <div className="px-8 pb-8">
+          <div className="flex items-center justify-between mb-8 bg-white/[0.02] p-4 rounded-3xl border border-white/5">
           {STEPS.map((s, i) => {
             const Icon = s.icon;
             return (
               <div key={s.num} className="flex items-center flex-1">
                 <div className="flex items-center gap-1.5">
                   <div className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all",
-                    step > s.num && "bg-primary text-primary-foreground",
-                    step === s.num && "bg-primary text-primary-foreground ring-2 ring-primary/30 ring-offset-2 ring-offset-background",
-                    step < s.num && "bg-muted text-muted-foreground"
+                    "w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black transition-all duration-500",
+                    step > s.num && "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]",
+                    step === s.num && "bg-violet-500 text-white shadow-[0_0_20px_rgba(139,92,246,0.4)] scale-110",
+                    step < s.num && "bg-white/5 text-zinc-600 border border-white/5 opacity-50"
                   )}>
-                    {step > s.num ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
+                    {step > s.num ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
                   </div>
                   <span className={cn(
-                    "text-xs hidden lg:block",
-                    step >= s.num ? "text-foreground font-medium" : "text-muted-foreground"
+                    "text-[10px] hidden lg:block font-black uppercase tracking-widest ml-2",
+                    step === s.num ? "text-white" : "text-zinc-500"
                   )}>
                     {s.label}
                   </span>
                 </div>
                 {i < STEPS.length - 1 && (
                   <div className={cn(
-                    "flex-1 h-0.5 mx-2",
-                    step > s.num ? "bg-primary" : "bg-muted"
+                    "flex-1 h-[2px] mx-4 transition-all duration-1000",
+                    step > s.num ? "bg-gradient-to-r from-emerald-500/50 to-violet-500/50" : "bg-white/5"
                   )} />
                 )}
               </div>
@@ -316,7 +321,7 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           })}
         </div>
 
-        <Separator className="mb-4" />
+        <Separator className="mb-8 bg-white/5" />
 
         {step === 1 && <Step1Identification formData={formData} errors={errors} updateField={updateField} />}
         {step === 2 && <Step2Specifications formData={formData} errors={errors} updateField={updateField} />}
@@ -328,27 +333,40 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
           <SolicitacaoReviewStep formData={formData} budgetCheck={budgetCheck} />
         )}
 
-        <DialogFooter className="mt-6 flex gap-2">
-          {step > 1 && (
-            <Button type="button" variant="outline" onClick={handleBack} disabled={isSubmitting}>
-              <ArrowLeft className="w-4 h-4 mr-1" /> Voltar
+        <DialogFooter className="p-8 pt-0 flex gap-4 sm:justify-between items-center bg-white/[0.01]">
+          {step > 1 ? (
+            <Button 
+              type="button" 
+              variant="ghost" 
+              onClick={handleBack} 
+              disabled={isSubmitting}
+              className="rounded-xl font-black text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white hover:bg-white/5 h-12 px-6"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" /> Voltar
             </Button>
+          ) : (
+            <div />
           )}
           
           {step < 4 ? (
-            <Button onClick={handleNext}>
-              Próximo <ArrowRight className="w-4 h-4 ml-1" />
-            </Button>
+            <EliteButton onClick={handleNext} className="h-12 px-10 rounded-xl bg-violet-600 hover:bg-violet-500 font-black text-[10px] tracking-widest uppercase">
+              PRÓXIMO <ArrowRight className="w-4 h-4 ml-2" />
+            </EliteButton>
           ) : (
-            <Button onClick={handleSubmit} disabled={isSubmitting || (budgetCheck !== null && !budgetCheck.available)}>
+            <EliteButton 
+              onClick={handleSubmit} 
+              disabled={isSubmitting || (budgetCheck !== null && !budgetCheck.available)}
+              className="h-12 px-10 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 font-black text-[10px] tracking-widest uppercase border-none shadow-lg shadow-emerald-500/20"
+            >
               {isSubmitting ? (
-                <><Loader2 className="w-4 h-4 mr-1 animate-spin" /> Criando...</>
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> PROCESSANDO...</>
               ) : (
-                <><Check className="w-4 h-4 mr-1" /> Criar Solicitação</>
+                <><Check className="w-4 h-4 mr-2" /> FINALIZAR SOLICITAÇÃO</>
               )}
-            </Button>
+            </EliteButton>
           )}
         </DialogFooter>
+      </div>
       </DialogContent>
     </Dialog>
   );
