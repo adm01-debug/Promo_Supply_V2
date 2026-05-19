@@ -53,10 +53,10 @@ export interface DashboardKPIsExtended {
 export function useDashboardKPIs(filters?: { category?: string | null; supplier?: string | null; period?: string | null }) {
   const { tenantId, user } = useAuth();
   
-  // Use explicit types and undefined instead of null to satisfy strict TS checks
-  const categoryId: string | undefined = (filters?.category && filters.category !== 'all') ? filters.category : undefined;
-  const supplierId: string | undefined = (filters?.supplier && filters.supplier !== 'all') ? filters.supplier : undefined;
-  const period = filters?.period || '6m';
+  // Explicitly handle potential null values from filters to satisfy TS
+  const categoryId: string | undefined = (filters?.category && filters.category !== 'all') ? (filters.category as string) : undefined;
+  const supplierId: string | undefined = (filters?.supplier && filters.supplier !== 'all') ? (filters.supplier as string) : undefined;
+  const period = (filters?.period && filters.period !== 'all') ? (filters.period as string) : '6m';
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['dashboard-metrics-optimized', tenantId, period, categoryId, supplierId],
