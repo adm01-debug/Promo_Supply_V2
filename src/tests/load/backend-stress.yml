@@ -13,15 +13,21 @@ config:
       Content-Type: "application/json"
 
 scenarios:
-  - name: "Edge Function Stress Test"
+  - name: "Edge Function Elite Stress Test (10/10)"
     flow:
+      - post:
+          url: "/system-simulation"
+          json:
+            iterations: 10
+            scenarios: ["negotiation", "workflow", "erp"]
       - post:
           url: "/ai-negotiation"
           json:
-            scenario: "stress-test"
-            payload: { "id": "test-{{ $uuid }}", "data": "heavy-workload" }
+            cotacoes: [{ "id": "1", "fornecedor": "Stress Supplier", "valor": 500 }]
+            solicitacao: { "id": "550e8400-e29b-411d-a716-446655440000", "titulo": "Stress Test" }
       - post:
           url: "/workflow-engine"
           json:
-            action: "validate"
-            context: { "timestamp": "{{ $timestamp }}" }
+            action: "start_workflow"
+            template_id: "550e8400-e29b-411d-a716-446655440000"
+            entity_id: "550e8400-e29b-411d-a716-446655440000"

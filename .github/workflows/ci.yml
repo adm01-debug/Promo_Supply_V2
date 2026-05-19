@@ -32,7 +32,13 @@ jobs:
           bunx playwright install --with-deps
           bun run test:e2e
 
-      - name: Edge Functions Simulation
+      - name: Backend Stress & Load Test (Artillery)
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        run: |
+          bun run test:load
+
+      - name: Edge Functions Contract & Simulation Gate
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -40,4 +46,4 @@ jobs:
           curl -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/system-simulation" \
             -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
             -H "Content-Type: application/json" \
-            -d '{"iterations": 10}'
+            -d '{"iterations": 20, "validate_contracts": true}'
