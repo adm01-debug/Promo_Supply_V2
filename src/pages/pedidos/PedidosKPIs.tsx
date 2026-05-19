@@ -34,7 +34,7 @@ export const PedidosKPIs = ({ kpis }: { kpis: KPIs }) => (
       subtitle="Rastreio em Tempo Real"
     />
     <ExecutiveMetricCard
-      title="Fulfillment"
+      title="Conclusão"
       value={kpis.entregues}
       icon={CheckCircle2}
       delay={3}
