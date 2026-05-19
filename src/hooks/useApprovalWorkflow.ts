@@ -365,6 +365,6 @@ export const useApprovalWorkflow = () => {
     rules, delegations, workflows, pendingSteps, allHistory, loading,
     fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps, fetchAllHistory,
     saveRule, deleteRule, saveDelegation, deleteDelegation,
-    createWorkflow, approveStep, rejectStep, fetchHistory
+    createWorkflow, approveStep, rejectStep, fetchHistory, checkEscalations
   };
 };
