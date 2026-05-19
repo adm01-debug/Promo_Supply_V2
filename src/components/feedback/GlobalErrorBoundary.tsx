@@ -55,9 +55,18 @@ const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
 };
 
 export const GlobalErrorBoundary: React.FC<GlobalErrorBoundaryProps> = ({ children }) => {
+  const { logger } = require("@/lib/logger");
+
   return (
     <ErrorBoundary
       FallbackComponent={ErrorFallback}
+      onError={(error, info) => {
+        logger.error("Global Error Caught", {
+          error: error.message,
+          stack: error.stack,
+          componentStack: info.componentStack,
+        });
+      }}
       onReset={() => {
         // Reset state here if needed
       }}

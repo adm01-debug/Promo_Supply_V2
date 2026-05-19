@@ -29,7 +29,7 @@ class Logger {
     return Logger.instance;
   }
 
-  private log(level: LogLevel, message: string, context?: Record<string, unknown>) {
+  private async log(level: LogLevel, message: string, context?: Record<string, unknown>) {
     // In production, we don't log 'debug'
     if (level === 'debug' && import.meta.env.PROD) return;
 
@@ -41,10 +41,9 @@ class Logger {
       context: this.sanitizeContext(context),
     };
 
-    // Use warn/error for those levels to ensure they appear in dev consoles correctly
-    // but follow a strict JSON-like format
     const output = JSON.stringify(entry);
 
+    // Console output for development and debugging
     switch (level) {
       case 'error':
         console.error(output);
@@ -55,6 +54,33 @@ class Logger {
       default:
         // eslint-disable-next-line no-console
         console.info(output);
+    }
+
+    // Persist to telemetry for critical levels or in production
+    if (level === 'error' || level === 'warn' || import.meta.env.PROD) {
+      this.sendToTelemetry(entry);
+    }
+  }
+
+  private async sendToTelemetry(entry: LogEntry) {
+    try {
+      // Lazy load supabase to avoid circular dependencies if any
+      const { supabase } = await import("./supabase");
+      
+      await supabase.functions.invoke("telemetry", {
+        body: {
+          level: entry.level,
+          message: entry.message,
+          context: entry.context,
+          requestId: entry.requestId,
+          url: window.location.href,
+          userAgent: navigator.userAgent,
+        },
+      });
+    } catch (err) {
+      // Silent fail to avoid infinite loops
+      // eslint-disable-next-line no-console
+      console.warn("Failed to send log to telemetry", err);
     }
   }
 
