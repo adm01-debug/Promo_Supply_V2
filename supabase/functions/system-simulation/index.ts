@@ -53,7 +53,8 @@ serve(async (req) => {
             method: "POST",
             headers: {
               "Authorization": `Bearer ${supabaseServiceKey}`,
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "x-tenant-id": "00000000-0000-0000-0000-000000000000" // Default for simulation
             },
             body: JSON.stringify(body)
           });
