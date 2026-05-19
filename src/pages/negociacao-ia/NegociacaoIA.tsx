@@ -216,21 +216,22 @@ const NegociacaoIA = () => {
                           </motion.div>
                         ))}
                       </div>
+
+                      <div className="mt-8 pt-6 border-t border-white/5">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 ml-1">Comparativo Estratégico de Propostas</p>
+                        <StrategicQuoteTable 
+                          cotacoes={cotacoes.map(c => ({
+                            id: c.id,
+                            fornecedor: (c as any).fornecedor?.nome_fantasia || (c as any).fornecedor?.razao_social || "Fornecedor",
+                            total: Number(c.valor_total),
+                            lead_time: Number(c.prazo_entrega),
+                            rating: (c as any).fornecedor?.avaliacao || 4.2
+                          }))} 
+                          quantidade={solicitacoes?.find(s => s.id === selectedSolicitacao)?.quantidade || 1} 
+                        />
+                      </div>
                     </motion.div>
-                  <div className="mt-8 pt-6 border-t border-white/5">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 ml-1">Comparativo Estratégico de Propostas</p>
-                    <StrategicQuoteTable 
-                      cotacoes={cotacoes.map(c => ({
-                        id: c.id,
-                        fornecedor: (c as any).fornecedor?.nome_fantasia || (c as any).fornecedor?.razao_social || "Fornecedor",
-                        total: Number(c.valor_total),
-                        lead_time: Number(c.prazo_entrega),
-                        rating: (c as any).fornecedor?.avaliacao || 4.2
-                      }))} 
-                      quantidade={solicitacoes?.find(s => s.id === selectedSolicitacao)?.quantidade || 1} 
-                    />
-                  </div>
-                )}
+                  )}
                 </AnimatePresence>
 
                 <div className="pt-4">
