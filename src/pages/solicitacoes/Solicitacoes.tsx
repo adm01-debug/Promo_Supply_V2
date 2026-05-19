@@ -146,8 +146,9 @@ const Solicitacoes = () => {
     if (action.id === 'delete') {
       return await bulkDelete(itemIds);
     }
-    if (action.id === 'change-status' && options?.targetStatus) {
-      const dbStatus = mapLegacyStatusToDb(options.targetStatus as string);
+    const targetStatusOption = options?.['targetStatus'] as string | undefined;
+    if (action.id === 'change-status' && targetStatusOption) {
+      const dbStatus = mapLegacyStatusToDb(targetStatusOption);
       return await bulkUpdateStatus(itemIds, dbStatus);
     }
     if (action.targetStatus) {
