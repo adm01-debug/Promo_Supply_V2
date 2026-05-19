@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { SimulationEngine } from "../_shared/simulation-engine.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,62 +7,51 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const engine = new SimulationEngine(supabaseUrl, supabaseServiceKey);
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
-    // Simulando cenários de Negociação IA
-    for (let i = 0; i < 10; i++) {
-      await engine.runScenario(`Negotiation Case ${i}`, async () => {
-        const response = await fetch(`${supabaseUrl}/functions/v1/ai-negotiation`, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${supabaseServiceKey}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            cotacoes: [{ id: "c1", fornecedor: "Test", total: 100 * (i + 1) }],
-            solicitacao: { id: crypto.randomUUID(), titulo: `Simulated Req ${i}` }
-          })
+    const { action, target_function } = await req.json();
+
+    if (action === "run_fuzzing") {
+      const payloads = [
+        {}, // Empty
+        { id: "invalid-uuid" }, // Bad format
+        { large_data: "A".repeat(10000) }, // Buffer stress
+        { script: "<script>alert(1)</script>" }, // Injection attempt
+        { nested: { a: { b: { c: { d: "depth" } } } } } // Recursion stress
+      ];
+
+      const results = [];
+      for (const p of payloads) {
+        const start = performance.now();
+        const { data, error } = await supabaseClient.functions.invoke(target_function, {
+          body: p,
         });
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return await response.json();
+        results.push({
+          payload: p,
+          status: error ? "caught_error" : "success",
+          latency: performance.now() - start,
+          error: error?.message
+        });
+      }
+
+      return new Response(JSON.stringify({ results }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Simulando cenários de Workflow Engine
-    for (let i = 0; i < 10; i++) {
-      await engine.runScenario(`Workflow Case ${i}`, async () => {
-        const response = await fetch(`${supabaseUrl}/functions/v1/workflow-engine`, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${supabaseServiceKey}`,
-            "Content-Type": "application/json",
-            "x-tenant-id": "00000000-0000-0000-0000-000000000000"
-          },
-          body: JSON.stringify({
-            action: "start_workflow",
-            template_id: crypto.randomUUID(),
-            entity_type: "solicitacao",
-            entity_id: crypto.randomUUID()
-          })
-        });
-        // Esperamos erro aqui se os IDs forem aleatórios e não existirem no DB, 
-        // mas o engine capturará isso como parte da validação de consistência.
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return await response.json();
-      });
-    }
-
-    return new Response(JSON.stringify(engine.getSummary()), {
+    return new Response(JSON.stringify({ status: "simulation_ready" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (e) {
-    return new Response(JSON.stringify({ error: e.message }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
