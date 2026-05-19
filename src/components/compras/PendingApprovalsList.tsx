@@ -186,10 +186,18 @@ export const PendingApprovalsList = () => {
   }, [approvals, searchTerm, filterStatus, sortBy, approvalsFuse]);
 
   const handleApprove = async (approval: PendingApprovalItem) => {
+    setSelectedApproval(approval);
+    setDetailsModalOpen(true);
+  };
+
+  const confirmApprove = async () => {
+    if (!selectedApproval) return;
     setLoading(true);
     try {
-      await approveStep(approval.id, approveComment);
+      await approveStep(selectedApproval.id, approveComment);
       setApproveComment("");
+      setDetailsModalOpen(false);
+      setSelectedApproval(null);
     } catch (error: unknown) {
       toast.error("Erro ao aprovar solicitação");
     } finally {
@@ -435,6 +443,10 @@ export const PendingApprovalsList = () => {
         open={detailsModalOpen}
         onOpenChange={setDetailsModalOpen}
         approval={selectedApproval}
+        approveComment={approveComment}
+        onApproveCommentChange={setApproveComment}
+        onConfirm={confirmApprove}
+        loading={loading}
       />
     </Card>
   );

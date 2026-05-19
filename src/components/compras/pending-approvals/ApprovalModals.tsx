@@ -85,9 +85,21 @@ interface DetailsModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   approval: PendingApprovalItem | null;
+  approveComment?: string;
+  onApproveCommentChange?: (value: string) => void;
+  onConfirm?: () => void;
+  loading?: boolean;
 }
 
-export const DetailsModal = ({ open, onOpenChange, approval }: DetailsModalProps) => (
+export const DetailsModal = ({ 
+  open, 
+  onOpenChange, 
+  approval,
+  approveComment,
+  onApproveCommentChange,
+  onConfirm,
+  loading
+}: DetailsModalProps) => (
   <Dialog open={open} onOpenChange={onOpenChange}>
     <DialogContent aria-describedby="dialog-desc" className="sm:max-w-lg">
       <DialogHeader>
@@ -138,10 +150,33 @@ export const DetailsModal = ({ open, onOpenChange, approval }: DetailsModalProps
         </div>
       )}
 
-      <DialogFooter>
+      <div className="space-y-2 mt-4 pt-4 border-t">
+        <label className="text-sm font-medium flex items-center gap-2">
+          <MessageSquare className="w-4 h-4" />
+          Comentários da Aprovação
+        </label>
+        <Textarea
+          value={approveComment}
+          onChange={(e) => onApproveCommentChange?.(e.target.value)}
+          placeholder="Adicione um comentário (opcional)..."
+          rows={3}
+        />
+      </div>
+
+      <DialogFooter className="mt-6">
         <Button variant="outline" onClick={() => onOpenChange(false)}>
           Fechar
         </Button>
+        {onConfirm && (
+          <Button 
+            className="bg-success hover:bg-success/80" 
+            onClick={onConfirm}
+            disabled={loading}
+          >
+            <Check className="w-4 h-4 mr-2" />
+            Aprovar Solicitação
+          </Button>
+        )}
       </DialogFooter>
     </DialogContent>
   </Dialog>
