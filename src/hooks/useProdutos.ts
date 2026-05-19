@@ -29,7 +29,7 @@ export interface Produto {
 }
 
 export function useProdutos() {
-  const { user, organizationId } = useAuth();
+  const { user, organizationId, tenantId } = useAuth();
   const queryClient = useQueryClient();
 
   const { data: produtos = [], isLoading } = useQuery({
@@ -67,7 +67,11 @@ export function useProdutos() {
   const createProduto = useMutation({
     mutationFn: async (produto: Partial<Produto>) => {
       if (!organizationId) throw new Error("Organization ID missing");
-      const { data, error } = await supabase.from("produtos").insert({ ...produto, organization_id: organizationId } as any).select().single();
+      const { data, error } = await supabase.from("produtos").insert({ 
+        ...produto, 
+        organization_id: organizationId,
+        tenant_id: tenantId || organizationId
+      } as any).select().single();
       if (error) throw error;
       return data;
     },
