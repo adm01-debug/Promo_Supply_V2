@@ -329,14 +329,25 @@ export function PriceComparator() {
                   <CardContent className="p-0">
                     <Table aria-label="Tabela de dados">
                       <TableHeader>
-                        <TableRow>
+                        <TableRow className="hover:bg-transparent border-white/5">
+                          <TableHead className="w-[50px]">
+                            <Checkbox 
+                              checked={selectedQuotes.length === comparison.quotes.length}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedQuotes(comparison.quotes.map(q => q.supplierId));
+                                } else {
+                                  setSelectedQuotes([]);
+                                }
+                              }}
+                            />
+                          </TableHead>
                           <TableHead>Fornecedor</TableHead>
                           <TableHead className="text-right">Preço Unit.</TableHead>
                           <TableHead className="text-right">Total</TableHead>
                           <TableHead className="text-center">Entrega</TableHead>
                           <TableHead>Pagamento</TableHead>
                           <TableHead className="text-center">Rating</TableHead>
-                          <TableHead></TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
