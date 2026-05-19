@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
-  Sparkles, TrendingDown, AlertTriangle, CheckCircle, 
+  Sparkles, TrendingDown, TrendingUp, AlertTriangle, CheckCircle, 
   Loader2, Brain, Target, DollarSign, History, Clock,
   ArrowRight, ShieldCheck, Zap, Info
 } from "lucide-react";
@@ -20,12 +20,16 @@ interface NegotiationAnalysis {
   resumo: string;
   melhor_cotacao?: string;
   economia_estimada?: number;
+  oportunidade_score?: number;
+  contexto_mercado?: string;
   sugestoes: {
     fornecedor: string;
     estrategia: string;
     valor_contraproposta?: number;
+    valor_ponto_recuo?: number;
     argumentos: string[];
-    risco?: string;
+    risco?: "baixo" | "medio" | "alto";
+    confianca_negociacao?: number;
   }[];
   analise_detalhada: string;
 }
@@ -264,7 +268,7 @@ const NegociacaoIA = () => {
                         "{analysis.resumo}"
                       </div>
                       
-                      <div className="grid gap-4 md:grid-cols-2">
+                      <div className="grid gap-4 md:grid-cols-3">
                         {analysis.melhor_cotacao && (
                           <div className="flex items-center gap-3 p-4 rounded-xl bg-success/5 border border-success/20">
                             <div className="h-10 w-10 rounded-lg bg-success/10 flex items-center justify-center">
@@ -272,7 +276,7 @@ const NegociacaoIA = () => {
                             </div>
                             <div>
                               <p className="text-[10px] font-bold uppercase tracking-widest text-success/70">Recomendação Elite</p>
-                              <p className="font-bold text-foreground truncate max-w-[200px]">{analysis.melhor_cotacao}</p>
+                              <p className="font-bold text-foreground truncate max-w-[150px]">{analysis.melhor_cotacao}</p>
                             </div>
                           </div>
                         )}
@@ -282,14 +286,40 @@ const NegociacaoIA = () => {
                               <DollarSign className="h-6 w-6 text-primary" />
                             </div>
                             <div>
-                              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70">Potencial de Economia</p>
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-primary/70">Potencial de Savings</p>
                               <p className="font-bold text-primary text-xl">
                                 R$ {Number(analysis.economia_estimada).toLocaleString("pt-BR")}
                               </p>
                             </div>
                           </div>
                         )}
+                        {analysis.oportunidade_score != null && (
+                          <div className="flex items-center gap-3 p-4 rounded-xl bg-amber-500/5 border border-amber-500/20">
+                            <div className="h-10 w-10 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                              <Zap className="h-6 w-6 text-amber-500" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-[10px] font-bold uppercase tracking-widest text-amber-500/70">Score Oportunidade</p>
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-foreground">{analysis.oportunidade_score}%</span>
+                                <div className="h-1.5 flex-1 bg-amber-500/10 rounded-full overflow-hidden">
+                                  <div className="h-full bg-amber-500" style={{ width: `${analysis.oportunidade_score}%` }} />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
                       </div>
+
+                      {analysis.contexto_mercado && (
+                        <div className="flex items-start gap-3 p-4 rounded-xl bg-muted/50 border border-border/50 text-xs">
+                          <Info className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                          <div className="space-y-1">
+                            <p className="font-bold">Contexto de Mercado:</p>
+                            <p className="text-muted-foreground leading-relaxed">{analysis.contexto_mercado}</p>
+                          </div>
+                        </div>
+                      )}
 
                       <div className="space-y-4">
                         <h3 className="text-sm font-bold flex items-center gap-2 px-1">
@@ -304,7 +334,17 @@ const NegociacaoIA = () => {
                               className="group p-5 rounded-2xl bg-background/40 border border-border/50 hover:border-primary/20 transition-all shadow-sm"
                             >
                               <div className="flex items-center justify-between mb-3">
-                                <span className="font-bold text-sm tracking-tight">{s.fornecedor}</span>
+                                <div className="space-y-1">
+                                  <span className="font-bold text-sm tracking-tight">{s.fornecedor}</span>
+                                  {s.confianca_negociacao && (
+                                    <div className="flex items-center gap-1.5">
+                                      <div className="h-1 w-12 bg-muted rounded-full overflow-hidden">
+                                        <div className="h-full bg-primary" style={{ width: `${s.confianca_negociacao}%` }} />
+                                      </div>
+                                      <span className="text-[9px] text-muted-foreground">{s.confianca_negociacao}% confiança</span>
+                                    </div>
+                                  )}
+                                </div>
                                 {s.risco && (
                                   <Badge 
                                     className="text-[10px] px-2 py-0 h-5"
@@ -317,15 +357,27 @@ const NegociacaoIA = () => {
                               <p className="text-xs text-muted-foreground leading-relaxed mb-4 line-clamp-2 group-hover:line-clamp-none transition-all">
                                 {s.estrategia}
                               </p>
-                              {s.valor_contraproposta && (
-                                <div className="flex items-center gap-2 p-3 rounded-lg bg-success/5 border border-success/10 mb-4">
-                                  <TrendingDown className="h-4 w-4 text-success" />
-                                  <span className="text-xs font-bold text-success">
-                                    Meta: R$ {Number(s.valor_contraproposta).toLocaleString("pt-BR")}
-                                  </span>
-                                </div>
-                              )}
-                              <div className="space-y-2">
+                              
+                              <div className="grid grid-cols-2 gap-2 mb-4">
+                                {s.valor_contraproposta && (
+                                  <div className="p-2.5 rounded-lg bg-success/5 border border-success/10">
+                                    <p className="text-[8px] font-black uppercase text-success/70 mb-0.5">Meta Ideal</p>
+                                    <p className="text-xs font-bold text-success">
+                                      R$ {Number(s.valor_contraproposta).toLocaleString("pt-BR")}
+                                    </p>
+                                  </div>
+                                )}
+                                {s.valor_ponto_recuo && (
+                                  <div className="p-2.5 rounded-lg bg-amber-500/5 border border-amber-500/10">
+                                    <p className="text-[8px] font-black uppercase text-amber-500/70 mb-0.5">Ponto Recuo</p>
+                                    <p className="text-xs font-bold text-amber-500">
+                                      R$ {Number(s.valor_ponto_recuo).toLocaleString("pt-BR")}
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="space-y-2 mb-5">
                                 <p className="text-[10px] font-black uppercase tracking-tighter text-muted-foreground/60 flex items-center gap-1">
                                   <ArrowRight className="h-3 w-3" /> Argumentos de Negociação
                                 </p>
@@ -337,6 +389,15 @@ const NegociacaoIA = () => {
                                     </div>
                                   ))}
                                 </div>
+                              </div>
+
+                              <div className="flex gap-2">
+                                <Button size="sm" variant="outline" className="flex-1 text-[10px] font-bold h-8 border-primary/20 hover:bg-primary/5">
+                                  WhatsApp AI
+                                </Button>
+                                <Button size="sm" className="flex-1 text-[10px] font-bold h-8 shadow-sm">
+                                  E-mail Tático
+                                </Button>
                               </div>
                             </motion.div>
                           ))}
@@ -363,6 +424,50 @@ const NegociacaoIA = () => {
           </div>
 
           <div className="space-y-6">
+            <Card className="border-none shadow-lg bg-card/50 overflow-hidden">
+              <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-indigo-500" />
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-sm font-bold">
+                  <TrendingUp className="h-4 w-4 text-blue-500" />
+                  Sentimento de Mercado
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                      <DollarSign className="h-4 w-4 text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Dólar (USD)</p>
+                      <p className="text-xs font-black">R$ 5,24 <span className="text-[10px] text-success font-bold">-0.2%</span></p>
+                    </div>
+                  </div>
+                  <TrendingDown className="h-4 w-4 text-success" />
+                </div>
+                
+                <div className="flex items-center justify-between p-3 rounded-xl bg-amber-500/5 border border-amber-500/10">
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                      <Zap className="h-4 w-4 text-amber-500" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Energia / Frete</p>
+                      <p className="text-xs font-black">Estável <span className="text-[10px] text-amber-500 font-bold">+1.5%</span></p>
+                    </div>
+                  </div>
+                  <TrendingUp className="h-4 w-4 text-amber-500" />
+                </div>
+
+                <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
+                  <p className="text-[10px] font-black uppercase text-primary/70 mb-2">Insight de Timing</p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground">
+                    "O mercado de suprimentos eletrônicos mostra sinais de estabilização. Momento ideal para contratos trimestrais."
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="border-none shadow-lg bg-card/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
