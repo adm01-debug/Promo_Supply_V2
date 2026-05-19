@@ -424,6 +424,50 @@ const NegociacaoIA = () => {
           </div>
 
           <div className="space-y-6">
+            <Card className="border-none shadow-lg bg-card/50 overflow-hidden">
+              <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-indigo-500" />
+              <CardHeader className="pb-2">
+                <CardTitle className="flex items-center gap-2 text-sm font-bold">
+                  <TrendingUp className="h-4 w-4 text-blue-500" />
+                  Sentimento de Mercado
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-3 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                      <DollarSign className="h-4 w-4 text-blue-500" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Dólar (USD)</p>
+                      <p className="text-xs font-black">R$ 5,24 <span className="text-[10px] text-success font-bold">-0.2%</span></p>
+                    </div>
+                  </div>
+                  <TrendingDown className="h-4 w-4 text-success" />
+                </div>
+                
+                <div className="flex items-center justify-between p-3 rounded-xl bg-amber-500/5 border border-amber-500/10">
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg bg-amber-500/10 flex items-center justify-center">
+                      <Zap className="h-4 w-4 text-amber-500" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-muted-foreground uppercase">Energia / Frete</p>
+                      <p className="text-xs font-black">Estável <span className="text-[10px] text-amber-500 font-bold">+1.5%</span></p>
+                    </div>
+                  </div>
+                  <TrendingUp className="h-4 w-4 text-amber-500" />
+                </div>
+
+                <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
+                  <p className="text-[10px] font-black uppercase text-primary/70 mb-2">Insight de Timing</p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground">
+                    "O mercado de suprimentos eletrônicos mostra sinais de estabilização. Momento ideal para contratos trimestrais."
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="border-none shadow-lg bg-card/50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base">
