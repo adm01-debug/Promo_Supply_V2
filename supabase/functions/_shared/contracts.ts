@@ -15,12 +15,14 @@ export const NegotiationContract = z.object({
 
 export const WorkflowContract = z.object({
   action: z.enum(['start_workflow', 'approve_step', 'submit_decision']),
-  tenant_id: z.string().uuid().optional(),
+  template_id: z.string().uuid().optional(),
+  entity_type: z.string().optional(),
   entity_id: z.string().uuid().optional(),
   instance_id: z.string().uuid().optional(),
   node_id: z.string().uuid().optional(),
   decision: z.enum(['approve', 'reject']).optional(),
-  comment: z.string().optional()
+  approver_id: z.string().uuid().optional(),
+  comment: z.string().max(1000).optional()
 });
 
 export const ERPSyncContract = z.object({
