@@ -60,7 +60,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
       let query = supabase
         .from('devolucoes')
         .select(`*, fornecedor:fornecedores(id, razao_social, nome_fantasia), pedido:pedidos(id, numero)`)
-        .eq('tenant_id', tenantId || organizationId)
+        .eq('tenant_id', tenantId || organizationId || '00000000-0000-0000-0000-000000000000')
         .order('created_at', { ascending: false });
 
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
@@ -205,7 +205,7 @@ export function useCreditosFornecedor(fornecedorId?: string) {
         .select(`*, fornecedor:fornecedores(id, razao_social, nome_fantasia), devolucao:devolucoes(id, numero)`)
         .order('created_at', { ascending: false });
       if (fornecedorId) query = query.eq('fornecedor_id', fornecedorId);
-      query = query.eq('tenant_id', tenantId || organizationId);
+      query = query.eq('tenant_id', tenantId || organizationId || '00000000-0000-0000-0000-000000000000');
       const { data, error } = await query;
       if (error) throw error;
       return (data || []) as unknown as CreditoFornecedor[];
@@ -258,7 +258,7 @@ export function useDevolucoesKPIs() {
   const { data: kpis = { total: 0, abertas: 0, emTransito: 0, concluidas: 0, valorTotal: 0, taxaDevolucao: 0 }, isLoading } = useQuery({
     queryKey: ['devolucoes-kpis', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase.from('devolucoes').select('status, valor_total').eq('tenant_id', tenantId || organizationId);
+      const { data, error } = await supabase.from('devolucoes').select('status, valor_total').eq('tenant_id', tenantId || organizationId || '00000000-0000-0000-0000-000000000000');
       if (error) throw error;
       const all = data || [];
       const abertas = all.filter(d => ['rascunho', 'solicitada', 'aprovada'].includes(d.status)).length;
