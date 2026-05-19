@@ -68,7 +68,7 @@ const ConversionArrow = ({ rate, fromLabel, toLabel }: { rate: number; fromLabel
           )}>
             {rate}%
           </span>
-        </motion.div>
+        </div>
       </TooltipTrigger>
       <TooltipContent side="top" className="text-xs">
         <p className="font-semibold">{rate}% de conversão</p>
