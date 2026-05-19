@@ -77,14 +77,16 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    const systemPrompt = `Você é um especialista em negociação de compras corporativas. Analise as cotações recebidas e forneça:
-1. Análise comparativa detalhada
-2. Pontos fortes e fracos de cada proposta
-3. Estratégias de negociação específicas para cada fornecedor
-4. Sugestão de contraproposta com valores
-5. Economia estimada se as sugestões forem aplicadas
+    const systemPrompt = `Você é um estrategista de suprimentos de elite (CPO AI). Sua missão é analisar cotações e gerar um plano tático de negociação imbatível.
+Forneça:
+1. Análise comparativa profunda (TCO - Total Cost of Ownership)
+2. Matriz de Risco vs. Oportunidade por fornecedor
+3. Estratégias táticas de negociação (ancoragem, concessões, prazos)
+4. Sugestão de contraproposta com "Ponto de Recuo" e "Meta Ideal"
+5. Economia estimada (Savings)
+6. Contexto de Mercado (Análise se o preço está acima ou abaixo da média histórica se fornecida)
 
-Responda SEMPRE em português brasileiro. Seja específico com números e percentuais.`;
+Responda SEMPRE em português brasileiro. Seja assertivo, técnico e focado em lucro e eficiência operacional.`;
 
     const userPrompt = `Analise estas cotações para a solicitação "${solicitacao?.titulo || 'N/A'}":
 
@@ -114,9 +116,11 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
             parameters: {
               type: "object",
               properties: {
-                resumo: { type: "string", description: "Resumo executivo da análise" },
-                melhor_cotacao: { type: "string", description: "ID ou nome do fornecedor com melhor cotação" },
-                economia_estimada: { type: "number", description: "Economia estimada em reais" },
+                resumo: { type: "string", description: "Resumo tático de alto nível" },
+                melhor_cotacao: { type: "string", description: "Nome do fornecedor recomendado" },
+                economia_estimada: { type: "number", description: "Savings total estimado" },
+                oportunidade_score: { type: "number", description: "Score de 0 a 100 da oportunidade geral" },
+                contexto_mercado: { type: "string", description: "Breve análise de mercado" },
                 sugestoes: {
                   type: "array",
                   items: {
@@ -125,15 +129,17 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
                       fornecedor: { type: "string" },
                       estrategia: { type: "string" },
                       valor_contraproposta: { type: "number" },
+                      valor_ponto_recuo: { type: "number", description: "Valor máximo aceitável" },
                       argumentos: { type: "array", items: { type: "string" } },
-                      risco: { type: "string", enum: ["baixo", "medio", "alto"] }
+                      risco: { type: "string", enum: ["baixo", "medio", "alto"] },
+                      confianca_negociacao: { type: "number", description: "0 a 100" }
                     },
                     required: ["fornecedor", "estrategia", "argumentos"]
                   }
                 },
-                analise_detalhada: { type: "string", description: "Análise detalhada em markdown" }
+                analise_detalhada: { type: "string", description: "Plano tático detalhado em Markdown" }
               },
-              required: ["resumo", "sugestoes", "analise_detalhada"]
+              required: ["resumo", "sugestoes", "analise_detalhada", "oportunidade_score"]
             }
           }
         }],
