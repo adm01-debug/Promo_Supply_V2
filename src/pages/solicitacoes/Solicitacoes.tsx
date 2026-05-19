@@ -54,31 +54,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
-import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
-import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
-import { PageHeaderStats } from "@/components/ui/page-header";
-import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
-import { EnhancedSearch } from "@/components/ui/enhanced-search";
-import { KanbanSkeleton } from "@/components/ui/contextual-skeletons";
-import { useSolicitacoes } from "@/features/solicitacoes";
-import { EnhancedBulkActionsBar } from "@/components/compras/EnhancedBulkActionsBar";
-import { type BulkItem, type BulkAction } from "@/components/compras/BulkOperationsPreview";
-import { statusConfig as uiStatusConfig } from "./solicitacoesHelpers";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useRealtimeSubscription } from "@/hooks/useRealtimeSubscription";
-import { mapLegacyStatusToDb, adaptToLegacyFormat } from "./solicitacoesHelpers";
-import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
-import { EliteButton } from "@/components/atoms/EliteButton";
-import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
-import { motion, AnimatePresence } from "framer-motion";
-import { ExecutiveMetricCard } from "@/components/compras/executive/ExecutiveMetricCard";
 
 const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");
