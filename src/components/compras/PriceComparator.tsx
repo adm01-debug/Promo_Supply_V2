@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { Scale, Search, TrendingDown, ArrowRight, Star, Clock, Truck, CheckCircle2, Loader2 } from 'lucide-react';
+import { Scale, Search, TrendingDown, ArrowRight, Star, Clock, Truck, CheckCircle2, Loader2, Send, ListChecks, Brain } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast as sonnerToast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -41,6 +44,7 @@ export function PriceComparator() {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState('100');
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
+  const [selectedQuotes, setSelectedQuotes] = useState<string[]>([]);
 
   const { data: fornecedores = [] } = useQuery({
     queryKey: ['price-comparator-fornecedores'],
@@ -81,6 +85,7 @@ export function PriceComparator() {
 
     setLoading(true);
     setComparison(null);
+    setSelectedQuotes([]);
 
     try {
       let linkedData: any[] = [];
@@ -213,11 +218,63 @@ export function PriceComparator() {
           {comparison && (
             <ScrollArea className="flex-1">
               <div className="space-y-6 pr-4">
-                {/* Strategic Cards Integration */}
-                <div className="space-y-3">
-                  <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1">Análise Estratégica de Aquisição</Label>
+                {/* Strategic Planning Console */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between px-1">
+                    <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em]">Análise Estratégica de Aquisição</Label>
+                    <Badge variant="outline" className="text-[8px] font-black uppercase border-violet-500/30 text-violet-400 gap-1.5 px-3 py-1 bg-violet-500/5">
+                      <Brain className="w-3 h-3" /> IA Advisor Ativo
+                    </Badge>
+                  </div>
                   <StrategicQuoteTable cotacoes={strategicData} quantidade={parseInt(quantity) || 100} />
                 </div>
+
+                {selectedQuotes.length >= 2 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-6 rounded-[2rem] bg-gradient-to-br from-violet-600/20 via-violet-600/5 to-transparent border border-violet-500/20 backdrop-blur-3xl shadow-2xl relative overflow-hidden group"
+                  >
+                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.1] transition-opacity">
+                      <ListChecks className="w-32 h-32 text-violet-400" />
+                    </div>
+                    
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center shadow-lg">
+                          <Brain className="w-7 h-7 text-violet-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-black text-white uppercase tracking-tighter">Planejamento de Aquisição em Lote</h3>
+                          <p className="text-[10px] text-zinc-400 font-bold mt-1 uppercase leading-tight tracking-widest">
+                            Consolidando {selectedQuotes.length} fornecedores para otimização de custos e prazos
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Média do Lote</p>
+                          <p className="text-xl font-black text-white tracking-tight">
+                            R$ {(comparison.quotes.filter(q => selectedQuotes.includes(q.supplierId)).reduce((sum, q) => sum + q.totalPrice, 0) / selectedQuotes.length).toLocaleString('pt-BR')}
+                          </p>
+                        </div>
+                        <Separator orientation="vertical" className="h-10 bg-white/10" />
+                        <Button 
+                          className="h-12 px-6 rounded-xl bg-white text-black hover:bg-zinc-200 font-black text-[10px] uppercase tracking-widest gap-2 shadow-xl shadow-white/10"
+                          onClick={() => {
+                            sonnerToast.success("Plano de Compra Gerado", {
+                              description: "A IA está consolidando os dados para a diretoria.",
+                            });
+                          }}
+                        >
+                          Gerar Plano Final
+                          <ArrowRight className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
 
                 <Separator className="bg-white/5" />
 
@@ -296,26 +353,72 @@ export function PriceComparator() {
                 </Card>
 
                 {/* Quotes Table */}
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">Cotações Detalhadas</CardTitle>
+                <Card className="border-white/5 bg-white/[0.02]">
+                  <CardHeader className="pb-4 flex flex-row items-center justify-between">
+                    <div>
+                      <CardTitle className="text-sm">Cotações Detalhadas</CardTitle>
+                      <CardDescription className="text-[10px] uppercase font-bold tracking-widest mt-1">
+                        Selecione fornecedores para disparar cotações em massa via IA
+                      </CardDescription>
+                    </div>
+                    {selectedQuotes.length > 0 && (
+                      <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2">
+                        <Button 
+                          size="sm" 
+                          variant="secondary" 
+                          className="h-8 rounded-lg bg-violet-600 text-white hover:bg-violet-500 font-bold text-[10px] uppercase tracking-widest gap-2"
+                          onClick={() => {
+                            toast({
+                              title: "RFQs Iniciadas",
+                              description: `Disparando cotações automáticas para ${selectedQuotes.length} fornecedores.`,
+                            });
+                          }}
+                        >
+                          <Send className="h-3.5 w-3.5" />
+                          Disparar RFQ ({selectedQuotes.length})
+                        </Button>
+                      </div>
+                    )}
                   </CardHeader>
                   <CardContent className="p-0">
                     <Table aria-label="Tabela de dados">
                       <TableHeader>
-                        <TableRow>
+                        <TableRow className="hover:bg-transparent border-white/5">
+                          <TableHead className="w-[50px]">
+                            <Checkbox 
+                              checked={selectedQuotes.length === comparison.quotes.length}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedQuotes(comparison.quotes.map(q => q.supplierId));
+                                } else {
+                                  setSelectedQuotes([]);
+                                }
+                              }}
+                            />
+                          </TableHead>
                           <TableHead>Fornecedor</TableHead>
                           <TableHead className="text-right">Preço Unit.</TableHead>
                           <TableHead className="text-right">Total</TableHead>
                           <TableHead className="text-center">Entrega</TableHead>
                           <TableHead>Pagamento</TableHead>
                           <TableHead className="text-center">Rating</TableHead>
-                          <TableHead></TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
                         {comparison.quotes.map((quote, index) => (
-                          <TableRow key={quote.supplierId} className={quote.recommended ? 'bg-primary/5' : ''}>
+                          <TableRow key={quote.supplierId} className={cn(quote.recommended ? 'bg-primary/5' : '', "border-white/5 hover:bg-white/[0.03]")}>
+                            <TableCell>
+                              <Checkbox 
+                                checked={selectedQuotes.includes(quote.supplierId)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setSelectedQuotes(prev => [...prev, quote.supplierId]);
+                                  } else {
+                                    setSelectedQuotes(prev => prev.filter(id => id !== quote.supplierId));
+                                  }
+                                }}
+                              />
+                            </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 {quote.recommended && (
@@ -349,11 +452,6 @@ export function PriceComparator() {
                                 <Star className="h-3 w-3 text-warning fill-amber-500" />
                                 {quote.rating}
                               </div>
-                            </TableCell>
-                            <TableCell>
-                              <Button variant="ghost" size="sm">
-                                <ArrowRight className="h-4 w-4" />
-                              </Button>
                             </TableCell>
                           </TableRow>
                         ))}
