@@ -1,25 +1,20 @@
 import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { 
   Eye, 
   EyeOff, 
   Volume2, 
-  VolumeX,
   ZoomIn,
   ZoomOut,
   Type,
   Contrast,
   MousePointer2,
   Keyboard,
-  Settings,
-  X,
-  Check,
   RotateCcw
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { cn } from '@/lib/utils';
 import {
   Sheet,
   SheetContent,

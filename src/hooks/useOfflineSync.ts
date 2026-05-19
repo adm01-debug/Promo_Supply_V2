@@ -106,13 +106,14 @@ export function useOfflineSync() {
               .from(tableName)
               .insert(operation.data as never);
             break;
-          case 'update':
+          case 'update': {
             const { id: updateId, ...updateData } = operation.data;
             result = await supabase
               .from(tableName)
               .update(updateData as never)
               .eq('id', updateId as string);
             break;
+          }
           case 'delete':
             result = await supabase
               .from(tableName)

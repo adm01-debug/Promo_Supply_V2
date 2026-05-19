@@ -94,7 +94,7 @@ export async function simulateAPISearch(
 ): Promise<CotacaoAPI[]> {
   await new Promise(resolve => setTimeout(resolve, 2000));
 
-  let suppliersToSearch = fornecedores;
+  const suppliersToSearch = fornecedores;
 
   // If we have a product context, prioritize linked suppliers from our ecosystem
   if (produtoId) {

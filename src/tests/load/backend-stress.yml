@@ -1,0 +1,27 @@
+config:
+  target: "https://trwgmplubeqxrxpncdgf.supabase.co/functions/v1"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 50
+      name: "Ramp up load"
+    - duration: 120
+      arrivalRate: 50
+      name: "Sustained high load"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "Edge Function Stress Test"
+    flow:
+      - post:
+          url: "/ai-negotiation"
+          json:
+            scenario: "stress-test"
+            payload: { "id": "test-{{ $uuid }}", "data": "heavy-workload" }
+      - post:
+          url: "/workflow-engine"
+          json:
+            action: "validate"
+            context: { "timestamp": "{{ $timestamp }}" }

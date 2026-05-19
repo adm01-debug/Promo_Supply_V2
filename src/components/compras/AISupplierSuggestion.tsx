@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { Brain, Sparkles, ArrowRight, CheckCircle2, Factory, Package } from "lucide-react";
+import { Brain, Sparkles, ArrowRight, Package } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { motion, AnimatePresence } from "framer-motion";
 
 export const AISupplierSuggestion = () => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isExpanding, setIsExpanding] = useState(false);
 
   return (

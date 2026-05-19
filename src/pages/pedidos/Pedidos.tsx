@@ -70,8 +70,8 @@ const Pedidos = () => {
   }, [pedidos, selectedIds]);
 
   const handleBulkExecute = async (action: BulkAction, itemIds: string[], options?: Record<string, any>) => {
-    if (action.id === 'change-status' || (action as any)['targetStatus']) {
-      const targetStatus = (options?.['targetStatus'] as Pedido['status']) || (action as any)['targetStatus'];
+    if (action.id === 'change-status' || (action as any).targetStatus) {
+      const targetStatus = (options?.['targetStatus'] as Pedido['status']) || (action as any).targetStatus;
       if (targetStatus) {
         const success = await bulkUpdateStatus(itemIds, targetStatus);
         if (success) setSelectedIds([]);
@@ -87,7 +87,7 @@ const Pedidos = () => {
   };
 
   const filteredPedidos = useMemo(() => {
-    let result = pedidos.filter(pedido => {
+    const result = pedidos.filter(pedido => {
       const matchSearch = pedido.numero.toLowerCase().includes(search.toLowerCase()) ||
         (pedido.fornecedor?.razao_social?.toLowerCase().includes(search.toLowerCase()) ?? false);
       const matchStatus = statusFilter === 'all' || pedido.status === statusFilter;
