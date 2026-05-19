@@ -1,19 +1,27 @@
 import { describe, it, expect, vi } from 'vitest';
-import { renderHook, act } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 import { useSolicitacoes } from '../useSolicitacoes';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
 
-// Mock Auth Context
-const mockAuthContext = {
-  user: { id: 'test-user' },
-  session: { access_token: 'test-token' },
-  userRole: 'admin',
-  loading: false,
-};
+// Mock Auth Context - Using the absolute path matching the import in the hook
+vi.mock('@/features/auth/hooks/useAuth', () => ({
+  useAuth: () => ({
+    user: { id: 'test-user' },
+    session: { access_token: 'test-token' },
+    userRole: 'admin',
+    loading: false,
+  }),
+}));
 
-vi.mock('../../auth/hooks/useAuth', () => ({
-  useAuth: () => mockAuthContext,
+// Mock Supabase
+vi.mock('@/integrations/supabase/client', () => ({
+  supabase: {
+    from: vi.fn(() => ({
+      select: vi.fn(() => ({ data: [], error: null })),
+      insert: vi.fn(() => ({ data: null, error: null })),
+    })),
+  },
 }));
 
 // Wrapper for React Query
@@ -41,8 +49,6 @@ describe('useSolicitacoes Hook', () => {
       wrapper: createWrapper(),
     });
 
-    await act(async () => {
-      expect(result.current.solicitacoes).toBeInstanceOf(Array);
-    });
+    expect(result.current.solicitacoes).toBeInstanceOf(Array);
   });
 });
