@@ -228,7 +228,7 @@ export function SolicitacaoKanban({ solicitacoes, onStatusChange, selectable, se
     if (!over) return;
 
     const activeColumn = findColumn(active.id as string);
-    let overColumn = findColumn(over.id as string);
+    const overColumn = findColumn(over.id as string);
 
     if (activeColumn && overColumn && activeColumn !== overColumn) {
       const solicitacao = solicitacoes.find(s => s.id === active.id);

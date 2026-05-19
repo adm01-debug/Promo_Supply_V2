@@ -1,15 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   TrendingUp,
-  TrendingDown,
   DollarSign,
   AlertTriangle,
   FileCheck,
   Target,
   PieChart,
-  BarChart3,
   Clock,
-  Percent,
   ArrowUpRight,
   ArrowDownRight,
   Minus,
@@ -31,15 +28,7 @@ import {
   Pie,
   Cell,
   ResponsiveContainer,
-  BarChart,
-  Bar,
   XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  LineChart,
-  Line,
   Area,
   AreaChart
 } from "recharts";
