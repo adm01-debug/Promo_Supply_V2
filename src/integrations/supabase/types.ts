@@ -7230,6 +7230,15 @@ export type Database = {
         Args: { prefix: string; table_name: string }
         Returns: string
       }
+      get_compras_dashboard_metrics: {
+        Args: {
+          p_category_id?: string
+          p_organization_id: string
+          p_period?: string
+          p_supplier_id?: string
+        }
+        Returns: Json
+      }
       get_cost_center_performance_report:
         | {
             Args: never
@@ -7274,7 +7283,15 @@ export type Database = {
         Args: { _email: string; _minutes?: number }
         Returns: number
       }
+      get_fornecedores_kpis: {
+        Args: { p_organization_id: string }
+        Returns: Json
+      }
       get_my_organization: { Args: never; Returns: string }
+      get_pagamentos_kpis: {
+        Args: { p_organization_id: string }
+        Returns: Json
+      }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
