@@ -1,4 +1,4 @@
-import { Check, X, Eye, MessageSquare } from "lucide-react";
+import { Check, X, Eye, MessageSquare, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -150,18 +150,26 @@ export const DetailsModal = ({
         </div>
       )}
 
-      <div className="space-y-2 mt-4 pt-4 border-t">
-        <label className="text-sm font-medium flex items-center gap-2">
-          <MessageSquare className="w-4 h-4" />
-          Comentários da Aprovação
-        </label>
-        <Textarea
-          value={approveComment}
-          onChange={(e) => onApproveCommentChange?.(e.target.value)}
-          placeholder="Adicione um comentário (opcional)..."
-          rows={3}
-        />
+      <div className="space-y-4 mt-4 pt-4 border-t">
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary/5 border border-primary/10">
+          <Sparkles className="w-4 h-4 text-primary animate-pulse" />
+          <p className="text-[10px] font-black uppercase tracking-wider text-primary">IA Decision Support Active</p>
+        </div>
+        
+        <div className="space-y-2">
+          <label className="text-sm font-medium flex items-center gap-2">
+            <MessageSquare className="w-4 h-4" />
+            Comentários da Aprovação
+          </label>
+          <Textarea
+            value={approveComment}
+            onChange={(e) => onApproveCommentChange?.(e.target.value)}
+            placeholder="Adicione um comentário ou instrução para o solicitante..."
+            rows={3}
+          />
+        </div>
       </div>
+
 
       <DialogFooter className="mt-6">
         <Button variant="outline" onClick={() => onOpenChange(false)}>

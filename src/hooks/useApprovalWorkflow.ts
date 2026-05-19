@@ -284,18 +284,41 @@ export const useApprovalWorkflow = () => {
       const { data: step, error: stepError } = await supabase.from('approval_steps').select('*, approval_workflows(*)').eq('id', stepId).single();
       if (stepError) throw stepError;
 
+      // Check if this step requires unanimity based on the rule
+      const workflow = step.approval_workflows;
+      let requiresUnanimity = false;
+      if (workflow?.rule_id) {
+        const { data: rule } = await supabase.from('approval_rules').select('requer_unanimidade').eq('id', workflow.rule_id).single();
+        requiresUnanimity = rule?.requer_unanimidade || false;
+      }
+
+
       const { error: updateError } = await supabase.from('approval_steps').update({
         status: 'approved', aprovador_efetivo_id: user?.id, comentario, decidido_em: new Date().toISOString()
       }).eq('id', stepId);
       if (updateError) throw updateError;
 
       const { data: allSteps } = await supabase.from('approval_steps').select('*').eq('workflow_id', step.workflow_id);
-      const allApproved = allSteps?.every(s => s.status === 'approved' || s.id === stepId);
+      const allOtherSteps = allSteps?.filter(s => s.id !== stepId) || [];
+      const allApproved = allOtherSteps.every(s => s.status === 'approved');
+
       if (allApproved) {
         await supabase.from('approval_workflows').update({ status: 'approved', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
+        
+        // Finalized!
+        toast.success('Aprovação finalizada! Solicitação liberada.');
       } else {
-        await supabase.from('approval_workflows').update({ etapa_atual: step.etapa + 1, updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
+        // If not requiring unanimity, move to next sequential step
+        // In this complex system, we usually have sequential steps, but let's ensure the logic holds
+        const nextStep = allOtherSteps.find(s => s.status === 'pending' && s.etapa > step.etapa);
+        if (nextStep) {
+          await supabase.from('approval_workflows').update({ etapa_atual: nextStep.etapa, updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
+        } else if (!requiresUnanimity) {
+          // If no more sequential steps and not unanimous, it's basically done
+           await supabase.from('approval_workflows').update({ status: 'approved', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
+        }
       }
+
 
       await supabase.from('approval_history').insert({
         workflow_id: step.workflow_id, step_id: stepId, acao: 'approved',
