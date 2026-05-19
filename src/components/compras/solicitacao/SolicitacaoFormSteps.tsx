@@ -68,34 +68,51 @@ interface StepProps {
 
 export function Step1Identification({ formData, errors, updateField }: StepProps) {
   return (
-    <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="empresa" className="flex items-center gap-2"><Building2 className="w-4 h-4" />Empresa *</Label>
+    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500 px-8">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="space-y-3">
+          <Label htmlFor="empresa" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest flex items-center gap-2">
+            <Building2 className="w-3.5 h-3.5 text-violet-400" />
+            Entidade Solicitante *
+          </Label>
           <Select value={formData.empresa} onValueChange={(v) => updateField('empresa', v)}>
-            <SelectTrigger className={cn(errors.empresa && "border-destructive")}><SelectValue placeholder="Selecione a empresa" /></SelectTrigger>
-            <SelectContent>{empresasMock.map(e => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
+            <SelectTrigger className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.empresa && "border-rose-500/50")}>
+              <SelectValue placeholder="Selecione a empresa" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl">
+              {empresasMock.map(e => <SelectItem key={e} value={e} className="text-xs font-bold py-3">{e}</SelectItem>)}
+            </SelectContent>
           </Select>
-          {errors.empresa && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.empresa}</p>}
+          {errors.empresa && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.empresa}</p>}
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="vendedor" className="flex items-center gap-2"><User className="w-4 h-4" />Vendedor *</Label>
+        <div className="space-y-3">
+          <Label htmlFor="vendedor" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest flex items-center gap-2">
+            <User className="w-3.5 h-3.5 text-violet-400" />
+            Gestor Responsável *
+          </Label>
           <Select value={formData.vendedor} onValueChange={(v) => updateField('vendedor', v)}>
-            <SelectTrigger className={cn(errors.vendedor && "border-destructive")}><SelectValue placeholder="Selecione o vendedor" /></SelectTrigger>
-            <SelectContent>{vendedoresMock.map(v => <SelectItem key={v} value={v}>{v}</SelectItem>)}</SelectContent>
+            <SelectTrigger className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.vendedor && "border-rose-500/50")}>
+              <SelectValue placeholder="Selecione o vendedor" />
+            </SelectTrigger>
+            <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl">
+              {vendedoresMock.map(v => <SelectItem key={v} value={v} className="text-xs font-bold py-3">{v}</SelectItem>)}
+            </SelectContent>
           </Select>
-          {errors.vendedor && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.vendedor}</p>}
+          {errors.vendedor && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.vendedor}</p>}
         </div>
       </div>
-      <div className="space-y-2">
-        <Label>Prioridade</Label>
-        <div className="grid grid-cols-2 gap-2 sm:flex sm:gap-2">
+      <div className="space-y-4">
+        <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Nível de Prioridade Neural</Label>
+        <div className="grid grid-cols-2 gap-3 sm:flex sm:gap-3">
           {Object.entries(prioridadeConfig).map(([key, config]) => (
             <button key={key} type="button"
-              className={cn("py-2 px-2 sm:px-3 sm:flex-1 rounded-lg border-2 transition-all text-xs sm:text-sm font-medium",
-                formData.prioridade === key ? "border-primary bg-primary/10 shadow-sm" : "border-muted hover:border-muted-foreground/30")}
+              className={cn("py-3 px-4 sm:flex-1 rounded-xl border-2 transition-all text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2",
+                formData.prioridade === key 
+                  ? "border-violet-500 bg-violet-500/10 text-white shadow-[0_0_15px_rgba(139,92,246,0.2)]" 
+                  : "border-white/5 bg-white/[0.02] text-zinc-500 hover:border-white/10 hover:bg-white/5")}
               onClick={() => updateField('prioridade', key as NovaSolicitacaoData['prioridade'])}>
-              <span className={cn("w-2 h-2 rounded-full inline-block mr-1 sm:mr-2", config.color)} />{config.label}
+              <div className={cn("w-1.5 h-1.5 rounded-full shadow-[0_0_8px_currentColor]", config.color)} />
+              {config.label}
             </button>
           ))}
         </div>

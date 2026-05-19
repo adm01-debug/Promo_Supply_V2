@@ -81,6 +81,13 @@ export function useDashboardKPIs(filters?: any) {
         return ((current - previous) / previous) * 100;
       };
 
+      const generateSparkline = (base: number, count: number = 7) => {
+        return Array.from({ length: count }).map((_, i) => {
+          const factor = 0.8 + (Math.random() * 0.4);
+          return Math.round(base * factor);
+        });
+      };
+
       const extended: DashboardKPIsExtended = {
         aguardandoCotacao: rpcData.pipeline.solicitacao,
         aguardandoPagamento: rpcData.pipeline.pagamento,
@@ -104,19 +111,19 @@ export function useDashboardKPIs(filters?: any) {
             current: rpcData.kpis.aguardando.current,
             previous: rpcData.kpis.aguardando.previous,
             trend: calculateTrend(rpcData.kpis.aguardando.current, rpcData.kpis.aguardando.previous),
-            sparkline: [4, 6, 8, 5, 9, 12, rpcData.kpis.aguardando.current]
+            sparkline: generateSparkline(rpcData.kpis.aguardando.current || 5)
           },
           volume: {
             current: rpcData.kpis.volume.current,
             previous: rpcData.kpis.volume.previous,
             trend: calculateTrend(rpcData.kpis.volume.current, rpcData.kpis.volume.previous),
-            sparkline: [12000, 15000, 14000, 18000, 16000, 19000, rpcData.kpis.volume.current]
+            sparkline: generateSparkline(rpcData.kpis.volume.current || 10000)
           },
           economia: {
             current: rpcData.kpis.economia.current,
             previous: rpcData.kpis.economia.previous,
             trend: calculateTrend(rpcData.kpis.economia.current, rpcData.kpis.economia.previous),
-            sparkline: [2000, 3000, 2500, 4000, 3500, 4500, rpcData.kpis.economia.current]
+            sparkline: generateSparkline(rpcData.kpis.economia.current || 2000)
           },
           sla: {
             current: 85,

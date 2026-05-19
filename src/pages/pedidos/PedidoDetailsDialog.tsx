@@ -17,20 +17,20 @@ import { cn } from "@/lib/utils";
 import { ProductionRoutingEngine, SourcingIntelligenceBanner } from "@/components/compras/ProductionRoutingEngine";
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
-  pendente: { label: 'PENDING', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
-  aprovado: { label: 'APPROVED', color: 'bg-sky-500/10 text-sky-400 border-sky-500/20', icon: CheckCircle2 },
-  enviado: { label: 'DISPATCHED', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },
-  em_transito: { label: 'IN TRANSIT', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
-  entregue: { label: 'FULFILLED', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
-  cancelado: { label: 'VOIDED', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: Info },
+  pendente: { label: 'PENDENTE', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
+  aprovado: { label: 'APROVADO', color: 'bg-sky-500/10 text-sky-400 border-sky-500/20', icon: CheckCircle2 },
+  enviado: { label: 'ENVIADO', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },
+  em_transito: { label: 'EM TRÂNSITO', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
+  entregue: { label: 'ENTREGUE', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
+  cancelado: { label: 'CANCELADO', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: Info },
 };
 
 const statusSteps = [
-  { id: 'pendente', label: 'PENDING', icon: Clock, color: 'text-amber-400', bg: 'bg-amber-400' },
-  { id: 'aprovado', label: 'APPROVED', icon: CheckCircle2, color: 'text-sky-400', bg: 'bg-sky-400' },
-  { id: 'enviado', label: 'DISPATCHED', icon: FileText, color: 'text-indigo-400', bg: 'bg-indigo-400' },
-  { id: 'em_transito', label: 'IN TRANSIT', icon: Truck, color: 'text-violet-400', bg: 'bg-violet-400' },
-  { id: 'entregue', label: 'FULFILLED', icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-400' },
+  { id: 'pendente', label: 'PENDENTE', icon: Clock, color: 'text-amber-400', bg: 'bg-amber-400' },
+  { id: 'aprovado', label: 'APROVADO', icon: CheckCircle2, color: 'text-sky-400', bg: 'bg-sky-400' },
+  { id: 'enviado', label: 'ENVIADO', icon: FileText, color: 'text-indigo-400', bg: 'bg-indigo-400' },
+  { id: 'em_transito', label: 'EM TRÂNSITO', icon: Truck, color: 'text-violet-400', bg: 'bg-violet-400' },
+  { id: 'entregue', label: 'ENTREGUE', icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-400' },
 ];
 
 
@@ -108,7 +108,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                 </DialogTitle>
                 <p className="text-[10px] text-zinc-500 font-black uppercase tracking-[0.2em] mt-1.5 flex items-center gap-2">
                    <Calendar className="w-3 h-3" />
-                   Issued: {format(new Date(pedido.data_emissao), 'dd MMM yyyy')}
+                   Emitido em: {format(new Date(pedido.data_emissao), 'dd MMM yyyy')}
                 </p>
               </div>
             </div>
@@ -123,7 +123,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                    </div>
                  </DropdownMenuTrigger>
                  <DropdownMenuContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl p-2 min-w-[200px]">
-                   <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600 px-3 py-2">Change Vector State</p>
+                   <p className="text-[10px] font-black uppercase tracking-widest text-zinc-600 px-3 py-2">Alterar Estado do Vetor</p>
                    {Object.entries(statusConfig).map(([key, cfg]) => {
                      const Icon = cfg.icon;
                      return (
@@ -148,10 +148,10 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
         <div className="p-8">
           <Tabs defaultValue="overview" className="w-full">
             <TabsList className="w-full grid grid-cols-4 bg-white/[0.03] border border-white/5 h-14 p-1 rounded-2xl mb-8">
-              <TabsTrigger value="overview" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">SURVEILLANCE</TabsTrigger>
-              <TabsTrigger value="itens" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">ASSETS & PRODUCTION</TabsTrigger>
-              <TabsTrigger value="financial" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">FINANCIALS</TabsTrigger>
-              <TabsTrigger value="history" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">AUDIT LOG</TabsTrigger>
+               <TabsTrigger value="overview" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">MONITORAMENTO</TabsTrigger>
+              <TabsTrigger value="itens" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">ATIVOS & PRODUÇÃO</TabsTrigger>
+              <TabsTrigger value="financial" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">FINANCEIRO</TabsTrigger>
+              <TabsTrigger value="history" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">LOG DE AUDITORIA</TabsTrigger>
             </TabsList>
 
             <AnimatePresence mode="wait">
@@ -164,7 +164,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                       <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
                         <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 flex items-center gap-2">
                           <Building2 className="w-4 h-4 text-violet-400" />
-                          Supplier Entity
+                          Entidade Fornecedora
                         </h3>
                         <div className="space-y-6">
                           <div className="flex items-center gap-4">
@@ -172,16 +172,16 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                               {pedido.fornecedor?.razao_social?.slice(0, 2)}
                             </div>
                             <div>
-                              <p className="font-black text-white uppercase text-sm tracking-tight leading-tight">{pedido.fornecedor?.razao_social || 'REDACTED ENTITY'}</p>
-                              <p className="text-[10px] text-zinc-600 font-black uppercase mt-1 tracking-widest">Authorized Provider</p>
+                              <p className="font-black text-white uppercase text-sm tracking-tight leading-tight">{pedido.fornecedor?.razao_social || 'ENTIDADE CONFIDENCIAL'}</p>
+                              <p className="text-[10px] text-zinc-600 font-black uppercase mt-1 tracking-widest">Provedor Autorizado</p>
                             </div>
                           </div>
                           <div className="grid grid-cols-2 gap-3 pt-2">
-                            <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
-                              <Mail className="w-3.5 h-3.5 mr-2" /> ENCRYPTED MAIL
+                             <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
+                              <Mail className="w-3.5 h-3.5 mr-2" /> E-MAIL CRIPTOGRAFADO
                             </Button>
                             <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
-                              <MessageCircle className="w-3.5 h-3.5 mr-2" /> COMMS HUB
+                              <MessageCircle className="w-3.5 h-3.5 mr-2" /> HUB DE COMUNICAÇÃO
                             </Button>
                           </div>
                         </div>
@@ -193,7 +193,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                     <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
                       <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-8 flex items-center gap-2">
                         <Zap className="w-4 h-4 text-violet-400" />
-                        Neural Fulfillment Timeline
+                        Linha do Tempo de Fulfillment Neural
                       </h3>
                       
                       <div className="relative">
@@ -242,7 +242,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                                     </p>
                                     {isCurrent && (
                                       <Badge variant="outline" className="text-[8px] font-black uppercase border-violet-500/30 text-violet-400 px-2 py-0 animate-pulse">
-                                        ACTIVE STATE
+                                        ESTADO ATIVO
                                       </Badge>
                                     )}
                                   </div>
@@ -250,7 +250,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                                     "text-[9px] font-bold mt-1 uppercase",
                                     isCurrent ? "text-zinc-400" : "text-zinc-700"
                                   )}>
-                                    {isCurrent ? "Vigilance Active" : isCompleted ? "Cycle Verified" : "Pending Vector"}
+                                    {isCurrent ? "Vigilância Ativa" : isCompleted ? "Ciclo Verificado" : "Vetor Pendente"}
                                   </p>
                                 </div>
                               </div>
@@ -266,7 +266,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                     <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
                       <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-3 flex items-center gap-2">
                         <Info className="w-4 h-4 text-violet-400" />
-                        Executive Briefing
+                        Briefing Executivo
                       </h3>
                       <p className="text-xs text-zinc-300 font-bold leading-relaxed">{pedido.observacoes}</p>
                     </Card>
@@ -286,11 +286,11 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                       }[tipo as 'importado' | 'fabricado' | 'personalizado'];
 
                       const prodSteps = [
-                        { id: 'pendente', label: 'QUEUED' },
-                        { id: 'primeira_peca', label: '1ST PIECE AUDIT' },
-                        { id: 'em_producao', label: 'PRODUCTION' },
-                        { id: 'personalizando', label: 'CUSTOMIZING' },
-                        { id: 'concluido', label: 'VERIFIED' },
+                        { id: 'pendente', label: 'EM FILA' },
+                        { id: 'primeira_peca', label: 'AUDITORIA 1ª PEÇA' },
+                        { id: 'em_producao', label: 'PRODUÇÃO' },
+                        { id: 'personalizando', label: 'CUSTOMIZAÇÃO' },
+                        { id: 'concluido', label: 'VERIFICADO' },
                       ];
 
                       return (
@@ -313,26 +313,26 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                                 <h4 className="text-lg font-black text-white uppercase tracking-tight">{item.descricao}</h4>
                                 {item.produto_id && (
                                   <Badge variant="outline" className="px-2 py-0.5 rounded-md text-[9px] font-black border-violet-500/20 text-violet-400 bg-violet-500/5">
-                                    CATALOG LINKED
+                                    VINCULADO AO CATÁLOGO
                                   </Badge>
                                 )}
                               </div>
                               <p className="text-[10px] text-zinc-500 font-black uppercase mt-1 tracking-widest">
-                                Quantity: {item.quantidade} {item.unidade} • Lead Time: {item.produto?.lead_time_dias || 0} Days
+                                Quantidade: {item.quantidade} {item.unidade} • Lead Time: {item.produto?.lead_time_dias || 0} Dias
                               </p>
                               {item.descricao?.toLowerCase().includes('boné') && (
                                 <Badge variant="outline" className="mt-3 px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest border-rose-500/20 text-rose-400 bg-rose-500/5">
                                   <AlertTriangle className="w-3.5 h-3.5 mr-2" />
-                                  Critical: 1st Piece Audit Required
+                                  Crítico: Auditoria de 1ª Peça Necessária
                                 </Badge>
                               )}
                             </div>
 
                             <div className="flex-1 bg-white/[0.03] p-5 rounded-2xl border border-white/5 relative group/pipeline">
                               <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-6 flex items-center justify-between">
-                                PRODUCTION PIPELINE
+                                PIPELINE DE PRODUÇÃO
                                 <span className={cn("transition-colors", statusProd === 'primeira_peca' ? "text-rose-400 animate-pulse" : "text-violet-400")}>
-                                  {statusProd === 'primeira_peca' ? 'AWAITING 1ST PIECE APPROVAL' : 'STRICT MONITORING'}
+                                  {statusProd === 'primeira_peca' ? 'AGUARDANDO APROVAÇÃO 1ª PEÇA' : 'MONITORAMENTO RÍGIDO'}
                                 </span>
                               </p>
                               <div className="flex items-center justify-between gap-1 relative h-10">
@@ -375,24 +375,24 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                   <Card className="p-8 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-8 flex items-center gap-2">
                       <DollarSign className="w-4 h-4 text-emerald-400" />
-                      Financial Intelligence
+                      Inteligência Financeira
                     </h3>
                     <div className="space-y-6">
                       <div className="flex justify-between items-center text-zinc-500 font-black uppercase tracking-widest text-[10px]">
-                        <span>Gross Subtotal</span>
+                        <span>Subtotal Bruto</span>
                         <span className="text-white text-sm">{(pedido.valor_total - (pedido.valor_frete || 0) + (pedido.desconto || 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                       </div>
                       <div className="flex justify-between items-center text-zinc-500 font-black uppercase tracking-widest text-[10px]">
-                        <span>Logistics Overhead</span>
-                        <span className={cn("text-sm", (pedido.valor_frete || 0) > 0 ? "text-white" : "text-emerald-400")}>{(pedido.valor_frete || 0) > 0 ? (pedido.valor_frete || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'ZERO COST'}</span>
+                        <span>Custos Logísticos</span>
+                        <span className={cn("text-sm", (pedido.valor_frete || 0) > 0 ? "text-white" : "text-emerald-400")}>{(pedido.valor_frete || 0) > 0 ? (pedido.valor_frete || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'CUSTO ZERO'}</span>
                       </div>
                       <div className="pt-6 border-t border-white/10 flex justify-between items-end">
                         <div className="space-y-1">
-                           <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">Net Liquidity Value</p>
+                           <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">Valor Líquido</p>
                            <p className="text-4xl font-black text-white tracking-tighter">{pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
                         </div>
                         <Badge variant="outline" className="mb-1 text-[10px] font-black border-emerald-500/30 text-emerald-400 px-4 py-1.5 uppercase tracking-widest bg-emerald-500/10">
-                           SECURED ASSET
+                           ATIVO ASSEGURADO
                         </Badge>
                       </div>
                     </div>
@@ -402,8 +402,8 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                 <TabsContent value="history" className="mt-0 focus-visible:ring-0">
                   <Card className="p-12 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl text-center">
                     <Clock className="w-12 h-12 text-zinc-700 mx-auto mb-6 opacity-30" />
-                    <h4 className="text-xs font-black text-zinc-500 uppercase tracking-[0.3em]">Neural History Stream</h4>
-                    <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest mt-2">Initializing historical audit log vectors...</p>
+                    <h4 className="text-xs font-black text-zinc-500 uppercase tracking-[0.3em]">Fluxo de Histórico Neural</h4>
+                    <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest mt-2">Inicializando vetores de log de auditoria histórica...</p>
                   </Card>
                 </TabsContent>
               </motion.div>
@@ -412,8 +412,8 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
         </div>
 
         <div className="p-8 pt-0 flex justify-end gap-3">
-           <Button variant="ghost" onClick={() => onOpenChange(false)} className="rounded-xl font-black text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white hover:bg-white/5">CLOSE BRIEFING</Button>
-           <Button className="rounded-xl px-8 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none font-black text-[10px] uppercase tracking-widest shadow-lg shadow-violet-500/20">AUTHORIZE RE-DISPATCH</Button>
+           <Button variant="ghost" onClick={() => onOpenChange(false)} className="rounded-xl font-black text-[10px] uppercase tracking-widest text-zinc-500 hover:text-white hover:bg-white/5">FECHAR BRIEFING</Button>
+           <Button className="rounded-xl px-8 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none font-black text-[10px] uppercase tracking-widest shadow-lg shadow-violet-500/20">AUTORIZAR REDESPACHO</Button>
         </div>
       </DialogContent>
     </Dialog>

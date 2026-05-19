@@ -139,10 +139,10 @@ const Solicitacoes = () => {
                 <ClipboardList className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Purchasing Flow</h1>
+                <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Fluxo de Compras</h1>
                 <div className="flex items-center gap-3 mt-3">
-                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-violet-500/30 text-violet-300 px-3 py-1">{filteredSolicitacoes.length} Active Records</Badge>
-                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Total Procurement Cycle</span>
+                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-violet-500/30 text-violet-300 px-3 py-1">{filteredSolicitacoes.length} Registros Ativos</Badge>
+                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Ciclo Total de Suprimentos</span>
                 </div>
               </div>
             </div>
@@ -178,20 +178,20 @@ const Solicitacoes = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <ExecutiveMetricCard
-              title="Total Requests"
+              title="Total de Solicitações"
               value={stats.total}
               icon={Package}
               delay={0}
             />
             <ExecutiveMetricCard
-              title="Pending Quotation"
+              title="Aguardando Cotação"
               value={stats.pending}
               icon={BarChart3}
               delay={1}
               urgent={stats.pending > 5 ? stats.pending : 0}
             />
             <ExecutiveMetricCard
-              title="Estimated Volume"
+              title="Volume Estimado"
               value={stats.value}
               icon={TrendingUp}
               format="currency"
@@ -206,27 +206,27 @@ const Solicitacoes = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="md:col-span-2">
-                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Global Smart Search</Label>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Busca Inteligente Global</Label>
                 <EnhancedSearch
-                  placeholder="ID, item or company name..."
+                  placeholder="ID, item ou nome da empresa..."
                   onSearch={(q) => setSearchTerm(q)}
                   className="bg-white/[0.03] border-white/10 h-12 rounded-xl text-white font-bold"
                 />
               </div>
               <div>
-                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Status Filter</Label>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Filtro de Status</Label>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="bg-white/[0.03] h-12 border-white/10 rounded-xl text-zinc-200 font-bold">
                     <div className="flex items-center gap-2">
                       <Filter className="w-4 h-4 text-violet-400" />
-                      <SelectValue placeholder="All Status" />
+                      <SelectValue placeholder="Todos os Status" />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl rounded-2xl">
-                    <SelectItem value="todas" className="text-xs font-bold py-2.5">All Requests</SelectItem>
-                    <SelectItem value="AGUARDANDO_COTACAO" className="text-xs font-bold py-2.5">Pending</SelectItem>
-                    <SelectItem value="EM_COTACAO" className="text-xs font-bold py-2.5">In Quotation</SelectItem>
-                    <SelectItem value="FORNECEDOR_SELECIONADO" className="text-xs font-bold py-2.5">Approved</SelectItem>
+                    <SelectItem value="todas" className="text-xs font-bold py-2.5">Todas as Solicitações</SelectItem>
+                    <SelectItem value="AGUARDANDO_COTACAO" className="text-xs font-bold py-2.5">Pendentes</SelectItem>
+                    <SelectItem value="EM_COTACAO" className="text-xs font-bold py-2.5">Em Cotação</SelectItem>
+                    <SelectItem value="FORNECEDOR_SELECIONADO" className="text-xs font-bold py-2.5">Aprovadas</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -264,7 +264,7 @@ const Solicitacoes = () => {
                       <SolicitacaoCard key={s.id} solicitacao={s} />
                     ))
                   ) : (
-                    <IllustratedEmptyState type="orders" title="No matching records" description="Adjust your filters to refine the results." />
+                    <IllustratedEmptyState type="orders" title="Nenhum registro encontrado" description="Ajuste seus filtros para refinar os resultados." />
                   )}
                 </EliteCardGrid>
               </motion.div>
