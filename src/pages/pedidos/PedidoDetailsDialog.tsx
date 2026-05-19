@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ProductionRoutingEngine, SourcingIntelligenceBanner } from "@/components/compras/ProductionRoutingEngine";
+import { SupplierInteractionLog } from "@/components/compras/SupplierInteractionLog";
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
   pendente: { label: 'PENDENTE', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
@@ -198,6 +199,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                         </div>
                         
                         <SourcingIntelligenceBanner items={itens} />
+                        <SupplierInteractionLog supplierName={pedido.fornecedor?.nome_fantasia || pedido.fornecedor?.razao_social} />
                       </Card>
                     </div>
 
