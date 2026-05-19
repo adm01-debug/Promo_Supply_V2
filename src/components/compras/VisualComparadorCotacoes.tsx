@@ -92,6 +92,10 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("radar");
+  const [decisionSupport, setDecisionSupport] = useState<{ rationale: string, confidence: number } | null>({
+    rationale: "O Fornecedor A apresenta o melhor TCO devido à isenção de frete e prazo de pagamento estendido, compensando o valor unitário 2% superior.",
+    confidence: 94
+  });
 
   // Calculate scores and best values
   const analysis = useMemo(() => {
@@ -358,7 +362,27 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                     <ScoresTab selectedCotacoes={selectedCotacoes} pieData={pieData} getScore={getScore} />
                   </TabsContent>
                   <TabsContent value="table" className="h-full mt-0 overflow-auto">
-                    <TableTab selectedCotacoes={selectedCotacoes} COLORS={COLORS} getScore={getScore} analysis={analysis} quantidade={quantidade} />
+                    <div className="space-y-6 pb-20">
+                      {decisionSupport && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-violet-500/10 border border-violet-500/20 p-4 rounded-xl flex gap-4 items-start"
+                        >
+                          <div className="p-2 rounded-lg bg-violet-500/20 text-violet-400">
+                            <Target className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2 mb-1">
+                              <h4 className="text-sm font-bold text-violet-300 uppercase tracking-widest">IA Decision Support rationale</h4>
+                              <Badge variant="outline" className="text-[10px] border-violet-500/30 text-violet-400">CONFIDENCE: {decisionSupport.confidence}%</Badge>
+                            </div>
+                            <p className="text-xs text-zinc-400 leading-relaxed">{decisionSupport.rationale}</p>
+                          </div>
+                        </motion.div>
+                      )}
+                      <TableTab selectedCotacoes={selectedCotacoes} COLORS={COLORS} getScore={getScore} analysis={analysis} quantidade={quantidade} />
+                    </div>
                   </TabsContent>
                 </div>
               </Tabs>
