@@ -16,7 +16,13 @@ export const StrategicQuoteTable = ({ cotacoes, quantidade }: StrategicQuoteTabl
 
   const cheapest = [...cotacoes].sort((a, b) => a.total - b.total)[0];
   const fastest = [...cotacoes].sort((a, b) => (a.lead_time || 99) - (b.lead_time || 99))[0];
-  const bestRated = [...cotacoes].sort((a, b) => (b.rating || 0) - (a.rating || 0))[0];
+  
+  // Advanced Rating Scoring (Rating + Weight for reliable delivery)
+  const bestRated = [...cotacoes].sort((a, b) => {
+    const scoreA = (a.rating || 0) * 10 - (a.lead_time || 0);
+    const scoreB = (b.rating || 0) * 10 - (b.lead_time || 0);
+    return scoreB - scoreA;
+  })[0];
 
   const handleSelectStrategy = (strat: string, supplier: string) => {
     toast.success(`Estratégia "${strat}" selecionada para o fornecedor ${supplier}.`, {
