@@ -1,9 +1,9 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
 import type { Database } from '@/integrations/supabase/types';
 
