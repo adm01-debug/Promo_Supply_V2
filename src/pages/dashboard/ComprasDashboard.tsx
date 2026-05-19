@@ -189,7 +189,7 @@ const ComprasDashboard = () => {
           <Card className="p-6 h-full border-border/40 bg-card/50 backdrop-blur-sm">
             <h2 className="text-lg font-bold text-foreground mb-6 flex items-center gap-2 uppercase tracking-tight">
               <BarChart3 className="w-5 h-5 text-primary" />
-              Pipeline Visual
+              Fluxo Visual de Pedidos
             </h2>
             <PipelineChart data={pipeline} previousData={(kpis as any).previousPipeline} />
           </Card>
@@ -200,10 +200,10 @@ const ComprasDashboard = () => {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold text-foreground flex items-center gap-2 uppercase tracking-tight">
                 <Clock className="w-5 h-5 text-destructive" />
-                Urgências ({urgentItems.length})
+                Urgências Detectadas ({urgentItems.length})
               </h2>
               <EliteButton variant="ghost" size="sm" onClick={() => {}}>
-                Ver Todos
+                VER TUDO
               </EliteButton>
             </div>
             {urgentItems.length > 0 ? (
@@ -211,7 +211,7 @@ const ComprasDashboard = () => {
                 id: (item as any).numero || item.id.substring(0, 8),
                 dbId: item.id,
                 produto: (item as any).titulo || "Item sem título",
-                fornecedor: item.status || "Pendente",
+                fornecedor: item.status || "Análise Pendente",
                 vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
                 urgencia: (item as any).urgencia || 'alto',
                 comprador: (item as any).comprador
@@ -264,7 +264,7 @@ const ComprasDashboard = () => {
                 <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">{t('dashboard.title')}</h1>
                 <p className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mt-2 opacity-80 flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-                  Supply Intelligence Hub
+                  Centro de Inteligência de Suprimentos
                 </p>
               </div>
             </div>
