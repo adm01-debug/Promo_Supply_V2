@@ -399,11 +399,6 @@ export function PriceComparator() {
                                 {quote.rating}
                               </div>
                             </TableCell>
-                            <TableCell>
-                              <Button variant="ghost" size="sm">
-                                <ArrowRight className="h-4 w-4" />
-                              </Button>
-                            </TableCell>
                           </TableRow>
                         ))}
                       </TableBody>
