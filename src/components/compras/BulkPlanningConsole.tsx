@@ -23,6 +23,11 @@ import { formatCurrency } from './executive/executiveDashboardData';
 export const BulkPlanningConsole = () => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set(['1', '2', '3']));
   const [activePlan, setActivePlan] = useState<string | null>(null);
+  const [freightAnalysis, setFreightAnalysis] = useState<{ [key: string]: { cost: number, optimization: number } }>({
+    '1': { cost: 450, optimization: 12 },
+    '2': { cost: 1200, optimization: 8 },
+    '3': { cost: 85, optimization: 15 }
+  });
 
   const mockPlanningData = [
     { 
@@ -114,9 +119,9 @@ export const BulkPlanningConsole = () => {
       </CardHeader>
       
       <CardContent className="p-0">
-        <div className="grid grid-cols-1 md:grid-cols-3 divide-x divide-white/5 h-[400px]">
+        <div className="grid grid-cols-1 md:grid-cols-12 divide-x divide-white/5 h-[450px]">
           {/* Lado Esquerdo: Lista de Lotes */}
-          <div className="col-span-1 flex flex-col">
+          <div className="md:col-span-3 flex flex-col">
             <div className="p-4 bg-white/[0.01] border-b border-white/5">
               <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Lotes de Aquisição Ativos</span>
             </div>
@@ -153,8 +158,14 @@ export const BulkPlanningConsole = () => {
                       </Badge>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-zinc-500 uppercase">{plan.items.length} ITENS • {plan.totalQty} UN</span>
-                      <ChevronRight className="h-4 w-4 text-zinc-600" />
+                      <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-tighter">{plan.items.length} ITENS • {plan.totalQty} UN</span>
+                      <div className="flex items-center gap-1.5">
+                        <div className="flex flex-col items-end">
+                          <span className="text-[8px] font-black text-emerald-400 uppercase">-{freightAnalysis[plan.id]?.optimization}% FRETE</span>
+                          <span className="text-[9px] font-bold text-zinc-500">R$ {freightAnalysis[plan.id]?.cost}</span>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-zinc-600" />
+                      </div>
                     </div>
                   </motion.div>
                 ))}
@@ -163,7 +174,7 @@ export const BulkPlanningConsole = () => {
           </div>
 
           {/* Lado Direito: Inteligência e Resumo */}
-          <div className="col-span-2 flex flex-col p-8">
+          <div className="md:col-span-9 flex flex-col p-8 bg-black/20">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-8">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
@@ -218,18 +229,33 @@ export const BulkPlanningConsole = () => {
               </div>
             </div>
 
-            <div className="mt-auto">
+            <div className="mt-auto grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card className="bg-violet-500/5 border-violet-500/10 p-6 rounded-[1.5rem] relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-6 opacity-[0.03]">
                   <Sparkles className="h-16 w-16 text-violet-400" />
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <h5 className="font-black text-xs text-white uppercase tracking-widest">Pronto para execução massiva</h5>
-                    <p className="text-[10px] text-zinc-500 font-medium">Os disparos serão realizados via IA para todos os fornecedores homologados.</p>
+                    <h5 className="font-black text-xs text-white uppercase tracking-widest">IA Decision Support</h5>
+                    <p className="text-[10px] text-zinc-500 font-medium">Validando propostas vs. benchmark de mercado.</p>
                   </div>
                   <Button variant="outline" className="h-10 text-[9px] font-black uppercase tracking-[0.2em] border-white/10 text-zinc-300">
-                    REVISAR FILAS
+                    VALIDAR
+                  </Button>
+                </div>
+              </Card>
+
+              <Card className="bg-emerald-500/5 border-emerald-500/10 p-6 rounded-[1.5rem] relative overflow-hidden">
+                <div className="absolute top-0 right-0 p-6 opacity-[0.03]">
+                  <TrendingUp className="h-16 w-16 text-emerald-400" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <h5 className="font-black text-xs text-white uppercase tracking-widest">Execução Massiva</h5>
+                    <p className="text-[10px] text-zinc-500 font-medium">Os disparos serão realizados via IA para todos os fornecedores.</p>
+                  </div>
+                  <Button variant="outline" className="h-10 text-[9px] font-black uppercase tracking-[0.2em] border-white/10 text-zinc-300">
+                    REVISAR FILA
                   </Button>
                 </div>
               </Card>

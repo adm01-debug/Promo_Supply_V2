@@ -185,7 +185,16 @@ export const DynamicApprovalMatrix = () => {
       </Card>
 
       {/* Modals */}
-      <ApprovalRuleModal open={ruleModalOpen} onOpenChange={setRuleModalOpen} editingRule={editingRule} setEditingRule={setEditingRule as any} onSave={handleSaveRule} loading={loading} />
+      <ApprovalRuleModal 
+        open={ruleModalOpen} 
+        onOpenChange={setRuleModalOpen} 
+        editingRule={editingRule} 
+        setEditingRule={setEditingRule as any} 
+        onSave={handleSaveRule} 
+        loading={loading} 
+        requerUnanimidade={editingRule?.requer_unanimidade}
+        onToggleUnanimidade={(val) => setEditingRule(prev => prev ? ({ ...prev, requer_unanimidade: val }) : null)}
+      />
       <ApprovalDelegationModal open={delegationModalOpen} onOpenChange={setDelegationModalOpen} editingDelegation={editingDelegation} setEditingDelegation={setEditingDelegation as any} onSave={handleSaveDelegation} loading={loading} />
 
       {/* Delete Confirmation */}

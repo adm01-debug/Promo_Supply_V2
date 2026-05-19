@@ -33,9 +33,11 @@ interface Props {
   setEditingRule: (rule: Partial<ApprovalRule> | null) => void;
   onSave: () => void;
   loading: boolean;
+  requerUnanimidade?: boolean;
+  onToggleUnanimidade?: (val: boolean) => void;
 }
 
-export const ApprovalRuleModal = ({ open, onOpenChange, editingRule, setEditingRule, onSave, loading }: Props) => {
+export const ApprovalRuleModal = ({ open, onOpenChange, editingRule, setEditingRule, onSave, loading, requerUnanimidade, onToggleUnanimidade }: Props) => {
   const { costCenters } = useSolicitacoes();
   const addApprover = () => {
     if (!editingRule) return;
@@ -153,6 +155,16 @@ export const ApprovalRuleModal = ({ open, onOpenChange, editingRule, setEditingR
                   </Select>
                 </div>
               )}
+            </div>
+
+            <div className="space-y-3 pt-2 border-t">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>Requer Unanimidade</Label>
+                  <p className="text-xs text-muted-foreground">Todos os aprovadores devem aprovar para seguir</p>
+                </div>
+                <Switch checked={requerUnanimidade || false} onCheckedChange={onToggleUnanimidade} />
+              </div>
             </div>
 
             <div className="flex items-center justify-between pt-2 border-t">
