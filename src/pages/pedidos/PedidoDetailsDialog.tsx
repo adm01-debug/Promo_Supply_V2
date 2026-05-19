@@ -199,6 +199,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                         </div>
                         
                         <SourcingIntelligenceBanner items={itens} />
+                        <SupplierInteractionLog supplierName={pedido.fornecedor?.nome_fantasia || pedido.fornecedor?.razao_social} />
                       </Card>
                     </div>
 
