@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
-import { MainLayout } from '@/features/layout/components/MainLayout';
 import { 
   fetchAuditLogs, 
   AuditLog, 
@@ -20,9 +19,9 @@ import {
   auditHelpers
 } from '@/services/auditService';
 import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
 import { cn } from '@/lib/utils';
 import { toast } from "@/lib/feedbackToast";
+import { exportToCSV } from "@/lib/exportData";
 
 const Auditoria = () => {
   const [logs, setLogs] = useState<AuditLog[]>([]);
@@ -64,30 +63,17 @@ const Auditoria = () => {
   };
 
   const handleExport = () => {
-    // Create CSV content
-    const headers = ['Data/Hora', 'Usuário', 'Email', 'Ação', 'Entidade', 'ID', 'Descrição'];
-    const rows = logs.map(log => [
-      format(new Date(log.created_at), "dd/MM/yyyy HH:mm:ss"),
-      log.user_name || 'Sistema',
-      log.user_email || 'N/A',
-      actionTypeLabels[log.action_type],
-      entityTypeLabels[log.entity_type],
-      log.entity_id || 'N/A',
-      log.entity_description || 'N/A',
-    ]);
+    const exportColumns = [
+      { key: 'created_at', label: 'Data/Hora', formatter: (val: any) => format(new Date(val), "dd/MM/yyyy HH:mm:ss") },
+      { key: 'user_name', label: 'Usuário', formatter: (val: any) => val || 'Sistema' },
+      { key: 'user_email', label: 'Email', formatter: (val: any) => val || 'N/A' },
+      { key: 'action_type', label: 'Ação', formatter: (val: any) => actionTypeLabels[val as AuditActionType] || val },
+      { key: 'entity_type', label: 'Entidade', formatter: (val: any) => entityTypeLabels[val as AuditEntityType] || val },
+      { key: 'entity_id', label: 'ID', formatter: (val: any) => val || 'N/A' },
+      { key: 'entity_description', label: 'Descrição', formatter: (val: any) => val || 'N/A' },
+    ];
 
-    const csvContent = [headers, ...rows]
-      .map(row => row.map(cell => `"${cell}"`).join(','))
-      .join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute('download', `auditoria_${format(new Date(), 'yyyy-MM-dd_HH-mm')}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    exportToCSV(logs as any, exportColumns, 'auditoria');
 
     // Log export action
     auditHelpers.logExport('relatorio', 'Exportação de logs de auditoria', { 
