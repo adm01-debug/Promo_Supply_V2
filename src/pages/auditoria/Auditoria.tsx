@@ -330,7 +330,7 @@ const Auditoria = () => {
                               )}
                               
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                {log.old_values && Object.keys(log.old_values).length > 0 && (
+                                {log.old_values && typeof log.old_values === 'object' && Object.keys(log.old_values).length > 0 && (
                                   <div className="p-3 rounded bg-destructive/5 border border-destructive/20">
                                     <p className="font-medium mb-2 text-destructive text-xs">Valores Anteriores:</p>
                                     <pre className="text-xs overflow-auto max-h-32 whitespace-pre-wrap">
@@ -339,7 +339,7 @@ const Auditoria = () => {
                                   </div>
                                 )}
                                 
-                                {log.new_values && Object.keys(log.new_values).length > 0 && (
+                                {log.new_values && typeof log.new_values === 'object' && Object.keys(log.new_values).length > 0 && (
                                   <div className="p-3 rounded bg-success/5 border border-success/20">
                                     <p className="font-medium mb-2 text-success text-xs">Novos Valores:</p>
                                     <pre className="text-xs overflow-auto max-h-32 whitespace-pre-wrap">
@@ -349,7 +349,7 @@ const Auditoria = () => {
                                 )}
                               </div>
 
-                              {log.metadata && Object.keys(log.metadata).length > 0 && (
+                              {log.metadata && typeof log.metadata === 'object' && Object.keys(log.metadata).length > 0 && (
                                 <div className="p-3 rounded bg-primary/5 border border-primary/20">
                                   <p className="font-medium mb-2 text-primary text-xs">Metadados:</p>
                                   <pre className="text-xs overflow-auto max-h-32 whitespace-pre-wrap">
