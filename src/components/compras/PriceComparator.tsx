@@ -82,6 +82,7 @@ export function PriceComparator() {
 
     setLoading(true);
     setComparison(null);
+    setSelectedQuotes([]);
 
     try {
       let linkedData: any[] = [];
