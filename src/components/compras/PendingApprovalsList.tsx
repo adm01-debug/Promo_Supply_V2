@@ -15,8 +15,10 @@ import {
   ChevronDown,
   Timer,
   Eye,
-  History
+  History,
+  Sparkles
 } from "lucide-react";
+
 import { normalizeText } from "@/hooks/useFuseSearch";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -337,7 +339,11 @@ export const PendingApprovalsList = () => {
                 )}
               >
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
+                  <div className="flex-1 min-w-0 relative">
+                    <div className="absolute top-0 right-0 opacity-10 pointer-events-none">
+                      <Sparkles className="w-12 h-12 text-primary" />
+                    </div>
+
                     <div className="flex flex-wrap items-center gap-2 mb-2">
                       <span className="font-mono text-sm text-primary font-medium">{approval.solicitacao_numero}</span>
                       <Badge variant="outline" className="text-xs">{approval.categoria}</Badge>
@@ -380,10 +386,11 @@ export const PendingApprovalsList = () => {
                       <div className="flex items-center gap-1.5">
                         {Array.from({ length: approval.total_etapas }).map((_, i) => (
                           <div key={i} className={cn(
-                            "h-2 flex-1 rounded-full transition-all",
-                            i < approval.etapa_atual - 1 && "bg-success",
-                            i === approval.etapa_atual - 1 && "bg-primary animate-pulse",
+                            "h-2 flex-1 rounded-full transition-all duration-700",
+                            i < approval.etapa_atual - 1 && "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)]",
+                            i === approval.etapa_atual - 1 && "bg-primary animate-pulse shadow-[0_0_15px_rgba(139,92,246,0.4)]",
                             i > approval.etapa_atual - 1 && "bg-muted"
+
                           )} />
                         ))}
                       </div>
