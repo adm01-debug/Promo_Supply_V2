@@ -37,7 +37,7 @@ export function useRealtimeSubscription({
 
   const flushInvalidations = useCallback(() => {
     const tableNames = Array.from(pendingTablesRef.current);
-    if (tableNames.size === 0) return;
+    if (tableNames.length === 0) return;
 
     logger.debug('Realtime: flushing batch invalidations', { tables: tableNames });
 
