@@ -60,10 +60,10 @@ export function PriceComparator() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('produtos')
-        .select('id, nome, categoria')
+        .select('id, nome, categoria_id')
         .limit(100);
       if (error) throw error;
-      return data || [];
+      return (data as any[]) || [];
     },
     staleTime: 60000,
   });
