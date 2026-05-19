@@ -44,7 +44,7 @@ export interface DashboardKPIsExtended {
   pipeline: PipelineData;
   urgentItems: any[];
   charts: {
-    monthlyTrends: { month: string; pedidos: number; cotacoes: number; economy: number }[];
+    monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
     cotacaoStatus: { name: string; value: number; color: string }[];
     topCategories: { name: string; value: number; percentage: number }[];
   };
