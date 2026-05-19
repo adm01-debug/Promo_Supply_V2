@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:load": "npx artillery run src/tests/load/backend-stress.yml",
-    "test:all": "npm run lint && npm run test && npm run test:e2e",
+    "test:coverage": "vitest run --coverage",
+    "test:all": "npm run lint && npm run typecheck && npm run test && npm run test:coverage && npm run test:e2e",
     "test:simulate": "curl -X POST \"$VITE_SUPABASE_URL/functions/v1/system-simulation\" -H \"Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY\" -H \"Content-Type: application/json\" -d '{\"iterations\": 50}'",
     "typecheck": "tsc --noEmit",
     "prepare": ""
