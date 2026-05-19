@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { StrategicQuoteTable } from "@/components/compras/StrategicQuoteTable";
+import { cn } from "@/lib/utils";
 
 interface NegotiationAnalysis {
   resumo: string;
@@ -47,7 +48,7 @@ const NegociacaoIA = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("solicitacoes")
-        .select("id, numero, titulo, valor_estimado, status")
+        .select("id, numero, titulo, valor_estimado, status, quantidade")
         .in("status", ["em_cotacao", "em_andamento", "aprovada"])
         .order("created_at", { ascending: false })
         .limit(50);
