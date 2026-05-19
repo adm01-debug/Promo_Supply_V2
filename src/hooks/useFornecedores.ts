@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { format } from 'date-fns';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
@@ -274,48 +275,34 @@ export function useFornecedores(filters?: FornecedorFilters) {
   };
 }
 
-// Hook for KPIs
+// Hook for KPIs optimized with RPC and React Query
 export function useFornecedoresKPIs() {
   const { user, tenantId } = useAuth();
-  const [kpis, setKpis] = useState({
-    total: 0,
-    ativos: 0,
-    integradosApi: 0,
-    mediaAvaliacao: 0,
-  });
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!user || !tenantId) return;
+  const { data: kpis = { total: 0, ativos: 0, integradosApi: 0, mediaAvaliacao: 0 }, isLoading } = useQuery({
+    queryKey: ['fornecedores-kpis', user?.id, tenantId],
+    queryFn: async () => {
+      if (!tenantId) return { total: 0, ativos: 0, integradosApi: 0, mediaAvaliacao: 0 };
+      
+      const { data, error } = await supabase.rpc('get_fornecedores_kpis', { 
+        p_organization_id: tenantId 
+      });
 
-    const fetchKPIs = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('fornecedores')
-          .select('status, integrado_api, avaliacao')
-          .eq('organization_id', tenantId);
-
-        if (error) throw error;
-
-        const stats = {
-          total: data?.length || 0,
-          ativos: data?.filter(f => f.status === 'ativo').length || 0,
-          integradosApi: data?.filter(f => f.integrado_api).length || 0,
-          mediaAvaliacao: data?.length 
-            ? data.reduce((sum, f) => sum + (f.avaliacao || 0), 0) / data.length 
-            : 0,
-        };
-
-        setKpis(stats);
-      } catch (err) {
-        logger.error('Error fetching KPIs', { error: err });
-      } finally {
-        setLoading(false);
+      if (error) {
+        logger.error('Error fetching Fornecedores KPIs via RPC', { error });
+        throw error;
       }
-    };
 
-    fetchKPIs();
-  }, [user]);
+      return data as { 
+        total: number; 
+        ativos: number; 
+        integradosApi: number; 
+        mediaAvaliacao: number; 
+      };
+    },
+    enabled: !!user && !!tenantId,
+    staleTime: 60_000,
+  });
 
-  return { kpis, loading };
+  return { kpis, loading: isLoading };
 }
