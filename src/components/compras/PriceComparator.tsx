@@ -216,11 +216,63 @@ export function PriceComparator() {
           {comparison && (
             <ScrollArea className="flex-1">
               <div className="space-y-6 pr-4">
-                {/* Strategic Cards Integration */}
-                <div className="space-y-3">
-                  <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1">Análise Estratégica de Aquisição</Label>
+                {/* Strategic Planning Console */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between px-1">
+                    <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em]">Análise Estratégica de Aquisição</Label>
+                    <Badge variant="outline" className="text-[8px] font-black uppercase border-violet-500/30 text-violet-400 gap-1.5 px-3 py-1 bg-violet-500/5">
+                      <Brain className="w-3 h-3" /> IA Advisor Ativo
+                    </Badge>
+                  </div>
                   <StrategicQuoteTable cotacoes={strategicData} quantidade={parseInt(quantity) || 100} />
                 </div>
+
+                {selectedQuotes.length >= 2 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-6 rounded-[2rem] bg-gradient-to-br from-violet-600/20 via-violet-600/5 to-transparent border border-violet-500/20 backdrop-blur-3xl shadow-2xl relative overflow-hidden group"
+                  >
+                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.1] transition-opacity">
+                      <ListChecks className="w-32 h-32 text-violet-400" />
+                    </div>
+                    
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-violet-600/20 border border-violet-500/30 flex items-center justify-center shadow-lg">
+                          <Brain className="w-7 h-7 text-violet-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-sm font-black text-white uppercase tracking-tighter">Planejamento de Aquisição em Lote</h3>
+                          <p className="text-[10px] text-zinc-400 font-bold mt-1 uppercase leading-tight tracking-widest">
+                            Consolidando {selectedQuotes.length} fornecedores para otimização de custos e prazos
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Média do Lote</p>
+                          <p className="text-xl font-black text-white tracking-tight">
+                            R$ {(comparison.quotes.filter(q => selectedQuotes.includes(q.supplierId)).reduce((sum, q) => sum + q.totalPrice, 0) / selectedQuotes.length).toLocaleString('pt-BR')}
+                          </p>
+                        </div>
+                        <Separator orientation="vertical" className="h-10 bg-white/10" />
+                        <Button 
+                          className="h-12 px-6 rounded-xl bg-white text-black hover:bg-zinc-200 font-black text-[10px] uppercase tracking-widest gap-2 shadow-xl shadow-white/10"
+                          onClick={() => {
+                            toast.success("Plano de Compra Gerado", {
+                              description: "A IA está consolidando os dados para a diretoria.",
+                            });
+                          }}
+                        >
+                          Gerar Plano Final
+                          <ArrowRight className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
 
                 <Separator className="bg-white/5" />
 
