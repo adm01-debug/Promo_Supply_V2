@@ -65,7 +65,7 @@ class Logger {
   private async sendToTelemetry(entry: LogEntry) {
     try {
       // Lazy load supabase to avoid circular dependencies if any
-      const { supabase } = await import("./supabase");
+      const { supabase } = await import("@/integrations/supabase/client");
       
       await supabase.functions.invoke("telemetry", {
         body: {
