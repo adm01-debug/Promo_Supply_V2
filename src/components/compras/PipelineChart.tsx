@@ -55,11 +55,8 @@ const ConversionArrow = ({ rate, fromLabel, toLabel }: { rate: number; fromLabel
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <motion.div 
+        <div 
           className="flex flex-col items-center justify-center px-0.5 shrink-0"
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.6, duration: 0.3 }}
         >
           <ArrowRight className={cn(
             "w-3.5 h-3.5",
@@ -71,7 +68,7 @@ const ConversionArrow = ({ rate, fromLabel, toLabel }: { rate: number; fromLabel
           )}>
             {rate}%
           </span>
-        </motion.div>
+        </div>
       </TooltipTrigger>
       <TooltipContent side="top" className="text-xs">
         <p className="font-semibold">{rate}% de conversão</p>
@@ -160,11 +157,8 @@ export const PipelineChart = memo(forwardRef<HTMLDivElement, PipelineChartProps>
               {/* Stage Bar */}
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <motion.div 
+                  <div 
                     className="flex-1 flex flex-col items-center gap-1.5 cursor-pointer group"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
                     onMouseEnter={() => setHoveredStage(stage.key)}
                     onMouseLeave={() => setHoveredStage(null)}
                   >
@@ -217,7 +211,7 @@ export const PipelineChart = memo(forwardRef<HTMLDivElement, PipelineChartProps>
                       "text-[10px] sm:text-xs text-muted-foreground truncate w-full text-center transition-colors",
                       isHovered && "text-foreground font-medium"
                     )}>{stage.label}</span>
-                  </motion.div>
+                  </div>
                 </TooltipTrigger>
                 <TooltipContent side="top" className="max-w-[220px]">
                   <div className="space-y-1.5">

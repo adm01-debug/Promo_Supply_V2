@@ -156,13 +156,19 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
       }
       if (response.status === 402) {
         logger.warn("AI Gateway Créditos Insuficientes");
-        return new Response(JSON.stringify({ error: "Créditos insuficientes. Adicione créditos ao workspace." }), {
+        return new Response(JSON.stringify({ error: "Créditos insuficientes no AI Gateway. Contate o suporte Lovable." }), {
           status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+      if (response.status >= 500) {
+        logger.error("Erro interno no AI Gateway", { status: response.status });
+        return new Response(JSON.stringify({ error: "O serviço de IA está temporariamente indisponível. Tente novamente." }), {
+          status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
       const t = await response.text();
       logger.error("Erro no AI Gateway", { status: response.status, response: t });
-      throw new Error("AI gateway error");
+      throw new Error(`AI gateway error: ${response.status}`);
     }
 
     const data = await response.json();
