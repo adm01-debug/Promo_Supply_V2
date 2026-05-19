@@ -119,10 +119,10 @@ const Fornecedores = () => {
                 <Network className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Partner Network</h1>
+                <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Rede de Parceiros</h1>
                 <div className="flex items-center gap-3 mt-3">
-                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-emerald-500/30 text-emerald-400 px-3 py-1">{filteredFornecedores.length} Active Partners</Badge>
-                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Supplier Ecosystem</span>
+                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-emerald-500/30 text-emerald-400 px-3 py-1">{filteredFornecedores.length} Parceiros Ativos</Badge>
+                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Ecossistema de Fornecedores</span>
                 </div>
               </div>
             </div>
@@ -130,31 +130,31 @@ const Fornecedores = () => {
             <div className="flex items-center gap-3">
               <AISupplierSuggestion />
               <EliteButton onClick={() => handleOpenModal()} className="h-11 px-8 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none shadow-lg shadow-violet-500/20 font-black text-[10px] tracking-widest uppercase">
-                <Plus className="w-4 h-4 mr-2" /> ADD PARTNER
+                <Plus className="w-4 h-4 mr-2" /> NOVO PARCEIRO
               </EliteButton>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <ExecutiveMetricCard
-              title="Total Suppliers"
+              title="Total de Fornecedores"
               value={kpis.total}
               icon={Users}
               delay={0}
             />
             <ExecutiveMetricCard
-              title="Cloud Integrations"
+              title="Integrações Cloud"
               value={kpis.integradosApi}
               icon={Plug}
               delay={1}
             />
             <ExecutiveMetricCard
-              title="Avg Network Rating"
+              title="Avaliação Média"
               value={kpis.mediaAvaliacao}
               icon={Star}
               format="number"
               delay={2}
-              subtitle="Performance Score"
+              subtitle="Score de Performance"
             />
           </div>
 
@@ -165,11 +165,11 @@ const Fornecedores = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="md:col-span-2 relative group">
-                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Partner Discovery</Label>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Descoberta de Parceiros</Label>
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 group-focus-within:text-emerald-400 transition-colors" />
                   <Input 
-                    placeholder="Search by name, CNPJ or segment..." 
+                    placeholder="Buscar por nome, CNPJ ou segmento..." 
                     value={search} 
                     onChange={(e) => setSearch(e.target.value)} 
                     className="pl-12 bg-white/[0.03] border-white/10 h-12 rounded-xl focus:bg-white/[0.05] transition-all text-white font-bold" 
@@ -178,19 +178,19 @@ const Fornecedores = () => {
               </div>
               
               <div>
-                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Supply Category</Label>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Categoria de Suprimentos</Label>
                 <Select value={tipoFilter} onValueChange={setTipoFilter}>
                   <SelectTrigger className="bg-white/[0.03] h-12 border-white/10 rounded-xl text-zinc-200 font-bold">
                     <div className="flex items-center gap-2">
                       <Filter className="w-4 h-4 text-emerald-400" />
-                      <SelectValue placeholder="Company Type" />
+                      <SelectValue placeholder="Tipo de Empresa" />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl rounded-2xl">
-                    <SelectItem value="todos" className="text-xs font-bold py-2.5">All Categories</SelectItem>
-                    <SelectItem value="IMPORTADORA" className="text-xs font-bold py-2.5">Importer</SelectItem>
-                    <SelectItem value="FABRICANTE" className="text-xs font-bold py-2.5">Manufacturer</SelectItem>
-                    <SelectItem value="DISTRIBUIDORA" className="text-xs font-bold py-2.5">Distributor</SelectItem>
+                    <SelectItem value="todos" className="text-xs font-bold py-2.5">Todas as Categorias</SelectItem>
+                    <SelectItem value="IMPORTADORA" className="text-xs font-bold py-2.5">Importadora</SelectItem>
+                    <SelectItem value="FABRICANTE" className="text-xs font-bold py-2.5">Fabricante</SelectItem>
+                    <SelectItem value="DISTRIBUIDORA" className="text-xs font-bold py-2.5">Distribuidora</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -207,10 +207,10 @@ const Fornecedores = () => {
               <Table>
                 <TableHeader className="bg-white/[0.02]">
                   <TableRow className="hover:bg-transparent border-white/5">
-                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 py-6 pl-10">Entity Name</TableHead>
-                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Operation Type</TableHead>
-                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-center">Trust Rating</TableHead>
-                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-center">Integrations</TableHead>
+                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 py-6 pl-10">Entidade / Razão Social</TableHead>
+                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Tipo de Operação</TableHead>
+                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-center">Rating de Confiança</TableHead>
+                    <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-center">Integrações</TableHead>
                     <TableHead className="w-20 pr-10"></TableHead>
                   </TableRow>
                 </TableHeader>
@@ -232,7 +232,7 @@ const Fornecedores = () => {
                             </div>
                             <div>
                               <p className="font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors uppercase tracking-tight">{fornecedor.nomeFantasia}</p>
-                              <p className="text-[10px] text-zinc-500 mt-1.5 font-black uppercase tracking-widest">{fornecedor.cnpj || 'INDIVIDUAL ENTITY'}</p>
+                              <p className="text-[10px] text-zinc-500 mt-1.5 font-black uppercase tracking-widest">{fornecedor.cnpj || 'ENTIDADE INDIVIDUAL'}</p>
                             </div>
                           </div>
                         </TableCell>
@@ -254,7 +254,7 @@ const Fornecedores = () => {
                                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.5)]" /> CLOUD ACTIVE
                              </div>
                            ) : (
-                             <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] opacity-60">Legacy / Manual</span>
+                             <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] opacity-60">Legado / Manual</span>
                            )}
                         </TableCell>
                         <TableCell className="pr-10">
