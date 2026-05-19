@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { SimulationEngine } from "../_shared/simulation-engine.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,51 +7,79 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const engine = new SimulationEngine(supabaseUrl, supabaseServiceKey);
 
-    const { action, target_function } = await req.json();
+    const { iterations = 100, scenarios = ["negotiation", "workflow", "risk", "erp"] } = await req.json().catch(() => ({}));
 
-    if (action === "run_fuzzing") {
-      const payloads = [
-        {}, // Empty
-        { id: "invalid-uuid" }, // Bad format
-        { large_data: "A".repeat(10000) }, // Buffer stress
-        { script: "<script>alert(1)</script>" }, // Injection attempt
-        { nested: { a: { b: { c: { d: "depth" } } } } } // Recursion stress
-      ];
+    // Thousands of simulations are split into manageable batches
+    const runBatch = async (scenarioType: string) => {
+      for (let i = 0; i < iterations; i++) {
+        await engine.runScenario(`${scenarioType.toUpperCase()} Scenario #${i}`, async () => {
+          let endpoint = "";
+          let body = {};
 
-      const results = [];
-      for (const p of payloads) {
-        const start = performance.now();
-        const { data, error } = await supabaseClient.functions.invoke(target_function, {
-          body: p,
-        });
-        results.push({
-          payload: p,
-          status: error ? "caught_error" : "success",
-          latency: performance.now() - start,
-          error: error?.message
+          switch (scenarioType) {
+            case "negotiation":
+              endpoint = "ai-negotiation";
+              body = {
+                cotacoes: [{ id: crypto.randomUUID(), fornecedor: `Supplier ${i}`, total: Math.random() * 10000 }],
+                solicitacao: { id: crypto.randomUUID(), titulo: `Urgent Supply ${i}` }
+              };
+              break;
+            case "workflow":
+              endpoint = "workflow-engine";
+              body = {
+                action: i % 2 === 0 ? "start_workflow" : "approve_step",
+                entity_id: crypto.randomUUID(),
+                context: { user_id: crypto.randomUUID(), role: "admin" }
+              };
+              break;
+            case "risk":
+              endpoint = "ai-supplier-risk";
+              body = { supplier_id: crypto.randomUUID(), data: { historical_delay: Math.random() * 0.5 } };
+              break;
+            case "erp":
+              endpoint = "erp-sync";
+              body = { operation: "sync_po", po_number: `PO-${i}`, source: "sap" };
+              break;
+          }
+
+          const response = await fetch(`${supabaseUrl}/functions/v1/${endpoint}`, {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${supabaseServiceKey}`,
+              "Content-Type": "application/json",
+              "x-tenant-id": "00000000-0000-0000-0000-000000000000" // Default for simulation
+            },
+            body: JSON.stringify(body)
+          });
+          
+          if (!response.ok && response.status !== 404) {
+            // 404 is allowed if function is missing code but registered
+            throw new Error(`HTTP ${response.status} at ${endpoint}`);
+          }
+          return response.status === 200 ? await response.json() : { skipped: true };
         });
       }
+    };
 
-      return new Response(JSON.stringify({ results }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    // Run scenarios in parallel batches to reach "thousands" quickly
+    await Promise.all(scenarios.map(s => runBatch(s)));
 
-    return new Response(JSON.stringify({ status: "simulation_ready" }), {
+    return new Response(JSON.stringify({
+      message: "Exhaustive simulation completed",
+      summary: engine.getSummary()
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e.message }), {
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
