@@ -41,6 +41,7 @@ export function PriceComparator() {
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [quantity, setQuantity] = useState('100');
   const [comparison, setComparison] = useState<ComparisonResult | null>(null);
+  const [selectedQuotes, setSelectedQuotes] = useState<string[]>([]);
 
   const { data: fornecedores = [] } = useQuery({
     queryKey: ['price-comparator-fornecedores'],
