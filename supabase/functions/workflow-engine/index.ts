@@ -1,19 +1,16 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4'
 import { EdgeLogger } from "../_shared/logger.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-tenant-id',
-}
+import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { WorkflowContract } from "../_shared/contracts.ts";
 
 serve(async (req) => {
-  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-  const logger = new EdgeLogger("workflow-engine", requestId);
-
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
+
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger("workflow-engine", requestId);
 
   try {
     const supabase = createClient(
@@ -21,15 +18,18 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, approver_id, comment } = await req.json()
+    // Contract Validation: Ensures type safety and catches malformed payloads before logic execution
+    const data = await validateBody(req, WorkflowContract, logger);
+    const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, approver_id, comment } = data;
+    
     const tenant_id = req.headers.get('x-tenant-id')
-
     if (!tenant_id) {
-      throw new Error('Missing tenant_id header')
+      throw new Error('Validation error: Missing tenant_id header')
     }
 
     if (action === 'start_workflow') {
-      // 1. Criar instância
+      if (!template_id) throw new Error('Validation error: template_id is required for start_workflow');
+      
       const { data: instance, error: instError } = await supabase
         .from('workflow_instances')
         .insert({
@@ -44,7 +44,6 @@ serve(async (req) => {
 
       if (instError) throw instError
 
-      // 2. Localizar nó inicial
       const { data: startNode, error: nodeError } = await supabase
         .from('workflow_nodes')
         .select('*')
@@ -54,7 +53,6 @@ serve(async (req) => {
 
       if (nodeError) throw nodeError
 
-      // 3. Registrar log e avançar para o próximo nó
       await supabase.from('workflow_logs').insert({
         instance_id: instance.id,
         tenant_id,
@@ -63,7 +61,6 @@ serve(async (req) => {
         message: 'Workflow started'
       })
 
-      // Lógica de transição simplificada para o próximo nó
       const { data: edge, error: edgeError } = await supabase
         .from('workflow_edges')
         .select('target_node_id')
@@ -76,14 +73,17 @@ serve(async (req) => {
           .eq('id', instance.id)
       }
 
-      return new Response(JSON.stringify({ instance_id: instance.id }), {
+      return new Response(JSON.stringify({ instance_id: instance.id, requestId }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
       })
     }
 
     if (action === 'submit_decision') {
-      // 1. Validar SoD via RPC
+      if (!instance_id || !node_id || !decision) {
+        throw new Error('Validation error: instance_id, node_id and decision are required');
+      }
+
       const { data: sodOk, error: sodError } = await supabase.rpc('check_workflow_sod', {
         p_instance_id: instance_id,
         p_approver_id: approver_id,
@@ -92,13 +92,12 @@ serve(async (req) => {
 
       if (sodError) throw sodError
       if (!sodOk) {
-        return new Response(JSON.stringify({ error: 'SoD Violation: Approver cannot approve this step.' }), {
+        return new Response(JSON.stringify({ error: 'SoD Violation: Approver cannot approve this step.', requestId }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 403,
         })
       }
 
-      // 2. Registrar decisão
       await supabase.from('workflow_approvals')
         .update({
           status: decision === 'approve' ? 'approved' : 'rejected',
@@ -108,26 +107,19 @@ serve(async (req) => {
         })
         .eq('instance_id', instance_id)
         .eq('node_id', node_id)
-
-      // 3. Avançar workflow ou encerrar
-      // (Implementação real teria motor de regras aqui)
       
-      return new Response(JSON.stringify({ success: true }), {
+      return new Response(JSON.stringify({ success: true, requestId }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
       })
     }
 
-    return new Response(JSON.stringify({ error: 'Invalid action' }), {
+    return new Response(JSON.stringify({ error: 'Invalid action', requestId }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       status: 400,
     })
 
   } catch (error) {
-    logger.error("Fatal error in workflow-engine", { error: error.message });
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 500,
-    })
+    return errorResponse(error, logger);
   }
 })
