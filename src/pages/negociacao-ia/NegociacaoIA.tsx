@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
-  Sparkles, TrendingDown, AlertTriangle, CheckCircle, 
+  Sparkles, TrendingDown, TrendingUp, AlertTriangle, CheckCircle, 
   Loader2, Brain, Target, DollarSign, History, Clock,
   ArrowRight, ShieldCheck, Zap, Info
 } from "lucide-react";
