@@ -299,9 +299,32 @@ export function PriceComparator() {
                 </Card>
 
                 {/* Quotes Table */}
-                <Card>
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-sm">Cotações Detalhadas</CardTitle>
+                <Card className="border-white/5 bg-white/[0.02]">
+                  <CardHeader className="pb-4 flex flex-row items-center justify-between">
+                    <div>
+                      <CardTitle className="text-sm">Cotações Detalhadas</CardTitle>
+                      <CardDescription className="text-[10px] uppercase font-bold tracking-widest mt-1">
+                        Selecione fornecedores para disparar cotações em massa via IA
+                      </CardDescription>
+                    </div>
+                    {selectedQuotes.length > 0 && (
+                      <div className="flex items-center gap-2 animate-in fade-in slide-in-from-right-2">
+                        <Button 
+                          size="sm" 
+                          variant="secondary" 
+                          className="h-8 rounded-lg bg-violet-600 text-white hover:bg-violet-500 font-bold text-[10px] uppercase tracking-widest gap-2"
+                          onClick={() => {
+                            toast({
+                              title: "RFQs Iniciadas",
+                              description: `Disparando cotações automáticas para ${selectedQuotes.length} fornecedores.`,
+                            });
+                          }}
+                        >
+                          <Send className="h-3.5 w-3.5" />
+                          Disparar RFQ ({selectedQuotes.length})
+                        </Button>
+                      </div>
+                    )}
                   </CardHeader>
                   <CardContent className="p-0">
                     <Table aria-label="Tabela de dados">
