@@ -88,7 +88,9 @@ class AuditService {
     }
   }
 
-  // Predefined helpers for common audit tasks
+  /**
+   * Helper to create audit log for common actions
+   */
   public helpers = {
     logCreate: (entityType: AuditEntityType, entityId: string, description: string, newValues?: Record<string, unknown>) =>
       this.logAction({ action_type: 'create', entity_type: entityType, entity_id: entityId, entity_description: description, new_values: newValues }),
