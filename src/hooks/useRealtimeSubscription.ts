@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
+import { logger } from '@/lib/logger';
 
 type TableName = 'solicitacoes' | 'pedidos' | 'cotacoes' | 'pagamentos' | 'notifications' | 'fornecedores' | 'contracts' | 'approval_workflows' | 'approval_steps';
 
@@ -35,15 +36,17 @@ export function useRealtimeSubscription({
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const flushInvalidations = useCallback(() => {
-    const tables = pendingTablesRef.current;
-    if (tables.size === 0) return;
+    const tableNames = Array.from(pendingTablesRef.current);
+    if (tableNames.length === 0) return;
+
+    logger.debug('Realtime: flushing batch invalidations', { tables: tableNames });
 
     if (queryKeysToInvalidate) {
       queryKeysToInvalidate.forEach(key => {
         queryClient.invalidateQueries({ queryKey: key });
       });
     } else {
-      tables.forEach(table => {
+      tableNames.forEach(table => {
         queryClient.invalidateQueries({
           predicate: (query) => {
             const key = query.queryKey[0];
@@ -53,7 +56,7 @@ export function useRealtimeSubscription({
       });
     }
 
-    pendingTablesRef.current = new Set();
+    pendingTablesRef.current.clear();
   }, [queryClient, queryKeysToInvalidate]);
 
   useEffect(() => {

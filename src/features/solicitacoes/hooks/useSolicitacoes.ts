@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useState, useEffect } from 'react';
+import { useCallback, useMemo, useEffect } from 'react';
 import { logger } from '@/lib/logger';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
 import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 import { fetchAllRows } from '@/lib/paginatedFetch';
@@ -47,8 +47,8 @@ const VALID_SOLICITACAO_TRANSITIONS: Record<string, string[]> = {
   cancelada: [],
 };
 
-async function fetchSolicitacoesData(userId: string | undefined, tenantId: string | null | undefined, filters?: SolicitacaoFilters) {
-  if (!userId || !tenantId) return { data: [], totalCount: 0 };
+async function fetchSolicitacoesData(userId: string | undefined, organizationId: string | null | undefined, filters?: SolicitacaoFilters) {
+  if (!userId || !organizationId) return { data: [], totalCount: 0 };
 
   const page = filters?.page || 1;
   const pageSize = filters?.pageSize || 100;
@@ -66,7 +66,7 @@ async function fetchSolicitacoesData(userId: string | undefined, tenantId: strin
       solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
-    .eq('organization_id', tenantId)
+    .eq('organization_id', organizationId)
     .range(from, to);
 
   if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
@@ -84,21 +84,21 @@ async function fetchSolicitacoesData(userId: string | undefined, tenantId: strin
 }
 
 export function useSolicitacoes(filters?: SolicitacaoFilters) {
-  const { user, tenantId } = useAuth();
+  const { user, organizationId } = useAuth();
   const queryClient = useQueryClient();
   const { createWorkflow } = useApprovalWorkflow();
 
   const queryKey = useMemo(() => [
-    'solicitacoes', user?.id, tenantId,
+    'solicitacoes', user?.id, organizationId,
     filters?.status, filters?.tipo, filters?.prioridade, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.valorMin, filters?.valorMax,
     filters?.page, filters?.pageSize,
-  ], [user?.id, tenantId, filters]);
+  ], [user?.id, organizationId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => fetchSolicitacoesData(user?.id, tenantId, filters),
-    enabled: !!user && !!tenantId,
+    queryFn: () => fetchSolicitacoesData(user?.id, organizationId, filters),
+    enabled: !!user && !!organizationId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
@@ -111,7 +111,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   }, [queryClient]);
 
   const createSolicitacao = useCallback(async (input: CreateSolicitacaoInput) => {
-    if (!user || !tenantId) { toast.error('Você precisa estar logado em uma organização'); return null; }
+    if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
     
     const validated = CreateSolicitacaoSchema.safeParse(input);
     if (!validated.success) {
@@ -166,8 +166,8 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           justificativa: validated.data.justificativa,
           categoria_id: validated.data.categoria_id, 
           solicitante_id: user.id,
-          tenant_id: tenantId,
-          organization_id: tenantId,
+          tenant_id: organizationId,
+          organization_id: organizationId,
         })
         .select().single();
       
@@ -199,7 +199,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       toast.error('Erro ao criar solicitação: ' + msg);
       return null;
     }
-  }, [user, tenantId, invalidate, createWorkflow]);
+  }, [user, organizationId, invalidate, createWorkflow]);
 
   const updateSolicitacao = useCallback(async (id: string, updates: Partial<Solicitacao>) => {
     try {
@@ -314,15 +314,15 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
 
 // Hook for KPIs optimized with RPC
 export function useSolicitacoesKPIs() {
-  const { user, tenantId } = useAuth();
+  const { user, organizationId } = useAuth();
   
   const { data: kpis = { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 }, isLoading } = useQuery({
-    queryKey: ['solicitacoes-kpis', user?.id, tenantId],
+    queryKey: ['solicitacoes-kpis', user?.id, organizationId],
     queryFn: async () => {
-      if (!tenantId) return { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 };
+      if (!organizationId) return { total: 0, pendentes: 0, emCotacao: 0, aprovadas: 0, concluidas: 0, valorTotal: 0 };
       
       const { data, error } = await supabase.rpc('get_solicitacoes_kpis', { 
-        p_organization_id: tenantId 
+        p_organization_id: organizationId 
       });
       
       if (error) {
@@ -339,7 +339,7 @@ export function useSolicitacoesKPIs() {
         valorTotal: number;
       };
     },
-    enabled: !!user && !!tenantId,
+    enabled: !!user && !!organizationId,
     staleTime: 60_000,
   });
 
