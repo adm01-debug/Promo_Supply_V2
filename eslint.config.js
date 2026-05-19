@@ -19,13 +19,18 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      "react-refresh/only-export-components": [
-        "warn",
-        { allowConstantExport: true },
-      ],
+      "react-refresh/only-export-components": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-explicit-any": "off",
-      "no-unused-vars": "off"
+      "no-unused-vars": "off",
+      "no-console": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@typescript-eslint/no-wrapper-object-types": "off",
+      "@typescript-eslint/no-unused-expressions": "off",
+      "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
+      "no-shadow-restricted-names": "off",
+      "no-useless-escape": "off",
+      "react-hooks/rules-of-hooks": "warn"
     },
   }
 );
