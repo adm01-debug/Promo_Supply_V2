@@ -104,19 +104,19 @@ async function fetchPedidosData(userId: string | undefined, tenantId: string | n
 }
 
 export function usePedidos(filters?: PedidoFilters) {
-  const { user, tenantId } = useAuth();
+  const { user, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
   const queryKey = useMemo(() => [
-    'pedidos', user?.id, tenantId,
+    'pedidos', user?.id, organizationId,
     filters?.status, filters?.fornecedor_id, filters?.search,
     filters?.dateFrom, filters?.dateTo, filters?.page, filters?.pageSize,
-  ], [user?.id, tenantId, filters]);
+  ], [user?.id, organizationId, filters]);
 
   const { data, isLoading, error, refetch } = useQuery({
     queryKey,
-    queryFn: () => fetchPedidosData(user?.id, tenantId, filters),
-    enabled: !!user && !!tenantId,
+    queryFn: () => fetchPedidosData(user?.id, organizationId, filters),
+    enabled: !!user && !!organizationId,
     staleTime: 30_000,
     refetchOnWindowFocus: false,
   });
@@ -126,7 +126,7 @@ export function usePedidos(filters?: PedidoFilters) {
 
   // Create new pedido
   const createPedido = useCallback(async (input: CreatePedidoInput) => {
-    if (!user || !tenantId) { toast.error('Você precisa estar logado em uma organização'); return null; }
+    if (!user || !organizationId) { toast.error('Você precisa estar logado em uma organização'); return null; }
 
     try {
       logger.info('Iniciando criação de pedido de compra', { solicitacaoId: input.solicitacao_id, fornecedorId: input.fornecedor_id, valorTotal: input.valor_total });
@@ -144,8 +144,8 @@ export function usePedidos(filters?: PedidoFilters) {
           data_previsao: input.data_previsao, endereco_entrega: input.endereco_entrega,
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
           comprador_id: user.id,
-          tenant_id: tenantId,
-          organization_id: tenantId,
+          tenant_id: organizationId,
+          organization_id: organizationId,
         } as any)
         .select().single();
 
@@ -167,7 +167,7 @@ export function usePedidos(filters?: PedidoFilters) {
           pedido_id: data.id, descricao: item.descricao, quantidade: item.quantidade,
           unidade: item.unidade || 'un', valor_unitario: item.valor_unitario,
           valor_total: item.quantidade * item.valor_unitario,
-          tenant_id: tenantId,
+          tenant_id: organizationId,
         }));
         await supabase.from('pedido_itens').insert(itensToInsert as any);
       }
@@ -182,7 +182,7 @@ export function usePedidos(filters?: PedidoFilters) {
       toast.error('Erro ao criar pedido: ' + msg);
       return null;
     }
-  }, [user, queryClient]);
+  }, [user, organizationId, queryClient]);
 
   // Update pedido
   const updatePedido = useCallback(async (id: string, updates: Partial<Pedido>) => {
