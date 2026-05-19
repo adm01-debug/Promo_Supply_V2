@@ -7230,6 +7230,15 @@ export type Database = {
         Args: { prefix: string; table_name: string }
         Returns: string
       }
+      get_compras_dashboard_metrics: {
+        Args: {
+          p_category_id?: string
+          p_organization_id: string
+          p_period?: string
+          p_supplier_id?: string
+        }
+        Returns: Json
+      }
       get_cost_center_performance_report:
         | {
             Args: never
