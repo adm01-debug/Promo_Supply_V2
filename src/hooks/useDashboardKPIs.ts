@@ -50,11 +50,11 @@ export interface DashboardKPIsExtended {
   };
 }
 
-export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
+export function useDashboardKPIs(filters?: { category?: string | null; supplier?: string | null; period?: string }) {
   const { tenantId, user } = useAuth();
   
-  const categoryId: string | undefined = filters?.category !== 'all' ? filters?.category : undefined;
-  const supplierId: string | undefined = filters?.supplier !== 'all' ? filters?.supplier : undefined;
+  const categoryId = (filters?.category && filters.category !== 'all') ? filters.category : undefined;
+  const supplierId = (filters?.supplier && filters.supplier !== 'all') ? filters.supplier : undefined;
   const period = filters?.period || '6m';
 
   const { data, isLoading, error } = useQuery({
