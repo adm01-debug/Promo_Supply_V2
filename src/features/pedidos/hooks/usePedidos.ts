@@ -57,8 +57,8 @@ const VALID_PEDIDO_TRANSITIONS: Record<string, string[]> = {
   enviado: ['em_transito', 'entregue', 'cancelado'],
   em_transito: ['entregue', 'parcial', 'cancelado'],
   entregue: ['parcial'],
-  parcial: ['entregue'],
-  cancelado: [],
+  parcial: ['entregue', 'cancelado'],
+  cancelado: ['pendente'], // Allow reset for corrections
   concluido: [],
 };
 
