@@ -22,6 +22,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: any }> 
   enviado: { label: 'ENVIADO', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },
   em_transito: { label: 'EM TRÂNSITO', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
   entregue: { label: 'ENTREGUE', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
+  parcial: { label: 'ENTREGA PARCIAL', color: 'bg-orange-500/10 text-orange-400 border-orange-500/20', icon: AlertTriangle },
   cancelado: { label: 'CANCELADO', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: Info },
 };
 
