@@ -50,11 +50,11 @@ export interface DashboardKPIsExtended {
   };
 }
 
-export function useDashboardKPIs(filters?: { category?: string | null; supplier?: string | null; period?: string }) {
+export function useDashboardKPIs(filters?: { category?: string | null; supplier?: string | null; period?: string | null }) {
   const { tenantId, user } = useAuth();
   
-  const categoryId = (filters?.category && filters.category !== 'all') ? filters.category : undefined;
-  const supplierId = (filters?.supplier && filters.supplier !== 'all') ? filters.supplier : undefined;
+  const categoryId = (filters?.category && filters.category !== 'all') ? filters.category : null;
+  const supplierId = (filters?.supplier && filters.supplier !== 'all') ? filters.supplier : null;
   const period = filters?.period || '6m';
 
   const { data, isLoading, error } = useQuery({
@@ -65,8 +65,8 @@ export function useDashboardKPIs(filters?: { category?: string | null; supplier?
       const { data, error } = await supabase.rpc('get_compras_dashboard_metrics', {
         p_organization_id: tenantId,
         p_period: period,
-        p_category_id: categoryId || null,
-        p_supplier_id: supplierId || null
+        p_category_id: categoryId,
+        p_supplier_id: supplierId
       });
 
       if (error) {
