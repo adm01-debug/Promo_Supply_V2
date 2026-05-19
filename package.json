@@ -10,6 +10,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:load": "artillery run src/tests/load/backend-stress.yml",
+    "test:all": "npm run lint && npm run test && npm run test:e2e",
     "typecheck": "tsc --noEmit",
     "prepare": ""
   },
