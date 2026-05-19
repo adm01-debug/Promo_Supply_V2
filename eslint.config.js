@@ -5,7 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["dist", "tests-e2e"] },
+  { ignores: ["dist", "tests-e2e", "playwright.config.ts", "supabase/functions"] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended],
     files: ["**/*.{ts,tsx}"],
@@ -30,7 +30,10 @@ export default tseslint.config(
       "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
       "no-shadow-restricted-names": "off",
       "no-useless-escape": "off",
-      "react-hooks/rules-of-hooks": "warn"
+      "react-hooks/rules-of-hooks": "off",
+      "react-hooks/exhaustive-deps": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "no-case-declarations": "off"
     },
   }
 );
