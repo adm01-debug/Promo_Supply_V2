@@ -261,7 +261,6 @@ const NegociacaoIA = () => {
                     )}
                   </Button>
                 </div>
-                </Button>
               </CardContent>
             </Card>
 
