@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { SimulationEngine } from "../_shared/simulation-engine.ts";
+import { ContractValidator, NegotiationContract, WorkflowContract, ERPSyncContract } from "../_shared/contracts.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
