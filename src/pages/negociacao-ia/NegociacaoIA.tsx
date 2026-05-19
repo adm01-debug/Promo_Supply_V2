@@ -236,29 +236,31 @@ const NegociacaoIA = () => {
 
                 <div className="pt-4">
                   <Button
-                  onClick={() => analyzeMutation.mutate()}
-                  disabled={!selectedSolicitacao || !cotacoes?.length || analyzeMutation.isPending}
-                  className="w-full h-12 text-base font-bold shadow-lg shadow-primary/20 group relative overflow-hidden"
-                >
-                  {analyzeMutation.isPending ? (
-                    <span className="flex items-center gap-2">
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                      Processando Insights de Elite...
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-2">
-                      <Sparkles className="h-5 w-5 group-hover:scale-125 transition-transform" />
-                      Gerar Estratégia de Negociação
-                    </span>
-                  )}
-                  {analyzeMutation.isPending && (
-                    <motion.div 
-                      className="absolute inset-0 bg-primary/20"
-                      initial={{ x: "-100%" }}
-                      animate={{ x: "100%" }}
-                      transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                    />
-                  )}
+                    onClick={() => analyzeMutation.mutate()}
+                    disabled={!selectedSolicitacao || !cotacoes?.length || analyzeMutation.isPending}
+                    className="w-full h-12 text-base font-bold shadow-lg shadow-primary/20 group relative overflow-hidden"
+                  >
+                    {analyzeMutation.isPending ? (
+                      <span className="flex items-center gap-2">
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        Processando Insights de Elite...
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <Sparkles className="h-5 w-5 group-hover:scale-125 transition-transform" />
+                        Gerar Estratégia de Negociação
+                      </span>
+                    )}
+                    {analyzeMutation.isPending && (
+                      <motion.div 
+                        className="absolute inset-0 bg-primary/20"
+                        initial={{ x: "-100%" }}
+                        animate={{ x: "100%" }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+                      />
+                    )}
+                  </Button>
+                </div>
                 </Button>
               </CardContent>
             </Card>
