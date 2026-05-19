@@ -352,7 +352,19 @@ export function PriceComparator() {
                       </TableHeader>
                       <TableBody>
                         {comparison.quotes.map((quote, index) => (
-                          <TableRow key={quote.supplierId} className={quote.recommended ? 'bg-primary/5' : ''}>
+                          <TableRow key={quote.supplierId} className={cn(quote.recommended ? 'bg-primary/5' : '', "border-white/5 hover:bg-white/[0.03]")}>
+                            <TableCell>
+                              <Checkbox 
+                                checked={selectedQuotes.includes(quote.supplierId)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    setSelectedQuotes(prev => [...prev, quote.supplierId]);
+                                  } else {
+                                    setSelectedQuotes(prev => prev.filter(id => id !== quote.supplierId));
+                                  }
+                                }}
+                              />
+                            </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 {quote.recommended && (
