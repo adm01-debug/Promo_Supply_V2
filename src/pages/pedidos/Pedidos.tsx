@@ -33,13 +33,13 @@ import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
 
 const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
-  pendente: { label: 'PENDING', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
-  aprovado: { label: 'APPROVED', color: 'bg-sky-500/10 text-sky-400 border-sky-500/20', icon: CheckCircle2 },
-  enviado: { label: 'DISPATCHED', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },
-  em_transito: { label: 'IN TRANSIT', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
-  entregue: { label: 'FULFILLED', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
-  cancelado: { label: 'VOIDED', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: X },
-  parcial: { label: 'PARTIAL', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Package },
+  pendente: { label: 'PENDENTE', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
+  aprovado: { label: 'APROVADO', color: 'bg-sky-500/10 text-sky-400 border-sky-500/20', icon: CheckCircle2 },
+  enviado: { label: 'ENVIADO', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },
+  em_transito: { label: 'EM TRÂNSITO', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
+  entregue: { label: 'ENTREGUE', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
+  cancelado: { label: 'CANCELADO', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: X },
+  parcial: { label: 'PARCIAL', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Package },
 };
 
 const Pedidos = () => {
@@ -148,23 +148,23 @@ const Pedidos = () => {
                 </motion.div>
               </div>
               <div>
-                <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Surveillance Core</h1>
+                <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Central de Pedidos</h1>
                 <div className="flex items-center gap-3 mt-3">
-                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-violet-500/30 text-violet-300 px-3 py-1">{filteredPedidos.length} Active Orders</Badge>
+                   <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-violet-500/30 text-violet-300 px-3 py-1">{filteredPedidos.length} Pedidos Ativos</Badge>
                    <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-fuchsia-500/30 text-fuchsia-300 px-3 py-1 flex gap-2">
-                     <Activity className="w-3 h-3" /> 4 New Handoffs
+                     <Activity className="w-3 h-3" /> 4 Novas Movimentações
                    </Badge>
-                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Fulfillment Neural Network</span>
+                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Rede Neural de Suprimentos</span>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
               <EliteButton variant="outline" size="sm" onClick={() => refetch()} className="h-11 px-5 rounded-xl border-white/10 hover:bg-white/5 font-black text-[10px] tracking-widest uppercase text-zinc-400">
-                <RefreshCw className="w-4 h-4 mr-2" /> REFRESH
+                <RefreshCw className="w-4 h-4 mr-2" /> ATUALIZAR
               </EliteButton>
               <EliteButton variant="default" size="sm" onClick={handleExportPDF} className="h-11 px-8 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 border-none shadow-lg shadow-violet-500/20 font-black text-[10px] tracking-widest uppercase">
-                <Download className="w-4 h-4 mr-2" /> EXPORT DATA
+                <Download className="w-4 h-4 mr-2" /> EXPORTAR DADOS
               </EliteButton>
             </div>
           </div>
@@ -178,11 +178,11 @@ const Pedidos = () => {
           >
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div className="md:col-span-2 relative group">
-                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Global Search</Label>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Busca Global</Label>
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600 group-focus-within:text-violet-400 transition-colors" />
                   <Input 
-                    placeholder="Search by ID or supplier..." 
+                    placeholder="Buscar por ID ou fornecedor..." 
                     value={search} 
                     onChange={(e) => setSearch(e.target.value)} 
                     className="pl-12 bg-white/[0.03] border-white/10 h-12 rounded-xl focus:bg-white/[0.05] transition-all text-white font-bold" 
@@ -191,16 +191,16 @@ const Pedidos = () => {
               </div>
               
               <div>
-                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Fulfillment Status</Label>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Status do Pedido</Label>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger className="bg-white/[0.03] h-12 border-white/10 rounded-xl text-zinc-200 font-bold">
                     <div className="flex items-center gap-2">
                       <Filter className="w-4 h-4 text-violet-400" />
-                      <SelectValue placeholder="All Status" />
+                      <SelectValue placeholder="Todos os Status" />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl rounded-2xl">
-                    <SelectItem value="all" className="text-xs font-bold py-2.5">All Orders</SelectItem>
+                    <SelectItem value="all" className="text-xs font-bold py-2.5">Todos os Pedidos</SelectItem>
                     {Object.entries(statusConfig).map(([key, config]) => (
                       <SelectItem key={key} value={key} className="text-xs font-bold py-2.5">{config.label}</SelectItem>
                     ))}
@@ -209,16 +209,16 @@ const Pedidos = () => {
               </div>
 
               <div>
-                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Provider Entity</Label>
+                <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-[0.2em] ml-1 mb-2 block">Entidade Fornecedora</Label>
                 <Select value={fornecedorFilter} onValueChange={setFornecedorFilter}>
                   <SelectTrigger className="bg-white/[0.03] h-12 border-white/10 rounded-xl text-zinc-200 font-bold">
                     <div className="flex items-center gap-2">
                       <Building2 className="w-4 h-4 text-violet-400" />
-                      <SelectValue placeholder="All Suppliers" />
+                      <SelectValue placeholder="Todos os Fornecedores" />
                     </div>
                   </SelectTrigger>
                   <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl rounded-2xl">
-                    <SelectItem value="all" className="text-xs font-bold py-2.5">All Suppliers</SelectItem>
+                    <SelectItem value="all" className="text-xs font-bold py-2.5">Todos os Fornecedores</SelectItem>
                     {fornecedores.map(f => (
                       <SelectItem key={f.id} value={f.id} className="text-xs font-bold py-2.5">{f.razao_social}</SelectItem>
                     ))}
@@ -241,11 +241,11 @@ const Pedidos = () => {
                   <TableHeader className="bg-white/[0.02]">
                     <TableRow className="hover:bg-transparent border-white/5">
                       <TableHead className="w-14 pl-6"><Checkbox checked={selectedIds.length === filteredPedidos.length} onCheckedChange={handleSelectAll} className="border-white/20" /></TableHead>
-                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 py-6">Reference</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Supplier Entity</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Logistics State</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">SLA Health</TableHead>
-                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-right pr-10">Total Volume</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 py-6">Referência</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Fornecedor</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Estado Logístico</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Saúde do SLA</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 text-right pr-10">Volume Total</TableHead>
                       <TableHead className="w-20 pr-6"></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -302,7 +302,7 @@ const Pedidos = () => {
                                   "text-[10px] font-black uppercase tracking-tighter",
                                   index % 3 === 0 ? "text-amber-400" : "text-emerald-400"
                                 )}>
-                                  {index % 3 === 0 ? "ATTENTION" : "ON TRACK"}
+                                  {index % 3 === 0 ? "ATENÇÃO" : "NO PRAZO"}
                                 </span>
                               </div>
                             </TableCell>
