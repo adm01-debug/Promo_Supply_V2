@@ -6,7 +6,7 @@ import {
   CartesianGrid, Tooltip, ResponsiveContainer, Cell 
 } from "recharts";
 import { type SupplierHistory } from "@/hooks/usePurchaseHistory";
-import { TrendingUp, AlertTriangle, CheckCircle2, ShieldCheck, Zap, DollarSign, TrendingDown } from "lucide-react";
+import { TrendingUp, AlertTriangle, CheckCircle2, ShieldCheck, Zap, DollarSign, TrendingDown, Sparkles, ArrowRight } from "lucide-react";
 
 interface Props {
   suppliers: SupplierHistory[];
@@ -158,13 +158,20 @@ export const SupplierIntelligenceConsole = ({ suppliers }: Props) => {
             )}
           </Card>
           
-          <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
-            <h4 className="text-xs font-bold text-primary uppercase mb-2">IA Insight Sugestão</h4>
-            <p className="text-[11px] text-primary/80 leading-relaxed italic">
-              "Baseado nos últimos 90 dias, concentrar pedidos de volumetria alta no fornecedor 
-              <strong className="mx-1">{insights.topReliable?.name}</strong> 
-              pode reduzir custos operacionais de re-entrega em até 12%."
+          <div className="p-4 rounded-lg bg-primary/10 border border-primary/20 shadow-inner">
+            <h4 className="text-xs font-bold text-primary uppercase mb-2 flex items-center gap-2">
+              <Sparkles className="w-3 h-3" />
+              IA Predictive Recommendation
+            </h4>
+            <p className="text-[11px] text-primary/80 leading-relaxed">
+              "Análise de padrões sazonais indica que o preço de itens da categoria 
+              <strong className="mx-1">Alumínio</strong> 
+              deve subir 8% no próximo mês. Recomendamos antecipar pedidos com 
+              <strong className="mx-1">{insights.topReliable?.name}</strong>."
             </p>
+            <Button variant="link" className="h-auto p-0 text-[10px] mt-2 text-primary font-bold">
+              GERAR PEDIDO PREDITIVO <ArrowRight className="w-2 h-2 ml-1" />
+            </Button>
           </div>
         </div>
       </div>
