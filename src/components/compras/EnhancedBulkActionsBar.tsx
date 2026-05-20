@@ -82,10 +82,23 @@ export function EnhancedBulkActionsBar({
 }: EnhancedBulkActionsBarProps) {
   const [showPreview, setShowPreview] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showUndo, setShowUndo] = useState(false);
 
   const actions = availableActions || defaultActions[entityType] || [];
   const selectedCount = selectedItems.length;
   const totalValue = selectedItems.reduce((acc, item) => acc + (item.value || 0), 0);
+
+  const handleExecute = async (action: BulkAction, itemIds: string[], options?: Record<string, unknown>) => {
+    const success = await onExecute(action, itemIds, options);
+    if (success) {
+      setShowUndo(true);
+      setTimeout(() => setShowUndo(false), 8000);
+      toast.success("Ação em massa executada com sucesso!", {
+        description: "Você tem 8 segundos para desfazer.",
+      });
+    }
+    return success;
+  };
 
   const handleOpenPreview = useCallback(() => {
     setShowPreview(true);
