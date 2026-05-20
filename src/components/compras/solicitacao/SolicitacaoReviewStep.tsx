@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { Check, Building2, Package, DollarSign, FileText } from "lucide-react";
+import { Check, Building2, Package, DollarSign, FileText, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { type SolicitacaoFormData as NovaSolicitacaoData } from "@/schemas/solicitacao.schema";
