@@ -148,7 +148,7 @@ export const SolicitacaoCard = ({
   const cardContent = (
     <Card 
       className={cn(
-        "p-5 md:p-6 transition-all duration-300 border-white/5 bg-white/[0.03] backdrop-blur-2xl rounded-[2rem] hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-1 relative group",
+        "p-5 md:p-6 transition-all duration-500 border-white/5 bg-white/[0.03] backdrop-blur-2xl rounded-[2rem] hover:shadow-[0_20px_50px_rgba(139,92,246,0.15)] hover:-translate-y-1 relative group cursor-pointer active:scale-[0.98]",
         selected && "ring-2 ring-violet-500/50 bg-violet-500/5"
       )}
     >
