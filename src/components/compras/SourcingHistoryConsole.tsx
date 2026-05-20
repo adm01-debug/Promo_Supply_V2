@@ -325,12 +325,20 @@ export const SourcingHistoryConsole = () => {
                             {record.supplierName}
                           </span>
                         </div>
+                        <Separator orientation="vertical" className="h-4 mx-2" />
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground">
+                          IPG (Índice Preço Global): 
+                          <span className="text-emerald-500 flex items-center">
+                            <TrendingDown className="w-3 h-3 mr-0.5" /> -4.2%
+                          </span>
+                        </div>
                         {record.discount > 0 && (
-                          <Badge variant="outline" className="bg-emerald-500/5 text-emerald-600 border-emerald-500/20 text-[10px]">
+                          <Badge variant="outline" className="bg-emerald-500/5 text-emerald-600 border-emerald-500/20 text-[10px] ml-auto">
                             <TrendingDown className="w-3 h-3 mr-1" /> {record.discount}% Economy
                           </Badge>
                         )}
                       </div>
+
                         <Sheet>
                           <SheetTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 text-xs gap-2 hover:bg-primary/10 hover:text-primary">
