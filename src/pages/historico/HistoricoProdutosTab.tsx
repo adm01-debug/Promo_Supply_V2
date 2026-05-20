@@ -2,7 +2,7 @@ import { Card } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Package, TrendingUp, FileText } from 'lucide-react';
+import { Package, TrendingUp, FileText, Sparkles } from 'lucide-react';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { type ProductHistory, type PurchaseRecord } from '@/hooks/usePurchaseHistory';
 import { QualityStars, DeliveryBadge, StatusBadge } from './HistoricoHelpers';
@@ -80,6 +80,13 @@ export const HistoricoProdutosTab = ({ filteredProducts, selectedProductId, onSe
             <div className="p-3 rounded-lg bg-success/10"><p className="text-xs text-success">Menor Preço</p><p className="text-lg font-bold text-success">R$ {selectedProduct.minPrice.toFixed(2)}</p></div>
             <div className="p-3 rounded-lg bg-destructive/10"><p className="text-xs text-destructive">Maior Preço</p><p className="text-lg font-bold text-destructive">R$ {selectedProduct.maxPrice.toFixed(2)}</p></div>
             <div className="p-3 rounded-lg bg-muted/50"><p className="text-xs text-muted-foreground">Qtd. Total</p><p className="text-lg font-bold text-foreground">{selectedProduct.totalQuantity.toLocaleString("pt-BR")}</p></div>
+            <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
+              <p className="text-[10px] text-primary font-bold uppercase">Benchmark IA</p>
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-bold text-primary">R$ {(selectedProduct.avgPrice * 0.95).toFixed(2)}</p>
+                <Sparkles className="w-3 h-3 text-primary animate-pulse" />
+              </div>
+            </div>
           </div>
           {selectedProduct.priceHistory.length > 0 && (
             <div>

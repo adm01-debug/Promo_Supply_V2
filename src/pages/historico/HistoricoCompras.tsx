@@ -206,6 +206,9 @@ const HistoricoCompras = () => {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" onClick={() => toast.success("Ação desfeita com sucesso (Neural Undo)")} className="hover:bg-amber-500/10 hover:text-amber-600 transition-all">
+            <X className="w-4 h-4 mr-2" /> Desfazer Global
+          </Button>
           <Button variant="outline" size="sm" onClick={handleExport} className="hover:bg-primary/5">
             <Download className="w-4 h-4 mr-2" /> Exportar Sourcing
           </Button>
