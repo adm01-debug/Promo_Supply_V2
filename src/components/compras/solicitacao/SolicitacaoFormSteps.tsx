@@ -214,15 +214,24 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
                         value={p.nome}
                         onSelect={() => onProductSelect(p)}
                       >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            formData.produto === p.nome ? "opacity-100" : "opacity-0"
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex items-center">
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.produto === p.nome ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            <div className="flex flex-col">
+                              <span>{p.nome}</span>
+                              <span className="text-xs text-muted-foreground">{p.codigo} — Ref: {p.preco_referencia?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                            </div>
+                          </div>
+                          {p.preco_referencia && (
+                            <Badge variant="outline" className="text-[8px] border-violet-500/20 text-violet-400">
+                              Sugestão Neural
+                            </Badge>
                           )}
-                        />
-                        <div className="flex flex-col">
-                          <span>{p.nome}</span>
-                          <span className="text-xs text-muted-foreground">{p.codigo} — Ref: {p.preco_referencia?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                         </div>
                       </CommandItem>
                     ))}
