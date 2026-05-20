@@ -197,6 +197,10 @@ export function usePurchaseHistory() {
           deliveryDate: ped.data_entrega || undefined,
           deliveredOnTime: onTime ?? undefined,
           qualityRating: Number(forn?.avaliacao) || 0,
+          solicitacaoId: ped.solicitacao_id,
+          solicitacaoTitle: sol?.titulo,
+          departamento: sol?.departamento,
+          centroCusto: sol?.centro_custo,
         });
       } else {
         pedItens.forEach((item) => {
@@ -219,6 +223,10 @@ export function usePurchaseHistory() {
             deliveryDate: ped.data_entrega || undefined,
             deliveredOnTime: onTime ?? undefined,
             qualityRating: Number(forn?.avaliacao) || 0,
+            solicitacaoId: ped.solicitacao_id,
+            solicitacaoTitle: sol?.titulo,
+            departamento: sol?.departamento,
+            centroCusto: sol?.centro_custo,
           });
         });
       }
