@@ -177,7 +177,7 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
         <div className="space-y-3">
           <Label htmlFor="produto" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest flex items-center gap-2">
             <Package className="w-3.5 h-3.5 text-violet-400" />
-            Item ou Serviço *
+            Item ou Serviço <Sparkles className="w-3 h-3 text-violet-300 animate-pulse" />
           </Label>
           
           <Popover open={open} onOpenChange={setOpen}>
