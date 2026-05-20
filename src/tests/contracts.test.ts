@@ -1,5 +1,6 @@
 import { test, expect } from 'vitest';
-import { NegotiationContract } from '../supabase/functions/_shared/contracts.ts';
+// @ts-expect-error - Edge function Deno module not resolvable from frontend TS
+import { NegotiationContract } from '../../supabase/functions/_shared/contracts.ts';
 
 /**
  * Suite de Testes de Regressão: Contratos e Validação de Dados
