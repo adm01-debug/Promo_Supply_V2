@@ -137,22 +137,28 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
   };
 
   return (
-    <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="categoria" className="flex items-center gap-2"><FileText className="w-4 h-4" />Categoria *</Label>
+    <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500 px-8">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="space-y-3">
+          <Label htmlFor="categoria" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest flex items-center gap-2">
+            <FileText className="w-3.5 h-3.5 text-violet-400" />
+            Categoria Inteligente *
+          </Label>
           <Select value={formData.categoriaId} onValueChange={(v) => updateField('categoriaId', v)}>
-            <SelectTrigger className={cn(errors.categoriaId && "border-destructive")}>
+            <SelectTrigger className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.categoriaId && "border-rose-500/50")}>
               <SelectValue placeholder="Selecione a categoria" />
             </SelectTrigger>
-            <SelectContent>
-              {categorias.map(c => <SelectItem key={c.id} value={c.id}>{c.nome}</SelectItem>)}
+            <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl">
+              {categorias.map(c => <SelectItem key={c.id} value={c.id} className="text-xs font-bold py-3">{c.nome}</SelectItem>)}
             </SelectContent>
           </Select>
-          {errors.categoriaId && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.categoriaId}</p>}
+          {errors.categoriaId && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.categoriaId}</p>}
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="produto" className="flex items-center gap-2"><Package className="w-4 h-4" />Produto *</Label>
+        <div className="space-y-3">
+          <Label htmlFor="produto" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest flex items-center gap-2">
+            <Package className="w-3.5 h-3.5 text-violet-400" />
+            Item ou Serviço *
+          </Label>
           
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -160,15 +166,15 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
                 variant="outline"
                 role="combobox"
                 aria-expanded={open}
-                className={cn("w-full justify-between font-normal", !formData.produto && "text-muted-foreground", errors.produto && "border-destructive")}
+                className={cn("w-full justify-between h-12 rounded-xl bg-white/5 border-white/10 text-white font-bold hover:bg-white/[0.08]", !formData.produto && "text-zinc-500", errors.produto && "border-rose-500/50")}
               >
-                {formData.produto || "Selecionar ou digitar produto..."}
+                {formData.produto || "Selecionar ou digitar..."}
                 <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-[400px] p-0" align="start">
-              <Command>
-                <CommandInput placeholder="Buscar produto no catálogo..." />
+            <PopoverContent className="w-[400px] p-0 bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl shadow-2xl" align="start">
+              <Command className="bg-transparent">
+                <CommandInput placeholder="Buscar no catálogo neural..." className="text-white h-12" />
                 <CommandList>
                   <CommandEmpty>
                     <p className="text-sm p-4">Nenhum produto encontrado no catálogo.</p>
@@ -219,32 +225,37 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
           {errors.produto && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.produto}</p>}
         </div>
       </div>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
-        <div className="space-y-2">
-          <Label htmlFor="quantidade">Quantidade *</Label>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div className="space-y-3">
+          <Label htmlFor="quantidade" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Quantidade Precisa *</Label>
           <Input id="quantidade" type="number" min="1" value={formData.quantidade || ''}
             onChange={(e) => updateField('quantidade', parseInt(e.target.value) || 0)}
-            placeholder="0" className={cn(errors.quantidade && "border-destructive")} />
-          {errors.quantidade && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.quantidade}</p>}
+            placeholder="0" className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold", errors.quantidade && "border-rose-500/50")} />
+          {errors.quantidade && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.quantidade}</p>}
         </div>
-        <div className="space-y-2">
-          <Label htmlFor="prazoEntrega" className="flex items-center gap-2"><Calendar className="w-4 h-4" />Prazo de Entrega *</Label>
+        <div className="space-y-3">
+          <Label htmlFor="prazoEntrega" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest flex items-center gap-2">
+            <Calendar className="w-3.5 h-3.5 text-violet-400" />
+            Limite de Entrega *
+          </Label>
           <Input id="prazoEntrega" type="date" value={formData.prazoEntrega}
             onChange={(e) => updateField('prazoEntrega', e.target.value)}
-            className={cn(errors.prazoEntrega && "border-destructive")} />
-          {errors.prazoEntrega && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.prazoEntrega}</p>}
+            className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold", errors.prazoEntrega && "border-rose-500/50")} />
+          {errors.prazoEntrega && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.prazoEntrega}</p>}
         </div>
       </div>
-      <div className="space-y-2">
-        <Label>Tipo de Solicitação *</Label>
-        <div className="grid gap-2">
+      <div className="space-y-4">
+        <Label className="text-[10px] font-black uppercase text-zinc-500 tracking-widest block">Metodologia de Suprimento *</Label>
+        <div className="grid gap-3">
           {Object.entries(tipoConfig).map(([key, config]) => (
             <button key={key} type="button"
-              className={cn("p-3 rounded-lg border-2 text-left transition-all",
-                formData.tipo === key ? "border-primary bg-primary/10 shadow-sm" : "border-muted hover:border-muted-foreground/30")}
+              className={cn("p-4 rounded-2xl border-2 text-left transition-all duration-300",
+                formData.tipo === key 
+                  ? "border-violet-500 bg-violet-500/10 shadow-[0_0_20px_rgba(139,92,246,0.1)]" 
+                  : "border-white/5 bg-white/[0.02] hover:border-white/10 hover:bg-white/5")}
               onClick={() => updateField('tipo', key as NovaSolicitacaoData['tipo'])}>
-              <p className="font-medium text-sm">{config.label}</p>
-              <p className="text-xs text-muted-foreground">{config.description}</p>
+              <p className="font-black text-xs text-white uppercase tracking-widest mb-1">{config.label}</p>
+              <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-tight">{config.description}</p>
             </button>
           ))}
         </div>
