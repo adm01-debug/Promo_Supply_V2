@@ -24,6 +24,7 @@ import { endOfMonth } from "date-fns/endOfMonth";
 import { isWithinInterval } from "date-fns/isWithinInterval";
 import { parseISO } from "date-fns/parseISO";
 import { ptBR } from "date-fns/locale/pt-BR";
+import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 import { exportToCSV } from "@/lib/exportData";
 import { toast } from "sonner";
@@ -346,7 +347,7 @@ const HistoricoCompras = () => {
       </Tabs>
       
       {ConfirmDialog}
-      <HistoricoDrilldownModal open={drilldownOpen} onOpenChange={setDrilldownOpen} type={drilldownType} data={drilldownData} records={purchaseRecords} />
+      <HistoricoDrilldownModal open={drilldownOpen} onOpenChange={setDrilldownOpen} drilldownType={drilldownType} drilldownData={drilldownData} drilldownRecords={filteredPurchaseRecords} />
     </div>
   );
 };
