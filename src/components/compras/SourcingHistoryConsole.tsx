@@ -130,7 +130,26 @@ export const SourcingHistoryConsole = () => {
       </div>
 
 
+      {/* Matriz de Sourcing Estratégico */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { title: "Itens Estratégicos", count: 12, trend: "+5%", color: "border-l-primary" },
+          { title: "Itens Críticos", count: 8, trend: "-2%", color: "border-l-destructive" },
+          { title: "Alavancagem", count: 24, trend: "+12%", color: "border-l-emerald-500" },
+          { title: "Rotineiros", count: 156, trend: "Estável", color: "border-l-amber-500" },
+        ].map(item => (
+          <Card key={item.title} className={cn("p-4 border-l-4 shadow-sm hover:shadow-md transition-shadow", item.color)}>
+            <div className="flex justify-between items-start">
+              <span className="text-xs font-bold text-muted-foreground uppercase">{item.title}</span>
+              <Badge variant="secondary" className="text-[10px]">{item.trend}</Badge>
+            </div>
+            <div className="mt-2 text-2xl font-bold">{item.count}</div>
+          </Card>
+        ))}
+      </div>
+
       <Card className="p-6 border-border/40 shadow-sm bg-background/50 backdrop-blur-sm">
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div className="flex bg-muted/30 p-1 rounded-lg border border-border/50">
             <Button 
