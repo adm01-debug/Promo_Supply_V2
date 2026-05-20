@@ -151,8 +151,8 @@ function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds
   
   return (
     <div className={cn(
-      "flex-shrink-0 w-80 flex flex-col rounded-[2rem] border transition-all duration-500 h-[calc(100vh-280px)]",
-      isOver ? "border-violet-500/50 bg-violet-500/5 scale-[1.02]" : "border-white/5 bg-white/[0.01] backdrop-blur-2xl"
+      "flex-shrink-0 w-80 flex flex-col rounded-[2rem] border transition-all duration-500 h-[calc(100vh-280px)] group/column",
+      isOver ? "border-violet-500/50 bg-violet-500/10 scale-[1.02] shadow-[0_0_40px_rgba(139,92,246,0.1)]" : "border-white/5 bg-white/[0.01] backdrop-blur-2xl"
     )}>
       <div className="p-5 flex items-center justify-between border-b border-white/5">
         <div className="flex items-center gap-3">

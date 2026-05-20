@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { SolicitacaoCard } from "@/components/compras/SolicitacaoCard";
 import { SolicitacaoKanban } from "@/components/compras/SolicitacaoKanban";
 import { NovaSolicitacaoModal } from "@/components/compras/NovaSolicitacaoModal";
+import { IAAdvisor } from "@/components/compras/IAAdvisor";
 import { FiltrosAvancados, initialFilters, type AdvancedFilters } from "@/components/compras/FiltrosAvancados";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { PageHeaderStats } from "@/components/ui/page-header";
@@ -286,6 +287,8 @@ const Solicitacoes = () => {
               delay={2}
             />
           </div>
+
+          <IAAdvisor stats={stats} />
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
