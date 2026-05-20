@@ -1,3 +1,4 @@
+// @ts-ignore - Deno remote import
 import { z } from "https://esm.sh/zod@3.22.4";
 
 // Contract definitions for core Edge Functions
@@ -38,7 +39,7 @@ export class ContractValidator {
     if (!result.success) {
       return {
         isValid: false,
-        errors: result.error.errors.map(e => `${e.path.join('.')}: ${e.message}`)
+        errors: result.error.errors.map((e: any) => `${e.path.join('.')}: ${e.message}`)
       };
     }
     return { isValid: true, data: result.data };

@@ -33,7 +33,7 @@ export function AppLogsView() {
         .limit(100);
       
       if (error) throw error;
-      return data as AppLog[];
+      return (data as unknown) as AppLog[];
     },
     refetchInterval: 10000,
   });
