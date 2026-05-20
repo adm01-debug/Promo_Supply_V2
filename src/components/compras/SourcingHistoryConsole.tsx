@@ -355,28 +355,43 @@ export const SourcingHistoryConsole = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="space-y-1.5">
-                      <div className="flex justify-between text-xs font-medium">
-                        <span className="text-muted-foreground">OTIF (On-Time In-Full)</span>
-                        <span className="text-foreground">{supplier.onTimeRate}%</span>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="text-center">
+                        <div className="text-[9px] text-muted-foreground uppercase font-bold">Qualidade</div>
+                        <div className="text-sm font-bold text-emerald-600">{(supplier.qualityScore * 20).toFixed(0)}%</div>
                       </div>
-                      <Progress value={supplier.onTimeRate} className="h-1.5" />
+                      <div className="text-center border-x border-border/50">
+                        <div className="text-[9px] text-muted-foreground uppercase font-bold">Prazo</div>
+                        <div className="text-sm font-bold text-blue-600">{supplier.onTimeRate}%</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-[9px] text-muted-foreground uppercase font-bold">Preço</div>
+                        <div className="text-sm font-bold text-amber-600">{supplier.bestDiscount + 70}%</div>
+                      </div>
                     </div>
                     
-                    <div className="flex justify-between items-center py-2">
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs font-medium">
+                        <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-tighter">Índice Global de Performance</span>
+                        <span className="text-foreground">{( (supplier.qualityScore * 20 + supplier.onTimeRate + (supplier.bestDiscount + 70)) / 3 ).toFixed(1)}%</span>
+                      </div>
+                      <Progress value={( (supplier.qualityScore * 20 + supplier.onTimeRate + (supplier.bestDiscount + 70)) / 3 )} className="h-1.5 bg-muted group-hover:bg-muted/50 transition-colors" />
+                    </div>
+                    
+                    <div className="flex justify-between items-center pt-2">
                       <div className="flex items-center gap-4">
                         <div className="flex flex-col">
                           <span className="text-[10px] text-muted-foreground uppercase font-bold">Pedidos</span>
                           <span className="text-sm font-bold">{supplier.totalOrders}</span>
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-muted-foreground uppercase font-bold">Best Disc.</span>
-                          <span className="text-sm font-bold text-emerald-600">{supplier.bestDiscount}%</span>
+                          <span className="text-[10px] text-muted-foreground uppercase font-bold">Lead Time</span>
+                          <span className="text-sm font-bold text-blue-600">~4 dias</span>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" className="h-8 text-xs font-bold gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                        Análise de Sourcing <ChevronRight className="w-3 h-3" />
+                      <Button variant="outline" size="sm" className="h-8 text-[11px] font-bold gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all rounded-full px-4">
+                        Dossiê Completo <ChevronRight className="w-3.5 h-3.5" />
                       </Button>
                     </div>
                   </div>
