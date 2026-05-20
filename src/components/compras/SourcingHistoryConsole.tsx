@@ -266,7 +266,18 @@ export const SourcingHistoryConsole = () => {
                             <span className="flex items-center gap-1.5">
                               <MapPin className="w-3.5 h-3.5" /> {record.departamento || "Logística"}
                             </span>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="flex items-center gap-1.5 text-emerald-600 cursor-help">
+                                    <Sparkles className="w-3.5 h-3.5" /> Recompra Sugerida: 15/06
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>Padrão neural detectado: Este item é comprado a cada 45 dias.</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           </div>
+
                         </div>
                       </div>
                       
