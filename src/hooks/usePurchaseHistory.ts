@@ -20,6 +20,10 @@ export interface PurchaseRecord {
   deliveryDate?: string;
   deliveredOnTime?: boolean;
   qualityRating?: number;
+  solicitacaoId?: string;
+  solicitacaoTitle?: string;
+  departamento?: string;
+  centroCusto?: string;
 }
 
 export interface ProductHistory {
@@ -78,7 +82,7 @@ export function usePurchaseHistory() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("pedidos")
-        .select("id, numero, status, valor_total, valor_frete, desconto, data_emissao, data_previsao, data_entrega, fornecedor_id, created_at")
+        .select("id, numero, status, valor_total, valor_frete, desconto, data_emissao, data_previsao, data_entrega, fornecedor_id, solicitacao_id, created_at")
         .order("data_emissao", { ascending: false });
       if (error) throw error;
       return data || [];
@@ -132,6 +136,16 @@ export function usePurchaseHistory() {
     staleTime: 600_000,
   });
 
+  const { data: rawSolicitacoes } = useQuery({
+    queryKey: ["purchase-history-solicitacoes"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("solicitacoes").select("id, titulo, departamento, centro_custo");
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 600_000,
+  });
+
   // ── Derived Data ──
   const computed = useMemo(() => {
     const pedidos = rawPedidos || [];
@@ -139,10 +153,12 @@ export function usePurchaseHistory() {
     const fornecedores = rawFornecedores || [];
     const produtos = rawProdutos || [];
     const categorias = rawCategorias || [];
+    const solicitacoes = rawSolicitacoes || [];
 
     const fornMap = new Map(fornecedores.map((f) => [f.id, f]));
     const prodMap = new Map(produtos.map((p) => [p.id, p]));
     const catMap = new Map(categorias.map((c) => [c.id, c.nome]));
+    const solMap = new Map(solicitacoes.map((s) => [s.id, s]));
     const itensByPedido = new Map<string, typeof itens>();
     itens.forEach((item) => {
       const list = itensByPedido.get(item.pedido_id || "") || [];
@@ -154,6 +170,7 @@ export function usePurchaseHistory() {
     const purchaseRecords: PurchaseRecord[] = [];
     pedidos.forEach((ped) => {
       const forn = fornMap.get(ped.fornecedor_id);
+      const sol = solMap.get(ped.solicitacao_id || "");
       const pedItens = itensByPedido.get(ped.id) || [];
       const uiStatus = STATUS_MAP[ped.status] || "pending";
       const onTime =
@@ -180,6 +197,10 @@ export function usePurchaseHistory() {
           deliveryDate: ped.data_entrega || undefined,
           deliveredOnTime: onTime ?? undefined,
           qualityRating: Number(forn?.avaliacao) || 0,
+          solicitacaoId: ped.solicitacao_id ?? undefined,
+          solicitacaoTitle: sol?.titulo ?? undefined,
+          departamento: sol?.departamento ?? undefined,
+          centroCusto: sol?.centro_custo ?? undefined,
         });
       } else {
         pedItens.forEach((item) => {
@@ -202,6 +223,10 @@ export function usePurchaseHistory() {
             deliveryDate: ped.data_entrega || undefined,
             deliveredOnTime: onTime ?? undefined,
             qualityRating: Number(forn?.avaliacao) || 0,
+            solicitacaoId: ped.solicitacao_id ?? undefined,
+            solicitacaoTitle: sol?.titulo ?? undefined,
+            departamento: sol?.departamento ?? undefined,
+            centroCusto: sol?.centro_custo ?? undefined,
           });
         });
       }
@@ -302,7 +327,7 @@ export function usePurchaseHistory() {
     );
 
     return { purchaseRecords, productsHistory, suppliersHistory, productCategories };
-  }, [rawPedidos, rawItens, rawFornecedores, rawProdutos, rawCategorias]);
+  }, [rawPedidos, rawItens, rawFornecedores, rawProdutos, rawCategorias, rawSolicitacoes]);
 
   return {
     ...computed,
