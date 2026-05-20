@@ -6,7 +6,7 @@ import {
   CartesianGrid, Tooltip, ResponsiveContainer, Cell 
 } from "recharts";
 import { type SupplierHistory } from "@/hooks/usePurchaseHistory";
-import { TrendingUp, AlertTriangle, CheckCircle2, ShieldCheck, Zap } from "lucide-react";
+import { TrendingUp, AlertTriangle, CheckCircle2, ShieldCheck, Zap, DollarSign, TrendingDown } from "lucide-react";
 
 interface Props {
   suppliers: SupplierHistory[];
