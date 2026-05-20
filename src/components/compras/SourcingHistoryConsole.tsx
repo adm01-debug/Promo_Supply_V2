@@ -203,7 +203,21 @@ export const SourcingHistoryConsole = () => {
           </div>
         </div>
 
+        {searchTerm && (
+          <div className="mb-4 flex items-center justify-between p-3 bg-primary/5 border border-primary/20 rounded-lg animate-in fade-in zoom-in duration-300">
+            <div className="flex items-center gap-2 text-sm text-primary font-medium">
+              <Info className="w-4 h-4" />
+              <span>{filteredRecords.length} resultados encontrados. Deseja realizar ações em massa?</span>
+            </div>
+            <div className="flex gap-2">
+              <Button size="xs" variant="outline" className="h-7 text-[10px] uppercase font-bold" onClick={() => toast.info("Modo de Seleção Ativado")}>Selecionar Tudo</Button>
+              <Button size="xs" className="h-7 text-[10px] uppercase font-bold" onClick={() => toast.success("Dossier Consolidado Gerado")}>Gerar Dossier Combinado</Button>
+            </div>
+          </div>
+        )}
+
         {showFilters && (
+
           <div className="mb-6 p-4 rounded-xl bg-muted/20 border border-border/40 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="flex flex-wrap gap-2">
               <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider w-full mb-1">Categorias</div>
