@@ -430,9 +430,13 @@ export const SourcingHistoryConsole = () => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Badge variant="outline" className={cn("gap-1 py-1 px-2 font-bold", getReliabilityColor(supplier.qualityScore))}>
-                            <ShieldCheck className="w-3 h-3" /> {supplier.qualityScore.toFixed(1)}
+                          <Badge variant="outline" className={cn(
+                            "gap-1 py-1 px-2 font-bold animate-pulse", 
+                            getReliabilityColor(supplier.qualityScore)
+                          )}>
+                            <ShieldCheck className="w-3 h-3" /> {supplier.qualityScore.toFixed(1)} Confiança IA
                           </Badge>
+
                         </TooltipTrigger>
                         <TooltipContent>Índice de Confiabilidade Neural</TooltipContent>
                       </Tooltip>
