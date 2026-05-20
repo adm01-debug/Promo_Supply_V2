@@ -454,20 +454,27 @@ export const SourcingHistoryConsole = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mb-4 bg-muted/30 p-3 rounded-lg border border-border/50">
-                    <div>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="bg-muted/30 p-3 rounded-xl border border-border/50 hover:bg-muted/50 transition-colors">
                       <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Vol. Histórico</div>
                       <div className="text-lg font-bold text-foreground">
                         {supplier.totalSpent.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })}
                       </div>
+                      <div className="text-[9px] text-emerald-600 font-bold mt-1 flex items-center">
+                        <TrendingUp className="w-2.5 h-2.5 mr-0.5" /> +12.5% vs YoY
+                      </div>
                     </div>
-                    <div>
+                    <div className="bg-muted/30 p-3 rounded-xl border border-border/50 hover:bg-muted/50 transition-colors">
                       <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Ticket Médio</div>
                       <div className="text-lg font-bold text-foreground">
                         {supplier.averageOrderValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })}
                       </div>
+                      <div className="text-[9px] text-blue-600 font-bold mt-1 flex items-center">
+                        <ArrowRight className="w-2.5 h-2.5 mr-0.5" /> Estável
+                      </div>
                     </div>
                   </div>
+
 
                   <div className="space-y-4">
                     <div className="grid grid-cols-3 gap-2">
