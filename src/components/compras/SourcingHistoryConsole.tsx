@@ -24,15 +24,27 @@ export const SourcingHistoryConsole = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<"client" | "supplier">("client");
   const [lastActions, setLastActions] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const categories = useMemo(() => {
+    const cats = new Set(purchaseRecords.map(r => r.productCategory));
+    return Array.from(cats);
+  }, [purchaseRecords]);
 
   const filteredRecords = useMemo(() => {
-    return purchaseRecords.filter(r => 
-      r.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (r.costCenterName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (r.solicitacaoTitle || "").toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [purchaseRecords, searchTerm]);
+    return purchaseRecords.filter(r => {
+      const matchesSearch = 
+        r.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        r.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (r.costCenterName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (r.solicitacaoTitle || "").toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(r.productCategory);
+      
+      return matchesSearch && matchesCategory;
+    });
+  }, [purchaseRecords, searchTerm, selectedCategories]);
 
   const filteredSuppliers = useMemo(() => {
     return suppliersHistory.filter(s => 
@@ -125,14 +137,57 @@ export const SourcingHistoryConsole = () => {
                 placeholder="Buscar itens, fornecedores, centros de custo..." 
                 value={searchTerm} 
                 onChange={(e) => setSearchTerm(e.target.value)} 
-                className="pl-10 h-10"
+                className="pl-10 h-10 bg-background/50 border-border/60 focus:ring-primary/20"
               />
             </div>
-            <Button variant="outline" size="icon" className="h-10 w-10">
+            <Button 
+              variant={showFilters ? "default" : "outline"} 
+              size="sm" 
+              className="h-10 gap-2"
+              onClick={() => setShowFilters(!showFilters)}
+            >
               <Filter className="w-4 h-4" />
+              Filtros
+              {selectedCategories.length > 0 && (
+                <Badge variant="secondary" className="ml-1 px-1 h-5 min-w-[20px] justify-center">
+                  {selectedCategories.length}
+                </Badge>
+              )}
             </Button>
           </div>
         </div>
+
+        {showFilters && (
+          <div className="mb-6 p-4 rounded-xl bg-muted/20 border border-border/40 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex flex-wrap gap-2">
+              <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider w-full mb-1">Categorias</div>
+              {categories.map(cat => (
+                <Badge
+                  key={cat}
+                  variant={selectedCategories.includes(cat) ? "default" : "outline"}
+                  className="cursor-pointer hover:border-primary/50 transition-colors py-1 px-3"
+                  onClick={() => {
+                    setSelectedCategories(prev => 
+                      prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
+                    );
+                  }}
+                >
+                  {cat}
+                </Badge>
+              ))}
+              {selectedCategories.length > 0 && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setSelectedCategories([])}
+                  className="h-7 text-[10px] text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  Limpar Todos
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
 
         <ScrollArea className="h-[600px] pr-4">
           {viewMode === "client" ? (
