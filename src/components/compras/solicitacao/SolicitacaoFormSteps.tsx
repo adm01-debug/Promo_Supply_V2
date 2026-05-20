@@ -1,8 +1,8 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useMemo } from "react";
 import {
   Package, Building2, User, Calendar, FileText,
   Upload, AlertCircle, Loader2, Check, DollarSign,
-  ShieldCheck, X, Search, Plus,
+  ShieldCheck, X, Search, Plus, Sparkles, TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -134,6 +134,17 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
   const { produtos, categorias } = useProdutos();
   const [open, setOpen] = useState(false);
 
+  const predictedDelivery = useMemo(() => {
+    if (!formData.prazoEntrega) return null;
+    const date = new Date(formData.prazoEntrega);
+    const today = new Date();
+    const diffDays = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 3) return { label: 'Risco de Atraso (Neural)', color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/20' };
+    if (diffDays < 7) return { label: 'Prazo Otimizado', color: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/20' };
+    return { label: 'Prazo Seguro (Histórico)', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' };
+  }, [formData.prazoEntrega]);
+
   const onProductSelect = (p: Produto) => {
     updateField('produto', p.nome);
     if (p.preco_referencia) {
@@ -166,7 +177,7 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
         <div className="space-y-3">
           <Label htmlFor="produto" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest flex items-center gap-2">
             <Package className="w-3.5 h-3.5 text-violet-400" />
-            Item ou Serviço *
+            Item ou Serviço <Sparkles className="w-3 h-3 text-violet-300 animate-pulse" />
           </Label>
           
           <Popover open={open} onOpenChange={setOpen}>
@@ -203,15 +214,24 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
                         value={p.nome}
                         onSelect={() => onProductSelect(p)}
                       >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            formData.produto === p.nome ? "opacity-100" : "opacity-0"
+                        <div className="flex items-center justify-between w-full">
+                          <div className="flex items-center">
+                            <Check
+                              className={cn(
+                                "mr-2 h-4 w-4",
+                                formData.produto === p.nome ? "opacity-100" : "opacity-0"
+                              )}
+                            />
+                            <div className="flex flex-col">
+                              <span>{p.nome}</span>
+                              <span className="text-xs text-muted-foreground">{p.codigo} — Ref: {p.preco_referencia?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                            </div>
+                          </div>
+                          {p.preco_referencia && (
+                            <Badge variant="outline" className="text-[8px] border-violet-500/20 text-violet-400">
+                              Sugestão Neural
+                            </Badge>
                           )}
-                        />
-                        <div className="flex flex-col">
-                          <span>{p.nome}</span>
-                          <span className="text-xs text-muted-foreground">{p.codigo} — Ref: {p.preco_referencia?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                         </div>
                       </CommandItem>
                     ))}
@@ -247,9 +267,20 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
             <Calendar className="w-3.5 h-3.5 text-violet-400" />
             Limite de Entrega *
           </Label>
-          <Input id="prazoEntrega" type="date" value={formData.prazoEntrega}
-            onChange={(e) => updateField('prazoEntrega', e.target.value)}
-            className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold", errors.prazoEntrega && "border-rose-500/50")} />
+          <div className="space-y-2">
+            <Input id="prazoEntrega" type="date" value={formData.prazoEntrega}
+              onChange={(e) => updateField('prazoEntrega', e.target.value)}
+              className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold", errors.prazoEntrega && "border-rose-500/50")} />
+            
+            {predictedDelivery && (
+              <div className={cn("px-3 py-2 rounded-xl border flex items-center gap-2 animate-in fade-in zoom-in duration-500", predictedDelivery.bg, predictedDelivery.border)}>
+                <TrendingUp className={cn("w-3 h-3", predictedDelivery.color)} />
+                <span className={cn("text-[8px] font-black uppercase tracking-widest", predictedDelivery.color)}>
+                  {predictedDelivery.label}
+                </span>
+              </div>
+            )}
+          </div>
           {errors.prazoEntrega && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.prazoEntrega}</p>}
         </div>
       </div>
@@ -323,17 +354,25 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
               </Button>
 
               {budgetCheck && (
-                <div className="space-y-2">
+                <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
                   <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                    <span className="text-zinc-500">Integridade Orçamentária</span>
-                    <span className={cn(budgetCheck.available ? "text-emerald-400" : "text-rose-400")}>
-                      {budgetCheck.available ? "Seguro" : "Risco Crítico"}
+                    <div className="flex items-center gap-1.5 text-zinc-500">
+                      <ShieldCheck className={cn("w-3.5 h-3.5", budgetCheck.available ? "text-emerald-400" : "text-rose-400")} />
+                      Integridade Orçamentária
+                    </div>
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-full border",
+                      budgetCheck.available 
+                        ? "text-emerald-400 border-emerald-500/20 bg-emerald-500/5 shadow-[0_0_10px_rgba(16,185,129,0.1)]" 
+                        : "text-rose-400 border-rose-500/20 bg-rose-500/5"
+                    )}>
+                      {budgetCheck.available ? "SEGURO" : "RISCO CRÍTICO"}
                     </span>
                   </div>
-                  <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                  <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
                     <div 
                       className={cn(
-                        "h-full transition-all duration-1000 ease-out",
+                        "h-full transition-all duration-1000 ease-out rounded-full",
                         budgetCheck.available ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]"
                       )}
                       style={{ width: `${Math.min(100, (formData.valorEstimado / (budgetCheck.budget_total || 1)) * 100)}%` }}
@@ -357,9 +396,14 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
       </div>
 
       {formData.valorEstimado > 0 && formData.valorEstimado < 1000 && (
-        <div className="rounded-lg p-3 border bg-primary/5 border-primary/20 text-sm">
-          <div className="flex items-center gap-2 text-primary font-medium"><Check className="w-4 h-4" />Aprovação Automática</div>
-          <p className="text-xs text-muted-foreground mt-1">Solicitações abaixo de R$ 1.000 são aprovadas automaticamente.</p>
+        <div className="bg-blue-500/5 border border-blue-500/20 rounded-2xl p-4 flex items-center gap-3 animate-in slide-in-from-left-2 duration-500">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center border border-blue-500/30 bg-blue-500/10 text-blue-400">
+            <Check className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="text-[8px] font-black uppercase tracking-widest text-blue-300">Fast Track Habilitado</p>
+            <p className="text-[10px] font-bold text-blue-100">Aprovação Automática ativada para este valor.</p>
+          </div>
         </div>
       )}
 

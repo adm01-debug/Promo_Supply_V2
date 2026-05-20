@@ -1,8 +1,9 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { SolicitacaoReviewStep } from "./solicitacao/SolicitacaoReviewStep";
 import { 
   Plus, Package, Check, Loader2,
-  Building2, DollarSign, ShieldCheck, ArrowRight, ArrowLeft,
+  Building2, DollarSign, ShieldCheck, ArrowRight, ArrowLeft, AlertCircle, Upload, X, Search,
+  Undo2, Sparkles
 } from "lucide-react";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { useImageCompression } from "@/hooks/useImageCompression";
@@ -55,10 +56,6 @@ interface BudgetCheckResult {
   message: string;
 }
 
-interface NovaSolicitacaoModalProps {
-  onSuccess?: () => void;
-}
-
 const STEPS = [
   { num: 1, label: 'Identificação', icon: Building2 },
   { num: 2, label: 'Especificações', icon: Package },
@@ -66,7 +63,7 @@ const STEPS = [
   { num: 4, label: 'Revisão', icon: ShieldCheck },
 ];
 
-export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
+export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) {
   const { user, organizationId } = useAuth();
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
@@ -75,20 +72,53 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     return saved ? JSON.parse(saved) : initialFormData;
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessingNeural, setIsProcessingNeural] = useState(false);
+  const [neuralInput, setNeuralInput] = useState("");
   const [errors, setErrors] = useState<Partial<Record<keyof NovaSolicitacaoData, string>>>({});
   const [budgetCheck, setBudgetCheck] = useState<BudgetCheckResult | null>(null);
   const [isCheckingBudget, setIsCheckingBudget] = useState(false);
+  const [history, setHistory] = useState<NovaSolicitacaoData[]>([]);
+  const isInternalUpdate = useRef(false);
 
   useEffect(() => {
-    if (formData !== initialFormData) {
+    if (formData !== initialFormData && !isInternalUpdate.current) {
       localStorage.setItem('nova_solicitacao_draft', JSON.stringify(formData));
     }
   }, [formData]);
 
-  const updateField = <K extends keyof NovaSolicitacaoData>(
-    field: K, 
-    value: NovaSolicitacaoData[K]
-  ) => {
+  const pushToHistory = (data: NovaSolicitacaoData) => {
+    setHistory(prev => [...prev.slice(-9), data]); // Keep last 10 versions
+  };
+
+  const handleUndo = () => {
+    if (history.length === 0) return;
+    const prev = history[history.length - 1];
+    isInternalUpdate.current = true;
+    setFormData(prev);
+    setHistory(prevH => prevH.slice(0, -1));
+    toast.success("Ação desfeita");
+    setTimeout(() => { isInternalUpdate.current = false; }, 100);
+  };
+
+  const processNeuralDraft = async () => {
+    if (!neuralInput.trim()) return;
+    setIsProcessingNeural(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('process-solicitacao-neural', {
+        body: { input: neuralInput }
+      });
+      if (error) throw error;
+      setFormData(prev => ({ ...prev, ...data }));
+      toast.success("Dados preenchidos via IA com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao processar solicitação via IA.");
+    } finally {
+      setIsProcessingNeural(false);
+    }
+  };
+
+  const updateField = <K extends keyof NovaSolicitacaoData>(field: K, value: NovaSolicitacaoData[K]) => {
+    pushToHistory(formData);
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
@@ -105,7 +135,6 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     const newErrors: Partial<Record<keyof NovaSolicitacaoData, string>> = {};
     result.error.issues.forEach(issue => {
       const path = issue.path[0] as keyof NovaSolicitacaoData;
-      // Filter errors by step
       if (currentStep === 1 && (path === 'empresa' || path === 'vendedor')) {
         newErrors[path] = issue.message;
       } else if (currentStep === 2 && (path === 'produto' || path === 'quantidade' || path === 'prazoEntrega')) {
@@ -160,7 +189,6 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
     setIsSubmitting(true);
     
     try {
-      // Sanitização de inputs
       const sanitizedTitulo = DOMPurify.sanitize(formData.produto);
       const sanitizedDescricao = DOMPurify.sanitize(formData.observacoes || '');
 
@@ -288,22 +316,45 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
               <Package className="w-6 h-6" />
             </div>
             Nova Solicitação de Compra
+            {history.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleUndo}
+                className="ml-auto mr-4 text-[10px] font-black uppercase text-zinc-500 hover:text-white"
+              >
+                <Undo2 className="w-3 h-3 mr-1.5" /> Desfazer
+              </Button>
+            )}
           </DialogTitle>
         </DialogHeader>
 
         <div className="px-8 pb-8">
-          {/* Neural Input Interface for Step 1 */}
           {step === 1 && (
-            <div className="mb-8 p-6 bg-violet-500/5 border border-violet-500/20 rounded-3xl animate-in fade-in zoom-in duration-700">
-              <Label className="text-[10px] font-black uppercase text-violet-300 tracking-widest block mb-3">Neural Draft (IA Instantânea)</Label>
+            <div className="mb-8 bg-violet-500/5 border border-violet-500/20 rounded-3xl overflow-hidden animate-in fade-in zoom-in duration-700">
+              <div className="bg-violet-500/10 px-6 py-2 border-b border-violet-500/20 flex items-center justify-between">
+                <Label className="text-[10px] font-black uppercase text-violet-300 tracking-widest flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+                  Neural Draft (IA Instantânea)
+                </Label>
+                <Badge variant="outline" className="text-[8px] border-violet-500/20 text-violet-400 bg-violet-500/5">EXPERIMENTAL</Badge>
+              </div>
+              <div className="p-6">
               <div className="relative">
                 <Textarea 
+                  value={neuralInput}
+                  onChange={(e) => setNeuralInput(e.target.value)}
                   placeholder="Ex: Preciso de 50 monitores Dell para o RH com entrega até sexta-feira."
                   className="w-full h-24 bg-white/5 border-white/5 rounded-2xl resize-none text-white p-4 focus:border-violet-500 transition-colors"
                 />
-                <Button className="absolute bottom-2 right-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-[10px] uppercase font-black tracking-widest">
-                  Processar
+                <Button 
+                  onClick={processNeuralDraft}
+                  disabled={isProcessingNeural}
+                  className="absolute bottom-2 right-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-[10px] uppercase font-black tracking-widest"
+                >
+                  {isProcessingNeural ? <Loader2 className="animate-spin w-3 h-3" /> : "Processar"}
                 </Button>
+              </div>
               </div>
             </div>
           )}
