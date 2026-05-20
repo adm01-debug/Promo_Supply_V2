@@ -258,9 +258,20 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
             <Calendar className="w-3.5 h-3.5 text-violet-400" />
             Limite de Entrega *
           </Label>
-          <Input id="prazoEntrega" type="date" value={formData.prazoEntrega}
-            onChange={(e) => updateField('prazoEntrega', e.target.value)}
-            className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold", errors.prazoEntrega && "border-rose-500/50")} />
+          <div className="space-y-2">
+            <Input id="prazoEntrega" type="date" value={formData.prazoEntrega}
+              onChange={(e) => updateField('prazoEntrega', e.target.value)}
+              className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold", errors.prazoEntrega && "border-rose-500/50")} />
+            
+            {predictedDelivery && (
+              <div className={cn("px-3 py-2 rounded-xl border flex items-center gap-2 animate-in fade-in zoom-in duration-500", predictedDelivery.bg, predictedDelivery.border)}>
+                <TrendingUp className={cn("w-3 h-3", predictedDelivery.color)} />
+                <span className={cn("text-[8px] font-black uppercase tracking-widest", predictedDelivery.color)}>
+                  {predictedDelivery.label}
+                </span>
+              </div>
+            )}
+          </div>
           {errors.prazoEntrega && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.prazoEntrega}</p>}
         </div>
       </div>
