@@ -75,14 +75,23 @@ export function Step1Identification({ formData, errors, updateField }: StepProps
             <Building2 className="w-3.5 h-3.5 text-violet-400" />
             Entidade Solicitante *
           </Label>
-          <Select value={formData.empresa} onValueChange={(v) => updateField('empresa', v)}>
-            <SelectTrigger className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.empresa && "border-rose-500/50")}>
-              <SelectValue placeholder="Selecione a empresa" />
-            </SelectTrigger>
-            <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl">
-              {empresasMock.map(e => <SelectItem key={e} value={e} className="text-xs font-bold py-3">{e}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <div className="relative">
+            <Select value={formData.empresa} onValueChange={(v) => updateField('empresa', v)}>
+              <SelectTrigger className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold transition-all hover:bg-white/[0.08]", errors.empresa && "border-rose-500/50")}>
+                <SelectValue placeholder="Selecione a empresa" />
+              </SelectTrigger>
+              <SelectContent className="bg-[#0a0a0f] border-white/10 rounded-2xl backdrop-blur-3xl">
+                {empresasMock.map(e => (
+                  <SelectItem key={e} value={e} className="text-xs font-bold py-3">
+                    <div className="flex items-center justify-between w-full gap-8">
+                      <span>{e}</span>
+                      <Badge variant="outline" className="text-[8px] border-emerald-500/20 text-emerald-400">Score: 9.8</Badge>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
           {errors.empresa && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.empresa}</p>}
         </div>
         <div className="space-y-3">
