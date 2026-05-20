@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Solicitacao } from "@/types/legacyTypes";
 import { getTipoLabel, getStatusColor } from "@/types/legacyTypes";
