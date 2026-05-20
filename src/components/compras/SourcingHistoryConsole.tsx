@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "sonner";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip as RechartsTooltip, Cell, PieChart, Pie } from "recharts";
 
@@ -292,9 +293,76 @@ export const SourcingHistoryConsole = () => {
                           </Badge>
                         )}
                       </div>
-                      <Button variant="ghost" size="sm" className="h-8 text-xs gap-2 hover:bg-primary/10 hover:text-primary">
-                        Ver Detalhes do Sourcing <ArrowRight className="w-3 h-3" />
-                      </Button>
+                        <Sheet>
+                          <SheetTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 text-xs gap-2 hover:bg-primary/10 hover:text-primary">
+                              Ver Detalhes do Sourcing <ArrowRight className="w-3 h-3" />
+                            </Button>
+                          </SheetTrigger>
+                          <SheetContent className="sm:max-w-xl">
+                            <SheetHeader>
+                              <SheetTitle className="flex items-center gap-2">
+                                <History className="w-5 h-5 text-primary" />
+                                Jornada do Item: {record.productName}
+                              </SheetTitle>
+                              <SheetDescription>
+                                Rastreabilidade completa desde a solicitação até a entrega final.
+                              </SheetDescription>
+                            </SheetHeader>
+                            
+                            <div className="mt-8 space-y-8">
+                              <div className="relative pl-6 border-l-2 border-primary/20 space-y-8">
+                                <div className="relative">
+                                  <div className="absolute -left-[31px] top-0 h-4 w-4 rounded-full bg-primary border-4 border-background" />
+                                  <div className="font-bold text-sm">Entrega Concluída</div>
+                                  <div className="text-xs text-muted-foreground">{new Date(record.purchaseDate).toLocaleDateString()} - Recebido por Almoxarifado Central</div>
+                                </div>
+                                
+                                <div className="relative">
+                                  <div className="absolute -left-[31px] top-0 h-4 w-4 rounded-full bg-primary/40 border-4 border-background" />
+                                  <div className="font-bold text-sm">Pedido de Compra Emitido</div>
+                                  <div className="text-xs text-muted-foreground">Fornecedor: {record.supplierName} - NF-e: 459302</div>
+                                </div>
+
+                                <div className="relative">
+                                  <div className="absolute -left-[31px] top-0 h-4 w-4 rounded-full bg-primary/20 border-4 border-background" />
+                                  <div className="font-bold text-sm">Aprovação de Sourcing</div>
+                                  <div className="text-xs text-muted-foreground">Aprovado por: Gestor de Suprimentos - Economia de {record.discount}%</div>
+                                </div>
+
+                                <div className="relative">
+                                  <div className="absolute -left-[31px] top-0 h-4 w-4 rounded-full bg-muted border-4 border-background" />
+                                  <div className="font-bold text-sm">Solicitação Originada</div>
+                                  <div className="text-xs text-muted-foreground">ID: {record.solicitacaoId} - Cliente: {record.costCenterName}</div>
+                                </div>
+                              </div>
+
+                              <Card className="p-4 bg-muted/30 border-dashed">
+                                <h5 className="font-bold text-xs uppercase tracking-wider mb-3">Benchmark Neural de Preço</h5>
+                                <div className="h-32">
+                                  <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={[
+                                      { name: 'Jan', price: 400 },
+                                      { name: 'Fev', price: 300 },
+                                      { name: 'Mar', price: 500 },
+                                      { name: 'Abr', price: record.totalPrice },
+                                    ]}>
+                                      <XAxis dataKey="name" hide />
+                                      <YAxis hide />
+                                      <RechartsTooltip />
+                                      <Line type="monotone" dataKey="price" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                                    </LineChart>
+                                  </ResponsiveContainer>
+                                </div>
+                                <div className="flex justify-between mt-2 text-[10px] font-bold">
+                                  <span className="text-muted-foreground">MÍN: R$ 300,00</span>
+                                  <span className="text-primary">ATUAL: R$ {record.totalPrice.toFixed(2)}</span>
+                                  <span className="text-muted-foreground">MÁX: R$ 500,00</span>
+                                </div>
+                              </Card>
+                            </div>
+                          </SheetContent>
+                        </Sheet>
                     </div>
                   </div>
                 ))
