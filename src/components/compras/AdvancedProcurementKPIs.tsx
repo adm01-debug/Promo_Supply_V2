@@ -29,8 +29,14 @@ import {
   Cell,
   ResponsiveContainer,
   XAxis,
+  YAxis,
   Area,
-  AreaChart
+  AreaChart,
+  BarChart,
+  Bar,
+  CartesianGrid,
+  Tooltip,
+  Legend,
 } from "recharts";
 import { cn } from "@/lib/utils";
 import { useKPITargetsStore, checkKPIStatus } from "@/stores/kpiTargetsStore";
