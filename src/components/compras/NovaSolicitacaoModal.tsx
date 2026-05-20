@@ -118,6 +118,7 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
   };
 
   const updateField = <K extends keyof NovaSolicitacaoData>(field: K, value: NovaSolicitacaoData[K]) => {
+    pushToHistory(formData);
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: undefined }));
