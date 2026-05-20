@@ -316,6 +316,16 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
               <Package className="w-6 h-6" />
             </div>
             Nova Solicitação de Compra
+            {history.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleUndo}
+                className="ml-auto mr-4 text-[10px] font-black uppercase text-zinc-500 hover:text-white"
+              >
+                <Undo2 className="w-3 h-3 mr-1.5" /> Desfazer
+              </Button>
+            )}
           </DialogTitle>
         </DialogHeader>
 
