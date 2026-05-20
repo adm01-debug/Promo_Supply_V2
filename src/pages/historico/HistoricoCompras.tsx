@@ -36,6 +36,7 @@ import { HistoricoFornecedoresTab } from "./HistoricoFornecedoresTab";
 import { HistoricoRegistrosTab } from "./HistoricoRegistrosTab";
 import { HistoricoSourcingTab } from "./HistoricoSourcingTab";
 import { HistoricoDrilldownModal } from "./HistoricoDrilldownModal";
+import { SupplierIntelligenceConsole } from "@/components/compras/SupplierIntelligenceConsole";
 
 interface DrilldownData {
   name?: string; month?: string; category?: string; supplier?: string;
@@ -337,12 +338,16 @@ const HistoricoCompras = () => {
           />
         </TabsContent>
 
-        <TabsContent value="analytics" className="mt-0 text-center py-12 text-muted-foreground">
-          <div className="flex flex-col items-center">
-            <BarChart3 className="w-12 h-12 mb-4 opacity-20" />
-            <p>Análise de tendências e previsões neurais sendo processadas...</p>
-            <Button variant="link" onClick={() => setActiveTab("produtos")}>Ver evolução por produto</Button>
-          </div>
+        <TabsContent value="analytics" className="mt-0 space-y-6">
+          <SupplierIntelligenceConsole suppliers={suppliersHistory} />
+          
+          <Card className="p-12 text-center text-muted-foreground border-dashed">
+            <div className="flex flex-col items-center">
+              <BarChart3 className="w-12 h-12 mb-4 opacity-20" />
+              <p>Previsões neurais de demanda futura em desenvolvimento...</p>
+              <Button variant="link" onClick={() => setActiveTab("produtos")}>Ver evolução detalhada por produto</Button>
+            </div>
+          </Card>
         </TabsContent>
       </Tabs>
       
