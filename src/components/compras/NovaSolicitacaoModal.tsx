@@ -331,8 +331,15 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
 
         <div className="px-8 pb-8">
           {step === 1 && (
-            <div className="mb-8 p-6 bg-violet-500/5 border border-violet-500/20 rounded-3xl animate-in fade-in zoom-in duration-700">
-              <Label className="text-[10px] font-black uppercase text-violet-300 tracking-widest block mb-3">Neural Draft (IA Instantânea)</Label>
+            <div className="mb-8 bg-violet-500/5 border border-violet-500/20 rounded-3xl overflow-hidden animate-in fade-in zoom-in duration-700">
+              <div className="bg-violet-500/10 px-6 py-2 border-b border-violet-500/20 flex items-center justify-between">
+                <Label className="text-[10px] font-black uppercase text-violet-300 tracking-widest flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+                  Neural Draft (IA Instantânea)
+                </Label>
+                <Badge variant="outline" className="text-[8px] border-violet-500/20 text-violet-400 bg-violet-500/5">EXPERIMENTAL</Badge>
+              </div>
+              <div className="p-6">
               <div className="relative">
                 <Textarea 
                   value={neuralInput}
