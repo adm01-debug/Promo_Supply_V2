@@ -1,4 +1,4 @@
-import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy, Clock, AlertTriangle } from "lucide-react";
+import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy, Clock, AlertTriangle, ChevronRight } from "lucide-react";
 import { StatusTimeline } from "@/components/compras/StatusTimeline";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -83,10 +83,10 @@ export const SolicitacaoCard = ({
   const isOverdue = isPast(deadline) && solicitacao.status !== 'ENTREGUE';
   
   const getUrgencyInfo = () => {
-    if (isOverdue) return { color: "text-rose-400", bg: "bg-rose-500/10", label: "Overdue", icon: AlertTriangle };
-    if (daysRemaining <= 2) return { color: "text-rose-400", bg: "bg-rose-500/10", label: "Urgent", icon: Clock };
-    if (daysRemaining <= 5) return { color: "text-amber-400", bg: "bg-amber-500/10", label: "Priority", icon: Clock };
-    return { color: "text-emerald-400", bg: "bg-emerald-500/10", label: "On Schedule", icon: CheckCircle };
+    if (isOverdue) return { color: "text-rose-400", bg: "bg-rose-500/10", label: "Atrasado", icon: AlertTriangle, pulse: true };
+    if (daysRemaining <= 2) return { color: "text-rose-400", bg: "bg-rose-500/10", label: "Urgente", icon: Clock, pulse: true };
+    if (daysRemaining <= 5) return { color: "text-amber-400", bg: "bg-amber-500/10", label: "Prioridade", icon: Clock, pulse: false };
+    return { color: "text-emerald-400", bg: "bg-emerald-500/10", label: "No Prazo", icon: CheckCircle, pulse: false };
   };
 
   const urgency = getUrgencyInfo();
@@ -166,7 +166,12 @@ export const SolicitacaoCard = ({
                 )}
               </div>
               
-              <Badge className={cn("text-[10px] font-black uppercase tracking-widest py-1 px-3 gap-1.5 border-none rounded-full", urgency.bg, urgency.color)}>
+              <Badge className={cn(
+                "text-[10px] font-black uppercase tracking-widest py-1 px-3 gap-1.5 border-none rounded-full transition-all duration-500", 
+                urgency.bg, 
+                urgency.color,
+                urgency.pulse && "animate-pulse shadow-[0_0_15px_rgba(244,63,94,0.3)]"
+              )}>
                 <urgency.icon className="w-3 h-3" />
                 {urgency.label}
               </Badge>
@@ -206,7 +211,8 @@ export const SolicitacaoCard = ({
           </div>
         )}
 
-        <div className="py-2 border-y border-white/5">
+        <div className="py-4 border-y border-white/5 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 via-transparent to-transparent opacity-50" />
           <StatusTimeline currentStatus={solicitacao.status.toLowerCase()} compact />
         </div>
 

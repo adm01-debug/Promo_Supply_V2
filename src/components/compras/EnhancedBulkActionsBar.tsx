@@ -9,7 +9,11 @@ import {
   Square,
   Eye,
   MoreHorizontal,
-  Copy
+  Copy,
+  ChevronUp,
+  Package,
+  DollarSign,
+  TrendingUp
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -75,8 +79,11 @@ export function EnhancedBulkActionsBar({
   availableActions,
 }: EnhancedBulkActionsBarProps) {
   const [showPreview, setShowPreview] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const actions = availableActions || defaultActions[entityType] || [];
+  const selectedCount = selectedItems.length;
+  const totalValue = selectedItems.reduce((acc, item) => acc + (item.value || 0), 0);
 
   const handleOpenPreview = useCallback(() => {
     setShowPreview(true);
@@ -86,113 +93,147 @@ export function EnhancedBulkActionsBar({
     setShowPreview(false);
   }, []);
 
-  if (selectedItems.length === 0) return null;
+  if (selectedCount === 0) return null;
 
   return (
     <>
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 50 }}
-          className={cn(
-            "fixed bottom-4 left-1/2 -translate-x-1/2 z-50",
-            "bg-primary text-primary-foreground shadow-2xl rounded-lg",
-            "flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2 md:py-3",
-          )}
-        >
-          {/* Close Button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/10"
-            onClick={onDeselectAll}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-
-          {/* Selection Info */}
-          <div className="flex items-center gap-2 pr-2 md:pr-3 border-r border-primary-foreground/20">
-            <Badge 
-              variant="secondary" 
-              className="bg-primary-foreground/20 text-primary-foreground border-0"
-            >
-              {selectedItems.length}
-            </Badge>
-            <span className="text-sm hidden sm:inline whitespace-nowrap">
-              de {totalCount} selecionado(s)
-            </span>
-          </div>
-
-          {/* Select All Toggle */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-primary-foreground hover:bg-primary-foreground/10 hidden md:flex"
-            onClick={isAllSelected ? onDeselectAll : onSelectAll}
-          >
-            {isAllSelected ? (
-              <>
-                <Square className="h-4 w-4 mr-1" />
-                Desmarcar
-              </>
-            ) : (
-              <>
-                <CheckSquare className="h-4 w-4 mr-1" />
-                Selec. Todos
-              </>
+      <motion.div
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 100, opacity: 0 }}
+        className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 w-full max-w-4xl px-4"
+      >
+        <div className="bg-[#0a0a0f]/90 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden">
+          {/* Impact Preview Section - Step 6: Preview de impacto financeiro */}
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="border-b border-white/5 bg-white/[0.02] p-6"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-violet-500/10 rounded-xl flex items-center justify-center text-violet-400">
+                      <Package className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Itens Selecionados</p>
+                      <p className="text-white font-black text-lg">{selectedCount}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-400">
+                      <DollarSign className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Impacto Financeiro</p>
+                      <p className="text-white font-black text-lg">R$ {totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-400">
+                      <TrendingUp className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Previsão de Saving</p>
+                      <p className="text-white font-black text-lg">~ R$ {(totalValue * 0.15).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
             )}
-          </Button>
+          </AnimatePresence>
 
-          {/* Preview Button - Main Action */}
-          <Button
-            size="sm"
-            variant="secondary"
-            className="gap-2"
-            onClick={handleOpenPreview}
-          >
-            <Eye className="h-4 w-4" />
-            <span className="hidden sm:inline">Ações em Massa</span>
-            <span className="sm:hidden">Ações</span>
-          </Button>
-
-          {/* Quick Actions Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <div className="p-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-primary-foreground hover:bg-primary-foreground/10"
+                size="sm"
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="rounded-xl h-10 w-10 p-0 text-zinc-500 hover:text-white hover:bg-white/5"
               >
-                <MoreHorizontal className="h-4 w-4" />
+                <motion.div animate={{ rotate: isExpanded ? 180 : 0 }}>
+                  <ChevronUp className="w-5 h-5" />
+                </motion.div>
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem onClick={() => onSelectAll()}>
-                <CheckSquare className="h-4 w-4 mr-2" />
-                Selecionar Todos
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onDeselectAll()}>
-                <Square className="h-4 w-4 mr-2" />
-                Desmarcar Todos
-              </DropdownMenuItem>
-              {onExport && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => onExport('excel', selectedItems.map(i => i.id))}>
-                    <FileDown className="h-4 w-4 mr-2" />
-                    Exportar Excel
+              
+              <div className="flex items-center gap-2">
+                <Badge className="bg-violet-500 text-white font-black text-xs px-3 h-7 border-none rounded-lg">
+                  {selectedCount} selecionados
+                </Badge>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onDeselectAll}
+                  className="text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-rose-400"
+                >
+                  Desmarcar
+                </Button>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Button
+                size="sm"
+                className="bg-violet-600 hover:bg-violet-500 text-white font-black text-[10px] uppercase tracking-widest px-6 h-11 rounded-xl shadow-lg shadow-violet-500/20 border-none"
+                onClick={handleOpenPreview}
+              >
+                <Eye className="h-4 w-4 mr-2" />
+                Ações em Massa
+              </Button>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-11 w-11 rounded-xl text-zinc-500 hover:text-white hover:bg-white/5 border border-white/10"
+                  >
+                    <MoreHorizontal className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-[#0a0a0f] border-white/10 p-2 rounded-2xl backdrop-blur-xl">
+                  <DropdownMenuItem 
+                    onClick={() => onSelectAll()}
+                    className="text-[10px] font-black uppercase tracking-widest p-3 rounded-xl hover:bg-white/5 cursor-pointer"
+                  >
+                    <CheckSquare className="h-4 w-4 mr-3" />
+                    Selecionar Todos
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onExport('pdf', selectedItems.map(i => i.id))}>
-                    <FileDown className="h-4 w-4 mr-2" />
-                    Exportar PDF
+                  <DropdownMenuItem 
+                    onClick={() => onDeselectAll()}
+                    className="text-[10px] font-black uppercase tracking-widest p-3 rounded-xl hover:bg-white/5 cursor-pointer"
+                  >
+                    <Square className="h-4 w-4 mr-3" />
+                    Desmarcar Todos
                   </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </motion.div>
-      </AnimatePresence>
+                  {onExport && (
+                    <>
+                      <DropdownMenuSeparator className="bg-white/5" />
+                      <DropdownMenuItem 
+                        onClick={() => onExport('excel', selectedItems.map(i => i.id))}
+                        className="text-[10px] font-black uppercase tracking-widest p-3 rounded-xl hover:bg-white/5 cursor-pointer"
+                      >
+                        <FileDown className="h-4 w-4 mr-3" />
+                        Exportar Excel
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
+                        onClick={() => onExport('pdf', selectedItems.map(i => i.id))}
+                        className="text-[10px] font-black uppercase tracking-widest p-3 rounded-xl hover:bg-white/5 cursor-pointer"
+                      >
+                        <FileDown className="h-4 w-4 mr-3" />
+                        Exportar PDF
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Preview Modal */}
       {showPreview && (
