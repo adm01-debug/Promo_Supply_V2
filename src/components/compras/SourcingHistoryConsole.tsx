@@ -99,59 +99,36 @@ export const SourcingHistoryConsole = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header Estratégico */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            Console de Sourcing de Elite
-            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
-              <Sparkles className="w-3 h-3 mr-1" /> IA Neural
+      {/* Header Estratégico com Matrix de Sourcing */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2 mb-2">
+            Console de Sourcing Elite
+            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+              <Sparkles className="w-3 h-3 mr-1" /> Inteligência 10/10
             </Badge>
           </h2>
-          <p className="text-muted-foreground">Rastreabilidade total e inteligência competitiva de suprimentos.</p>
+          <p className="text-muted-foreground text-lg">Ecossistema de compras, fornecedores e inteligência estratégica.</p>
         </div>
-        <div className="flex items-center gap-2">
-          {lastActions.length > 0 && (
-            <Button variant="outline" size="sm" onClick={handleUndo} className="gap-2 border-dashed border-primary/30 text-primary hover:bg-primary/5">
-              <Undo2 className="w-4 h-4" /> Desfazer ({lastActions.length})
-            </Button>
-          )}
-          
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2">
-                <History className="w-4 h-4" /> Log de Auditoria
+        <div className="flex flex-col gap-2 items-start lg:items-end justify-center">
+          <div className="flex items-center gap-2">
+            {lastActions.length > 0 && (
+              <Button variant="outline" size="sm" onClick={handleUndo} className="gap-2 border-dashed">
+                <Undo2 className="w-4 h-4" /> Desfazer ({lastActions.length})
               </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <SheetHeader>
-                <SheetTitle>Log de Auditoria Estratégica</SheetTitle>
-                <SheetDescription>Rastreabilidade de todas as alterações manuais no histórico.</SheetDescription>
-              </SheetHeader>
-              <div className="mt-6 space-y-4">
-                {[1,2,3].map(i => (
-                  <div key={i} className="text-xs p-3 rounded-lg bg-muted/30 border border-border/50">
-                    <div className="flex justify-between font-bold mb-1">
-                      <span>Alteração de Sourcing</span>
-                      <span className="text-muted-foreground font-normal">Há {i * 2}h</span>
-                    </div>
-                    <p className="text-muted-foreground">Usuário Admin alterou o status do item #459{i} para 'Entregue'.</p>
-                  </div>
-                ))}
-              </div>
-            </SheetContent>
-          </Sheet>
-
-          <Button 
-            variant="default" 
-            size="sm" 
-            className="gap-2 shadow-lg shadow-primary/20"
-            onClick={() => toast.success("Relatório de Sourcing exportado com sucesso (Excel/PDF)")}
-          >
-            <Link2 className="w-4 h-4" /> Exportar Dossier
-          </Button>
+            )}
+            <Button 
+              size="sm" 
+              className="gap-2 bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/40"
+              onClick={() => toast.success("Dossier Sourcing Exportado com sucesso")}
+            >
+              <Link2 className="w-4 h-4" /> Exportar Dossier Master
+            </Button>
+          </div>
+          <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-1">Status: Sincronizado | Tempo real</p>
         </div>
       </div>
+
 
       <Card className="p-6 border-border/40 shadow-sm bg-background/50 backdrop-blur-sm">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
