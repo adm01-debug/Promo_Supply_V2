@@ -208,7 +208,7 @@ export function BulkOperationsPreview({
 
   return (
     <Dialog open={true} onOpenChange={() => !isExecuting && onClose()}>
-      <DialogContent aria-describedby="dialog-desc" className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent aria-describedby="dialog-desc" className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col bg-[#05020a] border-white/10 rounded-[2.5rem] shadow-[0_0_100px_rgba(139,92,246,0.1)]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <EntityIcon className={cn("w-5 h-5", config.color)} />
@@ -237,7 +237,7 @@ export function BulkOperationsPreview({
                       key={action.id}
                       variant="outline"
                       className={cn(
-                        "h-auto p-4 flex flex-col items-start gap-2 justify-start",
+                        "h-auto p-6 flex flex-col items-start gap-3 justify-start bg-white/[0.02] border-white/5 rounded-2xl hover:bg-violet-500/10 hover:border-violet-500/20 transition-all group",
                         action.variant === 'destructive' && "border-destructive/50 hover:bg-destructive/10",
                         action.variant === 'warning' && "border-orange-500/50 hover:bg-warning/10"
                       )}

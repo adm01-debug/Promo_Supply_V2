@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import {
   DndContext,
   DragOverlay,
@@ -94,11 +95,15 @@ function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, select
   const config = statusConfig[solicitacao.status as Solicitacao['status']];
 
   return (
-    <Card className={cn(
-      "p-4 cursor-grab active:cursor-grabbing hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-300 border-white/5 bg-white/[0.04] backdrop-blur-xl rounded-2xl relative overflow-hidden group",
-      isOverlay && "shadow-2xl rotate-2 scale-105 border-violet-500/30",
-      selected && "ring-2 ring-violet-500/50 bg-violet-500/5"
-    )}>
+    <motion.div
+      whileHover={{ scale: 1.02, y: -5 }}
+      whileTap={{ scale: 0.98 }}
+      className={cn(
+        "p-4 cursor-grab active:cursor-grabbing hover:shadow-[0_20px_50px_rgba(139,92,246,0.15)] transition-all duration-300 border-white/5 bg-white/[0.04] backdrop-blur-xl rounded-[1.5rem] relative overflow-hidden group",
+        isOverlay && "shadow-2xl rotate-2 scale-105 border-violet-500/30",
+        selected && "ring-2 ring-violet-500/50 bg-violet-500/5"
+      )}
+    >
       <div className="absolute top-0 left-0 w-0.5 h-full opacity-50 bg-violet-500" style={{ backgroundColor: config?.color.includes('bg-') ? undefined : 'var(--violet-500)' }} />
       
       <div className="flex flex-col gap-3">
@@ -142,7 +147,7 @@ function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, select
           </div>
         )}
       </div>
-    </Card>
+    </motion.div>
   );
 }
 
