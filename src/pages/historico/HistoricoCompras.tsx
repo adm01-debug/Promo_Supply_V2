@@ -40,6 +40,7 @@ import { COLORS } from "./HistoricoHelpers";
 import { HistoricoProdutosTab } from "./HistoricoProdutosTab";
 import { HistoricoFornecedoresTab } from "./HistoricoFornecedoresTab";
 import { HistoricoRegistrosTab } from "./HistoricoRegistrosTab";
+import { HistoricoSourcingTab } from "./HistoricoSourcingTab";
 import { HistoricoDrilldownModal } from "./HistoricoDrilldownModal";
 
 interface DrilldownData {
@@ -50,7 +51,7 @@ interface DrilldownData {
 const HistoricoCompras = () => {
   const { purchaseRecords, productsHistory, suppliersHistory, productCategories, isLoading } = usePurchaseHistory();
 
-  const [activeTab, setActiveTab] = useState("produtos");
+  const [activeTab, setActiveTab] = useState("sourcing");
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
