@@ -456,7 +456,34 @@ export const SourcingHistoryConsole = () => {
               )}
             </div>
           ) : viewMode === ("intelligence" as any) ? (
-            <div className="space-y-6">
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              {/* Sourcing Health Header */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
+                <Card className="p-4 border-primary/20 bg-primary/5 flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-bold text-primary uppercase tracking-widest">Health Index Global</p>
+                    <h3 className="text-2xl font-black">94.2/100</h3>
+                  </div>
+                  <div className="h-12 w-12 rounded-full border-4 border-primary border-t-transparent animate-spin-slow flex items-center justify-center">
+                    <CheckCircle className="w-6 h-6 text-primary" />
+                  </div>
+                </Card>
+                <Card className="p-4 border-emerald-500/20 bg-emerald-500/5 flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Savings Acumulado</p>
+                    <h3 className="text-2xl font-black">R$ 142k</h3>
+                  </div>
+                  <TrendingDown className="w-8 h-8 text-emerald-500 opacity-50" />
+                </Card>
+                <Card className="p-4 border-blue-500/20 bg-blue-500/5 flex items-center justify-between">
+                  <div>
+                    <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Risk Exposure</p>
+                    <h3 className="text-2xl font-black">12.5%</h3>
+                  </div>
+                  <ShieldCheck className="w-8 h-8 text-blue-500 opacity-50" />
+                </Card>
+              </div>
+
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="p-6 border-border/40 bg-muted/10">
                   <div className="flex justify-between items-center mb-6">
