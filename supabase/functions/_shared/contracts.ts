@@ -1,3 +1,4 @@
+// @ts-ignore - Deno remote import
 import { z } from "https://esm.sh/zod@3.22.4";
 
 // Contract definitions for core Edge Functions

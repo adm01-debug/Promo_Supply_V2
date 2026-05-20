@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-// @ts-expect-error - Edge function Deno module not resolvable from frontend TS
+// @ts-ignore - Edge function Deno module not resolvable from frontend TS
 import { NegotiationContract } from '../../supabase/functions/_shared/contracts.ts';
 
 /**
