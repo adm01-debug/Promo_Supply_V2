@@ -19,7 +19,10 @@ import {
   ChevronDown,
   ChevronUp,
   Loader2,
-  Undo2
+  Undo2,
+  Sparkles,
+  Brain,
+  TrendingUp as TrendingUpIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
