@@ -99,61 +99,57 @@ export const SourcingHistoryConsole = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header Estratégico */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight flex items-center gap-2">
-            Console de Sourcing de Elite
-            <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
-              <Sparkles className="w-3 h-3 mr-1" /> IA Neural
+      {/* Header Estratégico com Matrix de Sourcing */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <h2 className="text-3xl font-bold tracking-tight flex items-center gap-2 mb-2">
+            Console de Sourcing Elite
+            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-600 border-emerald-500/20">
+              <Sparkles className="w-3 h-3 mr-1" /> Inteligência 10/10
             </Badge>
           </h2>
-          <p className="text-muted-foreground">Rastreabilidade total e inteligência competitiva de suprimentos.</p>
+          <p className="text-muted-foreground text-lg">Ecossistema de compras, fornecedores e inteligência estratégica.</p>
         </div>
-        <div className="flex items-center gap-2">
-          {lastActions.length > 0 && (
-            <Button variant="outline" size="sm" onClick={handleUndo} className="gap-2 border-dashed border-primary/30 text-primary hover:bg-primary/5">
-              <Undo2 className="w-4 h-4" /> Desfazer ({lastActions.length})
-            </Button>
-          )}
-          
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2">
-                <History className="w-4 h-4" /> Log de Auditoria
+        <div className="flex flex-col gap-2 items-start lg:items-end justify-center">
+          <div className="flex items-center gap-2">
+            {lastActions.length > 0 && (
+              <Button variant="outline" size="sm" onClick={handleUndo} className="gap-2 border-dashed">
+                <Undo2 className="w-4 h-4" /> Desfazer ({lastActions.length})
               </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <SheetHeader>
-                <SheetTitle>Log de Auditoria Estratégica</SheetTitle>
-                <SheetDescription>Rastreabilidade de todas as alterações manuais no histórico.</SheetDescription>
-              </SheetHeader>
-              <div className="mt-6 space-y-4">
-                {[1,2,3].map(i => (
-                  <div key={i} className="text-xs p-3 rounded-lg bg-muted/30 border border-border/50">
-                    <div className="flex justify-between font-bold mb-1">
-                      <span>Alteração de Sourcing</span>
-                      <span className="text-muted-foreground font-normal">Há {i * 2}h</span>
-                    </div>
-                    <p className="text-muted-foreground">Usuário Admin alterou o status do item #459{i} para 'Entregue'.</p>
-                  </div>
-                ))}
-              </div>
-            </SheetContent>
-          </Sheet>
-
-          <Button 
-            variant="default" 
-            size="sm" 
-            className="gap-2 shadow-lg shadow-primary/20"
-            onClick={() => toast.success("Relatório de Sourcing exportado com sucesso (Excel/PDF)")}
-          >
-            <Link2 className="w-4 h-4" /> Exportar Dossier
-          </Button>
+            )}
+            <Button 
+              size="sm" 
+              className="gap-2 bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/40"
+              onClick={() => toast.success("Dossier Sourcing Exportado com sucesso")}
+            >
+              <Link2 className="w-4 h-4" /> Exportar Dossier Master
+            </Button>
+          </div>
+          <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-1">Status: Sincronizado | Tempo real</p>
         </div>
       </div>
 
+
+      {/* Matriz de Sourcing Estratégico */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { title: "Itens Estratégicos", count: 12, trend: "+5%", color: "border-l-primary" },
+          { title: "Itens Críticos", count: 8, trend: "-2%", color: "border-l-destructive" },
+          { title: "Alavancagem", count: 24, trend: "+12%", color: "border-l-emerald-500" },
+          { title: "Rotineiros", count: 156, trend: "Estável", color: "border-l-amber-500" },
+        ].map(item => (
+          <Card key={item.title} className={cn("p-4 border-l-4 shadow-sm hover:shadow-md transition-shadow", item.color)}>
+            <div className="flex justify-between items-start">
+              <span className="text-xs font-bold text-muted-foreground uppercase">{item.title}</span>
+              <Badge variant="secondary" className="text-[10px]">{item.trend}</Badge>
+            </div>
+            <div className="mt-2 text-2xl font-bold">{item.count}</div>
+          </Card>
+        ))}
+      </div>
+
       <Card className="p-6 border-border/40 shadow-sm bg-background/50 backdrop-blur-sm">
+
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
           <div className="flex bg-muted/30 p-1 rounded-lg border border-border/50">
             <Button 
@@ -207,7 +203,22 @@ export const SourcingHistoryConsole = () => {
           </div>
         </div>
 
+        {searchTerm && (
+          <div className="mb-4 flex items-center justify-between p-3 bg-primary/5 border border-primary/20 rounded-lg animate-in fade-in zoom-in duration-300">
+            <div className="flex items-center gap-2 text-sm text-primary font-medium">
+              <Info className="w-4 h-4" />
+              <span>{filteredRecords.length} resultados encontrados. Deseja realizar ações em massa?</span>
+            </div>
+            <div className="flex gap-2">
+              <Button size="sm" variant="outline" className="h-7 text-[10px] uppercase font-bold" onClick={() => toast.info("Modo de Seleção Ativado")}>Selecionar Tudo</Button>
+              <Button size="sm" className="h-7 text-[10px] uppercase font-bold" onClick={() => toast.success("Dossier Consolidado Gerado")}>Gerar Dossier Combinado</Button>
+            </div>
+
+          </div>
+        )}
+
         {showFilters && (
+
           <div className="mb-6 p-4 rounded-xl bg-muted/20 border border-border/40 animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="flex flex-wrap gap-2">
               <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider w-full mb-1">Categorias</div>
@@ -270,7 +281,18 @@ export const SourcingHistoryConsole = () => {
                             <span className="flex items-center gap-1.5">
                               <MapPin className="w-3.5 h-3.5" /> {record.departamento || "Logística"}
                             </span>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="flex items-center gap-1.5 text-emerald-600 cursor-help">
+                                    <Sparkles className="w-3.5 h-3.5" /> Recompra Sugerida: 15/06
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent>Padrão neural detectado: Este item é comprado a cada 45 dias.</TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           </div>
+
                         </div>
                       </div>
                       
@@ -318,12 +340,20 @@ export const SourcingHistoryConsole = () => {
                             {record.supplierName}
                           </span>
                         </div>
+                        <Separator orientation="vertical" className="h-4 mx-2" />
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground">
+                          IPG (Índice Preço Global): 
+                          <span className="text-emerald-500 flex items-center">
+                            <TrendingDown className="w-3 h-3 mr-0.5" /> -4.2%
+                          </span>
+                        </div>
                         {record.discount > 0 && (
-                          <Badge variant="outline" className="bg-emerald-500/5 text-emerald-600 border-emerald-500/20 text-[10px]">
+                          <Badge variant="outline" className="bg-emerald-500/5 text-emerald-600 border-emerald-500/20 text-[10px] ml-auto">
                             <TrendingDown className="w-3 h-3 mr-1" /> {record.discount}% Economy
                           </Badge>
                         )}
                       </div>
+
                         <Sheet>
                           <SheetTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 text-xs gap-2 hover:bg-primary/10 hover:text-primary">
@@ -415,9 +445,13 @@ export const SourcingHistoryConsole = () => {
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger>
-                          <Badge variant="outline" className={cn("gap-1 py-1 px-2 font-bold", getReliabilityColor(supplier.qualityScore))}>
-                            <ShieldCheck className="w-3 h-3" /> {supplier.qualityScore.toFixed(1)}
+                          <Badge variant="outline" className={cn(
+                            "gap-1 py-1 px-2 font-bold animate-pulse", 
+                            getReliabilityColor(supplier.qualityScore)
+                          )}>
+                            <ShieldCheck className="w-3 h-3" /> {supplier.qualityScore.toFixed(1)} Confiança IA
                           </Badge>
+
                         </TooltipTrigger>
                         <TooltipContent>Índice de Confiabilidade Neural</TooltipContent>
                       </Tooltip>
@@ -439,20 +473,27 @@ export const SourcingHistoryConsole = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 mb-4 bg-muted/30 p-3 rounded-lg border border-border/50">
-                    <div>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="bg-muted/30 p-3 rounded-xl border border-border/50 hover:bg-muted/50 transition-colors">
                       <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Vol. Histórico</div>
                       <div className="text-lg font-bold text-foreground">
                         {supplier.totalSpent.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })}
                       </div>
+                      <div className="text-[9px] text-emerald-600 font-bold mt-1 flex items-center">
+                        <TrendingUp className="w-2.5 h-2.5 mr-0.5" /> +12.5% vs YoY
+                      </div>
                     </div>
-                    <div>
+                    <div className="bg-muted/30 p-3 rounded-xl border border-border/50 hover:bg-muted/50 transition-colors">
                       <div className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mb-1">Ticket Médio</div>
                       <div className="text-lg font-bold text-foreground">
                         {supplier.averageOrderValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })}
                       </div>
+                      <div className="text-[9px] text-blue-600 font-bold mt-1 flex items-center">
+                        <ArrowRight className="w-2.5 h-2.5 mr-0.5" /> Estável
+                      </div>
                     </div>
                   </div>
+
 
                   <div className="space-y-4">
                     <div className="grid grid-cols-3 gap-2">
