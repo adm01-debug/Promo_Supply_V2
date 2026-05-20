@@ -323,17 +323,25 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
               </Button>
 
               {budgetCheck && (
-                <div className="space-y-2">
+                <div className="space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-500">
                   <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
-                    <span className="text-zinc-500">Integridade Orçamentária</span>
-                    <span className={cn(budgetCheck.available ? "text-emerald-400" : "text-rose-400")}>
-                      {budgetCheck.available ? "Seguro" : "Risco Crítico"}
+                    <div className="flex items-center gap-1.5 text-zinc-500">
+                      <ShieldCheck className={cn("w-3.5 h-3.5", budgetCheck.available ? "text-emerald-400" : "text-rose-400")} />
+                      Integridade Orçamentária
+                    </div>
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-full border",
+                      budgetCheck.available 
+                        ? "text-emerald-400 border-emerald-500/20 bg-emerald-500/5 shadow-[0_0_10px_rgba(16,185,129,0.1)]" 
+                        : "text-rose-400 border-rose-500/20 bg-rose-500/5"
+                    )}>
+                      {budgetCheck.available ? "SEGURO" : "RISCO CRÍTICO"}
                     </span>
                   </div>
-                  <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                  <div className="h-3 w-full bg-white/5 rounded-full overflow-hidden border border-white/5 p-[1px]">
                     <div 
                       className={cn(
-                        "h-full transition-all duration-1000 ease-out",
+                        "h-full transition-all duration-1000 ease-out rounded-full",
                         budgetCheck.available ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]"
                       )}
                       style={{ width: `${Math.min(100, (formData.valorEstimado / (budgetCheck.budget_total || 1)) * 100)}%` }}
