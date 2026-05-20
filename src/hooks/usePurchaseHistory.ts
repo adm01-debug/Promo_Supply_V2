@@ -24,6 +24,8 @@ export interface PurchaseRecord {
   solicitacaoTitle?: string;
   departamento?: string;
   centroCusto?: string;
+  costCenterName?: string;
+  costCenterCode?: string;
 }
 
 export interface ProductHistory {
@@ -149,7 +151,7 @@ export function usePurchaseHistory() {
   const { data: rawCostCenters } = useQuery({
     queryKey: ["purchase-history-cost-centers"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("cost_centers").select("id, name, code, description");
+      const { data, error } = await supabase.from("cost_centers").select("id, name, code");
       if (error) throw error;
       return data || [];
     },
@@ -171,6 +173,7 @@ export function usePurchaseHistory() {
     const catMap = new Map(categorias.map((c) => [c.id, c.nome]));
     const solMap = new Map(solicitacoes.map((s) => [s.id, s]));
     const ccMap = new Map(costCenters.map((cc) => [cc.id, cc]));
+    
     const itensByPedido = new Map<string, typeof itens>();
     itens.forEach((item) => {
       const list = itensByPedido.get(item.pedido_id || "") || [];
@@ -183,6 +186,8 @@ export function usePurchaseHistory() {
     pedidos.forEach((ped) => {
       const forn = fornMap.get(ped.fornecedor_id);
       const sol = solMap.get(ped.solicitacao_id || "");
+      const cc = sol?.cost_center_id ? ccMap.get(sol.cost_center_id) : null;
+      
       const pedItens = itensByPedido.get(ped.id) || [];
       const uiStatus = STATUS_MAP[ped.status] || "pending";
       const onTime =
@@ -190,55 +195,48 @@ export function usePurchaseHistory() {
       const discountPct =
         ped.valor_total > 0 ? ((Number(ped.desconto) || 0) / (Number(ped.valor_total) + (Number(ped.desconto) || 0))) * 100 : 0;
 
+      const baseRecord = {
+        id: ped.id,
+        orderNumber: ped.numero,
+        supplierId: ped.fornecedor_id,
+        supplierName: forn?.nome_fantasia || forn?.razao_social || "Desconhecido",
+        purchaseDate: ped.data_emissao,
+        discount: Math.round(discountPct * 10) / 10,
+        status: uiStatus,
+        deliveryDate: ped.data_entrega || undefined,
+        deliveredOnTime: onTime ?? undefined,
+        qualityRating: Number(forn?.avaliacao) || 0,
+        solicitacaoId: ped.solicitacao_id ?? undefined,
+        solicitacaoTitle: sol?.titulo ?? undefined,
+        departamento: sol?.departamento ?? undefined,
+        centroCusto: sol?.centro_custo ?? undefined,
+        costCenterName: cc?.name ?? undefined,
+        costCenterCode: cc?.code ?? undefined,
+      };
+
       if (pedItens.length === 0) {
-        // No line items — create a single record per pedido
         purchaseRecords.push({
-          id: ped.id,
-          orderNumber: ped.numero,
+          ...baseRecord,
           productId: "",
           productName: "Sem itens detalhados",
           productCategory: "Geral",
-          supplierId: ped.fornecedor_id,
-          supplierName: forn?.nome_fantasia || forn?.razao_social || "Desconhecido",
-          purchaseDate: ped.data_emissao,
           quantity: 1,
           unitPrice: Number(ped.valor_total) || 0,
           totalPrice: Number(ped.valor_total) || 0,
-          discount: Math.round(discountPct * 10) / 10,
-          status: uiStatus,
-          deliveryDate: ped.data_entrega || undefined,
-          deliveredOnTime: onTime ?? undefined,
-          qualityRating: Number(forn?.avaliacao) || 0,
-          solicitacaoId: ped.solicitacao_id ?? undefined,
-          solicitacaoTitle: sol?.titulo ?? undefined,
-          departamento: sol?.departamento ?? undefined,
-          centroCusto: sol?.centro_custo ?? undefined,
         });
       } else {
         pedItens.forEach((item) => {
           const prod = item.produto_id ? prodMap.get(item.produto_id) : null;
           const catName = prod?.categoria_id ? catMap.get(prod.categoria_id) || "Geral" : "Geral";
           purchaseRecords.push({
+            ...baseRecord,
             id: item.id,
-            orderNumber: ped.numero,
             productId: item.produto_id || item.id,
             productName: prod?.nome || item.descricao || "Produto",
             productCategory: catName,
-            supplierId: ped.fornecedor_id,
-            supplierName: forn?.nome_fantasia || forn?.razao_social || "Desconhecido",
-            purchaseDate: ped.data_emissao,
             quantity: item.quantidade,
             unitPrice: Number(item.valor_unitario) || 0,
             totalPrice: Number(item.valor_total) || 0,
-            discount: Math.round(discountPct * 10) / 10,
-            status: uiStatus,
-            deliveryDate: ped.data_entrega || undefined,
-            deliveredOnTime: onTime ?? undefined,
-            qualityRating: Number(forn?.avaliacao) || 0,
-            solicitacaoId: ped.solicitacao_id ?? undefined,
-            solicitacaoTitle: sol?.titulo ?? undefined,
-            departamento: sol?.departamento ?? undefined,
-            centroCusto: sol?.centro_custo ?? undefined,
           });
         });
       }
@@ -338,8 +336,8 @@ export function usePurchaseHistory() {
       }
     );
 
-    return { purchaseRecords, productsHistory, suppliersHistory, productCategories };
-  }, [rawPedidos, rawItens, rawFornecedores, rawProdutos, rawCategorias, rawSolicitacoes]);
+    return { purchaseRecords, productsHistory, suppliersHistory, productCategories, costCenters };
+  }, [rawPedidos, rawItens, rawFornecedores, rawProdutos, rawCategorias, rawSolicitacoes, rawCostCenters]);
 
   return {
     ...computed,
