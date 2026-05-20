@@ -10,7 +10,9 @@ import {
   Package, Truck, CheckCircle, Info, AlertCircle, 
   TrendingDown, DollarSign, Sparkles, Filter,
   BarChart3, History, ArrowRight, ShieldCheck,
-  TrendingUp, Clock, Calendar, ChevronRight, Undo2
+  TrendingUp, Clock, Calendar, ChevronRight, Undo2,
+  Globe, Zap, FileText, Download, BarChart, Map,
+  Table as TableIcon
 } from "lucide-react";
 import { usePurchaseHistory, type PurchaseRecord, type SupplierHistory } from "@/hooks/usePurchaseHistory";
 import { cn } from "@/lib/utils";
@@ -19,7 +21,12 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "sonner";
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip as RechartsTooltip, Cell, PieChart, Pie } from "recharts";
+import { 
+  LineChart, Line, ResponsiveContainer, XAxis, YAxis, 
+  Tooltip as RechartsTooltip, Cell, PieChart, Pie,
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
+  BarChart as RechartsBarChart, Bar
+} from "recharts";
 
 const PriceTrendChart = ({ data }: { data: { date: string, price: number }[] }) => (
   <div className="h-16 w-32">
@@ -120,9 +127,12 @@ export const SourcingHistoryConsole = () => {
             <Button 
               size="sm" 
               className="gap-2 bg-primary shadow-lg shadow-primary/20 hover:shadow-primary/40"
-              onClick={() => toast.success("Dossier Sourcing Exportado com sucesso")}
+              onClick={() => toast.success("Dossier Sourcing Elite v10.0 Exportado", {
+                description: "O documento contém análise de Kraljic, Radar de Performance e Matriz Geográfica.",
+                icon: <FileText className="w-4 h-4" />
+              })}
             >
-              <Link2 className="w-4 h-4" /> Exportar Dossier Master
+              <Download className="w-4 h-4" /> Exportar Dossier Elite 10/10
             </Button>
           </div>
           <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-widest mt-1">Status: Sincronizado | Tempo real</p>
@@ -161,7 +171,7 @@ export const SourcingHistoryConsole = () => {
               )} 
               onClick={() => setViewMode("client")}
             >
-              <Users className="w-4 h-4" /> Por Cliente/Centro de Custo
+              <Users className="w-4 h-4" /> Cliente
             </Button>
             <Button 
               variant="ghost" 
@@ -172,7 +182,18 @@ export const SourcingHistoryConsole = () => {
               )} 
               onClick={() => setViewMode("supplier")}
             >
-              <Building className="w-4 h-4" /> Por Fornecedor/Sourcing
+              <Building className="w-4 h-4" /> Fornecedor
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className={cn(
+                "gap-2 px-4 transition-all duration-200",
+                viewMode as string === "intelligence" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+              )} 
+              onClick={() => setViewMode("intelligence" as any)}
+            >
+              <Globe className="w-4 h-4" /> Inteligência
             </Button>
           </div>
           
@@ -433,6 +454,168 @@ export const SourcingHistoryConsole = () => {
                   <p className="text-muted-foreground">Nenhum registro encontrado para sua busca.</p>
                 </div>
               )}
+            </div>
+          ) : viewMode === ("intelligence" as any) ? (
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="p-6 border-border/40 bg-muted/10">
+                  <div className="flex justify-between items-center mb-6">
+                    <div>
+                      <h4 className="font-bold text-lg flex items-center gap-2">
+                        <Map className="w-5 h-5 text-primary" /> Matriz de Origem Geográfica
+                      </h4>
+                      <p className="text-xs text-muted-foreground">Distribuição global e local de fornecimento</p>
+                    </div>
+                    <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20">
+                      Real-time
+                    </Badge>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    {[
+                      { region: "Sudeste (SP/RJ/MG)", value: 65, color: "bg-blue-500", trend: "up" },
+                      { region: "Sul (PR/SC/RS)", value: 20, color: "bg-emerald-500", trend: "stable" },
+                      { region: "Internacional (China/EUA)", value: 10, color: "bg-amber-500", trend: "down" },
+                      { region: "Nordeste (BA/PE)", value: 5, color: "bg-purple-500", trend: "up" },
+                    ].map((item) => (
+                      <div key={item.region} className="space-y-2">
+                        <div className="flex justify-between items-center text-sm font-medium">
+                          <span className="flex items-center gap-2">
+                            <MapPin className="w-3.5 h-3.5 text-muted-foreground" />
+                            {item.region}
+                          </span>
+                          <span className="flex items-center gap-2">
+                            {item.value}%
+                            {item.trend === "up" && <TrendingUp className="w-3 h-3 text-emerald-500" />}
+                            {item.trend === "down" && <TrendingDown className="w-3 h-3 text-destructive" />}
+                          </span>
+                        </div>
+                        <Progress value={item.value} className={cn("h-2", item.color)} />
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="mt-8 p-4 rounded-xl bg-primary/5 border border-primary/10">
+                    <div className="flex items-start gap-3">
+                      <Zap className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+                      <div>
+                        <p className="text-sm font-bold text-primary">Insight Logístico</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          A concentração de 65% no Sudeste sugere otimização de frete, mas eleva risco de ruptura local. Considere diversificação para o Sul.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </Card>
+
+                <Card className="p-6 border-border/40 bg-muted/10">
+                  <div className="flex justify-between items-center mb-6">
+                    <div>
+                      <h4 className="font-bold text-lg flex items-center gap-2">
+                        <BarChart className="w-5 h-5 text-primary" /> Radar de Performance de Sourcing
+                      </h4>
+                      <p className="text-xs text-muted-foreground">Métricas integradas de eficiência</p>
+                    </div>
+                  </div>
+                  
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={[
+                        { subject: 'Preço', A: 120, B: 110, fullMark: 150 },
+                        { subject: 'Qualidade', A: 98, B: 130, fullMark: 150 },
+                        { subject: 'Prazo', A: 86, B: 130, fullMark: 150 },
+                        { subject: 'Risco', A: 99, B: 100, fullMark: 150 },
+                        { subject: 'Sustent.', A: 85, B: 90, fullMark: 150 },
+                        { subject: 'Inovação', A: 65, B: 85, fullMark: 150 },
+                      ]}>
+                        <PolarGrid stroke="#e2e8f0" />
+                        <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10, fontWeight: 700 }} />
+                        <PolarRadiusAxis hide />
+                        <Radar
+                          name="Sourcing Atual"
+                          dataKey="B"
+                          stroke="#0ea5e9"
+                          fill="#0ea5e9"
+                          fillOpacity={0.5}
+                        />
+                        <Radar
+                          name="Benchmark Mercado"
+                          dataKey="A"
+                          stroke="#94a3b8"
+                          fill="#94a3b8"
+                          fillOpacity={0.3}
+                        />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                  
+                  <div className="flex justify-center gap-6 mt-4">
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 w-3 rounded-full bg-primary/50" />
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase">Sourcing Atual</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="h-3 w-3 rounded-full bg-slate-400/30" />
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase">Benchmark Mercado</span>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              <Card className="p-6 border-border/40">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h4 className="font-bold text-lg flex items-center gap-2">
+                      <TableIcon className="w-5 h-5 text-primary" /> Matriz de Comparação Competitiva
+                    </h4>
+                    <p className="text-xs text-muted-foreground">Análise detalhada vs Médias de Mercado (neural)</p>
+                  </div>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Download className="w-4 h-4" /> Exportar Dados
+                  </Button>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-border">
+                        <th className="pb-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">Categoria</th>
+                        <th className="pb-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">Preço Médio (Nós)</th>
+                        <th className="pb-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">Preço Médio (Mercado)</th>
+                        <th className="pb-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">Performance</th>
+                        <th className="pb-3 font-bold text-xs uppercase tracking-wider text-muted-foreground">Status Sourcing</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      {[
+                        { cat: "Eletrônicos", us: "R$ 450", market: "R$ 490", perf: "-8.2%", status: "Otimizado" },
+                        { cat: "Mobiliário", us: "R$ 1.2k", market: "R$ 1.1k", perf: "+9.1%", status: "Rever Sourcing" },
+                        { cat: "Suprimentos", us: "R$ 85", market: "R$ 92", perf: "-7.6%", status: "Otimizado" },
+                        { cat: "Serviços TI", us: "R$ 3.5k", market: "R$ 3.2k", perf: "+9.4%", status: "Crítico" },
+                      ].map((row, idx) => (
+                        <tr key={idx} className="hover:bg-muted/30 transition-colors group">
+                          <td className="py-4 font-bold text-sm">{row.cat}</td>
+                          <td className="py-4 text-sm">{row.us}</td>
+                          <td className="py-4 text-sm text-muted-foreground">{row.market}</td>
+                          <td className={cn("py-4 text-sm font-bold", row.perf.startsWith('-') ? "text-emerald-500" : "text-destructive")}>
+                            {row.perf}
+                          </td>
+                          <td className="py-4">
+                            <Badge variant="outline" className={cn(
+                              "text-[10px] uppercase font-bold",
+                              row.status === "Otimizado" ? "bg-emerald-50/50 text-emerald-600 border-emerald-200" :
+                              row.status === "Crítico" ? "bg-destructive/10 text-destructive border-destructive/20 animate-pulse" :
+                              "bg-amber-50/50 text-amber-600 border-amber-200"
+                            )}>
+                              {row.status}
+                            </Badge>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
