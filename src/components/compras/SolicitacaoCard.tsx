@@ -263,6 +263,38 @@ export const SolicitacaoCard = ({
         </div>
 
         <div className="flex items-center gap-3 pt-1">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-10 rounded-xl text-zinc-500 hover:text-white hover:bg-white/5 font-black text-[10px] tracking-widest uppercase">
+                <MessageSquare className="w-3.5 h-3.5 mr-2" />
+                Contexto
+              </Badge>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 bg-[#0a0a0f] border-white/10 rounded-2xl p-4 shadow-2xl">
+              <h5 className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-4">Neural Context Thread</h5>
+              <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
+                <div className="p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-[9px] font-black text-white">@João Silva</span>
+                    <span className="text-[8px] text-zinc-600">há 2h</span>
+                  </div>
+                  <p className="text-[10px] text-zinc-400">Verifiquei que o estoque de Dell está baixo. @Maria Santos, aprova a urgência?</p>
+                </div>
+                <div className="p-3 bg-violet-500/10 rounded-xl border border-violet-500/20">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-[9px] font-black text-violet-300">@Maria Santos</span>
+                    <span className="text-[8px] text-zinc-600">há 15min</span>
+                  </div>
+                  <p className="text-[10px] text-zinc-300">Ok, orçamento validado. Seguir com a compra.</p>
+                </div>
+              </div>
+              <div className="mt-4 flex gap-2">
+                <Input placeholder="Adicionar nota neural..." className="h-8 text-[10px] bg-white/5 border-white/5" />
+                <Button size="icon" className="h-8 w-8 bg-violet-600"><ArrowRight className="w-3 h-3" /></Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+
           {onDuplicate && (
             <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="h-10 rounded-xl text-zinc-500 hover:text-white hover:bg-white/5 font-black text-[10px] tracking-widest uppercase" title="Duplicate">
               <Copy className="w-3.5 h-3.5 mr-2" />
