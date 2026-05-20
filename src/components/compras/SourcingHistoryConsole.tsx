@@ -300,7 +300,7 @@ export const SourcingHistoryConsole = () => {
             </div>
           )}
         </ScrollArea>
-      </ScrollArea>
+      </Card>
 
       {/* Footer Inteligente / Insights */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
