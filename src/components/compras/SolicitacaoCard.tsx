@@ -177,15 +177,50 @@ export const SolicitacaoCard = ({
                 )}
               </div>
               
-              <Badge className={cn(
-                "text-[10px] font-black uppercase tracking-widest py-1 px-3 gap-1.5 border-none rounded-full transition-all duration-500", 
-                urgency.bg, 
-                urgency.color,
-                urgency.pulse && "animate-pulse shadow-[0_0_15px_rgba(244,63,94,0.3)]"
-              )}>
-                <urgency.icon className="w-3 h-3" />
-                {urgency.label}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-violet-400">
+                      <GitBranch className="w-4 h-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 bg-[#0a0a0f] border-white/10 rounded-2xl p-4 shadow-2xl">
+                    <h5 className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-4">Fluxo de Aprovação Neural</h5>
+                    <div className="space-y-4">
+                      {[
+                        { label: 'Gerente Depto', status: 'completed', user: 'João Silva' },
+                        { label: 'Diretor Financeiro', status: 'current', user: 'Maria Santos' },
+                        { label: 'CEO Approval', status: 'pending', user: 'Roberto Costa' }
+                      ].map((step, i) => (
+                        <div key={i} className="flex gap-3 relative">
+                          {i < 2 && <div className="absolute left-2 top-5 bottom-0 w-[1px] bg-white/10" />}
+                          <div className={cn(
+                            "w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 z-10",
+                            step.status === 'completed' ? "bg-emerald-500 border-emerald-500" : 
+                            step.status === 'current' ? "bg-violet-500 border-violet-500 animate-pulse" : "bg-zinc-900 border-zinc-800"
+                          )}>
+                            {step.status === 'completed' && <Check className="w-2 h-2 text-white" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] font-black uppercase text-white tracking-widest">{step.label}</p>
+                            <p className="text-[9px] text-zinc-500 font-bold">{step.user}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                <Badge className={cn(
+                  "text-[10px] font-black uppercase tracking-widest py-1 px-3 gap-1.5 border-none rounded-full transition-all duration-500", 
+                  urgency.bg, 
+                  urgency.color,
+                  urgency.pulse && "animate-pulse shadow-[0_0_15px_rgba(244,63,94,0.3)]"
+                )}>
+                  <urgency.icon className="w-3 h-3" />
+                  {urgency.label}
+                </Badge>
+              </div>
             </div>
 
             <p className="text-sm font-medium text-zinc-100 mb-4 line-clamp-2 leading-relaxed">{solicitacao.produto}</p>
