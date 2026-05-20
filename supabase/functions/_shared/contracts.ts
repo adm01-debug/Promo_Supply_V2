@@ -38,7 +38,7 @@ export class ContractValidator {
     if (!result.success) {
       return {
         isValid: false,
-        errors: result.error.errors.map(e => `${e.path.join('.')}: ${e.message}`)
+        errors: result.error.errors.map((e: any) => `${e.path.join('.')}: ${e.message}`)
       };
     }
     return { isValid: true, data: result.data };
