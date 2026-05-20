@@ -164,11 +164,13 @@ export function usePurchaseHistory() {
     const produtos = rawProdutos || [];
     const categorias = rawCategorias || [];
     const solicitacoes = rawSolicitacoes || [];
+    const costCenters = rawCostCenters || [];
 
     const fornMap = new Map(fornecedores.map((f) => [f.id, f]));
     const prodMap = new Map(produtos.map((p) => [p.id, p]));
     const catMap = new Map(categorias.map((c) => [c.id, c.nome]));
     const solMap = new Map(solicitacoes.map((s) => [s.id, s]));
+    const ccMap = new Map(costCenters.map((cc) => [cc.id, cc]));
     const itensByPedido = new Map<string, typeof itens>();
     itens.forEach((item) => {
       const list = itensByPedido.get(item.pedido_id || "") || [];
