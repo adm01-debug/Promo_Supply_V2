@@ -112,6 +112,24 @@ export function EnhancedBulkActionsBar({
 
   return (
     <>
+      <AnimatePresence>
+        {showUndo && (
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 50, opacity: 0 }}
+            className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[60]"
+          >
+            <Button 
+              onClick={() => { setShowUndo(false); toast.info("Ação desfeita com sucesso."); }}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] uppercase tracking-widest px-8 h-12 rounded-2xl shadow-2xl border-none gap-3"
+            >
+              <Undo2 className="w-4 h-4" /> Desfazer Ação Neural
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.div
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
