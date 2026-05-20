@@ -355,6 +355,7 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
                   {isProcessingNeural ? <Loader2 className="animate-spin w-3 h-3" /> : "Processar"}
                 </Button>
               </div>
+              </div>
             </div>
           )}
 
