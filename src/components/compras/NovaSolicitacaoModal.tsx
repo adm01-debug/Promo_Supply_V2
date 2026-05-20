@@ -77,12 +77,28 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
   const [errors, setErrors] = useState<Partial<Record<keyof NovaSolicitacaoData, string>>>({});
   const [budgetCheck, setBudgetCheck] = useState<BudgetCheckResult | null>(null);
   const [isCheckingBudget, setIsCheckingBudget] = useState(false);
+  const [history, setHistory] = useState<NovaSolicitacaoData[]>([]);
+  const isInternalUpdate = useRef(false);
 
   useEffect(() => {
-    if (formData !== initialFormData) {
+    if (formData !== initialFormData && !isInternalUpdate.current) {
       localStorage.setItem('nova_solicitacao_draft', JSON.stringify(formData));
     }
   }, [formData]);
+
+  const pushToHistory = (data: NovaSolicitacaoData) => {
+    setHistory(prev => [...prev.slice(-9), data]); // Keep last 10 versions
+  };
+
+  const handleUndo = () => {
+    if (history.length === 0) return;
+    const prev = history[history.length - 1];
+    isInternalUpdate.current = true;
+    setFormData(prev);
+    setHistory(prevH => prevH.slice(0, -1));
+    toast.success("Ação desfeita");
+    setTimeout(() => { isInternalUpdate.current = false; }, 100);
+  };
 
   const processNeuralDraft = async () => {
     if (!neuralInput.trim()) return;
