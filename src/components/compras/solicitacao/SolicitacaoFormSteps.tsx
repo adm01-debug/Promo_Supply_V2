@@ -308,26 +308,44 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
           {errors.costCenterId && <p className="text-xs text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3" />{errors.costCenterId}</p>}
           
           {formData.costCenterId && formData.valorEstimado > 0 && (
-            <Button type="button" variant="outline" size="sm" onClick={checkBudget} disabled={isCheckingBudget} className="w-full mt-1">
-              {isCheckingBudget ? <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Verificando...</> : <><ShieldCheck className="w-3 h-3 mr-1" /> Verificar Orçamento</>}
-            </Button>
+            <div className="space-y-4">
+              <Button type="button" variant="outline" size="sm" onClick={checkBudget} disabled={isCheckingBudget} className="w-full mt-1 border-violet-500/20 hover:bg-violet-500/5">
+                {isCheckingBudget ? <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Verificando...</> : <><ShieldCheck className="w-3 h-3 mr-1" /> Verificar Orçamento Neural</>}
+              </Button>
+
+              {budgetCheck && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-[10px] font-black uppercase tracking-widest">
+                    <span className="text-zinc-500">Integridade Orçamentária</span>
+                    <span className={cn(budgetCheck.available ? "text-emerald-400" : "text-rose-400")}>
+                      {budgetCheck.available ? "Seguro" : "Risco Crítico"}
+                    </span>
+                  </div>
+                  <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                    <div 
+                      className={cn(
+                        "h-full transition-all duration-1000 ease-out",
+                        budgetCheck.available ? "bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" : "bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)]"
+                      )}
+                      style={{ width: `${Math.min(100, (formData.valorEstimado / (budgetCheck.budget_total || 1)) * 100)}%` }}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="p-2 bg-white/[0.02] rounded-lg border border-white/5">
+                      <p className="text-[8px] text-zinc-500 font-black uppercase">Disponível</p>
+                      <p className="text-[10px] text-white font-bold">R$ {budgetCheck.budget_available?.toLocaleString('pt-BR')}</p>
+                    </div>
+                    <div className="p-2 bg-white/[0.02] rounded-lg border border-white/5">
+                      <p className="text-[8px] text-zinc-500 font-black uppercase">Comprometido</p>
+                      <p className="text-[10px] text-white font-bold">R$ {budgetCheck.budget_committed?.toLocaleString('pt-BR')}</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
         </div>
       </div>
-
-      {budgetCheck && (
-        <div className={cn("rounded-lg p-3 border text-sm", budgetCheck.available
-          ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-400"
-          : "bg-destructive/10 border-destructive/20 text-destructive")}>
-          <div className="flex items-center gap-2 font-medium mb-1">
-            {budgetCheck.available ? <><Check className="w-4 h-4" /> Orçamento Disponível</> : <><AlertCircle className="w-4 h-4" /> Orçamento Insuficiente</>}
-          </div>
-          <p className="text-xs">{budgetCheck.message}</p>
-          {budgetCheck.has_budget && budgetCheck.budget_available !== undefined && (
-            <p className="text-xs mt-1">Disponível: R$ {budgetCheck.budget_available.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
-          )}
-        </div>
-      )}
 
       {formData.valorEstimado > 0 && formData.valorEstimado < 1000 && (
         <div className="rounded-lg p-3 border bg-primary/5 border-primary/20 text-sm">
