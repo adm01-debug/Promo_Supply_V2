@@ -501,41 +501,83 @@ export const SourcingHistoryConsole = () => {
         </ScrollArea>
       </Card>
 
-      {/* Footer Inteligente / Insights */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="p-4 border-emerald-500/20 bg-emerald-500/5 flex items-start gap-4">
-          <div className="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-            <TrendingUp className="w-5 h-5" />
+      {/* Footer Inteligente / Insights 10/10 */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="p-4 border-emerald-500/20 bg-emerald-500/5 flex flex-col gap-3 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform">
+            <TrendingUp className="w-12 h-12" />
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+              <TrendingUp className="w-4 h-4" />
+            </div>
+            <h5 className="font-bold text-emerald-900 dark:text-emerald-400 text-xs uppercase tracking-wider">Oportunidade IA</h5>
           </div>
           <div>
-            <h5 className="font-bold text-emerald-900 dark:text-emerald-400 text-sm">Oportunidade de Sourcing</h5>
-            <p className="text-xs text-emerald-800/70 dark:text-emerald-400/70 mt-1">
-              3 fornecedores reduziram o ticket médio em 12% no último trimestre.
+            <div className="text-2xl font-bold text-emerald-700">R$ 12.4k</div>
+            <p className="text-[10px] text-emerald-800/70 dark:text-emerald-400/70 mt-1">
+              Potencial de economia em eletrônicos via fornecedor "Global Tech".
             </p>
           </div>
+          <Progress value={75} className="h-1 bg-emerald-200/30" />
         </Card>
 
-        <Card className="p-4 border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
-          <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600">
-            <AlertCircle className="w-5 h-5" />
+        <Card className="p-4 border-amber-500/20 bg-amber-500/5 flex flex-col gap-3 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform">
+            <AlertCircle className="w-12 h-12" />
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600">
+              <AlertCircle className="w-4 h-4" />
+            </div>
+            <h5 className="font-bold text-amber-900 dark:text-amber-400 text-xs uppercase tracking-wider">Risco de Sourcing</h5>
           </div>
           <div>
-            <h5 className="font-bold text-amber-900 dark:text-amber-400 text-sm">Alerta de Lead Time</h5>
-            <p className="text-xs text-amber-800/70 dark:text-amber-400/70 mt-1">
-              Atrasos recorrentes detectados em 15% das entregas de itens críticos.
+            <div className="text-2xl font-bold text-amber-700">Alta</div>
+            <p className="text-[10px] text-amber-800/70 dark:text-amber-400/70 mt-1">
+              Lead time médio subiu 15% para itens de infraestrutura.
             </p>
           </div>
+          <Progress value={40} className="h-1 bg-amber-200/30" />
         </Card>
 
-        <Card className="p-4 border-primary/20 bg-primary/5 flex items-start gap-4">
-          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-            <Sparkles className="w-5 h-5" />
+        <Card className="p-4 border-primary/20 bg-primary/5 flex flex-col gap-3 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform">
+            <Sparkles className="w-12 h-12" />
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <h5 className="font-bold text-primary-900 dark:text-primary-400 text-xs uppercase tracking-wider">Insight Estratégico</h5>
           </div>
           <div>
-            <h5 className="font-bold text-primary-900 dark:text-primary-400 text-sm">Insight IA</h5>
-            <p className="text-xs text-primary-800/70 dark:text-primary-400/70 mt-1">
-              Consolidar compras por Centro de Custo pode gerar economia de R$ 45k/mês.
+            <div className="text-2xl font-bold text-primary-700">88.5%</div>
+            <p className="text-[10px] text-primary-800/70 dark:text-primary-400/70 mt-1">
+              Eficiência global de sourcing (Benchmark vs. Atual).
             </p>
+          </div>
+          <Progress value={88} className="h-1 bg-primary-200/30" />
+        </Card>
+
+        <Card className="p-4 border-border/40 bg-background/50 backdrop-blur-sm flex flex-col gap-3">
+          <h5 className="font-bold text-muted-foreground text-[10px] uppercase tracking-wider">Spend por Categoria</h5>
+          <div className="space-y-2">
+            {[
+              { label: 'Obras', val: 65, color: 'bg-blue-500' },
+              { label: 'TI', val: 25, color: 'bg-emerald-500' },
+              { label: 'Adm', val: 10, color: 'bg-amber-500' }
+            ].map(cat => (
+              <div key={cat.label} className="space-y-1">
+                <div className="flex justify-between text-[9px] font-bold">
+                  <span>{cat.label}</span>
+                  <span>{cat.val}%</span>
+                </div>
+                <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
+                  <div className={cn("h-full", cat.color)} style={{ width: `${cat.val}%` }} />
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
