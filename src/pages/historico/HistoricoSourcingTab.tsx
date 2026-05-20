@@ -137,7 +137,7 @@ export const HistoricoSourcingTab = ({ purchaseRecords, searchTerm }: Props) => 
                     </span>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={record.status === 'delivered' ? 'success' : 'secondary'} className="text-[10px]">
+                    <Badge variant="outline" className={record.status === 'delivered' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20 text-[10px]' : 'text-[10px]'}>
                       {record.status === 'delivered' ? 'Entregue' : 
                        record.status === 'shipped' ? 'Enviado' : 'Pendente'}
                     </Badge>
