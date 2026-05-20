@@ -139,7 +139,17 @@ export function usePurchaseHistory() {
   const { data: rawSolicitacoes } = useQuery({
     queryKey: ["purchase-history-solicitacoes"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("solicitacoes").select("id, titulo, departamento, centro_custo");
+      const { data, error } = await supabase.from("solicitacoes").select("id, titulo, departamento, centro_custo, cost_center_id");
+      if (error) throw error;
+      return data || [];
+    },
+    staleTime: 600_000,
+  });
+
+  const { data: rawCostCenters } = useQuery({
+    queryKey: ["purchase-history-cost-centers"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("cost_centers").select("id, name, code, description");
       if (error) throw error;
       return data || [];
     },
