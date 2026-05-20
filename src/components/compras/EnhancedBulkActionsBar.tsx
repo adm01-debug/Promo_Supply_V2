@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -13,8 +13,10 @@ import {
   ChevronUp,
   Package,
   DollarSign,
-  TrendingUp
+  TrendingUp,
+  Undo2
 } from 'lucide-react';
+import { toast } from "sonner";
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
