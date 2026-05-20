@@ -1,8 +1,8 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect, useMemo } from "react";
 import {
   Package, Building2, User, Calendar, FileText,
   Upload, AlertCircle, Loader2, Check, DollarSign,
-  ShieldCheck, X, Search, Plus,
+  ShieldCheck, X, Search, Plus, Sparkles, TrendingUp
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
