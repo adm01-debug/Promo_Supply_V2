@@ -55,6 +55,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { BulkPlanningConsole } from "@/components/compras/BulkPlanningConsole";
 
 const Solicitacoes = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -289,6 +290,8 @@ const Solicitacoes = () => {
           </div>
 
           <IAAdvisor stats={stats} />
+
+          <BulkPlanningConsole />
 
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
