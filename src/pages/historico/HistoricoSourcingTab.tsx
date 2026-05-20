@@ -1,13 +1,19 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Target, Users, Building, Link2, Search, MapPin } from "lucide-react";
+import { 
+  Target, Users, Building, Link2, Search, MapPin, 
+  ArrowRight, Package, Truck, CheckCircle, Info, AlertCircle, 
+  TrendingUp, TrendingDown, DollarSign
+} from "lucide-react";
 import { type PurchaseRecord } from "@/hooks/usePurchaseHistory";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { parseISO } from "date-fns/parseISO";
+import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface Props {
   purchaseRecords: PurchaseRecord[];
