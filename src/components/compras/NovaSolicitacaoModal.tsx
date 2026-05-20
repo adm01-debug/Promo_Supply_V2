@@ -3,7 +3,7 @@ import { SolicitacaoReviewStep } from "./solicitacao/SolicitacaoReviewStep";
 import { 
   Plus, Package, Check, Loader2,
   Building2, DollarSign, ShieldCheck, ArrowRight, ArrowLeft, AlertCircle, Upload, X, Search,
-  Undo2
+  Undo2, Sparkles
 } from "lucide-react";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { useImageCompression } from "@/hooks/useImageCompression";
