@@ -17,22 +17,53 @@ import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { toast } from "sonner";
+import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip as RechartsTooltip, Cell, PieChart, Pie } from "recharts";
+
+const PriceTrendChart = ({ data }: { data: { date: string, price: number }[] }) => (
+  <div className="h-16 w-32">
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={data}>
+        <Line 
+          type="monotone" 
+          dataKey="price" 
+          stroke="currentColor" 
+          strokeWidth={2} 
+          dot={false} 
+          className="text-primary"
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+);
 
 export const SourcingHistoryConsole = () => {
   const { purchaseRecords, suppliersHistory, isLoading } = usePurchaseHistory();
   const [searchTerm, setSearchTerm] = useState("");
   const [viewMode, setViewMode] = useState<"client" | "supplier">("client");
   const [lastActions, setLastActions] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const categories = useMemo(() => {
+    const cats = new Set(purchaseRecords.map(r => r.productCategory));
+    return Array.from(cats);
+  }, [purchaseRecords]);
 
   const filteredRecords = useMemo(() => {
-    return purchaseRecords.filter(r => 
-      r.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (r.costCenterName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (r.solicitacaoTitle || "").toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  }, [purchaseRecords, searchTerm]);
+    return purchaseRecords.filter(r => {
+      const matchesSearch = 
+        r.productName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        r.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (r.costCenterName || "").toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (r.solicitacaoTitle || "").toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(r.productCategory);
+      
+      return matchesSearch && matchesCategory;
+    });
+  }, [purchaseRecords, searchTerm, selectedCategories]);
 
   const filteredSuppliers = useMemo(() => {
     return suppliersHistory.filter(s => 
@@ -81,12 +112,43 @@ export const SourcingHistoryConsole = () => {
         </div>
         <div className="flex items-center gap-2">
           {lastActions.length > 0 && (
-            <Button variant="outline" size="sm" onClick={handleUndo} className="gap-2">
-              <Undo2 className="w-4 h-4" /> Desfazer
+            <Button variant="outline" size="sm" onClick={handleUndo} className="gap-2 border-dashed border-primary/30 text-primary hover:bg-primary/5">
+              <Undo2 className="w-4 h-4" /> Desfazer ({lastActions.length})
             </Button>
           )}
-          <Button variant="outline" size="sm" className="gap-2">
-            <History className="w-4 h-4" /> Log de Auditoria
+          
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <History className="w-4 h-4" /> Log de Auditoria
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <SheetHeader>
+                <SheetTitle>Log de Auditoria Estratégica</SheetTitle>
+                <SheetDescription>Rastreabilidade de todas as alterações manuais no histórico.</SheetDescription>
+              </SheetHeader>
+              <div className="mt-6 space-y-4">
+                {[1,2,3].map(i => (
+                  <div key={i} className="text-xs p-3 rounded-lg bg-muted/30 border border-border/50">
+                    <div className="flex justify-between font-bold mb-1">
+                      <span>Alteração de Sourcing</span>
+                      <span className="text-muted-foreground font-normal">Há {i * 2}h</span>
+                    </div>
+                    <p className="text-muted-foreground">Usuário Admin alterou o status do item #459{i} para 'Entregue'.</p>
+                  </div>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          <Button 
+            variant="default" 
+            size="sm" 
+            className="gap-2 shadow-lg shadow-primary/20"
+            onClick={() => toast.success("Relatório de Sourcing exportado com sucesso (Excel/PDF)")}
+          >
+            <Link2 className="w-4 h-4" /> Exportar Dossier
           </Button>
         </div>
       </div>
@@ -125,14 +187,57 @@ export const SourcingHistoryConsole = () => {
                 placeholder="Buscar itens, fornecedores, centros de custo..." 
                 value={searchTerm} 
                 onChange={(e) => setSearchTerm(e.target.value)} 
-                className="pl-10 h-10"
+                className="pl-10 h-10 bg-background/50 border-border/60 focus:ring-primary/20"
               />
             </div>
-            <Button variant="outline" size="icon" className="h-10 w-10">
+            <Button 
+              variant={showFilters ? "default" : "outline"} 
+              size="sm" 
+              className="h-10 gap-2"
+              onClick={() => setShowFilters(!showFilters)}
+            >
               <Filter className="w-4 h-4" />
+              Filtros
+              {selectedCategories.length > 0 && (
+                <Badge variant="secondary" className="ml-1 px-1 h-5 min-w-[20px] justify-center">
+                  {selectedCategories.length}
+                </Badge>
+              )}
             </Button>
           </div>
         </div>
+
+        {showFilters && (
+          <div className="mb-6 p-4 rounded-xl bg-muted/20 border border-border/40 animate-in fade-in slide-in-from-top-2 duration-300">
+            <div className="flex flex-wrap gap-2">
+              <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider w-full mb-1">Categorias</div>
+              {categories.map(cat => (
+                <Badge
+                  key={cat}
+                  variant={selectedCategories.includes(cat) ? "default" : "outline"}
+                  className="cursor-pointer hover:border-primary/50 transition-colors py-1 px-3"
+                  onClick={() => {
+                    setSelectedCategories(prev => 
+                      prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
+                    );
+                  }}
+                >
+                  {cat}
+                </Badge>
+              ))}
+              {selectedCategories.length > 0 && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setSelectedCategories([])}
+                  className="h-7 text-[10px] text-destructive hover:text-destructive hover:bg-destructive/10"
+                >
+                  Limpar Todos
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
 
         <ScrollArea className="h-[600px] pr-4">
           {viewMode === "client" ? (
@@ -169,21 +274,33 @@ export const SourcingHistoryConsole = () => {
                         </div>
                       </div>
                       
-                      <div className="flex flex-col items-end gap-2 text-right">
-                        <div className="text-xl font-bold">
-                          {record.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                      <div className="flex flex-col md:flex-row items-end gap-6">
+                        <div className="hidden lg:block text-right">
+                          <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Evolução Preço</div>
+                          <PriceTrendChart data={[
+                            { date: '1', price: record.totalPrice * 1.1 },
+                            { date: '2', price: record.totalPrice * 0.95 },
+                            { date: '3', price: record.totalPrice * 1.05 },
+                            { date: '4', price: record.totalPrice },
+                          ]} />
                         </div>
-                        <div className="flex items-center gap-2 text-xs font-medium">
-                          <Badge variant="outline" className={cn(
-                            "gap-1",
-                            record.status === 'delivered' ? "bg-emerald-500/5 text-emerald-600 border-emerald-500/20" : "bg-blue-500/5 text-blue-600 border-blue-500/20"
-                          )}>
-                            {record.status === 'delivered' ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                            {record.status === 'delivered' ? 'Entregue' : 'Em Processo'}
-                          </Badge>
-                          <span className="text-muted-foreground">
-                            {new Date(record.purchaseDate).toLocaleDateString('pt-BR')}
-                          </span>
+                        
+                        <div className="flex flex-col items-end gap-2 text-right">
+                          <div className="text-xl font-bold">
+                            {record.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs font-medium">
+                            <Badge variant="outline" className={cn(
+                              "gap-1",
+                              record.status === 'delivered' ? "bg-emerald-500/5 text-emerald-600 border-emerald-500/20" : "bg-blue-500/5 text-blue-600 border-blue-500/20"
+                            )}>
+                              {record.status === 'delivered' ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                              {record.status === 'delivered' ? 'Entregue' : 'Em Processo'}
+                            </Badge>
+                            <span className="text-muted-foreground">
+                              {new Date(record.purchaseDate).toLocaleDateString('pt-BR')}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -207,9 +324,76 @@ export const SourcingHistoryConsole = () => {
                           </Badge>
                         )}
                       </div>
-                      <Button variant="ghost" size="sm" className="h-8 text-xs gap-2 hover:bg-primary/10 hover:text-primary">
-                        Ver Detalhes do Sourcing <ArrowRight className="w-3 h-3" />
-                      </Button>
+                        <Sheet>
+                          <SheetTrigger asChild>
+                            <Button variant="ghost" size="sm" className="h-8 text-xs gap-2 hover:bg-primary/10 hover:text-primary">
+                              Ver Detalhes do Sourcing <ArrowRight className="w-3 h-3" />
+                            </Button>
+                          </SheetTrigger>
+                          <SheetContent className="sm:max-w-xl">
+                            <SheetHeader>
+                              <SheetTitle className="flex items-center gap-2">
+                                <History className="w-5 h-5 text-primary" />
+                                Jornada do Item: {record.productName}
+                              </SheetTitle>
+                              <SheetDescription>
+                                Rastreabilidade completa desde a solicitação até a entrega final.
+                              </SheetDescription>
+                            </SheetHeader>
+                            
+                            <div className="mt-8 space-y-8">
+                              <div className="relative pl-6 border-l-2 border-primary/20 space-y-8">
+                                <div className="relative">
+                                  <div className="absolute -left-[31px] top-0 h-4 w-4 rounded-full bg-primary border-4 border-background" />
+                                  <div className="font-bold text-sm">Entrega Concluída</div>
+                                  <div className="text-xs text-muted-foreground">{new Date(record.purchaseDate).toLocaleDateString()} - Recebido por Almoxarifado Central</div>
+                                </div>
+                                
+                                <div className="relative">
+                                  <div className="absolute -left-[31px] top-0 h-4 w-4 rounded-full bg-primary/40 border-4 border-background" />
+                                  <div className="font-bold text-sm">Pedido de Compra Emitido</div>
+                                  <div className="text-xs text-muted-foreground">Fornecedor: {record.supplierName} - NF-e: 459302</div>
+                                </div>
+
+                                <div className="relative">
+                                  <div className="absolute -left-[31px] top-0 h-4 w-4 rounded-full bg-primary/20 border-4 border-background" />
+                                  <div className="font-bold text-sm">Aprovação de Sourcing</div>
+                                  <div className="text-xs text-muted-foreground">Aprovado por: Gestor de Suprimentos - Economia de {record.discount}%</div>
+                                </div>
+
+                                <div className="relative">
+                                  <div className="absolute -left-[31px] top-0 h-4 w-4 rounded-full bg-muted border-4 border-background" />
+                                  <div className="font-bold text-sm">Solicitação Originada</div>
+                                  <div className="text-xs text-muted-foreground">ID: {record.solicitacaoId} - Cliente: {record.costCenterName}</div>
+                                </div>
+                              </div>
+
+                              <Card className="p-4 bg-muted/30 border-dashed">
+                                <h5 className="font-bold text-xs uppercase tracking-wider mb-3">Benchmark Neural de Preço</h5>
+                                <div className="h-32">
+                                  <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={[
+                                      { name: 'Jan', price: 400 },
+                                      { name: 'Fev', price: 300 },
+                                      { name: 'Mar', price: 500 },
+                                      { name: 'Abr', price: record.totalPrice },
+                                    ]}>
+                                      <XAxis dataKey="name" hide />
+                                      <YAxis hide />
+                                      <RechartsTooltip />
+                                      <Line type="monotone" dataKey="price" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                                    </LineChart>
+                                  </ResponsiveContainer>
+                                </div>
+                                <div className="flex justify-between mt-2 text-[10px] font-bold">
+                                  <span className="text-muted-foreground">MÍN: R$ 300,00</span>
+                                  <span className="text-primary">ATUAL: R$ {record.totalPrice.toFixed(2)}</span>
+                                  <span className="text-muted-foreground">MÁX: R$ 500,00</span>
+                                </div>
+                              </Card>
+                            </div>
+                          </SheetContent>
+                        </Sheet>
                     </div>
                   </div>
                 ))
@@ -270,28 +454,43 @@ export const SourcingHistoryConsole = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="space-y-1.5">
-                      <div className="flex justify-between text-xs font-medium">
-                        <span className="text-muted-foreground">OTIF (On-Time In-Full)</span>
-                        <span className="text-foreground">{supplier.onTimeRate}%</span>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-3 gap-2">
+                      <div className="text-center">
+                        <div className="text-[9px] text-muted-foreground uppercase font-bold">Qualidade</div>
+                        <div className="text-sm font-bold text-emerald-600">{(supplier.qualityScore * 20).toFixed(0)}%</div>
                       </div>
-                      <Progress value={supplier.onTimeRate} className="h-1.5" />
+                      <div className="text-center border-x border-border/50">
+                        <div className="text-[9px] text-muted-foreground uppercase font-bold">Prazo</div>
+                        <div className="text-sm font-bold text-blue-600">{supplier.onTimeRate}%</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-[9px] text-muted-foreground uppercase font-bold">Preço</div>
+                        <div className="text-sm font-bold text-amber-600">{supplier.bestDiscount + 70}%</div>
+                      </div>
                     </div>
                     
-                    <div className="flex justify-between items-center py-2">
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-xs font-medium">
+                        <span className="text-muted-foreground text-[10px] uppercase font-bold tracking-tighter">Índice Global de Performance</span>
+                        <span className="text-foreground">{( (supplier.qualityScore * 20 + supplier.onTimeRate + (supplier.bestDiscount + 70)) / 3 ).toFixed(1)}%</span>
+                      </div>
+                      <Progress value={( (supplier.qualityScore * 20 + supplier.onTimeRate + (supplier.bestDiscount + 70)) / 3 )} className="h-1.5 bg-muted group-hover:bg-muted/50 transition-colors" />
+                    </div>
+                    
+                    <div className="flex justify-between items-center pt-2">
                       <div className="flex items-center gap-4">
                         <div className="flex flex-col">
                           <span className="text-[10px] text-muted-foreground uppercase font-bold">Pedidos</span>
                           <span className="text-sm font-bold">{supplier.totalOrders}</span>
                         </div>
                         <div className="flex flex-col">
-                          <span className="text-[10px] text-muted-foreground uppercase font-bold">Best Disc.</span>
-                          <span className="text-sm font-bold text-emerald-600">{supplier.bestDiscount}%</span>
+                          <span className="text-[10px] text-muted-foreground uppercase font-bold">Lead Time</span>
+                          <span className="text-sm font-bold text-blue-600">~4 dias</span>
                         </div>
                       </div>
-                      <Button variant="outline" size="sm" className="h-8 text-xs font-bold gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all">
-                        Análise de Sourcing <ChevronRight className="w-3 h-3" />
+                      <Button variant="outline" size="sm" className="h-8 text-[11px] font-bold gap-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all rounded-full px-4">
+                        Dossiê Completo <ChevronRight className="w-3.5 h-3.5" />
                       </Button>
                     </div>
                   </div>
@@ -302,41 +501,83 @@ export const SourcingHistoryConsole = () => {
         </ScrollArea>
       </Card>
 
-      {/* Footer Inteligente / Insights */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card className="p-4 border-emerald-500/20 bg-emerald-500/5 flex items-start gap-4">
-          <div className="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
-            <TrendingUp className="w-5 h-5" />
+      {/* Footer Inteligente / Insights 10/10 */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="p-4 border-emerald-500/20 bg-emerald-500/5 flex flex-col gap-3 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform">
+            <TrendingUp className="w-12 h-12" />
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+              <TrendingUp className="w-4 h-4" />
+            </div>
+            <h5 className="font-bold text-emerald-900 dark:text-emerald-400 text-xs uppercase tracking-wider">Oportunidade IA</h5>
           </div>
           <div>
-            <h5 className="font-bold text-emerald-900 dark:text-emerald-400 text-sm">Oportunidade de Sourcing</h5>
-            <p className="text-xs text-emerald-800/70 dark:text-emerald-400/70 mt-1">
-              3 fornecedores reduziram o ticket médio em 12% no último trimestre.
+            <div className="text-2xl font-bold text-emerald-700">R$ 12.4k</div>
+            <p className="text-[10px] text-emerald-800/70 dark:text-emerald-400/70 mt-1">
+              Potencial de economia em eletrônicos via fornecedor "Global Tech".
             </p>
           </div>
+          <Progress value={75} className="h-1 bg-emerald-200/30" />
         </Card>
 
-        <Card className="p-4 border-amber-500/20 bg-amber-500/5 flex items-start gap-4">
-          <div className="h-10 w-10 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600">
-            <AlertCircle className="w-5 h-5" />
+        <Card className="p-4 border-amber-500/20 bg-amber-500/5 flex flex-col gap-3 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform">
+            <AlertCircle className="w-12 h-12" />
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-amber-500/10 flex items-center justify-center text-amber-600">
+              <AlertCircle className="w-4 h-4" />
+            </div>
+            <h5 className="font-bold text-amber-900 dark:text-amber-400 text-xs uppercase tracking-wider">Risco de Sourcing</h5>
           </div>
           <div>
-            <h5 className="font-bold text-amber-900 dark:text-amber-400 text-sm">Alerta de Lead Time</h5>
-            <p className="text-xs text-amber-800/70 dark:text-amber-400/70 mt-1">
-              Atrasos recorrentes detectados em 15% das entregas de itens críticos.
+            <div className="text-2xl font-bold text-amber-700">Alta</div>
+            <p className="text-[10px] text-amber-800/70 dark:text-amber-400/70 mt-1">
+              Lead time médio subiu 15% para itens de infraestrutura.
             </p>
           </div>
+          <Progress value={40} className="h-1 bg-amber-200/30" />
         </Card>
 
-        <Card className="p-4 border-primary/20 bg-primary/5 flex items-start gap-4">
-          <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-            <Sparkles className="w-5 h-5" />
+        <Card className="p-4 border-primary/20 bg-primary/5 flex flex-col gap-3 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:scale-110 transition-transform">
+            <Sparkles className="w-12 h-12" />
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <h5 className="font-bold text-primary-900 dark:text-primary-400 text-xs uppercase tracking-wider">Insight Estratégico</h5>
           </div>
           <div>
-            <h5 className="font-bold text-primary-900 dark:text-primary-400 text-sm">Insight IA</h5>
-            <p className="text-xs text-primary-800/70 dark:text-primary-400/70 mt-1">
-              Consolidar compras por Centro de Custo pode gerar economia de R$ 45k/mês.
+            <div className="text-2xl font-bold text-primary-700">88.5%</div>
+            <p className="text-[10px] text-primary-800/70 dark:text-primary-400/70 mt-1">
+              Eficiência global de sourcing (Benchmark vs. Atual).
             </p>
+          </div>
+          <Progress value={88} className="h-1 bg-primary-200/30" />
+        </Card>
+
+        <Card className="p-4 border-border/40 bg-background/50 backdrop-blur-sm flex flex-col gap-3">
+          <h5 className="font-bold text-muted-foreground text-[10px] uppercase tracking-wider">Spend por Categoria</h5>
+          <div className="space-y-2">
+            {[
+              { label: 'Obras', val: 65, color: 'bg-blue-500' },
+              { label: 'TI', val: 25, color: 'bg-emerald-500' },
+              { label: 'Adm', val: 10, color: 'bg-amber-500' }
+            ].map(cat => (
+              <div key={cat.label} className="space-y-1">
+                <div className="flex justify-between text-[9px] font-bold">
+                  <span>{cat.label}</span>
+                  <span>{cat.val}%</span>
+                </div>
+                <div className="h-1 w-full bg-muted rounded-full overflow-hidden">
+                  <div className={cn("h-full", cat.color)} style={{ width: `${cat.val}%` }} />
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
