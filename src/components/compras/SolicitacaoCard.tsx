@@ -1,4 +1,4 @@
-import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy, Clock, AlertTriangle, ChevronRight } from "lucide-react";
+import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy, Clock, AlertTriangle, ChevronRight, GitBranch, MessageSquare, Zap } from "lucide-react";
 import { StatusTimeline } from "@/components/compras/StatusTimeline";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
@@ -13,6 +13,17 @@ import { useHapticFeedback } from "@/hooks/useMobileGestures";
 import { toast } from "sonner";
 import { differenceInDays } from "date-fns/differenceInDays";
 import { isPast } from "date-fns/isPast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface SolicitacaoCardProps {
   solicitacao: Solicitacao;
