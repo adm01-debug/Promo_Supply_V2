@@ -1,8 +1,9 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { SolicitacaoReviewStep } from "./solicitacao/SolicitacaoReviewStep";
 import { 
   Plus, Package, Check, Loader2,
-  Building2, DollarSign, ShieldCheck, ArrowRight, ArrowLeft, AlertCircle, Upload, X, Search
+  Building2, DollarSign, ShieldCheck, ArrowRight, ArrowLeft, AlertCircle, Upload, X, Search,
+  Undo2
 } from "lucide-react";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { useImageCompression } from "@/hooks/useImageCompression";
