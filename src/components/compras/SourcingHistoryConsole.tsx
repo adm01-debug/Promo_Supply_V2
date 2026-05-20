@@ -210,9 +210,10 @@ export const SourcingHistoryConsole = () => {
               <span>{filteredRecords.length} resultados encontrados. Deseja realizar ações em massa?</span>
             </div>
             <div className="flex gap-2">
-              <Button size="xs" variant="outline" className="h-7 text-[10px] uppercase font-bold" onClick={() => toast.info("Modo de Seleção Ativado")}>Selecionar Tudo</Button>
-              <Button size="xs" className="h-7 text-[10px] uppercase font-bold" onClick={() => toast.success("Dossier Consolidado Gerado")}>Gerar Dossier Combinado</Button>
+              <Button size="sm" variant="outline" className="h-7 text-[10px] uppercase font-bold" onClick={() => toast.info("Modo de Seleção Ativado")}>Selecionar Tudo</Button>
+              <Button size="sm" className="h-7 text-[10px] uppercase font-bold" onClick={() => toast.success("Dossier Consolidado Gerado")}>Gerar Dossier Combinado</Button>
             </div>
+
           </div>
         )}
 
