@@ -268,7 +268,7 @@ export const SolicitacaoCard = ({
               <Button variant="ghost" size="sm" className="h-10 rounded-xl text-zinc-500 hover:text-white hover:bg-white/5 font-black text-[10px] tracking-widest uppercase">
                 <MessageSquare className="w-3.5 h-3.5 mr-2" />
                 Contexto
-              </Badge>
+              </Button>
             </PopoverTrigger>
             <PopoverContent className="w-80 bg-[#0a0a0f] border-white/10 rounded-2xl p-4 shadow-2xl">
               <h5 className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-4">Neural Context Thread</h5>
