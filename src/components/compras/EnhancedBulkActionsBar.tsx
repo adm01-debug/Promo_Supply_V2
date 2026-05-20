@@ -275,7 +275,7 @@ export function EnhancedBulkActionsBar({
           selectedItems={selectedItems}
           availableActions={actions}
           statusOptions={statusOptions}
-          onExecute={onExecute}
+          onExecute={handleExecute}
           onClose={handleClosePreview}
           onExport={onExport}
         />
