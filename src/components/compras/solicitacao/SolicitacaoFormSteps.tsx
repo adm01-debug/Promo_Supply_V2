@@ -365,9 +365,14 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
       </div>
 
       {formData.valorEstimado > 0 && formData.valorEstimado < 1000 && (
-        <div className="rounded-lg p-3 border bg-primary/5 border-primary/20 text-sm">
-          <div className="flex items-center gap-2 text-primary font-medium"><Check className="w-4 h-4" />Aprovação Automática</div>
-          <p className="text-xs text-muted-foreground mt-1">Solicitações abaixo de R$ 1.000 são aprovadas automaticamente.</p>
+        <div className="bg-blue-500/5 border border-blue-500/20 rounded-2xl p-4 flex items-center gap-3 animate-in slide-in-from-left-2 duration-500">
+          <div className="w-8 h-8 rounded-full flex items-center justify-center border border-blue-500/30 bg-blue-500/10 text-blue-400">
+            <Check className="w-4 h-4" />
+          </div>
+          <div>
+            <p className="text-[8px] font-black uppercase tracking-widest text-blue-300">Fast Track Habilitado</p>
+            <p className="text-[10px] font-bold text-blue-100">Aprovação Automática ativada para este valor.</p>
+          </div>
         </div>
       )}
 
