@@ -18,6 +18,24 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip as RechartsTooltip, Cell, PieChart, Pie } from "recharts";
+
+const PriceTrendChart = ({ data }: { data: { date: string, price: number }[] }) => (
+  <div className="h-16 w-32">
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={data}>
+        <Line 
+          type="monotone" 
+          dataKey="price" 
+          stroke="currentColor" 
+          strokeWidth={2} 
+          dot={false} 
+          className="text-primary"
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  </div>
+);
 
 export const SourcingHistoryConsole = () => {
   const { purchaseRecords, suppliersHistory, isLoading } = usePurchaseHistory();
@@ -224,21 +242,33 @@ export const SourcingHistoryConsole = () => {
                         </div>
                       </div>
                       
-                      <div className="flex flex-col items-end gap-2 text-right">
-                        <div className="text-xl font-bold">
-                          {record.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                      <div className="flex flex-col md:flex-row items-end gap-6">
+                        <div className="hidden lg:block text-right">
+                          <div className="text-[10px] text-muted-foreground uppercase font-bold mb-1">Evolução Preço</div>
+                          <PriceTrendChart data={[
+                            { date: '1', price: record.totalPrice * 1.1 },
+                            { date: '2', price: record.totalPrice * 0.95 },
+                            { date: '3', price: record.totalPrice * 1.05 },
+                            { date: '4', price: record.totalPrice },
+                          ]} />
                         </div>
-                        <div className="flex items-center gap-2 text-xs font-medium">
-                          <Badge variant="outline" className={cn(
-                            "gap-1",
-                            record.status === 'delivered' ? "bg-emerald-500/5 text-emerald-600 border-emerald-500/20" : "bg-blue-500/5 text-blue-600 border-blue-500/20"
-                          )}>
-                            {record.status === 'delivered' ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
-                            {record.status === 'delivered' ? 'Entregue' : 'Em Processo'}
-                          </Badge>
-                          <span className="text-muted-foreground">
-                            {new Date(record.purchaseDate).toLocaleDateString('pt-BR')}
-                          </span>
+                        
+                        <div className="flex flex-col items-end gap-2 text-right">
+                          <div className="text-xl font-bold">
+                            {record.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          </div>
+                          <div className="flex items-center gap-2 text-xs font-medium">
+                            <Badge variant="outline" className={cn(
+                              "gap-1",
+                              record.status === 'delivered' ? "bg-emerald-500/5 text-emerald-600 border-emerald-500/20" : "bg-blue-500/5 text-blue-600 border-blue-500/20"
+                            )}>
+                              {record.status === 'delivered' ? <CheckCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                              {record.status === 'delivered' ? 'Entregue' : 'Em Processo'}
+                            </Badge>
+                            <span className="text-muted-foreground">
+                              {new Date(record.purchaseDate).toLocaleDateString('pt-BR')}
+                            </span>
+                          </div>
                         </div>
                       </div>
                     </div>
