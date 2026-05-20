@@ -118,7 +118,9 @@ const HistoricoCompras = () => {
       const matchesSearch = record.productName.toLowerCase().includes(searchTerm.toLowerCase()) || 
                            record.supplierName.toLowerCase().includes(searchTerm.toLowerCase()) || 
                            record.orderNumber.includes(searchTerm) ||
-                           record.centroCusto?.toLowerCase().includes(searchTerm.toLowerCase());
+                           record.centroCusto?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           record.costCenterName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           record.costCenterCode?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = categoryFilter === "all" || record.productCategory === categoryFilter;
       const matchesStatus = statusFilter === "all" || record.status === statusFilter;
       let matchesDate = true;
