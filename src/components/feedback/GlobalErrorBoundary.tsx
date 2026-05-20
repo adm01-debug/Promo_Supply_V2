@@ -60,7 +60,7 @@ export const GlobalErrorBoundary: React.FC<GlobalErrorBoundaryProps> = ({ childr
   return (
     <ErrorBoundary
       FallbackComponent={ErrorFallback}
-      onError={(error, info) => {
+      onError={(error: Error, info) => {
         logger.error("Global Error Caught", {
           error: error.message,
           stack: error.stack,
