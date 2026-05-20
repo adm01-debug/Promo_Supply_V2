@@ -3,10 +3,11 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 import { 
   Target, Users, Building, Link2, Search, MapPin, 
   Package, Truck, CheckCircle, Info, AlertCircle, 
-  TrendingDown, DollarSign, Sparkles, TrendingUp, BarChart, ArrowRight, Undo2
+  TrendingDown, DollarSign, Sparkles, TrendingUp, BarChart, ArrowRight, Undo2, Download
 } from "lucide-react";
 import { type PurchaseRecord } from "@/hooks/usePurchaseHistory";
 import { format } from "date-fns/format";
