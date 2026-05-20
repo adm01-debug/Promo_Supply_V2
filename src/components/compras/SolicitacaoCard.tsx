@@ -211,7 +211,8 @@ export const SolicitacaoCard = ({
           </div>
         )}
 
-        <div className="py-2 border-y border-white/5">
+        <div className="py-4 border-y border-white/5 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 via-transparent to-transparent opacity-50" />
           <StatusTimeline currentStatus={solicitacao.status.toLowerCase()} compact />
         </div>
 

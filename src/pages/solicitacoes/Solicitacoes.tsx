@@ -318,10 +318,21 @@ const Solicitacoes = () => {
                     <SelectItem value="AGUARDANDO_COTACAO" className="text-xs font-bold py-2.5">Pendentes</SelectItem>
                     <SelectItem value="EM_COTACAO" className="text-xs font-bold py-2.5">Em Cotação</SelectItem>
                     <SelectItem value="FORNECEDOR_SELECIONADO" className="text-xs font-bold py-2.5">Aprovadas</SelectItem>
+                    <SelectItem value="OWN" className="text-xs font-bold py-2.5 text-violet-400">Minhas Solicitações</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex items-end">
+              <div className="flex items-end gap-3">
+                 <Button 
+                   variant="outline" 
+                   onClick={() => setStatusFilter("OWN")}
+                   className={cn(
+                     "h-12 px-6 rounded-xl font-black text-[10px] uppercase tracking-widest gap-2 transition-all",
+                     statusFilter === "OWN" ? "bg-violet-500 text-white border-none" : "bg-white/[0.03] border-white/10 text-zinc-400"
+                   )}
+                 >
+                   Meus Itens
+                 </Button>
                  <FiltrosAvancados filters={advancedFilters} onFiltersChange={setAdvancedFilters} onApply={() => {}} />
               </div>
             </div>
