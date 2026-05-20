@@ -134,6 +134,17 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
   const { produtos, categorias } = useProdutos();
   const [open, setOpen] = useState(false);
 
+  const predictedDelivery = useMemo(() => {
+    if (!formData.prazoEntrega) return null;
+    const date = new Date(formData.prazoEntrega);
+    const today = new Date();
+    const diffDays = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 3) return { label: 'Risco de Atraso (Neural)', color: 'text-rose-400', bg: 'bg-rose-500/10', border: 'border-rose-500/20' };
+    if (diffDays < 7) return { label: 'Prazo Otimizado', color: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/20' };
+    return { label: 'Prazo Seguro (Histórico)', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20' };
+  }, [formData.prazoEntrega]);
+
   const onProductSelect = (p: Produto) => {
     updateField('produto', p.nome);
     if (p.preco_referencia) {
