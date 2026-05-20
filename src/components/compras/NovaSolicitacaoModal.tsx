@@ -24,6 +24,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/lib/feedbackToast";
 import { cn } from "@/lib/utils";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Step1Identification, Step2Specifications, Step3Values } from "./solicitacao/SolicitacaoFormSteps";
 
 const initialFormData: NovaSolicitacaoData = {
@@ -290,37 +292,53 @@ export function NovaSolicitacaoModal({ onSuccess }: NovaSolicitacaoModalProps) {
         </DialogHeader>
 
         <div className="px-8 pb-8">
-          <div className="flex items-center justify-between mb-8 bg-white/[0.02] p-4 rounded-3xl border border-white/5">
-          {STEPS.map((s, i) => {
-            const Icon = s.icon;
-            return (
-              <div key={s.num} className="flex items-center flex-1">
-                <div className="flex items-center gap-1.5">
-                  <div className={cn(
-                    "w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black transition-all duration-500",
-                    step > s.num && "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]",
-                    step === s.num && "bg-violet-500 text-white shadow-[0_0_20px_rgba(139,92,246,0.4)] scale-110",
-                    step < s.num && "bg-white/5 text-zinc-600 border border-white/5 opacity-50"
-                  )}>
-                    {step > s.num ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
-                  </div>
-                  <span className={cn(
-                    "text-[10px] hidden lg:block font-black uppercase tracking-widest ml-2",
-                    step === s.num ? "text-white" : "text-zinc-500"
-                  )}>
-                    {s.label}
-                  </span>
-                </div>
-                {i < STEPS.length - 1 && (
-                  <div className={cn(
-                    "flex-1 h-[2px] mx-4 transition-all duration-1000",
-                    step > s.num ? "bg-gradient-to-r from-emerald-500/50 to-violet-500/50" : "bg-white/5"
-                  )} />
-                )}
+          {/* Neural Input Interface for Step 1 */}
+          {step === 1 && (
+            <div className="mb-8 p-6 bg-violet-500/5 border border-violet-500/20 rounded-3xl animate-in fade-in zoom-in duration-700">
+              <Label className="text-[10px] font-black uppercase text-violet-300 tracking-widest block mb-3">Neural Draft (IA Instantânea)</Label>
+              <div className="relative">
+                <Textarea 
+                  placeholder="Ex: Preciso de 50 monitores Dell para o RH com entrega até sexta-feira."
+                  className="w-full h-24 bg-white/5 border-white/5 rounded-2xl resize-none text-white p-4 focus:border-violet-500 transition-colors"
+                />
+                <Button className="absolute bottom-2 right-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-[10px] uppercase font-black tracking-widest">
+                  Processar
+                </Button>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between mb-8 bg-white/[0.02] p-4 rounded-3xl border border-white/5">
+            {STEPS.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <div key={s.num} className="flex items-center flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <div className={cn(
+                      "w-10 h-10 rounded-xl flex items-center justify-center text-sm font-black transition-all duration-500",
+                      step > s.num && "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.2)]",
+                      step === s.num && "bg-violet-500 text-white shadow-[0_0_20px_rgba(139,92,246,0.4)] scale-110",
+                      step < s.num && "bg-white/5 text-zinc-600 border border-white/5 opacity-50"
+                    )}>
+                      {step > s.num ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
+                    </div>
+                    <span className={cn(
+                      "text-[10px] hidden lg:block font-black uppercase tracking-widest ml-2",
+                      step === s.num ? "text-white" : "text-zinc-500"
+                    )}>
+                      {s.label}
+                    </span>
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div className={cn(
+                      "flex-1 h-[2px] mx-4 transition-all duration-1000",
+                      step > s.num ? "bg-gradient-to-r from-emerald-500/50 to-violet-500/50" : "bg-white/5"
+                    )} />
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
         <Separator className="mb-8 bg-white/5" />
 

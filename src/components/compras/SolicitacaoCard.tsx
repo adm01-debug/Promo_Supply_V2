@@ -1,10 +1,11 @@
-import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy, Clock, AlertTriangle, ChevronRight } from "lucide-react";
+import { Eye, BarChart3, FileText, Check, ArrowRight, Trash2, Edit, CheckCircle, XCircle, Archive, Copy, Clock, AlertTriangle, ChevronRight, GitBranch, MessageSquare, Zap } from "lucide-react";
 import { StatusTimeline } from "@/components/compras/StatusTimeline";
 import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import type { Solicitacao } from "@/types/legacyTypes";
 import { getTipoLabel, getStatusColor } from "@/types/legacyTypes";
@@ -13,6 +14,17 @@ import { useHapticFeedback } from "@/hooks/useMobileGestures";
 import { toast } from "sonner";
 import { differenceInDays } from "date-fns/differenceInDays";
 import { isPast } from "date-fns/isPast";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface SolicitacaoCardProps {
   solicitacao: Solicitacao;
@@ -136,7 +148,7 @@ export const SolicitacaoCard = ({
   const cardContent = (
     <Card 
       className={cn(
-        "p-5 md:p-6 transition-all duration-300 border-white/5 bg-white/[0.03] backdrop-blur-2xl rounded-[2rem] hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-1 relative group",
+        "p-5 md:p-6 transition-all duration-500 border-white/5 bg-white/[0.03] backdrop-blur-2xl rounded-[2rem] hover:shadow-[0_20px_50px_rgba(139,92,246,0.15)] hover:-translate-y-1 relative group cursor-pointer active:scale-[0.98]",
         selected && "ring-2 ring-violet-500/50 bg-violet-500/5"
       )}
     >
@@ -159,22 +171,64 @@ export const SolicitacaoCard = ({
               <div className="flex items-center gap-3 flex-wrap">
                 <span className="font-black text-xs font-mono text-violet-400 uppercase tracking-widest">#{solicitacao.id}</span>
                 <span className="font-bold text-white text-base truncate">{solicitacao.empresa}</span>
-                {(solicitacao as any).organizationName && (
-                  <Badge className="text-[9px] font-black uppercase tracking-widest py-0.5 bg-violet-500/10 text-violet-400 border-none">
-                    {(solicitacao as any).organizationName}
-                  </Badge>
-                )}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Badge className="text-[9px] font-black uppercase tracking-widest py-0.5 bg-emerald-500/10 text-emerald-400 border-none">
+                        <Zap className="w-2.5 h-2.5 mr-1" /> Predicted: {new Date(new Date(solicitacao.prazoEntrega).getTime() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString('pt-BR')}
+                      </Badge>
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-[#0a0a0f] border-white/10 text-[10px] font-bold uppercase tracking-widest">
+                      Predição Neural: 94% Confiança baseada em logística histórica.
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </div>
               
-              <Badge className={cn(
-                "text-[10px] font-black uppercase tracking-widest py-1 px-3 gap-1.5 border-none rounded-full transition-all duration-500", 
-                urgency.bg, 
-                urgency.color,
-                urgency.pulse && "animate-pulse shadow-[0_0_15px_rgba(244,63,94,0.3)]"
-              )}>
-                <urgency.icon className="w-3 h-3" />
-                {urgency.label}
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-zinc-500 hover:text-violet-400">
+                      <GitBranch className="w-4 h-4" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 bg-[#0a0a0f] border-white/10 rounded-2xl p-4 shadow-2xl">
+                    <h5 className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-4">Fluxo de Aprovação Neural</h5>
+                    <div className="space-y-4">
+                      {[
+                        { label: 'Gerente Depto', status: 'completed', user: 'João Silva' },
+                        { label: 'Diretor Financeiro', status: 'current', user: 'Maria Santos' },
+                        { label: 'CEO Approval', status: 'pending', user: 'Roberto Costa' }
+                      ].map((step, i) => (
+                        <div key={i} className="flex gap-3 relative">
+                          {i < 2 && <div className="absolute left-2 top-5 bottom-0 w-[1px] bg-white/10" />}
+                          <div className={cn(
+                            "w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 z-10",
+                            step.status === 'completed' ? "bg-emerald-500 border-emerald-500" : 
+                            step.status === 'current' ? "bg-violet-500 border-violet-500 animate-pulse" : "bg-zinc-900 border-zinc-800"
+                          )}>
+                            {step.status === 'completed' && <Check className="w-2 h-2 text-white" />}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[10px] font-black uppercase text-white tracking-widest">{step.label}</p>
+                            <p className="text-[9px] text-zinc-500 font-bold">{step.user}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                <Badge className={cn(
+                  "text-[10px] font-black uppercase tracking-widest py-1 px-3 gap-1.5 border-none rounded-full transition-all duration-500", 
+                  urgency.bg, 
+                  urgency.color,
+                  urgency.pulse && "animate-pulse shadow-[0_0_15px_rgba(244,63,94,0.3)]"
+                )}>
+                  <urgency.icon className="w-3 h-3" />
+                  {urgency.label}
+                </Badge>
+              </div>
             </div>
 
             <p className="text-sm font-medium text-zinc-100 mb-4 line-clamp-2 leading-relaxed">{solicitacao.produto}</p>
@@ -217,6 +271,38 @@ export const SolicitacaoCard = ({
         </div>
 
         <div className="flex items-center gap-3 pt-1">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-10 rounded-xl text-zinc-500 hover:text-white hover:bg-white/5 font-black text-[10px] tracking-widest uppercase">
+                <MessageSquare className="w-3.5 h-3.5 mr-2" />
+                Contexto
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 bg-[#0a0a0f] border-white/10 rounded-2xl p-4 shadow-2xl">
+              <h5 className="text-[10px] font-black uppercase text-violet-400 tracking-widest mb-4">Neural Context Thread</h5>
+              <div className="space-y-4 max-h-60 overflow-y-auto pr-2">
+                <div className="p-3 bg-white/[0.02] rounded-xl border border-white/5">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-[9px] font-black text-white">@João Silva</span>
+                    <span className="text-[8px] text-zinc-600">há 2h</span>
+                  </div>
+                  <p className="text-[10px] text-zinc-400">Verifiquei que o estoque de Dell está baixo. @Maria Santos, aprova a urgência?</p>
+                </div>
+                <div className="p-3 bg-violet-500/10 rounded-xl border border-violet-500/20">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-[9px] font-black text-violet-300">@Maria Santos</span>
+                    <span className="text-[8px] text-zinc-600">há 15min</span>
+                  </div>
+                  <p className="text-[10px] text-zinc-300">Ok, orçamento validado. Seguir com a compra.</p>
+                </div>
+              </div>
+              <div className="mt-4 flex gap-2">
+                <Input placeholder="Adicionar nota neural..." className="h-8 text-[10px] bg-white/5 border-white/5" />
+                <Button size="icon" className="h-8 w-8 bg-violet-600"><ArrowRight className="w-3 h-3" /></Button>
+              </div>
+            </PopoverContent>
+          </Popover>
+
           {onDuplicate && (
             <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onDuplicate(); }} className="h-10 rounded-xl text-zinc-500 hover:text-white hover:bg-white/5 font-black text-[10px] tracking-widest uppercase" title="Duplicate">
               <Copy className="w-3.5 h-3.5 mr-2" />

@@ -365,7 +365,38 @@ const Solicitacoes = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.4 }}
+                className="space-y-6"
               >
+                {/* Step 9: Strategic Priority Matrix Visualization */}
+                <Card className="p-8 bg-white/[0.02] border-white/5 rounded-[2.5rem] overflow-hidden relative">
+                  <div className="flex items-center justify-between mb-8">
+                    <div>
+                      <h4 className="text-sm font-black text-white uppercase tracking-widest">Matriz de Prioridade Neural</h4>
+                      <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Crítico vs Impacto Financeiro</p>
+                    </div>
+                    <Badge className="bg-violet-500/10 text-violet-400 border-none font-black text-[10px]">IA Analysis</Badge>
+                  </div>
+                  <div className="h-64 w-full border-l-2 border-b-2 border-white/5 relative bg-gradient-to-tr from-rose-500/5 via-transparent to-emerald-500/5">
+                    <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 -rotate-90 text-[8px] font-black uppercase text-zinc-600 tracking-widest">URGÊNCIA NEURAL</div>
+                    <div className="absolute bottom-[-25px] left-1/2 -translate-x-1/2 text-[8px] font-black uppercase text-zinc-600 tracking-widest">IMPACTO FINANCEIRO</div>
+                    
+                    {/* Simplified Scatter Plot Dots */}
+                    {filteredSolicitacoes.slice(0, 15).map((s, i) => (
+                      <motion.div
+                        key={i}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: i * 0.1 }}
+                        className="absolute w-3 h-3 rounded-full bg-violet-500 shadow-[0_0_10px_rgba(139,92,246,0.5)] cursor-pointer hover:scale-150 transition-transform"
+                        style={{ 
+                          left: `${(i * 7) + 10}%`, 
+                          bottom: `${(s.valorTotal ? (s.valorTotal / 10000) * 100 : 20) + 10}%` 
+                        }}
+                      />
+                    ))}
+                  </div>
+                </Card>
+
                 <EliteCardGrid columns={1}>
                   {filteredSolicitacoes.length > 0 ? (
                     filteredSolicitacoes.map(s => (

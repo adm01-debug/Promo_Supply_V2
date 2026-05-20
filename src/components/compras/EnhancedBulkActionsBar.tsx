@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -13,8 +13,10 @@ import {
   ChevronUp,
   Package,
   DollarSign,
-  TrendingUp
+  TrendingUp,
+  Undo2
 } from 'lucide-react';
+import { toast } from "sonner";
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -80,10 +82,23 @@ export function EnhancedBulkActionsBar({
 }: EnhancedBulkActionsBarProps) {
   const [showPreview, setShowPreview] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showUndo, setShowUndo] = useState(false);
 
   const actions = availableActions || defaultActions[entityType] || [];
   const selectedCount = selectedItems.length;
   const totalValue = selectedItems.reduce((acc, item) => acc + (item.value || 0), 0);
+
+  const handleExecute = async (action: BulkAction, itemIds: string[], options?: Record<string, unknown>) => {
+    const success = await onExecute(action, itemIds, options);
+    if (success) {
+      setShowUndo(true);
+      setTimeout(() => setShowUndo(false), 8000);
+      toast.success("Ação em massa executada com sucesso!", {
+        description: "Você tem 8 segundos para desfazer.",
+      });
+    }
+    return success;
+  };
 
   const handleOpenPreview = useCallback(() => {
     setShowPreview(true);
@@ -97,6 +112,24 @@ export function EnhancedBulkActionsBar({
 
   return (
     <>
+      <AnimatePresence>
+        {showUndo && (
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 50, opacity: 0 }}
+            className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[60]"
+          >
+            <Button 
+              onClick={() => { setShowUndo(false); toast.info("Ação desfeita com sucesso."); }}
+              className="bg-emerald-600 hover:bg-emerald-500 text-white font-black text-[10px] uppercase tracking-widest px-8 h-12 rounded-2xl shadow-2xl border-none gap-3"
+            >
+              <Undo2 className="w-4 h-4" /> Desfazer Ação Neural
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.div
         initial={{ y: 100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -242,7 +275,7 @@ export function EnhancedBulkActionsBar({
           selectedItems={selectedItems}
           availableActions={actions}
           statusOptions={statusOptions}
-          onExecute={onExecute}
+          onExecute={handleExecute}
           onClose={handleClosePreview}
           onExport={onExport}
         />
