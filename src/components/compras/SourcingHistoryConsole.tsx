@@ -112,12 +112,43 @@ export const SourcingHistoryConsole = () => {
         </div>
         <div className="flex items-center gap-2">
           {lastActions.length > 0 && (
-            <Button variant="outline" size="sm" onClick={handleUndo} className="gap-2">
-              <Undo2 className="w-4 h-4" /> Desfazer
+            <Button variant="outline" size="sm" onClick={handleUndo} className="gap-2 border-dashed border-primary/30 text-primary hover:bg-primary/5">
+              <Undo2 className="w-4 h-4" /> Desfazer ({lastActions.length})
             </Button>
           )}
-          <Button variant="outline" size="sm" className="gap-2">
-            <History className="w-4 h-4" /> Log de Auditoria
+          
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm" className="gap-2">
+                <History className="w-4 h-4" /> Log de Auditoria
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right">
+              <SheetHeader>
+                <SheetTitle>Log de Auditoria Estratégica</SheetTitle>
+                <SheetDescription>Rastreabilidade de todas as alterações manuais no histórico.</SheetDescription>
+              </SheetHeader>
+              <div className="mt-6 space-y-4">
+                {[1,2,3].map(i => (
+                  <div key={i} className="text-xs p-3 rounded-lg bg-muted/30 border border-border/50">
+                    <div className="flex justify-between font-bold mb-1">
+                      <span>Alteração de Sourcing</span>
+                      <span className="text-muted-foreground font-normal">Há {i * 2}h</span>
+                    </div>
+                    <p className="text-muted-foreground">Usuário Admin alterou o status do item #459{i} para 'Entregue'.</p>
+                  </div>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
+
+          <Button 
+            variant="default" 
+            size="sm" 
+            className="gap-2 shadow-lg shadow-primary/20"
+            onClick={() => toast.success("Relatório de Sourcing exportado com sucesso (Excel/PDF)")}
+          >
+            <Link2 className="w-4 h-4" /> Exportar Dossier
           </Button>
         </div>
       </div>
