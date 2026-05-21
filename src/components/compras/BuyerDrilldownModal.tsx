@@ -16,6 +16,7 @@ import {
 import type { TooltipProps } from 'recharts';
 import type { ValueType, NameType } from 'recharts/types/component/DefaultTooltipContent';
 import type { BuyerData } from "@/hooks/useBuyerPerformanceData";
+import { formatDateBR } from "@/lib/dateUtils";
 
 interface LegacyComprador {
   nome: string;
@@ -122,7 +123,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
                         <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
-                            {new Date(neg.data).toLocaleDateString('pt-BR')}
+                            {formatDateBR(neg.data)}
                           </span>
                         </div>
                       </div>

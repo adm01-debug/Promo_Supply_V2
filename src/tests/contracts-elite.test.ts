@@ -58,7 +58,7 @@ const ERPSyncContract = z.object({
 
 test('NegotiationContract: deve validar payloads reais', () => {
   const payload = {
-    cotacoes: [{ id: '1', fornecedor: 'Test', valor: 100 }],
+    cotacoes: [{ id: '550e8400-e29b-411d-a716-446655440001', fornecedor: 'Test', total: 100 }],
     solicitacao: { id: '550e8400-e29b-411d-a716-446655440000', titulo: 'Test' }
   };
   expect(NegotiationContract.safeParse(payload).success).toBe(true);
