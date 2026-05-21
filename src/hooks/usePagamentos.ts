@@ -2,6 +2,7 @@ import { useCallback, useMemo, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { security } from '@/lib/security';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
@@ -67,7 +68,10 @@ async function fetchPagamentosData(userId: string | undefined, organizationId: s
 
   if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
   if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
-  if (filters?.search) query = query.or(`numero.ilike.%${filters.search}%,numero_nf.ilike.%${filters.search}%`);
+  if (filters?.search) {
+    const term = security.sanitizeSearchTerm(filters.search);
+    if (term) query = query.or(`numero.ilike.%${term}%,numero_nf.ilike.%${term}%`);
+  }
   if (filters?.dateFrom) query = query.gte('data_vencimento', filters.dateFrom);
   if (filters?.dateTo) query = query.lte('data_vencimento', filters.dateTo);
 

@@ -54,10 +54,11 @@ export const useGeoRestriction = () => {
       const { data, error } = await supabase
         .from('geo_settings')
         .select('*')
-        .single();
-      
+        .limit(1)
+        .maybeSingle();
+
       if (error) throw error;
-      return data as GeoSettings;
+      return (data as GeoSettings | null) ?? null;
     },
     enabled: !!user,
   });

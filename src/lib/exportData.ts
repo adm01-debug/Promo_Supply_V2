@@ -3,6 +3,8 @@
  * Suporta formatação BRL, datas pt-BR e nomes de colunas traduzidos.
  */
 
+import { parseLocalDate } from './dateUtils';
+
 interface ExportColumn {
   key: string;
   label: string;
@@ -17,24 +19,24 @@ const formatCurrency = (value: unknown): string => {
 
 const formatDate = (value: unknown): string => {
   if (!value) return '';
-  const d = new Date(String(value));
-  if (isNaN(d.getTime())) return String(value);
-  return d.toLocaleDateString('pt-BR');
+  const d = parseLocalDate(value as string);
+  return d ? d.toLocaleDateString('pt-BR') : String(value);
 };
 
 const formatDateTime = (value: unknown): string => {
   if (!value) return '';
-  const d = new Date(String(value));
-  if (isNaN(d.getTime())) return String(value);
-  return d.toLocaleString('pt-BR');
+  const d = parseLocalDate(value as string);
+  return d ? d.toLocaleString('pt-BR') : String(value);
 };
 
-// Escape CSV value
+// Escape CSV value (delimiter is ';') and neutralize formula injection.
 const escapeCSV = (val: string): string => {
-  if (val.includes(',') || val.includes('"') || val.includes('\n') || val.includes('\r')) {
-    return `"${val.replace(/"/g, '""')}"`;
+  // Prevent CSV/formula injection in spreadsheet apps: prefix risky leading chars.
+  let safe = /^[=+\-@\t\r]/.test(val) ? `'${val}` : val;
+  if (/[;",\n\r]/.test(safe)) {
+    safe = `"${safe.replace(/"/g, '""')}"`;
   }
-  return val;
+  return safe;
 };
 
 export function exportToCSV<T extends Record<string, unknown>>(

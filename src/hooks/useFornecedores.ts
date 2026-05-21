@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { security } from '@/lib/security';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { auditHelpers } from '@/services/auditService';
@@ -50,7 +51,10 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
       if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
-      if (filters?.search) query = query.or(`razao_social.ilike.%${filters.search}%,nome_fantasia.ilike.%${filters.search}%,cnpj.ilike.%${filters.search}%`);
+      if (filters?.search) {
+        const term = security.sanitizeSearchTerm(filters.search);
+        if (term) query = query.or(`razao_social.ilike.%${term}%,nome_fantasia.ilike.%${term}%,cnpj.ilike.%${term}%`);
+      }
 
       const { data, error: fetchError } = await query;
       if (fetchError) throw fetchError;

@@ -28,6 +28,21 @@ export const security = {
   },
 
   /**
+   * Sanitiza um termo de busca antes de interpolar em filtros PostgREST `.or()`.
+   * Remove os caracteres estruturais do PostgREST (`,` `(` `)`) que quebram o
+   * parse do filtro e permitem injetar condições extras, e os curingas SQL
+   * (`%` `_` `*`) para que sejam tratados como texto literal no `ilike`.
+   */
+  sanitizeSearchTerm: (term: string): string => {
+    if (!term) return '';
+    return term
+      .replace(/[,()]/g, ' ')      // delimitadores estruturais do PostgREST
+      .replace(/[%_*\\]/g, '')      // curingas SQL/PostgREST
+      .trim()
+      .slice(0, 100);
+  },
+
+  /**
    * Validates if a string is a potentially dangerous pattern.
    */
   isDangerous: (text: string): boolean => {

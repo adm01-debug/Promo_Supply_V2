@@ -197,15 +197,16 @@ export function useOfflineSync() {
   }, [getPendingOperations, syncPendingOperations]);
 
   // Wrapper for operations that can be queued offline
-  const withOfflineSupport = useCallback(<T extends Record<string, unknown>>(
+  const withOfflineSupport = useCallback(<T>(
     table: string,
     type: PendingOperation['type'],
+    data: Record<string, unknown>,
     operation: () => Promise<T>
   ): Promise<T | { offline: true; operationId: string }> => {
     return operation().catch((error) => {
-      if (!state.isOnline || error.message?.includes('network')) {
-        // Queue for later
-        const operationId = addPendingOperation(type, table, error.data || {});
+      if (!state.isOnline || error?.message?.includes('network')) {
+        // Queue the actual payload for later replay
+        const operationId = addPendingOperation(type, table, data);
         return { offline: true, operationId };
       }
       throw error;

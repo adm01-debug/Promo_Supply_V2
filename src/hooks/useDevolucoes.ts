@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo, useEffect } from 'react';
 import { format } from 'date-fns';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { security } from '@/lib/security';
 import { useAuth } from '@/features/auth';
 import { toast } from 'sonner';
 import type { Database } from '@/integrations/supabase/types';
@@ -65,7 +66,10 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
 
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
       if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
-      if (filters?.search) query = query.or(`numero.ilike.%${filters.search}%,motivo_detalhe.ilike.%${filters.search}%`);
+      if (filters?.search) {
+        const term = security.sanitizeSearchTerm(filters.search);
+        if (term) query = query.or(`numero.ilike.%${term}%,motivo_detalhe.ilike.%${term}%`);
+      }
 
       const { data, error } = await query;
       if (error) throw error;

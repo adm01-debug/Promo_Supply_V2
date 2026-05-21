@@ -2,6 +2,7 @@ import { useCallback, useMemo, useEffect } from 'react';
 import { logger } from '@/lib/logger';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { security } from '@/lib/security';
 import { useAuth } from '@/features/auth';
 import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
@@ -72,7 +73,10 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
   if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
   if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
   if (filters?.prioridade && filters.prioridade !== 'todas') query = query.eq('prioridade', filters.prioridade);
-  if (filters?.search) query = query.or(`titulo.ilike.%${filters.search}%,numero.ilike.%${filters.search}%,descricao.ilike.%${filters.search}%`);
+  if (filters?.search) {
+    const term = security.sanitizeSearchTerm(filters.search);
+    if (term) query = query.or(`titulo.ilike.%${term}%,numero.ilike.%${term}%,descricao.ilike.%${term}%`);
+  }
   if (filters?.dateFrom) query = query.gte('data_necessidade', filters.dateFrom);
   if (filters?.dateTo) query = query.lte('data_necessidade', filters.dateTo);
   if (filters?.valorMin !== undefined) query = query.gte('valor_estimado', filters.valorMin);

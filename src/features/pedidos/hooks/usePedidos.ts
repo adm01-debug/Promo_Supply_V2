@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import { security } from '@/lib/security';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
@@ -88,7 +89,8 @@ async function fetchPedidosData(userId: string | undefined, tenantId: string | n
     query = query.eq('fornecedor_id', filters.fornecedor_id);
   }
   if (filters?.search) {
-    query = query.or(`numero.ilike.%${filters.search}%`);
+    const term = security.sanitizeSearchTerm(filters.search);
+    if (term) query = query.or(`numero.ilike.%${term}%`);
   }
   if (filters?.dateFrom) {
     query = query.gte('data_emissao', filters.dateFrom);
