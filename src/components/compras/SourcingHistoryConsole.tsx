@@ -12,7 +12,8 @@ import {
   BarChart3, History, ArrowRight, ShieldCheck,
   TrendingUp, Clock, Calendar, ChevronRight, Undo2,
   Globe, Zap, FileText, Download, BarChart, Map,
-  Table as TableIcon
+  Table as TableIcon, Brain, Database, Activity,
+  Lock, SearchCode
 } from "lucide-react";
 import { usePurchaseHistory, type PurchaseRecord, type SupplierHistory } from "@/hooks/usePurchaseHistory";
 import { cn } from "@/lib/utils";
@@ -25,7 +26,7 @@ import {
   LineChart, Line, ResponsiveContainer, XAxis, YAxis, 
   Tooltip as RechartsTooltip, Cell, PieChart, Pie,
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
-  BarChart as RechartsBarChart, Bar
+  BarChart as RechartsBarChart, Bar, AreaChart, Area
 } from "recharts";
 
 const PriceTrendChart = ({ data }: { data: { date: string, price: number }[] }) => (
@@ -194,6 +195,17 @@ export const SourcingHistoryConsole = () => {
               onClick={() => setViewMode("intelligence" as any)}
             >
               <Globe className="w-4 h-4" /> Inteligência
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className={cn(
+                "gap-2 px-4 transition-all duration-200",
+                viewMode as string === "neural" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+              )} 
+              onClick={() => setViewMode("neural" as any)}
+            >
+              <Brain className="w-4 h-4" /> Neural
             </Button>
           </div>
           
@@ -641,6 +653,127 @@ export const SourcingHistoryConsole = () => {
                       ))}
                     </tbody>
                   </table>
+                </div>
+              </Card>
+            </div>
+          ) : viewMode === ("neural" as any) ? (
+            <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+              {/* Neural Prediction Console */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Card className="p-6 border-primary/30 bg-primary/5 relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform">
+                    <Brain className="w-24 h-24" />
+                  </div>
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                      <Brain className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-black text-xl tracking-tight">Predição de Recompra Neural</h4>
+                      <p className="text-xs text-muted-foreground">Baseado em padrões históricos e sazonalidade</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    {[
+                      { item: "Cimento CP II 50kg", date: "15/06", prob: 98, trend: "Aumentando" },
+                      { item: "Vergalhão CA-50 10mm", date: "18/06", prob: 94, trend: "Estável" },
+                      { item: "Areia Lavada Fina", date: "22/06", prob: 88, trend: "Diminuindo" },
+                    ].map((pred) => (
+                      <div key={pred.item} className="flex items-center justify-between p-3 bg-background/50 rounded-lg border border-border/40 hover:border-primary/50 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                          <div>
+                            <p className="text-sm font-bold">{pred.item}</p>
+                            <p className="text-[10px] text-muted-foreground uppercase font-bold">Estimativa: {pred.date}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-xs font-black text-primary">{pred.prob}% Confiança</div>
+                          <Badge variant="outline" className="text-[8px] h-4 px-1">{pred.trend}</Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <Button className="w-full mt-6 bg-primary shadow-lg shadow-primary/20 group-hover:shadow-primary/40 transition-all gap-2">
+                    <Activity className="w-4 h-4" /> Executar Análise de Demanda Global
+                  </Button>
+                </Card>
+
+                <Card className="p-6 border-emerald-500/30 bg-emerald-500/5 relative overflow-hidden">
+                  <div className="flex justify-between items-center mb-6">
+                    <div>
+                      <h4 className="font-black text-xl tracking-tight">Benchmarking Dinâmico</h4>
+                      <p className="text-xs text-muted-foreground">Nossa performance vs. Mercado global</p>
+                    </div>
+                    <Badge className="bg-emerald-500 hover:bg-emerald-600">Alpha AI</Badge>
+                  </div>
+
+                  <div className="h-48 mb-6">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={[
+                        { name: 'Jan', us: 400, market: 440 },
+                        { name: 'Fev', us: 380, market: 450 },
+                        { name: 'Mar', us: 420, market: 460 },
+                        { name: 'Abr', us: 390, market: 455 },
+                        { name: 'Mai', us: 370, market: 450 },
+                        { name: 'Jun', us: 350, market: 445 },
+                      ]}>
+                        <defs>
+                          <linearGradient id="colorUs" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <XAxis dataKey="name" hide />
+                        <YAxis hide />
+                        <RechartsTooltip />
+                        <Area type="monotone" dataKey="us" stroke="#10b981" fillOpacity={1} fill="url(#colorUs)" strokeWidth={3} />
+                        <Area type="monotone" dataKey="market" stroke="#94a3b8" fillOpacity={0} strokeWidth={2} strokeDasharray="5 5" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 bg-background/50 rounded-lg border border-border/40">
+                      <p className="text-[9px] text-muted-foreground uppercase font-black">Economy Gap</p>
+                      <div className="text-xl font-black text-emerald-600">14.2%</div>
+                      <p className="text-[8px] text-muted-foreground">Abaixo da média de mercado</p>
+                    </div>
+                    <div className="p-3 bg-background/50 rounded-lg border border-border/40">
+                      <p className="text-[9px] text-muted-foreground uppercase font-black">Eficiência Sourcing</p>
+                      <div className="text-xl font-black text-primary">9.8/10</div>
+                      <p className="text-[8px] text-muted-foreground">Percentil 98 do setor</p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              {/* Advanced Analytics Table */}
+              <Card className="p-6 border-border/40">
+                <div className="flex items-center justify-between mb-6">
+                  <h4 className="font-black text-lg flex items-center gap-2">
+                    <Database className="w-5 h-5 text-primary" /> Matriz de Inteligência de Custo
+                  </h4>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="sm" className="h-8 text-[10px] font-black uppercase"><SearchCode className="w-3 h-3 mr-1" /> Deep Scan</Button>
+                    <Button variant="outline" size="sm" className="h-8 text-[10px] font-black uppercase"><Lock className="w-3 h-3 mr-1" /> Audit Log</Button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                   {[
+                     { label: "Análise de Kraljic", value: "Estratégico", desc: "Itens de alto risco e alto valor" },
+                     { label: "Predictive Fill", value: "92%", desc: "Acuracidade de estoque futuro" },
+                     { label: "Churn de Fornecedor", value: "2.4%", desc: "Taxa de substituição anual" },
+                   ].map(item => (
+                     <div key={item.label} className="p-4 bg-muted/20 rounded-xl border border-border/40 hover:border-primary/30 transition-all cursor-pointer group">
+                       <p className="text-[10px] text-muted-foreground uppercase font-black mb-1 group-hover:text-primary transition-colors">{item.label}</p>
+                       <p className="text-2xl font-black">{item.value}</p>
+                       <p className="text-[10px] text-muted-foreground mt-1">{item.desc}</p>
+                     </div>
+                   ))}
                 </div>
               </Card>
             </div>
