@@ -21,13 +21,35 @@ serve(async (req) => {
     }
 
     const token = authHeader.split(" ")[1];
-    
-    // In a production environment, we would validate the scim_token_hash from sso_configurations.
-    // For now, we use a service role client to manage users.
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Empty token" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
+
+    // Validate the bearer against sso_configurations.scim_token_hash with a
+    // constant-time compare. The DB stores a SHA-256 hex hash of the token.
+    const tokenHash = await sha256Hex(token);
+    const { data: ssoRows, error: ssoErr } = await supabaseAdmin
+      .from("sso_configurations")
+      .select("scim_token_hash, is_active")
+      .not("scim_token_hash", "is", null);
+    if (ssoErr) throw ssoErr;
+    const matched = (ssoRows ?? []).some((row) =>
+      row.is_active && constantTimeEqual(row.scim_token_hash as string, tokenHash)
+    );
+    if (!matched) {
+      return new Response(JSON.stringify({ error: "Invalid SCIM token" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const url = new URL(req.url);
     const pathParts = url.pathname.split("/").filter(Boolean);
@@ -112,4 +134,18 @@ function mapSupabaseUserToSCIM(user: any) {
       lastModified: user.updated_at,
     },
   };
+}
+
+async function sha256Hex(input: string): Promise<string> {
+  const data = new TextEncoder().encode(input);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  const bytes = new Uint8Array(digest);
+  return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function constantTimeEqual(a: string, b: string): boolean {
+  if (typeof a !== "string" || typeof b !== "string" || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
 }

@@ -1,8 +1,8 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4'
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
 import { WorkflowContract } from "../_shared/contracts.ts";
+import { requireUser, requireTenantMembership, serviceClient, errorToResponse } from "../_shared/auth.ts";
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -13,23 +13,24 @@ serve(async (req) => {
   const logger = new EdgeLogger("workflow-engine", requestId);
 
   try {
-    const supabase = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
+    const { user } = await requireUser(req);
+    const supabase = serviceClient();
 
-    // Contract Validation: Ensures type safety and catches malformed payloads before logic execution
+    // Contract Validation: ensures type safety before logic.
     const data = await validateBody(req, WorkflowContract, logger);
-    const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, approver_id, comment } = data;
-    
-    const tenant_id = req.headers.get('x-tenant-id')
+    const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, comment, tenant_id: bodyTenant } = data;
+
+    // Identity and tenant come from auth, not the client.
+    const tenant_id = bodyTenant;
     if (!tenant_id) {
-      throw new Error('Validation error: Missing tenant_id header')
+      throw new Error('Validation error: tenant_id is required in body');
     }
+    await requireTenantMembership(user.id, tenant_id);
+    const approver_id = user.id;
 
     if (action === 'start_workflow') {
       if (!template_id) throw new Error('Validation error: template_id is required for start_workflow');
-      
+
       const { data: instance, error: instError } = await supabase
         .from('workflow_instances')
         .insert({
@@ -51,7 +52,12 @@ serve(async (req) => {
         .eq('type', 'start')
         .single()
 
-      if (nodeError) throw nodeError
+      if (nodeError || !startNode) {
+        // Roll back the orphan instance before surfacing the error so we
+        // don't leak a running instance with no current_node_id.
+        await supabase.from('workflow_instances').delete().eq('id', instance.id);
+        throw nodeError ?? new Error('Start node not found');
+      }
 
       await supabase.from('workflow_logs').insert({
         instance_id: instance.id,
@@ -61,7 +67,7 @@ serve(async (req) => {
         message: 'Workflow started'
       })
 
-      const { data: edge, error: edgeError } = await supabase
+      const { data: edge } = await supabase
         .from('workflow_edges')
         .select('target_node_id')
         .eq('source_node_id', startNode.id)
@@ -107,7 +113,7 @@ serve(async (req) => {
         })
         .eq('instance_id', instance_id)
         .eq('node_id', node_id)
-      
+
       return new Response(JSON.stringify({ success: true, requestId }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
@@ -120,6 +126,11 @@ serve(async (req) => {
     })
 
   } catch (error) {
+    // Auth errors get a specific status; other errors flow through the
+    // existing error responder.
+    if (error && typeof error === 'object' && 'status' in error) {
+      return errorToResponse(error, corsHeaders);
+    }
     return errorResponse(error, logger);
   }
 })

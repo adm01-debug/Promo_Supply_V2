@@ -124,21 +124,35 @@ Deno.serve(async (req) => {
 
     const externalClient = createClient(externalUrl, externalKey);
 
-    // Get user ID from auth header
-    const authHeader = req.headers.get("Authorization");
-    let userId: string | null = null;
-    if (authHeader) {
-      try {
-        const localUrl = Deno.env.get("SUPABASE_URL")!;
-        const localKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-        const localClient = createClient(localUrl, localKey);
-        const { data: { user } } = await localClient.auth.getUser(
-          authHeader.replace("Bearer ", "")
+    // Require a valid Authorization header. Previously auth errors were
+    // silently swallowed, meaning anyone could proxy arbitrary queries
+    // to the external DB using the configured service key.
+    const authHeader = req.headers.get("Authorization") || req.headers.get("authorization");
+    if (!authHeader || !authHeader.toLowerCase().startsWith("bearer ")) {
+      return new Response(
+        JSON.stringify({ error: "Authorization required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    let userId: string;
+    try {
+      const localUrl = Deno.env.get("SUPABASE_URL")!;
+      const localKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+      const localClient = createClient(localUrl, localKey);
+      const token = authHeader.slice(7).trim();
+      const { data: { user }, error: authErr } = await localClient.auth.getUser(token);
+      if (authErr || !user) {
+        return new Response(
+          JSON.stringify({ error: "Invalid token" }),
+          { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
         );
-        userId = user?.id || null;
-      } catch (_) {
-        // ignore auth errors
       }
+      userId = user.id;
+    } catch (_) {
+      return new Response(
+        JSON.stringify({ error: "Auth verification failed" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
     }
 
     let result: { data: unknown; error: unknown; count?: number | null } = {
