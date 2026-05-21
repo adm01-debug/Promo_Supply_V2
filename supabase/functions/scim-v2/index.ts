@@ -6,6 +6,16 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+function timingSafeEqual(a: string, b: string): boolean {
+  const encoder = new TextEncoder();
+  const aBytes = encoder.encode(a);
+  const bBytes = encoder.encode(b);
+  if (aBytes.length !== bBytes.length) return false;
+  let diff = 0;
+  for (let i = 0; i < aBytes.length; i++) diff |= aBytes[i] ^ bBytes[i];
+  return diff === 0;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -21,9 +31,25 @@ serve(async (req) => {
     }
 
     const token = authHeader.split(" ")[1];
-    
-    // In a production environment, we would validate the scim_token_hash from sso_configurations.
-    // For now, we use a service role client to manage users.
+
+    // Fail closed: the SCIM bearer token must match the configured secret before
+    // any service-role operation is allowed. Without this, any presented token
+    // would grant full user management access.
+    const expectedToken = Deno.env.get("SCIM_BEARER_TOKEN");
+    if (!expectedToken) {
+      console.error("SCIM_BEARER_TOKEN is not configured; rejecting request");
+      return new Response(JSON.stringify({ error: "SCIM not configured" }), {
+        status: 503,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!token || !timingSafeEqual(token, expectedToken)) {
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""

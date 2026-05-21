@@ -33,7 +33,7 @@ export const useApprovalWorkflow = () => {
         aprovadores: typeof rule.aprovadores === 'string' ? JSON.parse(rule.aprovadores) : rule.aprovadores || []
       })) as ApprovalRule[]);
     } catch (error) { logger.error('Error fetching approval rules', { error }); }
-  }, []);
+  }, [organizationId]);
 
   const fetchDelegations = useCallback(async () => {
     if (!organizationId) return;
@@ -47,7 +47,7 @@ export const useApprovalWorkflow = () => {
         categorias_permitidas: typeof d.categorias_permitidas === 'string' ? JSON.parse(d.categorias_permitidas) : d.categorias_permitidas || []
       })) as ApprovalDelegation[]);
     } catch (error) { logger.error('Error fetching delegations', { error }); }
-  }, []);
+  }, [organizationId]);
 
   const fetchPendingWorkflows = useCallback(async () => {
     if (!user || !organizationId) return;
@@ -59,7 +59,7 @@ export const useApprovalWorkflow = () => {
       if (error) throw error;
       setWorkflows((data || []) as any);
     } catch (error) { logger.error('Error fetching workflows', { error }); }
-  }, [user]);
+  }, [user, organizationId]);
 
   const fetchPendingSteps = useCallback(async () => {
     if (!user || !organizationId) return;
@@ -71,7 +71,7 @@ export const useApprovalWorkflow = () => {
       if (error) throw error;
       setPendingSteps((data || []) as ApprovalStep[]);
     } catch (error) { logger.error('Error fetching pending steps', { error }); }
-  }, [user]);
+  }, [user, organizationId]);
 
   const saveRule = useCallback(async (rule: Partial<ApprovalRule>) => {
     if (!organizationId) return;
@@ -107,7 +107,7 @@ export const useApprovalWorkflow = () => {
       await fetchRules();
     } catch (error) { logger.error('Error saving rule', { error }); toast.error('Erro ao salvar regra'); }
     finally { setLoading(false); }
-  }, [user, fetchRules]);
+  }, [user, organizationId, fetchRules]);
 
   const deleteRule = useCallback(async (ruleId: string) => {
     try {
@@ -143,7 +143,7 @@ export const useApprovalWorkflow = () => {
       await fetchDelegations();
     } catch (error) { logger.error('Error saving delegation', { error }); toast.error('Erro ao salvar delegação'); }
     finally { setLoading(false); }
-  }, [fetchDelegations]);
+  }, [organizationId, fetchDelegations]);
 
   const deleteDelegation = useCallback(async (delegationId: string) => {
     try {
@@ -276,7 +276,7 @@ export const useApprovalWorkflow = () => {
       return null; 
     }
     finally { setLoading(false); }
-  }, [user, findApplicableRule, fetchPendingWorkflows, getEffectiveApprover, findApplicableRuleRPC, rules]);
+  }, [user, organizationId, findApplicableRule, fetchPendingWorkflows, getEffectiveApprover, findApplicableRuleRPC, rules]);
 
   const approveStep = useCallback(async (stepId: string, comentario?: string) => {
     try {
