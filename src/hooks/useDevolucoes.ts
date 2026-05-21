@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { toast } from 'sonner';
+import { escapeIlike } from '@/lib/supabaseQuery';
 import type { Database } from '@/integrations/supabase/types';
 
 export type Devolucao = Database['public']['Tables']['devolucoes']['Row'] & {
@@ -65,7 +66,10 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
 
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
       if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
-      if (filters?.search) query = query.or(`numero.ilike.%${filters.search}%,motivo_detalhe.ilike.%${filters.search}%`);
+      if (filters?.search) {
+        const s = escapeIlike(filters.search);
+        query = query.or(`numero.ilike.%${s}%,motivo_detalhe.ilike.%${s}%`);
+      }
 
       const { data, error } = await query;
       if (error) throw error;

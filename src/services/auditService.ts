@@ -1,6 +1,7 @@
 import { AuditLogEntry, AuditLog, AuditActionType, AuditEntityType } from './auditTypes';
 import { supabase } from '@/integrations/supabase/client';
 import { logger } from '@/lib/logger';
+import { escapeIlike } from '@/lib/supabaseQuery';
 import type { Json } from '@/integrations/supabase/types';
 
 export type { AuditLog, AuditActionType, AuditEntityType };
@@ -68,7 +69,10 @@ class AuditService {
       if (options?.end_date) query = query.lte('created_at', options.end_date.toISOString());
       
       if (options?.search) {
-        query = query.or(`entity_description.ilike.%${options.search}%,user_email.ilike.%${options.search}%,user_name.ilike.%${options.search}%`);
+        {
+          const s = escapeIlike(options.search);
+          query = query.or(`entity_description.ilike.%${s}%,user_email.ilike.%${s}%,user_name.ilike.%${s}%`);
+        }
       }
 
       if (options?.limit) query = query.limit(options.limit);

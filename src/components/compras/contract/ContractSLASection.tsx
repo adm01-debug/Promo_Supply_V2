@@ -33,7 +33,7 @@ export const ContractSLASection = ({ data, onChange }: ContractSLASectionProps) 
         <Input
           type="number"
           value={data.sla_delivery_days}
-          onChange={(e) => onChange({ sla_delivery_days: parseInt(e.target.value) || 30 })}
+          onChange={(e) => onChange({ sla_delivery_days: parseInt(e.target.value, 10) || 30 })}
         />
       </div>
       <div className="space-y-2">
@@ -50,7 +50,7 @@ export const ContractSLASection = ({ data, onChange }: ContractSLASectionProps) 
         <Input
           type="number"
           value={data.penalty_cap_percent}
-          onChange={(e) => onChange({ penalty_cap_percent: parseInt(e.target.value) || 0 })}
+          onChange={(e) => onChange({ penalty_cap_percent: parseInt(e.target.value, 10) || 0 })}
         />
       </div>
     </div>
@@ -72,7 +72,7 @@ export const ContractSLASection = ({ data, onChange }: ContractSLASectionProps) 
         <Input
           type="number"
           value={data.quality_penalty_percent}
-          onChange={(e) => onChange({ quality_penalty_percent: parseInt(e.target.value) || 0 })}
+          onChange={(e) => onChange({ quality_penalty_percent: parseInt(e.target.value, 10) || 0 })}
         />
       </div>
       <div className="space-y-2">

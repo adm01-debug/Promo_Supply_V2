@@ -54,7 +54,7 @@ export function LicitacaoDetailDialog({
     const result = await addProposta({
       fornecedor_id: propostaForm.fornecedor_id,
       valor_proposta: parseFloat(propostaForm.valor_proposta) || 0,
-      prazo_entrega: parseInt(propostaForm.prazo_entrega) || 0,
+      prazo_entrega: parseInt(propostaForm.prazo_entrega, 10) || 0,
       observacoes: propostaForm.observacoes || null,
       score_preco: (licitacao.valor_estimado || 0) > 0
         ? Math.max(0, 100 - ((parseFloat(propostaForm.valor_proposta) || 0) / (licitacao.valor_estimado || 0) - 1) * 100)

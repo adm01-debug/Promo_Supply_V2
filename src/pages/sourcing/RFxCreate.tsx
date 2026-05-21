@@ -280,7 +280,7 @@ const RFxCreate = () => {
                       value={c.weight} 
                       onChange={e => {
                         const newCriteria = [...formData.criteria];
-                        newCriteria[i].weight = parseInt(e.target.value) || 0;
+                        newCriteria[i].weight = parseInt(e.target.value, 10) || 0;
                         setFormData({...formData, criteria: newCriteria});
                       }}
                     />

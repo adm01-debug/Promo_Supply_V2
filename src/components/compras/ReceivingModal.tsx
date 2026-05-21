@@ -245,7 +245,7 @@ export function ReceivingModal({
                         max={item.quantidade * 2}
                         value={received}
                         onChange={(e) =>
-                          handleQuantityChange(item.id, parseInt(e.target.value) || 0)
+                          handleQuantityChange(item.id, parseInt(e.target.value, 10) || 0)
                         }
                         className="w-20 text-center"
                       />

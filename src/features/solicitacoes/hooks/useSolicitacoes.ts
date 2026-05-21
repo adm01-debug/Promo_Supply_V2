@@ -7,6 +7,7 @@ import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
 import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 import { fetchAllRows } from '@/lib/paginatedFetch';
+import { escapeIlike } from '@/lib/supabaseQuery';
 import type { Json, Database } from '@/integrations/supabase/types';
 import { CreateSolicitacaoSchema, type CreateSolicitacaoInput } from '@/features/solicitacoes';
 
@@ -72,7 +73,10 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
   if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
   if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
   if (filters?.prioridade && filters.prioridade !== 'todas') query = query.eq('prioridade', filters.prioridade);
-  if (filters?.search) query = query.or(`titulo.ilike.%${filters.search}%,numero.ilike.%${filters.search}%,descricao.ilike.%${filters.search}%`);
+  if (filters?.search) {
+    const s = escapeIlike(filters.search);
+    query = query.or(`titulo.ilike.%${s}%,numero.ilike.%${s}%,descricao.ilike.%${s}%`);
+  }
   if (filters?.dateFrom) query = query.gte('data_necessidade', filters.dateFrom);
   if (filters?.dateTo) query = query.lte('data_necessidade', filters.dateTo);
   if (filters?.valorMin !== undefined) query = query.gte('valor_estimado', filters.valorMin);

@@ -152,7 +152,7 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
                   </div>
                   <div className="col-span-2">
                     {idx === 0 && <Label className="text-xs">Qtd</Label>}
-                    <Input type="number" min={1} value={item.quantidade} onChange={e => updateItem(idx, 'quantidade', parseInt(e.target.value) || 1)} />
+                    <Input type="number" min={1} value={item.quantidade} onChange={e => updateItem(idx, 'quantidade', parseInt(e.target.value, 10) || 1)} />
                   </div>
                   <div className="col-span-3">
                     {idx === 0 && <Label className="text-xs">Valor Unit.</Label>}
