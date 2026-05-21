@@ -56,6 +56,16 @@ async function sha256Hex(value: string): Promise<string> {
   return toHex(await crypto.subtle.digest("SHA-256", encoder.encode(value)));
 }
 
+function timingSafeEqual(a: string, b: string): boolean {
+  const encoder = new TextEncoder();
+  const aBytes = encoder.encode(a);
+  const bBytes = encoder.encode(b);
+  if (aBytes.length !== bBytes.length) return false;
+  let diff = 0;
+  for (let i = 0; i < aBytes.length; i++) diff |= aBytes[i] ^ bBytes[i];
+  return diff === 0;
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -70,6 +80,7 @@ serve(async (req) => {
       });
     }
 
+
     // M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id).
     const ip = req.headers.get("cf-connecting-ip")
       ?? req.headers.get("x-forwarded-for")?.split(",")[0].trim()
@@ -82,8 +93,25 @@ serve(async (req) => {
     });
     if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
 
-
     const token = authHeader.slice("Bearer ".length).trim();
+
+    // Fail closed: the SCIM bearer token must match the configured secret before
+    // any service-role operation is allowed. Without this, any presented token
+    // would grant full user management access.
+    const expectedToken = Deno.env.get("SCIM_BEARER_TOKEN");
+    if (!expectedToken) {
+      console.error("SCIM_BEARER_TOKEN is not configured; rejecting request");
+      return new Response(JSON.stringify({ error: "SCIM not configured" }), {
+        status: 503,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!token || !timingSafeEqual(token, expectedToken)) {
+      return new Response(JSON.stringify({ error: "Invalid token" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
