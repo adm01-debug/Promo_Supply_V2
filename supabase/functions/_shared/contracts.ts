@@ -7,7 +7,7 @@ export const NegotiationContract = z.object({
     id: z.string().uuid(),
     fornecedor: z.string(),
     total: z.number().positive()
-  })),
+  })).min(1),
   solicitacao: z.object({
     id: z.string().uuid(),
     titulo: z.string().min(3)
@@ -30,7 +30,7 @@ export const ERPSyncContract = z.object({
   operation: z.enum(['sync_po', 'sync_supplier', 'sync_invoice']),
   po_number: z.string().optional(),
   external_id: z.string().optional(),
-  source: z.string()
+  source: z.enum(['sap', 'oracle', 'totvs', 'protheus', 'senior', 'sankhya'])
 });
 
 export class ContractValidator {

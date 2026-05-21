@@ -68,8 +68,12 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<NovaSolicitacaoData>(() => {
-    const saved = localStorage.getItem('nova_solicitacao_draft');
-    return saved ? JSON.parse(saved) : initialFormData;
+    try {
+      const saved = localStorage.getItem('nova_solicitacao_draft');
+      return saved ? JSON.parse(saved) : initialFormData;
+    } catch {
+      return initialFormData;
+    }
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessingNeural, setIsProcessingNeural] = useState(false);

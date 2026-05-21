@@ -37,6 +37,11 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      // Edge Functions (Deno) importam zod via URL remota. No vitest (Node)
+      // o loader ESM não resolve `https:`, então mapeamos para o pacote npm.
+      "https://esm.sh/zod@3.22.4": "zod",
+    },
   },
 });

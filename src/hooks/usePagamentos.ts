@@ -38,12 +38,12 @@ export interface PagamentoFilters {
 
 const VALID_PAGAMENTO_TRANSITIONS: Record<string, string[]> = {
   pendente: ['aprovado', 'cancelado'],
-  aprovado: ['agendado', 'pago', 'cancelado'],
-  agendado: ['pago', 'cancelado'],
+  aprovado: ['agendado', 'pago', 'parcial', 'cancelado'],
+  agendado: ['pago', 'parcial', 'cancelado'],
   pago: ['parcial'],
-  parcial: ['pago'],
+  parcial: ['pago', 'parcial', 'cancelado'],
   cancelado: [],
-  atrasado: ['pago', 'cancelado'],
+  atrasado: ['pago', 'parcial', 'cancelado'],
 };
 
 async function fetchPagamentosData(userId: string | undefined, organizationId: string | null | undefined, filters?: PagamentoFilters) {

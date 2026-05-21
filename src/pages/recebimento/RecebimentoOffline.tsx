@@ -30,6 +30,8 @@ import {
   OFFLINE_STORAGE_KEY,
   getOfflineEntries,
   saveOfflineEntries,
+  getCachedOrders,
+  saveCachedOrders,
 } from "./recebimentoHelpers";
 
 export default function RecebimentoOffline() {
@@ -97,12 +99,12 @@ export default function RecebimentoOffline() {
 
       setOrders(mapped);
       // Cache for offline use
-      localStorage.setItem("offline-orders-cache", JSON.stringify(mapped));
+      saveCachedOrders(mapped);
     } catch (err: unknown) {
       // Try cached data
-      const cached = localStorage.getItem("offline-orders-cache");
+      const cached = getCachedOrders();
       if (cached) {
-        setOrders(JSON.parse(cached));
+        setOrders(cached);
         toast.info("Usando dados em cache");
       } else {
         toast.error("Erro ao buscar pedidos");
@@ -119,9 +121,9 @@ export default function RecebimentoOffline() {
   // On mount, load cached orders if offline
   useEffect(() => {
     if (!isOnline) {
-      const cached = localStorage.getItem("offline-orders-cache");
+      const cached = getCachedOrders();
       if (cached) {
-        setOrders(JSON.parse(cached));
+        setOrders(cached);
         setLoading(false);
       }
     }

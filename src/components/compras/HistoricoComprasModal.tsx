@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Package, Calendar, DollarSign, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { formatDateBR } from "@/lib/dateUtils";
 
 interface HistoricoComprasModalProps {
   open: boolean;
@@ -92,7 +93,7 @@ export const HistoricoComprasModal = ({ open, onOpenChange, fornecedor }: Histor
               <span className="text-xs">Última Compra</span>
             </div>
             <p className="text-2xl font-bold text-foreground">
-              {lastDate ? new Date(lastDate).toLocaleDateString('pt-BR') : '—'}
+              {formatDateBR(lastDate)}
             </p>
           </div>
         </div>
@@ -127,7 +128,7 @@ export const HistoricoComprasModal = ({ open, onOpenChange, fornecedor }: Histor
                         </Badge>
                       </TableCell>
                       <TableCell className="text-muted-foreground text-sm">
-                        {pedido.data_emissao ? new Date(pedido.data_emissao).toLocaleDateString('pt-BR') : '—'}
+                        {formatDateBR(pedido.data_emissao)}
                       </TableCell>
                     </TableRow>
                   );

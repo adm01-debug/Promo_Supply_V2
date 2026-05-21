@@ -1,5 +1,5 @@
 import { test, expect } from 'vitest';
-// @ts-ignore - Edge function Deno module not resolvable from frontend TS
+// @ts-expect-error - Edge function Deno module not resolvable from frontend TS
 import { NegotiationContract } from '../../supabase/functions/_shared/contracts.ts';
 
 /**
@@ -10,7 +10,7 @@ import { NegotiationContract } from '../../supabase/functions/_shared/contracts.
 test('NegotiationContract should validate correct payloads', () => {
   const validPayload = {
     cotacoes: [
-      { id: '1', fornecedor: 'Global Logistics', valor: 1500, prazo: '5 dias' }
+      { id: '550e8400-e29b-411d-a716-446655440001', fornecedor: 'Global Logistics', total: 1500 }
     ],
     solicitacao: {
       id: '550e8400-e29b-411d-a716-446655440000',
@@ -26,7 +26,9 @@ test('NegotiationContract should validate correct payloads', () => {
 
 test('NegotiationContract should reject invalid UUIDs', () => {
   const invalidPayload = {
-    cotacoes: [],
+    cotacoes: [
+      { id: '550e8400-e29b-411d-a716-446655440001', fornecedor: 'Global Logistics', total: 1500 }
+    ],
     solicitacao: {
       id: 'invalid-uuid',
       titulo: 'Teste',

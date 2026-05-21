@@ -229,7 +229,7 @@ export function useCreditosFornecedor(fornecedorId?: string) {
         utilizado_em_pagamento_id: pagamentoId,
       }).eq('id', creditoId);
       if (error) throw error;
-      toast.success(`Crédito de R$ ${valor.toFixed(2)} utilizado!`);
+      toast.success(`Crédito de ${valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} utilizado!`);
       queryClient.invalidateQueries({ queryKey: ['creditos-fornecedor'] });
       return true;
     } catch (err: unknown) {
