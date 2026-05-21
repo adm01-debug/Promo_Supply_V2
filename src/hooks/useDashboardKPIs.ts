@@ -81,12 +81,11 @@ export function useDashboardKPIs(filters?: any) {
         return ((current - previous) / previous) * 100;
       };
 
-      const generateSparkline = (base: number, count: number = 7) => {
-        return Array.from({ length: count }).map((_, i) => {
-          const factor = 0.8 + (Math.random() * 0.4);
-          return Math.round(base * factor);
-        });
-      };
+      // Without real time-series data, return an empty sparkline. The consumer
+      // renders a placeholder. (Previously Math.random() generated a new fake
+      // line on every refetch, causing the UI to flicker and showing
+      // misleading "data".)
+      const generateSparkline = (_base: number, _count: number = 7): number[] => [];
 
       const extended: DashboardKPIsExtended = {
         aguardandoCotacao: rpcData.pipeline.solicitacao,

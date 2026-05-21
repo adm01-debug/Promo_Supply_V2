@@ -215,7 +215,7 @@ export function useCreditosFornecedor(fornecedorId?: string) {
   });
 
   const creditos = data || [];
-  const saldoTotal = creditos.filter(c => c.status === 'ativo').reduce((s, c) => s + c.saldo, 0);
+  const saldoTotal = creditos.filter(c => c.status === 'ativo').reduce((s, c) => s + (Number(c.saldo) || 0), 0);
 
   const utilizarCredito = useCallback(async (creditoId: string, valor: number, pagamentoId?: string) => {
     const credito = creditos.find(c => c.id === creditoId);

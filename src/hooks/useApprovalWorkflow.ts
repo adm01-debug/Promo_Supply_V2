@@ -10,6 +10,9 @@ import type {
 
 export type { ApprovalRule, ApprovalDelegation, ApprovalWorkflow, ApprovalStep, ApprovalHistory };
 
+// Module-level guard so only one consumer drives escalation polling.
+let escalationIntervalActive = false;
+
 export const useApprovalWorkflow = () => {
   const { user, organizationId } = useAuth();
   const [rules, setRules] = useState<ApprovalRule[]>([]);
@@ -33,7 +36,7 @@ export const useApprovalWorkflow = () => {
         aprovadores: typeof rule.aprovadores === 'string' ? JSON.parse(rule.aprovadores) : rule.aprovadores || []
       })) as ApprovalRule[]);
     } catch (error) { logger.error('Error fetching approval rules', { error }); }
-  }, []);
+  }, [organizationId]);
 
   const fetchDelegations = useCallback(async () => {
     if (!organizationId) return;
@@ -47,7 +50,7 @@ export const useApprovalWorkflow = () => {
         categorias_permitidas: typeof d.categorias_permitidas === 'string' ? JSON.parse(d.categorias_permitidas) : d.categorias_permitidas || []
       })) as ApprovalDelegation[]);
     } catch (error) { logger.error('Error fetching delegations', { error }); }
-  }, []);
+  }, [organizationId]);
 
   const fetchPendingWorkflows = useCallback(async () => {
     if (!user || !organizationId) return;
@@ -59,7 +62,7 @@ export const useApprovalWorkflow = () => {
       if (error) throw error;
       setWorkflows((data || []) as any);
     } catch (error) { logger.error('Error fetching workflows', { error }); }
-  }, [user]);
+  }, [user, organizationId]);
 
   const fetchPendingSteps = useCallback(async () => {
     if (!user || !organizationId) return;
@@ -71,7 +74,7 @@ export const useApprovalWorkflow = () => {
       if (error) throw error;
       setPendingSteps((data || []) as ApprovalStep[]);
     } catch (error) { logger.error('Error fetching pending steps', { error }); }
-  }, [user]);
+  }, [user, organizationId]);
 
   const saveRule = useCallback(async (rule: Partial<ApprovalRule>) => {
     if (!organizationId) return;
@@ -390,7 +393,19 @@ export const useApprovalWorkflow = () => {
   // Removed custom subscription here to avoid duplication as useRealtimeSubscription handles it globally
 
   useEffect(() => { fetchRules(); fetchDelegations(); fetchPendingWorkflows(); fetchPendingSteps(); }, [fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps, organizationId]);
-  useEffect(() => { const interval = setInterval(checkEscalations, 60000); return () => clearInterval(interval); }, [checkEscalations]);
+
+  // Escalation polling: gated by a module-level flag so multiple consumers
+  // of this hook don't spawn parallel intervals (which produces duplicate
+  // approval_history rows). Long-term this should move to a server cron.
+  useEffect(() => {
+    if (escalationIntervalActive) return;
+    escalationIntervalActive = true;
+    const interval = setInterval(checkEscalations, 60000);
+    return () => {
+      clearInterval(interval);
+      escalationIntervalActive = false;
+    };
+  }, [checkEscalations]);
 
   return {
     rules, delegations, workflows, pendingSteps, allHistory, loading,

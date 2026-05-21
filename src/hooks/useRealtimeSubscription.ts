@@ -35,14 +35,26 @@ export function useRealtimeSubscription({
   const pendingTablesRef = useRef<Set<string>>(new Set());
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Stash callbacks in refs so the channel handler always reads the latest
+  // versions without rebuilding the channel when consumers pass inline closures.
+  const onInsertRef = useRef(onInsert);
+  const onUpdateRef = useRef(onUpdate);
+  const onDeleteRef = useRef(onDelete);
+  const queryKeysRef = useRef(queryKeysToInvalidate);
+  useEffect(() => { onInsertRef.current = onInsert; }, [onInsert]);
+  useEffect(() => { onUpdateRef.current = onUpdate; }, [onUpdate]);
+  useEffect(() => { onDeleteRef.current = onDelete; }, [onDelete]);
+  useEffect(() => { queryKeysRef.current = queryKeysToInvalidate; }, [queryKeysToInvalidate]);
+
   const flushInvalidations = useCallback(() => {
     const tableNames = Array.from(pendingTablesRef.current);
     if (tableNames.length === 0) return;
 
     logger.debug('Realtime: flushing batch invalidations', { tables: tableNames });
 
-    if (queryKeysToInvalidate) {
-      queryKeysToInvalidate.forEach(key => {
+    const keys = queryKeysRef.current;
+    if (keys) {
+      keys.forEach(key => {
         queryClient.invalidateQueries({ queryKey: key });
       });
     } else {
@@ -57,7 +69,7 @@ export function useRealtimeSubscription({
     }
 
     pendingTablesRef.current.clear();
-  }, [queryClient, queryKeysToInvalidate]);
+  }, [queryClient]);
 
   useEffect(() => {
     if (!enabled || tables.length === 0) return;
@@ -70,17 +82,14 @@ export function useRealtimeSubscription({
         'postgres_changes',
         { event: '*', schema: 'public', table },
         (payload: RealtimePostgresChangesPayload<any>) => {
-          // Queue table for batch invalidation
           pendingTablesRef.current.add(table);
 
-          // Debounce: reset timer on each event
           if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
           debounceTimerRef.current = setTimeout(flushInvalidations, debounceMs);
 
-          // Fire callbacks immediately
-          if (payload.eventType === 'INSERT' && onInsert) onInsert(payload);
-          if (payload.eventType === 'UPDATE' && onUpdate) onUpdate(payload);
-          if (payload.eventType === 'DELETE' && onDelete) onDelete(payload);
+          if (payload.eventType === 'INSERT') onInsertRef.current?.(payload);
+          else if (payload.eventType === 'UPDATE') onUpdateRef.current?.(payload);
+          else if (payload.eventType === 'DELETE') onDeleteRef.current?.(payload);
         }
       );
     });
@@ -95,5 +104,5 @@ export function useRealtimeSubscription({
         channelRef.current = null;
       }
     };
-  }, [enabled, tables.join(','), debounceMs]);
+  }, [enabled, tables.join(','), debounceMs, flushInvalidations]);
 }

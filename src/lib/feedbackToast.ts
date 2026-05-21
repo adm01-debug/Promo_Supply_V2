@@ -1,19 +1,33 @@
 import { toast as sonnerToast } from "sonner";
 import { useFeedbackPreferences, hapticPatterns, soundConfigs, FeedbackType } from "@/hooks/useFeedback";
 
+// Singleton AudioContext: Chrome caps at ~6 simultaneous contexts and
+// previously a new one was allocated per toast, leaking until audio silently
+// stopped working.
+let sharedAudioContext: AudioContext | null = null;
+const getAudioContext = (): AudioContext | null => {
+  if (typeof AudioContext === 'undefined') return null;
+  if (!sharedAudioContext) sharedAudioContext = new AudioContext();
+  if (sharedAudioContext.state === 'suspended') {
+    sharedAudioContext.resume().catch(() => {});
+  }
+  return sharedAudioContext;
+};
+
 // Trigger feedback without using hooks (for use outside React components)
 const triggerFeedback = (type: FeedbackType) => {
   const { soundEnabled, hapticEnabled, volume } = useFeedbackPreferences.getState();
-  
+
   // Haptic feedback
   if (hapticEnabled && 'vibrate' in navigator) {
     navigator.vibrate(hapticPatterns[type]);
   }
-  
+
   // Sound feedback
-  if (soundEnabled && typeof AudioContext !== 'undefined') {
+  if (soundEnabled) {
     try {
-      const audioContext = new AudioContext();
+      const audioContext = getAudioContext();
+      if (!audioContext) return;
       const config = soundConfigs[type];
       
       const oscillator = audioContext.createOscillator();

@@ -45,7 +45,7 @@ export const useDashboardFilters = () => {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user, tenantId]);
 
   const saveFavorite = async (name: string, filters: FilterValues) => {
     if (!user || !tenantId) {

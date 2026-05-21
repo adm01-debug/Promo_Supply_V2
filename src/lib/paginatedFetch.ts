@@ -39,8 +39,10 @@ export async function fetchAllRows<T = Record<string, unknown>>(
       allData.push(data[i] as T);
     }
 
-    if (data.length < pageSize) hasMore = false;
-    from += pageSize;
+    // Stop only when the page is fully empty. Previously the loop stopped at
+    // `data.length < pageSize`, which dropped the rest of the result set when
+    // RLS filtered a partial page mid-fetch.
+    from += data.length;
   }
 
   return allData;
