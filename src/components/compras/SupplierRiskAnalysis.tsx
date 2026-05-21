@@ -273,7 +273,7 @@ export function SupplierRiskAnalysis() {
                         const status = statusConfig[factor.status] || statusConfig.warning;
                         const StatusIcon = status.icon;
                         return (
-                          <Card key={index}>
+                          <Card key={`${factor.category}-${index}`}>
                             <CardContent className="pt-4">
                               <div className="flex items-start justify-between mb-2">
                                 <div className="flex items-center gap-2">
@@ -363,7 +363,7 @@ export function SupplierRiskAnalysis() {
                       {analysis.actionItems.map((item, index) => {
                         const priority = priorityConfig[item.priority] || priorityConfig.medium;
                         return (
-                          <Card key={index}>
+                          <Card key={`${item.action}-${index}`}>
                             <CardContent className="py-3 flex items-center justify-between">
                               <div className="flex items-center gap-3">
                                 <Badge variant="secondary" className={priority.color}>

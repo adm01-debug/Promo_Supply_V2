@@ -47,6 +47,11 @@ import { useToast } from "@/hooks/use-toast";
 import { kpiData, KPI_COLORS as COLORS } from "./procurement-kpis/kpiMockData";
 
 const TrendBadge = ({ current, previous }: { current: number; previous: number }) => {
+  if (!previous) {
+    return current ? (
+      <Badge className="bg-muted text-muted-foreground border-border">novo</Badge>
+    ) : null;
+  }
   const diff = ((current - previous) / previous) * 100;
   if (diff > 0) {
     return (

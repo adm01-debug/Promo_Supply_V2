@@ -40,11 +40,11 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
     motivo_detalhe: "",
     resolucao: "credito",
     observacoes: "",
-    itens: [{ descricao: "", quantidade: 1, valor_unitario: 0 }],
+    itens: [{ _key: crypto.randomUUID(), descricao: "", quantidade: 1, valor_unitario: 0 }],
   });
   const [saving, setSaving] = useState(false);
 
-  const addItem = () => setForm(f => ({ ...f, itens: [...f.itens, { descricao: "", quantidade: 1, valor_unitario: 0 }] }));
+  const addItem = () => setForm(f => ({ ...f, itens: [...f.itens, { _key: crypto.randomUUID(), descricao: "", quantidade: 1, valor_unitario: 0 }] }));
   const removeItem = (idx: number) => setForm(f => ({ ...f, itens: f.itens.filter((_, i) => i !== idx) }));
   const updateItem = (idx: number, field: string, value: string | number) =>
     setForm(f => ({ ...f, itens: f.itens.map((it, i) => i === idx ? { ...it, [field]: value } : it) }));
@@ -60,12 +60,12 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
       motivo_detalhe: form.motivo_detalhe || undefined,
       resolucao: form.resolucao,
       observacoes: form.observacoes || undefined,
-      itens: form.itens,
+      itens: form.itens.map(({ _key: _, ...rest }) => rest),
     };
     const result = await createDevolucao(input);
     setSaving(false);
     if (result) {
-      setForm({ fornecedor_id: "", tipo: "devolucao", motivo: "defeito", motivo_detalhe: "", resolucao: "credito", observacoes: "", itens: [{ descricao: "", quantidade: 1, valor_unitario: 0 }] });
+      setForm({ fornecedor_id: "", tipo: "devolucao", motivo: "defeito", motivo_detalhe: "", resolucao: "credito", observacoes: "", itens: [{ _key: crypto.randomUUID(), descricao: "", quantidade: 1, valor_unitario: 0 }] });
       onClose();
     }
   };
@@ -145,7 +145,7 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
             </div>
             <div className="space-y-2">
               {form.itens.map((item, idx) => (
-                <div key={idx} className="grid grid-cols-12 gap-2 items-end">
+                <div key={item._key ?? idx} className="grid grid-cols-12 gap-2 items-end">
                   <div className="col-span-5">
                     {idx === 0 && <Label className="text-xs">Descrição</Label>}
                     <Input value={item.descricao} onChange={e => updateItem(idx, 'descricao', e.target.value)} placeholder="Nome do item" />

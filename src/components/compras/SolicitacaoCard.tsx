@@ -52,23 +52,23 @@ const statusActions: Record<string, {
     secondary: { label: 'Select', icon: Check },
   },
   FORNECEDOR_SELECIONADO: {
-    primary: { label: 'Generate PO', icon: FileText },
+    primary: { label: 'Generate PO', icon: FileText, href: '/pedidos' },
     secondary: { label: 'View', icon: Eye },
   },
   AGUARDANDO_PAGAMENTO: {
-    primary: { label: 'Pay Now', icon: FileText },
+    primary: { label: 'Pay Now', icon: FileText, href: '/pagamentos' },
     secondary: { label: 'View', icon: Eye },
   },
   PAGO: {
-    primary: { label: 'Track Order', icon: Eye },
+    primary: { label: 'Track Order', icon: Eye, href: '/pedidos' },
     secondary: null,
   },
   EM_TRANSITO: {
-    primary: { label: 'Track Delivery', icon: Eye },
+    primary: { label: 'Track Delivery', icon: Eye, href: '/pedidos' },
     secondary: null,
   },
   PEDIDO_GERADO: {
-    primary: { label: 'View Order', icon: Eye },
+    primary: { label: 'View Order', icon: Eye, href: '/pedidos' },
     secondary: null,
   },
   ENTREGUE: { label: 'View Details', icon: Eye } as any,

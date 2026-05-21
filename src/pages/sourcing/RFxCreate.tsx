@@ -28,10 +28,16 @@ import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 
+const newId = () =>
+  (typeof crypto !== 'undefined' && 'randomUUID' in crypto
+    ? crypto.randomUUID()
+    : Math.random().toString(36).slice(2));
+
 const RFxCreate = () => {
   const navigate = useNavigate();
   const { createEvent } = useSourcingEvents();
   const [step, setStep] = useState(1);
+  const [supplierSearch, setSupplierSearch] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -43,9 +49,9 @@ const RFxCreate = () => {
     sealed_bid: false,
     lots: [] as any[],
     criteria: [
-      { label: "Preço Comercial", weight: 60, type: "numeric" },
-      { label: "Prazo de Entrega", weight: 20, type: "numeric" },
-      { label: "Qualidade Técnica", weight: 20, type: "scale_1_5" }
+      { id: newId(), label: "Preço Comercial", weight: 60, type: "numeric" },
+      { id: newId(), label: "Prazo de Entrega", weight: 20, type: "numeric" },
+      { id: newId(), label: "Qualidade Técnica", weight: 20, type: "scale_1_5" }
     ],
     invitations: [] as string[]
   });
@@ -252,8 +258,8 @@ const RFxCreate = () => {
             <div className="flex items-center justify-between">
               <Label className="text-lg font-semibold">Rubrica de Avaliação</Label>
               <Button variant="outline" size="sm" onClick={() => setFormData({
-                ...formData, 
-                criteria: [...formData.criteria, { label: "", weight: 0, type: "numeric" }]
+                ...formData,
+                criteria: [...formData.criteria, { id: newId(), label: "", weight: 0, type: "numeric" }]
               })}>
                 <Plus className="w-4 h-4 mr-2" /> Adicionar Critério
               </Button>
@@ -261,37 +267,37 @@ const RFxCreate = () => {
             
             <div className="space-y-4">
               {formData.criteria.map((c, i) => (
-                <div key={i} className="flex items-end gap-4 p-4 border rounded-lg bg-muted/30">
+                <div key={c.id ?? i} className="flex items-end gap-4 p-4 border rounded-lg bg-muted/30">
                   <div className="flex-1 space-y-2">
                     <Label>Nome do Critério</Label>
-                    <Input 
-                      value={c.label} 
+                    <Input
+                      value={c.label}
                       onChange={e => {
                         const newCriteria = [...formData.criteria];
-                        newCriteria[i].label = e.target.value;
+                        newCriteria[i] = { ...newCriteria[i], label: e.target.value };
                         setFormData({...formData, criteria: newCriteria});
                       }}
                     />
                   </div>
                   <div className="w-24 space-y-2">
                     <Label>Peso (%)</Label>
-                    <Input 
-                      type="number" 
-                      value={c.weight} 
+                    <Input
+                      type="number"
+                      value={c.weight}
                       onChange={e => {
                         const newCriteria = [...formData.criteria];
-                        newCriteria[i].weight = parseInt(e.target.value) || 0;
+                        newCriteria[i] = { ...newCriteria[i], weight: parseInt(e.target.value, 10) || 0 };
                         setFormData({...formData, criteria: newCriteria});
                       }}
                     />
                   </div>
                   <div className="w-40 space-y-2">
                     <Label>Tipo de Resposta</Label>
-                    <Select 
-                      value={c.type} 
+                    <Select
+                      value={c.type}
                       onValueChange={v => {
                         const newCriteria = [...formData.criteria];
-                        newCriteria[i].type = v;
+                        newCriteria[i] = { ...newCriteria[i], type: v };
                         setFormData({...formData, criteria: newCriteria});
                       }}
                     >
@@ -326,8 +332,8 @@ const RFxCreate = () => {
             <div className="flex items-center justify-between">
               <Label className="text-lg font-semibold">Lotes / Itens da Cotação</Label>
               <Button variant="outline" size="sm" onClick={() => setFormData({
-                ...formData, 
-                lots: [...formData.lots, { title: "", description: "", target_price: "" }]
+                ...formData,
+                lots: [...formData.lots, { id: newId(), title: "", description: "", target_price: "" }]
               })}>
                 <Plus className="w-4 h-4 mr-2" /> Adicionar Lote
               </Button>
@@ -339,38 +345,38 @@ const RFxCreate = () => {
                   <p className="text-muted-foreground">Nenhum lote adicionado. O evento será considerado como lote único do budget total.</p>
                 </div>
               ) : formData.lots.map((lot, i) => (
-                <div key={i} className="p-4 border rounded-lg space-y-4">
+                <div key={lot.id ?? i} className="p-4 border rounded-lg space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Nome do Lote/Item</Label>
-                      <Input 
-                        value={lot.title} 
+                      <Input
+                        value={lot.title}
                         onChange={e => {
                           const newLots = [...formData.lots];
-                          newLots[i].title = e.target.value;
+                          newLots[i] = { ...newLots[i], title: e.target.value };
                           setFormData({...formData, lots: newLots});
                         }}
                       />
                     </div>
                     <div className="space-y-2">
                       <Label>Preço Alvo (Opcional)</Label>
-                      <Input 
-                        type="number" 
-                        value={lot.target_price} 
+                      <Input
+                        type="number"
+                        value={lot.target_price}
                         onChange={e => {
                           const newLots = [...formData.lots];
-                          newLots[i].target_price = e.target.value;
+                          newLots[i] = { ...newLots[i], target_price: e.target.value };
                           setFormData({...formData, lots: newLots});
                         }}
                       />
                     </div>
                     <div className="md:col-span-2 space-y-2">
                       <Label>Especificações Técnicas</Label>
-                      <Textarea 
-                        value={lot.description} 
+                      <Textarea
+                        value={lot.description}
                         onChange={e => {
                           const newLots = [...formData.lots];
-                          newLots[i].description = e.target.value;
+                          newLots[i] = { ...newLots[i], description: e.target.value };
                           setFormData({...formData, lots: newLots});
                         }}
                       />
@@ -393,11 +399,24 @@ const RFxCreate = () => {
               <Label className="text-lg font-semibold">Convidar Fornecedores</Label>
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input className="pl-9" placeholder="Buscar fornecedores na base..." />
+                <Input
+                  className="pl-9"
+                  placeholder="Buscar fornecedores na base..."
+                  value={supplierSearch}
+                  onChange={e => setSupplierSearch(e.target.value)}
+                />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2 max-h-[400px] overflow-y-auto pr-2">
-                {suppliers.map(s => {
+                {suppliers.filter(s => {
+                  if (!supplierSearch.trim()) return true;
+                  const q = supplierSearch.toLowerCase();
+                  return (
+                    s.razao_social?.toLowerCase().includes(q) ||
+                    s.nome_fantasia?.toLowerCase().includes(q) ||
+                    s.email?.toLowerCase().includes(q)
+                  );
+                }).map(s => {
                   const isSelected = formData.invitations.includes(s.id);
                   return (
                     <div 

@@ -143,8 +143,8 @@ export function DeliveryCalendar() {
                           </span>
                           {hasEvents && (
                             <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-0.5">
-                              {dayEvents.slice(0, 3).map((event, i) => (
-                                <span key={i} className={cn("w-1.5 h-1.5 rounded-full", statusConfig[event.status].color)} />
+                              {dayEvents.slice(0, 3).map((event) => (
+                                <span key={event.id} className={cn("w-1.5 h-1.5 rounded-full", statusConfig[event.status].color)} />
                               ))}
                               {dayEvents.length > 3 && (
                                 <span className="text-[8px] text-muted-foreground">+{dayEvents.length - 3}</span>

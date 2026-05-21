@@ -58,18 +58,25 @@ export const CotacaoManualModal = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    const valorUnitario = parseFloat(formData.valorUnitario);
+    const quantidadeDisponivel = parseInt(formData.quantidadeDisponivel, 10);
+    const prazoEntrega = parseInt(formData.prazoEntrega, 10);
+    if (!isFinite(valorUnitario) || valorUnitario <= 0) return;
+    if (!Number.isFinite(quantidadeDisponivel) || quantidadeDisponivel <= 0) return;
+    if (!Number.isFinite(prazoEntrega) || prazoEntrega <= 0) return;
+
     const selectedFornecedor = fornecedores.find(f => f.id === formData.fornecedor);
-    const fornecedorNome = formData.fornecedor === 'novo' 
-      ? formData.novoFornecedor 
+    const fornecedorNome = formData.fornecedor === 'novo'
+      ? formData.novoFornecedor
       : selectedFornecedor?.nomeFantasia || '';
 
     onSave({
       fornecedor: fornecedorNome,
       fornecedor_id: formData.fornecedor === 'novo' ? undefined : formData.fornecedor,
-      valorUnitario: parseFloat(formData.valorUnitario),
-      quantidadeDisponivel: parseInt(formData.quantidadeDisponivel),
-      prazoEntrega: parseInt(formData.prazoEntrega),
+      valorUnitario,
+      quantidadeDisponivel,
+      prazoEntrega,
       frete: parseFloat(formData.frete) || 0,
       freteInfo: parseFloat(formData.frete) > 0 ? `+R$ ${formData.frete}` : 'Incluso',
       condicaoPagamento: formData.condicaoPagamento === 'a_vista' ? 'À vista' : '30 dias',

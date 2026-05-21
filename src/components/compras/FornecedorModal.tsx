@@ -12,7 +12,7 @@ interface FornecedorModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   fornecedor?: Fornecedor | null;
-  onSave: (fornecedor: Partial<Fornecedor>) => void;
+  onSave: (fornecedor: Partial<Fornecedor>) => void | Promise<unknown>;
 }
 
 const ramosDisponiveis = [
@@ -72,15 +72,20 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
     setFormData({ ...formData, ramos: formData.ramos.filter(r => r !== ramo) });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const dataToSave = {
       ...formData,
       tipo: formData.tipo || undefined,
       vendeProduto: formData.vendeProduto || undefined,
     };
-    onSave(dataToSave as Partial<Fornecedor>);
-    onOpenChange(false);
+    try {
+      await onSave(dataToSave as Partial<Fornecedor>);
+      onOpenChange(false);
+    } catch {
+      // onSave is expected to surface its own error toast; keep modal open
+      // so the user can correct and retry.
+    }
   };
 
   const formatCNPJ = (value: string) => {

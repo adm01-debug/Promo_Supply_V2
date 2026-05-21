@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -47,6 +47,10 @@ const Pagamentos = () => {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState("pendentes");
   const [showDashboard, setShowDashboard] = useState(true);
+
+  // Reset bulk selection when the visible list changes so the "select all"
+  // checkbox doesn't compare counts across tabs.
+  useEffect(() => { setSelectedIds([]); }, [activeTab]);
 
   const isMobile = useIsMobile();
   const { pagamentos, loading, refetch, markAsPaid, approvePagamento, bulkUpdateStatus } = usePagamentos();

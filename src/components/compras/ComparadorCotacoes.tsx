@@ -247,7 +247,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
           </div>
         );
       },
-      getBest: (cotacoes) => cotacoes.reduce((a, b) => a.valorUnitario < b.valorUnitario ? a : b).id,
+      getBest: (cotacoes) => cotacoes.length ? cotacoes.reduce((a, b) => a.valorUnitario < b.valorUnitario ? a : b).id : '',
       weight: 0,
     },
     {
@@ -287,7 +287,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
           </div>
         );
       },
-      getBest: (cotacoes) => cotacoes.reduce((a, b) => a.frete < b.frete ? a : b).id,
+      getBest: (cotacoes) => cotacoes.length ? cotacoes.reduce((a, b) => a.frete < b.frete ? a : b).id : '',
       weight: 0,
     },
     {
@@ -322,7 +322,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
           </div>
         );
       },
-      getBest: (cotacoes) => cotacoes.reduce((a, b) => a.quantidadeDisponivel > b.quantidadeDisponivel ? a : b).id,
+      getBest: (cotacoes) => cotacoes.length ? cotacoes.reduce((a, b) => a.quantidadeDisponivel > b.quantidadeDisponivel ? a : b).id : '',
       weight: 20,
     },
     {

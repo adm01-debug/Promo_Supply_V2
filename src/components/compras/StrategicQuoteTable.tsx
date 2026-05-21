@@ -42,7 +42,11 @@ export const StrategicQuoteTable = ({ cotacoes, quantidade }: StrategicQuoteTabl
       supplier: cheapest.fornecedor,
       value: cheapest.total,
       detail: `${cheapest.lead_time} Dias`,
-      saving: `${(((cotacoes.reduce((acc, c) => acc + c.total, 0) / cotacoes.length) - cheapest.total) / (cotacoes.reduce((acc, c) => acc + c.total, 0) / cotacoes.length) * 100).toFixed(1)}% abaixo da média`
+      saving: (() => {
+        const avg = cotacoes.reduce((acc, c) => acc + c.total, 0) / cotacoes.length;
+        if (!avg || avg === cheapest.total) return 'Preço médio';
+        return `${(((avg - cheapest.total) / avg) * 100).toFixed(1)}% abaixo da média`;
+      })()
     },
     {
       id: 'fastest',

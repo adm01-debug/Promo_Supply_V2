@@ -35,9 +35,11 @@ export const EnhancedPedidoTimeline = ({
 }: EnhancedPedidoTimelineProps) => {
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
   
-  const progressPercent = Math.round(
-    (etapas.filter(e => e.status === 'concluido').length / etapas.length) * 100
-  );
+  const progressPercent = etapas.length
+    ? Math.round(
+        (etapas.filter(e => e.status === 'concluido').length / etapas.length) * 100
+      )
+    : 0;
 
   const etapaAtual = etapas.find(e => e.status === 'atual');
   const prazoInfo = prazoFinal ? calcularPrazo(prazoFinal) : null;

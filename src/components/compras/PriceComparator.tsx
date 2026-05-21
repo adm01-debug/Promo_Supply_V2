@@ -102,7 +102,11 @@ export function PriceComparator() {
         }
       }
 
-      const qty = parseInt(quantity) || 100;
+      const qty = parseInt(quantity, 10);
+      if (!qty || qty <= 0) {
+        toast({ title: 'Quantidade inválida', description: 'Informe uma quantidade > 0', variant: 'destructive' });
+        return;
+      }
       const displayProductName = selectedProductId 
         ? products.find(p => p.id === selectedProductId)?.nome || productName 
         : productName;
@@ -256,7 +260,9 @@ export function PriceComparator() {
                         <div className="text-right">
                           <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-1">Média do Lote</p>
                           <p className="text-xl font-black text-white tracking-tight">
-                            R$ {(comparison.quotes.filter(q => selectedQuotes.includes(q.supplierId)).reduce((sum, q) => sum + q.totalPrice, 0) / selectedQuotes.length).toLocaleString('pt-BR')}
+                            {selectedQuotes.length ? (
+                              `R$ ${(comparison.quotes.filter(q => selectedQuotes.includes(q.supplierId)).reduce((sum, q) => sum + q.totalPrice, 0) / selectedQuotes.length).toLocaleString('pt-BR')}`
+                            ) : '—'}
                           </p>
                         </div>
                         <Separator orientation="vertical" className="h-10 bg-white/10" />
