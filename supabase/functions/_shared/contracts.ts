@@ -114,13 +114,14 @@ export const FunctionContracts: Record<string, z.ZodSchema> = {
 
 /**
  * Mapping of functions to accessed tables for audit.
+ * Used for automated permission validation.
  */
 export const FunctionTableAudit: Record<string, string[]> = {
   "workflow-engine": ["workflow_instances", "workflow_nodes", "workflow_logs", "workflow_edges", "workflow_approvals"],
-  "check-sla-alerts": ["notifications"],
+  "check-sla-alerts": ["notifications", "pedidos", "solicitacoes", "pagamentos", "user_roles"],
   "check-cotacao-followup": ["notifications", "cotacoes", "profiles"],
   "check-expiry-alerts": ["notifications", "cotacoes", "pagamentos", "user_roles"],
-  "check-approval-escalations": ["workflow_instances", "workflow_approvals", "notifications"],
+  "check-approval-escalations": ["approval_steps", "approval_workflows", "approval_history", "notifications"],
   "send-push-notification": ["push_subscriptions", "notifications"],
   "spot-proxy": ["spot_sessions", "spot_pedidos", "user_roles"],
   "weekly-report": ["solicitacoes", "pedidos", "pagamentos", "cotacoes", "notifications", "user_roles"],
@@ -133,6 +134,9 @@ export const FunctionTableAudit: Record<string, string[]> = {
   "process-invoice-idp": ["fiscal-documents"],
   "punchout-receive": ["punchout_sessions", "solicitacoes"],
   "punchout-setup": ["punchout_catalogs", "punchout_sessions"],
-  "dependency-health": ["dependency_health", "dependency_health_history", "audit_logs"]
+  "dependency-health": ["dependency_health", "dependency_health_history", "audit_logs"],
+  "ai-demand-prediction": ["telemetry_logs"],
+  "ai-supplier-risk": ["telemetry_logs"],
+  "ai-supplier-suggestion": ["telemetry_logs"]
 };
 
