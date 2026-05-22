@@ -43,7 +43,7 @@ export async function validateBody<T>(
  * Standardized error response with proper status codes and logging.
  */
 export function errorResponse(error: unknown, logger?: EdgeLogger, headers = corsHeaders) {
-  const message = error instanceof Error ? error.message : "Internal Server Error";
+  const message = error instanceof Error ? error.message : String(error);
   const requestId = logger?.getRequestId() || "req_" + Math.random().toString(36).slice(2, 9);
   
   let status = 500;
