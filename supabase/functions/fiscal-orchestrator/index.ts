@@ -1,62 +1,45 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { z } from "https://esm.sh/zod@3.23.8";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { EdgeLogger } from "../_shared/logger.ts";
+import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { FiscalContract } from "../_shared/contracts.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
-
-const FiscalActionSchema = z.object({
-  action: z.enum(["send", "cancel", "query", "manifest"]),
-  type: z.enum(["NFe", "NFSe", "CTe", "MDFe"]),
-  document_id: z.string().uuid().optional(),
-  payload: z.record(z.any()).optional(),
-});
-
-Deno.serve(async (req) => {
+serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger("fiscal-orchestrator", requestId);
+
   try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("Validation error: Authorization header missing");
+    }
+
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      { global: { headers: { Authorization: req.headers.get("Authorization")! } } }
+      { global: { headers: { Authorization: authHeader } } }
     );
 
-    // Get user from token
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
     if (userError || !user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), { 
+      return new Response(JSON.stringify({ error: "Sessão expirada ou inválida", requestId }), { 
         status: 401, 
         headers: { ...corsHeaders, "Content-Type": "application/json" } 
       });
     }
 
-    const body = await req.json();
-    const parsed = FiscalActionSchema.safeParse(body);
+    const data = await validateBody(req, FiscalContract, logger);
+    const { action, type, document_id, payload } = data;
 
-    if (!parsed.success) {
-      return new Response(JSON.stringify({ error: parsed.error.format() }), { 
-        status: 400, 
-        headers: { ...corsHeaders, "Content-Type": "application/json" } 
-      });
-    }
+    logger.info(`Processando ação fiscal`, { action, type, document_id, userId: user.id });
 
-    const { action, type, document_id, payload } = parsed.data;
-
-    // Simulate integration with Focus NFe / SEFAZ
-    // In production, this would call Focus NFe API or SEFAZ directly
-    console.log(`Processing ${action} for ${type} document ${document_id}`);
-
-    // Create log entry in fiscal_events
-    // We use service role to ensure the event is logged even if RLS is tight
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Resolve tenant_id for the user
     const { data: userTenant } = await supabaseAdmin
       .from("user_tenants")
       .select("tenant_id")
@@ -67,10 +50,8 @@ Deno.serve(async (req) => {
     const tenant_id = userTenant?.tenant_id;
 
     if (!tenant_id) {
-      return new Response(JSON.stringify({ error: "Tenant context not found" }), { 
-        status: 400, 
-        headers: { ...corsHeaders, "Content-Type": "application/json" } 
-      });
+      logger.error("Contexto de tenant não encontrado para o usuário", { userId: user.id });
+      throw new Error("Validation error: Tenant context not found");
     }
 
     const { data: event, error: eventError } = await supabaseAdmin
@@ -86,23 +67,23 @@ Deno.serve(async (req) => {
       .select()
       .single();
 
-    if (eventError) throw eventError;
+    if (eventError) {
+      logger.error("Erro ao criar evento fiscal no banco", { eventError });
+      throw eventError;
+    }
 
-    // Placeholder for actual API call
-    // const response = await fetch('https://api.focusnfe.com.br/v2/nfe', { ... });
+    logger.info("Evento fiscal registrado com sucesso", { eventId: event.id });
 
     return new Response(JSON.stringify({ 
       success: true, 
-      message: `${type} ${action} initiated`,
-      event_id: event.id 
+      message: `${type} ${action} iniciado`,
+      event_id: event.id,
+      requestId
     }), { 
       headers: { ...corsHeaders, "Content-Type": "application/json" } 
     });
 
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { 
-      status: 500, 
-      headers: { ...corsHeaders, "Content-Type": "application/json" } 
-    });
+    return errorResponse(error, logger);
   }
 });
