@@ -111,11 +111,21 @@ export const FunctionContracts: Record<string, z.ZodSchema> = {
 export const FunctionTableAudit: Record<string, string[]> = {
   "workflow-engine": ["workflow_instances", "workflow_nodes", "workflow_logs", "workflow_edges", "workflow_approvals"],
   "check-sla-alerts": ["notifications"],
-  "check-cotacao-followup": ["notifications"],
-  "check-expiry-alerts": ["notifications"],
+  "check-cotacao-followup": ["notifications", "cotacoes", "profiles"],
+  "check-expiry-alerts": ["notifications", "cotacoes", "pagamentos", "user_roles"],
+  "check-approval-escalations": ["workflow_instances", "workflow_approvals", "notifications"],
   "send-push-notification": ["push_subscriptions", "notifications"],
-  "spot-proxy": ["spot_sessions", "spot_pedidos"],
-  "weekly-report": ["solicitacoes", "pedidos", "pagamentos", "cotacoes", "notifications"],
-  "weekly-summary-report": ["notifications"],
-  "ai-negotiation": ["solicitacoes", "cotacoes"]
+  "spot-proxy": ["spot_sessions", "spot_pedidos", "user_roles"],
+  "weekly-report": ["solicitacoes", "pedidos", "pagamentos", "cotacoes", "notifications", "user_roles"],
+  "weekly-summary-report": ["solicitacoes", "pedidos", "cotacoes", "user_roles", "notifications"],
+  "ai-negotiation": ["solicitacoes", "cotacoes"],
+  "erp-sync": ["erp_connections", "erp_sync_log"],
+  "fiscal-orchestrator": ["user_tenants", "fiscal_events"],
+  "generate-contract-pdf": ["contracts", "contract_items", "contract_penalties"],
+  "guided-buying-ai": ["produtos", "fornecedores"],
+  "process-invoice-idp": ["fiscal-documents"],
+  "punchout-receive": ["punchout_sessions", "solicitacoes"],
+  "punchout-setup": ["punchout_catalogs", "punchout_sessions"],
+  "dependency-health": ["dependency_health", "dependency_health_history", "audit_logs"]
 };
+
