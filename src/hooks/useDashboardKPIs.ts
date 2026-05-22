@@ -42,7 +42,7 @@ export interface DashboardKPIsExtended {
     sla: KPIComparison;
   };
   pipeline: PipelineData;
-  urgentItems: { id: string; title: string; priority: 'high' | 'medium' | 'low' }[];
+  urgentItems: any[];
   charts: {
     monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
     cotacaoStatus: { name: string; value: number; color: string }[];
@@ -65,8 +65,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       const { data, error } = await supabase.rpc('get_compras_dashboard_metrics', {
         p_organization_id: tenantId,
         p_period: period,
-        p_category_id: categoryId,
-        p_supplier_id: supplierId
+        p_category_id: categoryId || undefined,
+        p_supplier_id: supplierId || undefined
       });
 
       if (error) {
