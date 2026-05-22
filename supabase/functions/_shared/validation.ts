@@ -44,18 +44,34 @@ export async function validateBody<T>(
  */
 export function errorResponse(error: unknown, logger?: EdgeLogger, headers = corsHeaders) {
   const message = error instanceof Error ? error.message : "Internal Server Error";
-  const status = message.startsWith('Validation error') || message === 'Invalid JSON body' ? 400 : 500;
+  const requestId = logger?.getRequestId() || "req_" + Math.random().toString(36).slice(2, 9);
   
+  let status = 500;
+  let details: any = undefined;
+
+  if (message.startsWith('Validation error')) {
+    status = 400;
+  } else if (message === 'Invalid JSON body') {
+    status = 400;
+  } else if (message.includes('Authorization header missing') || message.includes('Sessão inválida')) {
+    status = 401;
+  } else if (message.includes('Security error')) {
+    status = 403;
+  }
+
   if (logger && status === 500) {
-    logger.error("Internal Server Error occurred", { error: message });
+    logger.error("Internal Server Error occurred", { error: message, requestId });
   }
 
   return new Response(JSON.stringify({ 
     error: message,
-    requestId: logger?.getRequestId(),
-    timestamp: new Date().toISOString()
+    requestId,
+    status: "error",
+    timestamp: new Date().toISOString(),
+    details
   }), {
     status,
     headers: { ...headers, "Content-Type": "application/json" },
   });
 }
+
