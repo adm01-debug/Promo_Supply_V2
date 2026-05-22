@@ -113,16 +113,19 @@ serve(async (req) => {
         .eq('instance_id', instance_id)
         .eq('node_id', node_id)
       
-      return new Response(JSON.stringify({ success: true, requestId }), {
+      return new Response(JSON.stringify({ 
+        data: { success: true }, 
+        requestId,
+        status: "success",
+        timestamp: new Date().toISOString()
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
       })
     }
 
-    return new Response(JSON.stringify({ error: 'Invalid action', requestId }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 400,
-    })
+    throw new Error('Validation error: Invalid action');
+
 
   } catch (error) {
     return errorResponse(error, logger);
