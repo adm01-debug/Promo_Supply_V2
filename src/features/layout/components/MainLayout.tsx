@@ -60,7 +60,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen text-zinc-100 pb-16 md:pb-0 overflow-x-hidden selection:bg-violet-500/30">
+    <div className="min-h-screen text-foreground pb-16 md:pb-0 overflow-x-hidden selection:bg-primary/30">
       <EliteBackground />
       <NavigationProgressBar />
       <SkipLinks />
@@ -103,7 +103,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
                     variant="ghost"
                     size="icon"
                     onClick={() => setMobileMenuOpen(true)}
-                    className="h-10 w-10 rounded-xl bg-white/5 border border-white/5"
+                    className="h-10 w-10 rounded-xl bg-muted border border-border"
                     aria-label="Abrir menu"
                   >
                     <Menu className="w-5 h-5 text-violet-400" />
@@ -132,7 +132,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
               {/* Sidebar toggle for desktop when collapsed */}
               {isHome && (
                 <div className="hidden md:block">
-                  <Package className="w-6 h-6 text-primary animate-pulse-gentle" />
+                  <Package className="w-6 h-6 text-primary animate-pulse-slow" />
                 </div>
               )}
             </div>

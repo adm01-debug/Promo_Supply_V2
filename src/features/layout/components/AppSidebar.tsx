@@ -185,7 +185,7 @@ const SidebarItem = ({
       <Icon
         className={cn(
           "h-[18px] w-[18px] shrink-0 transition-colors",
-          active ? "text-violet-400" : "text-zinc-500 group-hover:text-zinc-100"
+          active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
         )}
       />
 
@@ -264,12 +264,12 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
     <aside
       data-tour="sidebar"
       className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-white/5 bg-white/[0.02] backdrop-blur-3xl transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border bg-card/10 backdrop-blur-3xl transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
         collapsed ? "w-[68px]" : "w-64"
       )}
     >
       {/* ── Header ── */}
-      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-white/5 px-4">
+      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-border px-4">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-500/20 transition-transform hover:scale-105 active:scale-95">
           <Package className="h-5 w-5 text-primary-foreground" />
         </div>
@@ -282,10 +282,10 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               className="flex flex-col leading-none"
               style={{ fontFamily: 'Outfit, sans-serif' }}
             >
-              <span className="text-[15px] font-black uppercase tracking-tighter text-white">
-                PROMO <span className="text-violet-400">SUPPLY</span>
+              <span className="text-[15px] font-black uppercase tracking-tighter text-foreground">
+                PROMO <span className="text-primary">SUPPLY</span>
               </span>
-              <span className="text-[9px] tracking-[0.22em] uppercase text-zinc-500 font-semibold mt-1">
+              <span className="text-[9px] tracking-[0.22em] uppercase text-muted-foreground font-semibold mt-1">
                 Gestão de Compras
               </span>
             </motion.div>
