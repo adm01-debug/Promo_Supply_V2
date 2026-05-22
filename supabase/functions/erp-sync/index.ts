@@ -21,10 +21,9 @@ serve(async (req) => {
     const data = await validateBody(req, ERPSyncContract, logger);
     const { action, connectionId, entity } = data;
     
-    const tenantId = req.headers.get("x-tenant-id");
-    if (!tenantId) {
-      throw new Error("Validation error: Missing tenant ID header");
-    }
+    const { validateTenant } = await import("../_shared/security.ts");
+    const tenantId = validateTenant(req);
+
 
     logger.info(`Iniciando sincronização ERP`, { action, entity, connectionId, tenantId });
 
