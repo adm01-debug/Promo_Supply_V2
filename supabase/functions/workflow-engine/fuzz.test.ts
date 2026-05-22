@@ -60,5 +60,6 @@ Deno.test("Security: Workflow Engine rejects missing tenant ID", async () => {
 
   const body = await res.json();
   assertEquals(res.status, 400);
-  assert(body.error.includes("x-tenant-id"));
+  assert(body.error.toLowerCase().includes("x-tenant-id"), `Error should mention x-tenant-id, got: ${body.error}`);
 });
+
