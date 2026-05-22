@@ -27,10 +27,28 @@ export const WorkflowContract = z.object({
 });
 
 export const ERPSyncContract = z.object({
-  operation: z.enum(['sync_po', 'sync_supplier', 'sync_invoice']),
+  action: z.enum(['push', 'pull', 'sync_po', 'sync_supplier', 'sync_invoice']),
+  connectionId: z.string().uuid(),
+  entity: z.string(),
   po_number: z.string().optional(),
   external_id: z.string().optional(),
-  source: z.string()
+  source: z.string().optional()
+});
+
+export const FiscalContract = z.object({
+  action: z.enum(["send", "cancel", "query", "manifest"]),
+  type: z.enum(["NFe", "NFSe", "CTe", "MDFe"]),
+  document_id: z.string().uuid().optional(),
+  payload: z.record(z.any()).optional(),
+});
+
+export const TelemetryContract = z.object({
+  level: z.enum(["info", "warn", "error", "debug"]),
+  message: z.string(),
+  context: z.record(z.any()).optional(),
+  requestId: z.string().optional(),
+  url: z.string().optional(),
+  userAgent: z.string().optional(),
 });
 
 export class ContractValidator {
