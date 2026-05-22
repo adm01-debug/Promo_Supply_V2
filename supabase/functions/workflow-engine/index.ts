@@ -99,10 +99,8 @@ serve(async (req) => {
 
       if (sodError) throw sodError
       if (!sodOk) {
-        return new Response(JSON.stringify({ error: 'SoD Violation: Approver cannot approve this step.', requestId }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 403,
-        })
+        return errorResponse(new Error('Security error: SoD Violation: Approver cannot approve this step.'), logger);
+
       }
 
       await supabase.from('workflow_approvals')
