@@ -49,7 +49,7 @@ export function errorResponse(error: unknown, logger?: EdgeLogger, headers = cor
   let status = 500;
   let details: any = undefined;
 
-  if (message.toLowerCase().startsWith('validation error')) {
+  if (message.toLowerCase().includes('validation error')) {
     status = 400;
   } else if (message === 'Invalid JSON body') {
     status = 400;
