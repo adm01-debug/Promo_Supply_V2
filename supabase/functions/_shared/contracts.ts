@@ -3,15 +3,14 @@ import { z } from "https://esm.sh/zod@3.22.4";
 
 // Contract definitions for core Edge Functions
 export const NegotiationContract = z.object({
-  cotacoes: z.array(z.object({
-    id: z.string().uuid(),
-    fornecedor: z.string(),
-    total: z.number().positive()
-  })),
+  cotacoes: z.array(z.any()).min(1, "É necessário pelo menos uma cotação para análise"),
   solicitacao: z.object({
     id: z.string().uuid(),
-    titulo: z.string().min(3)
-  })
+    titulo: z.string(),
+    valor_estimado: z.number().optional().nullable(),
+    quantidade: z.number().optional().nullable(),
+  }),
+  historico_precos: z.array(z.any()).optional().nullable(),
 });
 
 export const WorkflowContract = z.discriminatedUnion("action", [
@@ -79,6 +78,12 @@ export const SupplierSuggestionContract = z.object({
   suppliers: z.array(z.any()).optional().nullable()
 });
 
+export const SpotProxyContract = z.object({
+  action: z.enum(["create_session", "sync_pedidos", "verify_callback"]),
+  session_id: z.string().uuid().optional(),
+  payload: z.any().optional()
+});
+
 export class ContractValidator {
   static validate(schema: z.ZodSchema, payload: any) {
     const result = schema.safeParse(payload);
@@ -102,8 +107,10 @@ export const FunctionContracts: Record<string, z.ZodSchema> = {
   "fiscal-orchestrator": FiscalContract,
   "telemetry": TelemetryContract,
   "ai-demand-prediction": DemandPredictionContract,
-  "ai-supplier-suggestion": SupplierSuggestionContract
+  "ai-supplier-suggestion": SupplierSuggestionContract,
+  "spot-proxy": SpotProxyContract
 };
+
 
 /**
  * Mapping of functions to accessed tables for audit.
