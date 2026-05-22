@@ -140,9 +140,15 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
     logger.info("Análise concluída com sucesso", { requestId });
 
-    return new Response(JSON.stringify({ ...analysis, requestId }), {
+    return new Response(JSON.stringify({ 
+      data: analysis, 
+      requestId,
+      status: "success",
+      timestamp: new Date().toISOString()
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (e) {
     return errorResponse(e, logger);
   }
