@@ -74,10 +74,16 @@ serve(async (req) => {
           .eq('id', instance.id)
       }
 
-      return new Response(JSON.stringify({ instance_id: instance.id, requestId }), {
+      return new Response(JSON.stringify({ 
+        data: { instance_id: instance.id }, 
+        requestId,
+        status: "success",
+        timestamp: new Date().toISOString()
+      }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
       })
+
     }
 
     if (action === 'submit_decision') {
