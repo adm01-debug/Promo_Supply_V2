@@ -18,7 +18,7 @@ export const WorkflowContract = z.object({
   action: z.enum(['start_workflow', 'approve_step', 'submit_decision']),
   template_id: z.string().uuid().optional(),
   entity_type: z.string(),
-  entity_id: z.string().uuid().optional(),
+  entity_id: z.string().uuid(),
   instance_id: z.string().uuid().optional(),
   node_id: z.string().uuid().optional(),
   decision: z.enum(['approve', 'reject']).optional(),
