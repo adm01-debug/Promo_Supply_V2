@@ -8,9 +8,13 @@ export class PayloadFuzzer {
   /**
    * Generates a variety of malformed payloads based on a Zod schema.
    */
-  static generateMutations(schema: z.ZodObject<any>, validBase: any): any[] {
+  static generateMutations(schema: any, validBase: any): any[] {
     const mutations: any[] = [];
-    const keys = Object.keys(schema.shape);
+    
+    // Support Discriminated Unions and regular Objects
+    const shape = schema instanceof z.ZodObject ? schema.shape : (schema._def?.options?.[0]?.shape || {});
+    const keys = Object.keys(shape);
+
 
     // 1. Missing required fields
     keys.forEach(key => {
