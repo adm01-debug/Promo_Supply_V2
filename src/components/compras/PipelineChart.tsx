@@ -197,7 +197,7 @@ export const PipelineChart = memo(forwardRef<HTMLDivElement, PipelineChartProps>
                       <AnimatePresence>
                         {isHovered && (
                           <motion.div
-                            className="absolute inset-0 bg-gradient-to-t from-transparent via-white/10 to-white/5"
+                            className="absolute inset-0 bg-gradient-to-t from-transparent via-primary/5 to-primary/10"
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
