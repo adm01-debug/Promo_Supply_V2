@@ -9,9 +9,9 @@ type TableName = 'solicitacoes' | 'pedidos' | 'cotacoes' | 'pagamentos' | 'notif
 interface RealtimeOptions {
   tables: TableName[];
   queryKeysToInvalidate?: string[][];
-  onInsert?: (payload: RealtimePostgresChangesPayload<any>) => void;
-  onUpdate?: (payload: RealtimePostgresChangesPayload<any>) => void;
-  onDelete?: (payload: RealtimePostgresChangesPayload<any>) => void;
+  onInsert?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
+  onUpdate?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
+  onDelete?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
   enabled?: boolean;
   /** Debounce interval in ms (default 1000) to batch rapid changes */
   debounceMs?: number;

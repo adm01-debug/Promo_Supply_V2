@@ -42,7 +42,7 @@ export interface DashboardKPIsExtended {
     sla: KPIComparison;
   };
   pipeline: PipelineData;
-  urgentItems: any[];
+  urgentItems: { id: string; title: string; priority: 'high' | 'medium' | 'low' }[];
   charts: {
     monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
     cotacaoStatus: { name: string; value: number; color: string }[];
@@ -50,7 +50,7 @@ export interface DashboardKPIsExtended {
   };
 }
 
-export function useDashboardKPIs(filters?: any) {
+export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
   const { tenantId, user } = useAuth();
   
   const categoryId = (filters?.category && filters.category !== 'all') ? filters.category : null;

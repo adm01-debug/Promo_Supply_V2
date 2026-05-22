@@ -29,8 +29,7 @@ export interface Contract {
   return_policy?: string | null;
   min_supplier_score?: number | null;
   auto_block_below_score?: boolean | null;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  penalty_clauses?: any;
+  penalty_clauses?: PenaltyClause[];
 }
 
 export interface PenaltyClause {

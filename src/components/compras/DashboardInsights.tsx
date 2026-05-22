@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { LucideIcon } from 'lucide-react';
 import { 
   Sparkles, 
   Lightbulb, 
@@ -24,7 +25,7 @@ interface Insight {
   description: string;
   impact: string;
   action: string;
-  icon: any;
+  icon: LucideIcon;
   color: string;
 }
 
