@@ -1,34 +1,45 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { EdgeLogger } from "../_shared/logger.ts";
+import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { TelemetryContract } from "../_shared/contracts.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger("telemetry", requestId);
+
   try {
+    const authHeader = req.headers.get("Authorization");
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       {
         global: {
-          headers: { Authorization: req.headers.get("Authorization")! },
+          headers: authHeader ? { Authorization: authHeader } : {},
         },
       }
     );
 
-    const {
-      data: { user },
-    } = await supabaseClient.auth.getUser();
+    let user = null;
+    if (authHeader) {
+      const { data } = await supabaseClient.auth.getUser();
+      user = data.user;
+    }
 
-    const { level, message, context, requestId, url, userAgent } = await req.json();
+    const data = await validateBody(req, TelemetryContract, logger);
+    const { level, message, context, url, userAgent } = data;
 
-    const { error } = await supabaseClient.from("telemetry_logs").insert({
+    // Use admin client for telemetry to ensure logging even if auth is tricky
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+
+    const { error } = await supabaseAdmin.from("telemetry_logs").insert({
       level,
       message,
       context,
@@ -39,16 +50,16 @@ serve(async (req) => {
       client_ip: req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for"),
     });
 
-    if (error) throw error;
+    if (error) {
+      logger.error("Falha ao salvar log de telemetria no banco", { dbError: error });
+      throw error;
+    }
 
-    return new Response(JSON.stringify({ success: true }), {
+    return new Response(JSON.stringify({ success: true, requestId }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 400,
-    });
+    return errorResponse(error, logger);
   }
 });
