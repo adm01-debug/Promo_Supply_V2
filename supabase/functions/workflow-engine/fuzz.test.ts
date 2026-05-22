@@ -21,8 +21,10 @@ Deno.test("Fuzzing: Workflow Engine rejects malformed payloads", async () => {
   const validBase = {
     action: "start_workflow",
     template_id: "00000000-0000-0000-0000-000000000001",
-    entity_type: "pedido"
+    entity_type: "pedido",
+    entity_id: "00000000-0000-0000-0000-000000000002"
   };
+
 
   // @ts-ignore
   const mutations = PayloadFuzzer.generateMutations(WorkflowContract, validBase);
