@@ -135,7 +135,7 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
       </div>
       <SLASettingsPanel />
 
-      <div className="pl-2 ml-1 sm:pl-3 sm:ml-2 border-l border-border">
+      <div className="pl-2 ml-1 sm:pl-3 sm:ml-2 border-l border-border/50">
         <UserMenu />
       </div>
     </div>

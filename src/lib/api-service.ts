@@ -5,7 +5,7 @@ type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 interface RequestOptions {
   method?: HttpMethod;
   headers?: Record<string, string>;
-  body?: any;
+  body?: unknown;
   cache?: boolean;
 }
 

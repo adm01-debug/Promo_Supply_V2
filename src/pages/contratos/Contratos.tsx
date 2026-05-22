@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import type { LucideIcon } from "lucide-react";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
@@ -51,7 +52,7 @@ import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
+const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   draft: { label: "Rascunho", color: "bg-muted text-muted-foreground", icon: FileText },
   pending_approval: { label: "Aguard. Aprovação", color: "bg-warning/10 text-warning", icon: History },
   active: { label: "Ativo", color: "bg-success/10 text-success", icon: CheckCircle2 },
@@ -75,7 +76,7 @@ export default function Contratos() {
     try {
       const { data, error } = await supabase.from('contracts').select('*').order('created_at', { ascending: false });
       if (error) throw error;
-      setContracts(data || []);
+      setContracts((data as unknown as Contract[]) || []);
     } finally { setLoading(false); }
   };
 

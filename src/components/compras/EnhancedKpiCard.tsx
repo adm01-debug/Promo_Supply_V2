@@ -66,7 +66,7 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
 
   const commonCardClasses = cn(
     "relative overflow-hidden cursor-pointer transition-all duration-500",
-    "border-white/5 bg-white/[0.03] backdrop-blur-2xl rounded-[2rem]",
+    "border-border/40 bg-card/40 backdrop-blur-2xl rounded-[2rem]",
     "hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-1 active:scale-[0.98]",
     colors.border
   );
@@ -114,22 +114,22 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
 
           <div className="space-y-4">
             <div>
-              <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-1">{title}</p>
+              <p className="text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em] mb-1">{title}</p>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-black text-white tracking-tighter leading-none">
+                <span className="text-3xl font-black text-foreground tracking-tighter leading-none">
                   {animate ? <AnimatedCounter value={value} format={format} /> : formatValue(value)}
                 </span>
                 {targetProgress && targetProgress >= 100 && (
                   <Sparkles className="h-4 w-4 text-emerald-400 animate-pulse" />
                 )}
               </div>
-              {subtitle && <p className="text-[10px] font-bold text-zinc-500/60 mt-2 uppercase tracking-wide">{subtitle}</p>}
+              {subtitle && <p className="text-[10px] font-bold text-muted-foreground/60 mt-2 uppercase tracking-wide">{subtitle}</p>}
             </div>
 
             {target && (
               <div className="space-y-3">
                 <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
-                  <div className="flex items-center gap-2 text-zinc-500">
+                  <div className="flex items-center gap-2 text-muted-foreground">
                     <Target className="h-3.5 w-3.5" />
                     <span>{target.label || 'TARGET INDEX'}</span>
                   </div>
@@ -137,7 +137,7 @@ export const EnhancedKpiCard = forwardRef<HTMLDivElement, EnhancedKpiCardProps>(
                     {targetProgress?.toFixed(0)}%
                   </span>
                 </div>
-                <div className="relative h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
+                <div className="relative h-1.5 w-full rounded-full bg-muted overflow-hidden">
                   <motion.div 
                     className={cn(
                       "h-full rounded-full",

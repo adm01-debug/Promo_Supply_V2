@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -42,7 +42,7 @@ export interface DashboardKPIsExtended {
     sla: KPIComparison;
   };
   pipeline: PipelineData;
-  urgentItems: any[];
+  urgentItems: { id: string; status: string; data_necessidade: string | null; [key: string]: any }[];
   charts: {
     monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
     cotacaoStatus: { name: string; value: number; color: string }[];
@@ -50,7 +50,7 @@ export interface DashboardKPIsExtended {
   };
 }
 
-export function useDashboardKPIs(filters?: any) {
+export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
   const { tenantId, user } = useAuth();
   
   const categoryId = (filters?.category && filters.category !== 'all') ? filters.category : null;
@@ -65,8 +65,8 @@ export function useDashboardKPIs(filters?: any) {
       const { data, error } = await supabase.rpc('get_compras_dashboard_metrics', {
         p_organization_id: tenantId,
         p_period: period,
-        p_category_id: categoryId,
-        p_supplier_id: supplierId
+        p_category_id: (categoryId as string | undefined),
+        p_supplier_id: (supplierId as string | undefined)
       });
 
       if (error) {
