@@ -115,9 +115,8 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
     if (!response.ok) {
       if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Limite de requisições excedido. Tente novamente em alguns minutos.", requestId }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return errorResponse(new Error("Validation error: Limite de requisições excedido. Tente novamente em alguns minutos."), logger);
+
       }
       const t = await response.text();
       logger.error("Erro no AI Gateway", { status: response.status, response: t });
