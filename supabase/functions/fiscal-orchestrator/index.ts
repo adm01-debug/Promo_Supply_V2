@@ -40,14 +40,9 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const { data: userTenant } = await supabaseAdmin
-      .from("user_tenants")
-      .select("tenant_id")
-      .eq("user_id", user.id)
-      .eq("is_default", true)
-      .single();
+    const { getTenantId } = await import("../_shared/security.ts");
+    const tenant_id = await getTenantId(supabaseAdmin, user, req);
 
-    const tenant_id = userTenant?.tenant_id;
 
     if (!tenant_id) {
       logger.error("Contexto de tenant não encontrado para o usuário", { userId: user.id });
