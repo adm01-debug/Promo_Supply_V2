@@ -77,6 +77,44 @@ export class ContractValidator {
         errors: result.error.errors.map((e: any) => `${e.path.join('.')}: ${e.message}`)
       };
     }
+
+  static validate(schema: z.ZodSchema, payload: any) {
+    const result = schema.safeParse(payload);
+    if (!result.success) {
+      return {
+        isValid: false,
+        errors: result.error.errors.map((e: any) => `${e.path.join('.')}: ${e.message}`)
+      };
+    }
     return { isValid: true, data: result.data };
   }
 }
+
+/**
+ * Registry of contracts per function name for automated testing/validation.
+ */
+export const FunctionContracts: Record<string, z.ZodSchema> = {
+  "ai-negotiation": NegotiationContract,
+  "workflow-engine": WorkflowContract,
+  "erp-sync": ERPSyncContract,
+  "fiscal-orchestrator": FiscalContract,
+  "telemetry": TelemetryContract,
+  "ai-demand-prediction": DemandPredictionContract,
+  "ai-supplier-suggestion": SupplierSuggestionContract
+};
+
+/**
+ * Mapping of functions to accessed tables for audit.
+ */
+export const FunctionTableAudit: Record<string, string[]> = {
+  "workflow-engine": ["workflow_instances", "workflow_nodes", "workflow_logs", "workflow_edges", "workflow_approvals"],
+  "check-sla-alerts": ["notifications"],
+  "check-cotacao-followup": ["notifications"],
+  "check-expiry-alerts": ["notifications"],
+  "send-push-notification": ["push_subscriptions", "notifications"],
+  "spot-proxy": ["spot_sessions", "spot_pedidos"],
+  "weekly-report": ["solicitacoes", "pedidos", "pagamentos", "cotacoes", "notifications"],
+  "weekly-summary-report": ["notifications"],
+  "ai-negotiation": ["solicitacoes", "cotacoes"]
+};
+
