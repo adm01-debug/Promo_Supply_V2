@@ -22,12 +22,41 @@ export const validateAuth = (req: Request) => {
  * Standard response helpers for edge functions.
  */
 export const responses = {
-  success: (data: any) => new Response(
-    JSON.stringify(data),
+  success: (data: any, requestId?: string) => new Response(
+    JSON.stringify({
+      data,
+      requestId,
+      status: "success",
+      timestamp: new Date().toISOString()
+    }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
   ),
-  error: (message: string, status = 400) => new Response(
-    JSON.stringify({ error: message }),
+  error: (message: string, status = 400, requestId?: string, details?: any) => new Response(
+    JSON.stringify({ 
+      error: message, 
+      requestId, 
+      details,
+      status: "error",
+      timestamp: new Date().toISOString()
+    }),
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status }
   ),
 };
+
+/**
+ * Validates that the request has a tenant context and it matches the resource.
+ * Enforces isolation in multi-tenant environments.
+ */
+export const validateTenant = (req: Request, resourceTenantId?: string) => {
+  const tenantId = req.headers.get('x-tenant-id');
+  if (!tenantId) {
+    throw new Error('Validation error: Missing x-tenant-id header');
+  }
+  
+  if (resourceTenantId && resourceTenantId !== tenantId) {
+    throw new Error('Security error: Tenant isolation violation');
+  }
+  
+  return tenantId;
+};
+
