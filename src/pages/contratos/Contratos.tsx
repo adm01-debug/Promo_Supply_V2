@@ -76,7 +76,7 @@ export default function Contratos() {
     try {
       const { data, error } = await supabase.from('contracts').select('*').order('created_at', { ascending: false });
       if (error) throw error;
-      setContracts((data as unknown as Contract[]) || []);
+      setContracts((data as any) || []);
     } finally { setLoading(false); }
   };
 
