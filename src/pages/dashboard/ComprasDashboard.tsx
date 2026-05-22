@@ -206,15 +206,14 @@ const ComprasDashboard = () => {
                 VER TUDO
               </EliteButton>
             </div>
-            {urgentItems.length > 0 ? (
-              <UrgentItemsList items={urgentItems.map(item => ({
-                id: (item as any).numero || item.id.substring(0, 8),
+              <UrgentItemsList items={urgentItems.map((item: any) => ({
+                id: item.numero || item.id.substring(0, 8),
                 dbId: item.id,
-                produto: (item as any).titulo || "Item sem título",
+                produto: item.titulo || "Item sem título",
                 fornecedor: item.status || "Análise Pendente",
                 vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
-                urgencia: (item as any).urgencia || 'alto',
-                comprador: (item as any).comprador
+                urgencia: item.urgencia || 'alto',
+                comprador: item.comprador
               }))} />
             ) : (
               <p className="text-sm text-muted-foreground text-center py-12">Nenhum item urgente detectado.</p>
