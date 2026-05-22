@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { useDashboardKPIs } from '@/hooks/useDashboardKPIs';
+import { useDashboardKPIs, type DashboardKPIsExtended } from '@/hooks/useDashboardKPIs';
 
 interface Insight {
   id: string;
@@ -30,7 +30,7 @@ interface Insight {
 }
 
 export const DashboardInsights = () => {
-  const { kpis, loading } = useDashboardKPIs();
+  const { kpis, loading } = useDashboardKPIs() as { kpis: DashboardKPIsExtended; loading: boolean };
   const [activeTab, setActiveTab] = useState<'all' | 'opportunity' | 'warning'>('all');
 
   const insights = useMemo<Insight[]>(() => {

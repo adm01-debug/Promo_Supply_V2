@@ -28,7 +28,7 @@ import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
 import { CriticalAlertsBar } from "@/components/compras/CriticalAlertsBar";
 import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidget";
 import { DraggableDashboard } from "@/components/compras/DraggableDashboard";
-import { useDashboardKPIs } from "@/hooks/useDashboardKPIs";
+import { useDashboardKPIs, type DashboardKPIsExtended } from "@/hooks/useDashboardKPIs";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { FilterFavoritesManager } from "@/components/compras/FilterFavoritesManager";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -78,7 +78,7 @@ const ComprasDashboard = () => {
     loading: accountFiltersLoading
   } = useAccountFilters('compras-dashboard', filterDefaults);
 
-  const { kpis, pipeline, urgentItems, loading: kpisLoading } = useDashboardKPIs(currentFilters);
+  const { kpis, pipeline, urgentItems, loading: kpisLoading } = useDashboardKPIs(currentFilters) as { kpis: DashboardKPIsExtended; pipeline: any; urgentItems: any[]; loading: boolean };
   const loading = kpisLoading || accountFiltersLoading;
 
   useEffect(() => {
