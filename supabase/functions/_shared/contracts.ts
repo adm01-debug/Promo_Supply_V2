@@ -51,8 +51,15 @@ export const TelemetryContract = z.object({
   userAgent: z.string().optional(),
 });
 
+export const DemandPredictionContract = z.object({
+  historicalData: z.array(z.any()),
+  category: z.string().optional(),
+  timeframe: z.string().optional()
+});
+
 export class ContractValidator {
   static validate(schema: z.ZodSchema, payload: any) {
+
     const result = schema.safeParse(payload);
     if (!result.success) {
       return {
