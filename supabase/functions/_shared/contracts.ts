@@ -14,17 +14,30 @@ export const NegotiationContract = z.object({
   })
 });
 
-export const WorkflowContract = z.object({
-  action: z.enum(['start_workflow', 'approve_step', 'submit_decision']),
-  template_id: z.string().uuid().optional(),
-  entity_type: z.string(),
-  entity_id: z.string().uuid(),
-  instance_id: z.string().uuid().optional(),
-  node_id: z.string().uuid().optional(),
-  decision: z.enum(['approve', 'reject']).optional(),
-  approver_id: z.string().uuid().optional(),
-  comment: z.string().max(1000).optional()
-});
+export const WorkflowContract = z.discriminatedUnion("action", [
+  z.object({
+    action: z.literal('start_workflow'),
+    template_id: z.string().uuid(),
+    entity_type: z.string(),
+    entity_id: z.string().uuid(),
+  }),
+  z.object({
+    action: z.literal('approve_step'),
+    instance_id: z.string().uuid(),
+    node_id: z.string().uuid(),
+    approver_id: z.string().uuid(),
+    comment: z.string().max(1000).optional()
+  }),
+  z.object({
+    action: z.literal('submit_decision'),
+    instance_id: z.string().uuid(),
+    node_id: z.string().uuid(),
+    decision: z.enum(['approve', 'reject']),
+    approver_id: z.string().uuid(),
+    comment: z.string().max(1000).optional()
+  })
+]);
+
 
 export const ERPSyncContract = z.object({
   action: z.enum(['push', 'pull', 'sync_po', 'sync_supplier', 'sync_invoice']),
