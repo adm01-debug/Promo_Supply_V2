@@ -35,9 +35,8 @@ serve(async (req) => {
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
-      return new Response(JSON.stringify({ error: "Sessão inválida", requestId }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return errorResponse(new Error("Sessão inválida"), logger);
+
     }
 
     // Standardized validation with auto-telemetry
@@ -116,9 +115,8 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
     if (!response.ok) {
       if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Limite de requisições excedido. Tente novamente em alguns minutos.", requestId }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return errorResponse(new Error("Validation error: Limite de requisições excedido. Tente novamente em alguns minutos."), logger);
+
       }
       const t = await response.text();
       logger.error("Erro no AI Gateway", { status: response.status, response: t });
@@ -142,9 +140,15 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
     logger.info("Análise concluída com sucesso", { requestId });
 
-    return new Response(JSON.stringify({ ...analysis, requestId }), {
+    return new Response(JSON.stringify({ 
+      data: analysis, 
+      requestId,
+      status: "success",
+      timestamp: new Date().toISOString()
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
+
   } catch (e) {
     return errorResponse(e, logger);
   }
