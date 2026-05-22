@@ -57,7 +57,17 @@ export const DemandPredictionContract = z.object({
   timeframe: z.string().optional()
 });
 
+export const SupplierSuggestionContract = z.object({
+  productDescription: z.string().min(3),
+  category: z.string().optional(),
+  quantity: z.number().optional().nullable(),
+  budget: z.number().optional().nullable(),
+  purchaseHistory: z.array(z.any()).optional().nullable(),
+  suppliers: z.array(z.any()).optional().nullable()
+});
+
 export class ContractValidator {
+
   static validate(schema: z.ZodSchema, payload: any) {
 
     const result = schema.safeParse(payload);
