@@ -2,18 +2,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
-import { z } from "https://esm.sh/zod@3.22.4";
+import { NegotiationContract } from "../_shared/contracts.ts";
 
-const NegotiationInputSchema = z.object({
-  cotacoes: z.array(z.any()).min(1, "É necessário pelo menos uma cotação para análise"),
-  solicitacao: z.object({
-    id: z.string().uuid(),
-    titulo: z.string(),
-    valor_estimado: z.number().optional().nullable(),
-    quantidade: z.number().optional().nullable(),
-  }),
-  historico_precos: z.array(z.any()).optional().nullable(),
-});
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
