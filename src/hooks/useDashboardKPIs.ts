@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/features/auth';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
 

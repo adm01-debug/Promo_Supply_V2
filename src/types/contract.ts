@@ -29,7 +29,7 @@ export interface Contract {
   return_policy?: string | null;
   min_supplier_score?: number | null;
   auto_block_below_score?: boolean | null;
-  penalty_clauses?: PenaltyClause[];
+  penalty_clauses?: any;
 }
 
 export interface PenaltyClause {
