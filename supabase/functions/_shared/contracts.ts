@@ -27,14 +27,49 @@ export const WorkflowContract = z.object({
 });
 
 export const ERPSyncContract = z.object({
-  operation: z.enum(['sync_po', 'sync_supplier', 'sync_invoice']),
+  action: z.enum(['push', 'pull', 'sync_po', 'sync_supplier', 'sync_invoice']),
+  connectionId: z.string().uuid(),
+  entity: z.string(),
   po_number: z.string().optional(),
   external_id: z.string().optional(),
-  source: z.string()
+  source: z.string().optional()
+});
+
+export const FiscalContract = z.object({
+  action: z.enum(["send", "cancel", "query", "manifest"]),
+  type: z.enum(["NFe", "NFSe", "CTe", "MDFe"]),
+  document_id: z.string().uuid().optional(),
+  payload: z.record(z.any()).optional(),
+});
+
+export const TelemetryContract = z.object({
+  level: z.enum(["info", "warn", "error", "debug"]),
+  message: z.string(),
+  context: z.record(z.any()).optional(),
+  requestId: z.string().optional(),
+  url: z.string().optional(),
+  userAgent: z.string().optional(),
+});
+
+export const DemandPredictionContract = z.object({
+  historicalData: z.array(z.any()),
+  category: z.string().optional(),
+  timeframe: z.string().optional()
+});
+
+export const SupplierSuggestionContract = z.object({
+  productDescription: z.string().min(3),
+  category: z.string().optional(),
+  quantity: z.number().optional().nullable(),
+  budget: z.number().optional().nullable(),
+  purchaseHistory: z.array(z.any()).optional().nullable(),
+  suppliers: z.array(z.any()).optional().nullable()
 });
 
 export class ContractValidator {
+
   static validate(schema: z.ZodSchema, payload: any) {
+
     const result = schema.safeParse(payload);
     if (!result.success) {
       return {
