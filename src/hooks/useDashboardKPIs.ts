@@ -65,8 +65,8 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
       const { data, error } = await supabase.rpc('get_compras_dashboard_metrics', {
         p_organization_id: tenantId,
         p_period: period,
-        p_category_id: categoryId || undefined,
-        p_supplier_id: supplierId || undefined
+        p_category_id: (categoryId as string | undefined),
+        p_supplier_id: (supplierId as string | undefined)
       });
 
       if (error) {
