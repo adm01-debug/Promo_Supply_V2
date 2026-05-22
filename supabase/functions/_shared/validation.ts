@@ -44,19 +44,30 @@ export async function validateBody<T>(
  */
 export function errorResponse(error: unknown, logger?: EdgeLogger, headers = corsHeaders) {
   const message = error instanceof Error ? error.message : (typeof error === 'object' ? JSON.stringify(error) : String(error));
-  const requestId = logger?.getRequestId() || "req_" + Math.random().toString(36).slice(2, 9);
+  const requestId = logger?.getRequestId() || "req_" + crypto.randomUUID().slice(0, 8);
   
   let status = 500;
   let details: any = undefined;
 
-  if (message.toLowerCase().includes('validation error')) {
+  // Pattern matching for error categorization
+  const msgLower = message.toLowerCase();
+  
+  if (msgLower.includes('validation error') || msgLower.includes('invalid json')) {
     status = 400;
-  } else if (message === 'Invalid JSON body') {
-    status = 400;
-  } else if (message.includes('Authorization header missing') || message.includes('Sessão inválida')) {
+  } else if (msgLower.includes('auth') || msgLower.includes('sessão inválida') || msgLower.includes('unauthorized')) {
     status = 401;
-  } else if (message.includes('Security error')) {
+  } else if (msgLower.includes('security error') || msgLower.includes('isolation violation') || msgLower.includes('permission denied')) {
     status = 403;
+  } else if (msgLower.includes('not found')) {
+    status = 404;
+  }
+
+  // Extract validation details if available from Zod error message
+  if (status === 400 && message.includes('Validation error:')) {
+    details = {
+      validation_error: true,
+      fields: message.replace('Validation error: ', '').split(', ')
+    };
   }
 
   if (logger && status === 500) {
@@ -68,10 +79,21 @@ export function errorResponse(error: unknown, logger?: EdgeLogger, headers = cor
     requestId,
     status: "error",
     timestamp: new Date().toISOString(),
-    details
+    details,
+    code: status
   }), {
     status,
     headers: { ...headers, "Content-Type": "application/json" },
   });
 }
+
+/**
+ * Ensures a request is using a supported HTTP method.
+ */
+export function validateMethod(req: Request, methods: string[]) {
+  if (!methods.includes(req.method)) {
+    throw new Error(`Method ${req.method} not allowed. Use: ${methods.join(', ')}`);
+  }
+}
+
 

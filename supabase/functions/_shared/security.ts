@@ -50,13 +50,40 @@ export const responses = {
 export const validateTenant = (req: Request, resourceTenantId?: string) => {
   const tenantId = req.headers.get('x-tenant-id');
   if (!tenantId) {
-    throw new Error('Validation error: Missing x-tenant-id header');
+    throw new Error('Security error: Missing x-tenant-id header for multi-tenant isolation');
   }
   
   if (resourceTenantId && resourceTenantId !== tenantId) {
-    throw new Error('Security error: Tenant isolation violation');
+    throw new Error('Security error: Tenant isolation violation. Cross-tenant access denied.');
   }
   
   return tenantId;
 };
+
+/**
+ * Extracts and validates the tenant ID from a Supabase Auth User or request header.
+ */
+export const getTenantId = async (supabase: any, user: any, req: Request) => {
+  // Priority 1: Header (Explicitly set by client)
+  let tenantId = req.headers.get('x-tenant-id');
+  
+  if (!tenantId && user) {
+    // Priority 2: Database (Resolved from user session)
+    const { data: userTenant } = await supabase
+      .from("user_tenants")
+      .select("tenant_id")
+      .eq("user_id", user.id)
+      .eq("is_default", true)
+      .single();
+    
+    tenantId = userTenant?.tenant_id;
+  }
+  
+  if (!tenantId) {
+    throw new Error("Security error: Could not resolve tenant context");
+  }
+  
+  return tenantId;
+};
+
 
