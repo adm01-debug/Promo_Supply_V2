@@ -30,7 +30,7 @@ serve(async (req) => {
     }
 
     // Standardized validation with auto-telemetry
-    const validatedData = await validateBody(req, NegotiationInputSchema, logger);
+    const validatedData = await validateBody(req, NegotiationContract, logger);
     const { cotacoes, solicitacao, historico_precos } = validatedData;
 
     logger.info("Iniciando análise de negociação", { 
