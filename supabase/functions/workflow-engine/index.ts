@@ -22,10 +22,11 @@ serve(async (req) => {
     const data = await validateBody(req, WorkflowContract, logger);
     const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, approver_id, comment } = data;
     
-    const tenant_id = req.headers.get('x-tenant-id')
+    const tenant_id = req.headers.get('x-tenant-id');
     if (!tenant_id) {
-      throw new Error('Validation error: Missing tenant_id header')
+      throw new Error('Validation error: Missing x-tenant-id header');
     }
+
 
     if (action === 'start_workflow') {
       if (!template_id) throw new Error('Validation error: template_id is required for start_workflow');
