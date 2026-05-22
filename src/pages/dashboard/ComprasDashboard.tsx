@@ -206,6 +206,7 @@ const ComprasDashboard = () => {
                 VER TUDO
               </EliteButton>
             </div>
+            {urgentItems.length > 0 ? (
               <UrgentItemsList items={urgentItems.map((item: any) => ({
                 id: item.numero || item.id.substring(0, 8),
                 dbId: item.id,
