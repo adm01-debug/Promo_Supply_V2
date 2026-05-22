@@ -67,17 +67,6 @@ export const SupplierSuggestionContract = z.object({
 });
 
 export class ContractValidator {
-
-  static validate(schema: z.ZodSchema, payload: any) {
-
-    const result = schema.safeParse(payload);
-    if (!result.success) {
-      return {
-        isValid: false,
-        errors: result.error.errors.map((e: any) => `${e.path.join('.')}: ${e.message}`)
-      };
-    }
-
   static validate(schema: z.ZodSchema, payload: any) {
     const result = schema.safeParse(payload);
     if (!result.success) {
@@ -117,4 +106,3 @@ export const FunctionTableAudit: Record<string, string[]> = {
   "weekly-summary-report": ["notifications"],
   "ai-negotiation": ["solicitacoes", "cotacoes"]
 };
-
