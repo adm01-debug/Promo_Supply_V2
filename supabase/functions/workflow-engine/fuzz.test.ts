@@ -55,7 +55,13 @@ Deno.test("Security: Workflow Engine rejects missing tenant ID", async () => {
       "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
       // Missing x-tenant-id
     },
-    body: JSON.stringify({ action: "start_workflow", template_id: crypto.randomUUID() }),
+    body: JSON.stringify({ 
+      action: "start_workflow", 
+      template_id: crypto.randomUUID(),
+      entity_type: "pedido",
+      entity_id: crypto.randomUUID()
+    }),
+
   });
 
   const body = await res.json();
