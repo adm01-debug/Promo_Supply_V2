@@ -1,42 +1,57 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { FunctionTableAudit, FunctionContracts } from "../_shared/contracts.ts";
-import { runIntegrityTests } from "../_shared/integrity_test.ts";
-import { corsHeaders } from "../_shared/validation.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+};
 
 serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
 
   try {
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) throw new Error("Unauthorized");
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
-    const baseUrl = Deno.env.get("SUPABASE_URL") + "/functions/v1";
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    // 1. Audit RLS Policies for (true)
+    const { data: policies, error: policiesError } = await supabaseAdmin
+      .rpc('get_raw_policies'); // We might need to create this function if it doesn't exist, or query pg_policies directly
 
-    // 1. Generate Table Access Report
-    const tableReport = Object.entries(FunctionTableAudit).map(([fn, tables]) => ({
-      function: fn,
-      accessed_tables: tables,
-      has_contract: !!FunctionContracts[fn],
-      security_status: "Verified: RLS + Tenant Isolation"
-    }));
-
-    // 2. Run Automated Integrity Tests
-    const integrityResults = await runIntegrityTests(baseUrl, anonKey);
-
-    return new Response(JSON.stringify({
-      report_timestamp: new Date().toISOString(),
-      table_access_audit: tableReport,
-      integrity_validation: integrityResults,
-      status: "System Integrity 10/10"
-    }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
+    // Fallback query if RPC doesn't exist
+    const { data: pgPolicies, error: pgError } = await supabaseAdmin.rpc('exec_sql', {
+      sql_query: "SELECT tablename, policyname, qual, with_check FROM pg_policies WHERE schemaname = 'public'"
     });
 
-  } catch (e) {
-    return new Response(JSON.stringify({ error: e.message }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
+    if (pgError) throw pgError;
+
+    const issues = pgPolicies.filter((p: any) => 
+      (p.qual && p.qual.includes('true')) || (p.with_check && p.with_check.includes('true'))
+    );
+
+    // Exclude allowed tables (master data)
+    const allowedMasterTables = ['currencies', 'exchange_rates', 'unspsc_codes', 'dependency_health', 'dependency_health_history'];
+    const criticalIssues = issues.filter((p: any) => !allowedMasterTables.includes(p.tablename));
+
+    const report = {
+      timestamp: new Date().toISOString(),
+      status: criticalIssues.length === 0 ? "PASSED" : "FAILED",
+      total_policies: pgPolicies.length,
+      vulnerable_policies: criticalIssues,
+      master_data_policies: issues.filter((p: any) => allowedMasterTables.includes(p.tablename))
+    };
+
+    return new Response(JSON.stringify(report, null, 2), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: criticalIssues.length === 0 ? 200 : 403,
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error.message }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      status: 500,
     });
   }
 });
