@@ -28,9 +28,12 @@ serve(async (req) => {
 
     if (pgError) throw pgError;
 
-    const issues = pgPolicies.filter((p: any) => 
-      (p.qual && p.qual.includes('true')) || (p.with_check && p.with_check.includes('true'))
-    );
+    const issues = pgPolicies.filter((p: any) => {
+      const isVulnerable = (p.qual && p.qual === 'true') || (p.with_check && p.with_check === 'true');
+      const isPermissive = (p.qual && p.qual.includes('true') && !p.qual.includes('tenant_id')) || 
+                           (p.with_check && p.with_check.includes('true') && !p.with_check.includes('tenant_id'));
+      return isVulnerable || isPermissive;
+    });
 
     // Exclude allowed tables (master data)
     const allowedMasterTables = ['currencies', 'exchange_rates', 'unspsc_codes', 'dependency_health', 'dependency_health_history'];
