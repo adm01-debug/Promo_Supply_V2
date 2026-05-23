@@ -7,53 +7,50 @@ const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 Deno.test("Multi-tenant Isolation Security Test", async (t) => {
   const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
-  // We use existing UUIDs or valid formats. 
-  // For the test to pass without database side-effects, we use ROLLBACK
-  
   await t.step("Security: Tenant A cannot read Tenant B data", async () => {
+    // Note: We use the existing 'tenant_isolation_solicitacoes' policy which uses auth.jwt() ->> 'tenant_id'
     const { data, error } = await supabaseAdmin.rpc('exec_sql', {
       sql_query: `
         BEGIN;
-        -- Create dummy data for Tenant B
-        INSERT INTO public.solicitacoes (tenant_id, titulo, status) 
-        VALUES ('00000000-0000-0000-0000-000000000002', 'PRIVATE_B', 'pendente');
+        -- 1. Create data for Tenant B
+        INSERT INTO public.solicitacoes (tenant_id, titulo, status, solicitante_id) 
+        VALUES ('00000000-0000-0000-0000-000000000002', 'PRIVATE_B', 'pendente', '22222222-2222-2222-2222-222222222222');
         
-        -- Switch to Tenant A context
-        SET LOCAL "request.jwt.claims" = '{"sub": "11111111-1111-1111-1111-111111111111", "tenant_id": "00000000-0000-0000-0000-000000000001"}';
+        -- 2. Mock Tenant A context (authenticated but different tenant)
+        SET LOCAL "request.jwt.claims" = '{"sub": "11111111-1111-1111-1111-111111111111", "tenant_id": "00000000-0000-0000-0000-000000000001", "role": "authenticated"}';
         SET LOCAL "role" = 'authenticated';
         
-        -- Try to read
+        -- 3. Attempt to read
         SELECT count(*) as count FROM public.solicitacoes WHERE titulo = 'PRIVATE_B';
         ROLLBACK;
       `
     });
 
-    // data[2] because it's a multi-statement query: [BEGIN, INSERT, SET, SET, SELECT, ROLLBACK]
-    // Depending on how exec_sql returns multi-statement results, we check for '0'
-    const resultCount = data?.[4]?.count || data?.[0]?.count || 0;
-    assertEquals(Number(resultCount), 0, "CRITICAL: Tenant A was able to read Tenant B data!");
+    // Check query result
+    const selectResult = data?.find((r: any) => r.count !== undefined);
+    assertEquals(Number(selectResult?.count || 0), 0, "CRITICAL: Tenant A was able to read Tenant B data!");
   });
 
   await t.step("Security: Tenant A cannot update Tenant B data", async () => {
     const { data, error } = await supabaseAdmin.rpc('exec_sql', {
       sql_query: `
         BEGIN;
-        INSERT INTO public.solicitacoes (tenant_id, titulo, status) 
-        VALUES ('00000000-0000-0000-0000-000000000002', 'UPDATE_ME', 'pendente');
+        INSERT INTO public.solicitacoes (tenant_id, titulo, status, solicitante_id) 
+        VALUES ('00000000-0000-0000-0000-000000000002', 'UPDATE_ME', 'pendente', '22222222-2222-2222-2222-222222222222');
         
-        SET LOCAL "request.jwt.claims" = '{"sub": "11111111-1111-1111-1111-111111111111", "tenant_id": "00000000-0000-0000-0000-000000000001"}';
+        SET LOCAL "request.jwt.claims" = '{"sub": "11111111-1111-1111-1111-111111111111", "tenant_id": "00000000-0000-0000-0000-000000000001", "role": "authenticated"}';
         SET LOCAL "role" = 'authenticated';
         
         UPDATE public.solicitacoes SET titulo = 'HACKED' WHERE titulo = 'UPDATE_ME';
         
-        -- Check if it was updated (should be 0)
         SELECT count(*) as count FROM public.solicitacoes WHERE titulo = 'HACKED';
         ROLLBACK;
       `
     });
 
-    const resultCount = data?.[5]?.count || data?.[0]?.count || 0;
-    assertEquals(Number(resultCount), 0, "CRITICAL: Tenant A was able to update Tenant B data!");
+    const selectResult = data?.find((r: any) => r.count !== undefined);
+    assertEquals(Number(selectResult?.count || 0), 0, "CRITICAL: Tenant A was able to update Tenant B data!");
   });
 });
+
 
