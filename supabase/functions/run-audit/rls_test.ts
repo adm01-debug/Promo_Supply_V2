@@ -12,7 +12,7 @@ Deno.test({
     const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey);
 
     await t.step("Security: Tenant A cannot read Tenant B data", async () => {
-      const { data, error } = await supabaseAdmin.rpc('exec_sql', {
+      const { data } = await supabaseAdmin.rpc('exec_sql', {
         sql_query: `
           BEGIN;
           INSERT INTO public.solicitacoes (tenant_id, titulo, status, solicitante_id) 
@@ -23,13 +23,12 @@ Deno.test({
           ROLLBACK;
         `
       });
-
       const selectResult = data?.find((r: any) => r.count !== undefined);
       assertEquals(Number(selectResult?.count || 0), 0, "CRITICAL: Tenant A was able to read Tenant B data!");
     });
 
     await t.step("Security: Tenant A cannot update Tenant B data", async () => {
-      const { data, error } = await supabaseAdmin.rpc('exec_sql', {
+      const { data } = await supabaseAdmin.rpc('exec_sql', {
         sql_query: `
           BEGIN;
           INSERT INTO public.solicitacoes (tenant_id, titulo, status, solicitante_id) 
@@ -41,12 +40,15 @@ Deno.test({
           ROLLBACK;
         `
       });
-
       const selectResult = data?.find((r: any) => r.count !== undefined);
       assertEquals(Number(selectResult?.count || 0), 0, "CRITICAL: Tenant A was able to update Tenant B data!");
     });
+    
+    // Explicitly nullify to help GC if needed, though leak is likely internal to the client pool
+    (supabaseAdmin as any) = null;
   }
 });
+
 
 
 
