@@ -102,7 +102,7 @@ export function PriceComparator() {
         }
       }
 
-      const qty = parseInt(quantity) || 100;
+      const qty = parseInt(quantity, 10) || 100;
       const displayProductName = selectedProductId 
         ? products.find(p => p.id === selectedProductId)?.nome || productName 
         : productName;
@@ -226,7 +226,7 @@ export function PriceComparator() {
                       <Brain className="w-3 h-3" /> IA Advisor Ativo
                     </Badge>
                   </div>
-                  <StrategicQuoteTable cotacoes={strategicData} quantidade={parseInt(quantity) || 100} />
+                  <StrategicQuoteTable cotacoes={strategicData} quantidade={parseInt(quantity, 10) || 100} />
                 </div>
 
                 {selectedQuotes.length >= 2 && (

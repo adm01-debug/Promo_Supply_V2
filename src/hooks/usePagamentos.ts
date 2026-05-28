@@ -6,6 +6,7 @@ import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
+import { escapeIlike } from '@/lib/supabaseQuery';
 import type { Json, Database } from '@/integrations/supabase/types';
 
 export type Pagamento = Database['public']['Tables']['pagamentos']['Row'] & {
@@ -67,7 +68,10 @@ async function fetchPagamentosData(userId: string | undefined, organizationId: s
 
   if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
   if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
-  if (filters?.search) query = query.or(`numero.ilike.%${filters.search}%,numero_nf.ilike.%${filters.search}%`);
+  if (filters?.search) {
+    const s = escapeIlike(filters.search);
+    query = query.or(`numero.ilike.%${s}%,numero_nf.ilike.%${s}%`);
+  }
   if (filters?.dateFrom) query = query.gte('data_vencimento', filters.dateFrom);
   if (filters?.dateTo) query = query.lte('data_vencimento', filters.dateTo);
 

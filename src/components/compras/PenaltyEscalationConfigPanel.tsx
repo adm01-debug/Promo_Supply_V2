@@ -64,10 +64,10 @@ export const PenaltyEscalationConfigPanel = () => {
       const { error } = await supabase.from('penalty_escalation_config').insert({
         level: form.level,
         min_infractions: form.min_infractions,
-        max_infractions: form.max_infractions ? parseInt(form.max_infractions) : null,
+        max_infractions: form.max_infractions ? parseInt(form.max_infractions, 10) : null,
         action_type: form.action_type,
         penalty_multiplier: form.penalty_multiplier,
-        block_days: form.block_days ? parseInt(form.block_days) : null,
+        block_days: form.block_days ? parseInt(form.block_days, 10) : null,
         description: form.description || null,
       } as any);
       if (error) throw error;
@@ -177,7 +177,7 @@ export const PenaltyEscalationConfigPanel = () => {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Nível</Label>
-                <Input type="number" min={1} value={form.level} onChange={e => setForm(f => ({ ...f, level: parseInt(e.target.value) || 1 }))} />
+                <Input type="number" min={1} value={form.level} onChange={e => setForm(f => ({ ...f, level: parseInt(e.target.value, 10) || 1 }))} />
               </div>
               <div className="space-y-1.5">
                 <Label>Ação</Label>
@@ -195,7 +195,7 @@ export const PenaltyEscalationConfigPanel = () => {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
                 <Label>Mín. Infrações</Label>
-                <Input type="number" min={1} value={form.min_infractions} onChange={e => setForm(f => ({ ...f, min_infractions: parseInt(e.target.value) || 1 }))} />
+                <Input type="number" min={1} value={form.min_infractions} onChange={e => setForm(f => ({ ...f, min_infractions: parseInt(e.target.value, 10) || 1 }))} />
               </div>
               <div className="space-y-1.5">
                 <Label>Máx. Infrações (vazio = ilimitado)</Label>

@@ -474,7 +474,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
                 id="renewal_notice_days"
                 type="number"
                 value={formData.renewal_notice_days}
-                onChange={(e) => setFormData(prev => ({ ...prev, renewal_notice_days: parseInt(e.target.value) || 30 }))}
+                onChange={(e) => setFormData(prev => ({ ...prev, renewal_notice_days: parseInt(e.target.value, 10) || 30 }))}
               />
             </div>
           </div>

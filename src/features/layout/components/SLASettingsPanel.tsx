@@ -113,7 +113,7 @@ export const SLASettingsPanel = forwardRef<HTMLDivElement>((_props, ref) => {
                   onChange={(e) =>
                     setLocalSettings({
                       ...localSettings,
-                      warningThresholdDays: parseInt(e.target.value) || 1,
+                      warningThresholdDays: parseInt(e.target.value, 10) || 1,
                     })
                   }
                 />
@@ -136,7 +136,7 @@ export const SLASettingsPanel = forwardRef<HTMLDivElement>((_props, ref) => {
                   onChange={(e) =>
                     setLocalSettings({
                       ...localSettings,
-                      criticalThresholdDays: parseInt(e.target.value) || 1,
+                      criticalThresholdDays: parseInt(e.target.value, 10) || 1,
                     })
                   }
                 />
@@ -230,7 +230,7 @@ export const SLASettingsPanel = forwardRef<HTMLDivElement>((_props, ref) => {
               onChange={(e) =>
                 setLocalSettings({
                   ...localSettings,
-                  checkIntervalMinutes: parseInt(e.target.value) || 1,
+                  checkIntervalMinutes: parseInt(e.target.value, 10) || 1,
                 })
               }
               className="w-32"

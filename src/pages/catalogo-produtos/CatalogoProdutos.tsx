@@ -467,7 +467,7 @@ const CatalogoProdutos = () => {
                 id="estoque_min"
                 type="number"
                 value={formData.estoque_minimo ?? 0}
-                onChange={(e) => updateField("estoque_minimo", parseInt(e.target.value) || 0)}
+                onChange={(e) => updateField("estoque_minimo", parseInt(e.target.value, 10) || 0)}
               />
             </div>
           </div>

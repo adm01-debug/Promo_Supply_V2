@@ -5,6 +5,7 @@ import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
+import { escapeIlike } from '@/lib/supabaseQuery';
 import type { Database } from '@/integrations/supabase/types';
 
 export type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
@@ -88,7 +89,7 @@ async function fetchPedidosData(userId: string | undefined, tenantId: string | n
     query = query.eq('fornecedor_id', filters.fornecedor_id);
   }
   if (filters?.search) {
-    query = query.or(`numero.ilike.%${filters.search}%`);
+    query = query.or(`numero.ilike.%${escapeIlike(filters.search)}%`);
   }
   if (filters?.dateFrom) {
     query = query.gte('data_emissao', filters.dateFrom);

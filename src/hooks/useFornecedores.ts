@@ -6,6 +6,7 @@ import { logger } from '@/lib/logger';
 import { auditHelpers } from '@/services/auditService';
 import { toast } from '@/lib/feedbackToast';
 import { format } from 'date-fns';
+import { escapeIlike } from '@/lib/supabaseQuery';
 import type { Database } from '@/integrations/supabase/types';
 
 export type Fornecedor = Database['public']['Tables']['fornecedores']['Row'];
@@ -50,7 +51,10 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
       if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
-      if (filters?.search) query = query.or(`razao_social.ilike.%${filters.search}%,nome_fantasia.ilike.%${filters.search}%,cnpj.ilike.%${filters.search}%`);
+      if (filters?.search) {
+        const s = escapeIlike(filters.search);
+        query = query.or(`razao_social.ilike.%${s}%,nome_fantasia.ilike.%${s}%,cnpj.ilike.%${s}%`);
+      }
 
       const { data, error: fetchError } = await query;
       if (fetchError) throw fetchError;
@@ -66,15 +70,15 @@ export function useFornecedores(filters?: FornecedorFilters) {
     if (clean.length !== 14) return false;
     if (/^(\d)\1+$/.test(clean)) return false;
     const calc = (str: string, weights: number[]) =>
-      str.split('').reduce((sum, d, i) => sum + parseInt(d) * weights[i], 0);
+      str.split('').reduce((sum, d, i) => sum + parseInt(d, 10) * weights[i], 0);
     const w1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     const w2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     const d1 = calc(clean.slice(0, 12), w1) % 11;
     const check1 = d1 < 2 ? 0 : 11 - d1;
-    if (parseInt(clean[12]) !== check1) return false;
+    if (parseInt(clean[12], 10) !== check1) return false;
     const d2 = calc(clean.slice(0, 13), w2) % 11;
     const check2 = d2 < 2 ? 0 : 11 - d2;
-    return parseInt(clean[13]) === check2;
+    return parseInt(clean[13], 10) === check2;
   }, []);
 
   // Create new fornecedor

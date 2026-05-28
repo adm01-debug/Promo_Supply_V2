@@ -46,8 +46,8 @@ const Orcamentos = () => {
       cost_center_id: form.cost_center_id,
       centro_custo: form.centro_custo,
       departamento: form.departamento,
-      ano: parseInt(form.ano),
-      mes: form.mes ? parseInt(form.mes) : null,
+      ano: parseInt(form.ano, 10),
+      mes: form.mes ? parseInt(form.mes, 10) : null,
       valor_total: valor,
     }, {
       onSuccess: () => {
