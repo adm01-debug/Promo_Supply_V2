@@ -141,7 +141,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.error('Erro ao registrar pagamento: ' + msg);
       return null;
     }
-  }, [user, invalidate]);
+  }, [user, organizationId, invalidate]);
 
   const updatePagamento = useCallback(async (id: string, updates: Partial<Pagamento>) => {
     if (updates.status) {
@@ -210,7 +210,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.error('Erro ao atualizar pagamentos: ' + msg);
       return false;
     }
-  }, [user, invalidate]);
+  }, [user, organizationId, invalidate]);
 
   const deletePagamento = useCallback(async (id: string) => {
     try {

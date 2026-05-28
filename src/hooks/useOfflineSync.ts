@@ -196,16 +196,19 @@ export function useOfflineSync() {
     };
   }, [getPendingOperations, syncPendingOperations]);
 
-  // Wrapper for operations that can be queued offline
+  // Wrapper for operations that can be queued offline. Caller passes the
+  // payload to be replayed on reconnect; previously the helper queued
+  // `error.data || {}`, which is virtually always undefined → enqueued empty
+  // payloads that produced malformed rows when replayed.
   const withOfflineSupport = useCallback(<T extends Record<string, unknown>>(
     table: string,
     type: PendingOperation['type'],
+    payload: Record<string, unknown>,
     operation: () => Promise<T>
   ): Promise<T | { offline: true; operationId: string }> => {
     return operation().catch((error) => {
       if (!state.isOnline || error.message?.includes('network')) {
-        // Queue for later
-        const operationId = addPendingOperation(type, table, error.data || {});
+        const operationId = addPendingOperation(type, table, payload);
         return { offline: true, operationId };
       }
       throw error;

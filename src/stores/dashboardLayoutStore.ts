@@ -131,7 +131,7 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
               dashboard_id: dashboardId,
               layout: widgets as unknown as Json,
               updated_at: new Date().toISOString()
-            }, { onConflict: 'user_id, dashboard_id' });
+            }, { onConflict: 'user_id,dashboard_id' });
 
           if (error) throw error;
         } catch (error) {
