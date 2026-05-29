@@ -1,0 +1,79 @@
+name: Freight Quest CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  quality-gate:
+    name: Quality Gate (Lint, Typecheck, RLS Audit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      
+      - name: Install dependencies
+        run: bun install
+        
+      - name: Linting
+        run: bun run lint
+        
+      - name: Type Check
+        run: bun run typecheck
+        
+      - name: Security RLS Audit
+        run: |
+          # Run the audit script if it exists
+          if [ -f "scripts/rls-audit.ts" ]; then
+            bun run scripts/rls-audit.ts
+          fi
+
+  unit-integration-tests:
+    name: Unit & Integration Tests (Frontend + Edge)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - uses: denoland/setup-deno@v1
+        with:
+          deno-version: v1.x
+          
+      - name: Install dependencies
+        run: bun install
+        
+      - name: Run Vitest (Frontend)
+        run: bun run test
+        
+      - name: Run Deno Tests (Edge Functions)
+        run: |
+          # Mock environment for Deno tests
+          export VITE_SUPABASE_URL="http://localhost:54321"
+          export VITE_SUPABASE_PUBLISHABLE_KEY="mock-key"
+          deno test --allow-net --allow-env --allow-read supabase/functions/tests/
+
+  e2e-tests:
+    name: End-to-End Tests (Playwright)
+    runs-on: ubuntu-latest
+    needs: [quality-gate]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      
+      - name: Install dependencies
+        run: bun install
+        
+      - name: Install Playwright Browsers
+        run: bunx playwright install --with-deps
+        
+      - name: Run Playwright tests
+        run: bunx playwright test
+        
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
