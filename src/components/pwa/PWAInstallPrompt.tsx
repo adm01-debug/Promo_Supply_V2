@@ -96,7 +96,7 @@ export const PWAInstallPrompt = forwardRef<HTMLDivElement>((_props, _ref) => {
 
       {/* Install Prompt */}
       {showInstallPrompt && (
-        <div className="fixed bottom-6 md:bottom-10 right-6 z-[2000] max-w-sm animate-in slide-in-from-bottom-10 duration-700 ease-[0.16,1,0.3,1]">
+        <div className="fixed bottom-6 md:bottom-10 right-6 z-[2000] max-w-sm animate-in slide-in-from-bottom-10 duration-700 ease-&lsqb;0.16,1,0.3,1]">
           <Card className="border-border/40 bg-card/80 backdrop-blur-3xl shadow-[0_20px_50px_-15px_rgba(0,0,0,0.4)] rounded-[2.5rem] overflow-hidden relative group">
             {/* Ambient Animated Glow */}
             <div className="absolute -top-20 -right-20 w-40 h-40 bg-violet-600/20 blur-[80px] rounded-full group-hover:bg-violet-600/30 transition-colors duration-1000" />

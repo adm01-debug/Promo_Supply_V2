@@ -84,14 +84,14 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       </AnimatePresence>
 
       <div className={cn(
-        "fixed left-0 top-0 z-40 h-screen w-72 bg-[#05020a]/95 border-r border-white/5 transform transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] md:hidden",
+        "fixed left-0 top-0 z-40 h-screen w-72 bg-[#05020a]/95 border-r border-white/5 transform transition-transform duration-500 ease-&lsqb;cubic-bezier(0.23,1,0.32,1)] md:hidden",
         mobileMenuOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
       )}>
         <AppSidebar collapsed={false} onToggle={() => setMobileMenuOpen(false)} />
       </div>
 
       <div className={cn(
-        "transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]", 
+        "transition-all duration-500 ease-&lsqb;cubic-bezier(0.23,1,0.32,1)]", 
         sidebarCollapsed ? "md:ml-[68px]" : "md:ml-64"
       )}>
         <header className="sticky top-0 z-30 h-16 md:h-20 border-b border-white/5 shadow-sm bg-white/[0.01] backdrop-blur-2xl print:hidden flex items-center">

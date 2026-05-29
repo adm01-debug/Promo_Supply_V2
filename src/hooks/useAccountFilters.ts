@@ -129,6 +129,8 @@ export function useAccountFilters<T extends FiltersRecord>(
       return;
     }
 
+    const currentFilters = JSON.stringify(filters);
+    
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       void persist(userId, scope, filters, legacyStorageKey);
@@ -137,7 +139,9 @@ export function useAccountFilters<T extends FiltersRecord>(
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [filters, userId, scope, legacyStorageKey]);
+    // Use stringified filters to avoid infinite loops if an object is passed
+    // but the content is the same.
+  }, [JSON.stringify(filters), userId, scope, legacyStorageKey]);
 
   const setFilters = useCallback((next: T) => {
     setFiltersState(next);
