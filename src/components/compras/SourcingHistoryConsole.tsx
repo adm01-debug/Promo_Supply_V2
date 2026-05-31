@@ -16,7 +16,7 @@ import {
   Lock, SearchCode
 } from "lucide-react";
 import { usePurchaseHistory, type PurchaseRecord, type SupplierHistory } from "@/hooks/usePurchaseHistory";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
@@ -342,7 +342,7 @@ export const SourcingHistoryConsole = () => {
                         
                         <div className="flex flex-col items-end gap-2 text-right">
                           <div className="text-xl font-bold">
-                            {record.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            {formatCurrency(record.totalPrice)}
                           </div>
                           <div className="flex items-center gap-2 text-xs font-medium">
                             <Badge variant="outline" className={cn(

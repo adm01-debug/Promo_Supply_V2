@@ -13,7 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { type Pedido } from "@/features/pedidos";
 import { toast } from "@/lib/feedbackToast";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { ProductionRoutingEngine, SourcingIntelligenceBanner } from "@/components/compras/ProductionRoutingEngine";
 import { SupplierInteractionLog } from "@/components/compras/SupplierInteractionLog";
 
@@ -393,16 +393,16 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                     <div className="space-y-6">
                       <div className="flex justify-between items-center text-zinc-500 font-black uppercase tracking-widest text-[10px]">
                         <span>Subtotal Bruto</span>
-                        <span className="text-white text-sm">{(pedido.valor_total - (pedido.valor_frete || 0) + (pedido.desconto || 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                        <span className="text-white text-sm">{formatCurrency(pedido.valor_total - (pedido.valor_frete || 0) + (pedido.desconto || 0))}</span>
                       </div>
                       <div className="flex justify-between items-center text-zinc-500 font-black uppercase tracking-widest text-[10px]">
                         <span>Custos Logísticos</span>
-                        <span className={cn("text-sm", (pedido.valor_frete || 0) > 0 ? "text-white" : "text-emerald-400")}>{(pedido.valor_frete || 0) > 0 ? (pedido.valor_frete || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'CUSTO ZERO'}</span>
+                        <span className={cn("text-sm", (pedido.valor_frete || 0) > 0 ? "text-white" : "text-emerald-400")}>{(pedido.valor_frete || 0) > 0 ? formatCurrency(pedido.valor_frete || 0) : 'CUSTO ZERO'}</span>
                       </div>
                       <div className="pt-6 border-t border-white/10 flex justify-between items-end">
                         <div className="space-y-1">
                            <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">Valor Líquido</p>
-                           <p className="text-4xl font-black text-white tracking-tighter">{pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                           <p className="text-4xl font-black text-white tracking-tighter">{formatCurrency(pedido.valor_total)}</p>
                         </div>
                         <Badge variant="outline" className="mb-1 text-[10px] font-black border-emerald-500/30 text-emerald-400 px-4 py-1.5 uppercase tracking-widest bg-emerald-500/10">
                            ATIVO ASSEGURADO

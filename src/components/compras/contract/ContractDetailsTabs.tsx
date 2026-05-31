@@ -7,6 +7,7 @@ import {
   Clock, DollarSign, ShieldAlert, AlertTriangle, CheckCircle2,
 } from "lucide-react";
 import type { Contract, ContractPenalty } from "@/types/contract";
+import { formatCurrency } from "@/lib/utils";
 
 export function ContractSLAReadonlyTab({ contract }: { contract: Contract }) {
   return (
@@ -70,7 +71,7 @@ export function ContractPenaltiesTab({ penalties, totalPenalties }: { penalties:
       <div className="p-4 bg-destructive/10 rounded-lg flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-destructive">Total de Penalidades</p>
-          <p className="text-2xl font-bold text-destructive">{totalPenalties.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+          <p className="text-2xl font-bold text-destructive">{formatCurrency(totalPenalties)}</p>
         </div>
         <Badge variant="destructive" className="text-lg px-4 py-2">{penalties.length} ocorrência(s)</Badge>
       </div>
@@ -92,7 +93,7 @@ export function ContractPenaltiesTab({ penalties, totalPenalties }: { penalties:
               <TableCell className="max-w-[200px] truncate">{penalty.description}</TableCell>
               <TableCell className="text-right">{penalty.days_late ?? '-'}</TableCell>
               <TableCell className="text-right">{penalty.penalty_percent != null ? `${penalty.penalty_percent}%` : '-'}</TableCell>
-              <TableCell className="text-right font-medium text-destructive">{Number(penalty.penalty_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</TableCell>
+              <TableCell className="text-right font-medium text-destructive">{formatCurrency(Number(penalty.penalty_value))}</TableCell>
               <TableCell className="text-center"><Badge variant={penalty.status === 'applied' ? 'destructive' : 'secondary'} className="capitalize">{penalty.status}</Badge></TableCell>
             </TableRow>
           ))}

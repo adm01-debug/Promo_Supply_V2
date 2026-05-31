@@ -17,6 +17,7 @@ import {
   TrendingUp, Award, Ban, Star, Package, Clock, BarChart3,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { formatCurrency } from "@/lib/utils";
 import { toast } from "@/lib/feedbackToast";
 import {
   type ComplianceData,
@@ -105,7 +106,7 @@ export default function ComplianceDashboard() {
                 <div>
                   <p className="text-xs text-muted-foreground">Total Penalidades</p>
                   <p className="text-2xl font-bold text-destructive">
-                    {totalPenaltyValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    {formatCurrency(totalPenaltyValue)}
                   </p>
                 </div>
                 <div className="w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center">
@@ -232,7 +233,7 @@ export default function ComplianceDashboard() {
                             )}
                           </TableCell>
                           <TableCell className="text-right font-bold text-destructive">
-                            {Number(item.total_penalty_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            {formatCurrency(Number(item.total_penalty_value))}
                           </TableCell>
                         </TableRow>
                       );

@@ -43,7 +43,7 @@ import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch } fro
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
@@ -196,7 +196,7 @@ const Cotacao = () => {
                   <div className="space-y-1">
                     <Label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Target Price</Label>
                     <p className="text-lg font-black text-violet-400">
-                      {solicitacao.valor_estimado ? solicitacao.valor_estimado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'TBD'}
+                      {solicitacao.valor_estimado ? formatCurrency(solicitacao.valor_estimado) : 'TBD'}
                     </p>
                   </div>
                   <div className="space-y-1">

@@ -30,7 +30,7 @@ import {
 } from "recharts";
 import type { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { EliteButton } from "@/components/atoms/EliteButton";
 
 const PIE_COLORS = ["hsl(var(--primary))", "#8b5cf6", "#10b981", "#f59e0b", "#ef4444", "#06b6d4", "#ec4899"];
@@ -45,7 +45,7 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameT
           <span className="text-[10px] font-bold text-muted-foreground uppercase">{entry.name}</span>
           <span className="text-sm font-black" style={{ color: entry.color }}>
             {typeof entry.value === "number"
-              ? entry.value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+              ? formatCurrency(entry.value as number)
               : entry.value}
           </span>
         </div>

@@ -27,7 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { formatBytes } from "@/lib/imageCompression";
 
 import { type SolicitacaoFormData as NovaSolicitacaoData } from "@/schemas/solicitacao.schema";
@@ -224,7 +224,7 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
                             />
                             <div className="flex flex-col">
                               <span>{p.nome}</span>
-                              <span className="text-xs text-muted-foreground">{p.codigo} — Ref: {p.preco_referencia?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                              <span className="text-xs text-muted-foreground">{p.codigo} — Ref: {p.preco_referencia != null ? formatCurrency(p.preco_referencia) : undefined}</span>
                             </div>
                           </div>
                           {p.preco_referencia && (

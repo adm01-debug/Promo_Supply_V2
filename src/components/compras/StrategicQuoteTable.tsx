@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Zap, Clock, TrendingDown, CheckCircle2, ShieldCheck, ArrowRight, ExternalLink, Scale, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { toast } from "@/lib/feedbackToast";
 import { VisualComparadorCotacoes } from "./VisualComparadorCotacoes";
@@ -145,7 +145,7 @@ export const StrategicQuoteTable = ({ cotacoes, quantidade }: StrategicQuoteTabl
                 <div>
                   <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest block mb-1">Impacto Total</span>
                   <span className="text-2xl font-black text-white tracking-tight">
-                    {strat.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    {strat.value != null ? formatCurrency(strat.value) : undefined}
                   </span>
                 </div>
                 <Badge variant="outline" className={cn("text-[9px] font-black uppercase px-3 py-1 bg-black/20", strat.border, strat.color)}>

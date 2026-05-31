@@ -5,6 +5,7 @@ import { Bell, AlertTriangle, DollarSign, Calendar, CheckCircle2 } from "lucide-
 import { differenceInDays } from "date-fns/differenceInDays";
 import { format } from "date-fns/format";
 import type { Pagamento } from "@/hooks/usePagamentos";
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   pagamentos: Pagamento[];
@@ -24,15 +25,13 @@ export const PagamentoNotificationsWidget = ({ pagamentos }: Props) => {
     const hojeStr = hoje.toISOString().split('T')[0];
     const pendentes = pagamentos.filter(p => !['pago', 'cancelado'].includes(p.status));
     const result: Notificacao[] = [];
-    const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
     // Vencidos
     const vencidos = pendentes.filter(p => p.data_vencimento < hojeStr);
     if (vencidos.length > 0) {
       const valor = vencidos.reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0);
       result.push({
         id: 'vencidos', icon: AlertTriangle,
-        message: `${vencidos.length} pagamento(s) vencido(s) — ${fmt(valor)}`,
+        message: `${vencidos.length} pagamento(s) vencido(s) — ${formatCurrency(valor)}`,
         priority: 'critical', color: 'text-destructive',
       });
     }
@@ -43,7 +42,7 @@ export const PagamentoNotificationsWidget = ({ pagamentos }: Props) => {
       const valor = venceHoje.reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0);
       result.push({
         id: 'hoje', icon: Calendar,
-        message: `${venceHoje.length} pagamento(s) vence(m) hoje — ${fmt(valor)}`,
+        message: `${venceHoje.length} pagamento(s) vence(m) hoje — ${formatCurrency(valor)}`,
         priority: 'high', color: 'text-warning',
       });
     }
@@ -57,7 +56,7 @@ export const PagamentoNotificationsWidget = ({ pagamentos }: Props) => {
       const valor = venceAmanha.reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0);
       result.push({
         id: 'amanha', icon: Calendar,
-        message: `${venceAmanha.length} pagamento(s) vence(m) amanhã — ${fmt(valor)}`,
+        message: `${venceAmanha.length} pagamento(s) vence(m) amanhã — ${formatCurrency(valor)}`,
         priority: 'normal', color: 'text-warning',
       });
     }
@@ -71,7 +70,7 @@ export const PagamentoNotificationsWidget = ({ pagamentos }: Props) => {
       const valor = vence3d.reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0);
       result.push({
         id: '3dias', icon: Bell,
-        message: `${vence3d.length} pagamento(s) nos próximos 3 dias — ${fmt(valor)}`,
+        message: `${vence3d.length} pagamento(s) nos próximos 3 dias — ${formatCurrency(valor)}`,
         priority: 'normal', color: 'text-info',
       });
     }

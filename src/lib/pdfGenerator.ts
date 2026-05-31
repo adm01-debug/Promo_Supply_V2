@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 import { LegacyFornecedor } from "@/types/legacyTypes";
+import { formatCurrency } from "@/lib/utils";
 
 export interface OrderPDFData {
   numero: string;
@@ -78,8 +79,8 @@ export const generateOrderPDF = (data: OrderPDFData) => {
       i.descricao,
       i.quantidade,
       i.unidade || 'un',
-      i.valor_unitario.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
-      (i.quantidade * i.valor_unitario).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+      formatCurrency(i.valor_unitario),
+      formatCurrency(i.quantidade * i.valor_unitario)
     ]),
     theme: 'striped',
     headStyles: { 
@@ -106,17 +107,17 @@ export const generateOrderPDF = (data: OrderPDFData) => {
   doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
   doc.text("Subtotal:", totalsX, finalY);
   doc.setTextColor(0);
-  doc.text(data.subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), pageWidth - 14, finalY, { align: 'right' });
+  doc.text(formatCurrency(data.subtotal), pageWidth - 14, finalY, { align: 'right' });
 
   doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
   doc.text("Frete:", totalsX, finalY + 6);
   doc.setTextColor(0);
-  doc.text(data.frete.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), pageWidth - 14, finalY + 6, { align: 'right' });
+  doc.text(formatCurrency(data.frete), pageWidth - 14, finalY + 6, { align: 'right' });
 
   doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
   doc.text("Desconto:", totalsX, finalY + 12);
   doc.setTextColor(0);
-  doc.text(`- ${data.desconto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`, pageWidth - 14, finalY + 12, { align: 'right' });
+  doc.text(`- ${formatCurrency(data.desconto)}`, pageWidth - 14, finalY + 12, { align: 'right' });
 
   // Divider
   doc.line(totalsX, finalY + 16, pageWidth - 14, finalY + 16);
@@ -125,7 +126,7 @@ export const generateOrderPDF = (data: OrderPDFData) => {
   doc.setFont("helvetica", "bold");
   doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
   doc.text("TOTAL DO PEDIDO:", totalsX, finalY + 24);
-  doc.text(data.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), pageWidth - 14, finalY + 24, { align: 'right' });
+  doc.text(formatCurrency(data.total), pageWidth - 14, finalY + 24, { align: 'right' });
 
   // Observations
   if (data.observacoes) {
