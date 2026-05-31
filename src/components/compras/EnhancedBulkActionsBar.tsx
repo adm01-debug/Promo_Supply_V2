@@ -26,7 +26,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import { 
   BulkOperationsPreview, 
   BulkItem, 
@@ -162,7 +162,7 @@ export function EnhancedBulkActionsBar({
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Impacto Financeiro</p>
-                      <p className="text-white font-black text-lg">R$ {totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                      <p className="text-white font-black text-lg">{formatCurrency(totalValue)}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
@@ -171,7 +171,7 @@ export function EnhancedBulkActionsBar({
                     </div>
                     <div>
                       <p className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Previsão de Saving</p>
-                      <p className="text-white font-black text-lg">~ R$ {(totalValue * 0.15).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                      <p className="text-white font-black text-lg">~ {formatCurrency(totalValue * 0.15)}</p>
                     </div>
                   </div>
                 </div>

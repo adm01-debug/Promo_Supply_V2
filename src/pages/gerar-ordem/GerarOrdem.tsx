@@ -33,6 +33,7 @@ import { useCotacoes } from "@/features/cotacoes";
 import { Loader2 } from "lucide-react";
 
 import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerarOrdemHelpers';
+import { formatCurrency } from "@/lib/utils";
 import { generateOrderPDF } from "@/lib/pdfGenerator";
 import { LegacyFornecedor } from "@/types/legacyTypes";
 import { useAuth } from "@/features/auth";
@@ -464,7 +465,7 @@ const GerarOrdem = () => {
                 <Separator />
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-medium">R$ {subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-medium">{formatCurrency(subtotal)}</span>
                 </div>
                 
                 {/* Frete Editável */}
@@ -509,7 +510,7 @@ const GerarOrdem = () => {
                 <div className="flex justify-between">
                   <span className="font-semibold text-foreground">TOTAL</span>
                   <span className="text-xl font-bold text-primary">
-                    R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    {formatCurrency(total)}
                   </span>
                 </div>
               </div>

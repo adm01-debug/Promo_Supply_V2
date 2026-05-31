@@ -6,6 +6,7 @@ import { FileText, Printer, Building2, Calendar, DollarSign, Package } from 'luc
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import type { Pedido } from '@/features/pedidos';
+import { formatCurrency } from "@/lib/utils";
 
 interface OrderPreviewModalProps {
   pedido: Pedido | null;
@@ -20,9 +21,6 @@ export const OrderPreviewModal = ({ pedido, open, onOpenChange, onConfirmSend }:
   const handlePrint = () => {
     window.print();
   };
-
-  const formatCurrency = (v: number) =>
-    `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

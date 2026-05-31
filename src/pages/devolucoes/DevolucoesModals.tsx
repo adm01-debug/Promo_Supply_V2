@@ -12,6 +12,7 @@ import { RotateCcw, Plus, X, Clock } from "lucide-react";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { toast } from "@/lib/feedbackToast";
+import { formatCurrency } from "@/lib/utils";
 
 export const MOTIVO_LABELS: Record<string, string> = {
   defeito: "Defeito de Fabricação",
@@ -169,7 +170,7 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
               ))}
             </div>
             <div className="mt-2 text-right text-sm font-semibold text-foreground">
-              Total: R$ {totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+              Total: {formatCurrency(totalValue)}
             </div>
           </div>
 
@@ -246,7 +247,7 @@ export function DevolucaoDetailModal({ devolucao, open, onClose }: { devolucao: 
             <div><span className="text-muted-foreground">Pedido:</span> <span className="font-medium">{devolucao.pedido?.numero || '—'}</span></div>
             <div><span className="text-muted-foreground">Motivo:</span> <span className="font-medium">{MOTIVO_LABELS[devolucao.motivo as keyof typeof MOTIVO_LABELS] || devolucao.motivo}</span></div>
             <div><span className="text-muted-foreground">Resolução:</span> <span className="font-medium">{RESOLUCAO_LABELS[devolucao.resolucao as keyof typeof RESOLUCAO_LABELS] || devolucao.resolucao}</span></div>
-            <div><span className="text-muted-foreground">Valor:</span> <span className="font-semibold text-primary">R$ {(devolucao.valor_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span></div>
+            <div><span className="text-muted-foreground">Valor:</span> <span className="font-semibold text-primary">{formatCurrency(devolucao.valor_total || 0)}</span></div>
             <div><span className="text-muted-foreground">Data:</span> <span className="font-medium">{format(new Date(devolucao.data_solicitacao), "dd/MM/yyyy", { locale: ptBR })}</span></div>
           </div>
 

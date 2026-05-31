@@ -45,7 +45,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 const COLORS_RADAR = [
   'hsl(var(--primary))',
@@ -216,7 +216,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className={cn("text-xl font-bold", isBest && "text-success")}>
-                R$ {value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                {formatCurrency(value)}
               </span>
               {isBest && <Trophy className="w-4 h-4 text-warning" />}
             </div>
@@ -396,7 +396,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Total: R$ {cotacao.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                        <p>Total: {formatCurrency(cotacao.total)}</p>
                         <p>Prazo: {cotacao.prazoEntrega} dias</p>
                       </TooltipContent>
                     </Tooltip>

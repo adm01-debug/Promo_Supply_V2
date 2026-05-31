@@ -12,7 +12,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   Cell, PieChart as RechartsPieChart, Pie,
 } from "recharts";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 const tooltipStyle = {
   backgroundColor: 'hsl(var(--card))',
@@ -91,7 +91,7 @@ export function BarsTab({ barChartData }: Pick<ChartProps, 'barChartData'>) {
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis type="number" tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} tickFormatter={(v) => `R$ ${(v/1000).toFixed(1)}k`} />
               <YAxis type="category" dataKey="name" width={100} tick={{ fill: 'hsl(var(--foreground))', fontSize: 11 }} />
-              <RechartsTooltip formatter={(value: number) => `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} contentStyle={tooltipStyle} />
+              <RechartsTooltip formatter={(value: number) => formatCurrency(value)} contentStyle={tooltipStyle} />
               <Legend />
               <Bar dataKey="total" name="Valor Total" radius={[0, 4, 4, 0]}>
                 {barChartData.map((entry, index) => (<Cell key={`cell-${index}`} fill={entry.fill} />))}
@@ -231,7 +231,7 @@ export function TableTab({ selectedCotacoes, COLORS, getScore, analysis, quantid
                   <td className="p-3 flex items-center gap-2"><DollarSign className="w-4 h-4 text-success" />Valor Total</td>
                   {selectedCotacoes.map(c => (
                     <td key={c.id} className={cn("p-3 text-center font-semibold", c.id === analysis.bestPrice && "text-success")}>
-                      R$ {c.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                      {formatCurrency(c.total)}
                       {c.id === analysis.bestPrice && <Trophy className="w-4 h-4 inline ml-1 text-warning" />}
                     </td>
                   ))}

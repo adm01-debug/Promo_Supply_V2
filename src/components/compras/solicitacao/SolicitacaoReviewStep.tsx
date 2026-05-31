@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Check, Building2, Package, DollarSign, FileText, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 import { type SolicitacaoFormData as NovaSolicitacaoData } from "@/schemas/solicitacao.schema";
 
@@ -103,7 +103,7 @@ export const SolicitacaoReviewStep = ({ formData, budgetCheck }: SolicitacaoRevi
         <div>
           <p className="text-[8px] font-black uppercase text-zinc-500 tracking-tighter mb-1">Valor Estimado</p>
           <p className="text-xl font-black text-emerald-400 tracking-tighter">
-            R$ {formData.valorEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            {formatCurrency(formData.valorEstimado)}
           </p>
         </div>
         {formData.centroCusto && (

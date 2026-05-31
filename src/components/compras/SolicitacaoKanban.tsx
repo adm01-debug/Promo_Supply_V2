@@ -38,7 +38,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { Solicitacao, getTipoLabel } from "@/types/legacyTypes";
 import { toast } from "@/lib/feedbackToast";
 
@@ -143,7 +143,7 @@ function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, select
         {solicitacao.valorTotal && (
           <div className="text-xs font-black text-white pt-2 border-t border-white/5 mt-1 flex justify-between items-center">
             <span className="text-zinc-500 text-[9px] uppercase tracking-widest">VALUE</span>
-            R$ {solicitacao.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            {formatCurrency(solicitacao.valorTotal)}
           </div>
         )}
       </div>

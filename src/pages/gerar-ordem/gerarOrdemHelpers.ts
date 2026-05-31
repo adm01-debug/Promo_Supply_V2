@@ -1,3 +1,5 @@
+import { formatCurrency } from "@/lib/utils";
+
 export const getTipoLabel = (tipo: string) => {
   const map: Record<string, string> = {
     'produto': 'Produto', 'servico': 'Serviço', 'material': 'Material',
@@ -40,7 +42,7 @@ Gostaríamos de confirmar o pedido abaixo:
 💰 *Valor Unitário:* R$ ${(solicitacao.valorUnitario || 12).toFixed(2)}
 ${frete > 0 ? `🚚 *Frete:* R$ ${frete.toFixed(2)}` : '🚚 *Frete:* Grátis'}
 ${desconto > 0 ? `🎁 *Desconto:* R$ ${desconto.toFixed(2)}` : ''}
-💵 *TOTAL:* R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+💵 *TOTAL:* ${formatCurrency(total)}
 
 📅 *Prazo de Entrega:* ${new Date(solicitacao.prazoEntrega).toLocaleDateString('pt-BR')}
 💳 *Condição:* À vista via PIX
@@ -76,10 +78,10 @@ DADOS DO PEDIDO:
 
 VALORES:
 • Valor Unitário: R$ ${(solicitacao.valorUnitario || 12).toFixed(2)}
-• Subtotal: R$ ${subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+• Subtotal: ${formatCurrency(subtotal)}
 • Frete: ${frete > 0 ? `R$ ${frete.toFixed(2)}` : 'Grátis'}
 ${desconto > 0 ? `• Desconto: R$ ${desconto.toFixed(2)}` : ''}
-• Total: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+• Total: ${formatCurrency(total)}
 
 CONDIÇÕES:
 • Pagamento: À vista via PIX

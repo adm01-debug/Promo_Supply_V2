@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Solicitacao, getStatusLabel, getTipoLabel } from "@/types/legacyTypes";
+import { formatCurrency } from "@/lib/utils";
 
 interface KanbanColumn {
   id: string;
@@ -191,7 +192,7 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
                           {pedido.valorTotal && (
                             <div className="pt-2 border-t border-border">
                               <p className="text-sm font-bold text-primary">
-                                R$ {pedido.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                {formatCurrency(pedido.valorTotal)}
                               </p>
                             </div>
                           )}

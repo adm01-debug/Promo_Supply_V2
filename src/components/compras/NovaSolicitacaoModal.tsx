@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "@/lib/feedbackToast";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Step1Identification, Step2Specifications, Step3Values } from "./solicitacao/SolicitacaoFormSteps";
@@ -248,7 +248,7 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
       }
       
       toast.success(`Solicitação ${data.numero} criada com sucesso!`, {
-        description: `${sanitizedTitulo} - ${formData.quantidade} un. | R$ ${formData.valorEstimado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`,
+        description: `${sanitizedTitulo} - ${formData.quantidade} un. | ${formatCurrency(formData.valorEstimado)}`,
       });
       
       localStorage.removeItem('nova_solicitacao_draft');

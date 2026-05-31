@@ -19,6 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { NovaDevolucaoModal, DevolucaoDetailModal, MOTIVO_LABELS } from "./DevolucoesModals";
 import { STATUS_MAP, CREDITO_STATUS_MAP } from "./devolucoesData";
 import { EnhancedKpiCard } from "@/components/compras/EnhancedKpiCard";
+import { formatCurrency } from "@/lib/utils";
 
 export default function Devolucoes() {
   const [statusFilter, setStatusFilter] = useState("todos");
@@ -133,7 +134,7 @@ export default function Devolucoes() {
                             </TableCell>
                             <TableCell className="text-sm">{MOTIVO_LABELS[dev.motivo] || dev.motivo}</TableCell>
                             <TableCell><Badge className={`${st?.color} text-xs`}>{st?.label}</Badge></TableCell>
-                            <TableCell className="text-right font-semibold">R$ {dev.valor_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
+                            <TableCell className="text-right font-semibold">{formatCurrency(dev.valor_total)}</TableCell>
                             <TableCell className="text-sm text-muted-foreground">{format(new Date(dev.data_solicitacao), "dd/MM/yy")}</TableCell>
                             <TableCell>
                               <Button variant="ghost" size="icon" className="w-8 h-8"><Eye className="w-4 h-4" /></Button>
@@ -156,7 +157,7 @@ export default function Devolucoes() {
                   <DollarSign className="w-5 h-5 text-primary" />
                   Créditos de Fornecedores
                   <Badge variant="secondary" className="ml-auto">
-                    Saldo Total: R$ {saldoTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    Saldo Total: {formatCurrency(saldoTotal)}
                   </Badge>
                 </CardTitle>
               </CardHeader>
@@ -193,9 +194,9 @@ export default function Devolucoes() {
                             <TableCell className="font-medium">{cred.fornecedor?.nome_fantasia || cred.fornecedor?.razao_social || '—'}</TableCell>
                             <TableCell className="font-mono text-xs text-primary">{cred.devolucao?.numero || '—'}</TableCell>
                             <TableCell className="text-sm">{cred.tipo === 'credito_devolucao' ? 'Devolução' : cred.tipo}</TableCell>
-                            <TableCell className="text-right font-medium">R$ {cred.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
-                            <TableCell className="text-right text-muted-foreground">R$ {cred.valor_utilizado.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
-                            <TableCell className="text-right font-semibold text-kpi-success">R$ {cred.saldo.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</TableCell>
+                            <TableCell className="text-right font-medium">{formatCurrency(cred.valor)}</TableCell>
+                            <TableCell className="text-right text-muted-foreground">{formatCurrency(cred.valor_utilizado)}</TableCell>
+                            <TableCell className="text-right font-semibold text-kpi-success">{formatCurrency(cred.saldo)}</TableCell>
                             <TableCell><Badge className={`${cs.color} text-xs`}>{cs.label}</Badge></TableCell>
                             <TableCell className="text-sm text-muted-foreground">{format(new Date(cred.data_emissao), "dd/MM/yy")}</TableCell>
                           </TableRow>
