@@ -12,11 +12,13 @@ interface LogEntry {
   context?: Record<string, unknown>;
   requestId?: string;
   userId?: string;
+  tenantId?: string;
 }
 
 class Logger {
   private static instance: Logger;
   private requestId: string;
+  private tenantId: string | null = null;
 
   private constructor() {
     this.requestId = crypto.randomUUID();
@@ -38,6 +40,7 @@ class Logger {
       level,
       timestamp: new Date().toISOString(),
       requestId: this.requestId,
+      tenantId: this.tenantId || undefined,
       context: this.sanitizeContext(context),
     };
 
@@ -73,6 +76,7 @@ class Logger {
           message: entry.message,
           context: entry.context,
           requestId: entry.requestId,
+          tenantId: entry.tenantId,
           url: window.location.href,
           userAgent: navigator.userAgent,
         },
@@ -117,6 +121,10 @@ class Logger {
 
   public getRequestId() {
     return this.requestId;
+  }
+
+  public setTenantId(id: string | null) {
+    this.tenantId = id;
   }
 }
 
