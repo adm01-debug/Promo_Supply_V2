@@ -59,6 +59,7 @@ export const TelemetryContract = z.object({
   message: z.string(),
   context: z.record(z.any()).optional(),
   requestId: z.string().optional(),
+  tenantId: z.string().uuid().optional(),
   url: z.string().optional(),
   userAgent: z.string().optional(),
 });
