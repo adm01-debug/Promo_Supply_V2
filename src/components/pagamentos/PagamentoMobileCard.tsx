@@ -221,7 +221,7 @@ export const PagamentoMobileCard = ({
                 "font-bold text-lg",
                 isPago ? "text-success dark:text-success" : "text-primary"
               )}>
-                {pagamento.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                {formatCurrency(pagamento.valor)}
               </span>
             </div>
           </div>

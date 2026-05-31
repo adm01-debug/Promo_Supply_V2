@@ -41,6 +41,7 @@ import { differenceInDays } from "date-fns/differenceInDays";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
+import { formatCurrency } from "@/lib/utils";
 import { logger } from "@/lib/logger";
 import type { Contract, ContractItem, ContractPenalty, ContractDocument, StatusConfig, TypeConfig } from "@/types/contract";
 import { Input } from "@/components/ui/input";
@@ -194,7 +195,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
                 {penalties.length > 0 && (
                   <Badge variant="destructive" className="flex items-center gap-1">
                     <ShieldAlert className="w-3 h-3" />
-                    {penalties.length} penalidade(s): {totalPenalties.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    {penalties.length} penalidade(s): {formatCurrency(totalPenalties)}
                   </Badge>
                 )}
               </div>
@@ -202,7 +203,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Valor Total</p>
               <p className="text-2xl font-bold">
-                {Number(contract.total_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                {formatCurrency(Number(contract.total_value))}
               </p>
             </div>
           </div>

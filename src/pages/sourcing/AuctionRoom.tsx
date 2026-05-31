@@ -26,6 +26,7 @@ import {
   Area
 } from "recharts";
 import { format } from "date-fns";
+import { formatCurrency } from "@/lib/utils";
 
 const AuctionRoom = () => {
   const { id } = useParams();
@@ -171,7 +172,7 @@ const AuctionRoom = () => {
                     />
                     <ChartTooltip 
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                      formatter={(value: any) => [value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), 'Lance']}
+                      formatter={(value: any) => [formatCurrency(value), 'Lance']}
                     />
                     <Area 
                       type="monotone" 
@@ -208,7 +209,7 @@ const AuctionRoom = () => {
                       </div>
                       <div className="text-right">
                         <span className={`text-sm font-bold ${l.valor_lance === bestBid ? 'text-emerald-600' : ''}`}>
-                          {l.valor_lance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          {formatCurrency(l.valor_lance)}
                         </span>
                         {i < lances.length - 1 && (
                           <span className="text-[9px] text-muted-foreground block">

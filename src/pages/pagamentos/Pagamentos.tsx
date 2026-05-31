@@ -34,7 +34,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import { differenceInDays } from "date-fns/differenceInDays";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -237,7 +237,7 @@ const Pagamentos = () => {
                           </TableCell>
                           <TableCell className="text-right">
                             <span className="font-black text-foreground">
-                              {p.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                              {formatCurrency(p.valor)}
                             </span>
                           </TableCell>
                           <TableCell className="pr-4">
