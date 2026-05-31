@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
 import {
   Building2, Package, FileText, TrendingUp, Clock,
   CheckCircle, AlertTriangle, DollarSign, Eye, Search,
@@ -20,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { PageHeader } from '@/components/ui/page-header';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
-import { cn, formatCurrency } from '@/lib/utils';
+import { cn, formatCurrency, formatDate } from '@/lib/utils';
 import {
   usePortalFornecedorData,
   statusPedido,
@@ -269,10 +268,10 @@ export default function PortalFornecedor() {
                                 </Badge>
                               </TableCell>
                               <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
-                                {format(new Date(p.data_emissao), 'dd/MM/yyyy', { locale: ptBR })}
+                                {formatDate(p.data_emissao)}
                               </TableCell>
                               <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
-                                {p.data_previsao ? format(new Date(p.data_previsao), 'dd/MM/yyyy', { locale: ptBR }) : '—'}
+                                {p.data_previsao ? formatDate(p.data_previsao) : '—'}
                               </TableCell>
                               <TableCell className="text-right font-medium">{formatCurrency(p.valor_total)}</TableCell>
                             </TableRow>

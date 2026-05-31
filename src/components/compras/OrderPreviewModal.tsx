@@ -3,10 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { FileText, Printer, Building2, Calendar, DollarSign, Package } from 'lucide-react';
-import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
 import type { Pedido } from '@/features/pedidos';
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 
 interface OrderPreviewModalProps {
   pedido: Pedido | null;
@@ -43,7 +41,7 @@ export const OrderPreviewModal = ({ pedido, open, onOpenChange, onConfirmSend }:
             <div className="text-right text-sm text-muted-foreground">
               <p>Data de Emissão:</p>
               <p className="font-medium text-foreground">
-                {format(new Date(pedido.data_emissao), 'dd/MM/yyyy', { locale: ptBR })}
+                {formatDate(pedido.data_emissao)}
               </p>
               <Badge className="mt-1" variant="outline">{pedido.status.toUpperCase()}</Badge>
             </div>
@@ -76,7 +74,7 @@ export const OrderPreviewModal = ({ pedido, open, onOpenChange, onConfirmSend }:
               </p>
               <p className="font-medium text-foreground">
                 {pedido.data_previsao
-                  ? format(new Date(pedido.data_previsao), 'dd/MM/yyyy', { locale: ptBR })
+                  ? formatDate(pedido.data_previsao)
                   : 'Não definida'}
               </p>
             </div>

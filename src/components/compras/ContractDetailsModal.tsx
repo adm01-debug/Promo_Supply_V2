@@ -41,7 +41,7 @@ import { differenceInDays } from "date-fns/differenceInDays";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import { logger } from "@/lib/logger";
 import type { Contract, ContractItem, ContractPenalty, ContractDocument, StatusConfig, TypeConfig } from "@/types/contract";
 import { Input } from "@/components/ui/input";
@@ -249,7 +249,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
                   </CardHeader>
                   <CardContent>
                     <p className="font-medium">
-                      {format(new Date(contract.start_date), "dd/MM/yyyy", { locale: ptBR })} - {format(new Date(contract.end_date), "dd/MM/yyyy", { locale: ptBR })}
+                      {formatDate(contract.start_date)} - {formatDate(contract.end_date)}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {daysRemaining > 0 ? `${daysRemaining} dias restantes` : `Expirado há ${Math.abs(daysRemaining)} dias`}

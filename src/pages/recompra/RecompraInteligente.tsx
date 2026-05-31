@@ -7,8 +7,7 @@ import { RefreshCw, ShoppingCart, TrendingUp, Calendar, Sparkles, Loader2, Check
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
+import { formatDate } from "@/lib/utils";
 
 const RecompraInteligente = () => {
   const queryClient = useQueryClient();
@@ -215,7 +214,7 @@ const RecompraInteligente = () => {
                       <TableCell>
                         {s.proxima_compra_estimada ? (
                           <Badge variant={isOverdue ? "destructive" : "secondary"}>
-                            {format(new Date(s.proxima_compra_estimada), "dd/MM/yyyy", { locale: ptBR })}
+                            {formatDate(s.proxima_compra_estimada)}
                           </Badge>
                         ) : "-"}
                       </TableCell>
