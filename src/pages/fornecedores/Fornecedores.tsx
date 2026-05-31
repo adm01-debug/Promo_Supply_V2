@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo } from "react";
 import { FornecedorModal } from "@/components/compras/FornecedorModal";
 import { AISupplierSuggestion } from "@/components/compras/AISupplierSuggestion";
 import { SupplierRiskAnalysis } from "@/components/compras/SupplierRiskAnalysis";

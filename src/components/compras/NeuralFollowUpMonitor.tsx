@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Brain, MessageSquare, Send, CheckCircle2, Loader2, Sparkles, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";

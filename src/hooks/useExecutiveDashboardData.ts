@@ -34,7 +34,7 @@ export function useExecutiveDashboardData() {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
-    staleTime: 30000,
+    staleTime: 30_000,
   });
 
   const { data: solicitacoes, isLoading: l2 } = useQuery({
@@ -45,7 +45,7 @@ export function useExecutiveDashboardData() {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
-    staleTime: 30000,
+    staleTime: 30_000,
   });
 
   const { data: fornecedores, isLoading: l3 } = useQuery({
@@ -56,7 +56,7 @@ export function useExecutiveDashboardData() {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const { data: contracts, isLoading: l4 } = useQuery({
@@ -67,7 +67,7 @@ export function useExecutiveDashboardData() {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const { data: workflows, isLoading: l5 } = useQuery({
@@ -78,7 +78,7 @@ export function useExecutiveDashboardData() {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
-    staleTime: 30000,
+    staleTime: 30_000,
   });
 
   const { data: categorias, isLoading: l6 } = useQuery({
@@ -89,7 +89,7 @@ export function useExecutiveDashboardData() {
         filters: [{ column: 'organization_id', operator: 'eq', value: organizationId }]
       });
     },
-    staleTime: 120000,
+    staleTime: 120_000,
   });
 
   const metrics = useMemo<ExecutiveMetrics>(() => {
