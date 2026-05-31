@@ -106,7 +106,8 @@ export async function simulateAPISearch(
     if (linkedSuppliers && linkedSuppliers.length > 0) {
       // Logic: Boost linked suppliers or filter specifically to them
       // For simulation, we'll just ensure they are included and have accurate initial data
-      console.log('Using linked suppliers for simulation', linkedSuppliers);
+      // Debug: Using linked suppliers for simulation
+      // logger.debug('Using linked suppliers for simulation', { linkedSuppliersCount: linkedSuppliers.length });
     }
   }
 

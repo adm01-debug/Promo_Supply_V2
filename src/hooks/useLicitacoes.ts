@@ -171,11 +171,11 @@ export interface SourcingEvent {
   type: 'rfp' | 'rfq' | 'auction';
   category_id: string | null;
   category?: { nome: string } | null;
-  lots?: any[];
-  questions?: any[];
-  criteria?: any[];
-  invitations?: any[];
-  responses?: any[];
+  lots?: Database['public']['Tables']['sourcing_event_lots']['Row'][];
+  questions?: Database['public']['Tables']['sourcing_event_questions']['Row'][];
+  criteria?: Database['public']['Tables']['sourcing_event_criteria']['Row'][];
+  invitations?: (Database['public']['Tables']['sourcing_invitations']['Row'] & { fornecedor?: { razao_social: string } | null })[];
+  responses?: (Database['public']['Tables']['sourcing_responses']['Row'] & { fornecedor?: { razao_social: string } | null })[];
   created_at: string;
   closes_at: string;
   award_deadline: string | null;
@@ -215,7 +215,7 @@ export function useSourcingEvents() {
       queryClient.invalidateQueries({ queryKey: ['sourcing-events'] });
       toast.success('Evento de sourcing criado!');
     },
-    onError: (err: any) => toast.error('Erro: ' + err.message)
+    onError: (err: Error) => toast.error('Erro: ' + err.message)
   });
 
   return { events, isLoading, createEvent };
@@ -275,8 +275,8 @@ export function useLicitacaoLances(licitacaoId: string | null) {
       queryClient.invalidateQueries({ queryKey: ['licitacao-lances', licitacaoId] });
       queryClient.invalidateQueries({ queryKey: ['licitacoes'] });
       return true;
-    } catch (err: any) {
-      toast.error('Erro ao enviar lance: ' + err.message);
+    } catch (err: unknown) {
+      toast.error('Erro ao enviar lance: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
       return false;
     }
   }, [licitacaoId, queryClient]);
