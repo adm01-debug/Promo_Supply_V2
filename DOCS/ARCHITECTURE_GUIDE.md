@@ -87,6 +87,45 @@ Esta função atua como um proxy seguro para bancos de dados externos (ERP, Lega
 
 ---
 
+## 🛡️ Padrões Obrigatórios (External DB Bridge)
+
+Para garantir segurança e performance ao usar o bridge, siga estas regras:
+
+### 1. Paginação Obrigatória
+Nunca faça requisições sem `limit`. O padrão é 100, mas especifique o necessário.
+```json
+{ "operation": "select", "table": "logs", "limit": 50 }
+```
+
+### 2. Filtros Fortes
+Sempre utilize filtros específicos para evitar carregamento excessivo de dados. Prefira operadores explícitos.
+```json
+{
+  "filters": {
+    "tenant_id": "123",
+    "status": { "operator": "eq", "value": "active" }
+  }
+}
+```
+
+### 3. Tratamento de Resposta
+A resposta sempre contém um objeto `meta`. Use `meta.status` para telemetria no frontend.
+- Se `status === "slow"`, exiba um indicador de carregamento otimizado.
+- Sempre verifique o campo `error` na raiz do JSON de retorno.
+
+### 4. Chamadas RPC
+Para operações complexas, prefira criar uma `FUNCTION` no banco externo e chamá-la via `rpc` em vez de múltiplos `selects`.
+```json
+{
+  "operation": "rpc",
+  "rpcName": "get_consolidated_report",
+  "params": { "start_date": "2024-01-01" }
+}
+```
+
+
+---
+
 ## 📊 Diagrama de Sequência
 
 ```mermaid
