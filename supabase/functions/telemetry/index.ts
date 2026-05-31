@@ -31,7 +31,7 @@ serve(async (req) => {
     }
 
     const data = await validateBody(req, TelemetryContract, logger);
-    const { level, message, context, url, userAgent } = data;
+    const { level, message, context, url, userAgent, tenantId: providedTenantId } = data;
 
     // Use admin client for telemetry to ensure logging even if auth is tricky
     const supabaseAdmin = createClient(
@@ -39,12 +39,16 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
+    // Get tenant ID from user metadata if not provided explicitly
+    const tenantId = providedTenantId || (user?.user_metadata?.tenant_id as string);
+
     const { error } = await supabaseAdmin.from("telemetry_logs").insert({
       level,
       message,
       context,
       request_id: requestId,
       user_id: user?.id,
+      tenant_id: tenantId,
       url,
       user_agent: userAgent,
       client_ip: req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for"),

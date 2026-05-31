@@ -13,6 +13,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TelemetryCharts } from "@/components/admin/telemetry/TelemetryCharts";
 import { AppLogsView } from "@/components/admin/telemetry/AppLogsView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SystemAlertsView } from "@/components/admin/telemetry/SystemAlertsView";
+import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns/format";
 import {
@@ -171,6 +173,10 @@ export default function AdminTelemetriaPage() {
               <Terminal className="h-4 w-4" />
               Logs da Aplicação
             </TabsTrigger>
+            <TabsTrigger value="alerts" className="gap-2">
+              <AlertCircle className="h-4 w-4" />
+              Alertas de Sistema
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="queries" className="space-y-6">
@@ -259,6 +265,10 @@ export default function AdminTelemetriaPage() {
 
           <TabsContent value="logs">
             <AppLogsView />
+          </TabsContent>
+
+          <TabsContent value="alerts">
+            <SystemAlertsView />
           </TabsContent>
         </Tabs>
       </div>

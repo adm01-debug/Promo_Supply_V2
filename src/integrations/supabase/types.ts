@@ -6354,6 +6354,42 @@ export type Database = {
           },
         ]
       }
+      system_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          id: string
+          message: string
+          metadata: Json | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          tenant_id: string | null
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string | null
+          id?: string
+          message: string
+          metadata?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity: string
+          tenant_id?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          id?: string
+          message?: string
+          metadata?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          tenant_id?: string | null
+        }
+        Relationships: []
+      }
       telemetry_logs: {
         Row: {
           client_ip: string | null
@@ -6363,6 +6399,7 @@ export type Database = {
           level: Database["public"]["Enums"]["log_level"]
           message: string
           request_id: string | null
+          tenant_id: string | null
           url: string | null
           user_agent: string | null
           user_id: string | null
@@ -6375,6 +6412,7 @@ export type Database = {
           level: Database["public"]["Enums"]["log_level"]
           message: string
           request_id?: string | null
+          tenant_id?: string | null
           url?: string | null
           user_agent?: string | null
           user_id?: string | null
@@ -6387,6 +6425,7 @@ export type Database = {
           level?: Database["public"]["Enums"]["log_level"]
           message?: string
           request_id?: string | null
+          tenant_id?: string | null
           url?: string | null
           user_agent?: string | null
           user_id?: string | null

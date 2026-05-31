@@ -78,6 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setRole(roleRes.data?.role ? (roleRes.data.role as AppRole) : null);
       setOrganizationId(profileRes.data?.current_organization_id || tenantIdRes.data || null);
       setTenantId(tenantIdRes.data || null);
+      logger.setTenantId(tenantIdRes.data || null);
       
       if (availableTenantsRes.data) {
         const tenants = availableTenantsRes.data
@@ -143,6 +144,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setRole(null);
           setOrganizationId(null);
           setTenantId(null);
+          logger.setTenantId(null);
           setAvailableTenants([]);
           fetchedUserIdRef.current = null;
           if (event === 'SIGNED_OUT') {
