@@ -46,6 +46,8 @@ export function adaptFornecedoresToLegacy(fornecedores: any[]): LegacyFornecedor
     id: f.id,
     nome_fantasia: nullishStr(f.nome_fantasia, f.razao_social),
     razao_social: f.razao_social,
+    nomeFantasia: nullishStr(f.nome_fantasia, f.razao_social),
+    razaoSocial: f.razao_social,
     cnpj: nullishStr(f.cnpj),
     tipo: f.tipo === 'internacional' ? 'IMPORTADORA' as const :
           f.tipo === 'local' ? 'DISTRIBUIDORA' as const : 'FABRICANTE' as const,

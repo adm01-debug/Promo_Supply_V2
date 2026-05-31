@@ -54,8 +54,8 @@ const Fornecedores = () => {
     let filtered = fornecedores;
     if (search.trim()) {
       filtered = (fornecedores as LegacyFornecedor[]).filter((f: LegacyFornecedor) =>
-        f.nomeFantasia.toLowerCase().includes(search.toLowerCase()) ||
-        f.razaoSocial.toLowerCase().includes(search.toLowerCase()) ||
+        f.nome_fantasia.toLowerCase().includes(search.toLowerCase()) ||
+        f.razao_social.toLowerCase().includes(search.toLowerCase()) ||
         f.cnpj.includes(search)
       );
     }
@@ -75,8 +75,8 @@ const Fornecedores = () => {
       const dbRecord = dbFornecedores.find(f => f.id === selectedFornecedor.id);
       if (dbRecord) {
         await updateFornecedor(dbRecord.id, {
-          razao_social: data.razaoSocial || dbRecord.razao_social,
-          nome_fantasia: data.nomeFantasia,
+          razao_social: data.razao_social || dbRecord.razao_social,
+          nome_fantasia: data.nome_fantasia,
           cnpj: data.cnpj,
           email: data.email,
           telefone: data.telefone,
@@ -87,8 +87,8 @@ const Fornecedores = () => {
       }
     } else {
       await createFornecedor({
-        razao_social: data.razaoSocial || 'Novo Fornecedor',
-        nome_fantasia: data.nomeFantasia,
+        razao_social: data.razao_social || 'Novo Fornecedor',
+        nome_fantasia: data.nome_fantasia,
         cnpj: data.cnpj,
         email: data.email,
         telefone: data.telefone,
@@ -228,10 +228,10 @@ const Fornecedores = () => {
                         <TableCell className="pl-10">
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center font-black text-emerald-400 text-xs shadow-inner border border-emerald-500/10 transition-transform group-hover:scale-110">
-                              {fornecedor.nomeFantasia.slice(0, 2).toUpperCase()}
+                              {fornecedor.nome_fantasia.slice(0, 2).toUpperCase()}
                             </div>
                             <div>
-                              <p className="font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors uppercase tracking-tight">{fornecedor.nomeFantasia}</p>
+                              <p className="font-bold text-white leading-tight group-hover:text-emerald-400 transition-colors uppercase tracking-tight">{fornecedor.nome_fantasia}</p>
                               <p className="text-[10px] text-zinc-500 mt-1.5 font-black uppercase tracking-widest">{fornecedor.cnpj || 'ENTIDADE INDIVIDUAL'}</p>
                             </div>
                           </div>

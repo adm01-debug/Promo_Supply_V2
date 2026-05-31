@@ -23,8 +23,8 @@ const ramosDisponiveis = [
 
 export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: FornecedorModalProps) => {
   const [formData, setFormData] = useState({
-    razaoSocial: "",
-    nomeFantasia: "",
+    razao_social: "",
+    nome_fantasia: "",
     cnpj: "",
     tipo: "" as Fornecedor["tipo"] | "",
     ramos: [] as string[],
@@ -37,8 +37,8 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
   useEffect(() => {
     if (fornecedor) {
       setFormData({
-        razaoSocial: fornecedor.razaoSocial,
-        nomeFantasia: fornecedor.nomeFantasia,
+        razao_social: fornecedor.razao_social,
+        nome_fantasia: fornecedor.nome_fantasia,
         cnpj: fornecedor.cnpj,
         tipo: fornecedor.tipo,
         ramos: fornecedor.ramos,
@@ -49,8 +49,8 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
       });
     } else {
       setFormData({
-        razaoSocial: "",
-        nomeFantasia: "",
+        razao_social: "",
+        nome_fantasia: "",
         cnpj: "",
         tipo: "",
         ramos: [],
@@ -116,21 +116,21 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="razaoSocial">Razão Social *</Label>
+              <Label htmlFor="razao_social">Razão Social *</Label>
               <Input
-                id="razaoSocial"
-                value={formData.razaoSocial}
-                onChange={(e) => setFormData({ ...formData, razaoSocial: e.target.value })}
+                id="razao_social"
+                value={formData.razao_social}
+                onChange={(e) => setFormData({ ...formData, razao_social: e.target.value })}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="nomeFantasia">Nome Fantasia *</Label>
+              <Label htmlFor="nome_fantasia">Nome Fantasia *</Label>
               <Input
-                id="nomeFantasia"
-                value={formData.nomeFantasia}
-                onChange={(e) => setFormData({ ...formData, nomeFantasia: e.target.value })}
+                id="nome_fantasia"
+                value={formData.nome_fantasia}
+                onChange={(e) => setFormData({ ...formData, nome_fantasia: e.target.value })}
                 required
               />
             </div>
