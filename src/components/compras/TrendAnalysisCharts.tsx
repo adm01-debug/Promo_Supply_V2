@@ -17,6 +17,7 @@ import {
 } from 'recharts';
 import { Card } from "@/components/ui/card";
 import { TrendingUp, PieChart as PieChartIcon, BarChart3 } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils';
 
 interface TrendAnalysisChartsProps {
   monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
@@ -189,7 +190,7 @@ export const TrendAnalysisCharts = ({ monthlyTrends, cotacaoStatus, topCategorie
               />
               <Tooltip 
                 formatter={(value: number) => [
-                  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value),
+                  formatCurrency(value),
                   'Economia'
                 ]}
                 contentStyle={{ backgroundColor: 'rgba(0,0,0,0.8)', border: 'none', borderRadius: '8px', fontSize: '12px' }}
