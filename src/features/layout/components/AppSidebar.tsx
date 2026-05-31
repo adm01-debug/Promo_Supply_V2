@@ -3,6 +3,7 @@ import {
   ClipboardList, 
   Search, 
   FileText, 
+  BookOpen, 
   CreditCard, 
   Factory,
   Building2,
