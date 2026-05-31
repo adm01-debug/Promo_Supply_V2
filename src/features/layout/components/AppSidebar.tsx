@@ -130,6 +130,7 @@ const sections: NavSection[] = [
       { title: "ERP Sync", icon: RefreshCw, href: "/admin/erp" },
       { title: "Sourcing Pipeline", icon: TrendingUp, href: "/admin/sourcing-pipeline" },
       { title: "Fiscal", icon: FileCheck, href: "/admin/fiscal" },
+      { title: "Documentação", icon: BookOpen, href: "/admin/docs" },
     ],
   },
 ];
