@@ -18,6 +18,16 @@ Promo Supply é um sistema completo de gestão de compras, fornecedores e contra
 - `src/hooks`: Lógica de negócio e integração com API em hooks customizados
 - `src/lib`: Utilitários, configurações de segurança e helpers globais
 - `supabase`: Esquema do banco de dados, migrações e funções de borda
+- `DOCS/`: Central de documentação técnica detalhada
+
+### 📘 Documentação Técnica
+Para uma compreensão profunda da arquitetura, padrões de código e decisões técnicas, consulte:
+- [Guia de Arquitetura](./DOCS/ARCHITECTURE_GUIDE.md) - Mapa de pastas, fluxo de dados e contratos de API.
+- [Guia de Excelência de Engenharia](./DOCS/ENGINEERING_EXCELLENCE.md) - Padrões de segurança, performance e UX.
+- [Decisões de Arquitetura (ADRs)](./DOCS/ADR/README.md) - Histórico de decisões críticas do projeto.
+
+A documentação também está disponível dentro do sistema no painel administrativo.
+
 
 ### 🔒 Segurança e Compliance
 - **RBAC:** Controle de acesso baseado em perfis (Admin, Coordenador, Comprador, Financeiro, Viewer).

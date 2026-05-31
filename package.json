@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:bridge": "bun run scripts/validate-bridge.ts",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:load": "npx artillery run src/tests/load/backend-stress.yml",
