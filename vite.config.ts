@@ -141,7 +141,7 @@ export default defineConfig(({ mode }) => ({
     minify: "esbuild",
     sourcemap: false,
     cssCodeSplit: true,
-    chunkSizeWarningLimit: 600,
+    chunkSizeWarningLimit: 1000,
     reportCompressedSize: false,
     rollupOptions: {
       onwarn: handleRollupWarning,

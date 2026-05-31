@@ -39,9 +39,11 @@ export interface LegacyCotacao {
 
 export interface LegacyFornecedor {
   id: string;
-  razaoSocial: string;
-  nomeFantasia: string;
+  razao_social: string;
+  nome_fantasia: string;
   cnpj: string;
+  razaoSocial: string; // Restored as mandatory for UI compatibility
+  nomeFantasia: string; // Restored as mandatory for UI compatibility
   tipo: 'IMPORTADORA' | 'FABRICANTE' | 'DISTRIBUIDORA';
   ramos: string[];
   vendeProduto: 'LISO' | 'PERSONALIZADO' | 'AMBOS';

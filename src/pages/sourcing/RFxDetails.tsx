@@ -162,7 +162,7 @@ const RFxDetails = memo(() => {
 
               <TabsContent value="items" className="mt-6">
                 <div className="space-y-4">
-                  {event.lots?.map((lot: { id: string; nome: string; descricao: string; preco_referencia: number }) => (
+                  {event.lots?.map((lot: any) => (
                     <Card key={lot.id} className="p-6">
                       <div className="flex justify-between items-start">
                         <div>
@@ -186,7 +186,7 @@ const RFxDetails = memo(() => {
               <TabsContent value="responses" className="mt-6">
                 <div className="space-y-4">
                   {event.responses && event.responses.length > 0 ? (
-                    event.responses.map((resp: { id: string; fornecedor?: { razao_social: string }; created_at: string; valor_total: number; score_total: number }) => (
+                    event.responses.map((resp: any) => (
                       <Card key={resp.id} className="p-4 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
@@ -201,11 +201,11 @@ const RFxDetails = memo(() => {
                           <div className="text-right flex items-center gap-6">
                             <div>
                               <span className="text-[10px] text-muted-foreground block uppercase font-bold">Valor Total</span>
-                              <span className="font-bold">{resp.valor_total?.toLocaleString('pt-BR', { style: 'currency', currency: event.currency })}</span>
+                              <span className="font-bold">{resp.total_preco?.toLocaleString('pt-BR', { style: 'currency', currency: event.currency })}</span>
                             </div>
                             <div>
                               <span className="text-[10px] text-muted-foreground block uppercase font-bold">Score</span>
-                              <Badge>{resp.score_total?.toFixed(1) || '0.0'}</Badge>
+                              <Badge>{resp.total_score?.toFixed(1) || '0.0'}</Badge>
                             </div>
                             <Button variant="ghost" size="sm">
                               <ArrowRight className="w-4 h-4" />
@@ -278,7 +278,7 @@ const RFxDetails = memo(() => {
                   <span className="text-foreground">Melhor Oferta:</span>
                   <span className="text-emerald-600">
                     {event.responses && event.responses.length > 0 
-                      ? Math.min(...event.responses.map((r: { valor_total: number }) => r.valor_total)).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
+                      ? Math.min(...event.responses.map((r: any) => r.total_preco || 0)).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
                       : '-'}
                   </span>
                 </div>
@@ -295,7 +295,7 @@ const RFxDetails = memo(() => {
                   <p className="text-xs text-muted-foreground mb-2">Análise de IA:</p>
                   <p className="text-[13px] leading-relaxed">
                     {event.responses && event.responses.length > 0 
-                      ? `Identificamos que o fornecedor ${[...event.responses].sort((a,b) => a.valor_total - b.valor_total)[0]?.fornecedor?.razao_social} possui a melhor oferta financeira, com um saving de ${(((event.budget_estimate || 0) - Math.min(...event.responses.map((r: any) => r.valor_total))) / (event.budget_estimate || 1) * 100).toFixed(1)}% em relação ao budget.`
+                      ? `Identificamos que o fornecedor ${[...event.responses].sort((a,b) => (a.total_preco || 0) - (b.total_preco || 0))[0]?.fornecedor?.razao_social} possui a melhor oferta financeira, com um saving de ${(((event.budget_estimate || 0) - Math.min(...event.responses.map((r: any) => r.total_preco || 0))) / (event.budget_estimate || 1) * 100).toFixed(1)}% em relação ao budget.`
                       : "Aguardando propostas para realizar análise comparativa de Lead Time e Preço."}
                   </p>
                 </div>

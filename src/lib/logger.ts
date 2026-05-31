@@ -46,14 +46,14 @@ class Logger {
     // Console output for development and debugging
     switch (level) {
       case 'error':
-        console.error(output);
+        // console.error(output);
         break;
       case 'warn':
-        console.warn(output);
+        // console.warn(output);
         break;
       default:
         // eslint-disable-next-line no-console
-        console.info(output);
+        // console.info(output);
     }
 
     // Persist to telemetry for critical levels or in production

@@ -23,6 +23,8 @@ export interface CotacaoAPI {
 
 export interface LegacyFornecedor {
   id: string;
+  nome_fantasia: string;
+  razao_social: string;
   nomeFantasia: string;
   razaoSocial: string;
   cnpj: string;
@@ -44,6 +46,8 @@ export interface LegacyFornecedor {
 export function adaptFornecedoresToLegacy(fornecedores: any[]): LegacyFornecedor[] {
   return fornecedores.map(f => ({
     id: f.id,
+    nome_fantasia: nullishStr(f.nome_fantasia, f.razao_social),
+    razao_social: f.razao_social,
     nomeFantasia: nullishStr(f.nome_fantasia, f.razao_social),
     razaoSocial: f.razao_social,
     cnpj: nullishStr(f.cnpj),
@@ -106,7 +110,8 @@ export async function simulateAPISearch(
     if (linkedSuppliers && linkedSuppliers.length > 0) {
       // Logic: Boost linked suppliers or filter specifically to them
       // For simulation, we'll just ensure they are included and have accurate initial data
-      console.log('Using linked suppliers for simulation', linkedSuppliers);
+      // Debug: Using linked suppliers for simulation
+      // logger.debug('Using linked suppliers for simulation', { linkedSuppliersCount: linkedSuppliers.length });
     }
   }
 

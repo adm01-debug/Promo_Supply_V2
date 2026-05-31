@@ -34,6 +34,7 @@ import { Loader2 } from "lucide-react";
 
 import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerarOrdemHelpers';
 import { generateOrderPDF } from "@/lib/pdfGenerator";
+import { LegacyFornecedor } from "@/types/legacyTypes";
 import { useAuth } from "@/features/auth";
 
 const GerarOrdem = () => {
@@ -215,8 +216,8 @@ const GerarOrdem = () => {
     const doc = generateOrderPDF({
       numero: ordemNumero,
       data: new Date().toLocaleDateString('pt-BR'),
-      fornecedor,
-      solicitante: user,
+      fornecedor: fornecedor as Partial<LegacyFornecedor>,
+      solicitante: { email: user?.email },
       itens: [{
         descricao: solicitacao.produto,
         quantidade: solicitacao.quantidadeReal,
