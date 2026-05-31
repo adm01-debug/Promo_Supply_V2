@@ -34,6 +34,7 @@ import { Loader2 } from "lucide-react";
 
 import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerarOrdemHelpers';
 import { generateOrderPDF } from "@/lib/pdfGenerator";
+import { LegacyFornecedor } from "@/types/legacyTypes";
 import { useAuth } from "@/features/auth";
 
 const GerarOrdem = () => {

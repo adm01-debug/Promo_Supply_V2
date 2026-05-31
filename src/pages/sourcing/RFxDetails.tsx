@@ -295,7 +295,7 @@ const RFxDetails = memo(() => {
                   <p className="text-xs text-muted-foreground mb-2">Análise de IA:</p>
                   <p className="text-[13px] leading-relaxed">
                     {event.responses && event.responses.length > 0 
-                      ? `Identificamos que o fornecedor ${[...event.responses].sort((a,b) => a.valor_total - b.valor_total)[0]?.fornecedor?.razao_social} possui a melhor oferta financeira, com um saving de ${(((event.budget_estimate || 0) - Math.min(...event.responses.map((r: any) => r.valor_total))) / (event.budget_estimate || 1) * 100).toFixed(1)}% em relação ao budget.`
+                      ? `Identificamos que o fornecedor ${[...event.responses].sort((a,b) => (a.total_preco || 0) - (b.total_preco || 0))[0]?.fornecedor?.razao_social} possui a melhor oferta financeira, com um saving de ${(((event.budget_estimate || 0) - Math.min(...event.responses.map((r: any) => r.total_preco || 0))) / (event.budget_estimate || 1) * 100).toFixed(1)}% em relação ao budget.`
                       : "Aguardando propostas para realizar análise comparativa de Lead Time e Preço."}
                   </p>
                 </div>

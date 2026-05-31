@@ -42,6 +42,8 @@ export interface LegacyFornecedor {
   razao_social: string;
   nome_fantasia: string;
   cnpj: string;
+  razaoSocial?: string; // Legacy compatibility
+  nomeFantasia?: string; // Legacy compatibility
   tipo: 'IMPORTADORA' | 'FABRICANTE' | 'DISTRIBUIDORA';
   ramos: string[];
   vendeProduto: 'LISO' | 'PERSONALIZADO' | 'AMBOS';
