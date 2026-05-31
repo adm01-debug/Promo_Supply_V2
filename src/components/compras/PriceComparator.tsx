@@ -56,7 +56,7 @@ export function PriceComparator() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   // Fetch available products for selection
@@ -70,7 +70,7 @@ export function PriceComparator() {
       if (error) throw error;
       return (data as any[]) || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const handleCompare = async () => {

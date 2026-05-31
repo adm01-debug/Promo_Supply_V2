@@ -16,7 +16,7 @@ export const BuyerPerformancePanel = () => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const { data: solicitacoes } = useQuery({
@@ -28,7 +28,7 @@ export const BuyerPerformancePanel = () => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const stats = useMemo(() => {

@@ -9,7 +9,8 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { PendingApprovalItem, formatCurrency } from "./pendingApprovalsData";
+import { PendingApprovalItem } from "./pendingApprovalsData";
+import { formatCurrency } from '@/lib/utils';
 
 interface RejectModalProps {
   open: boolean;

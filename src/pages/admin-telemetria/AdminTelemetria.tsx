@@ -41,7 +41,7 @@ export default function AdminTelemetriaPage() {
       return (data as unknown as TelemetryRow[]) || [];
     },
     refetchInterval: 30000,
-    staleTime: 10000,
+    staleTime: 10_000,
   });
 
   const handleCleanup = async () => {

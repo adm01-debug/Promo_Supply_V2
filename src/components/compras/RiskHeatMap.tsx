@@ -72,13 +72,13 @@ export const RiskHeatMap = () => {
   const { data: fornecedores, isLoading: loadingForn } = useQuery({
     queryKey: ['risk-heatmap-fornecedores'],
     queryFn: () => fetchAllRows<{ id: string; razao_social: string; avaliacao: number | null; status: string; categorias: { nome: string } }>('fornecedores', 'id, razao_social, avaliacao, status, categorias(nome)'),
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const { data: pedidos, isLoading: loadingPed } = useQuery({
     queryKey: ['risk-heatmap-pedidos'],
     queryFn: () => fetchAllRows<{ fornecedor_id: string; status: string; data_previsao: string; data_entrega: string; valor_total: number }>('pedidos', 'fornecedor_id, status, data_previsao, data_entrega, valor_total'),
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const riskData = useMemo(() => {

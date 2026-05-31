@@ -2,7 +2,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TrendingUp, TrendingDown, Target, Package, Users, DollarSign, Clock, ShieldCheck, AlertCircle } from 'lucide-react';
-import { type DrillDownData, formatCurrency, pendingItems } from './executiveDashboardData';
+import { type DrillDownData, pendingItems } from './executiveDashboardData';
+import { formatCurrency } from '@/lib/utils';
 
 interface Props {
   drillDown: DrillDownData | null;

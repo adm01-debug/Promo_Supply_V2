@@ -17,8 +17,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
-import { formatCurrency } from './executive/executiveDashboardData';
+import { cn, formatCurrency } from '@/lib/utils';
+
 
 export const BulkPlanningConsole = () => {
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set(['1', '2', '3']));

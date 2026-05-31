@@ -35,7 +35,7 @@ export const SupplierAlertsPanel = () => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const { data: pedidos, isLoading: loadingPed } = useQuery({
@@ -50,7 +50,7 @@ export const SupplierAlertsPanel = () => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 30000,
+    staleTime: 30_000,
   });
 
   const supplierData = useMemo<SupplierSLA[]>(() => {

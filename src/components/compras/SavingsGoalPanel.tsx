@@ -72,7 +72,7 @@ export const SavingsGoalPanel = () => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 30000,
+    staleTime: 30_000,
   });
 
   const economiaAtual = useMemo(() => {

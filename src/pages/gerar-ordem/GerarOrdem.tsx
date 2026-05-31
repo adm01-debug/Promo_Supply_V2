@@ -83,7 +83,7 @@ const GerarOrdem = () => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   // Create a unified data shape
