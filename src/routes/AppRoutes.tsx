@@ -117,6 +117,7 @@ export const AnimatedRoutes = () => {
             <Route path="/admin/fiscal" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><FiscalDashboard /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/admin/sourcing-pipeline" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="kanban"><SourcingPipeline /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/admin/workflows" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><WorkflowDesigner /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/admin/docs" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><DeveloperDocs /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/portal-fornecedor" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="dashboard"><PortalFornecedor /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/configuracoes-centro-custo" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><ConfiguracoesCentroCusto /></RouteSkeleton></ModuleErrorBoundary>} />
           </Route>
