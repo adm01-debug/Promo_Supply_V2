@@ -1,6 +1,5 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
-
 import { LegacyFornecedor } from "@/types/legacyTypes";
 
 export interface OrderPDFData {
@@ -120,7 +119,6 @@ export const generateOrderPDF = (data: OrderPDFData) => {
   doc.text(`- ${data.desconto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`, pageWidth - 14, finalY + 12, { align: 'right' });
 
   // Divider
-  doc.setDrawColor(200);
   doc.line(totalsX, finalY + 16, pageWidth - 14, finalY + 16);
 
   doc.setFontSize(14);
