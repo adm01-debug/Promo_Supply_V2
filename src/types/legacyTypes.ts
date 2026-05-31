@@ -39,8 +39,8 @@ export interface LegacyCotacao {
 
 export interface LegacyFornecedor {
   id: string;
-  razaoSocial: string;
-  nomeFantasia: string;
+  razao_social: string;
+  nome_fantasia: string;
   cnpj: string;
   tipo: 'IMPORTADORA' | 'FABRICANTE' | 'DISTRIBUIDORA';
   ramos: string[];

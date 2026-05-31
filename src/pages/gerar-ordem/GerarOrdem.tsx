@@ -215,8 +215,8 @@ const GerarOrdem = () => {
     const doc = generateOrderPDF({
       numero: ordemNumero,
       data: new Date().toLocaleDateString('pt-BR'),
-      fornecedor,
-      solicitante: user,
+      fornecedor: fornecedor as Partial<LegacyFornecedor>,
+      solicitante: { email: user?.email },
       itens: [{
         descricao: solicitacao.produto,
         quantidade: solicitacao.quantidadeReal,
