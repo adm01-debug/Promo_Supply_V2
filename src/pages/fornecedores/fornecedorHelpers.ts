@@ -5,6 +5,8 @@ export interface LegacyFornecedor {
   id: string;
   razao_social: string;
   nome_fantasia: string;
+  razaoSocial: string;
+  nomeFantasia: string;
   cnpj: string;
   tipo: "IMPORTADORA" | "FABRICANTE" | "DISTRIBUIDORA";
   ramos: string[];

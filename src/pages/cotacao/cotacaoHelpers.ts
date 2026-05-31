@@ -25,6 +25,8 @@ export interface LegacyFornecedor {
   id: string;
   nome_fantasia: string;
   razao_social: string;
+  nomeFantasia: string;
+  razaoSocial: string;
   cnpj: string;
   tipo: 'IMPORTADORA' | 'DISTRIBUIDORA' | 'FABRICANTE';
   ramos: string[];

@@ -43,7 +43,7 @@ const Fornecedores = () => {
   const [search, setSearch] = useState("");
   const [tipoFilter, setTipoFilter] = useState<string>("todos");
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedFornecedor, setSelectedFornecedor] = useState<LegacyFornecedor | null>(null);
+  const [selectedFornecedor, setSelectedFornecedor] = useState<any | null>(null);
 
   const { fornecedores: dbFornecedores, loading, createFornecedor, updateFornecedor } = useFornecedores({ search: search || undefined });
   const { kpis } = useFornecedoresKPIs();
