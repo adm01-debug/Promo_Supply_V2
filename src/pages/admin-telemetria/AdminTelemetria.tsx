@@ -15,7 +15,7 @@ import { AppLogsView } from "@/components/admin/telemetry/AppLogsView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SystemAlertsView } from "@/components/admin/telemetry/SystemAlertsView";
 import { AlertCircle } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import {
   type TelemetryRow, type SeverityFilter, type TimeFilter,
@@ -41,7 +41,7 @@ export default function AdminTelemetriaPage() {
       return (data as unknown as TelemetryRow[]) || [];
     },
     refetchInterval: 30000,
-    staleTime: 10000,
+    staleTime: 10_000,
   });
 
   const handleCleanup = async () => {

@@ -85,7 +85,7 @@ export function SupplierRiskAnalysis() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const handleAnalyze = async () => {

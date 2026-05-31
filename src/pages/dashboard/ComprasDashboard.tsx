@@ -41,6 +41,7 @@ import { useQuery } from "@tanstack/react-query";
 import { performanceMonitor } from "@/lib/performance";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
+import { formatCurrency } from "@/lib/utils";
 
 // Lazy load heavy panels
 const SLADistributionChart = lazy(() => import("@/components/compras/SLADistributionChart").then(m => ({ default: m.SLADistributionChart })));
@@ -162,7 +163,7 @@ const ComprasDashboard = () => {
               sparklineData={kpis.comparisons.economia.sparkline}
               icon={PiggyBank}
               color="emerald"
-              subtitle={`${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.economiaGerada)} economizados`}
+              subtitle={`${formatCurrency(kpis.economiaGerada)} economizados`}
               format="percent"
               variant="featured"
             />

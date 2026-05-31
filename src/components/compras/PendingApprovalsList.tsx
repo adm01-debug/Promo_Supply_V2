@@ -44,15 +44,14 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { useApprovalNotifications } from "@/hooks/useApprovalNotifications";
 import { useApprovalWorkflow, type ApprovalStep } from "@/hooks/useApprovalWorkflow";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import {
   PendingApprovalItem,
   SortOption,
   FilterStatus,
-  formatCurrency,
   getTimeStatus,
   getTimeProgress,
 } from "./pending-approvals/pendingApprovalsData";

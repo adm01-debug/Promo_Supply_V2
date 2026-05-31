@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Award, Plus, Loader2, Gift, Percent, Calendar } from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 

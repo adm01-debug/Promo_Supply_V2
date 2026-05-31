@@ -23,7 +23,8 @@ import {
 } from "@/components/ui/dialog";
 import { useSolicitacoes, type CostCenter } from '@/features/solicitacoes';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
+import { formatCurrency } from '@/lib/utils';
 import { 
   Building2, Plus, Edit2, Trash2, Search, CheckCircle2, XCircle, Loader2
 } from 'lucide-react';
@@ -282,12 +283,12 @@ const ConfiguracoesCentroCusto = () => {
                       </TableCell>
                       <TableCell>
                         <div className="text-sm">
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(cc.total_budget || 0)}
+                          {formatCurrency(cc.total_budget)}
                         </div>
                       </TableCell>
                       <TableCell>
                         <div className={`text-sm font-bold ${(cc.total_budget || 0) - (cc.committed_amount || 0) - (cc.used_amount || 0) < 0 ? 'text-destructive' : 'text-emerald-600'}`}>
-                          {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format((cc.total_budget || 0) - (cc.committed_amount || 0) - (cc.used_amount || 0))}
+                          {formatCurrency((cc.total_budget || 0) - (cc.committed_amount || 0) - (cc.used_amount || 0))}
                         </div>
                       </TableCell>
                       <TableCell>{cc.manager?.full_name || '-'}</TableCell>

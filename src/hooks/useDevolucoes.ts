@@ -1,9 +1,10 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
 import { format } from 'date-fns';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import { escapeIlike } from '@/lib/supabaseQuery';
 import type { Database } from '@/integrations/supabase/types';
 
@@ -182,17 +183,11 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
     }
   }, [queryClient]);
 
-  // Realtime
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('devolucoes-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'devolucoes' }, () => {
-        queryClient.invalidateQueries({ queryKey: ['devolucoes'] });
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, queryClient]);
+  useRealtimeSubscription({
+    tables: ['devolucoes'],
+    queryKeysToInvalidate: [['devolucoes']],
+    enabled: !!user,
+  });
 
   return { devolucoes, loading: isLoading, error: error?.message || null, refetch, createDevolucao, updateStatus, deleteDevolucao };
 }
@@ -242,17 +237,11 @@ export function useCreditosFornecedor(fornecedorId?: string) {
     }
   }, [creditos, queryClient]);
 
-  // Realtime
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('creditos-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'creditos_fornecedor' }, () => {
-        queryClient.invalidateQueries({ queryKey: ['creditos-fornecedor'] });
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, queryClient]);
+  useRealtimeSubscription({
+    tables: ['creditos_fornecedor'],
+    queryKeysToInvalidate: [['creditos-fornecedor']],
+    enabled: !!user,
+  });
 
   return { creditos, saldoTotal, loading: isLoading, utilizarCredito };
 }

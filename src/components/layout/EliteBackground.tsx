@@ -1,4 +1,3 @@
-import React from 'react';
 
 export const EliteBackground = () => (
   <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 bg-background">

@@ -4,7 +4,7 @@ import {
   Check, Clock, FileText, ChevronDown, ChevronUp,
   CalendarDays, User, Building2, ExternalLink
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -110,7 +110,7 @@ export const EnhancedPedidoTimeline = ({
             <div className="flex items-center gap-4">
               {valorTotal && (
                 <Badge className="bg-primary/10 text-primary border-primary/20">
-                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotal)}
+                  {formatCurrency(valorTotal)}
                 </Badge>
               )}
               {prazoInfo && (
@@ -331,7 +331,7 @@ export const EnhancedPedidoTimeline = ({
           <div className="flex items-center gap-4">
             {valorTotal && (
               <Badge className="bg-primary/10 text-primary border-primary/20">
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(valorTotal)}
+                {formatCurrency(valorTotal)}
               </Badge>
             )}
             {prazoInfo && (

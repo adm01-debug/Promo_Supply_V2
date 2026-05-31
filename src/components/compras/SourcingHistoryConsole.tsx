@@ -21,7 +21,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { 
   LineChart, Line, ResponsiveContainer, XAxis, YAxis, 
   Tooltip as RechartsTooltip, Cell, PieChart, Pie,

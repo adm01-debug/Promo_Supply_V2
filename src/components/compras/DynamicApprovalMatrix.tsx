@@ -8,7 +8,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useApprovalWorkflow, ApprovalRule, ApprovalDelegation } from "@/hooks/useApprovalWorkflow";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { ApprovalRuleModal } from "./approval/ApprovalRuleModal";
 import { ApprovalDelegationModal } from "./approval/ApprovalDelegationModal";
 

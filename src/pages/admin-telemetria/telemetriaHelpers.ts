@@ -1,5 +1,5 @@
 import { format } from "date-fns/format";
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 
 export interface TelemetryRow {
   id: string;

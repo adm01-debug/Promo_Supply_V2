@@ -94,7 +94,7 @@ export function DemandPredictionPanel() {
   const { data: pedidos } = useQuery({
     queryKey: ['demand-prediction-pedidos'],
     queryFn: () => fetchAllRows<{ valor_total: number; data_emissao: string }>('pedidos', 'valor_total, data_emissao'),
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const historicalData = useMemo(() => {

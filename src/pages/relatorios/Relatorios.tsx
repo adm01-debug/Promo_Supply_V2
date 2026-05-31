@@ -19,7 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { subMonths } from "date-fns/subMonths";
 import { format } from "date-fns/format";
 import { parseISO } from "date-fns/parseISO";

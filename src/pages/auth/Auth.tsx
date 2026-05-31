@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Package, Mail, Lock, User, Loader2, Fingerprint, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -11,7 +11,7 @@ import { useWebAuthn } from '@/hooks/useWebAuthn';
 import { useAccountLockout } from '@/hooks/useAccountLockout';
 import { PasswordStrengthIndicator } from '@/components/security/PasswordStrengthIndicator';
 import { ThemeToggle } from '@/features/layout/components/ThemeToggle';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
 

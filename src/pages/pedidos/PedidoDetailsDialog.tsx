@@ -11,7 +11,7 @@ import { ptBR } from "date-fns/locale/pt-BR";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { type Pedido } from "@/features/pedidos";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { ProductionRoutingEngine, SourcingIntelligenceBanner } from "@/components/compras/ProductionRoutingEngine";

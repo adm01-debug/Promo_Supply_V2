@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { formatCurrency } from '@/lib/utils';
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { Gavel, Plus, Search, Eye, Trophy, Trash2, FileText, Filter, DollarSign } from 'lucide-react';
@@ -19,10 +20,6 @@ import { useLicitacoes } from '@/hooks/useLicitacoes';
 import { useFornecedores } from '@/hooks/useFornecedores';
 import { LicitacaoDetailDialog, modalidadeLabels, statusConfig } from './LicitacaoDetailDialog';
 import { ReverseAuctionRoom } from '@/components/licitacoes/ReverseAuctionRoom';
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-}
 
 export default function Licitacoes() {
   const { licitacoes, isLoading, createLicitacao, updateLicitacao, deleteLicitacao } = useLicitacoes();

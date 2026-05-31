@@ -29,7 +29,7 @@ import { useTranslation } from "react-i18next";
 import { PageHeader } from "@/components/ui/page-header";
 import { useAutoImageCompression } from "@/hooks/useImageCompression";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 const formatCurrency = (v: number | null) =>
   v != null ? v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }) : "—";

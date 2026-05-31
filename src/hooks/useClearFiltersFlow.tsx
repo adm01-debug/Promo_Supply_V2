@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { ConfirmClearFiltersDialog } from '@/components/filters/ConfirmClearFiltersDialog';
 import { useUndoStore } from '@/stores/undoStore';
 import {

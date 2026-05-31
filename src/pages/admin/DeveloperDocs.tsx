@@ -5,7 +5,7 @@ import { FileText, BookOpen, ShieldCheck, Network, Settings2, Github, Terminal, 
 import ReactMarkdown from "react-markdown";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 const DOCS_CONTENT = {
   architecture: `# Guia de Arquitetura - Freight Quest

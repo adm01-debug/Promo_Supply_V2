@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Shield, Plus, Trash2, Loader2, AlertTriangle, TrendingUp } from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 
 interface EscalationConfig {
   id: string;

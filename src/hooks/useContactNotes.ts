@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 
 export interface ContactNote {
   id: string;
@@ -142,29 +143,13 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
     fetchNotes();
   }, [fetchNotes]);
 
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-
-    const channel = supabase
-      .channel('contact-notes-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'contact_notes'
-        },
-        () => {
-          fetchNotes();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, fetchNotes]);
+  useRealtimeSubscription({
+    tables: ['contact_notes'],
+    onInsert: () => fetchNotes(),
+    onUpdate: () => fetchNotes(),
+    onDelete: () => fetchNotes(),
+    enabled: !!user,
+  });
 
   return {
     notes,

@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { formatCurrency } from '@/lib/utils';
 import { Gavel, Clock, Trophy, TrendingDown, Users, AlertCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,10 +10,6 @@ import { Progress } from '@/components/ui/progress';
 import { useLicitacaoLances, Licitacao } from '@/hooks/useLicitacoes';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale/pt-BR';
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-}
 
 interface ReverseAuctionRoomProps {
   licitacao: Licitacao;

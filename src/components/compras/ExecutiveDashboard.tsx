@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { useAccountFilters } from '@/hooks/useAccountFilters';
 import { useClearFiltersFlow } from '@/hooks/useClearFiltersFlow';
 import { Card } from '@/components/ui/card';

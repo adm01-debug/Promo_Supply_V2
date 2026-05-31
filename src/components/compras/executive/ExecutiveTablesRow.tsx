@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Users, Zap, ArrowUpRight, ArrowDownRight } from 'lucide-react';
-import { formatCurrency } from './executiveDashboardData';
-import { cn } from '@/lib/utils';
+
+import { cn, formatCurrency } from '@/lib/utils';
 
 interface Supplier {
   name: string; spend: number; previousSpend: number;

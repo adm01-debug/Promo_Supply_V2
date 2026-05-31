@@ -14,8 +14,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { monthlyTrend, comparisonTrend, COLORS, formatCurrency } from './executiveDashboardData';
-import { cn } from '@/lib/utils';
+import { monthlyTrend, comparisonTrend, COLORS } from './executiveDashboardData';
+import { cn, formatCurrency } from '@/lib/utils';
 
 const CustomTooltip = ({ active, payload, label, showComparison }: any) => {
   if (active && payload && payload.length) {

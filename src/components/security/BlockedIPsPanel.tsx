@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { useSecurityLogs, BlockedIP } from '@/hooks/useSecurityLogs';
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";

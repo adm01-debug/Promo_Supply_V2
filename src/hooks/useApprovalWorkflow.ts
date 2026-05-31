@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { logger } from '@/lib/logger';
 import type {
   ApprovalRule, ApprovalDelegation, ApprovalWorkflow,

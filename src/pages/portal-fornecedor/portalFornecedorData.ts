@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
@@ -108,6 +108,3 @@ export const statusCotacao: Record<string, { label: string; variant: 'default' |
   rejeitada: { label: 'Rejeitada', variant: 'destructive' },
 };
 
-export function formatCurrency(value: number) {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-}

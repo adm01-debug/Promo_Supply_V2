@@ -20,12 +20,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { PageHeader } from '@/components/ui/page-header';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 import {
   usePortalFornecedorData,
   statusPedido,
   statusCotacao,
-  formatCurrency,
 } from './portalFornecedorData';
 
 export default function PortalFornecedor() {

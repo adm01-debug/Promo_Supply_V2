@@ -9,7 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { useGeoRestriction, COMMON_COUNTRIES } from '@/hooks/useGeoRestriction';
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";

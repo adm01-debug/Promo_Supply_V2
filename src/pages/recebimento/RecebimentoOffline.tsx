@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/ui/page-header";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth";
 import { cn } from "@/lib/utils";

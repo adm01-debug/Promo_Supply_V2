@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
@@ -7,6 +7,7 @@ import { auditHelpers } from '@/services/auditService';
 import { toast } from '@/lib/feedbackToast';
 import { format } from 'date-fns';
 import { escapeIlike } from '@/lib/supabaseQuery';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Database } from '@/integrations/supabase/types';
 
 export type Fornecedor = Database['public']['Tables']['fornecedores']['Row'];
@@ -36,6 +37,7 @@ export interface FornecedorFilters {
 
 export function useFornecedores(filters?: FornecedorFilters) {
   const { user, tenantId } = useAuth();
+  const queryClient = useQueryClient();
   const queryKey = ['fornecedores', user?.id, tenantId, filters?.tipo, filters?.status, filters?.search];
 
   const { data: fornecedores = [], isLoading: loading, error, refetch } = useQuery({
@@ -152,7 +154,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
       logger.info('Fornecedor cadastrado com sucesso', { id: data.id, razaoSocial: data.razao_social });
       toast.success('Fornecedor cadastrado com sucesso!');
-      refetch();
+      queryClient.invalidateQueries({ queryKey: ['fornecedores'] });
       return data;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
@@ -160,7 +162,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
       toast.error('Erro ao cadastrar fornecedor: ' + errorMessage);
       return null;
     }
-  }, [user, tenantId, refetch, validateCNPJ]);
+  }, [user, tenantId, queryClient, validateCNPJ]);
 
   // Update fornecedor
   const updateFornecedor = useCallback(async (id: string, updates: Partial<Fornecedor>) => {
@@ -177,7 +179,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
       }
 
       toast.success('Fornecedor atualizado!');
-      refetch();
+      queryClient.invalidateQueries({ queryKey: ['fornecedores'] });
       return true;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
@@ -185,7 +187,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
       toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
-  }, [refetch]);
+  }, [queryClient]);
 
   // Delete fornecedor
   const deleteFornecedor = useCallback(async (id: string) => {
@@ -203,7 +205,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
       logger.info('Fornecedor excluído com sucesso', { id });
 
       toast.success('Fornecedor excluído!');
-      refetch();
+      queryClient.invalidateQueries({ queryKey: ['fornecedores'] });
       return true;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
@@ -211,32 +213,13 @@ export function useFornecedores(filters?: FornecedorFilters) {
       toast.error('Erro ao excluir: ' + errorMessage);
       return false;
     }
-  }, [refetch]);
+  }, [queryClient]);
 
-
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-
-    const channel = supabase
-      .channel('fornecedores-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'fornecedores'
-        },
-        () => {
-          refetch();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, refetch]);
+  useRealtimeSubscription({
+    tables: ['fornecedores'],
+    queryKeysToInvalidate: [['fornecedores']],
+    enabled: !!user,
+  });
 
   return {
     fornecedores,

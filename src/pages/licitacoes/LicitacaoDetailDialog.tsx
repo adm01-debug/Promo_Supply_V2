@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLicitacaoPropostas, type Licitacao } from '@/hooks/useLicitacoes';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 
 const modalidadeLabels: Record<string, string> = {
   pregao: 'Pregão', concorrencia: 'Concorrência',
@@ -31,9 +31,6 @@ const statusConfig: Record<string, { label: string; variant: 'default' | 'second
 
 export { modalidadeLabels, statusConfig };
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-}
 
 interface LicitacaoDetailDialogProps {
   licitacao: Licitacao;

@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";

@@ -10,7 +10,7 @@ import {
   GraduationCap,
   RefreshCw
 } from 'lucide-react';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { Skeleton } from '@/components/ui/skeleton';
 
 const AVAILABLE_TOURS = [
