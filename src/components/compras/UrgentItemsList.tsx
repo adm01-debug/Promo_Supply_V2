@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState, memo, useMemo, useCallback } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { UrgencyDetailsSheet } from "./dashboard/UrgencyDetailsSheet";
 
 interface UrgentItem {

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
 import { format } from 'date-fns';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,6 +7,7 @@ import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
 import { escapeIlike } from '@/lib/supabaseQuery';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Json, Database } from '@/integrations/supabase/types';
 
 export type Pagamento = Database['public']['Tables']['pagamentos']['Row'] & {
@@ -250,17 +251,11 @@ export function usePagamentos(filters?: PagamentoFilters) {
     }
   }, [invalidate]);
 
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('pagamentos-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'pagamentos' }, () => {
-        invalidate();
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, invalidate]);
+  useRealtimeSubscription({
+    tables: ['pagamentos'],
+    queryKeysToInvalidate: [['pagamentos']],
+    enabled: !!user,
+  });
 
   return {
     pagamentos, totalCount, loading: isLoading, error: error?.message || null,

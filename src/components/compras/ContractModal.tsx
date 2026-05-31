@@ -29,7 +29,7 @@ import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import type { Contract, ContractItem } from "@/types/contract";
 
 interface ContractModalProps {

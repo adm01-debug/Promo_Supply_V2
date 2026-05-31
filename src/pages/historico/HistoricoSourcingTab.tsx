@@ -15,7 +15,7 @@ import { ptBR } from "date-fns/locale/pt-BR";
 import { parseISO } from "date-fns/parseISO";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
 
 interface Props {

@@ -1,10 +1,11 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Json, Database } from '@/integrations/supabase/types';
 
 export type Cotacao = Database['public']['Tables']['cotacoes']['Row'] & {
@@ -192,17 +193,11 @@ export function useCotacoes(filters?: CotacaoFilters) {
     }
   }, [invalidate]);
 
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('cotacoes-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'cotacoes' }, () => {
-        invalidate();
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, invalidate]);
+  useRealtimeSubscription({
+    tables: ['cotacoes'],
+    queryKeysToInvalidate: [['cotacoes']],
+    enabled: !!user,
+  });
 
   return {
     cotacoes, loading: isLoading, error: error?.message || null,

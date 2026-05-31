@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
@@ -6,6 +6,7 @@ import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
 import { escapeIlike } from '@/lib/supabaseQuery';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Database } from '@/integrations/supabase/types';
 
 export type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
@@ -277,17 +278,11 @@ export function usePedidos(filters?: PedidoFilters) {
     }
   }, [queryClient]);
 
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('pedidos-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, () => {
-        queryClient.invalidateQueries({ queryKey: ['pedidos'] });
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, queryClient]);
+  useRealtimeSubscription({
+    tables: ['pedidos'],
+    queryKeysToInvalidate: [['pedidos']],
+    enabled: !!user,
+  });
 
   return {
     pedidos,

@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Trophy, Zap, Clock, TrendingDown, CheckCircle2, ShieldCheck, ArrowRight, ExternalLink, Scale, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { VisualComparadorCotacoes } from "./VisualComparadorCotacoes";
 
 interface StrategicQuoteTableProps {

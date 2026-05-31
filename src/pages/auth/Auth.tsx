@@ -11,7 +11,7 @@ import { useWebAuthn } from '@/hooks/useWebAuthn';
 import { useAccountLockout } from '@/hooks/useAccountLockout';
 import { PasswordStrengthIndicator } from '@/components/security/PasswordStrengthIndicator';
 import { ThemeToggle } from '@/features/layout/components/ThemeToggle';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { z } from 'zod';
 import { cn } from '@/lib/utils';
 

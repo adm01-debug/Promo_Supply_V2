@@ -47,7 +47,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useApprovalNotifications } from "@/hooks/useApprovalNotifications";
 import { useApprovalWorkflow, type ApprovalStep } from "@/hooks/useApprovalWorkflow";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import {
   PendingApprovalItem,
   SortOption,

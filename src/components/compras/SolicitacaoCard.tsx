@@ -11,7 +11,7 @@ import type { Solicitacao } from "@/types/legacyTypes";
 import { getTipoLabel, getStatusColor } from "@/types/legacyTypes";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
 import { useHapticFeedback } from "@/hooks/useMobileGestures";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { differenceInDays } from "date-fns/differenceInDays";
 import { isPast } from "date-fns/isPast";
 import {

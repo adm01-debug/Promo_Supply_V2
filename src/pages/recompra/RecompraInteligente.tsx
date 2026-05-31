@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { RefreshCw, ShoppingCart, TrendingUp, Calendar, Sparkles, Loader2, CheckCircle, X, Package } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 

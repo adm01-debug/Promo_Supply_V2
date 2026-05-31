@@ -11,7 +11,7 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { RotateCcw, Plus, X, Clock } from "lucide-react";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 export const MOTIVO_LABELS: Record<string, string> = {
   defeito: "Defeito de Fabricação",

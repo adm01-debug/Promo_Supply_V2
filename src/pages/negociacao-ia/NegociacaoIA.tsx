@@ -12,7 +12,7 @@ import {
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { StrategicQuoteTable } from "@/components/compras/StrategicQuoteTable";

@@ -27,7 +27,7 @@ import { ptBR } from "date-fns/locale/pt-BR";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 import { exportToCSV } from "@/lib/exportData";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { usePurchaseHistory, type PurchaseRecord } from "@/hooks/usePurchaseHistory";
 
 import { COLORS } from "./HistoricoHelpers";

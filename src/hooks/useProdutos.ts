@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 export interface Produto {
   id: string;
@@ -35,11 +35,10 @@ export function useProdutos() {
   const { data: produtos = [], isLoading } = useQuery({
     queryKey: ["produtos", organizationId],
     queryFn: async () => {
-      if (!organizationId) return [];
       const { data, error } = await supabase
         .from("produtos")
         .select("*, categorias(nome), fornecedores!produtos_fornecedor_preferencial_id_fkey(razao_social)")
-        .eq('organization_id', organizationId)
+        .eq('organization_id', organizationId!)
         .order("nome");
       if (error) throw error;
       return (data || []).map((p: any) => ({
@@ -48,19 +47,20 @@ export function useProdutos() {
         fornecedor_nome: p.fornecedores?.razao_social || null,
       })) as Produto[];
     },
+    enabled: !!organizationId,
     staleTime: 60_000,
   });
 
   const { data: categorias = [] } = useQuery({
     queryKey: ["categorias-list", organizationId],
     queryFn: async () => {
-      if (!organizationId) return [];
       const { data, error } = await supabase.from("categorias").select("id, nome").eq("ativo", true)
-        .eq('organization_id', organizationId)
+        .eq('organization_id', organizationId!)
         .order("nome");
       if (error) throw error;
       return data || [];
     },
+    enabled: !!organizationId,
     staleTime: 300_000,
   });
 

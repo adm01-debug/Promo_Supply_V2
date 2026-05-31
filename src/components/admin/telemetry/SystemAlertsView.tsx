@@ -7,7 +7,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns/format";
 import { Bell, AlertCircle, AlertTriangle, ShieldCheck, Clock, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 export interface SystemAlert {
   id: string;

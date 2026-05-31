@@ -5,7 +5,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { ExternalLink, Plus, Settings2 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 const PunchOutCatalogs = () => {
   const { data: catalogs, isLoading, refetch } = useQuery({

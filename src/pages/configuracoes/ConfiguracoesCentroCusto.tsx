@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { useSolicitacoes, type CostCenter } from '@/features/solicitacoes';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { 
   Building2, Plus, Edit2, Trash2, Search, CheckCircle2, XCircle, Loader2
 } from 'lucide-react';

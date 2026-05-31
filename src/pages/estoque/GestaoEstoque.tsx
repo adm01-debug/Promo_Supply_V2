@@ -21,7 +21,7 @@ import { useProdutos } from "@/hooks/useProdutos";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 const GestaoEstoque = () => {
   const { estoque, isLoading, movimentar, criarItemEstoque } = useEstoque();

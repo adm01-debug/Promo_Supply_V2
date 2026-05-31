@@ -1,4 +1,4 @@
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 
 export const STATUS_CONFIG: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; label: string }> = {
   'Submetida': { variant: 'outline', label: 'Submetida' },
