@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { FileText, BookOpen, ShieldCheck, Architecture, Network, Settings2, Github, Terminal } from "lucide-react";
+import { FileText, BookOpen, ShieldCheck, Network, Settings2, Github, Terminal, Award, Layout as Architecture } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
