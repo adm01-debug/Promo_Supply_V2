@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 
 import { STATUS_CONFIG, openExternalSpotUrl, extractSpotProductId } from './spotHelpers';
+import { formatCurrency } from "@/lib/utils";
 import { SpotFinancialTab } from './SpotFinancialTab';
 const CatalogoSpot = () => {
   const { loading, searchProducts, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
@@ -369,7 +370,7 @@ const CatalogoSpot = () => {
                               {order.date ? new Date(order.date).toLocaleDateString('pt-BR') : '—'}
                             </TableCell>
                             <TableCell className="text-right font-medium">
-                              {order.total > 0 ? `R$ ${order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '—'}
+                              {order.total > 0 ? formatCurrency(order.total) : '—'}
                             </TableCell>
                             <TableCell className="text-sm">{order.carrier || '—'}</TableCell>
                             <TableCell>
