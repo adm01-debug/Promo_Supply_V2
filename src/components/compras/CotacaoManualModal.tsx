@@ -59,17 +59,23 @@ export const CotacaoManualModal = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const valorUnitario = parseFloat(formData.valorUnitario);
-    const quantidadeDisponivel = parseInt(formData.quantidadeDisponivel, 10);
-    const prazoEntrega = parseInt(formData.prazoEntrega, 10);
-    if (!isFinite(valorUnitario) || valorUnitario <= 0) return;
-    if (!Number.isFinite(quantidadeDisponivel) || quantidadeDisponivel <= 0) return;
-    if (!Number.isFinite(prazoEntrega) || prazoEntrega <= 0) return;
+    // Numeric validation: reject empty/NaN; reject decimals on integer fields
+    // (the HTML `min="1"` prevents most cases but a paste of "3.7" still gets
+    // through here and parseInt would silently truncate to 3).
+    const valorUnitario = Number(formData.valorUnitario);
+    const quantidadeDisponivel = Number(formData.quantidadeDisponivel);
+    const prazoEntrega = Number(formData.prazoEntrega);
+    if (!Number.isFinite(valorUnitario) || valorUnitario <= 0) return;
+    if (!Number.isFinite(quantidadeDisponivel) || quantidadeDisponivel <= 0 || !Number.isInteger(quantidadeDisponivel)) return;
+    if (!Number.isFinite(prazoEntrega) || prazoEntrega <= 0 || !Number.isInteger(prazoEntrega)) return;
 
+    // Fornecedor must be selected; if "novo", a name must be provided.
+    if (!formData.fornecedor) return;
     const selectedFornecedor = fornecedores.find(f => f.id === formData.fornecedor);
     const fornecedorNome = formData.fornecedor === 'novo'
-      ? formData.novoFornecedor
+      ? formData.novoFornecedor.trim()
       : selectedFornecedor?.nomeFantasia || '';
+    if (!fornecedorNome) return;
 
     onSave({
       fornecedor: fornecedorNome,

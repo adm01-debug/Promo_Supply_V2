@@ -184,16 +184,23 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
     setLoading(true);
 
     try {
+      // Generate a canonical slug from the supplier name. Names made up
+      // entirely of symbols/non-ASCII collapse to ''; fall back to a
+      // timestamped placeholder so the DB never receives an empty id.
+      const slugFromName = (formData.supplier_name || '')
+        .normalize('NFD')
+        .replace(/[̀-ͯ]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '');
+      const supplierId =
+        formData.supplier_id || slugFromName || `supplier-${Date.now()}`;
+
       const contractData = {
         contract_number: formData.contract_number,
         title: formData.title,
         description: formData.description || null,
-        supplier_id: formData.supplier_id || formData.supplier_name
-          .normalize('NFD')
-          .replace(/[̀-ͯ]/g, '')
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, '-')
-          .replace(/(^-|-$)/g, ''),
+        supplier_id: supplierId,
         supplier_name: formData.supplier_name,
         contract_type: formData.contract_type,
         status: formData.status,

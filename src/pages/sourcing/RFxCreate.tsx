@@ -27,11 +27,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-
-const newId = () =>
-  (typeof crypto !== 'undefined' && 'randomUUID' in crypto
-    ? crypto.randomUUID()
-    : Math.random().toString(36).slice(2));
+import { generateUniqueKey as newId } from "@/lib/utils";
 
 const RFxCreate = () => {
   const navigate = useNavigate();

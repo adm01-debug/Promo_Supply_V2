@@ -150,8 +150,10 @@ export const EnhancedPedidoTimeline = ({
           <motion.div
             className="absolute top-9 left-0 h-1 bg-gradient-to-r from-success via-primary to-primary rounded-full"
             initial={{ width: 0 }}
-            animate={{ 
-              width: `${(etapas.filter(e => e.status === 'concluido').length / (etapas.length - 1)) * 100}%` 
+            animate={{
+              width: etapas.length > 1
+                ? `${(etapas.filter(e => e.status === 'concluido').length / (etapas.length - 1)) * 100}%`
+                : "0%"
             }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
           />
