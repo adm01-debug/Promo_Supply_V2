@@ -13,6 +13,17 @@ import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { toast } from "sonner";
 
+// crypto.randomUUID() throws in non-secure contexts and older browsers.
+// This wrapper returns a UUID when available and falls back to a
+// Math.random-based id otherwise — sufficient for an in-memory React key.
+const newItemKey = (): string => {
+  const c = (globalThis as { crypto?: { randomUUID?: () => string } }).crypto;
+  if (c?.randomUUID) {
+    try { return c.randomUUID(); } catch { /* fall through */ }
+  }
+  return `k-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+};
+
 export const MOTIVO_LABELS: Record<string, string> = {
   defeito: "Defeito de Fabricação",
   divergencia: "Divergência do Pedido",
@@ -40,11 +51,11 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
     motivo_detalhe: "",
     resolucao: "credito",
     observacoes: "",
-    itens: [{ _key: crypto.randomUUID(), descricao: "", quantidade: 1, valor_unitario: 0 }],
+    itens: [{ _key: newItemKey(), descricao: "", quantidade: 1, valor_unitario: 0 }],
   });
   const [saving, setSaving] = useState(false);
 
-  const addItem = () => setForm(f => ({ ...f, itens: [...f.itens, { _key: crypto.randomUUID(), descricao: "", quantidade: 1, valor_unitario: 0 }] }));
+  const addItem = () => setForm(f => ({ ...f, itens: [...f.itens, { _key: newItemKey(), descricao: "", quantidade: 1, valor_unitario: 0 }] }));
   const removeItem = (idx: number) => setForm(f => ({ ...f, itens: f.itens.filter((_, i) => i !== idx) }));
   const updateItem = (idx: number, field: string, value: string | number) =>
     setForm(f => ({ ...f, itens: f.itens.map((it, i) => i === idx ? { ...it, [field]: value } : it) }));
@@ -65,7 +76,7 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
     const result = await createDevolucao(input);
     setSaving(false);
     if (result) {
-      setForm({ fornecedor_id: "", tipo: "devolucao", motivo: "defeito", motivo_detalhe: "", resolucao: "credito", observacoes: "", itens: [{ _key: crypto.randomUUID(), descricao: "", quantidade: 1, valor_unitario: 0 }] });
+      setForm({ fornecedor_id: "", tipo: "devolucao", motivo: "defeito", motivo_detalhe: "", resolucao: "credito", observacoes: "", itens: [{ _key: newItemKey(), descricao: "", quantidade: 1, valor_unitario: 0 }] });
       onClose();
     }
   };
