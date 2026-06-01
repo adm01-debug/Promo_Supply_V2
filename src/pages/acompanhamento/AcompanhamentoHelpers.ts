@@ -1,4 +1,5 @@
 import { differenceInDays } from "date-fns/differenceInDays";
+import { formatCurrency } from "@/lib/utils";
 import { differenceInHours } from "date-fns/differenceInHours";
 import { isPast } from "date-fns/isPast";
 import { isToday } from "date-fns/isToday";
@@ -132,7 +133,7 @@ export const gerarEtapasEnhanced = (pedido: AcompanhamentoPedido): TimelineStep[
     { id: 'cotacao', nome: 'Cotação Enviada', status: 'pendente', dataReal: new Date(dataBase.getTime() + 86400000).toISOString(), data: new Date(dataBase.getTime() + 86400000).toLocaleDateString('pt-BR'), descricao: 'Cotações solicitadas a 3 fornecedores', responsavel: 'Equipe de Compras', duracao: '24 horas' },
     { id: 'selecao', nome: 'Fornecedor Selecionado', status: 'pendente', dataReal: new Date(dataBase.getTime() + 172800000).toISOString(), data: new Date(dataBase.getTime() + 172800000).toLocaleDateString('pt-BR'), descricao: pedido.fornecedorSelecionado ? `Selecionado: ${pedido.fornecedorSelecionado}` : 'Aguardando seleção', responsavel: 'Gestor de Compras', duracao: '2 dias' },
     { id: 'pedido', nome: 'Pedido Gerado', status: 'pendente', dataReal: new Date(dataBase.getTime() + 259200000).toISOString(), data: new Date(dataBase.getTime() + 259200000).toLocaleDateString('pt-BR'), descricao: 'Ordem de compra emitida', responsavel: 'Sistema', duracao: '< 1 hora', documentos: [{ nome: 'OC-' + pedido.id + '.pdf', url: '#' }] },
-    { id: 'pagamento', nome: 'Pagamento Realizado', status: 'pendente', dataReal: new Date(dataBase.getTime() + 345600000).toISOString(), data: new Date(dataBase.getTime() + 345600000).toLocaleDateString('pt-BR'), descricao: pedido.valorTotal ? `Valor: R$ ${pedido.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : 'Aguardando pagamento', responsavel: 'Financeiro', duracao: '1-3 dias', documentos: pedido.valorTotal ? [{ nome: 'NF-' + pedido.id + '.pdf', url: '#' }] : undefined },
+    { id: 'pagamento', nome: 'Pagamento Realizado', status: 'pendente', dataReal: new Date(dataBase.getTime() + 345600000).toISOString(), data: new Date(dataBase.getTime() + 345600000).toLocaleDateString('pt-BR'), descricao: pedido.valorTotal ? `Valor: ${formatCurrency(pedido.valorTotal)}` : 'Aguardando pagamento', responsavel: 'Financeiro', duracao: '1-3 dias', documentos: pedido.valorTotal ? [{ nome: 'NF-' + pedido.id + '.pdf', url: '#' }] : undefined },
     { id: 'transito', nome: 'Em Trânsito', status: 'pendente', dataReal: new Date(dataBase.getTime() + 432000000).toISOString(), data: new Date(dataBase.getTime() + 432000000).toLocaleDateString('pt-BR'), descricao: 'Produto em transporte para entrega', responsavel: 'Transportadora', duracao: '2-5 dias', observacoes: 'Código de rastreamento disponível' },
     { id: 'entregue', nome: 'Entregue', status: 'pendente', data: new Date(pedido.prazoEntrega).toLocaleDateString('pt-BR'), descricao: 'Produto entregue e conferido', responsavel: 'Almoxarifado' },
   ];

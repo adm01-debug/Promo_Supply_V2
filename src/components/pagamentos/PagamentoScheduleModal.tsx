@@ -9,6 +9,7 @@ import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { toast } from "@/hooks/use-toast";
 import type { Pagamento } from "@/hooks/usePagamentos";
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   pagamentos: Pagamento[];
@@ -22,7 +23,6 @@ export const PagamentoScheduleModal = ({ pagamentos, open, onOpenChange, onSched
   const [scheduling, setScheduling] = useState(false);
 
   const totalValor = pagamentos.reduce((s, p) => s + (p.valor - (p.valor_pago || 0)), 0);
-  const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   const handleSchedule = async () => {
     if (!selectedDate) {
@@ -64,7 +64,7 @@ export const PagamentoScheduleModal = ({ pagamentos, open, onOpenChange, onSched
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Valor total</span>
-              <span className="font-bold text-primary">{fmt(totalValor)}</span>
+              <span className="font-bold text-primary">{formatCurrency(totalValor)}</span>
             </div>
           </div>
 

@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { toast } from '@/lib/feedbackToast';
 import { useSecurityLogs, BlockedIP } from '@/hooks/useSecurityLogs';
 import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
+import { formatDateTime } from '@/lib/utils';
 
 export const BlockedIPsPanel = () => {
   const { blockedIPs, isLoading, blockIP, unblockIP } = useSecurityLogs();
@@ -129,7 +129,7 @@ export const BlockedIPsPanel = () => {
                       <Badge variant="secondary">{ip.attempts_count}</Badge>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {format(new Date(ip.blocked_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                      {formatDateTime(ip.blocked_at)}
                     </TableCell>
                     <TableCell>
                       {ip.permanent ? (
@@ -140,7 +140,7 @@ export const BlockedIPsPanel = () => {
                       ) : ip.expires_at ? (
                         <span className="text-sm text-muted-foreground flex items-center gap-1">
                           <Clock className="w-3 h-3" />
-                          {format(new Date(ip.expires_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                          {formatDateTime(ip.expires_at)}
                         </span>
                       ) : (
                         '-'
@@ -171,7 +171,7 @@ export const BlockedIPsPanel = () => {
                 {expiredBlocks.slice(0, 5).map(ip => (
                   <div key={ip.id} className="flex justify-between py-1">
                     <span className="font-mono">{ip.ip_address}</span>
-                    <span>Expirou em {format(new Date(ip.expires_at!), "dd/MM", { locale: ptBR })}</span>
+                    <span>Expirou em {format(new Date(ip.expires_at!), "dd/MM")}</span>
                   </div>
                 ))}
               </div>

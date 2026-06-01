@@ -4,6 +4,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Package, Calendar, DollarSign, TrendingUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { formatCurrency } from "@/lib/utils";
 
 interface HistoricoComprasModalProps {
   open: boolean;
@@ -74,7 +75,7 @@ export const HistoricoComprasModal = ({ open, onOpenChange, fornecedor }: Histor
               <span className="text-xs">Volume Total</span>
             </div>
             <p className="text-2xl font-bold text-foreground">
-              {totalCompras.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              {formatCurrency(totalCompras)}
             </p>
           </div>
           <div className="bg-muted/50 rounded-lg p-4">
@@ -83,7 +84,7 @@ export const HistoricoComprasModal = ({ open, onOpenChange, fornecedor }: Histor
               <span className="text-xs">Ticket Médio</span>
             </div>
             <p className="text-2xl font-bold text-foreground">
-              {mediaValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+              {formatCurrency(mediaValor)}
             </p>
           </div>
           <div className="bg-muted/50 rounded-lg p-4">
@@ -119,7 +120,7 @@ export const HistoricoComprasModal = ({ open, onOpenChange, fornecedor }: Histor
                         {itens.map(i => i.descricao).join(', ').slice(0, 50) || '—'}
                       </TableCell>
                       <TableCell className="text-right font-medium">
-                        {(pedido.valor_total || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        {formatCurrency(pedido.valor_total || 0)}
                       </TableCell>
                       <TableCell>
                         <Badge className={`${statusColors[pedido.status] || 'bg-muted/500'} text-primary-foreground text-xs`}>

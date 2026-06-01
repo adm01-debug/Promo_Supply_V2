@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback } from "react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { 
   FileText, Search, Download, Building2, Calendar, Clock,
   CheckCircle2, Truck, Package, X, ArrowUpDown, ChevronDown, RefreshCw, Trash2, BarChart3,
@@ -308,7 +308,7 @@ const Pedidos = () => {
                             </TableCell>
                             <TableCell className="text-right pr-10">
                               <span className="font-black text-white text-base tracking-tighter">
-                                {pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                {formatCurrency(pedido.valor_total)}
                               </span>
                             </TableCell>
                             <TableCell className="pr-6">

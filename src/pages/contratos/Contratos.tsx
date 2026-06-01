@@ -50,7 +50,7 @@ import type { Contract } from "@/types/contract";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   draft: { label: "Rascunho", color: "bg-muted text-muted-foreground", icon: FileText },
@@ -245,7 +245,7 @@ export default function Contratos() {
                       </TableCell>
                       <TableCell className="text-right">
                         <span className="font-black text-foreground">
-                          {Number(contract.total_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          {formatCurrency(Number(contract.total_value))}
                         </span>
                       </TableCell>
                       <TableCell className="pr-8">

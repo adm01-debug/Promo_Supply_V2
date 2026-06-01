@@ -1,7 +1,5 @@
 import { useState, useMemo } from 'react';
-import { formatCurrency } from '@/lib/utils';
-import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { Gavel, Plus, Search, Eye, Trophy, Trash2, FileText, Filter, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -150,7 +148,7 @@ export default function Licitacoes() {
                     <TableCell><Badge variant={statusConfig[lic.status]?.variant || 'secondary'}>{statusConfig[lic.status]?.label || lic.status}</Badge></TableCell>
                     <TableCell className="hidden md:table-cell text-right">{formatCurrency(lic.valor_estimado || 0)}</TableCell>
                     <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
-                      {lic.data_abertura ? format(new Date(lic.data_abertura), 'dd/MM/yyyy', { locale: ptBR }) : '—'}
+                      {lic.data_abertura ? formatDate(lic.data_abertura) : '—'}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1" onClick={e => e.stopPropagation()}>

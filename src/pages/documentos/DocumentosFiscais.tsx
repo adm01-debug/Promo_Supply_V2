@@ -9,8 +9,7 @@ import { FileText, Upload, CheckCircle, XCircle, Clock, Search, AlertTriangle, F
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
+import { formatDate } from "@/lib/utils";
 
 const DocumentosFiscais = () => {
   const [search, setSearch] = useState("");
@@ -286,7 +285,7 @@ const DocumentosFiscais = () => {
                     <TableCell className="font-mono text-sm">{doc.numero_nf}</TableCell>
                     <TableCell className="text-xs text-muted-foreground max-w-[150px] truncate">{doc.chave_acesso || "-"}</TableCell>
                     <TableCell className="text-sm">
-                      {doc.data_emissao ? format(new Date(doc.data_emissao), "dd/MM/yyyy", { locale: ptBR }) : "-"}
+                      {doc.data_emissao ? formatDate(doc.data_emissao) : "-"}
                     </TableCell>
                     <TableCell className="text-right font-medium">
                       R$ {Number(doc.valor_total).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}

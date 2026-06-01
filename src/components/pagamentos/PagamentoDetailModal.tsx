@@ -19,6 +19,7 @@ import { useAuth } from "@/features/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns/format";
 import type { Pagamento } from "@/hooks/usePagamentos";
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   pagamento: Pagamento | null;
@@ -138,11 +139,11 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
       await supabase.from('payment_history').insert({
         pagamento_id: pagamento.id,
         valor_parcela: aplicar,
-        observacoes: `Crédito de devolução aplicado: ${aplicar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`,
+        observacoes: `Crédito de devolução aplicado: ${formatCurrency(aplicar)}`,
         registrado_por: user.id,
       });
 
-      toast({ title: "Crédito aplicado!", description: `${aplicar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} abatido do pagamento.` });
+      toast({ title: "Crédito aplicado!", description: `${formatCurrency(aplicar)} abatido do pagamento.` });
       queryClient.invalidateQueries({ queryKey: ['pagamentos'] });
       queryClient.invalidateQueries({ queryKey: ['creditos-fornecedor'] });
       queryClient.invalidateQueries({ queryKey: ['payment-history'] });
@@ -157,7 +158,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
     try {
       const valor = valorParcial ? parseFloat(valorParcial) : undefined;
       if (valor && (valor <= 0 || valor > saldoRestante)) {
-        toast({ title: "Valor inválido", description: `Informe um valor entre R$ 0,01 e ${saldoRestante.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`, variant: "destructive" });
+        toast({ title: "Valor inválido", description: `Informe um valor entre R$ 0,01 e ${formatCurrency(saldoRestante)}`, variant: "destructive" });
         return;
       }
       const success = await onConfirmarPagamento(pagamento.id, valor);
@@ -184,8 +185,6 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
   };
 
   if (!pagamento) return null;
-
-  const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -219,8 +218,8 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                 </div>
                 <Progress value={percentPago} className="h-3" />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Pago: {fmt(pagamento.valor_pago || 0)}</span>
-                  <span>Restante: {fmt(saldoRestante)}</span>
+                  <span>Pago: {formatCurrency(pagamento.valor_pago || 0)}</span>
+                  <span>Restante: {formatCurrency(saldoRestante)}</span>
                 </div>
               </div>
 
@@ -250,7 +249,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                 <div className="flex gap-2">
                   <Input
                     type="number"
-                    placeholder={`Total: ${fmt(saldoRestante)}`}
+                    placeholder={`Total: ${formatCurrency(saldoRestante)}`}
                     value={valorParcial}
                     onChange={(e) => setValorParcial(e.target.value)}
                     step="0.01"
@@ -313,7 +312,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
               </div>
               <div className="p-2 rounded bg-muted/50">
                 <p className="text-muted-foreground text-xs">Valor Total</p>
-                <p className="font-bold text-primary">{fmt(pagamento.valor)}</p>
+                <p className="font-bold text-primary">{formatCurrency(pagamento.valor)}</p>
               </div>
               <div className="p-2 rounded bg-muted/50">
                 <p className="text-muted-foreground text-xs">Vencimento</p>
@@ -374,7 +373,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                     </div>
                     {h.valor_parcela > 0 && (
                       <Badge variant="outline" className="bg-success/10 text-success">
-                        {fmt(h.valor_parcela)}
+                        {formatCurrency(h.valor_parcela)}
                       </Badge>
                     )}
                   </div>
@@ -389,7 +388,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
               <div className="p-3 bg-success/5 dark:bg-success/10 border border-success/20 dark:border-success/30 rounded-lg">
                 <p className="text-sm text-success dark:text-success flex items-center gap-2">
                   <DollarSign className="h-4 w-4" />
-                  {fmt(totalCreditos)} em créditos disponíveis para este fornecedor
+                  {formatCurrency(totalCreditos)} em créditos disponíveis para este fornecedor
                 </p>
               </div>
               {creditos.map((c: any) => (
@@ -400,7 +399,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                       <p className="text-xs text-muted-foreground">{c.descricao || `Emitido em ${format(new Date(c.data_emissao), 'dd/MM/yyyy')}`}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-success">{fmt(c.saldo)}</p>
+                      <p className="font-bold text-success">{formatCurrency(c.saldo)}</p>
                       <Button size="sm" variant="outline" className="mt-1" onClick={() => handleApplyCredit(c.id, c.saldo)}>
                         Aplicar
                       </Button>

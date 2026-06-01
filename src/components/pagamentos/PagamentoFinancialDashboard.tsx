@@ -15,6 +15,7 @@ import { endOfMonth } from "date-fns/endOfMonth";
 import { eachDayOfInterval } from "date-fns/eachDayOfInterval";
 import { ptBR } from "date-fns/locale/pt-BR";
 import type { Pagamento } from "@/hooks/usePagamentos";
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   pagamentos: Pagamento[];
@@ -75,7 +76,6 @@ export const PagamentoFinancialDashboard = ({ pagamentos }: Props) => {
     });
   }, [pagamentos]);
 
-  const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
   const fmtK = (v: number) => v >= 1000 ? `R$ ${(v / 1000).toFixed(0)}k` : `R$ ${v.toFixed(0)}`;
 
   return (
@@ -96,7 +96,7 @@ export const PagamentoFinancialDashboard = ({ pagamentos }: Props) => {
                   <Pie data={concentracao} dataKey="valor" nameKey="nome" cx="50%" cy="50%" innerRadius={25} outerRadius={55} paddingAngle={2}>
                     {concentracao.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
                   </Pie>
-                  <Tooltip formatter={(v: number) => fmt(v)} />
+                  <Tooltip formatter={(v: number) => formatCurrency(v)} />
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -125,7 +125,7 @@ export const PagamentoFinancialDashboard = ({ pagamentos }: Props) => {
               <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
               <XAxis dataKey="semana" tick={{ fontSize: 10 }} />
               <YAxis tickFormatter={fmtK} tick={{ fontSize: 10 }} />
-              <Tooltip formatter={(v: number) => fmt(v)} labelFormatter={(l) => `Semana ${l}`} />
+              <Tooltip formatter={(v: number) => formatCurrency(v)} labelFormatter={(l) => `Semana ${l}`} />
               <Bar dataKey="saida" fill="hsl(var(--primary))" radius={[3, 3, 0, 0]} name="Saídas" />
             </BarChart>
           </ResponsiveContainer>
@@ -153,7 +153,7 @@ export const PagamentoFinancialDashboard = ({ pagamentos }: Props) => {
                 d.isToday ? 'ring-1 ring-primary font-bold' :
                 d.count > 0 ? 'font-semibold' : 'text-muted-foreground'
               } ${d.count > 0 ? 'bg-destructive/10' : ''}`}
-              title={d.count > 0 ? `${d.count} vencimento(s): ${fmt(d.valor)}` : ''}
+              title={d.count > 0 ? `${d.count} vencimento(s): ${formatCurrency(d.valor)}` : ''}
             >
               {d.dia.getDate()}
               {d.count > 0 && (

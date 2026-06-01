@@ -21,7 +21,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import type { Pedido } from "@/features/pedidos";
 
 interface PedidoMobileCardProps {
@@ -191,7 +191,7 @@ export const PedidoMobileCard = ({
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success/10">
               <TrendingUp className="w-4 h-4 text-success" />
               <span className="font-bold text-success dark:text-success">
-                {pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                {formatCurrency(pedido.valor_total)}
               </span>
             </div>
           </div>

@@ -25,7 +25,7 @@ import {
   Zap,
   Send
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
@@ -240,7 +240,7 @@ export const UrgencyDetailsSheet = ({
                   <div className="flex items-center justify-between py-2 border-b border-border/30">
                     <span className="text-xs text-muted-foreground">Valor Estimado</span>
                     <span className="text-xs font-black text-primary">
-                      {item.valor_estimado ? item.valor_estimado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'N/A'}
+                      {item.valor_estimado ? formatCurrency(item.valor_estimado) : 'N/A'}
                     </span>
                   </div>
                 </div>

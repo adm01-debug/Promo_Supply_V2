@@ -11,8 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from "@/lib/feedbackToast";
 import { usePasswordResetRequests, PasswordResetRequest } from '@/hooks/usePasswordResetRequests';
 import { useAuth } from '@/features/auth';
-import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
+import { formatDateTime } from '@/lib/utils';
 
 const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; icon: React.ReactNode }> = {
   pending: { label: 'Pendente', variant: 'outline', icon: <Clock className="w-3 h-3" /> },
@@ -124,7 +123,7 @@ export const PasswordResetRequestsPanel = () => {
                   {request.reason || '-'}
                 </TableCell>
                 <TableCell className="text-sm text-muted-foreground">
-                  {format(new Date(request.requested_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                  {formatDateTime(request.requested_at)}
                 </TableCell>
                 {showActions && (
                   <TableCell className="text-right">
