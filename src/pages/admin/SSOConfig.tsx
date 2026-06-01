@@ -53,6 +53,16 @@ export default function SSOConfig() {
     },
   });
 
+  const samlConfig = configs?.find(c => c.protocol === 'saml');
+
+  // Hydrate the IdP metadata URL field from server data once it loads.
+  // Kept above the admin guard so the hook count stays stable when
+  // `isAdmin` flips from false to true after the role resolves.
+  const [metadataUrl, setMetadataUrl] = useState('');
+  useEffect(() => {
+    setMetadataUrl(samlConfig?.idp_metadata_url || '');
+  }, [samlConfig?.idp_metadata_url]);
+
   if (!isAdmin) {
     return (
       <div className="p-8 text-center">
@@ -62,16 +72,6 @@ export default function SSOConfig() {
       </div>
     );
   }
-
-  const samlConfig = configs?.find(c => c.protocol === 'saml');
-
-  // Hydrate the IdP metadata URL field from server data once it loads.
-  // defaultValue alone does not update once samlConfig resolves, so the
-  // input would stay empty even when a value exists in the DB.
-  const [metadataUrl, setMetadataUrl] = useState('');
-  useEffect(() => {
-    setMetadataUrl(samlConfig?.idp_metadata_url || '');
-  }, [samlConfig?.idp_metadata_url]);
 
   const handleAddDomain = () => {
     if (!newDomain || !newDomain.includes('.')) {

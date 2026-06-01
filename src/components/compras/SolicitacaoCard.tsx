@@ -39,8 +39,10 @@ interface SolicitacaoCardProps {
   onDuplicate?: () => void;
 }
 
-const statusActions: Record<string, { 
-  primary: { label: string; icon: React.ElementType; href?: string } | null; 
+const statusActions: Record<string, {
+  // `param` overrides the default `id` query key. Used when the destination
+  // page expects a specific param name (e.g. `/gerar-ordem?solicitacao=`).
+  primary: { label: string; icon: React.ElementType; href?: string; param?: string } | null;
   secondary: { label: string; icon: React.ElementType } | null;
 }> = {
   AGUARDANDO_COTACAO: {
@@ -52,7 +54,7 @@ const statusActions: Record<string, {
     secondary: { label: 'Select', icon: Check },
   },
   FORNECEDOR_SELECIONADO: {
-    primary: { label: 'Generate PO', icon: FileText, href: '/pedidos' },
+    primary: { label: 'Generate PO', icon: FileText, href: '/gerar-ordem', param: 'solicitacao' },
     secondary: { label: 'View', icon: Eye },
   },
   AGUARDANDO_PAGAMENTO: {
@@ -329,7 +331,7 @@ export const SolicitacaoCard = ({
               )}
             >
               {actions.primary.href ? (
-                <Link to={`${actions.primary.href}?id=${solicitacao.id}`}>
+                <Link to={`${actions.primary.href}?${actions.primary.param ?? 'id'}=${solicitacao.id}`}>
                   <actions.primary.icon className="w-4 h-4 mr-2" />
                   {actions.primary.label}
                 </Link>
