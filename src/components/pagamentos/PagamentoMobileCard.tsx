@@ -21,7 +21,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import type { Pagamento } from "@/hooks/usePagamentos";
 
 interface PagamentoMobileCardProps {
