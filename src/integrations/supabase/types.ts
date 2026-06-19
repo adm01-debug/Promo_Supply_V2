@@ -94,6 +94,71 @@ export type Database = {
           },
         ]
       }
+      aliquotas_tributarias: {
+        Row: {
+          cofins: number | null
+          created_at: string
+          icms: number | null
+          id: string
+          ipi: number | null
+          iss: number | null
+          ncm: string | null
+          observacoes: string | null
+          organization_id: string
+          pis: number | null
+          regime: Database["public"]["Enums"]["regime_tributario"]
+          uf_destino: string | null
+          uf_origem: string | null
+          updated_at: string
+          vigencia_fim: string | null
+          vigencia_inicio: string
+        }
+        Insert: {
+          cofins?: number | null
+          created_at?: string
+          icms?: number | null
+          id?: string
+          ipi?: number | null
+          iss?: number | null
+          ncm?: string | null
+          observacoes?: string | null
+          organization_id: string
+          pis?: number | null
+          regime: Database["public"]["Enums"]["regime_tributario"]
+          uf_destino?: string | null
+          uf_origem?: string | null
+          updated_at?: string
+          vigencia_fim?: string | null
+          vigencia_inicio?: string
+        }
+        Update: {
+          cofins?: number | null
+          created_at?: string
+          icms?: number | null
+          id?: string
+          ipi?: number | null
+          iss?: number | null
+          ncm?: string | null
+          observacoes?: string | null
+          organization_id?: string
+          pis?: number | null
+          regime?: Database["public"]["Enums"]["regime_tributario"]
+          uf_destino?: string | null
+          uf_origem?: string | null
+          updated_at?: string
+          vigencia_fim?: string | null
+          vigencia_inicio?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "aliquotas_tributarias_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       allowed_countries: {
         Row: {
           added_at: string
@@ -3438,28 +3503,34 @@ export type Database = {
       }
       organizations: {
         Row: {
+          cnpj_matriz: string | null
           created_at: string | null
           id: string
           logo_url: string | null
           name: string
+          razao_social: string | null
           settings: Json | null
           slug: string
           updated_at: string | null
         }
         Insert: {
+          cnpj_matriz?: string | null
           created_at?: string | null
           id?: string
           logo_url?: string | null
           name: string
+          razao_social?: string | null
           settings?: Json | null
           slug: string
           updated_at?: string | null
         }
         Update: {
+          cnpj_matriz?: string | null
           created_at?: string | null
           id?: string
           logo_url?: string | null
           name?: string
+          razao_social?: string | null
           settings?: Json | null
           slug?: string
           updated_at?: string | null
@@ -4196,6 +4267,7 @@ export type Database = {
           current_organization_id: string | null
           department: string | null
           email: string | null
+          empresa_default_id: string | null
           full_name: string | null
           id: string
           phone: string | null
@@ -4210,6 +4282,7 @@ export type Database = {
           current_organization_id?: string | null
           department?: string | null
           email?: string | null
+          empresa_default_id?: string | null
           full_name?: string | null
           id?: string
           phone?: string | null
@@ -4224,6 +4297,7 @@ export type Database = {
           current_organization_id?: string | null
           department?: string | null
           email?: string | null
+          empresa_default_id?: string | null
           full_name?: string | null
           id?: string
           phone?: string | null
@@ -4238,6 +4312,13 @@ export type Database = {
             columns: ["current_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_empresa_default_id_fkey"
+            columns: ["empresa_default_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
           {
@@ -6415,41 +6496,77 @@ export type Database = {
       tenants: {
         Row: {
           cnpj: string | null
+          cor_identificacao: string | null
           created_at: string
           default_currency: string
           default_locale: string
+          empresa_codigo: string | null
+          endereco_fiscal: Json | null
           id: string
+          inscricao_estadual: string | null
+          inscricao_municipal: string | null
           name: string
+          nome_fantasia: string | null
+          organization_id: string | null
           plan: string
+          razao_social: string | null
+          regime_tributario:
+            | Database["public"]["Enums"]["regime_tributario"]
+            | null
           settings: Json
           slug: string
           status: Database["public"]["Enums"]["tenant_status"]
+          uf: string | null
           updated_at: string
         }
         Insert: {
           cnpj?: string | null
+          cor_identificacao?: string | null
           created_at?: string
           default_currency?: string
           default_locale?: string
+          empresa_codigo?: string | null
+          endereco_fiscal?: Json | null
           id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
           name: string
+          nome_fantasia?: string | null
+          organization_id?: string | null
           plan?: string
+          razao_social?: string | null
+          regime_tributario?:
+            | Database["public"]["Enums"]["regime_tributario"]
+            | null
           settings?: Json
           slug: string
           status?: Database["public"]["Enums"]["tenant_status"]
+          uf?: string | null
           updated_at?: string
         }
         Update: {
           cnpj?: string | null
+          cor_identificacao?: string | null
           created_at?: string
           default_currency?: string
           default_locale?: string
+          empresa_codigo?: string | null
+          endereco_fiscal?: Json | null
           id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
           name?: string
+          nome_fantasia?: string | null
+          organization_id?: string | null
           plan?: string
+          razao_social?: string | null
+          regime_tributario?:
+            | Database["public"]["Enums"]["regime_tributario"]
+            | null
           settings?: Json
           slug?: string
           status?: Database["public"]["Enums"]["tenant_status"]
+          uf?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -6459,6 +6576,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "currencies"
             referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "tenants_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -7367,6 +7491,7 @@ export type Database = {
         Args: { p_organization_id: string }
         Returns: Json
       }
+      get_user_grupo_id: { Args: never; Returns: string }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -7426,6 +7551,8 @@ export type Database = {
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
       suggest_unspsc_code: { Args: { item_name: string }; Returns: string }
+      tenant_in_my_group: { Args: { _tenant_id: string }; Returns: boolean }
+      tenants_in_my_group: { Args: never; Returns: string[] }
       user_belongs_to_tenant: {
         Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
@@ -7477,6 +7604,11 @@ export type Database = {
         | "multi_choice"
         | "file"
         | "date"
+      regime_tributario:
+        | "simples_nacional"
+        | "lucro_presumido"
+        | "lucro_real"
+        | "mei"
       saving_type: "negotiated" | "avoidance" | "process" | "specification"
       sourcing_project_status:
         | "backlog"
@@ -7691,6 +7823,12 @@ export const Constants = {
         "multi_choice",
         "file",
         "date",
+      ],
+      regime_tributario: [
+        "simples_nacional",
+        "lucro_presumido",
+        "lucro_real",
+        "mei",
       ],
       saving_type: ["negotiated", "avoidance", "process", "specification"],
       sourcing_project_status: [

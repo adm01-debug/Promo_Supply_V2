@@ -16,10 +16,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [tenantId, setTenantId] = useState<string | null>(null);
   const [availableTenants, setAvailableTenants] = useState<Tenant[]>([]);
+  const [selectedEmpresaId, setSelectedEmpresaIdState] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return window.localStorage.getItem('selectedEmpresaId');
+  });
   const [loading, setLoading] = useState(true);
   const fetchedUserIdRef = useRef<string | null>(null);
   const isFetchingRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const setSelectedEmpresa = useCallback((empresaId: string | null) => {
+    setSelectedEmpresaIdState(empresaId);
+    if (typeof window !== 'undefined') {
+      if (empresaId) window.localStorage.setItem('selectedEmpresaId', empresaId);
+      else window.localStorage.removeItem('selectedEmpresaId');
+    }
+    // Invalida queries para refetch com novo filtro
+    queryClient.invalidateQueries();
+  }, []);
 
   const fetchUserData = useCallback(async (userId: string) => {
     // Deduplicate: skip if already fetched for this user or currently fetching
@@ -32,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
         supabase.rpc('current_tenant_id'), // Renomeado internamente para refletir o que é
-        supabase.from('user_tenants').select('tenant:tenants(id, name, slug)').eq('user_id', userId),
+        supabase.from('user_tenants').select('tenant:tenants(id, name, slug, cnpj, razao_social, nome_fantasia, uf, regime_tributario, cor_identificacao, empresa_codigo, organization_id)').eq('user_id', userId),
       ]);
 
       if (profileRes.error) {
@@ -267,13 +281,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       profile,
       role,
       organizationId,
+      grupoId: organizationId,
       tenantId,
+      selectedEmpresaId,
       availableTenants,
+      availableEmpresas: availableTenants,
       loading,
       signIn,
       signUp,
       signOut,
       switchTenant,
+      setSelectedEmpresa,
       hasRole,
       isAdmin,
     }),
@@ -284,12 +302,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       role,
       organizationId,
       tenantId,
+      selectedEmpresaId,
       availableTenants,
       loading,
       signIn,
       signUp,
       signOut,
       switchTenant,
+      setSelectedEmpresa,
       hasRole,
       isAdmin,
     ]
