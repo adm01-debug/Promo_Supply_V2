@@ -161,7 +161,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
   }, [fetchUserData]);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = useCallback(async (email: string, password: string) => {
     const normalizedEmail = email.trim().toLowerCase();
 
     const { error } = await supabase.auth.signInWithPassword({
@@ -171,9 +171,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (error) logger.warn('Sign in failed', { email: normalizedEmail, error: error.message });
     else logger.info('Sign in successful', { email: normalizedEmail });
     return { error: error as Error | null };
-  };
+  }, []);
 
-  const signUp = async (email: string, password: string, fullName: string) => {
+  const signUp = useCallback(async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
     const normalizedEmail = email.trim().toLowerCase();
 
@@ -188,9 +188,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       },
     });
     return { error: error as Error | null };
-  };
+  }, []);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     const userId = user?.id;
     logger.info('Signing out', { userId });
     fetchedUserIdRef.current = null;
@@ -202,9 +202,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setOrganizationId(null);
     setTenantId(null);
     setAvailableTenants([]);
-  };
+  }, [user?.id]);
 
-  const switchTenant = async (newTenantId: string) => {
+  const switchTenant = useCallback(async (newTenantId: string) => {
     if (!user) return;
     try {
       setLoading(true);
@@ -237,7 +237,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, fetchUserData]);
 
   const hasRole = useCallback((requiredRole: AppRole | AppRole[]): boolean => {
     if (!role) return false;
@@ -254,28 +254,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const isAdmin = useMemo(() => role === 'admin', [role]);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        session,
-        profile,
-        role,
-        organizationId,
-        tenantId,
-        availableTenants,
-        loading,
-        signIn,
-        signUp,
-        signOut,
-        switchTenant,
-        hasRole,
-        isAdmin,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const ctxValue = useMemo(
+    () => ({
+      user,
+      session,
+      profile,
+      role,
+      organizationId,
+      tenantId,
+      availableTenants,
+      loading,
+      signIn,
+      signUp,
+      signOut,
+      switchTenant,
+      hasRole,
+      isAdmin,
+    }),
+    [
+      user,
+      session,
+      profile,
+      role,
+      organizationId,
+      tenantId,
+      availableTenants,
+      loading,
+      signIn,
+      signUp,
+      signOut,
+      switchTenant,
+      hasRole,
+      isAdmin,
+    ]
   );
+
+  return <AuthContext.Provider value={ctxValue}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = () => {
