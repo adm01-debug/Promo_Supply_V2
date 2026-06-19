@@ -179,39 +179,41 @@ serve(async (req) => {
         }
         stats.moved += 1;
 
-        // Atualiza URLs salvos: troca o segmento de path antigo pelo novo.
-        // publicUrl: `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`
+        // Atualiza URLs salvos: troca o segmento de path antigo pelo novo,
+        // preservando host e query strings. publicUrl tem o formato:
+        // `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`
         const oldUrlFragment = `/object/public/${bucket}/${oldPath}`;
         const newUrlFragment = `/object/public/${bucket}/${newPath}`;
         for (const target of URL_TARGETS[bucket] ?? []) {
-          const { data: updated, error: upErr } = await admin
+          const { data: rows, error: selErr } = await admin
             .from(target.table)
-            .update({ [target.column]: newUrlFragment }) // placeholder, sobrescrito abaixo via RPC-like
-            .like(target.column, `%${oldUrlFragment}%`)
-            .select("id");
-          // O update acima substituiria o valor inteiro. Em vez disso, fazemos REPLACE preservando query strings:
-          if (!upErr && updated && updated.length > 0) {
-            // Reverter para fazer replace correto (mantém prefixo do host e qualquer sufixo):
-            for (const row of updated) {
-              const { data: cur } = await admin
-                .from(target.table)
-                .select(target.column)
-                .eq("id", row.id)
-                .maybeSingle();
-              const currentVal = (cur as Record<string, string> | null)?.[target.column];
-              if (typeof currentVal === "string" && currentVal.includes(newUrlFragment)) {
-                // Já reescrevemos no update; conta como atualização válida.
-                stats.url_rows_updated += 1;
-              }
+            .select(`id, ${target.column}`)
+            .like(target.column, `%${oldUrlFragment}%`);
+          if (selErr) {
+            stats.errors.push({ path: `${target.table}.${target.column}`, error: selErr.message });
+            continue;
+          }
+          for (const row of rows ?? []) {
+            const current = (row as Record<string, unknown>)[target.column];
+            if (typeof current !== "string") continue;
+            const next = current.split(oldUrlFragment).join(newUrlFragment);
+            if (next === current) continue;
+            const { error: upErr } = await admin
+              .from(target.table)
+              .update({ [target.column]: next })
+              .eq("id", (row as { id: string }).id);
+            if (upErr) {
+              stats.errors.push({ path: `${target.table}.${target.column}#${(row as { id: string }).id}`, error: upErr.message });
+            } else {
+              stats.url_rows_updated += 1;
             }
-          } else if (upErr) {
-            stats.errors.push({ path: `${target.table}.${target.column}`, error: upErr.message });
           }
         }
       }
 
       results.push(stats);
     }
+
 
 
     return new Response(JSON.stringify({ dryRun, results }, null, 2), {
