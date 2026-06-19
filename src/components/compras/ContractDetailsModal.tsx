@@ -41,6 +41,7 @@ import { differenceInDays } from "date-fns/differenceInDays";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
+import { useAuth } from "@/features/auth";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { logger } from "@/lib/logger";
 import type { Contract, ContractItem, ContractPenalty, ContractDocument, StatusConfig, TypeConfig } from "@/types/contract";
@@ -77,6 +78,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const [loading, setLoading] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const { user, tenantId } = useAuth();
 
   const fetchContractDetails = useCallback(async () => {
     setLoading(true);
@@ -110,9 +112,14 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!user || !tenantId) {
+      toast.error('Organização não identificada. Faça login novamente.');
+      return;
+    }
     setUploading(true);
     try {
-      const filePath = `contracts/${contract.id}/${Date.now()}_${file.name}`;
+      // Path convention enforced by storage RLS: {tenantId}/{userId}/...
+      const filePath = `${tenantId}/${user.id}/contracts/${contract.id}/${Date.now()}_${file.name}`;
       const { error: uploadError } = await supabase.storage.from('documentos').upload(filePath, file);
       if (uploadError) throw uploadError;
       const { data: urlData } = supabase.storage.from('documentos').getPublicUrl(filePath);

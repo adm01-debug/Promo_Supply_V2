@@ -29,7 +29,7 @@ interface Props {
 }
 
 export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirmarPagamento }: Props) => {
-  const { user } = useAuth();
+  const { user, tenantId } = useAuth();
   const queryClient = useQueryClient();
   const [valorParcial, setValorParcial] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -77,10 +77,15 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
 
   const handleUploadComprovante = useCallback(async (file: File) => {
     if (!pagamento || !user) return;
+    if (!tenantId) {
+      toast({ title: 'Organização não identificada', description: 'Faça login novamente.', variant: 'destructive' });
+      return;
+    }
     setUploading(true);
     try {
       const ext = file.name.split('.').pop();
-      const path = `${pagamento.id}/${Date.now()}.${ext}`;
+      // Path convention enforced by storage RLS: {tenantId}/{userId}/...
+      const path = `${tenantId}/${user.id}/${pagamento.id}/${Date.now()}.${ext}`;
       const { error: uploadError } = await supabase.storage
         .from('comprovantes')
         .upload(path, file, { cacheControl: '3600' });
