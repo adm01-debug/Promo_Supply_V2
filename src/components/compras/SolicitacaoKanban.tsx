@@ -63,7 +63,7 @@ const statusConfig: Record<Solicitacao['status'], { label: string; color: string
   CANCELADA: { label: 'Cancelled', color: 'bg-zinc-600', bgColor: 'bg-zinc-600/10' },
 };
 
-function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectChange }: any) {
+const SortableItem = memo(function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectChange }: any) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging: isSorting } = useSortable({ id: solicitacao.id });
   const style = { transform: CSS.Transform.toString(transform), transition };
   return (
