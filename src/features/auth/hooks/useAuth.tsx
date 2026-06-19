@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
         supabase.rpc('current_tenant_id'), // Renomeado internamente para refletir o que é
-        supabase.from('user_tenants').select('tenant:tenants(id, name, slug)').eq('user_id', userId),
+        supabase.from('user_tenants').select('tenant:tenants(id, name, slug, cnpj, razao_social, nome_fantasia, uf, regime_tributario, cor_identificacao, empresa_codigo, organization_id)').eq('user_id', userId),
       ]);
 
       if (profileRes.error) {
