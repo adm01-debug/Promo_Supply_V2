@@ -17,14 +17,29 @@ const corsHeaders = {
 const BUCKETS = ["documentos", "comprovantes"] as const;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// Tabelas/colunas que armazenam URLs públicas por bucket.
+// Após mover {userId}/x → {tenantId}/{userId}/x, atualizamos os URLs salvos.
+const URL_TARGETS: Record<string, Array<{ table: string; column: string }>> = {
+  comprovantes: [
+    { table: "pagamentos", column: "comprovante_url" },
+    { table: "payment_history", column: "comprovante_url" },
+  ],
+  documentos: [
+    { table: "contract_documents", column: "file_url" },
+    { table: "supplier_documents", column: "file_url" },
+  ],
+};
+
 interface MigrationStats {
   bucket: string;
   scanned: number;
   moved: number;
   skipped_already_new: number;
   skipped_no_tenant: number;
+  url_rows_updated: number;
   errors: Array<{ path: string; error: string }>;
 }
+
 
 async function listAll(admin: ReturnType<typeof createClient>, bucket: string, prefix = ""): Promise<string[]> {
   // Recursivamente lista todos os paths abaixo de `prefix` no bucket.
@@ -126,6 +141,7 @@ serve(async (req) => {
         moved: 0,
         skipped_already_new: 0,
         skipped_no_tenant: 0,
+        url_rows_updated: 0,
         errors: [],
       };
 
@@ -136,13 +152,10 @@ serve(async (req) => {
         const segments = oldPath.split("/");
         const first = segments[0];
 
-        // Já migrado: primeiro segmento é um tenant conhecido.
         if (UUID_RE.test(first) && validTenants.has(first)) {
           stats.skipped_already_new += 1;
           continue;
         }
-
-        // Esperado legado: {userId}/...
         if (!UUID_RE.test(first)) {
           stats.skipped_no_tenant += 1;
           continue;
@@ -162,13 +175,46 @@ serve(async (req) => {
         const { error: mvErr } = await admin.storage.from(bucket).move(oldPath, newPath);
         if (mvErr) {
           stats.errors.push({ path: oldPath, error: mvErr.message });
-        } else {
-          stats.moved += 1;
+          continue;
+        }
+        stats.moved += 1;
+
+        // Atualiza URLs salvos: troca o segmento de path antigo pelo novo,
+        // preservando host e query strings. publicUrl tem o formato:
+        // `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`
+        const oldUrlFragment = `/object/public/${bucket}/${oldPath}`;
+        const newUrlFragment = `/object/public/${bucket}/${newPath}`;
+        for (const target of URL_TARGETS[bucket] ?? []) {
+          const { data: rows, error: selErr } = await admin
+            .from(target.table)
+            .select(`id, ${target.column}`)
+            .like(target.column, `%${oldUrlFragment}%`);
+          if (selErr) {
+            stats.errors.push({ path: `${target.table}.${target.column}`, error: selErr.message });
+            continue;
+          }
+          for (const row of rows ?? []) {
+            const current = (row as Record<string, unknown>)[target.column];
+            if (typeof current !== "string") continue;
+            const next = current.split(oldUrlFragment).join(newUrlFragment);
+            if (next === current) continue;
+            const { error: upErr } = await admin
+              .from(target.table)
+              .update({ [target.column]: next })
+              .eq("id", (row as { id: string }).id);
+            if (upErr) {
+              stats.errors.push({ path: `${target.table}.${target.column}#${(row as { id: string }).id}`, error: upErr.message });
+            } else {
+              stats.url_rows_updated += 1;
+            }
+          }
         }
       }
 
       results.push(stats);
     }
+
+
 
     return new Response(JSON.stringify({ dryRun, results }, null, 2), {
       status: 200,
