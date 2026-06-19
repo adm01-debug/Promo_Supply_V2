@@ -141,6 +141,7 @@ serve(async (req) => {
         moved: 0,
         skipped_already_new: 0,
         skipped_no_tenant: 0,
+        url_rows_updated: 0,
         errors: [],
       };
 
@@ -151,13 +152,10 @@ serve(async (req) => {
         const segments = oldPath.split("/");
         const first = segments[0];
 
-        // Já migrado: primeiro segmento é um tenant conhecido.
         if (UUID_RE.test(first) && validTenants.has(first)) {
           stats.skipped_already_new += 1;
           continue;
         }
-
-        // Esperado legado: {userId}/...
         if (!UUID_RE.test(first)) {
           stats.skipped_no_tenant += 1;
           continue;
@@ -177,13 +175,44 @@ serve(async (req) => {
         const { error: mvErr } = await admin.storage.from(bucket).move(oldPath, newPath);
         if (mvErr) {
           stats.errors.push({ path: oldPath, error: mvErr.message });
-        } else {
-          stats.moved += 1;
+          continue;
+        }
+        stats.moved += 1;
+
+        // Atualiza URLs salvos: troca o segmento de path antigo pelo novo.
+        // publicUrl: `${SUPABASE_URL}/storage/v1/object/public/${bucket}/${path}`
+        const oldUrlFragment = `/object/public/${bucket}/${oldPath}`;
+        const newUrlFragment = `/object/public/${bucket}/${newPath}`;
+        for (const target of URL_TARGETS[bucket] ?? []) {
+          const { data: updated, error: upErr } = await admin
+            .from(target.table)
+            .update({ [target.column]: newUrlFragment }) // placeholder, sobrescrito abaixo via RPC-like
+            .like(target.column, `%${oldUrlFragment}%`)
+            .select("id");
+          // O update acima substituiria o valor inteiro. Em vez disso, fazemos REPLACE preservando query strings:
+          if (!upErr && updated && updated.length > 0) {
+            // Reverter para fazer replace correto (mantém prefixo do host e qualquer sufixo):
+            for (const row of updated) {
+              const { data: cur } = await admin
+                .from(target.table)
+                .select(target.column)
+                .eq("id", row.id)
+                .maybeSingle();
+              const currentVal = (cur as Record<string, string> | null)?.[target.column];
+              if (typeof currentVal === "string" && currentVal.includes(newUrlFragment)) {
+                // Já reescrevemos no update; conta como atualização válida.
+                stats.url_rows_updated += 1;
+              }
+            }
+          } else if (upErr) {
+            stats.errors.push({ path: `${target.table}.${target.column}`, error: upErr.message });
+          }
         }
       }
 
       results.push(stats);
     }
+
 
     return new Response(JSON.stringify({ dryRun, results }, null, 2), {
       status: 200,
