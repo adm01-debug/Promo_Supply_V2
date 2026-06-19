@@ -7275,6 +7275,17 @@ export type Database = {
       }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
       clear_login_lockout: { Args: { _email: string }; Returns: undefined }
+      count_legacy_storage_urls: {
+        Args: never
+        Returns: {
+          bucket: string
+          column_name: string
+          legacy_count: number
+          migrated_count: number
+          table_name: string
+          total_with_url: number
+        }[]
+      }
       current_tenant_id: { Args: never; Returns: string }
       exec_sql: { Args: { sql_query: string }; Returns: Json }
       find_approval_rule: {
