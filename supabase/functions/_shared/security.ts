@@ -43,22 +43,6 @@ export const responses = {
   ),
 };
 
-/**
- * Validates that the request has a tenant context and it matches the resource.
- * Enforces isolation in multi-tenant environments.
- */
-export const validateTenant = (req: Request, resourceTenantId?: string) => {
-  const tenantId = req.headers.get('x-tenant-id');
-  if (!tenantId) {
-    throw new Error('Security error: Missing x-tenant-id header for multi-tenant isolation');
-  }
-  
-  if (resourceTenantId && resourceTenantId !== tenantId) {
-    throw new Error('Security error: Tenant isolation violation. Cross-tenant access denied.');
-  }
-  
-  return tenantId;
-};
 
 /**
  * Validates that the request has a tenant context and it matches the resource.
