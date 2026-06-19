@@ -86,12 +86,20 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
     }
   };
 
+  // Precompute min/max once per cotacoes change (avoid spread for large arrays)
+  const bounds = useMemo(() => {
+    let minTotal = Infinity, maxTotal = -Infinity, minPrazo = Infinity, maxPrazo = -Infinity;
+    for (const c of cotacoes) {
+      if (c.total < minTotal) minTotal = c.total;
+      if (c.total > maxTotal) maxTotal = c.total;
+      if (c.prazoEntrega < minPrazo) minPrazo = c.prazoEntrega;
+      if (c.prazoEntrega > maxPrazo) maxPrazo = c.prazoEntrega;
+    }
+    return { minTotal, maxTotal, minPrazo, maxPrazo };
+  }, [cotacoes]);
+
   const calculateScore = (cotacao: Cotacao) => {
-    const minTotal = Math.min(...cotacoes.map(c => c.total));
-    const maxTotal = Math.max(...cotacoes.map(c => c.total));
-    const minPrazo = Math.min(...cotacoes.map(c => c.prazoEntrega));
-    const maxPrazo = Math.max(...cotacoes.map(c => c.prazoEntrega));
-    
+    const { minTotal, maxTotal, minPrazo, maxPrazo } = bounds;
     const normalizedPreco = maxTotal === minTotal ? 100 : (1 - (cotacao.total - minTotal) / (maxTotal - minTotal)) * 100;
     const normalizedPrazo = maxPrazo === minPrazo ? 100 : (1 - (cotacao.prazoEntrega - minPrazo) / (maxPrazo - minPrazo)) * 100;
     const normalizedEstoque = cotacao.quantidadeDisponivel >= quantidade ? 100 : (cotacao.quantidadeDisponivel / quantidade) * 100;
@@ -105,12 +113,16 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
     return Math.round(finalScore);
   };
 
-  const cotacoesComScore = cotacoes.map(c => ({
-    ...c,
-    score: calculateScore(c)
-  }));
+  const cotacoesComScore = useMemo(
+    () => cotacoes.map(c => ({ ...c, score: calculateScore(c) })),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [cotacoes, weights, quantidade, bounds]
+  );
 
-  const cotacoesOrdenadas = [...cotacoesComScore].sort((a, b) => b.score - a.score);
+  const cotacoesOrdenadas = useMemo(
+    () => [...cotacoesComScore].sort((a, b) => b.score - a.score),
+    [cotacoesComScore]
+  );
   
   const cheapestId = useMemo(() => {
     return [...cotacoes].sort((a, b) => a.total - b.total)[0]?.id;
