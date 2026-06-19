@@ -6,6 +6,27 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const encoder = new TextEncoder();
+
+function toHex(bytes: ArrayBuffer): string {
+  return Array.from(new Uint8Array(bytes))
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+function safeEqual(a: string, b: string): boolean {
+  const left = encoder.encode(a);
+  const right = encoder.encode(b);
+  if (left.length !== right.length) return false;
+  let diff = 0;
+  for (let i = 0; i < left.length; i += 1) diff |= left[i] ^ right[i];
+  return diff === 0;
+}
+
+async function sha256Hex(value: string): Promise<string> {
+  return toHex(await crypto.subtle.digest("SHA-256", encoder.encode(value)));
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -20,14 +41,31 @@ serve(async (req) => {
       });
     }
 
-    const token = authHeader.split(" ")[1];
-    
-    // In a production environment, we would validate the scim_token_hash from sso_configurations.
-    // For now, we use a service role client to manage users.
+    const token = authHeader.slice("Bearer ".length).trim();
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
+
+    const tokenHash = await sha256Hex(token);
+    const { data: configs, error: configError } = await supabaseAdmin
+      .from("sso_configurations")
+      .select("id, scim_token_hash")
+      .eq("is_active", true)
+      .not("scim_token_hash", "is", null);
+
+    if (configError) throw configError;
+
+    const isTokenValid = (configs ?? []).some((config) =>
+      typeof config.scim_token_hash === "string" && safeEqual(config.scim_token_hash, tokenHash)
+    );
+
+    if (!isTokenValid) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const url = new URL(req.url);
     const pathParts = url.pathname.split("/").filter(Boolean);
@@ -89,9 +127,10 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error("SCIM Error:", error);
-    return new Response(JSON.stringify({ error: error.message }), {
+    const message = error instanceof Error ? error.message : "SCIM request failed";
+    return new Response(JSON.stringify({ error: message }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

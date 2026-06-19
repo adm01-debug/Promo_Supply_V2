@@ -4705,6 +4705,7 @@ export type Database = {
           proxima_compra_estimada: string | null
           quantidade_sugerida: number
           status: string
+          tenant_id: string
           ultimo_pedido_id: string | null
           updated_at: string
         }
@@ -4720,6 +4721,7 @@ export type Database = {
           proxima_compra_estimada?: string | null
           quantidade_sugerida?: number
           status?: string
+          tenant_id?: string
           ultimo_pedido_id?: string | null
           updated_at?: string
         }
@@ -4735,6 +4737,7 @@ export type Database = {
           proxima_compra_estimada?: string | null
           quantidade_sugerida?: number
           status?: string
+          tenant_id?: string
           ultimo_pedido_id?: string | null
           updated_at?: string
         }
@@ -4758,6 +4761,13 @@ export type Database = {
             columns: ["produto_id"]
             isOneToOne: false
             referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repurchase_suggestions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
           {

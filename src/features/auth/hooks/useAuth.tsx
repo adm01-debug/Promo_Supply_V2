@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode, useMemo } from 'react';
+import { useEffect, useState, useRef, useCallback, ReactNode, useMemo } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { queryClient } from '@/lib/query-client';
@@ -6,27 +6,7 @@ import { logger } from '@/lib/logger';
 import { toast } from 'sonner';
 import type { AppRole } from '../types/authRoles';
 import { UserProfileSchema, type UserProfile, type Tenant } from '../schemas/auth.schemas';
-
-export type { UserProfile };
-
-interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  profile: UserProfile | null;
-  role: AppRole | null;
-  organizationId: string | null;
-  tenantId: string | null;
-  availableTenants: Tenant[];
-  loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
-  signOut: () => Promise<void>;
-  switchTenant: (tenantId: string) => Promise<void>;
-  hasRole: (requiredRole: AppRole | AppRole[]) => boolean;
-  isAdmin: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -316,12 +296,4 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 
   return <AuthContext.Provider value={ctxValue}>{children}</AuthContext.Provider>;
-};
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
 };

@@ -8,12 +8,15 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
 import { formatDate } from "@/lib/utils";
+import { useAuth } from "@/features/auth";
 
 const RecompraInteligente = () => {
   const queryClient = useQueryClient();
+  const { tenantId, organizationId } = useAuth();
+  const activeTenantId = tenantId ?? organizationId;
 
   const { data: suggestions, isLoading } = useQuery({
-    queryKey: ["repurchase-suggestions"],
+    queryKey: ["repurchase-suggestions", activeTenantId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("repurchase_suggestions")
@@ -24,14 +27,20 @@ const RecompraInteligente = () => {
       if (error) throw error;
       return data;
     },
+    enabled: Boolean(activeTenantId),
   });
 
   const generateMutation = useMutation({
     mutationFn: async () => {
+      if (!activeTenantId) {
+        throw new Error("Organização ativa não identificada");
+      }
+
       // Analyze purchase history to generate suggestions
       const { data: pedidoItens, error: piError } = await supabase
         .from("pedido_itens")
         .select("*, pedido:pedidos(fornecedor_id, data_emissao, status)")
+        .eq("tenant_id", activeTenantId)
         .limit(500);
       if (piError) throw piError;
 
@@ -67,6 +76,7 @@ const RecompraInteligente = () => {
 
         if (nextDate <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)) {
           newSuggestions.push({
+            tenant_id: activeTenantId,
             produto_id: sorted[0].produto_id || null,
             fornecedor_id: (sorted[sorted.length - 1] as any).pedido?.fornecedor_id || null,
             quantidade_sugerida: avgQty,
@@ -81,7 +91,7 @@ const RecompraInteligente = () => {
 
       if (newSuggestions.length > 0) {
         // Remove existing pending suggestions to avoid duplicates
-        await supabase.from("repurchase_suggestions").delete().eq("status", "sugerido");
+        await supabase.from("repurchase_suggestions").delete().eq("status", "sugerido").eq("tenant_id", activeTenantId);
         const { error } = await supabase.from("repurchase_suggestions").insert(newSuggestions);
         if (error) throw error;
       }
@@ -89,10 +99,12 @@ const RecompraInteligente = () => {
       return newSuggestions.length;
     },
     onSuccess: (count) => {
-      queryClient.invalidateQueries({ queryKey: ["repurchase-suggestions"] });
+      queryClient.invalidateQueries({ queryKey: ["repurchase-suggestions", activeTenantId] });
       toast.success(`${count} sugestão(ões) de recompra gerada(s)!`);
     },
-    onError: () => toast.error("Erro ao gerar sugestões"),
+    onError: (error) => {
+      toast.error(error instanceof Error ? error.message : "Erro ao gerar sugestões");
+    },
   });
 
   const dismissMutation = useMutation({
@@ -104,7 +116,7 @@ const RecompraInteligente = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["repurchase-suggestions"] });
+      queryClient.invalidateQueries({ queryKey: ["repurchase-suggestions", activeTenantId] });
       toast.success("Sugestão descartada");
     },
   });
@@ -118,7 +130,7 @@ const RecompraInteligente = () => {
       if (error) throw error;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["repurchase-suggestions"] });
+      queryClient.invalidateQueries({ queryKey: ["repurchase-suggestions", activeTenantId] });
       toast.success("Sugestão aceita! Crie a solicitação.");
     },
   });

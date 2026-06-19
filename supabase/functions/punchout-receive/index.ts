@@ -11,6 +11,13 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -30,9 +37,15 @@ serve(async (req) => {
       .from("punchout_sessions")
       .select("*")
       .eq("buyer_cookie", buyerCookie)
+      .eq("status", "opened")
+      .is("closed_at", null)
       .single();
 
     if (sessionError || !session) throw new Error("Session not found");
+
+    const createdAt = new Date(session.created_at).getTime();
+    const isExpired = !Number.isFinite(createdAt) || Date.now() - createdAt > 30 * 60 * 1000;
+    if (isExpired) throw new Error("Session expired");
 
     // Mock cart parsing (In production, iterate over ItemIn elements)
     const mockCart = {
@@ -75,8 +88,9 @@ serve(async (req) => {
       },
     });
 
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "PunchOut receive failed";
+    return new Response(JSON.stringify({ error: message }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

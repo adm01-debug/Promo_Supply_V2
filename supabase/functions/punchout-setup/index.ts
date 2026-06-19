@@ -11,8 +11,19 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   try {
-    const supabaseClient = createClient(
+    const authClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+    const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
@@ -20,23 +31,34 @@ serve(async (req) => {
     const { catalog_id, return_url } = await req.json();
     
     // Auth check
-    const authHeader = req.headers.get("Authorization")!;
-    const { data: { user }, error: authError } = await supabaseClient.auth.getUser(authHeader.replace("Bearer ", ""));
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
+    const { data: { user }, error: authError } = await authClient.auth.getUser(authHeader.slice("Bearer ".length));
     if (authError || !user) throw new Error("Unauthorized");
 
     // Get catalog details
-    const { data: catalog, error: catError } = await supabaseClient
+    const { data: catalog, error: catError } = await supabaseAdmin
       .from("punchout_catalogs")
-      .select("*, tenants(slug)")
+      .select("id, tenant_id, setup_url, identity, is_active, tenants(slug)")
       .eq("id", catalog_id)
+      .eq("is_active", true)
       .single();
 
     if (catError || !catalog) throw new Error("Catalog not found");
 
+    const { data: membership, error: membershipError } = await supabaseAdmin
+      .from("user_tenants")
+      .select("tenant_id")
+      .eq("user_id", user.id)
+      .eq("tenant_id", catalog.tenant_id)
+      .maybeSingle();
+
+    if (membershipError || !membership) throw new Error("Unauthorized");
+
     const buyerCookie = crypto.randomUUID();
 
     // Create session
-    await supabaseClient.from("punchout_sessions").insert({
+    await supabaseAdmin.from("punchout_sessions").insert({
       tenant_id: catalog.tenant_id,
       catalog_id,
       user_id: user.id,
@@ -55,7 +77,6 @@ serve(async (req) => {
     <Sender>
       <Credential domain="NetworkID">
         <Identity>${catalog.identity}</Identity>
-        <SharedSecret>${catalog.shared_secret_encrypted}</SharedSecret>
       </Credential>
       <UserAgent>Lovable Procurement</UserAgent>
     </Sender>
@@ -71,8 +92,8 @@ serve(async (req) => {
   </Request>
 </cXML>`;
 
-    // In a real scenario, we would POST this to catalog.setup_url and get a StartURL
-    // For this simulation/MVP, we'll return a mock StartURL or the logic to handle the XML
+    // The PunchOut shared secret must never be returned to the browser.
+    // Production suppliers should receive it only through a server-to-server setup call.
     
     return new Response(
       JSON.stringify({ 
@@ -84,8 +105,9 @@ serve(async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "PunchOut setup failed";
+    return new Response(JSON.stringify({ error: message }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
