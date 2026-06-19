@@ -3,6 +3,29 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { logger } from '@/lib/logger';
+import { useAuth } from '@/features/auth/hooks/useAuthContext';
+
+/**
+ * Tables that carry a `tenant_id` column. Realtime subscriptions on these
+ * tables MUST be scoped to the active tenant to prevent cross-tenant leakage.
+ * Keep in sync with migrations that add `tenant_id`.
+ */
+const TENANT_SCOPED_TABLES = new Set<string>([
+  'solicitacoes',
+  'pedidos',
+  'cotacoes',
+  'pagamentos',
+  'fornecedores',
+  'contracts',
+  'approval_workflows',
+  'approval_steps',
+  'devolucoes',
+  'creditos_fornecedor',
+  'contact_notes',
+  'licitacoes',
+  'licitacao_lances',
+  'notifications',
+]);
 
 type TableName = 'solicitacoes' | 'pedidos' | 'cotacoes' | 'pagamentos' | 'notifications' | 'fornecedores' | 'contracts' | 'approval_workflows' | 'approval_steps' | 'devolucoes' | 'creditos_fornecedor' | 'contact_notes' | 'licitacoes' | 'licitacao_lances';
 
@@ -71,17 +94,46 @@ export function useRealtimeSubscription({
     pendingTablesRef.current.clear();
   }, [queryClient]);
 
+  const { tenantId } = useAuth();
+
   useEffect(() => {
     if (!enabled || tables.length === 0) return;
 
-    const channelName = `realtime-${tables.join('-')}`;
+    // SECURITY: Tenant-scoped tables require an active tenant before subscribing.
+    // Without it, Postgres CDC would broadcast every tenant's rows to this client
+    // (RLS does NOT filter Realtime payloads on its own).
+    const needsTenant = tables.some((t) => TENANT_SCOPED_TABLES.has(t));
+    if (needsTenant && !tenantId) {
+      logger.debug('Realtime: skipping subscription, awaiting tenantId', { tables });
+      return;
+    }
+
+    // Scope channel name by tenant so each tenant has an isolated channel.
+    const channelName = `realtime-${tenantId ?? 'global'}-${tables.join('-')}`;
     let channel = supabase.channel(channelName);
 
-    tables.forEach(table => {
+    tables.forEach((table) => {
+      const isTenantScoped = TENANT_SCOPED_TABLES.has(table);
+      const config: { event: '*'; schema: 'public'; table: string; filter?: string } = {
+        event: '*',
+        schema: 'public',
+        table,
+      };
+      if (isTenantScoped && tenantId) {
+        config.filter = `tenant_id=eq.${tenantId}`;
+      }
+
       channel = channel.on(
         'postgres_changes',
-        { event: '*', schema: 'public', table },
+        config,
         (payload: RealtimePostgresChangesPayload<any>) => {
+          // Defense-in-depth: drop any payload that slips through with a foreign tenant.
+          const row = (payload.new ?? payload.old) as { tenant_id?: string } | null;
+          if (isTenantScoped && tenantId && row?.tenant_id && row.tenant_id !== tenantId) {
+            logger.warn('Realtime: dropped cross-tenant payload', { table, expected: tenantId });
+            return;
+          }
+
           pendingTablesRef.current.add(table);
 
           if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
@@ -104,5 +156,5 @@ export function useRealtimeSubscription({
         channelRef.current = null;
       }
     };
-  }, [enabled, tables.join(','), debounceMs, flushInvalidations]);
+  }, [enabled, tables.join(','), debounceMs, flushInvalidations, tenantId]);
 }
