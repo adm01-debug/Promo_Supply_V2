@@ -5,7 +5,7 @@ import { PiggyBank, TrendingDown, Award, ArrowUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/features/auth/hooks/useAuth";
+import { useAuth } from "@/features/auth";
 
 export const BuyerPerformancePanel = () => {
   const { organizationId } = useAuth();
