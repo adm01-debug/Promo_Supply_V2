@@ -112,9 +112,14 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!user || !tenantId) {
+      toast.error('Organização não identificada. Faça login novamente.');
+      return;
+    }
     setUploading(true);
     try {
-      const filePath = `contracts/${contract.id}/${Date.now()}_${file.name}`;
+      // Path convention enforced by storage RLS: {tenantId}/{userId}/...
+      const filePath = `${tenantId}/${user.id}/contracts/${contract.id}/${Date.now()}_${file.name}`;
       const { error: uploadError } = await supabase.storage.from('documentos').upload(filePath, file);
       if (uploadError) throw uploadError;
       const { data: urlData } = supabase.storage.from('documentos').getPublicUrl(filePath);
