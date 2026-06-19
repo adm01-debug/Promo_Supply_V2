@@ -78,6 +78,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const [loading, setLoading] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const { user, tenantId } = useAuth();
 
   const fetchContractDetails = useCallback(async () => {
     setLoading(true);
