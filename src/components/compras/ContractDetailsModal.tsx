@@ -41,6 +41,7 @@ import { differenceInDays } from "date-fns/differenceInDays";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
+import { useAuth } from "@/features/auth";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { logger } from "@/lib/logger";
 import type { Contract, ContractItem, ContractPenalty, ContractDocument, StatusConfig, TypeConfig } from "@/types/contract";
