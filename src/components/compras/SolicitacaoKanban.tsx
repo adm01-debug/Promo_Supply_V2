@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { memo, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   DndContext,
@@ -63,7 +63,7 @@ const statusConfig: Record<Solicitacao['status'], { label: string; color: string
   CANCELADA: { label: 'Cancelled', color: 'bg-zinc-600', bgColor: 'bg-zinc-600/10' },
 };
 
-function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectChange }: any) {
+const SortableItem = memo(function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectChange }: any) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging: isSorting } = useSortable({ id: solicitacao.id });
   const style = { transform: CSS.Transform.toString(transform), transition };
   return (
@@ -77,9 +77,9 @@ function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectC
       />
     </div>
   );
-}
+});
 
-function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, selectable, selected, onSelectChange }: any) {
+const SolicitacaoKanbanCard = memo(function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, selectable, selected, onSelectChange }: any) {
   const deadline = new Date(solicitacao.prazoEntrega);
   const daysRemaining = differenceInDays(deadline, new Date());
   const isOverdue = isPast(deadline) && solicitacao.status !== 'ENTREGUE';
@@ -149,7 +149,7 @@ function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, select
       </div>
     </motion.div>
   );
-}
+});
 
 function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds, onSelectChange }: any) {
   const config = statusConfig[status as Solicitacao['status']];
