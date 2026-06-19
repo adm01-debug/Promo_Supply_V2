@@ -394,16 +394,21 @@ export const useApprovalWorkflow = () => {
 
   useEffect(() => { fetchRules(); fetchDelegations(); fetchPendingWorkflows(); fetchPendingSteps(); }, [fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps, organizationId]);
 
-  // Escalation polling: gated by a module-level flag so multiple consumers
+  // Escalation polling: gated by a module-level ref-count so multiple consumers
   // of this hook don't spawn parallel intervals (which produces duplicate
-  // approval_history rows). Long-term this should move to a server cron.
+  // approval_history rows). Resilient to React 18 StrictMode double-invoke.
+  // Long-term this should move to a server cron.
   useEffect(() => {
-    if (escalationIntervalActive) return;
-    escalationIntervalActive = true;
-    const interval = setInterval(checkEscalations, 60000);
+    escalationRefCount += 1;
+    if (escalationRefCount === 1) {
+      escalationIntervalId = setInterval(checkEscalations, 60000);
+    }
     return () => {
-      clearInterval(interval);
-      escalationIntervalActive = false;
+      escalationRefCount = Math.max(0, escalationRefCount - 1);
+      if (escalationRefCount === 0 && escalationIntervalId !== null) {
+        clearInterval(escalationIntervalId);
+        escalationIntervalId = null;
+      }
     };
   }, [checkEscalations]);
 

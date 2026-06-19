@@ -97,7 +97,7 @@ const NegociacaoIA = () => {
       const result = data as NegotiationAnalysis;
 
       // Persist to negotiation_analyses table
-      await supabase.from("negotiation_analyses").insert({
+      const { error: insertError } = await supabase.from("negotiation_analyses").insert({
         solicitacao_id: selectedSolicitacao,
         analise_texto: result.analise_detalhada || result.resumo,
         sugestoes: result.sugestoes as any,
@@ -105,6 +105,7 @@ const NegociacaoIA = () => {
         modelo_ia: "gemini-2.5-flash",
         created_by: user?.id,
       });
+      if (insertError) throw insertError;
 
       return result;
     },

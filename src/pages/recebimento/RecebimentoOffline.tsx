@@ -100,12 +100,17 @@ export default function RecebimentoOffline() {
       localStorage.setItem("offline-orders-cache", JSON.stringify(mapped));
     } catch (err: unknown) {
       // Try cached data
-      const cached = localStorage.getItem("offline-orders-cache");
-      if (cached) {
-        setOrders(JSON.parse(cached));
-        toast.info("Usando dados em cache");
-      } else {
-        toast.error("Erro ao buscar pedidos");
+      try {
+        const cached = localStorage.getItem("offline-orders-cache");
+        if (cached) {
+          setOrders(JSON.parse(cached));
+          toast.info("Usando dados em cache");
+        } else {
+          toast.error("Erro ao buscar pedidos");
+        }
+      } catch {
+        localStorage.removeItem("offline-orders-cache");
+        toast.error("Cache corrompido. Conecte-se à internet para recarregar.");
       }
     } finally {
       setLoading(false);
@@ -119,10 +124,14 @@ export default function RecebimentoOffline() {
   // On mount, load cached orders if offline
   useEffect(() => {
     if (!isOnline) {
-      const cached = localStorage.getItem("offline-orders-cache");
-      if (cached) {
-        setOrders(JSON.parse(cached));
-        setLoading(false);
+      try {
+        const cached = localStorage.getItem("offline-orders-cache");
+        if (cached) {
+          setOrders(JSON.parse(cached));
+          setLoading(false);
+        }
+      } catch {
+        localStorage.removeItem("offline-orders-cache");
       }
     }
   }, [isOnline]);

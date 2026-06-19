@@ -70,15 +70,18 @@ export default function Contratos() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  useEffect(() => { fetchContracts(); }, []);
-
-  const fetchContracts = async () => {
+  const fetchContracts = useCallback(async () => {
+    setLoading(true);
     try {
       const { data, error } = await supabase.from('contracts').select('*').order('created_at', { ascending: false });
       if (error) throw error;
       setContracts((data as unknown as Contract[]) || []);
+    } catch (err) {
+      console.error('Erro ao buscar contratos:', err);
     } finally { setLoading(false); }
-  };
+  }, []);
+
+  useEffect(() => { fetchContracts(); }, [fetchContracts]);
 
   const filteredContracts = contracts.filter(contract => {
     const matchesSearch = contract.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

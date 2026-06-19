@@ -104,7 +104,7 @@ const RFxCreate = () => {
       if (event) {
         // Create lots
         if (formData.lots.length > 0) {
-          await supabase.from('sourcing_event_lots').insert(
+          const { error: lotsError } = await supabase.from('sourcing_event_lots').insert(
             formData.lots.map(lot => ({ 
               event_id: event.id,
               nome: lot.title,
@@ -112,11 +112,12 @@ const RFxCreate = () => {
               preco_referencia: parseFloat(lot.target_price) || null
             }))
           );
+          if (lotsError) throw lotsError;
         }
 
         // Create criteria
         if (formData.criteria.length > 0) {
-          await supabase.from('sourcing_event_criteria').insert(
+          const { error: critError } = await supabase.from('sourcing_event_criteria').insert(
             formData.criteria.map(c => ({ 
               event_id: event.id,
               nome: c.label,
@@ -124,12 +125,13 @@ const RFxCreate = () => {
               config: { type: c.type }
             }))
           );
+          if (critError) throw critError;
         }
 
         // Create invitations
         if (formData.invitations.length > 0) {
           const selectedSuppliers = suppliers.filter(s => formData.invitations.includes(s.id));
-          await supabase.from('sourcing_invitations').insert(
+          const { error: invError } = await supabase.from('sourcing_invitations').insert(
             selectedSuppliers.map(s => ({ 
               event_id: event.id, 
               fornecedor_id: s.id,
@@ -137,6 +139,7 @@ const RFxCreate = () => {
               token: crypto.randomUUID()
             }))
           );
+          if (invError) throw invError;
         }
 
         navigate(`/sourcing/${event.id}`);
