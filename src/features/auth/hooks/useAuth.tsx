@@ -121,24 +121,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (mounted) setLoading(false);
     });
 
+    // Fix #2: Synchronous callback — defer async work via setTimeout to avoid
+    // deadlocks in Supabase's internal state machine (token refresh / tab switch).
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         if (!mounted) return;
-        
-        // Optimistic session/user update
+
+        // Optimistic, synchronous session/user update
         setSession(session);
         setUser(session?.user ?? null);
 
         if (session?.user) {
           if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-            // For sign-in, we might want to show a loader if profile is missing
             if (event === 'SIGNED_IN') setLoading(true);
-            
-            try {
-              await fetchUserData(session.user.id);
-            } finally {
-              if (mounted) setLoading(false);
-            }
+            setTimeout(() => {
+              if (!mounted) return;
+              fetchUserData(session.user.id).finally(() => {
+                if (mounted) setLoading(false);
+              });
+            }, 0);
           }
         } else {
           setProfile(null);
@@ -149,15 +150,36 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setAvailableTenants([]);
           fetchedUserIdRef.current = null;
           if (event === 'SIGNED_OUT') {
+            // Fix #1/#5: ensure cache is wiped on every sign-out path
+            queryClient.clear();
             setLoading(false);
           }
         }
       }
     );
 
+    // Fix #5: Cross-tab logout sync — when Supabase clears its token in another
+    // tab, mirror the cleanup here so in-memory state doesn't keep stale data.
+    const handleStorageLogout = (e: StorageEvent) => {
+      if (!mounted) return;
+      if (e.key && e.key.startsWith('sb-') && e.key.endsWith('-auth-token') && e.newValue === null) {
+        queryClient.clear();
+        setUser(null);
+        setSession(null);
+        setProfile(null);
+        setRole(null);
+        setOrganizationId(null);
+        setTenantId(null);
+        setAvailableTenants([]);
+        fetchedUserIdRef.current = null;
+      }
+    };
+    window.addEventListener('storage', handleStorageLogout);
+
     return () => {
       mounted = false;
       subscription.unsubscribe();
+      window.removeEventListener('storage', handleStorageLogout);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [fetchUserData]);
