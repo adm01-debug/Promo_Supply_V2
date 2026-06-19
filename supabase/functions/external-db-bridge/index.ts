@@ -94,10 +94,39 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
+
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   const logger = new EdgeLogger('external-db-bridge', requestId);
 
   try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const localUrl = Deno.env.get("SUPABASE_URL")!;
+    const localKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const localClient = createClient(localUrl, localKey);
+    const { data: { user }, error: authError } = await localClient.auth.getUser(
+      authHeader.slice("Bearer ".length)
+    );
+
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const {
       operation = "select",
       table,
@@ -123,23 +152,6 @@ Deno.serve(async (req) => {
     }
 
     const externalClient = createClient(externalUrl, externalKey);
-
-    // Get user ID from auth header
-    const authHeader = req.headers.get("Authorization");
-    let userId: string | null = null;
-    if (authHeader) {
-      try {
-        const localUrl = Deno.env.get("SUPABASE_URL")!;
-        const localKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-        const localClient = createClient(localUrl, localKey);
-        const { data: { user } } = await localClient.auth.getUser(
-          authHeader.replace("Bearer ", "")
-        );
-        userId = user?.id || null;
-      } catch (_) {
-        // ignore auth errors
-      }
-    }
 
     let result: { data: unknown; error: unknown; count?: number | null } = {
       data: null,
@@ -239,7 +251,7 @@ Deno.serve(async (req) => {
       status,
       recordCount,
       error: hasError ? (result.error as { message?: string })?.message : undefined,
-      userId,
+      userId: user.id,
     });
 
     if (hasError) {
