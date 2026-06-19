@@ -149,7 +149,7 @@ const SolicitacaoKanbanCard = memo(function SolicitacaoKanbanCard({ solicitacao,
       </div>
     </motion.div>
   );
-}
+});
 
 function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds, onSelectChange }: any) {
   const config = statusConfig[status as Solicitacao['status']];
