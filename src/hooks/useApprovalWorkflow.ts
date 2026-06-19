@@ -11,7 +11,8 @@ import type {
 export type { ApprovalRule, ApprovalDelegation, ApprovalWorkflow, ApprovalStep, ApprovalHistory };
 
 // Module-level guard so only one consumer drives escalation polling.
-let escalationIntervalActive = false;
+let escalationRefCount = 0;
+let escalationIntervalId: ReturnType<typeof setInterval> | null = null;
 
 export const useApprovalWorkflow = () => {
   const { user, organizationId } = useAuth();
