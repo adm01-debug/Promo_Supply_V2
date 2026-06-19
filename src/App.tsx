@@ -69,7 +69,7 @@ const App = () => {
                 <Sonner />
                 <PWAInstallPrompt />
                 <AccessibilityPanel />
-                <BrowserRouter>
+                <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                   <NavigationProvider>
                     <GlobalErrorBoundary>
                       <Suspense fallback={<PageLoader />}>
