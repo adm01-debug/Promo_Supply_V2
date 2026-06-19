@@ -218,6 +218,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     logger.info('Signing out', { userId });
     fetchedUserIdRef.current = null;
     await supabase.auth.signOut();
+    // Fix #1: wipe TanStack Query cache (memory + persisted localStorage) so the
+    // next user on this machine never sees the previous user's data.
+    queryClient.clear();
     setUser(null);
     setSession(null);
     setProfile(null);
