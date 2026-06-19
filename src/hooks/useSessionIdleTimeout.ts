@@ -1,5 +1,5 @@
 import { useEffect, useRef, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/features/auth';
 import { toast } from '@/lib/feedbackToast';
 
 const IDLE_TIMEOUT_MS = 30 * 60 * 1000; // 30 minutes
@@ -9,8 +9,13 @@ const THROTTLE_MS = 60_000; // Only update "last activity" once per minute
 /**
  * Hook that auto-logs out the user after a period of inactivity.
  * Tracks mouse, keyboard, touch and scroll events.
+ *
+ * Fix #3: Uses signOut from AuthContext so the app's full cleanup runs
+ * (queryClient.clear + state reset), instead of calling supabase directly
+ * which would leave caches and React state desynchronized.
  */
 export function useSessionIdleTimeout(timeoutMs = IDLE_TIMEOUT_MS) {
+  const { signOut } = useAuth();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastActivityRef = useRef<number>(Date.now());
 
@@ -18,12 +23,15 @@ export function useSessionIdleTimeout(timeoutMs = IDLE_TIMEOUT_MS) {
     toast.warning('Sessão expirada por inatividade. Faça login novamente.', {
       duration: 5000,
     });
-    await supabase.auth.signOut();
-  }, []);
+    try {
+      await signOut();
+    } catch (error: unknown) {
+      // Best-effort: ignore so the timer never throws unhandled
+    }
+  }, [signOut]);
 
   const resetTimer = useCallback(() => {
     const now = Date.now();
-    // Throttle: only reset if enough time has passed
     if (now - lastActivityRef.current < THROTTLE_MS) return;
     lastActivityRef.current = now;
 
@@ -32,10 +40,8 @@ export function useSessionIdleTimeout(timeoutMs = IDLE_TIMEOUT_MS) {
   }, [handleLogout, timeoutMs]);
 
   useEffect(() => {
-    // Start the timer
     timerRef.current = setTimeout(handleLogout, timeoutMs);
 
-    // Attach listeners
     for (const event of ACTIVITY_EVENTS) {
       window.addEventListener(event, resetTimer, { passive: true });
     }
