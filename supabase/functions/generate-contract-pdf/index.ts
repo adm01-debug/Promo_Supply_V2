@@ -23,15 +23,57 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
+  }
 
   try {
     const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
     const logger = new EdgeLogger('generate-contract-pdf', requestId);
 
-    const { contract_id } = await req.json();
+    // SECURITY: require authenticated caller
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "");
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const authClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: `Bearer ${token}` } } },
+    );
+    const { data: userData, error: userErr } = await authClient.auth.getUser(token);
+    if (userErr || !userData.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const body = await req.json().catch(() => ({}));
+    const contract_id = typeof body?.contract_id === "string" ? body.contract_id : null;
     if (!contract_id) throw new Error("contract_id é obrigatório");
 
-    logger.info("Generating contract HTML", { contractId: contract_id });
+    logger.info("Generating contract HTML", { contractId: contract_id, userId: userData.user.id });
+
+    // SECURITY: verify caller can see this contract via RLS *before* escalating
+    const { data: rlsCheck, error: rlsErr } = await authClient
+      .from("contracts")
+      .select("id")
+      .eq("id", contract_id)
+      .maybeSingle();
+    if (rlsErr || !rlsCheck) {
+      return new Response(JSON.stringify({ error: "Contrato não encontrado ou sem permissão" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
