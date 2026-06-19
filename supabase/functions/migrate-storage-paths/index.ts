@@ -17,14 +17,29 @@ const corsHeaders = {
 const BUCKETS = ["documentos", "comprovantes"] as const;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// Tabelas/colunas que armazenam URLs públicas por bucket.
+// Após mover {userId}/x → {tenantId}/{userId}/x, atualizamos os URLs salvos.
+const URL_TARGETS: Record<string, Array<{ table: string; column: string }>> = {
+  comprovantes: [
+    { table: "pagamentos", column: "comprovante_url" },
+    { table: "payment_history", column: "comprovante_url" },
+  ],
+  documentos: [
+    { table: "contract_documents", column: "file_url" },
+    { table: "supplier_documents", column: "file_url" },
+  ],
+};
+
 interface MigrationStats {
   bucket: string;
   scanned: number;
   moved: number;
   skipped_already_new: number;
   skipped_no_tenant: number;
+  url_rows_updated: number;
   errors: Array<{ path: string; error: string }>;
 }
+
 
 async function listAll(admin: ReturnType<typeof createClient>, bucket: string, prefix = ""): Promise<string[]> {
   // Recursivamente lista todos os paths abaixo de `prefix` no bucket.
