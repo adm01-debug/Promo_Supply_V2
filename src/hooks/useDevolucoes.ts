@@ -115,7 +115,8 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
           valor_total: i.quantidade * i.valor_unitario,
           motivo: i.motivo || input.motivo,
         }));
-        await supabase.from('devolucao_itens').insert(itens);
+        const { error: itensError } = await supabase.from('devolucao_itens').insert(itens);
+        if (itensError) throw itensError;
       }
 
       toast.success('Devolução criada com sucesso!');

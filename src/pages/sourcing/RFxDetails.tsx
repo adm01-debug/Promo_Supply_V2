@@ -278,7 +278,7 @@ const RFxDetails = memo(() => {
                   <span className="text-foreground">Melhor Oferta:</span>
                   <span className="text-emerald-600">
                     {event.responses && event.responses.length > 0 
-                      ? Math.min(...event.responses.map((r: any) => r.total_preco || 0)).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
+                      ? event.responses.reduce((min: number, r: any) => Math.min(min, r.total_preco || 0), Infinity).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
                       : '-'}
                   </span>
                 </div>
@@ -295,7 +295,12 @@ const RFxDetails = memo(() => {
                   <p className="text-xs text-muted-foreground mb-2">Análise de IA:</p>
                   <p className="text-[13px] leading-relaxed">
                     {event.responses && event.responses.length > 0 
-                      ? `Identificamos que o fornecedor ${[...event.responses].sort((a,b) => (a.total_preco || 0) - (b.total_preco || 0))[0]?.fornecedor?.razao_social} possui a melhor oferta financeira, com um saving de ${(((event.budget_estimate || 0) - Math.min(...event.responses.map((r: any) => r.total_preco || 0))) / (event.budget_estimate || 1) * 100).toFixed(1)}% em relação ao budget.`
+                      ? (() => {
+                          const best = event.responses.reduce((b: any, r: any) => ((r.total_preco || 0) < (b.total_preco || Infinity) ? r : b), event.responses[0]);
+                          const minPrice = best.total_preco || 0;
+                          const saving = (((event.budget_estimate || 0) - minPrice) / (event.budget_estimate || 1) * 100).toFixed(1);
+                          return `Identificamos que o fornecedor ${best?.fornecedor?.razao_social} possui a melhor oferta financeira, com um saving de ${saving}% em relação ao budget.`;
+                        })()
                       : "Aguardando propostas para realizar análise comparativa de Lead Time e Preço."}
                   </p>
                 </div>

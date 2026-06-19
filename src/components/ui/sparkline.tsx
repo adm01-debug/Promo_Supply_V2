@@ -26,8 +26,12 @@ export const Sparkline = forwardRef<SVGSVGElement, SparklineProps>(({
   const pathData = useMemo(() => {
     if (!data || data.length < 2) return { line: "", area: "" };
 
-    const min = Math.min(...data);
-    const max = Math.max(...data);
+    let min = data[0];
+    let max = data[0];
+    for (let i = 1; i < data.length; i++) {
+      if (data[i] < min) min = data[i];
+      if (data[i] > max) max = data[i];
+    }
     const range = max - min || 1;
     const padding = 2;
 

@@ -74,7 +74,7 @@ const AuctionRoom = () => {
 
   const bestBid = useMemo(() => {
     if (lances.length === 0) return event?.budget_estimate || 0;
-    return Math.min(...lances.map(l => l.valor_lance));
+    return lances.reduce((min, l) => l.valor_lance < min ? l.valor_lance : min, Infinity);
   }, [lances, event?.budget_estimate]);
 
   if (loadingEvent) return <Skeleton className="h-96 w-full" />;
