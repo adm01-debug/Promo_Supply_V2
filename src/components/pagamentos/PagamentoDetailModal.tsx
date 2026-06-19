@@ -78,7 +78,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
   const handleUploadComprovante = useCallback(async (file: File) => {
     if (!pagamento || !user) return;
     if (!tenantId) {
-      toast.error('Organização não identificada. Faça login novamente.');
+      toast({ title: 'Organização não identificada', description: 'Faça login novamente.', variant: 'destructive' });
       return;
     }
     setUploading(true);
