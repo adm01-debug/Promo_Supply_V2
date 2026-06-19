@@ -29,7 +29,7 @@ interface Props {
 }
 
 export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirmarPagamento }: Props) => {
-  const { user } = useAuth();
+  const { user, tenantId } = useAuth();
   const queryClient = useQueryClient();
   const [valorParcial, setValorParcial] = useState("");
   const [uploading, setUploading] = useState(false);
