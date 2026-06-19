@@ -208,8 +208,9 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
                       </div>
                       <Progress value={progressValue} className="h-2" />
                     </Card>
-                  );
-                })}
+                    );
+                  });
+                })()}
               </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground text-sm">
