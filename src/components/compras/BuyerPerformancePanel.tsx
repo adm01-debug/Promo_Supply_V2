@@ -144,7 +144,7 @@ export const BuyerPerformancePanel = () => {
         <div className="space-y-2">
           {stats.topEconomias.length > 0 ? (
             stats.topEconomias.map((item, index) => (
-              <div key={index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+              <div key={`${item.produto}-${index}`} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-muted-foreground w-4">
                     #{index + 1}
