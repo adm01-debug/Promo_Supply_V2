@@ -50,6 +50,7 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
 
       <ThemeToggle />
       <LanguageSwitcher />
+      <EmpresaSelector className="hidden md:inline-flex" />
       <TenantSwitcher />
 
       <Suspense fallback={null}>
