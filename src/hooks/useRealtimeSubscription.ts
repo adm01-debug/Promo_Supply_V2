@@ -3,6 +3,29 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { logger } from '@/lib/logger';
+import { useAuth } from '@/features/auth/hooks/useAuthContext';
+
+/**
+ * Tables that carry a `tenant_id` column. Realtime subscriptions on these
+ * tables MUST be scoped to the active tenant to prevent cross-tenant leakage.
+ * Keep in sync with migrations that add `tenant_id`.
+ */
+const TENANT_SCOPED_TABLES = new Set<string>([
+  'solicitacoes',
+  'pedidos',
+  'cotacoes',
+  'pagamentos',
+  'fornecedores',
+  'contracts',
+  'approval_workflows',
+  'approval_steps',
+  'devolucoes',
+  'creditos_fornecedor',
+  'contact_notes',
+  'licitacoes',
+  'licitacao_lances',
+  'notifications',
+]);
 
 type TableName = 'solicitacoes' | 'pedidos' | 'cotacoes' | 'pagamentos' | 'notifications' | 'fornecedores' | 'contracts' | 'approval_workflows' | 'approval_steps' | 'devolucoes' | 'creditos_fornecedor' | 'contact_notes' | 'licitacoes' | 'licitacao_lances';
 
