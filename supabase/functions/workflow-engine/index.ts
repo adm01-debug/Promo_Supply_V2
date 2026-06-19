@@ -8,11 +8,26 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
+  }
 
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   const logger = new EdgeLogger("workflow-engine", requestId);
 
   try {
+    // SECURITY: authenticate caller and resolve tenant from DB (never trust header alone)
+    const { getAuthUser, getTenantId } = await import("../_shared/security.ts");
+    const { user } = await getAuthUser(req);
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -21,9 +36,10 @@ serve(async (req) => {
     // Contract Validation: Ensures type safety and catches malformed payloads before logic execution
     const data = await validateBody(req, WorkflowContract, logger);
     const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, approver_id, comment } = data;
-    
-    const { validateTenant } = await import("../_shared/security.ts");
-    const tenant_id = validateTenant(req);
+
+    const tenant_id = await getTenantId(supabase, user, req);
+
+
 
 
 
