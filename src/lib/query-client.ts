@@ -31,6 +31,6 @@ export const queryClient = new QueryClient({
  * Used for offline support and faster subsequent loads.
  */
 export const persister = createSyncStoragePersister({
-  storage: window.localStorage,
+  storage: typeof window !== 'undefined' ? window.localStorage : undefined,
   key: 'PROMO_SUPPLY_CACHE',
 });

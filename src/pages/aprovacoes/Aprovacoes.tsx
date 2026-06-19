@@ -36,10 +36,6 @@ const Aprovacoes = () => {
 
   useEffect(() => {
     checkEscalations();
-    const interval = setInterval(() => {
-      checkEscalations();
-    }, 5 * 60 * 1000);
-    return () => clearInterval(interval);
   }, [checkEscalations]);
 
   useEffect(() => {
