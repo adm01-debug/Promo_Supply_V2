@@ -5,10 +5,13 @@ import { PiggyBank, TrendingDown, Award, ArrowUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 export const BuyerPerformancePanel = () => {
+  const { organizationId } = useAuth();
+
   const { data: cotacoes, isLoading } = useQuery({
-    queryKey: ['buyer-performance-cotacoes'],
+    queryKey: ['buyer-performance-cotacoes', organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('cotacoes')
@@ -17,10 +20,11 @@ export const BuyerPerformancePanel = () => {
       return data || [];
     },
     staleTime: 60_000,
+    enabled: !!organizationId,
   });
 
   const { data: solicitacoes } = useQuery({
-    queryKey: ['buyer-performance-solicitacoes'],
+    queryKey: ['buyer-performance-solicitacoes', organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('solicitacoes')
@@ -29,6 +33,7 @@ export const BuyerPerformancePanel = () => {
       return data || [];
     },
     staleTime: 60_000,
+    enabled: !!organizationId,
   });
 
   const stats = useMemo(() => {
