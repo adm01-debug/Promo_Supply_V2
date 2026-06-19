@@ -77,9 +77,9 @@ const SortableItem = memo(function SortableItem({ solicitacao, isDragging, selec
       />
     </div>
   );
-}
+});
 
-function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, selectable, selected, onSelectChange }: any) {
+const SolicitacaoKanbanCard = memo(function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, selectable, selected, onSelectChange }: any) {
   const deadline = new Date(solicitacao.prazoEntrega);
   const daysRemaining = differenceInDays(deadline, new Date());
   const isOverdue = isPast(deadline) && solicitacao.status !== 'ENTREGUE';
