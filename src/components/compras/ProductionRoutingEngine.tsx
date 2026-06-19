@@ -105,9 +105,10 @@ import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 export const SourcingIntelligenceBanner: React.FC<{ items: any[] }> = ({ items }) => {
+  const produtoIds = useMemo(() => items.map(i => i.produto_id), [items]);
   // Fetch real supplier ecosystems for the first few items
   const { data: backups = [] } = useQuery({
-    queryKey: ['sourcing-alternatives', items.map(i => i.produto_id)],
+    queryKey: ['sourcing-alternatives', produtoIds],
     queryFn: async () => {
       const results = [];
       for (const item of items) {
