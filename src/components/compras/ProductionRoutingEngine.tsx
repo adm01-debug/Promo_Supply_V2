@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Zap, AlertTriangle, Clock, Target, CheckCircle2, Factory } from "lucide-react";
