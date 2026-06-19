@@ -16,10 +16,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [tenantId, setTenantId] = useState<string | null>(null);
   const [availableTenants, setAvailableTenants] = useState<Tenant[]>([]);
+  const [selectedEmpresaId, setSelectedEmpresaIdState] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return window.localStorage.getItem('selectedEmpresaId');
+  });
   const [loading, setLoading] = useState(true);
   const fetchedUserIdRef = useRef<string | null>(null);
   const isFetchingRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const setSelectedEmpresa = useCallback((empresaId: string | null) => {
+    setSelectedEmpresaIdState(empresaId);
+    if (typeof window !== 'undefined') {
+      if (empresaId) window.localStorage.setItem('selectedEmpresaId', empresaId);
+      else window.localStorage.removeItem('selectedEmpresaId');
+    }
+    // Invalida queries para refetch com novo filtro
+    queryClient.invalidateQueries();
+  }, []);
 
   const fetchUserData = useCallback(async (userId: string) => {
     // Deduplicate: skip if already fetched for this user or currently fetching
