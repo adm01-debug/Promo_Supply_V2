@@ -1,4 +1,4 @@
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, ReactNode } from "react";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { logger } from "@/lib/logger";
 import { Toaster } from "@/components/ui/toaster";
@@ -6,7 +6,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { queryClient, persister } from "@/lib/query-client";
 import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "@/features/auth";
+import { AuthProvider, useAuth } from "@/features/auth";
 import { PWAInstallPrompt } from "@/components/pwa/PWAInstallPrompt";
 import { ThemeProvider } from "next-themes";
 import { PageLoader } from "@/features/layout/components/PageLoader";
@@ -27,6 +27,28 @@ const AppContent = () => {
   );
 };
 
+/**
+ * Fix #4: PersistGate scopes the React Query persisted cache to the current
+ * user id via the `buster`. When the user changes (or signs out), the buster
+ * changes and the persister automatically discards the previous user's cache,
+ * preventing cross-user data leaks on shared machines.
+ */
+const PersistGate = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuth();
+  return (
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{
+        persister,
+        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+        buster: user?.id ?? 'anon',
+      }}
+    >
+      {children}
+    </PersistQueryClientProvider>
+  );
+};
+
 
 const App = () => {
   usePerformanceMonitor();
@@ -39,10 +61,7 @@ const App = () => {
     <AuthProvider>
       <div className="min-h-screen">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <PersistQueryClientProvider 
-            client={queryClient}
-            persistOptions={{ persister, maxAge: 1000 * 60 * 60 * 24 }} // 24 hours
-          >
+          <PersistGate>
             <AccessibilityProvider>
               <TooltipProvider>
                 <SkipToContent />
@@ -61,7 +80,7 @@ const App = () => {
                 </BrowserRouter>
               </TooltipProvider>
             </AccessibilityProvider>
-          </PersistQueryClientProvider>
+          </PersistGate>
         </ThemeProvider>
       </div>
     </AuthProvider>
