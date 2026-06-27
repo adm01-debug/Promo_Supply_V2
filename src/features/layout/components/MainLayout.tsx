@@ -30,6 +30,7 @@ import { Separator } from "@/components/ui/separator";
 import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { EliteBackground } from "@/components/layout/EliteBackground";
+import { PageTransition } from "@/features/layout/transitions";
 
 interface MainLayoutProps {
   children: React.ReactNode;
