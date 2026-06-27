@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
-import { AnimatePresence } from "framer-motion";
+
 import { Shell } from "@/features/layout/components/Shell";
 import { RouteSkeleton } from "@/components/navigation/RouteSkeleton";
 import { PageLoader } from "@/features/layout/components/PageLoader";
@@ -63,8 +63,8 @@ export const AnimatedRoutes = () => {
 
   return (
     <div className="w-full min-h-screen">
-      <AnimatePresence mode="wait">
-        <Routes location={location}>
+      <Routes location={location}>
+
           <Route path="/auth" element={
             <Suspense fallback={<PageLoader />}>
               <Auth />
@@ -128,9 +128,9 @@ export const AnimatedRoutes = () => {
             <Suspense fallback={<PageLoader />}>
               <NotFound />
             </Suspense>
-          } />
-        </Routes>
-      </AnimatePresence>
+        } />
+      </Routes>
     </div>
   );
 };
+

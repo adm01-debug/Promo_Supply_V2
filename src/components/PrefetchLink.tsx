@@ -1,10 +1,13 @@
 /**
- * Componente Link com prefetch automático
+ * Componente Link com prefetch automático de DADOS (React Query) e do
+ * CHUNK JS da rota destino, no hover/focus do usuário.
  */
 
 import React, { useCallback, useRef, forwardRef } from 'react';
 import { Link, LinkProps } from 'react-router-dom';
 import { usePrefetch } from '@/hooks/usePrefetch';
+import { prefetchRouteChunk } from '@/lib/routePrefetch';
+
 
 interface PrefetchLinkProps extends LinkProps {
   prefetch?: boolean;
@@ -23,6 +26,9 @@ export const PrefetchLink = forwardRef<HTMLAnchorElement, PrefetchLinkProps>(
     const handleMouseEnter = useCallback(
       (e: React.MouseEvent<HTMLAnchorElement>) => {
         if (prefetch) {
+          // Chunk JS: warm immediately so click feels instant.
+          prefetchRouteChunk(route);
+          // Data: small delay to avoid wasting fetches on quick mouse passes.
           timeoutRef.current = setTimeout(() => {
             prefetchByRoute(route);
           }, prefetchDelay);
@@ -42,12 +48,14 @@ export const PrefetchLink = forwardRef<HTMLAnchorElement, PrefetchLinkProps>(
     const handleFocus = useCallback(
       (e: React.FocusEvent<HTMLAnchorElement>) => {
         if (prefetch) {
+          prefetchRouteChunk(route);
           prefetchByRoute(route);
         }
         onFocus?.(e);
       },
       [prefetch, route, onFocus, prefetchByRoute]
     );
+
 
     return (
       <Link

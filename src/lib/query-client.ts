@@ -1,4 +1,4 @@
-import { QueryClient } from "@tanstack/react-query";
+import { QueryClient, keepPreviousData } from "@tanstack/react-query";
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
 
 /**
@@ -13,6 +13,10 @@ export const DEFAULT_GC_TIME = 5 * 60_000;
 
 /**
  * React Query Client instance with global defaults.
+ *
+ * `placeholderData: keepPreviousData` makes paginated / filtered queries
+ * keep showing the previous result while the new one is fetched, eliminating
+ * the blank-flash that hurts perceived navigation fluidity.
  */
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,11 +24,14 @@ export const queryClient = new QueryClient({
       staleTime: DEFAULT_STALE_TIME,
       gcTime: DEFAULT_GC_TIME,
       refetchOnWindowFocus: false,
+      refetchOnReconnect: "always",
       retry: 1,
       retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+      placeholderData: keepPreviousData,
     },
   },
 });
+
 
 /**
  * Persister for React Query to sync cache with localStorage.
