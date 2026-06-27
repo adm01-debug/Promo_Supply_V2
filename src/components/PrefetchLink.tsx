@@ -26,6 +26,9 @@ export const PrefetchLink = forwardRef<HTMLAnchorElement, PrefetchLinkProps>(
     const handleMouseEnter = useCallback(
       (e: React.MouseEvent<HTMLAnchorElement>) => {
         if (prefetch) {
+          // Chunk JS: warm immediately so click feels instant.
+          prefetchRouteChunk(route);
+          // Data: small delay to avoid wasting fetches on quick mouse passes.
           timeoutRef.current = setTimeout(() => {
             prefetchByRoute(route);
           }, prefetchDelay);
@@ -45,12 +48,14 @@ export const PrefetchLink = forwardRef<HTMLAnchorElement, PrefetchLinkProps>(
     const handleFocus = useCallback(
       (e: React.FocusEvent<HTMLAnchorElement>) => {
         if (prefetch) {
+          prefetchRouteChunk(route);
           prefetchByRoute(route);
         }
         onFocus?.(e);
       },
       [prefetch, route, onFocus, prefetchByRoute]
     );
+
 
     return (
       <Link
