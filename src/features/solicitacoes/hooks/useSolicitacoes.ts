@@ -292,19 +292,24 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   }, [solicitacoes, createSolicitacao]);
 
   const { data: costCenters = [], isLoading: loadingCostCenters } = useQuery({
-    queryKey: ['cost-centers'],
+    queryKey: ['cost-centers', organizationId],
     queryFn: async () => {
+      if (!organizationId) return [] as CostCenter[];
+      // RLS already scopes by tenant/group; explicit columns trim payload.
       const { data, error } = await supabase
         .from('cost_centers')
         .select(`
-          *,
+          id, name, code, tenant_id, manager_id, parent_id, is_active,
+          department, approval_threshold, total_budget, committed_amount, used_amount,
+          created_at, updated_at,
           manager:profiles(full_name)
         `)
         .eq('is_active', true)
         .order('name');
       if (error) throw error;
-      return (data || []) as CostCenter[];
+      return (data || []) as unknown as CostCenter[];
     },
+    enabled: !!organizationId,
     staleTime: 300_000,
   });
 
