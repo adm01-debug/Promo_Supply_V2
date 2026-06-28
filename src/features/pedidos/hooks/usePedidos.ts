@@ -75,7 +75,10 @@ async function fetchPedidosData(userId: string | undefined, tenantId: string | n
   let query = supabase
     .from('pedidos')
     .select(`
-      *,
+      id, numero, status, fornecedor_id, solicitacao_id, cotacao_id,
+      valor_total, valor_frete, desconto, data_emissao, data_previsao, data_entrega,
+      condicao_pagamento, endereco_entrega, observacoes, comprador_id,
+      organization_id, tenant_id, created_at, updated_at,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
       solicitacao:solicitacoes(id, numero, titulo)
     `, { count: 'exact' })
