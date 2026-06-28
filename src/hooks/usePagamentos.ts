@@ -59,7 +59,10 @@ async function fetchPagamentosData(userId: string | undefined, organizationId: s
   let query = supabase
     .from('pagamentos')
     .select(`
-      *,
+      id, numero, status, fornecedor_id, pedido_id, cost_center_id,
+      valor, valor_pago, data_vencimento, data_pagamento, data_aprovacao,
+      forma_pagamento, numero_nf, chave_nf, observacoes,
+      aprovador_id, created_by, organization_id, tenant_id, created_at, updated_at,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
       pedido:pedidos(id, numero),
       cost_center:cost_centers(id, name, code)
