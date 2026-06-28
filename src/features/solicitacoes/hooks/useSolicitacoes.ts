@@ -88,7 +88,7 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
 
   const { data, error, count } = await query;
   if (error) throw error;
-  return { data: (data as Solicitacao[]) || [], totalCount: count || 0 };
+  return { data: (data as unknown as Solicitacao[]) || [], totalCount: count || 0 };
 }
 
 export function useSolicitacoes(filters?: SolicitacaoFilters) {
