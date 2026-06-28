@@ -292,19 +292,22 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   }, [solicitacoes, createSolicitacao]);
 
   const { data: costCenters = [], isLoading: loadingCostCenters } = useQuery({
-    queryKey: ['cost-centers'],
+    queryKey: ['cost-centers', organizationId],
     queryFn: async () => {
+      if (!organizationId) return [] as CostCenter[];
       const { data, error } = await supabase
         .from('cost_centers')
         .select(`
-          *,
+          id, name, code, organization_id, manager_id, is_active, budget_limit, created_at, updated_at,
           manager:profiles(full_name)
         `)
+        .eq('organization_id', organizationId)
         .eq('is_active', true)
         .order('name');
       if (error) throw error;
       return (data || []) as CostCenter[];
     },
+    enabled: !!organizationId,
     staleTime: 300_000,
   });
 
