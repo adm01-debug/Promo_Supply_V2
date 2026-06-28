@@ -59,7 +59,11 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
   let query = supabase
     .from('solicitacoes')
     .select(`
-      *,
+      id, numero, titulo, descricao, tipo, status, prioridade,
+      valor_estimado, quantidade, unidade, data_necessidade,
+      departamento, centro_custo, cost_center_id, categoria_id, fornecedor_id,
+      justificativa, solicitante_id, aprovador_id, organization_id, tenant_id,
+      created_at, updated_at,
       fornecedor:fornecedores(razao_social, nome_fantasia),
       categoria:categorias(nome),
       cost_center:cost_centers(name, code),
