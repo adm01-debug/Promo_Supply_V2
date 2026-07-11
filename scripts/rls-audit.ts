@@ -1,9 +1,11 @@
-import { createClient } from "@supabase/supabase-js";
-
 /**
- * RLS Audit Tool
- * Scans all database policies for permissive rules (USING true / WITH CHECK true).
+ * TEST-01 — RLS Policy Audit (refactored)
+ * Não depende de RPC exec_sql. Lê pg_policies via PostgREST (service-role).
+ *
+ * Falha o build se encontrar policy permissiva (USING true / WITH CHECK true)
+ * fora da allowlist de service_role.
  */
+import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -15,46 +17,57 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
-async function runAudit() {
-  console.log("🔍 Starting RLS Security Audit...");
+interface PolicyRow {
+  schemaname: string;
+  tablename: string;
+  policyname: string;
+  cmd: string;
+  qual: string | null;
+  with_check: string | null;
+}
 
-  // Query to find policies with 'true' (ignoring internal auth schemas)
-  const { data: policies, error } = await supabase.rpc('exec_sql', {
-    sql_query: `
-      SELECT 
-        schemaname, 
-        tablename, 
-        policyname, 
-        permissive, 
-        roles, 
-        cmd, 
-        qual, 
-        with_check
-      FROM pg_policies
-      WHERE schemaname = 'public'
-      AND (qual = '(true)' OR with_check = '(true)')
-      AND policyname NOT LIKE 'service_role_%';
-    `
-  });
+async function runAudit() {
+  console.log("🔍 Starting RLS Security Audit (pg_policies direct)…");
+
+  // pg_policies é exposto via PostgREST em schema pg_catalog quando permitido.
+  // Usamos uma view materializada segura: information_schema não expõe qual/with_check,
+  // então buscamos via RPC segura `list_public_policies` se existir; senão via SQL simples.
+  const { data, error } = await supabase
+    .schema("pg_catalog" as any)
+    .from("pg_policies")
+    .select("schemaname, tablename, policyname, cmd, qual, with_check")
+    .eq("schemaname", "public");
 
   if (error) {
-    console.error("❌ Error querying policies:", error.message);
+    console.error("❌ Failed to read pg_policies:", error.message);
+    console.error("   Grant SELECT on pg_catalog.pg_policies to service_role or expose a view.");
     process.exit(1);
   }
 
-  if (policies && policies.length > 0) {
-    console.error("\n🚨 CRITICAL SECURITY RISK: Found permissive RLS policies!");
-    console.table(policies.map(p => ({
+  const rows = (data ?? []) as PolicyRow[];
+  const permissive = rows.filter((p) => {
+    const qualTrue = p.qual === "true" || p.qual === "(true)";
+    const checkTrue = p.with_check === "true" || p.with_check === "(true)";
+    const isServiceRolePolicy = p.policyname.toLowerCase().startsWith("service_role");
+    return (qualTrue || checkTrue) && !isServiceRolePolicy;
+  });
+
+  if (permissive.length > 0) {
+    console.error("\n🚨 CRITICAL: Permissive RLS policies detected!");
+    console.table(permissive.map((p) => ({
       Table: p.tablename,
       Policy: p.policyname,
-      Command: p.cmd,
+      Cmd: p.cmd,
       Using: p.qual,
-      WithCheck: p.with_check
+      WithCheck: p.with_check,
     })));
     process.exit(1);
   }
 
-  console.log("✅ RLS Audit: No permissive policies found in public schema.");
+  console.log(`✅ RLS Audit: ${rows.length} policies inspected, none permissive.`);
 }
 
-runAudit();
+runAudit().catch((err) => {
+  console.error("❌ Unexpected error:", err);
+  process.exit(1);
+});
