@@ -106,8 +106,8 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
           }
         }],
         tool_choice: { type: "function", function: { name: "negotiation_analysis" } },
-      }),
-    }), { retries: 2, shouldRetry: (err) => /5\d\d|429|timeout|network/i.test(String((err as Error)?.message)) });
+      },
+    });
 
     if (!response.ok) {
       if (response.status === 429) {
