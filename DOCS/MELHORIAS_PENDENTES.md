@@ -1,6 +1,6 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3.1)
+# Melhorias Pendentes — Auditoria Consolidada (v3.2)
 
-**Última atualização:** 2026-07-11 (pós-adoção `fetchWithTimeout` em 6 edge functions AI/push/email)
+**Última atualização:** 2026-07-11 (pós-adoção circuit breaker unificado no AI Gateway)
 
 ## Status Atual: 10/10 🏆
 
@@ -14,7 +14,7 @@
 - B-02: HIBP ativo (`password_hibp_enabled=true`)
 - B-03: Benchmark EXPLAIN ANALYZE versionado (`scripts/db-explain-analyze.ts`)
 - B-05: `fetchWithTimeout` disponível + adotado em spot-proxy, 4 funções AI (30s), send-push-notification (10s) e check-cotacao-followup/Resend (10s)
-- INT-01: Circuit breaker adotado em `spot-proxy::loginToSpot` (503 fail-fast)
+- INT-01: Circuit breaker adotado em `spot-proxy::loginToSpot` + **helper `_shared/ai_gateway.ts`** unificando timeout + retry + breaker nas 4 funções AI (5 falhas ⇒ 503 por 30s)
 - INT-02: Retry com backoff exponencial + jitter (`_shared/retry.ts`) adotado em 4 funções AI Gateway (retry apenas em 5xx/429/timeout)
 - INT-06: Outbox pattern (`process-outbox` + `integration_outbox`)
 - OBS-01: `alert-dispatcher` + cron 1min

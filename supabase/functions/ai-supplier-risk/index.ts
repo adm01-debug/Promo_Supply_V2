@@ -3,8 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
-import { fetchWithTimeout } from "../_shared/http.ts";
-import { retry } from "../_shared/retry.ts";
+import { callAIGateway, AIGatewayCircuitOpenError, circuitOpenResponse } from "../_shared/ai_gateway.ts";
 const getLogger = (req: Request) => {
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   return new EdgeLogger("ai-supplier-risk", requestId);
@@ -83,21 +82,16 @@ ${JSON.stringify(marketData || {}, null, 2)}
 
 Forneça uma análise de risco completa e acionável.`;
 
-    const response = await retry(() => fetchWithTimeout("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      timeoutMs: 30000,
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    const response = await callAIGateway({
+      apiKey: LOVABLE_API_KEY,
+      body: {
         model: "google/gemini-2.5-flash",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-      }),
-    }), { retries: 2, shouldRetry: (err) => /5\d\d|429|timeout|network/i.test(String((err as Error)?.message)) });
+      },
+    });
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -144,7 +138,8 @@ Forneça uma análise de risco completa e acionável.`;
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
-    logger.error("Erro fatal na função ai-supplier-risk", { error: error.message });
+    if (error instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
+    logger.error("Erro fatal na função ai-supplier-risk", { error: (error as Error).message });
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(JSON.stringify({ error: errorMessage }), {
