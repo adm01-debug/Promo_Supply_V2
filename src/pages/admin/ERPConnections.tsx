@@ -49,11 +49,9 @@ const ERPConnections = () => {
 
   const syncMutation = useMutation({
     mutationFn: async ({ connectionId, entity }: { connectionId: string, entity: string }) => {
-      if (!organizationId) throw new Error("ID da organização não encontrado");
-      
+      // M-02: tenant agora é resolvido no servidor a partir do JWT (user_tenants).
       const { data, error } = await supabase.functions.invoke('erp-sync', {
         body: { action: 'pull', connectionId, entity },
-        headers: { 'x-tenant-id': organizationId }
       });
       if (error) throw error;
       return data;
