@@ -7,7 +7,7 @@
 ### ✅ Concluídos (Ondas 1-5)
 - M-01: `SECURITY DEFINER` reduzido (allowlist arquitetural documentada)
 - M-02: `x-tenant-id` legado eliminado em produção e harnesses
-- M-03: Retenção via `cleanup_old_audit_logs` (365d) e `cleanup_old_security_logs` (180d)
+- M-03: Retenção via `cleanup_old_audit_logs` (365d), `cleanup_old_security_logs` (180d), `cleanup_old_webhook_events` (90d) e `cleanup_old_integration_outbox` (delivered 30d/dead 180d)
 - M-05: Rate-limit em 10 edge functions críticas (SPOT, PunchOut, ERP, IA, SCIM, push)
 - M-06: Idempotência via `webhook_events` em webhooks e IA
 - B-01: CORS allowlist por ambiente (`buildCorsHeaders`)
