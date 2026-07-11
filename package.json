@@ -10,6 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
+    "test:rls": "vitest run --config ./vitest.rls.config.ts",
     "test:bridge": "bun run scripts/validate-bridge.ts",
     "test:watch": "vitest",
     "test:e2e": "playwright test",

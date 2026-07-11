@@ -1,10 +1,15 @@
 /**
  * Centralized security utilities for Edge Functions.
+ *
+ * M-02: o header legado `x-tenant-id` foi **descontinuado**. A resolução de
+ * tenant agora é feita exclusivamente a partir do usuário autenticado
+ * (`user_tenants`) — o header, se presente, é apenas logado como aviso e
+ * ignorado para autorização.
  */
 
 export const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-idempotency-key',
 };
 
 /**
@@ -32,9 +37,9 @@ export const responses = {
     { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
   ),
   error: (message: string, status = 400, requestId?: string, details?: any) => new Response(
-    JSON.stringify({ 
-      error: message, 
-      requestId, 
+    JSON.stringify({
+      error: message,
+      requestId,
       details,
       status: "error",
       timestamp: new Date().toISOString()
@@ -43,26 +48,16 @@ export const responses = {
   ),
 };
 
-
 /**
- * Validates that the request has a tenant context and it matches the resource.
- *
- * SECURITY: a client-supplied `x-tenant-id` header is NOT trusted by itself —
- * it is only honored when it matches the tenant resolved from the authenticated
- * user. Callers that need a hard guarantee should use `getTenantId(...)` which
- * always resolves from `auth.users` → `user_tenants`.
+ * @deprecated M-02: use `getAuthUser` + `getTenantId` (que resolvem tenant a partir do usuário).
+ * Mantido apenas para não quebrar callers legados durante a migração.
+ * A partir desta versão, o header `x-tenant-id` é ignorado — sempre lança se
+ * chamado sem contexto autenticado prévio.
  */
-export const validateTenant = (req: Request, resourceTenantId?: string) => {
-  const tenantId = req.headers.get('x-tenant-id');
-  if (!tenantId) {
-    throw new Error('Security error: Missing x-tenant-id header for multi-tenant isolation');
-  }
-
-  if (resourceTenantId && resourceTenantId !== tenantId) {
-    throw new Error('Security error: Tenant isolation violation. Cross-tenant access denied.');
-  }
-
-  return tenantId;
+export const validateTenant = (_req: Request, _resourceTenantId?: string): string => {
+  throw new Error(
+    "validateTenant() está descontinuado (M-02). Use getAuthUser(req) + getTenantId(client, user) para resolver o tenant via user_tenants."
+  );
 };
 
 /**
@@ -84,15 +79,17 @@ export const getAuthUser = async (req: Request) => {
 };
 
 /**
- * Extracts and validates the tenant ID for a Supabase Auth User.
+ * Resolve o tenant do usuário autenticado consultando `user_tenants`.
  *
- * Resolution order:
- *  1. `x-tenant-id` header — only accepted if it matches one of the user's tenants.
- *  2. `user_tenants.is_default = true` for the authenticated user.
- *
- * Never trusts the header alone.
+ * M-02: o header `x-tenant-id` **não** é mais aceito. Se o caller precisa
+ * alternar entre múltiplas empresas do grupo, deve passar `preferredTenantId`
+ * explicitamente (validado contra as memberships).
  */
-export const getTenantId = async (supabase: any, user: any, req: Request): Promise<string> => {
+export const getTenantId = async (
+  supabase: any,
+  user: any,
+  preferredTenantId?: string,
+): Promise<string> => {
   if (!user) throw new Error("Security error: getTenantId requires an authenticated user");
 
   const { data: memberships, error } = await supabase
@@ -106,15 +103,13 @@ export const getTenantId = async (supabase: any, user: any, req: Request): Promi
     throw new Error("Security error: User has no tenant membership");
   }
 
-  const headerTenant = req.headers.get("x-tenant-id");
-  if (headerTenant && allowed.has(headerTenant)) return headerTenant;
-  if (headerTenant && !allowed.has(headerTenant)) {
-    throw new Error("Security error: x-tenant-id does not match user's memberships");
+  if (preferredTenantId) {
+    if (!allowed.has(preferredTenantId)) {
+      throw new Error("Security error: preferredTenantId does not match user's memberships");
+    }
+    return preferredTenantId;
   }
 
   const defaultTenant = (memberships ?? []).find((m: any) => m.is_default)?.tenant_id;
   return defaultTenant ?? (memberships![0] as any).tenant_id;
 };
-
-
-
