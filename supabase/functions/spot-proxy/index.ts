@@ -1,15 +1,10 @@
+import { corsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { getBreaker } from "../_shared/circuit_breaker.ts";
 
 // INT-01: Circuit breaker para SPOT — abre após 5 falhas, cooldown 30s.
 const spotBreaker = getBreaker("spot-login", { failureThreshold: 5, cooldownMs: 30_000 });
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-request-id",
-};
 
 const SPOT_BASE = "https://www.spotgifts.com.br";
 const LANG = "pt";
