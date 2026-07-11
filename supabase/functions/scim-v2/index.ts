@@ -1,9 +1,10 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-idempotency-key",
 };
 
 const encoder = new TextEncoder();
@@ -40,6 +41,19 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    // M-05: rate-limit por IP (SCIM é chamado por IdP externo, sem user.id).
+    const ip = req.headers.get("cf-connecting-ip")
+      ?? req.headers.get("x-forwarded-for")?.split(",")[0].trim()
+      ?? "unknown";
+    const rl = await checkRateLimit({
+      identifier: `scim:${ip}`,
+      endpoint: "scim-v2",
+      maxRequests: 120,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
 
     const token = authHeader.slice("Bearer ".length).trim();
     const supabaseAdmin = createClient(
