@@ -139,7 +139,14 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     throw new Error("Credenciais SPOT não configuradas no backend");
   }
 
+  // INT-01: Circuit breaker — falha rápido se SPOT está fora do ar.
+  if (!spotBreaker.canRequest()) {
+    throw new HttpError(503, "SPOT temporariamente indisponível (circuit breaker aberto)");
+  }
+
   const loginUrl = `${SPOT_BASE}/${LANG}/area-reservada/login/`;
+
+  try {
 
   // GET initial page to obtain PHPSESSID
   const initRes = await fetch(loginUrl, {
