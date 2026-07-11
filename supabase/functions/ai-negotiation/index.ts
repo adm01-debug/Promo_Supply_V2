@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
 import { NegotiationContract } from "../_shared/contracts.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
 
 serve(async (req) => {
@@ -26,8 +27,16 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
       return errorResponse(new Error("Sessão inválida"), logger);
-
     }
+
+    // M-05: rate-limit — IA custa tokens; 20 req/min por usuário.
+    const rl = await checkRateLimit({
+      identifier: user.id,
+      endpoint: "ai-negotiation",
+      maxRequests: 20,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
 
     // Standardized validation with auto-telemetry
     const validatedData = await validateBody(req, NegotiationContract, logger);

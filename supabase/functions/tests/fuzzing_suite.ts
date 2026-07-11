@@ -9,11 +9,11 @@ await load({ export: true, allowEmptyValues: true, examplePath: null });
 const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL") || "http://localhost:54321";
 const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY") || "anon";
 
+// M-02: header legado x-tenant-id removido; tenant vem do JWT.
 const baseHeaders = {
   apikey: SUPABASE_ANON_KEY,
   "Content-Type": "application/json",
   "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-  "x-tenant-id": "00000000-0000-0000-0000-000000000000"
 };
 
 /**

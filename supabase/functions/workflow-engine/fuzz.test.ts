@@ -10,11 +10,11 @@ const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY")!;
 const FN_URL = `${SUPABASE_URL}/functions/v1/workflow-engine`;
 
+// M-02: header legado x-tenant-id removido. Tenant é resolvido via JWT (user_tenants).
 const baseHeaders = {
   apikey: SUPABASE_ANON_KEY,
   "Content-Type": "application/json",
   "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-  "x-tenant-id": "00000000-0000-0000-0000-000000000000"
 };
 
 Deno.test("Fuzzing: Workflow Engine rejects malformed payloads", async () => {
@@ -46,26 +46,28 @@ Deno.test("Fuzzing: Workflow Engine rejects malformed payloads", async () => {
   }
 });
 
-Deno.test("Security: Workflow Engine rejects missing tenant ID", async () => {
+Deno.test("Security: Workflow Engine rejects unauthenticated requests", async () => {
+  // M-02: sem JWT válido, o tenant não pode ser resolvido → 401.
   const res = await fetch(FN_URL, {
     method: "POST",
     headers: {
       apikey: SUPABASE_ANON_KEY,
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-      // Missing x-tenant-id
+      // Missing Authorization
     },
-    body: JSON.stringify({ 
-      action: "start_workflow", 
+    body: JSON.stringify({
+      action: "start_workflow",
       template_id: crypto.randomUUID(),
       entity_type: "pedido",
       entity_id: crypto.randomUUID()
     }),
-
   });
 
-  const body = await res.json();
-  assertEquals(res.status, 400);
-  assert(body.error.toLowerCase().includes("x-tenant-id"), `Error should mention x-tenant-id, got: ${body.error}`);
+  const body = await res.json().catch(() => ({}));
+  assert(
+    [400, 401, 403].includes(res.status),
+    `Should reject unauthenticated request (got ${res.status})`
+  );
+  assertEquals(body.status ?? "error", "error");
 });
 

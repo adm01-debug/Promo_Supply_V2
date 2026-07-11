@@ -3,6 +3,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
 import { ERPSyncContract } from "../_shared/contracts.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+import { getIdempotentResponse, recordIdempotentResponse, deriveIdempotencyKey } from "../_shared/idempotency.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -18,10 +20,7 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const data = await validateBody(req, ERPSyncContract, logger);
-    const { action, connectionId, entity } = data;
-
-    // M-02: resolve tenant a partir do JWT (user_tenants), sem header x-tenant-id.
+    // M-02: resolve tenant a partir do JWT.
     const { getAuthUser, getTenantId } = await import("../_shared/security.ts");
     const { user, client: authClient } = await getAuthUser(req);
     if (!user) {
@@ -30,6 +29,29 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    // M-05: rate-limit 30 req/min por usuário (sync é operação pesada).
+    const rl = await checkRateLimit({
+      identifier: user.id,
+      endpoint: "erp-sync",
+      maxRequests: 30,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
+    // M-06: idempotência (webhooks ERP podem reentregar em falha parcial).
+    const bodyText = await req.text();
+    const idempotencyKey = await deriveIdempotencyKey(req, bodyText);
+    const cached = await getIdempotentResponse("erp-sync", idempotencyKey);
+    if (cached) {
+      logger.info("Idempotent replay", { key: idempotencyKey });
+      return cached.response(corsHeaders);
+    }
+
+    // Reconstrói request para validateBody (que consome req.json()).
+    const reqForValidation = new Request(req.url, { method: req.method, headers: req.headers, body: bodyText });
+    const data = await validateBody(reqForValidation, ERPSyncContract, logger);
+    const { action, connectionId, entity } = data;
     const tenantId = await getTenantId(authClient, user, (data as any).tenantId);
 
     logger.info(`Iniciando sincronização ERP`, { action, entity, connectionId, tenantId });
@@ -69,13 +91,16 @@ serve(async (req) => {
 
     logger.info("Sincronização ERP concluída com sucesso", { duration: Date.now() - startTime });
 
+    const responsePayload = {
+      message: `Sync ${entity} completed successfully`,
+      requestId,
+      timestamp: new Date().toISOString(),
+    };
+    await recordIdempotentResponse("erp-sync", idempotencyKey, responsePayload);
+
     return new Response(
-      JSON.stringify({ 
-        message: `Sync ${entity} completed successfully`,
-        requestId,
-        timestamp: new Date().toISOString()
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      JSON.stringify(responsePayload),
+      { headers: { ...corsHeaders, "Content-Type": "application/json", "x-request-id": requestId } }
     );
   } catch (error) {
     return errorResponse(error, logger);

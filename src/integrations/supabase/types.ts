@@ -2944,6 +2944,57 @@ export type Database = {
         }
         Relationships: []
       }
+      integration_outbox: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          delivered_at: string | null
+          endpoint: string
+          headers: Json | null
+          id: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          retries: number
+          status: string
+          target: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          delivered_at?: string | null
+          endpoint: string
+          headers?: Json | null
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload: Json
+          retries?: number
+          status?: string
+          target: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          delivered_at?: string | null
+          endpoint?: string
+          headers?: Json | null
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          retries?: number
+          status?: string
+          target?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ip_whitelist: {
         Row: {
           created_at: string
@@ -6422,6 +6473,9 @@ export type Database = {
         Row: {
           alert_type: string
           created_at: string | null
+          dispatch_error: string | null
+          dispatch_status: string | null
+          dispatched_at: string | null
           id: string
           message: string
           metadata: Json | null
@@ -6433,6 +6487,9 @@ export type Database = {
         Insert: {
           alert_type: string
           created_at?: string | null
+          dispatch_error?: string | null
+          dispatch_status?: string | null
+          dispatched_at?: string | null
           id?: string
           message: string
           metadata?: Json | null
@@ -6444,6 +6501,9 @@ export type Database = {
         Update: {
           alert_type?: string
           created_at?: string | null
+          dispatch_error?: string | null
+          dispatch_status?: string | null
+          dispatched_at?: string | null
           id?: string
           message?: string
           metadata?: Json | null
@@ -7450,6 +7510,8 @@ export type Database = {
         Returns: boolean
       }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
+      cleanup_old_audit_logs: { Args: never; Returns: number }
+      cleanup_old_security_logs: { Args: never; Returns: number }
       clear_login_lockout: { Args: { _email: string }; Returns: undefined }
       count_legacy_storage_urls: {
         Args: never
