@@ -20,10 +20,17 @@ serve(async (req) => {
 
     const data = await validateBody(req, ERPSyncContract, logger);
     const { action, connectionId, entity } = data;
-    
-    const { validateTenant } = await import("../_shared/security.ts");
-    const tenantId = validateTenant(req);
 
+    // M-02: resolve tenant a partir do JWT (user_tenants), sem header x-tenant-id.
+    const { getAuthUser, getTenantId } = await import("../_shared/security.ts");
+    const { user, client: authClient } = await getAuthUser(req);
+    if (!user) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const tenantId = await getTenantId(authClient, user, (data as any).tenantId);
 
     logger.info(`Iniciando sincronização ERP`, { action, entity, connectionId, tenantId });
 
