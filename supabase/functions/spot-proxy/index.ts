@@ -773,6 +773,14 @@ Deno.serve(async (req) => {
     // Verify authentication BEFORE processing
     const userId = await verifyAuth(req, supabase);
 
+    // M-05: rate limit uniforme por usuário (60 req/min).
+    const { checkRateLimit, rateLimitedResponse } = await import("../_shared/rate_limit.ts");
+    const rl = await checkRateLimit({ identifier: userId, endpoint: "spot-proxy", maxRequests: 60, windowSeconds: 60 });
+    if (!rl.allowed) {
+      logger.warn("spot-proxy rate limited", { userId, retry: rl.retryAfterSeconds });
+      return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    }
+
     const body = await readJsonBody(req);
     const action = readRequestAction(body);
 
