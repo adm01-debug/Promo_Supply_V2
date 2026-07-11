@@ -1,6 +1,6 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3)
+# Melhorias Pendentes — Auditoria Consolidada (v3.1)
 
-**Última atualização:** 2026-07-11 (pós-execução Onda Final Hardening)
+**Última atualização:** 2026-07-11 (pós-adoção `fetchWithTimeout` em 6 edge functions AI/push/email)
 
 ## Status Atual: 10/10 🏆
 
@@ -13,7 +13,7 @@
 - B-01: CORS allowlist por ambiente (`buildCorsHeaders`)
 - B-02: HIBP ativo (`password_hibp_enabled=true`)
 - B-03: Benchmark EXPLAIN ANALYZE versionado (`scripts/db-explain-analyze.ts`)
-- B-05: `fetchWithTimeout` disponível
+- B-05: `fetchWithTimeout` disponível + adotado em spot-proxy, 4 funções AI (30s), send-push-notification (10s) e check-cotacao-followup/Resend (10s)
 - INT-01: Circuit breaker adotado em `spot-proxy::loginToSpot` (503 fail-fast)
 - INT-02: Retry com backoff exponencial + jitter (`_shared/retry.ts`)
 - INT-06: Outbox pattern (`process-outbox` + `integration_outbox`)

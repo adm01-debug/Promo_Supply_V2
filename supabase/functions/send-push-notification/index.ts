@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
+import { fetchWithTimeout } from "../_shared/http.ts";
 interface PushPayload {
   title: string;
   message: string;
@@ -86,7 +87,8 @@ async function sendPushToSubscription(
   try {
     const payloadString = JSON.stringify(payload);
     
-    const response = await fetch(subscription.endpoint, {
+    const response = await fetchWithTimeout(subscription.endpoint, {
+      timeoutMs: 10000,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
