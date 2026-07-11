@@ -1,10 +1,14 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+import { deriveIdempotencyKey, getIdempotentResponse, recordIdempotentResponse } from "../_shared/idempotency.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-idempotency-key",
 };
+
+const SOURCE = "punchout";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -18,15 +22,29 @@ serve(async (req) => {
     });
   }
 
+  // M-05: rate limit por IP (webhooks anônimos).
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const rl = await checkRateLimit({
+    identifier: ip,
+    endpoint: `webhook:${SOURCE}`,
+    maxRequests: 30,
+    windowSeconds: 60,
+  });
+  if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
+  const bodyText = await req.text();
+  const idempotencyKey = await deriveIdempotencyKey(req, bodyText);
+
+  // M-05: se já processamos este evento, retorna a resposta anterior.
+  const cached = await getIdempotentResponse(SOURCE, idempotencyKey);
+  if (cached) return cached.response(corsHeaders);
+
   try {
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
 
-    // PunchOut suppliers usually send data as form-data or raw XML
-    const bodyText = await req.text();
-    
     // Simple parser for BuyerCookie and items (In production use fast-xml-parser)
     const buyerCookieMatch = bodyText.match(/<BuyerCookie>(.*?)<\/BuyerCookie>/);
     const buyerCookie = buyerCookieMatch ? buyerCookieMatch[1] : null;
@@ -47,14 +65,12 @@ serve(async (req) => {
     const isExpired = !Number.isFinite(createdAt) || Date.now() - createdAt > 30 * 60 * 1000;
     if (isExpired) throw new Error("Session expired");
 
-    // Mock cart parsing (In production, iterate over ItemIn elements)
     const mockCart = {
       items: [
-        { name: "Item From PunchOut", quantity: 1, price: 100, currency: "BRL" }
-      ]
+        { name: "Item From PunchOut", quantity: 1, price: 100, currency: "BRL" },
+      ],
     };
 
-    // Update session and create draft solicitation
     const { data: solicitation, error: solError } = await supabaseClient
       .from("solicitacoes")
       .insert({
@@ -62,7 +78,7 @@ serve(async (req) => {
         requester_id: session.user_id,
         status: "rascunho",
         observacoes: "Importado via PunchOut",
-        items: mockCart.items
+        items: mockCart.items,
       })
       .select()
       .single();
@@ -75,21 +91,25 @@ serve(async (req) => {
         status: "completed",
         cart_payload: mockCart,
         created_solicitacao_id: solicitation.id,
-        closed_at: new Date().toISOString()
+        closed_at: new Date().toISOString(),
       })
       .eq("id", session.id);
 
-    // Redirect user back to the application
-    return new Response(null, {
-      status: 303,
-      headers: {
-        ...corsHeaders,
-        "Location": `${session.return_url}?solicitation_id=${solicitation.id}`,
-      },
+    const redirectLocation = `${session.return_url}?solicitation_id=${solicitation.id}`;
+
+    // Registra a resposta processada para idempotência (payload cacheado é o location).
+    await recordIdempotentResponse(SOURCE, idempotencyKey, {
+      solicitation_id: solicitation.id,
+      redirect: redirectLocation,
     });
 
+    return new Response(null, {
+      status: 303,
+      headers: { ...corsHeaders, Location: redirectLocation },
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "PunchOut receive failed";
+    await recordIdempotentResponse(SOURCE, idempotencyKey, null, { status: "failed", errorMessage: message });
     return new Response(JSON.stringify({ error: message }), {
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
