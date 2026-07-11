@@ -6,7 +6,7 @@ import { EdgeLogger } from "../_shared/logger.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-tenant-id",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-idempotency-key",
 };
 
 serve(async (req) => {
@@ -73,9 +73,9 @@ serve(async (req) => {
           const response = await fetch(`${supabaseUrl}/functions/v1/${endpoint}`, {
             method: "POST",
             headers: {
+              // M-02: service_role bypassa RLS; tenant fica implícito no payload/RPC alvo.
               "Authorization": `Bearer ${supabaseServiceKey}`,
               "Content-Type": "application/json",
-              "x-tenant-id": "00000000-0000-0000-0000-000000000000"
             },
             body: JSON.stringify(item.payload)
           });

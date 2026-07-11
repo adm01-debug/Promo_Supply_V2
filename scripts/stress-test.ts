@@ -10,11 +10,11 @@ const ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "anon";
 const CONCURRENCY = 50; // Simultaneous requests
 const TOTAL_REQUESTS = 500;
 
+// M-02: header x-tenant-id removido; stress test roda como anon (rejeição esperada é parte da métrica).
 const headers = {
   "Content-Type": "application/json",
   "apikey": ANON_KEY,
   "Authorization": `Bearer ${ANON_KEY}`,
-  "x-tenant-id": "00000000-0000-0000-0000-000000000000"
 };
 
 const payload = {

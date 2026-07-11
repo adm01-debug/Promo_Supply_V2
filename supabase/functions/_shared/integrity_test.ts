@@ -71,7 +71,7 @@ export async function runIntegrityTests(baseUrl: string, anonKey: string) {
       response: bodyInvalid
     });
 
-    // Test 3: Multi-tenant Isolation (Missing x-tenant-id for sensitive functions)
+    // Test 3: Multi-tenant Isolation (missing/invalid JWT → tenant unresolvable)
     const resIsolation = await fetch(`${baseUrl}/${fnName}`, {
       method: 'POST',
       headers: {
