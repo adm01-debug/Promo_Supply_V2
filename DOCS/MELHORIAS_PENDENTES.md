@@ -16,7 +16,7 @@
 - B-05: `fetchWithTimeout` disponível + adotado em spot-proxy, 4 funções AI (30s), send-push-notification (10s) e check-cotacao-followup/Resend (10s)
 - INT-01: Circuit breaker adotado em `spot-proxy::loginToSpot` + **helper `_shared/ai_gateway.ts`** unificando timeout + retry + breaker nas 4 funções AI (5 falhas ⇒ 503 por 30s)
 - INT-02: Retry com backoff exponencial + jitter (`_shared/retry.ts`) adotado em 4 funções AI Gateway (retry apenas em 5xx/429/timeout)
-- INT-06: Outbox pattern (`process-outbox` + `integration_outbox`)
+- INT-06: Outbox pattern (`process-outbox` + `integration_outbox`) + trigger `alert_on_outbox_dead` emitindo `system_alerts` HIGH em dead-letter
 - OBS-01: `alert-dispatcher` + cron 1min
 - OBS-02: `x-request-id` propagado + `_invoke_edge_function` com trace ID
 - OPS-01: Runbook template (`DOCS/RUNBOOKS/rollback-template.md`)
