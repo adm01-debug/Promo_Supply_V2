@@ -1,6 +1,6 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3)
+# Melhorias Pendentes — Auditoria Consolidada (v3.1)
 
-**Última atualização:** 2026-07-11 (pós-execução Onda Final Hardening)
+**Última atualização:** 2026-07-11 (pós-adoção `fetchWithTimeout` em 6 edge functions AI/push/email)
 
 ## Status Atual: 10/10 🏆
 
