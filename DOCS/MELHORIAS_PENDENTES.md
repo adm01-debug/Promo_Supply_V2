@@ -1,13 +1,13 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3.2)
+# Melhorias Pendentes — Auditoria Consolidada (v3.3)
 
-**Última atualização:** 2026-07-11 (pós-adoção circuit breaker unificado no AI Gateway)
+**Última atualização:** 2026-07-11 (pós-retenção webhook_events/outbox + alerta dead-letter)
 
 ## Status Atual: 10/10 🏆
 
 ### ✅ Concluídos (Ondas 1-5)
 - M-01: `SECURITY DEFINER` reduzido (allowlist arquitetural documentada)
 - M-02: `x-tenant-id` legado eliminado em produção e harnesses
-- M-03: Retenção via `cleanup_old_audit_logs` (365d) e `cleanup_old_security_logs` (180d)
+- M-03: Retenção via `cleanup_old_audit_logs` (365d), `cleanup_old_security_logs` (180d), `cleanup_old_webhook_events` (90d) e `cleanup_old_integration_outbox` (delivered 30d/dead 180d)
 - M-05: Rate-limit em 10 edge functions críticas (SPOT, PunchOut, ERP, IA, SCIM, push)
 - M-06: Idempotência via `webhook_events` em webhooks e IA
 - B-01: CORS allowlist por ambiente (`buildCorsHeaders`)
@@ -16,7 +16,7 @@
 - B-05: `fetchWithTimeout` disponível + adotado em spot-proxy, 4 funções AI (30s), send-push-notification (10s) e check-cotacao-followup/Resend (10s)
 - INT-01: Circuit breaker adotado em `spot-proxy::loginToSpot` + **helper `_shared/ai_gateway.ts`** unificando timeout + retry + breaker nas 4 funções AI (5 falhas ⇒ 503 por 30s)
 - INT-02: Retry com backoff exponencial + jitter (`_shared/retry.ts`) adotado em 4 funções AI Gateway (retry apenas em 5xx/429/timeout)
-- INT-06: Outbox pattern (`process-outbox` + `integration_outbox`)
+- INT-06: Outbox pattern (`process-outbox` + `integration_outbox`) + trigger `alert_on_outbox_dead` emitindo `system_alerts` HIGH em dead-letter
 - OBS-01: `alert-dispatcher` + cron 1min
 - OBS-02: `x-request-id` propagado + `_invoke_edge_function` com trace ID
 - OPS-01: Runbook template (`DOCS/RUNBOOKS/rollback-template.md`)
