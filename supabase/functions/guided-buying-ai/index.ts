@@ -3,6 +3,8 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://esm.sh/zod@3.22.4";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { corsHeaders, validateBody, errorResponse } from "../_shared/validation.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+import { getAuthUser } from "../_shared/security.ts";
 
 const requestSchema = z.object({
   message: z.string().min(1),
@@ -19,7 +21,16 @@ serve(async (req) => {
   const logger = new EdgeLogger('guided-buying-ai', requestId);
 
   try {
+    const { user } = await getAuthUser(req);
+    if (!user) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const rl = await checkRateLimit({ identifier: user.id, endpoint: "guided-buying-ai", maxRequests: 30, windowSeconds: 60 });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
     const { message, history, context } = await validateBody(req, requestSchema);
+
+
 
     logger.info("Guided buying request received", { messageLength: message.length });
 

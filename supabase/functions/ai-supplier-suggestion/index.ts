@@ -2,6 +2,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
 import { SupplierSuggestionContract } from "../_shared/contracts.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -25,6 +26,9 @@ Deno.serve(async (req) => {
     
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) throw new Error("Não autorizado: token inválido");
+
+    const rl = await checkRateLimit({ identifier: user.id, endpoint: "ai-supplier-suggestion", maxRequests: 20, windowSeconds: 60 });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
 
     const validatedData = await validateBody(req, SupplierSuggestionContract, logger);
     const { productDescription, category, quantity, budget, purchaseHistory, suppliers } = validatedData;
