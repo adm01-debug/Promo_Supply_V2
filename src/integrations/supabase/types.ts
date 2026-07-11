@@ -7515,6 +7515,7 @@ export type Database = {
       cleanup_old_geo_access_logs: { Args: never; Returns: number }
       cleanup_old_integration_outbox: { Args: never; Returns: number }
       cleanup_old_login_attempts: { Args: never; Returns: number }
+      cleanup_old_query_telemetry: { Args: never; Returns: number }
       cleanup_old_rate_limit_logs: { Args: never; Returns: number }
       cleanup_old_security_logs: { Args: never; Returns: number }
       cleanup_old_system_alerts: { Args: never; Returns: undefined }
