@@ -41,7 +41,7 @@ export function useEstoque() {
       if (!organizationId) return [];
       const { data, error } = await supabase
         .from("estoque")
-        .select("*, produtos(nome, codigo)")
+        .select("id, produto_id, localizacao, quantidade_atual, estoque_minimo, estoque_maximo, ponto_pedido, ultimo_inventario, created_at, updated_at, produtos(nome, codigo)")
         .eq('organization_id', organizationId)
         .order("localizacao");
       
@@ -54,6 +54,7 @@ export function useEstoque() {
       })) as EstoqueItem[];
     },
     enabled: !!organizationId,
+    staleTime: 60_000,
   });
 
   const movimentar = useMutation({

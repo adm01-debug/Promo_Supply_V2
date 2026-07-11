@@ -19,18 +19,19 @@ export function useLicitacoes() {
   const queryClient = useQueryClient();
 
   const { data: licitacoes = [], isLoading } = useQuery({
-    queryKey: ['licitacoes', tenantId],
+    queryKey: ['licitacoes', user?.id, tenantId, organizationId],
     queryFn: async () => {
       if (!tenantId) return [];
       const { data, error } = await supabase
         .from('licitacoes')
-        .select('*, fornecedor_vencedor:fornecedores!licitacoes_fornecedor_vencedor_id_fkey(razao_social)')
+        .select('id, numero, objeto, modalidade, status, tipo, data_abertura, data_encerramento, valor_estimado, valor_vencedor, fornecedor_vencedor_id, responsavel_id, created_by, created_at, updated_at, tenant_id, organization_id, fornecedor_vencedor:fornecedores!licitacoes_fornecedor_vencedor_id_fkey(razao_social)')
         .eq('tenant_id', tenantId)
         .order('created_at', { ascending: false });
       if (error) throw error;
       return (data || []) as Licitacao[];
     },
     enabled: !!user && !!tenantId,
+    staleTime: 60_000,
   });
 
   const invalidate = useCallback(() => {
