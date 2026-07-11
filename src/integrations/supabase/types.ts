@@ -7634,6 +7634,7 @@ export type Database = {
       is_account_locked: { Args: { _email: string }; Returns: Json }
       is_ip_blocked: { Args: { _ip_address: string }; Returns: boolean }
       is_ip_whitelisted: { Args: { _ip_address: string }; Returns: boolean }
+      is_valid_cnpj: { Args: { _cnpj: string }; Returns: boolean }
       log_audit_event: {
         Args: {
           p_action: string
