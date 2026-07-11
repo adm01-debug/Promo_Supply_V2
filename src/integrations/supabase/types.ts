@@ -4643,6 +4643,7 @@ export type Database = {
           id: string
           ip_address: string
           request_count: number
+          retry_after: string | null
           user_agent: string | null
           user_id: string | null
           window_start: string
@@ -4654,6 +4655,7 @@ export type Database = {
           id?: string
           ip_address: string
           request_count?: number
+          retry_after?: string | null
           user_agent?: string | null
           user_id?: string | null
           window_start?: string
@@ -4665,6 +4667,7 @@ export type Database = {
           id?: string
           ip_address?: string
           request_count?: number
+          retry_after?: string | null
           user_agent?: string | null
           user_id?: string | null
           window_start?: string
@@ -6857,6 +6860,42 @@ export type Database = {
         }
         Relationships: []
       }
+      webhook_events: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          idempotency_key: string
+          request_headers: Json | null
+          response_payload: Json | null
+          source: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          idempotency_key: string
+          request_headers?: Json | null
+          response_payload?: Json | null
+          source: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          idempotency_key?: string
+          request_headers?: Json | null
+          response_payload?: Json | null
+          source?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       workflow_approvals: {
         Row: {
           approver_id: string | null
@@ -7389,6 +7428,19 @@ export type Database = {
         Returns: Json
       }
       check_escalation: { Args: never; Returns: undefined }
+      check_rate_limit: {
+        Args: {
+          _endpoint: string
+          _identifier: string
+          _max_requests?: number
+          _window_seconds?: number
+        }
+        Returns: {
+          allowed: boolean
+          remaining: number
+          retry_after_seconds: number
+        }[]
+      }
       check_workflow_sod: {
         Args: {
           p_approver_id: string
