@@ -146,6 +146,7 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
     });
 
   } catch (e) {
+    if (e instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
     return errorResponse(e, logger);
   }
 });
