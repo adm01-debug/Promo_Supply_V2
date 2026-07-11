@@ -7670,6 +7670,7 @@ export type Database = {
         Returns: string
       }
       mask_sensitive_data: { Args: { data: Json }; Returns: Json }
+      normalize_phone_br: { Args: { _raw: string }; Returns: string }
       recalculate_saldo_comprometido: {
         Args: { p_fornecedor_id: string }
         Returns: number
