@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
+import { fetchWithTimeout } from "../_shared/http.ts";
 const getLogger = (req: Request) => {
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   return new EdgeLogger("ai-supplier-risk", requestId);
@@ -81,7 +82,8 @@ ${JSON.stringify(marketData || {}, null, 2)}
 
 Forneça uma análise de risco completa e acionável.`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetchWithTimeout("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      timeoutMs: 30000,
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,

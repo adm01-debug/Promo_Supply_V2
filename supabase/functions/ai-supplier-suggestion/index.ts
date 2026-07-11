@@ -4,6 +4,7 @@ import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.
 import { SupplierSuggestionContract } from "../_shared/contracts.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
+import { fetchWithTimeout } from "../_shared/http.ts";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -78,7 +79,8 @@ Por favor, analise e forneça suas recomendações.`;
 
     logger.info("Calling Lovable AI for supplier suggestions", { userId: user.id });
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetchWithTimeout("https://ai.gateway.lovable.dev/v1/chat/completions", {
+      timeoutMs: 30000,
       method: "POST",
       headers: {
         Authorization: `Bearer ${LOVABLE_API_KEY}`,

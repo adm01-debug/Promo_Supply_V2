@@ -2,6 +2,7 @@ import { corsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 
+import { fetchWithTimeout } from "../_shared/http.ts";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -76,7 +77,8 @@ Deno.serve(async (req) => {
             .single();
 
           if (profile?.email) {
-            const emailRes = await fetch("https://api.resend.com/emails", {
+            const emailRes = await fetchWithTimeout("https://api.resend.com/emails", {
+      timeoutMs: 10000,
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
