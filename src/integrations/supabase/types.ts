@@ -7479,6 +7479,7 @@ export type Database = {
       }
     }
     Functions: {
+      _invoke_edge_function: { Args: { _name: string }; Returns: number }
       calculate_supplier_qualification_score: {
         Args: { p_fornecedor_id: string }
         Returns: number
