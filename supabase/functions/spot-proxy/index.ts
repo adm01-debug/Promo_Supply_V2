@@ -217,7 +217,12 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     is_valid: true,
   });
 
-  return cookie;
+    spotBreaker.recordSuccess();
+    return cookie;
+  } catch (err) {
+    spotBreaker.recordFailure();
+    throw err;
+  }
 }
 
 async function spotFetch(
