@@ -5,6 +5,7 @@ import { SupplierSuggestionContract } from "../_shared/contracts.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
 import { fetchWithTimeout } from "../_shared/http.ts";
+import { retry } from "../_shared/retry.ts";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -79,7 +80,7 @@ Por favor, analise e forneça suas recomendações.`;
 
     logger.info("Calling Lovable AI for supplier suggestions", { userId: user.id });
 
-    const response = await fetchWithTimeout("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await retry(() => fetchWithTimeout("https://ai.gateway.lovable.dev/v1/chat/completions", {
       timeoutMs: 30000,
       method: "POST",
       headers: {
@@ -93,7 +94,7 @@ Por favor, analise e forneça suas recomendações.`;
           { role: "user", content: userPrompt },
         ],
       }),
-    });
+    }), { retries: 2, shouldRetry: (err) => /5\d\d|429|timeout|network/i.test(String((err as Error)?.message)) });
 
     if (!response.ok) {
       const errorText = await response.text();
