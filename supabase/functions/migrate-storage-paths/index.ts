@@ -1,3 +1,4 @@
+import { corsHeaders } from "../_shared/security.ts";
 // Edge function: migra arquivos legados dos buckets `documentos` e `comprovantes`
 // do path antigo `{userId}/...` para o novo `{tenantId}/{userId}/...`.
 //
@@ -7,12 +8,6 @@
 
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
 
 const BUCKETS = ["documentos", "comprovantes"] as const;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

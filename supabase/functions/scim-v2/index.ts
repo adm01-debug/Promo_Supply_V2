@@ -1,11 +1,7 @@
+import { corsHeaders } from "../_shared/security.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-idempotency-key",
-};
 
 const encoder = new TextEncoder();
 
