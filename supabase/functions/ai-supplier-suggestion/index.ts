@@ -127,6 +127,7 @@ Por favor, analise e forneça suas recomendações.`;
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
+    if (error instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
     return errorResponse(error, logger);
   }
 });

@@ -146,6 +146,7 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
+    if (error instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
     return errorResponse(error, logger);
   }
 });

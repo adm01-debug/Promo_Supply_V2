@@ -138,7 +138,8 @@ Forneça uma análise de risco completa e acionável.`;
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
-    logger.error("Erro fatal na função ai-supplier-risk", { error: error.message });
+    if (error instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
+    logger.error("Erro fatal na função ai-supplier-risk", { error: (error as Error).message });
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(JSON.stringify({ error: errorMessage }), {
