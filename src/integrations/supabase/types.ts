@@ -7512,7 +7512,9 @@ export type Database = {
       }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
       cleanup_old_audit_logs: { Args: never; Returns: number }
+      cleanup_old_integration_outbox: { Args: never; Returns: number }
       cleanup_old_security_logs: { Args: never; Returns: number }
+      cleanup_old_webhook_events: { Args: never; Returns: number }
       clear_login_lockout: { Args: { _email: string }; Returns: undefined }
       count_legacy_storage_urls: {
         Args: never
