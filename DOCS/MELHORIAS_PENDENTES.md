@@ -15,7 +15,7 @@
 - B-03: Benchmark EXPLAIN ANALYZE versionado (`scripts/db-explain-analyze.ts`)
 - B-05: `fetchWithTimeout` disponível + adotado em spot-proxy, 4 funções AI (30s), send-push-notification (10s) e check-cotacao-followup/Resend (10s)
 - INT-01: Circuit breaker adotado em `spot-proxy::loginToSpot` (503 fail-fast)
-- INT-02: Retry com backoff exponencial + jitter (`_shared/retry.ts`)
+- INT-02: Retry com backoff exponencial + jitter (`_shared/retry.ts`) adotado em 4 funções AI Gateway (retry apenas em 5xx/429/timeout)
 - INT-06: Outbox pattern (`process-outbox` + `integration_outbox`)
 - OBS-01: `alert-dispatcher` + cron 1min
 - OBS-02: `x-request-id` propagado + `_invoke_edge_function` com trace ID

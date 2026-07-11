@@ -7,6 +7,7 @@ import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
 
 import { fetchWithTimeout } from "../_shared/http.ts";
+import { retry } from "../_shared/retry.ts";
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -63,7 +64,7 @@ ${JSON.stringify(cotacoes, null, 2)}
 ${historico_precos ? `Histórico de preços anteriores: ${JSON.stringify(historico_precos)}` : ''}
 Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
-    const response = await fetchWithTimeout("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await retry(() => fetchWithTimeout("https://ai.gateway.lovable.dev/v1/chat/completions", {
       timeoutMs: 30000,
       method: "POST",
       headers: {
@@ -112,7 +113,7 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
         }],
         tool_choice: { type: "function", function: { name: "negotiation_analysis" } },
       }),
-    });
+    }), { retries: 2, shouldRetry: (err) => /5\d\d|429|timeout|network/i.test(String((err as Error)?.message)) });
 
     if (!response.ok) {
       if (response.status === 429) {
