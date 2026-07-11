@@ -6,8 +6,7 @@ import { NegotiationContract } from "../_shared/contracts.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
 
-import { fetchWithTimeout } from "../_shared/http.ts";
-import { retry } from "../_shared/retry.ts";
+import { callAIGateway, AIGatewayCircuitOpenError, circuitOpenResponse } from "../_shared/ai_gateway.ts";
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -64,14 +63,9 @@ ${JSON.stringify(cotacoes, null, 2)}
 ${historico_precos ? `Histórico de preços anteriores: ${JSON.stringify(historico_precos)}` : ''}
 Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
-    const response = await retry(() => fetchWithTimeout("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      timeoutMs: 30000,
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    const response = await callAIGateway({
+      apiKey: LOVABLE_API_KEY!,
+      body: {
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
