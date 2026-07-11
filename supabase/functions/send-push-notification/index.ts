@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -121,7 +122,9 @@ Deno.serve(async (req) => {
 
   try {
     // SECURITY: Validate user authentication
-    await verifyAuthUser(req);
+    const _pushUserId = await verifyAuthUser(req);
+    const rlPush = await checkRateLimit({ identifier: _pushUserId, endpoint: "send-push-notification", maxRequests: 60, windowSeconds: 60 });
+    if (!rlPush.allowed) return rateLimitedResponse(rlPush.retryAfterSeconds, corsHeaders);
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;

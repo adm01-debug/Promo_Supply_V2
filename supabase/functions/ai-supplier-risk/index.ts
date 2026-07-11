@@ -1,5 +1,6 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -39,6 +40,9 @@ Deno.serve(async (req) => {
     const logger = getLogger(req);
     // SECURITY: Validate user authentication
     const userId = await verifyAuthUser(req);
+    // M-05: rate-limit por usuário (AI = custo de token elevado).
+    const rl = await checkRateLimit({ identifier: userId, endpoint: "ai-supplier-risk", maxRequests: 20, windowSeconds: 60 });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
     logger.info("Iniciando análise de risco de fornecedor", { userId });
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
