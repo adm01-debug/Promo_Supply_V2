@@ -28,7 +28,7 @@
 ### 🟡 Backlog Baixo Risco (não bloqueante)
 - M-04: Assincronização de triggers pesados — arquitetural, caso a caso
 - INT-03/04/05: Reconciliação Inter, quota WhatsApp, checkpoint ERP — dependem de volume real
-- B-04: Sweep de `corsHeaders` locais → padronizar em `_shared/security.ts` (higiene visual)
+- ✅ B-04: 21 edge functions padronizadas para `corsHeaders` de `_shared/security.ts`
 - TEST-02: Secrets `RLS_TEST_USER_A/B` no CI — ação DevOps humana
 
 ### 📊 Resultado Final
