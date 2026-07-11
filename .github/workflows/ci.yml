@@ -27,6 +27,14 @@ jobs:
       - name: Unit & Integration Tests
         run: bun run test
 
+      - name: RLS Regression Tests
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          RLS_TEST_USER_A: ${{ secrets.RLS_TEST_USER_A }}
+          RLS_TEST_USER_B: ${{ secrets.RLS_TEST_USER_B }}
+        run: bunx vitest run --config ./vitest.rls.config.ts
+
       - name: Playwright E2E Tests
         run: |
           bunx playwright install --with-deps
