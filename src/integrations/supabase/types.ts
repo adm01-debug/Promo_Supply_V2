@@ -7527,6 +7527,7 @@ export type Database = {
           total_with_url: number
         }[]
       }
+      cron_watchdog: { Args: never; Returns: undefined }
       current_tenant_id: { Args: never; Returns: string }
       exec_sql: { Args: { sql_query: string }; Returns: Json }
       find_approval_rule: {
