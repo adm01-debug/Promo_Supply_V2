@@ -7,9 +7,69 @@
  * ignorado para autorização.
  */
 
+/**
+ * B-01: CORS allowlist derivada de env `ALLOWED_ORIGINS` (CSV).
+ * Fallback para `*` apenas em dev/preview quando o env não é definido.
+ * Aceita curinga simples via prefixo `*.` (ex.: `*.lovable.app`).
+ */
+const parseAllowedOrigins = (): string[] => {
+  const raw = Deno.env.get("ALLOWED_ORIGINS") ?? "";
+  return raw.split(",").map((s) => s.trim()).filter(Boolean);
+};
+
+const originAllowed = (origin: string, allowlist: string[]): boolean => {
+  return allowlist.some((entry) => {
+    if (entry === "*") return true;
+    if (entry === origin) return true;
+    if (entry.startsWith("*.")) {
+      const suffix = entry.slice(1); // ".lovable.app"
+      try {
+        const host = new URL(origin).host;
+        return host.endsWith(suffix.slice(1)) || ("." + host).endsWith(suffix);
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  });
+};
+
+const BASE_CORS_HEADERS: Record<string, string> = {
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-idempotency-key, x-request-id",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+  "Access-Control-Max-Age": "86400",
+  "Vary": "Origin",
+};
+
+/**
+ * Retorna os headers CORS considerando o Origin da requisição.
+ * Se o Origin não estiver na allowlist, o header Allow-Origin é omitido
+ * (browser bloqueia — comportamento defensivo).
+ */
+export const buildCorsHeaders = (req?: Request): Record<string, string> => {
+  const allowlist = parseAllowedOrigins();
+  const origin = req?.headers.get("Origin") ?? "";
+
+  // Sem allowlist configurada → dev/preview → libera geral.
+  if (allowlist.length === 0) {
+    return { ...BASE_CORS_HEADERS, "Access-Control-Allow-Origin": "*" };
+  }
+
+  if (origin && originAllowed(origin, allowlist)) {
+    return { ...BASE_CORS_HEADERS, "Access-Control-Allow-Origin": origin };
+  }
+  // Origem não permitida → devolve headers sem Allow-Origin (browser bloqueia).
+  return BASE_CORS_HEADERS;
+};
+
+/**
+ * Compat: mantém `corsHeaders` para handlers legados.
+ * Em produção, prefira `buildCorsHeaders(req)`.
+ */
 export const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-idempotency-key',
+  ...BASE_CORS_HEADERS,
+  "Access-Control-Allow-Origin": "*",
 };
 
 /**
