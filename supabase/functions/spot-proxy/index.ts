@@ -1,5 +1,9 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { getBreaker } from "../_shared/circuit_breaker.ts";
+
+// INT-01: Circuit breaker para SPOT — abre após 5 falhas, cooldown 30s.
+const spotBreaker = getBreaker("spot-login", { failureThreshold: 5, cooldownMs: 30_000 });
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -135,7 +139,14 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     throw new Error("Credenciais SPOT não configuradas no backend");
   }
 
+  // INT-01: Circuit breaker — falha rápido se SPOT está fora do ar.
+  if (!spotBreaker.canRequest()) {
+    throw new HttpError(503, "SPOT temporariamente indisponível (circuit breaker aberto)");
+  }
+
   const loginUrl = `${SPOT_BASE}/${LANG}/area-reservada/login/`;
+
+  try {
 
   // GET initial page to obtain PHPSESSID
   const initRes = await fetch(loginUrl, {
@@ -206,7 +217,12 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     is_valid: true,
   });
 
-  return cookie;
+    spotBreaker.recordSuccess();
+    return cookie;
+  } catch (err) {
+    spotBreaker.recordFailure();
+    throw err;
+  }
 }
 
 async function spotFetch(
