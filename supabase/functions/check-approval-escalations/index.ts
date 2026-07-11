@@ -1,10 +1,6 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { EdgeLogger } from "../_shared/logger.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-request-id',
-}
+import { corsHeaders } from "../_shared/security.ts";
 
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
