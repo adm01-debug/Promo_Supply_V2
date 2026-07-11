@@ -1,6 +1,6 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3.2)
+# Melhorias Pendentes — Auditoria Consolidada (v3.3)
 
-**Última atualização:** 2026-07-11 (pós-adoção circuit breaker unificado no AI Gateway)
+**Última atualização:** 2026-07-11 (pós-retenção webhook_events/outbox + alerta dead-letter)
 
 ## Status Atual: 10/10 🏆
 
