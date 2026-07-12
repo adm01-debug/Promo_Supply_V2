@@ -7671,6 +7671,7 @@ export type Database = {
       }
       mask_sensitive_data: { Args: { data: Json }; Returns: Json }
       normalize_phone_br: { Args: { _raw: string }; Returns: string }
+      pg_activity_watchdog: { Args: never; Returns: number }
       recalculate_saldo_comprometido: {
         Args: { p_fornecedor_id: string }
         Returns: number
