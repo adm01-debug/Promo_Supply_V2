@@ -78,6 +78,8 @@ Deno.serve(async (req: Request) => {
   if (runsRes.error) return json({ error: runsRes.error.message }, 500);
   if (severityRes.error) return json({ error: severityRes.error.message }, 500);
   if (tsRes.error) return json({ error: tsRes.error.message }, 500);
+  if (mttrRes.error) return json({ error: mttrRes.error.message }, 500);
+  if (noisyRes.error) return json({ error: noisyRes.error.message }, 500);
 
   const severityCounts: Record<string, number> = {};
   for (const row of severityRes.data ?? []) {
@@ -103,5 +105,7 @@ Deno.serve(async (req: Request) => {
     last_runs: runsRes.data,
     severity_counts_24h: severityCounts,
     severity_timeseries_7d,
+    mttr_by_type_7d: mttrRes.data ?? [],
+    noisy_scanners_24h: noisyRes.data ?? [],
   });
 });
