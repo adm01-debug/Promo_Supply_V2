@@ -7941,10 +7941,20 @@ export type Database = {
           xmin_age: number
         }[]
       }
-      scan_sequence_exhaustion: {
-        Args: { _threshold_pct?: number }
-        Returns: number
-      }
+      scan_sequence_exhaustion:
+        | {
+            Args: never
+            Returns: {
+              data_type: string
+              last_value: number
+              max_value: number
+              owned_by: string
+              pct_used: number
+              sequence_name: string
+              severity: string
+            }[]
+          }
+        | { Args: { _threshold_pct?: number }; Returns: number }
       scan_stale_statistics: {
         Args: { min_mod_pct?: number; stale_days?: number }
         Returns: {
