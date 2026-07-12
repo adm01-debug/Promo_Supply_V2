@@ -6586,7 +6586,7 @@ export type Database = {
           dispatch_status: string | null
           dispatched_at: string | null
           id: string
-          message: string
+          message: string | null
           metadata: Json | null
           resolved_at: string | null
           resolved_by: string | null
@@ -6602,7 +6602,7 @@ export type Database = {
           dispatch_status?: string | null
           dispatched_at?: string | null
           id?: string
-          message: string
+          message?: string | null
           metadata?: Json | null
           resolved_at?: string | null
           resolved_by?: string | null
@@ -6618,7 +6618,7 @@ export type Database = {
           dispatch_status?: string | null
           dispatched_at?: string | null
           id?: string
-          message?: string
+          message?: string | null
           metadata?: Json | null
           resolved_at?: string | null
           resolved_by?: string | null
@@ -7965,34 +7965,19 @@ export type Database = {
           wait_seconds: number
         }[]
       }
-      scan_long_running_transactions:
-        | {
-            Args: never
-            Returns: {
-              application_name: string
-              duration_seconds: number
-              pid: number
-              query_snippet: string
-              severity: string
-              state: string
-              usename: string
-              wait_event: string
-            }[]
-          }
-        | {
-            Args: {
-              _active_threshold_min?: number
-              _idle_threshold_min?: number
-            }
-            Returns: {
-              duration_seconds: number
-              pid: number
-              query_preview: string
-              severity: string
-              state: string
-              usename: string
-            }[]
-          }
+      scan_long_running_transactions: {
+        Args: never
+        Returns: {
+          application_name: string
+          duration_seconds: number
+          pid: number
+          query_snippet: string
+          severity: string
+          state: string
+          usename: string
+          wait_event: string
+        }[]
+      }
       scan_partition_candidates: {
         Args: { min_size_gb?: number }
         Returns: {
@@ -8031,20 +8016,18 @@ export type Database = {
           table_name: string
         }[]
       }
-      scan_sequence_exhaustion:
-        | {
-            Args: never
-            Returns: {
-              data_type: string
-              last_value: number
-              max_value: number
-              owned_by: string
-              pct_used: number
-              sequence_name: string
-              severity: string
-            }[]
-          }
-        | { Args: { _threshold_pct?: number }; Returns: number }
+      scan_sequence_exhaustion: {
+        Args: never
+        Returns: {
+          data_type: string
+          last_value: number
+          max_value: number
+          owned_by: string
+          pct_used: number
+          sequence_name: string
+          severity: string
+        }[]
+      }
       scan_stale_alerts: {
         Args: never
         Returns: {
@@ -8113,18 +8096,16 @@ export type Database = {
           severity: string
         }[]
       }
-      scan_unused_indexes:
-        | {
-            Args: never
-            Returns: {
-              idx_scan: number
-              index_name: string
-              index_size: string
-              severity: string
-              table_name: string
-            }[]
-          }
-        | { Args: { _min_size_mb?: number }; Returns: number }
+      scan_unused_indexes: {
+        Args: never
+        Returns: {
+          idx_scan: number
+          index_name: string
+          index_size: string
+          severity: string
+          table_name: string
+        }[]
+      }
       scan_wal_generation_rate: {
         Args: {
           crit_mb_per_min?: number
