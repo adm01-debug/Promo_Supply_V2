@@ -230,10 +230,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = useCallback(async () => {
     const userId = user?.id;
     logger.info('Signing out', { userId });
+    // CRIT-C1/C8: invalidate any in-flight fetchUserData BEFORE clearing state
+    // so a late-arriving Promise cannot restore the outgoing user's profile/role.
+    fetchGenerationRef.current += 1;
     fetchedUserIdRef.current = null;
     await supabase.auth.signOut();
-    // Fix #1: wipe TanStack Query cache (memory + persisted localStorage) so the
-    // next user on this machine never sees the previous user's data.
     queryClient.clear();
     setUser(null);
     setSession(null);
