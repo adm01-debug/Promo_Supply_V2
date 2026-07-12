@@ -40,3 +40,31 @@ export async function fetchWithTimeout(
     clearTimeout(timer);
   }
 }
+
+/**
+ * Onda 62 · R-03 — Headers de segurança uniformes para respostas de edge functions.
+ * Merge com corsHeaders + Content-Type no wrapper de resposta.
+ */
+export const securityHeaders: Record<string, string> = {
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "no-referrer",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
+  "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Resource-Policy": "same-site",
+};
+
+/**
+ * Constrói cabeçalhos padrão para respostas JSON de edge functions.
+ * Uso: return new Response(body, { headers: buildResponseHeaders(corsHeaders) })
+ */
+export function buildResponseHeaders(
+  extra: Record<string, string> = {},
+): Record<string, string> {
+  return {
+    "Content-Type": "application/json; charset=utf-8",
+    ...securityHeaders,
+    ...extra,
+  };
+}
