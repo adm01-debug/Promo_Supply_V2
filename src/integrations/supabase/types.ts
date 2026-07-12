@@ -99,6 +99,7 @@ export type Database = {
           alert_type: string | null
           channel: string
           created_at: string
+          email: string | null
           enabled: boolean
           id: string
           min_severity: string
@@ -111,6 +112,7 @@ export type Database = {
           alert_type?: string | null
           channel?: string
           created_at?: string
+          email?: string | null
           enabled?: boolean
           id?: string
           min_severity?: string
@@ -123,6 +125,7 @@ export type Database = {
           alert_type?: string | null
           channel?: string
           created_at?: string
+          email?: string | null
           enabled?: boolean
           id?: string
           min_severity?: string
@@ -7703,6 +7706,7 @@ export type Database = {
         Args: { _alert_type: string; _severity: string }
         Returns: {
           channel: string
+          email: string
           slack_webhook_url: string
           subscription_id: string
           user_id: string

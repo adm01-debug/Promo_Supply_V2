@@ -27,6 +27,7 @@ interface Subscription {
   enabled: boolean;
   snoozed_until: string | null;
   slack_webhook_url: string | null;
+  email: string | null;
   created_at: string;
 }
 
@@ -51,6 +52,7 @@ export default function AlertSubscriptionsPanel() {
   const [minSeverity, setMinSeverity] = useState<string>("HIGH");
   const [channel, setChannel] = useState<string>("inapp");
   const [slackUrl, setSlackUrl] = useState("");
+  const [emailAddr, setEmailAddr] = useState("");
 
   const { data: subs = [], isLoading } = useQuery({
     queryKey: ["alert-subscriptions", user?.id],
@@ -71,12 +73,17 @@ export default function AlertSubscriptionsPanel() {
       if (channel === "slack" && !/^https:\/\/hooks\.slack\.com\//.test(slackUrl.trim())) {
         throw new Error("Webhook Slack inválido (deve começar com https://hooks.slack.com/)");
       }
+      const trimmedEmail = emailAddr.trim();
+      if (channel === "email" && trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+        throw new Error("Email inválido");
+      }
       const { error } = await supabase.from("alert_subscriptions").insert({
         user_id: user.id,
         alert_type: alertType.trim() || null,
         min_severity: minSeverity,
         channel,
         slack_webhook_url: channel === "slack" ? slackUrl.trim() : null,
+        email: channel === "email" ? (trimmedEmail || null) : null,
       });
       if (error) throw error;
     },
@@ -84,6 +91,7 @@ export default function AlertSubscriptionsPanel() {
       toast.success("Assinatura criada");
       setAlertType("");
       setSlackUrl("");
+      setEmailAddr("");
       qc.invalidateQueries({ queryKey: ["alert-subscriptions"] });
     },
     onError: (e: unknown) => toast.error(`Falha: ${(e as Error).message}`),
@@ -189,6 +197,17 @@ export default function AlertSubscriptionsPanel() {
             value={slackUrl}
             onChange={(e) => setSlackUrl(e.target.value)}
             aria-label="Slack webhook URL"
+            className="font-mono text-xs"
+          />
+        )}
+
+        {channel === "email" && (
+          <Input
+            type="email"
+            placeholder="Email de destino (vazio = email do seu cadastro)"
+            value={emailAddr}
+            onChange={(e) => setEmailAddr(e.target.value)}
+            aria-label="Endereço de email"
             className="font-mono text-xs"
           />
         )}
