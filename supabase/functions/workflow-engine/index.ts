@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4'
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
@@ -11,7 +12,7 @@ serve(async (req) => {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      headers: buildResponseHeaders(corsHeaders),
     });
   }
 
@@ -24,7 +25,7 @@ serve(async (req) => {
     const { user } = await getAuthUser(req);
     if (!user) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401, headers: buildResponseHeaders(corsHeaders),
       });
     }
 
@@ -95,7 +96,7 @@ serve(async (req) => {
         status: "success",
         timestamp: new Date().toISOString()
       }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: buildResponseHeaders(corsHeaders),
         status: 200,
       })
 
@@ -134,7 +135,7 @@ serve(async (req) => {
         status: "success",
         timestamp: new Date().toISOString()
       }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: buildResponseHeaders(corsHeaders),
         status: 200,
       })
     }

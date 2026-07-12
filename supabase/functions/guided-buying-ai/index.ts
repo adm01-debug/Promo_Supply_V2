@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://esm.sh/zod@3.22.4";
 import { EdgeLogger } from "../_shared/logger.ts";
@@ -23,7 +24,7 @@ serve(async (req) => {
   try {
     const { user } = await getAuthUser(req);
     if (!user) {
-      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: buildResponseHeaders(corsHeaders) });
     }
     const rl = await checkRateLimit({ identifier: user.id, endpoint: "guided-buying-ai", maxRequests: 30, windowSeconds: 60 });
     if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
@@ -85,7 +86,7 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ response: aiResponse }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
 
   } catch (error) {

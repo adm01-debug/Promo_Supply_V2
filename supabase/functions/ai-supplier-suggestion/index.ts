@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
 import { SupplierSuggestionContract } from "../_shared/contracts.ts";
@@ -124,7 +125,7 @@ Por favor, analise e forneça suas recomendações.`;
     logger.info("AI suggestions generated successfully");
 
     return new Response(JSON.stringify({ ...suggestions, requestId }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   } catch (error: unknown) {
     if (error instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);

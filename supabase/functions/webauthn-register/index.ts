@@ -1,4 +1,5 @@
 import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 function base64UrlEncode(buffer: Uint8Array | ArrayBuffer): string {
@@ -128,7 +129,7 @@ Deno.serve(async (req) => {
       console.log('Registration options generated for:', email);
 
       return new Response(JSON.stringify({ options }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: buildResponseHeaders(corsHeaders),
       });
     }
 
@@ -185,7 +186,7 @@ Deno.serve(async (req) => {
       console.log('Passkey registered successfully for user:', safeUserId);
 
       return new Response(JSON.stringify({ success: true }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: buildResponseHeaders(corsHeaders),
       });
     }
 
@@ -196,7 +197,7 @@ Deno.serve(async (req) => {
     const status = errorMessage.includes("Não autorizado") ? 401 : 400;
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status, headers: buildResponseHeaders(corsHeaders) }
     );
   }
 });

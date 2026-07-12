@@ -1,4 +1,5 @@
 import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
@@ -34,7 +35,7 @@ serve(async (req) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return new Response(JSON.stringify({ error: "Missing or invalid token" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: buildResponseHeaders(corsHeaders),
       });
     }
 
@@ -73,7 +74,7 @@ serve(async (req) => {
     if (!isTokenValid) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: buildResponseHeaders(corsHeaders),
       });
     }
 
@@ -90,7 +91,7 @@ serve(async (req) => {
           const { data, error } = await supabaseAdmin.auth.admin.getUserById(resourceId);
           if (error) throw error;
           return new Response(JSON.stringify(mapSupabaseUserToSCIM(data.user)), {
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            headers: buildResponseHeaders(corsHeaders),
           });
         } else {
           // List users
@@ -101,7 +102,7 @@ serve(async (req) => {
             totalResults: data.users.length,
             Resources: data.users.map(mapSupabaseUserToSCIM),
           }), {
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            headers: buildResponseHeaders(corsHeaders),
           });
         }
       }
@@ -121,7 +122,7 @@ serve(async (req) => {
         
         return new Response(JSON.stringify(mapSupabaseUserToSCIM(data.user)), {
           status: 201,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: buildResponseHeaders(corsHeaders),
         });
       }
       
@@ -134,7 +135,7 @@ serve(async (req) => {
 
     return new Response(JSON.stringify({ error: "Method not supported" }), {
       status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
 
   } catch (error: unknown) {
@@ -142,7 +143,7 @@ serve(async (req) => {
     const message = error instanceof Error ? error.message : "SCIM request failed";
     return new Response(JSON.stringify({ error: message }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   }
 });

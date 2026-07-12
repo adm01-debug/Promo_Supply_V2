@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
 import { DemandPredictionContract } from "../_shared/contracts.ts";
@@ -107,7 +108,7 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded", requestId }), {
           status: 429,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: buildResponseHeaders(corsHeaders),
         });
       }
       
@@ -143,7 +144,7 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
     logger.info("Demand prediction generated successfully");
 
     return new Response(JSON.stringify({ ...predictions, requestId }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   } catch (error: unknown) {
     if (error instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);

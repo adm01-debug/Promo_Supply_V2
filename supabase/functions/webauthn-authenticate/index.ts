@@ -1,4 +1,5 @@
 import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 function base64UrlEncode(buffer: Uint8Array | ArrayBuffer): string {
@@ -96,7 +97,7 @@ Deno.serve(async (req) => {
       console.log('Authentication options generated for:', email);
 
       return new Response(JSON.stringify({ options, userId: user.id }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: buildResponseHeaders(corsHeaders),
       });
     }
 
@@ -198,7 +199,7 @@ Deno.serve(async (req) => {
         email: email,
         actionLink: signInData.properties?.action_link,
       }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: buildResponseHeaders(corsHeaders),
       });
     }
 
@@ -208,7 +209,7 @@ Deno.serve(async (req) => {
     console.error('WebAuthn authenticate error:', error);
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status: 400, headers: buildResponseHeaders(corsHeaders) }
     );
   }
 });
