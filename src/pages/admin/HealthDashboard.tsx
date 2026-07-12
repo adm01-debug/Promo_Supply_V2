@@ -545,21 +545,81 @@ export default function HealthDashboard() {
           </CardContent>
         </Card>
 
-        {/* Alertas abertos individuais + botão Resolver */}
+        {/* Alertas abertos individuais + filtros + export */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between gap-2 flex-wrap">
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" aria-hidden />
-              Alertas abertos ({data?.open_alerts?.length ?? 0})
+              Alertas abertos ({filteredAlerts.length}/{data?.open_alerts?.length ?? 0})
             </CardTitle>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={exportCsv}
+              disabled={query.isLoading}
+              aria-label="Exportar alertas filtrados como CSV"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Exportar CSV
+            </Button>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            {/* Filtros */}
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <Filter className="h-3.5 w-3.5" aria-hidden />
+                <span className="text-xs">Filtros:</span>
+              </div>
+              {ALL_SEVS.map((sev) => {
+                const active = sevFilter.has(sev);
+                return (
+                  <button
+                    key={sev}
+                    type="button"
+                    onClick={() => toggleSev(sev)}
+                    className={`px-2 py-0.5 rounded-full text-xs border transition-opacity ${
+                      active ? severityStyles[sev] : "bg-muted text-muted-foreground opacity-50"
+                    }`}
+                    aria-pressed={active}
+                    aria-label={`Filtrar severidade ${sev}`}
+                  >
+                    {sev}
+                  </button>
+                );
+              })}
+              <div className="flex items-center gap-1 ml-2">
+                {(["1h", "24h", "7d", "all"] as const).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPeriodFilter(p)}
+                    className={`px-2 py-0.5 rounded-md text-xs border ${
+                      periodFilter === p ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                    }`}
+                    aria-pressed={periodFilter === p}
+                    aria-label={`Período ${p}`}
+                  >
+                    {p === "all" ? "todos" : p}
+                  </button>
+                ))}
+              </div>
+              <Input
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                placeholder="Buscar tipo ou mensagem…"
+                className="h-8 max-w-xs ml-auto"
+                aria-label="Filtrar por tipo ou mensagem"
+              />
+            </div>
+
             {query.isLoading ? (
               <Skeleton className="h-40 w-full" />
-            ) : (data?.open_alerts?.length ?? 0) === 0 ? (
+            ) : filteredAlerts.length === 0 ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground py-8 justify-center">
                 <CheckCircle2 className="h-5 w-5 text-green-500" aria-hidden />
-                Nenhum alerta aberto.
+                {(data?.open_alerts?.length ?? 0) === 0
+                  ? "Nenhum alerta aberto."
+                  : "Nenhum alerta corresponde aos filtros atuais."}
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -574,7 +634,7 @@ export default function HealthDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {data?.open_alerts?.map((row) => (
+                    {filteredAlerts.map((row) => (
                       <tr key={row.id} className="border-b last:border-0 align-top">
                         <td className="py-2 pr-3 text-muted-foreground whitespace-nowrap">
                           {new Date(row.created_at).toLocaleString("pt-BR")}
@@ -606,6 +666,7 @@ export default function HealthDashboard() {
             )}
           </CardContent>
         </Card>
+
 
         {data?.generated_at && (
           <p className="text-xs text-muted-foreground text-right">
