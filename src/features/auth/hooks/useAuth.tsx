@@ -42,16 +42,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUserData = useCallback(async (userId: string) => {
     // Deduplicate: skip if already fetched for this user or currently fetching
     if (fetchedUserIdRef.current === userId || isFetchingRef.current) return;
+  const fetchUserData = useCallback(async (userId: string) => {
+    // Deduplicate: skip if already fetched for this user or currently fetching
+    if (fetchedUserIdRef.current === userId || isFetchingRef.current) return;
     isFetchingRef.current = true;
-    logger.debug('Fetching auth user data', { userId });
+    // CRIT-C1/C8: snapshot generation at start; any signOut / user-switch
+    // increments fetchGenerationRef and we discard the result silently.
+    const gen = fetchGenerationRef.current;
+    logger.debug('Fetching auth user data', { userId, gen });
 
     try {
       const [profileRes, roleRes, tenantIdRes, availableTenantsRes] = await Promise.all([
         supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
-        supabase.rpc('current_tenant_id'), // Renomeado internamente para refletir o que é
+        supabase.rpc('current_tenant_id'),
         supabase.from('user_tenants').select('tenant:tenants(id, name, slug, cnpj, razao_social, nome_fantasia, uf, regime_tributario, cor_identificacao, empresa_codigo, organization_id)').eq('user_id', userId),
       ]);
+
+      // Discard obsolete result — user changed / signed out mid-flight.
+      if (gen !== fetchGenerationRef.current) {
+        logger.debug('Discarding stale auth fetch result', { userId, gen, current: fetchGenerationRef.current });
+        return;
+      }
 
       if (profileRes.error) {
         logger.error('Error fetching profile', { error: profileRes.error, userId });
@@ -62,6 +74,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (tenantIdRes.error) {
         logger.error('Error fetching current tenant', { error: tenantIdRes.error, userId });
       }
+      if (availableTenantsRes.error) {
+        logger.error('Error fetching available tenants', { error: availableTenantsRes.error, userId });
+      }
 
       if (profileRes.data) {
         const validatedProfile = UserProfileSchema.safeParse(profileRes.data);
@@ -69,7 +84,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setProfile(validatedProfile.data);
         } else {
           logger.error('Profile validation failed', { error: validatedProfile.error, data: profileRes.data });
-          setProfile(profileRes.data as UserProfile); // Fallback but logged
+          setProfile(profileRes.data as UserProfile);
         }
       } else {
         setProfile(null);
@@ -78,10 +93,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setOrganizationId(profileRes.data?.current_organization_id || tenantIdRes.data || null);
       setTenantId(tenantIdRes.data || null);
       logger.setTenantId(tenantIdRes.data || null);
-      
+
       if (availableTenantsRes.data) {
         const tenants = availableTenantsRes.data
-          .map((ut: any) => ut.tenant)
+          .map((ut: { tenant: Tenant | null }) => ut.tenant)
           .filter(Boolean) as Tenant[];
         setAvailableTenants(tenants);
       }
