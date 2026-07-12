@@ -7660,6 +7660,29 @@ export type Database = {
     }
     Functions: {
       _invoke_edge_function: { Args: { _name: string }; Returns: number }
+      alerts_mttr_by_type: {
+        Args: { days?: number }
+        Returns: {
+          alert_type: string
+          avg_minutes: number
+          max_minutes: number
+          p50_minutes: number
+          p95_minutes: number
+          resolved_count: number
+          severity: string
+        }[]
+      }
+      alerts_noisy_scanners: {
+        Args: { days?: number }
+        Returns: {
+          alert_type: string
+          distinct_severities: number
+          first_seen: string
+          last_seen: string
+          total: number
+          unresolved: number
+        }[]
+      }
       alerts_severity_timeseries: {
         Args: { days?: number }
         Returns: {

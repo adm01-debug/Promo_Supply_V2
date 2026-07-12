@@ -41,12 +41,33 @@ interface TimeseriesRow {
   INFO?: number;
 }
 
+interface MttrRow {
+  alert_type: string;
+  severity: string;
+  resolved_count: number;
+  avg_minutes: number | null;
+  p50_minutes: number | null;
+  p95_minutes: number | null;
+  max_minutes: number | null;
+}
+
+interface NoisyRow {
+  alert_type: string;
+  total: number;
+  unresolved: number;
+  distinct_severities: number;
+  first_seen: string;
+  last_seen: string;
+}
+
 interface DashboardResponse {
   generated_at: string;
   open_alerts_by_type: OverviewRow[];
   last_runs: RunRow[];
   severity_counts_24h: SeverityCounts;
   severity_timeseries_7d?: TimeseriesRow[];
+  mttr_by_type_7d?: MttrRow[];
+  noisy_scanners_24h?: NoisyRow[];
 }
 
 const severityColors: Record<string, string> = {
@@ -278,7 +299,102 @@ export default function HealthDashboard() {
           </CardContent>
         </Card>
 
-        {/* Last runs */}
+        {/* MTTR + Noisy Scanners */}
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Clock className="h-4 w-4" aria-hidden />
+                MTTR por tipo · últimos 7 dias
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {query.isLoading ? (
+                <Skeleton className="h-40 w-full" />
+              ) : (data?.mttr_by_type_7d?.length ?? 0) === 0 ? (
+                <div className="text-sm text-muted-foreground py-8 text-center">
+                  Sem alertas resolvidos no período.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="text-left text-muted-foreground border-b">
+                      <tr>
+                        <th className="py-2 pr-3">Tipo</th>
+                        <th className="py-2 pr-3">Sev</th>
+                        <th className="py-2 pr-3 text-right">#</th>
+                        <th className="py-2 pr-3 text-right">Média</th>
+                        <th className="py-2 pr-3 text-right">P50</th>
+                        <th className="py-2 pr-3 text-right">P95</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data?.mttr_by_type_7d?.map((row, idx) => (
+                        <tr key={`${row.alert_type}-${row.severity}-${idx}`} className="border-b last:border-0">
+                          <td className="py-2 pr-3 font-mono text-xs">{row.alert_type}</td>
+                          <td className="py-2 pr-3"><SeverityBadge severity={row.severity} /></td>
+                          <td className="py-2 pr-3 text-right font-semibold">{row.resolved_count}</td>
+                          <td className="py-2 pr-3 text-right">{row.avg_minutes ?? "—"}m</td>
+                          <td className="py-2 pr-3 text-right text-muted-foreground">{row.p50_minutes ?? "—"}m</td>
+                          <td className="py-2 pr-3 text-right text-muted-foreground">{row.p95_minutes ?? "—"}m</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <AlertTriangle className="h-4 w-4" aria-hidden />
+                Scanners mais barulhentos · últimas 24h
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {query.isLoading ? (
+                <Skeleton className="h-40 w-full" />
+              ) : (data?.noisy_scanners_24h?.length ?? 0) === 0 ? (
+                <div className="text-sm text-muted-foreground py-8 text-center">
+                  Nenhum alerta nas últimas 24h.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="text-left text-muted-foreground border-b">
+                      <tr>
+                        <th className="py-2 pr-3">Tipo</th>
+                        <th className="py-2 pr-3 text-right">Total</th>
+                        <th className="py-2 pr-3 text-right">Abertos</th>
+                        <th className="py-2 pr-3 text-right">Sev</th>
+                        <th className="py-2 pr-3">Último</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data?.noisy_scanners_24h?.map((row, idx) => (
+                        <tr key={`${row.alert_type}-${idx}`} className="border-b last:border-0">
+                          <td className="py-2 pr-3 font-mono text-xs">{row.alert_type}</td>
+                          <td className="py-2 pr-3 text-right font-semibold">{row.total}</td>
+                          <td className={`py-2 pr-3 text-right ${row.unresolved > 0 ? "text-destructive font-semibold" : "text-muted-foreground"}`}>
+                            {row.unresolved}
+                          </td>
+                          <td className="py-2 pr-3 text-right">{row.distinct_severities}</td>
+                          <td className="py-2 pr-3 text-muted-foreground">
+                            {row.last_seen ? new Date(row.last_seen).toLocaleTimeString("pt-BR") : "—"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
