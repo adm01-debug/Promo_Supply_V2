@@ -93,7 +93,7 @@ serve(async (req) => {
     });
   }
 
-  const results: Array<{ id: string; ok: boolean; error?: string }> = [];
+  const results: Array<{ id: string; ok: boolean; error?: string; in_app?: number; slack?: number }> = [];
   const seenWindow = new Map<string, string>(); // dedupe key -> id
 
   for (const alert of (alerts ?? []) as Alert[]) {
@@ -109,6 +109,34 @@ serve(async (req) => {
     }
     seenWindow.set(dedupeKey, alert.id);
 
+    // Onda 42 — resolve assinantes ativos (respeita min_severity/snooze/enabled).
+    let inAppFanout = 0;
+    let slackFanout = 0;
+    try {
+      const { data: subs } = await admin.rpc("alert_subscribers_for", {
+        _alert_type: alert.alert_type,
+        _severity: alert.severity,
+      });
+      const rows = (subs ?? []) as Array<{ user_id: string; channel: string }>;
+      const inApp = rows.filter((s) => s.channel === "in_app");
+      if (inApp.length > 0) {
+        const payload = inApp.map((s) => ({
+          user_id: s.user_id,
+          tenant_id: alert.tenant_id,
+          type: "system_alert",
+          priority: alert.severity.toLowerCase() === "critical" ? "urgent" : "high",
+          title: `${severityEmoji(alert.severity)} ${alert.alert_type}`,
+          message: alert.message,
+          action_url: `/admin/health/alerts/${alert.id}`,
+          action_label: "Ver detalhes",
+          data: { alert_id: alert.id, severity: alert.severity, alert_type: alert.alert_type },
+        }));
+        const { error: insErr } = await admin.from("notifications").insert(payload);
+        if (!insErr) inAppFanout = payload.length;
+      }
+      slackFanout = rows.filter((s) => s.channel === "slack").length;
+    } catch (_) { /* fanout best-effort */ }
+
     const outcome = await postToSlack(alert);
     await admin
       .from("system_alerts")
@@ -116,9 +144,10 @@ serve(async (req) => {
         dispatched_at: new Date().toISOString(),
         dispatch_status: outcome.ok ? "delivered" : "failed",
         dispatch_error: outcome.error ?? null,
+        metadata: { ...(alert.metadata ?? {}), fanout: { in_app: inAppFanout, slack: slackFanout } },
       })
       .eq("id", alert.id);
-    results.push({ id: alert.id, ...outcome });
+    results.push({ id: alert.id, ok: outcome.ok, error: outcome.error, in_app: inAppFanout, slack: slackFanout });
   }
 
   return new Response(
