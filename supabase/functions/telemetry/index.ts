@@ -42,8 +42,15 @@ serve(async (req) => {
     // Get tenant ID from user metadata if not provided explicitly
     const tenantId = providedTenantId || (user?.user_metadata?.tenant_id as string);
 
+    // Normaliza para enum log_level (lowercase: info|warn|error|debug)
+    const normalizedLevel = (() => {
+      const l = String(level ?? "info").toLowerCase();
+      if (l === "warning") return "warn";
+      return ["info", "warn", "error", "debug"].includes(l) ? l : "info";
+    })();
+
     const { error } = await supabaseAdmin.from("telemetry_logs").insert({
-      level,
+      level: normalizedLevel,
       message,
       context,
       request_id: requestId,
