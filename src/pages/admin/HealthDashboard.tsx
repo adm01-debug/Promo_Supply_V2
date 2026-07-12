@@ -4,8 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertTriangle, CheckCircle2, Clock, RefreshCw, Activity, TrendingUp, Check } from "lucide-react";
-import { useEffect, useState } from "react";
+import { AlertTriangle, CheckCircle2, Clock, RefreshCw, Activity, TrendingUp, Check, Download, Filter } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+
 import { toast } from "sonner";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
 import {
@@ -17,6 +18,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+
 
 
 type SeverityCounts = Record<string, number>;
@@ -162,6 +165,67 @@ export default function HealthDashboard() {
   const data = query.data;
   const severities = data?.severity_counts_24h ?? {};
   const totalOpen = data?.open_alerts_by_type.reduce((acc, r) => acc + r.open_count, 0) ?? 0;
+
+  // ---- Filtros dos alertas abertos ----
+  const ALL_SEVS = ["EMERGENCY", "CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"] as const;
+  const [sevFilter, setSevFilter] = useState<Set<string>>(new Set(ALL_SEVS));
+  const [typeFilter, setTypeFilter] = useState("");
+  const [periodFilter, setPeriodFilter] = useState<"1h" | "24h" | "7d" | "all">("all");
+
+  const toggleSev = (sev: string) => {
+    setSevFilter((prev) => {
+      const next = new Set(prev);
+      if (next.has(sev)) next.delete(sev);
+      else next.add(sev);
+      return next;
+    });
+  };
+
+  const filteredAlerts = useMemo(() => {
+    const rows = data?.open_alerts ?? [];
+    const cutoff =
+      periodFilter === "all"
+        ? 0
+        : Date.now() -
+          (periodFilter === "1h" ? 3_600_000 : periodFilter === "24h" ? 86_400_000 : 7 * 86_400_000);
+    const needle = typeFilter.trim().toLowerCase();
+    return rows.filter((r) => {
+      if (!sevFilter.has(r.severity)) return false;
+      if (cutoff && new Date(r.created_at).getTime() < cutoff) return false;
+      if (needle && !r.alert_type.toLowerCase().includes(needle) && !(r.message ?? "").toLowerCase().includes(needle)) {
+        return false;
+      }
+      return true;
+    });
+  }, [data?.open_alerts, sevFilter, typeFilter, periodFilter]);
+
+  const exportCsv = () => {
+    if (filteredAlerts.length === 0) {
+      toast.info("Nada para exportar com os filtros atuais");
+      return;
+    }
+    const header = ["id", "created_at", "alert_type", "severity", "message"];
+    const escape = (v: unknown) => {
+      const s = v === null || v === undefined ? "" : String(v);
+      return `"${s.replace(/"/g, '""').replace(/\r?\n/g, " ")}"`;
+    };
+    const lines = [
+      header.join(","),
+      ...filteredAlerts.map((r) =>
+        [r.id, r.created_at, r.alert_type, r.severity, r.message ?? ""].map(escape).join(","),
+      ),
+    ];
+    // UTF-8 BOM para Excel abrir com acentuação correta
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `alertas-abertos-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Exportados ${filteredAlerts.length} alertas`);
+  };
+
 
 
   useEffect(() => {
@@ -481,21 +545,81 @@ export default function HealthDashboard() {
           </CardContent>
         </Card>
 
-        {/* Alertas abertos individuais + botão Resolver */}
+        {/* Alertas abertos individuais + filtros + export */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between gap-2 flex-wrap">
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="h-4 w-4" aria-hidden />
-              Alertas abertos ({data?.open_alerts?.length ?? 0})
+              Alertas abertos ({filteredAlerts.length}/{data?.open_alerts?.length ?? 0})
             </CardTitle>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={exportCsv}
+              disabled={query.isLoading}
+              aria-label="Exportar alertas filtrados como CSV"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Exportar CSV
+            </Button>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-4">
+            {/* Filtros */}
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <Filter className="h-3.5 w-3.5" aria-hidden />
+                <span className="text-xs">Filtros:</span>
+              </div>
+              {ALL_SEVS.map((sev) => {
+                const active = sevFilter.has(sev);
+                return (
+                  <button
+                    key={sev}
+                    type="button"
+                    onClick={() => toggleSev(sev)}
+                    className={`px-2 py-0.5 rounded-full text-xs border transition-opacity ${
+                      active ? severityStyles[sev] : "bg-muted text-muted-foreground opacity-50"
+                    }`}
+                    aria-pressed={active}
+                    aria-label={`Filtrar severidade ${sev}`}
+                  >
+                    {sev}
+                  </button>
+                );
+              })}
+              <div className="flex items-center gap-1 ml-2">
+                {(["1h", "24h", "7d", "all"] as const).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPeriodFilter(p)}
+                    className={`px-2 py-0.5 rounded-md text-xs border ${
+                      periodFilter === p ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                    }`}
+                    aria-pressed={periodFilter === p}
+                    aria-label={`Período ${p}`}
+                  >
+                    {p === "all" ? "todos" : p}
+                  </button>
+                ))}
+              </div>
+              <Input
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                placeholder="Buscar tipo ou mensagem…"
+                className="h-8 max-w-xs ml-auto"
+                aria-label="Filtrar por tipo ou mensagem"
+              />
+            </div>
+
             {query.isLoading ? (
               <Skeleton className="h-40 w-full" />
-            ) : (data?.open_alerts?.length ?? 0) === 0 ? (
+            ) : filteredAlerts.length === 0 ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground py-8 justify-center">
                 <CheckCircle2 className="h-5 w-5 text-green-500" aria-hidden />
-                Nenhum alerta aberto.
+                {(data?.open_alerts?.length ?? 0) === 0
+                  ? "Nenhum alerta aberto."
+                  : "Nenhum alerta corresponde aos filtros atuais."}
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -510,7 +634,7 @@ export default function HealthDashboard() {
                     </tr>
                   </thead>
                   <tbody>
-                    {data?.open_alerts?.map((row) => (
+                    {filteredAlerts.map((row) => (
                       <tr key={row.id} className="border-b last:border-0 align-top">
                         <td className="py-2 pr-3 text-muted-foreground whitespace-nowrap">
                           {new Date(row.created_at).toLocaleString("pt-BR")}
@@ -542,6 +666,7 @@ export default function HealthDashboard() {
             )}
           </CardContent>
         </Card>
+
 
         {data?.generated_at && (
           <p className="text-xs text-muted-foreground text-right">
