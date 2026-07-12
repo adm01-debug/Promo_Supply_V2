@@ -1951,6 +1951,36 @@ export type Database = {
         }
         Relationships: []
       }
+      deadlock_snapshots: {
+        Row: {
+          captured_at: string
+          conflicts: number
+          datname: string
+          deadlocks: number
+          id: number
+          stats_reset: string | null
+          temp_files: number
+        }
+        Insert: {
+          captured_at?: string
+          conflicts: number
+          datname: string
+          deadlocks: number
+          id?: number
+          stats_reset?: string | null
+          temp_files: number
+        }
+        Update: {
+          captured_at?: string
+          conflicts?: number
+          datname?: string
+          deadlocks?: number
+          id?: number
+          stats_reset?: string | null
+          temp_files?: number
+        }
+        Relationships: []
+      }
       department_budgets: {
         Row: {
           ano: number
@@ -7609,6 +7639,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      cleanup_deadlock_snapshots: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
       cleanup_old_audit_logs: { Args: never; Returns: number }
       cleanup_old_geo_access_logs: { Args: never; Returns: number }
@@ -7814,6 +7845,19 @@ export type Database = {
         }[]
       }
       scan_dangerous_statements: { Args: never; Returns: number }
+      scan_deadlocks_and_conflicts: {
+        Args: {
+          crit_deadlocks_per_hour?: number
+          warn_conflicts_per_hour?: number
+          warn_deadlocks_per_hour?: number
+        }
+        Returns: {
+          details: Json
+          metric: string
+          severity: string
+          value: number
+        }[]
+      }
       scan_duplicate_indexes: {
         Args: never
         Returns: {
