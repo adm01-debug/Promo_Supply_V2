@@ -41,6 +41,7 @@
 | `scan_dangerous_statements` | ao vivo | UPDATE/DELETE sem WHERE via `pg_stat_statements` |
 | `scan_stale_statistics` | 04:30 UTC diário | `last_analyze` >7d ou >20% modificações desde ANALYZE → sugere `ANALYZE public.<tabela>` |
 | `scan_cache_hit_ratio` | a cada hora | heap/idx hit ratio <95% (HIGH <90%) → sugere aumentar shared_buffers ou revisar índices |
+| `scan_tables_without_pk` | 05:15 UTC diário | Tabelas sem PK ou REPLICA IDENTITY insuficiente (risco replicação/Realtime) |
 
 Alertas caem em `system_alerts` e são despachados por `alert-dispatcher`.
 
