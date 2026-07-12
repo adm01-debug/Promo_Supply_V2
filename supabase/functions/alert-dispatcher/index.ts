@@ -21,6 +21,9 @@ import { fetchWithTimeout } from "../_shared/http.ts";
 import { retry } from "../_shared/retry.ts";
 
 const GLOBAL_SLACK_WEBHOOK_URL = Deno.env.get("SLACK_WEBHOOK_URL") ?? "";
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
+const ALERT_EMAIL_FROM = Deno.env.get("ALERT_EMAIL_FROM") ?? "alerts@promo-supply.app";
+const APP_URL = Deno.env.get("APP_URL") ?? "https://hub-harmony-unite.lovable.app";
 
 interface Alert {
   id: string;
