@@ -3019,6 +3019,39 @@ export type Database = {
         }
         Relationships: []
       }
+      health_scan_runs: {
+        Row: {
+          duration_ms: number | null
+          failed_count: number
+          finished_at: string | null
+          id: string
+          ok_count: number
+          results: Json
+          started_at: string
+          total_scanners: number
+        }
+        Insert: {
+          duration_ms?: number | null
+          failed_count?: number
+          finished_at?: string | null
+          id?: string
+          ok_count?: number
+          results?: Json
+          started_at?: string
+          total_scanners?: number
+        }
+        Update: {
+          duration_ms?: number | null
+          failed_count?: number
+          finished_at?: string | null
+          id?: string
+          ok_count?: number
+          results?: Json
+          started_at?: string
+          total_scanners?: number
+        }
+        Relationships: []
+      }
       integration_outbox: {
         Row: {
           created_at: string
@@ -6553,7 +6586,7 @@ export type Database = {
           dispatch_status: string | null
           dispatched_at: string | null
           id: string
-          message: string
+          message: string | null
           metadata: Json | null
           resolved_at: string | null
           resolved_by: string | null
@@ -6569,7 +6602,7 @@ export type Database = {
           dispatch_status?: string | null
           dispatched_at?: string | null
           id?: string
-          message: string
+          message?: string | null
           metadata?: Json | null
           resolved_at?: string | null
           resolved_by?: string | null
@@ -6585,7 +6618,7 @@ export type Database = {
           dispatch_status?: string | null
           dispatched_at?: string | null
           id?: string
-          message?: string
+          message?: string | null
           metadata?: Json | null
           resolved_at?: string | null
           resolved_by?: string | null
@@ -7659,6 +7692,7 @@ export type Database = {
       }
       cleanup_deadlock_snapshots: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
+      cleanup_health_scan_runs: { Args: never; Returns: undefined }
       cleanup_old_audit_logs: { Args: never; Returns: number }
       cleanup_old_geo_access_logs: { Args: never; Returns: number }
       cleanup_old_integration_outbox: { Args: never; Returns: number }
@@ -7825,6 +7859,7 @@ export type Database = {
         Returns: number
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
+      run_all_health_scans: { Args: never; Returns: string }
       scan_autovacuum_starvation: {
         Args: {
           crit_dead_pct?: number
@@ -7930,34 +7965,19 @@ export type Database = {
           wait_seconds: number
         }[]
       }
-      scan_long_running_transactions:
-        | {
-            Args: never
-            Returns: {
-              application_name: string
-              duration_seconds: number
-              pid: number
-              query_snippet: string
-              severity: string
-              state: string
-              usename: string
-              wait_event: string
-            }[]
-          }
-        | {
-            Args: {
-              _active_threshold_min?: number
-              _idle_threshold_min?: number
-            }
-            Returns: {
-              duration_seconds: number
-              pid: number
-              query_preview: string
-              severity: string
-              state: string
-              usename: string
-            }[]
-          }
+      scan_long_running_transactions: {
+        Args: never
+        Returns: {
+          application_name: string
+          duration_seconds: number
+          pid: number
+          query_snippet: string
+          severity: string
+          state: string
+          usename: string
+          wait_event: string
+        }[]
+      }
       scan_partition_candidates: {
         Args: { min_size_gb?: number }
         Returns: {
@@ -7996,20 +8016,18 @@ export type Database = {
           table_name: string
         }[]
       }
-      scan_sequence_exhaustion:
-        | {
-            Args: never
-            Returns: {
-              data_type: string
-              last_value: number
-              max_value: number
-              owned_by: string
-              pct_used: number
-              sequence_name: string
-              severity: string
-            }[]
-          }
-        | { Args: { _threshold_pct?: number }; Returns: number }
+      scan_sequence_exhaustion: {
+        Args: never
+        Returns: {
+          data_type: string
+          last_value: number
+          max_value: number
+          owned_by: string
+          pct_used: number
+          sequence_name: string
+          severity: string
+        }[]
+      }
       scan_stale_alerts: {
         Args: never
         Returns: {
@@ -8078,18 +8096,16 @@ export type Database = {
           severity: string
         }[]
       }
-      scan_unused_indexes:
-        | {
-            Args: never
-            Returns: {
-              idx_scan: number
-              index_name: string
-              index_size: string
-              severity: string
-              table_name: string
-            }[]
-          }
-        | { Args: { _min_size_mb?: number }; Returns: number }
+      scan_unused_indexes: {
+        Args: never
+        Returns: {
+          idx_scan: number
+          index_name: string
+          index_size: string
+          severity: string
+          table_name: string
+        }[]
+      }
       scan_wal_generation_rate: {
         Args: {
           crit_mb_per_min?: number
