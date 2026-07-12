@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AlertTriangle, CheckCircle2, Clock, RefreshCw, Activity } from "lucide-react";
-import { Helmet } from "react-helmet-async";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 type SeverityCounts = Record<string, number>;
