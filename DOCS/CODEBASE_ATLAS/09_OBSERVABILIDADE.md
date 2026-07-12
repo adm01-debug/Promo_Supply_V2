@@ -303,3 +303,41 @@ Cron `scan-temp-file-usage-10min` → `*/10 * * * *`. Dedupe 24h por `entity_id 
 3. Para queries transacionais spillando: sinal de índice ausente — analisar `EXPLAIN (ANALYZE, BUFFERS)`, adicionar índice que elimine o Sort.
 4. Correlacionar com Onda 11 — spills geram WAL indireto via re-execução; com Onda 12 — checkpoints podem espremer I/O disponível para temp files.
 5. Nunca aumentar `work_mem` globalmente sem calcular `work_mem × max_connections × hash_mem_multiplier` — risco de OOM.
+
+---
+
+## Onda 15 — Deadlocks & Conflitos de Replicação
+
+### Objetivo
+Detectar picos anormais de **deadlocks** e **conflitos de recovery** via `pg_stat_database`, com baseline delta entre snapshots.
+
+### Assinatura
+`public.scan_deadlocks_and_conflicts(warn_deadlocks_per_hour INTEGER = 5, crit_deadlocks_per_hour INTEGER = 20, warn_conflicts_per_hour INTEGER = 10)`
+
+### Persistência
+- Tabela `public.deadlock_snapshots` (retenção 7 dias, RLS admin, index BRIN em `captured_at`).
+- Cleanup diário via `cleanup_deadlock_snapshots` às 04:15 UTC.
+
+### Thresholds
+| Métrica | HIGH | CRITICAL |
+|---|---|---|
+| Deadlocks/hora | ≥ 5 | ≥ 20 |
+| Conflicts/hora | ≥ 10 | — |
+
+### Alertas em `system_alerts`
+- `alert_type = 'deadlock_spike'` (severidade dinâmica)
+- `alert_type = 'replication_conflict_spike'` (HIGH)
+- `metadata`: `deadlocks_per_hour`, `delta_deadlocks`, `elapsed_minutes`, `total_deadlocks`, `diagnostic_sql` (locks ativos em `pg_stat_activity`)
+- Dedupe: 1 hora por `alert_type` não resolvido
+
+### Cron
+`scan-deadlocks-conflicts-15min` → `*/15 * * * *`
+
+### Runbook
+1. Executar `metadata.diagnostic_sql` — lista PIDs em `Lock`/`LWLock` com `wait_event`, `query` e `xact_start`.
+2. Identificar padrão: mesmas tabelas envolvidas? mesma ordem de UPDATE? → refatorar transações para ordem canônica de acesso (ex: sempre lock em `id ASC`).
+3. Verificar transações longas (`xact_start` > 5min) — candidatas a `pg_cancel_backend(pid)` ou `pg_terminate_backend(pid)`.
+4. Correlacionar com Onda 8 (locks >5min) e Onda 10 (saturação de conexões).
+5. Para `replication_conflict_spike`: analisar queries longas em réplicas versus `hot_standby_feedback` / `max_standby_streaming_delay`.
+6. Considerar `SET deadlock_timeout` maior para reduzir noise em cargas com contenção esperada (default 1s).
+
