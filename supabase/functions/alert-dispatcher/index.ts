@@ -98,7 +98,71 @@ async function postToSlackWithRetry(url: string, alert: Alert): Promise<{ ok: bo
     return { ok: true, attempts };
   } catch (err) {
     return { ok: false, error: (err as Error).message, attempts };
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]!));
+}
+
+function emailHtml(alert: Alert): string {
+  const deepLink = `${APP_URL}/admin/health/alerts/${alert.id}`;
+  const sev = alert.severity.toUpperCase();
+  const color = sev === "CRITICAL" || sev === "EMERGENCY" ? "#dc2626" : sev === "HIGH" ? "#ea580c" : "#ca8a04";
+  return `<!doctype html><html><body style="font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#0f172a;padding:24px;color:#e2e8f0;">
+    <div style="max-width:560px;margin:0 auto;background:#1e293b;border-radius:12px;overflow:hidden;border:1px solid #334155;">
+      <div style="background:${color};padding:16px 24px;color:#fff;font-weight:600;font-size:14px;letter-spacing:.5px;">
+        ${severityEmoji(sev)} ${escapeHtml(sev)} · ${escapeHtml(alert.alert_type)}
+      </div>
+      <div style="padding:24px;">
+        <p style="margin:0 0 16px;font-size:15px;line-height:1.5;color:#f1f5f9;">${escapeHtml(alert.message)}</p>
+        <p style="margin:0 0 24px;font-size:12px;color:#94a3b8;">tenant: <code>${escapeHtml(alert.tenant_id ?? "n/a")}</code> · id: <code>${escapeHtml(alert.id)}</code><br>criado em ${escapeHtml(alert.created_at)}</p>
+        <a href="${deepLink}" style="display:inline-block;background:#6366f1;color:#fff;text-decoration:none;padding:10px 20px;border-radius:8px;font-weight:600;font-size:14px;">Abrir detalhes do alerta →</a>
+        <p style="margin:24px 0 0;font-size:11px;color:#64748b;">Você recebeu este email porque possui uma assinatura ativa neste tipo/severidade. Ajuste em <a href="${APP_URL}/admin/health" style="color:#818cf8;">/admin/health</a>.</p>
+      </div>
+    </div>
+  </body></html>`;
+}
+
+async function sendEmailWithRetry(to: string, alert: Alert): Promise<{ ok: boolean; error?: string }> {
+  if (!RESEND_API_KEY) return { ok: false, error: "resend_not_configured" };
+  try {
+    await retry(
+      async () => {
+        const res = await fetchWithTimeout("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${RESEND_API_KEY}`,
+          },
+          body: JSON.stringify({
+            from: ALERT_EMAIL_FROM,
+            to: [to],
+            subject: `${severityEmoji(alert.severity)} [${alert.severity}] ${alert.alert_type}`,
+            html: emailHtml(alert),
+          }),
+          timeoutMs: 8_000,
+        });
+        if (!res.ok) {
+          const body = await res.text().catch(() => "");
+          const err = new Error(`resend_status_${res.status}:${body.slice(0, 120)}`);
+          if (res.status >= 400 && res.status < 500 && res.status !== 429) {
+            (err as Error & { __noRetry?: boolean }).__noRetry = true;
+          }
+          throw err;
+        }
+      },
+      {
+        retries: 2,
+        baseDelayMs: 400,
+        maxDelayMs: 4_000,
+        shouldRetry: (err) => !(err as { __noRetry?: boolean })?.__noRetry,
+      },
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
   }
+}
 }
 
 serve(async (req) => {
