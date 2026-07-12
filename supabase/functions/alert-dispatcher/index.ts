@@ -284,7 +284,7 @@ serve(async (req) => {
         _alert_type: alert.alert_type,
         _severity: alert.severity,
       });
-      const rows = (subs ?? []) as Array<{ user_id: string; channel: string; slack_webhook_url: string | null; email: string | null }>;
+      const rows = (subs ?? []) as Array<{ user_id: string; channel: string; slack_webhook_url: string | null; email: string | null; webhook_url: string | null; webhook_secret: string | null }>;
 
       // In-app fan-out
       const inApp = rows.filter((s) => s.channel === "in_app" || s.channel === "inapp");
