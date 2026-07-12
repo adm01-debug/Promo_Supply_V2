@@ -8916,6 +8916,7 @@ export type Database = {
           xmin_age: number
         }[]
       }
+      scan_scan_runs_sla: { Args: never; Returns: number }
       scan_schema_hygiene: {
         Args: never
         Returns: {
