@@ -43,9 +43,10 @@ import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useState } from "react";
+import { useEffect } from "react";
 import { PrefetchLink } from "@/components/PrefetchLink";
 import { useAuth } from "@/features/auth";
+import { useCriticalAlertsBadge } from "@/hooks/useCriticalAlertsBadge";
 
 interface NavItemDef {
   title: string;
@@ -133,7 +134,6 @@ const sections: NavSection[] = [
       { title: "Sourcing Pipeline", icon: TrendingUp, href: "/admin/sourcing-pipeline" },
       { title: "Fiscal", icon: FileCheck, href: "/admin/fiscal" },
       { title: "Documentação", icon: BookOpen, href: "/admin/docs" },
-      { title: "Documentação", icon: BookOpen, href: "/admin/docs" },
       { title: "Saúde do Sistema", icon: Activity, href: "/admin/health" },
     ],
   },
@@ -145,13 +145,19 @@ function isItemActive(pathname: string, href: string) {
 }
 
 /* ─── Badge ─── */
-const CountBadge = ({ count }: { count: number }) => (
-  <motion.span 
+const CountBadge = ({ count, critical = false }: { count: number; critical?: boolean }) => (
+  <motion.span
     initial={{ scale: 0.8, opacity: 0 }}
     animate={{ scale: 1, opacity: 1 }}
-    className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[9px] font-bold shadow-sm"
+    className={cn(
+      "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full text-[9px] font-bold shadow-sm px-1",
+      critical
+        ? "bg-destructive text-destructive-foreground animate-pulse ring-2 ring-destructive/40"
+        : "bg-primary text-primary-foreground"
+    )}
+    aria-label={critical ? `${count} alertas críticos` : undefined}
   >
-    {count}
+    {count > 99 ? "99+" : count}
   </motion.span>
 );
 
@@ -160,12 +166,17 @@ const SidebarItem = ({
   item,
   active,
   collapsed,
+  criticalBadge = 0,
 }: {
   item: NavItemDef;
   active: boolean;
   collapsed: boolean;
+  criticalBadge?: number;
 }) => {
   const Icon = item.icon;
+  const showCritical = criticalBadge > 0;
+  const badgeValue = showCritical ? criticalBadge : item.badge;
+  const hasBadge = badgeValue != null && badgeValue > 0;
 
   const content = (
     <PrefetchLink
@@ -181,29 +192,35 @@ const SidebarItem = ({
     >
       {/* Indicator Bar */}
       {active && (
-        <motion.span 
+        <motion.span
           layoutId="sidebar-active-indicator"
-          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[4px] rounded-r-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.5)]" 
+          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[4px] rounded-r-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.5)]"
         />
       )}
 
       <Icon
         className={cn(
           "h-[18px] w-[18px] shrink-0 transition-colors",
-          active ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+          showCritical && "text-destructive animate-pulse",
+          !showCritical && (active ? "text-primary" : "text-muted-foreground group-hover:text-foreground")
         )}
       />
 
       {!collapsed && (
         <>
           <span className="truncate">{item.title}</span>
-          {item.badge != null && item.badge > 0 && <CountBadge count={item.badge} />}
+          {hasBadge && <CountBadge count={badgeValue!} critical={showCritical} />}
         </>
       )}
 
       {/* Collapsed badge dot */}
-      {collapsed && item.badge != null && item.badge > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-primary ring-2 ring-sidebar-background" />
+      {collapsed && hasBadge && (
+        <span
+          className={cn(
+            "absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full ring-2 ring-sidebar-background",
+            showCritical ? "bg-destructive animate-pulse" : "bg-primary"
+          )}
+        />
       )}
     </PrefetchLink>
   );
@@ -214,8 +231,10 @@ const SidebarItem = ({
         <TooltipTrigger asChild>{content}</TooltipTrigger>
         <TooltipContent side="right" className="text-xs font-medium">
           {item.title}
-          {item.badge != null && item.badge > 0 && (
-            <span className="ml-1.5 text-primary">({item.badge})</span>
+          {hasBadge && (
+            <span className={cn("ml-1.5", showCritical ? "text-destructive" : "text-primary")}>
+              ({badgeValue})
+            </span>
           )}
         </TooltipContent>
       </Tooltip>
@@ -230,10 +249,12 @@ const SidebarSection = ({
   section,
   pathname,
   collapsed,
+  criticalHealthCount,
 }: {
   section: NavSection;
   pathname: string;
   collapsed: boolean;
+  criticalHealthCount: number;
 }) => (
   <div className="space-y-0.5">
     {/* Section label — hidden when collapsed */}
@@ -250,6 +271,7 @@ const SidebarSection = ({
         item={item}
         active={isItemActive(pathname, item.href)}
         collapsed={collapsed}
+        criticalBadge={item.href === "/admin/health" ? criticalHealthCount : 0}
       />
     ))}
   </div>
@@ -264,6 +286,13 @@ interface AppSidebarProps {
 export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
   const { pathname } = useLocation();
   const { signOut } = useAuth();
+  const { count: criticalHealthCount, markAsSeen } = useCriticalAlertsBadge();
+
+  useEffect(() => {
+    if (pathname.startsWith("/admin/health")) {
+      markAsSeen();
+    }
+  }, [pathname, markAsSeen]);
 
   return (
     <aside
@@ -325,9 +354,11 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
             section={section}
             pathname={pathname}
             collapsed={collapsed}
+            criticalHealthCount={criticalHealthCount}
           />
         ))}
       </nav>
+
 
       <div className="mt-auto space-y-1 p-2 border-t border-border/10 bg-muted/20">
         {!collapsed && (
