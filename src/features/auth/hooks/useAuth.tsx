@@ -155,6 +155,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }, 0);
           }
         } else {
+          // CRIT-C1/C8: invalidate any fetch in flight before clearing state
+          fetchGenerationRef.current += 1;
           setProfile(null);
           setRole(null);
           setOrganizationId(null);
@@ -163,7 +165,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setAvailableTenants([]);
           fetchedUserIdRef.current = null;
           if (event === 'SIGNED_OUT') {
-            // Fix #1/#5: ensure cache is wiped on every sign-out path
             queryClient.clear();
             setLoading(false);
           }
