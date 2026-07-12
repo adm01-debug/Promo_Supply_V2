@@ -94,6 +94,42 @@ export type Database = {
           },
         ]
       }
+      alert_subscriptions: {
+        Row: {
+          alert_type: string | null
+          channel: string
+          created_at: string
+          enabled: boolean
+          id: string
+          min_severity: string
+          snoozed_until: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_type?: string | null
+          channel?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          min_severity?: string
+          snoozed_until?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_type?: string | null
+          channel?: string
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          min_severity?: string
+          snoozed_until?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       aliquotas_tributarias: {
         Row: {
           cofins: number | null
@@ -7660,6 +7696,14 @@ export type Database = {
     }
     Functions: {
       _invoke_edge_function: { Args: { _name: string }; Returns: number }
+      alert_subscribers_for: {
+        Args: { _alert_type: string; _severity: string }
+        Returns: {
+          channel: string
+          subscription_id: string
+          user_id: string
+        }[]
+      }
       alerts_mttr_by_type: {
         Args: { days?: number }
         Returns: {
