@@ -139,7 +139,7 @@ export default function HealthDashboard() {
     mutationFn: async ({ id, note }: { id: string; note: string }) => {
       const { error } = await supabase.rpc("resolve_alert", {
         _alert_id: id,
-        _note: note.trim() ? note.trim() : null,
+        _note: note.trim() ? note.trim() : undefined,
       });
       if (error) throw error;
     },
