@@ -5209,6 +5209,39 @@ export type Database = {
           },
         ]
       }
+      security_definer_baseline: {
+        Row: {
+          approved_at: string
+          approved_by: string | null
+          created_at: string
+          function_name: string
+          function_signature: string
+          id: string
+          justification: string | null
+          schema_name: string
+        }
+        Insert: {
+          approved_at?: string
+          approved_by?: string | null
+          created_at?: string
+          function_name: string
+          function_signature: string
+          id?: string
+          justification?: string | null
+          schema_name: string
+        }
+        Update: {
+          approved_at?: string
+          approved_by?: string | null
+          created_at?: string
+          function_name?: string
+          function_signature?: string
+          id?: string
+          justification?: string | null
+          schema_name?: string
+        }
+        Relationships: []
+      }
       security_logs: {
         Row: {
           created_at: string
@@ -8133,6 +8166,7 @@ export type Database = {
           table_name: string
         }[]
       }
+      scan_security_definer_drift: { Args: never; Returns: Json }
       scan_sequence_exhaustion: {
         Args: never
         Returns: {
