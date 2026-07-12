@@ -100,3 +100,22 @@ Dois scanners novos preenchem gaps de observabilidade de infraestrutura:
 - Ignorar apenas se replica está em manutenção temporária conhecida.
 
 > Warnings 0028 (SECURITY DEFINER) permanecem na allowlist arquitetural — funções DBA nunca são expostas ao PostgREST.
+
+---
+
+## Onda 11 — Taxa de geração de WAL
+
+### `public.scan_wal_generation_rate(warn_mb_per_min=50, crit_mb_per_min=200, spike_multiplier=3.0)`
+- Persiste snapshots de `pg_stat_wal` em `public.wal_rate_snapshots` (retenção 24h).
+- Calcula MB/min desde o snapshot anterior e compara com **baseline móvel** (média das últimas 12 amostras das 2h).
+- Escala:
+  - **CRITICAL** → taxa ≥ 200 MB/min (absoluto).
+  - **HIGH** → taxa ≥ 50 MB/min, ou pico ≥ 3× o baseline.
+- Ignora rodadas após reset de estatísticas (`pg_stat_reset_shared('wal')`).
+- Cron: `scan-wal-generation-rate-5min` (a cada 5min).
+
+### Runbook
+1. Consultar `system_alerts` do tipo `db_wal_generation_rate` → executar `metadata.diagnostic_sql` para ver queries ativas.
+2. Suspeitos típicos: bulk `UPDATE`/`INSERT`, `VACUUM FULL`, `REINDEX`, migrações grandes, replicação lógica em catch-up.
+3. Se pico for legítimo (ex: janela ETL noturna), agendar exceção temporária ou elevar `warn_mb_per_min` na chamada do cron.
+4. Se sustentado, revisar índices redundantes (write amplification) — cruzar com `scan_duplicate_indexes` (Onda 6).
