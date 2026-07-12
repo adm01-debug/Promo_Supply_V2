@@ -1,6 +1,13 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3.9)
+# Melhorias Pendentes — Auditoria Consolidada (v4.0)
 
-**Última atualização:** 2026-07-12 (Onda 18 — scanner de XID wraparound concluída)
+**Última atualização:** 2026-07-12 (Onda 19 — scanner de replication slots concluída)
+
+### Onda 19 — Replication Slots
+- `scan_replication_slots()` inspeciona `pg_replication_slots` e mede lag de WAL via `pg_wal_lsn_diff(pg_current_wal_lsn(), restart_lsn)`.
+- Detecta 3 falhas críticas: slot inativo retendo WAL, lag excessivo em slot ativo, e `xmin` antigo bloqueando `VACUUM`.
+- Thresholds: inativo >1GB→HIGH, >10GB→CRITICAL; ativo >5GB→HIGH, >20GB→CRITICAL; `xmin_age >500M`→HIGH.
+- Alertas em `system_alerts` com dedupe de 2h, `fix_sql` (`pg_drop_replication_slot`) e `diagnostic_sql`.
+- Cron `*/30 * * * *` (`scan-replication-slots-30m`). `EXECUTE` restrito a `service_role`.
 
 ### Onda 18 — Transaction ID Wraparound
 - `scan_xid_wraparound()` cobre tabelas (`age(relfrozenxid)`, `mxid_age(relminmxid)`) e bancos (`age(datfrozenxid)`).
