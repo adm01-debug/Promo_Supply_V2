@@ -330,13 +330,27 @@ serve(async (req) => {
           emailErrors.push(outcome.error ?? "unknown");
         }
       }
+      // Webhook fan-out por assinatura — dedup por URL (assinatura própria via HMAC opcional)
+      const webhookSubs = rows.filter((s) => s.channel === "webhook" && s.webhook_url);
+      const seenWebhook = new Map<string, string | null>();
+      for (const s of webhookSubs) {
+        if (!seenWebhook.has(s.webhook_url!)) seenWebhook.set(s.webhook_url!, s.webhook_secret);
+      }
+      for (const [url, secret] of seenWebhook) {
+        const outcome = await sendWebhookWithRetry(url, secret, alert);
+        if (outcome.ok) webhookDelivered++;
+        else {
+          webhookFailed++;
+          webhookErrors.push(outcome.error ?? "unknown");
+        }
+      }
     } catch (e) {
       slackErrors.push(`fanout_error:${(e as Error).message}`);
     }
 
-    const overallOk = slackFailed === 0 && emailFailed === 0;
-    const anyDelivered = inAppFanout + slackDelivered + emailDelivered > 0;
-    const allErrors = [...slackErrors, ...emailErrors];
+    const overallOk = slackFailed === 0 && emailFailed === 0 && webhookFailed === 0;
+    const anyDelivered = inAppFanout + slackDelivered + emailDelivered + webhookDelivered > 0;
+    const allErrors = [...slackErrors, ...emailErrors, ...webhookErrors];
     await admin
       .from("system_alerts")
       .update({
@@ -351,6 +365,8 @@ serve(async (req) => {
             slack_failed: slackFailed,
             email_delivered: emailDelivered,
             email_failed: emailFailed,
+            webhook_delivered: webhookDelivered,
+            webhook_failed: webhookFailed,
           },
         },
       })
