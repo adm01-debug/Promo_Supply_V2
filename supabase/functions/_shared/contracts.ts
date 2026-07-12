@@ -16,9 +16,10 @@ export const NegotiationContract = z.object({
 // Helper: normaliza string enum case-insensitive
 const ciEnum = <T extends [string, ...string[]]>(values: T) =>
   z.preprocess(
-    (v) => (typeof v === "string" ? v.toLowerCase().trim() : v),
+    (v: unknown) => (typeof v === "string" ? v.toLowerCase().trim() : v),
     z.enum(values)
   );
+
 
 export const WorkflowContract = z.discriminatedUnion("action", [
   z.object({
@@ -58,8 +59,8 @@ export const FiscalContract = z.object({
   action: ciEnum(["send", "cancel", "query", "manifest"]),
   // NFe/NFSe/CTe/MDFe são siglas com case fixo — mantemos preprocess p/ uppercase
   type: z.preprocess(
-    (v) => (typeof v === "string" ? v.toUpperCase().trim() : v),
-    z.enum(["NFE", "NFSE", "CTE", "MDFE"]).transform((v) => {
+    (v: unknown) => (typeof v === "string" ? v.toUpperCase().trim() : v),
+    z.enum(["NFE", "NFSE", "CTE", "MDFE"]).transform((v: string) => {
       const map: Record<string, string> = { NFE: "NFe", NFSE: "NFSe", CTE: "CTe", MDFE: "MDFe" };
       return map[v] as "NFe" | "NFSe" | "CTe" | "MDFe";
     })
@@ -70,7 +71,7 @@ export const FiscalContract = z.object({
 
 export const TelemetryContract = z.object({
   // Aceita variações (ERROR/WARNING/etc.) e normaliza para o enum log_level
-  level: z.preprocess((v) => {
+  level: z.preprocess((v: unknown) => {
     const s = String(v ?? "info").toLowerCase().trim();
     if (s === "warning") return "warn";
     return ["info", "warn", "error", "debug"].includes(s) ? s : "info";
