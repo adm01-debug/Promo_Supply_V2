@@ -7678,6 +7678,10 @@ export type Database = {
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
       scan_dangerous_statements: { Args: never; Returns: number }
+      scan_sequence_exhaustion: {
+        Args: { _threshold_pct?: number }
+        Returns: number
+      }
       scan_table_bloat: {
         Args: { _min_dead_ratio?: number; _min_dead_tuples?: number }
         Returns: number
