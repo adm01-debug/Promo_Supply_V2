@@ -55,7 +55,12 @@ export const FiscalContract = z.object({
 });
 
 export const TelemetryContract = z.object({
-  level: z.enum(["info", "warn", "error", "debug"]),
+  // Aceita variações (ERROR/WARNING/etc.) e normaliza para o enum log_level
+  level: z.preprocess((v) => {
+    const s = String(v ?? "info").toLowerCase().trim();
+    if (s === "warning") return "warn";
+    return ["info", "warn", "error", "debug"].includes(s) ? s : "info";
+  }, z.enum(["info", "warn", "error", "debug"])),
   message: z.string(),
   context: z.record(z.any()).optional(),
   requestId: z.string().optional(),
