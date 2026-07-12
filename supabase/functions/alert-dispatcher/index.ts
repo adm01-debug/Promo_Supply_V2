@@ -93,7 +93,7 @@ serve(async (req) => {
     });
   }
 
-  const results: Array<{ id: string; ok: boolean; error?: string }> = [];
+  const results: Array<{ id: string; ok: boolean; error?: string; in_app?: number; slack?: number }> = [];
   const seenWindow = new Map<string, string>(); // dedupe key -> id
 
   for (const alert of (alerts ?? []) as Alert[]) {
