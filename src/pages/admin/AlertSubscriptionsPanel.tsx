@@ -73,12 +73,17 @@ export default function AlertSubscriptionsPanel() {
       if (channel === "slack" && !/^https:\/\/hooks\.slack\.com\//.test(slackUrl.trim())) {
         throw new Error("Webhook Slack inválido (deve começar com https://hooks.slack.com/)");
       }
+      const trimmedEmail = emailAddr.trim();
+      if (channel === "email" && trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+        throw new Error("Email inválido");
+      }
       const { error } = await supabase.from("alert_subscriptions").insert({
         user_id: user.id,
         alert_type: alertType.trim() || null,
         min_severity: minSeverity,
         channel,
         slack_webhook_url: channel === "slack" ? slackUrl.trim() : null,
+        email: channel === "email" ? (trimmedEmail || null) : null,
       });
       if (error) throw error;
     },
