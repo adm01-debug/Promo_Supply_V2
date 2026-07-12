@@ -28,6 +28,8 @@ interface Subscription {
   snoozed_until: string | null;
   slack_webhook_url: string | null;
   email: string | null;
+  webhook_url: string | null;
+  webhook_secret: string | null;
   created_at: string;
 }
 
@@ -36,6 +38,7 @@ const CHANNELS = [
   { value: "inapp", label: "In-app" },
   { value: "email", label: "Email" },
   { value: "slack", label: "Slack" },
+  { value: "webhook", label: "Webhook" },
 ] as const;
 
 const SNOOZE_PRESETS: Array<{ label: string; minutes: number }> = [
