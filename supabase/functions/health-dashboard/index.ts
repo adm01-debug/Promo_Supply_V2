@@ -56,6 +56,40 @@ Deno.serve(async (req: Request) => {
   if (roleErr) return json({ error: "Role check failed" }, 500);
   if (!isAdmin) return json({ error: "Forbidden" }, 403);
 
+  // 2b. Rota alternativa: detalhe de um único alerta + timeline (audit_logs)
+  const url = new URL(req.url);
+  const alertId = url.searchParams.get("alert_id");
+  if (alertId) {
+    const [alertRes, auditRes, relatedRes] = await Promise.all([
+      admin
+        .from("system_alerts")
+        .select("id, alert_type, severity, message, metadata, created_at, resolved_at, resolved_by")
+        .eq("id", alertId)
+        .maybeSingle(),
+      admin
+        .from("audit_logs")
+        .select("id, action, actor_id, created_at, metadata")
+        .eq("resource_type", "system_alert")
+        .eq("resource_id", alertId)
+        .order("created_at", { ascending: true }),
+      admin
+        .from("system_alerts")
+        .select("id, severity, created_at, resolved_at")
+        .order("created_at", { ascending: false })
+        .limit(20),
+    ]);
+    if (alertRes.error) return json({ error: alertRes.error.message }, 500);
+    if (!alertRes.data) return json({ error: "Alert not found" }, 404);
+    return json({
+      alert: alertRes.data,
+      timeline: auditRes.data ?? [],
+      related_same_type: (relatedRes.data ?? []).filter(
+        (r: { id: string }) => r.id !== alertId,
+      ),
+    });
+  }
+
+
   // 3. Consulta paralela dos datasets
   const [overviewRes, runsRes, severityRes, tsRes, mttrRes, noisyRes, openRes] = await Promise.all([
     admin.from("v_system_health_overview").select("*"),

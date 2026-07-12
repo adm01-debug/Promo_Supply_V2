@@ -57,6 +57,8 @@ const WorkflowDesigner = lazy(() => import("@/pages/admin/WorkflowAdmin"));
 const DeveloperDocs = lazy(() => import("@/pages/admin/DeveloperDocs"));
 const StorageMigration = lazy(() => import("@/pages/admin/StorageMigration"));
 const HealthDashboard = lazy(() => import("@/pages/admin/HealthDashboard"));
+const AlertDetail = lazy(() => import("@/pages/admin/AlertDetail"));
+
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 export const AnimatedRoutes = () => {
@@ -122,6 +124,8 @@ export const AnimatedRoutes = () => {
             <Route path="/admin/docs" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><DeveloperDocs /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/admin/storage-migration" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><StorageMigration /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/admin/health" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><HealthDashboard /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/health/alerts/:id" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><AlertDetail /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+
             <Route path="/portal-fornecedor" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="dashboard"><PortalFornecedor /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/configuracoes-centro-custo" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><ConfiguracoesCentroCusto /></RouteSkeleton></ModuleErrorBoundary>} />
           </Route>

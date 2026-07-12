@@ -644,7 +644,16 @@ export default function HealthDashboard() {
                         <td className="py-2 pr-3 max-w-md truncate" title={row.message ?? ""}>
                           {row.message ?? "—"}
                         </td>
-                        <td className="py-2 pr-3 text-right">
+                        <td className="py-2 pr-3 text-right whitespace-nowrap">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            asChild
+                            className="mr-1"
+                            aria-label={`Ver detalhes do alerta ${row.alert_type}`}
+                          >
+                            <a href={`/admin/health/alerts/${row.id}`}>Detalhes</a>
+                          </Button>
                           <Button
                             size="sm"
                             variant="outline"
@@ -658,6 +667,7 @@ export default function HealthDashboard() {
                             Resolver
                           </Button>
                         </td>
+
                       </tr>
                     ))}
                   </tbody>
