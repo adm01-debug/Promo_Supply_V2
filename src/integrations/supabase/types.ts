@@ -7678,6 +7678,7 @@ export type Database = {
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
       scan_dangerous_statements: { Args: never; Returns: number }
+      scan_fk_without_cascade: { Args: never; Returns: number }
       scan_sequence_exhaustion: {
         Args: { _threshold_pct?: number }
         Returns: number
