@@ -130,10 +130,10 @@ const BuyerPerformanceDashboard = () => {
         <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
           <p className="font-medium text-foreground">{label}</p>
           {payload.map((entry, index) => (
-            <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: {entry.name?.includes('Economia') 
-                ? `R$ ${(entry.value || 0).toLocaleString('pt-BR')}` 
-                : entry.name?.includes('Desconto') 
+            <p key={`${entry.name ?? 'series'}-${index}`} className="text-sm" style={{ color: entry.color }}>
+              {entry.name}: {entry.name?.includes('Economia')
+                ? `R$ ${(entry.value || 0).toLocaleString('pt-BR')}`
+                : entry.name?.includes('Desconto')
                   ? `${entry.value}%`
                   : entry.value}
             </p>
@@ -423,7 +423,7 @@ const BuyerPerformanceDashboard = () => {
                       const maxPedidos = Math.max(...buyer.fornecedores.map(f => f.pedidos));
                       const progressValue = maxPedidos > 0 ? (item.pedidos / maxPedidos) * 100 : 0;
                       return (
-                        <div key={index}>
+                        <div key={`${item.nome}-${index}`}>
                           <div className="flex items-center justify-between mb-1">
                             <span className="text-sm font-medium text-foreground truncate max-w-[140px]">{item.nome}</span>
                             <div className="flex items-center gap-3">
@@ -461,7 +461,7 @@ const BuyerPerformanceDashboard = () => {
                     </thead>
                     <tbody>
                       {buyer.ultimasNegociacoes.map((neg, index) => (
-                        <tr key={index} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
+                        <tr key={`${neg.produto}-${neg.data}-${index}`} className="border-b border-border/50 last:border-0 hover:bg-muted/30 transition-colors">
                           <td className="py-3 px-4 text-sm font-medium text-foreground truncate max-w-[200px]">{neg.produto}</td>
                           <td className="py-3 px-4 text-sm text-muted-foreground">
                             {new Date(neg.data).toLocaleDateString('pt-BR')}

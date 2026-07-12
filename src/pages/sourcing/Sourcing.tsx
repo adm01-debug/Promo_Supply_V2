@@ -26,11 +26,11 @@ const Sourcing = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published': return 'bg-blue-500/10 text-blue-600 border-blue-200';
-      case 'in_progress': return 'bg-amber-500/10 text-amber-600 border-amber-200';
-      case 'evaluation': return 'bg-purple-500/10 text-purple-600 border-purple-200';
-      case 'awarded': return 'bg-emerald-500/10 text-emerald-600 border-emerald-200';
-      default: return 'bg-slate-500/10 text-slate-600 border-slate-200';
+      case 'published': return 'bg-info/10 text-info border-info/30';
+      case 'in_progress': return 'bg-warning/10 text-warning border-warning/30';
+      case 'evaluation': return 'bg-primary/10 text-primary border-primary/30';
+      case 'awarded': return 'bg-success/10 text-success border-success/30';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -64,8 +64,8 @@ const Sourcing = () => {
         {/* Stats Summary */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card className="p-4 flex items-center gap-4">
-            <div className="p-2 bg-blue-500/10 rounded-lg">
-              <FileText className="w-5 h-5 text-blue-600" />
+            <div className="p-2 bg-info/10 rounded-lg">
+              <FileText className="w-5 h-5 text-info" />
             </div>
             <div>
               <p className="text-xs text-muted-foreground uppercase font-semibold">Eventos Ativos</p>

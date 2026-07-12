@@ -147,9 +147,9 @@ export default function AdminTelemetriaPage() {
                 
                 <div className="mt-6 pt-6 border-t border-violet-500/10">
                   <div className="flex flex-wrap gap-2">
-                    {simulationResult.details.map((detail: any, idx: number) => (
-                      <Badge 
-                        key={idx} 
+                    {simulationResult.details.map((detail: { name: string; status: string; duration: number }, idx: number) => (
+                      <Badge
+                        key={`${detail.name}-${idx}`}
                         variant={detail.status === 'success' ? 'secondary' : 'destructive'}
                         className="text-[9px] font-mono px-2 py-0.5"
                       >

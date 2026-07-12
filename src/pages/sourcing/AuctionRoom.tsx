@@ -89,7 +89,7 @@ const AuctionRoom = () => {
             </Button>
             <div>
               <div className="flex items-center gap-2">
-                <Badge className="bg-red-500 hover:bg-red-600 animate-pulse">AO VIVO</Badge>
+                <Badge variant="destructive" className="animate-pulse">AO VIVO</Badge>
                 <span className="text-sm font-mono text-muted-foreground">{event?.numero}</span>
               </div>
               <h1 className="text-2xl font-bold">{event?.title}</h1>
@@ -101,7 +101,7 @@ const AuctionRoom = () => {
               <Clock className="w-4 h-4" />
               <span className="text-sm font-medium uppercase tracking-wider">Tempo Restante</span>
             </div>
-            <div className="text-3xl font-mono font-bold text-red-600 tracking-tighter">
+            <div className="text-3xl font-mono font-bold text-destructive tracking-tighter">
               {timeLeft}
             </div>
           </div>
@@ -126,7 +126,7 @@ const AuctionRoom = () => {
 
               <Card className="p-4">
                 <div className="flex items-center gap-3 mb-2">
-                  <Users className="w-4 h-4 text-blue-600" />
+                  <Users className="w-4 h-4 text-info" />
                   <span className="text-xs font-semibold text-muted-foreground uppercase">Participantes Ativos</span>
                 </div>
                 <div className="text-2xl font-bold">
