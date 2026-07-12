@@ -7712,19 +7712,6 @@ export type Database = {
       }
     }
     Views: {
-      cron_job_staleness: {
-        Row: {
-          active: boolean | null
-          health: string | null
-          hours_since_last_run: number | null
-          jobid: number | null
-          jobname: string | null
-          last_run_at: string | null
-          last_status: string | null
-          schedule: string | null
-        }
-        Relationships: []
-      }
       supplier_compliance_summary: {
         Row: {
           avaliacao: number | null
@@ -7914,6 +7901,19 @@ export type Database = {
               usage_percentage: number
             }[]
           }
+      get_cron_job_staleness: {
+        Args: never
+        Returns: {
+          active: boolean
+          health: string
+          hours_since_last_run: number
+          jobid: number
+          jobname: string
+          last_run_at: string
+          last_status: string
+          schedule: string
+        }[]
+      }
       get_effective_approver: {
         Args: {
           p_approver_id: string
