@@ -133,7 +133,7 @@ export function SupplierChat() {
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
         const usersTyping: string[] = [];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         Object.values(state).forEach((presences: any[]) => {
           presences.forEach((presence: Record<string, unknown>) => {
             if (presence["isTyping"] && presence["userId"] !== user.id) {

@@ -118,7 +118,7 @@ export function useAccountFilters<T extends FiltersRecord>(
       cancelled = true;
       sub.subscription.unsubscribe();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [scope, legacyStorageKey]);
 
   // Debounced persistence
@@ -183,7 +183,7 @@ export function useAccountFilters<T extends FiltersRecord>(
     skipNextSaveRef.current = true;
 
     return removedKeys;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [userId, scope, legacyStorageKey, JSON.stringify(defaults)]);
 
   return {

@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 export const AISupplierSuggestion = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   const [isExpanding, setIsExpanding] = useState(false);
 
   return (

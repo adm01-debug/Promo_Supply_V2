@@ -115,7 +115,7 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
 
   const cotacoesComScore = useMemo(
     () => cotacoes.map(c => ({ ...c, score: calculateScore(c) })),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     [cotacoes, weights, quantidade, bounds]
   );
 
