@@ -481,12 +481,127 @@ export default function HealthDashboard() {
           </CardContent>
         </Card>
 
+        {/* Alertas abertos individuais + botão Resolver */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" aria-hidden />
+              Alertas abertos ({data?.open_alerts?.length ?? 0})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {query.isLoading ? (
+              <Skeleton className="h-40 w-full" />
+            ) : (data?.open_alerts?.length ?? 0) === 0 ? (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground py-8 justify-center">
+                <CheckCircle2 className="h-5 w-5 text-green-500" aria-hidden />
+                Nenhum alerta aberto.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="text-left text-muted-foreground border-b">
+                    <tr>
+                      <th className="py-2 pr-3">Quando</th>
+                      <th className="py-2 pr-3">Tipo</th>
+                      <th className="py-2 pr-3">Sev</th>
+                      <th className="py-2 pr-3">Mensagem</th>
+                      <th className="py-2 pr-3 text-right">Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data?.open_alerts?.map((row) => (
+                      <tr key={row.id} className="border-b last:border-0 align-top">
+                        <td className="py-2 pr-3 text-muted-foreground whitespace-nowrap">
+                          {new Date(row.created_at).toLocaleString("pt-BR")}
+                        </td>
+                        <td className="py-2 pr-3 font-mono text-xs">{row.alert_type}</td>
+                        <td className="py-2 pr-3"><SeverityBadge severity={row.severity} /></td>
+                        <td className="py-2 pr-3 max-w-md truncate" title={row.message ?? ""}>
+                          {row.message ?? "—"}
+                        </td>
+                        <td className="py-2 pr-3 text-right">
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setResolveTarget(row);
+                              setResolveNote("");
+                            }}
+                            aria-label={`Resolver alerta ${row.alert_type}`}
+                          >
+                            <Check className="h-3.5 w-3.5 mr-1" />
+                            Resolver
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {data?.generated_at && (
           <p className="text-xs text-muted-foreground text-right">
             Gerado em {new Date(data.generated_at).toLocaleString("pt-BR")}
           </p>
         )}
       </div>
+
+      <Dialog
+        open={!!resolveTarget}
+        onOpenChange={(open) => {
+          if (!open) {
+            setResolveTarget(null);
+            setResolveNote("");
+          }
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Resolver alerta</DialogTitle>
+            <DialogDescription>
+              {resolveTarget ? (
+                <>
+                  <span className="font-mono text-xs">{resolveTarget.alert_type}</span>{" "}
+                  · <SeverityBadge severity={resolveTarget.severity} />
+                  <div className="mt-2 text-sm text-foreground">{resolveTarget.message ?? "—"}</div>
+                </>
+              ) : null}
+            </DialogDescription>
+          </DialogHeader>
+          <Textarea
+            value={resolveNote}
+            onChange={(e) => setResolveNote(e.target.value)}
+            placeholder="Nota de resolução (opcional): causa raiz, ação executada, ticket relacionado…"
+            rows={4}
+            aria-label="Nota de resolução"
+          />
+          <DialogFooter>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setResolveTarget(null);
+                setResolveNote("");
+              }}
+              disabled={resolveMutation.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              onClick={() =>
+                resolveTarget && resolveMutation.mutate({ id: resolveTarget.id, note: resolveNote })
+              }
+              disabled={resolveMutation.isPending}
+            >
+              {resolveMutation.isPending ? "Resolvendo…" : "Confirmar resolução"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
+
 }
