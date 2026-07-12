@@ -70,6 +70,15 @@ interface NoisyRow {
   last_seen: string;
 }
 
+interface OpenAlertRow {
+  id: string;
+  alert_type: string;
+  severity: string;
+  message: string | null;
+  created_at: string;
+  metadata: Record<string, unknown> | null;
+}
+
 interface DashboardResponse {
   generated_at: string;
   open_alerts_by_type: OverviewRow[];
@@ -78,7 +87,9 @@ interface DashboardResponse {
   severity_timeseries_7d?: TimeseriesRow[];
   mttr_by_type_7d?: MttrRow[];
   noisy_scanners_24h?: NoisyRow[];
+  open_alerts?: OpenAlertRow[];
 }
+
 
 const severityColors: Record<string, string> = {
   EMERGENCY: "hsl(var(--destructive))",
