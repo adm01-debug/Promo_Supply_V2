@@ -677,6 +677,10 @@ export default function HealthDashboard() {
           </CardContent>
         </Card>
 
+        <AlertSubscriptionsPanel />
+
+
+
 
         {data?.generated_at && (
           <p className="text-xs text-muted-foreground text-right">
