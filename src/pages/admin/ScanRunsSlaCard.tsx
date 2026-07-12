@@ -242,8 +242,8 @@ export default function ScanRunsSlaCard() {
                 {rows.map((r) => {
                   const isOpen = expanded === r.scan_name;
                   return (
-                    <>
-                      <tr key={r.scan_name} className="border-b last:border-0">
+                    <Fragment key={r.scan_name}>
+                      <tr className="border-b last:border-0">
                         <td className="py-2 pr-1">
                           <Button
                             variant="ghost"
@@ -276,13 +276,13 @@ export default function ScanRunsSlaCard() {
                         <td className="py-2 pr-3 text-muted-foreground">{r.last_status ?? "—"}</td>
                       </tr>
                       {isOpen && (
-                        <tr key={`${r.scan_name}-history`}>
+                        <tr>
                           <td colSpan={7} className="py-2 pr-3">
                             <ScannerHistory scanName={r.scan_name} />
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>
