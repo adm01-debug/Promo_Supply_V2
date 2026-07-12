@@ -286,6 +286,13 @@ interface AppSidebarProps {
 export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
   const { pathname } = useLocation();
   const { signOut } = useAuth();
+  const { count: criticalHealthCount, markAsSeen } = useCriticalAlertsBadge();
+
+  useEffect(() => {
+    if (pathname.startsWith("/admin/health")) {
+      markAsSeen();
+    }
+  }, [pathname, markAsSeen]);
 
   return (
     <aside
@@ -347,9 +354,11 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
             section={section}
             pathname={pathname}
             collapsed={collapsed}
+            criticalHealthCount={criticalHealthCount}
           />
         ))}
       </nav>
+
 
       <div className="mt-auto space-y-1 p-2 border-t border-border/10 bg-muted/20">
         {!collapsed && (
