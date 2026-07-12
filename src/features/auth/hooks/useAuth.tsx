@@ -24,6 +24,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchedUserIdRef = useRef<string | null>(null);
   const isFetchingRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // CRIT-C1/C8: monotonic generation invalidates in-flight fetches when
+  // signOut / SIGNED_OUT / user-switch occurs, preventing stale data from a
+  // previous user leaking into the newly-cleared state.
+  const fetchGenerationRef = useRef(0);
 
   const setSelectedEmpresa = useCallback((empresaId: string | null) => {
     setSelectedEmpresaIdState(empresaId);
