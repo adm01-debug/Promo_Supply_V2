@@ -7817,6 +7817,12 @@ export type Database = {
       }
       cleanup_deadlock_snapshots: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
+      cleanup_expired_password_resets: {
+        Args: never
+        Returns: {
+          deleted_count: number
+        }[]
+      }
       cleanup_health_scan_runs: { Args: never; Returns: undefined }
       cleanup_old_audit_logs: { Args: never; Returns: number }
       cleanup_old_geo_access_logs: { Args: never; Returns: number }
@@ -7895,6 +7901,19 @@ export type Database = {
               usage_percentage: number
             }[]
           }
+      get_cron_job_staleness: {
+        Args: never
+        Returns: {
+          active: boolean
+          health: string
+          hours_since_last_run: number
+          jobid: number
+          jobname: string
+          last_run_at: string
+          last_status: string
+          schedule: string
+        }[]
+      }
       get_effective_approver: {
         Args: {
           p_approver_id: string
