@@ -173,3 +173,91 @@ export const getTenantId = async (
   const defaultTenant = (memberships ?? []).find((m: any) => m.is_default)?.tenant_id;
   return defaultTenant ?? (memberships![0] as any).tenant_id;
 };
+
+/**
+ * A-02 (Onda 47): Guarda dupla para edge functions administrativas.
+ *
+ * Exige (1) JWT válido de usuário autenticado e (2) role 'admin' via
+ * `public.has_role`. Retorna `Response` pronta em caso de falha
+ * (401 sem token/usuário, 403 sem role, 500 se lookup falhar).
+ *
+ * Uso:
+ * ```ts
+ * const guard = await requireAdmin(req);
+ * if (guard.response) return guard.response;
+ * const { user, admin } = guard;
+ * ```
+ */
+export const requireAdmin = async (
+  req: Request,
+): Promise<
+  | { response: Response; user?: undefined; admin?: undefined }
+  | { response?: undefined; user: any; admin: any }
+> => {
+  const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2.49.4");
+  const cors = buildCorsHeaders(req);
+  const jsonHeaders = { ...cors, "Content-Type": "application/json" };
+
+  const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+  const ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
+  const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+  if (!SUPABASE_URL || !ANON_KEY || !SERVICE_ROLE) {
+    return {
+      response: new Response(
+        JSON.stringify({ error: "Server misconfigured" }),
+        { status: 500, headers: jsonHeaders },
+      ),
+    };
+  }
+
+  const token = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
+  if (!token) {
+    return {
+      response: new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: jsonHeaders },
+      ),
+    };
+  }
+
+  const userClient = createClient(SUPABASE_URL, ANON_KEY, {
+    global: { headers: { Authorization: `Bearer ${token}` } },
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const { data: userData, error: userErr } = await userClient.auth.getUser(token);
+  if (userErr || !userData?.user) {
+    return {
+      response: new Response(
+        JSON.stringify({ error: "Unauthorized" }),
+        { status: 401, headers: jsonHeaders },
+      ),
+    };
+  }
+
+  const admin = createClient(SUPABASE_URL, SERVICE_ROLE, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  const { data: isAdmin, error: roleErr } = await admin.rpc("has_role", {
+    _user_id: userData.user.id,
+    _role: "admin",
+  });
+  if (roleErr) {
+    return {
+      response: new Response(
+        JSON.stringify({ error: "Role check failed" }),
+        { status: 500, headers: jsonHeaders },
+      ),
+    };
+  }
+  if (!isAdmin) {
+    return {
+      response: new Response(
+        JSON.stringify({ error: "Forbidden" }),
+        { status: 403, headers: jsonHeaders },
+      ),
+    };
+  }
+
+  return { user: userData.user, admin };
+};
+
