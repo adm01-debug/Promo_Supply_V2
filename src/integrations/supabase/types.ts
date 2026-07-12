@@ -7678,6 +7678,7 @@ export type Database = {
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
       scan_dangerous_statements: { Args: never; Returns: number }
+      scan_unused_indexes: { Args: { _min_size_mb?: number }; Returns: number }
       suggest_unspsc_code: { Args: { item_name: string }; Returns: string }
       tenant_in_my_group: { Args: { _tenant_id: string }; Returns: boolean }
       tenants_in_my_group: { Args: never; Returns: string[] }
