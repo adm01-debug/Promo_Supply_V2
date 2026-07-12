@@ -13,6 +13,13 @@ export const NegotiationContract = z.object({
   historico_precos: z.array(z.any()).optional().nullable(),
 });
 
+// Helper: normaliza string enum case-insensitive
+const ciEnum = <T extends [string, ...string[]]>(values: T) =>
+  z.preprocess(
+    (v) => (typeof v === "string" ? v.toLowerCase().trim() : v),
+    z.enum(values)
+  );
+
 export const WorkflowContract = z.discriminatedUnion("action", [
   z.object({
     action: z.literal('start_workflow'),
@@ -31,7 +38,7 @@ export const WorkflowContract = z.discriminatedUnion("action", [
     action: z.literal('submit_decision'),
     instance_id: z.string().uuid(),
     node_id: z.string().uuid(),
-    decision: z.enum(['approve', 'reject']),
+    decision: ciEnum(['approve', 'reject']),
     approver_id: z.string().uuid(),
     comment: z.string().max(1000).optional()
   })
@@ -39,7 +46,7 @@ export const WorkflowContract = z.discriminatedUnion("action", [
 
 
 export const ERPSyncContract = z.object({
-  action: z.enum(['push', 'pull', 'sync_po', 'sync_supplier', 'sync_invoice']),
+  action: ciEnum(['push', 'pull', 'sync_po', 'sync_supplier', 'sync_invoice']),
   connectionId: z.string().uuid(),
   entity: z.string(),
   po_number: z.string().optional(),
@@ -48,8 +55,15 @@ export const ERPSyncContract = z.object({
 });
 
 export const FiscalContract = z.object({
-  action: z.enum(["send", "cancel", "query", "manifest"]),
-  type: z.enum(["NFe", "NFSe", "CTe", "MDFe"]),
+  action: ciEnum(["send", "cancel", "query", "manifest"]),
+  // NFe/NFSe/CTe/MDFe são siglas com case fixo — mantemos preprocess p/ uppercase
+  type: z.preprocess(
+    (v) => (typeof v === "string" ? v.toUpperCase().trim() : v),
+    z.enum(["NFE", "NFSE", "CTE", "MDFE"]).transform((v) => {
+      const map: Record<string, string> = { NFE: "NFe", NFSE: "NFSe", CTE: "CTe", MDFE: "MDFe" };
+      return map[v] as "NFe" | "NFSe" | "CTe" | "MDFe";
+    })
+  ),
   document_id: z.string().uuid().optional(),
   payload: z.record(z.any()).optional(),
 });
