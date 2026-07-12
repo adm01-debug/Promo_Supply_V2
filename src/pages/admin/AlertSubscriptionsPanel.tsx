@@ -56,6 +56,8 @@ export default function AlertSubscriptionsPanel() {
   const [channel, setChannel] = useState<string>("inapp");
   const [slackUrl, setSlackUrl] = useState("");
   const [emailAddr, setEmailAddr] = useState("");
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [webhookSecret, setWebhookSecret] = useState("");
 
   const { data: subs = [], isLoading } = useQuery({
     queryKey: ["alert-subscriptions", user?.id],
