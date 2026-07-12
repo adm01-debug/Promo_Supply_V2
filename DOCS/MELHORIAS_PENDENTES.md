@@ -1,6 +1,6 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3.4)
+# Melhorias Pendentes — Auditoria Consolidada (v3.5)
 
-**Última atualização:** 2026-07-12 (Onda 13 — scanner de tabelas sem PK / REPLICA IDENTITY concluída)
+**Última atualização:** 2026-07-12 (Onda 14 — scanner de temp file spills concluída)
 
 ## Status Atual: 10/10 🏆
 
