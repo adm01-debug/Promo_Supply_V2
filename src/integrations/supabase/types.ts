@@ -6548,6 +6548,7 @@ export type Database = {
         Row: {
           alert_type: string
           created_at: string | null
+          description: string | null
           dispatch_error: string | null
           dispatch_status: string | null
           dispatched_at: string | null
@@ -6558,10 +6559,12 @@ export type Database = {
           resolved_by: string | null
           severity: string
           tenant_id: string | null
+          title: string | null
         }
         Insert: {
           alert_type: string
           created_at?: string | null
+          description?: string | null
           dispatch_error?: string | null
           dispatch_status?: string | null
           dispatched_at?: string | null
@@ -6572,10 +6575,12 @@ export type Database = {
           resolved_by?: string | null
           severity: string
           tenant_id?: string | null
+          title?: string | null
         }
         Update: {
           alert_type?: string
           created_at?: string | null
+          description?: string | null
           dispatch_error?: string | null
           dispatch_status?: string | null
           dispatched_at?: string | null
@@ -6586,6 +6591,7 @@ export type Database = {
           resolved_by?: string | null
           severity?: string
           tenant_id?: string | null
+          title?: string | null
         }
         Relationships: []
       }
@@ -7606,6 +7612,18 @@ export type Database = {
         }
         Relationships: []
       }
+      v_system_health_overview: {
+        Row: {
+          alert_type: string | null
+          last_1h: number | null
+          last_24h: number | null
+          most_recent: string | null
+          oldest_open: string | null
+          severity: string | null
+          total_open: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       _invoke_edge_function: { Args: { _name: string }; Returns: number }
@@ -7992,6 +8010,15 @@ export type Database = {
             }[]
           }
         | { Args: { _threshold_pct?: number }; Returns: number }
+      scan_stale_alerts: {
+        Args: never
+        Returns: {
+          alert_type: string
+          oldest_hours: number
+          severity: string
+          stale_count: number
+        }[]
+      }
       scan_stale_statistics: {
         Args: { min_mod_pct?: number; stale_days?: number }
         Returns: {
