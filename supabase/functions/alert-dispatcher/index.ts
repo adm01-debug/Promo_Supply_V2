@@ -274,7 +274,9 @@ serve(async (req) => {
     let emailDelivered = 0;
     let emailFailed = 0;
     const slackErrors: string[] = [];
-    const emailErrors: string[] = [];
+    let webhookDelivered = 0;
+    let webhookFailed = 0;
+    const webhookErrors: string[] = [];
 
     try {
       const { data: subs } = await admin.rpc("alert_subscribers_for", {
