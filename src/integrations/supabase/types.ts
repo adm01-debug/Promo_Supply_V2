@@ -7693,6 +7693,17 @@ export type Database = {
         }[]
       }
       scan_fk_without_cascade: { Args: never; Returns: number }
+      scan_long_running_transactions: {
+        Args: { _active_threshold_min?: number; _idle_threshold_min?: number }
+        Returns: {
+          duration_seconds: number
+          pid: number
+          query_preview: string
+          severity: string
+          state: string
+          usename: string
+        }[]
+      }
       scan_partition_candidates: {
         Args: { min_size_gb?: number }
         Returns: {
