@@ -166,6 +166,67 @@ export default function HealthDashboard() {
   const severities = data?.severity_counts_24h ?? {};
   const totalOpen = data?.open_alerts_by_type.reduce((acc, r) => acc + r.open_count, 0) ?? 0;
 
+  // ---- Filtros dos alertas abertos ----
+  const ALL_SEVS = ["EMERGENCY", "CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"] as const;
+  const [sevFilter, setSevFilter] = useState<Set<string>>(new Set(ALL_SEVS));
+  const [typeFilter, setTypeFilter] = useState("");
+  const [periodFilter, setPeriodFilter] = useState<"1h" | "24h" | "7d" | "all">("all");
+
+  const toggleSev = (sev: string) => {
+    setSevFilter((prev) => {
+      const next = new Set(prev);
+      if (next.has(sev)) next.delete(sev);
+      else next.add(sev);
+      return next;
+    });
+  };
+
+  const filteredAlerts = useMemo(() => {
+    const rows = data?.open_alerts ?? [];
+    const cutoff =
+      periodFilter === "all"
+        ? 0
+        : Date.now() -
+          (periodFilter === "1h" ? 3_600_000 : periodFilter === "24h" ? 86_400_000 : 7 * 86_400_000);
+    const needle = typeFilter.trim().toLowerCase();
+    return rows.filter((r) => {
+      if (!sevFilter.has(r.severity)) return false;
+      if (cutoff && new Date(r.created_at).getTime() < cutoff) return false;
+      if (needle && !r.alert_type.toLowerCase().includes(needle) && !(r.message ?? "").toLowerCase().includes(needle)) {
+        return false;
+      }
+      return true;
+    });
+  }, [data?.open_alerts, sevFilter, typeFilter, periodFilter]);
+
+  const exportCsv = () => {
+    if (filteredAlerts.length === 0) {
+      toast.info("Nada para exportar com os filtros atuais");
+      return;
+    }
+    const header = ["id", "created_at", "alert_type", "severity", "message"];
+    const escape = (v: unknown) => {
+      const s = v === null || v === undefined ? "" : String(v);
+      return `"${s.replace(/"/g, '""').replace(/\r?\n/g, " ")}"`;
+    };
+    const lines = [
+      header.join(","),
+      ...filteredAlerts.map((r) =>
+        [r.id, r.created_at, r.alert_type, r.severity, r.message ?? ""].map(escape).join(","),
+      ),
+    ];
+    // UTF-8 BOM para Excel abrir com acentuação correta
+    const blob = new Blob(["\uFEFF" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `alertas-abertos-${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success(`Exportados ${filteredAlerts.length} alertas`);
+  };
+
+
 
   useEffect(() => {
     document.title = "Saúde do Sistema | Admin";
