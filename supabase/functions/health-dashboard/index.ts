@@ -57,7 +57,7 @@ Deno.serve(async (req: Request) => {
   if (!isAdmin) return json({ error: "Forbidden" }, 403);
 
   // 3. Consulta paralela dos datasets
-  const [overviewRes, runsRes, severityRes, tsRes] = await Promise.all([
+  const [overviewRes, runsRes, severityRes, tsRes, mttrRes, noisyRes] = await Promise.all([
     admin.from("v_system_health_overview").select("*"),
     admin
       .from("health_scan_runs")
@@ -70,6 +70,8 @@ Deno.serve(async (req: Request) => {
       .is("resolved_at", null)
       .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
     admin.rpc("alerts_severity_timeseries", { days: 7 }),
+    admin.rpc("alerts_mttr_by_type", { days: 7 }),
+    admin.rpc("alerts_noisy_scanners", { days: 1 }),
   ]);
 
   if (overviewRes.error) return json({ error: overviewRes.error.message }, 500);
