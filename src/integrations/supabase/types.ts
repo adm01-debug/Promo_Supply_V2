@@ -7693,6 +7693,16 @@ export type Database = {
         }[]
       }
       scan_fk_without_cascade: { Args: never; Returns: number }
+      scan_partition_candidates: {
+        Args: { min_size_gb?: number }
+        Returns: {
+          row_estimate: number
+          size_gb: number
+          suggested_action: string
+          table_name: string
+          time_column: string
+        }[]
+      }
       scan_sequence_exhaustion: {
         Args: { _threshold_pct?: number }
         Returns: number
