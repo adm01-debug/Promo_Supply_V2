@@ -77,12 +77,13 @@ export default function HealthDashboard() {
   const severities = data?.severity_counts_24h ?? {};
   const totalOpen = data?.open_alerts_by_type.reduce((acc, r) => acc + r.open_count, 0) ?? 0;
 
+  useEffect(() => {
+    document.title = "Saúde do Sistema | Admin";
+  }, []);
+
   return (
     <>
-      <Helmet>
-        <title>Saúde do Sistema | Admin</title>
-        <meta name="description" content="Painel de saúde do banco de dados: alertas abertos, execuções dos scanners e severidade agregada." />
-      </Helmet>
+
 
       <div className="container mx-auto p-6 space-y-4">
         <header className="flex items-center justify-between">
