@@ -1073,6 +1073,51 @@ export type Database = {
           },
         ]
       }
+      checkpoint_snapshots: {
+        Row: {
+          bgw_buffers_alloc: number
+          bgw_buffers_clean: number
+          bgw_maxwritten: number
+          bgw_stats_reset: string | null
+          buffers_written: number
+          captured_at: string
+          ckpt_stats_reset: string | null
+          id: number
+          num_requested: number
+          num_timed: number
+          sync_time_ms: number
+          write_time_ms: number
+        }
+        Insert: {
+          bgw_buffers_alloc: number
+          bgw_buffers_clean: number
+          bgw_maxwritten: number
+          bgw_stats_reset?: string | null
+          buffers_written: number
+          captured_at?: string
+          ckpt_stats_reset?: string | null
+          id?: number
+          num_requested: number
+          num_timed: number
+          sync_time_ms: number
+          write_time_ms: number
+        }
+        Update: {
+          bgw_buffers_alloc?: number
+          bgw_buffers_clean?: number
+          bgw_maxwritten?: number
+          bgw_stats_reset?: string | null
+          buffers_written?: number
+          captured_at?: string
+          ckpt_stats_reset?: string | null
+          id?: number
+          num_requested?: number
+          num_timed?: number
+          sync_time_ms?: number
+          write_time_ms?: number
+        }
+        Relationships: []
+      }
       contact_notes: {
         Row: {
           author_id: string | null
@@ -7712,6 +7757,22 @@ export type Database = {
           idx_ratio: number
           severity: string
           table_name: string
+        }[]
+      }
+      scan_checkpoint_health: {
+        Args: {
+          crit_ckpt_per_min?: number
+          crit_requested_pct?: number
+          warn_ckpt_per_min?: number
+          warn_maxwritten_rate?: number
+          warn_requested_pct?: number
+        }
+        Returns: {
+          avg_write_ms: number
+          ckpt_per_min: number
+          maxwritten_per_min: number
+          requested_pct: number
+          severity: string
         }[]
       }
       scan_connection_saturation: {
