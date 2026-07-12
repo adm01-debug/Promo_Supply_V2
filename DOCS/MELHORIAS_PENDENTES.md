@@ -1,6 +1,6 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3.5)
+# Melhorias Pendentes — Auditoria Consolidada (v3.6)
 
-**Última atualização:** 2026-07-12 (Onda 14 — scanner de temp file spills concluída)
+**Última atualização:** 2026-07-12 (Onda 15 — scanner de deadlocks e conflitos de replicação concluída)
 
 ## Status Atual: 10/10 🏆
 
