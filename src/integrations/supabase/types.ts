@@ -6796,6 +6796,258 @@ export type Database = {
         }
         Relationships: []
       }
+      telemetry_logs_202605: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telemetry_logs_202606: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telemetry_logs_202607: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telemetry_logs_202608: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telemetry_logs_202609: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telemetry_logs_legacy_20260712: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       temp_file_snapshots: {
         Row: {
           captured_at: string
@@ -7922,6 +8174,10 @@ export type Database = {
       }
       cron_watchdog: { Args: never; Returns: undefined }
       current_tenant_id: { Args: never; Returns: string }
+      ensure_telemetry_logs_partition: {
+        Args: { _month: string }
+        Returns: undefined
+      }
       exec_sql: { Args: { sql_query: string }; Returns: Json }
       find_approval_rule: {
         Args: { p_categoria_id?: string; p_valor: number }
