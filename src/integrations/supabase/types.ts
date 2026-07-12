@@ -7677,6 +7677,16 @@ export type Database = {
         Returns: number
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
+      scan_cache_hit_ratio: {
+        Args: { min_ratio?: number; min_reads?: number }
+        Returns: {
+          alert_id: string
+          heap_ratio: number
+          idx_ratio: number
+          severity: string
+          table_name: string
+        }[]
+      }
       scan_dangerous_statements: { Args: never; Returns: number }
       scan_duplicate_indexes: {
         Args: never
@@ -7717,6 +7727,15 @@ export type Database = {
       scan_sequence_exhaustion: {
         Args: { _threshold_pct?: number }
         Returns: number
+      }
+      scan_stale_statistics: {
+        Args: { min_mod_pct?: number; stale_days?: number }
+        Returns: {
+          alert_id: string
+          reason: string
+          severity: string
+          table_name: string
+        }[]
       }
       scan_table_bloat: {
         Args: { _min_dead_ratio?: number; _min_dead_tuples?: number }
