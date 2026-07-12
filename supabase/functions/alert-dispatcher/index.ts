@@ -98,6 +98,7 @@ async function postToSlackWithRetry(url: string, alert: Alert): Promise<{ ok: bo
     return { ok: true, attempts };
   } catch (err) {
     return { ok: false, error: (err as Error).message, attempts };
+  }
 }
 
 function escapeHtml(s: string): string {
