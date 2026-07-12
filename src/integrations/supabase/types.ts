@@ -7712,6 +7712,19 @@ export type Database = {
       }
     }
     Views: {
+      cron_job_staleness: {
+        Row: {
+          active: boolean | null
+          health: string | null
+          hours_since_last_run: number | null
+          jobid: number | null
+          jobname: string | null
+          last_run_at: string | null
+          last_status: string | null
+          schedule: string | null
+        }
+        Relationships: []
+      }
       supplier_compliance_summary: {
         Row: {
           avaliacao: number | null
@@ -7817,6 +7830,12 @@ export type Database = {
       }
       cleanup_deadlock_snapshots: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
+      cleanup_expired_password_resets: {
+        Args: never
+        Returns: {
+          deleted_count: number
+        }[]
+      }
       cleanup_health_scan_runs: { Args: never; Returns: undefined }
       cleanup_old_audit_logs: { Args: never; Returns: number }
       cleanup_old_geo_access_logs: { Args: never; Returns: number }
