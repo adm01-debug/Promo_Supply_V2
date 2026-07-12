@@ -1,6 +1,13 @@
-# Melhorias Pendentes — Auditoria Consolidada (v4.0)
+# Melhorias Pendentes — Auditoria Consolidada (v4.1)
 
-**Última atualização:** 2026-07-12 (Onda 19 — scanner de replication slots concluída)
+**Última atualização:** 2026-07-12 (Onda 20 — scanner de índices inválidos/duplicados concluída)
+
+### Onda 20 — Invalid & Duplicate Indexes
+- `scan_invalid_and_duplicate_indexes()` cobre `pg_index` do schema `public`.
+- Invalid: `indisvalid=false` ou `indisready=false` (restos de `CREATE INDEX CONCURRENTLY` que falhou). HIGH quando >100MB.
+- Duplicate: mesmo `indkey` na mesma tabela; mantém PK/UNIQUE, marca o 2º como redundante. HIGH quando >50MB.
+- Alertas em `system_alerts` com `fix_sql` (`DROP INDEX CONCURRENTLY`) + `diagnostic_sql` (`pg_indexes`) e dedupe 24h.
+- Cron diário 04:45 UTC (`scan-invalid-dup-indexes-daily`). `EXECUTE` restrito a `service_role`.
 
 ### Onda 19 — Replication Slots
 - `scan_replication_slots()` inspeciona `pg_replication_slots` e mede lag de WAL via `pg_wal_lsn_diff(pg_current_wal_lsn(), restart_lsn)`.
