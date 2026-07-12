@@ -43,11 +43,13 @@ serve(async (req) => {
     const tenantId = providedTenantId || (user?.user_metadata?.tenant_id as string);
 
     // Normaliza para enum log_level (lowercase: info|warn|error|debug)
-    const normalizedLevel = (() => {
-      const l = String(level ?? "info").toLowerCase();
-      if (l === "warning") return "warn";
-      return ["info", "warn", "error", "debug"].includes(l) ? l : "info";
-    })();
+    // v2: força coerção segura mesmo se contract preprocess falhar
+    const rawLevel = String(level ?? "info").toLowerCase().trim();
+    const normalizedLevel = rawLevel === "warning"
+      ? "warn"
+      : (["info", "warn", "error", "debug"].includes(rawLevel) ? rawLevel : "info");
+
+    logger.info("telemetry insert", { rawLevel, normalizedLevel });
 
     const { error } = await supabaseAdmin.from("telemetry_logs").insert({
       level: normalizedLevel,
