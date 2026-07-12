@@ -1,4 +1,5 @@
 import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
@@ -99,12 +100,12 @@ Forneça uma análise de risco completa e acionável.`;
       
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 429, headers: buildResponseHeaders(corsHeaders),
         });
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: "AI credits exhausted" }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 402, headers: buildResponseHeaders(corsHeaders),
         });
       }
       
@@ -135,7 +136,7 @@ Forneça uma análise de risco completa e acionável.`;
     logger.info("Análise de risco concluída", { requestId: logger.getRequestId() });
 
     return new Response(JSON.stringify(analysis), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   } catch (error: unknown) {
     if (error instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
@@ -144,7 +145,7 @@ Forneça uma análise de risco completa e acionável.`;
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(JSON.stringify({ error: errorMessage }), {
       status,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   }
 });

@@ -1,4 +1,5 @@
 import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
@@ -52,7 +53,7 @@ serve(async (req) => {
     logger.info("Extração concluída", { extractedKeys: Object.keys(mockExtractedData) });
 
     return new Response(JSON.stringify(mockExtractedData), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
 
   } catch (error) {
@@ -63,7 +64,7 @@ serve(async (req) => {
     }
     return new Response(JSON.stringify({ error: error.message }), {
       status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   }
 });

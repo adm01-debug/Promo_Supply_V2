@@ -1,4 +1,5 @@
 import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { getBreaker } from "../_shared/circuit_breaker.ts";
@@ -771,7 +772,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Método não permitido" }), {
       status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   }
 
@@ -857,7 +858,7 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
@@ -870,7 +871,7 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({ error: msg }), {
       status,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   }
 });

@@ -6,6 +6,7 @@
 //   contagem total de alertas por severidade nas últimas 24h.
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
+import { buildResponseHeaders } from "../_shared/http.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -17,7 +18,7 @@ const corsHeaders = {
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
+    headers: buildResponseHeaders(corsHeaders),
   });
 }
 

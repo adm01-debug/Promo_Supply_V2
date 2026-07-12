@@ -1,4 +1,5 @@
 import { corsHeaders, requireAdmin } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 
@@ -85,12 +86,12 @@ serve(async (req) => {
     };
 
     return new Response(JSON.stringify(complianceSummary, null, 2), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
       status: criticalIssues.length === 0 ? 200 : 403,
     });
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
       status: 500,
     });
   }

@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
@@ -142,7 +143,7 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
       status: "success",
       timestamp: new Date().toISOString()
     }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
 
   } catch (e) {
