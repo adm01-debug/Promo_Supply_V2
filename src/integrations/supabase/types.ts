@@ -8445,6 +8445,13 @@ export type Database = {
         }[]
       }
       apply_lgpd_retention: { Args: never; Returns: Json }
+      archive_audit_logs_older_than: {
+        Args: { _months?: number }
+        Returns: {
+          archived_partition: string
+          moved_rows: number
+        }[]
+      }
       calculate_supplier_qualification_score: {
         Args: { p_fornecedor_id: string }
         Returns: number
