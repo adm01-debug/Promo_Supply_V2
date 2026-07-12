@@ -124,11 +124,34 @@ async function fetchHealth(): Promise<DashboardResponse> {
 }
 
 export default function HealthDashboard() {
+  const qc = useQueryClient();
   const query = useQuery({
     queryKey: ["admin", "health-dashboard"],
     queryFn: fetchHealth,
     staleTime: 30_000,
     refetchInterval: 60_000,
+  });
+
+  const [resolveTarget, setResolveTarget] = useState<OpenAlertRow | null>(null);
+  const [resolveNote, setResolveNote] = useState("");
+
+  const resolveMutation = useMutation({
+    mutationFn: async ({ id, note }: { id: string; note: string }) => {
+      const { error } = await supabase.rpc("resolve_alert", {
+        _alert_id: id,
+        _note: note.trim() ? note.trim() : null,
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Alerta resolvido");
+      setResolveTarget(null);
+      setResolveNote("");
+      qc.invalidateQueries({ queryKey: ["admin", "health-dashboard"] });
+    },
+    onError: (err: Error) => {
+      toast.error("Falha ao resolver alerta", { description: err.message });
+    },
   });
 
   const handleRefresh = async () => {
@@ -139,6 +162,7 @@ export default function HealthDashboard() {
   const data = query.data;
   const severities = data?.severity_counts_24h ?? {};
   const totalOpen = data?.open_alerts_by_type.reduce((acc, r) => acc + r.open_count, 0) ?? 0;
+
 
   useEffect(() => {
     document.title = "Saúde do Sistema | Admin";
