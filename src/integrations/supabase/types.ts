@@ -7890,6 +7890,31 @@ export type Database = {
         Returns: number
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
+      resolve_alert: {
+        Args: { _alert_id: string; _note?: string }
+        Returns: {
+          alert_type: string
+          created_at: string | null
+          description: string | null
+          dispatch_error: string | null
+          dispatch_status: string | null
+          dispatched_at: string | null
+          id: string
+          message: string | null
+          metadata: Json | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          tenant_id: string | null
+          title: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "system_alerts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       run_all_health_scans: { Args: never; Returns: string }
       scan_autovacuum_starvation: {
         Args: {
