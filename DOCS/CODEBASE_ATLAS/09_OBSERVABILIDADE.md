@@ -66,3 +66,37 @@ Alertas caem em `system_alerts` e são despachados por `alert-dispatcher`.
 ## Rastreamento (`requestId`)
 - Frontend loga com `requestId = crypto.randomUUID()` no `Logger`.
 - Edges leem header `x-request-id` ou geram; sempre retornam `requestId` no JSON de resposta e propagam para logs.
+
+---
+
+## Onda 10 — Saturação de conexões e Replication Lag
+
+Dois scanners novos preenchem gaps de observabilidade de infraestrutura:
+
+### `public.scan_connection_saturation(warn_pct=70, crit_pct=90)`
+- Lê `pg_stat_activity` e compara com `max_connections`.
+- Escala:
+  - **CRITICAL** → uso ≥ 90% **ou** > 5 conexões em `idle in transaction (aborted)`.
+  - **HIGH** → uso ≥ 70%.
+- Metadata do alerta inclui: `by_state`, top 5 `application_name`, top 5 `usename` e SQL de diagnóstico pronto.
+- Cron: `scan-connection-saturation-5min` (a cada 5min).
+
+### `public.scan_replication_lag(warn_seconds=30, crit_seconds=120)`
+- Percorre `pg_stat_replication` (lag por replica via `write_lag`/`flush_lag`/`replay_lag`) e `pg_replication_slots` (slots inativos).
+- Emite HIGH/CRITICAL por replica e HIGH imediato para slots inativos (risco de WAL bloat).
+- Guardrail: sai silenciosamente em single-node (sem replicas nem slots).
+- Cron: `scan-replication-lag-5min` (a cada 5min).
+
+### Runbook — alerta CRITICAL de saturação
+1. Consultar `system_alerts` do tipo `db_connection_saturation` → executar `metadata.diagnostic_sql`.
+2. Identificar `application_name` dominante (edge function? worker?).
+3. Se houver `idle in transaction (aborted)`: `SELECT pg_terminate_backend(pid)`.
+4. Revisar edge function suspeita — provavelmente falta `await client.end()` ou reuso de cliente por request.
+5. Escalar `compute` no painel Cloud somente se padrão de uso for legítimo (não leak).
+
+### Runbook — slot inativo
+- Verificar se replica correspondente foi desprovisionada.
+- Se órfão: executar `metadata.drop_sql` (`pg_drop_replication_slot(...)`).
+- Ignorar apenas se replica está em manutenção temporária conhecida.
+
+> Warnings 0028 (SECURITY DEFINER) permanecem na allowlist arquitetural — funções DBA nunca são expostas ao PostgREST.

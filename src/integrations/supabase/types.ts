@@ -7687,6 +7687,17 @@ export type Database = {
           table_name: string
         }[]
       }
+      scan_connection_saturation: {
+        Args: { crit_pct?: number; warn_pct?: number }
+        Returns: {
+          by_state: Json
+          max_connections: number
+          severity: string
+          top_apps: Json
+          total_connections: number
+          usage_pct: number
+        }[]
+      }
       scan_dangerous_statements: { Args: never; Returns: number }
       scan_duplicate_indexes: {
         Args: never
@@ -7722,6 +7733,15 @@ export type Database = {
           suggested_action: string
           table_name: string
           time_column: string
+        }[]
+      }
+      scan_replication_lag: {
+        Args: { crit_seconds?: number; warn_seconds?: number }
+        Returns: {
+          detail: Json
+          lag_seconds: number
+          severity: string
+          target: string
         }[]
       }
       scan_sequence_exhaustion: {
