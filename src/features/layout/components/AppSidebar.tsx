@@ -35,7 +35,8 @@ import {
   LogOut,
   Settings,
   Settings2,
-  Boxes
+  Boxes,
+  Activity
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
