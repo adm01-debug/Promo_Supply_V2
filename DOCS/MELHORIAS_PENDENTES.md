@@ -1,6 +1,13 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3.8)
+# Melhorias Pendentes — Auditoria Consolidada (v3.9)
 
-**Última atualização:** 2026-07-12 (Onda 17 — scanner de TOAST bloat concluída)
+**Última atualização:** 2026-07-12 (Onda 18 — scanner de XID wraparound concluída)
+
+### Onda 18 — Transaction ID Wraparound
+- `scan_xid_wraparound()` cobre tabelas (`age(relfrozenxid)`, `mxid_age(relminmxid)`) e bancos (`age(datfrozenxid)`).
+- Escala de severidade: INFO >200M · MEDIUM >500M · HIGH >1B · CRITICAL >1.5B · EMERGENCY >1.8B (limite ~2.1B).
+- Alertas emitidos em `system_alerts` apenas ≥ HIGH, com dedupe de 6h, `fix_sql` (`VACUUM FREEZE`), `diagnostic_sql` (long-running xmin, replication slots, prepared xacts) e `suggested_setting` para reduzir `autovacuum_freeze_max_age` por tabela.
+- Agendado em `pg_cron` diariamente às 03:30 UTC (`scan-xid-wraparound-daily`).
+- `EXECUTE` restrito a `service_role`.
 
 ## Status Atual: 10/10 🏆
 
