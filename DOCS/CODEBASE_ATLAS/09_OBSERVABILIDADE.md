@@ -42,6 +42,7 @@
 | `scan_stale_statistics` | 04:30 UTC diário | `last_analyze` >7d ou >20% modificações desde ANALYZE → sugere `ANALYZE public.<tabela>` |
 | `scan_cache_hit_ratio` | a cada hora | heap/idx hit ratio <95% (HIGH <90%) → sugere aumentar shared_buffers ou revisar índices |
 | `scan_tables_without_pk` | 05:15 UTC diário | Tabelas sem PK ou REPLICA IDENTITY insuficiente (risco replicação/Realtime) |
+| `scan_temp_file_usage` | a cada 10min | Spills de sort/hash para disco → sugere aumentar work_mem ou criar índice |
 
 Alertas caem em `system_alerts` e são despachados por `alert-dispatcher`.
 
@@ -261,3 +262,44 @@ Cron `scan-tables-without-pk-daily` → `15 5 * * *`. Diário é suficiente: sch
 - **Onda 11 (WAL rate)** → `REPLICA IDENTITY FULL` amplifica WAL; preferir `USING INDEX`.
 
 > Warnings 0028 (SECURITY DEFINER) permanecem na allowlist arquitetural — funções DBA nunca são expostas ao PostgREST.
+
+---
+
+## Onda 14 — Temp file spills (work_mem insuficiente)
+
+### Objetivo
+Detectar cedo quando sorts/hashes começam a estourar `work_mem` e escrever em disco — causa comum de queries 10-100x mais lentas sem log evidente. Correlato com Onda 11 (WAL) e slow queries.
+
+### Assinatura
+```sql
+public.scan_temp_file_usage(
+  warn_mb_per_min    numeric DEFAULT 10,
+  crit_mb_per_min    numeric DEFAULT 100,
+  warn_files_per_min numeric DEFAULT 5,
+  crit_files_per_min numeric DEFAULT 30
+) RETURNS void
+```
+`SECURITY DEFINER`, EXECUTE só `service_role`. Persiste em `public.temp_file_snapshots` (retenção 24h, RLS admin-only).
+
+### Thresholds
+
+| Sinal | Severidade | Condição |
+|---|---|---|
+| Volume alto | **CRITICAL** | `mb_per_min ≥ 100` ou `files_per_min ≥ 30` |
+| Volume moderado | **HIGH** | `mb_per_min ≥ 10` ou `files_per_min ≥ 5` |
+| Stats reset | Ignorado | `stats_reset` mudou entre snapshots |
+| Sem baseline | Ignorado | Primeira execução |
+
+### Frequência
+Cron `scan-temp-file-usage-10min` → `*/10 * * * *`. Dedupe 24h por `entity_id = datname`.
+
+### Alerta em `system_alerts`
+- `alert_type = 'db_temp_file_spill'`
+- `metadata`: `mb_per_min`, `files_per_min`, `temp_bytes_delta`, `diagnostic_sql` (top 20 em `pg_stat_statements` por `temp_blks_written`), `suggested_action`, `wave = 14`
+
+### Runbook
+1. Executar `metadata.diagnostic_sql` — identifica queries que mais escreveram em disco.
+2. Para queries de relatório/OLAP: `SET LOCAL work_mem = '64MB'` na sessão ou via `ALTER ROLE <role> SET work_mem = '32MB'`.
+3. Para queries transacionais spillando: sinal de índice ausente — analisar `EXPLAIN (ANALYZE, BUFFERS)`, adicionar índice que elimine o Sort.
+4. Correlacionar com Onda 11 — spills geram WAL indireto via re-execução; com Onda 12 — checkpoints podem espremer I/O disponível para temp files.
+5. Nunca aumentar `work_mem` globalmente sem calcular `work_mem × max_connections × hash_mem_multiplier` — risco de OOM.
