@@ -7751,6 +7751,7 @@ export type Database = {
           severity: string
         }[]
       }
+      apply_lgpd_retention: { Args: never; Returns: Json }
       calculate_supplier_qualification_score: {
         Args: { p_fornecedor_id: string }
         Returns: number
