@@ -56,6 +56,7 @@ const SourcingPipeline = lazy(() => import("@/pages/admin/SourcingPipeline"));
 const WorkflowDesigner = lazy(() => import("@/pages/admin/WorkflowAdmin"));
 const DeveloperDocs = lazy(() => import("@/pages/admin/DeveloperDocs"));
 const StorageMigration = lazy(() => import("@/pages/admin/StorageMigration"));
+const HealthDashboard = lazy(() => import("@/pages/admin/HealthDashboard"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 export const AnimatedRoutes = () => {
