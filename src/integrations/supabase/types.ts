@@ -7993,6 +7993,17 @@ export type Database = {
           toast_ratio: number
         }[]
       }
+      scan_unindexed_foreign_keys: {
+        Args: never
+        Returns: {
+          child_rows: number
+          child_table: string
+          fk_columns: string
+          fk_name: string
+          parent_table: string
+          severity: string
+        }[]
+      }
       scan_unused_indexes:
         | {
             Args: never
