@@ -27,6 +27,7 @@ interface Subscription {
   enabled: boolean;
   snoozed_until: string | null;
   slack_webhook_url: string | null;
+  email: string | null;
   created_at: string;
 }
 
