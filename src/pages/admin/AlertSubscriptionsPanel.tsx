@@ -201,6 +201,17 @@ export default function AlertSubscriptionsPanel() {
           />
         )}
 
+        {channel === "email" && (
+          <Input
+            type="email"
+            placeholder="Email de destino (vazio = email do seu cadastro)"
+            value={emailAddr}
+            onChange={(e) => setEmailAddr(e.target.value)}
+            aria-label="Endereço de email"
+            className="font-mono text-xs"
+          />
+        )}
+
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Carregando…</p>
         ) : subs.length === 0 ? (
