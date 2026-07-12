@@ -42,9 +42,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUserData = useCallback(async (userId: string) => {
     // Deduplicate: skip if already fetched for this user or currently fetching
     if (fetchedUserIdRef.current === userId || isFetchingRef.current) return;
-  const fetchUserData = useCallback(async (userId: string) => {
-    // Deduplicate: skip if already fetched for this user or currently fetching
-    if (fetchedUserIdRef.current === userId || isFetchingRef.current) return;
     isFetchingRef.current = true;
     // CRIT-C1/C8: snapshot generation at start; any signOut / user-switch
     // increments fetchGenerationRef and we discard the result silently.
