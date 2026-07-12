@@ -7986,6 +7986,17 @@ export type Database = {
           severity: string
         }[]
       }
+      scan_xid_wraparound: {
+        Args: never
+        Returns: {
+          mxid_age: number
+          object_name: string
+          pct_to_wraparound: number
+          scope: string
+          severity: string
+          xid_age: number
+        }[]
+      }
       suggest_unspsc_code: { Args: { item_name: string }; Returns: string }
       tenant_in_my_group: { Args: { _tenant_id: string }; Returns: boolean }
       tenants_in_my_group: { Args: never; Returns: string[] }
