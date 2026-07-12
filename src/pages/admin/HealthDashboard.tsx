@@ -31,12 +31,32 @@ interface RunRow {
   results: unknown;
 }
 
+interface TimeseriesRow {
+  day: string;
+  EMERGENCY?: number;
+  CRITICAL?: number;
+  HIGH?: number;
+  MEDIUM?: number;
+  LOW?: number;
+  INFO?: number;
+}
+
 interface DashboardResponse {
   generated_at: string;
   open_alerts_by_type: OverviewRow[];
   last_runs: RunRow[];
   severity_counts_24h: SeverityCounts;
+  severity_timeseries_7d?: TimeseriesRow[];
 }
+
+const severityColors: Record<string, string> = {
+  EMERGENCY: "hsl(var(--destructive))",
+  CRITICAL: "#dc2626",
+  HIGH: "#f97316",
+  MEDIUM: "#eab308",
+  LOW: "#3b82f6",
+  INFO: "hsl(var(--muted-foreground))",
+};
 
 const severityStyles: Record<string, string> = {
   EMERGENCY: "bg-destructive text-destructive-foreground",
