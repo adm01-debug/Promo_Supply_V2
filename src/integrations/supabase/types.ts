@@ -107,6 +107,8 @@ export type Database = {
           snoozed_until: string | null
           updated_at: string
           user_id: string
+          webhook_secret: string | null
+          webhook_url: string | null
         }
         Insert: {
           alert_type?: string | null
@@ -120,6 +122,8 @@ export type Database = {
           snoozed_until?: string | null
           updated_at?: string
           user_id: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
         }
         Update: {
           alert_type?: string | null
@@ -133,6 +137,8 @@ export type Database = {
           snoozed_until?: string | null
           updated_at?: string
           user_id?: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
         }
         Relationships: []
       }
@@ -7710,6 +7716,8 @@ export type Database = {
           slack_webhook_url: string
           subscription_id: string
           user_id: string
+          webhook_secret: string
+          webhook_url: string
         }[]
       }
       alerts_mttr_by_type: {
