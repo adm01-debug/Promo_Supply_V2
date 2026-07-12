@@ -105,20 +105,77 @@ Dois scanners novos preenchem gaps de observabilidade de infraestrutura:
 
 ## Onda 11 — Taxa de geração de WAL
 
-### `public.scan_wal_generation_rate(warn_mb_per_min=50, crit_mb_per_min=200, spike_multiplier=3.0)`
-- Persiste snapshots de `pg_stat_wal` em `public.wal_rate_snapshots` (retenção 24h).
-- Calcula MB/min desde o snapshot anterior e compara com **baseline móvel** (média das últimas 12 amostras das 2h).
-- Escala:
-  - **CRITICAL** → taxa ≥ 200 MB/min (absoluto).
-  - **HIGH** → taxa ≥ 50 MB/min, ou pico ≥ 3× o baseline.
-- Ignora rodadas após reset de estatísticas (`pg_stat_reset_shared('wal')`).
-- Cron: `scan-wal-generation-rate-5min` (a cada 5min).
+### Objetivo
+Detectar cedo picos anormais de geração de WAL, que costumam preceder:
+- Saturação de disco por WAL retido.
+- Replication lag em cascata (correlato com Onda 10).
+- Checkpoints excessivos e I/O storm (correlato com Onda 12).
+- Bloat acelerado em tabelas hot (write amplification por índices redundantes).
 
-### Runbook
-1. Consultar `system_alerts` do tipo `db_wal_generation_rate` → executar `metadata.diagnostic_sql` para ver queries ativas.
-2. Suspeitos típicos: bulk `UPDATE`/`INSERT`, `VACUUM FULL`, `REINDEX`, migrações grandes, replicação lógica em catch-up.
-3. Se pico for legítimo (ex: janela ETL noturna), agendar exceção temporária ou elevar `warn_mb_per_min` na chamada do cron.
-4. Se sustentado, revisar índices redundantes (write amplification) — cruzar com `scan_duplicate_indexes` (Onda 6).
+### Assinatura
+
+```sql
+public.scan_wal_generation_rate(
+  warn_mb_per_min  numeric DEFAULT 50,
+  crit_mb_per_min  numeric DEFAULT 200,
+  spike_multiplier numeric DEFAULT 3.0
+) RETURNS TABLE(severity, mb_per_min, baseline_mb_per_min, delta_seconds)
+```
+
+- `SECURITY DEFINER`, `search_path = public, pg_catalog`.
+- `EXECUTE` apenas para `service_role` (revogado de `PUBLIC/anon/authenticated`).
+
+### Persistência
+
+Tabela `public.wal_rate_snapshots` (retenção **24h**, purge automático em cada rodada) — colunas: `captured_at`, `wal_bytes`, `wal_records`, `wal_fpi`, `stats_reset`.
+Índice `idx_wal_rate_snapshots_captured_at DESC` para leituras rápidas do baseline.
+RLS ativa; SELECT liberado apenas para `admin` via `has_role`.
+
+### Thresholds
+
+| Sinal | Severidade | Condição | GUC/ação sugerida |
+|---|---|---|---|
+| Absoluto crítico | **CRITICAL** | `mb_per_min ≥ 200` | Investigar imediatamente — risco de encher `pg_wal`. |
+| Absoluto alto | **HIGH** | `mb_per_min ≥ 50` | Investigar em janela útil. |
+| Pico anômalo | **HIGH** | `mb_per_min ≥ 3× baseline` e `baseline > 1 MB/min` | Comparar com deploy/ETL recente. |
+| Reset de stats | Ignorado | `stats_reset` mudou entre snapshots | Uma rodada é descartada; retoma na próxima. |
+| Sem histórico | Ignorado | Primeira execução | Aguarda 2ª rodada (≥5min). |
+
+**Baseline móvel:** média das últimas 12 amostras da janela de 2h anteriores ao snapshot atual (exclui o instante da comparação para não diluir o próprio pico).
+
+### Frequência
+Cron `scan-wal-generation-rate-5min` → `*/5 * * * *`. Janela alinhada à Onda 10 e 12 para permitir correlação temporal.
+
+### Alerta em `system_alerts`
+
+- `alert_type = 'db_wal_generation_rate'`
+- `metadata`:
+  - `mb_per_min`, `baseline_mb_per_min`, `spike_multiplier`
+  - `delta_bytes`, `delta_seconds`, `wal_records_delta`, `wal_fpi_delta`
+  - `diagnostic_sql` — pronto para colar no psql (top 20 queries ativas ordenadas por `xact_start`).
+  - `wave = 11`
+
+### Runbook por tipo de alerta
+
+**🔴 CRITICAL — taxa absoluta ≥ 200 MB/min**
+1. Executar `metadata.diagnostic_sql` e identificar sessão dominante.
+2. Checar espaço em `pg_wal`: `SELECT pg_size_pretty(sum(size)) FROM pg_ls_waldir();`
+3. Se causa for migração/backfill legítimo: monitorar e considerar `SET LOCAL synchronous_commit = off` na transação (com aval).
+4. Se runaway (query travada gerando WAL sem sentido): `pg_terminate_backend(pid)`.
+5. Verificar Onda 10 imediatamente — replication lag tende a escalar em minutos.
+
+**🟠 HIGH — taxa absoluta ≥ 50 MB/min**
+1. Rodar `diagnostic_sql`; identificar padrão (bulk write, REINDEX, VACUUM FULL, replicação lógica em catch-up).
+2. Correlacionar com deploys recentes ou jobs agendados.
+3. Se sustentado por >30min, escalar para CRITICAL manual.
+
+**🟠 HIGH — pico ≥ 3× baseline**
+1. Confirmar se é evento único (spike) ou início de tendência: consultar as 6 últimas rodadas em `wal_rate_snapshots`.
+2. Se coincide com janela ETL/relatórios noturnos → considerar elevar `warn_mb_per_min` só para esse cron horário, ou desabilitar o alerta na janela.
+3. Se orgânico e recorrente → revisar índices redundantes com `scan_duplicate_indexes` (Onda 6) e FKs sem cascade (Onda 5) — cada índice extra amplifica WAL em UPDATE/DELETE.
+
+### Ajuste de thresholds
+Chamar cron manualmente com override: `SELECT public.scan_wal_generation_rate(80, 300, 4.0);` para ambientes write-heavy legítimos (ex.: fase de migração inicial de dados).
 
 ---
 
