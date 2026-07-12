@@ -121,7 +121,7 @@ export const AnimatedRoutes = () => {
             <Route path="/admin/workflows" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><WorkflowDesigner /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/admin/docs" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><DeveloperDocs /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/admin/storage-migration" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><StorageMigration /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/health" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><HealthDashboard /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/admin/health" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><HealthDashboard /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/portal-fornecedor" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="dashboard"><PortalFornecedor /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/configuracoes-centro-custo" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><ConfiguracoesCentroCusto /></RouteSkeleton></ModuleErrorBoundary>} />
           </Route>

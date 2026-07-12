@@ -35,7 +35,8 @@ import {
   LogOut,
   Settings,
   Settings2,
-  Boxes
+  Boxes,
+  Activity
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
@@ -132,6 +133,8 @@ const sections: NavSection[] = [
       { title: "Sourcing Pipeline", icon: TrendingUp, href: "/admin/sourcing-pipeline" },
       { title: "Fiscal", icon: FileCheck, href: "/admin/fiscal" },
       { title: "Documentação", icon: BookOpen, href: "/admin/docs" },
+      { title: "Documentação", icon: BookOpen, href: "/admin/docs" },
+      { title: "Saúde do Sistema", icon: Activity, href: "/admin/health" },
     ],
   },
 ];
