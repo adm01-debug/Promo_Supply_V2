@@ -102,6 +102,7 @@ export type Database = {
           enabled: boolean
           id: string
           min_severity: string
+          slack_webhook_url: string | null
           snoozed_until: string | null
           updated_at: string
           user_id: string
@@ -113,6 +114,7 @@ export type Database = {
           enabled?: boolean
           id?: string
           min_severity?: string
+          slack_webhook_url?: string | null
           snoozed_until?: string | null
           updated_at?: string
           user_id: string
@@ -124,6 +126,7 @@ export type Database = {
           enabled?: boolean
           id?: string
           min_severity?: string
+          slack_webhook_url?: string | null
           snoozed_until?: string | null
           updated_at?: string
           user_id?: string
@@ -7700,6 +7703,7 @@ export type Database = {
         Args: { _alert_type: string; _severity: string }
         Returns: {
           channel: string
+          slack_webhook_url: string
           subscription_id: string
           user_id: string
         }[]
