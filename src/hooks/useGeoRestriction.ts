@@ -80,15 +80,19 @@ export const useGeoRestriction = () => {
   // Toggle geo restriction
   const toggleRestriction = useMutation({
     mutationFn: async (enabled: boolean) => {
+      // HIGH-C6: guard against updating with empty id when settings haven't loaded
+      if (!geoSettings?.id) {
+        throw new Error('Configurações de geo-restrição ainda não carregaram. Aguarde e tente novamente.');
+      }
       const { error } = await supabase
         .from('geo_settings')
-        .update({ 
+        .update({
           geo_restriction_enabled: enabled,
           updated_at: new Date().toISOString(),
-          updated_by: user?.id
+          updated_by: user?.id,
         })
-        .eq('id', geoSettings?.id ?? '');
-      
+        .eq('id', geoSettings.id);
+
       if (error) throw error;
     },
     onSuccess: () => {
