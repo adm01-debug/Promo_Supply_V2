@@ -1,6 +1,9 @@
 import { corsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+import { assertBridgeRequest, MAX_SELECT_LIMIT } from "../_shared/external-bridge-allowlist.ts";
+
 
 const SLOW_QUERY_THRESHOLD_MS = 3000;
 const VERY_SLOW_QUERY_THRESHOLD_MS = 8000;
