@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { corsHeaders, requireAdmin } from "../_shared/security.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { SimulationEngine } from "../_shared/simulation-engine.ts";
 import { ContractValidator, NegotiationContract, WorkflowContract, ERPSyncContract } from "../_shared/contracts.ts";
@@ -7,6 +7,10 @@ import { EdgeLogger } from "../_shared/logger.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+
+  // A-02: guarda dupla (JWT + role admin) — simulação impacta o banco.
+  const guard = await requireAdmin(req);
+  if (guard.response) return guard.response;
 
   const logger = new EdgeLogger("system-simulation");
   
