@@ -119,3 +119,27 @@ Dois scanners novos preenchem gaps de observabilidade de infraestrutura:
 2. Suspeitos típicos: bulk `UPDATE`/`INSERT`, `VACUUM FULL`, `REINDEX`, migrações grandes, replicação lógica em catch-up.
 3. Se pico for legítimo (ex: janela ETL noturna), agendar exceção temporária ou elevar `warn_mb_per_min` na chamada do cron.
 4. Se sustentado, revisar índices redundantes (write amplification) — cruzar com `scan_duplicate_indexes` (Onda 6).
+
+---
+
+## Onda 12 — Saúde de checkpoints (checkpoint tuning)
+
+### `public.scan_checkpoint_health(warn_requested_pct=25, crit_requested_pct=50, warn_ckpt_per_min=0.4, crit_ckpt_per_min=1.0, warn_maxwritten_rate=1.0)`
+- Persiste snapshots de `pg_stat_checkpointer` (PG17+) e `pg_stat_bgwriter` em `public.checkpoint_snapshots` (retenção 24h).
+- Métricas derivadas entre snapshots:
+  - **% requested** = `num_requested / (num_timed + num_requested)` — indica `max_wal_size` insuficiente.
+  - **checkpoints/min** — se alto, `checkpoint_timeout` está curto.
+  - **maxwritten_clean/min** do bgwriter — se >0, `bgwriter_lru_maxpages` está pequeno.
+  - **avg write_time** por checkpoint (I/O saturado).
+- Alertas HIGH/CRITICAL com **sugestões prontas** de tuning (max_wal_size, checkpoint_timeout, bgwriter_lru_maxpages).
+- Ignora rodadas após `pg_stat_reset_shared`.
+- Cron: `scan-checkpoint-health-5min`.
+
+### Runbook — checkpoints muito frequentes
+1. Se `requested_pct` alto → `ALTER SYSTEM SET max_wal_size = '8GB'; SELECT pg_reload_conf();`
+2. Se `checkpoints_per_min` alto e maioria "timed" → aumentar `checkpoint_timeout` (10-15min).
+3. Se `maxwritten_per_min` > 1 → aumentar `bgwriter_lru_maxpages` (100 → 500) e/ou reduzir `bgwriter_delay` (200ms → 100ms).
+4. Avaliar `checkpoint_completion_target` (recomendado 0.9 no PG17+) para diluir I/O.
+5. Correlacionar com Onda 11 (WAL rate) — checkpoints altos + WAL alto = workload write-heavy legítimo, tuning ainda vale.
+
+> Warnings 0028 (SECURITY DEFINER) permanecem na allowlist arquitetural — funções DBA nunca são expostas ao PostgREST.
