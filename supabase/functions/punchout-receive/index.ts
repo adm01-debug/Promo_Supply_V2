@@ -2,10 +2,70 @@ import { corsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { XMLParser } from "https://esm.sh/fast-xml-parser@4.3.6";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { deriveIdempotencyKey, getIdempotentResponse, recordIdempotentResponse } from "../_shared/idempotency.ts";
 
 const SOURCE = "punchout";
+
+// HIGH-C4: proper XML parser (was fragile regex + hardcoded mock cart)
+const xmlParser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: "@_",
+  parseTagValue: true,
+  trimValues: true,
+});
+
+interface PunchOutItem {
+  name: string;
+  quantity: number;
+  price: number;
+  currency: string;
+  supplier_part_id?: string;
+  unit?: string;
+}
+
+function toArray<T>(v: T | T[] | undefined | null): T[] {
+  if (v == null) return [];
+  return Array.isArray(v) ? v : [v];
+}
+
+function parsePunchOutOrderMessage(xml: string): { buyerCookie: string | null; items: PunchOutItem[] } {
+  const parsed = xmlParser.parse(xml) as Record<string, unknown>;
+  const cxml = (parsed?.cXML ?? parsed?.CXML ?? parsed) as Record<string, unknown>;
+  const msg = (cxml?.Message as Record<string, unknown> | undefined) ?? {};
+  const pom = (msg?.PunchOutOrderMessage as Record<string, unknown> | undefined) ?? {};
+  const buyerCookie = (pom?.BuyerCookie as string | undefined) ?? null;
+  const header = (pom?.PunchOutOrderMessageHeader as Record<string, unknown> | undefined) ?? {};
+  const defaultCurrency =
+    ((header?.Total as Record<string, unknown> | undefined)?.Money as Record<string, unknown> | undefined)
+      ?.["@_currency"] as string | undefined;
+
+  const itemIns = toArray(pom?.ItemIn as unknown);
+  const items: PunchOutItem[] = itemIns.slice(0, 500).map((raw) => {
+    const r = raw as Record<string, unknown>;
+    const detail = (r?.ItemDetail as Record<string, unknown> | undefined) ?? {};
+    const unitPrice =
+      ((detail?.UnitPrice as Record<string, unknown> | undefined)?.Money as Record<string, unknown> | undefined) ?? {};
+    const description = detail?.Description;
+    const name = typeof description === "string"
+      ? description
+      : (description as { "#text"?: string } | undefined)?.["#text"] ?? "Item";
+    const quantity = Number(r?.["@_quantity"] ?? 1);
+    const price = Number((unitPrice as { "#text"?: unknown })?.["#text"] ?? 0);
+    const currency = (unitPrice?.["@_currency"] as string | undefined) ?? defaultCurrency ?? "BRL";
+    return {
+      name: String(name).slice(0, 500),
+      quantity: Number.isFinite(quantity) && quantity > 0 ? quantity : 1,
+      price: Number.isFinite(price) && price >= 0 ? price : 0,
+      currency,
+      supplier_part_id: (detail?.SupplierPartID as string | undefined)?.slice?.(0, 200),
+      unit: (detail?.UnitOfMeasure as string | undefined) ?? undefined,
+    };
+  });
+
+  return { buyerCookie, items };
+}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
