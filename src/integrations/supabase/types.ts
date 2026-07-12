@@ -6845,6 +6845,33 @@ export type Database = {
         }
         Relationships: []
       }
+      wal_rate_snapshots: {
+        Row: {
+          captured_at: string
+          id: number
+          stats_reset: string | null
+          wal_bytes: number
+          wal_fpi: number
+          wal_records: number
+        }
+        Insert: {
+          captured_at?: string
+          id?: number
+          stats_reset?: string | null
+          wal_bytes: number
+          wal_fpi: number
+          wal_records: number
+        }
+        Update: {
+          captured_at?: string
+          id?: number
+          stats_reset?: string | null
+          wal_bytes?: number
+          wal_fpi?: number
+          wal_records?: number
+        }
+        Relationships: []
+      }
       webauthn_challenges: {
         Row: {
           challenge: string
@@ -7762,6 +7789,19 @@ export type Database = {
         Returns: number
       }
       scan_unused_indexes: { Args: { _min_size_mb?: number }; Returns: number }
+      scan_wal_generation_rate: {
+        Args: {
+          crit_mb_per_min?: number
+          spike_multiplier?: number
+          warn_mb_per_min?: number
+        }
+        Returns: {
+          baseline_mb_per_min: number
+          delta_seconds: number
+          mb_per_min: number
+          severity: string
+        }[]
+      }
       suggest_unspsc_code: { Args: { item_name: string }; Returns: string }
       tenant_in_my_group: { Args: { _tenant_id: string }; Returns: boolean }
       tenants_in_my_group: { Args: never; Returns: string[] }
