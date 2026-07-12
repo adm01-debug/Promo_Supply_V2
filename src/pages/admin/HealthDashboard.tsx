@@ -174,6 +174,61 @@ export default function HealthDashboard() {
               ))}
         </div>
 
+        {/* Timeseries 7 dias */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" aria-hidden />
+              Alertas por severidade · últimos 7 dias
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {query.isLoading ? (
+              <Skeleton className="h-64 w-full" />
+            ) : (data?.severity_timeseries_7d?.length ?? 0) === 0 ? (
+              <div className="text-sm text-muted-foreground py-8 text-center">Sem dados no período.</div>
+            ) : (
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={data?.severity_timeseries_7d ?? []} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis
+                      dataKey="day"
+                      tickFormatter={(v: string) => new Date(v).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                    />
+                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} allowDecimals={false} />
+                    <Tooltip
+                      contentStyle={{
+                        background: "hsl(var(--popover))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: 8,
+                        fontSize: 12,
+                      }}
+                      labelFormatter={(v: string) => new Date(v).toLocaleDateString("pt-BR")}
+                    />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    {["EMERGENCY", "CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"].map((sev) => (
+                      <Line
+                        key={sev}
+                        type="monotone"
+                        dataKey={sev}
+                        stroke={severityColors[sev]}
+                        strokeWidth={2}
+                        dot={false}
+                        isAnimationActive={false}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+
+
         {/* Alerts by type */}
         <Card>
           <CardHeader>
