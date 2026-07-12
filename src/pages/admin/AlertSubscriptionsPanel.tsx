@@ -82,6 +82,12 @@ export default function AlertSubscriptionsPanel() {
       if (channel === "email" && trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
         throw new Error("Email inválido");
       }
+      const trimmedWebhook = webhookUrl.trim();
+      if (channel === "webhook") {
+        if (!/^https:\/\/.+/i.test(trimmedWebhook)) {
+          throw new Error("Webhook URL inválido (obrigatório https://)");
+        }
+      }
       const { error } = await supabase.from("alert_subscriptions").insert({
         user_id: user.id,
         alert_type: alertType.trim() || null,
@@ -89,6 +95,8 @@ export default function AlertSubscriptionsPanel() {
         channel,
         slack_webhook_url: channel === "slack" ? slackUrl.trim() : null,
         email: channel === "email" ? (trimmedEmail || null) : null,
+        webhook_url: channel === "webhook" ? trimmedWebhook : null,
+        webhook_secret: channel === "webhook" ? (webhookSecret.trim() || null) : null,
       });
       if (error) throw error;
     },
@@ -97,6 +105,8 @@ export default function AlertSubscriptionsPanel() {
       setAlertType("");
       setSlackUrl("");
       setEmailAddr("");
+      setWebhookUrl("");
+      setWebhookSecret("");
       qc.invalidateQueries({ queryKey: ["alert-subscriptions"] });
     },
     onError: (e: unknown) => toast.error(`Falha: ${(e as Error).message}`),
