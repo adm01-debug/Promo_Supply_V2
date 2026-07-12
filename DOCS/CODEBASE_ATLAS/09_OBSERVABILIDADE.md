@@ -341,3 +341,36 @@ Detectar picos anormais de **deadlocks** e **conflitos de recovery** via `pg_sta
 5. Para `replication_conflict_spike`: analisar queries longas em réplicas versus `hot_standby_feedback` / `max_standby_streaming_delay`.
 6. Considerar `SET deadlock_timeout` maior para reduzir noise em cargas com contenção esperada (default 1s).
 
+---
+
+## Onda 16 — Autovacuum Starvation
+
+### Objetivo
+Detectar tabelas do schema `public` que acumularam dead tuples (>20%) sem receber `VACUUM`/`autovacuum` nas últimas 24h, sintoma clássico de autovacuum sub-dimensionado.
+
+### Assinatura
+`public.scan_autovacuum_starvation(warn_dead_pct NUMERIC = 20.0, crit_dead_pct NUMERIC = 40.0, min_rows INTEGER = 1000, stale_hours INTEGER = 24)`
+
+### Thresholds
+| Condição | Severidade |
+|---|---|
+| dead_pct ≥ 40% | CRITICAL |
+| Nunca vacuumada + n_live_tup > 100k | CRITICAL |
+| dead_pct ≥ 20% + last_vacuum > 24h | HIGH |
+
+### Alerta em `system_alerts`
+- `alert_type = 'autovacuum_starvation'`
+- `metadata`: `tablename`, `dead_pct`, `n_dead_tup`, `n_live_tup`, `last_vacuum_hours`, `fix_sql` (VACUUM ANALYZE VERBOSE), `suggested_setting` (`ALTER TABLE ... SET (autovacuum_vacuum_scale_factor = 0.05)`)
+- Dedupe: 24h por `tablename`
+
+### Cron
+`scan-autovacuum-starvation-daily` → `45 5 * * *`
+
+### Runbook
+1. Executar `metadata.fix_sql` manualmente em janela de baixo tráfego para reclamar espaço imediatamente.
+2. Aplicar `metadata.suggested_setting` — reduz o threshold de disparo do autovacuum para tabelas hot.
+3. Se recorrer: revisar `autovacuum_max_workers` global (default 3) e `autovacuum_naptime` (default 60s).
+4. Correlacionar com Onda 6 (bloat) — starvation crônica gera bloat físico que requer `VACUUM FULL` ou `pg_repack`.
+5. Correlacionar com Onda 11 (WAL) — `VACUUM` gera WAL; agrupar execução manual fora de janelas críticas de escrita.
+
+
