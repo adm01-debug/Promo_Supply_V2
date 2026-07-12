@@ -206,14 +206,17 @@ serve(async (req) => {
     let inAppFanout = 0;
     let slackDelivered = 0;
     let slackFailed = 0;
+    let emailDelivered = 0;
+    let emailFailed = 0;
     const slackErrors: string[] = [];
+    const emailErrors: string[] = [];
 
     try {
       const { data: subs } = await admin.rpc("alert_subscribers_for", {
         _alert_type: alert.alert_type,
         _severity: alert.severity,
       });
-      const rows = (subs ?? []) as Array<{ user_id: string; channel: string; slack_webhook_url: string | null }>;
+      const rows = (subs ?? []) as Array<{ user_id: string; channel: string; slack_webhook_url: string | null; email: string | null }>;
 
       // In-app fan-out
       const inApp = rows.filter((s) => s.channel === "in_app" || s.channel === "inapp");
@@ -247,23 +250,39 @@ serve(async (req) => {
           slackErrors.push(outcome.error ?? "unknown");
         }
       }
+
+      // Email fan-out por assinatura (Resend) — dedup por endereço
+      const emailSubs = rows.filter((s) => s.channel === "email" && s.email);
+      const emails = new Set<string>(emailSubs.map((s) => s.email!.trim().toLowerCase()).filter(Boolean));
+      for (const to of emails) {
+        const outcome = await sendEmailWithRetry(to, alert);
+        if (outcome.ok) emailDelivered++;
+        else {
+          emailFailed++;
+          emailErrors.push(outcome.error ?? "unknown");
+        }
+      }
     } catch (e) {
       slackErrors.push(`fanout_error:${(e as Error).message}`);
     }
 
-    const overallOk = slackFailed === 0;
+    const overallOk = slackFailed === 0 && emailFailed === 0;
+    const anyDelivered = inAppFanout + slackDelivered + emailDelivered > 0;
+    const allErrors = [...slackErrors, ...emailErrors];
     await admin
       .from("system_alerts")
       .update({
         dispatched_at: new Date().toISOString(),
-        dispatch_status: overallOk ? "delivered" : slackDelivered > 0 ? "partial" : "failed",
-        dispatch_error: slackErrors.length > 0 ? slackErrors.join(" | ").slice(0, 500) : null,
+        dispatch_status: overallOk ? "delivered" : anyDelivered ? "partial" : "failed",
+        dispatch_error: allErrors.length > 0 ? allErrors.join(" | ").slice(0, 500) : null,
         metadata: {
           ...(alert.metadata ?? {}),
           fanout: {
             in_app: inAppFanout,
             slack_delivered: slackDelivered,
             slack_failed: slackFailed,
+            email_delivered: emailDelivered,
+            email_failed: emailFailed,
           },
         },
       })
@@ -272,7 +291,7 @@ serve(async (req) => {
     results.push({
       id: alert.id,
       ok: overallOk,
-      error: slackErrors[0],
+      error: allErrors[0],
       in_app: inAppFanout,
       slack_delivered: slackDelivered,
       slack_failed: slackFailed,
