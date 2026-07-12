@@ -99,7 +99,7 @@ export const SupplierSuggestionContract = z.object({
 });
 
 export const SpotProxyContract = z.object({
-  action: z.enum(["create_session", "sync_pedidos", "verify_callback"]),
+  action: ciEnum(["create_session", "sync_pedidos", "verify_callback"]),
   session_id: z.string().uuid().optional(),
   payload: z.any().optional()
 });
