@@ -1,6 +1,6 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3.3)
+# Melhorias Pendentes — Auditoria Consolidada (v3.4)
 
-**Última atualização:** 2026-07-11 (pós-retenção webhook_events/outbox + alerta dead-letter)
+**Última atualização:** 2026-07-12 (Onda 13 — scanner de tabelas sem PK / REPLICA IDENTITY concluída)
 
 ## Status Atual: 10/10 🏆
 
