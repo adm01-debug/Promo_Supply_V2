@@ -548,6 +548,10 @@ export default function HealthDashboard() {
           </CardContent>
         </Card>
 
+        <ScanRunsSlaCard />
+
+
+
         {/* Alertas abertos individuais + filtros + export */}
         <Card>
           <CardHeader className="flex flex-row items-center justify-between gap-2 flex-wrap">
