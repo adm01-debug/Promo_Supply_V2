@@ -131,7 +131,7 @@ Deno.serve(async (req) => {
       table,
       rpcName,
       selectColumns = "*",
-      limit = 100,
+      limit: rawLimit = 100,
       offset = 0,
       countMode = "none",
       filters = {},
@@ -139,9 +139,36 @@ Deno.serve(async (req) => {
       data: bodyData,
     } = await req.json();
 
+    // Clamp de limit para evitar dump silencioso do DB externo.
+    const limit = Math.min(Math.max(1, Number(rawLimit) || 100), MAX_SELECT_LIMIT);
+
+    // A-01 · Allowlist estrita (rejeita antes de tocar no DB externo).
+    const authz = assertBridgeRequest({ operation, table, rpcName, countMode, filters, limit });
+    if (!authz.ok) {
+      logger.warn("bridge request rejected", { userId: user.id, operation, table, rpcName, reason: authz.reason });
+      return new Response(
+        JSON.stringify({ error: authz.reason }),
+        { status: authz.status, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+
+    // Rate limit por usuário (60 req/min) — protege o DB externo de abuso.
+    const rl = await checkRateLimit({
+      identifier: `user:${user.id}`,
+      endpoint: "external-db-bridge",
+      maxRequests: 60,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) {
+      logger.warn("bridge rate limited", { userId: user.id, retryAfter: rl.retryAfterSeconds });
+      return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    }
+
     // Get external DB credentials
     const externalUrl = Deno.env.get("EXTERNAL_DB_URL");
     const externalKey = Deno.env.get("EXTERNAL_DB_KEY");
+
+
 
     if (!externalUrl || !externalKey) {
       return new Response(
