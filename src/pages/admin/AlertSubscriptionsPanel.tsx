@@ -227,6 +227,28 @@ export default function AlertSubscriptionsPanel() {
           />
         )}
 
+        {channel === "webhook" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <Input
+              placeholder="Webhook URL (https://...)"
+              value={webhookUrl}
+              onChange={(e) => setWebhookUrl(e.target.value)}
+              aria-label="Webhook URL"
+              className="font-mono text-xs"
+            />
+            <Input
+              type="password"
+              placeholder="Secret HMAC-SHA256 (opcional)"
+              value={webhookSecret}
+              onChange={(e) => setWebhookSecret(e.target.value)}
+              aria-label="Secret HMAC"
+              className="font-mono text-xs"
+            />
+          </div>
+        )}
+
+
+
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Carregando…</p>
         ) : subs.length === 0 ? (
