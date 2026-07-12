@@ -56,8 +56,8 @@ Deno.serve(async (req: Request) => {
   if (roleErr) return json({ error: "Role check failed" }, 500);
   if (!isAdmin) return json({ error: "Forbidden" }, 403);
 
-  // 3. Consulta paralela dos três datasets
-  const [overviewRes, runsRes, severityRes] = await Promise.all([
+  // 3. Consulta paralela dos datasets
+  const [overviewRes, runsRes, severityRes, tsRes] = await Promise.all([
     admin.from("v_system_health_overview").select("*"),
     admin
       .from("health_scan_runs")
@@ -69,11 +69,13 @@ Deno.serve(async (req: Request) => {
       .select("severity")
       .is("resolved_at", null)
       .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()),
+    admin.rpc("alerts_severity_timeseries", { days: 7 }),
   ]);
 
   if (overviewRes.error) return json({ error: overviewRes.error.message }, 500);
   if (runsRes.error) return json({ error: runsRes.error.message }, 500);
   if (severityRes.error) return json({ error: severityRes.error.message }, 500);
+  if (tsRes.error) return json({ error: tsRes.error.message }, 500);
 
   const severityCounts: Record<string, number> = {};
   for (const row of severityRes.data ?? []) {
@@ -81,10 +83,23 @@ Deno.serve(async (req: Request) => {
     severityCounts[sev] = (severityCounts[sev] ?? 0) + 1;
   }
 
+  // Pivota timeseries por dia
+  const tsMap = new Map<string, Record<string, number | string>>();
+  for (const row of (tsRes.data ?? []) as Array<{ day: string; severity: string; cnt: number }>) {
+    const key = String(row.day);
+    const bucket = tsMap.get(key) ?? { day: key };
+    bucket[row.severity] = Number(row.cnt);
+    tsMap.set(key, bucket);
+  }
+  const severity_timeseries_7d = Array.from(tsMap.values()).sort((a, b) =>
+    String(a.day).localeCompare(String(b.day)),
+  );
+
   return json({
     generated_at: new Date().toISOString(),
     open_alerts_by_type: overviewRes.data,
     last_runs: runsRes.data,
     severity_counts_24h: severityCounts,
+    severity_timeseries_7d,
   });
 });
