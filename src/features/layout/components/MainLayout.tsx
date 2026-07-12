@@ -52,8 +52,10 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   const isHome = location.pathname === '/' || location.pathname === '/compras';
 
   const handleRefresh = useCallback(async () => {
-    await queryClient.invalidateQueries();
-    await new Promise(resolve => setTimeout(resolve, 800));
+    // MED-C12: invalidate only *active* queries to avoid refetching every
+    // module's cache on a single pull-to-refresh gesture. Wait for the actual
+    // refetch instead of a fake 800ms delay so the UX label is accurate.
+    await queryClient.invalidateQueries({ type: 'active' });
   }, [queryClient]);
 
   useEffect(() => {
