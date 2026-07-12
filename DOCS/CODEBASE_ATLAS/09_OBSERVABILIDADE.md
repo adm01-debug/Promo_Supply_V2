@@ -373,4 +373,39 @@ Detectar tabelas do schema `public` que acumularam dead tuples (>20%) sem recebe
 4. Correlacionar com Onda 6 (bloat) — starvation crônica gera bloat físico que requer `VACUUM FULL` ou `pg_repack`.
 5. Correlacionar com Onda 11 (WAL) — `VACUUM` gera WAL; agrupar execução manual fora de janelas críticas de escrita.
 
+---
+
+## Onda 17 — TOAST Bloat
+
+### Objetivo
+Detectar inflação/fragmentação em segmentos **TOAST** (armazenamento fora-de-linha de colunas TEXT/JSONB/BYTEA grandes) sem depender de `pgstattuple` (não instalado).
+
+### Assinatura
+`public.scan_toast_bloat(min_toast_mb NUMERIC = 500, warn_ratio NUMERIC = 3.0, crit_toast_mb NUMERIC = 2048, crit_ratio NUMERIC = 10.0)`
+
+### Heurística
+Razão `toast_mb / heap_mb`: TOAST > 3× o heap é sinal forte de bloat ou desenho ruim (JSONB gigante repetitivo, logs em coluna, etc.).
+
+### Thresholds
+| Condição | Severidade |
+|---|---|
+| toast_mb ≥ 2GB OU ratio ≥ 10× | CRITICAL |
+| toast_mb ≥ 500MB E ratio ≥ 3× | HIGH |
+
+### Alerta em `system_alerts`
+- `alert_type = 'toast_bloat'`
+- `metadata`: `tablename`, `heap_mb`, `toast_mb`, `toast_ratio`, `large_columns` (colunas com `attstorage IN ('e','x')`), `fix_sql_vacuum_full`, `fix_sql_pg_repack`, `suggested_action`
+- Dedupe: 7 dias por `tablename`
+
+### Cron
+`scan-toast-bloat-weekly` → `0 6 * * 0` (domingo 06:00 UTC)
+
+### Runbook
+1. Inspecionar `metadata.large_columns` — identifica candidatas a normalização (JSONB muito grande → tabela 1:1).
+2. Aplicar compressão LZ4 (Postgres 14+): `ALTER TABLE public.<tbl> ALTER COLUMN <col> SET COMPRESSION lz4;` — depois `VACUUM FULL` para re-comprimir.
+3. Para reclamar espaço imediato: `VACUUM (FULL, ANALYZE)` (bloqueia tabela) OU `pg_repack` (online, requer extensão).
+4. Se o padrão é escrita-uma-vez-leitura-múltipla de blob: mover para Storage bucket e guardar só a URL.
+5. Correlacionar com Onda 14 (temp files) — colunas TOAST grandes em ORDER BY/JOIN aumentam spills; e Onda 6 (bloat heap) — bloat combinado pode dobrar footprint.
+
+
 
