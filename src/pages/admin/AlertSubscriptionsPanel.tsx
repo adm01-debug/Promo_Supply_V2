@@ -16,7 +16,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Bell, BellOff, Plus, Trash2, Clock } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth } from "@/features/auth";
 
 interface Subscription {
   id: string;
