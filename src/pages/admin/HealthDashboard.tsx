@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { AlertTriangle, CheckCircle2, Clock, RefreshCw, Activity } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Clock, RefreshCw, Activity, TrendingUp } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts";
 
 type SeverityCounts = Record<string, number>;
 
@@ -30,12 +31,32 @@ interface RunRow {
   results: unknown;
 }
 
+interface TimeseriesRow {
+  day: string;
+  EMERGENCY?: number;
+  CRITICAL?: number;
+  HIGH?: number;
+  MEDIUM?: number;
+  LOW?: number;
+  INFO?: number;
+}
+
 interface DashboardResponse {
   generated_at: string;
   open_alerts_by_type: OverviewRow[];
   last_runs: RunRow[];
   severity_counts_24h: SeverityCounts;
+  severity_timeseries_7d?: TimeseriesRow[];
 }
+
+const severityColors: Record<string, string> = {
+  EMERGENCY: "hsl(var(--destructive))",
+  CRITICAL: "#dc2626",
+  HIGH: "#f97316",
+  MEDIUM: "#eab308",
+  LOW: "#3b82f6",
+  INFO: "hsl(var(--muted-foreground))",
+};
 
 const severityStyles: Record<string, string> = {
   EMERGENCY: "bg-destructive text-destructive-foreground",
@@ -152,6 +173,61 @@ export default function HealthDashboard() {
                 </Card>
               ))}
         </div>
+
+        {/* Timeseries 7 dias */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" aria-hidden />
+              Alertas por severidade · últimos 7 dias
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {query.isLoading ? (
+              <Skeleton className="h-64 w-full" />
+            ) : (data?.severity_timeseries_7d?.length ?? 0) === 0 ? (
+              <div className="text-sm text-muted-foreground py-8 text-center">Sem dados no período.</div>
+            ) : (
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={data?.severity_timeseries_7d ?? []} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                    <XAxis
+                      dataKey="day"
+                      tickFormatter={(v: string) => new Date(v).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}
+                      stroke="hsl(var(--muted-foreground))"
+                      fontSize={12}
+                    />
+                    <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} allowDecimals={false} />
+                    <Tooltip
+                      contentStyle={{
+                        background: "hsl(var(--popover))",
+                        border: "1px solid hsl(var(--border))",
+                        borderRadius: 8,
+                        fontSize: 12,
+                      }}
+                      labelFormatter={(v: string) => new Date(v).toLocaleDateString("pt-BR")}
+                    />
+                    <Legend wrapperStyle={{ fontSize: 12 }} />
+                    {["EMERGENCY", "CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO"].map((sev) => (
+                      <Line
+                        key={sev}
+                        type="monotone"
+                        dataKey={sev}
+                        stroke={severityColors[sev]}
+                        strokeWidth={2}
+                        dot={false}
+                        isAnimationActive={false}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+
 
         {/* Alerts by type */}
         <Card>
