@@ -1,4 +1,5 @@
 import { corsHeaders } from "../_shared/security.ts";
+import { withIdempotency } from "../_shared/idempotency.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
 
@@ -14,7 +15,10 @@ serve(async (req) => {
     });
   }
 
-  try {
+  // A-10 (Onda 49): idempotência universal.
+  // Reprocessos com o mesmo X-Idempotency-Key (ou mesmo body) devolvem a resposta
+  // cacheada em vez de criar novas sessões punchout duplicadas.
+  return await withIdempotency("punchout-setup", req, corsHeaders, async (bodyText) => {
     const authClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
@@ -24,8 +28,8 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const { catalog_id, return_url } = await req.json();
-    
+    const { catalog_id, return_url } = JSON.parse(bodyText || "{}");
+
     // Auth check
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) throw new Error("Unauthorized");
@@ -89,23 +93,14 @@ serve(async (req) => {
 </cXML>`;
 
     // The PunchOut shared secret must never be returned to the browser.
-    // Production suppliers should receive it only through a server-to-server setup call.
-    
-    return new Response(
-      JSON.stringify({ 
-        message: "PunchOut session initialized", 
+    return {
+      status: 200,
+      data: {
+        message: "PunchOut session initialized",
         buyerCookie,
         setup_xml: cxml,
-        mock_redirect: catalog.setup_url + "?hook=" + buyerCookie
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "PunchOut setup failed";
-    return new Response(JSON.stringify({ error: message }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
+        mock_redirect: catalog.setup_url + "?hook=" + buyerCookie,
+      },
+    };
+  });
 });
