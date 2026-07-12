@@ -1,21 +1,26 @@
 /**
- * OBS-01 — Alert Dispatcher
- * Consome `system_alerts` de severidade HIGH/CRITICAL e envia para Slack.
+ * OBS-01 — Alert Dispatcher (Onda 43)
+ * Consome `system_alerts` HIGH/CRITICAL e faz fan-out por assinatura:
+ *   - in_app: insere em `notifications`
+ *   - slack:  posta em `slack_webhook_url` da assinatura OU fallback global
  *
  * Trigger:
  *   - Chamado por cron (pg_net) a cada 1 min
  *   - Dedupe: só dispara alertas com `dispatched_at IS NULL`
- *   - Silencia janela de 15 min por (alert_type + tenant_id) para evitar flood
+ *   - Silencia janela: 1 alerta por (alert_type + tenant_id) por rodada
  *
- * Secrets esperados:
- *   - SLACK_WEBHOOK_URL (opcional; se ausente, apenas marca como dispatched)
+ * Resiliência:
+ *   - Retry com backoff exponencial + jitter (via `_shared/retry.ts`) para Slack
+ *   - Timeout 5s por tentativa · até 3 tentativas
+ *   - Falha isolada por assinatura não bloqueia demais fanouts
  */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { corsHeaders } from "../_shared/security.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
+import { retry } from "../_shared/retry.ts";
 
-const SLACK_WEBHOOK_URL = Deno.env.get("SLACK_WEBHOOK_URL") ?? "";
+const GLOBAL_SLACK_WEBHOOK_URL = Deno.env.get("SLACK_WEBHOOK_URL") ?? "";
 
 interface Alert {
   id: string;
@@ -36,36 +41,60 @@ function severityEmoji(sev: string): string {
   }
 }
 
-async function postToSlack(alert: Alert): Promise<{ ok: boolean; error?: string }> {
-  if (!SLACK_WEBHOOK_URL) return { ok: true }; // no-op silencioso em dev.
-  try {
-    const res = await fetchWithTimeout(SLACK_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text: `${severityEmoji(alert.severity)} *${alert.alert_type}* — ${alert.severity}`,
-        blocks: [
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: `${severityEmoji(alert.severity)} *${alert.alert_type}* (${alert.severity})\n${alert.message}`,
-            },
-          },
-          {
-            type: "context",
-            elements: [
-              { type: "mrkdwn", text: `tenant: \`${alert.tenant_id ?? "n/a"}\` · id: \`${alert.id}\` · ${alert.created_at}` },
-            ],
-          },
+function slackPayload(alert: Alert) {
+  return {
+    text: `${severityEmoji(alert.severity)} *${alert.alert_type}* — ${alert.severity}`,
+    blocks: [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `${severityEmoji(alert.severity)} *${alert.alert_type}* (${alert.severity})\n${alert.message}`,
+        },
+      },
+      {
+        type: "context",
+        elements: [
+          { type: "mrkdwn", text: `tenant: \`${alert.tenant_id ?? "n/a"}\` · id: \`${alert.id}\` · ${alert.created_at}` },
         ],
-      }),
-      timeoutMs: 5_000,
-    });
-    if (!res.ok) return { ok: false, error: `slack_status_${res.status}` };
-    return { ok: true };
+      },
+    ],
+  };
+}
+
+/** Envio com retry backoff exponencial + jitter (3 tentativas, timeout 5s cada). */
+async function postToSlackWithRetry(url: string, alert: Alert): Promise<{ ok: boolean; error?: string; attempts: number }> {
+  let attempts = 0;
+  try {
+    await retry(
+      async () => {
+        attempts++;
+        const res = await fetchWithTimeout(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(slackPayload(alert)),
+          timeoutMs: 5_000,
+        });
+        // 4xx (exceto 429) não deve gerar retry — trata como erro terminal.
+        if (!res.ok) {
+          const err = new Error(`slack_status_${res.status}`);
+          if (res.status >= 400 && res.status < 500 && res.status !== 429) {
+            // marca como não-retryable
+            (err as Error & { __noRetry?: boolean }).__noRetry = true;
+          }
+          throw err;
+        }
+      },
+      {
+        retries: 2,
+        baseDelayMs: 300,
+        maxDelayMs: 3_000,
+        shouldRetry: (err) => !(err as { __noRetry?: boolean })?.__noRetry,
+      },
+    );
+    return { ok: true, attempts };
   } catch (err) {
-    return { ok: false, error: (err as Error).message };
+    return { ok: false, error: (err as Error).message, attempts };
   }
 }
 
@@ -77,7 +106,6 @@ serve(async (req) => {
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
   );
 
-  // Busca alertas HIGH/CRITICAL não despachados (limite conservador por rodada).
   const { data: alerts, error } = await admin
     .from("system_alerts")
     .select("id, tenant_id, alert_type, severity, message, metadata, created_at")
@@ -93,11 +121,10 @@ serve(async (req) => {
     });
   }
 
-  const results: Array<{ id: string; ok: boolean; error?: string; in_app?: number; slack?: number }> = [];
-  const seenWindow = new Map<string, string>(); // dedupe key -> id
+  const results: Array<{ id: string; ok: boolean; error?: string; in_app?: number; slack_delivered?: number; slack_failed?: number }> = [];
+  const seenWindow = new Map<string, string>();
 
   for (const alert of (alerts ?? []) as Alert[]) {
-    // Dedupe janela de 15 min: (tenant_id + alert_type)
     const dedupeKey = `${alert.tenant_id ?? "global"}::${alert.alert_type}`;
     if (seenWindow.has(dedupeKey)) {
       await admin
@@ -109,16 +136,20 @@ serve(async (req) => {
     }
     seenWindow.set(dedupeKey, alert.id);
 
-    // Onda 42 — resolve assinantes ativos (respeita min_severity/snooze/enabled).
     let inAppFanout = 0;
-    let slackFanout = 0;
+    let slackDelivered = 0;
+    let slackFailed = 0;
+    const slackErrors: string[] = [];
+
     try {
       const { data: subs } = await admin.rpc("alert_subscribers_for", {
         _alert_type: alert.alert_type,
         _severity: alert.severity,
       });
-      const rows = (subs ?? []) as Array<{ user_id: string; channel: string }>;
-      const inApp = rows.filter((s) => s.channel === "in_app");
+      const rows = (subs ?? []) as Array<{ user_id: string; channel: string; slack_webhook_url: string | null }>;
+
+      // In-app fan-out
+      const inApp = rows.filter((s) => s.channel === "in_app" || s.channel === "inapp");
       if (inApp.length > 0) {
         const payload = inApp.map((s) => ({
           user_id: s.user_id,
@@ -134,20 +165,51 @@ serve(async (req) => {
         const { error: insErr } = await admin.from("notifications").insert(payload);
         if (!insErr) inAppFanout = payload.length;
       }
-      slackFanout = rows.filter((s) => s.channel === "slack").length;
-    } catch (_) { /* fanout best-effort */ }
 
-    const outcome = await postToSlack(alert);
+      // Slack fan-out por assinatura (com retry) — dedup por URL
+      const slackSubs = rows.filter((s) => s.channel === "slack" && s.slack_webhook_url);
+      const urls = new Set<string>(slackSubs.map((s) => s.slack_webhook_url!));
+      // Fallback global se nenhuma assinatura Slack e webhook global configurado
+      if (urls.size === 0 && GLOBAL_SLACK_WEBHOOK_URL) urls.add(GLOBAL_SLACK_WEBHOOK_URL);
+
+      for (const url of urls) {
+        const outcome = await postToSlackWithRetry(url, alert);
+        if (outcome.ok) slackDelivered++;
+        else {
+          slackFailed++;
+          slackErrors.push(outcome.error ?? "unknown");
+        }
+      }
+    } catch (e) {
+      slackErrors.push(`fanout_error:${(e as Error).message}`);
+    }
+
+    const overallOk = slackFailed === 0;
     await admin
       .from("system_alerts")
       .update({
         dispatched_at: new Date().toISOString(),
-        dispatch_status: outcome.ok ? "delivered" : "failed",
-        dispatch_error: outcome.error ?? null,
-        metadata: { ...(alert.metadata ?? {}), fanout: { in_app: inAppFanout, slack: slackFanout } },
+        dispatch_status: overallOk ? "delivered" : slackDelivered > 0 ? "partial" : "failed",
+        dispatch_error: slackErrors.length > 0 ? slackErrors.join(" | ").slice(0, 500) : null,
+        metadata: {
+          ...(alert.metadata ?? {}),
+          fanout: {
+            in_app: inAppFanout,
+            slack_delivered: slackDelivered,
+            slack_failed: slackFailed,
+          },
+        },
       })
       .eq("id", alert.id);
-    results.push({ id: alert.id, ok: outcome.ok, error: outcome.error, in_app: inAppFanout, slack: slackFanout });
+
+    results.push({
+      id: alert.id,
+      ok: overallOk,
+      error: slackErrors[0],
+      in_app: inAppFanout,
+      slack_delivered: slackDelivered,
+      slack_failed: slackFailed,
+    });
   }
 
   return new Response(

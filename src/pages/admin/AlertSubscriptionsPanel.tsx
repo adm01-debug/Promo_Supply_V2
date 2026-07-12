@@ -26,6 +26,7 @@ interface Subscription {
   channel: string;
   enabled: boolean;
   snoozed_until: string | null;
+  slack_webhook_url: string | null;
   created_at: string;
 }
 
@@ -49,6 +50,7 @@ export default function AlertSubscriptionsPanel() {
   const [alertType, setAlertType] = useState("");
   const [minSeverity, setMinSeverity] = useState<string>("HIGH");
   const [channel, setChannel] = useState<string>("inapp");
+  const [slackUrl, setSlackUrl] = useState("");
 
   const { data: subs = [], isLoading } = useQuery({
     queryKey: ["alert-subscriptions", user?.id],
@@ -66,17 +68,22 @@ export default function AlertSubscriptionsPanel() {
   const create = useMutation({
     mutationFn: async () => {
       if (!user?.id) throw new Error("Sem usuário");
+      if (channel === "slack" && !/^https:\/\/hooks\.slack\.com\//.test(slackUrl.trim())) {
+        throw new Error("Webhook Slack inválido (deve começar com https://hooks.slack.com/)");
+      }
       const { error } = await supabase.from("alert_subscriptions").insert({
         user_id: user.id,
         alert_type: alertType.trim() || null,
         min_severity: minSeverity,
         channel,
+        slack_webhook_url: channel === "slack" ? slackUrl.trim() : null,
       });
       if (error) throw error;
     },
     onSuccess: () => {
       toast.success("Assinatura criada");
       setAlertType("");
+      setSlackUrl("");
       qc.invalidateQueries({ queryKey: ["alert-subscriptions"] });
     },
     onError: (e: unknown) => toast.error(`Falha: ${(e as Error).message}`),
@@ -175,6 +182,16 @@ export default function AlertSubscriptionsPanel() {
             <Plus className="h-4 w-4 mr-1" /> Adicionar
           </Button>
         </div>
+
+        {channel === "slack" && (
+          <Input
+            placeholder="Slack Incoming Webhook URL (https://hooks.slack.com/services/...)"
+            value={slackUrl}
+            onChange={(e) => setSlackUrl(e.target.value)}
+            aria-label="Slack webhook URL"
+            className="font-mono text-xs"
+          />
+        )}
 
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Carregando…</p>
