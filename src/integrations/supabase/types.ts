@@ -5209,6 +5209,51 @@ export type Database = {
           },
         ]
       }
+      secret_rotation_schedule: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          last_notified_at: string | null
+          last_notified_bucket: string | null
+          last_rotated_at: string
+          next_due_at: string
+          notes: string | null
+          owner_user_id: string | null
+          rotation_days: number
+          secret_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_notified_at?: string | null
+          last_notified_bucket?: string | null
+          last_rotated_at?: string
+          next_due_at?: string
+          notes?: string | null
+          owner_user_id?: string | null
+          rotation_days: number
+          secret_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_notified_at?: string | null
+          last_notified_bucket?: string | null
+          last_rotated_at?: string
+          next_due_at?: string
+          notes?: string | null
+          owner_user_id?: string | null
+          rotation_days?: number
+          secret_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       security_definer_baseline: {
         Row: {
           approved_at: string
@@ -7805,6 +7850,12 @@ export type Database = {
           allowed: boolean
           remaining: number
           retry_after_seconds: number
+        }[]
+      }
+      check_secret_rotation_due: {
+        Args: never
+        Returns: {
+          notified_count: number
         }[]
       }
       check_workflow_sod: {
