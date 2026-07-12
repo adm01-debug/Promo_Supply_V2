@@ -7849,6 +7849,17 @@ export type Database = {
         Args: { _min_dead_ratio?: number; _min_dead_tuples?: number }
         Returns: number
       }
+      scan_tables_without_pk: {
+        Args: { allowlist?: string[]; min_rows_critical?: number }
+        Returns: {
+          estimated_rows: number
+          finding: string
+          in_publication: boolean
+          replica_identity: string
+          severity: string
+          table_name: string
+        }[]
+      }
       scan_unused_indexes: { Args: { _min_size_mb?: number }; Returns: number }
       scan_wal_generation_rate: {
         Args: {

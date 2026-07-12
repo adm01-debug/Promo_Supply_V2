@@ -41,6 +41,7 @@
 | `scan_dangerous_statements` | ao vivo | UPDATE/DELETE sem WHERE via `pg_stat_statements` |
 | `scan_stale_statistics` | 04:30 UTC diário | `last_analyze` >7d ou >20% modificações desde ANALYZE → sugere `ANALYZE public.<tabela>` |
 | `scan_cache_hit_ratio` | a cada hora | heap/idx hit ratio <95% (HIGH <90%) → sugere aumentar shared_buffers ou revisar índices |
+| `scan_tables_without_pk` | 05:15 UTC diário | Tabelas sem PK ou REPLICA IDENTITY insuficiente (risco replicação/Realtime) |
 
 Alertas caem em `system_alerts` e são despachados por `alert-dispatcher`.
 
@@ -198,5 +199,65 @@ Chamar cron manualmente com override: `SELECT public.scan_wal_generation_rate(80
 3. Se `maxwritten_per_min` > 1 → aumentar `bgwriter_lru_maxpages` (100 → 500) e/ou reduzir `bgwriter_delay` (200ms → 100ms).
 4. Avaliar `checkpoint_completion_target` (recomendado 0.9 no PG17+) para diluir I/O.
 5. Correlacionar com Onda 11 (WAL rate) — checkpoints altos + WAL alto = workload write-heavy legítimo, tuning ainda vale.
+
+---
+
+## Onda 13 — Tabelas sem PK / REPLICA IDENTITY insuficiente
+
+### Objetivo
+Detectar tabelas que quebram silenciosamente **replicação lógica**, **Supabase Realtime** e **CDC (Debezium)**. Sem PK ou identity adequada, `UPDATE/DELETE` não propaga, slots incham (correlato com Onda 10) e queries degradam para full-scan.
+
+### Assinatura
+```sql
+public.scan_tables_without_pk(
+  min_rows_critical bigint DEFAULT 1000000,
+  allowlist         text[] DEFAULT ARRAY['schema_migrations','ar_internal_metadata']
+) RETURNS TABLE(table_name, finding, severity, estimated_rows, replica_identity, in_publication)
+```
+`STABLE`, `SECURITY DEFINER`, `search_path = public, pg_catalog`, EXECUTE só `service_role`.
+
+### Findings detectados
+
+| Finding | Condição | Severidade base |
+|---|---|---|
+| `no_primary_key` | Tabela sem `indisprimary` | HIGH (→ CRITICAL se em publication ou >1M rows) |
+| `replica_identity_nothing` | `relreplident='n'` | **CRITICAL sempre** (quebra logical replication) |
+| `replica_identity_default_no_pk` | `relreplident='d'` sem PK | CRITICAL (Realtime perde UPDATE/DELETE) |
+| `replica_identity_using_dropped_index` | `indisreplident=true` e `indisvalid=false` | HIGH (→ CRITICAL se em publication) |
+
+### Filtros aplicados (falsos positivos evitados)
+- `relkind IN ('r','p')` — só tabelas reais e raízes particionadas
+- `relpersistence = 'p'` — exclui unlogged/temp
+- `NOT relispartition` — partições filhas herdam do pai
+- `allowlist` — audit append-only, tabelas legadas
+
+### Frequência
+Cron `scan-tables-without-pk-daily` → `15 5 * * *`. Diário é suficiente: schema muda raramente.
+
+### Alerta em `system_alerts`
+- `alert_type = 'db_missing_pk_or_replica_identity'`
+- `entity_id = <table_name>` → dedupe 24h por tabela
+- `metadata`: `table_name`, `finding`, `estimated_rows`, `replica_identity`, `in_publication`, `fix_sql`, `wave=13`
+
+### Runbook por finding
+
+**🔴 `replica_identity_nothing`** (mais grave)
+1. Confirmar impacto: `SELECT * FROM pg_publication_tables WHERE tablename = '<t>';`
+2. Preferencial: `ALTER TABLE public.<t> REPLICA IDENTITY USING INDEX <t>_pkey;`
+3. Fallback (custo alto em WAL): `ALTER TABLE public.<t> REPLICA IDENTITY FULL;`
+4. Verificar Onda 10 — slot lógico provavelmente cresceu.
+
+**🔴 `no_primary_key` / `replica_identity_default_no_pk`**
+1. Executar `metadata.fix_sql` (já traz `ADD CONSTRAINT ... PRIMARY KEY`).
+2. Em tabela grande (>10M): criar unique index CONCURRENTLY primeiro, depois `ALTER TABLE ... ADD PRIMARY KEY USING INDEX`.
+3. Se coluna `id` não existe, adicionar via `ADD COLUMN id uuid DEFAULT gen_random_uuid()` (fix_sql já contempla).
+
+**🟠 `replica_identity_using_dropped_index`**
+1. `REINDEX TABLE public.<t>;` — se apenas invalidação temporária.
+2. Se índice foi DROPADO: `ALTER TABLE public.<t> REPLICA IDENTITY USING INDEX <valid_pk_or_unique_idx>;`
+
+### Correlações
+- **Onda 10 (replication lag)** → tabelas listadas aqui são causa provável de WAL bloat em slots.
+- **Onda 11 (WAL rate)** → `REPLICA IDENTITY FULL` amplifica WAL; preferir `USING INDEX`.
 
 > Warnings 0028 (SECURITY DEFINER) permanecem na allowlist arquitetural — funções DBA nunca são expostas ao PostgREST.
