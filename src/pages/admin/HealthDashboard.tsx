@@ -81,6 +81,33 @@ export default function HealthDashboard() {
     document.title = "Saúde do Sistema | Admin";
   }, []);
 
+  // Realtime push para novos alertas críticos
+  useEffect(() => {
+    const channel = supabase
+      .channel("system_alerts_admin")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "system_alerts" },
+        (payload) => {
+          const row = payload.new as { severity?: string; alert_type?: string; message?: string };
+          const sev = (row.severity ?? "INFO").toUpperCase();
+          if (sev === "CRITICAL" || sev === "EMERGENCY") {
+            toast.error(`🚨 ${sev}: ${row.alert_type ?? "alerta"}`, {
+              description: row.message ?? "Novo alerta crítico recebido",
+              duration: 10_000,
+            });
+          }
+          query.refetch();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
 
