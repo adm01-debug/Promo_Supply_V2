@@ -9040,6 +9040,10 @@ export type Database = {
           xid_age: number
         }[]
       }
+      simulate_scan_sla_loop: {
+        Args: { p_scenarios?: number; p_seed?: number }
+        Returns: Json
+      }
       suggest_unspsc_code: { Args: { item_name: string }; Returns: string }
       tenant_in_my_group: { Args: { _tenant_id: string }; Returns: boolean }
       tenants_in_my_group: { Args: never; Returns: string[] }
