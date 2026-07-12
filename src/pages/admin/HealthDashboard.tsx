@@ -41,12 +41,33 @@ interface TimeseriesRow {
   INFO?: number;
 }
 
+interface MttrRow {
+  alert_type: string;
+  severity: string;
+  resolved_count: number;
+  avg_minutes: number | null;
+  p50_minutes: number | null;
+  p95_minutes: number | null;
+  max_minutes: number | null;
+}
+
+interface NoisyRow {
+  alert_type: string;
+  total: number;
+  unresolved: number;
+  distinct_severities: number;
+  first_seen: string;
+  last_seen: string;
+}
+
 interface DashboardResponse {
   generated_at: string;
   open_alerts_by_type: OverviewRow[];
   last_runs: RunRow[];
   severity_counts_24h: SeverityCounts;
   severity_timeseries_7d?: TimeseriesRow[];
+  mttr_by_type_7d?: MttrRow[];
+  noisy_scanners_24h?: NoisyRow[];
 }
 
 const severityColors: Record<string, string> = {
