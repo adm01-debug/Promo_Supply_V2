@@ -838,6 +838,348 @@ export type Database = {
           },
         ]
       }
+      audit_logs_202605: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      audit_logs_202606: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      audit_logs_202607: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      audit_logs_202608: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      audit_logs_202609: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      audit_logs_legacy_20260712: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
       blocked_countries: {
         Row: {
           blocked_at: string
@@ -8174,6 +8516,10 @@ export type Database = {
       }
       cron_watchdog: { Args: never; Returns: undefined }
       current_tenant_id: { Args: never; Returns: string }
+      ensure_audit_logs_partition: {
+        Args: { _month: string }
+        Returns: undefined
+      }
       ensure_telemetry_logs_partition: {
         Args: { _month: string }
         Returns: undefined
