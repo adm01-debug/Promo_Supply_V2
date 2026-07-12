@@ -28,6 +28,8 @@ interface Subscription {
   snoozed_until: string | null;
   slack_webhook_url: string | null;
   email: string | null;
+  webhook_url: string | null;
+  webhook_secret: string | null;
   created_at: string;
 }
 
@@ -36,6 +38,7 @@ const CHANNELS = [
   { value: "inapp", label: "In-app" },
   { value: "email", label: "Email" },
   { value: "slack", label: "Slack" },
+  { value: "webhook", label: "Webhook" },
 ] as const;
 
 const SNOOZE_PRESETS: Array<{ label: string; minutes: number }> = [
@@ -53,6 +56,8 @@ export default function AlertSubscriptionsPanel() {
   const [channel, setChannel] = useState<string>("inapp");
   const [slackUrl, setSlackUrl] = useState("");
   const [emailAddr, setEmailAddr] = useState("");
+  const [webhookUrl, setWebhookUrl] = useState("");
+  const [webhookSecret, setWebhookSecret] = useState("");
 
   const { data: subs = [], isLoading } = useQuery({
     queryKey: ["alert-subscriptions", user?.id],
@@ -77,6 +82,12 @@ export default function AlertSubscriptionsPanel() {
       if (channel === "email" && trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
         throw new Error("Email inválido");
       }
+      const trimmedWebhook = webhookUrl.trim();
+      if (channel === "webhook") {
+        if (!/^https:\/\/.+/i.test(trimmedWebhook)) {
+          throw new Error("Webhook URL inválido (obrigatório https://)");
+        }
+      }
       const { error } = await supabase.from("alert_subscriptions").insert({
         user_id: user.id,
         alert_type: alertType.trim() || null,
@@ -84,6 +95,8 @@ export default function AlertSubscriptionsPanel() {
         channel,
         slack_webhook_url: channel === "slack" ? slackUrl.trim() : null,
         email: channel === "email" ? (trimmedEmail || null) : null,
+        webhook_url: channel === "webhook" ? trimmedWebhook : null,
+        webhook_secret: channel === "webhook" ? (webhookSecret.trim() || null) : null,
       });
       if (error) throw error;
     },
@@ -92,6 +105,8 @@ export default function AlertSubscriptionsPanel() {
       setAlertType("");
       setSlackUrl("");
       setEmailAddr("");
+      setWebhookUrl("");
+      setWebhookSecret("");
       qc.invalidateQueries({ queryKey: ["alert-subscriptions"] });
     },
     onError: (e: unknown) => toast.error(`Falha: ${(e as Error).message}`),
@@ -211,6 +226,28 @@ export default function AlertSubscriptionsPanel() {
             className="font-mono text-xs"
           />
         )}
+
+        {channel === "webhook" && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <Input
+              placeholder="Webhook URL (https://...)"
+              value={webhookUrl}
+              onChange={(e) => setWebhookUrl(e.target.value)}
+              aria-label="Webhook URL"
+              className="font-mono text-xs"
+            />
+            <Input
+              type="password"
+              placeholder="Secret HMAC-SHA256 (opcional)"
+              value={webhookSecret}
+              onChange={(e) => setWebhookSecret(e.target.value)}
+              aria-label="Secret HMAC"
+              className="font-mono text-xs"
+            />
+          </div>
+        )}
+
+
 
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Carregando…</p>

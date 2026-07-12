@@ -98,6 +98,7 @@ async function postToSlackWithRetry(url: string, alert: Alert): Promise<{ ok: bo
     return { ok: true, attempts };
   } catch (err) {
     return { ok: false, error: (err as Error).message, attempts };
+  }
 }
 
 function escapeHtml(s: string): string {
@@ -163,6 +164,70 @@ async function sendEmailWithRetry(to: string, alert: Alert): Promise<{ ok: boole
     return { ok: false, error: (err as Error).message };
   }
 }
+
+/** Assinatura HMAC-SHA256 hex do body — usada quando webhook_secret está definido. */
+async function hmacSha256Hex(secret: string, body: string): Promise<string> {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    new TextEncoder().encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(body));
+  return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+async function sendWebhookWithRetry(
+  url: string,
+  secret: string | null,
+  alert: Alert,
+): Promise<{ ok: boolean; error?: string }> {
+  const body = JSON.stringify({
+    event: "system_alert",
+    alert: {
+      id: alert.id,
+      tenant_id: alert.tenant_id,
+      alert_type: alert.alert_type,
+      severity: alert.severity,
+      message: alert.message,
+      metadata: alert.metadata,
+      created_at: alert.created_at,
+    },
+    deep_link: `${APP_URL}/admin/health/alerts/${alert.id}`,
+    delivered_at: new Date().toISOString(),
+  });
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    "User-Agent": "lovable-alert-dispatcher/1.0",
+    "X-Alert-Id": alert.id,
+    "X-Alert-Type": alert.alert_type,
+    "X-Alert-Severity": alert.severity,
+  };
+  if (secret) headers["X-Signature-256"] = `sha256=${await hmacSha256Hex(secret, body)}`;
+  try {
+    await retry(
+      async () => {
+        const res = await fetchWithTimeout(url, { method: "POST", headers, body, timeoutMs: 6_000 });
+        if (!res.ok) {
+          const err = new Error(`webhook_status_${res.status}`);
+          if (res.status >= 400 && res.status < 500 && res.status !== 429) {
+            (err as Error & { __noRetry?: boolean }).__noRetry = true;
+          }
+          throw err;
+        }
+      },
+      {
+        retries: 2,
+        baseDelayMs: 400,
+        maxDelayMs: 4_000,
+        shouldRetry: (err) => !(err as { __noRetry?: boolean })?.__noRetry,
+      },
+    );
+    return { ok: true };
+  } catch (err) {
+    return { ok: false, error: (err as Error).message };
+  }
 }
 
 serve(async (req) => {
@@ -210,13 +275,16 @@ serve(async (req) => {
     let emailFailed = 0;
     const slackErrors: string[] = [];
     const emailErrors: string[] = [];
+    let webhookDelivered = 0;
+    let webhookFailed = 0;
+    const webhookErrors: string[] = [];
 
     try {
       const { data: subs } = await admin.rpc("alert_subscribers_for", {
         _alert_type: alert.alert_type,
         _severity: alert.severity,
       });
-      const rows = (subs ?? []) as Array<{ user_id: string; channel: string; slack_webhook_url: string | null; email: string | null }>;
+      const rows = (subs ?? []) as Array<{ user_id: string; channel: string; slack_webhook_url: string | null; email: string | null; webhook_url: string | null; webhook_secret: string | null }>;
 
       // In-app fan-out
       const inApp = rows.filter((s) => s.channel === "in_app" || s.channel === "inapp");
@@ -262,13 +330,27 @@ serve(async (req) => {
           emailErrors.push(outcome.error ?? "unknown");
         }
       }
+      // Webhook fan-out por assinatura — dedup por URL (assinatura própria via HMAC opcional)
+      const webhookSubs = rows.filter((s) => s.channel === "webhook" && s.webhook_url);
+      const seenWebhook = new Map<string, string | null>();
+      for (const s of webhookSubs) {
+        if (!seenWebhook.has(s.webhook_url!)) seenWebhook.set(s.webhook_url!, s.webhook_secret);
+      }
+      for (const [url, secret] of seenWebhook) {
+        const outcome = await sendWebhookWithRetry(url, secret, alert);
+        if (outcome.ok) webhookDelivered++;
+        else {
+          webhookFailed++;
+          webhookErrors.push(outcome.error ?? "unknown");
+        }
+      }
     } catch (e) {
       slackErrors.push(`fanout_error:${(e as Error).message}`);
     }
 
-    const overallOk = slackFailed === 0 && emailFailed === 0;
-    const anyDelivered = inAppFanout + slackDelivered + emailDelivered > 0;
-    const allErrors = [...slackErrors, ...emailErrors];
+    const overallOk = slackFailed === 0 && emailFailed === 0 && webhookFailed === 0;
+    const anyDelivered = inAppFanout + slackDelivered + emailDelivered + webhookDelivered > 0;
+    const allErrors = [...slackErrors, ...emailErrors, ...webhookErrors];
     await admin
       .from("system_alerts")
       .update({
@@ -283,6 +365,8 @@ serve(async (req) => {
             slack_failed: slackFailed,
             email_delivered: emailDelivered,
             email_failed: emailFailed,
+            webhook_delivered: webhookDelivered,
+            webhook_failed: webhookFailed,
           },
         },
       })
