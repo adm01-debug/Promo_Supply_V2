@@ -91,6 +91,7 @@ export default function AlertSubscriptionsPanel() {
       toast.success("Assinatura criada");
       setAlertType("");
       setSlackUrl("");
+      setEmailAddr("");
       qc.invalidateQueries({ queryKey: ["alert-subscriptions"] });
     },
     onError: (e: unknown) => toast.error(`Falha: ${(e as Error).message}`),
