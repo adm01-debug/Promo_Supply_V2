@@ -41,7 +41,7 @@ export const useBudgetManagement = () => {
     queryKey: ['cost-center-performance', organizationId],
     queryFn: async () => {
       if (!organizationId) return [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const { data, error } = await (supabase.rpc as any)('get_cost_center_performance_report', {
         p_organization_id: organizationId
       });

@@ -55,7 +55,7 @@ class Logger {
         // console.warn(output);
         break;
       default:
-        // eslint-disable-next-line no-console
+         
         // console.info(output);
     }
 
@@ -83,7 +83,7 @@ class Logger {
       });
     } catch (err) {
       // Silent fail to avoid infinite loops
-      // eslint-disable-next-line no-console
+       
       console.warn("Failed to send log to telemetry", err);
     }
   }

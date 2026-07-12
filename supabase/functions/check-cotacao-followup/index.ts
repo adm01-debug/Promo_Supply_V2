@@ -8,14 +8,17 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // MED-C10: declare logger BEFORE the try so the catch can safely reference it.
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  let logger: EdgeLogger | undefined;
+
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('check-cotacao-followup', requestId);
+    logger = new EdgeLogger('check-cotacao-followup', requestId);
 
     logger.info("Starting cotação follow-up check...");
 
@@ -122,7 +125,9 @@ Deno.serve(async (req) => {
             }
           }
         } catch (emailErr) {
-          console.warn("Email dispatch error:", emailErr);
+          logger?.warn("Email dispatch failed", {
+            error: emailErr instanceof Error ? emailErr.message : String(emailErr),
+          });
         }
       }
     }

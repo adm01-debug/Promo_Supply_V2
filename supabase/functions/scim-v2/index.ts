@@ -2,7 +2,18 @@ import { corsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
+import { z } from "https://esm.sh/zod@3.22.4";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+
+// HIGH-C9: validate SCIM POST /Users body before hitting the admin API to avoid
+// creating orphan users with undefined email or missing name.
+const ScimUserPostSchema = z.object({
+  emails: z.array(z.object({ value: z.string().email(), primary: z.boolean().optional() })).min(1),
+  displayName: z.string().min(1).optional(),
+  name: z.object({ formatted: z.string().min(1).optional() }).optional(),
+}).refine((v) => !!(v.displayName || v.name?.formatted), {
+  message: "displayName or name.formatted is required",
+});
 
 const encoder = new TextEncoder();
 
@@ -108,9 +119,21 @@ serve(async (req) => {
       }
 
       if (req.method === "POST") {
-        const body = await req.json();
-        const email = body.emails?.[0]?.value;
-        const displayName = body.displayName || body.name?.formatted;
+        const rawBody = await req.json().catch(() => null);
+        const parsed = ScimUserPostSchema.safeParse(rawBody);
+        if (!parsed.success) {
+          return new Response(
+            JSON.stringify({
+              schemas: ["urn:ietf:params:scim:api:messages:2.0:Error"],
+              detail: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "),
+              status: "400",
+            }),
+            { status: 400, headers: buildResponseHeaders(corsHeaders) },
+          );
+        }
+
+        const email = parsed.data.emails[0].value;
+        const displayName = parsed.data.displayName ?? parsed.data.name?.formatted ?? email;
 
         const { data, error } = await supabaseAdmin.auth.admin.createUser({
           email,
@@ -119,17 +142,17 @@ serve(async (req) => {
         });
 
         if (error) throw error;
-        
+
         return new Response(JSON.stringify(mapSupabaseUserToSCIM(data.user)), {
           status: 201,
           headers: buildResponseHeaders(corsHeaders),
         });
       }
-      
+
       if (req.method === "DELETE" && resourceId) {
         const { error } = await supabaseAdmin.auth.admin.deleteUser(resourceId);
         if (error) throw error;
-        return new Response(null, { status: 204, headers: corsHeaders });
+        return new Response(null, { status: 204, headers: buildResponseHeaders(corsHeaders) });
       }
     }
 

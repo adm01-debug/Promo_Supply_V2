@@ -54,11 +54,11 @@ const RFxDetails = memo(() => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published': return 'bg-blue-500/10 text-blue-600 border-blue-200';
-      case 'in_progress': return 'bg-amber-500/10 text-amber-600 border-amber-200';
-      case 'evaluation': return 'bg-purple-500/10 text-purple-600 border-purple-200';
-      case 'awarded': return 'bg-emerald-500/10 text-emerald-600 border-emerald-200';
-      default: return 'bg-slate-500/10 text-slate-600 border-slate-200';
+      case 'published': return 'bg-info/10 text-info border-info/30';
+      case 'in_progress': return 'bg-warning/10 text-warning border-warning/30';
+      case 'evaluation': return 'bg-primary/10 text-primary border-primary/30';
+      case 'awarded': return 'bg-success/10 text-success border-success/30';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -93,7 +93,7 @@ const RFxDetails = memo(() => {
             <h1 className="text-2xl font-bold mt-1">{event.title}</h1>
           </div>
           {event.type === 'auction' && event.status === 'in_progress' && (
-            <Button className="gap-2 bg-red-600 hover:bg-red-700" onClick={() => navigate(`/sourcing/${id}/auction`)}>
+            <Button variant="destructive" className="gap-2" onClick={() => navigate(`/sourcing/${id}/auction`)}>
               <Gavel className="w-4 h-4" />
               Ver Sala de Leilão
             </Button>

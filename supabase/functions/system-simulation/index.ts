@@ -68,23 +68,27 @@ serve(async (req) => {
             return { type: "normal", payload: p };
           });
 
+      // HIGH-C3: forward the admin caller's JWT (verified by requireAdmin) instead of
+      // service_role — never expose service_role in outbound HTTP Authorization headers.
+      const forwardAuth = req.headers.get("authorization") ?? "";
+      const apiKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
+
       for (const item of payloadsToTest) {
         await engine.runScenario(`${scenarioType.toUpperCase()} ${item.type}`, async () => {
           const response = await fetch(`${supabaseUrl}/functions/v1/${endpoint}`, {
             method: "POST",
             headers: {
-              // M-02: service_role bypassa RLS; tenant fica implícito no payload/RPC alvo.
-              "Authorization": `Bearer ${supabaseServiceKey}`,
+              "Authorization": forwardAuth,
+              "apikey": apiKey,
               "Content-Type": "application/json",
             },
             body: JSON.stringify(item.payload)
           });
-          
-          const result = response.status === 200 || response.status === 201 
-            ? await response.json() 
+
+          const result = response.status === 200 || response.status === 201
+            ? await response.json()
             : { error: true, status: response.status, text: await response.text() };
 
-          // In fuzz mode, 400 is a "success" (expected rejection), 500 is a failure (unhandled exception)
           if (mode === "fuzz" && response.status === 500) {
             throw new Error(`CRITICAL: Unhandled exception on ${item.type} payload`);
           }

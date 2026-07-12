@@ -196,6 +196,11 @@ Deno.serve(async (req) => {
     let sentCount = 0;
     let failedCount = 0;
 
+    // HIGH-C7: track failures per-subscription. The previous global counter
+    // deleted the wrong endpoint whenever any 3 sends failed anywhere in the
+    // loop. Now we remove a subscription immediately when its own send fails
+    // — push endpoints don't recover mid-batch and Web Push spec says 404/410
+    // means "gone" so it's safe to purge on first failure.
     for (const sub of subscriptions || []) {
       const success = await sendPushToSubscription(
         { endpoint: sub.endpoint, p256dh: sub.p256dh, auth: sub.auth },
@@ -208,10 +213,14 @@ Deno.serve(async (req) => {
         sentCount++;
       } else {
         failedCount++;
-        
-        if (failedCount > 3) {
-          await supabase.from('push_subscriptions').delete().eq('id', sub.id);
-          console.log(`Removed invalid subscription ${sub.id}`);
+        const { error: delErr } = await supabase
+          .from('push_subscriptions')
+          .delete()
+          .eq('id', sub.id);
+        if (delErr) {
+          logger.warn('Failed to purge invalid subscription', { id: sub.id, error: delErr });
+        } else {
+          logger.info('Removed invalid subscription', { id: sub.id });
         }
       }
     }

@@ -21,9 +21,9 @@ interface Props {
   filteredSuppliers: Supplier[];
   filteredBuyers: Buyer[];
   showComparison: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   onSupplierDrillDown: (s: any) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   onBuyerDrillDown: (b: any) => void;
 }
 

@@ -12,28 +12,40 @@ const NavigationContext = createContext<NavigationContextType | undefined>(undef
 
 /**
  * High-performance navigation provider.
- * Tracks history depth to determine if logical "back" or browser "back" should be used.
+ * Uses React Router's history index (window.history.state.idx) as source of
+ * truth so browser back/forward is respected — a monotonic counter would keep
+ * canGoBack=true after returning to the entry page and break SmartBackButton.
  */
 export const NavigationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [breadcrumbLabel, setBreadcrumbLabel] = useState<string | null>(null);
   const location = useLocation();
-  
-  // Use a ref to track entry path once
-  const [entryPath] = useState(() => window.location.pathname);
-  
-  // Track history stack depth within the app session
-  const [historyCount, setHistoryCount] = useState(0);
+
+  const [entryPath] = useState(() =>
+    typeof window !== 'undefined' ? window.location.pathname : '/',
+  );
+
+  // MED-C11: read the router-managed history index instead of a growing counter
+  const [historyIdx, setHistoryIdx] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0;
+    const idx = (window.history.state as { idx?: number } | null)?.idx;
+    return typeof idx === 'number' ? idx : 0;
+  });
 
   useEffect(() => {
-    setHistoryCount(prev => prev + 1);
-  }, [location.pathname]);
+    if (typeof window === 'undefined') return;
+    const idx = (window.history.state as { idx?: number } | null)?.idx;
+    if (typeof idx === 'number') setHistoryIdx(idx);
+  }, [location.key, location.pathname]);
 
-  const value = useMemo(() => ({
-    breadcrumbLabel,
-    setBreadcrumbLabel,
-    canGoBack: historyCount > 1,
-    entryPath
-  }), [breadcrumbLabel, historyCount, entryPath]);
+  const value = useMemo(
+    () => ({
+      breadcrumbLabel,
+      setBreadcrumbLabel,
+      canGoBack: historyIdx > 0,
+      entryPath,
+    }),
+    [breadcrumbLabel, historyIdx, entryPath],
+  );
 
   return (
     <NavigationContext.Provider value={value}>

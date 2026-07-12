@@ -24,6 +24,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchedUserIdRef = useRef<string | null>(null);
   const isFetchingRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // CRIT-C1/C8: monotonic generation invalidates in-flight fetches when
+  // signOut / SIGNED_OUT / user-switch occurs, preventing stale data from a
+  // previous user leaking into the newly-cleared state.
+  const fetchGenerationRef = useRef(0);
 
   const setSelectedEmpresa = useCallback((empresaId: string | null) => {
     setSelectedEmpresaIdState(empresaId);
@@ -38,16 +42,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUserData = useCallback(async (userId: string) => {
     // Deduplicate: skip if already fetched for this user or currently fetching
     if (fetchedUserIdRef.current === userId || isFetchingRef.current) return;
+  const fetchUserData = useCallback(async (userId: string) => {
+    // Deduplicate: skip if already fetched for this user or currently fetching
+    if (fetchedUserIdRef.current === userId || isFetchingRef.current) return;
     isFetchingRef.current = true;
-    logger.debug('Fetching auth user data', { userId });
+    // CRIT-C1/C8: snapshot generation at start; any signOut / user-switch
+    // increments fetchGenerationRef and we discard the result silently.
+    const gen = fetchGenerationRef.current;
+    logger.debug('Fetching auth user data', { userId, gen });
 
     try {
       const [profileRes, roleRes, tenantIdRes, availableTenantsRes] = await Promise.all([
         supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
-        supabase.rpc('current_tenant_id'), // Renomeado internamente para refletir o que é
+        supabase.rpc('current_tenant_id'),
         supabase.from('user_tenants').select('tenant:tenants(id, name, slug, cnpj, razao_social, nome_fantasia, uf, regime_tributario, cor_identificacao, empresa_codigo, organization_id)').eq('user_id', userId),
       ]);
+
+      // Discard obsolete result — user changed / signed out mid-flight.
+      if (gen !== fetchGenerationRef.current) {
+        logger.debug('Discarding stale auth fetch result', { userId, gen, current: fetchGenerationRef.current });
+        return;
+      }
 
       if (profileRes.error) {
         logger.error('Error fetching profile', { error: profileRes.error, userId });
@@ -58,6 +74,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (tenantIdRes.error) {
         logger.error('Error fetching current tenant', { error: tenantIdRes.error, userId });
       }
+      if (availableTenantsRes.error) {
+        logger.error('Error fetching available tenants', { error: availableTenantsRes.error, userId });
+      }
 
       if (profileRes.data) {
         const validatedProfile = UserProfileSchema.safeParse(profileRes.data);
@@ -65,7 +84,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setProfile(validatedProfile.data);
         } else {
           logger.error('Profile validation failed', { error: validatedProfile.error, data: profileRes.data });
-          setProfile(profileRes.data as UserProfile); // Fallback but logged
+          setProfile(profileRes.data as UserProfile);
         }
       } else {
         setProfile(null);
@@ -74,10 +93,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setOrganizationId(profileRes.data?.current_organization_id || tenantIdRes.data || null);
       setTenantId(tenantIdRes.data || null);
       logger.setTenantId(tenantIdRes.data || null);
-      
+
       if (availableTenantsRes.data) {
         const tenants = availableTenantsRes.data
-          .map((ut: any) => ut.tenant)
+          .map((ut: { tenant: Tenant | null }) => ut.tenant)
           .filter(Boolean) as Tenant[];
         setAvailableTenants(tenants);
       }
@@ -136,6 +155,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }, 0);
           }
         } else {
+          // CRIT-C1/C8: invalidate any fetch in flight before clearing state
+          fetchGenerationRef.current += 1;
           setProfile(null);
           setRole(null);
           setOrganizationId(null);
@@ -144,7 +165,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setAvailableTenants([]);
           fetchedUserIdRef.current = null;
           if (event === 'SIGNED_OUT') {
-            // Fix #1/#5: ensure cache is wiped on every sign-out path
             queryClient.clear();
             setLoading(false);
           }
@@ -210,10 +230,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signOut = useCallback(async () => {
     const userId = user?.id;
     logger.info('Signing out', { userId });
+    // CRIT-C1/C8: invalidate any in-flight fetchUserData BEFORE clearing state
+    // so a late-arriving Promise cannot restore the outgoing user's profile/role.
+    fetchGenerationRef.current += 1;
     fetchedUserIdRef.current = null;
     await supabase.auth.signOut();
-    // Fix #1: wipe TanStack Query cache (memory + persisted localStorage) so the
-    // next user on this machine never sees the previous user's data.
     queryClient.clear();
     setUser(null);
     setSession(null);
