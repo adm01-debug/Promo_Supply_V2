@@ -3019,6 +3019,39 @@ export type Database = {
         }
         Relationships: []
       }
+      health_scan_runs: {
+        Row: {
+          duration_ms: number | null
+          failed_count: number
+          finished_at: string | null
+          id: string
+          ok_count: number
+          results: Json
+          started_at: string
+          total_scanners: number
+        }
+        Insert: {
+          duration_ms?: number | null
+          failed_count?: number
+          finished_at?: string | null
+          id?: string
+          ok_count?: number
+          results?: Json
+          started_at?: string
+          total_scanners?: number
+        }
+        Update: {
+          duration_ms?: number | null
+          failed_count?: number
+          finished_at?: string | null
+          id?: string
+          ok_count?: number
+          results?: Json
+          started_at?: string
+          total_scanners?: number
+        }
+        Relationships: []
+      }
       integration_outbox: {
         Row: {
           created_at: string
@@ -7659,6 +7692,7 @@ export type Database = {
       }
       cleanup_deadlock_snapshots: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
+      cleanup_health_scan_runs: { Args: never; Returns: undefined }
       cleanup_old_audit_logs: { Args: never; Returns: number }
       cleanup_old_geo_access_logs: { Args: never; Returns: number }
       cleanup_old_integration_outbox: { Args: never; Returns: number }
@@ -7825,6 +7859,7 @@ export type Database = {
         Returns: number
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
+      run_all_health_scans: { Args: never; Returns: string }
       scan_autovacuum_starvation: {
         Args: {
           crit_dead_pct?: number
