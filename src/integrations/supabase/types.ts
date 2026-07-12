@@ -7920,6 +7920,17 @@ export type Database = {
           target: string
         }[]
       }
+      scan_replication_slots: {
+        Args: never
+        Returns: {
+          is_active: boolean
+          severity: string
+          slot_name: string
+          slot_type: string
+          wal_lag_bytes: number
+          xmin_age: number
+        }[]
+      }
       scan_sequence_exhaustion: {
         Args: { _threshold_pct?: number }
         Returns: number
