@@ -102,11 +102,19 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
     );
 
-    // Simple parser for BuyerCookie and items (In production use fast-xml-parser)
-    const buyerCookieMatch = bodyText.match(/<BuyerCookie>(.*?)<\/BuyerCookie>/);
-    const buyerCookie = buyerCookieMatch ? buyerCookieMatch[1] : null;
+    // HIGH-C4: proper XML parse (previously fragile regex + hardcoded mock cart
+    // that ignored the actual PunchOut response — every solicitação was created
+    // with the same fake item regardless of what the supplier returned).
+    let parsedMessage: { buyerCookie: string | null; items: PunchOutItem[] };
+    try {
+      parsedMessage = parsePunchOutOrderMessage(bodyText);
+    } catch (parseErr) {
+      throw new Error("Invalid PunchOut XML: " + (parseErr instanceof Error ? parseErr.message : "parse error"));
+    }
+    const { buyerCookie, items: cartItems } = parsedMessage;
 
     if (!buyerCookie) throw new Error("BuyerCookie missing in response");
+    if (cartItems.length === 0) throw new Error("PunchOut cart has no items");
 
     const { data: session, error: sessionError } = await supabaseClient
       .from("punchout_sessions")
@@ -122,11 +130,7 @@ serve(async (req) => {
     const isExpired = !Number.isFinite(createdAt) || Date.now() - createdAt > 30 * 60 * 1000;
     if (isExpired) throw new Error("Session expired");
 
-    const mockCart = {
-      items: [
-        { name: "Item From PunchOut", quantity: 1, price: 100, currency: "BRL" },
-      ],
-    };
+    const cart = { items: cartItems };
 
     const { data: solicitation, error: solError } = await supabaseClient
       .from("solicitacoes")
@@ -135,7 +139,7 @@ serve(async (req) => {
         requester_id: session.user_id,
         status: "rascunho",
         observacoes: "Importado via PunchOut",
-        items: mockCart.items,
+        items: cart.items,
       })
       .select()
       .single();
@@ -146,7 +150,7 @@ serve(async (req) => {
       .from("punchout_sessions")
       .update({
         status: "completed",
-        cart_payload: mockCart,
+        cart_payload: cart,
         created_solicitacao_id: solicitation.id,
         closed_at: new Date().toISOString(),
       })
