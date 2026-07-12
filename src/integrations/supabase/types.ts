@@ -7757,6 +7757,27 @@ export type Database = {
       }
     }
     Views: {
+      mv_dashboard_kpis: {
+        Row: {
+          dia: string | null
+          fornecedores_unicos: number | null
+          pedidos_cancelados: number | null
+          pedidos_entregues: number | null
+          tenant_id: string | null
+          ticket_medio: number | null
+          total_pedidos: number | null
+          valor_total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       supplier_compliance_summary: {
         Row: {
           avaliacao: number | null
@@ -7965,6 +7986,25 @@ export type Database = {
           schedule: string
         }[]
       }
+      get_dashboard_kpis: {
+        Args: { _from?: string; _to?: string }
+        Returns: {
+          dia: string | null
+          fornecedores_unicos: number | null
+          pedidos_cancelados: number | null
+          pedidos_entregues: number | null
+          tenant_id: string | null
+          ticket_medio: number | null
+          total_pedidos: number | null
+          valor_total: number | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "mv_dashboard_kpis"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       get_effective_approver: {
         Args: {
           p_approver_id: string
@@ -8056,6 +8096,7 @@ export type Database = {
         Returns: number
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
+      refresh_mv_dashboard_kpis: { Args: never; Returns: undefined }
       resolve_alert: {
         Args: { _alert_id: string; _note?: string }
         Returns: {
