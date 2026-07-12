@@ -7957,6 +7957,21 @@ export type Database = {
         }
         Returns: undefined
       }
+      scan_toast_bloat: {
+        Args: {
+          crit_ratio?: number
+          crit_toast_mb?: number
+          min_toast_mb?: number
+          warn_ratio?: number
+        }
+        Returns: {
+          heap_mb: number
+          severity: string
+          tablename: string
+          toast_mb: number
+          toast_ratio: number
+        }[]
+      }
       scan_unused_indexes: { Args: { _min_size_mb?: number }; Returns: number }
       scan_wal_generation_rate: {
         Args: {
