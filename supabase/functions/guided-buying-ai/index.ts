@@ -40,15 +40,34 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Fetch some catalog context to help the AI
+    // CRIT-C2: resolve tenant do usuário e filtrar catálogo/fornecedores por tenant_id
+    // para não vazar dados de outros tenants no prompt da IA.
+    const { getTenantId } = await import("../_shared/security.ts");
+    const { createClient: createAuthClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    const authClient = createAuthClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: req.headers.get("authorization") ?? "" } } },
+    );
+    const tenantId = await getTenantId(authClient, user);
+    if (!tenantId) {
+      return new Response(JSON.stringify({ error: "tenant not resolved" }), {
+        status: 403,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+
+    // Fetch catalog context scoped to this tenant only
     const { data: products } = await supabaseAdmin
       .from("produtos")
       .select("nome, descricao, codigo, unidade, preco_referencia")
+      .eq("tenant_id", tenantId)
       .limit(20);
 
     const { data: suppliers } = await supabaseAdmin
       .from("fornecedores")
       .select("razao_social, nome_fantasia, categorias_atendidas")
+      .eq("tenant_id", tenantId)
       .limit(10);
 
     // System prompt for Guided Buying

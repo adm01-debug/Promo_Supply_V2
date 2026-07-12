@@ -69,11 +69,12 @@ serve(async (req) => {
     }
 
     const startTime = Date.now();
-    let status = "success";
-    let errorMsg = null;
-
-    // Simulação de delay de integração
-    await new Promise(resolve => setTimeout(resolve, 800));
+    // HIGH-C5: no real ERP integration is wired yet; do NOT report a fake
+    // "success" after a setTimeout — that masked failed syncs in production
+    // dashboards. Record status=pending and return 501 so callers know the
+    // integration is a stub and must be implemented per connection.type.
+    const status = "pending";
+    const errorMsg = `ERP integration not implemented for connection type '${(connection as { type?: string })?.type ?? 'unknown'}'`;
 
     const { error: logError } = await supabaseClient.from("erp_sync_log").insert({
       tenant_id: tenantId,
@@ -89,10 +90,11 @@ serve(async (req) => {
       logger.error("Erro ao gravar log de sincronização", { logError });
     }
 
-    logger.info("Sincronização ERP concluída com sucesso", { duration: Date.now() - startTime });
+    logger.warn("ERP sync skipped — integration stub", { entity, duration: Date.now() - startTime });
 
     const responsePayload = {
-      message: `Sync ${entity} completed successfully`,
+      message: errorMsg,
+      status,
       requestId,
       timestamp: new Date().toISOString(),
     };
@@ -100,7 +102,7 @@ serve(async (req) => {
 
     return new Response(
       JSON.stringify(responsePayload),
-      { headers: { ...corsHeaders, "Content-Type": "application/json", "x-request-id": requestId } }
+      { status: 501, headers: { ...corsHeaders, "Content-Type": "application/json", "x-request-id": requestId } }
     );
   } catch (error) {
     return errorResponse(error, logger);

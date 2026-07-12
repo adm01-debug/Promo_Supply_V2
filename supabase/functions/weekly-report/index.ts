@@ -7,13 +7,17 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  // MED-C10: declare logger BEFORE the try so the catch can use it without
+  // hitting a TDZ ReferenceError that would mask the real failure.
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  let logger: EdgeLogger | undefined;
+
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('weekly-report', requestId);
+    logger = new EdgeLogger('weekly-report', requestId);
 
     logger.info("Generating weekly procurement report...");
 
