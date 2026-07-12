@@ -1,6 +1,6 @@
-# Melhorias Pendentes — Auditoria Consolidada (v3.6)
+# Melhorias Pendentes — Auditoria Consolidada (v3.7)
 
-**Última atualização:** 2026-07-12 (Onda 15 — scanner de deadlocks e conflitos de replicação concluída)
+**Última atualização:** 2026-07-12 (Onda 16 — scanner de autovacuum starvation concluída)
 
 ## Status Atual: 10/10 🏆
 

@@ -7807,6 +7807,23 @@ export type Database = {
         Returns: number
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
+      scan_autovacuum_starvation: {
+        Args: {
+          crit_dead_pct?: number
+          min_rows?: number
+          stale_hours?: number
+          warn_dead_pct?: number
+        }
+        Returns: {
+          dead_pct: number
+          last_vacuum_hours: number
+          n_dead_tup: number
+          n_live_tup: number
+          schemaname: string
+          severity: string
+          tablename: string
+        }[]
+      }
       scan_cache_hit_ratio: {
         Args: { min_ratio?: number; min_reads?: number }
         Returns: {
