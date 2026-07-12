@@ -7993,7 +7993,18 @@ export type Database = {
           toast_ratio: number
         }[]
       }
-      scan_unused_indexes: { Args: { _min_size_mb?: number }; Returns: number }
+      scan_unused_indexes:
+        | {
+            Args: never
+            Returns: {
+              idx_scan: number
+              index_name: string
+              index_size: string
+              severity: string
+              table_name: string
+            }[]
+          }
+        | { Args: { _min_size_mb?: number }; Returns: number }
       scan_wal_generation_rate: {
         Args: {
           crit_mb_per_min?: number

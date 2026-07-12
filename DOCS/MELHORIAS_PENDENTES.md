@@ -1,6 +1,13 @@
-# Melhorias Pendentes — Auditoria Consolidada (v4.1)
+# Melhorias Pendentes — Auditoria Consolidada (v4.2)
 
-**Última atualização:** 2026-07-12 (Onda 20 — scanner de índices inválidos/duplicados concluída)
+**Última atualização:** 2026-07-12 (Onda 21 — scanner de índices não utilizados concluída)
+
+### Onda 21 — Unused Indexes
+- `scan_unused_indexes()` cobre `pg_stat_user_indexes` do schema `public`, preservando PK/UNIQUE e ignorando índices <10MB.
+- Guard-rail: aborta com `NOTICE` se `pg_stat_database.stats_reset` < 7 dias (evita falsos positivos após restart).
+- HIGH quando `idx_scan=0` e tamanho >100MB; MEDIUM caso contrário (`idx_scan<10`).
+- Alertas em `system_alerts` incluem `stats_reset_at`, `fix_sql` (`DROP INDEX CONCURRENTLY`) e `safety_note` sobre jobs mensais/anuais.
+- Cron semanal segundas 05:15 UTC (`scan-unused-indexes-weekly`). `EXECUTE` restrito a `service_role`.
 
 ### Onda 20 — Invalid & Duplicate Indexes
 - `scan_invalid_and_duplicate_indexes()` cobre `pg_index` do schema `public`.
