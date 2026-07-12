@@ -183,6 +183,16 @@ export default function AlertSubscriptionsPanel() {
           </Button>
         </div>
 
+        {channel === "slack" && (
+          <Input
+            placeholder="Slack Incoming Webhook URL (https://hooks.slack.com/services/...)"
+            value={slackUrl}
+            onChange={(e) => setSlackUrl(e.target.value)}
+            aria-label="Slack webhook URL"
+            className="font-mono text-xs"
+          />
+        )}
+
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Carregando…</p>
         ) : subs.length === 0 ? (
