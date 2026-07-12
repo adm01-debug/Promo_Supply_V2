@@ -6601,6 +6601,33 @@ export type Database = {
         }
         Relationships: []
       }
+      temp_file_snapshots: {
+        Row: {
+          captured_at: string
+          datname: string
+          id: number
+          stats_reset: string | null
+          temp_bytes: number
+          temp_files: number
+        }
+        Insert: {
+          captured_at?: string
+          datname: string
+          id?: number
+          stats_reset?: string | null
+          temp_bytes: number
+          temp_files: number
+        }
+        Update: {
+          captured_at?: string
+          datname?: string
+          id?: number
+          stats_reset?: string | null
+          temp_bytes?: number
+          temp_files?: number
+        }
+        Relationships: []
+      }
       tenants: {
         Row: {
           cnpj: string | null
@@ -7859,6 +7886,15 @@ export type Database = {
           severity: string
           table_name: string
         }[]
+      }
+      scan_temp_file_usage: {
+        Args: {
+          crit_files_per_min?: number
+          crit_mb_per_min?: number
+          warn_files_per_min?: number
+          warn_mb_per_min?: number
+        }
+        Returns: undefined
       }
       scan_unused_indexes: { Args: { _min_size_mb?: number }; Returns: number }
       scan_wal_generation_rate: {
