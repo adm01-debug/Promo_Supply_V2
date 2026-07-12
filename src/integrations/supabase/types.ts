@@ -7900,6 +7900,18 @@ export type Database = {
           table_name: string
         }[]
       }
+      scan_lock_waits: {
+        Args: never
+        Returns: {
+          blocked_pid: number
+          blocked_query: string
+          blocker_pid: number
+          blocker_query: string
+          lock_type: string
+          severity: string
+          wait_seconds: number
+        }[]
+      }
       scan_long_running_transactions:
         | {
             Args: never
