@@ -7970,6 +7970,14 @@ export type Database = {
           xmin_age: number
         }[]
       }
+      scan_schema_hygiene: {
+        Args: never
+        Returns: {
+          issue: string
+          severity: string
+          table_name: string
+        }[]
+      }
       scan_sequence_exhaustion:
         | {
             Args: never
