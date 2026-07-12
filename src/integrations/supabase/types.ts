@@ -3411,33 +3411,51 @@ export type Database = {
       }
       health_scan_runs: {
         Row: {
+          details: Json | null
           duration_ms: number | null
           failed_count: number
+          findings: number | null
+          findings_count: number | null
           finished_at: string | null
           id: string
           ok_count: number
           results: Json
+          scan_name: string | null
+          scanner_name: string | null
           started_at: string
+          status: string | null
           total_scanners: number
         }
         Insert: {
+          details?: Json | null
           duration_ms?: number | null
           failed_count?: number
+          findings?: number | null
+          findings_count?: number | null
           finished_at?: string | null
           id?: string
           ok_count?: number
           results?: Json
+          scan_name?: string | null
+          scanner_name?: string | null
           started_at?: string
+          status?: string | null
           total_scanners?: number
         }
         Update: {
+          details?: Json | null
           duration_ms?: number | null
           failed_count?: number
+          findings?: number | null
+          findings_count?: number | null
           finished_at?: string | null
           id?: string
           ok_count?: number
           results?: Json
+          scan_name?: string | null
+          scanner_name?: string | null
           started_at?: string
+          status?: string | null
           total_scanners?: number
         }
         Relationships: []
@@ -8401,6 +8419,17 @@ export type Database = {
     }
     Functions: {
       _invoke_edge_function: { Args: { _name: string }; Returns: number }
+      admin_scan_runs_sla_status: {
+        Args: never
+        Returns: {
+          age_minutes: number
+          health: string
+          last_run_at: string
+          last_status: string
+          scan_name: string
+          sla_minutes: number
+        }[]
+      }
       alert_subscribers_for: {
         Args: { _alert_type: string; _severity: string }
         Returns: {

@@ -20,6 +20,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import AlertSubscriptionsPanel from "./AlertSubscriptionsPanel";
+import ScanRunsSlaCard from "./ScanRunsSlaCard";
 
 
 
@@ -546,6 +547,10 @@ export default function HealthDashboard() {
             )}
           </CardContent>
         </Card>
+
+        <ScanRunsSlaCard />
+
+
 
         {/* Alertas abertos individuais + filtros + export */}
         <Card>
