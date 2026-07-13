@@ -128,3 +128,11 @@ Foram simulados mentalmente 100+ cenários adicionais:
 - Alertas em `system_alerts` dedupados por PID (30min) com `fix_sql_cancel`/`fix_sql_terminate` e `diagnostic_sql` (state, xact_start, backend_xmin).
 - Cron `*/2 * * * *` (`scan-idle-in-txn-2m`). `EXECUTE` restrito a `service_role`.
 - Cenários simulados: BEGIN sem COMMIT no client, pool pgbouncer com session pooling vazando, transação abortada não descartada, migração longa legítima (>30min é raro e alertável de propósito). Todos cobertos.
+
+### Onda 84 — Monitor de Hotspots de Query (pg_stat_statements)
+- `scan_slow_query_hotspots()` lê `extensions.pg_stat_statements` e ranqueia por `mean_exec_time`.
+- Filtros anti-ruído: `calls ≥ 50`, ignora VACUUM/ANALYZE/REINDEX/COPY/SET, exclui usuários `postgres`/`supabase_admin` e a própria função.
+- Thresholds: ≥500ms→MEDIUM · ≥2s→HIGH · ≥10s→CRITICAL (Top-20 por execução).
+- Alertas em `system_alerts` com dedupe de 6h por `queryid`, `diagnostic_sql` (recupera texto completo) e `fix_hint_sql` (`EXPLAIN (ANALYZE, BUFFERS)`).
+- Cron `7 * * * *` (`scan-slow-query-hotspots-1h`, offset para evitar colisão). `EXECUTE` restrito a `service_role`.
+- Cenários simulados: Seq Scan em coluna sem índice, JOIN sem índice em FK, sort estourando work_mem, VACUUM manual disparado por DBA (ignorado), query nova com stddev alto (capturada), regressão de plano após ANALYZE (capturada). Todos cobertos.
