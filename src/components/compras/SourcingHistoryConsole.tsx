@@ -49,7 +49,7 @@ const PriceTrendChart = ({ data }: { data: { date: string, price: number }[] }) 
 export const SourcingHistoryConsole = () => {
   const { purchaseRecords, suppliersHistory, isLoading } = usePurchaseHistory();
   const [searchTerm, setSearchTerm] = useState("");
-  const [viewMode, setViewMode] = useState<"client" | "supplier">("client");
+  const [viewMode, setViewMode] = useState<"client" | "supplier" | "intelligence" | "neural">("client");
   const [lastActions, setLastActions] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
