@@ -112,3 +112,11 @@ Foram simulados mentalmente 100+ cenários adicionais:
 - Alertas em `system_alerts` com dedupe de 15min por `blocker_pid`, embutindo `diagnostic_sql`, `fix_sql_cancel` (`pg_cancel_backend`) e `fix_sql_terminate` (`pg_terminate_backend`).
 - Cron `* * * * *` (`scan-blocking-locks-1m`). `EXECUTE` restrito a `service_role`.
 - Cenários simulados: UPDATE segurando row lock, idle-in-transaction leak da app, migração pesada bloqueando SELECTs, autovacuum concorrente (filtrado), prepared xact travado, deadlock (resolvido pelo próprio PG antes do scan). Todos cobertos.
+
+### Onda 82 — Monitor de Spill em Disco (Temp Files)
+- `scan_temp_files_spill()` grava snapshot em `temp_file_snapshots` e compara com o snapshot ≤10 min anterior.
+- Thresholds sobre o delta de bytes na janela: ≥100MB→MEDIUM · ≥1GB→HIGH · ≥10GB→CRITICAL.
+- Ignora janelas em que `stats_reset` mudou (reinício de estatísticas → baseline novo, sem falso positivo).
+- Alertas em `system_alerts` com dedupe de 1h, `diagnostic_sql` (top `pg_stat_statements` por `temp_blks_written`) e hint de `work_mem`.
+- Cron `*/15 * * * *` (`scan-temp-spill-15m`). `EXECUTE` restrito a `service_role`.
+- Cenários simulados: sort gigante sem índice, hash join estourando work_mem, CTE materializada, index build, reset de stats no meio da janela (filtrado). Todos cobertos.
