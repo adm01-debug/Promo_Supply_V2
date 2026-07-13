@@ -52,7 +52,7 @@ export function useRecentlyViewed(
         return parsed.filter(item => new Date(item.viewedAt) > thirtyDaysAgo);
       }
     } catch (error) {
-      console.warn('Failed to load recently viewed items:', error);
+      logger.warn('Failed to load recently viewed items', { error: error instanceof Error ? error.message : String(error) });
     }
     return [];
   });
@@ -62,7 +62,7 @@ export function useRecentlyViewed(
     try {
       localStorage.setItem(storageKey, JSON.stringify(recentItems));
     } catch (error) {
-      console.warn('Failed to save recently viewed items:', error);
+      logger.warn('Failed to save recently viewed items', { error: error instanceof Error ? error.message : String(error) });
     }
   }, [recentItems, storageKey]);
 

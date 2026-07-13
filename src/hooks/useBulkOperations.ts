@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { logger } from '@/lib/logger';
 import { BulkAction, BulkItem } from '@/components/compras/BulkOperationsPreview';
 
 interface UseBulkOperationsOptions {
@@ -47,7 +48,7 @@ export function useBulkOperations(options: UseBulkOperationsOptions) {
 
       return false;
     } catch (error) {
-      console.error('Error executing bulk action:', error);
+      logger.error('Error executing bulk action', { error: error instanceof Error ? error.message : String(error) });
       return false;
     }
   }, [onDelete, onUpdateStatus, onCustomAction]);

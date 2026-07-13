@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
+import { logger } from '@/lib/logger';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -114,7 +115,7 @@ export function useFeedback() {
         oscillator.stop(endTime + 0.1);
       });
     } catch (error) {
-      console.warn('Sound feedback failed:', error);
+      logger.warn('Sound feedback failed', { error: error instanceof Error ? error.message : String(error) });
     }
   }, [soundEnabled, volume, getAudioContext]);
 
