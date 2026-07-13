@@ -81,16 +81,17 @@ export const SupplierBonificationsPanel = () => {
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from('supplier_bonifications').insert({
+      if (!user?.id) throw new Error('Usuário não autenticado');
+      const { error } = await supabase.from('supplier_bonifications').insert([{
         fornecedor_id: form.fornecedor_id,
         bonification_type: form.bonification_type,
         value_percent: parseFloat(form.value_percent) || 0,
         reason: form.reason || null,
         period_start: form.period_start,
         period_end: form.period_end || null,
-        granted_by: user?.id,
+        granted_by: user.id,
         is_active: true,
-      });
+      }]);
       if (error) throw error;
     },
     onSuccess: () => {
