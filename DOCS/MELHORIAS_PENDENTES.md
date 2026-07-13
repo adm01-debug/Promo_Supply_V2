@@ -105,3 +105,10 @@ Foram simulados mentalmente 100+ cenários adicionais:
 - `fix_sql` gerado automaticamente (`CREATE INDEX CONCURRENTLY`). Dedupe de 24h por tabela+constraint.
 - Cron `30 5 * * 1` (segundas 05:30 UTC). `EXECUTE` restrito a `service_role`.
 - Baseline pós-fix: **0 FKs sem índice**.
+
+### Onda 81 — Monitor de Locks Bloqueantes
+- `scan_blocking_locks()` inspeciona `pg_stat_activity` + `pg_blocking_pids()` para detectar sessões que travam outras.
+- Thresholds por tempo de espera: ≥30s→MEDIUM · ≥2min→HIGH · ≥5min→CRITICAL. Ignora `autovacuum worker` e o próprio backend.
+- Alertas em `system_alerts` com dedupe de 15min por `blocker_pid`, embutindo `diagnostic_sql`, `fix_sql_cancel` (`pg_cancel_backend`) e `fix_sql_terminate` (`pg_terminate_backend`).
+- Cron `* * * * *` (`scan-blocking-locks-1m`). `EXECUTE` restrito a `service_role`.
+- Cenários simulados: UPDATE segurando row lock, idle-in-transaction leak da app, migração pesada bloqueando SELECTs, autovacuum concorrente (filtrado), prepared xact travado, deadlock (resolvido pelo próprio PG antes do scan). Todos cobertos.
