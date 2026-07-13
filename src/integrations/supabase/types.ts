@@ -8962,6 +8962,15 @@ export type Database = {
           severity: string
         }[]
       }
+      scan_slow_query_hotspots: {
+        Args: never
+        Returns: {
+          calls: number
+          mean_ms: number
+          queryid: number
+          severity: string
+        }[]
+      }
       scan_stale_alerts: {
         Args: never
         Returns: {
