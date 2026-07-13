@@ -21,13 +21,37 @@ import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
+type KraljicQuadrant = 'strategic' | 'leverage' | 'bottleneck' | 'routine';
+type RiskLevel = 'low' | 'medium' | 'high' | 'critical';
+
 interface CategoryItem {
   id: string;
   name: string;
-  quadrant: 'strategic' | 'leverage' | 'bottleneck' | 'routine';
+  quadrant: KraljicQuadrant;
   spend: number;
-  risk: 'low' | 'medium' | 'high' | 'critical';
+  risk: RiskLevel;
 }
+
+interface CategoryStrategyRow {
+  id: string;
+  kraljic_quadrant: string | null;
+  spend_impact: number | string | null;
+  risk_level: string | null;
+  categorias: { nome: string | null } | { nome: string | null }[] | null;
+}
+
+const KRALJIC_QUADRANTS: readonly KraljicQuadrant[] = ['strategic', 'leverage', 'bottleneck', 'routine'] as const;
+const RISK_LEVELS: readonly RiskLevel[] = ['low', 'medium', 'high', 'critical'] as const;
+
+const asQuadrant = (v: string | null): KraljicQuadrant =>
+  (KRALJIC_QUADRANTS as readonly string[]).includes(v ?? '') ? (v as KraljicQuadrant) : 'routine';
+const asRisk = (v: string | null): RiskLevel =>
+  (RISK_LEVELS as readonly string[]).includes(v ?? '') ? (v as RiskLevel) : 'low';
+const pickCategoriaNome = (c: CategoryStrategyRow['categorias']): string => {
+  if (!c) return 'Sem Categoria';
+  const first = Array.isArray(c) ? c[0] : c;
+  return first?.nome ?? 'Sem Categoria';
+};
 
 const quadrants = {
   leverage: {
