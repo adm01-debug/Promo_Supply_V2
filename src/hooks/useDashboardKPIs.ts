@@ -42,12 +42,22 @@ export interface DashboardKPIsExtended {
     sla: KPIComparison;
   };
   pipeline: PipelineData;
-  urgentItems: { id: string; status: string; data_necessidade: string | null; [key: string]: any }[];
+  urgentItems: { id: string; status: string; data_necessidade: string | null; [key: string]: unknown }[];
   charts: {
     monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
     cotacaoStatus: { name: string; value: number; color: string }[];
     topCategories: { name: string; value: number; percentage: number }[];
   };
+}
+
+interface RpcKpi { current: number; previous: number }
+interface RpcDashboardMetrics {
+  kpis: { aguardando: RpcKpi; volume: RpcKpi; economia: RpcKpi };
+  pipeline: PipelineData;
+  urgentItems: DashboardKPIsExtended['urgentItems'];
+  trends: DashboardKPIsExtended['charts']['monthlyTrends'];
+  cotacaoStatus: DashboardKPIsExtended['charts']['cotacaoStatus'];
+  topCategories: DashboardKPIsExtended['charts']['topCategories'];
 }
 
 export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
