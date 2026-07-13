@@ -86,7 +86,7 @@ export const SupplierBonificationsPanel = () => {
         fornecedor_id: form.fornecedor_id,
         bonification_type: form.bonification_type,
         value_percent: parseFloat(form.value_percent) || 0,
-        reason: form.reason || null,
+        reason: form.reason || '',
         period_start: form.period_start,
         period_end: form.period_end || null,
         granted_by: user.id,
