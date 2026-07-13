@@ -9086,16 +9086,7 @@ export type Database = {
           severity: string
         }[]
       }
-      scan_unused_indexes: {
-        Args: never
-        Returns: {
-          idx_scan: number
-          index_name: string
-          index_size: string
-          severity: string
-          table_name: string
-        }[]
-      }
+      scan_unused_indexes: { Args: never; Returns: Json }
       scan_wal_generation_rate: {
         Args: {
           crit_mb_per_min?: number
