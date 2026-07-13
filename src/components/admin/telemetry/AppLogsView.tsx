@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -8,17 +9,24 @@ import { format } from "date-fns/format";
 import { AlertCircle, Info, AlertTriangle, Terminal, ChevronDown, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+type TelemetryLogRow = Database["public"]["Tables"]["telemetry_logs"]["Row"];
+type LogLevel = "info" | "warn" | "error" | "debug";
+
 export interface AppLog {
   id: string;
   created_at: string;
-  level: 'info' | 'warn' | 'error' | 'debug';
+  level: LogLevel;
   message: string;
-  context: any;
-  request_id: string;
-  user_id: string;
-  url: string;
-  user_agent: string;
+  context: Record<string, unknown> | null;
+  request_id: string | null;
+  user_id: string | null;
+  url: string | null;
+  user_agent: string | null;
 }
+
+const toLogLevel = (v: unknown): LogLevel => {
+  return v === "warn" || v === "error" || v === "debug" ? v : "info";
+};
 
 export function AppLogsView() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -27,16 +35,28 @@ export function AppLogsView() {
     queryKey: ["app-logs"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("telemetry_logs" as any)
+        .from("telemetry_logs")
         .select("*")
         .order("created_at", { ascending: false })
         .limit(100);
-      
+
       if (error) throw error;
-      return (data as unknown) as AppLog[];
+      const rows = (data ?? []) as TelemetryLogRow[];
+      return rows.map((r): AppLog => ({
+        id: String(r.id),
+        created_at: r.created_at ?? new Date().toISOString(),
+        level: toLogLevel((r as { level?: unknown }).level),
+        message: (r as { message?: string }).message ?? "",
+        context: ((r as { context?: unknown }).context ?? null) as Record<string, unknown> | null,
+        request_id: (r as { request_id?: string | null }).request_id ?? null,
+        user_id: (r as { user_id?: string | null }).user_id ?? null,
+        url: (r as { url?: string | null }).url ?? null,
+        user_agent: (r as { user_agent?: string | null }).user_agent ?? null,
+      }));
     },
     refetchInterval: 10000,
   });
+
 
   const getLevelBadge = (level: string) => {
     switch (level) {
