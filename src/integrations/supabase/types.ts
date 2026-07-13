@@ -8785,6 +8785,15 @@ export type Database = {
           tablename: string
         }[]
       }
+      scan_blocking_locks: {
+        Args: never
+        Returns: {
+          blocked_count: number
+          blocker_pid: number
+          severity: string
+          wait_seconds: number
+        }[]
+      }
       scan_cache_hit_ratio:
         | { Args: never; Returns: Json }
         | {
