@@ -17,10 +17,10 @@ interface EliteButtonProps extends HTMLMotionProps<"button"> {
  * High-performance, tactile button with micro-interactions.
  */
 export const EliteButton = React.forwardRef<HTMLButtonElement, EliteButtonProps>(
-  ({ className, variant, size, children, loading, ...props }, ref) => {
+  ({ className, variant, size, children, loading, onClick, ...props }, ref) => {
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       haptics.light();
-      if (props.onClick) props.onClick(e);
+      onClick?.(e as unknown as Parameters<NonNullable<HTMLMotionProps<"button">["onClick"]>>[0]);
     };
 
     return (
@@ -30,7 +30,7 @@ export const EliteButton = React.forwardRef<HTMLButtonElement, EliteButtonProps>
         whileTap={{ scale: 0.97 }}
         onClick={handleClick}
         className={cn("relative overflow-hidden", className)}
-        {...(props as any)}
+        {...props}
       >
         <ShadcnButton
           variant={variant}

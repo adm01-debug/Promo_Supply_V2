@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { logger } from '@/lib/logger';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { toast } from '@/lib/feedbackToast';
@@ -57,7 +58,7 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
       setNotes((data as ContactNote[]) || []);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error fetching contact notes:', err);
+      logger.error('Error fetching contact notes:', { error: err });
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -90,7 +91,7 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
       return data as ContactNote;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error creating note:', err);
+      logger.error('Error creating note:', { error: err });
       toast.error('Erro ao adicionar nota: ' + errorMessage);
       return null;
     }
@@ -111,7 +112,7 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
       return true;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error updating note:', err);
+      logger.error('Error updating note:', { error: err });
       toast.error('Erro ao atualizar nota: ' + errorMessage);
       return false;
     }
@@ -132,7 +133,7 @@ export function useContactNotes(contactId?: string, fornecedorId?: string) {
       return true;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
-      console.error('Error deleting note:', err);
+      logger.error('Error deleting note:', { error: err });
       toast.error('Erro ao excluir nota: ' + errorMessage);
       return false;
     }
