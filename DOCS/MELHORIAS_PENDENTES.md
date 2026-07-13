@@ -91,3 +91,9 @@ Foram simulados mentalmente 100+ cenários adicionais:
 - Dedupe de 1h por alerta aberto, `diagnostic_sql` + `hint` embutidos no metadata.
 - Cron `*/15 * * * *` (`scan-rollback-rate-15m`). `EXECUTE` restrito a `service_role`.
 - Baseline atual: **0.26%** (saudável). Alerta dispararia caso edge functions passem a gerar deadlocks/violações de constraint em massa.
+
+### Onda 79 — Trio de Monitores Runtime
+- `scan_connection_saturation()` (cron 5min): 70/85/95% do `max_connections` → MEDIUM/HIGH/CRITICAL. Baseline: 8/60 (13%).
+- `scan_cache_hit_ratio()` (cron 30min): abaixo de 99/95/90% → MEDIUM/HIGH/CRITICAL. Ignora amostras <100k. Baseline: 100%.
+- `scan_long_running_queries()` (cron 2min): 5/15/30min → MEDIUM/HIGH/CRITICAL. Dedupe por `pid`+30min, ignora autovacuum e self.
+- Todos com `diagnostic_sql`, `hint` e (quando aplicável) `fix_sql` embutidos. `EXECUTE` restrito a `service_role`.
