@@ -108,12 +108,12 @@ export const KraljicMatrix = () => {
       ];
     }
 
-    return realCategories.map(c => ({
+    return (realCategories as unknown as CategoryStrategyRow[]).map((c) => ({
       id: c.id,
-      name: (c as any).categorias?.nome || 'Sem Categoria',
-      quadrant: c.kraljic_quadrant as any,
-      spend: Number(c.spend_impact || 0),
-      risk: c.risk_level as any
+      name: pickCategoriaNome(c.categorias),
+      quadrant: asQuadrant(c.kraljic_quadrant),
+      spend: Number(c.spend_impact ?? 0),
+      risk: asRisk(c.risk_level),
     }));
   }, [realCategories]);
 
