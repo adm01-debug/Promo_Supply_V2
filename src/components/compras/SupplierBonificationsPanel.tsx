@@ -169,7 +169,8 @@ export const SupplierBonificationsPanel = () => {
                         </Badge>
                       </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
