@@ -8864,6 +8864,15 @@ export type Database = {
         }[]
       }
       scan_fk_without_cascade: { Args: never; Returns: number }
+      scan_idle_in_transaction: {
+        Args: never
+        Returns: {
+          aborted: boolean
+          idle_seconds: number
+          pid: number
+          severity: string
+        }[]
+      }
       scan_invalid_and_duplicate_indexes: {
         Args: never
         Returns: {
