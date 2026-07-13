@@ -24,6 +24,21 @@ const TYPE_LABELS: Record<string, string> = {
   bonus_items: 'Itens Bônus',
 };
 
+type FornecedorRef = { razao_social?: string | null; nome_fantasia?: string | null };
+interface BonificationRow {
+  id: string;
+  fornecedor_id: string;
+  bonification_type: string;
+  value_percent: number | string | null;
+  reason: string | null;
+  period_start: string | null;
+  period_end: string | null;
+  is_active: boolean | null;
+  fornecedor: FornecedorRef | FornecedorRef[] | null;
+}
+const pickFornecedor = (f: BonificationRow['fornecedor']): FornecedorRef | null =>
+  Array.isArray(f) ? f[0] ?? null : f;
+
 export const SupplierBonificationsPanel = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -46,7 +61,7 @@ export const SupplierBonificationsPanel = () => {
         .order('created_at', { ascending: false })
         .limit(100);
       if (error) throw error;
-      return data as any[];
+      return (data ?? []) as unknown as BonificationRow[];
     },
     enabled: !!user,
   });
@@ -66,16 +81,17 @@ export const SupplierBonificationsPanel = () => {
 
   const createMutation = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from('supplier_bonifications').insert({
+      if (!user?.id) throw new Error('Usuário não autenticado');
+      const { error } = await supabase.from('supplier_bonifications').insert([{
         fornecedor_id: form.fornecedor_id,
         bonification_type: form.bonification_type,
         value_percent: parseFloat(form.value_percent) || 0,
-        reason: form.reason || null,
+        reason: form.reason || '',
         period_start: form.period_start,
         period_end: form.period_end || null,
-        granted_by: user?.id,
+        granted_by: user.id,
         is_active: true,
-      } as any);
+      }]);
       if (error) throw error;
     },
     onSuccess: () => {
@@ -87,7 +103,7 @@ export const SupplierBonificationsPanel = () => {
     onError: () => toast.error('Erro ao registrar bonificação'),
   });
 
-  const activeCount = bonifications.filter((b: any) => b.is_active).length;
+  const activeCount = bonifications.filter((b) => b.is_active).length;
 
   if (isLoading) {
     return <Card><CardContent className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin" /></CardContent></Card>;
@@ -130,10 +146,12 @@ export const SupplierBonificationsPanel = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {bonifications.map((b: any) => (
+                  {bonifications.map((b) => {
+                    const forn = pickFornecedor(b.fornecedor);
+                    return (
                     <TableRow key={b.id}>
                       <TableCell className="font-medium">
-                        {b.fornecedor?.nome_fantasia || b.fornecedor?.razao_social || '—'}
+                        {forn?.nome_fantasia || forn?.razao_social || '—'}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">{TYPE_LABELS[b.bonification_type] || b.bonification_type}</Badge>
@@ -152,7 +170,8 @@ export const SupplierBonificationsPanel = () => {
                         </Badge>
                       </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
