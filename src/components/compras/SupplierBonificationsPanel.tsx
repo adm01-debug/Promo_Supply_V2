@@ -145,10 +145,12 @@ export const SupplierBonificationsPanel = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {bonifications.map((b) => (
+                  {bonifications.map((b) => {
+                    const forn = pickFornecedor(b.fornecedor);
+                    return (
                     <TableRow key={b.id}>
                       <TableCell className="font-medium">
-                        {b.fornecedor?.nome_fantasia || b.fornecedor?.razao_social || '—'}
+                        {forn?.nome_fantasia || forn?.razao_social || '—'}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline">{TYPE_LABELS[b.bonification_type] || b.bonification_type}</Badge>
