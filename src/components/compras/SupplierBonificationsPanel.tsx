@@ -24,6 +24,21 @@ const TYPE_LABELS: Record<string, string> = {
   bonus_items: 'Itens Bônus',
 };
 
+type FornecedorRef = { razao_social?: string | null; nome_fantasia?: string | null };
+interface BonificationRow {
+  id: string;
+  fornecedor_id: string;
+  bonification_type: string;
+  value_percent: number | string | null;
+  reason: string | null;
+  period_start: string | null;
+  period_end: string | null;
+  is_active: boolean | null;
+  fornecedor: FornecedorRef | FornecedorRef[] | null;
+}
+const pickFornecedor = (f: BonificationRow['fornecedor']): FornecedorRef | null =>
+  Array.isArray(f) ? f[0] ?? null : f;
+
 export const SupplierBonificationsPanel = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
