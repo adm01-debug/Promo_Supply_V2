@@ -84,7 +84,7 @@ export function useDashboardKPIs(filters?: { category?: string; supplier?: strin
         throw error;
       }
 
-      const rpcData = data as any;
+      const rpcData = data as unknown as RpcDashboardMetrics;
       
       const calculateTrend = (current: number, previous: number) => {
         if (previous === 0) return 0;
