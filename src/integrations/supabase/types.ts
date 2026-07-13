@@ -8785,16 +8785,18 @@ export type Database = {
           tablename: string
         }[]
       }
-      scan_cache_hit_ratio: {
-        Args: { min_ratio?: number; min_reads?: number }
-        Returns: {
-          alert_id: string
-          heap_ratio: number
-          idx_ratio: number
-          severity: string
-          table_name: string
-        }[]
-      }
+      scan_cache_hit_ratio:
+        | { Args: never; Returns: Json }
+        | {
+            Args: { min_ratio?: number; min_reads?: number }
+            Returns: {
+              alert_id: string
+              heap_ratio: number
+              idx_ratio: number
+              severity: string
+              table_name: string
+            }[]
+          }
       scan_checkpoint_health: {
         Args: {
           crit_ckpt_per_min?: number
@@ -8811,17 +8813,19 @@ export type Database = {
           severity: string
         }[]
       }
-      scan_connection_saturation: {
-        Args: { crit_pct?: number; warn_pct?: number }
-        Returns: {
-          by_state: Json
-          max_connections: number
-          severity: string
-          top_apps: Json
-          total_connections: number
-          usage_pct: number
-        }[]
-      }
+      scan_connection_saturation:
+        | { Args: never; Returns: Json }
+        | {
+            Args: { crit_pct?: number; warn_pct?: number }
+            Returns: {
+              by_state: Json
+              max_connections: number
+              severity: string
+              top_apps: Json
+              total_connections: number
+              usage_pct: number
+            }[]
+          }
       scan_dangerous_statements: { Args: never; Returns: number }
       scan_deadlocks_and_conflicts: {
         Args: {
@@ -8873,6 +8877,7 @@ export type Database = {
           wait_seconds: number
         }[]
       }
+      scan_long_running_queries: { Args: never; Returns: Json }
       scan_long_running_transactions: {
         Args: never
         Returns: {
