@@ -8885,20 +8885,7 @@ export type Database = {
           value: number
         }[]
       }
-      scan_duplicate_indexes: {
-        Args: never
-        Returns: {
-          columns_a: string
-          columns_b: string
-          index_a: string
-          index_b: string
-          redundancy_type: string
-          schema_name: string
-          size_a: string
-          size_b: string
-          table_name: string
-        }[]
-      }
+      scan_duplicate_indexes: { Args: never; Returns: Json }
       scan_fk_without_cascade: { Args: never; Returns: number }
       scan_idle_in_transaction: {
         Args: never
