@@ -48,7 +48,7 @@ export const useAccountLockout = () => {
       });
 
       if (error) {
-        console.error('Error checking lockout:', error);
+        logger.error('Error checking lockout:', { error: error });
         return { locked: false, remainingSeconds: 0 };
       }
 
@@ -66,7 +66,7 @@ export const useAccountLockout = () => {
 
       return status;
     } catch (error) {
-      console.error('Error checking lockout:', error);
+      logger.error('Error checking lockout:', { error: error });
       return { locked: false, remainingSeconds: 0 };
     }
   }, []);
@@ -78,7 +78,7 @@ export const useAccountLockout = () => {
       });
 
       if (error) {
-        console.error('Error recording failed attempt:', error);
+        logger.error('Error recording failed attempt:', { error: error });
         return { locked: false };
       }
 
@@ -110,7 +110,7 @@ export const useAccountLockout = () => {
         remainingAttempts: result.remaining_attempts,
       };
     } catch (error) {
-      console.error('Error recording failed attempt:', error);
+      logger.error('Error recording failed attempt:', { error: error });
       return { locked: false };
     }
   }, []);
@@ -121,7 +121,7 @@ export const useAccountLockout = () => {
       setLockoutStatus({ locked: false, remainingSeconds: 0 });
       setCountdown(0);
     } catch (error) {
-      console.error('Error clearing lockout:', error);
+      logger.error('Error clearing lockout:', { error: error });
     }
   }, []);
 
