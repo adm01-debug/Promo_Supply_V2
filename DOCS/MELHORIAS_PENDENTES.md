@@ -1,6 +1,12 @@
 # Melhorias Pendentes — Auditoria Consolidada (v4.2)
 
-**Última atualização:** 2026-07-12 (Onda 21 — scanner de índices não utilizados concluída)
+**Última atualização:** 2026-07-13 (Onda 77 — policies em partições de logs)
+
+### Onda 77 — Policies em partições mensais
+- Adicionadas policies `admin_read_partition` (admin SELECT) e `service_role_all_partition` (service_role ALL) em 10 partições de `audit_logs` (5) e `telemetry_logs` (5).
+- Elimina 10 avisos `0008_rls_enabled_no_policy` do linter sem alterar comportamento efetivo (acesso continua governado pelas tabelas-mãe).
+- Linter: 119 → 109 issues; remanescentes são allowlist `SECURITY DEFINER` (warns 0028/0029) já documentada.
+
 
 ### Onda 21 — Unused Indexes
 - `scan_unused_indexes()` cobre `pg_stat_user_indexes` do schema `public`, preservando PK/UNIQUE e ignorando índices <10MB.
