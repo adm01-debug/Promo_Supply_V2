@@ -84,3 +84,10 @@ Foram simulados mentalmente 100+ cenários adicionais:
 - Cron `_invoke_edge_function` sem service_role → `security definer` + `pg_net` garantem execução
 - Outbox retry infinito → backoff exponencial + dead-letter após N tentativas
 - Idempotência colide `idempotency_key` → replay 200 sem side effect
+
+### Onda 78 — Monitor de Taxa de Rollback
+- `scan_rollback_rate()` compara `xact_commit` × `xact_rollback` em `pg_stat_database`.
+- Thresholds: <1% saudável · 1-3% MEDIUM · 3-10% HIGH · >10% CRITICAL.
+- Dedupe de 1h por alerta aberto, `diagnostic_sql` + `hint` embutidos no metadata.
+- Cron `*/15 * * * *` (`scan-rollback-rate-15m`). `EXECUTE` restrito a `service_role`.
+- Baseline atual: **0.26%** (saudável). Alerta dispararia caso edge functions passem a gerar deadlocks/violações de constraint em massa.
