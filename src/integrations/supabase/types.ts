@@ -8995,6 +8995,15 @@ export type Database = {
         }
         Returns: undefined
       }
+      scan_temp_files_spill: {
+        Args: never
+        Returns: {
+          datname: string
+          delta_bytes: number
+          delta_files: number
+          severity: string
+        }[]
+      }
       scan_toast_bloat: {
         Args: {
           crit_ratio?: number
