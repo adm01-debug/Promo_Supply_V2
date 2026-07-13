@@ -97,3 +97,11 @@ Foram simulados mentalmente 100+ cenários adicionais:
 - `scan_cache_hit_ratio()` (cron 30min): abaixo de 99/95/90% → MEDIUM/HIGH/CRITICAL. Ignora amostras <100k. Baseline: 100%.
 - `scan_long_running_queries()` (cron 2min): 5/15/30min → MEDIUM/HIGH/CRITICAL. Dedupe por `pid`+30min, ignora autovacuum e self.
 - Todos com `diagnostic_sql`, `hint` e (quando aplicável) `fix_sql` embutidos. `EXECUTE` restrito a `service_role`.
+
+### Onda 80 — Scanner de FKs sem Índice
+- Corrigido único FK sem índice existente: `secret_rotation_schedule.owner_user_id` → `idx_secret_rotation_schedule_owner_user_id`.
+- Nova função `scan_unindexed_fks()` inspeciona `pg_constraint`+`pg_index` e ignora FKs cujas colunas já são prefixo de qualquer índice.
+- Severidade proporcional ao tamanho: INFO <10MB · MEDIUM ≥10MB · HIGH ≥100MB.
+- `fix_sql` gerado automaticamente (`CREATE INDEX CONCURRENTLY`). Dedupe de 24h por tabela+constraint.
+- Cron `30 5 * * 1` (segundas 05:30 UTC). `EXECUTE` restrito a `service_role`.
+- Baseline pós-fix: **0 FKs sem índice**.
