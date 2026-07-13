@@ -90,7 +90,7 @@ export const SupplierBonificationsPanel = () => {
         period_end: form.period_end || null,
         granted_by: user?.id,
         is_active: true,
-      } as any);
+      });
       if (error) throw error;
     },
     onSuccess: () => {
@@ -102,7 +102,7 @@ export const SupplierBonificationsPanel = () => {
     onError: () => toast.error('Erro ao registrar bonificação'),
   });
 
-  const activeCount = bonifications.filter((b: any) => b.is_active).length;
+  const activeCount = bonifications.filter((b) => b.is_active).length;
 
   if (isLoading) {
     return <Card><CardContent className="flex justify-center py-8"><Loader2 className="w-6 h-6 animate-spin" /></CardContent></Card>;
@@ -145,7 +145,7 @@ export const SupplierBonificationsPanel = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {bonifications.map((b: any) => (
+                  {bonifications.map((b) => (
                     <TableRow key={b.id}>
                       <TableCell className="font-medium">
                         {b.fornecedor?.nome_fantasia || b.fornecedor?.razao_social || '—'}
