@@ -7114,6 +7114,42 @@ export type Database = {
         }
         Relationships: []
       }
+      table_size_snapshots: {
+        Row: {
+          captured_at: string
+          id: string
+          index_bytes: number
+          row_estimate: number
+          schema_name: string
+          table_bytes: number
+          table_name: string
+          toast_bytes: number
+          total_bytes: number
+        }
+        Insert: {
+          captured_at?: string
+          id?: string
+          index_bytes: number
+          row_estimate?: number
+          schema_name: string
+          table_bytes: number
+          table_name: string
+          toast_bytes?: number
+          total_bytes: number
+        }
+        Update: {
+          captured_at?: string
+          id?: string
+          index_bytes?: number
+          row_estimate?: number
+          schema_name?: string
+          table_bytes?: number
+          table_name?: string
+          toast_bytes?: number
+          total_bytes?: number
+        }
+        Relationships: []
+      }
       telemetry_logs: {
         Row: {
           client_ip: string | null
@@ -8993,6 +9029,7 @@ export type Database = {
         Args: { _min_dead_ratio?: number; _min_dead_tuples?: number }
         Returns: number
       }
+      scan_table_growth: { Args: never; Returns: Json }
       scan_tables_without_pk: {
         Args: { allowlist?: string[]; min_rows_critical?: number }
         Returns: {
