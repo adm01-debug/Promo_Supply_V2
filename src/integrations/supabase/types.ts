@@ -8686,6 +8686,7 @@ export type Database = {
           isSetofReturn: true
         }
       }
+      get_db_health_snapshot: { Args: never; Returns: Json }
       get_effective_approver: {
         Args: {
           p_approver_id: string
