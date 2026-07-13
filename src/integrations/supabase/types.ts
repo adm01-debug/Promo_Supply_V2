@@ -9001,6 +9001,7 @@ export type Database = {
           toast_ratio: number
         }[]
       }
+      scan_unindexed_fks: { Args: never; Returns: Json }
       scan_unindexed_foreign_keys: {
         Args: never
         Returns: {
