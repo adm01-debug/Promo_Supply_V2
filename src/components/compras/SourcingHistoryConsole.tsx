@@ -190,9 +190,9 @@ export const SourcingHistoryConsole = () => {
               size="sm"
               className={cn(
                 "gap-2 px-4 transition-all duration-200",
-                viewMode as string === "intelligence" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+                viewMode === "intelligence" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
               )} 
-              onClick={() => setViewMode("intelligence" as any)}
+              onClick={() => setViewMode("intelligence")}
             >
               <Globe className="w-4 h-4" /> Inteligência
             </Button>
@@ -201,9 +201,9 @@ export const SourcingHistoryConsole = () => {
               size="sm"
               className={cn(
                 "gap-2 px-4 transition-all duration-200",
-                viewMode as string === "neural" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+                viewMode === "neural" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
               )} 
-              onClick={() => setViewMode("neural" as any)}
+              onClick={() => setViewMode("neural")}
             >
               <Brain className="w-4 h-4" /> Neural
             </Button>
@@ -467,7 +467,7 @@ export const SourcingHistoryConsole = () => {
                 </div>
               )}
             </div>
-          ) : viewMode === ("intelligence" as any) ? (
+          ) : viewMode === "intelligence" ? (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Sourcing Health Header */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
@@ -656,7 +656,7 @@ export const SourcingHistoryConsole = () => {
                 </div>
               </Card>
             </div>
-          ) : viewMode === ("neural" as any) ? (
+          ) : viewMode === "neural" ? (
             <div className="space-y-6 animate-in fade-in zoom-in duration-500">
               {/* Neural Prediction Console */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
