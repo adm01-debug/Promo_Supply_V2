@@ -120,3 +120,11 @@ Foram simulados mentalmente 100+ cenários adicionais:
 - Alertas em `system_alerts` com dedupe de 1h, `diagnostic_sql` (top `pg_stat_statements` por `temp_blks_written`) e hint de `work_mem`.
 - Cron `*/15 * * * *` (`scan-temp-spill-15m`). `EXECUTE` restrito a `service_role`.
 - Cenários simulados: sort gigante sem índice, hash join estourando work_mem, CTE materializada, index build, reset de stats no meio da janela (filtrado). Todos cobertos.
+
+### Onda 83 — Monitor de Idle-in-Transaction
+- `scan_idle_in_transaction()` varre `pg_stat_activity` por sessões em `idle in transaction` ou `idle in transaction (aborted)` há >2min.
+- Thresholds: 2min→MEDIUM · 10min→HIGH · 30min→CRITICAL. Estado `aborted` escala a CRITICAL após 5 min (bloqueia recursos sem trabalho útil).
+- Filtra apenas `client backend` (ignora workers internos e o próprio scanner).
+- Alertas em `system_alerts` dedupados por PID (30min) com `fix_sql_cancel`/`fix_sql_terminate` e `diagnostic_sql` (state, xact_start, backend_xmin).
+- Cron `*/2 * * * *` (`scan-idle-in-txn-2m`). `EXECUTE` restrito a `service_role`.
+- Cenários simulados: BEGIN sem COMMIT no client, pool pgbouncer com session pooling vazando, transação abortada não descartada, migração longa legítima (>30min é raro e alertável de propósito). Todos cobertos.
