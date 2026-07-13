@@ -92,10 +92,18 @@ export function useDeliveryEvents() {
         status = 'delayed';
       }
 
-      const fornecedor = pedido.fornecedor as any;
-      const itens = pedido.pedido_itens as any[];
-      const productName = itens?.[0]?.descricao || `Pedido #${pedido.numero}`;
-      const totalQty = itens?.reduce((acc: number, i: any) => acc + (i.quantidade || 0), 0) || 1;
+      const fornecedorRaw = pedido.fornecedor as
+        | { razao_social?: string | null; nome_fantasia?: string | null }
+        | Array<{ razao_social?: string | null; nome_fantasia?: string | null }>
+        | null
+        | undefined;
+      const fornecedor = Array.isArray(fornecedorRaw) ? fornecedorRaw[0] : fornecedorRaw;
+      const itens = (pedido.pedido_itens ?? []) as Array<{
+        descricao?: string | null;
+        quantidade?: number | null;
+      }>;
+      const productName = itens[0]?.descricao || `Pedido #${pedido.numero}`;
+      const totalQty = itens.reduce((acc, i) => acc + (i.quantidade ?? 0), 0) || 1;
 
       return {
         id: pedido.id,
