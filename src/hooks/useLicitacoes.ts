@@ -163,33 +163,23 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
   return { propostas, isLoading, addProposta, selectWinner, invalidate };
 }
 
-export interface SourcingEvent {
-  id: string;
-  numero: string;
-  title: string;
-  description: string | null;
-  status: 'draft' | 'published' | 'in_progress' | 'evaluation' | 'awarded';
-  type: 'rfp' | 'rfq' | 'auction';
-  category_id: string | null;
+type SourcingEventRow = Database['public']['Tables']['sourcing_events']['Row'];
+type SourcingEventInsert = Database['public']['Tables']['sourcing_events']['Insert'];
+
+export type SourcingEvent = SourcingEventRow & {
   category?: { nome: string } | null;
   lots?: Database['public']['Tables']['sourcing_event_lots']['Row'][];
   questions?: Database['public']['Tables']['sourcing_event_questions']['Row'][];
   criteria?: Database['public']['Tables']['sourcing_event_criteria']['Row'][];
   invitations?: (Database['public']['Tables']['sourcing_invitations']['Row'] & { fornecedor?: { razao_social: string } | null })[];
   responses?: (Database['public']['Tables']['sourcing_responses']['Row'] & { fornecedor?: { razao_social: string } | null })[];
-  created_at: string;
-  closes_at: string;
-  award_deadline: string | null;
-  budget_estimate: number | null;
-  currency: string;
-  sealed_bid?: boolean;
-}
+};
 
 export function useSourcingEvents() {
   const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: events = [], isLoading } = useQuery({
+  const { data: events = [], isLoading } = useQuery<SourcingEvent[]>({
     queryKey: ['sourcing-events'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -197,20 +187,21 @@ export function useSourcingEvents() {
         .select('*, category:categorias(nome)')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return (data || []) as unknown as SourcingEvent[];
+      return (data ?? []) as SourcingEvent[];
     },
     enabled: !!user,
   });
 
   const createEvent = useMutation({
-    mutationFn: async (event: Partial<SourcingEvent>) => {
-      const { data, error } = await supabase.from('sourcing_events').insert({
+    mutationFn: async (event: Partial<SourcingEventInsert>) => {
+      const payload: SourcingEventInsert = {
         ...event,
-        organization_id: organizationId || tenantId,
-        tenant_id: tenantId || organizationId
-      } as any).select().single();
+        organization_id: organizationId || tenantId || '',
+        tenant_id: tenantId || organizationId || '',
+      } as SourcingEventInsert;
+      const { data, error } = await supabase.from('sourcing_events').insert(payload).select().single();
       if (error) throw error;
-      return data as unknown as SourcingEvent;
+      return data as SourcingEvent;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sourcing-events'] });
@@ -224,9 +215,8 @@ export function useSourcingEvents() {
 
 export function useSourcingEventDetails(eventId: string | null) {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
 
-  const { data: event, isLoading: loadingEvent } = useQuery({
+  const { data: event, isLoading: loadingEvent } = useQuery<SourcingEvent | null>({
     queryKey: ['sourcing-event', eventId],
     queryFn: async () => {
       if (!eventId) return null;
@@ -236,7 +226,7 @@ export function useSourcingEventDetails(eventId: string | null) {
         .eq('id', eventId)
         .single();
       if (error) throw error;
-      return data as unknown as SourcingEvent;
+      return data as SourcingEvent;
     },
     enabled: !!user && !!eventId,
   });
