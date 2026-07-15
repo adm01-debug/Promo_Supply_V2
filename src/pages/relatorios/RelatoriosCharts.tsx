@@ -214,7 +214,8 @@ export const SupplierPerformanceTable = ({ data }: { data: Stats['fornecedorPerf
         </thead>
         <tbody className="divide-y divide-border/5">
           {data.map((f, idx) => (
-            <tr key={idx} className="group hover:bg-primary/5 transition-colors cursor-pointer">
+            <tr key={f.nome ?? idx} className="group hover:bg-primary/5 transition-colors cursor-pointer">
+
               <td className="py-5 px-8">
                 <div className="flex items-center gap-4">
                   <div className={cn(
