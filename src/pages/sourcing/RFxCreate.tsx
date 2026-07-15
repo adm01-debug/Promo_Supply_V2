@@ -330,7 +330,7 @@ const RFxCreate = () => {
                       value={c.type} 
                       onValueChange={v => {
                         const newCriteria = [...formData.criteria];
-                        newCriteria[i].type = v;
+                        newCriteria[i].type = v as CriterionType;
                         setFormData({...formData, criteria: newCriteria});
                       }}
                     >
