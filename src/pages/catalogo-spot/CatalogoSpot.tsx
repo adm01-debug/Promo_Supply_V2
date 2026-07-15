@@ -173,14 +173,14 @@ const CatalogoSpot = () => {
                     <h3 className="text-sm font-medium text-muted-foreground">
                       {searchResults.length} resultado(s)
                     </h3>
-                    {searchResults.map((result, i) => {
+                    {searchResults.map((result) => {
                       const parts = result.text.split(' - ');
                       const ref = parts[0] || '';
                       const name = parts.slice(1).join(' - ') || result.text;
                       const productId = extractSpotProductId(result.value, ref);
 
                       return (
-                        <Card key={i} className="hover:bg-accent/50 transition-colors">
+                        <Card key={result.value || `${result.line}-${result.text}`} className="hover:bg-accent/50 transition-colors">
                           <CardContent className="flex items-center justify-between p-4">
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
@@ -257,8 +257,8 @@ const CatalogoSpot = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {cart.items.map((item, i) => (
-                        <TableRow key={i}>
+                      {cart.items.map((item) => (
+                        <TableRow key={item.groupId || item.ref}>
                           <TableCell>
                             <Badge variant="outline" className="font-mono">{item.ref}</Badge>
                           </TableCell>
