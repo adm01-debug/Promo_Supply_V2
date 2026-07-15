@@ -86,10 +86,11 @@ export const KPICards = ({ stats, isLoading }: { stats: Stats; isLoading: boolea
 
   return (
     <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-      {items.map((item, idx) => (
+      {items.map((item) => (
         <motion.div
-          key={idx}
+          key={item.label}
           whileHover={{ y: -4, scale: 1.02 }}
+
           className="p-6 rounded-[2rem] border border-border/40 bg-card/40 backdrop-blur-xl shadow-xl shadow-black/5"
         >
           <div className="flex items-center justify-between mb-4">
