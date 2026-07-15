@@ -347,7 +347,7 @@ export default function PortalFornecedor() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {contratos.map((ct: any) => (
+                          {contratos.map((ct) => (
                             <TableRow key={ct.id}>
                               <TableCell className="font-mono text-xs">{ct.contract_number}</TableCell>
                               <TableCell className="font-medium max-w-[200px] truncate">{ct.title}</TableCell>
