@@ -2,6 +2,21 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
+import type { Database } from '@/integrations/supabase/types';
+
+export type PortalPedido = Database['public']['Tables']['pedidos']['Row'];
+export type PortalCotacao = Database['public']['Tables']['cotacoes']['Row'] & {
+  solicitacao?: { titulo?: string | null; numero?: string | null } | null;
+};
+export type PortalContrato = {
+  id: string;
+  contract_number: string | null;
+  title: string | null;
+  status: string | null;
+  start_date: string;
+  end_date: string;
+  total_value: number | null;
+};
 
 export function usePortalFornecedorData(fornecedorId: string | null) {
   const { user } = useAuth();
