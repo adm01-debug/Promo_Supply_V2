@@ -428,7 +428,7 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
         {formData.anexos.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2">
             {formData.anexos.map((file, index) => (
-              <Badge key={index} variant="secondary" className="gap-1 pr-1">
+              <Badge key={`${file.name}-${file.size}-${file.lastModified}`} variant="secondary" className="gap-1 pr-1">
                 <span className="max-w-[120px] truncate">{file.name}</span>
                 <span className="text-[10px] text-muted-foreground">{formatBytes(file.size)}</span>
                 {file.type === 'image/webp' && <Check className="w-3 h-3 text-emerald-500" />}
