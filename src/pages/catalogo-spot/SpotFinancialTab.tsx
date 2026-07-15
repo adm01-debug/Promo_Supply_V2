@@ -58,7 +58,7 @@ export function SpotFinancialTab({ financialDocs, loading, onRefresh }: SpotFina
               </TableHeader>
               <TableBody>
                 {financialDocs.documents.map((doc, i) => (
-                  <TableRow key={i} className={doc.isOverdue ? 'bg-destructive/5' : ''}>
+                  <TableRow key={`${doc.docNumber}-${doc.orderNumber}-${i}`} className={doc.isOverdue ? 'bg-destructive/5' : ''}>
                     <TableCell className="font-mono font-medium">{doc.docNumber}</TableCell>
                     <TableCell>{doc.orderNumber}</TableCell>
                     <TableCell className="text-sm">{doc.date}</TableCell>
