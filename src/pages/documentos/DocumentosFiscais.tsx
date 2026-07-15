@@ -8,8 +8,23 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FileText, Upload, CheckCircle, XCircle, Clock, Search, AlertTriangle, FileCheck, BrainCircuit, Loader2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { toast } from "@/lib/feedbackToast";
 import { formatDate } from "@/lib/utils";
+import { logger } from "@/lib/logger";
+
+type FiscalDocumentInsert = Database["public"]["Tables"]["fiscal_documents"]["Insert"];
+
+interface ExtractedInvoiceData {
+  numero_nf: string;
+  chave_acesso?: string | null;
+  data_emissao?: string | null;
+  valor_total: number;
+  valor_produtos?: number | null;
+  valor_frete?: number | null;
+}
+
+const LEGACY_TENANT_ID = "00000000-0000-0000-0000-000000000000";
 
 const DocumentosFiscais = () => {
   const [search, setSearch] = useState("");
@@ -67,7 +82,7 @@ const DocumentosFiscais = () => {
       const vDesc = parseFloat(getTag("vDesc")) || 0;
 
       const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await supabase.from("fiscal_documents").insert({
+      const payload: FiscalDocumentInsert = {
         numero_nf: nNF || `NF-${Date.now()}`,
         serie,
         chave_acesso: chaveAcesso,
@@ -77,15 +92,16 @@ const DocumentosFiscais = () => {
         valor_frete: vFrete,
         valor_desconto: vDesc,
         status: "validada",
-        uploaded_by: user?.id || null,
-        tenant_id: '00000000-0000-0000-0000-000000000000' as any, // Default to legacy for manual uploads initially
-      } as any);
+        uploaded_by: user?.id ?? null,
+        tenant_id: LEGACY_TENANT_ID,
+      };
+      const { error } = await supabase.from("fiscal_documents").insert(payload);
 
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
       toast.success(`NF-e ${nNF} importada com sucesso!`);
     } catch (err) {
-      console.error(err);
+      logger.error("fiscal_documents.xml_upload_failed", { error: err });
       toast.error("Erro ao processar XML. Verifique o formato do arquivo.");
     }
 
@@ -116,32 +132,35 @@ const DocumentosFiscais = () => {
       if (uploadError) throw uploadError;
 
       // Call AI extraction function
-      const { data: extractedData, error: extractionError } = await supabase.functions.invoke('process-invoice-idp', {
+      const { data: extractedData, error: extractionError } = await supabase.functions.invoke<ExtractedInvoiceData>('process-invoice-idp', {
         body: { filePath }
       });
 
       if (extractionError) throw extractionError;
+      if (!extractedData) throw new Error("IA não retornou dados extraídos");
 
-      const { error: dbError } = await supabase.from("fiscal_documents").insert({
+      const payload: FiscalDocumentInsert = {
         numero_nf: extractedData.numero_nf,
-        chave_acesso: extractedData.chave_acesso,
-        data_emissao: extractedData.data_emissao,
+        chave_acesso: extractedData.chave_acesso ?? null,
+        data_emissao: extractedData.data_emissao ?? null,
         valor_total: extractedData.valor_total,
-        valor_produtos: extractedData.valor_produtos,
-        valor_frete: extractedData.valor_frete,
+        valor_produtos: extractedData.valor_produtos ?? null,
+        valor_frete: extractedData.valor_frete ?? null,
         source_type: 'pdf',
         file_path: filePath,
         status: "validada",
-        uploaded_by: user?.id || null,
-        tenant_id: '00000000-0000-0000-0000-000000000000' as any,
-      } as any);
+        uploaded_by: user?.id ?? null,
+        tenant_id: LEGACY_TENANT_ID,
+      };
+      const { error: dbError } = await supabase.from("fiscal_documents").insert(payload);
 
       if (dbError) throw dbError;
       queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
       toast.success(`Nota processada via IA com sucesso!`);
-    } catch (err: any) {
-      console.error(err);
-      toast.error("Erro ao processar com IA: " + err.message);
+    } catch (err: unknown) {
+      logger.error("fiscal_documents.pdf_upload_failed", { error: err });
+      const message = err instanceof Error ? err.message : "Erro desconhecido";
+      toast.error("Erro ao processar com IA: " + message);
     } finally {
       setIsProcessingPdf(false);
     }
