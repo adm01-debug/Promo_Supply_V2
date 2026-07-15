@@ -355,8 +355,9 @@ const NegociacaoIA = () => {
                         <div className="grid gap-4 md:grid-cols-2">
                           {analysis.sugestoes.map((s, i) => (
                             <motion.div
-                              key={i}
+                              key={s.fornecedor ?? i}
                               whileHover={{ y: -4, scale: 1.01 }}
+
                               className="group p-6 rounded-3xl bg-background/40 border border-white/5 hover:border-primary/30 transition-all shadow-2xl relative overflow-hidden"
                             >
                               {/* Background Pattern */}
