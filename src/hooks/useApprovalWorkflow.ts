@@ -5,10 +5,11 @@ import { toast } from '@/lib/feedbackToast';
 import { logger } from '@/lib/logger';
 import type {
   ApprovalRule, ApprovalDelegation, ApprovalWorkflow,
+  ApprovalWorkflowWithRelations,
   ApprovalStep, ApprovalHistory,
 } from './approvalWorkflowTypes';
 
-export type { ApprovalRule, ApprovalDelegation, ApprovalWorkflow, ApprovalStep, ApprovalHistory };
+export type { ApprovalRule, ApprovalDelegation, ApprovalWorkflow, ApprovalWorkflowWithRelations, ApprovalStep, ApprovalHistory };
 
 // Module-level guard so only one consumer drives escalation polling.
 let escalationRefCount = 0;
@@ -18,7 +19,7 @@ export const useApprovalWorkflow = () => {
   const { user, organizationId } = useAuth();
   const [rules, setRules] = useState<ApprovalRule[]>([]);
   const [delegations, setDelegations] = useState<ApprovalDelegation[]>([]);
-  const [workflows, setWorkflows] = useState<ApprovalWorkflow[]>([]);
+  const [workflows, setWorkflows] = useState<ApprovalWorkflowWithRelations[]>([]);
   const [pendingSteps, setPendingSteps] = useState<ApprovalStep[]>([]);
   const [allHistory, setAllHistory] = useState<ApprovalHistory[]>([]);
   const [loading, setLoading] = useState(false);
@@ -61,7 +62,7 @@ export const useApprovalWorkflow = () => {
         .eq('organization_id', organizationId)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      setWorkflows((data || []) as any);
+      setWorkflows((data ?? []) as unknown as ApprovalWorkflowWithRelations[]);
     } catch (error) { logger.error('Error fetching workflows', { error }); }
   }, [user, organizationId]);
 
