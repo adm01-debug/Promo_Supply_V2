@@ -383,7 +383,7 @@ const Solicitacoes = () => {
                     {/* Simplified Scatter Plot Dots */}
                     {filteredSolicitacoes.slice(0, 15).map((s, i) => (
                       <motion.div
-                        key={i}
+                        key={s.id}
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ delay: i * 0.1 }}
