@@ -50,11 +50,11 @@ export default function PortalFornecedor() {
 
   // KPIs
   const kpis = useMemo(() => {
-    const pedidosAbertos = (pedidos as any[]).filter(p => !['entregue', 'cancelado'].includes(p.status)).length;
-    const cotacoesPendentes = (cotacoes as any[]).filter(c => c.status === 'pendente').length;
-    const volumeTotal = (pedidos as any[]).reduce((s: number, p: any) => s + (p.valor_total || 0), 0);
-    const entregasNoPrazo = (pedidos as any[]).filter(p => p.data_entrega && p.data_previsao && new Date(p.data_entrega) <= new Date(p.data_previsao)).length;
-    const totalEntregues = (pedidos as any[]).filter(p => p.data_entrega && p.data_previsao).length;
+    const pedidosAbertos = pedidos.filter(p => !['entregue', 'cancelado'].includes(p.status)).length;
+    const cotacoesPendentes = cotacoes.filter(c => c.status === 'pendente').length;
+    const volumeTotal = pedidos.reduce((s, p) => s + Number(p.valor_total || 0), 0);
+    const entregasNoPrazo = pedidos.filter(p => p.data_entrega && p.data_previsao && new Date(p.data_entrega) <= new Date(p.data_previsao)).length;
+    const totalEntregues = pedidos.filter(p => p.data_entrega && p.data_previsao).length;
     const otif = totalEntregues > 0 ? Math.round((entregasNoPrazo / totalEntregues) * 100) : 0;
 
     return { pedidosAbertos, cotacoesPendentes, volumeTotal, otif };
