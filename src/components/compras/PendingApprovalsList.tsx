@@ -46,7 +46,7 @@ import {
 } from "@/components/ui/tooltip";
 import { cn, formatCurrency } from "@/lib/utils";
 import { useApprovalNotifications } from "@/hooks/useApprovalNotifications";
-import { useApprovalWorkflow, type ApprovalStep } from "@/hooks/useApprovalWorkflow";
+import { useApprovalWorkflow, type ApprovalStep, type ApprovalWorkflowWithRelations } from "@/hooks/useApprovalWorkflow";
 import { toast } from "@/lib/feedbackToast";
 import {
   PendingApprovalItem,
