@@ -34,6 +34,7 @@ export const RESOLUCAO_LABELS: Record<string, string> = {
 export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { createDevolucao } = useDevolucoes();
   const { fornecedores } = useFornecedores();
+  const newItem = () => ({ _uid: crypto.randomUUID(), descricao: "", quantidade: 1, valor_unitario: 0 });
   const [form, setForm] = useState({
     fornecedor_id: "",
     tipo: "devolucao" as const,
@@ -41,14 +42,14 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
     motivo_detalhe: "",
     resolucao: "credito",
     observacoes: "",
-    itens: [{ descricao: "", quantidade: 1, valor_unitario: 0 }],
+    itens: [newItem()],
   });
   const [saving, setSaving] = useState(false);
 
-  const addItem = () => setForm(f => ({ ...f, itens: [...f.itens, { descricao: "", quantidade: 1, valor_unitario: 0 }] }));
-  const removeItem = (idx: number) => setForm(f => ({ ...f, itens: f.itens.filter((_, i) => i !== idx) }));
-  const updateItem = (idx: number, field: string, value: string | number) =>
-    setForm(f => ({ ...f, itens: f.itens.map((it, i) => i === idx ? { ...it, [field]: value } : it) }));
+  const addItem = () => setForm(f => ({ ...f, itens: [...f.itens, newItem()] }));
+  const removeItem = (uid: string) => setForm(f => ({ ...f, itens: f.itens.filter(it => it._uid !== uid) }));
+  const updateItem = (uid: string, field: string, value: string | number) =>
+    setForm(f => ({ ...f, itens: f.itens.map(it => it._uid === uid ? { ...it, [field]: value } : it) }));
 
   const handleSubmit = async () => {
     if (!form.fornecedor_id) { toast.error("Selecione o fornecedor"); return; }
@@ -61,17 +62,19 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
       motivo_detalhe: form.motivo_detalhe || undefined,
       resolucao: form.resolucao,
       observacoes: form.observacoes || undefined,
-      itens: form.itens,
+      itens: form.itens.map(({ _uid, ...rest }) => rest),
     };
     const result = await createDevolucao(input);
     setSaving(false);
     if (result) {
-      setForm({ fornecedor_id: "", tipo: "devolucao", motivo: "defeito", motivo_detalhe: "", resolucao: "credito", observacoes: "", itens: [{ descricao: "", quantidade: 1, valor_unitario: 0 }] });
+      setForm({ fornecedor_id: "", tipo: "devolucao", motivo: "defeito", motivo_detalhe: "", resolucao: "credito", observacoes: "", itens: [newItem()] });
       onClose();
     }
   };
 
   const totalValue = form.itens.reduce((s, i) => s + i.quantidade * i.valor_unitario, 0);
+
+
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -146,28 +149,29 @@ export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: 
             </div>
             <div className="space-y-2">
               {form.itens.map((item, idx) => (
-                <div key={idx} className="grid grid-cols-12 gap-2 items-end">
+                <div key={item._uid} className="grid grid-cols-12 gap-2 items-end">
                   <div className="col-span-5">
                     {idx === 0 && <Label className="text-xs">Descrição</Label>}
-                    <Input value={item.descricao} onChange={e => updateItem(idx, 'descricao', e.target.value)} placeholder="Nome do item" />
+                    <Input value={item.descricao} onChange={e => updateItem(item._uid, 'descricao', e.target.value)} placeholder="Nome do item" />
                   </div>
                   <div className="col-span-2">
                     {idx === 0 && <Label className="text-xs">Qtd</Label>}
-                    <Input type="number" min={1} value={item.quantidade} onChange={e => updateItem(idx, 'quantidade', parseInt(e.target.value, 10) || 1)} />
+                    <Input type="number" min={1} value={item.quantidade} onChange={e => updateItem(item._uid, 'quantidade', parseInt(e.target.value, 10) || 1)} />
                   </div>
                   <div className="col-span-3">
                     {idx === 0 && <Label className="text-xs">Valor Unit.</Label>}
-                    <Input type="number" min={0} step={0.01} value={item.valor_unitario} onChange={e => updateItem(idx, 'valor_unitario', parseFloat(e.target.value) || 0)} />
+                    <Input type="number" min={0} step={0.01} value={item.valor_unitario} onChange={e => updateItem(item._uid, 'valor_unitario', parseFloat(e.target.value) || 0)} />
                   </div>
                   <div className="col-span-2 flex justify-end">
                     {form.itens.length > 1 && (
-                      <Button variant="ghost" size="icon" onClick={() => removeItem(idx)} className="text-muted-foreground hover:text-destructive">
+                      <Button variant="ghost" size="icon" onClick={() => removeItem(item._uid)} className="text-muted-foreground hover:text-destructive">
                         <X className="w-4 h-4" />
                       </Button>
                     )}
                   </div>
                 </div>
               ))}
+
             </div>
             <div className="mt-2 text-right text-sm font-semibold text-foreground">
               Total: {formatCurrency(totalValue)}
