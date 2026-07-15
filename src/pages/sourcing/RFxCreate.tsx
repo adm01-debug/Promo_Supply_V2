@@ -27,12 +27,48 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/lib/feedbackToast";
+import { logger } from "@/lib/logger";
+
+type RFxUiType = "RFI" | "RFP" | "RFQ" | "AUCTION";
+type SourcingEventType = "rfp" | "rfq" | "auction";
+type CriterionType = "numeric" | "scale_1_5" | "boolean";
+
+interface RFxLotDraft {
+  title: string;
+  description: string;
+  target_price: string;
+}
+
+interface RFxCriterionDraft {
+  label: string;
+  weight: number;
+  type: CriterionType;
+}
+
+const UI_TYPE_TO_EVENT_TYPE: Record<RFxUiType, SourcingEventType> = {
+  RFI: "rfp",
+  RFP: "rfp",
+  RFQ: "rfq",
+  AUCTION: "auction",
+};
 
 const RFxCreate = () => {
   const navigate = useNavigate();
   const { createEvent } = useSourcingEvents();
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    description: string;
+    type: RFxUiType;
+    category_id: string;
+    budget_estimate: string;
+    currency: string;
+    closes_at: string;
+    sealed_bid: boolean;
+    lots: RFxLotDraft[];
+    criteria: RFxCriterionDraft[];
+    invitations: string[];
+  }>({
     title: "",
     description: "",
     type: "RFQ",
@@ -41,7 +77,7 @@ const RFxCreate = () => {
     currency: "BRL",
     closes_at: "",
     sealed_bid: false,
-    lots: [] as any[],
+    lots: [],
     criteria: [
       { label: "Preço Comercial", weight: 60, type: "numeric" },
       { label: "Prazo de Entrega", weight: 20, type: "numeric" },
