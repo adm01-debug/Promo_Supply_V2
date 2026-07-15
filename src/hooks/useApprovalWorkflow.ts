@@ -62,7 +62,7 @@ export const useApprovalWorkflow = () => {
         .eq('organization_id', organizationId)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      setWorkflows((data || []) as any);
+      setWorkflows((data ?? []) as unknown as ApprovalWorkflowWithRelations[]);
     } catch (error) { logger.error('Error fetching workflows', { error }); }
   }, [user, organizationId]);
 
