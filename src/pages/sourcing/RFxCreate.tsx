@@ -27,12 +27,48 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/lib/feedbackToast";
+import { logger } from "@/lib/logger";
+
+type RFxUiType = "RFI" | "RFP" | "RFQ" | "AUCTION";
+type SourcingEventType = "rfp" | "rfq" | "auction";
+type CriterionType = "numeric" | "scale_1_5" | "boolean";
+
+interface RFxLotDraft {
+  title: string;
+  description: string;
+  target_price: string;
+}
+
+interface RFxCriterionDraft {
+  label: string;
+  weight: number;
+  type: CriterionType;
+}
+
+const UI_TYPE_TO_EVENT_TYPE: Record<RFxUiType, SourcingEventType> = {
+  RFI: "rfp",
+  RFP: "rfp",
+  RFQ: "rfq",
+  AUCTION: "auction",
+};
 
 const RFxCreate = () => {
   const navigate = useNavigate();
   const { createEvent } = useSourcingEvents();
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    title: string;
+    description: string;
+    type: RFxUiType;
+    category_id: string;
+    budget_estimate: string;
+    currency: string;
+    closes_at: string;
+    sealed_bid: boolean;
+    lots: RFxLotDraft[];
+    criteria: RFxCriterionDraft[];
+    invitations: string[];
+  }>({
     title: "",
     description: "",
     type: "RFQ",
@@ -41,7 +77,7 @@ const RFxCreate = () => {
     currency: "BRL",
     closes_at: "",
     sealed_bid: false,
-    lots: [] as any[],
+    lots: [],
     criteria: [
       { label: "Preço Comercial", weight: 60, type: "numeric" },
       { label: "Prazo de Entrega", weight: 20, type: "numeric" },
@@ -92,7 +128,7 @@ const RFxCreate = () => {
       const event = await createEvent.mutateAsync({
         title: formData.title,
         description: formData.description,
-        type: formData.type.toLowerCase() as any,
+        type: UI_TYPE_TO_EVENT_TYPE[formData.type],
         category_id: formData.category_id || null,
         budget_estimate: parseFloat(formData.budget_estimate) || 0,
         currency: formData.currency,
@@ -135,7 +171,7 @@ const RFxCreate = () => {
             selectedSuppliers.map(s => ({ 
               event_id: event.id, 
               fornecedor_id: s.id,
-              email_contato: (s as any).email || 'contato@fornecedor.com',
+              email_contato: s.email || 'contato@fornecedor.com',
               token: crypto.randomUUID()
             }))
           );
@@ -144,8 +180,9 @@ const RFxCreate = () => {
 
         navigate(`/sourcing/${event.id}`);
       }
-    } catch (err: any) {
-      console.error(err);
+    } catch (err: unknown) {
+      logger.error('RFxCreate.handleCreate', { error: err instanceof Error ? err.message : String(err) });
+      toast.error('Não foi possível criar o evento. Tente novamente.');
     }
   };
 
@@ -191,7 +228,7 @@ const RFxCreate = () => {
               
               <div className="space-y-2">
                 <Label>Tipo de Evento</Label>
-                <Select value={formData.type} onValueChange={v => setFormData({...formData, type: v})}>
+                <Select value={formData.type} onValueChange={v => setFormData({...formData, type: v as RFxUiType})}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -294,7 +331,7 @@ const RFxCreate = () => {
                       value={c.type} 
                       onValueChange={v => {
                         const newCriteria = [...formData.criteria];
-                        newCriteria[i].type = v;
+                        newCriteria[i].type = v as CriterionType;
                         setFormData({...formData, criteria: newCriteria});
                       }}
                     >
