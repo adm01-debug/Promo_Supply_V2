@@ -45,31 +45,54 @@ const RecompraInteligente = () => {
       if (piError) throw piError;
 
       // Group by product to find patterns
-      const productMap = new Map<string, any[]>();
-      pedidoItens?.forEach(pi => {
+      type PedidoRef = { fornecedor_id: string | null; data_emissao: string | null; status: string | null } | null;
+      type PedidoItemRow = {
+        produto_id: string | null;
+        descricao: string | null;
+        quantidade: number;
+        valor_unitario: number | string;
+        pedido: PedidoRef;
+      };
+      type NewSuggestion = {
+        tenant_id: string;
+        produto_id: string | null;
+        fornecedor_id: string | null;
+        quantidade_sugerida: number;
+        preco_estimado: number;
+        frequencia_dias: number;
+        proxima_compra_estimada: string;
+        confianca_score: number;
+        status: string;
+      };
+
+      const rows = (pedidoItens ?? []) as unknown as PedidoItemRow[];
+      const productMap = new Map<string, PedidoItemRow[]>();
+      rows.forEach(pi => {
         const key = pi.produto_id || pi.descricao;
+        if (!key) return;
         if (!productMap.has(key)) productMap.set(key, []);
         productMap.get(key)!.push(pi);
       });
 
-      const newSuggestions: any[] = [];
-      for (const [productKey, items] of productMap) {
+      const emissao = (pi: PedidoItemRow) => pi.pedido?.data_emissao ?? null;
+      const newSuggestions: NewSuggestion[] = [];
+      for (const [, items] of productMap) {
         if (items.length < 2) continue;
-        
+
         const sorted = items
-          .filter(i => (i as any).pedido?.data_emissao)
-          .sort((a, b) => new Date((a as any).pedido.data_emissao).getTime() - new Date((b as any).pedido.data_emissao).getTime());
-        
+          .filter(i => Boolean(emissao(i)))
+          .sort((a, b) => new Date(emissao(a)!).getTime() - new Date(emissao(b)!).getTime());
+
         if (sorted.length < 2) continue;
 
         const intervals: number[] = [];
         for (let i = 1; i < sorted.length; i++) {
-          const diff = (new Date((sorted[i] as any).pedido.data_emissao).getTime() - new Date((sorted[i-1] as any).pedido.data_emissao).getTime()) / (1000 * 60 * 60 * 24);
+          const diff = (new Date(emissao(sorted[i])!).getTime() - new Date(emissao(sorted[i - 1])!).getTime()) / (1000 * 60 * 60 * 24);
           intervals.push(diff);
         }
 
         const avgInterval = Math.round(intervals.reduce((a, b) => a + b, 0) / intervals.length);
-        const lastDate = new Date((sorted[sorted.length - 1] as any).pedido.data_emissao);
+        const lastDate = new Date(emissao(sorted[sorted.length - 1])!);
         const nextDate = new Date(lastDate.getTime() + avgInterval * 24 * 60 * 60 * 1000);
         const avgQty = Math.round(sorted.reduce((a, b) => a + b.quantidade, 0) / sorted.length);
         const avgPrice = sorted.reduce((a, b) => a + Number(b.valor_unitario), 0) / sorted.length;
@@ -77,8 +100,8 @@ const RecompraInteligente = () => {
         if (nextDate <= new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)) {
           newSuggestions.push({
             tenant_id: activeTenantId,
-            produto_id: sorted[0].produto_id || null,
-            fornecedor_id: (sorted[sorted.length - 1] as any).pedido?.fornecedor_id || null,
+            produto_id: sorted[0].produto_id ?? null,
+            fornecedor_id: sorted[sorted.length - 1].pedido?.fornecedor_id ?? null,
             quantidade_sugerida: avgQty,
             preco_estimado: Math.round(avgPrice * avgQty * 100) / 100,
             frequencia_dias: avgInterval,
