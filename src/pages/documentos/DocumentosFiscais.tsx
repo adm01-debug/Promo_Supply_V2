@@ -82,7 +82,7 @@ const DocumentosFiscais = () => {
       const vDesc = parseFloat(getTag("vDesc")) || 0;
 
       const { data: { user } } = await supabase.auth.getUser();
-      const { error } = await supabase.from("fiscal_documents").insert({
+      const payload: FiscalDocumentInsert = {
         numero_nf: nNF || `NF-${Date.now()}`,
         serie,
         chave_acesso: chaveAcesso,
@@ -92,15 +92,16 @@ const DocumentosFiscais = () => {
         valor_frete: vFrete,
         valor_desconto: vDesc,
         status: "validada",
-        uploaded_by: user?.id || null,
-        tenant_id: '00000000-0000-0000-0000-000000000000' as any, // Default to legacy for manual uploads initially
-      } as any);
+        uploaded_by: user?.id ?? null,
+        tenant_id: LEGACY_TENANT_ID,
+      };
+      const { error } = await supabase.from("fiscal_documents").insert(payload);
 
       if (error) throw error;
       queryClient.invalidateQueries({ queryKey: ["fiscal-documents"] });
       toast.success(`NF-e ${nNF} importada com sucesso!`);
     } catch (err) {
-      console.error(err);
+      logger.error("fiscal_documents.xml_upload_failed", { error: err });
       toast.error("Erro ao processar XML. Verifique o formato do arquivo.");
     }
 
