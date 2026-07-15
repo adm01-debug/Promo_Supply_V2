@@ -227,7 +227,7 @@ const RFxCreate = () => {
               
               <div className="space-y-2">
                 <Label>Tipo de Evento</Label>
-                <Select value={formData.type} onValueChange={v => setFormData({...formData, type: v})}>
+                <Select value={formData.type} onValueChange={v => setFormData({...formData, type: v as RFxUiType})}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
