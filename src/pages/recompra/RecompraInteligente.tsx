@@ -238,11 +238,15 @@ const RecompraInteligente = () => {
               </TableHeader>
               <TableBody>
                 {suggestions?.map(s => {
+                  const row = s as typeof s & {
+                    produto?: { nome?: string | null } | null;
+                    fornecedor?: { razao_social?: string | null } | null;
+                  };
                   const isOverdue = s.proxima_compra_estimada && new Date(s.proxima_compra_estimada) <= new Date();
                   return (
                     <TableRow key={s.id} className={isOverdue ? "bg-destructive/5" : ""}>
-                      <TableCell className="font-medium">{(s as any).produto?.nome || "Produto"}</TableCell>
-                      <TableCell className="text-sm">{(s as any).fornecedor?.razao_social || "-"}</TableCell>
+                      <TableCell className="font-medium">{row.produto?.nome || "Produto"}</TableCell>
+                      <TableCell className="text-sm">{row.fornecedor?.razao_social || "-"}</TableCell>
                       <TableCell className="text-center">{s.quantidade_sugerida}</TableCell>
                       <TableCell className="text-right">R$ {Number(s.preco_estimado).toLocaleString("pt-BR")}</TableCell>
                       <TableCell className="text-center text-sm">{s.frequencia_dias} dias</TableCell>
