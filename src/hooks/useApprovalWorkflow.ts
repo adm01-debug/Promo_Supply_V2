@@ -5,10 +5,11 @@ import { toast } from '@/lib/feedbackToast';
 import { logger } from '@/lib/logger';
 import type {
   ApprovalRule, ApprovalDelegation, ApprovalWorkflow,
+  ApprovalWorkflowWithRelations,
   ApprovalStep, ApprovalHistory,
 } from './approvalWorkflowTypes';
 
-export type { ApprovalRule, ApprovalDelegation, ApprovalWorkflow, ApprovalStep, ApprovalHistory };
+export type { ApprovalRule, ApprovalDelegation, ApprovalWorkflow, ApprovalWorkflowWithRelations, ApprovalStep, ApprovalHistory };
 
 // Module-level guard so only one consumer drives escalation polling.
 let escalationRefCount = 0;
