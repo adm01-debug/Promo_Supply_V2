@@ -8,8 +8,23 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { FileText, Upload, CheckCircle, XCircle, Clock, Search, AlertTriangle, FileCheck, BrainCircuit, Loader2 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { toast } from "@/lib/feedbackToast";
 import { formatDate } from "@/lib/utils";
+import { logger } from "@/lib/logger";
+
+type FiscalDocumentInsert = Database["public"]["Tables"]["fiscal_documents"]["Insert"];
+
+interface ExtractedInvoiceData {
+  numero_nf: string;
+  chave_acesso?: string | null;
+  data_emissao?: string | null;
+  valor_total: number;
+  valor_produtos?: number | null;
+  valor_frete?: number | null;
+}
+
+const LEGACY_TENANT_ID = "00000000-0000-0000-0000-000000000000";
 
 const DocumentosFiscais = () => {
   const [search, setSearch] = useState("");
