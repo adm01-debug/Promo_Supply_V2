@@ -171,7 +171,7 @@ const RFxCreate = () => {
             selectedSuppliers.map(s => ({ 
               event_id: event.id, 
               fornecedor_id: s.id,
-              email_contato: (s as any).email || 'contato@fornecedor.com',
+              email_contato: s.email || 'contato@fornecedor.com',
               token: crypto.randomUUID()
             }))
           );
@@ -180,8 +180,9 @@ const RFxCreate = () => {
 
         navigate(`/sourcing/${event.id}`);
       }
-    } catch (err: any) {
-      console.error(err);
+    } catch (err: unknown) {
+      logger.error('RFxCreate.handleCreate', { error: err instanceof Error ? err.message : String(err) });
+      toast.error('Não foi possível criar o evento. Tente novamente.');
     }
   };
 
