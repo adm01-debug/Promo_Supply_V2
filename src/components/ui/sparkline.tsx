@@ -126,7 +126,7 @@ export const Sparkline = forwardRef<SVGSVGElement, SparklineProps>(({
       {/* Dots */}
       {showDots && pathData.points && pathData.points.map((point, index) => (
         <motion.circle
-          key={index}
+          key={`${point.x.toFixed(2)}-${point.y.toFixed(2)}`}
           cx={point.x}
           cy={point.y}
           r={2}
