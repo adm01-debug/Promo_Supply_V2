@@ -19,7 +19,7 @@ export const useApprovalWorkflow = () => {
   const { user, organizationId } = useAuth();
   const [rules, setRules] = useState<ApprovalRule[]>([]);
   const [delegations, setDelegations] = useState<ApprovalDelegation[]>([]);
-  const [workflows, setWorkflows] = useState<ApprovalWorkflow[]>([]);
+  const [workflows, setWorkflows] = useState<ApprovalWorkflowWithRelations[]>([]);
   const [pendingSteps, setPendingSteps] = useState<ApprovalStep[]>([]);
   const [allHistory, setAllHistory] = useState<ApprovalHistory[]>([]);
   const [loading, setLoading] = useState(false);
