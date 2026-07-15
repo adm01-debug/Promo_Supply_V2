@@ -72,13 +72,13 @@ export function usePortalFornecedorData(fornecedorId: string | null) {
     queryKey: ['portal-contratos', fornecedorId],
     queryFn: async () => {
       if (!fornecedorId) return [];
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('contracts')
         .select('id, contract_number, title, status, start_date, end_date, total_value')
         .eq('supplier_id', fornecedorId)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return data || [];
+      return (data as unknown as PortalContrato[]) || [];
     },
     enabled: !!user && !!fornecedorId,
   });
