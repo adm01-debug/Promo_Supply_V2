@@ -50,11 +50,11 @@ export default function PortalFornecedor() {
 
   // KPIs
   const kpis = useMemo(() => {
-    const pedidosAbertos = (pedidos as any[]).filter(p => !['entregue', 'cancelado'].includes(p.status)).length;
-    const cotacoesPendentes = (cotacoes as any[]).filter(c => c.status === 'pendente').length;
-    const volumeTotal = (pedidos as any[]).reduce((s: number, p: any) => s + (p.valor_total || 0), 0);
-    const entregasNoPrazo = (pedidos as any[]).filter(p => p.data_entrega && p.data_previsao && new Date(p.data_entrega) <= new Date(p.data_previsao)).length;
-    const totalEntregues = (pedidos as any[]).filter(p => p.data_entrega && p.data_previsao).length;
+    const pedidosAbertos = pedidos.filter(p => !['entregue', 'cancelado'].includes(p.status)).length;
+    const cotacoesPendentes = cotacoes.filter(c => c.status === 'pendente').length;
+    const volumeTotal = pedidos.reduce((s, p) => s + Number(p.valor_total || 0), 0);
+    const entregasNoPrazo = pedidos.filter(p => p.data_entrega && p.data_previsao && new Date(p.data_entrega) <= new Date(p.data_previsao)).length;
+    const totalEntregues = pedidos.filter(p => p.data_entrega && p.data_previsao).length;
     const otif = totalEntregues > 0 ? Math.round((entregasNoPrazo / totalEntregues) * 100) : 0;
 
     return { pedidosAbertos, cotacoesPendentes, volumeTotal, otif };
@@ -259,7 +259,7 @@ export default function PortalFornecedor() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {(pedidos as any[]).map(p => (
+                          {pedidos.map(p => (
                             <TableRow key={p.id}>
                               <TableCell className="font-mono text-xs">{p.numero}</TableCell>
                               <TableCell>
@@ -303,11 +303,11 @@ export default function PortalFornecedor() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {(cotacoes as any[]).map(c => (
+                          {cotacoes.map(c => (
                             <TableRow key={c.id}>
                               <TableCell className="font-mono text-xs">{c.numero}</TableCell>
                               <TableCell className="text-sm">
-                                {(c as any).solicitacao?.titulo || (c as any).solicitacao?.numero || '—'}
+                                {c.solicitacao?.titulo || c.solicitacao?.numero || '—'}
                               </TableCell>
                               <TableCell>
                                 <Badge variant={statusCotacao[c.status]?.variant || 'secondary'}>
@@ -347,7 +347,7 @@ export default function PortalFornecedor() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {contratos.map((ct: any) => (
+                          {contratos.map((ct) => (
                             <TableRow key={ct.id}>
                               <TableCell className="font-mono text-xs">{ct.contract_number}</TableCell>
                               <TableCell className="font-medium max-w-[200px] truncate">{ct.title}</TableCell>
