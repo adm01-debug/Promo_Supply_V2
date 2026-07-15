@@ -303,11 +303,11 @@ export default function PortalFornecedor() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {(cotacoes as any[]).map(c => (
+                          {cotacoes.map(c => (
                             <TableRow key={c.id}>
                               <TableCell className="font-mono text-xs">{c.numero}</TableCell>
                               <TableCell className="text-sm">
-                                {(c as any).solicitacao?.titulo || (c as any).solicitacao?.numero || '—'}
+                                {c.solicitacao?.titulo || c.solicitacao?.numero || '—'}
                               </TableCell>
                               <TableCell>
                                 <Badge variant={statusCotacao[c.status]?.variant || 'secondary'}>
