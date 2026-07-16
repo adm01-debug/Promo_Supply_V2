@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { toast } from '@/lib/feedbackToast';
+import { logger } from '@/lib/logger';
 
 export interface DashboardFilter {
   id: string;
