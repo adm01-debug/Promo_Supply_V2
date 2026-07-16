@@ -42,7 +42,7 @@ export const useDashboardFilters = () => {
       if (error) throw error;
       setFavorites(data || []);
     } catch (error) {
-      console.error('Error fetching favorites:', error);
+      logger.error('Erro ao buscar filtros favoritos', { error, userId: user.id, tenantId });
     } finally {
       setLoading(false);
     }
@@ -76,7 +76,7 @@ export const useDashboardFilters = () => {
       toast.success(`Filtro "${name}" salvo com sucesso`);
       return data;
     } catch (error) {
-      console.error('Error saving favorite:', error);
+      logger.error('Erro ao salvar filtro favorito', { error, name });
       toast.error('Erro ao salvar filtro favorito');
       return null;
     }
@@ -94,7 +94,7 @@ export const useDashboardFilters = () => {
       setFavorites(prev => prev.filter(f => f.id !== id));
       toast.success('Filtro removido com sucesso');
     } catch (error) {
-      console.error('Error deleting favorite:', error);
+      logger.error('Erro ao remover filtro favorito', { error, id });
       toast.error('Erro ao remover filtro');
     }
   };
@@ -123,7 +123,7 @@ export const useDashboardFilters = () => {
       })));
       toast.success('Filtro definido como padrão');
     } catch (error) {
-      console.error('Error setting default:', error);
+      logger.error('Erro ao definir filtro padrão', { error, id });
       toast.error('Erro ao definir filtro padrão');
     }
   };
