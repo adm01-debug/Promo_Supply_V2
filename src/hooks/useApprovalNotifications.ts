@@ -68,6 +68,17 @@ export const useApprovalNotifications = () => {
     requestPermission();
   }, []);
 
+  // Safety net: clear monitoring interval on unmount to prevent memory leaks
+  // if the consumer forgets to call stopMonitoring().
+  useEffect(() => {
+    return () => {
+      if (monitoringRef.current) {
+        clearInterval(monitoringRef.current);
+        monitoringRef.current = null;
+      }
+    };
+  }, []);
+
   const sendNotification = useCallback(async (
     approvalId: string,
     requestId: string,
