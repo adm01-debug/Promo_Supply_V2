@@ -24,6 +24,7 @@ import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { normalizeText } from "@/hooks/useFuseSearch";
 import { ChatArea } from "./chat/ChatArea";
+import { logger } from "@/lib/logger";
 
 interface ChatContact {
   id: string;
@@ -172,7 +173,7 @@ export function SupplierChat() {
         online_at: new Date().toISOString(),
       });
     } catch (error: unknown) {
-      console.error('Error updating typing status:', error);
+      logger.error('SupplierChat: falha ao atualizar status de typing', { error });
     }
   }, [user]);
 
