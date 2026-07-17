@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { useRealPushNotifications } from "@/hooks/useRealPushNotifications";
 import { toast } from "@/lib/feedbackToast";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export const NotificationSettingsPanel = () => {
   const {
