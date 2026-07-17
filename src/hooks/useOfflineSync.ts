@@ -129,15 +129,25 @@ export function useOfflineSync() {
 
         // Synced successfully
       } catch (error) {
-        console.error(`Failed to sync operation ${operation.id}:`, error);
-        
+        logger.error('offlineSync: falha ao sincronizar operação', {
+          operationId: operation.id,
+          type: operation.type,
+          table: operation.table,
+          retries: operation.retries,
+          error: error instanceof Error ? error.message : String(error),
+        });
+
         if (operation.retries < MAX_RETRIES) {
           failedOperations.push({
             ...operation,
             retries: operation.retries + 1,
           });
         } else {
-          console.error(`Max retries reached for operation ${operation.id}, discarding`);
+          logger.error('offlineSync: máximo de tentativas atingido — operação descartada', {
+            operationId: operation.id,
+            type: operation.type,
+            table: operation.table,
+          });
         }
       }
     }
