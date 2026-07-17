@@ -46,7 +46,7 @@ export const NotificationSettingsPanel = () => {
         toast.error("Permita as notificações primeiro.");
       }
     } catch (error) {
-      console.error("Error testing notification:", error);
+      logger.error("notifications: falha ao enviar notificação de teste", { error: error instanceof Error ? error.message : String(error) });
       toast.error("Erro ao enviar notificação de teste.");
     } finally {
       setIsTestingNotification(false);
