@@ -64,7 +64,7 @@ export const NotificationSettingsPanel = () => {
         `Verificação concluída: ${data.sla_warnings} alertas SLA, ${data.pending_approvals} aprovações pendentes, ${data.notifications_sent} notificações enviadas.`
       );
     } catch (error) {
-      console.error("Error checking alerts:", error);
+      logger.error("notifications: falha ao verificar alertas SLA", { error: error instanceof Error ? error.message : String(error) });
       toast.error("Erro ao verificar alertas.");
     } finally {
       setIsCheckingAlerts(false);
