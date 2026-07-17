@@ -5,6 +5,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { logger } from '@/lib/logger';
 
 interface PendingOperation {
   id: string;
@@ -52,7 +53,7 @@ export function useOfflineSync() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(operations));
       setState(prev => ({ ...prev, pendingCount: operations.length }));
     } catch (e) {
-      console.error('Failed to save pending operations:', e);
+      logger.error('offlineSync: falha ao persistir operações pendentes', { error: e instanceof Error ? e.message : String(e) });
     }
   }, []);
 
@@ -128,15 +129,25 @@ export function useOfflineSync() {
 
         // Synced successfully
       } catch (error) {
-        console.error(`Failed to sync operation ${operation.id}:`, error);
-        
+        logger.error('offlineSync: falha ao sincronizar operação', {
+          operationId: operation.id,
+          type: operation.type,
+          table: operation.table,
+          retries: operation.retries,
+          error: error instanceof Error ? error.message : String(error),
+        });
+
         if (operation.retries < MAX_RETRIES) {
           failedOperations.push({
             ...operation,
             retries: operation.retries + 1,
           });
         } else {
-          console.error(`Max retries reached for operation ${operation.id}, discarding`);
+          logger.error('offlineSync: máximo de tentativas atingido — operação descartada', {
+            operationId: operation.id,
+            type: operation.type,
+            table: operation.table,
+          });
         }
       }
     }
