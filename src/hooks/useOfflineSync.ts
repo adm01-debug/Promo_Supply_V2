@@ -53,7 +53,7 @@ export function useOfflineSync() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(operations));
       setState(prev => ({ ...prev, pendingCount: operations.length }));
     } catch (e) {
-      console.error('Failed to save pending operations:', e);
+      logger.error('offlineSync: falha ao persistir operações pendentes', { error: e instanceof Error ? e.message : String(e) });
     }
   }, []);
 
