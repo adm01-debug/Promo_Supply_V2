@@ -5,6 +5,7 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { logger } from '@/lib/logger';
 
 interface PendingOperation {
   id: string;
