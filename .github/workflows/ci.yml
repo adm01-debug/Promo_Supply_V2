@@ -10,10 +10,10 @@ jobs:
   test-and-verify:
     runs-on: ubuntu-latest
     env:
-      # Provide placeholder values so the Vite dev server can boot during E2E.
-      # Override with real secrets for live-environment testing.
+      # Placeholder values so the Vite dev server can boot during E2E.
+      # Real credentials come from secrets when configured.
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || secrets.SUPABASE_URL || 'https://placeholder.supabase.co' }}
-      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsYWNlaG9sZGVyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2MDAwMDAwMDAsImV4cCI6MjAwMDAwMDAwMH0.placeholder' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_ANON_KEY || 'placeholder-anon-key' }}
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
@@ -34,7 +34,7 @@ jobs:
 
       - name: RLS Regression Tests
         # Only run when real Supabase credentials are configured
-        if: ${{ secrets.SUPABASE_URL != '' && secrets.SUPABASE_ANON_KEY != '' }}
+        if: secrets.SUPABASE_URL != '' && secrets.SUPABASE_ANON_KEY != ''
         env:
           VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
@@ -60,14 +60,14 @@ jobs:
 
       - name: Backend Stress & Load Test (Artillery)
         # Only run when a real Supabase URL is configured via secrets
-        if: ${{ secrets.SUPABASE_URL != '' }}
+        if: secrets.SUPABASE_URL != ''
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
         run: bun run test:load
 
       - name: Edge Functions Contract & Simulation Gate
         # Only run when both Supabase URL and service role key are configured
-        if: ${{ secrets.SUPABASE_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != '' }}
+        if: secrets.SUPABASE_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != ''
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
