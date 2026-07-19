@@ -180,7 +180,7 @@ export default function ComplianceDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {sortedData.map((item: any, idx: number) => {
+                    {sortedData.map((item, idx) => {
                       const status = getComplianceStatus(item);
                       const StatusIcon = status.icon;
                       return (

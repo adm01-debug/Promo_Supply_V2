@@ -7,8 +7,20 @@ import { motion } from "framer-motion";
 import { toast } from "@/lib/feedbackToast";
 import { VisualComparadorCotacoes } from "./VisualComparadorCotacoes";
 
+interface CotacaoItem {
+  id: string;
+  fornecedor: string;
+  total: number;
+  lead_time?: number | null;
+  rating?: number | null;
+  unit_price?: number | null;
+  stock?: number | null;
+  payment_terms?: string | null;
+  shipping?: number | null;
+}
+
 interface StrategicQuoteTableProps {
-  cotacoes: any[];
+  cotacoes: CotacaoItem[];
   quantidade: number;
 }
 

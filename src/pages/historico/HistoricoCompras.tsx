@@ -134,7 +134,7 @@ const HistoricoCompras = () => {
     screenLabel: "Histórico de Compras",
     describeActiveFilters: () => [],
     takeSnapshot: () => ({ searchTerm, categoryFilter, statusFilter, dateRange, periodPreset }),
-    applySnapshot: (s: any) => {
+    applySnapshot: (s) => {
       setSearchTerm(s.searchTerm); setCategoryFilter(s.categoryFilter);
       setStatusFilter(s.statusFilter); setDateRange(s.dateRange); setPeriodPreset(s.periodPreset);
     },

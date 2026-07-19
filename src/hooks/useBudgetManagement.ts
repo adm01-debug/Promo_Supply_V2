@@ -75,9 +75,10 @@ export const useBudgetManagement = () => {
       queryClient.invalidateQueries({ queryKey: ['cost-center-performance', organizationId] });
       toast.success('Orçamento criado com sucesso');
     },
-    onError: (err: any, variables) => {
-      logger.error('Erro ao criar orçamento', { error: err.message, costCenterId: variables.cost_center_id });
-      if (err.message?.includes('unique')) {
+    onError: (err: unknown, variables) => {
+      const msg = (err as Error).message ?? '';
+      logger.error('Erro ao criar orçamento', { error: msg, costCenterId: variables.cost_center_id });
+      if (msg.includes('unique')) {
         toast.error('Já existe orçamento para este centro de custo/período');
       } else {
         toast.error('Erro ao criar orçamento');
@@ -100,8 +101,8 @@ export const useBudgetManagement = () => {
       queryClient.invalidateQueries({ queryKey: ['cost-center-performance', organizationId] });
       toast.success('Orçamento atualizado');
     },
-    onError: (err: any, variables) => {
-      logger.error('Erro ao atualizar orçamento', { error: err.message, id: variables.id });
+    onError: (err: unknown, variables) => {
+      logger.error('Erro ao atualizar orçamento', { error: (err as Error).message, id: variables.id });
       toast.error('Erro ao atualizar orçamento');
     },
   });

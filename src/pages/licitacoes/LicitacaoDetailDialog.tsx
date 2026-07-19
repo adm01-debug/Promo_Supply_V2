@@ -37,7 +37,7 @@ interface LicitacaoDetailDialogProps {
   open: boolean;
   onClose: () => void;
   onUpdate: (id: string, updates: Partial<Licitacao>) => Promise<boolean>;
-  fornecedores: any[];
+  fornecedores: { id: string; razao_social: string; status?: string | null }[];
 }
 
 export function LicitacaoDetailDialog({
@@ -198,7 +198,7 @@ export function LicitacaoDetailDialog({
                     <Select value={propostaForm.fornecedor_id} onValueChange={v => setPropostaForm(f => ({ ...f, fornecedor_id: v }))}>
                       <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                       <SelectContent>
-                        {fornecedores.filter((f: any) => f.status === 'ativo').map((f: any) => (
+                        {fornecedores.filter((f) => f.status === 'ativo').map((f) => (
                           <SelectItem key={f.id} value={f.id}>{f.razao_social}</SelectItem>
                         ))}
                       </SelectContent>

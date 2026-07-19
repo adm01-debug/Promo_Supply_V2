@@ -64,13 +64,13 @@ const Auditoria = () => {
 
   const handleExport = () => {
     const exportColumns = [
-      { key: 'created_at', label: 'Data/Hora', formatter: (val: any) => format(new Date(val), "dd/MM/yyyy HH:mm:ss") },
-      { key: 'user_name', label: 'Usuário', formatter: (val: any) => val || 'Sistema' },
-      { key: 'user_email', label: 'Email', formatter: (val: any) => val || 'N/A' },
-      { key: 'action_type', label: 'Ação', formatter: (val: any) => actionTypeLabels[val as AuditActionType] || val },
-      { key: 'entity_type', label: 'Entidade', formatter: (val: any) => entityTypeLabels[val as AuditEntityType] || val },
-      { key: 'entity_id', label: 'ID', formatter: (val: any) => val || 'N/A' },
-      { key: 'entity_description', label: 'Descrição', formatter: (val: any) => val || 'N/A' },
+      { key: 'created_at', label: 'Data/Hora', formatter: (val: unknown) => format(new Date(val as string), "dd/MM/yyyy HH:mm:ss") },
+      { key: 'user_name', label: 'Usuário', formatter: (val: unknown) => String(val ?? '') || 'Sistema' },
+      { key: 'user_email', label: 'Email', formatter: (val: unknown) => String(val ?? '') || 'N/A' },
+      { key: 'action_type', label: 'Ação', formatter: (val: unknown) => actionTypeLabels[val as AuditActionType] || String(val ?? '') },
+      { key: 'entity_type', label: 'Entidade', formatter: (val: unknown) => entityTypeLabels[val as AuditEntityType] || String(val ?? '') },
+      { key: 'entity_id', label: 'ID', formatter: (val: unknown) => String(val ?? '') || 'N/A' },
+      { key: 'entity_description', label: 'Descrição', formatter: (val: unknown) => String(val ?? '') || 'N/A' },
     ];
 
     exportToCSV(logs as unknown as Record<string, unknown>[], exportColumns, 'auditoria');

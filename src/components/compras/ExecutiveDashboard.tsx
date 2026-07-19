@@ -116,7 +116,7 @@ export const ExecutiveDashboard = () => {
       { key: 'supplier', label: 'Fornecedor', value: selectedSupplier },
     ],
     takeSnapshot: () => ({ selectedCategory, selectedSupplier, selectedPeriod, showComparison }),
-    applySnapshot: (s: any) => {
+    applySnapshot: (s) => {
       setSelectedCategory(s.selectedCategory); setSelectedSupplier(s.selectedSupplier);
     },
     performClear: () => {
@@ -153,8 +153,8 @@ export const ExecutiveDashboard = () => {
     return data;
   }, [selectedCategory, selectedSupplier]);
 
-  const handleCategoryDrillDown = (category: any) => {
-     setSelectedCategory(category.name);
+  const handleCategoryDrillDown = (category: { name: string }) => {
+    setSelectedCategory(category.name);
   };
 
   return (

@@ -42,11 +42,11 @@ export function useProdutoFornecedores(produtoId?: string) {
 
       if (error) throw error;
       
-      return (data || []).map((pf: any) => ({
+      return (data || []).map((pf) => ({
         ...pf,
-        fornecedor_nome: pf.fornecedores?.razao_social,
-        fornecedor_email: pf.fornecedores?.email,
-        fornecedor_rating: pf.fornecedores?.avaliacao,
+        fornecedor_nome: (pf as { fornecedores?: { razao_social?: string; email?: string; avaliacao?: number | null } | null }).fornecedores?.razao_social,
+        fornecedor_email: (pf as { fornecedores?: { razao_social?: string; email?: string; avaliacao?: number | null } | null }).fornecedores?.email,
+        fornecedor_rating: (pf as { fornecedores?: { razao_social?: string; email?: string; avaliacao?: number | null } | null }).fornecedores?.avaliacao,
       })) as ProdutoFornecedor[];
     },
     enabled: !!produtoId && !!tenantId,

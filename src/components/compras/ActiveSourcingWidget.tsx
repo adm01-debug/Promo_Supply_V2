@@ -41,7 +41,7 @@ export const ActiveSourcingWidget = () => {
       <CardContent>
         {activeEvents.length > 0 ? (
           <div className="space-y-3">
-            {activeEvents.slice(0, 4).map((event: any) => (
+            {activeEvents.slice(0, 4).map((event) => (
               <div key={event.id} className="flex items-center justify-between p-3 rounded-xl bg-muted/30 border border-transparent hover:border-border transition-colors">
                 <div className="flex-1 min-w-0">
                   <p className="font-semibold text-sm truncate">{event.title}</p>

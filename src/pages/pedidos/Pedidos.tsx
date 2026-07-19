@@ -1,9 +1,9 @@
 import { useState, useMemo, useCallback } from "react";
 import { cn, formatCurrency } from "@/lib/utils";
-import { 
+import {
   FileText, Search, Download, Building2, Calendar, Clock,
   CheckCircle2, Truck, Package, X, ArrowUpDown, ChevronDown, RefreshCw, Trash2, BarChart3,
-  Filter, MoreHorizontal, Copy, List, Zap, Activity, AlertTriangle
+  Filter, MoreHorizontal, Copy, List, Zap, Activity, AlertTriangle, type LucideIcon
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
 
-const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
+const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   pendente: { label: 'PENDENTE', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
   aprovado: { label: 'APROVADO', color: 'bg-sky-500/10 text-sky-400 border-sky-500/20', icon: CheckCircle2 },
   enviado: { label: 'ENVIADO', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },

@@ -127,8 +127,8 @@ const ConfiguracoesCentroCusto = () => {
       }
       queryClient.invalidateQueries({ queryKey: ['cost-centers'] });
       setIsDialogOpen(false);
-    } catch (error: any) {
-      toast.error('Erro ao salvar: ' + error.message);
+    } catch (error: unknown) {
+      toast.error('Erro ao salvar: ' + (error as Error).message);
     } finally {
       setIsSaving(false);
     }
@@ -141,8 +141,8 @@ const ConfiguracoesCentroCusto = () => {
       if (error) throw error;
       toast.success('Centro de custo excluído');
       queryClient.invalidateQueries({ queryKey: ['cost-centers'] });
-    } catch (error: any) {
-      toast.error('Erro ao excluir: ' + error.message);
+    } catch (error: unknown) {
+      toast.error('Erro ao excluir: ' + (error as Error).message);
     }
   };
 

@@ -47,10 +47,10 @@ export function useEstoque() {
       
       if (error) throw error;
       
-      return (data || []).map((item: any) => ({
+      return (data || []).map((item) => ({
         ...item,
-        produto_nome: item.produtos?.nome,
-        produto_codigo: item.produtos?.codigo,
+        produto_nome: (item as { produtos?: { nome?: string; codigo?: string } | null }).produtos?.nome,
+        produto_codigo: (item as { produtos?: { nome?: string; codigo?: string } | null }).produtos?.codigo,
       })) as EstoqueItem[];
     },
     enabled: !!organizationId,

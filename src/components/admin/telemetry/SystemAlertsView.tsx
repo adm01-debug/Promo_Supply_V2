@@ -16,7 +16,7 @@ export interface SystemAlert {
   alert_type: string;
   severity: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
   message: string;
-  metadata: any;
+  metadata: Record<string, unknown> | null;
   resolved_at: string | null;
   resolved_by: string | null;
 }

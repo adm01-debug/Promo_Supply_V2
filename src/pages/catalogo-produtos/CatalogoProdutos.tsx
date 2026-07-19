@@ -84,8 +84,8 @@ const CatalogoProdutos = () => {
 
       setFormData(prev => ({ ...prev, imagem_url: publicUrl }));
       toast.success("Imagem enviada com sucesso!");
-    } catch (error: any) {
-      toast.error("Erro ao enviar imagem: " + error.message);
+    } catch (error: unknown) {
+      toast.error("Erro ao enviar imagem: " + (error as Error).message);
     } finally {
       setIsUploading(false);
     }
@@ -133,7 +133,7 @@ const CatalogoProdutos = () => {
     setModalOpen(false);
   };
 
-  const updateField = (field: string, value: any) => {
+  const updateField = (field: string, value: unknown) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 

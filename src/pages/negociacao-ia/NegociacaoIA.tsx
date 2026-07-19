@@ -532,7 +532,7 @@ const NegociacaoIA = () => {
               <CardContent className="px-2">
                 <div className="space-y-1 max-h-[800px] overflow-y-auto px-2 custom-scrollbar">
                   {pastAnalyses.length > 0 ? (
-                    pastAnalyses.map((a: any, idx) => (
+                    pastAnalyses.map((a, idx) => (
                       <motion.div 
                         key={a.id} 
                         initial={{ opacity: 0, x: 10 }}

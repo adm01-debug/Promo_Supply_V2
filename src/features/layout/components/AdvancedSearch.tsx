@@ -21,6 +21,12 @@ import { SearchEmptyState } from "./search/SearchEmptyState";
 import { SearchResultsList } from "./search/SearchResultsList";
 import { FileText, ShoppingCart, CreditCard, Building2, FileSignature } from "lucide-react";
 
+type SolicitacaoSearchRow = { id: string; titulo: string; numero: string; status: string; prioridade: string; valor_estimado: number };
+type PedidoSearchRow = { id: string; numero: string; status: string; valor_total: number; fornecedor: { razao_social?: string } | null };
+type FornecedorSearchRow = { id: string; nome_fantasia: string | null; razao_social: string; cnpj: string | null; segmento: string | null; status: string };
+type PagamentoSearchRow = { id: string; numero: string; status: string; valor: number; fornecedor: { razao_social?: string } | null };
+type ContractSearchRow = { id: string; title: string; contract_number: string; supplier_name: string; status: string; total_value: number };
+
 function useDebounceValue<T>(value: T, delay: number): T {
   const [debouncedValue, setDebouncedValue] = useState<T>(value);
   useEffect(() => {
@@ -96,11 +102,11 @@ export function AdvancedSearch() {
       }
 
       // DB searches
-      const searchEntities = async (table: string, cat: SearchCategory, fields: string, orFilter: string, mapFn: (item: any) => SearchResult & { normalizedTitle: string; normalizedSubtitle: string }, weight: number) => {
+      const searchEntities = async <T>(table: string, cat: SearchCategory, fields: string, orFilter: string, mapFn: (item: T) => SearchResult & { normalizedTitle: string; normalizedSubtitle: string }, weight: number) => {
         if (category !== 'all' && category !== cat) return;
         const { data } = await supabase.from(table as Parameters<typeof supabase.from>[0]).select(fields).or(orFilter).limit(20);
         if (!data?.length) return;
-        const items = data.map(mapFn);
+        const items = (data as unknown as T[]).map(mapFn);
         const fuse = new Fuse(items, fuseOptions);
         const seenIds = new Set<string>();
         [...fuse.search(searchQuery), ...fuse.search(normalizedQuery)].forEach(r => {
@@ -110,11 +116,11 @@ export function AdvancedSearch() {
       };
 
       await Promise.all([
-        searchEntities('solicitacoes', 'solicitacoes', 'id, numero, titulo, status, prioridade, valor_estimado', `titulo.ilike.%${searchQuery}%,numero.ilike.%${searchQuery}%`, (s) => ({ id: s.id, title: s.titulo, subtitle: `${s.numero} • ${s.status}`, normalizedTitle: normalizeText(s.titulo), normalizedSubtitle: normalizeText(`${s.numero} ${s.status}`), type: 'solicitacoes' as SearchCategory, icon: FileText, href: `/solicitacoes?id=${s.id}`, metadata: { status: s.status, value: s.valor_estimado, priority: s.prioridade } }), 90),
-        searchEntities('pedidos', 'pedidos', 'id, numero, status, valor_total, fornecedor:fornecedores(razao_social)', `numero.ilike.%${searchQuery}%`, (p) => { const f = p.fornecedor as { razao_social?: string } | null; return { id: p.id, title: `Pedido ${p.numero}`, subtitle: `${f?.razao_social || 'Fornecedor'} • ${p.status}`, normalizedTitle: normalizeText(`Pedido ${p.numero}`), normalizedSubtitle: normalizeText(`${f?.razao_social || ''} ${p.status}`), type: 'pedidos' as SearchCategory, icon: ShoppingCart, href: `/pedidos?id=${p.id}`, metadata: { status: p.status, value: p.valor_total } }; }, 85),
-        searchEntities('fornecedores', 'fornecedores', 'id, razao_social, nome_fantasia, cnpj, status, segmento', `razao_social.ilike.%${searchQuery}%,nome_fantasia.ilike.%${searchQuery}%,cnpj.ilike.%${searchQuery}%`, (f) => ({ id: f.id, title: f.nome_fantasia || f.razao_social, subtitle: `CNPJ: ${f.cnpj || 'N/A'} • ${f.segmento || 'Geral'}`, normalizedTitle: normalizeText(f.nome_fantasia || f.razao_social), normalizedSubtitle: normalizeText(`${f.cnpj || ''} ${f.segmento || ''}`), type: 'fornecedores' as SearchCategory, icon: Building2, href: `/fornecedores?id=${f.id}`, metadata: { status: f.status } }), 88),
-        searchEntities('pagamentos', 'pagamentos', 'id, numero, status, valor, fornecedor:fornecedores(razao_social)', `numero.ilike.%${searchQuery}%`, (p) => { const f = p.fornecedor as { razao_social?: string } | null; return { id: p.id, title: `Pagamento ${p.numero}`, subtitle: `${f?.razao_social || 'Fornecedor'} • R$ ${p.valor?.toLocaleString('pt-BR')}`, normalizedTitle: normalizeText(`Pagamento ${p.numero}`), normalizedSubtitle: normalizeText(`${f?.razao_social || ''}`), type: 'pagamentos' as SearchCategory, icon: CreditCard, href: `/pagamentos?id=${p.id}`, metadata: { status: p.status, value: p.valor } }; }, 82),
-        searchEntities('contracts', 'contratos', 'id, contract_number, title, supplier_name, status, total_value', `title.ilike.%${searchQuery}%,contract_number.ilike.%${searchQuery}%,supplier_name.ilike.%${searchQuery}%`, (c) => ({ id: c.id, title: c.title, subtitle: `${c.contract_number} • ${c.supplier_name}`, normalizedTitle: normalizeText(c.title), normalizedSubtitle: normalizeText(`${c.contract_number} ${c.supplier_name}`), type: 'contratos' as SearchCategory, icon: FileSignature, href: `/contratos?id=${c.id}`, metadata: { status: c.status, value: c.total_value } }), 86),
+        searchEntities<SolicitacaoSearchRow>('solicitacoes', 'solicitacoes', 'id, numero, titulo, status, prioridade, valor_estimado', `titulo.ilike.%${searchQuery}%,numero.ilike.%${searchQuery}%`, (s) => ({ id: s.id, title: s.titulo, subtitle: `${s.numero} • ${s.status}`, normalizedTitle: normalizeText(s.titulo), normalizedSubtitle: normalizeText(`${s.numero} ${s.status}`), type: 'solicitacoes' as SearchCategory, icon: FileText, href: `/solicitacoes?id=${s.id}`, metadata: { status: s.status, value: s.valor_estimado, priority: s.prioridade } }), 90),
+        searchEntities<PedidoSearchRow>('pedidos', 'pedidos', 'id, numero, status, valor_total, fornecedor:fornecedores(razao_social)', `numero.ilike.%${searchQuery}%`, (p) => { const f = p.fornecedor; return { id: p.id, title: `Pedido ${p.numero}`, subtitle: `${f?.razao_social || 'Fornecedor'} • ${p.status}`, normalizedTitle: normalizeText(`Pedido ${p.numero}`), normalizedSubtitle: normalizeText(`${f?.razao_social || ''} ${p.status}`), type: 'pedidos' as SearchCategory, icon: ShoppingCart, href: `/pedidos?id=${p.id}`, metadata: { status: p.status, value: p.valor_total } }; }, 85),
+        searchEntities<FornecedorSearchRow>('fornecedores', 'fornecedores', 'id, razao_social, nome_fantasia, cnpj, status, segmento', `razao_social.ilike.%${searchQuery}%,nome_fantasia.ilike.%${searchQuery}%,cnpj.ilike.%${searchQuery}%`, (f) => ({ id: f.id, title: f.nome_fantasia || f.razao_social, subtitle: `CNPJ: ${f.cnpj || 'N/A'} • ${f.segmento || 'Geral'}`, normalizedTitle: normalizeText(f.nome_fantasia || f.razao_social), normalizedSubtitle: normalizeText(`${f.cnpj || ''} ${f.segmento || ''}`), type: 'fornecedores' as SearchCategory, icon: Building2, href: `/fornecedores?id=${f.id}`, metadata: { status: f.status } }), 88),
+        searchEntities<PagamentoSearchRow>('pagamentos', 'pagamentos', 'id, numero, status, valor, fornecedor:fornecedores(razao_social)', `numero.ilike.%${searchQuery}%`, (p) => { const f = p.fornecedor; return { id: p.id, title: `Pagamento ${p.numero}`, subtitle: `${f?.razao_social || 'Fornecedor'} • R$ ${p.valor?.toLocaleString('pt-BR')}`, normalizedTitle: normalizeText(`Pagamento ${p.numero}`), normalizedSubtitle: normalizeText(`${f?.razao_social || ''}`), type: 'pagamentos' as SearchCategory, icon: CreditCard, href: `/pagamentos?id=${p.id}`, metadata: { status: p.status, value: p.valor } }; }, 82),
+        searchEntities<ContractSearchRow>('contracts', 'contratos', 'id, contract_number, title, supplier_name, status, total_value', `title.ilike.%${searchQuery}%,contract_number.ilike.%${searchQuery}%,supplier_name.ilike.%${searchQuery}%`, (c) => ({ id: c.id, title: c.title, subtitle: `${c.contract_number} • ${c.supplier_name}`, normalizedTitle: normalizeText(c.title), normalizedSubtitle: normalizeText(`${c.contract_number} ${c.supplier_name}`), type: 'contratos' as SearchCategory, icon: FileSignature, href: `/contratos?id=${c.id}`, metadata: { status: c.status, value: c.total_value } }), 86),
       ]);
 
       allResults.sort((a, b) => (b.score || 0) - (a.score || 0));

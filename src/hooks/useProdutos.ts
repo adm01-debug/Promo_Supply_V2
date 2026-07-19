@@ -49,10 +49,10 @@ export function useProdutos() {
         .eq('organization_id', organizationId!)
         .order("nome");
       if (error) throw error;
-      return (data || []).map((p: any) => ({
+      return (data || []).map((p) => ({
         ...p,
-        categoria_nome: p.categorias?.nome || null,
-        fornecedor_nome: p.fornecedores?.razao_social || null,
+        categoria_nome: (p as { categorias?: { nome?: string } | null }).categorias?.nome ?? null,
+        fornecedor_nome: (p as { fornecedores?: { razao_social?: string } | null }).fornecedores?.razao_social ?? null,
       })) as Produto[];
     },
     enabled: !!organizationId,

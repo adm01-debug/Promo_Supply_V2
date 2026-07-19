@@ -35,7 +35,7 @@ export const SourcingIntelligenceWidget = () => {
         ];
       }
 
-      return linkedData.map((d: any) => ({
+      return linkedData.map((d) => ({
         category: d.produto?.nome || 'Insumo',
         supplier: d.fornecedor?.razao_social || 'Parceiro',
         saving: 'Optimization',

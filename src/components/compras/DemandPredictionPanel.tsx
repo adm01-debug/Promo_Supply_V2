@@ -138,7 +138,7 @@ export function DemandPredictionPanel() {
     try {
       const { data, error } = await supabase.functions.invoke('ai-demand-prediction', {
         body: {
-          historicalData: historicalData.map((item: any) => ({
+          historicalData: historicalData.map((item) => ({
             month: item.month,
             value: item.totalValue,
             quantity: item.totalQuantity,

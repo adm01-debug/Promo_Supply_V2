@@ -172,7 +172,7 @@ const AuctionRoom = () => {
                     />
                     <ChartTooltip 
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                      formatter={(value: any) => [formatCurrency(value), 'Lance']}
+                      formatter={(value: number) => [formatCurrency(value), 'Lance']}
                     />
                     <Area 
                       type="monotone" 

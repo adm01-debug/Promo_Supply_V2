@@ -135,7 +135,7 @@ export function SupplierChat() {
         const state = channel.presenceState();
         const usersTyping: string[] = [];
          
-        Object.values(state).forEach((presences: any[]) => {
+        Object.values(state).forEach((presences) => {
           presences.forEach((presence: Record<string, unknown>) => {
             if (presence["isTyping"] && presence["userId"] !== user.id) {
               usersTyping.push((presence["userName"] as string) || 'Alguém');

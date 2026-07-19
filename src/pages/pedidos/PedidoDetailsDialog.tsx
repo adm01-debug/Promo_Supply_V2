@@ -1,4 +1,4 @@
-import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap, Package, ShoppingBag, Palette, MapPin, ClipboardCheck, ArrowRight, AlertTriangle } from "lucide-react";
+import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap, Package, ShoppingBag, Palette, MapPin, ClipboardCheck, ArrowRight, AlertTriangle, type LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ import { cn, formatCurrency } from "@/lib/utils";
 import { ProductionRoutingEngine, SourcingIntelligenceBanner } from "@/components/compras/ProductionRoutingEngine";
 import { SupplierInteractionLog } from "@/components/compras/SupplierInteractionLog";
 
-const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
+const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   pendente: { label: 'PENDENTE', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
   aprovado: { label: 'APROVADO', color: 'bg-sky-500/10 text-sky-400 border-sky-500/20', icon: CheckCircle2 },
   enviado: { label: 'ENVIADO', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },
@@ -78,8 +78,8 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
       queryClient.invalidateQueries({ queryKey: ['dashboard-solicitacoes'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-pedidos'] });
       toast.success('Estado de produção atualizado');
-    } catch (err: any) {
-      toast.error('Erro ao atualizar produção: ' + err.message);
+    } catch (err: unknown) {
+      toast.error('Erro ao atualizar produção: ' + (err as Error).message);
     }
   };
 
@@ -289,7 +289,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
 
                 <TabsContent value="itens" className="mt-0 space-y-6 focus-visible:ring-0">
                   <div className="grid grid-cols-1 gap-6">
-                    {itens.map((item: any) => {
+                    {itens.map((item) => {
                       const tipo = item.produto?.tipo_produto || 'fabricado';
                       const statusProd = item.status_producao || 'pendente';
                       
