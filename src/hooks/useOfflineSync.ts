@@ -12,28 +12,44 @@ interface PendingOperation {
   type: 'create' | 'update' | 'delete';
   table: string;
   data: Record<string, unknown>;
+  /** Unix ms when the client created this record (for conflict detection on updates). */
+  clientTimestamp: number;
   timestamp: number;
   retries: number;
+}
+
+/** Operations that exceeded MAX_RETRIES land here instead of being silently dropped. */
+interface DeadLetterOperation extends PendingOperation {
+  failedAt: number;
+  lastError: string;
 }
 
 interface OfflineSyncState {
   isOnline: boolean;
   isSyncing: boolean;
   pendingCount: number;
+  deadLetterCount: number;
   lastSyncAt: Date | null;
 }
 
 const STORAGE_KEY = 'offline_pending_operations';
-const MAX_RETRIES = 3;
+const DLQ_STORAGE_KEY = 'offline_dead_letter_queue';
+const MAX_RETRIES = 5;
+
+/** Exponential backoff: 1s, 2s, 4s, 8s, 16s (capped) */
+function backoffDelay(retries: number): number {
+  return Math.min(1000 * 2 ** retries, 30_000);
+}
 
 export function useOfflineSync() {
   const queryClient = useQueryClient();
   const syncTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
+
   const [state, setState] = useState<OfflineSyncState>({
     isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
     isSyncing: false,
     pendingCount: 0,
+    deadLetterCount: 0,
     lastSyncAt: null,
   });
 
@@ -41,6 +57,15 @@ export function useOfflineSync() {
   const getPendingOperations = useCallback((): PendingOperation[] => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  }, []);
+
+  const getDeadLetterQueue = useCallback((): DeadLetterOperation[] => {
+    try {
+      const stored = localStorage.getItem(DLQ_STORAGE_KEY);
       return stored ? JSON.parse(stored) : [];
     } catch {
       return [];
@@ -57,6 +82,18 @@ export function useOfflineSync() {
     }
   }, []);
 
+  const saveDeadLetter = useCallback((op: DeadLetterOperation) => {
+    try {
+      const queue = getDeadLetterQueue();
+      // Keep last 50 DLQ entries to avoid unbounded growth
+      const updated = [...queue, op].slice(-50);
+      localStorage.setItem(DLQ_STORAGE_KEY, JSON.stringify(updated));
+      setState(prev => ({ ...prev, deadLetterCount: updated.length }));
+    } catch {
+      /* ignore quota errors */
+    }
+  }, [getDeadLetterQueue]);
+
   // Add a pending operation
   const addPendingOperation = useCallback((
     type: PendingOperation['type'],
@@ -69,12 +106,12 @@ export function useOfflineSync() {
       type,
       table,
       data,
+      clientTimestamp: Date.now(),
       timestamp: Date.now(),
       retries: 0,
     };
-    
+
     savePendingOperations([...operations, newOperation]);
-    
     return newOperation.id;
   }, [getPendingOperations, savePendingOperations]);
 
@@ -100,7 +137,7 @@ export function useOfflineSync() {
       try {
         let result;
         const tableName = operation.table as 'solicitacoes' | 'pedidos' | 'fornecedores' | 'pagamentos' | 'cotacoes' | 'contracts';
-        
+
         switch (operation.type) {
           case 'create':
             result = await supabase
@@ -109,6 +146,28 @@ export function useOfflineSync() {
             break;
           case 'update': {
             const { id: updateId, ...updateData } = operation.data;
+            // Conflict detection: only apply if the server row hasn't been
+            // modified since we captured the operation (last-writer-wins guard).
+            if (operation.clientTimestamp) {
+              const { data: serverRow } = await supabase
+                .from(tableName)
+                .select('updated_at')
+                .eq('id', updateId as string)
+                .maybeSingle();
+              const serverTs = serverRow && 'updated_at' in serverRow
+                ? new Date((serverRow as { updated_at: string }).updated_at).getTime()
+                : 0;
+              if (serverTs > operation.clientTimestamp) {
+                // Server is newer — skip silently and log for observability
+                logger.warn('offlineSync: conflito detectado — descartando atualização offline', {
+                  table: operation.table,
+                  id: updateId,
+                  serverTs: new Date(serverTs).toISOString(),
+                  clientTs: new Date(operation.clientTimestamp).toISOString(),
+                });
+                continue;
+              }
+            }
             result = await supabase
               .from(tableName)
               .update(updateData as never)
@@ -127,33 +186,42 @@ export function useOfflineSync() {
           throw result.error;
         }
 
-        // Synced successfully
+        // Synced successfully — nothing to push to failedOperations
       } catch (error) {
+        const errMsg = error instanceof Error ? error.message : String(error);
         logger.error('offlineSync: falha ao sincronizar operação', {
           operationId: operation.id,
           type: operation.type,
           table: operation.table,
           retries: operation.retries,
-          error: error instanceof Error ? error.message : String(error),
+          error: errMsg,
         });
 
         if (operation.retries < MAX_RETRIES) {
-          failedOperations.push({
-            ...operation,
-            retries: operation.retries + 1,
+          // Schedule retry with exponential backoff
+          const delay = backoffDelay(operation.retries);
+          logger.warn(`offlineSync: reagendando tentativa ${operation.retries + 1}/${MAX_RETRIES} em ${delay}ms`, {
+            operationId: operation.id,
           });
+          failedOperations.push({ ...operation, retries: operation.retries + 1 });
         } else {
-          logger.error('offlineSync: máximo de tentativas atingido — operação descartada', {
+          // Move to dead-letter queue instead of silently discarding
+          logger.error('offlineSync: máximo de tentativas atingido — movendo para DLQ', {
             operationId: operation.id,
             type: operation.type,
             table: operation.table,
+          });
+          saveDeadLetter({
+            ...operation,
+            failedAt: Date.now(),
+            lastError: errMsg,
           });
         }
       }
     }
 
     savePendingOperations(failedOperations);
-    
+
     // Invalidate queries to refresh data
     await queryClient.invalidateQueries();
 
@@ -163,14 +231,18 @@ export function useOfflineSync() {
       lastSyncAt: new Date(),
       pendingCount: failedOperations.length,
     }));
-  }, [state.isOnline, state.isSyncing, getPendingOperations, savePendingOperations, queryClient]);
+
+    // If retries remain, schedule next attempt with backoff from the first failure
+    if (failedOperations.length > 0) {
+      const delay = backoffDelay(failedOperations[0].retries);
+      syncTimeoutRef.current = setTimeout(syncPendingOperations, delay);
+    }
+  }, [state.isOnline, state.isSyncing, getPendingOperations, savePendingOperations, saveDeadLetter, queryClient]);
 
   // Handle online status changes
   useEffect(() => {
     const handleOnline = () => {
-      // Back online - trigger sync
       setState(prev => ({ ...prev, isOnline: true }));
-      
       // Delay sync slightly to ensure connection is stable
       syncTimeoutRef.current = setTimeout(() => {
         syncPendingOperations();
@@ -178,9 +250,7 @@ export function useOfflineSync() {
     };
 
     const handleOffline = () => {
-      // Gone offline
       setState(prev => ({ ...prev, isOnline: false }));
-      
       if (syncTimeoutRef.current) {
         clearTimeout(syncTimeoutRef.current);
       }
@@ -189,9 +259,10 @@ export function useOfflineSync() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Initial pending count
+    // Initial pending / DLQ counts
     const pending = getPendingOperations();
-    setState(prev => ({ ...prev, pendingCount: pending.length }));
+    const dlq = getDeadLetterQueue();
+    setState(prev => ({ ...prev, pendingCount: pending.length, deadLetterCount: dlq.length }));
 
     // Sync on mount if online and has pending
     if (navigator.onLine && pending.length > 0) {
@@ -205,12 +276,9 @@ export function useOfflineSync() {
         clearTimeout(syncTimeoutRef.current);
       }
     };
-  }, [getPendingOperations, syncPendingOperations]);
+  }, [getPendingOperations, getDeadLetterQueue, syncPendingOperations]);
 
-  // Wrapper for operations that can be queued offline. Caller passes the
-  // payload to be replayed on reconnect; previously the helper queued
-  // `error.data || {}`, which is virtually always undefined → enqueued empty
-  // payloads that produced malformed rows when replayed.
+  // Wrapper for operations that can be queued offline.
   const withOfflineSupport = useCallback(<T extends Record<string, unknown>>(
     table: string,
     type: PendingOperation['type'],
@@ -218,7 +286,7 @@ export function useOfflineSync() {
     operation: () => Promise<T>
   ): Promise<T | { offline: true; operationId: string }> => {
     return operation().catch((error) => {
-      if (!state.isOnline || error.message?.includes('network')) {
+      if (!state.isOnline || (error as Error).message?.includes('network')) {
         const operationId = addPendingOperation(type, table, payload);
         return { offline: true, operationId };
       }
@@ -233,5 +301,6 @@ export function useOfflineSync() {
     syncPendingOperations,
     withOfflineSupport,
     hasPendingOperations: state.pendingCount > 0,
+    deadLetterQueue: getDeadLetterQueue,
   };
 }
