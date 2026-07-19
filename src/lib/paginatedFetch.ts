@@ -5,20 +5,25 @@ import { supabase } from '@/integrations/supabase/client';
  * Uses cursor-based pagination with .range() to fetch in batches.
  * Optimized: pre-allocates array and avoids spread operator in loop.
  */
+const DEFAULT_MAX_ROWS = 50_000;
+
 export async function fetchAllRows<T = Record<string, unknown>>(
   table: string,
   select: string,
   options?: {
     filters?: Array<{ column: string; operator: string; value: string }>;
     pageSize?: number;
+    maxRows?: number;
   }
 ): Promise<T[]> {
   const pageSize = options?.pageSize || 1000;
+  const maxRows = options?.maxRows ?? DEFAULT_MAX_ROWS;
   const allData: T[] = [];
   let from = 0;
   let hasMore = true;
 
   while (hasMore) {
+    if (allData.length >= maxRows) break;
     let query = supabase.from(table as never).select(select).range(from, from + pageSize - 1);
 
     if (options?.filters) {

@@ -37,6 +37,10 @@ export default defineConfig({
     },
   },
   resolve: {
-    alias: { "@": path.resolve(__dirname, "./src") },
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+      // Redirect Deno-style HTTPS zod import used in edge function shared contracts
+      "https://esm.sh/zod@3.22.4": path.resolve(__dirname, "node_modules/zod/lib/index.mjs"),
+    },
   },
 });

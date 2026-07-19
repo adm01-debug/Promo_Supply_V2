@@ -30,8 +30,7 @@ export default tseslint.config(
       "@typescript-eslint/no-non-null-asserted-optional-chain": "off",
       "no-shadow-restricted-names": "off",
       "no-useless-escape": "off",
-      "react-hooks/rules-of-hooks": "off",
-      "react-hooks/exhaustive-deps": "off",
+      "react-hooks/exhaustive-deps": "warn",
       "@typescript-eslint/no-require-imports": "off",
       "no-case-declarations": "off"
     },

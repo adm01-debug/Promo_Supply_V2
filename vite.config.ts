@@ -90,10 +90,10 @@ export default defineConfig(({ mode }) => ({
               networkTimeoutSeconds: 10,
               expiration: {
                 maxEntries: 200,
-                maxAgeSeconds: 60 * 60 * 24,
+                maxAgeSeconds: 60 * 5,
               },
               cacheableResponse: {
-                statuses: [0, 200],
+                statuses: [200],
               },
             },
           },
@@ -162,7 +162,6 @@ export default defineConfig(({ mode }) => ({
         },
       },
       treeshake: {
-        moduleSideEffects: false,
         propertyReadSideEffects: false,
       },
     },

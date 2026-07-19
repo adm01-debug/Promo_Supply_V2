@@ -113,16 +113,16 @@ export const AnimatedRoutes = () => {
             <Route path="/sourcing/:id/auction" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><AuctionRoom /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/licitacoes" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><Licitacoes /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/recebimento" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="form"><RecebimentoOffline /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/telemetria" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><AdminTelemetria /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/dependency-health" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><DependencyHealth /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/sso" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><SSOConfig /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/punchout" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><PunchOutCatalogs /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/erp" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><ERPConnections /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/fiscal" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><FiscalDashboard /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/sourcing-pipeline" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="kanban"><SourcingPipeline /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/workflows" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><WorkflowDesigner /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/docs" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><DeveloperDocs /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/storage-migration" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><StorageMigration /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/admin/telemetria" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><AdminTelemetria /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/dependency-health" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><DependencyHealth /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/sso" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><SSOConfig /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/punchout" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><PunchOutCatalogs /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/erp" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><ERPConnections /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/fiscal" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><FiscalDashboard /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/sourcing-pipeline" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="kanban"><SourcingPipeline /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/workflows" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><WorkflowDesigner /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/docs" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><DeveloperDocs /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/storage-migration" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><StorageMigration /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/admin/health" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><HealthDashboard /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/admin/health/alerts/:id" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><AlertDetail /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
 
