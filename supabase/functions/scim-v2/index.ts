@@ -5,8 +5,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 import { z } from "https://esm.sh/zod@3.22.4";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
-// HIGH-C9: validate SCIM POST /Users body before hitting the admin API to avoid
-// creating orphan users with undefined email or missing name.
+// RFC 7643 §4.1 — SCIM User resource schemas
 const ScimUserPostSchema = z.object({
   emails: z.array(z.object({ value: z.string().email(), primary: z.boolean().optional() })).min(1),
   displayName: z.string().min(1).optional(),
@@ -14,6 +13,27 @@ const ScimUserPostSchema = z.object({
 }).refine((v) => !!(v.displayName || v.name?.formatted), {
   message: "displayName or name.formatted is required",
 });
+
+// RFC 7644 §3.5.1 — PATCH Operations
+const ScimPatchSchema = z.object({
+  schemas: z.array(z.string()).optional(),
+  Operations: z.array(z.object({
+    op: z.enum(["Add", "Remove", "Replace", "add", "remove", "replace"]),
+    path: z.string().optional(),
+    value: z.unknown().optional(),
+  })).min(1),
+});
+
+function scimErrorResponse(detail: string, status: number, headers: Record<string, string>): Response {
+  return new Response(
+    JSON.stringify({
+      schemas: ["urn:ietf:params:scim:api:messages:2.0:Error"],
+      detail,
+      status: String(status),
+    }),
+    { status, headers: buildResponseHeaders(headers) },
+  );
+}
 
 const encoder = new TextEncoder();
 
@@ -122,13 +142,10 @@ serve(async (req) => {
         const rawBody = await req.json().catch(() => null);
         const parsed = ScimUserPostSchema.safeParse(rawBody);
         if (!parsed.success) {
-          return new Response(
-            JSON.stringify({
-              schemas: ["urn:ietf:params:scim:api:messages:2.0:Error"],
-              detail: parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "),
-              status: "400",
-            }),
-            { status: 400, headers: buildResponseHeaders(corsHeaders) },
+          return scimErrorResponse(
+            parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "),
+            400,
+            corsHeaders,
           );
         }
 
@@ -143,8 +160,44 @@ serve(async (req) => {
 
         if (error) throw error;
 
-        return new Response(JSON.stringify(mapSupabaseUserToSCIM(data.user)), {
+        const scimUser = mapSupabaseUserToSCIM(data.user);
+        // RFC 7644 §3.3: 201 response MUST include a Location header
+        const locationHeader = `${url.origin}${url.pathname.replace(/\/$/, "")}/Users/${data.user.id}`;
+        return new Response(JSON.stringify(scimUser), {
           status: 201,
+          headers: { ...buildResponseHeaders(corsHeaders), Location: locationHeader },
+        });
+      }
+
+      // RFC 7644 §3.5.1 — PATCH: partial attribute update via Operations array
+      if (req.method === "PATCH" && resourceId) {
+        const rawBody = await req.json().catch(() => null);
+        const parsed = ScimPatchSchema.safeParse(rawBody);
+        if (!parsed.success) {
+          return scimErrorResponse(
+            parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "),
+            400,
+            corsHeaders,
+          );
+        }
+
+        // Map SCIM Operations to Supabase user_metadata fields
+        const metaUpdates: Record<string, unknown> = {};
+        for (const op of parsed.data.Operations) {
+          const normalizedOp = op.op.toLowerCase();
+          if ((normalizedOp === "replace" || normalizedOp === "add") && op.path && op.value !== undefined) {
+            if (op.path === "displayName") metaUpdates["full_name"] = op.value;
+            // Additional SCIM attribute mappings can be added here
+          }
+        }
+
+        const { data, error } = await supabaseAdmin.auth.admin.updateUserById(resourceId, {
+          user_metadata: metaUpdates,
+        });
+        if (error) throw error;
+
+        return new Response(JSON.stringify(mapSupabaseUserToSCIM(data.user)), {
+          status: 200,
           headers: buildResponseHeaders(corsHeaders),
         });
       }
@@ -152,22 +205,21 @@ serve(async (req) => {
       if (req.method === "DELETE" && resourceId) {
         const { error } = await supabaseAdmin.auth.admin.deleteUser(resourceId);
         if (error) throw error;
-        return new Response(null, { status: 204, headers: buildResponseHeaders(corsHeaders) });
+        // RFC 7644 §3.6: 204 No Content — empty body
+        return new Response(null, {
+          status: 204,
+          headers: { ...buildResponseHeaders(corsHeaders), "content-length": "0" },
+        });
       }
     }
 
-    return new Response(JSON.stringify({ error: "Method not supported" }), {
-      status: 405,
-      headers: buildResponseHeaders(corsHeaders),
-    });
+    return scimErrorResponse("Method not supported", 405, corsHeaders);
 
   } catch (error: unknown) {
     console.error("SCIM Error:", error);
     const message = error instanceof Error ? error.message : "SCIM request failed";
-    return new Response(JSON.stringify({ error: message }), {
-      status: 400,
-      headers: buildResponseHeaders(corsHeaders),
-    });
+    // RFC 7644 §3.12: all errors must use the SCIM Error schema
+    return scimErrorResponse(message, 400, corsHeaders);
   }
 });
 
