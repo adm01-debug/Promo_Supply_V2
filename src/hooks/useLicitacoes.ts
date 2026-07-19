@@ -67,7 +67,7 @@ export function useLicitacoes() {
       toast.error('Erro: ' + (err instanceof Error ? err.message : 'desconhecido'));
       return null;
     }
-  }, [user, tenantId, invalidate]);
+  }, [user, tenantId, invalidate, organizationId]);
 
   const updateLicitacao = useCallback(async (id: string, updates: Partial<Licitacao>) => {
     try {

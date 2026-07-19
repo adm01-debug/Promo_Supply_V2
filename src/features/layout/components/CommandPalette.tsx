@@ -170,7 +170,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     ...item,
     normalizedLabel: normalizeText(item.label),
     normalizedKeywords: item.keywords?.map(k => normalizeText(k)),
-  })), [currentTheme, mounted, navigate, setTheme]);
+  })), [currentTheme, navigate, setTheme]);
 
   const allItems = React.useMemo(() => 
     [...navigationItems, ...actionItems, ...settingsItems],

@@ -111,7 +111,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     refetchOnWindowFocus: false,
   });
 
-  const solicitacoes = data?.data || [];
+  const solicitacoes = useMemo(() => data?.data ?? [], [data]);
   const totalCount = data?.totalCount || 0;
 
   const invalidate = useCallback(() => {

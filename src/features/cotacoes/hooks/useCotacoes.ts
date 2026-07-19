@@ -125,7 +125,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
       toast.error('Erro ao adicionar cotação: ' + msg);
       return null;
     }
-  }, [user, invalidate]);
+  }, [user, invalidate, organizationId]);
 
   const updateCotacao = useCallback(async (id: string, updates: Partial<Cotacao>) => {
     try {

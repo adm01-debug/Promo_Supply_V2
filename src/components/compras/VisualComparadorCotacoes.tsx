@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Scale, 
@@ -160,8 +160,8 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
     );
   };
 
-  const selectedCotacoes = cotacoes.filter(c => selectedIds.includes(c.id));
-  const getScore = (id: string) => analysis?.scores.find(s => s.id === id);
+  const selectedCotacoes = useMemo(() => cotacoes.filter(c => selectedIds.includes(c.id)), [cotacoes, selectedIds]);
+  const getScore = useCallback((id: string) => analysis?.scores.find(s => s.id === id), [analysis]);
 
   // Prepare chart data
   const barChartData = useMemo(() => {
@@ -216,7 +216,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
         }))
       },
     ];
-  }, [selectedCotacoes, analysis]);
+  }, [selectedCotacoes, getScore, analysis]);
 
   const pieData = useMemo(() => {
     return selectedCotacoes.map((c, index) => ({
@@ -224,7 +224,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
       value: getScore(c.id)?.score || 0,
       fill: COLORS[index % COLORS.length]
     }));
-  }, [selectedCotacoes, analysis]);
+  }, [selectedCotacoes, getScore]);
 
   if (!analysis) return null;
 

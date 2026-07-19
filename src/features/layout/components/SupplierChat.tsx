@@ -161,7 +161,7 @@ export function SupplierChat() {
         presenceChannelRef.current = null;
       }
     };
-  }, [selectedContact?.fornecedorId, user]);
+  }, [selectedContact, user]);
 
   const updateTypingStatus = useCallback(async (typing: boolean) => {
     if (!presenceChannelRef.current || !user) return;

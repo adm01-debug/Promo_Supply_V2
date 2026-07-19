@@ -112,7 +112,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
     } finally {
       setUploading(false);
     }
-  }, [pagamento, user, queryClient]);
+  }, [pagamento, user, queryClient, tenantId]);
 
   const handleApplyCredit = useCallback(async (creditId: string, creditSaldo: number) => {
     if (!pagamento || !user) return;

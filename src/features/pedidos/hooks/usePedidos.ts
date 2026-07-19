@@ -126,7 +126,7 @@ export function usePedidos(filters?: PedidoFilters) {
     refetchOnWindowFocus: false,
   });
 
-  const pedidos = data?.data || [];
+  const pedidos = useMemo(() => data?.data ?? [], [data]);
   const totalCount = data?.totalCount || 0;
 
   // Create new pedido

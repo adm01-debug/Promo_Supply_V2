@@ -137,6 +137,7 @@ export default function HealthDashboard() {
     staleTime: 30_000,
     refetchInterval: 60_000,
   });
+  const { refetch } = query;
 
   const [resolveTarget, setResolveTarget] = useState<OpenAlertRow | null>(null);
   const [resolveNote, setResolveNote] = useState("");
@@ -251,7 +252,7 @@ export default function HealthDashboard() {
               duration: 10_000,
             });
           }
-          query.refetch();
+          refetch();
         }
       )
       .subscribe();
@@ -259,8 +260,7 @@ export default function HealthDashboard() {
     return () => {
       supabase.removeChannel(channel);
     };
-     
-  }, []);
+  }, [refetch]);
 
   return (
     <>

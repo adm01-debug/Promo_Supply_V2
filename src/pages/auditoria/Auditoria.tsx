@@ -1,4 +1,4 @@
-import { useState, useEffect, Fragment } from 'react';
+import { useState, useEffect, useCallback, Fragment } from 'react';
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
 import { History, Download, Filter, Search, RefreshCw, ChevronDown, ChevronRight, User, FileText, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -34,7 +34,7 @@ const Auditoria = () => {
   const [page, setPage] = useState(0);
   const pageSize = 20;
 
-  const loadLogs = async () => {
+  const loadLogs = useCallback(async () => {
     setLoading(true);
     const { data, count } = await fetchAuditLogs({
       limit: pageSize,
@@ -46,11 +46,11 @@ const Auditoria = () => {
     setLogs(data);
     setTotalCount(count);
     setLoading(false);
-  };
+  }, [pageSize, page, entityFilter, actionFilter, search]);
 
   useEffect(() => {
     loadLogs();
-  }, [entityFilter, actionFilter, page]);
+  }, [loadLogs]);
 
   // Log page view for demonstration
   useEffect(() => {

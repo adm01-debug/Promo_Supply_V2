@@ -96,6 +96,8 @@ export function useRealtimeSubscription({
 
   const { tenantId } = useAuth();
 
+  const tablesKey = tables.join(',');
+
   useEffect(() => {
     if (!enabled || tables.length === 0) return;
 
@@ -156,5 +158,5 @@ export function useRealtimeSubscription({
         channelRef.current = null;
       }
     };
-  }, [enabled, tables.join(','), debounceMs, flushInvalidations, tenantId]);
+  }, [enabled, tablesKey, debounceMs, flushInvalidations, tenantId, tables]);
 }

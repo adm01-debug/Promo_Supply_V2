@@ -296,7 +296,7 @@ export const useApprovalWorkflow = () => {
       fetchPendingWorkflows(),
       fetchPendingSteps(),
     ]);
-  }, [rulesApi.fetchRules, rulesApi.fetchDelegations, fetchPendingWorkflows, fetchPendingSteps]);
+  }, [rulesApi, fetchPendingWorkflows, fetchPendingSteps]);
 
   useEffect(() => {
     escalationRefCount += 1;

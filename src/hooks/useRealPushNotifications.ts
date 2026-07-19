@@ -63,40 +63,13 @@ export function useRealPushNotifications() {
     }
   }, []);
 
-  // Request browser notification permission
-  const requestPermission = useCallback(async () => {
-    if (!('Notification' in window)) {
-      toast({
-        title: 'Não suportado',
-        description: 'Seu navegador não suporta notificações push.',
-        variant: 'destructive',
-      });
-      return 'denied';
-    }
-
-    const permission = await Notification.requestPermission();
-    setPermissionStatus(permission);
-
-    if (permission === 'granted') {
-      toast({
-        title: 'Notificações ativadas',
-        description: 'Você receberá notificações push do sistema.',
-      });
-      
-      // Register service worker subscription if needed
-      await registerPushSubscription();
-    }
-
-    return permission;
-  }, [toast]);
-
   // Register push subscription with service worker
   const registerPushSubscription = useCallback(async () => {
     if (!user || !('serviceWorker' in navigator)) return;
 
     try {
       const registration = await navigator.serviceWorker.ready;
-      
+
       // Check if push is supported
       if (!registration.pushManager) {
         return;
@@ -123,7 +96,7 @@ export function useRealPushNotifications() {
 
       if (subscription) {
         const subscriptionJson = subscription.toJSON();
-        
+
         // Save subscription to database
         const { error } = await supabase.from('push_subscriptions').upsert({
           user_id: user.id,
@@ -142,6 +115,33 @@ export function useRealPushNotifications() {
       logger.error('Error registering push subscription', { error });
     }
   }, [user]);
+
+  // Request browser notification permission
+  const requestPermission = useCallback(async () => {
+    if (!('Notification' in window)) {
+      toast({
+        title: 'Não suportado',
+        description: 'Seu navegador não suporta notificações push.',
+        variant: 'destructive',
+      });
+      return 'denied';
+    }
+
+    const permission = await Notification.requestPermission();
+    setPermissionStatus(permission);
+
+    if (permission === 'granted') {
+      toast({
+        title: 'Notificações ativadas',
+        description: 'Você receberá notificações push do sistema.',
+      });
+
+      // Register service worker subscription if needed
+      await registerPushSubscription();
+    }
+
+    return permission;
+  }, [toast, registerPushSubscription]);
 
   // Load notifications
   const loadNotifications = useCallback(async () => {

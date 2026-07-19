@@ -102,7 +102,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
     refetchOnWindowFocus: false,
   });
 
-  const pagamentos = data?.data || [];
+  const pagamentos = useMemo(() => data?.data ?? [], [data]);
   const totalCount = data?.totalCount || 0;
 
   const invalidate = useCallback(() => {
@@ -218,7 +218,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.error('Erro ao atualizar pagamentos: ' + msg);
       return false;
     }
-  }, [user, organizationId, invalidate]);
+  }, [user, invalidate]);
 
   const deletePagamento = useCallback(async (id: string) => {
     try {

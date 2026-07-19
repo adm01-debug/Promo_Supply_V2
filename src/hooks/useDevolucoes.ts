@@ -80,7 +80,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
     staleTime: 30_000,
   });
 
-  const devolucoes = data || [];
+  const devolucoes = useMemo(() => data ?? [], [data]);
 
   const createDevolucao = useCallback(async (input: CreateDevolucaoInput) => {
     if (!user) { toast.error('Você precisa estar logado'); return null; }
@@ -126,7 +126,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
       toast.error('Erro ao criar devolução: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
       return null;
     }
-  }, [user, queryClient]);
+  }, [user, queryClient, tenantId, organizationId]);
 
   const updateStatus = useCallback(async (id: string, newStatus: string) => {
     const dev = devolucoes.find(d => d.id === id);
@@ -169,7 +169,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
       toast.error('Erro: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
       return false;
     }
-  }, [devolucoes, user, queryClient]);
+  }, [devolucoes, user, queryClient, tenantId, organizationId]);
 
   const deleteDevolucao = useCallback(async (id: string) => {
     try {
@@ -214,7 +214,7 @@ export function useCreditosFornecedor(fornecedorId?: string) {
     staleTime: 30_000,
   });
 
-  const creditos = data || [];
+  const creditos = useMemo(() => data ?? [], [data]);
   const saldoTotal = creditos.filter(c => c.status === 'ativo').reduce((s, c) => s + (Number(c.saldo) || 0), 0);
 
   const utilizarCredito = useCallback(async (creditoId: string, valor: number, pagamentoId?: string) => {
