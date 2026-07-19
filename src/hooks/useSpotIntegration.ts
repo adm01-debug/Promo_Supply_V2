@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/lib/feedbackToast';
 
@@ -177,8 +177,7 @@ export function useSpotIntegration() {
     });
   }, [withLoading]);
 
-  // Return a stable object reference using useMemo
-  return useMemo(() => ({
+  return {
     loading,
     error,
     searchProducts,
@@ -193,9 +192,5 @@ export function useSpotIntegration() {
     getFinancialDocs,
     getCheckoutInfo,
     testConnection,
-  }), [
-    loading, error, searchProducts, browseCatalog, getProduct,
-    checkStock, addToCart, getCart, removeFromCart, updateCartQuantity,
-    getOrders, getFinancialDocs, getCheckoutInfo, testConnection,
-  ]);
+  };
 }
