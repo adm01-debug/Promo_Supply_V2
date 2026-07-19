@@ -182,7 +182,7 @@ export function ReverseAuctionRoom({ licitacao, userFornecedorId }: ReverseAucti
                           {idx === 0 ? 'NOVO MELHOR LANCE!' : 'Lance Recebido'}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          Fornecedor: {(lance as any).fornecedor?.razao_social || 'Anônimo'}
+                          Fornecedor: {(lance as { fornecedor?: { razao_social?: string } | null }).fornecedor?.razao_social || 'Anônimo'}
                         </p>
                       </div>
                     </div>
@@ -227,7 +227,7 @@ export function ReverseAuctionRoom({ licitacao, userFornecedorId }: ReverseAucti
                     }`}>
                       {i + 1}
                     </span>
-                    <span className="text-sm font-medium">{(l as any).fornecedor?.razao_social || 'Participante'}</span>
+                    <span className="text-sm font-medium">{(l as { fornecedor?: { razao_social?: string } | null }).fornecedor?.razao_social || 'Participante'}</span>
                   </div>
                   <span className={`text-sm font-bold ${i === 0 ? 'text-primary' : ''}`}>
                     {formatCurrency(l.valor_lance)}

@@ -69,7 +69,7 @@ export function PriceComparator() {
         .select('id, nome, categoria_id')
         .limit(100);
       if (error) throw error;
-      return (data as any[]) || [];
+      return data || [];
     },
     staleTime: 60_000,
   });

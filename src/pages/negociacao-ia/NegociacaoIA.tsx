@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { useAuth } from "@/features/auth";
 import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
@@ -100,7 +101,7 @@ const NegociacaoIA = () => {
       const { error: insertError } = await supabase.from("negotiation_analyses").insert({
         solicitacao_id: selectedSolicitacao,
         analise_texto: result.analise_detalhada || result.resumo,
-        sugestoes: result.sugestoes as any,
+        sugestoes: result.sugestoes as unknown as Json,
         economia_estimada: result.economia_estimada || 0,
         modelo_ia: "gemini-2.5-flash",
         created_by: user?.id,
@@ -205,7 +206,7 @@ const NegociacaoIA = () => {
                             className="group relative p-4 rounded-xl bg-background/40 border border-border/50 hover:border-primary/30 transition-all duration-300"
                           >
                             <p className="font-semibold text-xs text-muted-foreground truncate mb-1">
-                              {(c as any).fornecedor?.nome_fantasia || (c as any).fornecedor?.razao_social || "Fornecedor"}
+                              {(c as { fornecedor?: { nome_fantasia?: string; razao_social?: string } | null }).fornecedor?.nome_fantasia || (c as { fornecedor?: { razao_social?: string } | null }).fornecedor?.razao_social || "Fornecedor"}
                             </p>
                             <p className="text-lg font-bold text-foreground">
                               R$ {Number(c.valor_total).toLocaleString("pt-BR")}
@@ -224,10 +225,10 @@ const NegociacaoIA = () => {
                         <StrategicQuoteTable 
                           cotacoes={cotacoes.map(c => ({
                             id: c.id,
-                            fornecedor: (c as any).fornecedor?.nome_fantasia || (c as any).fornecedor?.razao_social || "Fornecedor",
+                            fornecedor: (c as { fornecedor?: { nome_fantasia?: string; razao_social?: string; avaliacao?: number } | null }).fornecedor?.nome_fantasia || (c as { fornecedor?: { razao_social?: string } | null }).fornecedor?.razao_social || "Fornecedor",
                             total: Number(c.valor_total),
                             lead_time: Number(c.prazo_entrega),
-                            rating: (c as any).fornecedor?.avaliacao || 4.2
+                            rating: (c as { fornecedor?: { avaliacao?: number } | null }).fornecedor?.avaliacao || 4.2
                           }))} 
                           quantidade={solicitacoes?.find(s => s.id === selectedSolicitacao)?.quantidade || 1} 
                         />

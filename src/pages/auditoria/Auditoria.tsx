@@ -73,7 +73,7 @@ const Auditoria = () => {
       { key: 'entity_description', label: 'Descrição', formatter: (val: any) => val || 'N/A' },
     ];
 
-    exportToCSV(logs as any, exportColumns, 'auditoria');
+    exportToCSV(logs as unknown as Record<string, unknown>[], exportColumns, 'auditoria');
 
     // Log export action
     auditHelpers.logExport('relatorio', 'Exportação de logs de auditoria', { 

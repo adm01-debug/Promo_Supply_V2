@@ -1,3 +1,4 @@
+import { type Dispatch, type SetStateAction } from "react";
 import { Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +21,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   editingDelegation: Partial<ApprovalDelegation> | null;
-  setEditingDelegation: (d: Partial<ApprovalDelegation> | null) => void;
+  setEditingDelegation: Dispatch<SetStateAction<Partial<ApprovalDelegation> | null>>;
   onSave: () => void;
   loading: boolean;
 }

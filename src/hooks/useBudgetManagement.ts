@@ -42,7 +42,7 @@ export const useBudgetManagement = () => {
     queryFn: async () => {
       if (!organizationId) return [];
        
-      const { data, error } = await (supabase.rpc as any)('get_cost_center_performance_report', {
+      const { data, error } = await supabase.rpc('get_cost_center_performance_report', {
         p_organization_id: organizationId
       });
       if (error) throw error;

@@ -71,7 +71,7 @@ const statusActions: Record<string, {
     primary: { label: 'View Order', icon: Eye },
     secondary: null,
   },
-  ENTREGUE: { label: 'View Details', icon: Eye } as any,
+  ENTREGUE: { primary: { label: 'View Details', icon: Eye }, secondary: null },
 };
 
 export const SolicitacaoCard = ({ 

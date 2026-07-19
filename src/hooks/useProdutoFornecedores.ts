@@ -62,7 +62,7 @@ export function useProdutoFornecedores(produtoId?: string) {
           ...input,
           organization_id: tenantId,
           tenant_id: tenantId,
-        } as any)
+        })
         .select()
         .single();
 

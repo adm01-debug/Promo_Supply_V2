@@ -75,11 +75,13 @@ export function useProdutos() {
   const createProduto = useMutation({
     mutationFn: async (produto: Partial<Produto>) => {
       if (!organizationId) throw new Error("Organization ID missing");
-      const { data, error } = await supabase.from("produtos").insert({ 
-        ...produto, 
+      // Strip joined/computed fields before inserting into the DB table
+      const { categoria_nome: _cn, fornecedor_nome: _fn, id: _id, created_at: _ca, updated_at: _ua, ...produtoData } = produto;
+      const { data, error } = await supabase.from("produtos").insert({
+        ...produtoData,
         organization_id: organizationId,
         tenant_id: tenantId || organizationId
-      } as any).select().single();
+      }).select().single();
       if (error) throw error;
       return data;
     },
@@ -92,7 +94,9 @@ export function useProdutos() {
 
   const updateProduto = useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Produto> & { id: string }) => {
-      const { data, error } = await supabase.from("produtos").update(updates as any).eq("id", id).select().single();
+      // Strip joined/computed fields before updating the DB table
+      const { categoria_nome: _cn, fornecedor_nome: _fn, ...updateData } = updates;
+      const { data, error } = await supabase.from("produtos").update(updateData).eq("id", id).select().single();
       if (error) throw error;
       return data;
     },

@@ -192,7 +192,7 @@ const ComprasDashboard = () => {
               <BarChart3 className="w-5 h-5 text-primary" />
               Fluxo Visual de Pedidos
             </h2>
-            <PipelineChart data={pipeline} previousData={(kpis as any).previousPipeline} />
+            <PipelineChart data={pipeline} />
           </Card>
         );
       case 'urgent-items':

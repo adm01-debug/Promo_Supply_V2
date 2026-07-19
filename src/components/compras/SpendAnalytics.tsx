@@ -35,7 +35,7 @@ export const SpendAnalytics = () => {
       // Group by unspsc name
       const groups: Record<string, number> = {};
       data?.forEach(item => {
-        const name = (item.unspsc as any)?.nome || 'Não Classificado';
+        const name = (item.unspsc as { nome?: string } | null)?.nome || 'Não Classificado';
         groups[name] = (groups[name] || 0) + Number(item.valor_total || 0);
       });
 

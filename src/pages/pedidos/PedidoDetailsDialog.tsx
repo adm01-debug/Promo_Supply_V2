@@ -12,6 +12,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { type Pedido } from "@/features/pedidos";
 import { toast } from "@/lib/feedbackToast";
+import type { Database } from "@/integrations/supabase/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn, formatCurrency } from "@/lib/utils";
 import { ProductionRoutingEngine, SourcingIntelligenceBanner } from "@/components/compras/ProductionRoutingEngine";
@@ -68,7 +69,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
     try {
       const { error } = await supabase
         .from('pedido_itens')
-        .update({ status_producao: newStatus } as any)
+        .update({ status_producao: newStatus as Database['public']['Enums']['status_producao_enum'] })
         .eq('id', itemId);
       
       if (error) throw error;

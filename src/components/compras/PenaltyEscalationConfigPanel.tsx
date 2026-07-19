@@ -69,7 +69,7 @@ export const PenaltyEscalationConfigPanel = () => {
         penalty_multiplier: form.penalty_multiplier,
         block_days: form.block_days ? parseInt(form.block_days, 10) : null,
         description: form.description || null,
-      } as any);
+      });
       if (error) throw error;
     },
     onSuccess: () => {

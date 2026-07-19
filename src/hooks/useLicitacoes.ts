@@ -44,16 +44,18 @@ export function useLicitacoes() {
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'LIC', table_name: 'licitacoes' });
       const numero = numData || `LIC-${Date.now()}`;
       
+      // Strip joined/computed fields before inserting into the DB table
+      const { fornecedor_vencedor: _fv, propostas_count: _pc, ...inputData } = input;
       const { data, error } = await supabase
         .from('licitacoes')
-        .insert({ 
-          ...input, 
-          numero, 
-          created_by: user.id, 
-          responsavel_id: user.id, 
+        .insert({
+          ...inputData,
+          numero,
+          created_by: user.id,
+          responsavel_id: user.id,
           tenant_id: tenantId,
           organization_id: organizationId || tenantId
-        } as any)
+        })
         .select()
         .single();
       
@@ -123,9 +125,11 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
   const addProposta = useCallback(async (input: Partial<LicitacaoProposta>) => {
     if (!licitacaoId) return null;
     try {
+      // Strip joined/computed fields before inserting into the DB table
+      const { fornecedor: _f, ...inputData } = input;
       const { data, error } = await supabase
         .from('licitacao_propostas')
-        .insert({ ...input, licitacao_id: licitacaoId } as any)
+        .insert({ ...inputData, licitacao_id: licitacaoId })
         .select()
         .single();
       if (error) throw error;

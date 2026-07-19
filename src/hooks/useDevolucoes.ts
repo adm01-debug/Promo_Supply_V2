@@ -102,7 +102,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
         valor_total: valorTotal,
         status: 'solicitada',
         tenant_id: tenantId || organizationId,
-      } as any).select().single();
+      }).select().single();
       if (error) throw error;
 
       if (input.itens.length > 0) {
@@ -157,7 +157,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
           descricao: `Crédito ref. devolução ${dev.numero}`,
           created_by: user?.id,
           tenant_id: tenantId || organizationId,
-        } as any);
+        });
         toast.success('Crédito gerado automaticamente!');
       }
 

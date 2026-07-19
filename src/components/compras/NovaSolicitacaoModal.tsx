@@ -229,8 +229,8 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
           departamento: formData.empresa,
           categoria_id: formData.categoriaId || null,
           organization_id: organizationId,
-          tenant_id: organizationId as any,
-        } as any)
+          tenant_id: organizationId,
+        })
         .select('id, numero')
         .single();
 

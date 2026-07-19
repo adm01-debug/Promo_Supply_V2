@@ -60,13 +60,13 @@ export function useEstoque() {
   const movimentar = useMutation({
     mutationFn: async (mov: Omit<Movimentacao, 'id' | 'data_movimentacao' | 'usuario_id'>) => {
       if (!organizationId) throw new Error("Organization ID missing");
-      
+
       const { data, error } = await supabase
         .from("estoque_movimentacoes")
         .insert({
           ...mov,
           organization_id: organizationId,
-        } as any)
+        })
         .select()
         .single();
 
@@ -77,19 +77,20 @@ export function useEstoque() {
       queryClient.invalidateQueries({ queryKey: ["estoque", organizationId] });
       toast.success("Movimentação registrada com sucesso!");
     },
-    onError: (err: any) => toast.error("Erro ao registrar movimentação: " + err.message),
+    onError: (err: Error) => toast.error("Erro ao registrar movimentação: " + err.message),
   });
 
   const criarItemEstoque = useMutation({
     mutationFn: async (item: Partial<EstoqueItem>) => {
       if (!organizationId) throw new Error("Organization ID missing");
-      
+      // Strip joined/computed fields before inserting into the DB table
+      const { produto_nome: _pn, produto_codigo: _pc, ...itemData } = item;
       const { data, error } = await supabase
         .from("estoque")
         .insert({
-          ...item,
+          ...itemData,
           organization_id: organizationId,
-        } as any)
+        })
         .select()
         .single();
 
@@ -100,7 +101,7 @@ export function useEstoque() {
       queryClient.invalidateQueries({ queryKey: ["estoque", organizationId] });
       toast.success("Produto vinculado ao estoque!");
     },
-    onError: (err: any) => toast.error("Erro ao vincular ao estoque: " + err.message),
+    onError: (err: Error) => toast.error("Erro ao vincular ao estoque: " + err.message),
   });
 
   return { estoque, isLoading, movimentar, criarItemEstoque };

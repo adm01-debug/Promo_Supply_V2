@@ -8,7 +8,7 @@ import { auditHelpers } from '@/services/auditService';
 import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 import { fetchAllRows } from '@/lib/paginatedFetch';
 import { escapeIlike } from '@/lib/supabaseQuery';
-import type { Json, Database } from '@/integrations/supabase/types';
+import type { Database } from '@/integrations/supabase/types';
 import { CreateSolicitacaoSchema, type CreateSolicitacaoInput } from '@/features/solicitacoes';
 
 export type CostCenter = Database['public']['Tables']['cost_centers']['Row'] & {
@@ -140,12 +140,12 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
         
         if (budgetError) {
           logger.error('Erro ao verificar orçamento', { error: budgetError, costCenterId: input.cost_center_id });
-        } else if (availability && !(availability as any).available) {
-          logger.warn('Saldo insuficiente no centro de custo', { 
-            costCenterId: input.cost_center_id, 
-            valor: input.valor_estimado 
+        } else if (availability && !(availability as { available: boolean; message?: string }).available) {
+          logger.warn('Saldo insuficiente no centro de custo', {
+            costCenterId: input.cost_center_id,
+            valor: input.valor_estimado
           });
-          toast.error((availability as any).message || 'Saldo insuficiente no centro de custo.');
+          toast.error((availability as { available: boolean; message?: string }).message || 'Saldo insuficiente no centro de custo.');
           if (input.prioridade !== 'urgente') {
             return null;
           }
@@ -162,8 +162,8 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           numero, 
           titulo: validated.data.titulo, 
           descricao: validated.data.descricao, 
-          tipo: validated.data.tipo as any, // Database enum type
-          prioridade: validated.data.prioridade as any,
+          tipo: validated.data.tipo,
+          prioridade: validated.data.prioridade,
           valor_estimado: validated.data.valor_estimado,
           quantidade: validated.data.quantidade, 
           unidade: validated.data.unidade,
@@ -284,7 +284,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       titulo: `${original.titulo} (Cópia)`,
       descricao: original.descricao || undefined,
       tipo: original.tipo,
-      prioridade: original.prioridade as any,
+      prioridade: original.prioridade as CreateSolicitacaoInput['prioridade'],
       valor_estimado: original.valor_estimado || undefined,
       quantidade: original.quantidade,
       unidade: original.unidade || 'un',

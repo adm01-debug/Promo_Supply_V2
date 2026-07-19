@@ -87,7 +87,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
         supabase.from('contract_items').select('*').eq('contract_id', contract.id),
         supabase.from('contract_history').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
         supabase.from('order_contracts').select('*').eq('contract_id', contract.id),
-        (supabase as any).from('contract_penalties').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
+        supabase.from('contract_penalties').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
         supabase.from('contract_documents').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
       ]);
 

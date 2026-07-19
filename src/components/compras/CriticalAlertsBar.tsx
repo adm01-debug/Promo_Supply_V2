@@ -87,7 +87,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
       }
       
       // Check for first piece audit status
-      if ((ped as any).status_producao === 'primeira_peca') {
+      if ((ped as { status_producao?: string }).status_producao === 'primeira_peca') {
         prodAuditCount++;
         if (prodAuditItems.length < 3) prodAuditItems.push(ped.numero);
       }

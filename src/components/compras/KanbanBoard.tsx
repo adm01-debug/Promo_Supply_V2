@@ -10,8 +10,21 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Solicitacao, getStatusLabel, getTipoLabel } from "@/types/legacyTypes";
+import { getStatusLabel, getTipoLabel } from "@/types/legacyTypes";
 import { formatCurrency } from "@/lib/utils";
+
+interface KanbanPedido {
+  id: string;
+  status: string;
+  produto: string;
+  empresa: string;
+  quantidade: number;
+  tipo: string;
+  valorTotal?: number | null;
+  fornecedorSelecionado?: string | null;
+  prazoEntrega?: string | null;
+  createdAt?: string;
+}
 
 interface KanbanColumn {
   id: string;
@@ -21,8 +34,8 @@ interface KanbanColumn {
 }
 
 interface KanbanBoardProps {
-  pedidos: Solicitacao[];
-  onViewDetails: (pedido: Solicitacao) => void;
+  pedidos: KanbanPedido[];
+  onViewDetails: (pedido: KanbanPedido) => void;
   onStatusChange?: (pedidoId: string, novoStatus: string) => void;
 }
 
@@ -54,14 +67,14 @@ const colunas: KanbanColumn[] = [
 ];
 
 export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBoardProps) => {
-  const [draggedPedido, setDraggedPedido] = useState<Solicitacao | null>(null);
+  const [draggedPedido, setDraggedPedido] = useState<KanbanPedido | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
   const getPedidosByColumn = (coluna: KanbanColumn) => {
     return pedidos.filter(p => coluna.statuses.includes(p.status));
   };
 
-  const handleDragStart = (e: React.DragEvent, pedido: Solicitacao) => {
+  const handleDragStart = (e: React.DragEvent, pedido: KanbanPedido) => {
     setDraggedPedido(pedido);
     e.dataTransfer.effectAllowed = 'move';
   };

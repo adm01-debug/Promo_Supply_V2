@@ -151,7 +151,7 @@ export function usePedidos(filters?: PedidoFilters) {
           comprador_id: user.id,
           tenant_id: organizationId,
           organization_id: organizationId,
-        } as any)
+        })
         .select().single();
 
       if (error) {
@@ -174,7 +174,7 @@ export function usePedidos(filters?: PedidoFilters) {
           valor_total: item.quantidade * item.valor_unitario,
           tenant_id: organizationId,
         }));
-        await supabase.from('pedido_itens').insert(itensToInsert as any);
+        await supabase.from('pedido_itens').insert(itensToInsert);
       }
 
       logger.info('Pedido criado com sucesso', { id: data.id, numero: data.numero });
