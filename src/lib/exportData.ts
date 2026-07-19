@@ -29,12 +29,17 @@ const formatDateTime = (value: unknown): string => {
   return d.toLocaleString('pt-BR');
 };
 
-// Escape CSV value
+// Escape CSV value and prevent formula injection (OWASP CSV injection)
 const escapeCSV = (val: string): string => {
-  if (val.includes(',') || val.includes('"') || val.includes('\n') || val.includes('\r')) {
-    return `"${val.replace(/"/g, '""')}"`;
+  let safe = val;
+  // Prefix cells that start with formula-trigger chars to neutralize injection
+  if (safe.length > 0 && (safe[0] === '=' || safe[0] === '+' || safe[0] === '-' || safe[0] === '@' || safe[0] === '\t' || safe[0] === '\r')) {
+    safe = `\t${safe}`;
   }
-  return val;
+  if (safe.includes(';') || safe.includes(',') || safe.includes('"') || safe.includes('\n') || safe.includes('\r') || safe.includes('\t')) {
+    return `"${safe.replace(/"/g, '""')}"`;
+  }
+  return safe;
 };
 
 export function exportToCSV<T extends Record<string, unknown>>(

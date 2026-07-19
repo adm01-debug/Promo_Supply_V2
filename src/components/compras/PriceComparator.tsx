@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { logger } from '@/lib/logger';
 import { Scale, Search, TrendingDown, ArrowRight, Star, Clock, Truck, CheckCircle2, Loader2, Send, ListChecks, Brain } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -114,7 +115,7 @@ export function PriceComparator() {
         description: `${result.quotes.length} cotações processadas para "${displayProductName}"`,
       });
     } catch (error) {
-      console.error('Error comparing prices:', error);
+      logger.error('Error comparing prices', { error });
       toast({
         title: 'Erro na comparação',
         description: 'Não foi possível comparar os preços. Tente novamente.',

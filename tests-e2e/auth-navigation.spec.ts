@@ -1,8 +1,11 @@
 import { test, expect } from '@playwright/test';
 
-/**
- * Testes E2E para fluxos críticos de Auth e Navegação
- */
+// E2E test credentials: set E2E_TEST_EMAIL / E2E_TEST_PASSWORD env vars to use
+// real test-account credentials. The defaults are intentionally non-working
+// placeholder values so CI can still exercise the auth UI without real creds.
+const E2E_EMAIL = process.env.E2E_TEST_EMAIL ?? 'test@example.com';
+const E2E_PASSWORD = process.env.E2E_TEST_PASSWORD ?? 'placeholder_password';
+
 test.describe('Fluxos Críticos de Autenticação e Navegação', () => {
   
   test('Deve redirecionar para /auth ao tentar acessar rota protegida sem login', async ({ page }) => {
@@ -25,8 +28,8 @@ test.describe('Fluxos Críticos de Autenticação e Navegação', () => {
     await expect(passwordInput).toBeVisible();
     
     // Simulação de preenchimento (usuário não necessariamente real se o backend estiver mockado)
-    await emailInput.fill('test@example.com');
-    await passwordInput.fill('password123');
+    await emailInput.fill(E2E_EMAIL);
+    await passwordInput.fill(E2E_PASSWORD);
     
     // Se houver um botão de login/signup, clicamos no de login
     await submitButton.click();

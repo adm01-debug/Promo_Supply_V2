@@ -36,7 +36,11 @@ import {
   Settings,
   Settings2,
   Boxes,
-  Activity
+  Activity,
+  Database,
+  KeyRound,
+  LineChart,
+  Network
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
@@ -47,12 +51,14 @@ import { useEffect } from "react";
 import { PrefetchLink } from "@/components/PrefetchLink";
 import { useAuth } from "@/features/auth";
 import { useCriticalAlertsBadge } from "@/hooks/useCriticalAlertsBadge";
+import { useSidebarBadges } from "@/hooks/useSidebarBadges";
 
 interface NavItemDef {
   title: string;
   icon: React.ElementType;
   href: string;
-  badge?: number;
+  /** Key into SidebarBadges for a live count. Static badge is gone. */
+  badgeKey?: 'solicitacoes' | 'cotacoes' | 'pagamentos' | 'aprovacoes';
 }
 
 interface NavSection {
@@ -74,9 +80,9 @@ const sections: NavSection[] = [
     id: "operations",
     label: "Operações",
     items: [
-      { title: "Solicitações", icon: ClipboardList, href: "/solicitacoes", badge: 5 },
+      { title: "Solicitações", icon: ClipboardList, href: "/solicitacoes", badgeKey: 'solicitacoes' },
       { title: "Kanban", icon: Columns3, href: "/kanban" },
-      { title: "Cotações", icon: Search, href: "/cotacao", badge: 3 },
+      { title: "Cotações", icon: Search, href: "/cotacao", badgeKey: 'cotacoes' },
       { title: "Negociação IA", icon: Brain, href: "/negociacao-ia" },
       { title: "Pedidos", icon: FileText, href: "/pedidos" },
       { title: "Recompra", icon: RefreshCw, href: "/recompra-inteligente" },
@@ -91,7 +97,7 @@ const sections: NavSection[] = [
     id: "finance",
     label: "Financeiro",
     items: [
-      { title: "Pagamentos", icon: CreditCard, href: "/pagamentos", badge: 2 },
+      { title: "Pagamentos", icon: CreditCard, href: "/pagamentos", badgeKey: 'pagamentos' },
       { title: "Contratos", icon: FileSignature, href: "/contratos" },
       { title: "Sourcing (RFx)", icon: Gavel, href: "/sourcing" },
       { title: "Licitações", icon: Gavel, href: "/licitacoes" },
@@ -125,7 +131,7 @@ const sections: NavSection[] = [
     id: "admin",
     label: "Admin",
     items: [
-      { title: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badge: 4 },
+      { title: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badgeKey: 'aprovacoes' },
       { title: "Auditoria", icon: History, href: "/auditoria" },
       { title: "Workflows", icon: Settings2, href: "/admin/workflows" },
       { title: "Segurança", icon: Shield, href: "/seguranca" },
@@ -135,6 +141,10 @@ const sections: NavSection[] = [
       { title: "Fiscal", icon: FileCheck, href: "/admin/fiscal" },
       { title: "Documentação", icon: BookOpen, href: "/admin/docs" },
       { title: "Saúde do Sistema", icon: Activity, href: "/admin/health" },
+      { title: "Telemetria", icon: LineChart, href: "/admin/telemetria" },
+      { title: "Dep. Health", icon: Network, href: "/admin/dependency-health" },
+      { title: "SSO / SCIM", icon: KeyRound, href: "/admin/sso" },
+      { title: "Migração Storage", icon: Database, href: "/admin/storage-migration" },
     ],
   },
 ];
@@ -167,15 +177,17 @@ const SidebarItem = ({
   active,
   collapsed,
   criticalBadge = 0,
+  liveBadge = 0,
 }: {
   item: NavItemDef;
   active: boolean;
   collapsed: boolean;
   criticalBadge?: number;
+  liveBadge?: number;
 }) => {
   const Icon = item.icon;
   const showCritical = criticalBadge > 0;
-  const badgeValue = showCritical ? criticalBadge : item.badge;
+  const badgeValue = showCritical ? criticalBadge : (item.badgeKey ? liveBadge : undefined);
   const hasBadge = badgeValue != null && badgeValue > 0;
 
   const content = (
@@ -250,20 +262,44 @@ const SidebarSection = ({
   pathname,
   collapsed,
   criticalHealthCount,
+  badges,
+  sectionBadge = 0,
+  sectionBadgeCritical = false,
 }: {
   section: NavSection;
   pathname: string;
   collapsed: boolean;
   criticalHealthCount: number;
+  badges: Record<string, number>;
+  sectionBadge?: number;
+  sectionBadgeCritical?: boolean;
 }) => (
   <div className="space-y-0.5">
     {/* Section label — hidden when collapsed */}
     {!collapsed && (
-      <p className="px-4 pb-2 pt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 select-none">
-        {section.label}
-      </p>
+      <div className="flex items-center gap-2 px-4 pb-2 pt-4 select-none">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 flex-1">
+          {section.label}
+        </p>
+        {sectionBadge > 0 && (
+          <CountBadge count={sectionBadge} critical={sectionBadgeCritical} />
+        )}
+      </div>
     )}
-    {collapsed && <div className="my-1.5 mx-2 h-px bg-border/40" />}
+    {collapsed && (
+      <div className="relative my-1.5 mx-2">
+        <div className="h-px bg-border/40" />
+        {sectionBadge > 0 && (
+          <span
+            className={cn(
+              "absolute -top-1 right-0 h-2 w-2 rounded-full ring-2 ring-sidebar-background",
+              sectionBadgeCritical ? "bg-destructive animate-pulse" : "bg-primary"
+            )}
+            aria-label={sectionBadgeCritical ? `${sectionBadge} alertas críticos` : undefined}
+          />
+        )}
+      </div>
+    )}
 
     {section.items.map((item) => (
       <SidebarItem
@@ -272,6 +308,7 @@ const SidebarSection = ({
         active={isItemActive(pathname, item.href)}
         collapsed={collapsed}
         criticalBadge={item.href === "/admin/health" ? criticalHealthCount : 0}
+        liveBadge={item.badgeKey ? (badges[item.badgeKey] ?? 0) : 0}
       />
     ))}
   </div>
@@ -287,6 +324,8 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
   const { pathname } = useLocation();
   const { signOut } = useAuth();
   const { count: criticalHealthCount, markAsSeen } = useCriticalAlertsBadge();
+  const { data: badgeData } = useSidebarBadges();
+  const badges = badgeData ?? { solicitacoes: 0, cotacoes: 0, pagamentos: 0, aprovacoes: 0 };
 
   useEffect(() => {
     if (pathname.startsWith("/admin/health")) {
@@ -355,6 +394,9 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
             pathname={pathname}
             collapsed={collapsed}
             criticalHealthCount={criticalHealthCount}
+            badges={badges}
+            sectionBadge={section.id === "admin" ? criticalHealthCount : 0}
+            sectionBadgeCritical={section.id === "admin"}
           />
         ))}
       </nav>

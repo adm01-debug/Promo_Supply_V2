@@ -5,8 +5,7 @@ import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.
 import { DemandPredictionContract } from "../_shared/contracts.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
-import { callAIGateway, AIGatewayCircuitOpenError, circuitOpenResponse } from "../_shared/ai_gateway.ts";
-import { retry } from "../_shared/retry.ts";
+import { callAIGatewayWithFallback } from "../_shared/ai_gateway.ts";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -90,28 +89,46 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
 
     logger.info("Calling Lovable AI for demand prediction", { userId: user.id });
 
-    const response = await callAIGateway({
-      apiKey: LOVABLE_API_KEY,
-      body: {
-        model: "google/gemini-2.0-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
+    const { response, usedFallback } = await callAIGatewayWithFallback(
+      {
+        apiKey: LOVABLE_API_KEY,
+        body: {
+          model: "google/gemini-2.0-flash",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+        },
       },
-    });
+      (reason) => {
+        // Rule-based fallback: return empty-but-valid structure with a warning
+        logger.warn("ai-demand-prediction: usando fallback determinístico", { reason });
+        return {
+          predictions: [],
+          seasonalPatterns: [],
+          recommendations: ["Análise IA temporariamente indisponível. Consulte o histórico manualmente."],
+          riskFactors: [],
+          summary: "O serviço de IA está temporariamente indisponível. Os dados históricos estão disponíveis no relatório de compras.",
+          requestId,
+        };
+      },
+      corsHeaders,
+    );
+
+    if (usedFallback) {
+      logger.warn("ai-demand-prediction: resposta de fallback retornada ao cliente");
+      return response;
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
       logger.error("AI Gateway error", { status: response.status, response: errorText });
-      
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded", requestId }), {
           status: 429,
           headers: buildResponseHeaders(corsHeaders),
         });
       }
-      
       throw new Error(`AI Gateway error: ${response.status}`);
     }
 
@@ -147,7 +164,6 @@ Por favor, analise os padrões e forneça previsões detalhadas.`;
       headers: buildResponseHeaders(corsHeaders),
     });
   } catch (error: unknown) {
-    if (error instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
     return errorResponse(error, logger);
   }
 });

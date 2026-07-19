@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { logger } from '@/lib/logger';
 import { Shield, AlertTriangle, CheckCircle2, XCircle, TrendingUp, TrendingDown, Loader2, RefreshCw, Target, AlertCircle, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -150,7 +151,7 @@ export function SupplierRiskAnalysis() {
         description: 'A análise de risco foi gerada com sucesso.',
       });
     } catch (error) {
-      console.error('Error analyzing supplier risk:', error);
+      logger.error('Error analyzing supplier risk', { error });
       toast({
         title: 'Erro na análise',
         description: 'Não foi possível gerar a análise. Tente novamente.',

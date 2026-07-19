@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from "react";
+import { logger } from '@/lib/logger';
 import { SolicitacaoReviewStep } from "./solicitacao/SolicitacaoReviewStep";
 import { 
   Plus, Package, Check, Loader2,
@@ -159,7 +160,7 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
       if (error) throw error;
       setBudgetCheck(data as unknown as BudgetCheckResult);
     } catch (error: unknown) {
-      console.error('Budget check error:', error);
+      logger.error('Budget check error', { error });
       setBudgetCheck(null);
     } finally {
       setIsCheckingBudget(false);
@@ -242,7 +243,7 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
             .from('documentos')
             .upload(filePath, file);
           if (uploadError) {
-            console.error('File upload error:', uploadError);
+            logger.error('File upload error', { error: uploadError });
           }
         }
       }

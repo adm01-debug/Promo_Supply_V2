@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { logger } from '@/lib/logger';
 import type { LucideIcon } from "lucide-react";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
@@ -77,7 +78,7 @@ export default function Contratos() {
       if (error) throw error;
       setContracts((data as unknown as Contract[]) || []);
     } catch (err) {
-      console.error('Erro ao buscar contratos:', err);
+      logger.error('Erro ao buscar contratos', { error: err });
     } finally { setLoading(false); }
   }, []);
 

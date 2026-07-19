@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import { logger } from '@/lib/logger';
 import { 
   Target, 
   Settings, 
@@ -52,7 +53,7 @@ export const SavingsGoalPanel = () => {
       try {
         setConfig(JSON.parse(saved));
       } catch (e) {
-        console.error("Failed to parse savings goal config", e);
+        logger.error('Failed to parse savings goal config', { error: e });
       }
     }
   }, []);

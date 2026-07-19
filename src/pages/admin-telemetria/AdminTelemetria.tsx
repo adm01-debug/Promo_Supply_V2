@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { logger } from '@/lib/logger';
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -63,7 +64,7 @@ export default function AdminTelemetriaPage() {
       setSimulationResult(data);
       toast.success(`Simulação concluída: ${data.success} sucessos, ${data.error} falhas.`);
     } catch (error) {
-      console.error('Simulation error:', error);
+      logger.error('Simulation error', { error });
       toast.error("Falha ao executar simulação de sistema.");
     } finally {
       setSimulationLoading(false);

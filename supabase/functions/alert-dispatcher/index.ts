@@ -16,9 +16,10 @@
  */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
-import { corsHeaders } from "../_shared/security.ts";
+import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
 import { retry } from "../_shared/retry.ts";
+import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 
 const GLOBAL_SLACK_WEBHOOK_URL = Deno.env.get("SLACK_WEBHOOK_URL") ?? "";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
@@ -232,6 +233,8 @@ async function sendWebhookWithRetry(
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const cronDenied = verifyCronSecret(req);
+  if (cronDenied) return cronDenied;
 
   const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -382,6 +385,7 @@ serve(async (req) => {
     });
   }
 
+  await recordCronHeartbeat(admin, "alert-dispatcher");
   return new Response(
     JSON.stringify({ processed: results.length, results }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } },

@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { logger } from '@/lib/logger';
 import { 
   Sheet, 
   SheetContent, 
@@ -103,7 +104,7 @@ export const UrgencyDetailsSheet = ({
       toast.success("Status atualizado com sucesso!");
       onStatusUpdate?.(itemId, newStatus);
     } catch (error) {
-      console.error(error);
+      logger.error('Unexpected error', { error });
       toast.error("Erro ao atualizar status.");
     }
   };

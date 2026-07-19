@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface BuyerTarget {
   buyerId: string;
@@ -32,6 +33,7 @@ interface BuyerAlertsState {
   alerts: BuyerAlert[];
   updateTarget: (buyerId: string, updates: Partial<BuyerTarget>) => void;
   setTargets: (targets: BuyerTarget[]) => void;
+  loadTargetsFromDb: (organizationId: string) => Promise<void>;
   addAlert: (alert: Omit<BuyerAlert, 'id' | 'timestamp' | 'read'>) => void;
   markAlertAsRead: (id: string) => void;
   markAllAlertsAsRead: () => void;
@@ -41,55 +43,16 @@ interface BuyerAlertsState {
   getAlertsByBuyer: (buyerId: string) => BuyerAlert[];
 }
 
-const defaultTargets: BuyerTarget[] = [
-  {
-    buyerId: 'ana-silva',
-    buyerName: 'Ana Silva',
-    economiaMensal: 10000,
-    descontoMedio: 12,
-    cotacoesMinimas: 40,
-    warningThreshold: 15,
-    criticalThreshold: 30,
-    enabled: true
-  },
-  {
-    buyerId: 'carlos-souza',
-    buyerName: 'Carlos Souza',
-    economiaMensal: 8000,
-    descontoMedio: 10,
-    cotacoesMinimas: 35,
-    warningThreshold: 15,
-    criticalThreshold: 30,
-    enabled: true
-  },
-  {
-    buyerId: 'maria-santos',
-    buyerName: 'Maria Santos',
-    economiaMensal: 6000,
-    descontoMedio: 8,
-    cotacoesMinimas: 30,
-    warningThreshold: 15,
-    criticalThreshold: 30,
-    enabled: true
-  },
-  {
-    buyerId: 'pedro-lima',
-    buyerName: 'Pedro Lima',
-    economiaMensal: 7000,
-    descontoMedio: 9,
-    cotacoesMinimas: 32,
-    warningThreshold: 15,
-    criticalThreshold: 30,
-    enabled: true
-  }
-];
+// Targets are loaded at runtime from the database via loadTargetsFromDb.
+// Defaults to empty so no demo names appear in production.
+const DEFAULT_THRESHOLDS = { warningThreshold: 15, criticalThreshold: 30 } as const;
 
 export const useBuyerAlertsStore = create<BuyerAlertsState>()(
   persist(
     (set, get) => ({
-      targets: defaultTargets,
+      targets: [],
       alerts: [],
-      
+
       updateTarget: (buyerId, updates) => {
         set(state => ({
           targets: state.targets.map(t => 
@@ -101,7 +64,41 @@ export const useBuyerAlertsStore = create<BuyerAlertsState>()(
       setTargets: (targets) => {
         set({ targets });
       },
-      
+
+      loadTargetsFromDb: async (organizationId) => {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('id, full_name')
+            .eq('organization_id', organizationId)
+            .eq('role', 'buyer');
+          if (error) throw error;
+          if (!data?.length) return;
+
+          const { targets: existing } = useBuyerAlertsStore.getState();
+          const existingMap = new Map(existing.map(t => [t.buyerId, t]));
+
+          const merged: BuyerTarget[] = data.map(profile => {
+            const prev = existingMap.get(profile.id);
+            return prev
+              ? { ...prev, buyerName: profile.full_name ?? prev.buyerName }
+              : {
+                  buyerId: profile.id,
+                  buyerName: profile.full_name ?? profile.id,
+                  economiaMensal: 0,
+                  descontoMedio: 0,
+                  cotacoesMinimas: 0,
+                  ...DEFAULT_THRESHOLDS,
+                  enabled: true,
+                };
+          });
+
+          set({ targets: merged });
+        } catch {
+          // Non-fatal: keep existing targets
+        }
+      },
+
       addAlert: (alert) => {
         const existingAlerts = get().alerts;
         // Prevent duplicate alerts for same buyer/metric within 1 hour

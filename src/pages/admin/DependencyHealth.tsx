@@ -257,91 +257,101 @@ const DependencyHealth = () => {
   }, [history, selectedId]);
 
 
-  const buildRefresh = (dispatchCi: boolean) =>
-    useMutation({
-      mutationFn: async (): Promise<SnapshotResult & { ciDispatch?: CiDispatchInfo | string }> => {
-        const { data, error } = await supabase.functions.invoke(
-          `dependency-health${dispatchCi ? "?dispatchCi=true" : ""}`,
-          { method: "POST" },
-        );
-        if (error) throw error;
-        const payload = data as DependencyHealthSnapshot & { ciDispatch?: CiDispatchInfo | string };
-        return {
-          snapshot: payload,
-          source: "edge",
-          fetchedAt: new Date().toISOString(),
-          ciDispatch: payload.ciDispatch,
-        };
-      },
-      onSuccess: (fresh) => {
-        // Preserve the previous smokeTest if the refreshed payload omits it —
-        // the edge function only emits package/lockfile/tree-shake data, while
-        // smokeTest is recorded by the smoke-date-fns CI workflow. Without this
-        // merge, "Atualizar agora" would wipe the smoke card to empty.
-        const prev = queryClient.getQueryData<SnapshotResult>(["dependency-health"]);
-        const merged: SnapshotResult = {
-          ...fresh,
-          snapshot: {
-            ...fresh.snapshot,
-            smokeTest: fresh.snapshot.smokeTest ?? prev?.snapshot.smokeTest,
-          },
-        };
-        queryClient.setQueryData(["dependency-health"], merged);
-        queryClient.invalidateQueries({ queryKey: ["dependency-health-history"] });
+  const makeRefreshMutationFn = (dispatchCi: boolean) =>
+    async (): Promise<SnapshotResult & { ciDispatch?: CiDispatchInfo | string }> => {
+      const { data, error } = await supabase.functions.invoke(
+        `dependency-health${dispatchCi ? "?dispatchCi=true" : ""}`,
+        { method: "POST" },
+      );
+      if (error) throw error;
+      const payload = data as DependencyHealthSnapshot & { ciDispatch?: CiDispatchInfo | string };
+      return {
+        snapshot: payload,
+        source: "edge",
+        fetchedAt: new Date().toISOString(),
+        ciDispatch: payload.ciDispatch,
+      };
+    };
 
-        if (!dispatchCi) {
-          toast({
-            title: "Snapshot atualizado",
-            description: `Gerado em ${fresh.snapshot.generatedAt}`,
-          });
-          return;
-        }
+  const makeRefreshOnSuccess = (dispatchCi: boolean) =>
+    (fresh: SnapshotResult & { ciDispatch?: CiDispatchInfo | string }) => {
+      // Preserve the previous smokeTest if the refreshed payload omits it —
+      // the edge function only emits package/lockfile/tree-shake data, while
+      // smokeTest is recorded by the smoke-date-fns CI workflow. Without this
+      // merge, "Atualizar agora" would wipe the smoke card to empty.
+      const prev = queryClient.getQueryData<SnapshotResult>(["dependency-health"]);
+      const merged: SnapshotResult = {
+        ...fresh,
+        snapshot: {
+          ...fresh.snapshot,
+          smokeTest: fresh.snapshot.smokeTest ?? prev?.snapshot.smokeTest,
+        },
+      };
+      queryClient.setQueryData(["dependency-health"], merged);
+      queryClient.invalidateQueries({ queryKey: ["dependency-health-history"] });
 
-        const ci = fresh.ciDispatch;
-        const ciObj = typeof ci === "object" && ci !== null ? ci : null;
-        const statusRaw = (ciObj?.status ?? (typeof ci === "string" ? ci : "")) || "unknown";
-        const statusLower = statusRaw.toLowerCase();
-
-        // Derive owner/repo from any GitHub URL we got back.
-        const anyUrl = ciObj?.workflowRunUrl ?? ciObj?.latestCommitUrl ?? "";
-        let ownerRepo = "";
-        try {
-          if (anyUrl) {
-            const u = new URL(anyUrl);
-            const parts = u.pathname.split("/").filter(Boolean);
-            if (parts.length >= 2) ownerRepo = `${parts[0]}/${parts[1]}`;
-          }
-        } catch {
-          // ignore
-        }
-        const branchSuffix = ciObj?.branch ? `@${ciObj.branch}` : "";
-        const repoLabel = ownerRepo ? `${ownerRepo}${branchSuffix}` : "repositório não identificado";
-
-        let title = "CI: status desconhecido";
-        let variant: "default" | "destructive" = "default";
-        if (statusLower === "queued") {
-          title = "CI enfileirado ✓";
-        } else if (statusLower.startsWith("skipped")) {
-          title = "CI ignorado";
-        } else if (statusLower.startsWith("failed")) {
-          title = "CI falhou";
-          variant = "destructive";
-        }
-
+      if (!dispatchCi) {
         toast({
-          title,
-          description: `${repoLabel} · ${statusRaw}`,
-          variant,
+          title: "Snapshot atualizado",
+          description: `Gerado em ${fresh.snapshot.generatedAt}`,
         });
-      },
-      onError: (err: unknown) => {
-        const msg = err instanceof Error ? err.message : "Falha ao atualizar snapshot";
-        toast({ title: "Erro", description: msg, variant: "destructive" });
-      },
-    });
+        return;
+      }
 
-  const refresh = buildRefresh(false);
-  const refreshAndCommit = buildRefresh(true);
+      const ci = fresh.ciDispatch;
+      const ciObj = typeof ci === "object" && ci !== null ? ci : null;
+      const statusRaw = (ciObj?.status ?? (typeof ci === "string" ? ci : "")) || "unknown";
+      const statusLower = statusRaw.toLowerCase();
+
+      // Derive owner/repo from any GitHub URL we got back.
+      const anyUrl = ciObj?.workflowRunUrl ?? ciObj?.latestCommitUrl ?? "";
+      let ownerRepo = "";
+      try {
+        if (anyUrl) {
+          const u = new URL(anyUrl);
+          const parts = u.pathname.split("/").filter(Boolean);
+          if (parts.length >= 2) ownerRepo = `${parts[0]}/${parts[1]}`;
+        }
+      } catch {
+        // ignore
+      }
+      const branchSuffix = ciObj?.branch ? `@${ciObj.branch}` : "";
+      const repoLabel = ownerRepo ? `${ownerRepo}${branchSuffix}` : "repositório não identificado";
+
+      let title = "CI: status desconhecido";
+      let variant: "default" | "destructive" = "default";
+      if (statusLower === "queued") {
+        title = "CI enfileirado ✓";
+      } else if (statusLower.startsWith("skipped")) {
+        title = "CI ignorado";
+      } else if (statusLower.startsWith("failed")) {
+        title = "CI falhou";
+        variant = "destructive";
+      }
+
+      toast({
+        title,
+        description: `${repoLabel} · ${statusRaw}`,
+        variant,
+      });
+    };
+
+  const onRefreshError = (err: unknown) => {
+    const msg = err instanceof Error ? err.message : "Falha ao atualizar snapshot";
+    toast({ title: "Erro", description: msg, variant: "destructive" });
+  };
+
+  const refresh = useMutation({
+    mutationFn: makeRefreshMutationFn(false),
+    onSuccess: makeRefreshOnSuccess(false),
+    onError: onRefreshError,
+  });
+
+  const refreshAndCommit = useMutation({
+    mutationFn: makeRefreshMutationFn(true),
+    onSuccess: makeRefreshOnSuccess(true),
+    onError: onRefreshError,
+  });
 
   const anyPending = refresh.isPending || refreshAndCommit.isPending;
 

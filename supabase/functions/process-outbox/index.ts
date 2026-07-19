@@ -7,11 +7,14 @@
  *   - SELECT ... FOR UPDATE SKIP LOCKED (via RPC) para concorrência segura
  *   - Backoff exponencial em falha: retries=0..5, next_attempt = now + 2^retries * 30s
  *   - Marca como 'delivered' em sucesso, 'dead' após 5 tentativas
+ *   - Quando um item atinge 'dead': loga structured error e emite alerta em
+ *     system_alerts (se a tabela existir) para visibilidade operacional (DLQ).
  */
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
-import { corsHeaders } from "../_shared/security.ts";
+import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { fetchWithTimeout, FetchTimeoutError } from "../_shared/http.ts";
+import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 
 const MAX_RETRIES = 5;
 const BATCH_SIZE = 20;
@@ -27,6 +30,8 @@ interface OutboxRow {
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const cronDenied = verifyCronSecret(req);
+  if (cronDenied) return cronDenied;
 
   const admin = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -43,6 +48,7 @@ serve(async (req) => {
     .limit(BATCH_SIZE);
 
   if (error) {
+    await recordCronHeartbeat(admin, "process-outbox", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -86,12 +92,40 @@ serve(async (req) => {
           last_error: errMsg,
         })
         .eq("id", row.id);
+
+      if (dead) {
+        console.error(JSON.stringify({
+          level: "ERROR",
+          event: "outbox_item_dead",
+          id: row.id,
+          target: row.target,
+          endpoint: row.endpoint,
+          retries,
+          last_error: errMsg,
+          ts: new Date().toISOString(),
+        }));
+        // Best-effort: insert system alert for DLQ visibility (non-blocking)
+        admin
+          .from("system_alerts")
+          .insert({
+            severity: "critical",
+            source: "process-outbox",
+            message: `Outbox item ${row.id} (target: ${row.target}) reached dead status after ${retries} retries. Last error: ${errMsg}`,
+            metadata: { id: row.id, target: row.target, endpoint: row.endpoint, retries, last_error: errMsg },
+          })
+          .then(() => {/* fire-and-forget */})
+          .catch(() => {/* system_alerts may not exist — silently ignore */});
+      }
+
       results.push({ id: row.id, ok: false, error: errMsg, retries });
     }
   }
 
+  const deadCount = results.filter(r => !r.ok && r.retries >= MAX_RETRIES).length;
+
+  await recordCronHeartbeat(admin, "process-outbox");
   return new Response(
-    JSON.stringify({ processed: results.length, results }),
+    JSON.stringify({ processed: results.length, dead: deadCount, results }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } },
   );
 });
