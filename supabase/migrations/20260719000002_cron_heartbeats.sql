@@ -33,7 +33,8 @@ INSERT INTO public.cron_heartbeats (job_name, last_status) VALUES
   ('check-sla-alerts',           'unknown'),
   ('process-outbox',             'unknown'),
   ('weekly-report',              'unknown'),
-  ('weekly-summary-report',      'unknown')
+  ('weekly-summary-report',      'unknown'),
+  ('maintain-partitions',        'unknown')
 ON CONFLICT (job_name) DO NOTHING;
 
 -- Function callable by service role to upsert heartbeat
