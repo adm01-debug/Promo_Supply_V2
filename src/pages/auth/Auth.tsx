@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { logger } from '@/lib/logger';
 import { Package, Mail, Lock, User, Loader2, Fingerprint, AlertTriangle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -115,7 +116,7 @@ const Auth = () => {
         _success: success,
         _failure_reason: failureReason ?? undefined,
       }).then(({ error: logError }) => {
-        if (logError) console.error('Failed to log login attempt:', logError);
+        if (logError) logger.error('Failed to log login attempt', { error: logError });
       });
     };
 

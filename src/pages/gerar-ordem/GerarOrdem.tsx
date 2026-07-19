@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { logger } from '@/lib/logger';
 import { 
   FileText, 
   Building2, 
@@ -207,7 +208,7 @@ const GerarOrdem = () => {
         navigate("/acompanhamento");
       }
     } catch (error) {
-      console.error(error);
+      logger.error('Unexpected error', { error });
     } finally {
       setIsSubmitting(false);
     }

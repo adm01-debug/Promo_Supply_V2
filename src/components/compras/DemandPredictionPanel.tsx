@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { logger } from '@/lib/logger';
 import { TrendingUp, TrendingDown, Minus, Calendar, BarChart3, AlertTriangle, Lightbulb, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -156,7 +157,7 @@ export function DemandPredictionPanel() {
         description: 'A análise de demanda foi concluída com sucesso.',
       });
     } catch (error) {
-      console.error('Error generating prediction:', error);
+      logger.error('Error generating prediction', { error });
       toast({
         title: 'Erro na previsão',
         description: 'Não foi possível gerar a previsão. Tente novamente.',

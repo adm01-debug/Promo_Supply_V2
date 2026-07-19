@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { logger } from '@/lib/logger';
 import { PenaltyEscalationConfigPanel } from "@/components/compras/PenaltyEscalationConfigPanel";
 import { SupplierBonificationsPanel } from "@/components/compras/SupplierBonificationsPanel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,7 +48,7 @@ export default function ComplianceDashboard() {
       setData((compRes.data as any[]) || []);
       setRules((rulesRes.data as any[]) || []);
     } catch (error: unknown) {
-      console.error('Error fetching compliance data:', error);
+      logger.error('Error fetching compliance data', { error });
       toast.error("Erro ao carregar dados de compliance");
     } finally {
       setLoading(false);

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
+import { logger } from '@/lib/logger';
 
 interface NavigationContextType {
   breadcrumbLabel: string | null;
@@ -59,7 +60,7 @@ export const useNavigation = () => {
   if (!context) {
     // Return a default value instead of throwing to prevent application-wide crashes
     // while we debug the provider placement
-    console.warn('useNavigation must be used within a NavigationProvider. Returning default values.');
+    logger.warn('useNavigation must be used within a NavigationProvider. Returning default values.');
     return {
       breadcrumbLabel: null,
       setBreadcrumbLabel: () => {},

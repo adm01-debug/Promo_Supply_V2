@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { ContractSLASection } from "./contract/ContractSLASection";
 import { ContractItemsEditor } from "./contract/ContractItemsEditor";
 import { useState, useEffect } from "react";
@@ -285,7 +286,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
       onOpenChange(false);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao salvar contrato';
-      console.error('Error saving contract:', err);
+      logger.error('Error saving contract', { error: err });
       toast.error(errorMessage);
     } finally {
       setLoading(false);
