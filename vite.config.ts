@@ -139,7 +139,7 @@ export default defineConfig(({ mode }) => ({
     target: "es2020",
     cssMinify: true,
     minify: "esbuild",
-    sourcemap: false,
+    sourcemap: 'hidden',
     cssCodeSplit: true,
     chunkSizeWarningLimit: 1000,
     reportCompressedSize: false,
