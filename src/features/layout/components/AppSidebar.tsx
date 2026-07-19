@@ -36,7 +36,11 @@ import {
   Settings,
   Settings2,
   Boxes,
-  Activity
+  Activity,
+  Database,
+  KeyRound,
+  LineChart,
+  Network
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
@@ -137,6 +141,10 @@ const sections: NavSection[] = [
       { title: "Fiscal", icon: FileCheck, href: "/admin/fiscal" },
       { title: "Documentação", icon: BookOpen, href: "/admin/docs" },
       { title: "Saúde do Sistema", icon: Activity, href: "/admin/health" },
+      { title: "Telemetria", icon: LineChart, href: "/admin/telemetria" },
+      { title: "Dep. Health", icon: Network, href: "/admin/dependency-health" },
+      { title: "SSO / SCIM", icon: KeyRound, href: "/admin/sso" },
+      { title: "Migração Storage", icon: Database, href: "/admin/storage-migration" },
     ],
   },
 ];
