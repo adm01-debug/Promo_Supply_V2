@@ -40,11 +40,11 @@ describe('usePermissions', () => {
   });
 
   it('should return default permissions for admin', async () => {
-    (useAuth as any).mockReturnValue({
+    vi.mocked(useAuth).mockReturnValue({
       user: { id: 'admin-id' },
       role: 'admin',
       isAdmin: true,
-    });
+    } as ReturnType<typeof useAuth>);
 
     const { result } = renderHook(() => usePermissions(), {
       wrapper: createQueryClientWrapper(),
@@ -70,20 +70,20 @@ describe('usePermissions', () => {
       },
     ];
 
-    (useAuth as any).mockReturnValue({
+    vi.mocked(useAuth).mockReturnValue({
       user: { id: 'user-id' },
       role: 'buyer',
       isAdmin: false,
-    });
+    } as ReturnType<typeof useAuth>);
 
     // Mock supabase response for role_permissions
     const { supabase } = await import('@/integrations/supabase/client');
-    (supabase.from as any).mockImplementation((table: string) => ({
+    vi.mocked(supabase.from).mockImplementation((_table: string) => ({
       select: vi.fn(() => ({
         order: vi.fn(() => Promise.resolve({ data: [], error: null })),
         eq: vi.fn(() => Promise.resolve({ data: mockUserPermissions, error: null })),
       })),
-    }));
+    }) as ReturnType<typeof supabase.from>);
 
     const { result } = renderHook(() => usePermissions(), {
       wrapper: createQueryClientWrapper(),
@@ -117,11 +117,11 @@ describe('usePermissions', () => {
   });
 
   it('should return false if no role is present', () => {
-    (useAuth as any).mockReturnValue({
+    vi.mocked(useAuth).mockReturnValue({
       user: null,
       role: null,
       isAdmin: false,
-    });
+    } as ReturnType<typeof useAuth>);
 
     const { result } = renderHook(() => usePermissions(), {
       wrapper: createQueryClientWrapper(),

@@ -55,7 +55,7 @@ const ComparisonMetricCard = ({
 interface BuyerComparisonViewProps {
   buyer: BuyerData;
   compareBuyer: BuyerData;
-  CustomTooltip: React.ComponentType<any>;
+  CustomTooltip: React.ComponentType<Record<string, unknown>>;
 }
 
 export const BuyerComparisonView = ({ buyer, compareBuyer, CustomTooltip }: BuyerComparisonViewProps) => {

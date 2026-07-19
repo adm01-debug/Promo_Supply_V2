@@ -69,7 +69,7 @@ const Pedidos = () => {
       }));
   }, [pedidos, selectedIds]);
 
-  const handleBulkExecute = async (action: BulkAction, itemIds: string[], options?: Record<string, any>) => {
+  const handleBulkExecute = async (action: BulkAction, itemIds: string[], options?: Record<string, unknown>) => {
     if (action.id === 'change-status' || action.targetStatus) {
       const targetStatus = (options?.['targetStatus'] as Pedido['status']) || action.targetStatus as Pedido['status'];
       if (targetStatus) {

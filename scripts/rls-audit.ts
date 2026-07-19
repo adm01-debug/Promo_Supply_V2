@@ -33,7 +33,7 @@ async function runAudit() {
   // Usamos uma view materializada segura: information_schema não expõe qual/with_check,
   // então buscamos via RPC segura `list_public_policies` se existir; senão via SQL simples.
   const { data, error } = await supabase
-    .schema("pg_catalog" as any)
+    .schema("pg_catalog" as unknown as Parameters<typeof supabase['schema']>[0])
     .from("pg_policies")
     .select("schemaname, tablename, policyname, cmd, qual, with_check")
     .eq("schemaname", "public");

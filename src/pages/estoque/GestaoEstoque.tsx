@@ -16,7 +16,7 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/ui/page-header";
-import { useEstoque } from "@/hooks/useEstoque";
+import { useEstoque, type EstoqueItem } from "@/hooks/useEstoque";
 import { useProdutos } from "@/hooks/useProdutos";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
@@ -29,7 +29,7 @@ const GestaoEstoque = () => {
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [movimentacaoOpen, setMovimentacaoOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<EstoqueItem | null>(null);
   
   const [formData, setFormData] = useState({
     produto_id: "",

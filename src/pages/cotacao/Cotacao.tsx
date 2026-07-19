@@ -39,7 +39,7 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/features/cotacoes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch } from "./cotacaoHelpers";
+import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch, type CotacaoAPI } from "./cotacaoHelpers";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
@@ -60,7 +60,7 @@ const Cotacao = () => {
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
   const [buscaStatus, setBuscaStatus] = useState<'idle' | 'searching' | 'done'>('idle');
-  const [cotacoesAPI, setCotacoesAPI] = useState<any[]>([]);
+  const [cotacoesAPI, setCotacoesAPI] = useState<CotacaoAPI[]>([]);
   const [showManualModal, setShowManualModal] = useState(false);
   const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);

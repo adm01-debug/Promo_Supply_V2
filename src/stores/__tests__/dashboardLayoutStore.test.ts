@@ -32,7 +32,7 @@ const DEFAULT_WIDGET_COUNT = 18;
 describe('dashboardLayoutStore', () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    useDashboardLayoutStore.setState({ widgets: useDashboardLayoutStore.getInitialState?.()?.widgets ?? (useDashboardLayoutStore as any).getInitialState?.() });
+    useDashboardLayoutStore.setState({ widgets: useDashboardLayoutStore.getInitialState?.()?.widgets ?? (useDashboardLayoutStore as unknown as { getInitialState?: () => { widgets: unknown } }).getInitialState?.()?.widgets });
     // Reset by calling resetLayout
     act(() => {
       getStore().resetLayout();

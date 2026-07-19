@@ -128,7 +128,7 @@ export function useRealtimeSubscription({
       channel = channel.on(
         'postgres_changes',
         config,
-        (payload: RealtimePostgresChangesPayload<any>) => {
+        (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
           // Defense-in-depth: drop any payload that slips through with a foreign tenant.
           const row = (payload.new ?? payload.old) as { tenant_id?: string } | null;
           if (isTenantScoped && tenantId && row?.tenant_id && row.tenant_id !== tenantId) {
