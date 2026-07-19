@@ -394,7 +394,10 @@ export const useApprovalWorkflow = () => {
   // Realtime subscription is now standard across the app
   // Removed custom subscription here to avoid duplication as useRealtimeSubscription handles it globally
 
-  useEffect(() => { fetchRules(); fetchDelegations(); fetchPendingWorkflows(); fetchPendingSteps(); }, [fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps, organizationId]);
+  useEffect(() => {
+    // organizationId is already a dep of each callback — no need to list it here.
+    void Promise.all([fetchRules(), fetchDelegations(), fetchPendingWorkflows(), fetchPendingSteps()]);
+  }, [fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps]);
 
   // Escalation polling: gated by a module-level ref-count so multiple consumers
   // of this hook don't spawn parallel intervals (which produces duplicate
