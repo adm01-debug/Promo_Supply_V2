@@ -65,37 +65,60 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         navigateFallbackDenylist: [/^\/~oauth/],
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+        // Expanded to include woff (legacy), json (translation/config), and webp (images)
+        globPatterns: ["**/*.{js,css,html,ico,png,jpg,jpeg,svg,webp,woff,woff2,json}"],
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
         cleanupOutdatedCaches: true,
         skipWaiting: true,
         clientsClaim: true,
         runtimeCaching: [
+          // Static image/font assets — long-lived CacheFirst
           {
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico|woff2?)$/i,
             handler: "CacheFirst",
             options: {
               cacheName: "static-assets-cache",
               expiration: {
-                maxEntries: 200,
+                maxEntries: 300,
                 maxAgeSeconds: 60 * 60 * 24 * 30,
               },
             },
           },
+          // Supabase REST (transactional) — NetworkFirst, short TTL
           {
-            urlPattern: /^https:\/\/apuzcrkeqodktmpwobnz\.supabase\.co\/.*/i,
+            urlPattern: /^https:\/\/apuzcrkeqodktmpwobnz\.supabase\.co\/rest\/.*/i,
             handler: "NetworkFirst",
             options: {
-              cacheName: "supabase-api-cache",
+              cacheName: "supabase-rest-cache",
               networkTimeoutSeconds: 10,
               expiration: {
-                maxEntries: 200,
+                maxEntries: 300,
                 maxAgeSeconds: 60 * 5,
               },
               cacheableResponse: {
                 statuses: [200],
               },
             },
+          },
+          // Supabase Storage (files/images) — CacheFirst, longer TTL
+          {
+            urlPattern: /^https:\/\/apuzcrkeqodktmpwobnz\.supabase\.co\/storage\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "supabase-storage-cache",
+              expiration: {
+                maxEntries: 100,
+                maxAgeSeconds: 60 * 60 * 24 * 7,
+              },
+              cacheableResponse: {
+                statuses: [200],
+              },
+            },
+          },
+          // Supabase Edge Functions — NetworkOnly (never cache mutations)
+          {
+            urlPattern: /^https:\/\/apuzcrkeqodktmpwobnz\.supabase\.co\/functions\/.*/i,
+            handler: "NetworkOnly",
           },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
@@ -119,6 +142,7 @@ export default defineConfig(({ mode }) => ({
               },
             },
           },
+          // App shell pages — NetworkFirst with offline fallback to index.html
           {
             urlPattern: ({ request }) => request.mode === "navigate",
             handler: "NetworkFirst",
@@ -126,7 +150,7 @@ export default defineConfig(({ mode }) => ({
               cacheName: "pages-cache",
               networkTimeoutSeconds: 3,
               expiration: {
-                maxEntries: 50,
+                maxEntries: 60,
                 maxAgeSeconds: 60 * 60 * 24,
               },
             },
