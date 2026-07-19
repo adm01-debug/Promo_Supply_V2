@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 
@@ -6,6 +6,8 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
+  const cronDenied = verifyCronSecret(req);
+  if (cronDenied) return cronDenied;
 
   try {
     const supabase = createClient(

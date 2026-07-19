@@ -457,6 +457,15 @@ async function handlePrSmoke(): Promise<Response> {
 }
 
 async function handleGet(req: Request): Promise<Response> {
+  // SECURITY: require authenticated user for all GET paths (internal operational data).
+  const auth = req.headers.get("Authorization");
+  if (!auth) return json({ error: "Unauthorized" }, 401);
+  const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    global: { headers: { Authorization: auth } },
+  });
+  const { data: userData, error: userErr } = await userClient.auth.getUser();
+  if (userErr || !userData.user) return json({ error: "Unauthorized" }, 401);
+
   const url = new URL(req.url);
   if (url.searchParams.get("history") === "true") {
     return await handleHistory();

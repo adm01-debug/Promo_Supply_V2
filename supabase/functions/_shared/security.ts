@@ -181,6 +181,33 @@ export const getTenantId = async (
 };
 
 /**
+ * Verifica se uma requisição vem de um cron autorizado.
+ *
+ * Requer o header `Authorization: Bearer <CRON_SECRET>` para chamadas diretas.
+ * Supabase cron triggers (pg_net) enviam o header automaticamente quando
+ * configurado como `Authorization: Bearer ${CRON_SECRET}` na definição da cron.
+ *
+ * Retorna `null` se autorizado, ou uma `Response` 401 pronta para retornar.
+ */
+export function verifyCronSecret(req: Request): Response | null {
+  const secret = Deno.env.get("CRON_SECRET");
+  // If no secret is configured, allow (backward compat with setups that rely on
+  // platform-level firewall. Log a warning to encourage configuration.)
+  if (!secret) {
+    console.warn("CRON_SECRET not configured — cron endpoint is unprotected");
+    return null;
+  }
+  const provided = (req.headers.get("Authorization") ?? "").replace(/^Bearer\s+/i, "").trim();
+  if (!provided || provided !== secret) {
+    return new Response(JSON.stringify({ error: "Unauthorized: invalid cron secret" }), {
+      status: 401,
+      headers: { ...BASE_CORS_HEADERS, "Content-Type": "application/json" },
+    });
+  }
+  return null;
+}
+
+/**
  * A-02 (Onda 47): Guarda dupla para edge functions administrativas.
  *
  * Exige (1) JWT válido de usuário autenticado e (2) role 'admin' via

@@ -1,12 +1,14 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { EdgeLogger } from "../_shared/logger.ts";
-import { corsHeaders } from "../_shared/security.ts";
+import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+  const cronDenied = verifyCronSecret(req);
+  if (cronDenied) return cronDenied;
 
   try {
     const requestId = req.headers.get('x-request-id') || crypto.randomUUID();

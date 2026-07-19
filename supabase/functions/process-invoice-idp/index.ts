@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { corsHeaders, getAuthUser } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -9,14 +9,31 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('process-invoice-idp', requestId);
+
   try {
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('process-invoice-idp', requestId);
+    // SECURITY: require authenticated user before touching service-role storage.
+    const { user } = await getAuthUser(req);
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Não autorizado: token ausente ou inválido" }), {
+        status: 401,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
 
     const { filePath } = await req.json();
-    if (!filePath) throw new Error("filePath is required");
+    if (!filePath || typeof filePath !== "string") throw new Error("filePath is required");
 
-    logger.info("Iniciando processamento de nota fiscal", { filePath });
+    // Prevent path traversal: filePath must be a relative path without ..
+    if (filePath.includes("..") || filePath.startsWith("/")) {
+      return new Response(JSON.stringify({ error: "filePath inválido" }), {
+        status: 400,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+
+    logger.info("Iniciando processamento de nota fiscal", { filePath, userId: user.id });
 
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
@@ -57,12 +74,8 @@ serve(async (req) => {
     });
 
   } catch (error) {
-    if (typeof logger !== 'undefined') {
-      logger.error("Erro fatal no processamento IDP", { error: error.message });
-    } else {
-      console.error("Erro fatal no processamento IDP:", error);
-    }
-    return new Response(JSON.stringify({ error: error.message }), {
+    logger.error("Erro fatal no processamento IDP", { error: (error as Error).message });
+    return new Response(JSON.stringify({ error: (error as Error).message }), {
       status: 400,
       headers: buildResponseHeaders(corsHeaders),
     });

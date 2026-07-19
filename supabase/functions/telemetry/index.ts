@@ -25,10 +25,20 @@ serve(async (req) => {
       }
     );
 
-    let user = null;
-    if (authHeader) {
-      const { data } = await supabaseClient.auth.getUser();
-      user = data.user;
+    // SECURITY: require valid user token to prevent log injection from unauthenticated callers.
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+    const { data: authData } = await supabaseClient.auth.getUser();
+    const user = authData.user;
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: buildResponseHeaders(corsHeaders),
+      });
     }
 
     const data = await validateBody(req, TelemetryContract, logger);

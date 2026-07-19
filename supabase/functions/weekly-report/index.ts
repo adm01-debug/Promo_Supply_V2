@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/security.ts";
+import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 
@@ -6,6 +6,8 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+  const cronDenied = verifyCronSecret(req);
+  if (cronDenied) return cronDenied;
 
   // MED-C10: declare logger BEFORE the try so the catch can use it without
   // hitting a TDZ ReferenceError that would mask the real failure.
