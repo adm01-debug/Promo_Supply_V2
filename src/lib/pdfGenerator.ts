@@ -1,5 +1,10 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
+
+/** jspdf-autotable injects this property at runtime. */
+interface JsPDFWithAutoTable extends jsPDF {
+  lastAutoTable: { finalY: number };
+}
 import { LegacyFornecedor } from "@/types/legacyTypes";
 import { formatCurrency } from "@/lib/utils";
 
@@ -100,7 +105,7 @@ export const generateOrderPDF = (data: OrderPDFData) => {
   });
 
   // Totals Area
-  const finalY = (doc as any).lastAutoTable.finalY + 15;
+  const finalY = (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 15;
   const totalsX = pageWidth - 80;
 
   doc.setFontSize(10);

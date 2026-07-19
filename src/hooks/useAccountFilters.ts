@@ -82,10 +82,10 @@ export function useAccountFilters<T extends FiltersRecord>(
             const merged = { ...defaults, ...legacy } as T;
             setFiltersState(merged);
             // Upsert into DB and remove legacy key
-            await supabase.from('user_filter_preferences' as any).upsert(
-              [{ user_id: uid, scope, filters: merged as unknown as any }],
-              { onConflict: 'user_id,scope' },
-            );
+            // user_filter_preferences is not in the generated type map — cast via unknown.
+            await (supabase as unknown as { from: (t: string) => ReturnType<typeof supabase.from> })
+              .from('user_filter_preferences')
+              .upsert([{ user_id: uid, scope, filters: merged }], { onConflict: 'user_id,scope' });
             try {
               localStorage.removeItem(legacyStorageKey);
             } catch {
@@ -217,10 +217,10 @@ async function persist<T extends FiltersRecord>(
   legacyKey: string,
 ): Promise<void> {
   if (userId) {
-    await supabase.from('user_filter_preferences' as any).upsert(
-      [{ user_id: userId, scope, filters: filters as unknown as any }],
-      { onConflict: 'user_id,scope' },
-    );
+    // user_filter_preferences is not in the generated type map — cast via unknown.
+    await (supabase as unknown as { from: (t: string) => ReturnType<typeof supabase.from> })
+      .from('user_filter_preferences')
+      .upsert([{ user_id: userId, scope, filters }], { onConflict: 'user_id,scope' });
   } else {
     try {
       localStorage.setItem(legacyKey, JSON.stringify(filters));

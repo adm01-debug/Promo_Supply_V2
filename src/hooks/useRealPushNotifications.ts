@@ -98,21 +98,21 @@ export function useRealPushNotifications() {
       const registration = await navigator.serviceWorker.ready;
       
       // Check if push is supported
-      if (!(registration as any).pushManager) {
+      if (!registration.pushManager) {
         return;
       }
 
       // Get existing subscription or create new one
-      let subscription = await (registration as any).pushManager.getSubscription();
-      
+      let subscription = await registration.pushManager.getSubscription();
+
       if (!subscription) {
         // For now, we'll use a placeholder VAPID key
         // In production, this would come from your backend
         const vapidPublicKey = 'BEl62iUYgUivxIkv69yViEuiBIa-Ib9-SkvMeAtA3LFgDzkrxZJjSgSnfckjBJuBkr3qBUYIHBQFLXYp5Nksh8U';
-        
+
         try {
           const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
-          subscription = await (registration as any).pushManager.subscribe({
+          subscription = await registration.pushManager.subscribe({
             userVisibleOnly: true,
             applicationServerKey: applicationServerKey as BufferSource,
           });
@@ -449,7 +449,7 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 // Play notification sound
 function playNotificationSound(priority: 'low' | 'medium' | 'high' | 'critical') {
   try {
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioContext = new (window.AudioContext || window.webkitAudioContext!)();
     
     const frequencies = {
       low: [440],

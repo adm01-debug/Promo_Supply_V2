@@ -51,8 +51,9 @@ export const performanceMonitor = {
         let clsValue = 0;
         const observer = new PerformanceObserver((entryList) => {
           for (const entry of entryList.getEntries()) {
-            if (!(entry as any).hadRecentInput) {
-              clsValue += (entry as any).value;
+            const shift = entry as LayoutShiftEntry;
+            if (!shift.hadRecentInput) {
+              clsValue += shift.value;
               if (clsValue > 0.1) {
                 logger.warn(`High CLS detected: ${clsValue.toFixed(4)}`);
               }
@@ -72,7 +73,8 @@ export const performanceMonitor = {
       try {
         const observer = new PerformanceObserver((entryList) => {
           for (const entry of entryList.getEntries()) {
-            const delay = (entry as any).processingStart - entry.startTime;
+            const fid = entry as FirstInputEntry;
+            const delay = fid.processingStart - fid.startTime;
             logger.info(`FID (First Input Delay): ${delay.toFixed(2)}ms`);
           }
         });
