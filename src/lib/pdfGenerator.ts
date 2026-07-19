@@ -8,11 +8,18 @@ interface JsPDFWithAutoTable extends jsPDF {
 import { LegacyFornecedor } from "@/types/legacyTypes";
 import { formatCurrency } from "@/lib/utils";
 
+export interface OrderPDFCompany {
+  nome: string;
+  endereco?: string;
+  /** Short label shown in the document footer */
+  footerLabel?: string;
+}
+
 export interface OrderPDFData {
   numero: string;
   data: string;
   fornecedor: Partial<LegacyFornecedor>;
-  solicitante: { email?: string };
+  solicitante: { email?: string; nome?: string };
   itens: Array<{
     descricao: string;
     quantidade: number;
@@ -24,9 +31,18 @@ export interface OrderPDFData {
   desconto: number;
   total: number;
   observacoes?: string;
+  /** Company branding injected at runtime — avoids hardcoding tenant name/address. */
+  company?: Partial<OrderPDFCompany>;
 }
 
+const DEFAULT_COMPANY: OrderPDFCompany = {
+  nome: "Promo Supply",
+  endereco: "",
+  footerLabel: "Promo Supply - Sistema de Gestão de Compras",
+};
+
 export const generateOrderPDF = (data: OrderPDFData) => {
+  const company: OrderPDFCompany = { ...DEFAULT_COMPANY, ...data.company };
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
@@ -70,10 +86,13 @@ export const generateOrderPDF = (data: OrderPDFData) => {
   doc.setFontSize(10);
   doc.setTextColor(0);
   doc.setFont("helvetica", "bold");
-  doc.text("PROMO SUPPLY LTDA", 110, 62);
+  doc.text(company.nome, 110, 62);
   doc.setFont("helvetica", "normal");
-  doc.text(`Solicitante: ${data.solicitante?.email || 'N/A'}`, 110, 67);
-  doc.text("Endereço: Av. Paulista, 1000 - São Paulo, SP", 110, 72);
+  const solicitanteLabel = data.solicitante?.nome || data.solicitante?.email || 'N/A';
+  doc.text(`Solicitante: ${solicitanteLabel}`, 110, 67);
+  if (company.endereco) {
+    doc.text(`Endereço: ${company.endereco}`, 110, 72);
+  }
 
   // Items Table
   autoTable(doc, {
@@ -149,7 +168,7 @@ export const generateOrderPDF = (data: OrderPDFData) => {
   const pageHeight = doc.internal.pageSize.getHeight();
   doc.setFontSize(8);
   doc.setTextColor(150);
-  doc.text("Promo Supply - Sistema de Gestão de Compras v1.0", 14, pageHeight - 10);
+  doc.text(company.footerLabel ?? DEFAULT_COMPANY.footerLabel!, 14, pageHeight - 10);
   doc.text(`Página 1 de 1`, pageWidth - 14, pageHeight - 10, { align: 'right' });
 
   return doc;
