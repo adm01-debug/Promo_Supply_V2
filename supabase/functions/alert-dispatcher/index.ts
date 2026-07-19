@@ -19,6 +19,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { fetchWithTimeout } from "../_shared/http.ts";
 import { retry } from "../_shared/retry.ts";
+import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 
 const GLOBAL_SLACK_WEBHOOK_URL = Deno.env.get("SLACK_WEBHOOK_URL") ?? "";
 const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY") ?? "";
@@ -384,6 +385,7 @@ serve(async (req) => {
     });
   }
 
+  await recordCronHeartbeat(admin, "alert-dispatcher");
   return new Response(
     JSON.stringify({ processed: results.length, results }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } },

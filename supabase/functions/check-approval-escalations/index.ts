@@ -1,6 +1,7 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 import { EdgeLogger } from "../_shared/logger.ts";
 import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
+import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
@@ -227,6 +228,7 @@ Deno.serve(async (req) => {
 
     logger.info('Escalation check completed', { result });
 
+    await recordCronHeartbeat(supabase as any, "check-approval-escalations");
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -238,9 +240,11 @@ Deno.serve(async (req) => {
     } else {
       console.error('Error in escalation check:', error);
     }
-    return new Response(JSON.stringify({ 
+    const supabaseForHb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+    await recordCronHeartbeat(supabaseForHb as any, "check-approval-escalations", errorMessage);
+    return new Response(JSON.stringify({
       error: errorMessage,
-      success: false 
+      success: false
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

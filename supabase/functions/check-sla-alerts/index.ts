@@ -1,6 +1,7 @@
 import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 
 interface AlertResult {
   sla_warnings: number;
@@ -204,6 +205,7 @@ Deno.serve(async (req) => {
 
     logger.info('Alert check complete', { result });
 
+    await recordCronHeartbeat(supabase as any, "check-sla-alerts");
     return new Response(
       JSON.stringify({
         success: true,
@@ -219,6 +221,8 @@ Deno.serve(async (req) => {
     } else {
       console.error('Error in check-sla-alerts:', error);
     }
+    const supabaseForHb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+    await recordCronHeartbeat(supabaseForHb as any, "check-sla-alerts", errorMessage);
     return new Response(
       JSON.stringify({ error: errorMessage }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

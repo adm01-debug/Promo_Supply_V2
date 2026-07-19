@@ -14,6 +14,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { fetchWithTimeout, FetchTimeoutError } from "../_shared/http.ts";
+import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 
 const MAX_RETRIES = 5;
 const BATCH_SIZE = 20;
@@ -47,6 +48,7 @@ serve(async (req) => {
     .limit(BATCH_SIZE);
 
   if (error) {
+    await recordCronHeartbeat(admin, "process-outbox", error.message);
     return new Response(JSON.stringify({ error: error.message }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -121,6 +123,7 @@ serve(async (req) => {
 
   const deadCount = results.filter(r => !r.ok && r.retries >= MAX_RETRIES).length;
 
+  await recordCronHeartbeat(admin, "process-outbox");
   return new Response(
     JSON.stringify({ processed: results.length, dead: deadCount, results }),
     { headers: { ...corsHeaders, "Content-Type": "application/json" } },

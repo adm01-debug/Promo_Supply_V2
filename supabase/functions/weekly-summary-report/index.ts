@@ -1,6 +1,7 @@
 import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -95,6 +96,7 @@ Deno.serve(async (req) => {
 
     logger.info("Weekly report generated and notifications sent", { summary });
 
+    await recordCronHeartbeat(supabase as any, "weekly-summary-report");
     return new Response(JSON.stringify(summary), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
@@ -103,6 +105,8 @@ Deno.serve(async (req) => {
     if (typeof logger !== 'undefined') {
       logger.error("Error generating weekly summary", { error: errorMessage });
     }
+    const supabaseForHb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    await recordCronHeartbeat(supabaseForHb as any, "weekly-summary-report", errorMessage);
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

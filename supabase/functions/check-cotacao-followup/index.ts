@@ -1,8 +1,8 @@
 import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
-
 import { fetchWithTimeout } from "../_shared/http.ts";
+import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -136,6 +136,7 @@ Deno.serve(async (req) => {
 
     logger.info(`Follow-up check complete`, { followUpsSent, emailsSent, totalStale: staleCotacoes?.length });
 
+    await recordCronHeartbeat(supabase as any, "check-cotacao-followup");
     return new Response(
       JSON.stringify({ followUpsSent, emailsSent, totalStale: staleCotacoes?.length || 0 }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -147,6 +148,8 @@ Deno.serve(async (req) => {
     } else {
       console.error("Error in check-cotacao-followup:", error);
     }
+    const supabaseForHb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    await recordCronHeartbeat(supabaseForHb as any, "check-cotacao-followup", msg);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
