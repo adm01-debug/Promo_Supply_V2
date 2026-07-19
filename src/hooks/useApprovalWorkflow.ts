@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { toast } from '@/lib/feedbackToast';
 import { logger } from '@/lib/logger';
+import { useWorkflowDLQ } from './useWorkflowDLQ';
 import type {
   ApprovalRule, ApprovalDelegation, ApprovalWorkflow,
   ApprovalWorkflowWithRelations,
@@ -23,6 +24,7 @@ export const useApprovalWorkflow = () => {
   const [pendingSteps, setPendingSteps] = useState<ApprovalStep[]>([]);
   const [allHistory, setAllHistory] = useState<ApprovalHistory[]>([]);
   const [loading, setLoading] = useState(false);
+  const { pushToDLQ, dlqEntries, retryableEntries, retryEntry, removeEntry, clearDLQ } = useWorkflowDLQ();
 
   const fetchRules = useCallback(async () => {
     if (!organizationId) return;
@@ -275,13 +277,15 @@ export const useApprovalWorkflow = () => {
       toast.success('Workflow de aprovação criado');
       await fetchPendingWorkflows();
       return typedWorkflow;
-    } catch (error) { 
-      logger.error('Error creating workflow', { error }); 
-      toast.error('Erro ao criar workflow de aprovação'); 
-      return null; 
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      logger.error('Error creating workflow', { error });
+      pushToDLQ('create_workflow', { solicitacaoId, valor, categoriaId, organizationId, userId: user?.id }, errMsg);
+      toast.error('Erro ao criar workflow de aprovação — salvo para reprocessamento');
+      return null;
     }
     finally { setLoading(false); }
-  }, [user, findApplicableRule, fetchPendingWorkflows, getEffectiveApprover, findApplicableRuleRPC, rules]);
+  }, [user, findApplicableRule, fetchPendingWorkflows, getEffectiveApprover, findApplicableRuleRPC, rules, organizationId, pushToDLQ]);
 
   const approveStep = useCallback(async (stepId: string, comentario?: string) => {
     try {
@@ -333,9 +337,14 @@ export const useApprovalWorkflow = () => {
       });
       toast.success('Aprovação registrada com sucesso');
       await fetchPendingSteps(); await fetchPendingWorkflows();
-    } catch (error) { logger.error('Error approving step', { error }); toast.error('Erro ao aprovar'); }
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      logger.error('Error approving step', { error });
+      pushToDLQ('approve_step', { stepId, comentario, userId: user?.id }, errMsg);
+      toast.error('Erro ao aprovar — salvo para reprocessamento');
+    }
     finally { setLoading(false); }
-  }, [user, fetchPendingSteps, fetchPendingWorkflows]);
+  }, [user, fetchPendingSteps, fetchPendingWorkflows, pushToDLQ]);
 
   const rejectStep = useCallback(async (stepId: string, comentario: string) => {
     try {
@@ -356,9 +365,14 @@ export const useApprovalWorkflow = () => {
       });
       toast.success('Rejeição registrada');
       await fetchPendingSteps(); await fetchPendingWorkflows();
-    } catch (error) { logger.error('Error rejecting step', { error }); toast.error('Erro ao rejeitar'); }
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      logger.error('Error rejecting step', { error });
+      pushToDLQ('reject_step', { stepId, comentario, userId: user?.id }, errMsg);
+      toast.error('Erro ao rejeitar — salvo para reprocessamento');
+    }
     finally { setLoading(false); }
-  }, [user, fetchPendingSteps, fetchPendingWorkflows]);
+  }, [user, fetchPendingSteps, fetchPendingWorkflows, pushToDLQ]);
 
   const fetchHistory = useCallback(async (workflowId: string): Promise<ApprovalHistory[]> => {
     try {
@@ -421,6 +435,8 @@ export const useApprovalWorkflow = () => {
     rules, delegations, workflows, pendingSteps, allHistory, loading,
     fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps, fetchAllHistory,
     saveRule, deleteRule, saveDelegation, deleteDelegation,
-    createWorkflow, approveStep, rejectStep, fetchHistory, checkEscalations
+    createWorkflow, approveStep, rejectStep, fetchHistory, checkEscalations,
+    // Dead-letter queue for failed workflow transitions
+    workflowDLQ: { dlqEntries, retryableEntries, retryEntry, removeEntry, clearDLQ },
   };
 };
