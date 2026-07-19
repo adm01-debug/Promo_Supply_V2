@@ -65,12 +65,18 @@ export const buildCorsHeaders = (req?: Request): Record<string, string> => {
 
 /**
  * Compat: mantém `corsHeaders` para handlers legados.
- * Em produção, prefira `buildCorsHeaders(req)`.
+ * Em produção com ALLOWED_ORIGINS configurado, emite wildcard apenas se a
+ * allowlist estiver vazia (dev/preview). Handlers devem preferir buildCorsHeaders(req).
  */
-export const corsHeaders = {
-  ...BASE_CORS_HEADERS,
-  "Access-Control-Allow-Origin": "*",
-};
+export const corsHeaders = (() => {
+  const allowlist = parseAllowedOrigins();
+  if (allowlist.length > 0) {
+    // Production: omit wildcard. callers that need origin-echo must use buildCorsHeaders(req).
+    return BASE_CORS_HEADERS as Record<string, string>;
+  }
+  // Dev/preview: allow all origins.
+  return { ...BASE_CORS_HEADERS, "Access-Control-Allow-Origin": "*" } as Record<string, string>;
+})();
 
 /**
  * Validates if the request has a valid authorization header.
