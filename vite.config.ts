@@ -174,15 +174,126 @@ export default defineConfig(({ mode }) => ({
         entryFileNames: "assets/[name]-[hash].js",
         assetFileNames: "assets/[name]-[hash][extname]",
         manualChunks: (id) => {
-          if (id.includes("node_modules")) {
-            if (id.includes("framer-motion")) return "vendor-motion";
-            if (id.includes("lucide-react")) return "vendor-icons";
-            if (id.includes("@radix-ui")) return "vendor-ui";
-            if (id.includes("@tanstack")) return "vendor-query";
-            if (id.includes("recharts")) return "vendor-charts";
-            if (id.includes("jspdf")) return "vendor-pdf";
-            return "vendor";
-          }
+          if (!id.includes("node_modules")) return undefined;
+
+          // Animation — framer-motion + its private deps (motion-dom, motion-utils)
+          if (
+            id.includes("framer-motion") ||
+            id.includes("motion-dom") ||
+            id.includes("motion-utils") ||
+            id.includes("motion-v")
+          ) return "vendor-motion";
+
+          // Icons
+          if (id.includes("lucide-react")) return "vendor-icons";
+
+          // Radix UI + overlay/portal deps that radix depends on (avoids circular chunks)
+          if (
+            id.includes("@radix-ui") ||
+            id.includes("/cmdk/") ||
+            id.includes("/vaul/") ||
+            id.includes("@floating-ui") ||
+            id.includes("react-remove-scroll") ||
+            id.includes("react-remove-scroll-bar") ||
+            id.includes("react-style-singleton") ||
+            id.includes("use-callback-ref") ||
+            id.includes("use-sidecar") ||
+            id.includes("aria-hidden") ||
+            id.includes("get-nonce")
+          ) return "vendor-ui";
+
+          // Charts + D3 + recharts transitive deps (lodash, fast-equals, internmap, etc.)
+          if (
+            id.includes("recharts") ||
+            id.includes("d3-") ||
+            id.includes("/victory") ||
+            id.includes("/lodash") ||
+            id.includes("fast-equals") ||
+            id.includes("internmap") ||
+            id.includes("decimal.js-light") ||
+            id.includes("react-smooth")
+          ) return "vendor-charts";
+
+          // PDF core — jsPDF + autotable (lightweight, ~200 kB)
+          if (id.includes("jspdf") || id.includes("jspdf-autotable")) return "vendor-pdf";
+          // Canvas rendering layer — html2canvas + canvg + Babel/core-js polyfills (~500 kB, lazy-loaded)
+          if (
+            id.includes("html2canvas") ||
+            id.includes("/canvg/") ||
+            id.includes("fflate") ||
+            id.includes("/pako/") ||
+            id.includes("fast-png") ||
+            id.includes("iobuffer") ||
+            id.includes("stackblur") ||
+            id.includes("rgbcolor") ||
+            id.includes("svg-pathdata") ||
+            id.includes("@babel/runtime") ||
+            id.includes("core-js") ||
+            id.includes("regenerator-runtime") ||
+            id.includes("/raf/") ||
+            id.includes("performance-now")
+          ) return "vendor-canvas";
+
+          // TanStack query / persister
+          if (id.includes("@tanstack")) return "vendor-query";
+
+          // Supabase
+          if (id.includes("@supabase") || id.includes("isows")) return "vendor-supabase";
+
+          // Zustand state
+          if (id.includes("zustand")) return "vendor-state";
+
+          // Router
+          if (id.includes("react-router") || id.includes("@remix-run")) return "vendor-router";
+
+          // Forms & validation
+          if (
+            id.includes("react-hook-form") ||
+            id.includes("@hookform") ||
+            id.includes("/zod/")
+          ) return "vendor-forms";
+
+          // i18n
+          if (id.includes("i18next") || id.includes("react-i18next")) return "vendor-i18n";
+
+          // Date utilities
+          if (id.includes("date-fns") || id.includes("react-day-picker")) return "vendor-date";
+
+          // Drag & drop
+          if (id.includes("@dnd-kit")) return "vendor-dnd";
+
+          // Markdown pipeline
+          if (
+            id.includes("react-markdown") ||
+            id.includes("/unified/") ||
+            id.includes("/remark") ||
+            id.includes("/rehype") ||
+            id.includes("/micromark") ||
+            id.includes("/mdast") ||
+            id.includes("/unist") ||
+            id.includes("/vfile") ||
+            id.includes("hast-") ||
+            id.includes("property-information") ||
+            id.includes("comma-separated-tokens") ||
+            id.includes("space-separated-tokens") ||
+            id.includes("html-url-attributes") ||
+            id.includes("decode-named-character-reference") ||
+            id.includes("trim-lines") ||
+            id.includes("bail") ||
+            id.includes("extend") ||
+            id.includes("is-plain-obj") ||
+            id.includes("trough") ||
+            id.includes("style-to-object") ||
+            id.includes("style-to-js") ||
+            id.includes("inline-style-parser") ||
+            id.includes("estree-util-is-identifier-name")
+          ) return "vendor-markdown";
+
+          // React core (placed after all react-* lib checks so react-router stays in vendor-router)
+          if (/\/node_modules\/(react|react-dom|scheduler)\//.test(id)) return "vendor-react";
+
+          // Remaining small libs
+          return "vendor";
         },
       },
       treeshake: {
