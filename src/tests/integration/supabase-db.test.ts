@@ -23,7 +23,6 @@ const describeIf = INTEGRATION ? describe : describe.skip;
 
 // ── Client setup ──────────────────────────────────────────────────────────────
 let supabase: SupabaseClient;
-let testOrgId: string | null = null;
 const TEST_MARKER = 'integration-test-' + Date.now();
 
 beforeAll(() => {
@@ -45,11 +44,10 @@ beforeAll(() => {
 
 afterAll(async () => {
   if (!INTEGRATION || !supabase) return;
-  // Clean up any test data seeded during the run
-  if (testOrgId) {
-    await supabase.from('approval_workflows').delete().eq('organization_id', testOrgId);
-    await supabase.from('approval_rules').delete().eq('organization_id', testOrgId);
-  }
+  // Clean up any test rows inserted with the TEST_MARKER in detalhes
+  await supabase.from('approval_history')
+    .delete()
+    .eq('detalhes->>test_marker', TEST_MARKER);
 });
 
 // ── Schema integrity tests ────────────────────────────────────────────────────
