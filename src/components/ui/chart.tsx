@@ -155,6 +155,9 @@ const ChartContainer = React.forwardRef<
 });
 ChartContainer.displayName = "Chart";
 
+const CSS_IDENT_RE = /[^a-zA-Z0-9_-]/g;
+const CSS_COLOR_RE = /[^a-zA-Z0-9#(),%. ]/g;
+
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(([_, config]) => config.theme || config.color);
 
@@ -162,17 +165,22 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null;
   }
 
+  // Sanitize id to a valid CSS identifier to prevent CSS injection
+  const safeId = id.replace(CSS_IDENT_RE, '');
+
   return (
     <style
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(
             ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
+${prefix} [data-chart=${safeId}] {
 ${colorConfig
   .map(([key, itemConfig]) => {
-    const color = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color;
-    return color ? `  --color-${key}: ${color};` : null;
+    const rawColor = itemConfig.theme?.[theme as keyof typeof itemConfig.theme] || itemConfig.color;
+    const color = rawColor ? rawColor.replace(CSS_COLOR_RE, '') : null;
+    const safeKey = key.replace(CSS_IDENT_RE, '');
+    return color ? `  --color-${safeKey}: ${color};` : null;
   })
   .join("\n")}
 }
