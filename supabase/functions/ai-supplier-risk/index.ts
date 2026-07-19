@@ -4,7 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
-import { callAIGateway, AIGatewayCircuitOpenError, circuitOpenResponse } from "../_shared/ai_gateway.ts";
+import { callAIGatewayWithFallback } from "../_shared/ai_gateway.ts";
 const getLogger = (req: Request) => {
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   return new EdgeLogger("ai-supplier-risk", requestId);
@@ -83,21 +83,43 @@ ${JSON.stringify(marketData || {}, null, 2)}
 
 Forneça uma análise de risco completa e acionável.`;
 
-    const response = await callAIGateway({
-      apiKey: LOVABLE_API_KEY,
-      body: {
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
+    const { response, usedFallback } = await callAIGatewayWithFallback(
+      {
+        apiKey: LOVABLE_API_KEY,
+        body: {
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+        },
       },
-    });
+      (reason) => {
+        logger.warn("ai-supplier-risk: usando fallback determinístico", { reason });
+        // Rule-based fallback: conservatively flag as medium risk with manual review required
+        return {
+          overallScore: 50,
+          riskLevel: "medium",
+          summary: "Análise IA temporariamente indisponível. Avaliação conservadora de risco médio aplicada. Revisão manual recomendada.",
+          details: {
+            financial: { score: 50, notes: "IA indisponível — verificar balanço manualmente" },
+            delivery: { score: 50, notes: "IA indisponível — verificar histórico de entregas" },
+            compliance: { score: 50, notes: "IA indisponível — verificar certidões manualmente" },
+          },
+          recommendations: ["Realize revisão manual completa do fornecedor antes de prosseguir."],
+        };
+      },
+      corsHeaders,
+    );
+
+    if (usedFallback) {
+      logger.warn("ai-supplier-risk: resposta de fallback retornada ao cliente");
+      return response;
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
       logger.error("Erro no AI Gateway", { status: response.status, response: errorText });
-      
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
           status: 429, headers: buildResponseHeaders(corsHeaders),
@@ -108,7 +130,6 @@ Forneça uma análise de risco completa e acionável.`;
           status: 402, headers: buildResponseHeaders(corsHeaders),
         });
       }
-      
       throw new Error(`AI Gateway error: ${response.status}`);
     }
 
@@ -139,7 +160,6 @@ Forneça uma análise de risco completa e acionável.`;
       headers: buildResponseHeaders(corsHeaders),
     });
   } catch (error: unknown) {
-    if (error instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
     logger.error("Erro fatal na função ai-supplier-risk", { error: (error as Error).message });
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;

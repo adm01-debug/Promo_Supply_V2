@@ -5,8 +5,7 @@ import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.
 import { SupplierSuggestionContract } from "../_shared/contracts.ts";
 import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
-import { callAIGateway, AIGatewayCircuitOpenError, circuitOpenResponse } from "../_shared/ai_gateway.ts";
-import { retry } from "../_shared/retry.ts";
+import { callAIGatewayWithFallback } from "../_shared/ai_gateway.ts";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -81,16 +80,44 @@ Por favor, analise e forneça suas recomendações.`;
 
     logger.info("Calling Lovable AI for supplier suggestions", { userId: user.id });
 
-    const response = await callAIGateway({
-      apiKey: LOVABLE_API_KEY,
-      body: {
-        model: "google/gemini-2.0-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
+    const { response, usedFallback } = await callAIGatewayWithFallback(
+      {
+        apiKey: LOVABLE_API_KEY,
+        body: {
+          model: "google/gemini-2.0-flash",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+        },
       },
-    });
+      (reason) => {
+        logger.warn("ai-supplier-suggestion: usando fallback determinístico", { reason });
+        // Rule-based fallback: rank existing suppliers by name (alphabetical) as neutral suggestion
+        const fallbackRecs = (suppliers ?? []).slice(0, 3).map((s: Record<string, unknown>, i: number) => ({
+          supplierId: s["id"] ?? "",
+          supplierName: s["nome"] ?? s["name"] ?? `Fornecedor ${i + 1}`,
+          score: 50,
+          reasons: ["IA indisponível — avaliação manual recomendada"],
+          estimatedPrice: null,
+          deliveryTime: "A consultar",
+          riskLevel: "medium",
+          negotiationTips: [],
+        }));
+        return {
+          recommendations: fallbackRecs,
+          marketInsights: "Análise IA temporariamente indisponível. Consulte o cadastro de fornecedores.",
+          alternativeSuggestions: [],
+          requestId,
+        };
+      },
+      corsHeaders,
+    );
+
+    if (usedFallback) {
+      logger.warn("ai-supplier-suggestion: resposta de fallback retornada ao cliente");
+      return response;
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -128,7 +155,6 @@ Por favor, analise e forneça suas recomendações.`;
       headers: buildResponseHeaders(corsHeaders),
     });
   } catch (error: unknown) {
-    if (error instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
     return errorResponse(error, logger);
   }
 });

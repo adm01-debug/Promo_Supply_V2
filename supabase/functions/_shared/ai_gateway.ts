@@ -65,3 +65,46 @@ export function circuitOpenResponse(corsHeaders: Record<string, string>): Respon
     },
   );
 }
+
+/**
+ * Wraps callAIGateway with a deterministic fallback.
+ *
+ * When the AI gateway is unavailable (circuit open, network failure, or
+ * non-200 status), `fallbackFn` is called with an explanation and its return
+ * value is used as the response body. The response always includes
+ * `"_fallback": true` so callers can show a degraded-mode indicator in the UI.
+ *
+ * @param opts        Same options as callAIGateway.
+ * @param fallbackFn  Pure function → plain object to return when AI fails.
+ * @param corsHeaders CORS headers to attach.
+ */
+export async function callAIGatewayWithFallback<T extends Record<string, unknown>>(
+  opts: CallAIGatewayOptions,
+  fallbackFn: (reason: string) => T,
+  corsHeaders: Record<string, string>,
+): Promise<{ response: Response; usedFallback: boolean }> {
+  let reason = "unknown";
+
+  try {
+    const res = await callAIGateway(opts);
+    if (res.ok) {
+      return { response: res, usedFallback: false };
+    }
+    reason = `ai_gateway_status_${res.status}`;
+    // Consume body to release the network socket
+    await res.text().catch(() => null);
+  } catch (err) {
+    reason = err instanceof AIGatewayCircuitOpenError
+      ? "circuit_open"
+      : err instanceof Error ? err.message : "network_error";
+  }
+
+  const fallbackBody = { ...fallbackFn(reason), _fallback: true, _fallback_reason: reason };
+  return {
+    response: new Response(JSON.stringify(fallbackBody), {
+      status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json", "X-AI-Fallback": "1" },
+    }),
+    usedFallback: true,
+  };
+}
