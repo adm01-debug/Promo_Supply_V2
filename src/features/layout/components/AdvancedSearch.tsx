@@ -102,7 +102,7 @@ export function AdvancedSearch() {
       }
 
       // DB searches
-      const searchEntities = async <T>(table: string, cat: SearchCategory, fields: string, orFilter: string, mapFn: (item: T) => SearchResult & { normalizedTitle: string; normalizedSubtitle: string }, weight: number) => {
+      const searchEntities = async <T,>(table: string, cat: SearchCategory, fields: string, orFilter: string, mapFn: (item: T) => SearchResult & { normalizedTitle: string; normalizedSubtitle: string }, weight: number) => {
         if (category !== 'all' && category !== cat) return;
         const { data } = await supabase.from(table as Parameters<typeof supabase.from>[0]).select(fields).or(orFilter).limit(20);
         if (!data?.length) return;
