@@ -177,12 +177,7 @@ export function useExecutiveDashboardData() {
 
   // Top suppliers by volume
   const topSuppliers = useMemo(() => {
-    const ped = pedidos || [];
     const forn = fornecedores || [];
-    const fornMap = new Map(forn.map(f => [f.id, f.razao_social]));
-    
-    // We can't easily aggregate by supplier from pedidos since we need fornecedor_id
-    // This would need a join, but for now aggregate what we have
     return forn
       .filter(f => f.status === 'ativo')
       .sort((a, b) => (Number(b.avaliacao) || 0) - (Number(a.avaliacao) || 0))

@@ -226,7 +226,7 @@ export const UrgencyDetailsSheet = ({
                 <div className="space-y-3">
                   <div className="flex items-center justify-between py-2 border-b border-border/30">
                     <span className="text-xs text-muted-foreground">Solicitante</span>
-                    <span className="text-xs font-bold">{(item as any).solicitante?.full_name || "Desconhecido"}</span>
+                    <span className="text-xs font-bold">{(item as { solicitante?: { full_name?: string } | null }).solicitante?.full_name || "Desconhecido"}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-border/30">
                     <span className="text-xs text-muted-foreground">Data da Solicitação</span>

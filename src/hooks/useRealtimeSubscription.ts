@@ -96,6 +96,8 @@ export function useRealtimeSubscription({
 
   const { tenantId } = useAuth();
 
+  const tablesKey = tables.join(',');
+
   useEffect(() => {
     if (!enabled || tables.length === 0) return;
 
@@ -126,7 +128,7 @@ export function useRealtimeSubscription({
       channel = channel.on(
         'postgres_changes',
         config,
-        (payload: RealtimePostgresChangesPayload<any>) => {
+        (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
           // Defense-in-depth: drop any payload that slips through with a foreign tenant.
           const row = (payload.new ?? payload.old) as { tenant_id?: string } | null;
           if (isTenantScoped && tenantId && row?.tenant_id && row.tenant_id !== tenantId) {
@@ -156,5 +158,5 @@ export function useRealtimeSubscription({
         channelRef.current = null;
       }
     };
-  }, [enabled, tables.join(','), debounceMs, flushInvalidations, tenantId]);
+  }, [enabled, tablesKey, debounceMs, flushInvalidations, tenantId, tables]);
 }

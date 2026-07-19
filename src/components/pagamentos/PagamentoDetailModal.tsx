@@ -69,7 +69,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
     enabled: !!pagamento?.id && open,
   });
 
-  const totalCreditos = creditos.reduce((s: number, c: any) => s + (c.saldo || 0), 0);
+  const totalCreditos = creditos.reduce((s: number, c) => s + (c.saldo || 0), 0);
   const saldoRestante = pagamento ? pagamento.valor - (pagamento.valor_pago || 0) : 0;
   const percentPago = pagamento ? ((pagamento.valor_pago || 0) / pagamento.valor) * 100 : 0;
   const isPago = pagamento?.status === 'pago';
@@ -107,12 +107,12 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
       toast({ title: "Comprovante enviado!", description: "Arquivo salvo com sucesso." });
       queryClient.invalidateQueries({ queryKey: ['pagamentos'] });
       queryClient.invalidateQueries({ queryKey: ['payment-history', pagamento.id] });
-    } catch (err: any) {
-      toast({ title: "Erro no upload", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Erro no upload", description: (err as Error).message, variant: "destructive" });
     } finally {
       setUploading(false);
     }
-  }, [pagamento, user, queryClient]);
+  }, [pagamento, user, queryClient, tenantId]);
 
   const handleApplyCredit = useCallback(async (creditId: string, creditSaldo: number) => {
     if (!pagamento || !user) return;
@@ -152,8 +152,8 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
       queryClient.invalidateQueries({ queryKey: ['pagamentos'] });
       queryClient.invalidateQueries({ queryKey: ['creditos-fornecedor'] });
       queryClient.invalidateQueries({ queryKey: ['payment-history'] });
-    } catch (err: any) {
-      toast({ title: "Erro", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Erro", description: (err as Error).message, variant: "destructive" });
     }
   }, [pagamento, user, saldoRestante, queryClient]);
 
@@ -369,7 +369,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
             {historico.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-4">Nenhum registro no histórico</p>
             ) : (
-              historico.map((h: any) => (
+              historico.map((h) => (
                 <Card key={h.id} className="p-3">
                   <div className="flex justify-between items-start">
                     <div>
@@ -396,7 +396,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                   {formatCurrency(totalCreditos)} em créditos disponíveis para este fornecedor
                 </p>
               </div>
-              {creditos.map((c: any) => (
+              {creditos.map((c) => (
                 <Card key={c.id} className="p-3">
                   <div className="flex justify-between items-center">
                     <div>

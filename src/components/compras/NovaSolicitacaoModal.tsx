@@ -87,11 +87,11 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
     }
   }, [formData]);
 
-  const pushToHistory = (data: NovaSolicitacaoData) => {
+  const pushToHistory = useCallback((data: NovaSolicitacaoData) => {
     setHistory(prev => [...prev.slice(-9), data]); // Keep last 10 versions
-  };
+  }, []);
 
-  const handleUndo = () => {
+  const handleUndo = useCallback(() => {
     if (history.length === 0) return;
     const prev = history[history.length - 1];
     isInternalUpdate.current = true;
@@ -99,9 +99,9 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
     setHistory(prevH => prevH.slice(0, -1));
     toast.success("Ação desfeita");
     setTimeout(() => { isInternalUpdate.current = false; }, 100);
-  };
+  }, [history]);
 
-  const processNeuralDraft = async () => {
+  const processNeuralDraft = useCallback(async () => {
     if (!neuralInput.trim()) return;
     setIsProcessingNeural(true);
     try {
@@ -116,9 +116,9 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
     } finally {
       setIsProcessingNeural(false);
     }
-  };
+  }, [neuralInput]);
 
-  const updateField = <K extends keyof NovaSolicitacaoData>(field: K, value: NovaSolicitacaoData[K]) => {
+  const updateField = useCallback(<K extends keyof NovaSolicitacaoData>(field: K, value: NovaSolicitacaoData[K]) => {
     pushToHistory(formData);
     setFormData(prev => ({ ...prev, [field]: value }));
     if (errors[field]) {
@@ -127,7 +127,7 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
     if (field === 'valorEstimado' || field === 'costCenterId') {
       setBudgetCheck(null);
     }
-  };
+  }, [pushToHistory, formData, errors]);
 
   const validateWithSchema = (currentStep: number) => {
     const result = solicitacaoSchema.safeParse(formData);
@@ -229,8 +229,8 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
           departamento: formData.empresa,
           categoria_id: formData.categoriaId || null,
           organization_id: organizationId,
-          tenant_id: organizationId as any,
-        } as any)
+          tenant_id: organizationId,
+        })
         .select('id, numero')
         .single();
 
@@ -280,7 +280,7 @@ export function NovaSolicitacaoModal({ onSuccess }: { onSuccess?: () => void }) 
     const processedFiles = await compressAndReplace(files);
     updateField('anexos', [...(formData.anexos || []), ...processedFiles]);
     e.target.value = '';
-  }, [compressAndReplace, formData.anexos]);
+  }, [compressAndReplace, formData.anexos, updateField]);
 
   const removeFile = (index: number) => {
     updateField('anexos', (formData.anexos || []).filter((_, i) => i !== index));

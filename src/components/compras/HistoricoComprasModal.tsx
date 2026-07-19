@@ -112,7 +112,7 @@ export const HistoricoComprasModal = ({ open, onOpenChange, fornecedor }: Histor
               </TableHeader>
               <TableBody>
                 {pedidos.map((pedido) => {
-                  const itens = (pedido.pedido_itens as any[]) || [];
+                  const itens = (pedido as { pedido_itens?: { descricao?: string; quantidade?: number }[] }).pedido_itens || [];
                   return (
                     <TableRow key={pedido.id}>
                       <TableCell className="font-medium">{pedido.numero}</TableCell>

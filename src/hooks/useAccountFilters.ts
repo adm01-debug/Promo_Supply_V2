@@ -43,6 +43,8 @@ export function useAccountFilters<T extends FiltersRecord>(
   const initializedRef = useRef(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const skipNextSaveRef = useRef(true); // Skip the very first save (right after hydration)
+  const filtersJson = JSON.stringify(filters);
+  const defaultsJson = JSON.stringify(defaults);
 
   // Load auth + initial filters
   useEffect(() => {
@@ -119,7 +121,7 @@ export function useAccountFilters<T extends FiltersRecord>(
       sub.subscription.unsubscribe();
     };
      
-  }, [scope, legacyStorageKey]);
+  }, [scope, legacyStorageKey, defaultsJson, defaults]);
 
   // Debounced persistence
   useEffect(() => {
@@ -129,8 +131,6 @@ export function useAccountFilters<T extends FiltersRecord>(
       return;
     }
 
-    const currentFilters = JSON.stringify(filters);
-    
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       void persist(userId, scope, filters, legacyStorageKey);
@@ -139,9 +139,8 @@ export function useAccountFilters<T extends FiltersRecord>(
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-    // Use stringified filters to avoid infinite loops if an object is passed
-    // but the content is the same.
-  }, [JSON.stringify(filters), userId, scope, legacyStorageKey]);
+    // filtersJson stabilizes the dep — avoids infinite loops when caller passes a new object with same content.
+  }, [filtersJson, userId, scope, legacyStorageKey, filters]);
 
   const setFilters = useCallback((next: T) => {
     setFiltersState(next);
@@ -184,7 +183,7 @@ export function useAccountFilters<T extends FiltersRecord>(
 
     return removedKeys;
      
-  }, [userId, scope, legacyStorageKey, JSON.stringify(defaults)]);
+  }, [userId, scope, legacyStorageKey, defaults]);
 
   return {
     filters,

@@ -37,8 +37,8 @@ const PunchOutCatalogs = () => {
       if (data.mock_redirect) {
         window.open(data.mock_redirect, '_blank');
       }
-    } catch (err: any) {
-      toast.error("Erro ao iniciar PunchOut: " + err.message);
+    } catch (err: unknown) {
+      toast.error("Erro ao iniciar PunchOut: " + (err as Error).message);
     }
   };
 

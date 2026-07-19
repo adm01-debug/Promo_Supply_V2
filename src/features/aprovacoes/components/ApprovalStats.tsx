@@ -1,22 +1,21 @@
+import { type LucideIcon, TrendingDown, Timer, Target, CheckCircle2, XCircle, ArrowUpRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Timer, 
-  Target, 
-  CheckCircle2, 
-  XCircle, 
-  ArrowUpRight 
-} from "lucide-react";
 
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: any;
+  icon: LucideIcon;
   trend?: string;
   trendValue?: string;
-  trendIcon?: any;
+  trendIcon?: LucideIcon;
   variant?: 'default' | 'info' | 'success' | 'destructive';
+}
+
+interface ApprovalMetrics {
+  taxaAprovacao: number;
+  tempoMedioGeral: number;
+  totalAprovadas: number;
+  totalRejeitadas: number;
 }
 
 const StatCard = ({ title, value, icon: Icon, trend, trendValue, trendIcon: TrendIcon, variant = 'default' }: StatCardProps) => {
@@ -48,7 +47,7 @@ const StatCard = ({ title, value, icon: Icon, trend, trendValue, trendIcon: Tren
   );
 };
 
-export const ApprovalKPIs = ({ metrics }: { metrics: any }) => (
+export const ApprovalKPIs = ({ metrics }: { metrics: ApprovalMetrics }) => (
   <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
     <StatCard 
       title="Taxa de Aprovação"

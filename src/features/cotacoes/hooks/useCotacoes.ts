@@ -99,7 +99,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
           organization_id: organizationId,
           tenant_id: organizationId,
-        } as any)
+        })
         .select().single();
       if (error) {
         logger.error('Erro ao inserir cotação no banco', { error, input });
@@ -125,7 +125,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
       toast.error('Erro ao adicionar cotação: ' + msg);
       return null;
     }
-  }, [user, invalidate]);
+  }, [user, invalidate, organizationId]);
 
   const updateCotacao = useCallback(async (id: string, updates: Partial<Cotacao>) => {
     try {

@@ -69,7 +69,7 @@ export function PriceComparator() {
         .select('id, nome, categoria_id')
         .limit(100);
       if (error) throw error;
-      return (data as any[]) || [];
+      return data || [];
     },
     staleTime: 60_000,
   });
@@ -89,7 +89,7 @@ export function PriceComparator() {
     setSelectedQuotes([]);
 
     try {
-      let linkedData: any[] = [];
+      let linkedData: { fornecedor_id: string; preco_custo?: number | null; lead_time_estimado?: number | null }[] = [];
       
       // If a product is selected, fetch its linked suppliers and prices
       if (selectedProductId) {

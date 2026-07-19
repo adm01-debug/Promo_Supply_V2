@@ -5,8 +5,18 @@ import { Zap, AlertTriangle, Clock, Target, CheckCircle2, Factory } from "lucide
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
+interface RoutingItem {
+  descricao?: string;
+  produto_id?: string;
+  produto?: {
+    nome?: string;
+    tipo_produto?: string;
+    lead_time_dias?: number;
+  };
+}
+
 interface ProductionRoutineProps {
-  items: any[];
+  items: RoutingItem[];
 }
 
 export const ProductionRoutingEngine: React.FC<ProductionRoutineProps> = ({ items }) => {
@@ -104,7 +114,7 @@ export const ProductionRoutingEngine: React.FC<ProductionRoutineProps> = ({ item
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
-export const SourcingIntelligenceBanner: React.FC<{ items: any[] }> = ({ items }) => {
+export const SourcingIntelligenceBanner: React.FC<{ items: RoutingItem[] }> = ({ items }) => {
   const produtoIds = useMemo(() => items.map(i => i.produto_id), [items]);
   // Fetch real supplier ecosystems for the first few items
   const { data: backups = [] } = useQuery({
@@ -136,7 +146,7 @@ export const SourcingIntelligenceBanner: React.FC<{ items: any[] }> = ({ items }
         Sourcing Intelligence (Ecosystem)
       </h4>
       <div className="space-y-3">
-        {backups.map((item: any, idx) => (
+        {backups.map((item, idx) => (
           <div key={idx} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all group relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-violet-600/5 blur-3xl -mr-16 -mt-16 pointer-events-none" />
             

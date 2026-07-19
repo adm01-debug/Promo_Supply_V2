@@ -34,7 +34,7 @@ export default function SSOConfig() {
   });
 
   const upsertConfigMutation = useMutation({
-    mutationFn: async (vars: any) => {
+    mutationFn: async (vars: Record<string, unknown>) => {
       const { data, error } = await supabase
         .from('sso_configurations')
         .upsert({
@@ -48,7 +48,7 @@ export default function SSOConfig() {
       queryClient.invalidateQueries({ queryKey: ['sso_configurations'] });
       toast.success('Configuração de SSO atualizada');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Erro ao salvar configuração: ' + error.message);
     },
   });

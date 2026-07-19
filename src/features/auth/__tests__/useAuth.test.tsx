@@ -50,10 +50,9 @@ describe('useAuth', () => {
 
   it('should sign in successfully', async () => {
     const mockSession = { user: { id: '123', email: 'test@example.com' } };
-    (supabase.auth.signInWithPassword as any).mockResolvedValue({
-      data: mockSession,
-      error: null,
-    });
+    vi.mocked(supabase.auth.signInWithPassword).mockResolvedValue(
+      { data: mockSession, error: null } as unknown as Awaited<ReturnType<typeof supabase.auth.signInWithPassword>>
+    );
 
     const { result } = renderHook(() => useAuth(), { wrapper });
     await waitFor(() => expect(result.current.loading).toBe(false));
@@ -70,7 +69,7 @@ describe('useAuth', () => {
   });
 
   it('should sign out successfully', async () => {
-    (supabase.auth.signOut as any).mockResolvedValue({ error: null });
+    vi.mocked(supabase.auth.signOut).mockResolvedValue({ error: null });
 
     const { result } = renderHook(() => useAuth(), { wrapper });
     await waitFor(() => expect(result.current.loading).toBe(false));

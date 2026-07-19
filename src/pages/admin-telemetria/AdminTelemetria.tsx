@@ -29,7 +29,12 @@ export default function AdminTelemetriaPage() {
   const [customDateFrom, setCustomDateFrom] = useState<Date | undefined>();
   const [customDateTo, setCustomDateTo] = useState<Date | undefined>();
   const [simulationLoading, setSimulationLoading] = useState(false);
-  const [simulationResult, setSimulationResult] = useState<any>(null);
+  const [simulationResult, setSimulationResult] = useState<{
+    success: number;
+    total: number;
+    avgDuration: number;
+    details: Array<{ name: string; status: string; duration: number }>;
+  } | null>(null);
 
   const { data: rows = [], isLoading, refetch, isRefetching } = useQuery<TelemetryRow[]>({
     queryKey: ["query-telemetry", severityFilter, timeFilter, customDateFrom?.toISOString(), customDateTo?.toISOString()],
@@ -186,7 +191,7 @@ export default function AdminTelemetriaPage() {
                 <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Database className="h-4 w-4" />Tabelas Mais Problemáticas</CardTitle></CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {stats.topOffenders.map(([name, s]: [string, any]) => (
+                    {stats.topOffenders.map(([name, s]) => (
                       <div key={name} className="p-3 rounded-lg border border-border/50 bg-muted/30">
                         <p className="font-mono text-sm font-medium truncate" title={name}>{name}</p>
                         <div className="flex items-center gap-2 mt-1"><span className="text-xs text-muted-foreground">{s.count}× alertas</span><span className="text-xs text-destructive">max {formatDuration(s.maxMs)}</span></div>

@@ -42,11 +42,11 @@ export default function ComplianceDashboard() {
   const fetchData = async () => {
     try {
       const [compRes, rulesRes] = await Promise.all([
-        supabase.from('supplier_compliance_summary' as any).select('*'),
-        supabase.from('penalty_escalation_config' as any).select('*').order('level', { ascending: true }),
+        supabase.from('supplier_compliance_summary').select('*'),
+        supabase.from('penalty_escalation_config').select('*').order('level', { ascending: true }),
       ]);
-      setData((compRes.data as any[]) || []);
-      setRules((rulesRes.data as any[]) || []);
+      setData((compRes.data as ComplianceData[]) || []);
+      setRules((rulesRes.data as EscalationRule[]) || []);
     } catch (error: unknown) {
       logger.error('Error fetching compliance data', { error });
       toast.error("Erro ao carregar dados de compliance");
@@ -180,7 +180,7 @@ export default function ComplianceDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {sortedData.map((item: any, idx: number) => {
+                    {sortedData.map((item, idx) => {
                       const status = getComplianceStatus(item);
                       const StatusIcon = status.icon;
                       return (

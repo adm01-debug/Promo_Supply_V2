@@ -7,7 +7,7 @@ export interface BulkItem {
   status: string;
   value?: number;
   date?: string;
-  extra?: Record<string, any>;
+  extra?: Record<string, unknown>;
 }
 
 export interface BulkAction {

@@ -102,7 +102,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
     refetchOnWindowFocus: false,
   });
 
-  const pagamentos = data?.data || [];
+  const pagamentos = useMemo(() => data?.data ?? [], [data]);
   const totalCount = data?.totalCount || 0;
 
   const invalidate = useCallback(() => {
@@ -125,7 +125,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
           chave_nf: input.chave_nf, observacoes: input.observacoes, created_by: user.id,
           tenant_id: organizationId,
           organization_id: organizationId,
-        } as any)
+        })
         .select().single();
       if (error) {
         logger.error('Erro ao inserir pagamento no banco', { error, input });
@@ -218,7 +218,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.error('Erro ao atualizar pagamentos: ' + msg);
       return false;
     }
-  }, [user, organizationId, invalidate]);
+  }, [user, invalidate]);
 
   const deletePagamento = useCallback(async (id: string) => {
     try {

@@ -57,7 +57,21 @@ const STATUS_CONFIG = {
   },
 };
 
-const renderActiveShape = (props: any) => {
+interface ActiveShapeProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  startAngle: number;
+  endAngle: number;
+  fill: string;
+  payload: { name: string };
+  percent: number;
+  value: number;
+}
+
+const renderActiveShape = (props: ActiveShapeProps) => {
   const RADIAN = Math.PI / 180;
   const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
   const sin = Math.sin(-RADIAN * midAngle);

@@ -18,18 +18,20 @@ describe('Edge Function Fuzzing', () => {
 
   endpoints.forEach(endpoint => {
     describe(`Endpoint: ${endpoint}`, () => {
-      malformedPayloads.forEach((payload: any, idx) => {
+      malformedPayloads.forEach((payload: unknown, idx: number) => {
         it(`should fail gracefully for malformed payload #${idx}`, () => {
-          const mockValidator = (p: any) => {
+          const mockValidator = (p: unknown) => {
             if (p === null || typeof p !== 'object') return false;
-            if (p.id !== undefined && typeof p.id !== 'string') return false;
-            if (p.action === "") return false;
-            
+            const obj = p as Record<string, unknown>;
+            if (obj['id'] !== undefined && typeof obj['id'] !== 'string') return false;
+            if (obj['action'] === "") return false;
+
             const str = JSON.stringify(p);
             if (str.length > 50000) return false;
             if (str.includes("DROP TABLE") || str.includes("--")) return false;
-            if (p.nested && p.nested.length > 100) return false;
-            
+            const nested = obj['nested'];
+            if (Array.isArray(nested) && nested.length > 100) return false;
+
             return true;
           };
           

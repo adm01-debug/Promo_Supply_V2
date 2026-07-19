@@ -22,9 +22,8 @@ interface Props {
   filteredBuyers: Buyer[];
   showComparison: boolean;
    
-  onSupplierDrillDown: (s: any) => void;
-   
-  onBuyerDrillDown: (b: any) => void;
+  onSupplierDrillDown: (s: Supplier) => void;
+  onBuyerDrillDown: (b: Buyer) => void;
 }
 
 export const ExecutiveTablesRow = ({ filteredSuppliers, filteredBuyers, showComparison, onSupplierDrillDown, onBuyerDrillDown }: Props) => {

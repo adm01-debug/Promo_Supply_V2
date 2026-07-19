@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
 
 describe('Fuzzing & Payload Validation', () => {
-  const validatePayload = (payload: any) => {
+  const validatePayload = (payload: unknown) => {
     if (!payload || typeof payload !== 'object') throw new Error('Invalid payload');
-    if (!payload.id && !payload.action) throw new Error('Missing identification fields');
+    const obj = payload as Record<string, unknown>;
+    if (!obj['id'] && !obj['action']) throw new Error('Missing identification fields');
     return true;
   };
 

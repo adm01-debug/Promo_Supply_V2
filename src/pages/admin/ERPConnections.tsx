@@ -60,7 +60,7 @@ const ERPConnections = () => {
       toast.success("Sincronização iniciada com sucesso");
       queryClient.invalidateQueries({ queryKey: ['erp-sync-logs'] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error("Erro ao sincronizar: " + error.message);
     }
   });

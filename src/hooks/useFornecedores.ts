@@ -135,7 +135,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
           created_by: user.id,
           organization_id: tenantId,
           tenant_id: tenantId,
-        } as any)
+        })
         .select()
         .single();
 

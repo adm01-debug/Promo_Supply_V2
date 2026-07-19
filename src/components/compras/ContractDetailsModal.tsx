@@ -44,7 +44,7 @@ import { toast } from "@/lib/feedbackToast";
 import { useAuth } from "@/features/auth";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { logger } from "@/lib/logger";
-import type { Contract, ContractItem, ContractPenalty, ContractDocument, StatusConfig, TypeConfig } from "@/types/contract";
+import type { Contract, ContractItem, ContractPenalty, ContractDocument, ContractHistory, StatusConfig, TypeConfig } from "@/types/contract";
 import { Input } from "@/components/ui/input";
 import { ContractSLAReadonlyTab, ContractPenaltiesTab } from "./contract/ContractDetailsTabs";
 
@@ -72,8 +72,8 @@ const typeConfig: Record<string, TypeConfig> = {
 export function ContractDetailsModal({ open, onOpenChange, contract }: ContractDetailsModalProps) {
   const [items, setItems] = useState<ContractItem[]>([]);
   const [documents, setDocuments] = useState<ContractDocument[]>([]);
-  const [history, setHistory] = useState<any[]>([]);
-  const [linkedOrders, setLinkedOrders] = useState<any[]>([]);
+  const [history, setHistory] = useState<ContractHistory[]>([]);
+  const [linkedOrders, setLinkedOrders] = useState<{ id: string; contract_id: string; order_id: string; tenant_id: string; created_at: string }[]>([]);
   const [penalties, setPenalties] = useState<ContractPenalty[]>([]);
   const [loading, setLoading] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
@@ -87,7 +87,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
         supabase.from('contract_items').select('*').eq('contract_id', contract.id),
         supabase.from('contract_history').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
         supabase.from('order_contracts').select('*').eq('contract_id', contract.id),
-        (supabase as any).from('contract_penalties').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
+        supabase.from('contract_penalties').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
         supabase.from('contract_documents').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
       ]);
 

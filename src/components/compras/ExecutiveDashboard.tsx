@@ -11,7 +11,7 @@ import {
   DollarSign, TrendingUp, ShoppingCart, Target, GitCompare, Download,
   ShieldCheck, Brain, Sparkles
 } from 'lucide-react';
-import { useExecutiveDashboardData } from '@/hooks/useExecutiveDashboardData';
+import { useExecutiveDashboardData, type ExecutiveMetrics } from '@/hooks/useExecutiveDashboardData';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import { ElitePageWrapper } from '@/components/organisms/ElitePageWrapper';
 import { EliteButton } from '@/components/atoms/EliteButton';
@@ -116,7 +116,7 @@ export const ExecutiveDashboard = () => {
       { key: 'supplier', label: 'Fornecedor', value: selectedSupplier },
     ],
     takeSnapshot: () => ({ selectedCategory, selectedSupplier, selectedPeriod, showComparison }),
-    applySnapshot: (s: any) => {
+    applySnapshot: (s) => {
       setSelectedCategory(s.selectedCategory); setSelectedSupplier(s.selectedSupplier);
     },
     performClear: () => {
@@ -153,8 +153,8 @@ export const ExecutiveDashboard = () => {
     return data;
   }, [selectedCategory, selectedSupplier]);
 
-  const handleCategoryDrillDown = (category: any) => {
-     setSelectedCategory(category.name);
+  const handleCategoryDrillDown = (category: { name: string }) => {
+    setSelectedCategory(category.name);
   };
 
   return (
@@ -267,7 +267,7 @@ export const ExecutiveDashboard = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
            <div className="lg:col-span-2 space-y-8">
               <ExecutiveAIInsights 
-                metrics={activeMetrics as any} 
+                metrics={activeMetrics as ExecutiveMetrics}
                 spendByCategory={realSpendByCategory || []} 
                 topSuppliers={(realTopSuppliers || []).map(s => ({ name: s.name, rating: 4.5 }))} 
               />

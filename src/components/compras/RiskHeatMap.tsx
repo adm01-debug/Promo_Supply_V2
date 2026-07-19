@@ -101,7 +101,7 @@ export const RiskHeatMap = () => {
       return {
         supplierId: f.id,
         supplierName: f.razao_social,
-        category: (f as any).categorias?.nome || 'General',
+        category: f.categorias?.nome || 'General',
         risks: { financial: financialRisk, operational: operationalRisk, quality: qualityRisk, delivery: deliveryRisk, concentration: concentrationRisk, geopolitical: geopoliticalRisk },
         overallRisk,
         trend: overallRisk > 40 ? 'worsening' : overallRisk < 20 ? 'improving' : 'stable',

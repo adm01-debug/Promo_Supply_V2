@@ -56,7 +56,7 @@ export const useApprovalRules = () => {
         valor_max: rule.valor_max || 999999999,
         categoria_id: rule.categoria_id,
         cost_center_id: rule.cost_center_id,
-        aprovadores: JSON.stringify(rule.aprovadores || []) as any,
+        aprovadores: JSON.stringify(rule.aprovadores || []),
         tempo_limite_horas: rule.tempo_limite_horas || 24,
         escalacao_automatica: rule.escalacao_automatica || false,
         escalacao_para: rule.escalacao_para,

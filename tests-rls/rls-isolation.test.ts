@@ -79,12 +79,12 @@ describe("RLS · anon isolation (tabelas críticas)", () => {
       user_email: "attacker@evil.com",
       entity_id: "x",
       entity_description: "tentativa",
-    } as any);
+    } as unknown as Parameters<ReturnType<typeof client.from<"audit_logs">>["insert"]>[0]);
     expect(error).toBeTruthy();
   });
 
   it("anon não consegue chamar RPC administrativa count_legacy_storage_urls", async () => {
-    const { error } = await client.rpc("count_legacy_storage_urls" as any);
+    const { error } = await client.rpc("count_legacy_storage_urls" as unknown as Parameters<typeof client.rpc>[0]);
     expect(error).toBeTruthy();
   });
 });
@@ -145,7 +145,7 @@ describe.runIf(!!USER_A && !!USER_B)(
         numero: `RLS-TEST-${Date.now()}`,
         status: "pendente",
         valor_total: 1,
-      } as any);
+      } as unknown as Parameters<ReturnType<typeof clientA.from<"pedidos">>["insert"]>[0]);
       expect(error).toBeTruthy();
     });
   },

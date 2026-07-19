@@ -162,7 +162,7 @@ const RFxDetails = memo(() => {
 
               <TabsContent value="items" className="mt-6">
                 <div className="space-y-4">
-                  {event.lots?.map((lot: any) => (
+                  {event.lots?.map((lot) => (
                     <Card key={lot.id} className="p-6">
                       <div className="flex justify-between items-start">
                         <div>
@@ -186,7 +186,7 @@ const RFxDetails = memo(() => {
               <TabsContent value="responses" className="mt-6">
                 <div className="space-y-4">
                   {event.responses && event.responses.length > 0 ? (
-                    event.responses.map((resp: any) => (
+                    event.responses.map((resp) => (
                       <Card key={resp.id} className="p-4 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
@@ -278,7 +278,7 @@ const RFxDetails = memo(() => {
                   <span className="text-foreground">Melhor Oferta:</span>
                   <span className="text-emerald-600">
                     {event.responses && event.responses.length > 0 
-                      ? event.responses.reduce((min: number, r: any) => Math.min(min, r.total_preco || 0), Infinity).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
+                      ? event.responses.reduce((min: number, r) => Math.min(min, r.total_preco || 0), Infinity).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
                       : '-'}
                   </span>
                 </div>
@@ -296,7 +296,7 @@ const RFxDetails = memo(() => {
                   <p className="text-[13px] leading-relaxed">
                     {event.responses && event.responses.length > 0 
                       ? (() => {
-                          const best = event.responses.reduce((b: any, r: any) => ((r.total_preco || 0) < (b.total_preco || Infinity) ? r : b), event.responses[0]);
+                          const best = event.responses.reduce((b, r) => ((r.total_preco || 0) < (b.total_preco || Infinity) ? r : b), event.responses[0]);
                           const minPrice = best.total_preco || 0;
                           const saving = (((event.budget_estimate || 0) - minPrice) / (event.budget_estimate || 1) * 100).toFixed(1);
                           return `Identificamos que o fornecedor ${best?.fornecedor?.razao_social} possui a melhor oferta financeira, com um saving de ${saving}% em relação ao budget.`;

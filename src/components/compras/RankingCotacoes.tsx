@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Trophy, Check, AlertTriangle, Truck, Settings2, Sparkles, MessageSquare, ArrowUpRight, ArrowDownRight, TrendingDown, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -98,7 +98,7 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
     return { minTotal, maxTotal, minPrazo, maxPrazo };
   }, [cotacoes]);
 
-  const calculateScore = (cotacao: Cotacao) => {
+  const calculateScore = useCallback((cotacao: Cotacao) => {
     const { minTotal, maxTotal, minPrazo, maxPrazo } = bounds;
     const normalizedPreco = maxTotal === minTotal ? 100 : (1 - (cotacao.total - minTotal) / (maxTotal - minTotal)) * 100;
     const normalizedPrazo = maxPrazo === minPrazo ? 100 : (1 - (cotacao.prazoEntrega - minPrazo) / (maxPrazo - minPrazo)) * 100;
@@ -111,12 +111,11 @@ export const RankingCotacoes = ({ cotacoes, quantidade, onSelecionar, selecionad
     );
 
     return Math.round(finalScore);
-  };
+  }, [bounds, quantidade, weights]);
 
   const cotacoesComScore = useMemo(
     () => cotacoes.map(c => ({ ...c, score: calculateScore(c) })),
-     
-    [cotacoes, weights, quantidade, bounds]
+    [cotacoes, calculateScore]
   );
 
   const cotacoesOrdenadas = useMemo(

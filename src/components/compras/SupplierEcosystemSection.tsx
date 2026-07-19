@@ -52,7 +52,7 @@ export const SupplierEcosystemSection = ({ produtoId, produtoNome }: SupplierEco
       <CardContent className="p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {ecossistema.length > 0 ? (
-            ecossistema.map((item: any, idx) => (
+            ecossistema.map((item, idx) => (
               <motion.div 
                 key={item.id}
                 initial={{ opacity: 0, y: 10 }}

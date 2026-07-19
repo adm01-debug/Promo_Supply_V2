@@ -17,13 +17,27 @@ import {
 import { monthlyTrend, comparisonTrend, COLORS } from './executiveDashboardData';
 import { cn, formatCurrency } from '@/lib/utils';
 
-const CustomTooltip = ({ active, payload, label, showComparison }: any) => {
+interface TooltipEntry {
+  name: string;
+  value: number;
+  color?: string;
+  fill?: string;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipEntry[];
+  label?: string;
+  showComparison?: boolean;
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[#05020a]/95 backdrop-blur-md border border-white/10 p-3 rounded-xl shadow-2xl space-y-2 min-w-[180px]">
         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">{label}</p>
         <div className="space-y-1.5">
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry, index) => (
             <div key={index} className="flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color || entry.fill }} />
@@ -42,7 +56,7 @@ const CustomTooltip = ({ active, payload, label, showComparison }: any) => {
 interface ExecutiveChartsRowProps {
   showComparison: boolean;
   filteredCategorySpend: Array<{ name: string; value: number; previousValue: number; percentage: number; orders: number; supplier: string }>;
-  onCategoryDrillDown: (category: any) => void;
+  onCategoryDrillDown: (category: { name: string; value: number; previousValue: number; percentage: number; orders: number; supplier: string }) => void;
   selectedCategory: string;
   selectedSupplier: string;
 }

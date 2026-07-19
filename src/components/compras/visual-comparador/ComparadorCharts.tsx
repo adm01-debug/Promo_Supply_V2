@@ -20,6 +20,29 @@ const tooltipStyle = {
   borderRadius: '8px',
 };
 
+interface RadarDataPoint {
+  metric: string;
+  [key: string]: number | string;
+}
+
+interface BarChartDataPoint {
+  name: string;
+  total: number;
+  fill: string;
+}
+
+interface PrazoChartDataPoint {
+  name: string;
+  prazo: number;
+  fill: string;
+}
+
+interface PieDataPoint {
+  name: string;
+  value: number;
+  fill: string;
+}
+
 interface ChartProps {
   selectedCotacoes: Array<{
     id: string;
@@ -31,10 +54,10 @@ interface ChartProps {
     quantidadeDisponivel: number;
     condicaoPagamento: string;
   }>;
-  radarData: any[];
-  barChartData: any[];
-  prazoChartData: any[];
-  pieData: any[];
+  radarData: RadarDataPoint[];
+  barChartData: BarChartDataPoint[];
+  prazoChartData: PrazoChartDataPoint[];
+  pieData: PieDataPoint[];
   COLORS: string[];
   getScore: (id: string) => { score: number; priceScore: number; prazoScore: number; stockScore: number } | undefined;
   analysis: {

@@ -7,9 +7,9 @@ import LanguageDetector from "i18next-browser-languagedetector";
  * Vite resolves these as static imports so they are tree-shaken and bundled efficiently.
  * Adding a new locale: create the JSON file and add an entry to LOCALE_MODULES below.
  */
-import ptTranslation from "/locales/pt/translation.json";
-import enTranslation from "/locales/en/translation.json";
-import esTranslation from "/locales/es/translation.json";
+import ptTranslation from "@/locales/pt/translation.json";
+import enTranslation from "@/locales/en/translation.json";
+import esTranslation from "@/locales/es/translation.json";
 
 const resources = {
   pt: { translation: ptTranslation },

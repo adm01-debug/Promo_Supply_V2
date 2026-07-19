@@ -20,16 +20,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn, formatCurrency } from '@/lib/utils';
 
 
-export const BulkPlanningConsole = () => {
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set(['1', '2', '3']));
-  const [activePlan, setActivePlan] = useState<string | null>(null);
-  const [freightAnalysis, setFreightAnalysis] = useState<{ [key: string]: { cost: number, optimization: number } }>({
-    '1': { cost: 450, optimization: 12 },
-    '2': { cost: 1200, optimization: 8 },
-    '3': { cost: 85, optimization: 15 }
-  });
-
-  const mockPlanningData = [
+const mockPlanningData = [
     { 
       id: '1', 
       category: 'Brindes Premium', 
@@ -64,6 +55,15 @@ export const BulkPlanningConsole = () => {
       risk: 'Crítico'
     }
   ];
+
+export const BulkPlanningConsole = () => {
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set(['1', '2', '3']));
+  const [activePlan, setActivePlan] = useState<string | null>(null);
+  const [freightAnalysis, setFreightAnalysis] = useState<{ [key: string]: { cost: number, optimization: number } }>({
+    '1': { cost: 450, optimization: 12 },
+    '2': { cost: 1200, optimization: 8 },
+    '3': { cost: 85, optimization: 15 }
+  });
 
   const toggleItem = (id: string) => {
     const next = new Set(selectedItems);

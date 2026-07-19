@@ -27,11 +27,26 @@ export interface ComparisonResult {
   insights: string[];
 }
 
+interface FornecedorLike {
+  id: string;
+  nome_fantasia?: string | null;
+  razao_social: string;
+  prazo_medio_entrega?: number | null;
+  condicoes_pagamento?: string | null;
+  avaliacao?: number | null;
+}
+
+interface LinkedSupplierLike {
+  fornecedor_id: string;
+  preco_custo?: number | null;
+  lead_time_estimado?: number | null;
+}
+
 export function generateQuotesFromSuppliers(
-  fornecedores: any[],
+  fornecedores: FornecedorLike[],
   productName: string,
   qty: number,
-  linkedProductSuppliers: any[] = []
+  linkedProductSuppliers: LinkedSupplierLike[] = []
 ): ComparisonResult {
   const quotes: PriceQuote[] = fornecedores.map((f, index) => {
     // Check if we have real data linked for this supplier and product

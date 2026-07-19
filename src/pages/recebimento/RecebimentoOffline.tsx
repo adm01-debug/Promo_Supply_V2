@@ -78,14 +78,14 @@ export default function RecebimentoOffline() {
 
       if (error) throw error;
 
-      const mapped: PendingOrder[] = (pedidos || []).map((p: any) => ({
+      const mapped: PendingOrder[] = (pedidos || []).map((p) => ({
         id: p.id,
         numero: p.numero,
-        fornecedor_nome: p.fornecedor?.razao_social || "Fornecedor",
+        fornecedor_nome: (p.fornecedor as { razao_social?: string } | null)?.razao_social || "Fornecedor",
         data_previsao: p.data_previsao,
         valor_total: p.valor_total || 0,
         status: p.status,
-        itens: (p.pedido_itens || []).map((i: any) => ({
+        itens: ((p.pedido_itens || []) as Array<{ id: string; descricao: string; quantidade: number; quantidade_recebida: number; unidade: string; valor_unitario: number }>).map((i) => ({
           id: i.id,
           descricao: i.descricao,
           quantidade: i.quantidade,

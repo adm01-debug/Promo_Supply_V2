@@ -6,11 +6,14 @@ import { logger } from '@/lib/logger';
 import { useWorkflowDLQ } from './useWorkflowDLQ';
 import { useApprovalRules } from './useApprovalRules';
 import { useApprovalHistory } from './useApprovalHistory';
+import type { Database } from '@/integrations/supabase/types';
 import type {
   ApprovalWorkflow,
   ApprovalWorkflowWithRelations,
   ApprovalStep,
 } from './approvalWorkflowTypes';
+
+type ApprovalStepInsert = Database['public']['Tables']['approval_steps']['Insert'];
 
 export type {
   ApprovalRule, ApprovalDelegation, ApprovalWorkflow,
@@ -89,7 +92,7 @@ export const useApprovalWorkflow = () => {
       let rule = ruleId ? rulesApi.rules.find(r => r.id === ruleId) || null : null;
       if (!rule) rule = rulesApi.findApplicableRule(valor, categoriaId);
 
-      const ccManagerId = (sol.cost_center as any)?.manager_id;
+      const ccManagerId = (sol.cost_center as { manager_id: string | null } | null)?.manager_id;
       if (!rule && !ccManagerId) {
         toast.error('Nenhuma regra de aprovação ou gestor de Centro de Custo encontrado');
         return null;
@@ -112,7 +115,7 @@ export const useApprovalWorkflow = () => {
       if (workflowError) throw workflowError;
       const typedWorkflow = workflow as ApprovalWorkflow;
 
-      const steps: object[] = [];
+      const steps: ApprovalStepInsert[] = [];
       let stepCounter = 1;
 
       if (ccManagerId) {
@@ -145,7 +148,7 @@ export const useApprovalWorkflow = () => {
 
       if (steps.length > 0) {
         await supabase.from('approval_workflows').update({ total_etapas: steps.length }).eq('id', typedWorkflow.id);
-        const { error: stepsError } = await supabase.from('approval_steps').insert(steps as any);
+        const { error: stepsError } = await supabase.from('approval_steps').insert(steps);
         if (stepsError) throw stepsError;
       }
 
@@ -293,7 +296,7 @@ export const useApprovalWorkflow = () => {
       fetchPendingWorkflows(),
       fetchPendingSteps(),
     ]);
-  }, [rulesApi.fetchRules, rulesApi.fetchDelegations, fetchPendingWorkflows, fetchPendingSteps]);
+  }, [rulesApi, fetchPendingWorkflows, fetchPendingSteps]);
 
   useEffect(() => {
     escalationRefCount += 1;

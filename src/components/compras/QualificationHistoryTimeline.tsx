@@ -15,6 +15,16 @@ const ACTION_CONFIG: Record<string, { icon: typeof CheckCircle2; color: string; 
   review: { icon: ShieldCheck, color: 'text-info', label: 'Revisão' },
 };
 
+interface QualificationHistoryItem {
+  id: string;
+  action_type: string;
+  description?: string | null;
+  old_value?: string | null;
+  new_value?: string | null;
+  created_at: string;
+  fornecedor?: { razao_social?: string; nome_fantasia?: string } | null;
+}
+
 interface Props {
   fornecedorId?: string;
 }
@@ -35,7 +45,7 @@ export const QualificationHistoryTimeline = ({ fornecedorId }: Props) => {
 
       const { data, error } = await query;
       if (error) throw error;
-      return data as any[];
+      return (data ?? []) as QualificationHistoryItem[];
     },
   });
 
@@ -63,7 +73,7 @@ export const QualificationHistoryTimeline = ({ fornecedorId }: Props) => {
             {/* Vertical line */}
             <div className="absolute left-[19px] top-3 bottom-3 w-px bg-border" />
 
-            {history.map((item: any, idx: number) => {
+            {history.map((item, idx) => {
               const config = ACTION_CONFIG[item.action_type] || { icon: History, color: 'text-muted-foreground', label: item.action_type };
               const Icon = config.icon;
               return (

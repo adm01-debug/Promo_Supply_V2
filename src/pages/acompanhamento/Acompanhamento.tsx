@@ -210,7 +210,7 @@ const Acompanhamento = () => {
                 key={stat.key}
                 whileHover={{ scale: 1.02, y: -2 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => stat.key !== 'transito' && stat.key !== 'prazo' && setFiltroSLA(filtroSLA === stat.key ? 'todos' : stat.key as any)}
+                onClick={() => stat.key !== 'transito' && stat.key !== 'prazo' && setFiltroSLA(filtroSLA === stat.key ? 'todos' : stat.key as 'atrasados' | 'criticos' | 'atencao')}
                 className={cn(
                   "p-5 rounded-[2rem] border border-border/40 backdrop-blur-xl cursor-pointer transition-all shadow-lg shadow-black/5",
                   filtroSLA === stat.key ? "bg-background border-primary shadow-primary/10" : "bg-card/40 hover:bg-card/60"
@@ -306,7 +306,7 @@ const Acompanhamento = () => {
                 exit={{ opacity: 0, scale: 0.98 }}
                 className="w-full h-full"
               >
-                <KanbanBoard pedidos={pedidosFiltrados as any} onViewDetails={setPedidoDetalhes as any} onStatusChange={handleStatusChange} />
+                <KanbanBoard pedidos={pedidosFiltrados} onViewDetails={setPedidoDetalhes} onStatusChange={handleStatusChange} />
               </motion.div>
             ) : (
               <motion.div

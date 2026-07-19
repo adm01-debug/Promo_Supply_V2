@@ -1,0 +1,90 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "search": "Buscar",
+    "actions": "Acciones",
+    "confirm": "Confirmar",
+    "success": "Éxito",
+    "error": "Error",
+    "warning": "Aviso",
+    "info": "Información",
+    "status": "Estado",
+    "date": "Fecha",
+    "total": "Total",
+    "value": "Valor",
+    "quantity": "Cantidad",
+    "unit": "Unidad",
+    "description": "Descripción",
+    "observations": "Observaciones",
+    "attachments": "Adjuntos",
+    "history": "Historial",
+    "notifications": "Notificaciones",
+    "profile": "Perfil",
+    "settings": "Configuraciones",
+    "logout": "Salir",
+    "login": "Entrar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "finish": "Finalizar",
+    "all": "Todos",
+    "none": "Ninguno",
+    "yes": "Sí",
+    "no": "No",
+    "welcome": "Bienvenido",
+    "dashboard": "Tablero",
+    "procurement": "Compras",
+    "suppliers": "Proveedores",
+    "products": "Productos",
+    "contracts": "Contratos",
+    "reports": "Informes",
+    "audit": "Auditoría",
+    "security": "Seguridad"
+  },
+  "dashboard": {
+    "title": "Tablero de Compras",
+    "kpis": {
+      "total_requests": "Total Solicitudes",
+      "pending_approval": "Pendiente Aprobación",
+      "active_quotes": "Cotizaciones Activas",
+      "completed_orders": "Pedidos Completados",
+      "total_spend": "Gasto Total",
+      "saving": "Ahorro Total",
+      "sla": "Tasa SLA",
+      "subtitles": {
+        "pending": "Solicitudes pendientes",
+        "volume": "Total facturado",
+        "economy": "del volumen total",
+        "sla": "Nivel de servicio"
+      }
+    }
+  },
+  "navigation": {
+    "overview": "Vista General",
+    "operations": "Operaciones",
+    "finance": "Finanzas",
+    "suppliers": "Proveedores",
+    "analytics": "Analíticas",
+    "admin": "Admin"
+  },
+  "status": {
+    "pending": "Pendiente",
+    "approved": "Aprobado",
+    "rejected": "Rechazado",
+    "in_progress": "En Progreso",
+    "completed": "Completado",
+    "cancelled": "Cancelado",
+    "active": "Activo",
+    "inactive": "Inactivo"
+  },
+  "errors": {
+    "generic": "Ocurrió un error inesperado.",
+    "network": "Error de conexión. Verifique su internet.",
+    "unauthorized": "Sesión expirada. Inicie sesión nuevamente.",
+    "not_found": "Registro no encontrado.",
+    "forbidden": "No tiene permiso para esta acción."
+  }
+}

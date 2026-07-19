@@ -28,7 +28,7 @@ export const CostCenterPerformanceAnalysis = () => {
     queryFn: async () => {
       const { data, error } = await supabase.rpc('get_cost_center_performance_report');
       if (error) throw error;
-      return data as any[];
+      return data ?? [];
     }
   });
 
