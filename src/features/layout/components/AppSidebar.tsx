@@ -263,21 +263,43 @@ const SidebarSection = ({
   collapsed,
   criticalHealthCount,
   badges,
+  sectionBadge = 0,
+  sectionBadgeCritical = false,
 }: {
   section: NavSection;
   pathname: string;
   collapsed: boolean;
   criticalHealthCount: number;
   badges: Record<string, number>;
+  sectionBadge?: number;
+  sectionBadgeCritical?: boolean;
 }) => (
   <div className="space-y-0.5">
     {/* Section label — hidden when collapsed */}
     {!collapsed && (
-      <p className="px-4 pb-2 pt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 select-none">
-        {section.label}
-      </p>
+      <div className="flex items-center gap-2 px-4 pb-2 pt-4 select-none">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 flex-1">
+          {section.label}
+        </p>
+        {sectionBadge > 0 && (
+          <CountBadge count={sectionBadge} critical={sectionBadgeCritical} />
+        )}
+      </div>
     )}
-    {collapsed && <div className="my-1.5 mx-2 h-px bg-border/40" />}
+    {collapsed && (
+      <div className="relative my-1.5 mx-2">
+        <div className="h-px bg-border/40" />
+        {sectionBadge > 0 && (
+          <span
+            className={cn(
+              "absolute -top-1 right-0 h-2 w-2 rounded-full ring-2 ring-sidebar-background",
+              sectionBadgeCritical ? "bg-destructive animate-pulse" : "bg-primary"
+            )}
+            aria-label={sectionBadgeCritical ? `${sectionBadge} alertas críticos` : undefined}
+          />
+        )}
+      </div>
+    )}
 
     {section.items.map((item) => (
       <SidebarItem
@@ -373,6 +395,8 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
             collapsed={collapsed}
             criticalHealthCount={criticalHealthCount}
             badges={badges}
+            sectionBadge={section.id === "admin" ? criticalHealthCount : 0}
+            sectionBadgeCritical={section.id === "admin"}
           />
         ))}
       </nav>
