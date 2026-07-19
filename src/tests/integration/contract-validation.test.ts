@@ -1,25 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { z } from 'zod';
-
-// Contract Definitions for Validation Testing
-const NegotiationContract = z.object({
-  cotacoes: z.array(z.object({
-    id: z.string().uuid(),
-    fornecedor: z.string(),
-    total: z.number().positive()
-  })),
-  solicitacao: z.object({
-    id: z.string().uuid(),
-    titulo: z.string().min(3)
-  })
-});
-
-const WorkflowContract = z.object({
-  action: z.enum(['start_workflow', 'approve_step', 'submit_decision']),
-  tenant_id: z.string().uuid().optional(),
-  entity_id: z.string().uuid().optional(),
-  instance_id: z.string().uuid().optional()
-});
+import { NegotiationSchema as NegotiationContract, WorkflowSchema as WorkflowContract } from './shared-schemas';
 
 describe('Edge Function Contract Tests', () => {
   describe('Negotiation Workflow', () => {

@@ -1,18 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { z } from 'zod';
-
-// Simplified client-side version of the contracts for testing
-const NegotiationSchema = z.object({
-  cotacoes: z.array(z.object({
-    id: z.string().uuid(),
-    fornecedor: z.string(),
-    total: z.number().positive()
-  })),
-  solicitacao: z.object({
-    id: z.string().uuid(),
-    titulo: z.string().min(3)
-  })
-});
+import { NegotiationSchema } from './shared-schemas';
 
 describe('Edge Function Contract Validation', () => {
   it('should validate a correct negotiation payload', () => {
