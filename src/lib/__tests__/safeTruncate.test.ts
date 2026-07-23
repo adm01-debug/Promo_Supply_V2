@@ -30,7 +30,7 @@ describe("safeTruncate (frontend)", () => {
     const samples = ["日本語テスト", "مرحبا بالعالم", "e\u0301\u0301\u0301"];
     for (const s of samples) {
       const out = safeTruncate(s, Math.max(1, s.length - 1));
-      expect(new TextEncoder().encode(out)).toBeInstanceOf(Uint8Array);
+      expect(new TextEncoder().encode(out).byteLength).toBeGreaterThan(0);
       expect(JSON.parse(JSON.stringify(out))).toBe(out);
     }
   });
