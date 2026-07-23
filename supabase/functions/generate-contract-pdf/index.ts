@@ -253,9 +253,7 @@ Deno.serve(async (req) => {
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
-    if (typeof logger !== 'undefined') {
-      logger.error("Error generating contract PDF", { error: msg });
-    }
+    logger.error("Error generating contract PDF", { error: msg });
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: buildResponseHeaders(corsHeaders),
