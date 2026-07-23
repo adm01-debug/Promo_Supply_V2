@@ -32,6 +32,24 @@ const WEIRD_MESSAGES: unknown[] = [
   "\u0000\u0001\u0002",
 ];
 
+const MULTIBYTE_SAMPLES = [
+  "café",
+  "日本語テスト",
+  "😀🎉🚀",
+  "👨‍👩‍👧‍👦",
+  "e\u0301\u0302\u0303",
+  "مرحبا بالعالم",
+  "שלום עולם",
+  "\u200B\u200C\u200D zero-width",
+  "\uD83D\uDCA9 pilha",
+  "\uD800lone-surrogate",
+  "\uDFFFlone-low",
+] as const;
+
+const MAX_ENTRY_BYTES = 64 * 1024;
+const utf8Bytes = (s: string) => new TextEncoder().encode(s).length;
+
+
 const INVALID_LEVELS = ["", "WARNING", "critical", "trace", "unknown"];
 
 function silenceConsole<T>(fn: () => T): T {
