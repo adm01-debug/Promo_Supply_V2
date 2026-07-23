@@ -10,16 +10,59 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { getStatusLabel, getTipoLabel } from "@/types/legacyTypes";
+import {
+  getStatusLabel,
+  getTipoLabel,
+  type LegacySolicitacao,
+} from "@/types/legacyTypes";
 import { formatCurrency } from "@/lib/utils";
 
-interface KanbanPedido {
+// ── Domain types ────────────────────────────────────────────────────────────
+export type KanbanStatus = LegacySolicitacao["status"];
+export type KanbanTipo = LegacySolicitacao["tipo"];
+
+const KANBAN_STATUSES: readonly KanbanStatus[] = [
+  "AGUARDANDO_COTACAO",
+  "EM_COTACAO",
+  "FORNECEDOR_SELECIONADO",
+  "PEDIDO_GERADO",
+  "AGUARDANDO_PAGAMENTO",
+  "PAGO",
+  "EM_TRANSITO",
+  "ENTREGUE",
+  "REJEITADA",
+  "CANCELADA",
+] as const;
+
+const KANBAN_TIPOS: readonly KanbanTipo[] = [
+  "PE_LISO",
+  "FAB_LISO",
+  "FAB_PERSONALIZADO",
+] as const;
+
+/** Type guard for KanbanStatus — narrows unknown strings safely. */
+export const isKanbanStatus = (value: unknown): value is KanbanStatus =>
+  typeof value === "string" && (KANBAN_STATUSES as readonly string[]).includes(value);
+
+/** Type guard for KanbanTipo — narrows unknown strings safely. */
+export const isKanbanTipo = (value: unknown): value is KanbanTipo =>
+  typeof value === "string" && (KANBAN_TIPOS as readonly string[]).includes(value);
+
+/** Safe status label — returns fallback for unknown/null values. */
+const safeStatusLabel = (status: string | null | undefined): string =>
+  isKanbanStatus(status) ? getStatusLabel(status) : "Desconhecido";
+
+/** Safe tipo label — returns fallback for unknown/null values. */
+const safeTipoLabel = (tipo: string | null | undefined): string =>
+  isKanbanTipo(tipo) ? getTipoLabel(tipo) : "—";
+
+export interface KanbanPedido {
   id: string;
-  status: string;
+  status: KanbanStatus | string; // accept incoming strings; guarded at render
   produto: string;
   empresa: string;
   quantidade: number;
-  tipo: string;
+  tipo: KanbanTipo | string;
   valorTotal?: number | null;
   fornecedorSelecionado?: string | null;
   prazoEntrega?: string | null;
@@ -30,41 +73,41 @@ interface KanbanColumn {
   id: string;
   title: string;
   color: string;
-  statuses: string[];
+  statuses: readonly KanbanStatus[];
 }
 
 interface KanbanBoardProps {
   pedidos: KanbanPedido[];
   onViewDetails: (pedido: KanbanPedido) => void;
-  onStatusChange?: (pedidoId: string, novoStatus: string) => void;
+  onStatusChange?: (pedidoId: string, novoStatus: KanbanStatus) => void;
 }
 
-const colunas: KanbanColumn[] = [
-  { 
-    id: 'processamento', 
-    title: 'Processamento', 
-    color: 'bg-info',
-    statuses: ['FORNECEDOR_SELECIONADO', 'PEDIDO_GERADO']
+const colunas: readonly KanbanColumn[] = [
+  {
+    id: "processamento",
+    title: "Processamento",
+    color: "bg-info",
+    statuses: ["FORNECEDOR_SELECIONADO", "PEDIDO_GERADO"],
   },
-  { 
-    id: 'pagamento', 
-    title: 'Aguard. Pagamento', 
-    color: 'bg-warning',
-    statuses: ['AGUARDANDO_PAGAMENTO']
+  {
+    id: "pagamento",
+    title: "Aguard. Pagamento",
+    color: "bg-warning",
+    statuses: ["AGUARDANDO_PAGAMENTO"],
   },
-  { 
-    id: 'transito', 
-    title: 'Em Trânsito', 
-    color: 'bg-purple-500',
-    statuses: ['PAGO', 'EM_TRANSITO']
+  {
+    id: "transito",
+    title: "Em Trânsito",
+    color: "bg-purple-500",
+    statuses: ["PAGO", "EM_TRANSITO"],
   },
-  { 
-    id: 'entregue', 
-    title: 'Entregue', 
-    color: 'bg-success',
-    statuses: ['ENTREGUE']
+  {
+    id: "entregue",
+    title: "Entregue",
+    color: "bg-success",
+    statuses: ["ENTREGUE"],
   },
-];
+] as const;
 
 export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBoardProps) => {
   const [draggedPedido, setDraggedPedido] = useState<KanbanPedido | null>(null);
