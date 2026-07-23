@@ -9,6 +9,7 @@
  *  • Rate limit e batching (não deve estourar exceção nem chamar telemetry além do teto)
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { createFuzzRng } from "./fuzzSeed";
 
 const { invokeMock } = vi.hoisted(() => ({
   invokeMock: vi.fn().mockResolvedValue({ data: null, error: null }),
@@ -19,6 +20,9 @@ vi.mock("@/integrations/supabase/client", () => ({
 }));
 
 import { logger } from "@/lib/logger";
+
+const rng = createFuzzRng("logger-frontend");
+
 
 const LEVELS = ["info", "warn", "error", "debug"] as const;
 const INVALID_LEVELS = [
