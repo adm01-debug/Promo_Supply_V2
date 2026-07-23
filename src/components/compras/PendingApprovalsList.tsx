@@ -86,7 +86,9 @@ export const PendingApprovalsList = () => {
         solicitante: solicitacao?.solicitante?.full_name || "Sistema",
         valor: workflow?.valor || 0,
         data_solicitacao: workflow?.created_at || step.created_at,
-        prazo_limite: step.prazo_limite ?? new Date().toISOString(),
+        prazo_limite: step.prazo_limite
+          ?? workflow?.prazo_limite
+          ?? new Date(new Date(workflow?.created_at ?? step.created_at).getTime() + 24 * 60 * 60 * 1000).toISOString(),
         etapa_atual: step.etapa,
         total_etapas: workflow?.total_etapas || 1,
         urgente: solicitacao?.prioridade === 'urgente',
