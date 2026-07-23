@@ -56,6 +56,29 @@ const WEIRD_MESSAGES: unknown[] = [
   "\u0000\u0001\u0002",
 ];
 
+// Amostras UTF-8 multibyte: 2-byte (Latin-1 estendido), 3-byte (CJK),
+// 4-byte (emoji com surrogate pair), ZWJ sequences, marcas combinantes,
+// RTL, controle e lone surrogates (payload malicioso comum).
+const MULTIBYTE_SAMPLES = [
+  "café",                        // 2-byte
+  "日本語テスト",                 // 3-byte CJK
+  "😀🎉🚀",                       // 4-byte surrogate pairs
+  "👨‍👩‍👧‍👦",                    // ZWJ family
+  "e\u0301\u0302\u0303",         // combining marks
+  "مرحبا بالعالم",               // RTL Árabe
+  "שלום עולם",                   // RTL Hebraico
+  "\u200B\u200C\u200D zero-width",
+  "\uD83D\uDCA9 pilha",           // surrogate válido explícito
+  "\uD800lone-surrogate",         // lone high surrogate (inválido)
+  "\uDFFFlone-low",               // lone low surrogate
+] as const;
+
+// Limite prático adotado para asserts de tamanho: 64KB é o teto informal
+// do payload por entrada antes de qualquer truncamento server-side.
+const MAX_ENTRY_BYTES = 64 * 1024;
+const utf8Bytes = (s: string) => new TextEncoder().encode(s).length;
+
+
 const SENSITIVE_CTX: Record<string, unknown> = {
   password: "hunter2",
   api_token: "abc",
