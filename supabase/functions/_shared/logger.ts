@@ -4,6 +4,10 @@
  */
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { safeTruncate } from "./logLevel.ts";
+
+const MAX_LOG_MESSAGE_LEN = 4000;
+const MAX_ERR_MESSAGE_LEN = 500;
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -31,7 +35,7 @@ export class EdgeLogger {
 
   private async log(level: LogLevel, message: string, context?: Record<string, unknown>) {
     const entry: LogEntry = {
-      message,
+      message: typeof message === "string" ? safeTruncate(message, MAX_LOG_MESSAGE_LEN) : String(message),
       level,
       timestamp: new Date().toISOString(),
       requestId: this.requestId,
@@ -72,8 +76,8 @@ export class EdgeLogger {
       });
     } catch (err: unknown) {
       // Silent fail for logging errors to avoid recursion
-      const msg = err instanceof Error ? err.message : String(err);
-      console.error("Failed to persist log to telemetry_logs:", msg);
+      const raw = err instanceof Error ? err.message : String(err);
+      console.error("Failed to persist log to telemetry_logs:", safeTruncate(raw, MAX_ERR_MESSAGE_LEN));
     }
   }
 

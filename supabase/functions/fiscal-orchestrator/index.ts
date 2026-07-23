@@ -6,6 +6,7 @@ import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.
 import { FiscalContract } from "../_shared/contracts.ts";
 import { withIdempotency } from "../_shared/idempotency.ts";
 import { retry } from "../_shared/retry.ts";
+import { safeTruncate } from "../_shared/logLevel.ts";
 
 const SEFAZ_TIMEOUT_MS = 20_000;
 const SEFAZ_RETRIES = 4; // up to 4 retries → 5 total attempts with jitter backoff
@@ -38,7 +39,7 @@ async function dispatchToSefaz(
       });
       if (!res.ok) {
         const body = await res.text().catch(() => "");
-        throw new Error(`sefaz_http_${res.status}: ${body.slice(0, 200)}`);
+        throw new Error(`sefaz_http_${res.status}: ${safeTruncate(body, 200)}`);
       }
       const json = await res.json().catch(() => ({})) as Record<string, unknown>;
       return {

@@ -134,7 +134,7 @@ export const useApprovalNotifications = () => {
           const toastType = notifType === 'warning' ? 'warning' : 'error';
           toast[toastType](row.title, {
             duration: notifType === 'warning' ? 5000 : 10000,
-            description: row.message.slice(0, 120),
+            description: safeTruncate(row.message ?? "", 120),
           });
         }
       )
