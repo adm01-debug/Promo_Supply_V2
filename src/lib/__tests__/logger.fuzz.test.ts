@@ -70,6 +70,12 @@ async function flush() {
 describe("logger (frontend) — fuzz & property", () => {
   beforeEach(() => {
     invokeMock.mockClear();
+    // Reset singleton internal state to isolate tests
+    const l = logger as unknown as Record<string, unknown>;
+    l.telemetryQueue = [];
+    l.telemetryFlushTimer = null;
+    l.telemetryCallsInWindow = 0;
+    l.telemetryWindowStart = 0;
     vi.useFakeTimers();
   });
 
