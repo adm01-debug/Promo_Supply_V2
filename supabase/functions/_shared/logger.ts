@@ -70,9 +70,10 @@ export class EdgeLogger {
         request_id: entry.requestId,
         url: `edge-function://${entry.functionName}`,
       });
-    } catch (err) {
+    } catch (err: unknown) {
       // Silent fail for logging errors to avoid recursion
-      console.error("Failed to persist log to telemetry_logs:", err.message);
+      const msg = err instanceof Error ? err.message : String(err);
+      console.error("Failed to persist log to telemetry_logs:", msg);
     }
   }
 
