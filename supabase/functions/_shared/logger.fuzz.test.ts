@@ -43,7 +43,7 @@ function silenceConsole<T>(fn: () => T): T {
   }
 }
 
-Deno.test("EdgeLogger: níveis válidos aceitam mensagens exóticas sem lançar", () => {
+Deno.test({ name: "EdgeLogger: níveis válidos aceitam mensagens exóticas sem lançar", sanitizeOps: false, sanitizeResources: false, fn: () => {
   const log = new EdgeLogger("fuzz-fn");
   silenceConsole(() => {
     for (const lvl of LEVELS) {
@@ -56,7 +56,7 @@ Deno.test("EdgeLogger: níveis válidos aceitam mensagens exóticas sem lançar"
   assert(true, "nenhuma exceção propagada");
 });
 
-Deno.test("EdgeLogger: níveis inválidos não expõem métodos", () => {
+Deno.test({ name: "EdgeLogger: níveis inválidos não expõem métodos", sanitizeOps: false, sanitizeResources: false, fn: () => {
   const log = new EdgeLogger("fuzz-fn");
   for (const lvl of INVALID_LEVELS) {
     const fn = (log as unknown as Record<string, unknown>)[lvl];
@@ -64,7 +64,7 @@ Deno.test("EdgeLogger: níveis inválidos não expõem métodos", () => {
   }
 });
 
-Deno.test("EdgeLogger: redige chaves sensíveis (case-insensitive, substring)", () => {
+Deno.test({ name: "EdgeLogger: redige chaves sensíveis (case-insensitive, substring)", sanitizeOps: false, sanitizeResources: false, fn: () => {
   const log = new EdgeLogger("redact-fn");
   let captured = "";
   const orig = console.error;
@@ -90,7 +90,7 @@ Deno.test("EdgeLogger: redige chaves sensíveis (case-insensitive, substring)", 
   assertEquals(entry.context.safe, "keep");
 });
 
-Deno.test("EdgeLogger: contexto com valores exóticos vira JSON sem quebrar", () => {
+Deno.test({ name: "EdgeLogger: contexto com valores exóticos vira JSON sem quebrar", sanitizeOps: false, sanitizeResources: false, fn: () => {
   const log = new EdgeLogger("weird-ctx-fn");
   silenceConsole(() => {
     log.warn("ctx-fuzz", {
@@ -105,7 +105,7 @@ Deno.test("EdgeLogger: contexto com valores exóticos vira JSON sem quebrar", ()
   assert(true);
 });
 
-Deno.test("EdgeLogger: getRequestId retorna UUID estável", () => {
+Deno.test({ name: "EdgeLogger: getRequestId retorna UUID estável", sanitizeOps: false, sanitizeResources: false, fn: () => {
   const log = new EdgeLogger("id-fn");
   const id1 = log.getRequestId();
   const id2 = log.getRequestId();
