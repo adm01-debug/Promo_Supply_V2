@@ -225,7 +225,7 @@ const ComprasDashboard = () => {
                 fornecedor: item.status || "Análise Pendente",
                 vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
                 urgencia: (item.urgencia || 'alto') as 'alto' | 'critico' | 'medio',
-                comprador: item.comprador
+                comprador: item.comprador ?? undefined
               }))} />
             ) : (
               <p className="text-sm text-muted-foreground text-center py-12">Nenhum item urgente detectado.</p>
