@@ -21,8 +21,11 @@ export type {
 } from './approvalWorkflowTypes';
 
 // Module-level guard so only one consumer drives escalation polling.
+// `latestCheckEscalations` is a ref updated on every render so the interval
+// always calls the freshest closure (avoids stale user/org/fetch bindings).
 let escalationRefCount = 0;
 let escalationIntervalId: ReturnType<typeof setInterval> | null = null;
+let latestCheckEscalations: (() => Promise<void>) | null = null;
 
 /**
  * F-022 refactor: useApprovalWorkflow is now a composition facade.
@@ -299,15 +302,21 @@ export const useApprovalWorkflow = () => {
   }, [rulesApi, fetchPendingWorkflows, fetchPendingSteps]);
 
   useEffect(() => {
+    latestCheckEscalations = checkEscalations;
     escalationRefCount += 1;
     if (escalationRefCount === 1) {
-      escalationIntervalId = setInterval(checkEscalations, 60000);
+      escalationIntervalId = setInterval(() => {
+        void latestCheckEscalations?.();
+      }, 60000);
     }
     return () => {
       escalationRefCount = Math.max(0, escalationRefCount - 1);
-      if (escalationRefCount === 0 && escalationIntervalId !== null) {
-        clearInterval(escalationIntervalId);
-        escalationIntervalId = null;
+      if (escalationRefCount === 0) {
+        if (escalationIntervalId !== null) {
+          clearInterval(escalationIntervalId);
+          escalationIntervalId = null;
+        }
+        latestCheckEscalations = null;
       }
     };
   }, [checkEscalations]);
