@@ -28,13 +28,8 @@ export const DEFAULT_LEVEL: CanonicalLogLevel = "info";
  *  - qualquer outra entrada → `DEFAULT_LEVEL`
  */
 export function normalizeLevel(input: unknown): CanonicalLogLevel {
-  let raw: string;
-  try {
-    raw = input === null || input === undefined ? "" : String(input);
-  } catch {
-    return DEFAULT_LEVEL;
-  }
-  const s = raw.toLowerCase().trim();
+  if (typeof input !== "string") return DEFAULT_LEVEL;
+  const s = input.toLowerCase().trim();
   if (s === "") return DEFAULT_LEVEL;
   if (s === "warning") return "warn";
   return (CANONICAL_LEVELS as readonly string[]).includes(s)
