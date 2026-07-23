@@ -157,7 +157,7 @@ export const PedidoMobileCard = ({
                 <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {emissaoValida ? `Emitido em ${format(emissaoDate, 'dd/MM/yyyy')}` : 'Data de emissão indisponível'}
+                {emissaoLabel}
               </p>
             </div>
             <Badge 
