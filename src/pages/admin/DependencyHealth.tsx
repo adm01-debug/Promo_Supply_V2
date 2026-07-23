@@ -455,7 +455,7 @@ const DependencyHealth = () => {
             )}
             {edgeError && (
               <span className="text-destructive" title={edgeError}>
-                · edge falhou: {edgeError.length > 60 ? `${edgeError.slice(0, 60)}…` : edgeError}
+                · edge falhou: {safeDisplay(edgeError, 61)}
               </span>
             )}
           </div>
