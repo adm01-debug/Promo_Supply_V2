@@ -114,7 +114,7 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
   const getPedidosByColumn = (coluna: KanbanColumn) => {
-    return pedidos.filter(p => coluna.statuses.includes(p.status));
+    return pedidos.filter(p => isKanbanStatus(p.status) && coluna.statuses.includes(p.status));
   };
 
   const handleDragStart = (e: React.DragEvent, pedido: KanbanPedido) => {
