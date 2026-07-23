@@ -164,10 +164,6 @@ export function ModuleErrorBoundary({
       module
     });
     
-    // In development, also log to console for easier debugging
-    if (import.meta.env.DEV) {
-      console.error(`[${module}] Error:`, error, errorInfo);
-    }
   }, [module]);
 
   return (
