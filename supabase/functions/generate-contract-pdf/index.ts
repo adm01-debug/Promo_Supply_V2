@@ -1,5 +1,6 @@
 import { corsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 
@@ -27,9 +28,10 @@ Deno.serve(async (req) => {
     });
   }
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('generate-contract-pdf', requestId);
+
   try {
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('generate-contract-pdf', requestId);
 
     // SECURITY: require authenticated caller
     const authHeader = req.headers.get("Authorization") ?? "";
@@ -52,6 +54,15 @@ Deno.serve(async (req) => {
         headers: buildResponseHeaders(corsHeaders),
       });
     }
+
+    // Rate limit: geração de PDF é custosa (I/O + render). 20 req/min por usuário.
+    const rl = await checkRateLimit({
+      identifier: userData.user.id,
+      endpoint: "generate-contract-pdf",
+      maxRequests: 20,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
 
     const body = await req.json().catch(() => ({}));
     const contract_id = typeof body?.contract_id === "string" ? body.contract_id : null;
@@ -242,9 +253,7 @@ Deno.serve(async (req) => {
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
-    if (typeof logger !== 'undefined') {
-      logger.error("Error generating contract PDF", { error: msg });
-    }
+    logger.error("Error generating contract PDF", { error: msg });
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: buildResponseHeaders(corsHeaders),
