@@ -117,96 +117,96 @@ export function rpcGetPedidosKpis(
   supabase: SupabaseClient,
   params: { p_tenant_id?: string; p_period?: string },
 ): RpcResult<KpiMetrics> {
-  return supabase.rpc("get_pedidos_kpis", params) as RpcResult<KpiMetrics>;
+  return supabase.rpc("get_pedidos_kpis", params) as unknown as RpcResult<KpiMetrics>;
 }
 
 export function rpcGetComprasDashboardMetrics(
   supabase: SupabaseClient,
   params: { p_tenant_id?: string; p_start_date?: string; p_end_date?: string },
 ): RpcResult<KpiMetrics> {
-  return supabase.rpc("get_compras_dashboard_metrics", params) as RpcResult<KpiMetrics>;
+  return supabase.rpc("get_compras_dashboard_metrics", params) as unknown as RpcResult<KpiMetrics>;
 }
 
 export function rpcGetFornecedoresKpis(
   supabase: SupabaseClient,
   params: { p_tenant_id?: string },
 ): RpcResult<KpiMetrics> {
-  return supabase.rpc("get_fornecedores_kpis", params) as RpcResult<KpiMetrics>;
+  return supabase.rpc("get_fornecedores_kpis", params) as unknown as RpcResult<KpiMetrics>;
 }
 
 export function rpcGetPagamentosKpis(
   supabase: SupabaseClient,
   params: { p_tenant_id?: string; p_period?: string },
 ): RpcResult<KpiMetrics> {
-  return supabase.rpc("get_pagamentos_kpis", params) as RpcResult<KpiMetrics>;
+  return supabase.rpc("get_pagamentos_kpis", params) as unknown as RpcResult<KpiMetrics>;
 }
 
 export function rpcFindApprovalRule(
   supabase: SupabaseClient,
   params: { p_valor: number; p_categoria_id?: string },
 ): RpcResult<ApprovalRule> {
-  return supabase.rpc("find_approval_rule", params) as RpcResult<ApprovalRule>;
+  return supabase.rpc("find_approval_rule", params) as unknown as RpcResult<ApprovalRule>;
 }
 
 export function rpcGetEffectiveApprover(
   supabase: SupabaseClient,
   params: { p_approver_id: string; p_categoria_id?: string; p_valor?: number },
 ): RpcResult<EffectiveApprover> {
-  return supabase.rpc("get_effective_approver", params) as RpcResult<EffectiveApprover>;
+  return supabase.rpc("get_effective_approver", params) as unknown as RpcResult<EffectiveApprover>;
 }
 
 export function rpcIsAccountLocked(
   supabase: SupabaseClient,
   params: { _email: string },
 ): RpcResult<AccountLockStatus> {
-  return supabase.rpc("is_account_locked", params) as RpcResult<AccountLockStatus>;
+  return supabase.rpc("is_account_locked", params) as unknown as RpcResult<AccountLockStatus>;
 }
 
 export function rpcRecordFailedLogin(
   supabase: SupabaseClient,
   params: { _email: string; _ip?: string },
 ): RpcResult<LoginAttemptResult> {
-  return supabase.rpc("record_failed_login", params) as RpcResult<LoginAttemptResult>;
+  return supabase.rpc("record_failed_login", params) as unknown as RpcResult<LoginAttemptResult>;
 }
 
 export function rpcClearLoginLockout(
   supabase: SupabaseClient,
   params: { _email: string },
 ): RpcResult<void> {
-  return supabase.rpc("clear_login_lockout", params) as RpcResult<void>;
+  return supabase.rpc("clear_login_lockout", params) as unknown as RpcResult<void>;
 }
 
 export function rpcLogLoginAttempt(
   supabase: SupabaseClient,
   params: { p_email: string; p_success: boolean; p_ip?: string; p_user_agent?: string },
 ): RpcResult<void> {
-  return supabase.rpc("log_login_attempt", params) as RpcResult<void>;
+  return supabase.rpc("log_login_attempt", params) as unknown as RpcResult<void>;
 }
 
 export function rpcResolveAlert(
   supabase: SupabaseClient,
   params: { alert_id: string; resolved_by?: string },
 ): RpcResult<void> {
-  return supabase.rpc("resolve_alert", params) as RpcResult<void>;
+  return supabase.rpc("resolve_alert", params) as unknown as RpcResult<void>;
 }
 
 export function rpcCountLegacyStorageUrls(supabase: SupabaseClient): RpcResult<number> {
-  return supabase.rpc("count_legacy_storage_urls") as RpcResult<number>;
+  return supabase.rpc("count_legacy_storage_urls") as unknown as RpcResult<number>;
 }
 
 export function rpcAdminScanRunsSlaStatus(supabase: SupabaseClient): RpcResult<SlaStatusRow[]> {
-  return supabase.rpc("admin_scan_runs_sla_status") as RpcResult<SlaStatusRow[]>;
+  return supabase.rpc("admin_scan_runs_sla_status") as unknown as RpcResult<SlaStatusRow[]>;
 }
 
 export function rpcGetCostCenterPerformanceReport(
   supabase: SupabaseClient,
 ): RpcResult<CostCenterPerformance[]> {
-  return supabase.rpc("get_cost_center_performance_report") as RpcResult<CostCenterPerformance[]>;
+  return supabase.rpc("get_cost_center_performance_report") as unknown as RpcResult<CostCenterPerformance[]>;
 }
 
 export function rpcHasRole(
   supabase: SupabaseClient,
   params: { _user_id: string; _role: string },
 ): RpcResult<boolean> {
-  return supabase.rpc("has_role", params) as RpcResult<boolean>;
+  return supabase.rpc("has_role", params) as unknown as RpcResult<boolean>;
 }
