@@ -4,6 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
 import { TelemetryContract } from "../_shared/contracts.ts";
+import { buildTelemetryRow } from "../_shared/logLevel.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
