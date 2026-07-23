@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
