@@ -56,6 +56,7 @@ import {
   getTimeProgress,
 } from "./pending-approvals/pendingApprovalsData";
 import { RejectModal, DetailsModal } from "./pending-approvals/ApprovalModals";
+import { resolveApprovalDeadline } from "./pending-approvals/deadlineFallback";
 
 export const PendingApprovalsList = () => {
   const { pendingSteps, workflows, allHistory, approveStep, rejectStep, loading: workflowLoading, fetchAllHistory } = useApprovalWorkflow();
