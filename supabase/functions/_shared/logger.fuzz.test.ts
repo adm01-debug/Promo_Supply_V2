@@ -10,8 +10,10 @@
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { EdgeLogger } from "./logger.ts";
 
-// Garante que persistência não tente sair (sem SERVICE_ROLE_KEY o método retorna cedo)
+// Garante que persistência não tente sair (sem SERVICE_ROLE_KEY/URL o método retorna cedo).
+// Deve acontecer ANTES do import de ./logger.ts (env é lida em module scope).
 Deno.env.delete("SUPABASE_SERVICE_ROLE_KEY");
+Deno.env.delete("SUPABASE_URL");
 
 const LEVELS = ["info", "warn", "error", "debug"] as const;
 
