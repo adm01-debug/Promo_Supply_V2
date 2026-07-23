@@ -156,4 +156,23 @@ describe("logger (frontend) — fuzz & property", () => {
     await flush();
     expect(invokeMock).toHaveBeenCalled();
   });
+
+  // Property test roda por último para não interferir nos testes de flush acima.
+  it("property: 200 iterações randomizadas com seed reprodutível", () => {
+    for (let i = 0; i < 200; i++) {
+      const lvl = rng.pick(LEVELS);
+      const msg = rng.randomString(rng.rand() < 0.05 ? 5_000 : 32);
+      const ctx = {
+        i,
+        seed: rng.seed,
+        rnd: rng.rand(),
+        password: rng.randomString(8),
+        payload: rng.randomString(16),
+      };
+      expect(
+        () => (logger as any)[lvl](msg, ctx),
+        `seed=${rng.seed} iter=${i} lvl=${lvl}`,
+      ).not.toThrow();
+    }
+  });
 });
