@@ -90,10 +90,31 @@ describe("logger (frontend) — fuzz & property", () => {
   it("não lança para mensagens exóticas em nenhum nível válido", () => {
     for (const lvl of LEVELS) {
       for (const msg of WEIRD_MESSAGES) {
-        expect(() => (logger as any)[lvl](msg as string)).not.toThrow();
+        expect(
+          () => (logger as any)[lvl](msg as string),
+          `seed=${rng.seed} lvl=${lvl} msg=${String(msg).slice(0, 40)}`,
+        ).not.toThrow();
       }
     }
   });
+
+  it("property: 200 iterações randomizadas com seed reprodutível", () => {
+    for (let i = 0; i < 200; i++) {
+      const lvl = rng.pick(LEVELS);
+      const msg = rng.randomString(rng.rand() < 0.05 ? 5_000 : 32);
+      const ctx = {
+        i,
+        rnd: rng.rand(),
+        password: rng.randomString(8),
+        payload: rng.randomString(16),
+      };
+      expect(
+        () => (logger as any)[lvl](msg, ctx),
+        `seed=${rng.seed} iter=${i} lvl=${lvl}`,
+      ).not.toThrow();
+    }
+  });
+
 
   it("não lança quando o nível é chamado com API válida mas contexto exótico", () => {
     for (const msg of WEIRD_MESSAGES) {
