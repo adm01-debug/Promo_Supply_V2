@@ -130,12 +130,12 @@ export const PedidoMobileCard = ({
           "relative overflow-hidden transition-all duration-300",
           "hover:shadow-lg active:shadow-md",
           "border-l-4",
-          pedido.status === 'pendente' && "border-l-amber-500",
-          pedido.status === 'aprovado' && "border-l-blue-500",
-          pedido.status === 'enviado' && "border-l-indigo-500",
-          pedido.status === 'em_transito' && "border-l-purple-500",
-          pedido.status === 'entregue' && "border-l-emerald-500",
-          pedido.status === 'cancelado' && "border-l-red-500",
+          status === 'pendente' && "border-l-amber-500",
+          status === 'aprovado' && "border-l-blue-500",
+          status === 'enviado' && "border-l-indigo-500",
+          status === 'em_transito' && "border-l-purple-500",
+          status === 'entregue' && "border-l-emerald-500",
+          status === 'cancelado' && "border-l-red-500",
           config.glowColor
         )}
         onClick={() => onView(pedido)}
@@ -155,7 +155,7 @@ export const PedidoMobileCard = ({
                 <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Emitido em {format(new Date(pedido.data_emissao), 'dd/MM/yyyy')}
+                {emissaoValida ? `Emitido em ${format(emissaoDate, 'dd/MM/yyyy')}` : 'Data de emissão indisponível'}
               </p>
             </div>
             <Badge 
