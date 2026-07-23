@@ -56,6 +56,7 @@ import {
   getTimeProgress,
 } from "./pending-approvals/pendingApprovalsData";
 import { RejectModal, DetailsModal } from "./pending-approvals/ApprovalModals";
+import { resolveApprovalDeadline } from "./pending-approvals/deadlineFallback";
 
 export const PendingApprovalsList = () => {
   const { pendingSteps, workflows, allHistory, approveStep, rejectStep, loading: workflowLoading, fetchAllHistory } = useApprovalWorkflow();
@@ -86,9 +87,12 @@ export const PendingApprovalsList = () => {
         solicitante: solicitacao?.solicitante?.full_name || "Sistema",
         valor: workflow?.valor || 0,
         data_solicitacao: workflow?.created_at || step.created_at,
-        prazo_limite: step.prazo_limite
-          ?? workflow?.prazo_limite
-          ?? new Date(new Date(workflow?.created_at ?? step.created_at).getTime() + 24 * 60 * 60 * 1000).toISOString(),
+        prazo_limite: resolveApprovalDeadline({
+          stepPrazoLimite: step.prazo_limite,
+          workflowPrazoLimite: workflow?.prazo_limite,
+          workflowCreatedAt: workflow?.created_at,
+          stepCreatedAt: step.created_at,
+        }),
         etapa_atual: step.etapa,
         total_etapas: workflow?.total_etapas || 1,
         urgente: solicitacao?.prioridade === 'urgente',
