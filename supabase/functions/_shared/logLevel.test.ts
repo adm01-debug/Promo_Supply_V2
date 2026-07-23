@@ -291,3 +291,149 @@ Deno.test("property: buildTelemetryRow sempre produz payload JSON-serializável 
     assertEquals(parsed.message, row.message);
   }
 });
+
+// --------------------------------------------------------------------------
+// 6. UTF-8 multibyte: truncamento + encoding preservado, JSON válido
+// --------------------------------------------------------------------------
+
+const REPLACEMENT = "\uFFFD"; // U+FFFD REPLACEMENT CHARACTER
+
+const MULTIBYTE_SAMPLES: readonly { name: string; text: string }[] = [
+  { name: "2-byte Latin-1",        text: "áéíóú çãõ ñü ¿¡" },
+  { name: "3-byte CJK",            text: "日本語テスト 中文测试 한국어" },
+  { name: "4-byte emoji (surrogate pair)", text: "🚀🔥💾🧪🌈" },
+  { name: "ZWJ family sequence",   text: "👨‍👩‍👧‍👦 👩🏽‍💻 🏳️‍🌈" },
+  { name: "combining marks",       text: "e\u0301 a\u0300 o\u0302 n\u0303" },
+  { name: "RTL scripts",           text: "مرحبا بالعالم שלום עולם" },
+  { name: "control + emoji",       text: "a\u0000b\u0007c\u001Fd🚀" },
+];
+
+Deno.test("safeTruncate: preserva encoding UTF-8 e evita lone surrogates", () => {
+  for (const { name, text } of MULTIBYTE_SAMPLES) {
+    for (const cap of [1, 2, 3, 8, 16, 64, text.length, text.length - 1]) {
+      if (cap <= 0) continue;
+      const out = safeTruncate(text, cap);
+      assert(out.length <= cap, `${name} @${cap}: length ${out.length} > cap`);
+
+      // Não deve haver lone high surrogate como último code unit
+      const last = out.charCodeAt(out.length - 1);
+      assert(
+        !(last >= 0xd800 && last <= 0xdbff),
+        `${name} @${cap}: terminou em lone high surrogate 0x${last.toString(16)}`,
+      );
+
+      // Round-trip JSON estável
+      const parsed = JSON.parse(JSON.stringify(out));
+      assertEquals(parsed, out, `${name} @${cap}: JSON round-trip divergente`);
+
+      // TextEncoder não deve introduzir U+FFFD (input era válido)
+      const bytes = new TextEncoder().encode(out);
+      const decoded = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+      assert(
+        !decoded.includes(REPLACEMENT),
+        `${name} @${cap}: encoding produziu U+FFFD`,
+      );
+    }
+  }
+});
+
+Deno.test("buildTelemetryRow: mensagens multibyte não corrompem payload nem JSON", () => {
+  for (const { name, text } of MULTIBYTE_SAMPLES) {
+    const row = buildTelemetryRow({
+      raw: { message: text, level: "info", context: { label: text } },
+      fallbackRequestId: REQUEST_ID,
+      userId: USER_ID,
+    });
+    assert(row !== null, `${name}: row nulo`);
+    assertEquals(row.message, text, `${name}: message alterada`);
+
+    const json = JSON.stringify(row);
+    const parsed = JSON.parse(json);
+    assertEquals(parsed.message, text, `${name}: JSON round-trip perdeu bytes`);
+
+    const bytes = new TextEncoder().encode(json);
+    assert(bytes.length > 0);
+    assert(!json.includes("\uFFFD"), `${name}: JSON contém U+FFFD`);
+  }
+});
+
+Deno.test("buildTelemetryRow: payload gigante multibyte é truncado sem quebrar surrogate pair", () => {
+  // 45k caracteres CJK (3 bytes UTF-8 cada) → ~135KB em UTF-8, > MAX_MESSAGE_LENGTH
+  const cjk = "日本語テスト".repeat(7500);
+  assert(cjk.length > MAX_MESSAGE_LENGTH);
+
+  const row = buildTelemetryRow({
+    raw: { message: cjk },
+    fallbackRequestId: REQUEST_ID,
+    userId: USER_ID,
+  });
+  assert(row !== null);
+  assertEquals(row.message.length, MAX_MESSAGE_LENGTH);
+  // Nenhum U+FFFD introduzido
+  const encoded = new TextEncoder().encode(row.message);
+  const decoded = new TextDecoder("utf-8", { fatal: true }).decode(encoded);
+  assertEquals(decoded, row.message);
+
+  // Payload com muitos emojis (surrogate pairs) — truncamento perto do limite
+  // deve recuar 1 code unit se cair no meio de um par.
+  const emojiHeavy = "🚀".repeat(MAX_MESSAGE_LENGTH); // 2 code units cada
+  const row2 = buildTelemetryRow({
+    raw: { message: emojiHeavy },
+    fallbackRequestId: REQUEST_ID,
+    userId: USER_ID,
+  });
+  assert(row2 !== null);
+  assert(row2.message.length <= MAX_MESSAGE_LENGTH);
+  // Deve ser par (cada 🚀 = 2 code units), sem lone surrogate final
+  const lastCode = row2.message.charCodeAt(row2.message.length - 1);
+  assert(!(lastCode >= 0xd800 && lastCode <= 0xdbff), "lone high surrogate no final");
+  assertEquals(row2.message.length % 2, 0, "quebrou surrogate pair (length ímpar)");
+  const bytes = new TextEncoder().encode(row2.message);
+  assertEquals(
+    new TextDecoder("utf-8", { fatal: true }).decode(bytes),
+    row2.message,
+    "encoding UTF-8 não é reversível — surrogate quebrado",
+  );
+});
+
+Deno.test("property: buildTelemetryRow mantém message idempotente sob JSON round-trip para inputs multibyte", () => {
+  const { rand, pick, seed } = createFuzzRng("multibyte-truncation");
+  const codepoints = [
+    "a", "Z", "1", " ", "\n", "\t",
+    "á", "ñ", "ç",              // 2-byte
+    "日", "中", "한", "ם",       // 3-byte
+    "🚀", "🔥", "🧪", "👩‍💻",   // 4-byte + ZWJ
+    "\u0301", "\u0300",         // combining
+  ];
+
+  for (let i = 0; i < 150; i++) {
+    // Tamanho oscila em torno do limite para exercitar truncagem
+    const target = MAX_MESSAGE_LENGTH - 32 + Math.floor(rand() * 128);
+    let s = "";
+    while (s.length < target) s += pick(codepoints);
+
+    const row = buildTelemetryRow({
+      raw: { message: s },
+      fallbackRequestId: REQUEST_ID,
+      userId: USER_ID,
+    });
+    assert(row !== null, `seed=${seed} iter=${i}`);
+    assert(
+      row.message.length <= MAX_MESSAGE_LENGTH,
+      `seed=${seed} iter=${i} excedeu cap`,
+    );
+
+    // JSON round-trip idempotente
+    const rt = JSON.parse(JSON.stringify(row.message));
+    assertEquals(rt, row.message, `seed=${seed} iter=${i} JSON divergente`);
+
+    // Encoding UTF-8 estrito (fatal) precisa aceitar — prova ausência de lone surrogate
+    const bytes = new TextEncoder().encode(row.message);
+    const decoded = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    assertEquals(
+      decoded,
+      row.message,
+      `seed=${seed} iter=${i} encoding UTF-8 não reversível`,
+    );
+  }
+});
