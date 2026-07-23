@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Shield, Check, X, Loader2, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -158,8 +158,8 @@ export const PermissionMatrix = () => {
             </TableHeader>
             <TableBody>
               {groupedPermissions && Object.entries(groupedPermissions).map(([module, perms]) => (
-                <>
-                  <TableRow key={module} className="bg-muted/30">
+                <React.Fragment key={module}>
+                  <TableRow className="bg-muted/30">
                     <TableCell colSpan={roles.length + 1} className="font-semibold">
                       {moduleLabels[module] || module}
                     </TableCell>
@@ -193,7 +193,7 @@ export const PermissionMatrix = () => {
                       })}
                     </TableRow>
                   ))}
-                </>
+                </React.Fragment>
               ))}
             </TableBody>
           </Table>
