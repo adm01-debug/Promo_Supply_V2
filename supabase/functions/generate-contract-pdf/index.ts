@@ -1,5 +1,6 @@
 import { corsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
 
