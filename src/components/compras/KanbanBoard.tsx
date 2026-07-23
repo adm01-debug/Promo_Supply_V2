@@ -217,7 +217,7 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
                             <div>
                               <span className="text-sm font-bold text-foreground">#{pedido.id}</span>
                               <Badge className={`ml-2 text-[10px] ${getStatusBadgeColor(pedido.status)}`}>
-                                {getStatusLabel(pedido.status as Parameters<typeof getStatusLabel>[0])}
+                                {safeStatusLabel(pedido.status)}
                               </Badge>
                             </div>
                             <Button 
