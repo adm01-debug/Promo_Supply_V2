@@ -10,7 +10,9 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-const invokeMock = vi.fn().mockResolvedValue({ data: null, error: null });
+const { invokeMock } = vi.hoisted(() => ({
+  invokeMock: vi.fn().mockResolvedValue({ data: null, error: null }),
+}));
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: { functions: { invoke: invokeMock } },
@@ -68,6 +70,12 @@ async function flush() {
 describe("logger (frontend) — fuzz & property", () => {
   beforeEach(() => {
     invokeMock.mockClear();
+    // Reset singleton internal state to isolate tests
+    const l = logger as unknown as Record<string, unknown>;
+    l.telemetryQueue = [];
+    l.telemetryFlushTimer = null;
+    l.telemetryCallsInWindow = 0;
+    l.telemetryWindowStart = 0;
     vi.useFakeTimers();
   });
 
