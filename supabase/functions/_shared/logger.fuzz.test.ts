@@ -32,6 +32,24 @@ const WEIRD_MESSAGES: unknown[] = [
   "\u0000\u0001\u0002",
 ];
 
+const MULTIBYTE_SAMPLES = [
+  "café",
+  "日本語テスト",
+  "😀🎉🚀",
+  "👨‍👩‍👧‍👦",
+  "e\u0301\u0302\u0303",
+  "مرحبا بالعالم",
+  "שלום עולם",
+  "\u200B\u200C\u200D zero-width",
+  "\uD83D\uDCA9 pilha",
+  "\uD800lone-surrogate",
+  "\uDFFFlone-low",
+] as const;
+
+const MAX_ENTRY_BYTES = 64 * 1024;
+const utf8Bytes = (s: string) => new TextEncoder().encode(s).length;
+
+
 const INVALID_LEVELS = ["", "WARNING", "critical", "trace", "unknown"];
 
 function silenceConsole<T>(fn: () => T): T {
@@ -164,5 +182,85 @@ Deno.test({
       }
     });
     assert(true);
+  },
+});
+
+Deno.test({
+  name: "EdgeLogger: UTF-8 multibyte sobrevive a JSON round-trip sem corromper",
+  ...opts,
+  fn: () => {
+    const log = new EdgeLogger("utf8-fn");
+    for (const sample of MULTIBYTE_SAMPLES) {
+      let captured = "";
+      const orig = console.error;
+      console.error = (out: string) => {
+        captured = String(out);
+      };
+      try {
+        log.error(sample, { tag: sample });
+      } finally {
+        console.error = orig;
+      }
+      // JSON.parse deve ter sucesso — se a serialização quebrasse
+      // encoding, aqui teríamos SyntaxError.
+      const entry = JSON.parse(captured);
+      assertEquals(typeof entry.message, "string");
+      assertEquals(entry.message, sample);
+      assertEquals(entry.context.tag, sample);
+      // Round-trip idempotente: serialize → parse → serialize.
+      assertEquals(JSON.stringify(JSON.parse(JSON.stringify(entry))), JSON.stringify(entry));
+    }
+  },
+});
+
+Deno.test({
+  name: "EdgeLogger: payload multibyte grande mantém encoding sem introduzir U+FFFD",
+  ...opts,
+  fn: () => {
+    const log = new EdgeLogger("utf8-huge-fn");
+    // ~15k × 3 = 45k caracteres CJK → ~135KB em UTF-8, acima do teto prático.
+    const huge = "日本語".repeat(15_000);
+    assert(utf8Bytes(huge) > MAX_ENTRY_BYTES);
+    let captured = "";
+    const orig = console.error;
+    console.error = (out: string) => {
+      captured = String(out);
+    };
+    try {
+      log.error(huge, { chunk: huge.slice(0, 100) });
+    } finally {
+      console.error = orig;
+    }
+    const entry = JSON.parse(captured);
+    assertEquals(typeof entry.message, "string");
+    // Nenhum replacement char introduzido em codepoints válidos.
+    assertEquals(entry.message.includes("\uFFFD"), false);
+    // Encoding permanece válido — TextEncoder não lança em codepoints válidos.
+    new TextEncoder().encode(entry.message);
+    // Se um truncamento server-side for adicionado, deve respeitar fronteira
+    // de codepoint. Validação até lá: o comprimento em codepoints é estável.
+    assertEquals([...entry.message].length, [...huge].length);
+  },
+});
+
+Deno.test({
+  name: "EdgeLogger: controle e nulos embutidos não corrompem JSON",
+  ...opts,
+  fn: () => {
+    const log = new EdgeLogger("ctrl-fn");
+    const evil = "prefix\u0000middle\u0007\u001Fsuffix\u{1F480}";
+    let captured = "";
+    const orig = console.warn;
+    console.warn = (out: string) => {
+      captured = String(out);
+    };
+    try {
+      log.warn(evil, { evil });
+    } finally {
+      console.warn = orig;
+    }
+    const entry = JSON.parse(captured);
+    assertEquals(entry.message, evil);
+    assertEquals(entry.context.evil, evil);
   },
 });

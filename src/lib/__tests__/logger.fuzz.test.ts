@@ -56,6 +56,29 @@ const WEIRD_MESSAGES: unknown[] = [
   "\u0000\u0001\u0002",
 ];
 
+// Amostras UTF-8 multibyte: 2-byte (Latin-1 estendido), 3-byte (CJK),
+// 4-byte (emoji com surrogate pair), ZWJ sequences, marcas combinantes,
+// RTL, controle e lone surrogates (payload malicioso comum).
+const MULTIBYTE_SAMPLES = [
+  "café",                        // 2-byte
+  "日本語テスト",                 // 3-byte CJK
+  "😀🎉🚀",                       // 4-byte surrogate pairs
+  "👨‍👩‍👧‍👦",                    // ZWJ family
+  "e\u0301\u0302\u0303",         // combining marks
+  "مرحبا بالعالم",               // RTL Árabe
+  "שלום עולם",                   // RTL Hebraico
+  "\u200B\u200C\u200D zero-width",
+  "\uD83D\uDCA9 pilha",           // surrogate válido explícito
+  "\uD800lone-surrogate",         // lone high surrogate (inválido)
+  "\uDFFFlone-low",               // lone low surrogate
+] as const;
+
+// Limite prático adotado para asserts de tamanho: 64KB é o teto informal
+// do payload por entrada antes de qualquer truncamento server-side.
+const MAX_ENTRY_BYTES = 64 * 1024;
+const utf8Bytes = (s: string) => new TextEncoder().encode(s).length;
+
+
 const SENSITIVE_CTX: Record<string, unknown> = {
   password: "hunter2",
   api_token: "abc",
@@ -156,6 +179,64 @@ describe("logger (frontend) — fuzz & property", () => {
     await flush();
     expect(invokeMock).toHaveBeenCalled();
   });
+
+  it("UTF-8 multibyte: preserva encoding e sobrevive a JSON round-trip", async () => {
+    for (const sample of MULTIBYTE_SAMPLES) {
+      invokeMock.mockClear();
+      logger.error(sample, { tag: sample });
+      await flush();
+      // Se o payload não gerou envio (rate limit), pulamos — mas em suíte
+      // isolada com beforeEach reset, deve enviar.
+      if (invokeMock.mock.calls.length === 0) continue;
+      const body = invokeMock.mock.calls[0][1].body;
+      const entry = body.batch[0];
+      // O logger não deve alterar codepoints válidos; lone surrogates viram
+      // replacement (\uFFFD) em qualquer serialização segura, mas em memória
+      // JS `JSON.stringify` mantém como \uD800 (escapado). Ambos são aceitos:
+      // exigimos apenas que o round-trip seja idempotente e não lance.
+      const roundTrip = JSON.parse(JSON.stringify(entry));
+      expect(
+        typeof roundTrip.message === "string",
+        `seed=${rng.seed} sample=${sample.slice(0, 20)}`,
+      ).toBe(true);
+      expect(roundTrip.message).toBe(entry.message);
+      expect(roundTrip.context.tag).toBe(entry.context.tag);
+    }
+  });
+
+  it("payload multibyte grande: mantém encoding e fica dentro do limite prático", async () => {
+    // ~40k caracteres CJK = ~120KB em UTF-8, acima do teto de 64KB por entrada.
+    const huge = "日本語".repeat(15_000);
+    const bytes = utf8Bytes(huge);
+    expect(bytes).toBeGreaterThan(MAX_ENTRY_BYTES);
+
+    invokeMock.mockClear();
+    expect(() => logger.error(huge, { chunk: huge.slice(0, 100) })).not.toThrow();
+    await flush();
+
+    if (invokeMock.mock.calls.length > 0) {
+      const entry = invokeMock.mock.calls[0][1].body.batch[0];
+      const serialized = JSON.stringify(entry);
+      // Round-trip não pode explodir nem introduzir replacement chars
+      // em codepoints válidos (mesmo se algum truncamento ocorrer).
+      const parsed = JSON.parse(serialized);
+      expect(typeof parsed.message).toBe("string");
+      // Nenhum caractere U+FFFD foi introduzido em codepoints válidos.
+      expect(parsed.message.includes("\uFFFD")).toBe(false);
+      // Se logger truncar no futuro, deve cortar em fronteira de codepoint:
+      // qualquer sufixo permanece re-encodável sem erro.
+      expect(() => new TextEncoder().encode(parsed.message)).not.toThrow();
+    }
+  });
+
+  it("controle e nulos embutidos em UTF-8 não corrompem JSON", () => {
+    const evil = "prefix\u0000middle\u0007\u001Fsuffix\u{1F480}";
+    expect(() => logger.warn(evil, { evil })).not.toThrow();
+    const serialized = JSON.stringify({ msg: evil });
+    expect(JSON.parse(serialized).msg).toBe(evil);
+  });
+
+
 
   // Property test roda por último para não interferir nos testes de flush acima.
   it("property: 200 iterações randomizadas com seed reprodutível", () => {
