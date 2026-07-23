@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth";
 import { toast } from "@/hooks/use-toast";
 import { Sparkline } from "@/components/ui/sparkline";
+import { safeDisplay } from "@/lib/safeDisplay";
 
 interface HistoryEntry {
   id: string;
@@ -455,7 +456,7 @@ const DependencyHealth = () => {
             )}
             {edgeError && (
               <span className="text-destructive" title={edgeError}>
-                · edge falhou: {edgeError.length > 60 ? `${edgeError.slice(0, 60)}…` : edgeError}
+                · edge falhou: {safeDisplay(edgeError, 61)}
               </span>
             )}
           </div>
