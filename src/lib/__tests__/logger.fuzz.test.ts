@@ -10,7 +10,9 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-const invokeMock = vi.fn().mockResolvedValue({ data: null, error: null });
+const { invokeMock } = vi.hoisted(() => ({
+  invokeMock: vi.fn().mockResolvedValue({ data: null, error: null }),
+}));
 
 vi.mock("@/integrations/supabase/client", () => ({
   supabase: { functions: { invoke: invokeMock } },
