@@ -4,6 +4,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
 import { TelemetryContract } from "../_shared/contracts.ts";
+import { buildTelemetryRow } from "../_shared/logLevel.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -56,26 +57,19 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const normalizeLevel = (lv: unknown) => {
-      const s = String(lv ?? "info").toLowerCase().trim();
-      if (s === "warning") return "warn";
-      return ["info", "warn", "error", "debug"].includes(s) ? s : "info";
-    };
-
     const clientIp = req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for");
+    const fallbackTenantId = (user?.user_metadata?.tenant_id as string) || null;
     const rows = entries
-      .filter((e) => e && typeof e.message === "string" && e.message.length > 0)
-      .map((e) => ({
-        level: normalizeLevel(e.level),
-        message: String(e.message).slice(0, 4000),
-        context: e.context ?? null,
-        request_id: e.requestId ?? requestId,
-        user_id: user?.id,
-        tenant_id: e.tenantId || (user?.user_metadata?.tenant_id as string) || null,
-        url: e.url ?? null,
-        user_agent: e.userAgent ?? null,
-        client_ip: clientIp,
-      }));
+      .map((raw) =>
+        buildTelemetryRow({
+          raw,
+          fallbackRequestId: requestId,
+          userId: user?.id ?? null,
+          fallbackTenantId,
+          clientIp,
+        }),
+      )
+      .filter((r): r is NonNullable<typeof r> => r !== null);
 
     if (rows.length === 0) {
       return new Response(JSON.stringify({ success: true, inserted: 0, requestId }), {
