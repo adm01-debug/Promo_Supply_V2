@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { toast } from '@/lib/feedbackToast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth/hooks/useAuthContext';
+import { safeTruncate } from '@/lib/safeTruncate';
 
 export interface ApprovalNotification {
   id: string;
