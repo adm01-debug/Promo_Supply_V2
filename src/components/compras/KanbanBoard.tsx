@@ -198,7 +198,11 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
                             </div>
                             <div className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              <span>{new Date(pedido.prazoEntrega ?? Date.now()).toLocaleDateString('pt-BR')}</span>
+                              <span>
+                                {pedido.prazoEntrega
+                                  ? new Date(pedido.prazoEntrega).toLocaleDateString('pt-BR')
+                                  : '—'}
+                              </span>
                             </div>
                           </div>
 
