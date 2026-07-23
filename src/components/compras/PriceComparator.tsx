@@ -227,7 +227,7 @@ export function PriceComparator() {
                       <Brain className="w-3 h-3" /> IA Advisor Ativo
                     </Badge>
                   </div>
-                  <StrategicQuoteTable cotacoes={strategicData} quantidade={parseInt(quantity, 10) || 100} />
+                  <StrategicQuoteTable cotacoes={strategicData as unknown as Parameters<typeof StrategicQuoteTable>[0]['cotacoes']} quantidade={parseInt(quantity, 10) || 100} />
                 </div>
 
                 {selectedQuotes.length >= 2 && (

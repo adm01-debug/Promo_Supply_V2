@@ -238,7 +238,7 @@ export const SLADistributionChart = forwardRef<HTMLDivElement>((_props, ref) => 
                 <PieChart>
                   <Pie
                     activeIndex={activeIndex}
-                    activeShape={renderActiveShape}
+                    activeShape={renderActiveShape as never}
                     data={distributionData}
                     cx="50%"
                     cy="50%"

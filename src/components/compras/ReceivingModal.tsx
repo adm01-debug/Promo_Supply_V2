@@ -101,7 +101,7 @@ export function ReceivingModal({
         // Fetch original pedido data
         const { data: originalPedido } = await supabase
           .from("pedidos")
-          .select("fornecedor_id, solicitacao_id, cotacao_id, condicao_pagamento, endereco_entrega, observacoes")
+          .select("fornecedor_id, solicitacao_id, cotacao_id, condicao_pagamento, endereco_entrega, observacoes, tenant_id")
           .eq("id", pedidoId)
           .single();
 
