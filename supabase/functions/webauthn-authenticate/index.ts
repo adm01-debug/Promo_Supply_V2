@@ -1,6 +1,12 @@
 import { corsHeaders } from "../_shared/security.ts";
 import { buildResponseHeaders } from "../_shared/http.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+function clientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for") || "";
+  return fwd.split(",")[0]?.trim() || req.headers.get("cf-connecting-ip") || "unknown";
+}
 
 function base64UrlEncode(buffer: Uint8Array | ArrayBuffer): string {
   const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
@@ -26,13 +32,37 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'method_not_allowed' }), {
+      status: 405,
+      headers: buildResponseHeaders(corsHeaders),
+    });
+  }
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { action, email, credential } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const { action, email, credential } = body ?? {};
+    if (!action || (action !== 'start' && action !== 'finish')) {
+      throw new Error('Invalid action');
+    }
+    if (typeof email !== 'string' || !email.includes('@') || email.length > 254) {
+      throw new Error('Email inválido');
+    }
+
+    // Rate limit: mitiga brute-force / enumeração por IP+email
+    const ip = clientIp(req);
+    const rl = await checkRateLimit({
+      identifier: `${ip}:${email.toLowerCase()}`,
+      endpoint: `webauthn-auth:${action}`,
+      maxRequests: action === 'start' ? 10 : 20,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
     console.log(`WebAuthn authenticate action: ${action}`);
 
     const rpId = new URL(req.headers.get('origin') || 'https://localhost').hostname;
