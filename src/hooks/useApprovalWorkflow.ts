@@ -302,15 +302,21 @@ export const useApprovalWorkflow = () => {
   }, [rulesApi, fetchPendingWorkflows, fetchPendingSteps]);
 
   useEffect(() => {
+    latestCheckEscalations = checkEscalations;
     escalationRefCount += 1;
     if (escalationRefCount === 1) {
-      escalationIntervalId = setInterval(checkEscalations, 60000);
+      escalationIntervalId = setInterval(() => {
+        void latestCheckEscalations?.();
+      }, 60000);
     }
     return () => {
       escalationRefCount = Math.max(0, escalationRefCount - 1);
-      if (escalationRefCount === 0 && escalationIntervalId !== null) {
-        clearInterval(escalationIntervalId);
-        escalationIntervalId = null;
+      if (escalationRefCount === 0) {
+        if (escalationIntervalId !== null) {
+          clearInterval(escalationIntervalId);
+          escalationIntervalId = null;
+        }
+        latestCheckEscalations = null;
       }
     };
   }, [checkEscalations]);
