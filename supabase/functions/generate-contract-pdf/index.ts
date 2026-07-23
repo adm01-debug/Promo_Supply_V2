@@ -54,6 +54,15 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Rate limit: geração de PDF é custosa (I/O + render). 20 req/min por usuário.
+    const rl = await checkRateLimit({
+      identifier: userData.user.id,
+      endpoint: "generate-contract-pdf",
+      maxRequests: 20,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
     const body = await req.json().catch(() => ({}));
     const contract_id = typeof body?.contract_id === "string" ? body.contract_id : null;
     if (!contract_id) throw new Error("contract_id é obrigatório");
