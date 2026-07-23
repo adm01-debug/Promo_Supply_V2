@@ -69,12 +69,10 @@ describe("logger (frontend) — fuzz & property", () => {
   beforeEach(() => {
     invokeMock.mockClear();
     vi.useFakeTimers();
-    vi.stubEnv("PROD", true as unknown as string);
   });
 
   afterEach(() => {
     vi.useRealTimers();
-    vi.unstubAllEnvs();
   });
 
   it("não lança para mensagens exóticas em nenhum nível válido", () => {
