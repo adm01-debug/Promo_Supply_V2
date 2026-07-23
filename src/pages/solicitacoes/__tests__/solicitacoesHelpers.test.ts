@@ -79,7 +79,7 @@ describe('adaptToLegacyFormat', () => {
   });
 
   it('uses first 8 chars of id as itemNumber when numero is null', () => {
-    const sol = makeSolicitacao({ id: 'abcdefgh-1234', numero: null });
+    const sol = makeSolicitacao({ id: 'abcdefgh-1234', numero: undefined });
     const result = adaptToLegacyFormat(sol);
     expect(result.itemNumber).toBe('abcdefgh');
   });

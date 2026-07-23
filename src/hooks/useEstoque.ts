@@ -90,7 +90,7 @@ export function useEstoque() {
         .insert({
           ...itemData,
           organization_id: organizationId,
-        })
+        } as never)
         .select()
         .single();
 

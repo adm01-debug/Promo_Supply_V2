@@ -171,7 +171,7 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
                             <div>
                               <span className="text-sm font-bold text-foreground">#{pedido.id}</span>
                               <Badge className={`ml-2 text-[10px] ${getStatusBadgeColor(pedido.status)}`}>
-                                {getStatusLabel(pedido.status)}
+                                {getStatusLabel(pedido.status as Parameters<typeof getStatusLabel>[0])}
                               </Badge>
                             </div>
                             <Button 
@@ -194,11 +194,11 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
                             <div className="flex items-center gap-1">
                               <Package className="w-3 h-3" />
                               <span>{pedido.quantidade} un</span>
-                              <Badge variant="outline" className="text-[10px] ml-1">{getTipoLabel(pedido.tipo)}</Badge>
+                              <Badge variant="outline" className="text-[10px] ml-1">{getTipoLabel(pedido.tipo as Parameters<typeof getTipoLabel>[0])}</Badge>
                             </div>
                             <div className="flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              <span>{new Date(pedido.prazoEntrega).toLocaleDateString('pt-BR')}</span>
+                              <span>{new Date(pedido.prazoEntrega ?? Date.now()).toLocaleDateString('pt-BR')}</span>
                             </div>
                           </div>
 

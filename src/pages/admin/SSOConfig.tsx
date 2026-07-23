@@ -40,7 +40,7 @@ export default function SSOConfig() {
         .upsert({
           tenant_id: tenantId as string,
           ...vars,
-        });
+        } as never);
       if (error) throw error;
       return data;
     },

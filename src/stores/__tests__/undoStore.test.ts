@@ -10,7 +10,7 @@ import { logger } from '@/lib/logger';
 
 const getStore = () => useUndoStore.getState();
 
-const makeAction = (overrides: Partial<Parameters<typeof getStore>['addAction']> = {}) => ({
+const makeAction = (overrides: Record<string, unknown> = {}) => ({
   type: 'test',
   description: 'Test action',
   undo: vi.fn().mockResolvedValue(undefined),

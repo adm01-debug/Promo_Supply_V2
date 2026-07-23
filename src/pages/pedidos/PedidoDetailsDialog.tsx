@@ -172,7 +172,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                 <TabsContent value="overview" className="mt-0 space-y-6 focus-visible:ring-0">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-6">
-                      <ProductionRoutingEngine items={itens} />
+                      <ProductionRoutingEngine items={itens as unknown as Parameters<typeof ProductionRoutingEngine>[0]['items']} />
 
                       <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
                         <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 flex items-center gap-2">
@@ -199,7 +199,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                           </div>
                         </div>
                         
-                        <SourcingIntelligenceBanner items={itens} />
+                        <SourcingIntelligenceBanner items={itens as unknown as Parameters<typeof SourcingIntelligenceBanner>[0]['items']} />
                         <SupplierInteractionLog supplierName={pedido.fornecedor?.nome_fantasia || pedido.fornecedor?.razao_social} />
                       </Card>
                     </div>

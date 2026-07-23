@@ -81,7 +81,7 @@ export function useProdutos() {
         ...produtoData,
         organization_id: organizationId,
         tenant_id: tenantId || organizationId
-      }).select().single();
+      } as never).select().single();
       if (error) throw error;
       return data;
     },

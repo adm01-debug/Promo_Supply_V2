@@ -11,7 +11,7 @@ vi.mock('zustand/middleware', async (importOriginal) => {
 
 const getStore = () => useKPITargetsStore.getState();
 
-const makeAlert = (overrides: Partial<Parameters<typeof getStore>['addAlert']> = {}) => ({
+const makeAlert = (overrides: Record<string, unknown> = {}) => ({
   kpiId: 'test-kpi',
   kpiName: 'Test KPI',
   type: 'warning' as const,

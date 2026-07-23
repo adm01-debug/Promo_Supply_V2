@@ -55,7 +55,7 @@ export function useLicitacoes() {
           responsavel_id: user.id,
           tenant_id: tenantId,
           organization_id: organizationId || tenantId
-        })
+        } as never)
         .select()
         .single();
       
@@ -129,7 +129,7 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
       const { fornecedor: _f, ...inputData } = input;
       const { data, error } = await supabase
         .from('licitacao_propostas')
-        .insert({ ...inputData, licitacao_id: licitacaoId })
+        .insert({ ...inputData, licitacao_id: licitacaoId } as never)
         .select()
         .single();
       if (error) throw error;

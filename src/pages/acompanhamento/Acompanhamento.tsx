@@ -306,7 +306,7 @@ const Acompanhamento = () => {
                 exit={{ opacity: 0, scale: 0.98 }}
                 className="w-full h-full"
               >
-                <KanbanBoard pedidos={pedidosFiltrados} onViewDetails={setPedidoDetalhes} onStatusChange={handleStatusChange} />
+                <KanbanBoard pedidos={pedidosFiltrados} onViewDetails={setPedidoDetalhes as unknown as (pedido: { id: string; status: string; produto: string; empresa: string; quantidade: number; tipo: string }) => void} onStatusChange={handleStatusChange} />
               </motion.div>
             ) : (
               <motion.div

@@ -224,7 +224,7 @@ export const PendingApprovalsList = () => {
   };
 
   const triggerNotificationCheck = () => {
-    checkApprovalDeadlines(getMonitoringApprovals(), 120, 30, 0);
+    checkApprovalDeadlines(getMonitoringApprovals(), 120, 30);
     toast.info("Verificação de prazos realizada", {
       description: "Notificações serão enviadas para aprovações próximas do limite"
     });

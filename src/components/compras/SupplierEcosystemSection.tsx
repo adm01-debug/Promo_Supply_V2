@@ -20,7 +20,7 @@ export const SupplierEcosystemSection = ({ produtoId, produtoNome }: SupplierEco
         .from("produto_fornecedores")
         .select(`
           *,
-          fornecedor:fornecedores(id, razao_social, rating)
+          fornecedor:fornecedores(id, razao_social)
         `)
         .eq("produto_id", produtoId);
       if (error) throw error;
@@ -52,7 +52,9 @@ export const SupplierEcosystemSection = ({ produtoId, produtoNome }: SupplierEco
       <CardContent className="p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {ecossistema.length > 0 ? (
-            ecossistema.map((item, idx) => (
+            ecossistema.map((item, idx) => {
+              const fornecedor = item.fornecedor as { id: string; razao_social: string; rating?: number } | null;
+              return (
               <motion.div 
                 key={item.id}
                 initial={{ opacity: 0, y: 10 }}
@@ -63,13 +65,13 @@ export const SupplierEcosystemSection = ({ produtoId, produtoNome }: SupplierEco
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center font-black text-emerald-400 text-xs border border-emerald-500/20">
-                      {item.fornecedor?.razao_social?.slice(0, 2).toUpperCase()}
+                      {fornecedor?.razao_social?.slice(0, 2).toUpperCase()}
                     </div>
                     <div>
-                      <h4 className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">{item.fornecedor?.razao_social}</h4>
+                      <h4 className="text-sm font-bold text-white group-hover:text-emerald-400 transition-colors uppercase tracking-tight">{fornecedor?.razao_social}</h4>
                       <div className="flex items-center gap-1 mt-1">
                         {[...Array(5)].map((_, i) => (
-                          <Star key={i} className={cn("w-2.5 h-2.5", i < (item.fornecedor?.rating || 0) ? "text-amber-400 fill-amber-400" : "text-zinc-800")} />
+                          <Star key={i} className={cn("w-2.5 h-2.5", i < (fornecedor?.rating || 0) ? "text-amber-400 fill-amber-400" : "text-zinc-800")} />
                         ))}
                       </div>
                     </div>
@@ -96,7 +98,8 @@ export const SupplierEcosystemSection = ({ produtoId, produtoNome }: SupplierEco
                   </div>
                 </div>
               </motion.div>
-            ))
+              );
+            })
           ) : (
             <div className="col-span-full py-12 text-center bg-white/[0.01] border-2 border-dashed border-white/5 rounded-3xl">
               <Package className="w-12 h-12 text-zinc-800 mx-auto mb-4" />

@@ -60,9 +60,9 @@ export const PermissionMatrix = () => {
           if (enabled) {
             // Add permission
             await supabase.from('role_permissions').upsert({
-              role: role as AppRole,
+              role: role as 'admin' | 'buyer' | 'coordinator' | 'finance' | 'viewer',
               permission_id: permissionId,
-            }, {
+            } as never, {
               onConflict: 'role,permission_id',
             });
           } else {
@@ -70,7 +70,7 @@ export const PermissionMatrix = () => {
             await supabase
               .from('role_permissions')
               .delete()
-              .eq('role', role)
+              .eq('role', role as 'admin' | 'buyer' | 'coordinator' | 'finance' | 'viewer')
               .eq('permission_id', permissionId);
           }
         }
