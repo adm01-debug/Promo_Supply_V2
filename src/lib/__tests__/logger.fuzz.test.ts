@@ -69,7 +69,7 @@ describe("logger (frontend) — fuzz & property", () => {
   beforeEach(() => {
     invokeMock.mockClear();
     vi.useFakeTimers();
-    vi.stubEnv("PROD", "true");
+    vi.stubEnv("PROD", true as unknown as string);
   });
 
   afterEach(() => {
