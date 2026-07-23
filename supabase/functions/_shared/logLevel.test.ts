@@ -20,6 +20,7 @@ import {
   DEFAULT_LEVEL,
   MAX_MESSAGE_LENGTH,
   normalizeLevel,
+  safeTruncate,
   type CanonicalLogLevel,
 } from "./logLevel.ts";
 import { createFuzzRng } from "./fuzzSeed.ts";
