@@ -28,9 +28,10 @@ Deno.serve(async (req) => {
     });
   }
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('generate-contract-pdf', requestId);
+
   try {
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('generate-contract-pdf', requestId);
 
     // SECURITY: require authenticated caller
     const authHeader = req.headers.get("Authorization") ?? "";
