@@ -148,5 +148,58 @@ describe.runIf(!!USER_A && !!USER_B)(
       } as unknown as Parameters<ReturnType<typeof clientA.from<"pedidos">>["insert"]>[0]);
       expect(error).toBeTruthy();
     });
+
+    /**
+     * Regressão da Onda 122: role privilegiada (finance/admin/buyer) NÃO pode
+     * enxergar pagamentos/contracts de outro tenant. Antes do patch de
+     * tenant_in_my_group() nas policies, um finance de qualquer empresa
+     * conseguia ler dados de todas — este bloco trava a regressão.
+     */
+    const PRIVILEGED_CROSS_TABLES = [
+      "pagamentos",
+      "contracts",
+      "cotacoes",
+      "supplier_documents",
+      "supplier_qualification_scores",
+    ] as const;
+
+    it.each(PRIVILEGED_CROSS_TABLES)(
+      "finance/admin do tenant A não lê %s do tenant B (cross-tenant leak)",
+      async (table) => {
+        if (!tenantB) return;
+        const { data, error } = await clientA
+          .from(table)
+          .select("id, tenant_id")
+          .eq("tenant_id", tenantB)
+          .limit(10);
+        expect(error).toBeNull();
+        expect(data ?? []).toEqual([]);
+      },
+    );
+
+    it("finance do tenant A não consegue inserir pagamento no tenant B", async () => {
+      if (!tenantB) return;
+      const { error } = await clientA.from("pagamentos").insert({
+        tenant_id: tenantB,
+        valor: 1,
+        status: "pendente",
+      } as unknown as Parameters<ReturnType<typeof clientA.from<"pagamentos">>["insert"]>[0]);
+      expect(error).toBeTruthy();
+    });
+
+    it("finance do tenant A não consegue atualizar contract do tenant B", async () => {
+      if (!tenantB) return;
+      const { data, error } = await clientA
+        .from("contracts")
+        .update({ status: "cancelled" } as unknown as Parameters<
+          ReturnType<typeof clientA.from<"contracts">>["update"]
+        >[0])
+        .eq("tenant_id", tenantB)
+        .select("id");
+      // Aceito: erro RLS OU zero linhas afetadas (RLS filtra silenciosamente).
+      if (!error) {
+        expect(data ?? []).toEqual([]);
+      }
+    });
   },
 );
