@@ -394,7 +394,7 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
             pathname={pathname}
             collapsed={collapsed}
             criticalHealthCount={criticalHealthCount}
-            badges={badges}
+            badges={badges as unknown as Record<string, number>}
             sectionBadge={section.id === "admin" ? criticalHealthCount : 0}
             sectionBadgeCritical={section.id === "admin"}
           />

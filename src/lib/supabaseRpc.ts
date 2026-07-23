@@ -84,14 +84,14 @@ export interface CostCenterPerformance {
 type RpcResult<T> = Promise<{ data: T | null; error: import("@supabase/supabase-js").PostgrestError | null }>;
 
 export function rpcCurrentTenantId(supabase: SupabaseClient): RpcResult<string> {
-  return supabase.rpc("current_tenant_id") as RpcResult<string>;
+  return supabase.rpc("current_tenant_id") as unknown as RpcResult<string>;
 }
 
 export function rpcGenerateSequentialNumber(
   supabase: SupabaseClient,
   params: { prefix: string; table_name: string },
 ): RpcResult<string> {
-  return supabase.rpc("generate_sequential_number", params) as RpcResult<string>;
+  return supabase.rpc("generate_sequential_number", params) as unknown as RpcResult<string>;
 }
 
 export function rpcCheckBudgetAvailability(
@@ -103,14 +103,14 @@ export function rpcCheckBudgetAvailability(
     p_period?: string;
   },
 ): RpcResult<BudgetAvailability> {
-  return supabase.rpc("check_budget_availability", params) as RpcResult<BudgetAvailability>;
+  return supabase.rpc("check_budget_availability", params) as unknown as RpcResult<BudgetAvailability>;
 }
 
 export function rpcGetSolicitacoesKpis(
   supabase: SupabaseClient,
   params: { p_tenant_id?: string; p_period?: string },
 ): RpcResult<KpiMetrics> {
-  return supabase.rpc("get_solicitacoes_kpis", params) as RpcResult<KpiMetrics>;
+  return supabase.rpc("get_solicitacoes_kpis", params) as unknown as RpcResult<KpiMetrics>;
 }
 
 export function rpcGetPedidosKpis(

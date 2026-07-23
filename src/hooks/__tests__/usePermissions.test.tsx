@@ -83,7 +83,7 @@ describe('usePermissions', () => {
         order: vi.fn(() => Promise.resolve({ data: [], error: null })),
         eq: vi.fn(() => Promise.resolve({ data: mockUserPermissions, error: null })),
       })),
-    }) as ReturnType<typeof supabase.from>);
+    }) as unknown as ReturnType<typeof supabase.from>);
 
     const { result } = renderHook(() => usePermissions(), {
       wrapper: createQueryClientWrapper(),

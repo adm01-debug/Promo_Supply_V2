@@ -49,7 +49,7 @@ export const usePermissions = () => {
           *,
           permission:permissions(*)
         `)
-        .eq('role', role);
+        .eq('role', role as 'admin' | 'buyer' | 'coordinator' | 'finance' | 'viewer');
 
       if (error) throw error;
       return data as (RolePermission & { permission: Permission })[];

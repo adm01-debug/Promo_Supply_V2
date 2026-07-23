@@ -102,7 +102,7 @@ export const StrategicQuoteTable = ({ cotacoes, quantidade }: StrategicQuoteTabl
             frete: c.shipping || 0,
             condicaoPagamento: c.payment_terms || "N/A",
             total: c.total,
-            rating: c.rating
+            rating: c.rating ?? undefined
           }))} 
           quantidade={quantidade} 
           onSelecionar={(id) => {
