@@ -118,7 +118,9 @@ export const PedidoMobileCard = ({
   const PrazoIcon = prazoStatus.icon;
 
   const emissaoDate = pedido.data_emissao ? new Date(pedido.data_emissao) : null;
-  const emissaoValida = emissaoDate && !Number.isNaN(emissaoDate.getTime());
+  const emissaoLabel = emissaoDate && !Number.isNaN(emissaoDate.getTime())
+    ? `Emitido em ${format(emissaoDate, 'dd/MM/yyyy')}`
+    : 'Data de emissão indisponível';
 
   const cardContent = (
     <motion.div
