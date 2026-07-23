@@ -140,7 +140,10 @@ export const KanbanBoard = ({ pedidos, onViewDetails, onStatusChange }: KanbanBo
     e.preventDefault();
     if (draggedPedido && onStatusChange) {
       const novoStatus = coluna.statuses[0];
-      if (!coluna.statuses.includes(draggedPedido.status)) {
+      const currentStatus = draggedPedido.status;
+      const alreadyInColumn =
+        isKanbanStatus(currentStatus) && coluna.statuses.includes(currentStatus);
+      if (!alreadyInColumn) {
         onStatusChange(draggedPedido.id, novoStatus);
       }
     }
