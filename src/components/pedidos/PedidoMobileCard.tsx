@@ -226,7 +226,7 @@ export const PedidoMobileCard = ({
               <Eye className="w-4 h-4 mr-2" />
               Detalhes
             </Button>
-            {pedido.status === 'pendente' && onUpdateStatus && (
+            {status === 'pendente' && onUpdateStatus && (
               <motion.div 
                 className="flex-1"
                 whileHover={{ scale: 1.02 }}
