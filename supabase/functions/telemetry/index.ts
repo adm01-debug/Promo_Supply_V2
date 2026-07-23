@@ -41,45 +41,56 @@ serve(async (req) => {
       });
     }
 
-    const data = await validateBody(req, TelemetryContract, logger);
-    const { level, message, context, url, userAgent, tenantId: providedTenantId } = data;
+    // Accept both single entry and { batch: [...] } from the frontend logger.
+    let rawBody: any;
+    try {
+      rawBody = await req.json();
+    } catch (_e) {
+      return errorResponse(new Error("Invalid JSON body"), logger);
+    }
 
-    // Use admin client for telemetry to ensure logging even if auth is tricky
+    const entries: any[] = Array.isArray(rawBody?.batch) ? rawBody.batch : [rawBody];
+
     const supabaseAdmin = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Get tenant ID from user metadata if not provided explicitly
-    const tenantId = providedTenantId || (user?.user_metadata?.tenant_id as string);
+    const normalizeLevel = (lv: unknown) => {
+      const s = String(lv ?? "info").toLowerCase().trim();
+      if (s === "warning") return "warn";
+      return ["info", "warn", "error", "debug"].includes(s) ? s : "info";
+    };
 
-    // Normaliza para enum log_level (lowercase: info|warn|error|debug)
-    // v2: força coerção segura mesmo se contract preprocess falhar
-    const rawLevel = String(level ?? "info").toLowerCase().trim();
-    const normalizedLevel = rawLevel === "warning"
-      ? "warn"
-      : (["info", "warn", "error", "debug"].includes(rawLevel) ? rawLevel : "info");
+    const clientIp = req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for");
+    const rows = entries
+      .filter((e) => e && typeof e.message === "string" && e.message.length > 0)
+      .map((e) => ({
+        level: normalizeLevel(e.level),
+        message: String(e.message).slice(0, 4000),
+        context: e.context ?? null,
+        request_id: e.requestId ?? requestId,
+        user_id: user?.id,
+        tenant_id: e.tenantId || (user?.user_metadata?.tenant_id as string) || null,
+        url: e.url ?? null,
+        user_agent: e.userAgent ?? null,
+        client_ip: clientIp,
+      }));
 
-    logger.info("telemetry insert", { rawLevel, normalizedLevel });
+    if (rows.length === 0) {
+      return new Response(JSON.stringify({ success: true, inserted: 0, requestId }), {
+        headers: buildResponseHeaders(corsHeaders),
+        status: 200,
+      });
+    }
 
-    const { error } = await supabaseAdmin.from("telemetry_logs").insert({
-      level: normalizedLevel,
-      message,
-      context,
-      request_id: requestId,
-      user_id: user?.id,
-      tenant_id: tenantId,
-      url,
-      user_agent: userAgent,
-      client_ip: req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for"),
-    });
-
+    const { error } = await supabaseAdmin.from("telemetry_logs").insert(rows);
     if (error) {
       logger.error("Falha ao salvar log de telemetria no banco", { dbError: error });
       throw error;
     }
 
-    return new Response(JSON.stringify({ success: true, requestId }), {
+    return new Response(JSON.stringify({ success: true, inserted: rows.length, requestId }), {
       headers: buildResponseHeaders(corsHeaders),
       status: 200,
     });
