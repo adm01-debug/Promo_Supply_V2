@@ -224,7 +224,7 @@ const ComprasDashboard = () => {
                 produto: item.titulo || "Item sem título",
                 fornecedor: item.status || "Análise Pendente",
                 vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
-                urgencia: item.urgencia || 'alto',
+                urgencia: (item.urgencia || 'alto') as 'alto' | 'critico' | 'medio',
                 comprador: item.comprador
               }))} />
             ) : (

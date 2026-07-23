@@ -45,8 +45,8 @@ export default function ComplianceDashboard() {
         supabase.from('supplier_compliance_summary').select('*'),
         supabase.from('penalty_escalation_config').select('*').order('level', { ascending: true }),
       ]);
-      setData((compRes.data as ComplianceData[]) || []);
-      setRules((rulesRes.data as EscalationRule[]) || []);
+      setData((compRes.data as unknown as ComplianceData[]) || []);
+      setRules((rulesRes.data as unknown as EscalationRule[]) || []);
     } catch (error: unknown) {
       logger.error('Error fetching compliance data', { error });
       toast.error("Erro ao carregar dados de compliance");

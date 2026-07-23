@@ -8,7 +8,7 @@ import {
 } from '../fornecedorHelpers';
 import type { Fornecedor } from '@/hooks/useFornecedores';
 
-const makeFornecedor = (overrides: Partial<Fornecedor> = {}): Fornecedor => ({
+const makeFornecedor = (overrides: Partial<Fornecedor> = {}): Fornecedor => (({
   id: 'f1',
   codigo: 'FORN001',
   razao_social: 'Empresa ABC Ltda',

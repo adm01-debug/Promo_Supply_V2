@@ -69,6 +69,7 @@ const GestaoEstoque = () => {
   };
 
   const handleMovimentar = async () => {
+    if (!selectedItem) return;
     if (movData.quantidade <= 0) {
       toast.error("Quantidade deve ser maior que zero");
       return;
