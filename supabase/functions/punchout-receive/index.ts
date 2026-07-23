@@ -55,11 +55,13 @@ function parsePunchOutOrderMessage(xml: string): { buyerCookie: string | null; i
     const price = Number((unitPrice as { "#text"?: unknown })?.["#text"] ?? 0);
     const currency = (unitPrice?.["@_currency"] as string | undefined) ?? defaultCurrency ?? "BRL";
     return {
-      name: String(name).slice(0, 500),
+      name: safeTruncate(String(name), 500),
       quantity: Number.isFinite(quantity) && quantity > 0 ? quantity : 1,
       price: Number.isFinite(price) && price >= 0 ? price : 0,
       currency,
-      supplier_part_id: (detail?.SupplierPartID as string | undefined)?.slice?.(0, 200),
+      supplier_part_id: typeof detail?.SupplierPartID === "string"
+        ? safeTruncate(detail.SupplierPartID as string, 200)
+        : undefined,
       unit: (detail?.UnitOfMeasure as string | undefined) ?? undefined,
     };
   });

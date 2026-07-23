@@ -1,5 +1,6 @@
 import { corsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
+import { safeTruncate } from "../_shared/logLevel.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -70,7 +71,7 @@ async function fetchLatestCommit(
     return {
       latestCommitSha: body?.sha,
       latestCommitUrl: body?.html_url,
-      latestCommitMessage: String(body?.commit?.message ?? "").split("\n")[0]?.slice(0, 200),
+      latestCommitMessage: safeTruncate(String(body?.commit?.message ?? "").split("\n")[0] ?? "", 200),
       latestCommitAuthor: body?.commit?.author?.name ?? body?.author?.login,
       latestCommitAt: body?.commit?.author?.date,
     };
@@ -149,7 +150,7 @@ async function dispatchWorkflow(rawBase: string): Promise<DispatchInfo> {
     if (res.status !== 204) {
       const text = await res.text().catch(() => "");
       return {
-        status: `failed: HTTP ${res.status} ${text.slice(0, 200)}`,
+        status: `failed: HTTP ${res.status} ${safeTruncate(text, 200)}`,
         branch,
         dispatchedAt: dispatchedAt.toISOString(),
       };
