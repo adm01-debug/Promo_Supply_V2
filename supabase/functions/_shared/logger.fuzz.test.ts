@@ -16,6 +16,9 @@ Deno.env.delete("SUPABASE_URL");
 
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { EdgeLogger } from "./logger.ts";
+import { createFuzzRng } from "./fuzzSeed.ts";
+
+const rng = createFuzzRng("logger-edge");
 
 const LEVELS = ["info", "warn", "error", "debug"] as const;
 
@@ -136,5 +139,30 @@ Deno.test({
     const id2 = log.getRequestId();
     assertEquals(id1, id2);
     assert(/^[0-9a-f-]{36}$/i.test(id1));
+  },
+});
+
+Deno.test({
+  name: "EdgeLogger: property — 100 iterações randomizadas com seed reprodutível",
+  ...opts,
+  fn: () => {
+    const log = new EdgeLogger("prop-fn");
+    silenceConsole(() => {
+      for (let i = 0; i < 100; i++) {
+        const lvl = rng.pick(LEVELS);
+        const msg = rng.randomString(rng.rand() < 0.1 ? 2_000 : 24);
+        try {
+          (log as unknown as Record<string, (m: string, c?: unknown) => void>)[lvl](msg, {
+            i,
+            seed: rng.seed,
+            token: rng.randomString(8),
+            payload: rng.randomString(16),
+          });
+        } catch (err) {
+          throw new Error(`falha reprodutível: seed=${rng.seed} iter=${i} lvl=${lvl}: ${err}`);
+        }
+      }
+    });
+    assert(true);
   },
 });

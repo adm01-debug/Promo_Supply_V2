@@ -9,6 +9,7 @@
  *  • Rate limit e batching (não deve estourar exceção nem chamar telemetry além do teto)
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { createFuzzRng } from "./fuzzSeed";
 
 const { invokeMock } = vi.hoisted(() => ({
   invokeMock: vi.fn().mockResolvedValue({ data: null, error: null }),
@@ -19,6 +20,9 @@ vi.mock("@/integrations/supabase/client", () => ({
 }));
 
 import { logger } from "@/lib/logger";
+
+const rng = createFuzzRng("logger-frontend");
+
 
 const LEVELS = ["info", "warn", "error", "debug"] as const;
 const INVALID_LEVELS = [
@@ -86,10 +90,17 @@ describe("logger (frontend) — fuzz & property", () => {
   it("não lança para mensagens exóticas em nenhum nível válido", () => {
     for (const lvl of LEVELS) {
       for (const msg of WEIRD_MESSAGES) {
-        expect(() => (logger as any)[lvl](msg as string)).not.toThrow();
+        expect(
+          () => (logger as any)[lvl](msg as string),
+          `seed=${rng.seed} lvl=${lvl} msg=${String(msg).slice(0, 40)}`,
+        ).not.toThrow();
       }
     }
   });
+
+
+
+
 
   it("não lança quando o nível é chamado com API válida mas contexto exótico", () => {
     for (const msg of WEIRD_MESSAGES) {
@@ -144,5 +155,24 @@ describe("logger (frontend) — fuzz & property", () => {
     logger.error("no-tenant");
     await flush();
     expect(invokeMock).toHaveBeenCalled();
+  });
+
+  // Property test roda por último para não interferir nos testes de flush acima.
+  it("property: 200 iterações randomizadas com seed reprodutível", () => {
+    for (let i = 0; i < 200; i++) {
+      const lvl = rng.pick(LEVELS);
+      const msg = rng.randomString(rng.rand() < 0.05 ? 5_000 : 32);
+      const ctx = {
+        i,
+        seed: rng.seed,
+        rnd: rng.rand(),
+        password: rng.randomString(8),
+        payload: rng.randomString(16),
+      };
+      expect(
+        () => (logger as any)[lvl](msg, ctx),
+        `seed=${rng.seed} iter=${i} lvl=${lvl}`,
+      ).not.toThrow();
+    }
   });
 });
