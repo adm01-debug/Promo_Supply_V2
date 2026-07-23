@@ -92,9 +92,9 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
       ]);
 
       setItems(itemsRes.data || []);
-      setHistory(historyRes.data || []);
+      setHistory((historyRes.data || []) as unknown as ContractHistory[]);
       setLinkedOrders(ordersRes.data || []);
-      setPenalties(penaltiesRes.data || []);
+      setPenalties((penaltiesRes.data || []) as unknown as ContractPenalty[]);
       setDocuments(docsRes.data || []);
     } catch (error) {
       logger.error('Error fetching contract details', { error });
