@@ -99,7 +99,7 @@ export function buildTelemetryRow(
 
   return {
     level: normalizeLevel((e as { level?: unknown }).level),
-    message: msg.slice(0, MAX_MESSAGE_LENGTH),
+    message: safeTruncate(msg, MAX_MESSAGE_LENGTH),
     context:
       context && typeof context === "object" && !Array.isArray(context)
         ? (context as Record<string, unknown>)
