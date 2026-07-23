@@ -37,7 +37,7 @@ const makeFornecedor = (overrides: Partial<Fornecedor> = {}): Fornecedor => (({
   saldo_comprometido: null,
   website: null,
   ...overrides,
-});
+}) as Fornecedor);
 
 describe('fornecedorHelpers', () => {
   describe('adaptToLegacy', () => {
