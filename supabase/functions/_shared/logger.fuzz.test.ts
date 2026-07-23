@@ -16,6 +16,9 @@ Deno.env.delete("SUPABASE_URL");
 
 import { assert, assertEquals } from "https://deno.land/std@0.224.0/assert/mod.ts";
 import { EdgeLogger } from "./logger.ts";
+import { createFuzzRng } from "./fuzzSeed.ts";
+
+const rng = createFuzzRng("logger-edge");
 
 const LEVELS = ["info", "warn", "error", "debug"] as const;
 
