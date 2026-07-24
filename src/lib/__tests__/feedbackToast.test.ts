@@ -117,3 +117,39 @@ describe('toast.loading', () => {
     expect(toast.loading).toBe(mockSonnerToast.loading);
   });
 });
+
+describe('toast — call counts and isolation', () => {
+  it('each method call is independent (no cross-contamination)', () => {
+    toast.success('S');
+    toast.error('E');
+    toast.warning('W');
+    toast.info('I');
+    expect(mockSonnerToast.success).toHaveBeenCalledTimes(1);
+    expect(mockSonnerToast.error).toHaveBeenCalledTimes(1);
+    expect(mockSonnerToast.warning).toHaveBeenCalledTimes(1);
+    expect(mockSonnerToast.info).toHaveBeenCalledTimes(1);
+  });
+
+  it('success called twice increments call count', () => {
+    toast.success('First');
+    toast.success('Second');
+    expect(mockSonnerToast.success).toHaveBeenCalledTimes(2);
+  });
+
+  it('error called with empty string does not throw', () => {
+    expect(() => toast.error('')).not.toThrow();
+    expect(mockSonnerToast.error).toHaveBeenCalledWith('', undefined);
+  });
+
+  it('warning with options object passes options through', () => {
+    const opts = { duration: 5000, id: 'my-id' };
+    toast.warning('Aviso', opts);
+    expect(mockSonnerToast.warning).toHaveBeenCalledWith('Aviso', opts);
+  });
+
+  it('info with options object passes options through', () => {
+    const opts = { description: 'Mais detalhes' };
+    toast.info('Info detalhada', opts);
+    expect(mockSonnerToast.info).toHaveBeenCalledWith('Info detalhada', opts);
+  });
+});
