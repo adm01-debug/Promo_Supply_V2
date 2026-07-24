@@ -125,3 +125,42 @@ describe('OrderPDFData interface shape', () => {
     });
   });
 });
+
+describe('generateOrderPDF — return value shape', () => {
+  it('returned object has a save method', () => {
+    const doc = generateOrderPDF(validData);
+    expect(typeof doc.save).toBe('function');
+  });
+
+  it('returned object has an output method', () => {
+    const doc = generateOrderPDF(validData);
+    expect(typeof doc.output).toBe('function');
+  });
+
+  it('calling output() returns a value', () => {
+    const doc = generateOrderPDF(validData);
+    const out = doc.output();
+    expect(out).toBeDefined();
+  });
+
+  it('does not throw with only 1 item in itens', () => {
+    expect(() => generateOrderPDF({
+      ...validData,
+      itens: [{ descricao: 'Único Item', quantidade: 1, unidade: 'un', valor_unitario: 10 }],
+    })).not.toThrow();
+  });
+
+  it('does not throw when total is 0', () => {
+    expect(() => generateOrderPDF({ ...validData, total: 0, subtotal: 0, frete: 0, desconto: 0 })).not.toThrow();
+  });
+
+  it('does not throw with very large values', () => {
+    expect(() => generateOrderPDF({
+      ...validData,
+      subtotal: 9_999_999,
+      frete: 999,
+      desconto: 100,
+      total: 10_000_898,
+    })).not.toThrow();
+  });
+});
