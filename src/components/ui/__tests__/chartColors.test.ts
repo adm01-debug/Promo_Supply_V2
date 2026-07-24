@@ -60,6 +60,20 @@ describe('chartPalette', () => {
   it('success uses green hue (around 142)', () => {
     expect(chartPalette.success.light).toContain('142.1');
   });
+
+  it('warning uses yellow hue (around 45)', () => {
+    expect(chartPalette.warning.light).toContain('45.4');
+  });
+
+  it('danger uses red hue (hue 0)', () => {
+    expect(chartPalette.danger.light).toMatch(/^hsl\(0 /);
+  });
+
+  it('each palette entry has exactly 2 keys: light and dark', () => {
+    PALETTE_KEYS.forEach(key => {
+      expect(Object.keys(chartPalette[key]).sort()).toEqual(['dark', 'light']);
+    });
+  });
 });
 
 // ─── darkModeChartColors ──────────────────────────────────────────────────────

@@ -39,6 +39,17 @@ describe('CHART_COLORS', () => {
   it('first color uses CSS variable --primary', () => {
     expect(CHART_COLORS[0]).toBe('hsl(var(--primary))');
   });
+
+  it('colors 2-6 use explicit HSL values (no CSS vars)', () => {
+    CHART_COLORS.slice(1).forEach(c => {
+      expect(c).not.toContain('var(');
+      expect(c).toMatch(/^hsl\(\d/);
+    });
+  });
+
+  it('sixth color is the red/danger hue (hue 0)', () => {
+    expect(CHART_COLORS[5]).toContain('hsl(0,');
+  });
 });
 
 // ─── formatBRL ────────────────────────────────────────────────────────────────
