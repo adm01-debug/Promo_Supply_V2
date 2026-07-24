@@ -158,4 +158,43 @@ describe('fetchAllRows', () => {
     const result = await fetchAllRows('empty_table', '*');
     expect(result).toEqual([]);
   });
+
+  it('concatenates rows from multiple pages in order', async () => {
+    const page1 = [{ id: 1 }, { id: 2 }];
+    const page2 = [{ id: 3 }, { id: 4 }];
+    let call = 0;
+    mockFrom.mockImplementation(() => {
+      const data = call === 0 ? page1 : call === 1 ? page2 : [];
+      call++;
+      return makeChain({ data, error: null });
+    });
+
+    const result = await fetchAllRows('t', '*', { pageSize: 2 });
+    expect(result).toEqual([...page1, ...page2]);
+  });
+
+  it('calls from() once per page fetch', async () => {
+    const page1 = [{ id: 1 }, { id: 2 }];
+    let call = 0;
+    mockFrom.mockImplementation(() => {
+      const data = call === 0 ? page1 : [];
+      call++;
+      return makeChain({ data, error: null });
+    });
+
+    await fetchAllRows('t', '*', { pageSize: 2 });
+    expect(mockFrom).toHaveBeenCalledTimes(2); // page 1 + page 2 (empty)
+  });
+
+  it('result is always an array', async () => {
+    mockFrom.mockReturnValue(makeChain({ data: [], error: null }));
+    const result = await fetchAllRows('t', '*');
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it('default pageSize uses range(0, 999) for first page', async () => {
+    mockFrom.mockReturnValue(makeChain({ data: [], error: null }));
+    await fetchAllRows('t', '*');
+    expect(mockRange).toHaveBeenCalledWith(0, 999);
+  });
 });
