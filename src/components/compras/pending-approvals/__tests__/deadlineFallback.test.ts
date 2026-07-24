@@ -86,6 +86,69 @@ describe("resolveApprovalDeadline", () => {
       vi.useRealTimers();
     }
   });
+
+  it("step.prazo_limite tem prioridade sobre workflow.prazo_limite quando ambos presentes", () => {
+    const result = resolveApprovalDeadline({
+      stepPrazoLimite: stepPrazo,
+      workflowPrazoLimite: workflowPrazo,
+      workflowCreatedAt: workflowCreated,
+      stepCreatedAt: stepCreated,
+    });
+    expect(result).toBe(stepPrazo);
+    expect(result).not.toBe(workflowPrazo);
+  });
+
+  it("workflow.created_at tem prioridade sobre step.created_at no fallback +24h", () => {
+    const result = resolveApprovalDeadline({
+      stepPrazoLimite: null,
+      workflowPrazoLimite: null,
+      workflowCreatedAt: workflowCreated,
+      stepCreatedAt: stepCreated,
+    });
+    expect(new Date(result).getTime()).toBe(new Date(workflowCreated).getTime() + D);
+    expect(new Date(result).getTime()).not.toBe(new Date(stepCreated).getTime() + D);
+  });
+
+  it("retorna sempre uma string ISO válida", () => {
+    const result = resolveApprovalDeadline({
+      stepPrazoLimite: stepPrazo,
+      workflowPrazoLimite: null,
+      workflowCreatedAt: null,
+      stepCreatedAt: null,
+    });
+    expect(typeof result).toBe('string');
+    expect(isNaN(new Date(result).getTime())).toBe(false);
+  });
+
+  it("resultado do fallback é sempre uma string ISO 8601 válida", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-07-23T10:00:00.000Z"));
+    try {
+      const result = resolveApprovalDeadline({
+        stepPrazoLimite: null,
+        workflowPrazoLimite: null,
+        workflowCreatedAt: null,
+        stepCreatedAt: null,
+      });
+      expect(typeof result).toBe('string');
+      expect(result).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/);
+      expect(isNaN(new Date(result).getTime())).toBe(false);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("undefined inputs comportam-se como null", () => {
+    vi.useFakeTimers();
+    const now = new Date("2026-07-23T10:00:00.000Z");
+    vi.setSystemTime(now);
+    try {
+      const result = resolveApprovalDeadline({});
+      expect(new Date(result).getTime()).toBe(now.getTime() + D);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
 });
 
 describe("integração com getTimeStatus (regressão de falso 'vencida')", () => {
