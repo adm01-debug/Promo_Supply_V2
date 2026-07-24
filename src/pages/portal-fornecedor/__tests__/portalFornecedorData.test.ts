@@ -56,6 +56,21 @@ describe('statusPedido', () => {
   it('em_transito has label "Em Trânsito"', () => {
     expect(statusPedido.em_transito.label).toBe('Em Trânsito');
   });
+
+  it('aprovado has variant "default"', () => {
+    expect(statusPedido.aprovado.variant).toBe('default');
+  });
+
+  it('all labels are unique across statusPedido', () => {
+    const labels = Object.values(statusPedido).map(v => v.label);
+    expect(new Set(labels).size).toBe(labels.length);
+  });
+
+  it('each entry has exactly 2 keys: label and variant', () => {
+    Object.values(statusPedido).forEach(entry => {
+      expect(Object.keys(entry).sort()).toEqual(['label', 'variant']);
+    });
+  });
 });
 
 describe('statusCotacao', () => {
@@ -98,5 +113,14 @@ describe('statusCotacao', () => {
 
   it('enviada has label "Enviada"', () => {
     expect(statusCotacao.enviada.label).toBe('Enviada');
+  });
+
+  it('enviada has variant "default"', () => {
+    expect(statusCotacao.enviada.variant).toBe('default');
+  });
+
+  it('all labels are unique across statusCotacao', () => {
+    const labels = Object.values(statusCotacao).map(v => v.label);
+    expect(new Set(labels).size).toBe(labels.length);
   });
 });

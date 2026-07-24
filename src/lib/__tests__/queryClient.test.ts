@@ -94,4 +94,19 @@ describe('queryClient', () => {
     expect(retryDelay(2)).toBe(4000);
     expect(retryDelay(10)).toBe(10000);
   });
+
+  it('retryDelay cap is exactly 10000 regardless of large attempt index', () => {
+    const opts = queryClient.getDefaultOptions();
+    const retryDelay = opts.queries?.retryDelay as (n: number) => number;
+    expect(retryDelay(100)).toBe(10000);
+    expect(retryDelay(50)).toBe(10000);
+  });
+
+  it('has a getQueryData method (is a real QueryClient)', () => {
+    expect(typeof queryClient.getQueryData).toBe('function');
+  });
+
+  it('has an invalidateQueries method', () => {
+    expect(typeof queryClient.invalidateQueries).toBe('function');
+  });
 });
