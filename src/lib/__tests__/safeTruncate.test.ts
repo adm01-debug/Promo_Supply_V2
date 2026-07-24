@@ -87,4 +87,39 @@ describe("safeTruncate (frontend)", () => {
     expect(typeof safeTruncate("", 10)).toBe("string");
     expect(typeof safeTruncate("abc", 0)).toBe("string");
   });
+
+  it("result.length é sempre <= maxUnits (propriedade fundamental)", () => {
+    const inputs = ["hello world", "😀😁😂", "日本語", "abc", ""];
+    const limits = [0, 1, 2, 5, 100];
+    for (const s of inputs) {
+      for (const limit of limits) {
+        expect(safeTruncate(s, limit).length).toBeLessThanOrEqual(limit);
+      }
+    }
+  });
+
+  it("resultado é sempre um prefixo da string original", () => {
+    const s = "abc😀def";
+    for (let cap = 0; cap <= s.length + 2; cap++) {
+      const out = safeTruncate(s, cap);
+      expect(s.startsWith(out)).toBe(true);
+    }
+  });
+
+  it("nenhum high surrogate isolado no final do resultado", () => {
+    const s = "ab😀cd😁ef";
+    for (let cap = 0; cap <= s.length; cap++) {
+      const out = safeTruncate(s, cap);
+      if (out.length > 0) {
+        const last = out.charCodeAt(out.length - 1);
+        expect(last >= 0xd800 && last <= 0xdbff).toBe(false);
+      }
+    }
+  });
+
+  it("strings grandes truncam eficientemente sem erro", () => {
+    const big = "x".repeat(100_000);
+    expect(() => safeTruncate(big, 50_000)).not.toThrow();
+    expect(safeTruncate(big, 50_000).length).toBe(50_000);
+  });
 });

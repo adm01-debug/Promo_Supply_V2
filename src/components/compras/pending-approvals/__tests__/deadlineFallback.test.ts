@@ -149,6 +149,61 @@ describe("resolveApprovalDeadline", () => {
       vi.useRealTimers();
     }
   });
+
+  it("string vazia em stepPrazoLimite cai para próxima prioridade (falsy)", () => {
+    const result = resolveApprovalDeadline({
+      stepPrazoLimite: '',
+      workflowPrazoLimite: workflowPrazo,
+      workflowCreatedAt: null,
+      stepCreatedAt: null,
+    });
+    expect(result).toBe(workflowPrazo);
+  });
+
+  it("string vazia em workflowPrazoLimite cai para fallback de +24h (falsy)", () => {
+    vi.useFakeTimers();
+    const now = new Date("2026-07-23T10:00:00.000Z");
+    vi.setSystemTime(now);
+    try {
+      const result = resolveApprovalDeadline({
+        stepPrazoLimite: '',
+        workflowPrazoLimite: '',
+        workflowCreatedAt: null,
+        stepCreatedAt: null,
+      });
+      expect(new Date(result).getTime()).toBe(now.getTime() + D);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("o fallback acrescenta exatamente 24h (86400000 ms), não 12h nem 48h", () => {
+    vi.useFakeTimers();
+    const now = new Date("2026-07-23T10:00:00.000Z");
+    vi.setSystemTime(now);
+    try {
+      const result = resolveApprovalDeadline({
+        stepPrazoLimite: null,
+        workflowPrazoLimite: null,
+        workflowCreatedAt: null,
+        stepCreatedAt: null,
+      });
+      const diff = new Date(result).getTime() - now.getTime();
+      expect(diff).toBe(24 * 60 * 60 * 1000);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("cálculo determinístico: workflowCreatedAt + 24h bate com valor esperado", () => {
+    const result = resolveApprovalDeadline({
+      stepPrazoLimite: null,
+      workflowPrazoLimite: null,
+      workflowCreatedAt: "2026-07-20T00:00:00.000Z",
+      stepCreatedAt: null,
+    });
+    expect(result).toBe("2026-07-21T00:00:00.000Z");
+  });
 });
 
 describe("integração com getTimeStatus (regressão de falso 'vencida')", () => {
