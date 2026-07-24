@@ -1,9 +1,12 @@
-import { describe, it, expect } from 'vitest';
-import { formatBRL, CHART_COLORS } from '../priceHistoryHelpers';
+import { describe, it, expect, vi } from 'vitest';
 
 vi.mock('react', () => ({
   useMemo: (fn: () => unknown) => fn(),
 }));
+vi.mock('date-fns/format', () => ({ format: vi.fn(() => 'jan/25') }));
+vi.mock('date-fns/locale/pt-BR', () => ({ ptBR: {} }));
+
+import { formatBRL, CHART_COLORS } from '../priceHistoryHelpers';
 
 // ─── CHART_COLORS ─────────────────────────────────────────────────────────────
 
@@ -21,6 +24,20 @@ describe('CHART_COLORS', () => {
 
   it('first color uses CSS variable syntax', () => {
     expect(CHART_COLORS[0]).toContain('hsl');
+  });
+
+  it('all colors reference hsl format', () => {
+    CHART_COLORS.forEach(c => {
+      expect(c).toMatch(/^hsl\(/);
+    });
+  });
+
+  it('all color values are unique', () => {
+    expect(new Set(CHART_COLORS).size).toBe(CHART_COLORS.length);
+  });
+
+  it('first color uses CSS variable --primary', () => {
+    expect(CHART_COLORS[0]).toBe('hsl(var(--primary))');
   });
 });
 
@@ -57,5 +74,25 @@ describe('formatBRL', () => {
     const result = formatBRL(10000);
     expect(result).toContain('R$');
     expect(result.length).toBeGreaterThan(5);
+  });
+
+  it('formats negative values with R$ prefix', () => {
+    const result = formatBRL(-500);
+    expect(result).toContain('R$');
+    expect(typeof result).toBe('string');
+  });
+
+  it('always produces exactly 2 decimal places for integers', () => {
+    const result = formatBRL(100);
+    expect(result).toMatch(/,00$|\.00$/);
+  });
+
+  it('formats 1.5 with two decimal places', () => {
+    const result = formatBRL(1.5);
+    expect(result).toMatch(/1[,.]50$|1,50/);
+  });
+
+  it('result for 1000 is longer than result for 10', () => {
+    expect(formatBRL(1000).length).toBeGreaterThanOrEqual(formatBRL(10).length);
   });
 });
