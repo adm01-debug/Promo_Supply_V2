@@ -67,4 +67,36 @@ describe('KNOWN_SUPPLIERS', () => {
   it('includes Eco Brindes supplier', () => {
     expect(KNOWN_SUPPLIERS.some(s => s.id === 'eco' && s.name === 'Eco Brindes')).toBe(true);
   });
+
+  it('includes Tech Brindes supplier', () => {
+    expect(KNOWN_SUPPLIERS.some(s => s.id === 'tech' && s.name === 'Tech Brindes')).toBe(true);
+  });
+
+  it('includes Premium Gifts supplier', () => {
+    expect(KNOWN_SUPPLIERS.some(s => s.id === 'premium' && s.name === 'Premium Gifts')).toBe(true);
+  });
+
+  it('includes Asia Import supplier', () => {
+    expect(KNOWN_SUPPLIERS.some(s => s.id === 'asia' && s.name === 'Asia Import')).toBe(true);
+  });
+
+  it('no id contains whitespace', () => {
+    KNOWN_SUPPLIERS.forEach(s => {
+      expect(s.id).not.toMatch(/\s/);
+    });
+  });
+
+  it('no entry has only keys other than id and name', () => {
+    KNOWN_SUPPLIERS.forEach(s => {
+      expect(Object.keys(s).sort()).toEqual(['id', 'name']);
+    });
+  });
+
+  it('first entry is XBZ Brindes', () => {
+    expect(KNOWN_SUPPLIERS[0].id).toBe('xbz');
+  });
+
+  it('last entry is Eco Brindes', () => {
+    expect(KNOWN_SUPPLIERS[KNOWN_SUPPLIERS.length - 1].id).toBe('eco');
+  });
 });
