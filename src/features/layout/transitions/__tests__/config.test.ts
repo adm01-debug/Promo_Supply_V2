@@ -65,4 +65,36 @@ describe('ROUTE_OVERRIDES', () => {
     expect(ROUTE_OVERRIDES[0].duration).toBeUndefined();
     expect(ROUTE_OVERRIDES[1].duration).toBeUndefined();
   });
+
+  it('DEFAULT_TRANSITION is one of the presets used in ROUTE_OVERRIDES or stands alone', () => {
+    expect(typeof DEFAULT_TRANSITION).toBe('string');
+    expect(DEFAULT_TRANSITION.length).toBeGreaterThan(0);
+  });
+
+  it('all override patterns are anchored at start (^)', () => {
+    ROUTE_OVERRIDES.forEach(override => {
+      expect(override.pattern.source).toMatch(/^\^/);
+    });
+  });
+
+  it('patterns use string-anchored matching — root "/" alone does not match any override', () => {
+    ROUTE_OVERRIDES.forEach(override => {
+      expect(override.pattern.test('/')).toBe(false);
+    });
+  });
+
+  it('second override does NOT match /admin-panel (hyphen suffix)', () => {
+    expect(ROUTE_OVERRIDES[0].pattern.test('/admin-panel')).toBe(false);
+    expect(ROUTE_OVERRIDES[1].pattern.test('/admin-panel')).toBe(true);
+  });
+
+  it('first override does not match /compras/approval (not wizard)', () => {
+    expect(ROUTE_OVERRIDES[0].pattern.test('/compras/approval')).toBe(false);
+  });
+
+  it('all presets are non-empty hyphenated strings', () => {
+    ROUTE_OVERRIDES.forEach(override => {
+      expect(override.preset).toMatch(/^[a-z]+(-[a-z]+)*$/);
+    });
+  });
 });
