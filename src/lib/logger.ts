@@ -108,6 +108,12 @@ class Logger {
   private async sendBatchToTelemetry(entries: LogEntry[]) {
     try {
       const { supabase } = await import("@/integrations/supabase/client");
+      // Telemetry endpoint requires an authenticated session; drop logs
+      // silently when the user is signed out (e.g. on the login page) to
+      // avoid 401 spam and infinite retry loops.
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) return;
+
       await supabase.functions.invoke("telemetry", {
         body: {
           batch: entries.map(e => ({
@@ -121,9 +127,8 @@ class Logger {
           })),
         },
       });
-    } catch (err) {
+    } catch {
       // Silent fail to avoid infinite loops
-      console.warn("Failed to send log batch to telemetry", err);
     }
   }
 
