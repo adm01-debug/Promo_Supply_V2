@@ -61,6 +61,21 @@ describe('MOTIVO_LABELS', () => {
     const values = Object.values(MOTIVO_LABELS);
     expect(new Set(values).size).toBe(values.length);
   });
+
+  it('avaria_transporte label contains "Transporte"', () => {
+    expect(MOTIVO_LABELS.avaria_transporte).toContain('Transporte');
+  });
+
+  it('prazo_vencido label references "Validade"', () => {
+    expect(MOTIVO_LABELS.prazo_vencido).toContain('Validade');
+  });
+
+  it('all motivo keys use snake_case (no spaces, no uppercase)', () => {
+    Object.keys(MOTIVO_LABELS).forEach(key => {
+      expect(key).not.toContain(' ');
+      expect(key).toBe(key.toLowerCase());
+    });
+  });
 });
 
 // ─── RESOLUCAO_LABELS ─────────────────────────────────────────────────────────
@@ -100,5 +115,15 @@ describe('RESOLUCAO_LABELS', () => {
   it('all labels are unique', () => {
     const values = Object.values(RESOLUCAO_LABELS);
     expect(new Set(values).size).toBe(values.length);
+  });
+
+  it('desconto_futuro label contains "Futuro"', () => {
+    expect(RESOLUCAO_LABELS.desconto_futuro).toContain('Futuro');
+  });
+
+  it('all resolucao keys use snake_case (no spaces)', () => {
+    Object.keys(RESOLUCAO_LABELS).forEach(key => {
+      expect(key).not.toContain(' ');
+    });
   });
 });
