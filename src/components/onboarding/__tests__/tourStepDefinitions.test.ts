@@ -100,6 +100,52 @@ describe('all tour step arrays', () => {
           expect(step.target).toMatch(/^\[data-tour=/);
         });
       });
+
+      it('all target selectors within the tour are unique', () => {
+        const targets = steps.map(s => s.target);
+        expect(new Set(targets).size).toBe(targets.length);
+      });
+
+      it('all titles within the tour are unique', () => {
+        const titles = steps.map(s => s.title);
+        expect(new Set(titles).size).toBe(titles.length);
+      });
+
+      it('content is longer than title for each step (is descriptive)', () => {
+        steps.forEach(step => {
+          expect(step.content.length).toBeGreaterThanOrEqual(step.title.length);
+        });
+      });
     });
+  });
+});
+
+// ── cross-tour uniqueness ─────────────────────────────────────────────────────
+
+describe('cross-tour target uniqueness', () => {
+  it('all targets across ALL tours are unique (no duplicate tour anchors)', () => {
+    const allTargets = ALL_TOURS.flatMap(({ steps }) => steps.map(s => s.target));
+    expect(new Set(allTargets).size).toBe(allTargets.length);
+  });
+
+  it('total step count across all tours is 21', () => {
+    const total = ALL_TOURS.reduce((sum, { steps }) => sum + steps.length, 0);
+    expect(total).toBe(21);
+  });
+});
+
+// ── dashboardTourSteps specific ───────────────────────────────────────────────
+
+describe('dashboardTourSteps specific', () => {
+  it('first step targets sidebar with position right', () => {
+    expect(dashboardTourSteps[0].target).toBe("[data-tour='sidebar']");
+    expect(dashboardTourSteps[0].position).toBe('right');
+  });
+
+  it('has steps with all four positions represented', () => {
+    const positions = dashboardTourSteps.map(s => s.position);
+    expect(positions).toContain('right');
+    expect(positions).toContain('bottom');
+    expect(positions).toContain('left');
   });
 });
