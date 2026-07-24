@@ -95,4 +95,41 @@ describe('colorClasses', () => {
     const texts = KPI_COLORS.map(c => colorClasses[c].text);
     expect(new Set(texts).size).toBe(texts.length);
   });
+
+  it('red color uses rose palette (not red-) for softer aesthetics', () => {
+    expect(colorClasses.red.bg).toContain('rose');
+    expect(colorClasses.red.text).toContain('rose');
+    expect(colorClasses.red.border).toContain('rose');
+  });
+
+  it('all gradient classes go from shade 600 to shade 400', () => {
+    KPI_COLORS.forEach(color => {
+      expect(colorClasses[color].gradient).toMatch(/from-\w+-600/);
+      expect(colorClasses[color].gradient).toMatch(/to-\w+-400/);
+    });
+  });
+
+  it('all bg classes use /10 opacity modifier', () => {
+    KPI_COLORS.forEach(color => {
+      expect(colorClasses[color].bg).toMatch(/\/10$/);
+    });
+  });
+
+  it('all border classes use /20 opacity modifier', () => {
+    KPI_COLORS.forEach(color => {
+      expect(colorClasses[color].border).toMatch(/\/20$/);
+    });
+  });
+
+  it('all text classes use shade 400', () => {
+    KPI_COLORS.forEach(color => {
+      expect(colorClasses[color].text).toMatch(/-400$/);
+    });
+  });
+
+  it('every entry has exactly 4 keys', () => {
+    KPI_COLORS.forEach(color => {
+      expect(Object.keys(colorClasses[color]).sort()).toEqual(['bg', 'border', 'gradient', 'text']);
+    });
+  });
 });
