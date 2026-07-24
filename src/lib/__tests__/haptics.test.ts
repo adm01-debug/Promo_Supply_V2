@@ -68,4 +68,36 @@ describe('haptics', () => {
     const mediumDuration = vibrateSpy.mock.calls[1][0] as number;
     expect(lightDuration).toBeLessThan(mediumDuration);
   });
+
+  it('success() uses an array pattern (double tap)', () => {
+    haptics.success();
+    const arg = vibrateSpy.mock.calls[0][0];
+    expect(Array.isArray(arg)).toBe(true);
+    expect((arg as number[]).length).toBeGreaterThan(1);
+  });
+
+  it('error() pattern is longer than success() pattern', () => {
+    haptics.success();
+    const successLen = (vibrateSpy.mock.calls[0][0] as number[]).length;
+    haptics.error();
+    const errorLen = (vibrateSpy.mock.calls[1][0] as number[]).length;
+    expect(errorLen).toBeGreaterThan(successLen);
+  });
+
+  it('warning() uses an odd-length pattern (vibrate-pause-vibrate)', () => {
+    haptics.warning();
+    const pattern = vibrateSpy.mock.calls[0][0] as number[];
+    expect(Array.isArray(pattern)).toBe(true);
+    expect(pattern.length % 2).toBe(1);
+  });
+
+  it('haptics object has exactly 5 methods', () => {
+    expect(Object.keys(haptics)).toHaveLength(5);
+  });
+
+  it('all haptics methods are functions', () => {
+    Object.values(haptics).forEach(fn => {
+      expect(typeof fn).toBe('function');
+    });
+  });
 });
