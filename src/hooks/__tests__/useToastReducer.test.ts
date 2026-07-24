@@ -130,3 +130,35 @@ describe('reducer — REMOVE_TOAST', () => {
     expect(state.toasts).toHaveLength(0);
   });
 });
+
+describe('reducer — invariants', () => {
+  it('always returns an object with a toasts array', () => {
+    const actions = [
+      { type: 'ADD_TOAST' as const, toast: makeToast('x') },
+      { type: 'UPDATE_TOAST' as const, toast: { id: 'x' } },
+      { type: 'DISMISS_TOAST' as const },
+      { type: 'REMOVE_TOAST' as const },
+    ];
+    for (const action of actions) {
+      // @ts-ignore — deliberately mixing action types
+      const result = reducer(emptyState, action);
+      expect(Array.isArray(result.toasts)).toBe(true);
+    }
+  });
+
+  it('DISMISS_TOAST on empty state does not throw', () => {
+    expect(() => reducer(emptyState, { type: 'DISMISS_TOAST', toastId: '1' })).not.toThrow();
+  });
+
+  it('REMOVE_TOAST on empty state does not throw', () => {
+    expect(() => reducer(emptyState, { type: 'REMOVE_TOAST', toastId: '1' })).not.toThrow();
+  });
+
+  it('UPDATE_TOAST on a non-existing id preserves all existing toasts', () => {
+    const toast = makeToast('existing');
+    const s1 = reducer(emptyState, { type: 'ADD_TOAST', toast });
+    const s2 = reducer(s1, { type: 'UPDATE_TOAST', toast: { id: 'ghost', title: 'X' } });
+    expect(s2.toasts).toHaveLength(1);
+    expect(s2.toasts[0].id).toBe('existing');
+  });
+});

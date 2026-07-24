@@ -48,6 +48,18 @@ describe('moduleLabels', () => {
     const values = Object.values(moduleLabels);
     expect(new Set(values).size).toBe(values.length);
   });
+
+  it('security label is "Segurança"', () => {
+    expect(moduleLabels.security).toBe('Segurança');
+  });
+
+  it('users label is "Usuários"', () => {
+    expect(moduleLabels.users).toBe('Usuários');
+  });
+
+  it('settings label is "Configurações"', () => {
+    expect(moduleLabels.settings).toBe('Configurações');
+  });
 });
 
 // ─── actionLabels ──────────────────────────────────────────────────────────────
@@ -94,5 +106,17 @@ describe('actionLabels', () => {
   it('all labels are unique', () => {
     const values = Object.values(actionLabels);
     expect(new Set(values).size).toBe(values.length);
+  });
+
+  it('edit label is "Editar"', () => {
+    expect(actionLabels.edit).toBe('Editar');
+  });
+
+  it('export label is "Exportar"', () => {
+    expect(actionLabels.export).toBe('Exportar');
+  });
+
+  it('manage_roles label is "Gerenciar Roles"', () => {
+    expect(actionLabels.manage_roles).toBe('Gerenciar Roles');
   });
 });
