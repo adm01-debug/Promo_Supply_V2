@@ -1,5 +1,9 @@
-import { describe, it, expect } from 'vitest';
-import { STATUS_CONFIG, extractSpotProductId } from '../spotHelpers';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+vi.mock('@/lib/feedbackToast', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
+
+import { STATUS_CONFIG, extractSpotProductId, openExternalSpotUrl } from '../spotHelpers';
+import { toast } from '@/lib/feedbackToast';
 
 // ─── STATUS_CONFIG ────────────────────────────────────────────────────────────
 
@@ -86,5 +90,58 @@ describe('extractSpotProductId', () => {
 
   it('uses prod param over fallback when available', () => {
     expect(extractSpotProductId('/page?prod=555', 'fallback')).toBe('555');
+  });
+});
+
+// ─── openExternalSpotUrl ──────────────────────────────────────────────────────
+
+describe('openExternalSpotUrl', () => {
+  let windowOpenSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
+    vi.clearAllMocks();
+  });
+
+  it('opens valid spotgifts.com.br URL in new tab', () => {
+    openExternalSpotUrl('https://www.spotgifts.com.br/produto/123');
+    expect(windowOpenSpy).toHaveBeenCalledWith(
+      'https://www.spotgifts.com.br/produto/123',
+      '_blank',
+      'noopener,noreferrer',
+    );
+  });
+
+  it('accepts spotgifts.com.br without www', () => {
+    openExternalSpotUrl('https://spotgifts.com.br/produto/456');
+    expect(windowOpenSpy).toHaveBeenCalledTimes(1);
+    expect(toast.error).not.toHaveBeenCalled();
+  });
+
+  it('resolves relative URL against spotgifts.com.br base', () => {
+    openExternalSpotUrl('/produto/789');
+    expect(windowOpenSpy).toHaveBeenCalledWith(
+      'https://www.spotgifts.com.br/produto/789',
+      '_blank',
+      'noopener,noreferrer',
+    );
+  });
+
+  it('blocks external hostname with error toast', () => {
+    openExternalSpotUrl('https://evil.example.com/payload');
+    expect(windowOpenSpy).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalledWith('URL externa inválida bloqueada por segurança');
+  });
+
+  it('blocks http://spotgifts.evil.com (subdomain attack)', () => {
+    openExternalSpotUrl('https://spotgifts.evil.com/path');
+    expect(windowOpenSpy).not.toHaveBeenCalled();
+    expect(toast.error).toHaveBeenCalled();
+  });
+
+  it('resolves colon-prefixed string as relative path against base (opens window)', () => {
+    openExternalSpotUrl(':::not-a-url:::');
+    expect(windowOpenSpy).toHaveBeenCalledTimes(1);
+    expect(toast.error).not.toHaveBeenCalled();
   });
 });
