@@ -77,4 +77,38 @@ describe("safeDisplay", () => {
       expect(out.includes("\uFFFD")).toBe(false);
     }
   });
+
+  it("retorna sempre typeof string", () => {
+    expect(typeof safeDisplay("abc", 5)).toBe("string");
+    expect(typeof safeDisplay(null, 5)).toBe("string");
+    expect(typeof safeDisplay(undefined, 5, { fallback: "x" })).toBe("string");
+    expect(typeof safeDisplay("", 0)).toBe("string");
+  });
+
+  it("string vazia nao recebe ellipsis mesmo abaixo do limite", () => {
+    expect(safeDisplay("", 5)).toBe("");
+  });
+
+  it("nao acrescenta ellipsis quando string cabe exatamente no limite", () => {
+    const out = safeDisplay("abc", 3);
+    expect(out).toBe("abc");
+    expect(out).not.toContain("\u2026");
+  });
+
+  it("ellipsis vazio equivale a truncamento puro", () => {
+    const out = safeDisplay("abcdefgh", 4, { ellipsis: "" });
+    expect(out).toBe("abcd");
+    expect(out.length).toBe(4);
+  });
+
+  it("ellipsis customizado multi-char nao excede o limite", () => {
+    const out = safeDisplay("abcdefghij", 8, { ellipsis: " [+]" });
+    expect(out.length).toBeLessThanOrEqual(8);
+    expect(out.endsWith(" [+]")).toBe(true);
+  });
+
+  it("null com fallback customizado retorna o fallback exato", () => {
+    expect(safeDisplay(null, 100, { fallback: "N/A" })).toBe("N/A");
+    expect(safeDisplay(undefined, 100, { fallback: "\u2014" })).toBe("\u2014");
+  });
 });
