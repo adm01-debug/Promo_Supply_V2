@@ -82,4 +82,26 @@ describe('stale time hierarchy', () => {
   it('REFERENCE_STALE_TIME is 10x DEFAULT_STALE_TIME', () => {
     expect(REFERENCE_STALE_TIME / DEFAULT_STALE_TIME).toBe(10);
   });
+
+  it('all stale time constants are typeof number', () => {
+    expect(typeof DEFAULT_STALE_TIME).toBe('number');
+    expect(typeof REFERENCE_STALE_TIME).toBe('number');
+    expect(typeof STATIC_STALE_TIME).toBe('number');
+    expect(typeof DEFAULT_GC_TIME).toBe('number');
+  });
+
+  it('all constants are integer milliseconds (no fractional ms)', () => {
+    [DEFAULT_STALE_TIME, REFERENCE_STALE_TIME, STATIC_STALE_TIME, DEFAULT_GC_TIME].forEach(c => {
+      expect(Number.isInteger(c)).toBe(true);
+    });
+  });
+
+  it('DEFAULT_GC_TIME > REFERENCE_STALE_TIME (GC outlives stale)', () => {
+    expect(DEFAULT_GC_TIME).toBeGreaterThan(REFERENCE_STALE_TIME);
+  });
+
+  it('STATIC_STALE_TIME is longest among all stale times', () => {
+    expect(STATIC_STALE_TIME).toBeGreaterThan(DEFAULT_STALE_TIME);
+    expect(STATIC_STALE_TIME).toBeGreaterThan(REFERENCE_STALE_TIME);
+  });
 });
