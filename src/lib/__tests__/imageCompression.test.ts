@@ -80,7 +80,8 @@ describe('formatBytes', () => {
 // ─── supportsWebP ─────────────────────────────────────────────────────────────
 
 describe('supportsWebP', () => {
-  let toDataURLSpy: ReturnType<typeof vi.spyOn> & { mockReturnValue: (v: string) => unknown };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let toDataURLSpy: any;
 
   beforeEach(() => {
     toDataURLSpy = vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL');
