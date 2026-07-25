@@ -96,7 +96,8 @@ describe('extractSpotProductId', () => {
 // ─── openExternalSpotUrl ──────────────────────────────────────────────────────
 
 describe('openExternalSpotUrl', () => {
-  let windowOpenSpy: ReturnType<typeof vi.spyOn>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let windowOpenSpy: any;
 
   beforeEach(() => {
     windowOpenSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
