@@ -1,63 +1,83 @@
-// Integration tests for migrate-helper edge function.
-// Valida que a função executa com verify_jwt = false (não exige Authorization)
-// e que a autorização é feita internamente via header x-access-key.
+// Testes de integração para a edge function `migrate-helper`.
+//
+// Requer variáveis:
+//   VITE_SUPABASE_URL              — URL do projeto (do .env raiz, auto-loaded)
+//   VITE_SUPABASE_PUBLISHABLE_KEY  — anon key (do .env raiz)
+//   MIGRATE_HELPER_ACCESS_KEY      — mesma secret configurada no projeto
 //
 // Rode com:
-//   deno test --allow-net --allow-env supabase/functions/migrate-helper/index.test.ts
+//   MIGRATE_HELPER_ACCESS_KEY=... deno test --allow-net --allow-env \
+//     supabase/functions/migrate-helper/index.test.ts
 import "https://deno.land/std@0.224.0/dotenv/load.ts";
 import { assertEquals, assert } from "https://deno.land/std@0.224.0/assert/mod.ts";
 
 const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL")!;
 const ANON = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY")!;
-const ACCESS_KEY = "a24a07e8cbcbb17cc67cc92d1c93f92b653a8ed88c8d2ce3";
-const FN_URL = `${SUPABASE_URL}/functions/v1/migrate-helper?action=ping`;
+const ACCESS_KEY = Deno.env.get("MIGRATE_HELPER_ACCESS_KEY") ?? "";
+const FN = `${SUPABASE_URL}/functions/v1/migrate-helper`;
 
-async function call(headers: Record<string, string>) {
-  const res = await fetch(FN_URL, { method: "GET", headers });
+async function call(action: string, headers: Record<string, string>) {
+  const res = await fetch(`${FN}?action=${action}`, { method: "GET", headers });
   const body = await res.json().catch(() => ({}));
   return { status: res.status, body };
 }
 
-Deno.test("migrate-helper: sem Authorization e sem x-access-key → 401 da função (não do gateway)", async () => {
-  const { status, body } = await call({});
-  // Gateway deixa passar (verify_jwt = false); função responde com seu próprio 401.
+const skipIfNoKey = { ignore: ACCESS_KEY.length === 0 };
+
+Deno.test("sem x-access-key e sem Authorization → 401 da função (verify_jwt=false)", async () => {
+  const { status, body } = await call("ping", {});
   assertEquals(status, 401);
   assertEquals(body.error, "unauthorized");
 });
 
-Deno.test("migrate-helper: com x-access-key válido → 200", async () => {
-  const { status, body } = await call({ "x-access-key": ACCESS_KEY });
+Deno.test("apenas anon JWT (sem x-access-key) → 401 da função", async () => {
+  const { status, body } = await call("ping", {
+    Authorization: `Bearer ${ANON}`,
+    apikey: ANON,
+  });
+  assertEquals(status, 401);
+  assertEquals(body.error, "unauthorized");
+});
+
+Deno.test("x-access-key inválida → 401", async () => {
+  const { status, body } = await call("ping", { "x-access-key": "invalid-key" });
+  assertEquals(status, 401);
+  assertEquals(body.error, "unauthorized");
+});
+
+Deno.test("x-access-key válida → 200 e NÃO expõe credenciais", { ...skipIfNoKey }, async () => {
+  const { status, body } = await call("ping", { "x-access-key": ACCESS_KEY });
   assertEquals(status, 200);
   assertEquals(body.ok, true);
   assert(typeof body.project_ref === "string" && body.project_ref.length > 0);
+  // Regressão de segurança: garantir que nunca voltamos a expor credenciais.
+  assertEquals(body.service_role, undefined);
+  assertEquals(body.db_url, undefined);
+  assertEquals(body.url, undefined);
 });
 
-Deno.test("migrate-helper: com x-access-key errado → 401 da função", async () => {
-  const { status, body } = await call({ "x-access-key": "invalid-key" });
-  assertEquals(status, 401);
-  assertEquals(body.error, "unauthorized");
+Deno.test("action=credentials foi removida → 400 unknown_action", { ...skipIfNoKey }, async () => {
+  const { status, body } = await call("credentials", { "x-access-key": ACCESS_KEY });
+  assertEquals(status, 400);
+  assertEquals(body.error, "unknown_action");
 });
 
-Deno.test("migrate-helper: apenas Authorization (anon JWT) sem x-access-key → 401 da função", async () => {
-  // Confirma que JWT válido NÃO substitui o x-access-key — a auth é 100% interna.
-  const { status, body } = await call({ Authorization: `Bearer ${ANON}`, apikey: ANON });
-  assertEquals(status, 401);
-  assertEquals(body.error, "unauthorized");
+Deno.test("action=healthcheck executa como service_role sem vazar credenciais", { ...skipIfNoKey }, async () => {
+  const { status, body } = await call("healthcheck", { "x-access-key": ACCESS_KEY });
+  assertEquals(status, 200);
+  assertEquals(body.ok, true);
+  assertEquals(body.service_role, undefined);
 });
 
-Deno.test("migrate-helper: OPTIONS (preflight CORS) → 200 sem exigir auth", async () => {
-  const res = await fetch(FN_URL, { method: "OPTIONS" });
+Deno.test("action desconhecida → 400", { ...skipIfNoKey }, async () => {
+  const { status, body } = await call("bogus", { "x-access-key": ACCESS_KEY });
+  assertEquals(status, 400);
+  assertEquals(body.error, "unknown_action");
+});
+
+Deno.test("OPTIONS preflight → 200 sem exigir auth", async () => {
+  const res = await fetch(FN, { method: "OPTIONS" });
   await res.body?.cancel();
   assertEquals(res.status, 200);
   assertEquals(res.headers.get("access-control-allow-origin"), "*");
-});
-
-Deno.test("migrate-helper: action desconhecida com x-access-key → 400", async () => {
-  const res = await fetch(`${SUPABASE_URL}/functions/v1/migrate-helper?action=bogus`, {
-    method: "GET",
-    headers: { "x-access-key": ACCESS_KEY },
-  });
-  const body = await res.json();
-  assertEquals(res.status, 400);
-  assertEquals(body.error, "unknown_action");
 });
