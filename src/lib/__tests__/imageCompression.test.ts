@@ -80,7 +80,7 @@ describe('formatBytes', () => {
 // ─── supportsWebP ─────────────────────────────────────────────────────────────
 
 describe('supportsWebP', () => {
-  let toDataURLSpy: ReturnType<typeof vi.spyOn>;
+  let toDataURLSpy: ReturnType<typeof vi.spyOn<HTMLCanvasElement, 'toDataURL'>>;
 
   beforeEach(() => {
     toDataURLSpy = vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL');
