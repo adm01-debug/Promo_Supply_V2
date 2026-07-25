@@ -58,7 +58,8 @@ async function raiseAlert(
     const admin = serviceClient();
     await admin.from("system_alerts").insert({
       severity,
-      source: FUNCTION_NAME,
+      alert_type: FUNCTION_NAME,
+      title: `[${FUNCTION_NAME}] ${message}`.slice(0, 200),
       message,
       metadata,
     });
