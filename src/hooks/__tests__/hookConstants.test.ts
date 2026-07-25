@@ -8,7 +8,7 @@ vi.mock('@/features/auth', () => ({ useAuth: vi.fn() }));
 vi.mock('@/lib/logger', () => ({ logger: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() } }));
 vi.mock('zustand', () => ({
   create: vi.fn(() => {
-    const fn = vi.fn(() => ({ soundEnabled: true, hapticEnabled: true, volume: 0.5, setSoundEnabled: vi.fn(), setHapticEnabled: vi.fn(), setVolume: vi.fn() }));
+    const fn = vi.fn(() => ({ soundEnabled: true, hapticEnabled: true, volume: 0.5, setSoundEnabled: vi.fn(), setHapticEnabled: vi.fn(), setVolume: vi.fn() })) as unknown as { getState: () => unknown } & ReturnType<typeof vi.fn>;
     fn.getState = vi.fn(() => ({ soundEnabled: true, hapticEnabled: true, volume: 0.5 }));
     return fn;
   }),
