@@ -76,4 +76,31 @@ describe('entityConfig', () => {
   it('fornecedores color is "text-warning"', () => {
     expect(entityConfig.fornecedores.color).toBe('text-warning');
   });
+
+  it('all labels are unique', () => {
+    const labels = ALL_ENTITY_TYPES.map(t => entityConfig[t].label);
+    expect(new Set(labels).size).toBe(labels.length);
+  });
+
+  it('all colors are unique', () => {
+    const colors = ALL_ENTITY_TYPES.map(t => entityConfig[t].color);
+    expect(new Set(colors).size).toBe(colors.length);
+  });
+
+  it('all icons are unique (different references)', () => {
+    const icons = ALL_ENTITY_TYPES.map(t => entityConfig[t].icon);
+    expect(new Set(icons).size).toBe(icons.length);
+  });
+
+  it('each entity config has exactly 3 keys: label, icon, color', () => {
+    ALL_ENTITY_TYPES.forEach(type => {
+      expect(Object.keys(entityConfig[type]).sort()).toEqual(['color', 'icon', 'label']);
+    });
+  });
+
+  it('all colors use text- prefix', () => {
+    ALL_ENTITY_TYPES.forEach(type => {
+      expect(entityConfig[type].color).toMatch(/^text-/);
+    });
+  });
 });

@@ -27,6 +27,12 @@ describe('OFFLINE_STORAGE_KEY', () => {
   it('equals "offline-receiving-entries"', () => {
     expect(OFFLINE_STORAGE_KEY).toBe('offline-receiving-entries');
   });
+
+  it('uses kebab-case (no spaces, no underscores)', () => {
+    expect(OFFLINE_STORAGE_KEY).not.toContain(' ');
+    expect(OFFLINE_STORAGE_KEY).not.toContain('_');
+    expect(OFFLINE_STORAGE_KEY).toMatch(/^[a-z-]+$/);
+  });
 });
 
 // ─── getOfflineEntries ────────────────────────────────────────────────────────
@@ -149,5 +155,23 @@ describe('saveOfflineEntries', () => {
     const result = getOfflineEntries();
     expect(result).toHaveLength(3);
     expect(result.map(e => e.pedido_id)).toEqual(['P1', 'P2', 'P3']);
+  });
+
+  it('getOfflineEntries is idempotent (same result called twice)', () => {
+    const entries = [makeEntry({ pedido_id: 'IDEM' })];
+    saveOfflineEntries(entries);
+    const r1 = getOfflineEntries();
+    const r2 = getOfflineEntries();
+    expect(r1).toEqual(r2);
+  });
+
+  it('round-trips items array with observacao values', () => {
+    const entry = makeEntry({
+      items: [{ item_id: 'Z', quantidade_recebida: 10, observacao: 'com avaria' }],
+    });
+    saveOfflineEntries([entry]);
+    const result = getOfflineEntries();
+    expect(result[0].items[0].observacao).toBe('com avaria');
+    expect(result[0].items[0].quantidade_recebida).toBe(10);
   });
 });

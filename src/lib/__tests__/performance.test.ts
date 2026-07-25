@@ -28,6 +28,16 @@ describe('performanceMonitor', () => {
     expect(typeof performanceMonitor.trackFCP).toBe('function');
     expect(typeof performanceMonitor.initAll).toBe('function');
   });
+
+  it('has exactly 7 methods (structural completeness)', () => {
+    expect(Object.keys(performanceMonitor)).toHaveLength(7);
+  });
+
+  it('all exported values are functions', () => {
+    Object.values(performanceMonitor).forEach(v => {
+      expect(typeof v).toBe('function');
+    });
+  });
 });
 
 describe('performanceMonitor.mark', () => {
@@ -68,6 +78,11 @@ describe('performanceMonitor.measure', () => {
 
   it('does not throw when marks are missing', () => {
     expect(() => performanceMonitor.measure('name', 'no-start', 'no-end')).not.toThrow();
+  });
+
+  it('always returns a number', () => {
+    const result = performanceMonitor.measure('name', 'no-start', 'no-end');
+    expect(typeof result).toBe('number');
   });
 
   it('returns 0 when window is undefined (SSR)', () => {
@@ -117,5 +132,22 @@ describe('performanceMonitor.initAll', () => {
   it('cleanup function does not throw', () => {
     const cleanup = performanceMonitor.initAll();
     expect(() => cleanup()).not.toThrow();
+  });
+
+  it('can be called multiple times without throwing', () => {
+    expect(() => {
+      const c1 = performanceMonitor.initAll();
+      const c2 = performanceMonitor.initAll();
+      c1();
+      c2();
+    }).not.toThrow();
+  });
+
+  it('cleanup can be called multiple times without throwing', () => {
+    const cleanup = performanceMonitor.initAll();
+    expect(() => {
+      cleanup();
+      cleanup();
+    }).not.toThrow();
   });
 });

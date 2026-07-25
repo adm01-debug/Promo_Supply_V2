@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
-import { formatBytes } from '../imageCompression';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { formatBytes, supportsWebP } from '../imageCompression';
 
 // ─── formatBytes ──────────────────────────────────────────────────────────────
 
@@ -43,5 +43,75 @@ describe('formatBytes', () => {
       const result = formatBytes(n);
       expect(result.endsWith('B') || result.endsWith('KB') || result.endsWith('MB') || result.endsWith('GB')).toBe(true);
     });
+  });
+
+  it('boundary: 1023 B stays in bytes range', () => {
+    const result = formatBytes(1023);
+    expect(result).toContain('B');
+    expect(result).not.toContain('KB');
+  });
+
+  it('boundary: 1025 B rounds to KB', () => {
+    const result = formatBytes(1025);
+    expect(result).toContain('KB');
+  });
+
+  it('formats fractional bytes under 1 KB as integer B', () => {
+    expect(formatBytes(512)).toBe('512 B');
+  });
+
+  it('formats large value close to 1 GB', () => {
+    const almostGb = 1024 * 1024 * 1024 - 1;
+    const result = formatBytes(almostGb);
+    expect(result).toContain('MB');
+  });
+
+  it('result for 1 MB is shorter than result for 1 GB', () => {
+    expect(formatBytes(1024 * 1024).length).toBeLessThanOrEqual(formatBytes(1024 * 1024 * 1024).length);
+  });
+
+  it('always contains a space between number and unit', () => {
+    [1, 1024, 1024 * 1024, 1024 * 1024 * 1024].forEach(n => {
+      expect(formatBytes(n)).toMatch(/^\d+(\.\d+)? [BKMG]/);
+    });
+  });
+});
+
+// ─── supportsWebP ─────────────────────────────────────────────────────────────
+
+describe('supportsWebP', () => {
+  let toDataURLSpy: ReturnType<typeof vi.spyOn>;
+
+  beforeEach(() => {
+    toDataURLSpy = vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL');
+  });
+
+  afterEach(() => {
+    toDataURLSpy.mockRestore();
+  });
+
+  it('returns false when canvas produces non-webp data URL', () => {
+    toDataURLSpy.mockReturnValue('data:image/png;base64,abc');
+    expect(supportsWebP()).toBe(false);
+  });
+
+  it('returns true when canvas produces a webp data URL', () => {
+    toDataURLSpy.mockReturnValue('data:image/webp;base64,abc');
+    expect(supportsWebP()).toBe(true);
+  });
+
+  it('returns a boolean in all cases', () => {
+    toDataURLSpy.mockReturnValue('data:image/png;base64,abc');
+    expect(typeof supportsWebP()).toBe('boolean');
+  });
+
+  it('does not throw when toDataURL returns a valid string', () => {
+    toDataURLSpy.mockReturnValue('data:image/png;base64,abc');
+    expect(() => supportsWebP()).not.toThrow();
+  });
+
+  it('calling multiple times returns consistent results', () => {
+    toDataURLSpy.mockReturnValue('data:image/webp;base64,abc');
+    expect(supportsWebP()).toBe(supportsWebP());
   });
 });

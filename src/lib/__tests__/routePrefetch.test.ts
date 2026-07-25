@@ -109,4 +109,21 @@ describe('warmTopRoutes', () => {
     expect(mockTimeout).toHaveBeenCalled();
     mockTimeout.mockRestore();
   });
+
+  it('returns undefined (does not return a value)', () => {
+    const result = warmTopRoutes([]);
+    expect(result).toBeUndefined();
+  });
+
+  it('does not throw when given a list of unknown routes', () => {
+    expect(() => warmTopRoutes(['/ghost', '/not-a-page', '/404'])).not.toThrow();
+  });
+
+  it('can be called multiple times consecutively without throwing', () => {
+    expect(() => {
+      warmTopRoutes(['/compras']);
+      warmTopRoutes(['/pedidos']);
+      warmTopRoutes([]);
+    }).not.toThrow();
+  });
 });
