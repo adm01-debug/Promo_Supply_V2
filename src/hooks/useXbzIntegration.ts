@@ -181,6 +181,14 @@ export function useXbzIntegration() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inFlight = useRef(0);
+  // Evita atualizar estado após o componente sair da tela (navegação durante
+  // uma chamada lenta da XBZ geraria warning do React e vazamento de estado).
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
 
   const runEnvelope = useCallback(async <T,>(
     action: string,
@@ -188,20 +196,22 @@ export function useXbzIntegration() {
     options: { silent?: boolean } = {},
   ): Promise<XbzEnvelope<T> | null> => {
     inFlight.current += 1;
-    setLoading(true);
-    setError(null);
+    if (mounted.current) {
+      setLoading(true);
+      setError(null);
+    }
     try {
       const envelope = await callXbz<T>(action, params);
-      if (envelope.warning) toast.warning(envelope.warning);
+      if (envelope.warning && mounted.current) toast.warning(envelope.warning);
       return envelope;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido na XBZ';
       const status = err instanceof XbzRequestError ? err.status : 0;
-      setError(message);
-      if (!options.silent) {
-        // 409 (duplicidade) e 429 (excesso de tentativas) não são falhas de
-        // sistema: são avisos de fluxo e merecem tom diferente do erro vermelho.
-        if (status === 409 || status === 429) toast.warning(message);
+      if (mounted.current) setError(message);
+      if (!options.silent && mounted.current) {
+        // 409 (duplicidade), 429 (excesso de tentativas) e 408 (timeout) não são
+        // falhas de sistema: são avisos de fluxo e merecem tom diferente do erro.
+        if (status === 409 || status === 429 || status === 408) toast.warning(message);
         else toast.error(`XBZ: ${message}`);
       }
       return null;
@@ -210,9 +220,10 @@ export function useXbzIntegration() {
       inFlight.current -= 1;
       if (inFlight.current <= 0) {
         inFlight.current = 0;
-        setLoading(false);
+        if (mounted.current) setLoading(false);
       }
     }
+
   }, []);
 
   const run = useCallback(async <T,>(
