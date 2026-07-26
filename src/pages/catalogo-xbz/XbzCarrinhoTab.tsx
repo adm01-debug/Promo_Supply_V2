@@ -124,8 +124,13 @@ export function XbzCarrinhoTab({ canGenerateOrders, canWrite }: XbzCarrinhoTabPr
                 Gerar pedidos cria pedidos reais na XBZ a partir dos itens selecionados. A ação é auditada.
               </AlertDescription>
             </Alert>
-            <Button onClick={() => setConfirmOpen(true)} disabled={loading || itens.length === 0}>
-              Gerar pedidos na XBZ
+            <Button
+              onClick={() => setConfirmOpen(true)}
+              disabled={loading || itens.length === 0 || cooldownActive}
+              aria-label="Gerar pedidos na XBZ"
+            >
+              {cooldownActive ? `Aguarde ${cooldown}s…` : 'Gerar pedidos na XBZ'}
+
             </Button>
           </>
         ) : null}
