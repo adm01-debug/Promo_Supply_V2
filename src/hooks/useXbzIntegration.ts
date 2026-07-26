@@ -227,6 +227,23 @@ function inFlightKey(action: string, params: Record<string, unknown>): string {
 }
 
 /**
+ * Cache de curta duração para tabelas praticamente estáticas da XBZ (cores,
+ * tipos de entrega e de pagamento). Elas raramente mudam e são pedidas em
+ * quase toda tela do catálogo/carrinho — sem cache, cada navegação gastava
+ * uma chamada ao portal e aproximava o rate limit.
+ */
+const STATIC_CACHE_TTL_MS = 5 * 60_000;
+const STATIC_ACTIONS = new Set<string>(['cores', 'entregaTipos', 'pagamentoTipos']);
+
+interface CacheEntry { expiresAt: number; envelope: XbzEnvelope<unknown> }
+const staticCache = new Map<string, CacheEntry>();
+
+/** Limpa o cache estático (usado ao trocar de credencial/pessoa na XBZ). */
+export function clearXbzStaticCache(): void {
+  staticCache.clear();
+}
+
+/**
  * Envolve `callXbz` com backoff exponencial, mas **apenas** para ações
  * idempotentes e falhas transitórias. Escritas (gerarPedidos, itemLancar…)
  * nunca são repetidas automaticamente para não duplicar efeitos na XBZ.
@@ -238,6 +255,14 @@ async function callXbzWithRetry<T>(
   if (!IDEMPOTENT_ACTIONS.has(action)) return callXbz<T>(action, params);
 
   const key = inFlightKey(action, params);
+  const cacheable = STATIC_ACTIONS.has(action);
+
+  if (cacheable) {
+    const cached = staticCache.get(key);
+    if (cached && cached.expiresAt > Date.now()) return cached.envelope as XbzEnvelope<T>;
+    if (cached) staticCache.delete(key);
+  }
+
   const existing = inFlightReads.get(key);
   if (existing) return existing as Promise<XbzEnvelope<T>>;
 
@@ -261,11 +286,18 @@ async function callXbzWithRetry<T>(
   // Guarda a promessa (mesmo em erro) só enquanto estiver em voo.
   inFlightReads.set(key, request as Promise<XbzEnvelope<unknown>>);
   try {
-    return await request;
+    const envelope = await request;
+    // Nunca cacheia respostas do espelho local (`stale`): elas devem ser
+    // reavaliadas assim que a XBZ voltar a responder.
+    if (cacheable && envelope.stale !== true) {
+      staticCache.set(key, { expiresAt: Date.now() + STATIC_CACHE_TTL_MS, envelope });
+    }
+    return envelope;
   } finally {
     inFlightReads.delete(key);
   }
 }
+
 
 
 /**
@@ -374,10 +406,15 @@ export function useXbzIntegration() {
   );
 
   const saveCredentials = useCallback(
-    (portalUser: string, portalPassword: string, cnpj?: string, label?: string) =>
-      run<XbzLoginInfo>('saveCredentials', { portalUser, portalPassword, cnpj, label }),
+    (portalUser: string, portalPassword: string, cnpj?: string, label?: string) => {
+      // Troca de credencial pode mudar a pessoa/CNPJ na XBZ: descarta o cache
+      // estático para não misturar tabelas de duas contas diferentes.
+      clearXbzStaticCache();
+      return run<XbzLoginInfo>('saveCredentials', { portalUser, portalPassword, cnpj, label });
+    },
     [run],
   );
+
 
   const testConnection = useCallback(
     () => run<XbzLoginInfo>('testConnection'),
