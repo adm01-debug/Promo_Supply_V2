@@ -11,6 +11,7 @@ import { XbzCredenciaisDialog } from './XbzCredenciaisDialog';
 import { XbzCatalogoTab } from './XbzCatalogoTab';
 import { XbzPedidosTab } from './XbzPedidosTab';
 import { XbzCarrinhoTab } from './XbzCarrinhoTab';
+import { XbzNetworkPanel } from './XbzNetworkPanel';
 
 const CatalogoXbz = () => {
   const { loading, getCredentialStatus, testConnection, getDashboard } = useXbzIntegration();
@@ -128,6 +129,8 @@ const CatalogoXbz = () => {
                 <XbzPedidosTab showPrices={showPrices} />
               </TabsContent>
             </Tabs>
+
+            <XbzNetworkPanel />
           </>
         )}
 
