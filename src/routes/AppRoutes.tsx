@@ -29,6 +29,8 @@ const ComplianceDashboard = lazy(() => import("@/pages/compliance/ComplianceDash
 const Auth = lazy(() => import("@/pages/auth/Auth"));
 const Seguranca = lazy(() => import("@/pages/seguranca/Seguranca"));
 const CatalogoSpot = lazy(() => import("@/pages/catalogo-spot/CatalogoSpot"));
+const CatalogoXbz = lazy(() => import("@/pages/catalogo-xbz/CatalogoXbz"));
+
 const QualificacaoFornecedores = lazy(() => import("@/pages/qualificacao/QualificacaoFornecedores"));
 const Orcamentos = lazy(() => import("@/pages/orcamentos/Orcamentos"));
 const NegociacaoIA = lazy(() => import("@/pages/negociacao-ia/NegociacaoIA"));
