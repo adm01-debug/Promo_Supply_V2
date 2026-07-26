@@ -74,8 +74,8 @@ test.describe('Painel de rede XBZ', () => {
     await expect(page.getByTestId('xbz-network-alert')).toHaveCount(0);
 
     await expect(panel).toContainText('8 de 12 chamadas evitadas');
-    await expect(panel.getByText('Rede')).toBeVisible();
-    await expect(panel.getByText('Coalescidas')).toBeVisible();
+    await expect(panel.getByText('Rede', { exact: true })).toBeVisible();
+    await expect(panel.getByText('Coalescidas', { exact: true })).toBeVisible();
   });
 
   test('transição de saudável para crítico troca badge e revela o alerta', async ({ page }) => {
