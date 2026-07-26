@@ -1,7 +1,14 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/lib/feedbackToast';
 import { normalizeBusca, type XbzPermissions } from '@/pages/catalogo-xbz/xbzHelpers';
+
+/**
+ * Tempo máximo (ms) que o cliente espera pelo `xbz-proxy`. O portal da XBZ é
+ * lento e instável em picos; sem esse teto o spinner ficaria preso para sempre.
+ */
+const XBZ_CLIENT_TIMEOUT_MS = 45_000;
+
 
 /** Resposta padronizada do proxy `xbz-proxy`. */
 interface XbzEnvelope<T> {
