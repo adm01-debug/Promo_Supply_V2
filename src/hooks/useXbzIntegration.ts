@@ -238,6 +238,41 @@ const STATIC_ACTIONS = new Set<string>(['cores', 'entregaTipos', 'pagamentoTipos
 interface CacheEntry { expiresAt: number; envelope: XbzEnvelope<unknown> }
 const staticCache = new Map<string, CacheEntry>();
 
+/**
+ * Contadores de eficiência da camada de rede da XBZ. Servem para responder,
+ * com dado real, "quantas chamadas ao portal o cache/coalescing evitou?" —
+ * métrica direta de risco de rate limit e de latência percebida.
+ */
+export interface XbzNetworkStats {
+  /** Chamadas que efetivamente saíram para o `xbz-proxy`. */
+  network: number;
+  /** Respostas servidas do cache TTL de tabelas estáticas. */
+  cacheHits: number;
+  /** Chamadas que aproveitaram uma requisição já em voo. */
+  coalesced: number;
+}
+
+const networkStats: XbzNetworkStats = { network: 0, cacheHits: 0, coalesced: 0 };
+
+/** Snapshot imutável dos contadores (o objeto interno é mutável). */
+export function getXbzNetworkStats(): XbzNetworkStats {
+  return { ...networkStats };
+}
+
+/** Zera os contadores — usado em testes e ao trocar de conta. */
+export function resetXbzNetworkStats(): void {
+  networkStats.network = 0;
+  networkStats.cacheHits = 0;
+  networkStats.coalesced = 0;
+}
+
+/** Razão de economia: fração das chamadas que não tocaram no portal (0..1). */
+export function getXbzSavedRatio(): number {
+  const saved = networkStats.cacheHits + networkStats.coalesced;
+  const total = saved + networkStats.network;
+  return total === 0 ? 0 : saved / total;
+}
+
 /** Limpa o cache estático (usado ao trocar de credencial/pessoa na XBZ). */
 export function clearXbzStaticCache(): void {
   staticCache.clear();
@@ -252,19 +287,33 @@ async function callXbzWithRetry<T>(
   action: string,
   params: Record<string, unknown> = {},
 ): Promise<XbzEnvelope<T>> {
-  if (!IDEMPOTENT_ACTIONS.has(action)) return callXbz<T>(action, params);
+  if (!IDEMPOTENT_ACTIONS.has(action)) {
+    networkStats.network += 1;
+    return callXbz<T>(action, params);
+  }
 
   const key = inFlightKey(action, params);
   const cacheable = STATIC_ACTIONS.has(action);
 
   if (cacheable) {
     const cached = staticCache.get(key);
-    if (cached && cached.expiresAt > Date.now()) return cached.envelope as XbzEnvelope<T>;
+    if (cached && cached.expiresAt > Date.now()) {
+      networkStats.cacheHits += 1;
+      logger.debug('XBZ: cache hit', { integration: 'xbz', action, source: 'static-cache' });
+      return cached.envelope as XbzEnvelope<T>;
+    }
     if (cached) staticCache.delete(key);
   }
 
   const existing = inFlightReads.get(key);
-  if (existing) return existing as Promise<XbzEnvelope<T>>;
+  if (existing) {
+    networkStats.coalesced += 1;
+    logger.debug('XBZ: chamada coalescida', { integration: 'xbz', action, source: 'in-flight' });
+    return existing as Promise<XbzEnvelope<T>>;
+  }
+
+  networkStats.network += 1;
+
 
   const request = (async (): Promise<XbzEnvelope<T>> => {
     let lastError: unknown;
