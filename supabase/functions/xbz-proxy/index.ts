@@ -442,14 +442,6 @@ Deno.serve(async (req) => {
   try {
     const caller = await authenticate(req, admin);
 
-    const rl = await checkRateLimit({
-      identifier: caller.userId,
-      endpoint: "xbz-proxy",
-      maxRequests: 60,
-      windowSeconds: 60,
-    });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
-
     let body: Body;
     try {
       body = await req.json() as Body;
@@ -461,6 +453,20 @@ Deno.serve(async (req) => {
     if (!VALID_ACTIONS.has(action)) {
       throw new XbzError(400, `Ação inválida: ${action || "(vazia)"}`);
     }
+
+    // Rate limit por ação: escritas críticas têm janela muito mais estreita.
+    const limit = ACTION_LIMITS[action] ?? DEFAULT_LIMIT;
+    const rl = await checkRateLimit({
+      identifier: caller.userId,
+      endpoint: `xbz-proxy:${action}`,
+      maxRequests: limit.maxRequests,
+      windowSeconds: limit.windowSeconds,
+    });
+    if (!rl.allowed) {
+      logger.warn("rate limit atingido", { action, tenantId: caller.tenantId });
+      return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    }
+
 
     logger.info("xbz action", { action, tenantId: caller.tenantId });
     return await handleAction(action, body, caller, admin, logger, requestId);
