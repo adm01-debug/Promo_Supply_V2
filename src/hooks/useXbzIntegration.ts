@@ -126,11 +126,26 @@ export class XbzRequestError extends Error {
   }
 }
 
+/** Rejeita com `XbzRequestError` (status 408) se a promessa exceder o teto de tempo. */
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new XbzRequestError('A XBZ demorou demais para responder. Tente novamente.', 408));
+    }, ms);
+    promise.then(
+      (value) => { clearTimeout(timer); resolve(value); },
+      (err: unknown) => { clearTimeout(timer); reject(err); },
+    );
+  });
+}
+
 /** Chama o proxy e normaliza erros/avisos (inclui o HTTP 425 de conflito de estoque). */
 async function callXbz<T>(action: string, params: Record<string, unknown> = {}): Promise<XbzEnvelope<T>> {
-  const { data, error } = await supabase.functions.invoke<XbzEnvelope<T>>('xbz-proxy', {
-    body: { action, ...params },
-  });
+  const { data, error } = await withTimeout(
+    supabase.functions.invoke<XbzEnvelope<T>>('xbz-proxy', { body: { action, ...params } }),
+    XBZ_CLIENT_TIMEOUT_MS,
+  );
+
 
   if (error) {
     let details = error.message;
