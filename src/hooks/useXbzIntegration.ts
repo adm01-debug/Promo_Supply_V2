@@ -9,6 +9,38 @@ import { normalizeBusca, type XbzPermissions } from '@/pages/catalogo-xbz/xbzHel
  */
 const XBZ_CLIENT_TIMEOUT_MS = 45_000;
 
+/**
+ * Ações seguras para repetir automaticamente: são somente-leitura na XBZ, logo
+ * uma nova tentativa nunca duplica pedidos, itens de carrinho ou credenciais.
+ */
+const IDEMPOTENT_ACTIONS = new Set<string>([
+  'catalogo',
+  'cores',
+  'fiscalSt',
+  'pedidos',
+  'dashboard',
+  'vendedor',
+  'pessoaToken',
+  'carrinhoResumo',
+  'carrinhoListar',
+  'entregaTipos',
+  'pagamentoTipos',
+  'credentialsStatus',
+]);
+
+/** Tentativas extras (além da inicial) e base do backoff exponencial. */
+const RETRY_MAX_ATTEMPTS = 2;
+const RETRY_BASE_DELAY_MS = 600;
+
+/** Só faz sentido repetir em falhas transitórias: timeout, rede ou 5xx. */
+function isRetryableStatus(status: number): boolean {
+  return status === 408 || status === 0 || (status >= 500 && status <= 599);
+}
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+
+
 
 /** Resposta padronizada do proxy `xbz-proxy`. */
 interface XbzEnvelope<T> {
