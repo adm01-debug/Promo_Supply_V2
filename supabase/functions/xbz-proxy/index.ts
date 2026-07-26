@@ -24,6 +24,8 @@ import {
   type XbzCaller,
 } from "../_shared/xbz_auth.ts";
 import { encryptSecret } from "../_shared/xbz_crypto.ts";
+import { mirrorCatalogo, readCatalogoCache } from "../_shared/xbz_catalog_cache.ts";
+
 import {
   extractPermissions,
   XbzError,
