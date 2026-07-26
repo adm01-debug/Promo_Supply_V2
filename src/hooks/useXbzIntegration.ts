@@ -208,6 +208,33 @@ async function callXbz<T>(action: string, params: Record<string, unknown> = {}):
   return data;
 }
 
+/**
+ * Envolve `callXbz` com backoff exponencial, mas **apenas** para ações
+ * idempotentes e falhas transitórias. Escritas (gerarPedidos, itemLancar…)
+ * nunca são repetidas automaticamente para não duplicar efeitos na XBZ.
+ */
+async function callXbzWithRetry<T>(
+  action: string,
+  params: Record<string, unknown> = {},
+): Promise<XbzEnvelope<T>> {
+  if (!IDEMPOTENT_ACTIONS.has(action)) return callXbz<T>(action, params);
+
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= RETRY_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      return await callXbz<T>(action, params);
+    } catch (err: unknown) {
+      lastError = err;
+      const status = err instanceof XbzRequestError ? err.status : -1;
+      if (status === -1 || !isRetryableStatus(status) || attempt === RETRY_MAX_ATTEMPTS) break;
+      // Backoff exponencial com jitter para evitar rajadas sincronizadas.
+      const delay = RETRY_BASE_DELAY_MS * 2 ** attempt + Math.floor(Math.random() * 200);
+      await sleep(delay);
+    }
+  }
+  throw lastError;
+}
+
 
 export function useXbzIntegration() {
   const [loading, setLoading] = useState(false);
