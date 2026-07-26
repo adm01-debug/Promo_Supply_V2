@@ -28,9 +28,10 @@ const CatalogoXbz = () => {
 
   const configured = Boolean(status?.pessoa_id) && status?.is_active !== false;
   const permissions = status?.permissions;
-  const showPrices = permissions?.podeVerPreco !== false;
-  const canWrite = permissions?.podeAlterarCarrinho !== false;
-  const canGenerateOrders = Boolean(permissions?.podeGerarPedido);
+  const showPrices = permissions?.WebExibePreco !== false;
+  const canWrite = permissions?.WebCarrinhoInserir !== false;
+  const canGenerateOrders = Boolean(permissions?.WebPedidoEnviar);
+
 
   const handleTest = useCallback(async () => {
     const info = await testConnection();
