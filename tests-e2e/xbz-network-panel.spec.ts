@@ -96,3 +96,48 @@ test.describe('Painel de rede XBZ', () => {
     await expect(page.getByLabel('Razão de economia de chamadas XBZ')).toBeVisible();
   });
 });
+
+/**
+ * Onda 147 — cobertura E2E da detecção de tendência.
+ *
+ * A série é reproduzida pelo harness via `?seq=` (amostras sucessivas com
+ * total monotônico), exercitando a janela deslizante de `xbzNetworkTrend`.
+ */
+const playSequence = async (page: Page, seq: string) => {
+  await page.goto(`/__dev/xbz-network-panel?seq=${seq}&stepMs=30`);
+  await expect(page.getByTestId('xbz-harness-progress')).toHaveAttribute('data-done', 'true');
+  return page.getByTestId('xbz-network-trend');
+};
+
+test.describe('Tendência de eficiência XBZ', () => {
+  test('série decrescente sinaliza degradação antecipada', async ({ page }) => {
+    const trend = await playSequence(
+      page,
+      '1:9:0,2:18:0,3:27:0,20:20:0,30:20:0,40:20:0',
+    );
+    await expect(trend).toHaveAttribute('data-trend', 'degrading');
+    await expect(trend).toContainText('caindo');
+  });
+
+  test('série crescente sinaliza melhora', async ({ page }) => {
+    const trend = await playSequence(
+      page,
+      '8:2:0,16:4:0,24:6:0,20:20:0,20:30:0,20:40:0',
+    );
+    await expect(trend).toHaveAttribute('data-trend', 'improving');
+  });
+
+  test('série plana permanece estável', async ({ page }) => {
+    const trend = await playSequence(
+      page,
+      '5:5:0,10:10:0,15:15:0,20:20:0,25:25:0,30:30:0',
+    );
+    await expect(trend).toHaveAttribute('data-trend', 'stable');
+  });
+
+  test('amostras insuficientes mantêm tendência indisponível', async ({ page }) => {
+    const trend = await playSequence(page, '5:5:0,10:10:0');
+    await expect(trend).toHaveAttribute('data-trend', 'unknown');
+    await expect(trend).toContainText('Tendência indisponível');
+  });
+});
