@@ -24,13 +24,24 @@ export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzC
   const [produtos, setProdutos] = useState<XbzProdutoRaw[]>([]);
   const [searched, setSearched] = useState(false);
   const [isStale, setIsStale] = useState(false);
+  const [syncedAt, setSyncedAt] = useState<string | null>(null);
 
   const handleSearch = useCallback(async () => {
     const result = await buscarProdutosDetalhado(term);
     setSearched(true);
     setProdutos(result ? result.produtos.slice(0, 200) : []);
     setIsStale(result?.stale === true);
+    setSyncedAt(result?.syncedAt ?? null);
   }, [buscarProdutosDetalhado, term]);
+
+  /** Formata o instante da última sincronização de forma legível (pt-BR). */
+  const syncedAtLabel = useMemo(() => {
+    if (!syncedAt) return null;
+    const date = new Date(syncedAt);
+    if (Number.isNaN(date.getTime())) return null;
+    return date.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+  }, [syncedAt]);
+
 
 
   const handleAdd = useCallback(async (produto: XbzProdutoRaw) => {
