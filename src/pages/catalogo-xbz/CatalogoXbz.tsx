@@ -129,6 +129,8 @@ const CatalogoXbz = () => {
                 <XbzPedidosTab showPrices={showPrices} />
               </TabsContent>
             </Tabs>
+
+            <XbzNetworkPanel />
           </>
         )}
 
