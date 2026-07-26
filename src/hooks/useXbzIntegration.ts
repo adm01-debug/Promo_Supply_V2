@@ -314,6 +314,8 @@ export function useXbzIntegration() {
     getPedidos,
     cancelarPedido,
     buscarProdutos,
+    buscarProdutosDetalhado,
+
     getCores,
     getFiscal,
     getCarrinhoResumo,
