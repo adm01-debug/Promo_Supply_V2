@@ -66,10 +66,29 @@ const VALID_ACTIONS = new Set([
   ...ADMIN_ACTIONS,
 ]);
 
+/**
+ * Limites por ação. Ações que geram efeito colateral irreversível na XBZ
+ * (gerar/cancelar pedido, salvar credenciais) recebem janelas bem mais
+ * estreitas do que leituras de catálogo.
+ */
+const ACTION_LIMITS: Record<string, { maxRequests: number; windowSeconds: number }> = {
+  gerarPedidos: { maxRequests: 3, windowSeconds: 60 },
+  cancelarPedido: { maxRequests: 5, windowSeconds: 60 },
+  saveCredentials: { maxRequests: 5, windowSeconds: 300 },
+  testConnection: { maxRequests: 10, windowSeconds: 300 },
+  login: { maxRequests: 20, windowSeconds: 60 },
+  catalogo: { maxRequests: 40, windowSeconds: 60 },
+};
+const DEFAULT_LIMIT = { maxRequests: 60, windowSeconds: 60 };
+
+/** Janela de deduplicação para geração de pedidos (double-submit / retry). */
+const GERAR_PEDIDOS_DEDUP_SECONDS = 30;
+
 interface Body {
   action?: string;
   [key: string]: unknown;
 }
+
 
 function json(payload: unknown, status = 200, extra: Record<string, string> = {}) {
   return new Response(JSON.stringify(payload), {
@@ -310,8 +329,10 @@ async function handleAction(
   }
 
   // --- Escritas ---
-  const isOrderAction = ORDER_ACTIONS.has(action);
+  // Cancelar pedido é irreversível na XBZ: exige o mesmo nível de gerarPedidos.
+  const isOrderAction = ORDER_ACTIONS.has(action) || action === "cancelarPedido";
   requireRole(caller, isOrderAction ? ORDER_ROLES : WRITE_ROLES);
+
 
   try {
     let result: XbzResult<unknown>;
@@ -356,9 +377,27 @@ async function handleAction(
         if (body.confirm !== true) {
           throw new XbzError(400, "Confirmação explícita obrigatória para gerar pedidos na XBZ");
         }
+        // Deduplicação: evita que double-click / retry de rede gere o pedido
+        // duas vezes na XBZ (operação sem idempotency key do lado deles).
+        const since = new Date(Date.now() - GERAR_PEDIDOS_DEDUP_SECONDS * 1000).toISOString();
+        const { data: recent } = await admin
+          .from("xbz_carrinho_log")
+          .select("id")
+          .eq("tenant_id", caller.tenantId)
+          .eq("action", "gerarPedidos")
+          .eq("success", true)
+          .gte("created_at", since)
+          .limit(1);
+        if (recent && recent.length > 0) {
+          throw new XbzError(
+            409,
+            "Um pedido já foi gerado há poucos segundos. Confira a aba Pedidos antes de tentar novamente.",
+          );
+        }
         result = await xbzCarrinhoWrite("GerarPedidos", "PUT", portal);
         break;
       }
+
       default:
         throw new XbzError(400, `Ação não suportada: ${action}`);
     }
@@ -403,14 +442,6 @@ Deno.serve(async (req) => {
   try {
     const caller = await authenticate(req, admin);
 
-    const rl = await checkRateLimit({
-      identifier: caller.userId,
-      endpoint: "xbz-proxy",
-      maxRequests: 60,
-      windowSeconds: 60,
-    });
-    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
-
     let body: Body;
     try {
       body = await req.json() as Body;
@@ -422,6 +453,20 @@ Deno.serve(async (req) => {
     if (!VALID_ACTIONS.has(action)) {
       throw new XbzError(400, `Ação inválida: ${action || "(vazia)"}`);
     }
+
+    // Rate limit por ação: escritas críticas têm janela muito mais estreita.
+    const limit = ACTION_LIMITS[action] ?? DEFAULT_LIMIT;
+    const rl = await checkRateLimit({
+      identifier: caller.userId,
+      endpoint: `xbz-proxy:${action}`,
+      maxRequests: limit.maxRequests,
+      windowSeconds: limit.windowSeconds,
+    });
+    if (!rl.allowed) {
+      logger.warn("rate limit atingido", { action, tenantId: caller.tenantId });
+      return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    }
+
 
     logger.info("xbz action", { action, tenantId: caller.tenantId });
     return await handleAction(action, body, caller, admin, logger, requestId);
