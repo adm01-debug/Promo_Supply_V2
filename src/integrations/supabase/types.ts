@@ -6672,19 +6672,160 @@ export type Database = {
           },
         ]
       }
+      spot_api_sync_log: {
+        Row: {
+          action: string | null
+          called_at: string
+          created_at: string
+          duration_ms: number | null
+          endpoint: string
+          error_code: string | null
+          error_message: string | null
+          id: string
+          records_processed: number
+          status: string
+        }
+        Insert: {
+          action?: string | null
+          called_at?: string
+          created_at?: string
+          duration_ms?: number | null
+          endpoint: string
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          records_processed?: number
+          status?: string
+        }
+        Update: {
+          action?: string | null
+          called_at?: string
+          created_at?: string
+          duration_ms?: number | null
+          endpoint?: string
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          records_processed?: number
+          status?: string
+        }
+        Relationships: []
+      }
+      spot_customization_options: {
+        Row: {
+          allow_full_color: boolean
+          area: string | null
+          component_id: string | null
+          created_at: string
+          hotspot: Json
+          id: string
+          is_default: boolean
+          location_id: string | null
+          max_colors: number | null
+          prices: Json
+          product_reference: string
+          raw: Json
+          service_code: string
+          synced_at: string
+          table_code_option: string | null
+          technique_code: string | null
+          technique_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          allow_full_color?: boolean
+          area?: string | null
+          component_id?: string | null
+          created_at?: string
+          hotspot?: Json
+          id?: string
+          is_default?: boolean
+          location_id?: string | null
+          max_colors?: number | null
+          prices?: Json
+          product_reference: string
+          raw?: Json
+          service_code: string
+          synced_at?: string
+          table_code_option?: string | null
+          technique_code?: string | null
+          technique_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          allow_full_color?: boolean
+          area?: string | null
+          component_id?: string | null
+          created_at?: string
+          hotspot?: Json
+          id?: string
+          is_default?: boolean
+          location_id?: string | null
+          max_colors?: number | null
+          prices?: Json
+          product_reference?: string
+          raw?: Json
+          service_code?: string
+          synced_at?: string
+          table_code_option?: string | null
+          technique_code?: string | null
+          technique_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      spot_estoque: {
+        Row: {
+          created_at: string
+          id: string
+          incoming_date: string | null
+          incoming_quantity: number | null
+          product_reference: string | null
+          quantity: number
+          sku: string
+          synced_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          incoming_date?: string | null
+          incoming_quantity?: number | null
+          product_reference?: string | null
+          quantity?: number
+          sku: string
+          synced_at?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          incoming_date?: string | null
+          incoming_quantity?: number | null
+          product_reference?: string | null
+          quantity?: number
+          sku?: string
+          synced_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       spot_pedidos: {
         Row: {
           codigo_rastreamento: string | null
           created_at: string
           data_pedido: string | null
           detalhes_url: string | null
+          estimated_ship_date: string | null
           id: string
+          internal_reference: string | null
           itens: Json | null
           last_synced_at: string
           referencia_cliente: string | null
           spot_order_id: string
           status: string
           status_color: string | null
+          status_synced_at: string | null
           transportadora: string | null
           updated_at: string
           valor_total: number | null
@@ -6694,13 +6835,16 @@ export type Database = {
           created_at?: string
           data_pedido?: string | null
           detalhes_url?: string | null
+          estimated_ship_date?: string | null
           id?: string
+          internal_reference?: string | null
           itens?: Json | null
           last_synced_at?: string
           referencia_cliente?: string | null
           spot_order_id: string
           status?: string
           status_color?: string | null
+          status_synced_at?: string | null
           transportadora?: string | null
           updated_at?: string
           valor_total?: number | null
@@ -6710,16 +6854,76 @@ export type Database = {
           created_at?: string
           data_pedido?: string | null
           detalhes_url?: string | null
+          estimated_ship_date?: string | null
           id?: string
+          internal_reference?: string | null
           itens?: Json | null
           last_synced_at?: string
           referencia_cliente?: string | null
           spot_order_id?: string
           status?: string
           status_color?: string | null
+          status_synced_at?: string | null
           transportadora?: string | null
           updated_at?: string
           valor_total?: number | null
+        }
+        Relationships: []
+      }
+      spot_produtos: {
+        Row: {
+          brand: string | null
+          catalogs: string[]
+          category_name: string | null
+          country_of_origin: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          main_image_url: string | null
+          name: string
+          raw: Json
+          reference: string
+          synced_at: string
+          type_code_legacy: string | null
+          type_code_new: string | null
+          updated_at: string
+        }
+        Insert: {
+          brand?: string | null
+          catalogs?: string[]
+          category_name?: string | null
+          country_of_origin?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          main_image_url?: string | null
+          name: string
+          raw?: Json
+          reference: string
+          synced_at?: string
+          type_code_legacy?: string | null
+          type_code_new?: string | null
+          updated_at?: string
+        }
+        Update: {
+          brand?: string | null
+          catalogs?: string[]
+          category_name?: string | null
+          country_of_origin?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          main_image_url?: string | null
+          name?: string
+          raw?: Json
+          reference?: string
+          synced_at?: string
+          type_code_legacy?: string | null
+          type_code_new?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -6747,6 +6951,72 @@ export type Database = {
           last_used_at?: string
           metadata?: Json | null
           session_cookie?: string
+        }
+        Relationships: []
+      }
+      spot_skus: {
+        Row: {
+          capacity: string | null
+          color_code: string | null
+          color_hex: string | null
+          color_name: string | null
+          created_at: string
+          handling_costs: number | null
+          id: string
+          image_url: string | null
+          no_replenishment: boolean
+          price_tiers: Json
+          print_area: string | null
+          product_reference: string
+          raw: Json
+          size: string | null
+          sku: string
+          synced_at: string
+          table_codes_options: string | null
+          updated_at: string
+          your_price: number | null
+        }
+        Insert: {
+          capacity?: string | null
+          color_code?: string | null
+          color_hex?: string | null
+          color_name?: string | null
+          created_at?: string
+          handling_costs?: number | null
+          id?: string
+          image_url?: string | null
+          no_replenishment?: boolean
+          price_tiers?: Json
+          print_area?: string | null
+          product_reference: string
+          raw?: Json
+          size?: string | null
+          sku: string
+          synced_at?: string
+          table_codes_options?: string | null
+          updated_at?: string
+          your_price?: number | null
+        }
+        Update: {
+          capacity?: string | null
+          color_code?: string | null
+          color_hex?: string | null
+          color_name?: string | null
+          created_at?: string
+          handling_costs?: number | null
+          id?: string
+          image_url?: string | null
+          no_replenishment?: boolean
+          price_tiers?: Json
+          print_area?: string | null
+          product_reference?: string
+          raw?: Json
+          size?: string | null
+          sku?: string
+          synced_at?: string
+          table_codes_options?: string | null
+          updated_at?: string
+          your_price?: number | null
         }
         Relationships: []
       }
