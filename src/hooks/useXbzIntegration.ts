@@ -9,6 +9,38 @@ import { normalizeBusca, type XbzPermissions } from '@/pages/catalogo-xbz/xbzHel
  */
 const XBZ_CLIENT_TIMEOUT_MS = 45_000;
 
+/**
+ * Ações seguras para repetir automaticamente: são somente-leitura na XBZ, logo
+ * uma nova tentativa nunca duplica pedidos, itens de carrinho ou credenciais.
+ */
+const IDEMPOTENT_ACTIONS = new Set<string>([
+  'catalogo',
+  'cores',
+  'fiscalSt',
+  'pedidos',
+  'dashboard',
+  'vendedor',
+  'pessoaToken',
+  'carrinhoResumo',
+  'carrinhoListar',
+  'entregaTipos',
+  'pagamentoTipos',
+  'credentialsStatus',
+]);
+
+/** Tentativas extras (além da inicial) e base do backoff exponencial. */
+const RETRY_MAX_ATTEMPTS = 2;
+const RETRY_BASE_DELAY_MS = 600;
+
+/** Só faz sentido repetir em falhas transitórias: timeout, rede ou 5xx. */
+function isRetryableStatus(status: number): boolean {
+  return status === 408 || status === 0 || (status >= 500 && status <= 599);
+}
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+
+
 
 /** Resposta padronizada do proxy `xbz-proxy`. */
 interface XbzEnvelope<T> {
@@ -176,6 +208,33 @@ async function callXbz<T>(action: string, params: Record<string, unknown> = {}):
   return data;
 }
 
+/**
+ * Envolve `callXbz` com backoff exponencial, mas **apenas** para ações
+ * idempotentes e falhas transitórias. Escritas (gerarPedidos, itemLancar…)
+ * nunca são repetidas automaticamente para não duplicar efeitos na XBZ.
+ */
+async function callXbzWithRetry<T>(
+  action: string,
+  params: Record<string, unknown> = {},
+): Promise<XbzEnvelope<T>> {
+  if (!IDEMPOTENT_ACTIONS.has(action)) return callXbz<T>(action, params);
+
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= RETRY_MAX_ATTEMPTS; attempt += 1) {
+    try {
+      return await callXbz<T>(action, params);
+    } catch (err: unknown) {
+      lastError = err;
+      const status = err instanceof XbzRequestError ? err.status : -1;
+      if (status === -1 || !isRetryableStatus(status) || attempt === RETRY_MAX_ATTEMPTS) break;
+      // Backoff exponencial com jitter para evitar rajadas sincronizadas.
+      const delay = RETRY_BASE_DELAY_MS * 2 ** attempt + Math.floor(Math.random() * 200);
+      await sleep(delay);
+    }
+  }
+  throw lastError;
+}
+
 
 export function useXbzIntegration() {
   const [loading, setLoading] = useState(false);
@@ -201,7 +260,7 @@ export function useXbzIntegration() {
       setError(null);
     }
     try {
-      const envelope = await callXbz<T>(action, params);
+      const envelope = await callXbzWithRetry<T>(action, params);
       if (envelope.warning && mounted.current) toast.warning(envelope.warning);
       return envelope;
     } catch (err: unknown) {
