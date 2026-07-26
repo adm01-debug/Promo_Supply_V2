@@ -113,6 +113,8 @@ const sections: NavSection[] = [
     items: [
       { title: "Cadastros", icon: Factory, href: "/fornecedores" },
       { title: "SPOT / Stricker", icon: Sparkles, href: "/catalogo-spot" },
+      { title: "XBZ Brindes", icon: Sparkles, href: "/catalogo-xbz" },
+
       { title: "Performance", icon: Users, href: "/supplier-performance" },
       { title: "Qualificação", icon: ShieldCheck, href: "/qualificacao-fornecedores" },
       { title: "Histórico", icon: ShoppingCart, href: "/historico-compras" },
