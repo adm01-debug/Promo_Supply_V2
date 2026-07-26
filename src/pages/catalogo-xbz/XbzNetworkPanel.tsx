@@ -18,14 +18,23 @@ const LEVEL_BADGE: Record<XbzNetworkLevel, { label: string; variant: 'default' |
   healthy: { label: 'Saudável', variant: 'default' },
 };
 
+export interface XbzNetworkPanelProps {
+  /** Injeta contadores fixos (usado pelo harness de teste E2E). */
+  statsOverride?: XbzNetworkStats;
+}
+
 /** Painel de eficiência da camada de rede XBZ (cache TTL + coalescing). */
-export const XbzNetworkPanel = () => {
-  const [stats, setStats] = useState<XbzNetworkStats>(() => getXbzNetworkStats());
+export const XbzNetworkPanel = ({ statsOverride }: XbzNetworkPanelProps) => {
+  const [stats, setStats] = useState<XbzNetworkStats>(() => statsOverride ?? getXbzNetworkStats());
 
   useEffect(() => {
+    if (statsOverride) {
+      setStats(statsOverride);
+      return;
+    }
     const id = window.setInterval(() => setStats(getXbzNetworkStats()), REFRESH_MS);
     return () => window.clearInterval(id);
-  }, []);
+  }, [statsOverride]);
 
   const handleReset = useCallback(() => {
     resetXbzNetworkStats();
@@ -36,7 +45,7 @@ export const XbzNetworkPanel = () => {
   const badge = LEVEL_BADGE[health.level];
 
   return (
-    <Card>
+    <Card data-testid="xbz-network-panel" data-level={health.level}>
       <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0">
         <div>
           <CardTitle className="flex items-center gap-4 text-base">
@@ -46,7 +55,7 @@ export const XbzNetworkPanel = () => {
           <CardDescription>Chamadas evitadas por cache e coalescing nesta sessão.</CardDescription>
         </div>
         <div className="flex items-center gap-4">
-          <Badge variant={badge.variant}>{badge.label}</Badge>
+          <Badge variant={badge.variant} data-testid="xbz-network-badge">{badge.label}</Badge>
           <Button variant="ghost" size="sm" onClick={handleReset} aria-label="Zerar contadores de rede XBZ">
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
           </Button>
@@ -55,6 +64,7 @@ export const XbzNetworkPanel = () => {
       <CardContent className="space-y-4">
         <div className="flex items-baseline gap-4">
           <span
+            data-testid="xbz-network-ratio"
             className={cn(
               'text-3xl font-semibold tabular-nums',
               health.level === 'below' && 'text-destructive',
@@ -84,11 +94,11 @@ export const XbzNetworkPanel = () => {
         </dl>
 
         {health.level === 'below' ? (
-          <Alert variant="destructive">
+          <Alert variant="destructive" data-testid="xbz-network-alert">
             <AlertDescription>{health.message}</AlertDescription>
           </Alert>
         ) : (
-          <p className="text-xs text-muted-foreground">{health.message}</p>
+          <p className="text-xs text-muted-foreground" data-testid="xbz-network-message">{health.message}</p>
         )}
       </CardContent>
     </Card>

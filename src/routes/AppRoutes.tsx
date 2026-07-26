@@ -63,6 +63,9 @@ const AlertDetail = lazy(() => import("@/pages/admin/AlertDetail"));
 
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
+/** Harness dev-only usado pelos testes E2E do painel de rede XBZ. */
+const XbzNetworkPanelHarness = lazy(() => import("@/pages/dev/XbzNetworkPanelHarness"));
+
 export const AnimatedRoutes = () => {
   const location = useLocation();
 
@@ -133,6 +136,14 @@ export const AnimatedRoutes = () => {
             <Route path="/portal-fornecedor" element={<ProtectedRoute requiredRole={['supplier', 'admin']}><ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="dashboard"><PortalFornecedor /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/configuracoes-centro-custo" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><ConfiguracoesCentroCusto /></RouteSkeleton></ModuleErrorBoundary>} />
           </Route>
+
+          {import.meta.env.DEV ? (
+            <Route path="/__dev/xbz-network-panel" element={
+              <Suspense fallback={<PageLoader />}>
+                <XbzNetworkPanelHarness />
+              </Suspense>
+            } />
+          ) : null}
 
           <Route path="*" element={
             <Suspense fallback={<PageLoader />}>
