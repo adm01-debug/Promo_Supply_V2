@@ -1,13 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { Activity, RotateCcw } from 'lucide-react';
+import { Activity, RotateCcw, TrendingDown, TrendingUp, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getXbzNetworkStats, resetXbzNetworkStats, type XbzNetworkStats } from '@/hooks/useXbzIntegration';
 import { evaluateXbzNetworkHealth, type XbzNetworkLevel } from './xbzNetworkHealth';
+import {
+  evaluateXbzNetworkTrend,
+  pushTrendSample,
+  type XbzTrendDirection,
+  type XbzTrendSample,
+} from './xbzNetworkTrend';
+
 
 const REFRESH_MS = 5_000;
 
