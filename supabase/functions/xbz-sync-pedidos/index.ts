@@ -179,13 +179,29 @@ Deno.serve(async (req) => {
   }
 
   const admin = serviceClient();
-  const cronSecret = Deno.env.get("MIGRATE_HELPER_ACCESS_KEY");
-  const isCron = Boolean(cronSecret) && req.headers.get("x-cron-key") === cronSecret;
+
+  // Autenticação do cron: a chave vive no Vault do banco (secret `xbz_cron_key`)
+  // e é validada por `verify_xbz_cron_key`, que só compara digests — nunca devolve o valor.
+  const cronKey = req.headers.get("x-cron-key");
+  let isCron = false;
+  if (cronKey) {
+    const { data, error } = await admin.rpc("verify_xbz_cron_key", { _key: cronKey });
+    if (error) logger.warn("falha ao validar chave de cron", { message: error.message });
+    isCron = data === true;
+    if (!isCron) {
+      logger.warn("tentativa de invocação de cron com chave inválida");
+      return new Response(JSON.stringify({ error: "Unauthorized", requestId }), {
+        status: 401,
+        headers,
+      });
+    }
+  }
 
   try {
     let tenantIds: string[] = [];
 
     if (isCron) {
+
       const { data } = await admin
         .from("xbz_credentials")
         .select("tenant_id")
