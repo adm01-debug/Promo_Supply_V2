@@ -224,6 +224,26 @@ export function useXbzIntegration() {
     [run],
   );
 
+  /**
+   * Igual a `buscarProdutos`, mas informa se os dados vieram do espelho local
+   * (`stale: true`) porque a XBZ estava indisponível.
+   */
+  const buscarProdutosDetalhado = useCallback(
+    async (busca: string, extras: Record<string, unknown> = {}): Promise<XbzCatalogoResult | null> => {
+      const envelope = await runEnvelope<XbzProdutoRaw[]>('catalogo', {
+        busca: normalizeBusca(busca),
+        ...extras,
+      });
+      if (!envelope) return null;
+      return {
+        produtos: Array.isArray(envelope.data) ? envelope.data : [],
+        stale: envelope.stale === true,
+      };
+    },
+    [runEnvelope],
+  );
+
+
   const getCores = useCallback(
     () => run<Array<{ Id: number; NomeCor: string; SiglaCor: string }>>('cores'),
     [run],
