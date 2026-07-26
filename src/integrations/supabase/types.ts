@@ -9501,6 +9501,7 @@ export type Database = {
       }
       verify_xbz_cron_key: { Args: { _key: string }; Returns: boolean }
       xbz_cron_key_get: { Args: never; Returns: string }
+      xbz_sync_watchdog: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "coordinator" | "buyer" | "finance" | "viewer"
