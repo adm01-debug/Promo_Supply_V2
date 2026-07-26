@@ -14,9 +14,12 @@ import {
   ExternalLink, AlertTriangle, CheckCircle2
 } from 'lucide-react';
 
-import { STATUS_CONFIG, openExternalSpotUrl, extractSpotProductId } from './spotHelpers';
+import { STATUS_CONFIG, openExternalSpotUrl } from './spotHelpers';
 import { formatCurrency } from "@/lib/utils";
 import { SpotFinancialTab } from './SpotFinancialTab';
+import { SpotCatalogTab } from './SpotCatalogTab';
+import { SpotSyncPanel } from './SpotSyncPanel';
+
 const CatalogoSpot = () => {
   const { loading, searchProducts, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
   const [activeTab, setActiveTab] = useState('catalogo');
