@@ -233,7 +233,7 @@ export function useXbzIntegration() {
       setError(null);
     }
     try {
-      const envelope = await callXbz<T>(action, params);
+      const envelope = await callXbzWithRetry<T>(action, params);
       if (envelope.warning && mounted.current) toast.warning(envelope.warning);
       return envelope;
     } catch (err: unknown) {
