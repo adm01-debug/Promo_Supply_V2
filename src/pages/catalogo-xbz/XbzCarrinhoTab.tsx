@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { AlertTriangle, Loader2, RefreshCw, Trash2 } from 'lucide-react';
 import { useXbzIntegration, type XbzCarrinhoItem, type XbzCarrinhoResumo } from '@/hooks/useXbzIntegration';
+import { useCooldown } from '@/hooks/useCooldown';
+
 import { formatBRL } from './xbzHelpers';
 
 interface XbzCarrinhoTabProps {
@@ -21,6 +23,8 @@ export function XbzCarrinhoTab({ canGenerateOrders, canWrite }: XbzCarrinhoTabPr
   const [resumo, setResumo] = useState<XbzCarrinhoResumo | null>(null);
   const [itens, setItens] = useState<XbzCarrinhoItem[]>([]);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const { remaining: cooldown, active: cooldownActive, start: startCooldown } = useCooldown(30);
+
 
   const load = useCallback(async () => {
     const [r, i] = await Promise.all([getCarrinhoResumo(), getCarrinhoItens()]);
@@ -37,9 +41,13 @@ export function XbzCarrinhoTab({ canGenerateOrders, canWrite }: XbzCarrinhoTabPr
 
   const handleGenerate = useCallback(async () => {
     setConfirmOpen(false);
-    await gerarPedidos();
+    const result = await gerarPedidos();
+    // Espelha a janela de deduplicação do backend (30s): novo clique nesse
+    // intervalo seria rejeitado com 409, então bloqueamos o botão antes.
+    if (result !== null) startCooldown();
     void load();
-  }, [gerarPedidos, load]);
+  }, [gerarPedidos, load, startCooldown]);
+
 
   return (
     <Card>
@@ -116,8 +124,13 @@ export function XbzCarrinhoTab({ canGenerateOrders, canWrite }: XbzCarrinhoTabPr
                 Gerar pedidos cria pedidos reais na XBZ a partir dos itens selecionados. A ação é auditada.
               </AlertDescription>
             </Alert>
-            <Button onClick={() => setConfirmOpen(true)} disabled={loading || itens.length === 0}>
-              Gerar pedidos na XBZ
+            <Button
+              onClick={() => setConfirmOpen(true)}
+              disabled={loading || itens.length === 0 || cooldownActive}
+              aria-label="Gerar pedidos na XBZ"
+            >
+              {cooldownActive ? `Aguarde ${cooldown}s…` : 'Gerar pedidos na XBZ'}
+
             </Button>
           </>
         ) : null}
