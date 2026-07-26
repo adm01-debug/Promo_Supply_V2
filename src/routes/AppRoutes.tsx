@@ -63,6 +63,9 @@ const AlertDetail = lazy(() => import("@/pages/admin/AlertDetail"));
 
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
+/** Harness dev-only usado pelos testes E2E do painel de rede XBZ. */
+const XbzNetworkPanelHarness = lazy(() => import("@/pages/dev/XbzNetworkPanelHarness"));
+
 export const AnimatedRoutes = () => {
   const location = useLocation();
 
