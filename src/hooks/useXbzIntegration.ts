@@ -135,18 +135,18 @@ export function useXbzIntegration() {
   const [error, setError] = useState<string | null>(null);
   const inFlight = useRef(0);
 
-  const run = useCallback(async <T,>(
+  const runEnvelope = useCallback(async <T,>(
     action: string,
     params: Record<string, unknown> = {},
     options: { silent?: boolean } = {},
-  ): Promise<T | null> => {
+  ): Promise<XbzEnvelope<T> | null> => {
     inFlight.current += 1;
     setLoading(true);
     setError(null);
     try {
       const envelope = await callXbz<T>(action, params);
       if (envelope.warning) toast.warning(envelope.warning);
-      return envelope.data;
+      return envelope;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido na XBZ';
       setError(message);
@@ -160,6 +160,16 @@ export function useXbzIntegration() {
       }
     }
   }, []);
+
+  const run = useCallback(async <T,>(
+    action: string,
+    params: Record<string, unknown> = {},
+    options: { silent?: boolean } = {},
+  ): Promise<T | null> => {
+    const envelope = await runEnvelope<T>(action, params, options);
+    return envelope ? envelope.data : null;
+  }, [runEnvelope]);
+
 
   // ---------------------------------------------------------------- estado
   const getCredentialStatus = useCallback(
