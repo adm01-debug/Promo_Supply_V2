@@ -1,7 +1,14 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/lib/feedbackToast';
 import { normalizeBusca, type XbzPermissions } from '@/pages/catalogo-xbz/xbzHelpers';
+
+/**
+ * Tempo máximo (ms) que o cliente espera pelo `xbz-proxy`. O portal da XBZ é
+ * lento e instável em picos; sem esse teto o spinner ficaria preso para sempre.
+ */
+const XBZ_CLIENT_TIMEOUT_MS = 45_000;
+
 
 /** Resposta padronizada do proxy `xbz-proxy`. */
 interface XbzEnvelope<T> {
@@ -119,11 +126,26 @@ export class XbzRequestError extends Error {
   }
 }
 
+/** Rejeita com `XbzRequestError` (status 408) se a promessa exceder o teto de tempo. */
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new XbzRequestError('A XBZ demorou demais para responder. Tente novamente.', 408));
+    }, ms);
+    promise.then(
+      (value) => { clearTimeout(timer); resolve(value); },
+      (err: unknown) => { clearTimeout(timer); reject(err); },
+    );
+  });
+}
+
 /** Chama o proxy e normaliza erros/avisos (inclui o HTTP 425 de conflito de estoque). */
 async function callXbz<T>(action: string, params: Record<string, unknown> = {}): Promise<XbzEnvelope<T>> {
-  const { data, error } = await supabase.functions.invoke<XbzEnvelope<T>>('xbz-proxy', {
-    body: { action, ...params },
-  });
+  const { data, error } = await withTimeout(
+    supabase.functions.invoke<XbzEnvelope<T>>('xbz-proxy', { body: { action, ...params } }),
+    XBZ_CLIENT_TIMEOUT_MS,
+  );
+
 
   if (error) {
     let details = error.message;
@@ -159,6 +181,14 @@ export function useXbzIntegration() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const inFlight = useRef(0);
+  // Evita atualizar estado após o componente sair da tela (navegação durante
+  // uma chamada lenta da XBZ geraria warning do React e vazamento de estado).
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
 
   const runEnvelope = useCallback(async <T,>(
     action: string,
@@ -166,20 +196,22 @@ export function useXbzIntegration() {
     options: { silent?: boolean } = {},
   ): Promise<XbzEnvelope<T> | null> => {
     inFlight.current += 1;
-    setLoading(true);
-    setError(null);
+    if (mounted.current) {
+      setLoading(true);
+      setError(null);
+    }
     try {
       const envelope = await callXbz<T>(action, params);
-      if (envelope.warning) toast.warning(envelope.warning);
+      if (envelope.warning && mounted.current) toast.warning(envelope.warning);
       return envelope;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido na XBZ';
       const status = err instanceof XbzRequestError ? err.status : 0;
-      setError(message);
-      if (!options.silent) {
-        // 409 (duplicidade) e 429 (excesso de tentativas) não são falhas de
-        // sistema: são avisos de fluxo e merecem tom diferente do erro vermelho.
-        if (status === 409 || status === 429) toast.warning(message);
+      if (mounted.current) setError(message);
+      if (!options.silent && mounted.current) {
+        // 409 (duplicidade), 429 (excesso de tentativas) e 408 (timeout) não são
+        // falhas de sistema: são avisos de fluxo e merecem tom diferente do erro.
+        if (status === 409 || status === 429 || status === 408) toast.warning(message);
         else toast.error(`XBZ: ${message}`);
       }
       return null;
@@ -188,9 +220,10 @@ export function useXbzIntegration() {
       inFlight.current -= 1;
       if (inFlight.current <= 0) {
         inFlight.current = 0;
-        setLoading(false);
+        if (mounted.current) setLoading(false);
       }
     }
+
   }, []);
 
   const run = useCallback(async <T,>(
