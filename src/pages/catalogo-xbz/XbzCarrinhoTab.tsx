@@ -37,9 +37,13 @@ export function XbzCarrinhoTab({ canGenerateOrders, canWrite }: XbzCarrinhoTabPr
 
   const handleGenerate = useCallback(async () => {
     setConfirmOpen(false);
-    await gerarPedidos();
+    const result = await gerarPedidos();
+    // Espelha a janela de deduplicação do backend (30s): novo clique nesse
+    // intervalo seria rejeitado com 409, então bloqueamos o botão antes.
+    if (result !== null) startCooldown();
     void load();
-  }, [gerarPedidos, load]);
+  }, [gerarPedidos, load, startCooldown]);
+
 
   return (
     <Card>
