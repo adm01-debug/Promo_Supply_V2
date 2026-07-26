@@ -29,6 +29,8 @@ const ComplianceDashboard = lazy(() => import("@/pages/compliance/ComplianceDash
 const Auth = lazy(() => import("@/pages/auth/Auth"));
 const Seguranca = lazy(() => import("@/pages/seguranca/Seguranca"));
 const CatalogoSpot = lazy(() => import("@/pages/catalogo-spot/CatalogoSpot"));
+const CatalogoXbz = lazy(() => import("@/pages/catalogo-xbz/CatalogoXbz"));
+
 const QualificacaoFornecedores = lazy(() => import("@/pages/qualificacao/QualificacaoFornecedores"));
 const Orcamentos = lazy(() => import("@/pages/orcamentos/Orcamentos"));
 const NegociacaoIA = lazy(() => import("@/pages/negociacao-ia/NegociacaoIA"));
@@ -98,6 +100,8 @@ export const AnimatedRoutes = () => {
             <Route path="/auditoria" element={<ModuleErrorBoundary module="relatorios"><RouteSkeleton variant="table"><Auditoria /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/seguranca" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><Seguranca /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/catalogo-spot" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><CatalogoSpot /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/catalogo-xbz" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><CatalogoXbz /></RouteSkeleton></ModuleErrorBoundary>} />
+
             <Route path="/qualificacao-fornecedores" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><QualificacaoFornecedores /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/orcamentos" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><Orcamentos /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/negociacao-ia" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><NegociacaoIA /></RouteSkeleton></ModuleErrorBoundary>} />
