@@ -406,10 +406,15 @@ export function useXbzIntegration() {
   );
 
   const saveCredentials = useCallback(
-    (portalUser: string, portalPassword: string, cnpj?: string, label?: string) =>
-      run<XbzLoginInfo>('saveCredentials', { portalUser, portalPassword, cnpj, label }),
+    (portalUser: string, portalPassword: string, cnpj?: string, label?: string) => {
+      // Troca de credencial pode mudar a pessoa/CNPJ na XBZ: descarta o cache
+      // estático para não misturar tabelas de duas contas diferentes.
+      clearXbzStaticCache();
+      return run<XbzLoginInfo>('saveCredentials', { portalUser, portalPassword, cnpj, label });
+    },
     [run],
   );
+
 
   const testConnection = useCallback(
     () => run<XbzLoginInfo>('testConnection'),
