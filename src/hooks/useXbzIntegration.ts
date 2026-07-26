@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/lib/feedbackToast';
+import { logger } from '@/lib/logger';
 import { normalizeBusca, type XbzPermissions } from '@/pages/catalogo-xbz/xbzHelpers';
 
 /**
@@ -235,6 +236,40 @@ async function callXbzWithRetry<T>(
   throw lastError;
 }
 
+/**
+ * Telemetria de latência por ação da XBZ. Serve para calibrar o teto de tempo
+ * (`XBZ_CLIENT_TIMEOUT_MS`) com dados reais em vez de suposições.
+ * Alinhado aos limiares do sistema: 3s = lenta, 8s = muito lenta.
+ */
+const XBZ_SLOW_MS = 3_000;
+const XBZ_VERY_SLOW_MS = 8_000;
+
+function logXbzLatency(
+  action: string,
+  durationMs: number,
+  outcome: 'ok' | 'error',
+  status?: number,
+): void {
+  const context = {
+    integration: 'xbz',
+    action,
+    duration_ms: Math.round(durationMs),
+    outcome,
+    ...(status !== undefined ? { status } : {}),
+  };
+
+  if (outcome === 'error' || durationMs >= XBZ_VERY_SLOW_MS) {
+    logger.warn('XBZ: chamada degradada', context);
+    return;
+  }
+  if (durationMs >= XBZ_SLOW_MS) {
+    logger.info('XBZ: chamada lenta', context);
+    return;
+  }
+  logger.debug('XBZ: chamada concluída', context);
+}
+
+
 
 export function useXbzIntegration() {
   const [loading, setLoading] = useState(false);
@@ -259,13 +294,16 @@ export function useXbzIntegration() {
       setLoading(true);
       setError(null);
     }
+    const startedAt = performance.now();
     try {
       const envelope = await callXbzWithRetry<T>(action, params);
+      logXbzLatency(action, performance.now() - startedAt, 'ok');
       if (envelope.warning && mounted.current) toast.warning(envelope.warning);
       return envelope;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido na XBZ';
       const status = err instanceof XbzRequestError ? err.status : 0;
+      logXbzLatency(action, performance.now() - startedAt, 'error', status);
       if (mounted.current) setError(message);
       if (!options.silent && mounted.current) {
         // 409 (duplicidade), 429 (excesso de tentativas) e 408 (timeout) não são
@@ -274,6 +312,8 @@ export function useXbzIntegration() {
         else toast.error(`XBZ: ${message}`);
       }
       return null;
+
+
 
     } finally {
       inFlight.current -= 1;
