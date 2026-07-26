@@ -377,9 +377,27 @@ async function handleAction(
         if (body.confirm !== true) {
           throw new XbzError(400, "Confirmação explícita obrigatória para gerar pedidos na XBZ");
         }
+        // Deduplicação: evita que double-click / retry de rede gere o pedido
+        // duas vezes na XBZ (operação sem idempotency key do lado deles).
+        const since = new Date(Date.now() - GERAR_PEDIDOS_DEDUP_SECONDS * 1000).toISOString();
+        const { data: recent } = await admin
+          .from("xbz_carrinho_log")
+          .select("id")
+          .eq("tenant_id", caller.tenantId)
+          .eq("action", "gerarPedidos")
+          .eq("success", true)
+          .gte("created_at", since)
+          .limit(1);
+        if (recent && recent.length > 0) {
+          throw new XbzError(
+            409,
+            "Um pedido já foi gerado há poucos segundos. Confira a aba Pedidos antes de tentar novamente.",
+          );
+        }
         result = await xbzCarrinhoWrite("GerarPedidos", "PUT", portal);
         break;
       }
+
       default:
         throw new XbzError(400, `Ação não suportada: ${action}`);
     }
