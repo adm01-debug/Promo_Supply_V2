@@ -18,14 +18,23 @@ const LEVEL_BADGE: Record<XbzNetworkLevel, { label: string; variant: 'default' |
   healthy: { label: 'Saudável', variant: 'default' },
 };
 
+export interface XbzNetworkPanelProps {
+  /** Injeta contadores fixos (usado pelo harness de teste E2E). */
+  statsOverride?: XbzNetworkStats;
+}
+
 /** Painel de eficiência da camada de rede XBZ (cache TTL + coalescing). */
-export const XbzNetworkPanel = () => {
-  const [stats, setStats] = useState<XbzNetworkStats>(() => getXbzNetworkStats());
+export const XbzNetworkPanel = ({ statsOverride }: XbzNetworkPanelProps) => {
+  const [stats, setStats] = useState<XbzNetworkStats>(() => statsOverride ?? getXbzNetworkStats());
 
   useEffect(() => {
+    if (statsOverride) {
+      setStats(statsOverride);
+      return;
+    }
     const id = window.setInterval(() => setStats(getXbzNetworkStats()), REFRESH_MS);
     return () => window.clearInterval(id);
-  }, []);
+  }, [statsOverride]);
 
   const handleReset = useCallback(() => {
     resetXbzNetworkStats();
