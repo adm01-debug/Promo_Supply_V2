@@ -235,9 +235,10 @@ async function handleAction(
   if (action === "catalogo") {
     requireRole(caller, READ_ROLES);
     requirePortalPermission(creds, "WebConsultaProdutos");
-    return ok(
-      await xbzConsultaEstoque(portal, {
-        busca: String(body.busca ?? "").slice(0, 100),
+    const busca = String(body.busca ?? "").slice(0, 100);
+    try {
+      const result = await xbzConsultaEstoque(portal, {
+        busca,
         cor_id: num(body.corId, 0),
         filtro_id: num(body.filtroId, 0),
         web_tipo_id: num(body.tipoId, 0),
@@ -246,10 +247,38 @@ async function handleAction(
         quantidade: num(body.quantidade, 0),
         preco_minimo: num(body.precoMinimo, 0),
         preco_maximo: num(body.precoMaximo, 0),
-      }),
-      requestId,
-    );
+      });
+
+      // Espelho best-effort: nunca compromete a resposta ao usuário.
+      const mirrored = await mirrorCatalogo(
+        admin,
+        caller.tenantId,
+        result.data,
+        (message) => logger.warn("falha ao espelhar catálogo XBZ", { message }),
+      );
+      logger.info("catálogo XBZ espelhado", { mirrored });
+
+      return ok(result, requestId);
+    } catch (err) {
+      // Degradação elegante: XBZ fora do ar (rede/5xx/circuit breaker aberto)
+      // → devolve o último snapshot conhecido em vez de falhar a tela.
+      const status = err instanceof XbzError ? err.status : 500;
+      if (status < 500) throw err;
+
+      const cached = await readCatalogoCache(admin, caller.tenantId, busca);
+      if (cached.length === 0) throw err;
+
+      logger.warn("catálogo servido do cache local", { status, items: cached.length });
+      return json({
+        success: true,
+        data: cached,
+        stale: true,
+        source: "cache",
+        requestId,
+      });
+    }
   }
+
 
   if (action === "fiscalSt") {
     requireRole(caller, READ_ROLES);
