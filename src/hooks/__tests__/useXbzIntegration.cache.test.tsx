@@ -22,7 +22,13 @@ vi.mock('@/lib/logger', () => ({
   logger: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 
-import { useXbzIntegration, clearXbzStaticCache } from '../useXbzIntegration';
+import {
+  useXbzIntegration,
+  clearXbzStaticCache,
+  getXbzNetworkStats,
+  getXbzSavedRatio,
+  resetXbzNetworkStats,
+} from '../useXbzIntegration';
 
 /** Resposta no formato do envelope do `xbz-proxy`. */
 function ok<T>(data: T) {
@@ -33,7 +39,9 @@ describe('useXbzIntegration — coalescing e cache', () => {
   beforeEach(() => {
     invoke.mockReset();
     clearXbzStaticCache();
+    resetXbzNetworkStats();
   });
+
 
   it('coalesce chamadas idempotentes concorrentes em uma única requisição', async () => {
     let resolveCall: ((v: unknown) => void) | undefined;
@@ -98,4 +106,26 @@ describe('useXbzIntegration — coalescing e cache', () => {
     await act(async () => { await result.current.getPagamentoTipos(); });
     expect(invoke).toHaveBeenCalledTimes(2);
   });
+
+  it('contabiliza rede, cache e coalescing na razão de economia', async () => {
+    invoke.mockImplementation(() => ok([{ Id: 1, NomeCor: 'Azul', SiglaCor: 'AZ' }]));
+
+    const { result } = renderHook(() => useXbzIntegration());
+
+    // 1ª → rede; 2ª e 3ª → cache.
+    await act(async () => { await result.current.getCores(); });
+    await act(async () => { await result.current.getCores(); });
+    await act(async () => { await result.current.getCores(); });
+
+    const stats = getXbzNetworkStats();
+    expect(stats.network).toBe(1);
+    expect(stats.cacheHits).toBe(2);
+    expect(stats.coalesced).toBe(0);
+    expect(getXbzSavedRatio()).toBeCloseTo(2 / 3, 5);
+
+    resetXbzNetworkStats();
+    expect(getXbzNetworkStats()).toEqual({ network: 0, cacheHits: 0, coalesced: 0 });
+    expect(getXbzSavedRatio()).toBe(0);
+  });
+
 });
