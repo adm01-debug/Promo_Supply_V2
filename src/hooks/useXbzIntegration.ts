@@ -242,7 +242,9 @@ export function useXbzIntegration() {
       return {
         produtos: Array.isArray(envelope.data) ? envelope.data : [],
         stale: envelope.stale === true,
+        syncedAt: typeof envelope.syncedAt === 'string' ? envelope.syncedAt : null,
       };
+
     },
     [runEnvelope],
   );
