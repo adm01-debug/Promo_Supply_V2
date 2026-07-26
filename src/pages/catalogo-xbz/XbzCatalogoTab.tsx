@@ -65,6 +65,26 @@ export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzC
           </Button>
         </div>
 
+        {isStale ? (
+          <div
+            role="status"
+            className="flex items-center gap-4 rounded-md border border-warning/40 bg-warning/10 p-4"
+          >
+            <WifiOff className="h-4 w-4 text-warning" aria-hidden="true" />
+            <div className="text-sm">
+              <Badge variant="outline" className="mr-4 border-warning/50 text-warning">
+                Dados em cache
+              </Badge>
+              <span className="text-muted-foreground">
+                A XBZ está indisponível no momento. Exibindo o último catálogo sincronizado —
+                preços e estoque podem estar desatualizados.
+              </span>
+            </div>
+          </div>
+        ) : null}
+
+
+
         {searched && produtos.length === 0 && !loading ? (
           <p className="text-sm text-muted-foreground">
             Nenhum produto encontrado. A busca por SKU não é suportada pela XBZ — use o nome ou o código amigável.
