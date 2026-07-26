@@ -22,7 +22,9 @@ export function XbzCarrinhoTab({ canGenerateOrders, canWrite }: XbzCarrinhoTabPr
   const { loading, getCarrinhoResumo, getCarrinhoItens, removerItem, gerarPedidos } = useXbzIntegration();
   const [resumo, setResumo] = useState<XbzCarrinhoResumo | null>(null);
   const [itens, setItens] = useState<XbzCarrinhoItem[]>([]);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const { remaining: cooldown, active: cooldownActive, start: startCooldown } = useCooldown(30);
+
 
   const load = useCallback(async () => {
     const [r, i] = await Promise.all([getCarrinhoResumo(), getCarrinhoItens()]);
