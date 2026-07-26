@@ -66,10 +66,29 @@ const VALID_ACTIONS = new Set([
   ...ADMIN_ACTIONS,
 ]);
 
+/**
+ * Limites por ação. Ações que geram efeito colateral irreversível na XBZ
+ * (gerar/cancelar pedido, salvar credenciais) recebem janelas bem mais
+ * estreitas do que leituras de catálogo.
+ */
+const ACTION_LIMITS: Record<string, { maxRequests: number; windowSeconds: number }> = {
+  gerarPedidos: { maxRequests: 3, windowSeconds: 60 },
+  cancelarPedido: { maxRequests: 5, windowSeconds: 60 },
+  saveCredentials: { maxRequests: 5, windowSeconds: 300 },
+  testConnection: { maxRequests: 10, windowSeconds: 300 },
+  login: { maxRequests: 20, windowSeconds: 60 },
+  catalogo: { maxRequests: 40, windowSeconds: 60 },
+};
+const DEFAULT_LIMIT = { maxRequests: 60, windowSeconds: 60 };
+
+/** Janela de deduplicação para geração de pedidos (double-submit / retry). */
+const GERAR_PEDIDOS_DEDUP_SECONDS = 30;
+
 interface Body {
   action?: string;
   [key: string]: unknown;
 }
+
 
 function json(payload: unknown, status = 200, extra: Record<string, string> = {}) {
   return new Response(JSON.stringify(payload), {
