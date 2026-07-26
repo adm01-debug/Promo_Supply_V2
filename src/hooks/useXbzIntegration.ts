@@ -108,6 +108,17 @@ export interface XbzPedidosFilters {
   numeroPedido?: string;
 }
 
+/** Erro da integração XBZ com o status HTTP preservado para tratamento na UI. */
+export class XbzRequestError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'XbzRequestError';
+    this.status = status;
+  }
+}
+
 /** Chama o proxy e normaliza erros/avisos (inclui o HTTP 425 de conflito de estoque). */
 async function callXbz<T>(action: string, params: Record<string, unknown> = {}): Promise<XbzEnvelope<T>> {
   const { data, error } = await supabase.functions.invoke<XbzEnvelope<T>>('xbz-proxy', {
@@ -116,23 +127,33 @@ async function callXbz<T>(action: string, params: Record<string, unknown> = {}):
 
   if (error) {
     let details = error.message;
-    const context = (error as { context?: { text?: () => Promise<string> } }).context;
+    let status = 0;
+    const context = (error as { context?: { status?: number; text?: () => Promise<string> } }).context;
+    if (typeof context?.status === 'number') status = context.status;
     if (context?.text) {
       try {
         const body = await context.text();
-        const parsed = JSON.parse(body) as { error?: string };
-        if (parsed?.error) details = parsed.error;
+        const parsed = JSON.parse(body) as { error?: string; retry_after_seconds?: number };
+        if (parsed?.error === 'rate_limited') {
+          const retry = parsed.retry_after_seconds ?? 0;
+          details = retry > 0
+            ? `Muitas tentativas seguidas. Tente novamente em ${retry}s.`
+            : 'Muitas tentativas seguidas. Aguarde alguns instantes.';
+        } else if (parsed?.error) {
+          details = parsed.error;
+        }
       } catch {
         /* mantém a mensagem original */
       }
     }
-    throw new Error(details || 'Falha na comunicação com a XBZ');
+    throw new XbzRequestError(details || 'Falha na comunicação com a XBZ', status);
   }
 
-  if (!data) throw new Error('Resposta vazia da integração XBZ');
-  if (data.error) throw new Error(data.error);
+  if (!data) throw new XbzRequestError('Resposta vazia da integração XBZ', 0);
+  if (data.error) throw new XbzRequestError(data.error, 0);
   return data;
 }
+
 
 export function useXbzIntegration() {
   const [loading, setLoading] = useState(false);
