@@ -8842,6 +8842,7 @@ export type Database = {
     }
     Functions: {
       _invoke_edge_function: { Args: { _name: string }; Returns: number }
+      _invoke_xbz_sync: { Args: never; Returns: number }
       admin_scan_runs_sla_status: {
         Args: never
         Returns: {
@@ -9498,6 +9499,8 @@ export type Database = {
         Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
       }
+      verify_xbz_cron_key: { Args: { _key: string }; Returns: boolean }
+      xbz_cron_key_get: { Args: never; Returns: string }
     }
     Enums: {
       app_role: "admin" | "coordinator" | "buyer" | "finance" | "viewer"
