@@ -9,7 +9,17 @@ interface XbzEnvelope<T> {
   stockConflict?: boolean;
   warning?: string | null;
   error?: string;
+  /** `true` quando a resposta veio do espelho local (XBZ indisponível). */
+  stale?: boolean;
+  source?: string;
 }
+
+/** Resultado da busca de catálogo com indicação de origem dos dados. */
+export interface XbzCatalogoResult {
+  produtos: XbzProdutoRaw[];
+  stale: boolean;
+}
+
 
 export interface XbzLoginInfo {
   pessoaId: number;
