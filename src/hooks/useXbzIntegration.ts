@@ -9,7 +9,17 @@ interface XbzEnvelope<T> {
   stockConflict?: boolean;
   warning?: string | null;
   error?: string;
+  /** `true` quando a resposta veio do espelho local (XBZ indisponível). */
+  stale?: boolean;
+  source?: string;
 }
+
+/** Resultado da busca de catálogo com indicação de origem dos dados. */
+export interface XbzCatalogoResult {
+  produtos: XbzProdutoRaw[];
+  stale: boolean;
+}
+
 
 export interface XbzLoginInfo {
   pessoaId: number;
@@ -125,18 +135,18 @@ export function useXbzIntegration() {
   const [error, setError] = useState<string | null>(null);
   const inFlight = useRef(0);
 
-  const run = useCallback(async <T,>(
+  const runEnvelope = useCallback(async <T,>(
     action: string,
     params: Record<string, unknown> = {},
     options: { silent?: boolean } = {},
-  ): Promise<T | null> => {
+  ): Promise<XbzEnvelope<T> | null> => {
     inFlight.current += 1;
     setLoading(true);
     setError(null);
     try {
       const envelope = await callXbz<T>(action, params);
       if (envelope.warning) toast.warning(envelope.warning);
-      return envelope.data;
+      return envelope;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido na XBZ';
       setError(message);
@@ -150,6 +160,16 @@ export function useXbzIntegration() {
       }
     }
   }, []);
+
+  const run = useCallback(async <T,>(
+    action: string,
+    params: Record<string, unknown> = {},
+    options: { silent?: boolean } = {},
+  ): Promise<T | null> => {
+    const envelope = await runEnvelope<T>(action, params, options);
+    return envelope ? envelope.data : null;
+  }, [runEnvelope]);
+
 
   // ---------------------------------------------------------------- estado
   const getCredentialStatus = useCallback(
@@ -203,6 +223,26 @@ export function useXbzIntegration() {
       run<XbzProdutoRaw[]>('catalogo', { busca: normalizeBusca(busca), ...extras }),
     [run],
   );
+
+  /**
+   * Igual a `buscarProdutos`, mas informa se os dados vieram do espelho local
+   * (`stale: true`) porque a XBZ estava indisponível.
+   */
+  const buscarProdutosDetalhado = useCallback(
+    async (busca: string, extras: Record<string, unknown> = {}): Promise<XbzCatalogoResult | null> => {
+      const envelope = await runEnvelope<XbzProdutoRaw[]>('catalogo', {
+        busca: normalizeBusca(busca),
+        ...extras,
+      });
+      if (!envelope) return null;
+      return {
+        produtos: Array.isArray(envelope.data) ? envelope.data : [],
+        stale: envelope.stale === true,
+      };
+    },
+    [runEnvelope],
+  );
+
 
   const getCores = useCallback(
     () => run<Array<{ Id: number; NomeCor: string; SiglaCor: string }>>('cores'),
@@ -274,6 +314,8 @@ export function useXbzIntegration() {
     getPedidos,
     cancelarPedido,
     buscarProdutos,
+    buscarProdutosDetalhado,
+
     getCores,
     getFiscal,
     getCarrinhoResumo,

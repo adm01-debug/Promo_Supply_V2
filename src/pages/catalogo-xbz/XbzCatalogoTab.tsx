@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, Search, ShoppingCart } from 'lucide-react';
+import { Loader2, Search, ShoppingCart, WifiOff } from 'lucide-react';
 import { useXbzIntegration, type XbzProdutoRaw } from '@/hooks/useXbzIntegration';
 import { formatBRL } from './xbzHelpers';
 
@@ -19,16 +19,19 @@ function produtoId(p: XbzProdutoRaw): number {
 }
 
 export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzCatalogoTabProps) {
-  const { loading, buscarProdutos, adicionarItem } = useXbzIntegration();
+  const { loading, buscarProdutosDetalhado, adicionarItem } = useXbzIntegration();
   const [term, setTerm] = useState('');
   const [produtos, setProdutos] = useState<XbzProdutoRaw[]>([]);
   const [searched, setSearched] = useState(false);
+  const [isStale, setIsStale] = useState(false);
 
   const handleSearch = useCallback(async () => {
-    const result = await buscarProdutos(term);
+    const result = await buscarProdutosDetalhado(term);
     setSearched(true);
-    setProdutos(Array.isArray(result) ? result.slice(0, 200) : []);
-  }, [buscarProdutos, term]);
+    setProdutos(result ? result.produtos.slice(0, 200) : []);
+    setIsStale(result?.stale === true);
+  }, [buscarProdutosDetalhado, term]);
+
 
   const handleAdd = useCallback(async (produto: XbzProdutoRaw) => {
     const id = produtoId(produto);
@@ -61,6 +64,26 @@ export function XbzCatalogoTab({ canAddToCart, showPrices, onCartChanged }: XbzC
             Buscar
           </Button>
         </div>
+
+        {isStale ? (
+          <div
+            role="status"
+            className="flex items-center gap-4 rounded-md border border-warning/40 bg-warning/10 p-4"
+          >
+            <WifiOff className="h-4 w-4 text-warning" aria-hidden="true" />
+            <div className="text-sm">
+              <Badge variant="outline" className="mr-4 border-warning/50 text-warning">
+                Dados em cache
+              </Badge>
+              <span className="text-muted-foreground">
+                A XBZ está indisponível no momento. Exibindo o último catálogo sincronizado —
+                preços e estoque podem estar desatualizados.
+              </span>
+            </div>
+          </div>
+        ) : null}
+
+
 
         {searched && produtos.length === 0 && !loading ? (
           <p className="text-sm text-muted-foreground">
