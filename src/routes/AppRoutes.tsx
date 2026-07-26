@@ -137,6 +137,14 @@ export const AnimatedRoutes = () => {
             <Route path="/configuracoes-centro-custo" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><ConfiguracoesCentroCusto /></RouteSkeleton></ModuleErrorBoundary>} />
           </Route>
 
+          {import.meta.env.DEV ? (
+            <Route path="/__dev/xbz-network-panel" element={
+              <Suspense fallback={<PageLoader />}>
+                <XbzNetworkPanelHarness />
+              </Suspense>
+            } />
+          ) : null}
+
           <Route path="*" element={
             <Suspense fallback={<PageLoader />}>
               <NotFound />
