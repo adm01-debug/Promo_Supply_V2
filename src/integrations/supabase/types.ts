@@ -8403,6 +8403,393 @@ export type Database = {
           },
         ]
       }
+      xbz_carrinho_log: {
+        Row: {
+          action: string
+          created_at: string
+          error_message: string | null
+          id: string
+          payload: Json
+          response_status: number | null
+          success: boolean
+          tenant_id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          payload?: Json
+          response_status?: number | null
+          success?: boolean
+          tenant_id: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          payload?: Json
+          response_status?: number | null
+          success?: boolean
+          tenant_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      xbz_cores: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: number
+          last_synced_at: string
+          nome: string
+          sigla: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id: number
+          last_synced_at?: string
+          nome: string
+          sigla?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: number
+          last_synced_at?: string
+          nome?: string
+          sigla?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      xbz_credentials: {
+        Row: {
+          api_token_enc: string | null
+          cnpj: string | null
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          id: string
+          is_active: boolean
+          label: string | null
+          last_error: string | null
+          last_login_at: string | null
+          last_login_ok: boolean | null
+          permissions: Json
+          pessoa_id: number | null
+          portal_password_enc: string | null
+          portal_user_enc: string | null
+          razao_social: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          api_token_enc?: string | null
+          cnpj?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          last_error?: string | null
+          last_login_at?: string | null
+          last_login_ok?: boolean | null
+          permissions?: Json
+          pessoa_id?: number | null
+          portal_password_enc?: string | null
+          portal_user_enc?: string | null
+          razao_social?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          api_token_enc?: string | null
+          cnpj?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          last_error?: string | null
+          last_login_at?: string | null
+          last_login_ok?: boolean | null
+          permissions?: Json
+          pessoa_id?: number | null
+          portal_password_enc?: string | null
+          portal_user_enc?: string | null
+          razao_social?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      xbz_pedido_status_history: {
+        Row: {
+          campo: string
+          created_at: string
+          detectado_em: string
+          id: string
+          pedido_numero: string
+          tenant_id: string
+          valor_anterior: string | null
+          valor_novo: string | null
+        }
+        Insert: {
+          campo: string
+          created_at?: string
+          detectado_em?: string
+          id?: string
+          pedido_numero: string
+          tenant_id: string
+          valor_anterior?: string | null
+          valor_novo?: string | null
+        }
+        Update: {
+          campo?: string
+          created_at?: string
+          detectado_em?: string
+          id?: string
+          pedido_numero?: string
+          tenant_id?: string
+          valor_anterior?: string | null
+          valor_novo?: string | null
+        }
+        Relationships: []
+      }
+      xbz_pedidos: {
+        Row: {
+          created_at: string
+          data_emissao: string | null
+          data_pagamento: string | null
+          data_status_lote_debito: string | null
+          entrega_tipo_nome: string | null
+          id: string
+          id_lote_debito_status: number | null
+          id_status: number | null
+          last_synced_at: string
+          lote_debito_status_cliente: string | null
+          lote_debito_status1_data: string | null
+          lote_debito_status2_data: string | null
+          lote_debito_status3_data: string | null
+          nota_fiscal: string | null
+          ordem_de_compra: string | null
+          pago: boolean
+          pedido_numero: string
+          pessoa_id: number | null
+          pessoa_razao_social: string | null
+          produto_codigo_xbz: string | null
+          produto_nome: string | null
+          quantidade: number | null
+          raw: Json
+          status_logistico: string | null
+          tenant_id: string
+          transportadora_nome: string | null
+          updated_at: string
+          valor_impostos_taxas: number | null
+          valor_produtos: number | null
+          valor_total: number | null
+        }
+        Insert: {
+          created_at?: string
+          data_emissao?: string | null
+          data_pagamento?: string | null
+          data_status_lote_debito?: string | null
+          entrega_tipo_nome?: string | null
+          id?: string
+          id_lote_debito_status?: number | null
+          id_status?: number | null
+          last_synced_at?: string
+          lote_debito_status_cliente?: string | null
+          lote_debito_status1_data?: string | null
+          lote_debito_status2_data?: string | null
+          lote_debito_status3_data?: string | null
+          nota_fiscal?: string | null
+          ordem_de_compra?: string | null
+          pago?: boolean
+          pedido_numero: string
+          pessoa_id?: number | null
+          pessoa_razao_social?: string | null
+          produto_codigo_xbz?: string | null
+          produto_nome?: string | null
+          quantidade?: number | null
+          raw?: Json
+          status_logistico?: string | null
+          tenant_id: string
+          transportadora_nome?: string | null
+          updated_at?: string
+          valor_impostos_taxas?: number | null
+          valor_produtos?: number | null
+          valor_total?: number | null
+        }
+        Update: {
+          created_at?: string
+          data_emissao?: string | null
+          data_pagamento?: string | null
+          data_status_lote_debito?: string | null
+          entrega_tipo_nome?: string | null
+          id?: string
+          id_lote_debito_status?: number | null
+          id_status?: number | null
+          last_synced_at?: string
+          lote_debito_status_cliente?: string | null
+          lote_debito_status1_data?: string | null
+          lote_debito_status2_data?: string | null
+          lote_debito_status3_data?: string | null
+          nota_fiscal?: string | null
+          ordem_de_compra?: string | null
+          pago?: boolean
+          pedido_numero?: string
+          pessoa_id?: number | null
+          pessoa_razao_social?: string | null
+          produto_codigo_xbz?: string | null
+          produto_nome?: string | null
+          quantidade?: number | null
+          raw?: Json
+          status_logistico?: string | null
+          tenant_id?: string
+          transportadora_nome?: string | null
+          updated_at?: string
+          valor_impostos_taxas?: number | null
+          valor_produtos?: number | null
+          valor_total?: number | null
+        }
+        Relationships: []
+      }
+      xbz_produto_fiscal: {
+        Row: {
+          created_at: string
+          id: string
+          last_synced_at: string
+          ncm: string | null
+          notas_calculo: string | null
+          percentual_ipi: number | null
+          preco_base_calculo: number | null
+          preco_venda: number | null
+          produto_id: number
+          raw: Json
+          sku: string | null
+          tenant_id: string
+          updated_at: string
+          valor_ipi: number | null
+          valor_mva: number | null
+          valor_st: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_synced_at?: string
+          ncm?: string | null
+          notas_calculo?: string | null
+          percentual_ipi?: number | null
+          preco_base_calculo?: number | null
+          preco_venda?: number | null
+          produto_id: number
+          raw?: Json
+          sku?: string | null
+          tenant_id: string
+          updated_at?: string
+          valor_ipi?: number | null
+          valor_mva?: number | null
+          valor_st?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_synced_at?: string
+          ncm?: string | null
+          notas_calculo?: string | null
+          percentual_ipi?: number | null
+          preco_base_calculo?: number | null
+          preco_venda?: number | null
+          produto_id?: number
+          raw?: Json
+          sku?: string | null
+          tenant_id?: string
+          updated_at?: string
+          valor_ipi?: number | null
+          valor_mva?: number | null
+          valor_st?: number | null
+        }
+        Relationships: []
+      }
+      xbz_produtos: {
+        Row: {
+          codigo_amigavel: string | null
+          codigo_composto: string | null
+          cor_id: number | null
+          cor_nome: string | null
+          created_at: string
+          disponivel: string | null
+          id: string
+          imagem_url: string | null
+          last_synced_at: string
+          multiplos: number | null
+          nome: string | null
+          preco: number | null
+          preco_ipi: number | null
+          produto_id: number
+          quantidade_disponivel: number | null
+          raw: Json
+          sku: string | null
+          tenant_id: string
+          updated_at: string
+          venda_minima: number | null
+        }
+        Insert: {
+          codigo_amigavel?: string | null
+          codigo_composto?: string | null
+          cor_id?: number | null
+          cor_nome?: string | null
+          created_at?: string
+          disponivel?: string | null
+          id?: string
+          imagem_url?: string | null
+          last_synced_at?: string
+          multiplos?: number | null
+          nome?: string | null
+          preco?: number | null
+          preco_ipi?: number | null
+          produto_id: number
+          quantidade_disponivel?: number | null
+          raw?: Json
+          sku?: string | null
+          tenant_id: string
+          updated_at?: string
+          venda_minima?: number | null
+        }
+        Update: {
+          codigo_amigavel?: string | null
+          codigo_composto?: string | null
+          cor_id?: number | null
+          cor_nome?: string | null
+          created_at?: string
+          disponivel?: string | null
+          id?: string
+          imagem_url?: string | null
+          last_synced_at?: string
+          multiplos?: number | null
+          nome?: string | null
+          preco?: number | null
+          preco_ipi?: number | null
+          produto_id?: number
+          quantidade_disponivel?: number | null
+          raw?: Json
+          sku?: string | null
+          tenant_id?: string
+          updated_at?: string
+          venda_minima?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       mv_dashboard_kpis: {
