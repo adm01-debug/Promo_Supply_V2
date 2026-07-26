@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/lib/feedbackToast';
+import { logger } from '@/lib/logger';
 import { normalizeBusca, type XbzPermissions } from '@/pages/catalogo-xbz/xbzHelpers';
 
 /**
