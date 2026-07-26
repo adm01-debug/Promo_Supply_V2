@@ -78,11 +78,28 @@ interface Caller {
   isCron: boolean;
 }
 
+/** Comparação em tempo constante para segredos compartilhados. */
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
 async function authorize(req: Request, db: SupabaseClient, action: string): Promise<Caller> {
+  // Agendador interno (pg_cron): chave dedicada, sem service role key exposta no SQL.
+  const cronKey = req.headers.get("x-spot-cron-key");
+  const expectedCronKey = Deno.env.get("SPOT_CRON_KEY");
+  if (cronKey && expectedCronKey && timingSafeEqual(cronKey, expectedCronKey)) {
+    if (!CRON_ACTIONS.has(action)) throw new HttpError(403, "Ação não permitida para chamadas agendadas");
+    return { userId: null, isCron: true };
+  }
+
   const header = req.headers.get("authorization") ?? req.headers.get("Authorization") ?? "";
   if (!header.startsWith("Bearer ")) throw new HttpError(401, "Não autorizado: token ausente");
   const token = header.slice(7).trim();
   if (!token) throw new HttpError(401, "Não autorizado: token inválido");
+
 
   // Cron/serviço: service role key chamando um sync agendado.
   if (token === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")) {
