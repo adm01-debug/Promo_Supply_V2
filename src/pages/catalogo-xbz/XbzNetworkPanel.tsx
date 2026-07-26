@@ -126,6 +126,19 @@ export const XbzNetworkPanel = ({ statsOverride }: XbzNetworkPanelProps) => {
         ) : (
           <p className="text-xs text-muted-foreground" data-testid="xbz-network-message">{health.message}</p>
         )}
+
+        <p
+          className={cn(
+            'flex items-center gap-4 text-xs text-muted-foreground',
+            trend.direction === 'degrading' && 'text-destructive',
+          )}
+          data-testid="xbz-network-trend"
+          data-trend={trend.direction}
+        >
+          <TrendIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+          {trend.message}
+        </p>
+
       </CardContent>
     </Card>
   );
