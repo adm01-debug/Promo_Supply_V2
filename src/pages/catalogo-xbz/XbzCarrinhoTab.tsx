@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/alert-dialog';
 import { AlertTriangle, Loader2, RefreshCw, Trash2 } from 'lucide-react';
 import { useXbzIntegration, type XbzCarrinhoItem, type XbzCarrinhoResumo } from '@/hooks/useXbzIntegration';
+import { useCooldown } from '@/hooks/useCooldown';
+
 import { formatBRL } from './xbzHelpers';
 
 interface XbzCarrinhoTabProps {
