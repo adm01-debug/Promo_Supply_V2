@@ -21,11 +21,8 @@ import { SpotCatalogTab } from './SpotCatalogTab';
 import { SpotSyncPanel } from './SpotSyncPanel';
 
 const CatalogoSpot = () => {
-  const { loading, searchProducts, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
+  const { loading, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
   const [activeTab, setActiveTab] = useState('catalogo');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [hasSearched, setHasSearched] = useState(false);
-  const [searchResults, setSearchResults] = useState<Array<{ line: number; value: string; text: string }>>([]);
   const [cart, setCart] = useState<{ items: SpotCartItem[]; total: number; itemCount: number } | null>(null);
   const [orders, setOrders] = useState<SpotOrder[]>([]);
   const [financialDocs, setFinancialDocs] = useState<{ documents: SpotFinancialDoc[]; hasOverdue: boolean } | null>(null);
@@ -48,14 +45,6 @@ const CatalogoSpot = () => {
     return () => { cancelled = true; };
   }, [testConnection]);
 
-  const handleSearch = useCallback(async () => {
-    if (!searchQuery.trim()) return;
-    const results = await searchProducts(searchQuery);
-    if (mountedRef.current) {
-      setHasSearched(true);
-      if (results) setSearchResults(results);
-    }
-  }, [searchQuery, searchProducts]);
 
   const loadCart = useCallback(async () => {
     const data = await getCart();
