@@ -22,7 +22,13 @@ vi.mock('@/lib/logger', () => ({
   logger: { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() },
 }));
 
-import { useXbzIntegration, clearXbzStaticCache } from '../useXbzIntegration';
+import {
+  useXbzIntegration,
+  clearXbzStaticCache,
+  getXbzNetworkStats,
+  getXbzSavedRatio,
+  resetXbzNetworkStats,
+} from '../useXbzIntegration';
 
 /** Resposta no formato do envelope do `xbz-proxy`. */
 function ok<T>(data: T) {
@@ -33,7 +39,9 @@ describe('useXbzIntegration — coalescing e cache', () => {
   beforeEach(() => {
     invoke.mockReset();
     clearXbzStaticCache();
+    resetXbzNetworkStats();
   });
+
 
   it('coalesce chamadas idempotentes concorrentes em uma única requisição', async () => {
     let resolveCall: ((v: unknown) => void) | undefined;
