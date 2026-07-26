@@ -174,9 +174,16 @@ export function useXbzIntegration() {
       return envelope;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido na XBZ';
+      const status = err instanceof XbzRequestError ? err.status : 0;
       setError(message);
-      if (!options.silent) toast.error(`XBZ: ${message}`);
+      if (!options.silent) {
+        // 409 (duplicidade) e 429 (excesso de tentativas) não são falhas de
+        // sistema: são avisos de fluxo e merecem tom diferente do erro vermelho.
+        if (status === 409 || status === 429) toast.warning(message);
+        else toast.error(`XBZ: ${message}`);
+      }
       return null;
+
     } finally {
       inFlight.current -= 1;
       if (inFlight.current <= 0) {
