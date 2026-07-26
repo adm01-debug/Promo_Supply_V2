@@ -259,13 +259,16 @@ export function useXbzIntegration() {
       setLoading(true);
       setError(null);
     }
+    const startedAt = performance.now();
     try {
       const envelope = await callXbzWithRetry<T>(action, params);
+      logXbzLatency(action, performance.now() - startedAt, 'ok');
       if (envelope.warning && mounted.current) toast.warning(envelope.warning);
       return envelope;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Erro desconhecido na XBZ';
       const status = err instanceof XbzRequestError ? err.status : 0;
+      logXbzLatency(action, performance.now() - startedAt, 'error', status);
       if (mounted.current) setError(message);
       if (!options.silent && mounted.current) {
         // 409 (duplicidade), 429 (excesso de tentativas) e 408 (timeout) não são
@@ -274,6 +277,8 @@ export function useXbzIntegration() {
         else toast.error(`XBZ: ${message}`);
       }
       return null;
+
+
 
     } finally {
       inFlight.current -= 1;
