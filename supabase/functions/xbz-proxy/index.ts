@@ -329,8 +329,10 @@ async function handleAction(
   }
 
   // --- Escritas ---
-  const isOrderAction = ORDER_ACTIONS.has(action);
+  // Cancelar pedido é irreversível na XBZ: exige o mesmo nível de gerarPedidos.
+  const isOrderAction = ORDER_ACTIONS.has(action) || action === "cancelarPedido";
   requireRole(caller, isOrderAction ? ORDER_ROLES : WRITE_ROLES);
+
 
   try {
     let result: XbzResult<unknown>;
