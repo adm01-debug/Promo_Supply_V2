@@ -1,13 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Progress } from '@/components/ui/progress';
-import { Activity, RotateCcw } from 'lucide-react';
+import { Activity, RotateCcw, TrendingDown, TrendingUp, Minus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getXbzNetworkStats, resetXbzNetworkStats, type XbzNetworkStats } from '@/hooks/useXbzIntegration';
 import { evaluateXbzNetworkHealth, type XbzNetworkLevel } from './xbzNetworkHealth';
+import {
+  evaluateXbzNetworkTrend,
+  pushTrendSample,
+  type XbzTrendDirection,
+  type XbzTrendSample,
+} from './xbzNetworkTrend';
+
 
 const REFRESH_MS = 5_000;
 
@@ -18,6 +25,13 @@ const LEVEL_BADGE: Record<XbzNetworkLevel, { label: string; variant: 'default' |
   healthy: { label: 'Saudável', variant: 'default' },
 };
 
+const TREND_ICON: Record<XbzTrendDirection, typeof Minus> = {
+  unknown: Minus,
+  stable: Minus,
+  degrading: TrendingDown,
+  improving: TrendingUp,
+};
+
 export interface XbzNetworkPanelProps {
   /** Injeta contadores fixos (usado pelo harness de teste E2E). */
   statsOverride?: XbzNetworkStats;
@@ -26,6 +40,7 @@ export interface XbzNetworkPanelProps {
 /** Painel de eficiência da camada de rede XBZ (cache TTL + coalescing). */
 export const XbzNetworkPanel = ({ statsOverride }: XbzNetworkPanelProps) => {
   const [stats, setStats] = useState<XbzNetworkStats>(() => statsOverride ?? getXbzNetworkStats());
+  const trendWindow = useRef<XbzTrendSample[]>([]);
 
   useEffect(() => {
     if (statsOverride) {
@@ -38,11 +53,22 @@ export const XbzNetworkPanel = ({ statsOverride }: XbzNetworkPanelProps) => {
 
   const handleReset = useCallback(() => {
     resetXbzNetworkStats();
+    trendWindow.current = [];
     setStats(getXbzNetworkStats());
   }, []);
 
   const health = evaluateXbzNetworkHealth(stats);
   const badge = LEVEL_BADGE[health.level];
+
+  // Amostragem da tendência durante a renderização é segura: `pushTrendSample`
+  // é idempotente para leituras com o mesmo total (polling sem novas chamadas).
+  trendWindow.current = pushTrendSample(trendWindow.current, {
+    ratio: health.ratio,
+    total: health.total,
+  });
+  const trend = evaluateXbzNetworkTrend(trendWindow.current);
+  const TrendIcon = TREND_ICON[trend.direction];
+
 
   return (
     <Card data-testid="xbz-network-panel" data-level={health.level}>
@@ -100,6 +126,19 @@ export const XbzNetworkPanel = ({ statsOverride }: XbzNetworkPanelProps) => {
         ) : (
           <p className="text-xs text-muted-foreground" data-testid="xbz-network-message">{health.message}</p>
         )}
+
+        <p
+          className={cn(
+            'flex items-center gap-4 text-xs text-muted-foreground',
+            trend.direction === 'degrading' && 'text-destructive',
+          )}
+          data-testid="xbz-network-trend"
+          data-trend={trend.direction}
+        >
+          <TrendIcon className="h-4 w-4 shrink-0" aria-hidden="true" />
+          {trend.message}
+        </p>
+
       </CardContent>
     </Card>
   );
