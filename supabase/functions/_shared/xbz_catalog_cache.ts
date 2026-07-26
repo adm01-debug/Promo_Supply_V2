@@ -122,12 +122,12 @@ export async function mirrorCatalogo(
  * Fallback de leitura quando a XBZ está indisponível.
  * Ao contrário da XBZ, aceita busca por SKU e código.
  */
-export async function readCatalogoCache(
+export async function readCatalogoCacheWithMeta(
   admin: SupabaseClient,
   tenantId: string,
   busca: string,
   limit = 200,
-): Promise<Record<string, unknown>[]> {
+): Promise<{ items: Record<string, unknown>[]; syncedAt: string | null }> {
   const term = busca.trim().slice(0, 100);
   let query = admin
     .from("xbz_produtos")
@@ -144,6 +144,27 @@ export async function readCatalogoCache(
   }
 
   const { data, error } = await query;
-  if (error || !data) return [];
-  return data.map((r) => (r.raw ?? {}) as Record<string, unknown>);
+  if (error || !data) return { items: [], syncedAt: null };
+
+  // A ordenação é decrescente por `last_synced_at`, logo o primeiro registro
+  // carrega o instante mais recente de sincronização do recorte retornado.
+  const syncedAt = typeof data[0]?.last_synced_at === "string"
+    ? (data[0].last_synced_at as string)
+    : null;
+
+  return {
+    items: data.map((r) => (r.raw ?? {}) as Record<string, unknown>),
+    syncedAt,
+  };
 }
+
+export async function readCatalogoCache(
+  admin: SupabaseClient,
+  tenantId: string,
+  busca: string,
+  limit = 200,
+): Promise<Record<string, unknown>[]> {
+  const { items } = await readCatalogoCacheWithMeta(admin, tenantId, busca, limit);
+  return items;
+}
+

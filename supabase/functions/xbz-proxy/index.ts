@@ -24,7 +24,7 @@ import {
   type XbzCaller,
 } from "../_shared/xbz_auth.ts";
 import { encryptSecret } from "../_shared/xbz_crypto.ts";
-import { mirrorCatalogo, readCatalogoCache } from "../_shared/xbz_catalog_cache.ts";
+import { mirrorCatalogo, readCatalogoCacheWithMeta } from "../_shared/xbz_catalog_cache.ts";
 
 import {
   extractPermissions,
@@ -267,17 +267,19 @@ async function handleAction(
       const status = err instanceof XbzError ? err.status : 500;
       if (status < 500) throw err;
 
-      const cached = await readCatalogoCache(admin, caller.tenantId, busca);
-      if (cached.length === 0) throw err;
+      const cached = await readCatalogoCacheWithMeta(admin, caller.tenantId, busca);
+      if (cached.items.length === 0) throw err;
 
-      logger.warn("catálogo servido do cache local", { status, items: cached.length });
+      logger.warn("catálogo servido do cache local", { status, items: cached.items.length });
       return json({
         success: true,
-        data: cached,
+        data: cached.items,
         stale: true,
         source: "cache",
+        syncedAt: cached.syncedAt,
         requestId,
       });
+
     }
   }
 

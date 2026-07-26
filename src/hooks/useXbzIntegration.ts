@@ -12,13 +12,17 @@ interface XbzEnvelope<T> {
   /** `true` quando a resposta veio do espelho local (XBZ indisponível). */
   stale?: boolean;
   source?: string;
+  /** ISO da última sincronização do espelho local, quando `stale`. */
+  syncedAt?: string | null;
 }
 
 /** Resultado da busca de catálogo com indicação de origem dos dados. */
 export interface XbzCatalogoResult {
   produtos: XbzProdutoRaw[];
   stale: boolean;
+  syncedAt: string | null;
 }
+
 
 
 export interface XbzLoginInfo {
@@ -238,7 +242,9 @@ export function useXbzIntegration() {
       return {
         produtos: Array.isArray(envelope.data) ? envelope.data : [],
         stale: envelope.stale === true,
+        syncedAt: typeof envelope.syncedAt === 'string' ? envelope.syncedAt : null,
       };
+
     },
     [runEnvelope],
   );
