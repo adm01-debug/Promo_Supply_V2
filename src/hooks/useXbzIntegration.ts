@@ -210,6 +210,23 @@ async function callXbz<T>(action: string, params: Record<string, unknown> = {}):
 }
 
 /**
+ * Coalescência de chamadas idempotentes em voo: duas telas (ou dois efeitos do
+ * React em StrictMode) pedindo o mesmo recurso ao mesmo tempo compartilham a
+ * mesma promessa, em vez de abrirem duas sessões no portal da XBZ — que é lento
+ * e aplica rate limit por conta.
+ */
+const inFlightReads = new Map<string, Promise<XbzEnvelope<unknown>>>();
+
+/** Chave estável: ação + params ordenados (JSON.stringify não garante ordem). */
+function inFlightKey(action: string, params: Record<string, unknown>): string {
+  const sorted = Object.keys(params)
+    .sort()
+    .map((k) => `${k}=${JSON.stringify(params[k])}`)
+    .join('&');
+  return `${action}?${sorted}`;
+}
+
+/**
  * Envolve `callXbz` com backoff exponencial, mas **apenas** para ações
  * idempotentes e falhas transitórias. Escritas (gerarPedidos, itemLancar…)
  * nunca são repetidas automaticamente para não duplicar efeitos na XBZ.
@@ -220,21 +237,36 @@ async function callXbzWithRetry<T>(
 ): Promise<XbzEnvelope<T>> {
   if (!IDEMPOTENT_ACTIONS.has(action)) return callXbz<T>(action, params);
 
-  let lastError: unknown;
-  for (let attempt = 0; attempt <= RETRY_MAX_ATTEMPTS; attempt += 1) {
-    try {
-      return await callXbz<T>(action, params);
-    } catch (err: unknown) {
-      lastError = err;
-      const status = err instanceof XbzRequestError ? err.status : -1;
-      if (status === -1 || !isRetryableStatus(status) || attempt === RETRY_MAX_ATTEMPTS) break;
-      // Backoff exponencial com jitter para evitar rajadas sincronizadas.
-      const delay = RETRY_BASE_DELAY_MS * 2 ** attempt + Math.floor(Math.random() * 200);
-      await sleep(delay);
+  const key = inFlightKey(action, params);
+  const existing = inFlightReads.get(key);
+  if (existing) return existing as Promise<XbzEnvelope<T>>;
+
+  const request = (async (): Promise<XbzEnvelope<T>> => {
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= RETRY_MAX_ATTEMPTS; attempt += 1) {
+      try {
+        return await callXbz<T>(action, params);
+      } catch (err: unknown) {
+        lastError = err;
+        const status = err instanceof XbzRequestError ? err.status : -1;
+        if (status === -1 || !isRetryableStatus(status) || attempt === RETRY_MAX_ATTEMPTS) break;
+        // Backoff exponencial com jitter para evitar rajadas sincronizadas.
+        const delay = RETRY_BASE_DELAY_MS * 2 ** attempt + Math.floor(Math.random() * 200);
+        await sleep(delay);
+      }
     }
+    throw lastError;
+  })();
+
+  // Guarda a promessa (mesmo em erro) só enquanto estiver em voo.
+  inFlightReads.set(key, request as Promise<XbzEnvelope<unknown>>);
+  try {
+    return await request;
+  } finally {
+    inFlightReads.delete(key);
   }
-  throw lastError;
 }
+
 
 /**
  * Telemetria de latência por ação da XBZ. Serve para calibrar o teto de tempo
