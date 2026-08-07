@@ -353,8 +353,10 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
             {pagamento.comprovante_url && (
               <Button variant="outline" className="w-full gap-2" asChild>
                 <a href={pagamento.comprovante_url} target="_blank" rel="noopener noreferrer">
-                  <Image className="h-4 w-4" />
-                  Ver Comprovante
+                  <span className="inline-flex items-center gap-2">
+                    <Image className="h-4 w-4" />
+                    Ver Comprovante
+                  </span>
                 </a>
               </Button>
             )}

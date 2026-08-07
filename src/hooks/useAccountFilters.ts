@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 type FiltersRecord = Record<string, unknown>;
@@ -120,8 +120,8 @@ export function useAccountFilters<T extends FiltersRecord>(
       cancelled = true;
       sub.subscription.unsubscribe();
     };
-     
-  }, [scope, legacyStorageKey, defaultsJson, defaults]);
+
+  }, [scope, legacyStorageKey, defaultsJson]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   // Debounced persistence
   useEffect(() => {
@@ -140,7 +140,8 @@ export function useAccountFilters<T extends FiltersRecord>(
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
     // filtersJson stabilizes the dep — avoids infinite loops when caller passes a new object with same content.
-  }, [filtersJson, userId, scope, legacyStorageKey, filters]);
+    // Intentionally NOT including the raw `filters` object — it would change reference every render.
+  }, [filtersJson, userId, scope, legacyStorageKey]);
 
   const setFilters = useCallback((next: T) => {
     setFiltersState(next);
@@ -185,7 +186,7 @@ export function useAccountFilters<T extends FiltersRecord>(
      
   }, [userId, scope, legacyStorageKey, defaults]);
 
-  return {
+  return useMemo(() => ({
     filters,
     loading,
     isAuthenticated,
@@ -194,7 +195,7 @@ export function useAccountFilters<T extends FiltersRecord>(
     clearFilters,
     restoreFilters,
     legacyStorageKey,
-  };
+  }), [filters, loading, isAuthenticated, setFilters, patchFilters, clearFilters, restoreFilters, legacyStorageKey]);
 }
 
 // --- helpers ---

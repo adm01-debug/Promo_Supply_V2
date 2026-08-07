@@ -232,8 +232,10 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <Scale className="w-4 h-4" />
-          Comparador Visual
+          <span className="inline-flex items-center gap-2">
+            <Scale className="w-4 h-4" />
+            Comparador Visual
+          </span>
         </Button>
       </DialogTrigger>
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, useRef, type ReactNode } from 'react';
 import { toast } from '@/lib/feedbackToast';
 import { ConfirmClearFiltersDialog } from '@/components/filters/ConfirmClearFiltersDialog';
 import { useUndoStore } from '@/stores/undoStore';
@@ -46,11 +46,15 @@ export function useClearFiltersFlow<T>(
   const undo = useUndoStore((s) => s.undo);
   const removeAction = useUndoStore((s) => s.removeAction);
 
-  const runClear = useCallback(async () => {
-    const fields = describeActiveFilters();
-    const snapshot = takeSnapshot();
+  // Store latest versions so callbacks don't need these in their deps.
+  const optsRef = useRef({ describeActiveFilters, takeSnapshot, applySnapshot, performClear });
+  optsRef.current = { describeActiveFilters, takeSnapshot, applySnapshot, performClear };
 
-    const removedKeys = await Promise.resolve(performClear());
+  const runClear = useCallback(async () => {
+    const fields = optsRef.current.describeActiveFilters();
+    const snapshot = optsRef.current.takeSnapshot();
+
+    const removedKeys = await Promise.resolve(optsRef.current.performClear());
     const report = buildClearReport(fields, removedKeys);
 
     if (!report.hadActiveFilters && removedKeys.length === 0) {
@@ -83,10 +87,10 @@ export function useClearFiltersFlow<T>(
     setTimeout(() => {
       if (actionId) removeAction(actionId);
     }, UNDO_TIMEOUT_MS + 200);
-  }, [describeActiveFilters, takeSnapshot, performClear, addAction, undo, removeAction, applySnapshot, screenLabel]);
+  }, [addAction, undo, removeAction, screenLabel]);
 
   const requestClear = useCallback(() => {
-    const fields = describeActiveFilters();
+    const fields = optsRef.current.describeActiveFilters();
     const lines = fields
       .filter((f) => {
         const v = f.value;
@@ -116,14 +120,14 @@ export function useClearFiltersFlow<T>(
 
     setActiveLines(lines);
     setOpen(true);
-  }, [describeActiveFilters, scope, runClear]);
+  }, [scope]);
 
   // Listen for global keyboard shortcut (Ctrl/Cmd + Shift + L) dispatched by useKeyboardShortcuts.
   useEffect(() => {
     const handler = () => requestClear();
     window.addEventListener('request-clear-filters', handler);
     return () => window.removeEventListener('request-clear-filters', handler);
-  }, [requestClear]);
+  }, []);
 
   const handleConfirm = useCallback(
     (skipNextTime: boolean) => {

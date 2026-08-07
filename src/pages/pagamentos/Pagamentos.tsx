@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+﻿import { useState, useMemo, useCallback } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -125,8 +125,8 @@ const Pagamentos = () => {
               <div>
                 <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">Pagamentos</h1>
                 <div className="flex items-center gap-2 mt-2">
-                   <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">{filteredPagamentos.length} Transações</Badge>
-                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">• Cash Flow Control</span>
+                   <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">{filteredPagamentos.length} TransaÃ§Ãµes</Badge>
+                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">â€¢ Cash Flow Control</span>
                 </div>
               </div>
             </div>
@@ -145,7 +145,7 @@ const Pagamentos = () => {
           <PagamentoNotificationsWidget pagamentos={pagamentos} />
           <PagamentoAdvancedKPIs pagamentos={pagamentos} />
 
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             {showDashboard && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
@@ -175,7 +175,7 @@ const Pagamentos = () => {
                   EM ABERTO ({pagamentosPendentes.length})
                 </TabsTrigger>
                 <TabsTrigger value="pago" className="rounded-xl px-8 font-black uppercase text-[10px] tracking-widest data-[state=active]:bg-background data-[state=active]:shadow-lg">
-                  CONCLUÍDOS ({pagamentosPagos.length})
+                  CONCLUÃDOS ({pagamentosPagos.length})
                 </TabsTrigger>
               </TabsList>
               
@@ -192,7 +192,7 @@ const Pagamentos = () => {
                   <TableHeader className="bg-muted/30">
                     <TableRow className="hover:bg-transparent border-border/10">
                       <TableHead className="w-12"><Checkbox checked={selectedIds.length === filteredPagamentos.length && filteredPagamentos.length > 0} onCheckedChange={handleSelectAll} /></TableHead>
-                      <TableHead className="text-[10px] font-black uppercase tracking-widest py-5 pl-4">Transação</TableHead>
+                      <TableHead className="text-[10px] font-black uppercase tracking-widest py-5 pl-4">TransaÃ§Ã£o</TableHead>
                       <TableHead className="text-[10px] font-black uppercase tracking-widest">Fornecedor</TableHead>
                       <TableHead className="text-[10px] font-black uppercase tracking-widest">Vencimento</TableHead>
                       <TableHead className="text-[10px] font-black uppercase tracking-widest text-right">Valor</TableHead>
@@ -251,7 +251,7 @@ const Pagamentos = () => {
                     {filteredPagamentos.length === 0 && (
                       <TableRow>
                         <TableCell colSpan={6} className="py-20">
-                          <IllustratedEmptyState type="payments" title="Sem transações" description="Ajuste os filtros para encontrar o que procura." />
+                          <IllustratedEmptyState type="payments" title="Sem transaÃ§Ãµes" description="Ajuste os filtros para encontrar o que procura." />
                         </TableCell>
                       </TableRow>
                     )}

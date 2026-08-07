@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { 
   BarChart3, 
   AlertTriangle, 
@@ -36,7 +36,7 @@ const SupplierPerformance = () => {
               </h1>
               <div className="flex items-center gap-3 mt-3">
                  <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-sky-500/30 text-sky-400 px-3 py-1">Advanced Performance Analytics</Badge>
-                 <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Neural Network Monitoring</span>
+                 <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">â€¢ Neural Network Monitoring</span>
               </div>
             </div>
           </div>
@@ -63,7 +63,7 @@ const SupplierPerformance = () => {
             </TabsTrigger>
           </TabsList>
 
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             <motion.div
               key={activeTab}
               initial={{ opacity: 0, y: 20 }}

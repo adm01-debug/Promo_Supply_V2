@@ -40,16 +40,8 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, loading = false, children, disabled, ...props }, ref) => {
     const Comp = asChild ? Slot : "button";
-    return (
-      <Comp 
-        className={cn(
-          buttonVariants({ variant, size, className }),
-          loading && "relative text-transparent transition-none hover:text-transparent"
-        )} 
-        ref={ref} 
-        disabled={disabled || loading}
-        {...props}
-      >
+    const inner = (
+      <>
         <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
         {loading && (
@@ -58,6 +50,19 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           </div>
         )}
         <span className="relative z-10 flex items-center gap-2">{children}</span>
+      </>
+    );
+    return (
+      <Comp
+        className={cn(
+          buttonVariants({ variant, size, className }),
+          loading && "relative text-transparent transition-none hover:text-transparent"
+        )}
+        ref={ref}
+        disabled={disabled || loading}
+        {...props}
+      >
+        {asChild ? children : inner}
       </Comp>
     );
   },

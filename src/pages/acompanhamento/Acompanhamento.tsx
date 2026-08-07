@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useRef } from "react";
+﻿import { useState, useMemo, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useAccountFilters } from "@/hooks/useAccountFilters";
 import { useClearFiltersFlow } from "@/hooks/useClearFiltersFlow";
@@ -59,6 +59,10 @@ const Acompanhamento = () => {
   const acct = useAccountFilters("acompanhamento", accountDefaults);
   const hydratedRef = useRef(false);
 
+  // Latest acct in a ref so E2 below doesn't re-run when the hook returns a new object literal.
+  const acctRef = useRef(acct);
+  acctRef.current = acct;
+
   useEffect(() => {
     if (acct.loading || hydratedRef.current) return;
     hydratedRef.current = true;
@@ -68,8 +72,8 @@ const Acompanhamento = () => {
 
   useEffect(() => {
     if (!hydratedRef.current) return;
-    acct.patchFilters({ searchTerm, filtroSLA });
-  }, [searchTerm, filtroSLA, acct]);
+    acctRef.current.patchFilters({ searchTerm, filtroSLA });
+  }, [searchTerm, filtroSLA]);
 
   useRealtimeSubscription({ tables: ['pedidos', 'solicitacoes'] });
 
@@ -167,7 +171,7 @@ const Acompanhamento = () => {
                 <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">Acompanhamento</h1>
                 <div className="flex items-center gap-2 mt-2">
                    <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">{pedidosState.length} Fluxos Ativos</Badge>
-                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">• Supply Pipeline</span>
+                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">â€¢ Supply Pipeline</span>
                 </div>
               </div>
             </div>
@@ -192,7 +196,7 @@ const Acompanhamento = () => {
                 </Button>
               </div>
               <EliteButton variant="default" onClick={() => {}} className="h-11 px-6">
-                 NOVA ATUALIZAÇÃO
+                 NOVA ATUALIZAÃ‡ÃƒO
               </EliteButton>
             </div>
           </div>
@@ -201,9 +205,9 @@ const Acompanhamento = () => {
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {[
               { label: 'ATRASADOS', count: atrasados.length, color: 'text-destructive', bg: 'bg-destructive/10', key: 'atrasados' },
-              { label: 'CRÍTICOS', count: criticos.length, color: 'text-orange-600', bg: 'bg-orange-500/10', key: 'criticos' },
-              { label: 'ATENÇÃO', count: emAtencao.length, color: 'text-amber-600', bg: 'bg-amber-500/10', key: 'atencao' },
-              { label: 'TRÂNSITO', count: pedidosState.filter(p => ['PAGO', 'EM_TRANSITO'].includes(p.status)).length, color: 'text-purple-600', bg: 'bg-purple-500/10', key: 'transito' },
+              { label: 'CRÃTICOS', count: criticos.length, color: 'text-orange-600', bg: 'bg-orange-500/10', key: 'criticos' },
+              { label: 'ATENÃ‡ÃƒO', count: emAtencao.length, color: 'text-amber-600', bg: 'bg-amber-500/10', key: 'atencao' },
+              { label: 'TRÃ‚NSITO', count: pedidosState.filter(p => ['PAGO', 'EM_TRANSITO'].includes(p.status)).length, color: 'text-purple-600', bg: 'bg-purple-500/10', key: 'transito' },
               { label: 'NO PRAZO', count: noPrazo.length, color: 'text-emerald-600', bg: 'bg-emerald-500/10', key: 'prazo' },
             ].map((stat) => (
               <motion.div
@@ -246,7 +250,7 @@ const Acompanhamento = () => {
                       <AlertTriangle className="w-6 h-6" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-black text-destructive uppercase tracking-tight mb-4">Urgência Detectada: Pipeline sob risco</h3>
+                      <h3 className="text-lg font-black text-destructive uppercase tracking-tight mb-4">UrgÃªncia Detectada: Pipeline sob risco</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {[...atrasados, ...criticos].slice(0, 4).map((pedido) => (
                           <div 
@@ -292,12 +296,12 @@ const Acompanhamento = () => {
               </div>
               
               <EliteButton variant="outline" className="h-12 rounded-xl border-dashed">
-                 <Filter className="w-4 h-4 mr-2" /> FILTROS AVANÇADOS
+                 <Filter className="w-4 h-4 mr-2" /> FILTROS AVANÃ‡ADOS
               </EliteButton>
             </div>
           </motion.div>
 
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             {viewMode === 'kanban' ? (
               <motion.div
                 key="kanban"
@@ -317,7 +321,7 @@ const Acompanhamento = () => {
                 className="space-y-4"
               >
                 {pedidosFiltrados.length === 0 ? (
-                  <IllustratedEmptyState type="orders" title="Sem Fluxos Correspondentes" description="Refine seus filtros para encontrar pedidos em trânsito." />
+                  <IllustratedEmptyState type="orders" title="Sem Fluxos Correspondentes" description="Refine seus filtros para encontrar pedidos em trÃ¢nsito." />
                 ) : (
                   <EliteCardGrid columns={1} className="gap-4">
                     {pedidosFiltrados.map((pedido) => (
@@ -414,7 +418,7 @@ const Acompanhamento = () => {
                      </div>
                      <div>
                        <h2 className="text-2xl font-black text-foreground tracking-tight uppercase leading-none">PEDIDO #{pedidoDetalhes.id}</h2>
-                       <p className="text-[11px] font-black text-primary uppercase tracking-[0.2em] mt-2">Dossiê de Acompanhamento</p>
+                       <p className="text-[11px] font-black text-primary uppercase tracking-[0.2em] mt-2">DossiÃª de Acompanhamento</p>
                      </div>
                    </div>
                    <EliteButton variant="ghost" size="icon" onClick={() => setPedidoDetalhes(null)} className="h-12 w-12 rounded-2xl">
@@ -424,7 +428,7 @@ const Acompanhamento = () => {
 
                 <div className="grid grid-cols-2 gap-6">
                    <div className="p-5 rounded-3xl bg-muted/30 border border-border/50">
-                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Produto / Serviço</p>
+                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2">Produto / ServiÃ§o</p>
                      <p className="text-sm font-bold">{pedidoDetalhes.produto}</p>
                    </div>
                    <div className="p-5 rounded-3xl bg-muted/30 border border-border/50">
@@ -444,7 +448,7 @@ const Acompanhamento = () => {
                 
                 <div className="flex gap-4">
                    <EliteButton className="flex-1 h-14 rounded-2xl text-xs font-black uppercase tracking-widest">VISUALIZAR NF-E</EliteButton>
-                   <EliteButton variant="outline" className="flex-1 h-14 rounded-2xl text-xs font-black uppercase tracking-widest">HISTÓRICO DE LOGS</EliteButton>
+                   <EliteButton variant="outline" className="flex-1 h-14 rounded-2xl text-xs font-black uppercase tracking-widest">HISTÃ“RICO DE LOGS</EliteButton>
                 </div>
               </div>
             )}

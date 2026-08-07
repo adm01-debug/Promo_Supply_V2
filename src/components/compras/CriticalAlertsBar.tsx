@@ -178,8 +178,10 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
                   className="flex-1 sm:flex-none h-9 gap-1 font-black uppercase text-[10px] tracking-widest shadow-lg shadow-destructive/20"
                 >
                   <Link to="/solicitacoes">
-                    Resolver Agora
-                    <ChevronRight className="h-4 w-4" />
+                    <span className="inline-flex items-center gap-1">
+                      Resolver Agora
+                      <ChevronRight className="h-4 w-4" />
+                    </span>
                   </Link>
                 </Button>
                 

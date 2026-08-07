@@ -226,11 +226,60 @@ export function useSourcingEventDetails(eventId: string | null) {
       if (!eventId) return null;
       const { data, error } = await supabase
         .from('sourcing_events')
-        .select('*, category:categorias(nome), lots:sourcing_event_lots(*), questions:sourcing_event_questions(*), criteria:sourcing_event_criteria(*), invitations:sourcing_invitations(*, fornecedor:fornecedores(razao_social)), responses:sourcing_responses(*, fornecedor:fornecedores(razao_social))')
+        .select('*')
         .eq('id', eventId)
         .single();
       if (error) throw error;
-      return data as SourcingEvent;
+      if (!data) return null;
+
+      // Fetch related child rows separately to avoid nested embed FK issues
+      const eventIdValue = (data as { id: string }).id;
+      const [categoryRes, lotsRes, questionsRes, criteriaRes, invitationsRes, responsesRes] = await Promise.all([
+        (data as { category_id?: string | null }).category_id
+          ? supabase.from('categorias').select('id, nome').eq('id', (data as { category_id: string }).category_id).maybeSingle()
+          : Promise.resolve({ data: null, error: null }),
+        supabase.from('sourcing_event_lots').select('*').eq('event_id', eventIdValue),
+        supabase.from('sourcing_event_questions').select('*').eq('event_id', eventIdValue),
+        supabase.from('sourcing_event_criteria').select('*').eq('event_id', eventIdValue),
+        supabase.from('sourcing_invitations').select('*').eq('event_id', eventIdValue),
+        supabase.from('sourcing_responses').select('*').eq('event_id', eventIdValue),
+      ]);
+
+      // Collect fornecedor ids from invitations + responses
+      const fornecedorIds = [
+        ...new Set([
+          ...((invitationsRes.data ?? []) as Array<{ fornecedor_id?: string | null }>)
+            .map(i => i.fornecedor_id).filter(Boolean),
+          ...((responsesRes.data ?? []) as Array<{ fornecedor_id?: string | null }>)
+            .map(r => r.fornecedor_id).filter(Boolean),
+        ]),
+      ] as string[];
+
+      const fornecedoresRes = fornecedorIds.length
+        ? await supabase.from('fornecedores').select('id, razao_social').in('id', fornecedorIds)
+        : { data: [] as Array<{ id: string; razao_social: string }>, error: null };
+
+      const fornecedoresMap = new Map((fornecedoresRes.data || []).map(f => [f.id, f]));
+
+      return {
+        ...(data as Record<string, unknown>),
+        category: categoryRes.data,
+        lots: lotsRes.data ?? [],
+        questions: questionsRes.data ?? [],
+        criteria: criteriaRes.data ?? [],
+        invitations: ((invitationsRes.data ?? []) as Array<Record<string, unknown>>).map(inv => ({
+          ...inv,
+          fornecedor: (inv as { fornecedor_id?: string | null }).fornecedor_id
+            ? fornecedoresMap.get((inv as { fornecedor_id: string }).fornecedor_id) ?? null
+            : null,
+        })),
+        responses: ((responsesRes.data ?? []) as Array<Record<string, unknown>>).map(resp => ({
+          ...resp,
+          fornecedor: (resp as { fornecedor_id?: string | null }).fornecedor_id
+            ? fornecedoresMap.get((resp as { fornecedor_id: string }).fornecedor_id) ?? null
+            : null,
+        })),
+      } as SourcingEvent;
     },
     enabled: !!user && !!eventId,
   });

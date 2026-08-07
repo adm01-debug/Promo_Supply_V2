@@ -345,8 +345,10 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <Scale className="w-4 h-4" />
-          Comparar Cotações
+          <span className="inline-flex items-center gap-2">
+            <Scale className="w-4 h-4" />
+            Comparar Cotações
+          </span>
         </Button>
       </DialogTrigger>
 

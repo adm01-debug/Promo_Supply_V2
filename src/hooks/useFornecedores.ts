@@ -36,20 +36,20 @@ export interface FornecedorFilters {
 }
 
 export function useFornecedores(filters?: FornecedorFilters) {
-  const { user, tenantId } = useAuth();
+  const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
-  const queryKey = ['fornecedores', user?.id, tenantId, filters?.tipo, filters?.status, filters?.search];
+  const queryKey = ['fornecedores', user?.id, tenantId, organizationId, filters?.tipo, filters?.status, filters?.search];
 
   const { data: fornecedores = [], isLoading: loading, error, refetch } = useQuery({
     queryKey,
     queryFn: async () => {
       if (!tenantId) return [];
-      
+
       let query = supabase
         .from('fornecedores')
         .select('id, codigo, razao_social, nome_fantasia, cnpj, email, telefone, endereco, cidade, estado, cep, website, tipo, segmento, status, avaliacao, condicoes_pagamento, prazo_medio_entrega, integrado_api, api_endpoint, observacoes, limite_credito, saldo_comprometido, created_at, updated_at, created_by')
         .order('razao_social', { ascending: true })
-        .eq('organization_id', tenantId);
+        .eq('organization_id', organizationId || tenantId);
 
       if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);

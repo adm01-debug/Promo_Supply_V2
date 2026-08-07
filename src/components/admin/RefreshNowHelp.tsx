@@ -1,6 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { badgeVariants } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { HelpCircle, RefreshCw, KeyRound, CloudOff } from "lucide-react";
+
+// Badge rendered as <span> so it can live inside a <p> without triggering
+// validateDOMNesting (a <div> is not allowed as a descendant of <p>).
+const InlineBadge = ({ className, ...props }: React.HTMLAttributes<HTMLSpanElement>) => (
+  <span className={cn(badgeVariants({ variant: "outline" }), "font-mono text-xs", className)} {...props} />
+);
 
 const RefreshNowHelp = () => {
   return (
@@ -35,12 +42,12 @@ const RefreshNowHelp = () => {
             Segredo necessário
           </div>
           <p className="text-muted-foreground leading-relaxed">
-            A função exige o segredo <Badge variant="outline" className="font-mono text-xs">GITHUB_REPO_RAW_BASE</Badge>{" "}
+            A função exige o segredo <InlineBadge>GITHUB_REPO_RAW_BASE</InlineBadge>{" "}
             apontando para a base raw do repositório (ex.:{" "}
             <code className="font-mono text-xs">https://raw.githubusercontent.com/&lt;owner&gt;/&lt;repo&gt;/main</code>).
             Sem ele o POST devolve <code className="font-mono text-xs">500</code> com a mensagem
             "GITHUB_REPO_RAW_BASE secret not configured". Para o botão "Atualizar & commitar no repo" é
-            preciso também <Badge variant="outline" className="font-mono text-xs">GITHUB_DISPATCH_TOKEN</Badge>{" "}
+            preciso também <InlineBadge>GITHUB_DISPATCH_TOKEN</InlineBadge>{" "}
             (PAT com permissão de workflow dispatch).
           </p>
         </section>

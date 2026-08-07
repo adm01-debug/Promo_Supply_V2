@@ -390,7 +390,10 @@ export const SourcingHistoryConsole = () => {
                         <Sheet>
                           <SheetTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 text-xs gap-2 hover:bg-primary/10 hover:text-primary">
-                              Ver Detalhes do Sourcing <ArrowRight className="w-3 h-3" />
+                              <span className="inline-flex items-center gap-2">
+                                Ver Detalhes do Sourcing
+                                <ArrowRight className="w-3 h-3" />
+                              </span>
                             </Button>
                           </SheetTrigger>
                           <SheetContent className="sm:max-w-xl">

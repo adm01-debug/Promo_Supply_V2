@@ -395,12 +395,14 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
                       !formData.start_date && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.start_date ? (
-                      format(formData.start_date, "dd/MM/yyyy", { locale: ptBR })
-                    ) : (
-                      "Selecione"
-                    )}
+                    <span className="inline-flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4" />
+                      {formData.start_date ? (
+                        format(formData.start_date, "dd/MM/yyyy", { locale: ptBR })
+                      ) : (
+                        "Selecione"
+                      )}
+                    </span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -424,12 +426,14 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
                       !formData.end_date && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.end_date ? (
-                      format(formData.end_date, "dd/MM/yyyy", { locale: ptBR })
-                    ) : (
-                      "Selecione"
-                    )}
+                    <span className="inline-flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4" />
+                      {formData.end_date ? (
+                        format(formData.end_date, "dd/MM/yyyy", { locale: ptBR })
+                      ) : (
+                        "Selecione"
+                      )}
+                    </span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">

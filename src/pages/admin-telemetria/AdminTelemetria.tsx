@@ -216,9 +216,9 @@ export default function AdminTelemetriaPage() {
               </Select>
               {timeFilter === "custom" && (
                 <div className="flex items-center gap-2">
-                  <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><CalendarIcon className="h-3 w-3 mr-1" />{customDateFrom ? format(customDateFrom, "dd/MM/yyyy") : "De"}</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateFrom} onSelect={setCustomDateFrom} /></PopoverContent></Popover>
+                  <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><span className="inline-flex items-center gap-1"><CalendarIcon className="h-3 w-3" />{customDateFrom ? format(customDateFrom, "dd/MM/yyyy") : "De"}</span></Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateFrom} onSelect={setCustomDateFrom} /></PopoverContent></Popover>
                   <span className="text-xs text-muted-foreground">até</span>
-                  <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><CalendarIcon className="h-3 w-3 mr-1" />{customDateTo ? format(customDateTo, "dd/MM/yyyy") : "Até"}</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateTo} onSelect={setCustomDateTo} /></PopoverContent></Popover>
+                  <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><span className="inline-flex items-center gap-1"><CalendarIcon className="h-3 w-3" />{customDateTo ? format(customDateTo, "dd/MM/yyyy") : "Até"}</span></Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateTo} onSelect={setCustomDateTo} /></PopoverContent></Popover>
                 </div>
               )}
               <span className="text-xs text-muted-foreground ml-auto">{rows.length} registros · auto-refresh 30s</span>

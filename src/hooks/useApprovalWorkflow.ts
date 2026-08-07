@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { toast } from '@/lib/feedbackToast';
@@ -44,6 +44,13 @@ export const useApprovalWorkflow = () => {
   const historyApi = useApprovalHistory();
   const { pushToDLQ, dlqEntries, retryableEntries, retryEntry, removeEntry, clearDLQ } = useWorkflowDLQ();
 
+  // Stable refs to rulesApi methods (rulesApi object literal is rebuilt each render
+  // — including it in a useEffect dep array triggers an infinite re-run).
+  const fetchRulesRef = useRef(rulesApi.fetchRules);
+  const fetchDelegationsRef = useRef(rulesApi.fetchDelegations);
+  fetchRulesRef.current = rulesApi.fetchRules;
+  fetchDelegationsRef.current = rulesApi.fetchDelegations;
+
   // ── Workflow / step fetches ──────────────────────────────────────────────
 
   const fetchPendingWorkflows = useCallback(async () => {
@@ -51,7 +58,7 @@ export const useApprovalWorkflow = () => {
     try {
       const { data, error } = await supabase
         .from('approval_workflows')
-        .select('*, solicitacoes:solicitacoes(numero, titulo, prioridade, solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)), categorias:categorias(nome)')
+        .select('*, solicitacoes:solicitacoes(numero, titulo, prioridade)')
         .eq('status', 'pending')
         .eq('organization_id', organizationId)
         .order('created_at', { ascending: false });
@@ -294,12 +301,12 @@ export const useApprovalWorkflow = () => {
 
   useEffect(() => {
     void Promise.all([
-      rulesApi.fetchRules(),
-      rulesApi.fetchDelegations(),
+      fetchRulesRef.current(),
+      fetchDelegationsRef.current(),
       fetchPendingWorkflows(),
       fetchPendingSteps(),
     ]);
-  }, [rulesApi, fetchPendingWorkflows, fetchPendingSteps]);
+  }, [fetchPendingWorkflows, fetchPendingSteps]);
 
   useEffect(() => {
     latestCheckEscalations = checkEscalations;

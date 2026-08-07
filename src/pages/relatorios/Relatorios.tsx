@@ -1,4 +1,4 @@
-import { useState, useMemo, lazy, Suspense } from "react";
+﻿import { useState, useMemo, lazy, Suspense } from "react";
 import {
   BarChart3,
   TrendingUp,
@@ -155,7 +155,7 @@ const Relatorios = () => {
                 <h1 className="text-3xl font-black text-foreground tracking-tight uppercase leading-none">Analytics</h1>
                 <div className="flex items-center gap-2 mt-2">
                    <Badge variant="outline" className="text-[10px] font-bold uppercase tracking-widest">Business Intelligence</Badge>
-                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">• Deep Insights</span>
+                   <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-50">â€¢ Deep Insights</span>
                 </div>
               </div>
             </div>
@@ -167,7 +167,7 @@ const Relatorios = () => {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
-                  <SelectItem value="1m">Último Mês</SelectItem>
+                  <SelectItem value="1m">Ãšltimo MÃªs</SelectItem>
                   <SelectItem value="3m">3 Meses</SelectItem>
                   <SelectItem value="6m">6 Meses</SelectItem>
                   <SelectItem value="12m">12 Meses</SelectItem>
@@ -183,11 +183,11 @@ const Relatorios = () => {
             <div className="overflow-x-auto pb-2 scrollbar-none">
               <TabsList className="bg-muted/30 p-1 rounded-2xl h-12 inline-flex w-full md:w-auto">
                 {[
-                  { id: 'geral', label: 'VISÃO GERAL', icon: BarChart3 },
+                  { id: 'geral', label: 'VISÃƒO GERAL', icon: BarChart3 },
                   { id: 'spend', label: 'SPEND ANALYTICS', icon: Layers },
-                  { id: 'kpis', label: 'KPIs AVANÇADOS', icon: TrendingUp },
+                  { id: 'kpis', label: 'KPIs AVANÃ‡ADOS', icon: TrendingUp },
                   { id: 'cost_centers', label: 'CENTROS CUSTO', icon: Building2 },
-                  { id: 'estrategia', label: 'ESTRATÉGIA', icon: Target },
+                  { id: 'estrategia', label: 'ESTRATÃ‰GIA', icon: Target },
                   { id: 'previsao', label: 'IA FORECAST', icon: Sparkles },
                 ].map(tab => (
                   <TabsTrigger key={tab.id} value={tab.id} className="rounded-xl px-6 font-black uppercase text-[9px] tracking-widest data-[state=active]:bg-background data-[state=active]:shadow-lg gap-2">
@@ -197,7 +197,7 @@ const Relatorios = () => {
               </TabsList>
             </div>
 
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="sync">
               <motion.div
                 key={activeTab}
                 initial={{ opacity: 0, y: 10 }}
@@ -222,8 +222,8 @@ const Relatorios = () => {
                          <div className="absolute top-0 right-0 p-6 opacity-5"><PieChartIcon className="w-32 h-32" /></div>
                          <div className="w-16 h-16 rounded-3xl bg-primary/10 flex items-center justify-center text-primary"><Info className="w-8 h-8" /></div>
                          <div>
-                           <h3 className="text-lg font-black uppercase tracking-tight mb-2">Relatórios Customizados</h3>
-                           <p className="text-xs text-muted-foreground leading-relaxed max-w-[200px]">Precisa de uma visão específica? Solicite ao suporte técnico ou use a API.</p>
+                           <h3 className="text-lg font-black uppercase tracking-tight mb-2">RelatÃ³rios Customizados</h3>
+                           <p className="text-xs text-muted-foreground leading-relaxed max-w-[200px]">Precisa de uma visÃ£o especÃ­fica? Solicite ao suporte tÃ©cnico ou use a API.</p>
                          </div>
                          <EliteButton variant="outline" className="rounded-2xl px-8">ABRIR CHAMADO</EliteButton>
                        </Card>

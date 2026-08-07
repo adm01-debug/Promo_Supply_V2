@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { 
@@ -212,7 +212,7 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
       />
 
       {/* Spotlight Highlight */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         <Spotlight 
           key={currentStep}
           rect={highlightRect} 
@@ -295,7 +295,7 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
         })()}
 
         {/* Main current card */}
-        <AnimatePresence mode="wait" custom={direction}>
+        <AnimatePresence mode="sync" custom={direction}>
           <motion.div
             key={currentStep}
             custom={direction}
@@ -410,7 +410,7 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
                   transition={{ delay: 0.5 }}
                   className="text-xs text-muted-foreground/60 text-center mt-2"
                 >
-                  ← Deslize para navegar →
+                  â† Deslize para navegar â†’
                 </motion.p>
               )}
             </div>
@@ -444,7 +444,7 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
                     </>
                   ) : (
                     <>
-                      Próximo
+                      PrÃ³ximo
                       <ChevronRight className="w-4 h-4" />
                     </>
                   )}

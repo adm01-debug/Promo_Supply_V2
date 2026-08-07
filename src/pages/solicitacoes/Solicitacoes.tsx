@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo, useEffect, useRef } from "react";
+﻿import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useAccountFilters } from "@/hooks/useAccountFilters";
 import { useClearFiltersFlow } from "@/hooks/useClearFiltersFlow";
 import { 
@@ -71,6 +71,9 @@ const Solicitacoes = () => {
   }), []);
   const acct = useAccountFilters("solicitacoes", accountDefaults);
   const hydratedRef = useRef(false);
+  // Latest acct in a ref so E2 below doesn't re-run when the hook returns a new object literal.
+  const acctRef = useRef(acct);
+  acctRef.current = acct;
 
   useEffect(() => {
     if (acct.loading || hydratedRef.current) return;
@@ -83,8 +86,8 @@ const Solicitacoes = () => {
 
   useEffect(() => {
     if (!hydratedRef.current) return;
-    acct.patchFilters({ searchTerm, statusFilter, tipoFilter, advancedFilters });
-  }, [searchTerm, statusFilter, tipoFilter, advancedFilters, acct]);
+    acctRef.current.patchFilters({ searchTerm, statusFilter, tipoFilter, advancedFilters });
+  }, [searchTerm, statusFilter, tipoFilter, advancedFilters]);
 
   const { solicitacoes, loading, updateStatus, bulkDelete, bulkUpdateStatus, refetch } = useSolicitacoes({
     search: searchTerm || undefined,
@@ -211,7 +214,7 @@ const Solicitacoes = () => {
                 <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Fluxo de Compras</h1>
                 <div className="flex items-center gap-3 mt-3">
                    <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-violet-500/30 text-violet-300 px-3 py-1">{filteredSolicitacoes.length} Registros Ativos</Badge>
-                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Ciclo Total de Suprimentos</span>
+                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">â€¢ Ciclo Total de Suprimentos</span>
                 </div>
               </div>
             </div>
@@ -220,19 +223,21 @@ const Solicitacoes = () => {
               <div className="bg-white/[0.03] p-1 rounded-2xl border border-white/5 flex">
                 <Sheet>
                   <SheetTrigger asChild>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
+                    <Button
+                      variant="ghost"
+                      size="sm"
                       className="rounded-xl px-5 font-black text-[10px] uppercase tracking-widest h-11 gap-2 text-zinc-400 hover:text-white"
                     >
-                      <GitBranch className="w-4 h-4" /> REGRAS
+                      <span className="inline-flex items-center gap-2">
+                        <GitBranch className="w-4 h-4" /> REGRAS
+                      </span>
                     </Button>
                   </SheetTrigger>
                   <SheetContent className="sm:max-w-4xl bg-[#0a0a0f] border-white/10 overflow-y-auto">
                     <SheetHeader className="mb-6">
-                      <SheetTitle className="text-2xl font-black text-white uppercase tracking-tight">Matriz de Aprovação</SheetTitle>
+                      <SheetTitle className="text-2xl font-black text-white uppercase tracking-tight">Matriz de AprovaÃ§Ã£o</SheetTitle>
                       <SheetDescription className="text-zinc-500 font-bold uppercase text-[10px] tracking-widest">
-                        Configure as regras e delegações para o fluxo de aprovação
+                        Configure as regras e delegaÃ§Ãµes para o fluxo de aprovaÃ§Ã£o
                       </SheetDescription>
                     </SheetHeader>
                     <DynamicApprovalMatrix />
@@ -268,13 +273,13 @@ const Solicitacoes = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <ExecutiveMetricCard
-              title="Total de Solicitações"
+              title="Total de SolicitaÃ§Ãµes"
               value={stats.total}
               icon={Package}
               delay={0}
             />
             <ExecutiveMetricCard
-              title="Aguardando Cotação"
+              title="Aguardando CotaÃ§Ã£o"
               value={stats.pending}
               icon={BarChart3}
               delay={1}
@@ -317,11 +322,11 @@ const Solicitacoes = () => {
                     </div>
                   </SelectTrigger>
                   <SelectContent className="bg-[#0a0a0f] border-white/10 backdrop-blur-3xl rounded-2xl">
-                    <SelectItem value="todas" className="text-xs font-bold py-2.5">Todas as Solicitações</SelectItem>
+                    <SelectItem value="todas" className="text-xs font-bold py-2.5">Todas as SolicitaÃ§Ãµes</SelectItem>
                     <SelectItem value="AGUARDANDO_COTACAO" className="text-xs font-bold py-2.5">Pendentes</SelectItem>
-                    <SelectItem value="EM_COTACAO" className="text-xs font-bold py-2.5">Em Cotação</SelectItem>
+                    <SelectItem value="EM_COTACAO" className="text-xs font-bold py-2.5">Em CotaÃ§Ã£o</SelectItem>
                     <SelectItem value="FORNECEDOR_SELECIONADO" className="text-xs font-bold py-2.5">Aprovadas</SelectItem>
-                    <SelectItem value="OWN" className="text-xs font-bold py-2.5 text-violet-400">Minhas Solicitações</SelectItem>
+                    <SelectItem value="OWN" className="text-xs font-bold py-2.5 text-violet-400">Minhas SolicitaÃ§Ãµes</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -341,7 +346,7 @@ const Solicitacoes = () => {
             </div>
           </motion.div>
 
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             {viewMode === 'kanban' ? (
               <motion.div
                 key="kanban"
@@ -372,12 +377,12 @@ const Solicitacoes = () => {
                   <div className="flex items-center justify-between mb-8">
                     <div>
                       <h4 className="text-sm font-black text-white uppercase tracking-widest">Matriz de Prioridade Neural</h4>
-                      <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">Crítico vs Impacto Financeiro</p>
+                      <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-1">CrÃ­tico vs Impacto Financeiro</p>
                     </div>
                     <Badge className="bg-violet-500/10 text-violet-400 border-none font-black text-[10px]">IA Analysis</Badge>
                   </div>
                   <div className="h-64 w-full border-l-2 border-b-2 border-white/5 relative bg-gradient-to-tr from-rose-500/5 via-transparent to-emerald-500/5">
-                    <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 -rotate-90 text-[8px] font-black uppercase text-zinc-600 tracking-widest">URGÊNCIA NEURAL</div>
+                    <div className="absolute left-[-40px] top-1/2 -translate-y-1/2 -rotate-90 text-[8px] font-black uppercase text-zinc-600 tracking-widest">URGÃŠNCIA NEURAL</div>
                     <div className="absolute bottom-[-25px] left-1/2 -translate-x-1/2 text-[8px] font-black uppercase text-zinc-600 tracking-widest">IMPACTO FINANCEIRO</div>
                     
                     {/* Simplified Scatter Plot Dots */}

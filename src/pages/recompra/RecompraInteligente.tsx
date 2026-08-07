@@ -20,12 +20,50 @@ const RecompraInteligente = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("repurchase_suggestions")
-        .select("*, produto:produtos(nome, codigo, unidade), fornecedor:fornecedores(razao_social, nome_fantasia)")
+        .select("*")
         .eq("status", "sugerido")
         .order("proxima_compra_estimada", { ascending: true })
         .limit(50);
       if (error) throw error;
-      return data;
+      if (!data || data.length === 0) return [];
+
+      // Fetch related produto/fornecedor names separately to avoid embed FK issues
+      const produtoIds = [...new Set(data.map((s: { produto_id?: string | null }) => s.produto_id).filter(Boolean))] as string[];
+      const fornecedorIds = [...new Set(data.map((s: { fornecedor_id?: string | null }) => s.fornecedor_id).filter(Boolean))] as string[];
+
+      const [produtosRes, fornecedoresRes] = await Promise.all([
+        produtoIds.length
+          ? supabase.from("produtos").select("id, nome, codigo, unidade").in("id", produtoIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; nome: string; codigo: string | null; unidade: string | null }>, error: null }),
+        fornecedorIds.length
+          ? supabase.from("fornecedores").select("id, razao_social, nome_fantasia").in("id", fornecedorIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; razao_social: string; nome_fantasia: string | null }>, error: null }),
+      ]);
+
+      const produtosMap = new Map((produtosRes.data || []).map((p) => [p.id, p]));
+      const fornecedoresMap = new Map((fornecedoresRes.data || []).map((f) => [f.id, f]));
+
+      type Row = {
+        id: string;
+        produto_id?: string | null;
+        fornecedor_id?: string | null;
+        quantidade_sugerida?: number;
+        preco_estimado?: number | null;
+        frequencia_dias?: number | null;
+        proxima_compra_estimada?: string | null;
+        confianca_score?: number | null;
+        status?: string;
+      };
+      type Enriched = Row & {
+        produto: { id: string; nome: string; codigo: string | null; unidade: string | null } | null;
+        fornecedor: { id: string; razao_social: string; nome_fantasia: string | null } | null;
+      };
+
+      return (data as Row[]).map((s) => ({
+        ...s,
+        produto: s.produto_id ? produtosMap.get(s.produto_id) ?? null : null,
+        fornecedor: s.fornecedor_id ? fornecedoresMap.get(s.fornecedor_id) ?? null : null,
+      })) as Enriched[];
     },
     enabled: Boolean(activeTenantId),
   });

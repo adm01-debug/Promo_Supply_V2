@@ -96,7 +96,6 @@ interface DashboardResponse {
   open_alerts?: OpenAlertRow[];
 }
 
-
 const severityColors: Record<string, string> = {
   EMERGENCY: "hsl(var(--destructive))",
   CRITICAL: "#dc2626",
@@ -120,13 +119,115 @@ function SeverityBadge({ severity }: { severity: string }) {
   return <Badge className={cls}>{severity}</Badge>;
 }
 
+// Pivots timeseries rows into the format the chart expects
+function pivotTimeseries(rows: Array<{ day: string; severity: string; cnt: number }>): TimeseriesRow[] {
+  const tsMap = new Map<string, Record<string, string | number>>();
+  for (const row of rows) {
+    const key = String(row.day);
+    const bucket = tsMap.get(key) ?? { day: key };
+    bucket[row.severity] = Number(row.cnt);
+    tsMap.set(key, bucket);
+  }
+  return Array.from(tsMap.values()).sort((a, b) =>
+    String(a.day).localeCompare(String(b.day)),
+  );
+}
+
 async function fetchHealth(): Promise<DashboardResponse> {
-  const { data, error } = await supabase.functions.invoke<DashboardResponse>("health-dashboard", {
-    method: "GET",
-  });
-  if (error) throw error;
-  if (!data) throw new Error("Resposta vazia do endpoint");
-  return data;
+  const [
+    overviewRes,
+    runsRes,
+    sev24hRes,
+    tsRes,
+    mttrRes,
+    noisyRes,
+    openRes,
+  ] = await Promise.all([
+    // v_system_health_overview: open alerts grouped by type (no tenant filter — system-wide)
+    supabase
+      .from("v_system_health_overview")
+      .select("alert_type, severity, total_open, last_24h, last_1h, oldest_open, most_recent")
+      .then(({ data, error }) => {
+        if (error) throw new Error(error.message);
+        return data!.map((r) => ({
+          alert_type: r.alert_type,
+          severity: r.severity,
+          open_count: Number(r.total_open),
+          last_1h: Number(r.last_1h),
+          last_24h: Number(r.last_24h),
+          oldest_open_at: r.oldest_open ?? null,
+          newest_open_at: r.most_recent ?? null,
+        }));
+      }),
+
+    // Last 10 health scan runs
+    supabase
+      .from("health_scan_runs")
+      .select("id, started_at, finished_at, duration_ms, ok_count, failed_count, results")
+      .order("started_at", { ascending: false })
+      .limit(10)
+      .then(({ data, error }) => {
+        if (error) throw new Error(error.message);
+        return data ?? [];
+      }),
+
+    // Severity counts for last 24h (open alerts created in that window)
+    supabase
+      .from("system_alerts")
+      .select("severity")
+      .is("resolved_at", null)
+      .gte("created_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      .then(({ data, error }) => {
+        if (error) throw new Error(error.message);
+        const counts: SeverityCounts = {};
+        for (const row of data ?? []) {
+          const sev = (row as { severity: string }).severity ?? "UNKNOWN";
+          counts[sev] = (counts[sev] ?? 0) + 1;
+        }
+        return counts;
+      }),
+
+    // Timeseries 7d
+    supabase.rpc("alerts_severity_timeseries", { days: 7 }).then(({ data, error }) => {
+      if (error) throw new Error(error.message);
+      return pivotTimeseries(data as Array<{ day: string; severity: string; cnt: number }>);
+    }),
+
+    // MTTR 7d
+    supabase.rpc("alerts_mttr_by_type", { days: 7 }).then(({ data, error }) => {
+      if (error) throw new Error(error.message);
+      return data ?? [];
+    }),
+
+    // Noisy scanners 24h
+    supabase.rpc("alerts_noisy_scanners", { days: 1 }).then(({ data, error }) => {
+      if (error) throw new Error(error.message);
+      return data ?? [];
+    }),
+
+    // Open alerts list (system-wide — no tenant filter)
+    supabase
+      .from("system_alerts")
+      .select("id, alert_type, severity, message, created_at, metadata")
+      .is("resolved_at", null)
+      .order("created_at", { ascending: false })
+      .limit(50)
+      .then(({ data, error }) => {
+        if (error) throw new Error(error.message);
+        return data ?? [];
+      }),
+  ]);
+
+  return {
+    generated_at: new Date().toISOString(),
+    open_alerts_by_type: overviewRes,
+    last_runs: runsRes,
+    severity_counts_24h: sev24hRes,
+    severity_timeseries_7d: tsRes,
+    mttr_by_type_7d: mttrRes,
+    noisy_scanners_24h: noisyRes,
+    open_alerts: openRes,
+  };
 }
 
 export default function HealthDashboard() {

@@ -376,15 +376,19 @@ export function BulkOperationsPreview({
                   >
                     <CollapsibleTrigger asChild>
                       <Button variant="ghost" className="w-full justify-between p-2">
-                        <span className="flex items-center gap-2">
+                        <span className="inline-flex items-center gap-2">
                           <Eye className="w-4 h-4" />
-                          Preview das alterações ({previewChanges.length} mudanças)
+                          <span className="flex items-center gap-2">
+                            Preview das alterações ({previewChanges.length} mudanças)
+                          </span>
                         </span>
-                        {expandedGroups.has('affected') ? (
-                          <ChevronUp className="w-4 h-4" />
-                        ) : (
-                          <ChevronDown className="w-4 h-4" />
-                        )}
+                        <span className="inline-flex items-center">
+                          {expandedGroups.has('affected') ? (
+                            <ChevronUp className="w-4 h-4" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4" />
+                          )}
+                        </span>
                       </Button>
                     </CollapsibleTrigger>
                     <CollapsibleContent>

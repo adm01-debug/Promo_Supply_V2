@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/features/auth';
@@ -55,6 +55,8 @@ export function useRealPushNotifications() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [permissionStatus, setPermissionStatus] = useState<NotificationPermission>('default');
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
 
   // Check browser notification permission
   useEffect(() => {
@@ -119,7 +121,7 @@ export function useRealPushNotifications() {
   // Request browser notification permission
   const requestPermission = useCallback(async () => {
     if (!('Notification' in window)) {
-      toast({
+      toastRef.current({
         title: 'Não suportado',
         description: 'Seu navegador não suporta notificações push.',
         variant: 'destructive',
@@ -131,7 +133,7 @@ export function useRealPushNotifications() {
     setPermissionStatus(permission);
 
     if (permission === 'granted') {
-      toast({
+      toastRef.current({
         title: 'Notificações ativadas',
         description: 'Você receberá notificações push do sistema.',
       });
@@ -141,7 +143,7 @@ export function useRealPushNotifications() {
     }
 
     return permission;
-  }, [toast, registerPushSubscription]);
+  }, [registerPushSubscription]);
 
   // Load notifications
   const loadNotifications = useCallback(async () => {
@@ -352,6 +354,13 @@ export function useRealPushNotifications() {
     if (preferences?.sound_enabled && notification.priority !== 'low') {
       playNotificationSound(notification.priority);
     }
+
+    // Show toast via stable ref to avoid unstable-dep loops
+    toastRef.current({
+      title: notification.title,
+      description: notification.message,
+      variant: notification.priority === 'critical' ? 'destructive' : 'default',
+    });
   }, [permissionStatus, preferences]);
 
   // Initial load
@@ -396,15 +405,8 @@ export function useRealPushNotifications() {
             setNotifications(prev => [newNotification, ...prev].slice(0, 100));
             setUnreadCount(prev => prev + 1);
 
-            // Send browser notification
+            // Send browser notification + toast (toast handled inside sendBrowserNotification)
             sendBrowserNotification(newNotification);
-
-            // Show toast
-            toast({
-              title: newNotification.title,
-              description: newNotification.message,
-              variant: newNotification.priority === 'critical' ? 'destructive' : 'default',
-            });
           }
         )
         .subscribe();
@@ -417,7 +419,7 @@ export function useRealPushNotifications() {
         supabase.removeChannel(channel);
       }
     };
-  }, [user, sendBrowserNotification, toast]);
+  }, [user, sendBrowserNotification]);
 
   return {
     notifications,

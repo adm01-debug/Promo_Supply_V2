@@ -59,7 +59,6 @@ export const UrgencyDetailsSheet = ({
           *,
           fornecedor:fornecedores(razao_social, nome_fantasia),
           categoria:categorias(nome),
-          solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name),
           cotacoes(id, created_at, valor_total, fornecedores(razao_social))
         `)
         .eq('id', itemId)

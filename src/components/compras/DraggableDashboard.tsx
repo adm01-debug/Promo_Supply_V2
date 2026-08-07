@@ -321,8 +321,10 @@ export const DraggableDashboard = forwardRef<HTMLDivElement, DraggableDashboardP
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm" className="gap-2">
-                      <Plus className="w-4 h-4" />
-                      Adicionar ({hiddenWidgets.length})
+                      <span className="inline-flex items-center gap-1">
+                        <Plus className="w-4 h-4" />
+                        Adicionar ({hiddenWidgets.length})
+                      </span>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">

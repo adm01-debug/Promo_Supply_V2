@@ -330,13 +330,17 @@ export const SolicitacaoCard = ({
             >
               {actions.primary.href ? (
                 <Link to={`${actions.primary.href}?id=${solicitacao.id}`}>
-                  <actions.primary.icon className="w-4 h-4 mr-2" />
-                  {actions.primary.label}
+                  <span className="inline-flex items-center gap-2">
+                    <actions.primary.icon className="w-4 h-4" />
+                    {actions.primary.label}
+                  </span>
                 </Link>
               ) : (
                 <button>
-                  <actions.primary.icon className="w-4 h-4 mr-2" />
-                  {actions.primary.label}
+                  <span className="inline-flex items-center gap-2">
+                    <actions.primary.icon className="w-4 h-4" />
+                    {actions.primary.label}
+                  </span>
                 </button>
               )}
             </Button>

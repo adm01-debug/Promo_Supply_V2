@@ -67,12 +67,16 @@ export const SupplierThresholdConfig = ({
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
       <CollapsibleTrigger asChild>
         <Button variant="ghost" size="sm" className="w-full justify-between gap-2 h-auto py-2">
-          <span className="text-sm font-medium">Configurações por Fornecedor</span>
-          {isOpen ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
+          <span className="inline-flex items-center gap-2">
+            <span className="text-sm font-medium">Configurações por Fornecedor</span>
+          </span>
+          <span className="inline-flex items-center">
+            {isOpen ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
+          </span>
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent className="space-y-3 pt-3">

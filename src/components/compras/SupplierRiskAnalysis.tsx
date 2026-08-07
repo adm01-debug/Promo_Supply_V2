@@ -173,8 +173,10 @@ export function SupplierRiskAnalysis() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <Shield className="h-4 w-4" />
-          Análise de Risco
+          <span className="inline-flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Análise de Risco
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent aria-describedby="dialog-desc" className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">

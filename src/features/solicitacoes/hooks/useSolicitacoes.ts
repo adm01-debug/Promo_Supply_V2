@@ -66,9 +66,7 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
       created_at, updated_at,
       fornecedor:fornecedores(razao_social, nome_fantasia),
       categoria:categorias(nome),
-      cost_center:cost_centers(name, code),
-      aprovador:profiles!solicitacoes_aprovador_id_fkey(full_name),
-      solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)
+      cost_center:cost_centers(name, code)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
     .eq('organization_id', organizationId)

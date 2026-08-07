@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   Package, Check, AlertCircle, Loader2, Search, Camera,
   WifiOff, Wifi, RefreshCw, ChevronRight, CheckCircle2,
@@ -35,6 +35,8 @@ import {
 export default function RecebimentoOffline() {
   const { user } = useAuth();
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const isOnlineRef = useRef(isOnline);
+  isOnlineRef.current = isOnline;
   const [orders, setOrders] = useState<PendingOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -60,7 +62,7 @@ export default function RecebimentoOffline() {
 
   // Fetch pending orders
   const fetchOrders = useCallback(async () => {
-    if (!isOnline) {
+    if (!isOnlineRef.current) {
       setLoading(false);
       return;
     }
@@ -115,7 +117,7 @@ export default function RecebimentoOffline() {
     } finally {
       setLoading(false);
     }
-  }, [isOnline]);
+  }, []);
 
   useEffect(() => {
     fetchOrders();

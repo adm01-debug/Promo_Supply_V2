@@ -1,4 +1,4 @@
-import { useState, useCallback, memo, useRef, useEffect } from "react";
+﻿import { useState, useCallback, memo, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppSidebar } from "./AppSidebar";
 import { AdvancedSearch } from "./AdvancedSearch";
@@ -116,7 +116,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
 
               
               {/* Desktop & Mobile Smart Back Button - Always present in header when not home */}
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="sync">
                 {!isHome && (
                   <motion.div
                     initial={{ opacity: 0, x: -20, filter: "blur(10px)" }}
@@ -165,7 +165,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
             )}
 
 
-            <AnimatePresence mode="wait" initial={false}>
+            <AnimatePresence mode="sync" initial={false}>
               <PageTransition className="w-full h-full">
                 {children}
               </PageTransition>

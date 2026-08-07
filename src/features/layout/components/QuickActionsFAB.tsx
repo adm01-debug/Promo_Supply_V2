@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Plus, 
@@ -40,7 +40,7 @@ export function QuickActionsFAB() {
   const quickActions: QuickAction[] = [
     {
       id: "nova-solicitacao",
-      label: "Nova Solicitação",
+      label: "Nova SolicitaÃ§Ã£o",
       icon: FileText,
       color: "bg-primary hover:bg-primary/90",
       action: () => {
@@ -159,7 +159,7 @@ export function QuickActionsFAB() {
                         </div>
                         <div className="text-left">
                           <p className="text-sm font-bold tracking-tight text-foreground/90">{action.label}</p>
-                          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Acesso Rápido</p>
+                          <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest">Acesso RÃ¡pido</p>
                         </div>
                       </div>
                       <ArrowRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all" />
@@ -198,7 +198,7 @@ export function QuickActionsFAB() {
                 )}
                 onClick={toggleOpen}
               >
-                <AnimatePresence mode="wait">
+                <AnimatePresence mode="sync">
                   {isOpen ? (
                     <motion.div
                       key="close"
@@ -224,7 +224,7 @@ export function QuickActionsFAB() {
               </Button>
             </motion.div>
           </TooltipTrigger>
-          {!isOpen && <TooltipContent side="left" className="font-bold">Ações Rápidas</TooltipContent>}
+          {!isOpen && <TooltipContent side="left" className="font-bold">AÃ§Ãµes RÃ¡pidas</TooltipContent>}
         </Tooltip>
       </TooltipProvider>
     </div>

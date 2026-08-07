@@ -70,8 +70,10 @@ export function Breadcrumbs({ className, variant = "ghost" }: BreadcrumbsProps) 
                 variant === "pills" && "bg-background/40 backdrop-blur-md px-4 py-2 rounded-2xl hover:bg-primary/10 hover:text-primary shadow-[0_4px_12px_rgba(0,0,0,0.03)] border border-border/20"
               )}
             >
-              <Home className="h-4 w-4 transition-transform group-hover:scale-110" />
-              {variant !== "compact" && <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 group-hover:opacity-100">Início</span>}
+              <span className="inline-flex items-center gap-1.5">
+                <Home className="h-4 w-4 transition-transform group-hover:scale-110" />
+                {variant !== "compact" && <span className="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 group-hover:opacity-100">Início</span>}
+              </span>
             </Link>
           </BreadcrumbLink>
         </BreadcrumbItem>

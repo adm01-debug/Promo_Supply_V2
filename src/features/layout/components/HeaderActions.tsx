@@ -36,11 +36,13 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
             className="hidden md:flex items-center gap-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-all active:scale-[0.98]"
             aria-label="Abrir Command Palette"
           >
-            <Command className="w-4 h-4" />
-            <span className="text-xs font-medium">Buscar...</span>
-            <kbd className="ml-2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[9px] font-bold text-muted-foreground/70 uppercase">
-              <span className="text-[10px]">⌘</span>K
-            </kbd>
+            <span className="inline-flex items-center gap-1.5">
+              <Command className="w-4 h-4" />
+              <span className="text-xs font-medium">Buscar...</span>
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[9px] font-bold text-muted-foreground/70 uppercase">
+                <span className="text-[10px]">⌘</span>K
+              </kbd>
+            </span>
           </Button>
         </TooltipTrigger>
         <TooltipContent className="bg-foreground text-background font-bold text-[10px] uppercase tracking-widest">

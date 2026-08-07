@@ -26,11 +26,13 @@ export function TenantSwitcher() {
           size="sm"
           className="h-9 px-3 border-dashed border-primary/30 hover:border-primary/60 transition-colors gap-2"
         >
-          <Building2 className="w-4 h-4 text-primary" />
-          <span className="hidden sm:inline font-medium text-xs truncate max-w-[120px]">
-            {currentTenant?.name || "Selecionar Organização"}
+          <span className="inline-flex items-center gap-2">
+            <Building2 className="w-4 h-4 text-primary" />
+            <span className="hidden sm:inline font-medium text-xs truncate max-w-[120px]">
+              {currentTenant?.name || "Selecionar Organização"}
+            </span>
+            <ChevronDown className="w-3 h-3 opacity-50" />
           </span>
-          <ChevronDown className="w-3 h-3 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

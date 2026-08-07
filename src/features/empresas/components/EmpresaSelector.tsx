@@ -38,17 +38,19 @@ export const EmpresaSelector = memo(({ className }: EmpresaSelectorProps) => {
           )}
           aria-label="Selecionar empresa"
         >
-          {selected ? (
-            <EmpresaBadge empresa={selected} showRegime />
-          ) : (
-            <>
-              <Layers className="h-3.5 w-3.5 text-violet-300" />
-              <span className="text-xs font-medium">Todas as empresas</span>
-              <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] text-muted-foreground">
-                {availableEmpresas.length}
-              </span>
-            </>
-          )}
+          <span className="inline-flex items-center gap-1.5">
+            {selected ? (
+              <EmpresaBadge empresa={selected} showRegime />
+            ) : (
+              <>
+                <Layers className="h-3.5 w-3.5 text-violet-300" />
+                <span className="text-xs font-medium">Todas as empresas</span>
+                <span className="rounded bg-white/10 px-1.5 py-0.5 text-[10px] text-muted-foreground">
+                  {availableEmpresas.length}
+                </span>
+              </>
+            )}
+          </span>
         </Button>
       </DropdownMenuTrigger>
 

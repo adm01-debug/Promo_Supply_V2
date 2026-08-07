@@ -953,27 +953,33 @@ const DependencyHealth = () => {
                     {smoke!.ci?.runUrl && (
                       <Button asChild variant="outline" size="sm">
                         <a href={smoke!.ci.runUrl} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
-                          Abrir execução
+                          <span className="inline-flex items-center gap-1.5">
+                            <ExternalLink className="h-3.5 w-3.5" />
+                            Abrir execução
+                          </span>
                         </a>
                       </Button>
                     )}
                     {smoke!.ci?.prNumber && smoke!.ci.prUrl && (
                       <Button asChild variant="outline" size="sm">
                         <a href={smoke!.ci.prUrl} target="_blank" rel="noopener noreferrer">
-                          <GitBranch className="h-3.5 w-3.5 mr-1.5" />
-                          PR #{smoke!.ci.prNumber}
-                          {smoke!.ci.branch ? ` · ${smoke!.ci.branch}` : ""}
+                          <span className="inline-flex items-center gap-1.5">
+                            <GitBranch className="h-3.5 w-3.5" />
+                            PR #{smoke!.ci.prNumber}
+                            {smoke!.ci.branch ? ` · ${smoke!.ci.branch}` : ""}
+                          </span>
                         </a>
                       </Button>
                     )}
                     {smoke!.log?.path && (
                       <Button asChild variant="outline" size="sm">
                         <a href={smoke!.log.path} target="_blank" rel="noopener noreferrer">
-                          <FileText className="h-3.5 w-3.5 mr-1.5" />
-                          Log completo
-                          {typeof smoke!.log.sizeBytes === "number" &&
-                            ` (${(smoke!.log.sizeBytes / 1024).toFixed(1)} KB)`}
+                          <span className="inline-flex items-center gap-1.5">
+                            <FileText className="h-3.5 w-3.5" />
+                            Log completo
+                            {typeof smoke!.log.sizeBytes === "number" &&
+                              ` (${(smoke!.log.sizeBytes / 1024).toFixed(1)} KB)`}
+                          </span>
                         </a>
                       </Button>
                     )}
@@ -1102,8 +1108,10 @@ const DependencyHealth = () => {
               <div className="flex flex-wrap gap-2 pt-1">
                 <Button asChild variant="outline" size="sm">
                   <a href={prSmoke.artifact.webUrl} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
-                    Abrir execução
+                    <span className="inline-flex items-center gap-1.5">
+                      <ExternalLink className="h-3.5 w-3.5" />
+                      Abrir execução
+                    </span>
                   </a>
                 </Button>
                 <Button asChild variant="outline" size="sm">
@@ -1112,8 +1120,10 @@ const DependencyHealth = () => {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <FileText className="h-3.5 w-3.5 mr-1.5" />
-                    Baixar artefato (.zip)
+                    <span className="inline-flex items-center gap-1.5">
+                      <FileText className="h-3.5 w-3.5" />
+                      Baixar artefato (.zip)
+                    </span>
                   </a>
                 </Button>
                 {prSmoke.artifact.prNumber && (
@@ -1123,8 +1133,10 @@ const DependencyHealth = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      <GitBranch className="h-3.5 w-3.5 mr-1.5" />
-                      PR #{prSmoke.artifact.prNumber}
+                      <span className="inline-flex items-center gap-1.5">
+                        <GitBranch className="h-3.5 w-3.5" />
+                        PR #{prSmoke.artifact.prNumber}
+                      </span>
                     </a>
                   </Button>
                 )}

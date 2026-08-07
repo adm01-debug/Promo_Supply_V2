@@ -61,7 +61,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
     queryFn: async () => {
       let query = supabase
         .from('devolucoes')
-        .select(`*, fornecedor:fornecedores(id, razao_social, nome_fantasia), pedido:pedidos(id, numero)`)
+        .select('*')
         .eq('tenant_id', tenantId || organizationId || '00000000-0000-0000-0000-000000000000')
         .order('created_at', { ascending: false });
 
@@ -72,9 +72,31 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
         query = query.or(`numero.ilike.%${s}%,motivo_detalhe.ilike.%${s}%`);
       }
 
-      const { data, error } = await query;
+      const { data: devRows, error } = await query;
       if (error) throw error;
-      return (data || []) as unknown as Devolucao[];
+      const rows = (devRows || []) as unknown as Database['public']['Tables']['devolucoes']['Row'][];
+
+      // Fetch related fornecedor + pedido separately to avoid embed FK issues
+      const fornecedorIds = [...new Set(rows.map(r => r.fornecedor_id).filter(Boolean))] as string[];
+      const pedidoIds = [...new Set(rows.map(r => r.pedido_id).filter(Boolean))] as string[];
+
+      const [fornecedoresRes, pedidosRes] = await Promise.all([
+        fornecedorIds.length
+          ? supabase.from('fornecedores').select('id, razao_social, nome_fantasia').in('id', fornecedorIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; razao_social: string; nome_fantasia: string | null }>, error: null }),
+        pedidoIds.length
+          ? supabase.from('pedidos').select('id, numero').in('id', pedidoIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; numero: string }>, error: null }),
+      ]);
+
+      const fornecedoresMap = new Map((fornecedoresRes.data || []).map(f => [f.id, f]));
+      const pedidosMap = new Map((pedidosRes.data || []).map(p => [p.id, p]));
+
+      return rows.map(r => ({
+        ...r,
+        fornecedor: r.fornecedor_id ? fornecedoresMap.get(r.fornecedor_id) ?? null : null,
+        pedido: r.pedido_id ? pedidosMap.get(r.pedido_id) ?? null : null,
+      })) as Devolucao[];
     },
     enabled: !!user,
     staleTime: 30_000,
@@ -202,13 +224,35 @@ export function useCreditosFornecedor(fornecedorId?: string) {
     queryFn: async () => {
       let query = supabase
         .from('creditos_fornecedor')
-        .select(`*, fornecedor:fornecedores(id, razao_social, nome_fantasia), devolucao:devolucoes(id, numero)`)
+        .select('*')
         .order('created_at', { ascending: false });
       if (fornecedorId) query = query.eq('fornecedor_id', fornecedorId);
       query = query.eq('tenant_id', tenantId || organizationId || '00000000-0000-0000-0000-000000000000');
-      const { data, error } = await query;
+      const { data: credRows, error } = await query;
       if (error) throw error;
-      return (data || []) as unknown as CreditoFornecedor[];
+      const rows = (credRows || []) as unknown as Database['public']['Tables']['creditos_fornecedor']['Row'][];
+
+      // Fetch related fornecedor + devolucao separately to avoid embed FK issues
+      const fornecedorIds = [...new Set(rows.map(r => r.fornecedor_id).filter(Boolean))] as string[];
+      const devolucaoIds = [...new Set(rows.map(r => r.devolucao_id).filter(Boolean))] as string[];
+
+      const [fornecedoresRes, devolucoesRes] = await Promise.all([
+        fornecedorIds.length
+          ? supabase.from('fornecedores').select('id, razao_social, nome_fantasia').in('id', fornecedorIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; razao_social: string; nome_fantasia: string | null }>, error: null }),
+        devolucaoIds.length
+          ? supabase.from('devolucoes').select('id, numero').in('id', devolucaoIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; numero: string }>, error: null }),
+      ]);
+
+      const fornecedoresMap = new Map((fornecedoresRes.data || []).map(f => [f.id, f]));
+      const devolucoesMap = new Map((devolucoesRes.data || []).map(d => [d.id, d]));
+
+      return rows.map(r => ({
+        ...r,
+        fornecedor: r.fornecedor_id ? fornecedoresMap.get(r.fornecedor_id) ?? null : null,
+        devolucao: r.devolucao_id ? devolucoesMap.get(r.devolucao_id) ?? null : null,
+      })) as CreditoFornecedor[];
     },
     enabled: !!user,
     staleTime: 30_000,
