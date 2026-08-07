@@ -1,0 +1,478 @@
+import { 
+  LayoutDashboard, 
+  ClipboardList, 
+  Search, 
+  FileText, 
+  BookOpen, 
+  CreditCard, 
+  Factory,
+  Building2,
+  ChevronLeft,
+  ChevronRight,
+  Menu,
+  Package,
+  Truck,
+  BarChart3,
+  History,
+  PiggyBank,
+  ClipboardCheck,
+  Users,
+  TrendingUp,
+  Award,
+  ShoppingCart,
+  FileSignature,
+  Shield,
+  HelpCircle,
+  Sparkles,
+  ShieldCheck,
+  Wallet,
+  Brain,
+  Columns3,
+  FileCheck,
+  RefreshCw,
+  RotateCcw,
+  Gavel,
+  LogOut,
+  Settings,
+  Settings2,
+  Boxes,
+  Activity,
+  Database,
+  KeyRound,
+  LineChart,
+  Network
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useEffect } from "react";
+import { PrefetchLink } from "@/components/PrefetchLink";
+import { useAuth } from "@/features/auth";
+import { useCriticalAlertsBadge } from "@/hooks/useCriticalAlertsBadge";
+import { useSidebarBadges } from "@/hooks/useSidebarBadges";
+
+interface NavItemDef {
+  title: string;
+  icon: React.ElementType;
+  href: string;
+  /** Key into SidebarBadges for a live count. Static badge is gone. */
+  badgeKey?: 'solicitacoes' | 'cotacoes' | 'pagamentos' | 'aprovacoes';
+}
+
+interface NavSection {
+  id: string;
+  label: string;
+  items: NavItemDef[];
+}
+
+const sections: NavSection[] = [
+  {
+    id: "overview",
+    label: "Visão Geral",
+    items: [
+      { title: "Dashboard", icon: LayoutDashboard, href: "/" },
+      { title: "Executivo", icon: TrendingUp, href: "/dashboard-executivo" },
+    ],
+  },
+  {
+    id: "operations",
+    label: "Operações",
+    items: [
+      { title: "Solicitações", icon: ClipboardList, href: "/solicitacoes", badgeKey: 'solicitacoes' },
+      { title: "Kanban", icon: Columns3, href: "/kanban" },
+      { title: "Cotações", icon: Search, href: "/cotacao", badgeKey: 'cotacoes' },
+      { title: "Negociação IA", icon: Brain, href: "/negociacao-ia" },
+      { title: "Pedidos", icon: FileText, href: "/pedidos" },
+      { title: "Recompra", icon: RefreshCw, href: "/recompra-inteligente" },
+      { title: "Acompanhamento", icon: Truck, href: "/acompanhamento" },
+      { title: "Recebimento", icon: ClipboardCheck, href: "/recebimento" },
+      { title: "Devoluções", icon: RotateCcw, href: "/devolucoes" },
+      { title: "Catálogo", icon: Package, href: "/catalogo-produtos" },
+      { title: "Estoque", icon: Boxes, href: "/estoque" },
+    ],
+  },
+  {
+    id: "finance",
+    label: "Financeiro",
+    items: [
+      { title: "Pagamentos", icon: CreditCard, href: "/pagamentos", badgeKey: 'pagamentos' },
+      { title: "Contratos", icon: FileSignature, href: "/contratos" },
+      { title: "Sourcing (RFx)", icon: Gavel, href: "/sourcing" },
+      { title: "Licitações", icon: Gavel, href: "/licitacoes" },
+      { title: "Compliance", icon: ShieldCheck, href: "/compliance" },
+      { title: "Orçamentos", icon: Wallet, href: "/orcamentos" },
+      { title: "Centros de Custo", icon: Building2, href: "/configuracoes-centro-custo" },
+      { title: "Docs Fiscais", icon: FileCheck, href: "/documentos-fiscais" },
+    ],
+  },
+  {
+    id: "suppliers",
+    label: "Fornecedores",
+    items: [
+      { title: "Cadastros", icon: Factory, href: "/fornecedores" },
+      { title: "SPOT / Stricker", icon: Sparkles, href: "/catalogo-spot" },
+      { title: "XBZ Brindes", icon: Sparkles, href: "/catalogo-xbz" },
+
+      { title: "Performance", icon: Users, href: "/supplier-performance" },
+      { title: "Qualificação", icon: ShieldCheck, href: "/qualificacao-fornecedores" },
+      { title: "Histórico", icon: ShoppingCart, href: "/historico-compras" },
+    ],
+  },
+  {
+    id: "analytics",
+    label: "Analytics",
+    items: [
+      { title: "Relatórios", icon: BarChart3, href: "/relatorios" },
+      { title: "Negociações", icon: PiggyBank, href: "/relatorios/negociacoes" },
+      { title: "Compradores", icon: Award, href: "/buyer-performance" },
+    ],
+  },
+  {
+    id: "admin",
+    label: "Admin",
+    items: [
+      { title: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badgeKey: 'aprovacoes' },
+      { title: "Auditoria", icon: History, href: "/auditoria" },
+      { title: "Workflows", icon: Settings2, href: "/admin/workflows" },
+      { title: "Segurança", icon: Shield, href: "/seguranca" },
+      { title: "PunchOut", icon: ShoppingCart, href: "/admin/punchout" },
+      { title: "ERP Sync", icon: RefreshCw, href: "/admin/erp" },
+      { title: "Sourcing Pipeline", icon: TrendingUp, href: "/admin/sourcing-pipeline" },
+      { title: "Fiscal", icon: FileCheck, href: "/admin/fiscal" },
+      { title: "Documentação", icon: BookOpen, href: "/admin/docs" },
+      { title: "Saúde do Sistema", icon: Activity, href: "/admin/health" },
+      { title: "Telemetria", icon: LineChart, href: "/admin/telemetria" },
+      { title: "Dep. Health", icon: Network, href: "/admin/dependency-health" },
+      { title: "SSO / SCIM", icon: KeyRound, href: "/admin/sso" },
+      { title: "Migração Storage", icon: Database, href: "/admin/storage-migration" },
+    ],
+  },
+];
+
+function isItemActive(pathname: string, href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
+}
+
+/* ─── Badge ─── */
+const CountBadge = ({ count, critical = false }: { count: number; critical?: boolean }) => (
+  <motion.span
+    initial={{ scale: 0.8, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    className={cn(
+      "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full text-[9px] font-bold shadow-sm px-1",
+      critical
+        ? "bg-destructive text-destructive-foreground animate-pulse ring-2 ring-destructive/40"
+        : "bg-primary text-primary-foreground"
+    )}
+    aria-label={critical ? `${count} alertas críticos` : undefined}
+  >
+    {count > 99 ? "99+" : count}
+  </motion.span>
+);
+
+/* ─── Single Nav Item ─── */
+const SidebarItem = ({
+  item,
+  active,
+  collapsed,
+  criticalBadge = 0,
+  liveBadge = 0,
+}: {
+  item: NavItemDef;
+  active: boolean;
+  collapsed: boolean;
+  criticalBadge?: number;
+  liveBadge?: number;
+}) => {
+  const Icon = item.icon;
+  const showCritical = criticalBadge > 0;
+  const badgeValue = showCritical ? criticalBadge : (item.badgeKey ? liveBadge : undefined);
+  const hasBadge = badgeValue != null && badgeValue > 0;
+
+  const content = (
+    <PrefetchLink
+      to={item.href}
+      aria-current={active ? "page" : undefined}
+      className={cn(
+        "group relative flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium transition-all duration-300",
+        collapsed && "justify-center px-0",
+        active
+          ? "bg-violet-500/10 text-violet-300 shadow-sm"
+          : "text-muted-foreground hover:bg-muted/80 hover:text-foreground hover:translate-x-1 hover:shadow-sm"
+      )}
+    >
+      {/* Indicator Bar */}
+      {active && (
+        <motion.span
+          layoutId="sidebar-active-indicator"
+          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[4px] rounded-r-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.5)]"
+        />
+      )}
+
+      <Icon
+        className={cn(
+          "h-[18px] w-[18px] shrink-0 transition-colors",
+          showCritical && "text-destructive animate-pulse",
+          !showCritical && (active ? "text-primary" : "text-muted-foreground group-hover:text-foreground")
+        )}
+      />
+
+      {!collapsed && (
+        <>
+          <span className="truncate">{item.title}</span>
+          {hasBadge && <CountBadge count={badgeValue!} critical={showCritical} />}
+        </>
+      )}
+
+      {/* Collapsed badge dot */}
+      {collapsed && hasBadge && (
+        <span
+          className={cn(
+            "absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full ring-2 ring-sidebar-background",
+            showCritical ? "bg-destructive animate-pulse" : "bg-primary"
+          )}
+        />
+      )}
+    </PrefetchLink>
+  );
+
+  if (collapsed) {
+    return (
+      <Tooltip delayDuration={0}>
+        <TooltipTrigger asChild>{content}</TooltipTrigger>
+        <TooltipContent side="right" className="text-xs font-medium">
+          {item.title}
+          {hasBadge && (
+            <span className={cn("ml-1.5", showCritical ? "text-destructive" : "text-primary")}>
+              ({badgeValue})
+            </span>
+          )}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return content;
+};
+
+/* ─── Section ─── */
+const SidebarSection = ({
+  section,
+  pathname,
+  collapsed,
+  criticalHealthCount,
+  badges,
+  sectionBadge = 0,
+  sectionBadgeCritical = false,
+}: {
+  section: NavSection;
+  pathname: string;
+  collapsed: boolean;
+  criticalHealthCount: number;
+  badges: Record<string, number>;
+  sectionBadge?: number;
+  sectionBadgeCritical?: boolean;
+}) => (
+  <div className="space-y-0.5">
+    {/* Section label — hidden when collapsed */}
+    {!collapsed && (
+      <div className="flex items-center gap-2 px-4 pb-2 pt-4 select-none">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 flex-1">
+          {section.label}
+        </p>
+        {sectionBadge > 0 && (
+          <CountBadge count={sectionBadge} critical={sectionBadgeCritical} />
+        )}
+      </div>
+    )}
+    {collapsed && (
+      <div className="relative my-1.5 mx-2">
+        <div className="h-px bg-border/40" />
+        {sectionBadge > 0 && (
+          <span
+            className={cn(
+              "absolute -top-1 right-0 h-2 w-2 rounded-full ring-2 ring-sidebar-background",
+              sectionBadgeCritical ? "bg-destructive animate-pulse" : "bg-primary"
+            )}
+            aria-label={sectionBadgeCritical ? `${sectionBadge} alertas críticos` : undefined}
+          />
+        )}
+      </div>
+    )}
+
+    {section.items.map((item) => (
+      <SidebarItem
+        key={item.href}
+        item={item}
+        active={isItemActive(pathname, item.href)}
+        collapsed={collapsed}
+        criticalBadge={item.href === "/admin/health" ? criticalHealthCount : 0}
+        liveBadge={item.badgeKey ? (badges[item.badgeKey] ?? 0) : 0}
+      />
+    ))}
+  </div>
+);
+
+/* ─── Main Sidebar ─── */
+interface AppSidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
+
+export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
+  const { pathname } = useLocation();
+  const { signOut } = useAuth();
+  const { count: criticalHealthCount, markAsSeen } = useCriticalAlertsBadge();
+  const { data: badgeData } = useSidebarBadges();
+  const badges = badgeData ?? { solicitacoes: 0, cotacoes: 0, pagamentos: 0, aprovacoes: 0 };
+
+  useEffect(() => {
+    if (pathname.startsWith("/admin/health")) {
+      markAsSeen();
+    }
+  }, [pathname, markAsSeen]);
+
+  return (
+    <aside
+      data-tour="sidebar"
+      className={cn(
+        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border bg-card/10 backdrop-blur-3xl transition-[width] duration-300 ease-&lsqb;cubic-bezier(0.4,0,0.2,1)]",
+        collapsed ? "w-[68px]" : "w-64"
+      )}
+    >
+      {/* ── Header ── */}
+      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-border px-4">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-500/20 transition-transform hover:scale-105 active:scale-95">
+          <Package className="h-5 w-5 text-primary-foreground" />
+        </div>
+        <AnimatePresence>
+          {!collapsed && (
+            <motion.div
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+              className="flex flex-col leading-none"
+              style={{ fontFamily: 'Outfit, sans-serif' }}
+            >
+              <span className="text-[15px] font-black uppercase tracking-tighter text-foreground">
+                PROMO <span className="text-primary">SUPPLY</span>
+              </span>
+              <span className="text-[9px] tracking-[0.22em] uppercase text-muted-foreground font-semibold mt-1">
+                Gestão de Compras
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* ── Toggle ── */}
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={onToggle}
+        className="absolute -right-3 top-[68px] z-50 h-7 w-7 rounded-full border border-border/20 bg-card shadow-md transition-transform hover:scale-110 active:scale-90"
+        aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
+      >
+        {collapsed ? (
+          <ChevronRight className="h-4 w-4 text-primary" />
+        ) : (
+          <ChevronLeft className="h-4 w-4 text-primary" />
+        )}
+      </Button>
+
+      {/* ── Navigation ── */}
+      <nav
+        className="flex-1 overflow-y-auto overflow-x-hidden px-2 py-2 scrollbar-thin"
+        role="navigation"
+        aria-label="Menu principal"
+      >
+        {sections.map((section) => (
+          <SidebarSection
+            key={section.id}
+            section={section}
+            pathname={pathname}
+            collapsed={collapsed}
+            criticalHealthCount={criticalHealthCount}
+            badges={badges as unknown as Record<string, number>}
+            sectionBadge={section.id === "admin" ? criticalHealthCount : 0}
+            sectionBadgeCritical={section.id === "admin"}
+          />
+        ))}
+      </nav>
+
+
+      <div className="mt-auto space-y-1 p-2 border-t border-border/10 bg-muted/20">
+        {!collapsed && (
+          <>
+            <PrefetchLink
+              to="/seguranca"
+              className="flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary"
+            >
+              <Settings className="h-[18px] w-[18px]" />
+              Segurança
+            </PrefetchLink>
+            <button
+              onClick={() => signOut()}
+              className="w-full flex items-center gap-3 rounded-xl px-3 py-2 text-[13px] font-medium text-muted-foreground transition-all hover:bg-destructive/5 hover:text-destructive"
+            >
+              <LogOut className="h-[18px] w-[18px]" />
+              Sair da conta
+            </button>
+          </>
+        )}
+
+        {collapsed && (
+          <div className="flex flex-col items-center gap-2">
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <PrefetchLink
+                  to="/seguranca"
+                  className="flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-all hover:bg-primary/5 hover:text-primary"
+                >
+                  <Settings className="h-[18px] w-[18px]" />
+                </PrefetchLink>
+              </TooltipTrigger>
+              <TooltipContent side="right">Segurança</TooltipContent>
+            </Tooltip>
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => signOut()}
+                  className="flex items-center justify-center rounded-xl p-2 text-muted-foreground transition-all hover:bg-destructive/5 hover:text-destructive"
+                >
+                  <LogOut className="h-[18px] w-[18px]" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">Sair</TooltipContent>
+            </Tooltip>
+          </div>
+        )}
+      </div>
+    </aside>
+  );
+};
+
+/* ─── Mobile Trigger ─── */
+export const MobileSidebarTrigger = ({
+  onClick,
+  hasNotifications = false,
+}: {
+  onClick: () => void;
+  hasNotifications?: boolean;
+}) => (
+  <Button
+    variant="ghost"
+    size="icon"
+    onClick={onClick}
+    className="md:hidden relative"
+    aria-label="Abrir menu de navegação"
+  >
+    <Menu className="h-5 w-5" />
+    {hasNotifications && (
+      <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-primary" />
+    )}
+  </Button>
+);

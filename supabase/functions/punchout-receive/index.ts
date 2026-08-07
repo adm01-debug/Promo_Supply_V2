@@ -1,0 +1,181 @@
+import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.39.3";
+import { XMLParser } from "https://esm.sh/fast-xml-parser@4.3.6";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+import { deriveIdempotencyKey, getIdempotentResponse, recordIdempotentResponse } from "../_shared/idempotency.ts";
+
+const SOURCE = "punchout";
+
+// HIGH-C4: proper XML parser (was fragile regex + hardcoded mock cart)
+const xmlParser = new XMLParser({
+  ignoreAttributes: false,
+  attributeNamePrefix: "@_",
+  parseTagValue: true,
+  trimValues: true,
+});
+
+interface PunchOutItem {
+  name: string;
+  quantity: number;
+  price: number;
+  currency: string;
+  supplier_part_id?: string;
+  unit?: string;
+}
+
+function toArray<T>(v: T | T[] | undefined | null): T[] {
+  if (v == null) return [];
+  return Array.isArray(v) ? v : [v];
+}
+
+function parsePunchOutOrderMessage(xml: string): { buyerCookie: string | null; items: PunchOutItem[] } {
+  const parsed = xmlParser.parse(xml) as Record<string, unknown>;
+  const cxml = (parsed?.cXML ?? parsed?.CXML ?? parsed) as Record<string, unknown>;
+  const msg = (cxml?.Message as Record<string, unknown> | undefined) ?? {};
+  const pom = (msg?.PunchOutOrderMessage as Record<string, unknown> | undefined) ?? {};
+  const buyerCookie = (pom?.BuyerCookie as string | undefined) ?? null;
+  const header = (pom?.PunchOutOrderMessageHeader as Record<string, unknown> | undefined) ?? {};
+  const defaultCurrency =
+    ((header?.Total as Record<string, unknown> | undefined)?.Money as Record<string, unknown> | undefined)
+      ?.["@_currency"] as string | undefined;
+
+  const itemIns = toArray(pom?.ItemIn as unknown);
+  const items: PunchOutItem[] = itemIns.slice(0, 500).map((raw) => {
+    const r = raw as Record<string, unknown>;
+    const detail = (r?.ItemDetail as Record<string, unknown> | undefined) ?? {};
+    const unitPrice =
+      ((detail?.UnitPrice as Record<string, unknown> | undefined)?.Money as Record<string, unknown> | undefined) ?? {};
+    const description = detail?.Description;
+    const name = typeof description === "string"
+      ? description
+      : (description as { "#text"?: string } | undefined)?.["#text"] ?? "Item";
+    const quantity = Number(r?.["@_quantity"] ?? 1);
+    const price = Number((unitPrice as { "#text"?: unknown })?.["#text"] ?? 0);
+    const currency = (unitPrice?.["@_currency"] as string | undefined) ?? defaultCurrency ?? "BRL";
+    return {
+      name: safeTruncate(String(name), 500),
+      quantity: Number.isFinite(quantity) && quantity > 0 ? quantity : 1,
+      price: Number.isFinite(price) && price >= 0 ? price : 0,
+      currency,
+      supplier_part_id: typeof detail?.SupplierPartID === "string"
+        ? safeTruncate(detail.SupplierPartID as string, 200)
+        : undefined,
+      unit: (detail?.UnitOfMeasure as string | undefined) ?? undefined,
+    };
+  });
+
+  return { buyerCookie, items };
+}
+
+serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: buildResponseHeaders(corsHeaders),
+    });
+  }
+
+  // M-05: rate limit por IP (webhooks anônimos).
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const rl = await checkRateLimit({
+    identifier: ip,
+    endpoint: `webhook:${SOURCE}`,
+    maxRequests: 30,
+    windowSeconds: 60,
+  });
+  if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
+  const bodyText = await req.text();
+  const idempotencyKey = await deriveIdempotencyKey(req, bodyText);
+
+  // M-05: se já processamos este evento, retorna a resposta anterior.
+  const cached = await getIdempotentResponse(SOURCE, idempotencyKey);
+  if (cached) return cached.response(corsHeaders);
+
+  try {
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+    );
+
+    // HIGH-C4: proper XML parse (previously fragile regex + hardcoded mock cart
+    // that ignored the actual PunchOut response — every solicitação was created
+    // with the same fake item regardless of what the supplier returned).
+    let parsedMessage: { buyerCookie: string | null; items: PunchOutItem[] };
+    try {
+      parsedMessage = parsePunchOutOrderMessage(bodyText);
+    } catch (parseErr) {
+      throw new Error("Invalid PunchOut XML: " + (parseErr instanceof Error ? parseErr.message : "parse error"));
+    }
+    const { buyerCookie, items: cartItems } = parsedMessage;
+
+    if (!buyerCookie) throw new Error("BuyerCookie missing in response");
+    if (cartItems.length === 0) throw new Error("PunchOut cart has no items");
+
+    const { data: session, error: sessionError } = await supabaseClient
+      .from("punchout_sessions")
+      .select("*")
+      .eq("buyer_cookie", buyerCookie)
+      .eq("status", "opened")
+      .is("closed_at", null)
+      .single();
+
+    if (sessionError || !session) throw new Error("Session not found");
+
+    const createdAt = new Date(session.created_at).getTime();
+    const isExpired = !Number.isFinite(createdAt) || Date.now() - createdAt > 30 * 60 * 1000;
+    if (isExpired) throw new Error("Session expired");
+
+    const cart = { items: cartItems };
+
+    const { data: solicitation, error: solError } = await supabaseClient
+      .from("solicitacoes")
+      .insert({
+        tenant_id: session.tenant_id,
+        requester_id: session.user_id,
+        status: "rascunho",
+        observacoes: "Importado via PunchOut",
+        items: cart.items,
+      })
+      .select()
+      .single();
+
+    if (solError) throw new Error("Error creating solicitation: " + solError.message);
+
+    await supabaseClient
+      .from("punchout_sessions")
+      .update({
+        status: "completed",
+        cart_payload: cart,
+        created_solicitacao_id: solicitation.id,
+        closed_at: new Date().toISOString(),
+      })
+      .eq("id", session.id);
+
+    const redirectLocation = `${session.return_url}?solicitation_id=${solicitation.id}`;
+
+    // Registra a resposta processada para idempotência (payload cacheado é o location).
+    await recordIdempotentResponse(SOURCE, idempotencyKey, {
+      solicitation_id: solicitation.id,
+      redirect: redirectLocation,
+    });
+
+    return new Response(null, {
+      status: 303,
+      headers: { ...corsHeaders, Location: redirectLocation },
+    });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : "PunchOut receive failed";
+    await recordIdempotentResponse(SOURCE, idempotencyKey, null, { status: "failed", errorMessage: message });
+    return new Response(JSON.stringify({ error: message }), {
+      status: 400,
+      headers: buildResponseHeaders(corsHeaders),
+    });
+  }
+});

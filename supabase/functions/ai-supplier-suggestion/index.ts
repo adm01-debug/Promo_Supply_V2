@@ -1,0 +1,160 @@
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { buildResponseHeaders } from "../_shared/http.ts";
+import { EdgeLogger } from "../_shared/logger.ts";
+import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { SupplierSuggestionContract } from "../_shared/contracts.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+
+import { callAIGatewayWithFallback } from "../_shared/ai_gateway.ts";
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('ai-supplier-suggestion', requestId);
+
+  try {
+    const authHeader = req.headers.get("authorization") || req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("Não autorizado: token ausente");
+    }
+
+    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    if (authError || !user) throw new Error("Não autorizado: token inválido");
+
+    const rl = await checkRateLimit({ identifier: user.id, endpoint: "ai-supplier-suggestion", maxRequests: 20, windowSeconds: 60 });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
+    const validatedData = await validateBody(req, SupplierSuggestionContract, logger);
+    const { productDescription, category, quantity, budget, purchaseHistory, suppliers } = validatedData;
+
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) {
+      throw new Error("LOVABLE_API_KEY is not configured");
+    }
+
+    const systemPrompt = `Você é um assistente especialista em compras corporativas e gestão de fornecedores.
+Seu objetivo é analisar o histórico de compras, fornecedores disponíveis e a necessidade atual para recomendar os melhores fornecedores.
+
+Responda SEMPRE em JSON válido com a seguinte estrutura:
+{
+  "recommendations": [
+    {
+      "supplierId": "id do fornecedor",
+      "supplierName": "nome do fornecedor",
+      "score": 85,
+      "reasons": ["razão 1", "razão 2"],
+      "estimatedPrice": 1000.00,
+      "deliveryTime": "5-7 dias úteis",
+      "riskLevel": "low|medium|high",
+      "negotiationTips": ["dica 1", "dica 2"]
+    }
+  ],
+  "marketInsights": "Análise breve do mercado para este tipo de produto",
+  "alternativeSuggestions": ["sugestão alternativa 1", "sugestão alternativa 2"]
+}`;
+
+    const userPrompt = `Analise a seguinte solicitação de compra e recomende os melhores fornecedores:
+
+**Produto/Serviço Solicitado:**
+${productDescription}
+
+**Categoria:** ${category || "Não especificada"}
+**Quantidade:** ${quantity || "A definir"}
+**Orçamento Estimado:** ${budget ? `R$ ${budget.toLocaleString('pt-BR')}` : "Não definido"}
+
+**Histórico de Compras Recentes:**
+${purchaseHistory ? JSON.stringify(purchaseHistory, null, 2) : "Nenhum histórico disponível"}
+
+**Fornecedores Cadastrados:**
+${suppliers ? JSON.stringify(suppliers, null, 2) : "Nenhum fornecedor cadastrado"}
+
+Por favor, analise e forneça suas recomendações.`;
+
+    logger.info("Calling Lovable AI for supplier suggestions", { userId: user.id });
+
+    const { response, usedFallback } = await callAIGatewayWithFallback(
+      {
+        apiKey: LOVABLE_API_KEY,
+        body: {
+          model: "google/gemini-2.0-flash",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+        },
+      },
+      (reason) => {
+        logger.warn("ai-supplier-suggestion: usando fallback determinístico", { reason });
+        // Rule-based fallback: rank existing suppliers by name (alphabetical) as neutral suggestion
+        const fallbackRecs = (suppliers ?? []).slice(0, 3).map((s: Record<string, unknown>, i: number) => ({
+          supplierId: s["id"] ?? "",
+          supplierName: s["nome"] ?? s["name"] ?? `Fornecedor ${i + 1}`,
+          score: 50,
+          reasons: ["IA indisponível — avaliação manual recomendada"],
+          estimatedPrice: null,
+          deliveryTime: "A consultar",
+          riskLevel: "medium",
+          negotiationTips: [],
+        }));
+        return {
+          recommendations: fallbackRecs,
+          marketInsights: "Análise IA temporariamente indisponível. Consulte o cadastro de fornecedores.",
+          alternativeSuggestions: [],
+          requestId,
+        };
+      },
+      corsHeaders,
+    );
+
+    if (usedFallback) {
+      logger.warn("ai-supplier-suggestion: resposta de fallback retornada ao cliente");
+      return response;
+    }
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      logger.error("AI Gateway error", { status: response.status, response: errorText });
+      throw new Error(`AI Gateway error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const content = data.choices?.[0]?.message?.content;
+
+    if (!content) {
+      throw new Error("No content in AI response");
+    }
+
+    let suggestions;
+    try {
+      const jsonMatch = content.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        suggestions = JSON.parse(jsonMatch[0]);
+      } else {
+        suggestions = JSON.parse(content);
+      }
+    } catch (_parseError) {
+      logger.error("Error parsing AI response", { error: _parseError });
+      suggestions = {
+        recommendations: [],
+        marketInsights: content,
+        alternativeSuggestions: [],
+      };
+    }
+
+    logger.info("AI suggestions generated successfully");
+
+    return new Response(JSON.stringify({ ...suggestions, requestId }), {
+      headers: buildResponseHeaders(corsHeaders),
+    });
+  } catch (error: unknown) {
+    return errorResponse(error, logger);
+  }
+});

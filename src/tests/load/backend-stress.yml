@@ -1,0 +1,33 @@
+config:
+  target: "https://trwgmplubeqxrxpncdgf.supabase.co/functions/v1"
+  phases:
+    - duration: 60
+      arrivalRate: 5
+      rampTo: 50
+      name: "Ramp up load"
+    - duration: 120
+      arrivalRate: 50
+      name: "Sustained high load"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "Edge Function Elite Stress Test (10/10)"
+    flow:
+      - post:
+          url: "/system-simulation"
+          json:
+            iterations: 10
+            scenarios: ["negotiation", "workflow", "erp"]
+      - post:
+          url: "/ai-negotiation"
+          json:
+            cotacoes: [{ "id": "1", "fornecedor": "Stress Supplier", "valor": 500 }]
+            solicitacao: { "id": "550e8400-e29b-411d-a716-446655440000", "titulo": "Stress Test" }
+      - post:
+          url: "/workflow-engine"
+          json:
+            action: "start_workflow"
+            template_id: "550e8400-e29b-411d-a716-446655440000"
+            entity_id: "550e8400-e29b-411d-a716-446655440000"
