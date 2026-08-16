@@ -178,6 +178,55 @@ O corpo inteiro é o toast. `async` sem `await`, sem chamada a Supabase. **Confi
 
 ---
 
+### ✅ CONFIRMADO — `workflow-engine` e `fiscal-orchestrator` retornam 403 em 100% das requisições
+
+**Alegação:** ambas passam o objeto `Request` no 3º parâmetro de `getTenantId`, que espera uma string.
+
+**Minha verificação**, lendo a assinatura em `supabase/functions/_shared/security.ts:154-181`:
+
+```ts
+export const getTenantId = async (supabase: any, user: any, preferredTenantId?: string): Promise<string> => {
+  ...
+  const allowed = new Set<string>((memberships ?? []).map((m: any) => m.tenant_id));
+  if (preferredTenantId) {
+    if (!allowed.has(preferredTenantId)) {
+      throw new Error("Security error: preferredTenantId does not match user's memberships");
+    }
+    ...
+```
+
+E as chamadas:
+- `supabase/functions/workflow-engine/index.ts:41` → `await getTenantId(supabase, user, req)`
+- `supabase/functions/fiscal-orchestrator/index.ts:98` → `await getTenantId(supabaseAdmin, user, req)`
+
+**Cadeia lógica confirmada:** um objeto `Request` é *truthy* → entra no `if (preferredTenantId)` → `allowed` é um `Set<string>` e **nunca conterá um objeto `Request`** → `allowed.has(req)` é sempre `false` → lança erro de segurança **antes de qualquer lógica de negócio**.
+
+**Confirmado: as duas funções são inoperantes em toda requisição autenticada.**
+
+**Por que passou despercebido:** `getTenantId` declara `supabase: any, user: any`, mas `preferredTenantId?: string` **é tipado**. TypeScript pegaria isso — só que Deno edge functions **não são cobertas pelo `tsc` do app** (`tsconfig.app.json` inclui apenas `src/`). Somado ao gate de tipos no-op do CI, não havia nenhuma rede capaz de capturar este defeito.
+
+---
+
+### ✅ CONFIRMADO — `punchout-receive` quebra em toda requisição válida
+
+`safeTruncate` é usado em `supabase/functions/punchout-receive/index.ts:58` e `:63`. Li os imports do arquivo (linhas 1-7): `corsHeaders`, `buildResponseHeaders`, `serve`, `createClient`, `XMLParser`, `checkRateLimit`/`rateLimitedResponse`, `deriveIdempotencyKey`/`getIdempotentResponse`/`recordIdempotentResponse`. **`safeTruncate` não está entre eles**, e não é declarado no arquivo.
+
+**Confirmado: `ReferenceError` em runtime** assim que o parser de XML alcança a linha 58 — isto é, em todo cXML de punchout bem formado.
+
+---
+
+### ✅ CONFIRMADO — o front invoca uma edge function que não existe
+
+`grep -rn "process-solicitacao-neural" src/` retorna **dois chamadores**:
+- `src/components/compras/NovaSolicitacaoModal.tsx:108`
+- `src/pages/admin/DeveloperDocs.tsx:44`
+
+`ls supabase/functions/ | grep -i neural` → **nada**. A função não existe no repositório.
+
+Confirmado. O modal de criação de solicitação — caminho de entrada primário do sistema — invoca uma função inexistente.
+
+---
+
 ### ⚠️ ACHADO NOVO MEU — 5 triggers duplicados em produção
 
 Nenhum lote poderia ter visto isto: só é visível no banco vivo. Detalhado em `L12`, Achado 6.
@@ -239,7 +288,36 @@ Objetivo: descobrir arquivos que caíram **entre** dois escopos — falha de cos
 
 **Árvore real:** 673 arquivos `.ts/.tsx/.js/.jsx` em `src/`, `supabase/functions/`, `scripts/`, `tests-e2e/`, `tests-rls/`.
 
-A recontagem por lote está na seção final deste documento, preenchida após o fechamento de todos os lotes.
+**Método:** extraí por regex todo caminho de arquivo citado como evidência nos relatórios dos lotes e comparei, por diff de conjuntos, com a árvore real.
+
+| Medida | Valor |
+|---|---|
+| Arquivos citados como evidência nos relatórios | **569** |
+| Arquivos reais na árvore | **673** |
+| Citados que **não existem** na árvore | **3** (todos falso-positivo meu — ver abaixo) |
+| Existem e **nunca foram citados** | **107** |
+
+### Os 107 não citados, decompostos
+
+| Categoria | Qtd | Situação |
+|---|---|---|
+| `src/components/ui/**` | 57 | **Declarado**: fatiei este diretório em altitude (shadcn/ui boilerplate), com amostragem de 4 arquivos. Decisão consciente, registrada antes da execução |
+| Arquivos de teste (`__tests__/`, `tests-e2e/`, `tests-rls/`, `src/tests/`) | 51 | Pertencem ao lote de CI e Testes |
+| `scripts/` | 3 | Idem |
+| **Lacuna real de cobertura** | **0** | — |
+
+**Nenhum arquivo de produção caiu entre dois escopos.** A costura do fatiamento se sustentou. Todo arquivo `.ts/.tsx` de produção fora de `components/ui` foi citado como evidência por pelo menos um lote.
+
+### Falso-positivo da própria recontagem (registro obrigatório)
+
+O diff acusou 3 arquivos "citados mas inexistentes":
+`src/locales/en/translation.js`, `src/locales/es/translation.js`, `src/locales/pt/translation.js`
+
+**Não é evidência fabricada.** Os arquivos existem como **`translation.json`**. Meu regex de extração só casava as extensões `.ts|.tsx|.js|.jsx` e **truncou `translation.json` em `translation.js`**.
+
+Registro porque é precisamente a armadilha que a auditoria deveria caçar: *um critério de detecção frouxo classifica coisa viva como ausente*. Se eu tivesse endossado esta lista sem testar o critério, teria acusado três lotes de inventar evidência.
+
+Confirmado por `ls`: `src/locales/{en,es,pt}/translation.json` e `public/locales/{en,es,pt}/translation.json` existem — os locales estão **duplicados em dois diretórios**, o que por si só merece nota.
 
 ### Costura verificada entre os lotes de `src/components/compras/`
 

@@ -259,11 +259,22 @@ Ressalva: **não testei se as policies estão corretas** — só que existem. Ve
 | Backups e PITR | Não expostos por SQL | `NAO_VERIFICADO` |
 | Qual dos 3 projetos Supabase divergentes é o de produção real | Medi **um** projeto (o do MCP), cujas tabelas batem com o domínio do código | Ver ressalva |
 
-### Ressalva metodológica importante
+### Ressalva metodológica — RESOLVIDA durante a auditoria
 
-O repositório aponta para **três** identificadores de projeto Supabase distintos:
-- `.env` → `lmypcdfsrgfftzhxawao`
-- `supabase/config.toml:1` → `trwgmplubeqxrxpncdgf`
-- O MCP que eu medi conecta a um terceiro endpoint.
+Eu havia levantado que o repositório apontava para identificadores de projeto Supabase divergentes, e registrei que **não podia provar** que o banco medido era o mesmo que a aplicação consome.
 
-Confirmei que o banco medido **é coerente com o domínio do código** (contém `solicitacoes`, `cotacoes`, `pedidos`, `fornecedores`, `xbz_*`, `spot_*`). Mas **não posso provar** que é o mesmo banco que a aplicação publicada consome. Se não for, parte dos números acima descreve outro ambiente. **Esta ambiguidade é, por si só, um achado grave de configuração** e precisa ser resolvida pelo dono antes de qualquer decisão baseada nestes dados.
+**Isso foi resolvido.** O MCP reportou explicitamente seu `project_ref`:
+
+```
+project_ref: lmypcdfsrgfftzhxawao
+```
+
+Que é **exatamente** o valor de `VITE_SUPABASE_PROJECT_ID` e `VITE_SUPABASE_URL` no `.env`.
+
+**Conclusão: o banco que medi É o banco que a aplicação consome.** Todos os números deste documento descrevem o ambiente real de produção. A ressalva está retirada.
+
+**O que permanece como achado, em grau menor:** `supabase/config.toml:1` declara `project_id = "trwgmplubeqxrxpncdgf"` — um projeto **diferente e desatualizado**. Consequência concreta: qualquer `supabase db push`, `supabase functions deploy` ou `supabase link` executado a partir do repositório sem `--project-ref` explícito mira o **projeto errado**.
+
+Isso deixa de ser ambiguidade de auditoria e passa a ser **risco operacional de deploy**: alguém pode aplicar migrations ou publicar edge functions em um projeto que não é o de produção, achando que está publicando. Agrava-se pelo fato de `SSOConfig.tsx:264,268` também trazer o ref antigo `trwgmplubeqxrxpncdgf` hardcoded nos endpoints SAML entregues ao administrador.
+
+**Correção barata e segura:** atualizar `supabase/config.toml` para `lmypcdfsrgfftzhxawao`. Não toca em produção.
