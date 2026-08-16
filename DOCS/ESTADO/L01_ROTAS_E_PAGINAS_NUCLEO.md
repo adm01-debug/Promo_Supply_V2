@@ -1,5 +1,49 @@
 # L01 — Rotas e Páginas Núcleo
 
+> ## ⚠️ ERRATA — duas linhas ✅ deste documento estão ERRADAS
+>
+> Detectado na meta-auditoria (`L15_META_AUDITORIA.md`). O corpo do relatório está preservado sem
+> edição; estas são as correções. A causa é **estrutural, não descuido do lote**: este lote auditou
+> telas, e o defeito, nos dois casos, estava numa camada fora do seu escopo.
+>
+> ### Errata 1 — "Login por Passkey (WebAuthn) | ✅"  →  deve ser **🟨, com achado CRÍTICO**
+>
+> O fio que este lote verificou (botão → `authenticateWithPasskey` → edge function
+> `webauthn-authenticate` → tabela `webauthn_credentials`) **está correto**. O problema está
+> *dentro* da edge function, que pertencia a outro lote:
+>
+> `webauthn-authenticate/index.ts:134-224` emite sessão válida **sem nunca verificar a assinatura
+> criptográfica** — a palavra `signature` não aparece no arquivo. É a falha de segurança mais grave
+> de todo o sistema (detalhada em `L10` como S-1 e reproduzida em `L14`).
+>
+> **É a funcionalidade mais quebrada do sistema marcada como totalmente implementada.**
+>
+> ### Errata 2 — "Dashboard de Compras — KPIs | ✅"  →  deve ser **🟨**
+>
+> A RPC `get_compras_dashboard_metrics` é real, como o lote registrou. Mas o hook que a consome
+> **sobrescreve parte do resultado com constantes** (`src/hooks/useDashboardKPIs.ts`, verificado
+> linha a linha na meta-auditoria):
+>
+> `atrasados: 0` (:106) · `taxaEntrega: 100` (:107) · `totalFornecedores: 0` (:109) ·
+> `pendingApprovals: 0` (:111) · `avgSla: 1.8` (:116) · `taxaSlaReal: 85` (:117) ·
+> `sla: { current: 85, previous: 82, trend: 3, sparkline: [80,82,81,84,83,85,85] }` (:138-142) ·
+> `generateSparkline` retorna sempre `[]` (:98)
+>
+> **O card de SLA do dashboard principal exibe "85%" permanentemente.** O `L07` classificou esse
+> hook corretamente como 🟨.
+>
+> ### Alcance provável
+>
+> A meta-auditoria mediu **6 hooks classificados 🟨/⬛ no `L07` alimentando 10 linhas ✅** nos lotes
+> de tela (`useAccountFilters`, `useBuyerPerformanceData`, `useDashboardKPIs`,
+> `useExecutiveDashboardData`, `usePurchaseHistory`, `useWebAuthn`). Ao consultar qualquer ✅ deste
+> documento, **cheque a classificação da camada de dados no `L07`, `L05` ou `L10` antes de confiar**.
+>
+> — *Fim da errata. O relatório original começa aqui.*
+
+---
+
+
 > Auditoria por leitura integral do código. Nada aqui vem de README, DOCS ou comentários.
 > Sem acesso a runtime/banco: qualquer afirmação sobre conteúdo de tabela, execução de job
 > ou resposta de edge function está marcada como `NAO_VERIFICADO (runtime)`.

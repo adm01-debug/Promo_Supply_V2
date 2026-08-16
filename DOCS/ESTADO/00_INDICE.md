@@ -26,6 +26,11 @@ Os arquivos abaixo são os **lotes de evidência**. Cada linha de cada tabela ci
 | [`L12_BANCO_E_RUNTIME.md`](L12_BANCO_E_RUNTIME.md) | **VERIFICADO em produção** — 162 tabelas, cron, storage, RLS, drift | banco vivo |
 | [`L13_MIGRATIONS.md`](L13_MIGRATIONS.md) | 279 migrations em altitude + reconstrutibilidade do ambiente | 21.209 linhas |
 | [`L14_VERIFICACAO_INDEPENDENTE.md`](L14_VERIFICACAO_INDEPENDENTE.md) | **Fase D** — reprodução dos achados graves, correções e recontagem de cobertura | — |
+| [`L15_META_AUDITORIA.md`](L15_META_AUDITORIA.md) | **Auditoria adversarial da própria auditoria** — defeitos do número principal, 2 classificações erradas, lacuna de `components/ui` fechada | — |
+
+> **Se você for consultar um ✅ específico, leia o `L15` antes.** Ele documenta que o ✅ de um lote
+> só vale até a fronteira do escopo dele, e identifica 10 linhas ✅ cuja camada de dados foi
+> classificada 🟨/⬛ por outro lote. O `L01` carrega errata com dois casos concretos.
 
 ---
 

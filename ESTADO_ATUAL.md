@@ -25,7 +25,17 @@ Há também **uma falha crítica de segurança** (bypass de autenticação por p
 
 ## Contagem honesta
 
-### Por classificação — o que o código mostra
+### O número medido, sem construção — comece por aqui
+
+Estes três dados vêm de contagem direta no banco de produção e **não dependem de como eu escolhi contar nada**:
+
+| Medida | Valor |
+|---|---|
+| Tabelas **completamente vazias** | **99 de 162 — 61,1%** |
+| Áreas de módulo com **100% das tabelas zeradas** | **13** (listadas abaixo) |
+| Fatia do volume do banco que é **telemetria do próprio sistema** | **73%** |
+
+### Por classificação — com uma ressalva importante
 
 | Classificação | Qtd | % | Significado |
 |---|---:|---:|---|
@@ -35,9 +45,19 @@ Há também **uma falha crítica de segurança** (bypass de autenticação por p
 | ⬛ **MORTO_OU_ABANDONADO** | **52** | **9,8%** | Nenhum caminho de execução alcança |
 | | **532** | 100% | |
 
+> ### ⚠️ Leia isto antes de usar os 48,5%
+>
+> A meta-auditoria ([`L15`](DOCS/ESTADO/L15_META_AUDITORIA.md)) encontrou **dois defeitos neste número**, ambos meus:
+>
+> **1. O denominador soma unidades incomparáveis.** Os lotes contaram na unidade que fazia sentido para cada escopo: telas (156), **componentes React** (173), **hooks** (61), **edge functions** (37), **capacidades de CI** (18). Um componente não é uma funcionalidade. Portanto **os 48,5% medem "unidades de código com o fio fechado", não "percentual do sistema pronto"**.
+>
+> **2. O ✅ está inflado em pelo menos 10 unidades.** O ✅ de um lote só vale até a fronteira do escopo dele. Medi: **6 hooks classificados 🟨/⬛ alimentam 10 linhas marcadas ✅** nos lotes de tela. Dois casos são erros claros — o **login por Passkey** (marcado ✅, é a falha crítica de segurança) e os **KPIs do Dashboard** (marcado ✅, com `avgSla: 1.8` e `taxaSlaReal: 85` hardcoded no hook). Cruzei apenas hooks×telas; componentes×telas e edge functions×telas provavelmente escondem mais.
+>
+> **A conclusão qualitativa não muda** — ela se apoia nos números de runtime acima, que são medição direta. O que estava mal calibrado era a precisão implícita da porcentagem.
+
 ### A correção que o runtime impõe
 
-**Os 48,5% são otimistas.** Aplicando a regra *pronto = em produção com uso real*, boa parte dos ✅ pertence a módulos cujas tabelas estão **100% vazias** — o código fecha, mas nunca rodou com usuário:
+Aplicando a regra *pronto = em produção com uso real*, boa parte dos ✅ pertence a módulos cujas tabelas estão **100% vazias** — o código fecha, mas nunca rodou com usuário:
 
 | Módulo | Tabelas vazias | Situação real |
 |---|---|---|
@@ -55,7 +75,7 @@ Há também **uma falha crítica de segurança** (bypass de autenticação por p
 
 **Estimativa honesta do que está de fato em uso com dado real: entre 15% e 20%** — cadastros básicos, dashboard de compras, catálogo, autenticação por senha e a telemetria interna.
 
-> Esta faixa é **inferência**, não medição. Medi as tabelas vazias (fato) e o fio de código (fato); a conversão em percentual de "uso real" envolve julgamento sobre o que conta como funcionalidade em uso.
+> Esta faixa é **ordem de grandeza, não medição**. O que a sustenta é a evidência de runtime (61% de tabelas vazias, 13 módulos zerados) — não a aritmética dos lotes, que a meta-auditoria mostrou ter unidades incomparáveis. Trate-a como "algo entre um sexto e um quinto", não como um número.
 
 ---
 
@@ -172,7 +192,9 @@ Declarado, não escondido:
 | **Corretude lógica das 324 policies RLS** | Só a existência foi medida. Exige sessão multiusuário autenticada |
 | **Corretude das 356 funções de banco** e das 208 `SECURITY DEFINER` | Exigiria execução; auditoria foi somente leitura |
 | **Leitura linha a linha das 279 migrations** (21.209 linhas) | Acima do teto de contexto — feito em altitude, por decisão declarada |
-| **`src/components/ui/`** (57 arquivos, shadcn) | Amostragem de 4 arquivos; o resto por grep. Decisão declarada |
+| ~~**`src/components/ui/`**~~ | **LACUNA FECHADA na meta-auditoria**: verificado que os 65 arquivos não têm lógica de negócio nem acesso a dados; os 4 `Math.random()` são decorativos. Ressalva: eu havia justificado a amostragem como "boilerplate shadcn" — **apenas 24 dos 65 usam Radix**; a decisão era segura, a justificativa estava errada |
+| **Duplicação semântica entre lotes** | Não quantificada. `SLADistributionChart` foi contado em dois lotes sob nomes diferentes; exigiria normalizar 532 sujeitos em prosa livre |
+| **Falso-positivo residual nas listas de ⬛** | Validei os critérios de grep dos lotes por amostragem, não exaustivamente. **Antes de apagar qualquer código, reconfirme aquele símbolo específico** — meu próprio índice de erro em critérios de detecção foi de 4 em ~10 |
 | **Logs de invocação das edge functions** | Sem acesso à Management API — não sei quais **de fato** já rodaram |
 | **Disponibilidade real das APIs XBZ / SPOT / ERP** | Tabelas vazias provam ausência de sincronização, não indisponibilidade da API |
 | **Backups e PITR** | Não expostos por SQL |
@@ -222,6 +244,10 @@ Esta auditoria mediu em vez de confiar — e isso incluiu **desconfiar de mim me
 1. Afirmei na Fase A que **"o typecheck passa limpo"**. Passava — porque não verificava nada. Repassei a premissa errada a um lote, que a registrou como ✅. **A contradição levantada por outro lote foi o que revelou o erro** — e o achado corrigido virou um dos mais graves do relatório.
 2. Afirmei **4 testes falhando** a partir de uma amostra de 1 execução. São 3 determinísticos + 1 flaky.
 
-Três achados graves de lotes também foram refinados ou refutados na verificação independente, e três falsos-positivos foram descartados antes de virarem recomendação — incluindo um do meu próprio regex, que teria acusado três lotes de inventar evidência.
+Três achados graves de lotes também foram refinados ou refutados na verificação independente.
+
+Depois da entrega, executei ainda uma **meta-auditoria adversarial** contra o meu próprio trabalho ([`L15`](DOCS/ESTADO/L15_META_AUDITORIA.md)), que encontrou mais três defeitos meus: o denominador de 532 soma unidades incomparáveis, o total de ✅ está inflado em pelo menos 10, e duas linhas de tabela do `L01` estão erradas. Ela também **fechou** a maior lacuna declarada (`components/ui`) e **confirmou uma a uma** as afirmações positivas deste documento — 107 importações, 162/162 tabelas com RLS e 53/53 rotas, todas exatas.
+
+No total, **quatro falsos-positivos de critérios de detecção meus** foram descartados antes de virarem recomendação — um deles teria acusado três lotes de inventar evidência. Essa taxa de erro é a razão da ressalva acima sobre não apagar código em lote a partir das listas de ⬛.
 
 **Nada foi alterado em produção.** Zero DDL, zero DML, zero migration, zero deploy.
