@@ -393,4 +393,21 @@ Ordenadas por severidade.
 /home/user/promo-supply-v2/src/lib/paginatedFetch.ts (implementação de `fetchAllRows`, usada por useExecutiveDashboardData)
 /home/user/promo-supply-v2/src/components/compras/PendingApprovalsList.tsx (linhas 108–133, 233)
 
-> **Ressalva de honestidade**: os 10 arquivos de `__tests__/` foram lidos em preview (primeiras ~30 linhas cada) o suficiente para identificar o que testam e quais exports importam — não linha a linha. Os 61 arquivos de produção foram lidos integralmente. `usePermissions.test.tsx` e `useXbzIntegration.cache.test.tsx` foram apenas listados e não abertos; sua existência é o que sustenta a afirmação de cobertura de teste, não seu conteúdo.
+> **Ressalva de honestidade**: os 61 arquivos de produção foram lidos integralmente, linha a linha. Os 10 arquivos de `__tests__/` foram lidos em preview (primeiras ~30–45 linhas de cada) — o suficiente para identificar o que testam, quais exports importam e o que mockam, mas **não** linha a linha. Portanto não afirmo nada sobre a qualidade ou a real cobertura das asserções desses testes, apenas sobre quais símbolos eles exercitam.
+
+**Cobertura de teste observada** (o que cada arquivo de `__tests__/` importa):
+
+| Arquivo de teste | Alvo exercitado |
+|---|---|
+| `hookConstants.test.ts:19–27` | constantes de `useBulkOperations`, `useFeedback`, `useGeoRestriction`, `useRecentlyViewed` |
+| `keyboardShortcutsData.test.ts:10` | `getShortcutsList`, `shortcutsList` de `useKeyboardShortcuts` |
+| `permissionsConstants.test.ts:8` | `moduleLabels`, `actionLabels` de `usePermissions` |
+| `useApprovalHistory.test.ts:3` | `useApprovalHistory` (Supabase mockado) |
+| `useFuseSearch.test.ts:3` | `useFuseSearch`, `normalizeText`, `createSearchIndex` — **único lugar que exercita o motor Fuse.js órfão** |
+| `useImageCompression.test.ts:3` | `useAutoImageCompression` |
+| `usePermissions.test.tsx:3` | `usePermissions` (Supabase + `useAuth` mockados) |
+| `useToastReducer.test.ts:5` | `reducer` de `use-toast` |
+| `useWorkflowDLQ.test.ts:3` | `useWorkflowDLQ` (localStorage mockado) |
+| `useXbzIntegration.cache.test.tsx:26–31` | `useXbzIntegration`, `clearXbzStaticCache`, `getXbzNetworkStats`, `getXbzSavedRatio`, `resetXbzNetworkStats` |
+
+**36 dos 61 arquivos de produção não têm nenhum teste em `src/hooks/__tests__/`** — inclusive todos os que tocam banco com escrita (`usePagamentos`, `useDevolucoes`, `useFornecedores`, `useApprovalWorkflow`, `useLicitacoes`, `useSecurityLogs`, `useMFA`, `useWebAuthn`).
