@@ -17,28 +17,20 @@
 # ARGUMENTS
 #   --cutoff YYYYMMDD   Migrations strictly before this timestamp prefix are
 #                       squashed.  Defaults to the oldest migration that is
-#                       NOT part of the official schema baseline (i.e. anything
-#                       before the first Lovable-generated UUID-named file).
-#                       Example: --cutoff 20260101000000
+#                       NOT part of the official schema baseline.
 #   --dry-run           Print what would happen without changing any files.
 #   --help              Show this message.
 #
 # OUTPUT
 #   supabase/migrations/<CUTOFF>_squashed_baseline.sql  ← new combined file
-#   The original files below the cutoff are DELETED.
+#   The original files below the cutoff are DELETED (via git rm).
 #
 # SAFETY RULES
 #   1. The working tree must be clean (git status) before running.
-#   2. Always commit the squashed file and push before deploying to production.
-#   3. On a Supabase managed project, run "supabase db reset" locally first
-#      to verify the squashed file produces an identical schema.
-#   4. Coordinate with every developer — they must "git pull" before running
-#      new migrations or they will get timestamp conflicts.
-#
-# PREREQUISITES
-#   - git
-#   - bash 4+
-#   - GNU cat / ls (standard on Linux/macOS)
+#   2. Never squash an existing *_squashed_baseline.sql file.
+#   3. Always commit the squashed file and push before deploying to production.
+#   4. On a Supabase managed project, run "supabase db reset" locally first.
+#   5. Coordinate with every developer — they must "git pull" before running.
 #
 set -euo pipefail
 
@@ -97,11 +89,13 @@ mapfile -t TO_SQUASH < <(
   ls "$MIGRATIONS_DIR"/*.sql 2>/dev/null \
     | sort \
     | awk -v cutoff="$CUTOFF" -F'/' '{
-        # Extract timestamp prefix (first 14 chars of filename)
         n = split($NF, a, "_"); ts = substr(a[1], 1, 14)
         if (ts < cutoff) print $0
       }'
 )
+
+# Proteção: nunca squashear um baseline já gerado.
+TO_SQUASH=($(printf '%s\n' "${TO_SQUASH[@]}" | grep -v 'squashed_baseline' || true))
 
 COUNT="${#TO_SQUASH[@]}"
 
@@ -153,9 +147,9 @@ fi
 
 echo "Written: $BASELINE_FILE ($(wc -l < "$BASELINE_FILE") lines)"
 
-# ── Remove originals ──────────────────────────────────────────────────────────
+# ── Remove originals via git rm (mantém o índice consistente) ─────────────────
 for f in "${TO_SQUASH[@]}"; do
-  rm "$f"
+  git -C "$SCRIPT_DIR/.." rm --quiet "$f"
   echo "  Removed: $(basename "$f")"
 done
 
