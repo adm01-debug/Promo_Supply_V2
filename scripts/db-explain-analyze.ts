@@ -8,6 +8,7 @@
  * Requer:
  *   - SUPABASE_URL
  *   - SUPABASE_SERVICE_ROLE_KEY
+ *   - RPC public.execute_read_query (migration 20261107150000_execute_read_query.sql)
  *
  * Saída:
  *   - Imprime plano + tempo por query (média de N execuções)
@@ -47,12 +48,20 @@ const HOT_QUERIES: { name: string; sql: string }[] = [
   },
 ];
 
+// Extrai o tempo real de execução (ms) do plano EXPLAIN (ANALYZE, FORMAT JSON).
+// O RPC retorna jsonb: um array com um único objeto { Plan: { "Actual Total Time": n } }.
+function extractTotalTime(data: unknown): number | null {
+  const arr = Array.isArray(data) ? data : [data];
+  const first = arr[0] as { Plan?: { "Actual Total Time"?: number } } | undefined;
+  const t = first?.Plan?.["Actual Total Time"];
+  return typeof t === "number" ? t : null;
+}
+
 async function runOnce(sql: string): Promise<number | null> {
   const explainSql = `EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON) ${sql}`;
-  const { data, error } = await supabase.rpc("execute_read_query" as never, { sql: explainSql }).single();
+  const { data, error } = await supabase.rpc("execute_read_query" as never, { sql: explainSql });
   if (error) return null;
-  const plan = (data as unknown as { Plan: { "Actual Total Time": number } }[])[0];
-  return plan?.Plan?.["Actual Total Time"] ?? 0;
+  return extractTotalTime(data);
 }
 
 async function main() {
@@ -70,7 +79,8 @@ async function main() {
 
     if (times.length === 0) {
       console.warn(`[skip] ${q.name}: RPC 'execute_read_query' não disponível`);
-      report.push(`## ${q.name}\n_skip: RPC não disponível_\n`);
+      report.push(`## ${q.name}\n_skip: RPC não disponível_
+`);
       continue;
     }
 
