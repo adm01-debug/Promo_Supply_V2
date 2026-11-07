@@ -35,12 +35,17 @@ interface PolicyRow {
   with_check: string | null;
 }
 
-// Allowlist: policies que legitimamente usam true (ex.: service_role admin).
+// Allowlist: policies que legitimamente usam true.
+// - service_role*/admin*: acesso administrativo total.
+// - *_authenticated_read (SELECT): leitura pública para usuários autenticados.
 const ALLOWED_POLICY_PREFIXES = ["service_role", "admin"];
 
-function isAllowed(policyname: string): boolean {
-  const lower = policyname.toLowerCase();
-  return ALLOWED_POLICY_PREFIXES.some((p) => lower.startsWith(p));
+function isAllowed(p: PolicyRow): boolean {
+  const lower = p.policyname.toLowerCase();
+  if (ALLOWED_POLICY_PREFIXES.some((pre) => lower.startsWith(pre))) return true;
+  // Policies de leitura para authenticated (SELECT com qual=true) são legítimas.
+  if (p.cmd === "SELECT" && lower.endsWith("_authenticated_read")) return true;
+  return false;
 }
 
 function isTrue(expr: string | null): boolean {
@@ -106,7 +111,7 @@ async function runAudit() {
   const permissive = rows.filter((p) => {
     const qualTrue = isTrue(p.qual);
     const checkTrue = isTrue(p.with_check);
-    return (qualTrue || checkTrue) && !isAllowed(p.policyname);
+    return (qualTrue || checkTrue) && !isAllowed(p);
   });
 
   const rlsDisabled = await readRlsDisabled();

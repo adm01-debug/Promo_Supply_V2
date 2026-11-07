@@ -66,7 +66,7 @@ async function validateBridgeContract() {
       body: { operation: 'insert', table: 'test_table', data: { id: 1 } }
     });
     if (ins.error) {
-      check(ins.error.message?.includes("External database not configured") || true, "Insert respondeu (erro esperado sem DB externo)", ins.error.message);
+      check(!!ins.error.message?.includes("External database not configured"), "Insert respondeu com erro esperado (sem DB externo)", ins.error.message);
     } else {
       check(!!ins.data, "Insert retornou dados");
     }
