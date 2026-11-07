@@ -31,7 +31,8 @@ BEGIN
 
   -- O comando após EXPLAIN deve ser somente leitura (SELECT ou WITH).
   -- Bloqueia EXPLAIN ANALYZE DELETE/UPDATE/INSERT/DDL (que executariam o DML).
-  IF v_body !~ '^(SELECT|WITH)\b' THEN
+  -- Nota: \b (word boundary) não funciona no regex do Postgres; usar (\s|$).
+  IF v_body !~ '^(SELECT|WITH)(\s|$)' THEN
     RAISE EXCEPTION 'EXPLAIN somente para SELECT/WITH (leitura)';
   END IF;
 
