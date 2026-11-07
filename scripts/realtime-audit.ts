@@ -40,8 +40,10 @@ function audit(file: string) {
   const src = stripComments(readFileSync(file, "utf8"));
   const opens = (src.match(/supabase\.channel\s*\(/g) ?? []).length;
   if (opens === 0) return;
+  // Lookbehind negativo: `supabase.removeChannel` só conta no regex qualificado,
+  // evitando contagem dupla da mesma chamada.
   const closes =
-    (src.match(/removeChannel\s*\(/g) ?? []).length +
+    (src.match(/(?<!supabase\.)removeChannel\s*\(/g) ?? []).length +
     (src.match(/removeAllChannels\s*\(/g) ?? []).length +
     (src.match(/\.unsubscribe\s*\(/g) ?? []).length +
     (src.match(/supabase\.removeChannel\s*\(/g) ?? []).length;
