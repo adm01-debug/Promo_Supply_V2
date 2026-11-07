@@ -13,13 +13,18 @@ import { performance } from "perf_hooks";
  * 401/403 são respostas de auth válidas (não contam como falha de infra).
  */
 
-const ENDPOINT = process.env.VITE_SUPABASE_URL ? `${process.env.VITE_SUPABASE_URL}/functions/v1/workflow-engine` : "http://localhost:54321/functions/v1/workflow-engine";
-const ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "anon";
-
 function arg(name: string, def: string): string {
   const i = process.argv.indexOf(name);
   return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : def;
 }
+
+const ENDPOINT = arg(
+  "--endpoint",
+  process.env.VITE_SUPABASE_URL
+    ? `${process.env.VITE_SUPABASE_URL}/functions/v1/workflow-engine`
+    : "http://localhost:54321/functions/v1/workflow-engine"
+);
+const ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY || "anon";
 
 const CONCURRENCY = Number(arg("--concurrency", "50"));
 const TOTAL_REQUESTS = Number(arg("--requests", "500"));

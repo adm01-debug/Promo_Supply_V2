@@ -66,14 +66,23 @@ async function readPolicies(): Promise<PolicyRow[] | null> {
   return (data ?? []) as PolicyRow[];
 }
 
-async function readRlsDisabled(): Promise<string[]> {
-  // Tabelas public com RLS desabilitado via pg_class/pg_namespace.
+async function readRlsDisabled(): Promise<string[] | null> {
+  // relnamespace é o OID do schema, não o nome. Resolve o OID de 'public'
+  // via pg_namespace antes de filtrar pg_class.
+  const ns = await supabase
+    .schema("pg_catalog" as unknown as Parameters<typeof supabase["schema"]>[0])
+    .from("pg_namespace")
+    .select("oid, nspname")
+    .eq("nspname", "public")
+    .single();
+  if (ns.error || !ns.data) return null;
+
   const { data, error } = await supabase
     .schema("pg_catalog" as unknown as Parameters<typeof supabase["schema"]>[0])
     .from("pg_class")
     .select("relname, relrowsecurity")
-    .eq("relnamespace", "public");
-  if (error) return [];
+    .eq("relnamespace", ns.data.oid);
+  if (error) return null;
   return (data ?? [])
     .filter((r: { relrowsecurity: boolean }) => r.relrowsecurity === false)
     .map((r: { relname: string }) => r.relname);
@@ -101,13 +110,22 @@ async function runAudit() {
   });
 
   const rlsDisabled = await readRlsDisabled();
+  if (rlsDisabled === null) {
+    const msg = "❌ Não foi possível ler pg_class — RLS desabilitado não verificado.";
+    if (STRICT) {
+      console.error(msg);
+      process.exit(1);
+    }
+    console.warn(msg);
+  }
+  const disabledTables = rlsDisabled ?? [];
 
   const report: string[] = [
     `# RLS Audit snapshot — ${new Date().toISOString()}`,
     "",
     `- Policies inspecionadas: ${rows.length}`,
     `- Policies permissivas: ${permissive.length}`,
-    `- Tabelas com RLS desabilitado: ${rlsDisabled.length}`,
+    `- Tabelas com RLS desabilitado: ${disabledTables.length}`,
     "",
   ];
 
@@ -119,9 +137,9 @@ async function runAudit() {
     report.push("");
   }
 
-  if (rlsDisabled.length > 0) {
+  if (disabledTables.length > 0) {
     report.push("## Tabelas com RLS desabilitado", "");
-    for (const t of rlsDisabled) report.push(`- \`${t}\``);
+    for (const t of disabledTables) report.push(`- \`${t}\``);
     report.push("");
   }
 
@@ -141,8 +159,8 @@ async function runAudit() {
     process.exit(1);
   }
 
-  if (rlsDisabled.length > 0) {
-    console.warn(`\n⚠️  ${rlsDisabled.length} tabela(s) com RLS desabilitado.`);
+  if (disabledTables.length > 0) {
+    console.warn(`\n⚠️  ${disabledTables.length} tabela(s) com RLS desabilitado.`);
     if (STRICT) process.exit(1);
   }
 

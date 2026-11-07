@@ -80,7 +80,14 @@ async function main() {
     const ok = avg <= LIMIT_MS;
     if (!ok) failed++;
     jsonOut[q.name] = { avgMs: avg, minMs: min, maxMs: max, ok };
-    console.log(`${ok ? "✅" : "❌"} ${q.name}: avg ${avg.toFixed(2)}ms (min ${min.toFixed(2)} / max ${max.toFixed(2)}, limit ${LIMIT_MS}ms)`);
+    // Em modo --json, mantém stdout como um único documento JSON válido:
+    // diagnóstico textual vai para stderr.
+    const line = `${ok ? "✅" : "❌"} ${q.name}: avg ${avg.toFixed(2)}ms (min ${min.toFixed(2)} / max ${max.toFixed(2)}, limit ${LIMIT_MS}ms)`;
+    if (AS_JSON) {
+      console.error(line);
+    } else {
+      console.log(line);
+    }
     report.push(`## ${q.name}\n- média: **${avg.toFixed(2)}ms** (min ${min.toFixed(2)} / max ${max.toFixed(2)})\n- limite: ${LIMIT_MS}ms\n- status: ${ok ? "ok" : "REGRESSÃO"}\n`);
   }
 
