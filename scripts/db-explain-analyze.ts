@@ -33,18 +33,19 @@ if (!url || !key) {
 const supabase = createClient(url, key);
 
 // Queries quentes identificadas via slow_queries / uso real.
+// Filtros reais (status/read) para medir scans que retornam dados de verdade.
 const HOT_QUERIES: { name: string; sql: string }[] = [
   {
-    name: "pedidos_by_org_status",
-    sql: "SELECT id FROM public.pedidos WHERE organization_id = gen_random_uuid() AND status = 'pendente' ORDER BY created_at DESC LIMIT 50",
+    name: "pedidos_by_status",
+    sql: "SELECT id FROM public.pedidos WHERE status = 'pendente' ORDER BY created_at DESC LIMIT 50",
   },
   {
     name: "solicitacoes_pipeline",
-    sql: "SELECT id FROM public.solicitacoes WHERE organization_id = gen_random_uuid() AND status IN ('pendente','em_cotacao') LIMIT 100",
+    sql: "SELECT id FROM public.solicitacoes WHERE status IN ('pendente','em_cotacao') ORDER BY created_at DESC LIMIT 100",
   },
   {
     name: "notifications_unread",
-    sql: "SELECT id FROM public.notifications WHERE user_id = gen_random_uuid() AND read_at IS NULL ORDER BY created_at DESC LIMIT 20",
+    sql: "SELECT id FROM public.notifications WHERE read = false ORDER BY created_at DESC LIMIT 20",
   },
 ];
 

@@ -16,10 +16,23 @@ SET search_path = pg_catalog, public
 AS $$
 DECLARE
   v_plan jsonb;
+  v_body text;
 BEGIN
-  -- Validação: só permite SELECT (leitura), nunca DML/DDL.
-  IF upper(btrim(p_sql)) !~ '^EXPLAIN' THEN
+  -- Validação: só permite EXPLAIN de leitura (SELECT/WITH), nunca DML/DDL.
+  v_body := upper(btrim(p_sql));
+  IF v_body !~ '^EXPLAIN' THEN
     RAISE EXCEPTION 'Somente EXPLAIN é permitido';
+  END IF;
+
+  -- Remove o prefixo EXPLAIN e as opções entre parênteses (ex.: (ANALYZE, BUFFERS)).
+  v_body := regexp_replace(v_body, '^EXPLAIN', '');
+  v_body := regexp_replace(v_body, '^\s*\([^)]*\)', '');
+  v_body := btrim(v_body);
+
+  -- O comando após EXPLAIN deve ser somente leitura (SELECT ou WITH).
+  -- Bloqueia EXPLAIN ANALYZE DELETE/UPDATE/INSERT/DDL (que executariam o DML).
+  IF v_body !~ '^(SELECT|WITH)\b' THEN
+    RAISE EXCEPTION 'EXPLAIN somente para SELECT/WITH (leitura)';
   END IF;
 
   EXECUTE p_sql INTO v_plan;
