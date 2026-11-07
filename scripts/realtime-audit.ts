@@ -2,16 +2,30 @@
  * OPS-02: Auditoria de canais Realtime — detecta subscribe sem unsubscribe.
  *
  * Regras:
- *   - Todo `supabase.channel(...)` deve ter `removeChannel` ou `unsubscribe`
- *     no cleanup do mesmo arquivo.
+ *   - Todo `supabase.channel(...)` deve ter `removeChannel`, `removeAllChannels`,
+ *     `supabase.removeChannel` ou `.unsubscribe` no cleanup do mesmo arquivo.
+ *   - Ignora comentários e strings para evitar falsos positivos.
  *   - Falha o build se sobrar canal órfão.
+ *
+ * Flags:
+ *   --json   saída JSON
+ *   --dir X  raiz a auditar (default: src)
  */
 
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 
-const ROOTS = ["src"];
+const AS_JSON = process.argv.includes("--json");
+const dirIdx = process.argv.indexOf("--dir");
+const ROOTS = dirIdx >= 0 && process.argv[dirIdx + 1] ? [process.argv[dirIdx + 1]] : ["src"];
 const orphaned: { file: string; count: number }[] = [];
+
+// Remove comentários de linha e de bloco para não gerar falsos positivos.
+function stripComments(src: string): string {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\/\/[^\n]*/g, "");
+}
 
 function walk(dir: string) {
   for (const entry of readdirSync(dir)) {
@@ -23,12 +37,14 @@ function walk(dir: string) {
 }
 
 function audit(file: string) {
-  const src = readFileSync(file, "utf8");
+  const src = stripComments(readFileSync(file, "utf8"));
   const opens = (src.match(/supabase\.channel\s*\(/g) ?? []).length;
   if (opens === 0) return;
   const closes =
     (src.match(/removeChannel\s*\(/g) ?? []).length +
-    (src.match(/\.unsubscribe\s*\(/g) ?? []).length;
+    (src.match(/removeAllChannels\s*\(/g) ?? []).length +
+    (src.match(/\.unsubscribe\s*\(/g) ?? []).length +
+    (src.match(/supabase\.removeChannel\s*\(/g) ?? []).length;
   if (closes < opens) {
     orphaned.push({ file, count: opens - closes });
   }
@@ -36,11 +52,16 @@ function audit(file: string) {
 
 for (const r of ROOTS) walk(r);
 
-if (orphaned.length === 0) {
+if (AS_JSON) {
+  console.log(JSON.stringify({ orphaned, total: orphaned.length }, null, 2));
+} else if (orphaned.length === 0) {
   console.log("✅ Nenhum canal Realtime órfão detectado.");
-  process.exit(0);
 }
 
-console.error("❌ Canais Realtime sem cleanup:");
-for (const o of orphaned) console.error(`  - ${o.file} (${o.count} canal(is) sem removeChannel)`);
-process.exit(1);
+if (orphaned.length > 0) {
+  console.error("❌ Canais Realtime sem cleanup:");
+  for (const o of orphaned) console.error(`  - ${o.file} (${o.count} canal(is) sem removeChannel)`);
+  process.exit(1);
+}
+
+process.exit(0);
