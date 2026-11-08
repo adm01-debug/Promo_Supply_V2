@@ -17,6 +17,17 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: CI Scripts Unit Tests (AGENTS.md baseline)
+        run: node --test scripts/ci/*.unit.mjs
+
+      - name: Integrity Guard AGENTS.md (PRs only)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          node scripts/ci/check-agents-md-integrity.mjs
+        env:
+          AGENTS_MD_BASE: origin/${{ github.base_ref }}
+
       - name: Linting
         run: bun run lint
 
