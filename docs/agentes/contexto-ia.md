@@ -1,6 +1,7 @@
 # Contexto para agentes de IA — como funciona e como operar
 
 Sistema de scripts autônomos que mantém o repositório descrito sozinho. Portado do `adm01-debug/Zapp_Web_V2`.
+Regras de uso no `AGENTS.md`, seção "Contexto gerado"; aqui está como o pipeline funciona e como diagnosticá-lo.
 
 ## Desenho
 
@@ -64,15 +65,16 @@ postgresql://postgres.<ref>:<senha>@aws-0-<regiao>.pooler.supabase.com:5432/post
 
 Detalhe completo, incluindo o SQL de um role read-only alternativo: `scripts/supabase_snapshot/README.md`.
 
-## Divergência de project ref (resolver)
+## Project ref do Supabase (divergência resolvida em 2026-11-08)
 
-O repo aponta para dois projetos Supabase diferentes:
+Oficial: **`lmypcdfsrgfftzhxawao`**. O commit `0bdc3cb` alinhou o código ativo (`supabase/config.toml`,
+`vite.config.ts`, `index.html`, `src/pages/admin/SSOConfig.tsx`, `src/tests/load/backend-stress.yml`,
+`tests-rls/`), que antes apontava para `trwgmplubeqxrxpncdgf` e `apuzcrkeqodktmpwobnz`.
 
-- `supabase/config.toml` → `trwgmplubeqxrxpncdgf`
-- `.env` → `VITE_SUPABASE_URL=https://lmypcdfsrgfftzhxawao.supabase.co`
-
-Nenhum script deste sistema tem ref escrito no código: o destino vem do secret. Mas a divergência é um risco
-real (migration aplicada no projeto errado), e precisa ser resolvida no repo.
+Nenhum script deste sistema tem ref escrito no código: o destino vem do secret. Ainda assim, **os comentários
+de `contexto.yml`, `types-sync.yml`, `inventario-estado-semanal.yml`, `inventario/README.md` e dos READMEs de
+`scripts/types-sync/` e `scripts/supabase_snapshot/` continuam descrevendo a divergência antiga como atual** —
+estão desatualizados. Fonte de verdade do ref: `docs/agentes/banco.md`.
 
 ## Regras que só o negócio sabe
 
