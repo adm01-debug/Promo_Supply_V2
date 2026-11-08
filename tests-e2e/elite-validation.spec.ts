@@ -35,7 +35,9 @@ test.describe('Freight Quest E2E Excellence', () => {
 
   test('Consistência de Dados: Painel Administrativo de Telemetria', async ({ page }) => {
     await page.goto('/admin/telemetria');
-    if (page.url().includes('/auth')) return;
+    // Aguarda SPA redirecionar (pode ir para /auth ou outra rota se sem permissão)
+    await page.waitForURL(/\/admin\/telemetria|\/auth/, { timeout: 3000 }).catch(() => {});
+    if (!page.url().includes('/admin/telemetria')) return;
     
     // Verificar se os widgets de telemetria estão carregando dados reais
     await expect(page.getByText(/Telemetria de Queries/i)).toBeVisible();

@@ -13,7 +13,7 @@ test.describe('Freight Quest Production Readiness', () => {
     
     // Check if login elements are present
     const loginHeader = page.getByText(/Acesse sua conta/i).or(page.getByText(/Login/i));
-    await expect(loginHeader).toBeVisible();
+    await expect(loginHeader.first()).toBeVisible();
   });
 
   test('Main Layout Components', async ({ page }) => {
@@ -22,9 +22,8 @@ test.describe('Freight Quest Production Readiness', () => {
     // Check for essential UI elements on landing/auth
     await expect(page.locator('input[type="email"]')).toBeVisible();
     
-    // Verify responsive design (mobile menu presence if simulated)
-    // For desktop, we check sidebar presence if logged in, but here we can check if the auth container is centered
-    const authCard = page.locator('.card, .border, [role="main"]');
+    // Verify auth container is present (use .first() to avoid strict mode violation)
+    const authCard = page.locator('.card, .border, [role="main"]').first();
     await expect(authCard).toBeVisible();
   });
 

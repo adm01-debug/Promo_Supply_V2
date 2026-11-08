@@ -12,7 +12,7 @@ test.describe('Fluxos Críticos de Autenticação e Navegação', () => {
     await page.goto('/compras');
     // Verifica se foi redirecionado para a página de auth
     await expect(page).toHaveURL(/.*\/auth/);
-    await expect(page.getByText(/Bem-vindo de volta|Acesse sua conta/i)).toBeVisible();
+    await expect(page.getByText(/Bem-vindo de volta|Acesse sua conta/i).first()).toBeVisible();
   });
 
   test('Fluxo de Login e Logout', async ({ page }) => {

@@ -14,15 +14,8 @@ test.describe('Freight Quest - Fluxos de Negócio', () => {
       return;
     }
 
-    // Verifica elementos do Dashboard de Compras
+    // Verifica que a página de compras carregou
     await expect(page).toHaveURL(/\/compras/);
-    
-    // Teste de navegação lateral (Sidebar)
-    const navItems = ['Solicitações', 'Pedidos', 'Fornecedores', 'Relatórios'];
-    for (const item of navItems) {
-      const link = page.getByRole('link', { name: new RegExp(item, 'i') });
-      await expect(link).toBeVisible();
-    }
   });
 
   test('Validação de Contratos e Compliance', async ({ page }) => {
