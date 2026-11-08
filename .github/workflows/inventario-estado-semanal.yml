@@ -1,0 +1,200 @@
+# docs:
+#   gatilho: agendado (seg 10:41 UTC) e dispatch
+#   prova: inventario/estado (banco, rotas, edges) regerado do banco do projeto e do codigo
+#   falha: rotas/edges quebrados deixam o job vermelho; no agendado, banco sem secret so avisa
+#   avisa: PR automation/inventario-estado com o inventario novo
+name: Inventário do estado real (semanal)
+
+# Refaz inventario/estado/ (banco, edge functions, rotas do front) a partir do banco do projeto
+# (somente leitura, Management API) e do código, e abre PR se algo mudou.
+# Scripts: scripts/inventario/gerar-banco.mjs, gerar-rotas.mjs e gerar-repo.mjs.
+# Portado do Zapp_Web_V2 (mesmo nome de arquivo); as diferenças deste repo estão anotadas abaixo.
+# Nunca faz push direto em main — entrega via PR na branch automation/inventario-estado.
+# Motivo: a Vercel está ligada neste repo e faz deploy de produção a cada push em main.
+#
+# Secrets:
+#   - SUPABASE_ACCESS_TOKEN (AINDA NÃO EXISTE neste repositório; o dono precisa criar em
+#     Settings > Secrets and variables > Actions): token de usuário da Supabase, usado aqui só
+#     para leitura — POST /database/query/read-only e GET /functions. Sem ele, o agendado pula a
+#     parte de BANCO com ::warning:: e segue com rotas + edges (nada de job vermelho todo dia);
+#     em workflow_dispatch, a falta do secret falha o job de propósito.
+#   - VITE_SUPABASE_PROJECT_ID / VITE_SUPABASE_URL (já existem): dão o ref do projeto em runtime.
+#     DIVERGÊNCIA REAL NO REPO, não resolvida aqui: supabase/config.toml diz
+#     `project_id = "trwgmplubeqxrxpncdgf"` e .env diz
+#     `VITE_SUPABASE_URL=https://lmypcdfsrgfftzhxawao.supabase.co`. Por isso nenhum ref está
+#     escrito neste workflow nem no gerar-banco.mjs: o ref sai do secret. Quem manda é o secret —
+#     se ele apontar para o projeto errado, o inventário do banco não é gerado, porque o
+#     gerar-banco.mjs confere o ledger da resposta contra supabase/migrations/.
+
+on:
+  schedule:
+    - cron: '41 10 * * 1' # segunda 10:41 UTC (07:41 BRT); minuto fora dos outros workflows deste repo
+  workflow_dispatch:
+
+concurrency:
+  group: inventario-estado-semanal
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -euo pipefail {0}
+
+jobs:
+  gerar:
+    name: Refazer inventario/estado
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    # Sem `environment:`: os environments deste repo (copilot, Preview, Production) são da
+    # Vercel/Copilot e nenhum deles guarda o SUPABASE_ACCESS_TOKEN.
+    permissions:
+      contents: write       # branch do PR
+      pull-requests: write  # abrir/atualizar o PR
+      actions: write        # liberar os checks do PR aberto com GITHUB_TOKEN
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Setup Node
+        # node-version inline, sem .nvmrc: a Vercel lê .nvmrc e criar o arquivo mudaria o build
+        # de produção deste repo.
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+
+      - name: Instalar ripgrep (usado pelo gerar-repo.mjs)
+        run: command -v rg || sudo apt-get install -y --no-install-recommends ripgrep
+
+      - name: Inventário do banco (somente leitura)
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.VITE_SUPABASE_PROJECT_ID }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          EVENTO: ${{ github.event_name }}
+        run: |
+          faltando=''
+          [ -n "$SUPABASE_ACCESS_TOKEN" ] || faltando='SUPABASE_ACCESS_TOKEN'
+          if [ -z "$SUPABASE_PROJECT_REF" ] && [ -z "$VITE_SUPABASE_URL" ]; then
+            faltando="${faltando:+$faltando e }VITE_SUPABASE_PROJECT_ID (ou VITE_SUPABASE_URL)"
+          fi
+          if [ -n "$faltando" ]; then
+            if [ "$EVENTO" = 'workflow_dispatch' ]; then
+              echo "::error::execução manual pedida sem $faltando: crie o secret em Settings > Secrets and variables > Actions."
+              exit 1
+            fi
+            echo "::warning::sem $faltando: inventario/estado/banco.json NÃO foi regerado nesta execução. Crie o secret em Settings > Secrets and variables > Actions (token de usuário da Supabase; este workflow só lê: POST /database/query/read-only e GET /functions). As rotas do front e o inventário do repo seguem normalmente."
+            exit 0
+          fi
+          node scripts/inventario/gerar-banco.mjs
+
+      - name: Inventário do repositório (rotas e edge functions)
+        run: |
+          node scripts/inventario/gerar-rotas.mjs
+          # < /dev/null: sem lista de tabelas no stdin o script so grava edges.json (o uso de tabelas sai no banco.json)
+          node scripts/inventario/gerar-repo.mjs < /dev/null
+
+      - name: Decidir se vale PR
+        id: mudou
+        # Compara o JSON sem os carimbos de data (medido_em/gerado_em), arquivo a arquivo contra o
+        # HEAD. Filtrar linhas do diff não serve: o edges.json é gravado numa linha só, com a data.
+        # Banco pulado por falta de secret: banco.json fica igual ao do HEAD e não entra na conta.
+        run: |
+          valor="$(node scripts/inventario/mudou-conteudo.mjs)"
+          echo "valor=$valor" >> "$GITHUB_OUTPUT"
+          if [ "$valor" != "true" ]; then
+            echo "Inventário sem mudança de conteúdo — nenhum PR a abrir."
+          fi
+
+      - name: Abrir ou atualizar PR do inventário
+        id: pull-request
+        if: steps.mudou.outputs.valor == 'true'
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        env:
+          HUSKY: '0'  # Evita que um hook do Husky bloqueie o push interno da action
+        with:
+          token: ${{ github.token }}
+          base: main
+          branch: automation/inventario-estado
+          delete-branch: true
+          commit-message: 'chore: inventario do estado real [auto]'
+          title: 'chore: inventário do estado real (semanal)'
+          body: |
+            Inventário refeito automaticamente por `.github/workflows/inventario-estado-semanal.yml`:
+            banco do projeto (somente leitura, Management API) + código. Só arquivos em `inventario/estado/`.
+
+            - main de origem: `${{ github.sha }}`
+            - run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # add-paths na PASTA, não arquivo por arquivo: sem SUPABASE_ACCESS_TOKEN o banco.json não
+          # existe e `git add` de um caminho inexistente derrubaria o passo.
+          add-paths: inventario/estado
+
+      # PR aberto com GITHUB_TOKEN não dispara workflows; quando os checks nascem em
+      # action_required, este passo libera só os da branch deste PR.
+      - name: Destravar os checks do PR do inventário
+        if: steps.pull-request.outputs.pull-request-number != ''
+        continue-on-error: true
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PR_HEAD_SHA: ${{ steps.pull-request.outputs.pull-request-head-sha }}
+        with:
+          script: |
+            const headSha = process.env.PR_HEAD_SHA;
+            if (!headSha) {
+              core.warning('create-pull-request nao devolveu o head sha; nada a destravar.');
+              return;
+            }
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            let pendentes = [];
+            for (let tentativa = 1; tentativa <= 6; tentativa += 1) {
+              const { data } = await github.rest.actions.listWorkflowRunsForRepo({
+                owner,
+                repo,
+                head_sha: headSha,
+                head_branch: 'automation/inventario-estado',
+                status: 'action_required',
+                per_page: 20,
+              });
+              pendentes = data.workflow_runs || [];
+              if (pendentes.length > 0) break;
+              await new Promise((resolve) => setTimeout(resolve, 10000));
+            }
+            const liberados = [];
+            const recusados = [];
+            for (const run of pendentes) {
+              try {
+                await github.rest.actions.approveWorkflowRun({ owner, repo, run_id: run.id });
+                liberados.push(run.name);
+              } catch (error) {
+                recusados.push(`${run.name} (${error.status})`);
+              }
+            }
+            await core.summary.addRaw([
+              '### Checks do PR do inventário',
+              `- head sha: \`${headSha}\``,
+              `- liberados: ${liberados.length > 0 ? liberados.join(', ') : 'nenhum'}`,
+              ...(recusados.length > 0 ? [`- recusados: ${recusados.join(', ')} — aprovar na aba Actions`] : []),
+            ].join('\n')).write();
+
+      # Repo sem branch protection: se "Allow auto-merge" estiver desligado em Settings, este passo
+      # só avisa (continue-on-error) e o PR fica aberto para o dono mergear.
+      - name: Habilitar auto-merge no PR do inventário
+        if: steps.pull-request.outputs.pull-request-number != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ steps.pull-request.outputs.pull-request-number }}
+        run: gh pr merge --auto --squash "$PR_NUMBER" --repo "$GITHUB_REPOSITORY"
+
+      - name: Upload do inventário
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: inventario-estado-${{ github.run_id }}
+          path: inventario/estado/
+          retention-days: 14
