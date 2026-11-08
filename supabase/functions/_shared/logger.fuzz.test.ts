@@ -37,11 +37,11 @@ const MULTIBYTE_SAMPLES = [
   "日本語テスト",
   "😀🎉🚀",
   "👨‍👩‍👧‍👦",
-  "e\u0301\u0302\u0303",
+  "é̂̃",
   "مرحبا بالعالم",
   "שלום עולם",
-  "\u200B\u200C\u200D zero-width",
-  "\uD83D\uDCA9 pilha",
+  "​‌‍ zero-width",
+  "💩 pilha",
   "\uD800lone-surrogate",
   "\uDFFFlone-low",
 ] as const;
@@ -234,12 +234,15 @@ Deno.test({
     const entry = JSON.parse(captured);
     assertEquals(typeof entry.message, "string");
     // Nenhum replacement char introduzido em codepoints válidos.
-    assertEquals(entry.message.includes("\uFFFD"), false);
+    assertEquals(entry.message.includes("�"), false);
     // Encoding permanece válido — TextEncoder não lança em codepoints válidos.
     new TextEncoder().encode(entry.message);
-    // Se um truncamento server-side for adicionado, deve respeitar fronteira
-    // de codepoint. Validação até lá: o comprimento em codepoints é estável.
-    assertEquals([...entry.message].length, [...huge].length);
+    // logger.ts trunca para MAX_LOG_MESSAGE_LEN (4000) via safeTruncate antes
+    // de persistir — a mensagem resultante deve ser um prefixo limpo do
+    // original, nunca o tamanho total (esse teto é intencional, protege o
+    // tamanho da linha gravada em telemetry_logs).
+    assert(entry.message.length <= huge.length, "mensagem persistida não pode exceder o original");
+    assert(huge.startsWith(entry.message), "mensagem truncada deve ser prefixo limpo do original");
   },
 });
 
