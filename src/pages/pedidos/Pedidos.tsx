@@ -1,9 +1,9 @@
 import { useState, useMemo, useCallback } from "react";
-import { cn } from "@/lib/utils";
-import { 
+import { cn, formatCurrency } from "@/lib/utils";
+import {
   FileText, Search, Download, Building2, Calendar, Clock,
   CheckCircle2, Truck, Package, X, ArrowUpDown, ChevronDown, RefreshCw, Trash2, BarChart3,
-  Filter, MoreHorizontal, Copy, List, Zap, Activity, AlertTriangle
+  Filter, MoreHorizontal, Copy, List, Zap, Activity, AlertTriangle, type LucideIcon
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -32,7 +32,7 @@ import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
 
-const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
+const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   pendente: { label: 'PENDENTE', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
   aprovado: { label: 'APROVADO', color: 'bg-sky-500/10 text-sky-400 border-sky-500/20', icon: CheckCircle2 },
   enviado: { label: 'ENVIADO', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },
@@ -69,9 +69,9 @@ const Pedidos = () => {
       }));
   }, [pedidos, selectedIds]);
 
-  const handleBulkExecute = async (action: BulkAction, itemIds: string[], options?: Record<string, any>) => {
-    if (action.id === 'change-status' || (action as any).targetStatus) {
-      const targetStatus = (options?.['targetStatus'] as Pedido['status']) || (action as any).targetStatus;
+  const handleBulkExecute = async (action: BulkAction, itemIds: string[], options?: Record<string, unknown>) => {
+    if (action.id === 'change-status' || action.targetStatus) {
+      const targetStatus = (options?.['targetStatus'] as Pedido['status']) || action.targetStatus as Pedido['status'];
       if (targetStatus) {
         const success = await bulkUpdateStatus(itemIds, targetStatus);
         if (success) setSelectedIds([]);
@@ -308,7 +308,7 @@ const Pedidos = () => {
                             </TableCell>
                             <TableCell className="text-right pr-10">
                               <span className="font-black text-white text-base tracking-tighter">
-                                {pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                {formatCurrency(pedido.valor_total)}
                               </span>
                             </TableCell>
                             <TableCell className="pr-6">

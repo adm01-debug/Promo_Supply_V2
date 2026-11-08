@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
-import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
+import { formatCurrency, formatDate } from '@/lib/utils';
 import { Gavel, Plus, Search, Eye, Trophy, Trash2, FileText, Filter, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -19,10 +18,6 @@ import { useLicitacoes } from '@/hooks/useLicitacoes';
 import { useFornecedores } from '@/hooks/useFornecedores';
 import { LicitacaoDetailDialog, modalidadeLabels, statusConfig } from './LicitacaoDetailDialog';
 import { ReverseAuctionRoom } from '@/components/licitacoes/ReverseAuctionRoom';
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-}
 
 export default function Licitacoes() {
   const { licitacoes, isLoading, createLicitacao, updateLicitacao, deleteLicitacao } = useLicitacoes();
@@ -120,7 +115,7 @@ export default function Licitacoes() {
           <SelectTrigger className="w-full sm:w-48"><Filter className="w-4 h-4 mr-2" /><SelectValue /></SelectTrigger>
           <SelectContent>
             <SelectItem value="todos">Todos os status</SelectItem>
-            {Object.entries(statusConfig).map(([k, v]: [string, any]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
+            {Object.entries(statusConfig).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
           </SelectContent>
         </Select>
       </div>
@@ -153,7 +148,7 @@ export default function Licitacoes() {
                     <TableCell><Badge variant={statusConfig[lic.status]?.variant || 'secondary'}>{statusConfig[lic.status]?.label || lic.status}</Badge></TableCell>
                     <TableCell className="hidden md:table-cell text-right">{formatCurrency(lic.valor_estimado || 0)}</TableCell>
                     <TableCell className="hidden lg:table-cell text-sm text-muted-foreground">
-                      {lic.data_abertura ? format(new Date(lic.data_abertura), 'dd/MM/yyyy', { locale: ptBR }) : '—'}
+                      {lic.data_abertura ? formatDate(lic.data_abertura) : '—'}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-1" onClick={e => e.stopPropagation()}>
@@ -187,7 +182,7 @@ export default function Licitacoes() {
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2"><Label>Modalidade</Label>
                 <Select value={newForm.modalidade} onValueChange={v => setNewForm(f => ({ ...f, modalidade: v }))}><SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{Object.entries(modalidadeLabels).map(([k, v]: [string, any]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
+                  <SelectContent>{Object.entries(modalidadeLabels).map(([k, v]) => <SelectItem key={k} value={k}>{v}</SelectItem>)}</SelectContent>
                 </Select></div>
               <div className="space-y-2"><Label>Tipo</Label>
                 <Select value={newForm.tipo} onValueChange={v => setNewForm(f => ({ ...f, tipo: v }))}><SelectTrigger><SelectValue /></SelectTrigger>

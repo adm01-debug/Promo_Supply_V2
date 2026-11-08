@@ -25,7 +25,7 @@ export const useFormDirty = (isDirty: boolean, message: string = "Você tem alte
 
   // Handle in-app navigation (React Router) via custom event that components can listen to
   useEffect(() => {
-    const handleNavigation = (e: any) => {
+    const handleNavigation = (e: Event) => {
       if (shouldPrevent && !window.confirm(message)) {
         e.preventDefault();
         // This is a simplified version; real RR navigation blocking needs unstable_useBlocker

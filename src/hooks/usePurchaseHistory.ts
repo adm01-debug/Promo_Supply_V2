@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useMemo } from "react";
+import { useAuth } from "@/features/auth";
 
 // ── Types ──
 export interface PurchaseRecord {
@@ -74,87 +75,112 @@ const STATUS_MAP: Record<string, PurchaseRecord["status"]> = {
 };
 
 export function usePurchaseHistory() {
+  const { organizationId } = useAuth();
+  const enabled = !!organizationId;
+
   // Fetch pedidos with items
   const {
     data: rawPedidos,
     isLoading: loadingPedidos,
     error: errorPedidos,
   } = useQuery({
-    queryKey: ["purchase-history-pedidos"],
+    queryKey: ["purchase-history-pedidos", organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("pedidos")
         .select("id, numero, status, valor_total, valor_frete, desconto, data_emissao, data_previsao, data_entrega, fornecedor_id, solicitacao_id, created_at")
+        .eq("organization_id", organizationId!)
         .order("data_emissao", { ascending: false });
       if (error) throw error;
       return data || [];
     },
+    enabled,
     staleTime: 120_000,
   });
 
   const { data: rawItens } = useQuery({
-    queryKey: ["purchase-history-itens"],
+    queryKey: ["purchase-history-itens", organizationId, rawPedidos?.length ?? 0],
     queryFn: async () => {
+      const pedidoIds = (rawPedidos ?? []).map((p) => p.id);
+      if (pedidoIds.length === 0) return [];
       const { data, error } = await supabase
         .from("pedido_itens")
-        .select("id, pedido_id, descricao, produto_id, quantidade, valor_unitario, valor_total, quantidade_recebida");
+        .select("id, pedido_id, descricao, produto_id, quantidade, valor_unitario, valor_total, quantidade_recebida")
+        .in("pedido_id", pedidoIds);
       if (error) throw error;
       return data || [];
     },
+    enabled: enabled && !!rawPedidos,
     staleTime: 120_000,
   });
 
   const { data: rawFornecedores } = useQuery({
-    queryKey: ["purchase-history-fornecedores"],
+    queryKey: ["purchase-history-fornecedores", organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("fornecedores")
-        .select("id, razao_social, nome_fantasia, cnpj, avaliacao, segmento, status");
+        .select("id, razao_social, nome_fantasia, cnpj, avaliacao, segmento, status")
+        .eq("organization_id", organizationId!);
       if (error) throw error;
       return data || [];
     },
+    enabled,
     staleTime: 300_000,
   });
 
   const { data: rawProdutos } = useQuery({
-    queryKey: ["purchase-history-produtos"],
+    queryKey: ["purchase-history-produtos", organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("produtos")
-        .select("id, codigo, nome, categoria_id, preco_medio, unidade");
+        .select("id, codigo, nome, categoria_id, preco_medio, unidade")
+        .eq("organization_id", organizationId!);
       if (error) throw error;
       return data || [];
     },
+    enabled,
     staleTime: 300_000,
   });
 
   const { data: rawCategorias } = useQuery({
-    queryKey: ["purchase-history-categorias"],
+    queryKey: ["purchase-history-categorias", organizationId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("categorias").select("id, nome");
+      const { data, error } = await supabase
+        .from("categorias")
+        .select("id, nome")
+        .eq("organization_id", organizationId!);
       if (error) throw error;
       return data || [];
     },
+    enabled,
     staleTime: 600_000,
   });
 
   const { data: rawSolicitacoes } = useQuery({
-    queryKey: ["purchase-history-solicitacoes"],
+    queryKey: ["purchase-history-solicitacoes", organizationId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("solicitacoes").select("id, titulo, departamento, centro_custo, cost_center_id");
+      const { data, error } = await supabase
+        .from("solicitacoes")
+        .select("id, titulo, departamento, centro_custo, cost_center_id")
+        .eq("organization_id", organizationId!);
       if (error) throw error;
       return data || [];
     },
+    enabled,
     staleTime: 600_000,
   });
 
   const { data: rawCostCenters } = useQuery({
-    queryKey: ["purchase-history-cost-centers"],
+    queryKey: ["purchase-history-cost-centers", organizationId],
     queryFn: async () => {
-      const { data, error } = await supabase.from("cost_centers").select("id, name, code");
+      const { data, error } = await supabase
+        .from("cost_centers")
+        .select("id, name, code")
+        .eq("organization_id", organizationId!);
       if (error) throw error;
       return data || [];
     },
+    enabled,
     staleTime: 600_000,
   });
 

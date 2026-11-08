@@ -233,8 +233,10 @@ const DateFnsUsagePanel = () => {
             <Collapsible open={fnsOpen} onOpenChange={setFnsOpen}>
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm" className="w-full justify-start gap-2 px-2">
-                  {fnsOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                  <span className="font-medium">Funções ({filteredFunctions.length})</span>
+                  <span className="inline-flex items-center gap-1">
+                    {fnsOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    <span className="font-medium">Funções ({filteredFunctions.length})</span>
+                  </span>
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-2">
@@ -245,8 +247,10 @@ const DateFnsUsagePanel = () => {
             <Collapsible open={localesOpen} onOpenChange={setLocalesOpen}>
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" size="sm" className="w-full justify-start gap-2 px-2">
-                  {localesOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-                  <span className="font-medium">Locales ({filteredLocales.length})</span>
+                  <span className="inline-flex items-center gap-1">
+                    {localesOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                    <span className="font-medium">Locales ({filteredLocales.length})</span>
+                  </span>
                 </Button>
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-2">

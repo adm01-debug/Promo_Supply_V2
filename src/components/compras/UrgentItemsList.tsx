@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState, memo, useMemo, useCallback } from "react";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { UrgencyDetailsSheet } from "./dashboard/UrgencyDetailsSheet";
 
 interface UrgentItem {
@@ -160,16 +160,18 @@ export const UrgentItemsList = memo(({ items }: UrgentItemsListProps) => {
                   Notificar
                 </Button>
 
-                <Button 
+                <Button
                   asChild
-                  variant={item.urgencia === 'critico' ? 'destructive' : 'default'} 
-                  size="sm" 
+                  variant={item.urgencia === 'critico' ? 'destructive' : 'default'}
+                  size="sm"
                   className="h-8 gap-1 text-xs font-bold shadow-sm"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <Link to={`/cotacao?id=${item.id}&action=quote`}>
-                    <Zap className="w-3.5 h-3.5 fill-current" />
-                    Citar Agora
+                    <span className="inline-flex items-center gap-1">
+                      <Zap className="w-3.5 h-3.5 fill-current" />
+                      Citar Agora
+                    </span>
                   </Link>
                 </Button>
               </div>

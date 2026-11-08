@@ -94,6 +94,119 @@ export type Database = {
           },
         ]
       }
+      alert_subscriptions: {
+        Row: {
+          alert_type: string | null
+          channel: string
+          created_at: string
+          email: string | null
+          enabled: boolean
+          id: string
+          min_severity: string
+          slack_webhook_url: string | null
+          snoozed_until: string | null
+          updated_at: string
+          user_id: string
+          webhook_secret: string | null
+          webhook_url: string | null
+        }
+        Insert: {
+          alert_type?: string | null
+          channel?: string
+          created_at?: string
+          email?: string | null
+          enabled?: boolean
+          id?: string
+          min_severity?: string
+          slack_webhook_url?: string | null
+          snoozed_until?: string | null
+          updated_at?: string
+          user_id: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
+        }
+        Update: {
+          alert_type?: string | null
+          channel?: string
+          created_at?: string
+          email?: string | null
+          enabled?: boolean
+          id?: string
+          min_severity?: string
+          slack_webhook_url?: string | null
+          snoozed_until?: string | null
+          updated_at?: string
+          user_id?: string
+          webhook_secret?: string | null
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
+      aliquotas_tributarias: {
+        Row: {
+          cofins: number | null
+          created_at: string
+          icms: number | null
+          id: string
+          ipi: number | null
+          iss: number | null
+          ncm: string | null
+          observacoes: string | null
+          organization_id: string
+          pis: number | null
+          regime: Database["public"]["Enums"]["regime_tributario"]
+          uf_destino: string | null
+          uf_origem: string | null
+          updated_at: string
+          vigencia_fim: string | null
+          vigencia_inicio: string
+        }
+        Insert: {
+          cofins?: number | null
+          created_at?: string
+          icms?: number | null
+          id?: string
+          ipi?: number | null
+          iss?: number | null
+          ncm?: string | null
+          observacoes?: string | null
+          organization_id: string
+          pis?: number | null
+          regime: Database["public"]["Enums"]["regime_tributario"]
+          uf_destino?: string | null
+          uf_origem?: string | null
+          updated_at?: string
+          vigencia_fim?: string | null
+          vigencia_inicio?: string
+        }
+        Update: {
+          cofins?: number | null
+          created_at?: string
+          icms?: number | null
+          id?: string
+          ipi?: number | null
+          iss?: number | null
+          ncm?: string | null
+          observacoes?: string | null
+          organization_id?: string
+          pis?: number | null
+          regime?: Database["public"]["Enums"]["regime_tributario"]
+          uf_destino?: string | null
+          uf_origem?: string | null
+          updated_at?: string
+          vigencia_fim?: string | null
+          vigencia_inicio?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "aliquotas_tributarias_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       allowed_countries: {
         Row: {
           added_at: string
@@ -725,6 +838,348 @@ export type Database = {
           },
         ]
       }
+      audit_logs_202605: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      audit_logs_202606: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      audit_logs_202607: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      audit_logs_202608: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      audit_logs_202609: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      audit_logs_legacy_20260712: {
+        Row: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at: string
+          entity_description: string | null
+          entity_id: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          new_values: Json | null
+          old_values: Json | null
+          organization_id: string | null
+          tenant_id: string
+          user_agent: string | null
+          user_email: string | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          action_type: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          action_type?: Database["public"]["Enums"]["audit_action_type"]
+          created_at?: string
+          entity_description?: string | null
+          entity_id?: string | null
+          entity_type?: Database["public"]["Enums"]["audit_entity_type"]
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          new_values?: Json | null
+          old_values?: Json | null
+          organization_id?: string | null
+          tenant_id?: string
+          user_agent?: string | null
+          user_email?: string | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
       blocked_countries: {
         Row: {
           blocked_at: string
@@ -1007,6 +1462,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      checkpoint_snapshots: {
+        Row: {
+          bgw_buffers_alloc: number
+          bgw_buffers_clean: number
+          bgw_maxwritten: number
+          bgw_stats_reset: string | null
+          buffers_written: number
+          captured_at: string
+          ckpt_stats_reset: string | null
+          id: number
+          num_requested: number
+          num_timed: number
+          sync_time_ms: number
+          write_time_ms: number
+        }
+        Insert: {
+          bgw_buffers_alloc: number
+          bgw_buffers_clean: number
+          bgw_maxwritten: number
+          bgw_stats_reset?: string | null
+          buffers_written: number
+          captured_at?: string
+          ckpt_stats_reset?: string | null
+          id?: number
+          num_requested: number
+          num_timed: number
+          sync_time_ms: number
+          write_time_ms: number
+        }
+        Update: {
+          bgw_buffers_alloc?: number
+          bgw_buffers_clean?: number
+          bgw_maxwritten?: number
+          bgw_stats_reset?: string | null
+          buffers_written?: number
+          captured_at?: string
+          ckpt_stats_reset?: string | null
+          id?: number
+          num_requested?: number
+          num_timed?: number
+          sync_time_ms?: number
+          write_time_ms?: number
+        }
+        Relationships: []
       }
       contact_notes: {
         Row: {
@@ -1838,6 +2338,36 @@ export type Database = {
           layout?: Json
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      deadlock_snapshots: {
+        Row: {
+          captured_at: string
+          conflicts: number
+          datname: string
+          deadlocks: number
+          id: number
+          stats_reset: string | null
+          temp_files: number
+        }
+        Insert: {
+          captured_at?: string
+          conflicts: number
+          datname: string
+          deadlocks: number
+          id?: number
+          stats_reset?: string | null
+          temp_files: number
+        }
+        Update: {
+          captured_at?: string
+          conflicts?: number
+          datname?: string
+          deadlocks?: number
+          id?: number
+          stats_reset?: string | null
+          temp_files?: number
         }
         Relationships: []
       }
@@ -2879,6 +3409,108 @@ export type Database = {
         }
         Relationships: []
       }
+      health_scan_runs: {
+        Row: {
+          details: Json | null
+          duration_ms: number | null
+          failed_count: number
+          findings: number | null
+          findings_count: number | null
+          finished_at: string | null
+          id: string
+          ok_count: number
+          results: Json
+          scan_name: string | null
+          scanner_name: string | null
+          started_at: string
+          status: string | null
+          total_scanners: number
+        }
+        Insert: {
+          details?: Json | null
+          duration_ms?: number | null
+          failed_count?: number
+          findings?: number | null
+          findings_count?: number | null
+          finished_at?: string | null
+          id?: string
+          ok_count?: number
+          results?: Json
+          scan_name?: string | null
+          scanner_name?: string | null
+          started_at?: string
+          status?: string | null
+          total_scanners?: number
+        }
+        Update: {
+          details?: Json | null
+          duration_ms?: number | null
+          failed_count?: number
+          findings?: number | null
+          findings_count?: number | null
+          finished_at?: string | null
+          id?: string
+          ok_count?: number
+          results?: Json
+          scan_name?: string | null
+          scanner_name?: string | null
+          started_at?: string
+          status?: string | null
+          total_scanners?: number
+        }
+        Relationships: []
+      }
+      integration_outbox: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          delivered_at: string | null
+          endpoint: string
+          headers: Json | null
+          id: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          retries: number
+          status: string
+          target: string
+          tenant_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          delivered_at?: string | null
+          endpoint: string
+          headers?: Json | null
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload: Json
+          retries?: number
+          status?: string
+          target: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          delivered_at?: string | null
+          endpoint?: string
+          headers?: Json | null
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          retries?: number
+          status?: string
+          target?: string
+          tenant_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       ip_whitelist: {
         Row: {
           created_at: string
@@ -3438,28 +4070,34 @@ export type Database = {
       }
       organizations: {
         Row: {
+          cnpj_matriz: string | null
           created_at: string | null
           id: string
           logo_url: string | null
           name: string
+          razao_social: string | null
           settings: Json | null
           slug: string
           updated_at: string | null
         }
         Insert: {
+          cnpj_matriz?: string | null
           created_at?: string | null
           id?: string
           logo_url?: string | null
           name: string
+          razao_social?: string | null
           settings?: Json | null
           slug: string
           updated_at?: string | null
         }
         Update: {
+          cnpj_matriz?: string | null
           created_at?: string | null
           id?: string
           logo_url?: string | null
           name?: string
+          razao_social?: string | null
           settings?: Json | null
           slug?: string
           updated_at?: string | null
@@ -3634,36 +4272,6 @@ export type Database = {
           reviewed_by?: string | null
           status?: string
           user_agent?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      password_reset_tokens: {
-        Row: {
-          created_at: string
-          expires_at: string
-          id: string
-          token: string
-          used: boolean
-          used_at: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          expires_at: string
-          id?: string
-          token: string
-          used?: boolean
-          used_at?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          expires_at?: string
-          id?: string
-          token?: string
-          used?: boolean
-          used_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -4226,6 +4834,7 @@ export type Database = {
           current_organization_id: string | null
           department: string | null
           email: string | null
+          empresa_default_id: string | null
           full_name: string | null
           id: string
           phone: string | null
@@ -4240,6 +4849,7 @@ export type Database = {
           current_organization_id?: string | null
           department?: string | null
           email?: string | null
+          empresa_default_id?: string | null
           full_name?: string | null
           id?: string
           phone?: string | null
@@ -4254,6 +4864,7 @@ export type Database = {
           current_organization_id?: string | null
           department?: string | null
           email?: string | null
+          empresa_default_id?: string | null
           full_name?: string | null
           id?: string
           phone?: string | null
@@ -4268,6 +4879,13 @@ export type Database = {
             columns: ["current_organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_empresa_default_id_fkey"
+            columns: ["empresa_default_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
           {
@@ -4592,6 +5210,7 @@ export type Database = {
           id: string
           ip_address: string
           request_count: number
+          retry_after: string | null
           user_agent: string | null
           user_id: string | null
           window_start: string
@@ -4603,6 +5222,7 @@ export type Database = {
           id?: string
           ip_address: string
           request_count?: number
+          retry_after?: string | null
           user_agent?: string | null
           user_id?: string | null
           window_start?: string
@@ -4614,6 +5234,7 @@ export type Database = {
           id?: string
           ip_address?: string
           request_count?: number
+          retry_after?: string | null
           user_agent?: string | null
           user_id?: string | null
           window_start?: string
@@ -4735,6 +5356,7 @@ export type Database = {
           proxima_compra_estimada: string | null
           quantidade_sugerida: number
           status: string
+          tenant_id: string
           ultimo_pedido_id: string | null
           updated_at: string
         }
@@ -4750,6 +5372,7 @@ export type Database = {
           proxima_compra_estimada?: string | null
           quantidade_sugerida?: number
           status?: string
+          tenant_id?: string
           ultimo_pedido_id?: string | null
           updated_at?: string
         }
@@ -4765,6 +5388,7 @@ export type Database = {
           proxima_compra_estimada?: string | null
           quantidade_sugerida?: number
           status?: string
+          tenant_id?: string
           ultimo_pedido_id?: string | null
           updated_at?: string
         }
@@ -4788,6 +5412,13 @@ export type Database = {
             columns: ["produto_id"]
             isOneToOne: false
             referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "repurchase_suggestions_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
             referencedColumns: ["id"]
           },
           {
@@ -4937,6 +5568,84 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      secret_rotation_schedule: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          last_notified_at: string | null
+          last_notified_bucket: string | null
+          last_rotated_at: string
+          next_due_at: string
+          notes: string | null
+          owner_user_id: string | null
+          rotation_days: number
+          secret_name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_notified_at?: string | null
+          last_notified_bucket?: string | null
+          last_rotated_at?: string
+          next_due_at?: string
+          notes?: string | null
+          owner_user_id?: string | null
+          rotation_days: number
+          secret_name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          last_notified_at?: string | null
+          last_notified_bucket?: string | null
+          last_rotated_at?: string
+          next_due_at?: string
+          notes?: string | null
+          owner_user_id?: string | null
+          rotation_days?: number
+          secret_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      security_definer_baseline: {
+        Row: {
+          approved_at: string
+          approved_by: string | null
+          created_at: string
+          function_name: string
+          function_signature: string
+          id: string
+          justification: string | null
+          schema_name: string
+        }
+        Insert: {
+          approved_at?: string
+          approved_by?: string | null
+          created_at?: string
+          function_name: string
+          function_signature: string
+          id?: string
+          justification?: string | null
+          schema_name: string
+        }
+        Update: {
+          approved_at?: string
+          approved_by?: string | null
+          created_at?: string
+          function_name?: string
+          function_signature?: string
+          id?: string
+          justification?: string | null
+          schema_name?: string
+        }
+        Relationships: []
       }
       security_logs: {
         Row: {
@@ -5963,19 +6672,160 @@ export type Database = {
           },
         ]
       }
+      spot_api_sync_log: {
+        Row: {
+          action: string | null
+          called_at: string
+          created_at: string
+          duration_ms: number | null
+          endpoint: string
+          error_code: string | null
+          error_message: string | null
+          id: string
+          records_processed: number
+          status: string
+        }
+        Insert: {
+          action?: string | null
+          called_at?: string
+          created_at?: string
+          duration_ms?: number | null
+          endpoint: string
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          records_processed?: number
+          status?: string
+        }
+        Update: {
+          action?: string | null
+          called_at?: string
+          created_at?: string
+          duration_ms?: number | null
+          endpoint?: string
+          error_code?: string | null
+          error_message?: string | null
+          id?: string
+          records_processed?: number
+          status?: string
+        }
+        Relationships: []
+      }
+      spot_customization_options: {
+        Row: {
+          allow_full_color: boolean
+          area: string | null
+          component_id: string | null
+          created_at: string
+          hotspot: Json
+          id: string
+          is_default: boolean
+          location_id: string | null
+          max_colors: number | null
+          prices: Json
+          product_reference: string
+          raw: Json
+          service_code: string
+          synced_at: string
+          table_code_option: string | null
+          technique_code: string | null
+          technique_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          allow_full_color?: boolean
+          area?: string | null
+          component_id?: string | null
+          created_at?: string
+          hotspot?: Json
+          id?: string
+          is_default?: boolean
+          location_id?: string | null
+          max_colors?: number | null
+          prices?: Json
+          product_reference: string
+          raw?: Json
+          service_code: string
+          synced_at?: string
+          table_code_option?: string | null
+          technique_code?: string | null
+          technique_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          allow_full_color?: boolean
+          area?: string | null
+          component_id?: string | null
+          created_at?: string
+          hotspot?: Json
+          id?: string
+          is_default?: boolean
+          location_id?: string | null
+          max_colors?: number | null
+          prices?: Json
+          product_reference?: string
+          raw?: Json
+          service_code?: string
+          synced_at?: string
+          table_code_option?: string | null
+          technique_code?: string | null
+          technique_name?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      spot_estoque: {
+        Row: {
+          created_at: string
+          id: string
+          incoming_date: string | null
+          incoming_quantity: number | null
+          product_reference: string | null
+          quantity: number
+          sku: string
+          synced_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          incoming_date?: string | null
+          incoming_quantity?: number | null
+          product_reference?: string | null
+          quantity?: number
+          sku: string
+          synced_at?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          incoming_date?: string | null
+          incoming_quantity?: number | null
+          product_reference?: string | null
+          quantity?: number
+          sku?: string
+          synced_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       spot_pedidos: {
         Row: {
           codigo_rastreamento: string | null
           created_at: string
           data_pedido: string | null
           detalhes_url: string | null
+          estimated_ship_date: string | null
           id: string
+          internal_reference: string | null
           itens: Json | null
           last_synced_at: string
           referencia_cliente: string | null
           spot_order_id: string
           status: string
           status_color: string | null
+          status_synced_at: string | null
           transportadora: string | null
           updated_at: string
           valor_total: number | null
@@ -5985,13 +6835,16 @@ export type Database = {
           created_at?: string
           data_pedido?: string | null
           detalhes_url?: string | null
+          estimated_ship_date?: string | null
           id?: string
+          internal_reference?: string | null
           itens?: Json | null
           last_synced_at?: string
           referencia_cliente?: string | null
           spot_order_id: string
           status?: string
           status_color?: string | null
+          status_synced_at?: string | null
           transportadora?: string | null
           updated_at?: string
           valor_total?: number | null
@@ -6001,16 +6854,76 @@ export type Database = {
           created_at?: string
           data_pedido?: string | null
           detalhes_url?: string | null
+          estimated_ship_date?: string | null
           id?: string
+          internal_reference?: string | null
           itens?: Json | null
           last_synced_at?: string
           referencia_cliente?: string | null
           spot_order_id?: string
           status?: string
           status_color?: string | null
+          status_synced_at?: string | null
           transportadora?: string | null
           updated_at?: string
           valor_total?: number | null
+        }
+        Relationships: []
+      }
+      spot_produtos: {
+        Row: {
+          brand: string | null
+          catalogs: string[]
+          category_name: string | null
+          country_of_origin: string | null
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          main_image_url: string | null
+          name: string
+          raw: Json
+          reference: string
+          synced_at: string
+          type_code_legacy: string | null
+          type_code_new: string | null
+          updated_at: string
+        }
+        Insert: {
+          brand?: string | null
+          catalogs?: string[]
+          category_name?: string | null
+          country_of_origin?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          main_image_url?: string | null
+          name: string
+          raw?: Json
+          reference: string
+          synced_at?: string
+          type_code_legacy?: string | null
+          type_code_new?: string | null
+          updated_at?: string
+        }
+        Update: {
+          brand?: string | null
+          catalogs?: string[]
+          category_name?: string | null
+          country_of_origin?: string | null
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          main_image_url?: string | null
+          name?: string
+          raw?: Json
+          reference?: string
+          synced_at?: string
+          type_code_legacy?: string | null
+          type_code_new?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -6038,6 +6951,72 @@ export type Database = {
           last_used_at?: string
           metadata?: Json | null
           session_cookie?: string
+        }
+        Relationships: []
+      }
+      spot_skus: {
+        Row: {
+          capacity: string | null
+          color_code: string | null
+          color_hex: string | null
+          color_name: string | null
+          created_at: string
+          handling_costs: number | null
+          id: string
+          image_url: string | null
+          no_replenishment: boolean
+          price_tiers: Json
+          print_area: string | null
+          product_reference: string
+          raw: Json
+          size: string | null
+          sku: string
+          synced_at: string
+          table_codes_options: string | null
+          updated_at: string
+          your_price: number | null
+        }
+        Insert: {
+          capacity?: string | null
+          color_code?: string | null
+          color_hex?: string | null
+          color_name?: string | null
+          created_at?: string
+          handling_costs?: number | null
+          id?: string
+          image_url?: string | null
+          no_replenishment?: boolean
+          price_tiers?: Json
+          print_area?: string | null
+          product_reference: string
+          raw?: Json
+          size?: string | null
+          sku: string
+          synced_at?: string
+          table_codes_options?: string | null
+          updated_at?: string
+          your_price?: number | null
+        }
+        Update: {
+          capacity?: string | null
+          color_code?: string | null
+          color_hex?: string | null
+          color_name?: string | null
+          created_at?: string
+          handling_costs?: number | null
+          id?: string
+          image_url?: string | null
+          no_replenishment?: boolean
+          price_tiers?: Json
+          print_area?: string | null
+          product_reference?: string
+          raw?: Json
+          size?: string | null
+          sku?: string
+          synced_at?: string
+          table_codes_options?: string | null
+          updated_at?: string
+          your_price?: number | null
         }
         Relationships: []
       }
@@ -6354,6 +7333,93 @@ export type Database = {
           },
         ]
       }
+      system_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string | null
+          description: string | null
+          dispatch_error: string | null
+          dispatch_status: string | null
+          dispatched_at: string | null
+          id: string
+          message: string | null
+          metadata: Json | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          tenant_id: string | null
+          title: string | null
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string | null
+          description?: string | null
+          dispatch_error?: string | null
+          dispatch_status?: string | null
+          dispatched_at?: string | null
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity: string
+          tenant_id?: string | null
+          title?: string | null
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string | null
+          description?: string | null
+          dispatch_error?: string | null
+          dispatch_status?: string | null
+          dispatched_at?: string | null
+          id?: string
+          message?: string | null
+          metadata?: Json | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          severity?: string
+          tenant_id?: string | null
+          title?: string | null
+        }
+        Relationships: []
+      }
+      table_size_snapshots: {
+        Row: {
+          captured_at: string
+          id: string
+          index_bytes: number
+          row_estimate: number
+          schema_name: string
+          table_bytes: number
+          table_name: string
+          toast_bytes: number
+          total_bytes: number
+        }
+        Insert: {
+          captured_at?: string
+          id?: string
+          index_bytes: number
+          row_estimate?: number
+          schema_name: string
+          table_bytes: number
+          table_name: string
+          toast_bytes?: number
+          total_bytes: number
+        }
+        Update: {
+          captured_at?: string
+          id?: string
+          index_bytes?: number
+          row_estimate?: number
+          schema_name?: string
+          table_bytes?: number
+          table_name?: string
+          toast_bytes?: number
+          total_bytes?: number
+        }
+        Relationships: []
+      }
       telemetry_logs: {
         Row: {
           client_ip: string | null
@@ -6363,6 +7429,7 @@ export type Database = {
           level: Database["public"]["Enums"]["log_level"]
           message: string
           request_id: string | null
+          tenant_id: string | null
           url: string | null
           user_agent: string | null
           user_id: string | null
@@ -6375,6 +7442,7 @@ export type Database = {
           level: Database["public"]["Enums"]["log_level"]
           message: string
           request_id?: string | null
+          tenant_id?: string | null
           url?: string | null
           user_agent?: string | null
           user_id?: string | null
@@ -6387,50 +7455,366 @@ export type Database = {
           level?: Database["public"]["Enums"]["log_level"]
           message?: string
           request_id?: string | null
+          tenant_id?: string | null
           url?: string | null
           user_agent?: string | null
           user_id?: string | null
         }
         Relationships: []
       }
+      telemetry_logs_202605: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telemetry_logs_202606: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telemetry_logs_202607: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telemetry_logs_202608: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telemetry_logs_202609: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      telemetry_logs_legacy_20260712: {
+        Row: {
+          client_ip: string | null
+          context: Json | null
+          created_at: string
+          id: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id: string | null
+          tenant_id: string | null
+          url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level: Database["public"]["Enums"]["log_level"]
+          message: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          client_ip?: string | null
+          context?: Json | null
+          created_at?: string
+          id?: string
+          level?: Database["public"]["Enums"]["log_level"]
+          message?: string
+          request_id?: string | null
+          tenant_id?: string | null
+          url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      temp_file_snapshots: {
+        Row: {
+          captured_at: string
+          datname: string
+          id: number
+          stats_reset: string | null
+          temp_bytes: number
+          temp_files: number
+        }
+        Insert: {
+          captured_at?: string
+          datname: string
+          id?: number
+          stats_reset?: string | null
+          temp_bytes: number
+          temp_files: number
+        }
+        Update: {
+          captured_at?: string
+          datname?: string
+          id?: number
+          stats_reset?: string | null
+          temp_bytes?: number
+          temp_files?: number
+        }
+        Relationships: []
+      }
       tenants: {
         Row: {
           cnpj: string | null
+          cor_identificacao: string | null
           created_at: string
           default_currency: string
           default_locale: string
+          empresa_codigo: string | null
+          endereco_fiscal: Json | null
           id: string
+          inscricao_estadual: string | null
+          inscricao_municipal: string | null
           name: string
+          nome_fantasia: string | null
+          organization_id: string | null
           plan: string
+          razao_social: string | null
+          regime_tributario:
+            | Database["public"]["Enums"]["regime_tributario"]
+            | null
           settings: Json
           slug: string
           status: Database["public"]["Enums"]["tenant_status"]
+          uf: string | null
           updated_at: string
         }
         Insert: {
           cnpj?: string | null
+          cor_identificacao?: string | null
           created_at?: string
           default_currency?: string
           default_locale?: string
+          empresa_codigo?: string | null
+          endereco_fiscal?: Json | null
           id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
           name: string
+          nome_fantasia?: string | null
+          organization_id?: string | null
           plan?: string
+          razao_social?: string | null
+          regime_tributario?:
+            | Database["public"]["Enums"]["regime_tributario"]
+            | null
           settings?: Json
           slug: string
           status?: Database["public"]["Enums"]["tenant_status"]
+          uf?: string | null
           updated_at?: string
         }
         Update: {
           cnpj?: string | null
+          cor_identificacao?: string | null
           created_at?: string
           default_currency?: string
           default_locale?: string
+          empresa_codigo?: string | null
+          endereco_fiscal?: Json | null
           id?: string
+          inscricao_estadual?: string | null
+          inscricao_municipal?: string | null
           name?: string
+          nome_fantasia?: string | null
+          organization_id?: string | null
           plan?: string
+          razao_social?: string | null
+          regime_tributario?:
+            | Database["public"]["Enums"]["regime_tributario"]
+            | null
           settings?: Json
           slug?: string
           status?: Database["public"]["Enums"]["tenant_status"]
+          uf?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -6440,6 +7824,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "currencies"
             referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "tenants_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -6639,6 +8030,33 @@ export type Database = {
         }
         Relationships: []
       }
+      wal_rate_snapshots: {
+        Row: {
+          captured_at: string
+          id: number
+          stats_reset: string | null
+          wal_bytes: number
+          wal_fpi: number
+          wal_records: number
+        }
+        Insert: {
+          captured_at?: string
+          id?: number
+          stats_reset?: string | null
+          wal_bytes: number
+          wal_fpi: number
+          wal_records: number
+        }
+        Update: {
+          captured_at?: string
+          id?: number
+          stats_reset?: string | null
+          wal_bytes?: number
+          wal_fpi?: number
+          wal_records?: number
+        }
+        Relationships: []
+      }
       webauthn_challenges: {
         Row: {
           challenge: string
@@ -6711,6 +8129,42 @@ export type Database = {
           transports?: string[] | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      webhook_events: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          idempotency_key: string
+          request_headers: Json | null
+          response_payload: Json | null
+          source: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          idempotency_key: string
+          request_headers?: Json | null
+          response_payload?: Json | null
+          source: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          idempotency_key?: string
+          request_headers?: Json | null
+          response_payload?: Json | null
+          source?: string
+          status?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -7219,8 +8673,416 @@ export type Database = {
           },
         ]
       }
+      xbz_carrinho_log: {
+        Row: {
+          action: string
+          created_at: string
+          error_message: string | null
+          id: string
+          payload: Json
+          response_status: number | null
+          success: boolean
+          tenant_id: string
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          payload?: Json
+          response_status?: number | null
+          success?: boolean
+          tenant_id: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          payload?: Json
+          response_status?: number | null
+          success?: boolean
+          tenant_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      xbz_cores: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: number
+          last_synced_at: string
+          nome: string
+          sigla: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id: number
+          last_synced_at?: string
+          nome: string
+          sigla?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: number
+          last_synced_at?: string
+          nome?: string
+          sigla?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      xbz_credentials: {
+        Row: {
+          api_token_enc: string | null
+          cnpj: string | null
+          created_at: string
+          created_by: string | null
+          deleted_at: string | null
+          id: string
+          is_active: boolean
+          label: string | null
+          last_error: string | null
+          last_login_at: string | null
+          last_login_ok: boolean | null
+          permissions: Json
+          pessoa_id: number | null
+          portal_password_enc: string | null
+          portal_user_enc: string | null
+          razao_social: string | null
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          api_token_enc?: string | null
+          cnpj?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          last_error?: string | null
+          last_login_at?: string | null
+          last_login_ok?: boolean | null
+          permissions?: Json
+          pessoa_id?: number | null
+          portal_password_enc?: string | null
+          portal_user_enc?: string | null
+          razao_social?: string | null
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          api_token_enc?: string | null
+          cnpj?: string | null
+          created_at?: string
+          created_by?: string | null
+          deleted_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          last_error?: string | null
+          last_login_at?: string | null
+          last_login_ok?: boolean | null
+          permissions?: Json
+          pessoa_id?: number | null
+          portal_password_enc?: string | null
+          portal_user_enc?: string | null
+          razao_social?: string | null
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      xbz_pedido_status_history: {
+        Row: {
+          campo: string
+          created_at: string
+          detectado_em: string
+          id: string
+          pedido_numero: string
+          tenant_id: string
+          valor_anterior: string | null
+          valor_novo: string | null
+        }
+        Insert: {
+          campo: string
+          created_at?: string
+          detectado_em?: string
+          id?: string
+          pedido_numero: string
+          tenant_id: string
+          valor_anterior?: string | null
+          valor_novo?: string | null
+        }
+        Update: {
+          campo?: string
+          created_at?: string
+          detectado_em?: string
+          id?: string
+          pedido_numero?: string
+          tenant_id?: string
+          valor_anterior?: string | null
+          valor_novo?: string | null
+        }
+        Relationships: []
+      }
+      xbz_pedidos: {
+        Row: {
+          created_at: string
+          data_emissao: string | null
+          data_pagamento: string | null
+          data_status_lote_debito: string | null
+          entrega_tipo_nome: string | null
+          id: string
+          id_lote_debito_status: number | null
+          id_status: number | null
+          last_synced_at: string
+          lote_debito_status_cliente: string | null
+          lote_debito_status1_data: string | null
+          lote_debito_status2_data: string | null
+          lote_debito_status3_data: string | null
+          nota_fiscal: string | null
+          ordem_de_compra: string | null
+          pago: boolean
+          pedido_numero: string
+          pessoa_id: number | null
+          pessoa_razao_social: string | null
+          produto_codigo_xbz: string | null
+          produto_nome: string | null
+          quantidade: number | null
+          raw: Json
+          status_logistico: string | null
+          tenant_id: string
+          transportadora_nome: string | null
+          updated_at: string
+          valor_impostos_taxas: number | null
+          valor_produtos: number | null
+          valor_total: number | null
+        }
+        Insert: {
+          created_at?: string
+          data_emissao?: string | null
+          data_pagamento?: string | null
+          data_status_lote_debito?: string | null
+          entrega_tipo_nome?: string | null
+          id?: string
+          id_lote_debito_status?: number | null
+          id_status?: number | null
+          last_synced_at?: string
+          lote_debito_status_cliente?: string | null
+          lote_debito_status1_data?: string | null
+          lote_debito_status2_data?: string | null
+          lote_debito_status3_data?: string | null
+          nota_fiscal?: string | null
+          ordem_de_compra?: string | null
+          pago?: boolean
+          pedido_numero: string
+          pessoa_id?: number | null
+          pessoa_razao_social?: string | null
+          produto_codigo_xbz?: string | null
+          produto_nome?: string | null
+          quantidade?: number | null
+          raw?: Json
+          status_logistico?: string | null
+          tenant_id: string
+          transportadora_nome?: string | null
+          updated_at?: string
+          valor_impostos_taxas?: number | null
+          valor_produtos?: number | null
+          valor_total?: number | null
+        }
+        Update: {
+          created_at?: string
+          data_emissao?: string | null
+          data_pagamento?: string | null
+          data_status_lote_debito?: string | null
+          entrega_tipo_nome?: string | null
+          id?: string
+          id_lote_debito_status?: number | null
+          id_status?: number | null
+          last_synced_at?: string
+          lote_debito_status_cliente?: string | null
+          lote_debito_status1_data?: string | null
+          lote_debito_status2_data?: string | null
+          lote_debito_status3_data?: string | null
+          nota_fiscal?: string | null
+          ordem_de_compra?: string | null
+          pago?: boolean
+          pedido_numero?: string
+          pessoa_id?: number | null
+          pessoa_razao_social?: string | null
+          produto_codigo_xbz?: string | null
+          produto_nome?: string | null
+          quantidade?: number | null
+          raw?: Json
+          status_logistico?: string | null
+          tenant_id?: string
+          transportadora_nome?: string | null
+          updated_at?: string
+          valor_impostos_taxas?: number | null
+          valor_produtos?: number | null
+          valor_total?: number | null
+        }
+        Relationships: []
+      }
+      xbz_produto_fiscal: {
+        Row: {
+          created_at: string
+          id: string
+          last_synced_at: string
+          ncm: string | null
+          notas_calculo: string | null
+          percentual_ipi: number | null
+          preco_base_calculo: number | null
+          preco_venda: number | null
+          produto_id: number
+          raw: Json
+          sku: string | null
+          tenant_id: string
+          updated_at: string
+          valor_ipi: number | null
+          valor_mva: number | null
+          valor_st: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_synced_at?: string
+          ncm?: string | null
+          notas_calculo?: string | null
+          percentual_ipi?: number | null
+          preco_base_calculo?: number | null
+          preco_venda?: number | null
+          produto_id: number
+          raw?: Json
+          sku?: string | null
+          tenant_id: string
+          updated_at?: string
+          valor_ipi?: number | null
+          valor_mva?: number | null
+          valor_st?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_synced_at?: string
+          ncm?: string | null
+          notas_calculo?: string | null
+          percentual_ipi?: number | null
+          preco_base_calculo?: number | null
+          preco_venda?: number | null
+          produto_id?: number
+          raw?: Json
+          sku?: string | null
+          tenant_id?: string
+          updated_at?: string
+          valor_ipi?: number | null
+          valor_mva?: number | null
+          valor_st?: number | null
+        }
+        Relationships: []
+      }
+      xbz_produtos: {
+        Row: {
+          codigo_amigavel: string | null
+          codigo_composto: string | null
+          cor_id: number | null
+          cor_nome: string | null
+          created_at: string
+          disponivel: string | null
+          id: string
+          imagem_url: string | null
+          last_synced_at: string
+          multiplos: number | null
+          nome: string | null
+          preco: number | null
+          preco_ipi: number | null
+          produto_id: number
+          quantidade_disponivel: number | null
+          raw: Json
+          sku: string | null
+          tenant_id: string
+          updated_at: string
+          venda_minima: number | null
+        }
+        Insert: {
+          codigo_amigavel?: string | null
+          codigo_composto?: string | null
+          cor_id?: number | null
+          cor_nome?: string | null
+          created_at?: string
+          disponivel?: string | null
+          id?: string
+          imagem_url?: string | null
+          last_synced_at?: string
+          multiplos?: number | null
+          nome?: string | null
+          preco?: number | null
+          preco_ipi?: number | null
+          produto_id: number
+          quantidade_disponivel?: number | null
+          raw?: Json
+          sku?: string | null
+          tenant_id: string
+          updated_at?: string
+          venda_minima?: number | null
+        }
+        Update: {
+          codigo_amigavel?: string | null
+          codigo_composto?: string | null
+          cor_id?: number | null
+          cor_nome?: string | null
+          created_at?: string
+          disponivel?: string | null
+          id?: string
+          imagem_url?: string | null
+          last_synced_at?: string
+          multiplos?: number | null
+          nome?: string | null
+          preco?: number | null
+          preco_ipi?: number | null
+          produto_id?: number
+          quantidade_disponivel?: number | null
+          raw?: Json
+          sku?: string | null
+          tenant_id?: string
+          updated_at?: string
+          venda_minima?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
+      mv_dashboard_kpis: {
+        Row: {
+          dia: string | null
+          fornecedores_unicos: number | null
+          pedidos_cancelados: number | null
+          pedidos_entregues: number | null
+          tenant_id: string | null
+          ticket_medio: number | null
+          total_pedidos: number | null
+          valor_total: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       supplier_compliance_summary: {
         Row: {
           avaliacao: number | null
@@ -7235,8 +9097,91 @@ export type Database = {
         }
         Relationships: []
       }
+      v_system_health_overview: {
+        Row: {
+          alert_type: string | null
+          last_1h: number | null
+          last_24h: number | null
+          most_recent: string | null
+          oldest_open: string | null
+          severity: string | null
+          total_open: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
+      _invoke_edge_function: { Args: { _name: string }; Returns: number }
+      _invoke_xbz_sync: { Args: never; Returns: number }
+      admin_scan_runs_sla_status: {
+        Args: never
+        Returns: {
+          age_minutes: number
+          health: string
+          last_run_at: string
+          last_status: string
+          scan_name: string
+          sla_minutes: number
+        }[]
+      }
+      alert_subscribers_for: {
+        Args: { _alert_type: string; _severity: string }
+        Returns: {
+          channel: string
+          email: string
+          slack_webhook_url: string
+          subscription_id: string
+          user_id: string
+          webhook_secret: string
+          webhook_url: string
+        }[]
+      }
+      alerts_mttr_by_type: {
+        Args: { days?: number }
+        Returns: {
+          alert_type: string
+          avg_minutes: number
+          max_minutes: number
+          p50_minutes: number
+          p95_minutes: number
+          resolved_count: number
+          severity: string
+        }[]
+      }
+      alerts_noisy_scanners: {
+        Args: { days?: number }
+        Returns: {
+          alert_type: string
+          distinct_severities: number
+          first_seen: string
+          last_seen: string
+          total: number
+          unresolved: number
+        }[]
+      }
+      alerts_severity_timeseries: {
+        Args: { days?: number }
+        Returns: {
+          cnt: number
+          day: string
+          severity: string
+        }[]
+      }
+      apply_lgpd_retention: { Args: never; Returns: Json }
+      archive_audit_logs_older_than: {
+        Args: { _months?: number }
+        Returns: {
+          archived_partition: string
+          moved_rows: number
+        }[]
+      }
+      archive_telemetry_logs_older_than: {
+        Args: { _months?: number }
+        Returns: {
+          archived_partition: string
+          moved_rows: number
+        }[]
+      }
       calculate_supplier_qualification_score: {
         Args: { p_fornecedor_id: string }
         Returns: number
@@ -7246,6 +9191,25 @@ export type Database = {
         Returns: Json
       }
       check_escalation: { Args: never; Returns: undefined }
+      check_rate_limit: {
+        Args: {
+          _endpoint: string
+          _identifier: string
+          _max_requests?: number
+          _window_seconds?: number
+        }
+        Returns: {
+          allowed: boolean
+          remaining: number
+          retry_after_seconds: number
+        }[]
+      }
+      check_secret_rotation_due: {
+        Args: never
+        Returns: {
+          notified_count: number
+        }[]
+      }
       check_workflow_sod: {
         Args: {
           p_approver_id: string
@@ -7254,9 +9218,50 @@ export type Database = {
         }
         Returns: boolean
       }
+      cleanup_deadlock_snapshots: { Args: never; Returns: undefined }
       cleanup_expired_challenges: { Args: never; Returns: undefined }
+      cleanup_expired_password_resets: {
+        Args: never
+        Returns: {
+          deleted_count: number
+        }[]
+      }
+      cleanup_health_scan_runs: { Args: never; Returns: undefined }
+      cleanup_old_audit_logs: { Args: never; Returns: number }
+      cleanup_old_geo_access_logs: { Args: never; Returns: number }
+      cleanup_old_integration_outbox: { Args: never; Returns: number }
+      cleanup_old_login_attempts: { Args: never; Returns: number }
+      cleanup_old_query_telemetry: { Args: never; Returns: number }
+      cleanup_old_rate_limit_logs: { Args: never; Returns: number }
+      cleanup_old_security_logs: { Args: never; Returns: number }
+      cleanup_old_system_alerts: { Args: never; Returns: undefined }
+      cleanup_old_telemetry_logs: { Args: never; Returns: number }
+      cleanup_old_temp_file_snapshots: { Args: never; Returns: undefined }
+      cleanup_old_wal_rate_snapshots: { Args: never; Returns: undefined }
+      cleanup_old_webhook_events: { Args: never; Returns: number }
       clear_login_lockout: { Args: { _email: string }; Returns: undefined }
+      count_legacy_storage_urls: {
+        Args: never
+        Returns: {
+          bucket: string
+          column_name: string
+          legacy_count: number
+          migrated_count: number
+          table_name: string
+          total_with_url: number
+        }[]
+      }
+      cron_watchdog: { Args: never; Returns: undefined }
       current_tenant_id: { Args: never; Returns: string }
+      ensure_audit_logs_partition: {
+        Args: { _month: string }
+        Returns: undefined
+      }
+      ensure_telemetry_logs_partition: {
+        Args: { _month: string }
+        Returns: undefined
+      }
+      exec_sql: { Args: { sql_query: string }; Returns: Json }
       find_approval_rule: {
         Args: { p_categoria_id?: string; p_valor: number }
         Returns: string
@@ -7307,6 +9312,39 @@ export type Database = {
               usage_percentage: number
             }[]
           }
+      get_cron_job_staleness: {
+        Args: never
+        Returns: {
+          active: boolean
+          health: string
+          hours_since_last_run: number
+          jobid: number
+          jobname: string
+          last_run_at: string
+          last_status: string
+          schedule: string
+        }[]
+      }
+      get_dashboard_kpis: {
+        Args: { _from?: string; _to?: string }
+        Returns: {
+          dia: string | null
+          fornecedores_unicos: number | null
+          pedidos_cancelados: number | null
+          pedidos_entregues: number | null
+          tenant_id: string | null
+          ticket_medio: number | null
+          total_pedidos: number | null
+          valor_total: number | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "mv_dashboard_kpis"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      get_db_health_snapshot: { Args: never; Returns: Json }
       get_effective_approver: {
         Args: {
           p_approver_id: string
@@ -7336,6 +9374,7 @@ export type Database = {
         Args: { p_organization_id: string }
         Returns: Json
       }
+      get_user_grupo_id: { Args: never; Returns: string }
       get_user_role: {
         Args: { _user_id: string }
         Returns: Database["public"]["Enums"]["app_role"]
@@ -7354,6 +9393,7 @@ export type Database = {
       is_account_locked: { Args: { _email: string }; Returns: Json }
       is_ip_blocked: { Args: { _ip_address: string }; Returns: boolean }
       is_ip_whitelisted: { Args: { _ip_address: string }; Returns: boolean }
+      is_valid_cnpj: { Args: { _cnpj: string }; Returns: boolean }
       log_audit_event: {
         Args: {
           p_action: string
@@ -7389,16 +9429,349 @@ export type Database = {
         Returns: string
       }
       mask_sensitive_data: { Args: { data: Json }; Returns: Json }
+      normalize_phone_br: { Args: { _raw: string }; Returns: string }
+      pg_activity_watchdog: { Args: never; Returns: number }
       recalculate_saldo_comprometido: {
         Args: { p_fornecedor_id: string }
         Returns: number
       }
       record_failed_login: { Args: { _email: string }; Returns: Json }
+      refresh_mv_dashboard_kpis: { Args: never; Returns: undefined }
+      resolve_alert: {
+        Args: { _alert_id: string; _note?: string }
+        Returns: {
+          alert_type: string
+          created_at: string | null
+          description: string | null
+          dispatch_error: string | null
+          dispatch_status: string | null
+          dispatched_at: string | null
+          id: string
+          message: string | null
+          metadata: Json | null
+          resolved_at: string | null
+          resolved_by: string | null
+          severity: string
+          tenant_id: string | null
+          title: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "system_alerts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      run_all_health_scans: { Args: never; Returns: string }
+      scan_autovacuum_starvation: {
+        Args: {
+          crit_dead_pct?: number
+          min_rows?: number
+          stale_hours?: number
+          warn_dead_pct?: number
+        }
+        Returns: {
+          dead_pct: number
+          last_vacuum_hours: number
+          n_dead_tup: number
+          n_live_tup: number
+          schemaname: string
+          severity: string
+          tablename: string
+        }[]
+      }
+      scan_blocking_locks: {
+        Args: never
+        Returns: {
+          blocked_count: number
+          blocker_pid: number
+          severity: string
+          wait_seconds: number
+        }[]
+      }
+      scan_cache_hit_ratio:
+        | { Args: never; Returns: Json }
+        | {
+            Args: { min_ratio?: number; min_reads?: number }
+            Returns: {
+              alert_id: string
+              heap_ratio: number
+              idx_ratio: number
+              severity: string
+              table_name: string
+            }[]
+          }
+      scan_checkpoint_health: {
+        Args: {
+          crit_ckpt_per_min?: number
+          crit_requested_pct?: number
+          warn_ckpt_per_min?: number
+          warn_maxwritten_rate?: number
+          warn_requested_pct?: number
+        }
+        Returns: {
+          avg_write_ms: number
+          ckpt_per_min: number
+          maxwritten_per_min: number
+          requested_pct: number
+          severity: string
+        }[]
+      }
+      scan_connection_saturation:
+        | { Args: never; Returns: Json }
+        | {
+            Args: { crit_pct?: number; warn_pct?: number }
+            Returns: {
+              by_state: Json
+              max_connections: number
+              severity: string
+              top_apps: Json
+              total_connections: number
+              usage_pct: number
+            }[]
+          }
+      scan_dangerous_statements: { Args: never; Returns: number }
+      scan_deadlocks_and_conflicts: {
+        Args: {
+          crit_deadlocks_per_hour?: number
+          warn_conflicts_per_hour?: number
+          warn_deadlocks_per_hour?: number
+        }
+        Returns: {
+          details: Json
+          metric: string
+          severity: string
+          value: number
+        }[]
+      }
+      scan_duplicate_indexes: { Args: never; Returns: Json }
+      scan_fk_without_cascade: { Args: never; Returns: number }
+      scan_idle_in_transaction: {
+        Args: never
+        Returns: {
+          aborted: boolean
+          idle_seconds: number
+          pid: number
+          severity: string
+        }[]
+      }
+      scan_invalid_and_duplicate_indexes: {
+        Args: never
+        Returns: {
+          finding_type: string
+          index_name: string
+          index_size: string
+          severity: string
+          table_name: string
+        }[]
+      }
+      scan_lock_waits: {
+        Args: never
+        Returns: {
+          blocked_pid: number
+          blocked_query: string
+          blocker_pid: number
+          blocker_query: string
+          lock_type: string
+          severity: string
+          wait_seconds: number
+        }[]
+      }
+      scan_long_running_queries: { Args: never; Returns: Json }
+      scan_long_running_transactions: {
+        Args: never
+        Returns: {
+          application_name: string
+          duration_seconds: number
+          pid: number
+          query_snippet: string
+          severity: string
+          state: string
+          usename: string
+          wait_event: string
+        }[]
+      }
+      scan_partition_candidates: {
+        Args: { min_size_gb?: number }
+        Returns: {
+          row_estimate: number
+          size_gb: number
+          suggested_action: string
+          table_name: string
+          time_column: string
+        }[]
+      }
+      scan_replication_lag: {
+        Args: { crit_seconds?: number; warn_seconds?: number }
+        Returns: {
+          detail: Json
+          lag_seconds: number
+          severity: string
+          target: string
+        }[]
+      }
+      scan_replication_slots: {
+        Args: never
+        Returns: {
+          is_active: boolean
+          severity: string
+          slot_name: string
+          slot_type: string
+          wal_lag_bytes: number
+          xmin_age: number
+        }[]
+      }
+      scan_rollback_rate: { Args: never; Returns: Json }
+      scan_scan_runs_sla: { Args: never; Returns: Json }
+      scan_schema_hygiene: {
+        Args: never
+        Returns: {
+          issue: string
+          severity: string
+          table_name: string
+        }[]
+      }
+      scan_security_definer_drift: { Args: never; Returns: Json }
+      scan_sequence_exhaustion: {
+        Args: never
+        Returns: {
+          data_type: string
+          last_value: number
+          max_value: number
+          owned_by: string
+          pct_used: number
+          sequence_name: string
+          severity: string
+        }[]
+      }
+      scan_slow_query_hotspots: {
+        Args: never
+        Returns: {
+          calls: number
+          mean_ms: number
+          queryid: number
+          severity: string
+        }[]
+      }
+      scan_stale_alerts: {
+        Args: never
+        Returns: {
+          alert_type: string
+          oldest_hours: number
+          severity: string
+          stale_count: number
+        }[]
+      }
+      scan_stale_statistics: {
+        Args: { min_mod_pct?: number; stale_days?: number }
+        Returns: {
+          alert_id: string
+          reason: string
+          severity: string
+          table_name: string
+        }[]
+      }
+      scan_table_bloat: {
+        Args: { _min_dead_ratio?: number; _min_dead_tuples?: number }
+        Returns: number
+      }
+      scan_table_growth: { Args: never; Returns: Json }
+      scan_tables_without_pk: {
+        Args: { allowlist?: string[]; min_rows_critical?: number }
+        Returns: {
+          estimated_rows: number
+          finding: string
+          in_publication: boolean
+          replica_identity: string
+          severity: string
+          table_name: string
+        }[]
+      }
+      scan_temp_file_usage: {
+        Args: {
+          crit_files_per_min?: number
+          crit_mb_per_min?: number
+          warn_files_per_min?: number
+          warn_mb_per_min?: number
+        }
+        Returns: undefined
+      }
+      scan_temp_files_spill: {
+        Args: never
+        Returns: {
+          datname: string
+          delta_bytes: number
+          delta_files: number
+          severity: string
+        }[]
+      }
+      scan_toast_bloat: {
+        Args: {
+          crit_ratio?: number
+          crit_toast_mb?: number
+          min_toast_mb?: number
+          warn_ratio?: number
+        }
+        Returns: {
+          heap_mb: number
+          severity: string
+          tablename: string
+          toast_mb: number
+          toast_ratio: number
+        }[]
+      }
+      scan_txid_wraparound: { Args: never; Returns: Json }
+      scan_unindexed_fks: { Args: never; Returns: Json }
+      scan_unindexed_foreign_keys: {
+        Args: never
+        Returns: {
+          child_rows: number
+          child_table: string
+          fk_columns: string
+          fk_name: string
+          parent_table: string
+          severity: string
+        }[]
+      }
+      scan_unused_indexes: { Args: never; Returns: Json }
+      scan_wal_generation_rate: {
+        Args: {
+          crit_mb_per_min?: number
+          spike_multiplier?: number
+          warn_mb_per_min?: number
+        }
+        Returns: {
+          baseline_mb_per_min: number
+          delta_seconds: number
+          mb_per_min: number
+          severity: string
+        }[]
+      }
+      scan_xid_wraparound: {
+        Args: never
+        Returns: {
+          mxid_age: number
+          object_name: string
+          pct_to_wraparound: number
+          scope: string
+          severity: string
+          xid_age: number
+        }[]
+      }
+      simulate_scan_sla_loop: {
+        Args: { p_scenarios?: number; p_seed?: number }
+        Returns: Json
+      }
       suggest_unspsc_code: { Args: { item_name: string }; Returns: string }
+      tenant_in_my_group: { Args: { _tenant_id: string }; Returns: boolean }
+      tenants_in_my_group: { Args: never; Returns: string[] }
       user_belongs_to_tenant: {
         Args: { _tenant_id: string; _user_id: string }
         Returns: boolean
       }
+      verify_xbz_cron_key: { Args: { _key: string }; Returns: boolean }
+      xbz_cron_key_get: { Args: never; Returns: string }
+      xbz_sync_watchdog: { Args: never; Returns: Json }
     }
     Enums: {
       app_role: "admin" | "coordinator" | "buyer" | "finance" | "viewer"
@@ -7446,6 +9819,11 @@ export type Database = {
         | "multi_choice"
         | "file"
         | "date"
+      regime_tributario:
+        | "simples_nacional"
+        | "lucro_presumido"
+        | "lucro_real"
+        | "mei"
       saving_type: "negotiated" | "avoidance" | "process" | "specification"
       sourcing_project_status:
         | "backlog"
@@ -7660,6 +10038,12 @@ export const Constants = {
         "multi_choice",
         "file",
         "date",
+      ],
+      regime_tributario: [
+        "simples_nacional",
+        "lucro_presumido",
+        "lucro_real",
+        "mei",
       ],
       saving_type: ["negotiated", "avoidance", "process", "specification"],
       sourcing_project_status: [

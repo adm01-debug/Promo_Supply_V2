@@ -3,6 +3,8 @@ import { nullishStr } from "@/lib/dbMapping";
 
 export interface LegacyFornecedor {
   id: string;
+  razao_social: string;
+  nome_fantasia: string;
   razaoSocial: string;
   nomeFantasia: string;
   cnpj: string;
@@ -25,6 +27,8 @@ export interface LegacyFornecedor {
 // `razao_social` because the UI always wants a display name.
 export const adaptToLegacy = (f: Fornecedor): LegacyFornecedor => ({
   id: f.id,
+  razao_social: f.razao_social,
+  nome_fantasia: nullishStr(f.nome_fantasia, f.razao_social),
   razaoSocial: f.razao_social,
   nomeFantasia: nullishStr(f.nome_fantasia, f.razao_social),
   cnpj: nullishStr(f.cnpj),

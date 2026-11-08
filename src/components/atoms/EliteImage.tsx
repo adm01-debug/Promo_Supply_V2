@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -31,7 +31,7 @@ export const EliteImage: React.FC<EliteImageProps> = ({
 
   return (
     <div className={cn("relative overflow-hidden", containerClassName)}>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         {!loaded && !error && (
           <motion.div
             key="skeleton"

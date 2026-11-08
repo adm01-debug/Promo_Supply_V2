@@ -1,4 +1,4 @@
-import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap, Package, ShoppingBag, Palette, MapPin, ClipboardCheck, ArrowRight, AlertTriangle } from "lucide-react";
+﻿import { FileText, Building2, Calendar, DollarSign, Mail, MessageCircle, Clock, CheckCircle2, Truck, Info, Zap, Package, ShoppingBag, Palette, MapPin, ClipboardCheck, ArrowRight, AlertTriangle, type LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,17 +11,18 @@ import { ptBR } from "date-fns/locale/pt-BR";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { type Pedido } from "@/features/pedidos";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
+import type { Database } from "@/integrations/supabase/types";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { ProductionRoutingEngine, SourcingIntelligenceBanner } from "@/components/compras/ProductionRoutingEngine";
 import { SupplierInteractionLog } from "@/components/compras/SupplierInteractionLog";
 
-const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
+const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   pendente: { label: 'PENDENTE', color: 'bg-amber-500/10 text-amber-400 border-amber-500/20', icon: Clock },
   aprovado: { label: 'APROVADO', color: 'bg-sky-500/10 text-sky-400 border-sky-500/20', icon: CheckCircle2 },
   enviado: { label: 'ENVIADO', color: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20', icon: FileText },
-  em_transito: { label: 'EM TRÂNSITO', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
+  em_transito: { label: 'EM TRÃ‚NSITO', color: 'bg-violet-500/10 text-violet-400 border-violet-500/20', icon: Truck },
   entregue: { label: 'ENTREGUE', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20', icon: CheckCircle2 },
   parcial: { label: 'ENTREGA PARCIAL', color: 'bg-orange-500/10 text-orange-400 border-orange-500/20', icon: AlertTriangle },
   cancelado: { label: 'CANCELADO', color: 'bg-rose-500/10 text-rose-400 border-rose-500/20', icon: Info },
@@ -31,7 +32,7 @@ const statusSteps = [
   { id: 'pendente', label: 'PENDENTE', icon: Clock, color: 'text-amber-400', bg: 'bg-amber-400' },
   { id: 'aprovado', label: 'APROVADO', icon: CheckCircle2, color: 'text-sky-400', bg: 'bg-sky-400' },
   { id: 'enviado', label: 'ENVIADO', icon: FileText, color: 'text-indigo-400', bg: 'bg-indigo-400' },
-  { id: 'em_transito', label: 'EM TRÂNSITO', icon: Truck, color: 'text-violet-400', bg: 'bg-violet-400' },
+  { id: 'em_transito', label: 'EM TRÃ‚NSITO', icon: Truck, color: 'text-violet-400', bg: 'bg-violet-400' },
   { id: 'entregue', label: 'ENTREGUE', icon: CheckCircle2, color: 'text-emerald-400', bg: 'bg-emerald-400' },
 ];
 
@@ -57,7 +58,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
 
     const success = await updateStatus(pedido.id, newStatus);
     if (success) {
-      toast.success(`Pedido ${pedido.numero} agora está ${config.label}`, {
+      toast.success(`Pedido ${pedido.numero} agora estÃ¡ ${config.label}`, {
         description: "A linha do tempo foi atualizada em tempo real.",
         icon: <config.icon className="w-4 h-4 text-emerald-400" />,
       });
@@ -68,7 +69,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
     try {
       const { error } = await supabase
         .from('pedido_itens')
-        .update({ status_producao: newStatus } as any)
+        .update({ status_producao: newStatus as Database['public']['Enums']['status_producao_enum'] })
         .eq('id', itemId);
       
       if (error) throw error;
@@ -76,9 +77,9 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
       queryClient.invalidateQueries({ queryKey: ['pedido-itens-extended', pedido?.id] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-solicitacoes'] });
       queryClient.invalidateQueries({ queryKey: ['dashboard-pedidos'] });
-      toast.success('Estado de produção atualizado');
-    } catch (err: any) {
-      toast.error('Erro ao atualizar produção: ' + err.message);
+      toast.success('Estado de produÃ§Ã£o atualizado');
+    } catch (err: unknown) {
+      toast.error('Erro ao atualizar produÃ§Ã£o: ' + (err as Error).message);
     }
   };
 
@@ -161,17 +162,17 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
           <Tabs defaultValue="overview" className="w-full">
             <TabsList className="w-full grid grid-cols-4 bg-white/[0.03] border border-white/5 h-14 p-1 rounded-2xl mb-8">
                <TabsTrigger value="overview" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">MONITORAMENTO</TabsTrigger>
-              <TabsTrigger value="itens" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">ATIVOS & PRODUÇÃO</TabsTrigger>
+              <TabsTrigger value="itens" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">ATIVOS & PRODUÃ‡ÃƒO</TabsTrigger>
               <TabsTrigger value="financial" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">FINANCEIRO</TabsTrigger>
               <TabsTrigger value="history" className="text-[10px] font-black uppercase tracking-widest data-[state=active]:bg-white/[0.05] rounded-xl transition-all">LOG DE AUDITORIA</TabsTrigger>
             </TabsList>
 
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="sync">
               <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2 }}>
                 <TabsContent value="overview" className="mt-0 space-y-6 focus-visible:ring-0">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-6">
-                      <ProductionRoutingEngine items={itens} />
+                      <ProductionRoutingEngine items={itens as unknown as Parameters<typeof ProductionRoutingEngine>[0]['items']} />
 
                       <Card className="p-6 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
                         <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-6 flex items-center gap-2">
@@ -193,12 +194,12 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                               <Mail className="w-3.5 h-3.5 mr-2" /> E-MAIL CRIPTOGRAFADO
                             </Button>
                             <Button variant="outline" className="h-10 rounded-xl bg-white/[0.03] border-white/10 font-black text-[9px] uppercase tracking-widest hover:bg-white/10">
-                              <MessageCircle className="w-3.5 h-3.5 mr-2" /> HUB DE COMUNICAÇÃO
+                              <MessageCircle className="w-3.5 h-3.5 mr-2" /> HUB DE COMUNICAÃ‡ÃƒO
                             </Button>
                           </div>
                         </div>
                         
-                        <SourcingIntelligenceBanner items={itens} />
+                        <SourcingIntelligenceBanner items={itens as unknown as Parameters<typeof SourcingIntelligenceBanner>[0]['items']} />
                         <SupplierInteractionLog supplierName={pedido.fornecedor?.nome_fantasia || pedido.fornecedor?.razao_social} />
                       </Card>
                     </div>
@@ -263,7 +264,7 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                                     "text-[9px] font-bold mt-1 uppercase",
                                     isCurrent ? "text-zinc-400" : "text-zinc-700"
                                   )}>
-                                    {isCurrent ? "Vigilância Ativa" : isCompleted ? "Ciclo Verificado" : "Vetor Pendente"}
+                                    {isCurrent ? "VigilÃ¢ncia Ativa" : isCompleted ? "Ciclo Verificado" : "Vetor Pendente"}
                                   </p>
                                 </div>
                               </div>
@@ -288,21 +289,21 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
 
                 <TabsContent value="itens" className="mt-0 space-y-6 focus-visible:ring-0">
                   <div className="grid grid-cols-1 gap-6">
-                    {itens.map((item: any) => {
+                    {itens.map((item) => {
                       const tipo = item.produto?.tipo_produto || 'fabricado';
                       const statusProd = item.status_producao || 'pendente';
                       
                       const tipoConfig = {
                         importado: { icon: ShoppingBag, label: 'PRONTA ENTREGA (IMPORT)', color: 'text-sky-400', bg: 'bg-sky-500/10' },
-                        fabricado: { icon: Package, label: 'LISO (FABRICAÇÃO)', color: 'text-amber-400', bg: 'bg-amber-500/10' },
+                        fabricado: { icon: Package, label: 'LISO (FABRICAÃ‡ÃƒO)', color: 'text-amber-400', bg: 'bg-amber-500/10' },
                         personalizado: { icon: Palette, label: 'PERSONALIZADO (DIRETO)', color: 'text-fuchsia-400', bg: 'bg-fuchsia-500/10' },
                       }[tipo as 'importado' | 'fabricado' | 'personalizado'];
 
                       const prodSteps = [
                         { id: 'pendente', label: 'EM FILA' },
-                        { id: 'primeira_peca', label: 'AUDITORIA 1ª PEÇA' },
-                        { id: 'em_producao', label: 'PRODUÇÃO' },
-                        { id: 'personalizando', label: 'CUSTOMIZAÇÃO' },
+                        { id: 'primeira_peca', label: 'AUDITORIA 1Âª PEÃ‡A' },
+                        { id: 'em_producao', label: 'PRODUÃ‡ÃƒO' },
+                        { id: 'personalizando', label: 'CUSTOMIZAÃ‡ÃƒO' },
                         { id: 'concluido', label: 'VERIFICADO' },
                       ];
 
@@ -326,26 +327,26 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                                 <h4 className="text-lg font-black text-white uppercase tracking-tight">{item.descricao}</h4>
                                 {item.produto_id && (
                                   <Badge variant="outline" className="px-2 py-0.5 rounded-md text-[9px] font-black border-violet-500/20 text-violet-400 bg-violet-500/5">
-                                    VINCULADO AO CATÁLOGO
+                                    VINCULADO AO CATÃLOGO
                                   </Badge>
                                 )}
                               </div>
                               <p className="text-[10px] text-zinc-500 font-black uppercase mt-1 tracking-widest">
-                                Quantidade: {item.quantidade} {item.unidade} • Lead Time: {item.produto?.lead_time_dias || 0} Dias
+                                Quantidade: {item.quantidade} {item.unidade} â€¢ Lead Time: {item.produto?.lead_time_dias || 0} Dias
                               </p>
-                              {item.descricao?.toLowerCase().includes('boné') && (
+                              {item.descricao?.toLowerCase().includes('bonÃ©') && (
                                 <Badge variant="outline" className="mt-3 px-3 py-1 rounded-lg font-black text-[9px] uppercase tracking-widest border-rose-500/20 text-rose-400 bg-rose-500/5">
                                   <AlertTriangle className="w-3.5 h-3.5 mr-2" />
-                                  Crítico: Auditoria de 1ª Peça Necessária
+                                  CrÃ­tico: Auditoria de 1Âª PeÃ§a NecessÃ¡ria
                                 </Badge>
                               )}
                             </div>
 
                             <div className="flex-1 bg-white/[0.03] p-5 rounded-2xl border border-white/5 relative group/pipeline">
                               <p className="text-[9px] font-black text-zinc-500 uppercase tracking-widest mb-6 flex items-center justify-between">
-                                PIPELINE DE PRODUÇÃO
+                                PIPELINE DE PRODUÃ‡ÃƒO
                                 <span className={cn("transition-colors", statusProd === 'primeira_peca' ? "text-rose-400 animate-pulse" : "text-violet-400")}>
-                                  {statusProd === 'primeira_peca' ? 'AGUARDANDO APROVAÇÃO 1ª PEÇA' : 'MONITORAMENTO RÍGIDO'}
+                                  {statusProd === 'primeira_peca' ? 'AGUARDANDO APROVAÃ‡ÃƒO 1Âª PEÃ‡A' : 'MONITORAMENTO RÃGIDO'}
                                 </span>
                               </p>
                               <div className="flex items-center justify-between gap-1 relative h-10">
@@ -388,21 +389,21 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                   <Card className="p-8 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl">
                     <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500 mb-8 flex items-center gap-2">
                       <DollarSign className="w-4 h-4 text-emerald-400" />
-                      Inteligência Financeira
+                      InteligÃªncia Financeira
                     </h3>
                     <div className="space-y-6">
                       <div className="flex justify-between items-center text-zinc-500 font-black uppercase tracking-widest text-[10px]">
                         <span>Subtotal Bruto</span>
-                        <span className="text-white text-sm">{(pedido.valor_total - (pedido.valor_frete || 0) + (pedido.desconto || 0)).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                        <span className="text-white text-sm">{formatCurrency(pedido.valor_total - (pedido.valor_frete || 0) + (pedido.desconto || 0))}</span>
                       </div>
                       <div className="flex justify-between items-center text-zinc-500 font-black uppercase tracking-widest text-[10px]">
-                        <span>Custos Logísticos</span>
-                        <span className={cn("text-sm", (pedido.valor_frete || 0) > 0 ? "text-white" : "text-emerald-400")}>{(pedido.valor_frete || 0) > 0 ? (pedido.valor_frete || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'CUSTO ZERO'}</span>
+                        <span>Custos LogÃ­sticos</span>
+                        <span className={cn("text-sm", (pedido.valor_frete || 0) > 0 ? "text-white" : "text-emerald-400")}>{(pedido.valor_frete || 0) > 0 ? formatCurrency(pedido.valor_frete || 0) : 'CUSTO ZERO'}</span>
                       </div>
                       <div className="pt-6 border-t border-white/10 flex justify-between items-end">
                         <div className="space-y-1">
-                           <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">Valor Líquido</p>
-                           <p className="text-4xl font-black text-white tracking-tighter">{pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+                           <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em]">Valor LÃ­quido</p>
+                           <p className="text-4xl font-black text-white tracking-tighter">{formatCurrency(pedido.valor_total)}</p>
                         </div>
                         <Badge variant="outline" className="mb-1 text-[10px] font-black border-emerald-500/30 text-emerald-400 px-4 py-1.5 uppercase tracking-widest bg-emerald-500/10">
                            ATIVO ASSEGURADO
@@ -415,8 +416,8 @@ export const PedidoDetailsDialog = ({ open, onOpenChange, pedido }: Props) => {
                 <TabsContent value="history" className="mt-0 focus-visible:ring-0">
                   <Card className="p-12 bg-white/[0.02] border-white/5 rounded-3xl backdrop-blur-2xl text-center">
                     <Clock className="w-12 h-12 text-zinc-700 mx-auto mb-6 opacity-30" />
-                    <h4 className="text-xs font-black text-zinc-500 uppercase tracking-[0.3em]">Fluxo de Histórico Neural</h4>
-                    <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest mt-2">Inicializando vetores de log de auditoria histórica...</p>
+                    <h4 className="text-xs font-black text-zinc-500 uppercase tracking-[0.3em]">Fluxo de HistÃ³rico Neural</h4>
+                    <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest mt-2">Inicializando vetores de log de auditoria histÃ³rica...</p>
                   </Card>
                 </TabsContent>
               </motion.div>

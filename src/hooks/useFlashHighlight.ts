@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 /**
  * Hook to trigger a flash highlight animation when a value changes.
@@ -6,9 +6,13 @@ import { useState, useEffect } from 'react';
  */
 export function useFlashHighlight<T>(value: T) {
   const [shouldFlash, setShouldFlash] = useState(false);
+  const isFirstRun = useRef(true);
 
   useEffect(() => {
-    // Skip initial mount
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      return;
+    }
     const timer = setTimeout(() => {
       setShouldFlash(true);
       const resetTimer = setTimeout(() => setShouldFlash(false), 1500);

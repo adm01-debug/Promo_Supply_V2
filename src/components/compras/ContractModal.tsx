@@ -1,3 +1,4 @@
+import { logger } from '@/lib/logger';
 import { ContractSLASection } from "./contract/ContractSLASection";
 import { ContractItemsEditor } from "./contract/ContractItemsEditor";
 import { useState, useEffect } from "react";
@@ -29,7 +30,7 @@ import { format } from "date-fns/format";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import type { Contract, ContractItem } from "@/types/contract";
 
 interface ContractModalProps {
@@ -297,7 +298,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
       onOpenChange(false);
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro ao salvar contrato';
-      console.error('Error saving contract:', err);
+      logger.error('Error saving contract', { error: err });
       toast.error(errorMessage);
     } finally {
       setLoading(false);
@@ -406,12 +407,14 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
                       !formData.start_date && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.start_date ? (
-                      format(formData.start_date, "dd/MM/yyyy", { locale: ptBR })
-                    ) : (
-                      "Selecione"
-                    )}
+                    <span className="inline-flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4" />
+                      {formData.start_date ? (
+                        format(formData.start_date, "dd/MM/yyyy", { locale: ptBR })
+                      ) : (
+                        "Selecione"
+                      )}
+                    </span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -435,12 +438,14 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
                       !formData.end_date && "text-muted-foreground"
                     )}
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.end_date ? (
-                      format(formData.end_date, "dd/MM/yyyy", { locale: ptBR })
-                    ) : (
-                      "Selecione"
-                    )}
+                    <span className="inline-flex items-center gap-2">
+                      <CalendarIcon className="h-4 w-4" />
+                      {formData.end_date ? (
+                        format(formData.end_date, "dd/MM/yyyy", { locale: ptBR })
+                      ) : (
+                        "Selecione"
+                      )}
+                    </span>
                   </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -486,7 +491,7 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
                 id="renewal_notice_days"
                 type="number"
                 value={formData.renewal_notice_days}
-                onChange={(e) => setFormData(prev => ({ ...prev, renewal_notice_days: parseInt(e.target.value) || 30 }))}
+                onChange={(e) => setFormData(prev => ({ ...prev, renewal_notice_days: parseInt(e.target.value, 10) || 30 }))}
               />
             </div>
           </div>

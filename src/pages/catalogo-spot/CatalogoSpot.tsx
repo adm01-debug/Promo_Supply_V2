@@ -8,20 +8,21 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Separator } from '@/components/ui/separator';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import {
   Search, ShoppingCart, Package, FileText, CreditCard, Loader2, Plug, Trash2, RefreshCw,
   ExternalLink, AlertTriangle, CheckCircle2
 } from 'lucide-react';
 
-import { STATUS_CONFIG, openExternalSpotUrl, extractSpotProductId } from './spotHelpers';
+import { STATUS_CONFIG, openExternalSpotUrl } from './spotHelpers';
+import { formatCurrency } from "@/lib/utils";
 import { SpotFinancialTab } from './SpotFinancialTab';
+import { SpotCatalogTab } from './SpotCatalogTab';
+import { SpotSyncPanel } from './SpotSyncPanel';
+
 const CatalogoSpot = () => {
-  const { loading, searchProducts, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
+  const { loading, testConnection, getCart, getOrders, getFinancialDocs, addToCart, removeFromCart } = useSpotIntegration();
   const [activeTab, setActiveTab] = useState('catalogo');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [hasSearched, setHasSearched] = useState(false);
-  const [searchResults, setSearchResults] = useState<Array<{ line: number; value: string; text: string }>>([]);
   const [cart, setCart] = useState<{ items: SpotCartItem[]; total: number; itemCount: number } | null>(null);
   const [orders, setOrders] = useState<SpotOrder[]>([]);
   const [financialDocs, setFinancialDocs] = useState<{ documents: SpotFinancialDoc[]; hasOverdue: boolean } | null>(null);
@@ -44,14 +45,6 @@ const CatalogoSpot = () => {
     return () => { cancelled = true; };
   }, [testConnection]);
 
-  const handleSearch = useCallback(async () => {
-    if (!searchQuery.trim()) return;
-    const results = await searchProducts(searchQuery);
-    if (mountedRef.current) {
-      setHasSearched(true);
-      if (results) setSearchResults(results);
-    }
-  }, [searchQuery, searchProducts]);
 
   const loadCart = useCallback(async () => {
     const data = await getCart();
@@ -140,87 +133,12 @@ const CatalogoSpot = () => {
             </TabsTrigger>
           </TabsList>
 
-          {/* CATÁLOGO */}
+          {/* CATÁLOGO — servido pelo cache da API oficial */}
           <TabsContent value="catalogo" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Search className="w-5 h-5" />
-                  Pesquisa de Produtos SPOT
-                </CardTitle>
-                <CardDescription>
-                  Busque por referência, nome ou descrição no catálogo SPOT (987+ produtos)
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Ex: 81198, caneta, bolsa..."
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && handleSearch()}
-                    className="flex-1"
-                  />
-                  <Button onClick={handleSearch} disabled={loading || !searchQuery.trim()}>
-                    {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-                    <span className="ml-2">Buscar</span>
-                  </Button>
-                </div>
-
-                {searchResults.length > 0 && (
-                  <div className="space-y-2">
-                    <h3 className="text-sm font-medium text-muted-foreground">
-                      {searchResults.length} resultado(s)
-                    </h3>
-                    {searchResults.map((result, i) => {
-                      const parts = result.text.split(' - ');
-                      const ref = parts[0] || '';
-                      const name = parts.slice(1).join(' - ') || result.text;
-                      const productId = extractSpotProductId(result.value, ref);
-
-                      return (
-                        <Card key={i} className="hover:bg-accent/50 transition-colors">
-                          <CardContent className="flex items-center justify-between p-4">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2">
-                                <Badge variant="outline" className="font-mono text-xs">{ref}</Badge>
-                                <span className="font-medium">{name}</span>
-                              </div>
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {result.value}
-                              </p>
-                            </div>
-                            <div className="flex gap-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => openExternalSpotUrl(result.value)}
-                              >
-                                <ExternalLink className="w-3.5 h-3.5 mr-1" />
-                                Ver
-                              </Button>
-                              <Button size="sm" onClick={() => handleAddToCart(productId)} disabled={loading}>
-                                {loading ? <Loader2 className="w-3.5 h-3.5 mr-1 animate-spin" /> : <ShoppingCart className="w-3.5 h-3.5 mr-1" />}
-                                Adicionar
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                )}
-
-                {searchResults.length === 0 && hasSearched && !loading && (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <Package className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                    <p>Nenhum produto encontrado para &quot;{searchQuery}&quot;</p>
-                    <p className="text-sm mt-1">Tente buscar por referência (ex: 81198) ou nome</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <SpotSyncPanel />
+            <SpotCatalogTab onAddToCart={handleAddToCart} disabled={loading} />
           </TabsContent>
+
 
           {/* CARRINHO */}
           <TabsContent value="carrinho" className="space-y-4">
@@ -256,8 +174,8 @@ const CatalogoSpot = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {cart.items.map((item, i) => (
-                        <TableRow key={i}>
+                      {cart.items.map((item) => (
+                        <TableRow key={item.groupId || item.ref}>
                           <TableCell>
                             <Badge variant="outline" className="font-mono">{item.ref}</Badge>
                           </TableCell>
@@ -369,7 +287,7 @@ const CatalogoSpot = () => {
                               {order.date ? new Date(order.date).toLocaleDateString('pt-BR') : '—'}
                             </TableCell>
                             <TableCell className="text-right font-medium">
-                              {order.total > 0 ? `R$ ${order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}` : '—'}
+                              {order.total > 0 ? formatCurrency(order.total) : '—'}
                             </TableCell>
                             <TableCell className="text-sm">{order.carrier || '—'}</TableCell>
                             <TableCell>
@@ -410,7 +328,7 @@ const CatalogoSpot = () => {
               <CardContent className="pt-4">
                 <h4 className="text-sm font-medium mb-3">Legenda de Status</h4>
                 <div className="flex flex-wrap gap-3">
-                  {Object.entries(STATUS_CONFIG).map(([status, cfg]: [string, any]) => (
+                  {Object.entries(STATUS_CONFIG).map(([status, cfg]) => (
                     <Badge key={status} variant={cfg.variant} className="text-xs">
                       {cfg.label}
                     </Badge>

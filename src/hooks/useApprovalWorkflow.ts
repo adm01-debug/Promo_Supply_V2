@@ -1,256 +1,157 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { logger } from '@/lib/logger';
+import { useWorkflowDLQ } from './useWorkflowDLQ';
+import { useApprovalRules } from './useApprovalRules';
+import { useApprovalHistory } from './useApprovalHistory';
+import type { Database } from '@/integrations/supabase/types';
 import type {
-  ApprovalRule, ApprovalDelegation, ApprovalWorkflow,
-  ApprovalStep, ApprovalHistory,
+  ApprovalWorkflow,
+  ApprovalWorkflowWithRelations,
+  ApprovalStep,
 } from './approvalWorkflowTypes';
 
-export type { ApprovalRule, ApprovalDelegation, ApprovalWorkflow, ApprovalStep, ApprovalHistory };
+type ApprovalStepInsert = Database['public']['Tables']['approval_steps']['Insert'];
 
+export type {
+  ApprovalRule, ApprovalDelegation, ApprovalWorkflow,
+  ApprovalWorkflowWithRelations, ApprovalStep, ApprovalHistory,
+} from './approvalWorkflowTypes';
+
+// Module-level guard so only one consumer drives escalation polling.
+// `latestCheckEscalations` is a ref updated on every render so the interval
+// always calls the freshest closure (avoids stale user/org/fetch bindings).
+let escalationRefCount = 0;
+let escalationIntervalId: ReturnType<typeof setInterval> | null = null;
+let latestCheckEscalations: (() => Promise<void>) | null = null;
+
+/**
+ * F-022 refactor: useApprovalWorkflow is now a composition facade.
+ * Business logic lives in focused sub-hooks:
+ *   - useApprovalRules    → rules/delegations CRUD + findApplicableRule
+ *   - useApprovalHistory  → fetchHistory / fetchAllHistory
+ * Workflow state (pending workflows/steps) and step actions remain here.
+ */
 export const useApprovalWorkflow = () => {
   const { user, organizationId } = useAuth();
-  const [rules, setRules] = useState<ApprovalRule[]>([]);
-  const [delegations, setDelegations] = useState<ApprovalDelegation[]>([]);
-  const [workflows, setWorkflows] = useState<ApprovalWorkflow[]>([]);
+  const [workflows, setWorkflows] = useState<ApprovalWorkflowWithRelations[]>([]);
   const [pendingSteps, setPendingSteps] = useState<ApprovalStep[]>([]);
-  const [allHistory, setAllHistory] = useState<ApprovalHistory[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchRules = useCallback(async () => {
-    if (!organizationId) return;
-    try {
-      const { data, error } = await supabase
-        .from('approval_rules').select('*')
-        .eq('organization_id', organizationId)
-        .order('prioridade', { ascending: false })
-        .order('valor_min', { ascending: true });
-      if (error) throw error;
-      setRules((data || []).map(rule => ({
-        ...rule,
-        aprovadores: typeof rule.aprovadores === 'string' ? JSON.parse(rule.aprovadores) : rule.aprovadores || []
-      })) as ApprovalRule[]);
-    } catch (error) { logger.error('Error fetching approval rules', { error }); }
-  }, []);
+  const rulesApi = useApprovalRules();
+  const historyApi = useApprovalHistory();
+  const { pushToDLQ, dlqEntries, retryableEntries, retryEntry, removeEntry, clearDLQ } = useWorkflowDLQ();
 
-  const fetchDelegations = useCallback(async () => {
-    if (!organizationId) return;
-    try {
-      const { data, error } = await supabase.from('approval_delegations').select('*')
-        .eq('organization_id', organizationId)
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      setDelegations((data || []).map(d => ({
-        ...d,
-        categorias_permitidas: typeof d.categorias_permitidas === 'string' ? JSON.parse(d.categorias_permitidas) : d.categorias_permitidas || []
-      })) as ApprovalDelegation[]);
-    } catch (error) { logger.error('Error fetching delegations', { error }); }
-  }, []);
+  // Stable refs to rulesApi methods (rulesApi object literal is rebuilt each render
+  // — including it in a useEffect dep array triggers an infinite re-run).
+  const fetchRulesRef = useRef(rulesApi.fetchRules);
+  const fetchDelegationsRef = useRef(rulesApi.fetchDelegations);
+  fetchRulesRef.current = rulesApi.fetchRules;
+  fetchDelegationsRef.current = rulesApi.fetchDelegations;
+
+  // ── Workflow / step fetches ──────────────────────────────────────────────
 
   const fetchPendingWorkflows = useCallback(async () => {
     if (!user || !organizationId) return;
     try {
-      const { data, error } = await supabase.from('approval_workflows').select('*, solicitacoes:solicitacoes(numero, titulo, prioridade, solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)), categorias:categorias(nome)')
+      const { data, error } = await supabase
+        .from('approval_workflows')
+        .select('*, solicitacoes:solicitacoes(numero, titulo, prioridade)')
         .eq('status', 'pending')
         .eq('organization_id', organizationId)
         .order('created_at', { ascending: false });
       if (error) throw error;
-      setWorkflows((data || []) as any);
+      setWorkflows((data ?? []) as unknown as ApprovalWorkflowWithRelations[]);
     } catch (error) { logger.error('Error fetching workflows', { error }); }
-  }, [user]);
+  }, [user, organizationId]);
 
   const fetchPendingSteps = useCallback(async () => {
     if (!user || !organizationId) return;
     try {
-      const { data, error } = await supabase.from('approval_steps').select('*').eq('status', 'pending')
+      const { data, error } = await supabase.from('approval_steps').select('*')
+        .eq('status', 'pending')
         .eq('organization_id', organizationId)
         .or(`aprovador_id.eq.${user.id},aprovador_efetivo_id.eq.${user.id}`)
         .order('prazo_limite', { ascending: true });
       if (error) throw error;
       setPendingSteps((data || []) as ApprovalStep[]);
     } catch (error) { logger.error('Error fetching pending steps', { error }); }
-  }, [user]);
+  }, [user, organizationId]);
 
-  const saveRule = useCallback(async (rule: Partial<ApprovalRule>) => {
-    if (!organizationId) return;
-    try {
-      setLoading(true);
-      const ruleData = {
-        nome: rule.nome || '', 
-        descricao: rule.descricao, 
-        valor_min: rule.valor_min || 0,
-        valor_max: rule.valor_max || 999999999, 
-        categoria_id: rule.categoria_id,
-        cost_center_id: rule.cost_center_id,
-        aprovadores: JSON.stringify(rule.aprovadores || []) as any,
-        tempo_limite_horas: rule.tempo_limite_horas || 24,
-        escalacao_automatica: rule.escalacao_automatica || false, 
-        escalacao_para: rule.escalacao_para,
-        niveis_aprovacao: rule.niveis_aprovacao || 1, 
-        requer_unanimidade: rule.requer_unanimidade || false,
-        ativo: rule.ativo ?? true, 
-        prioridade: rule.prioridade || 0, 
-        created_by: user?.id,
-        organization_id: organizationId
-      };
-      if (rule.id) {
-        const { error } = await supabase.from('approval_rules').update(ruleData).eq('id', rule.id);
-        if (error) throw error;
-        toast.success('Regra atualizada com sucesso');
-      } else {
-        const { error } = await supabase.from('approval_rules').insert(ruleData);
-        if (error) throw error;
-        toast.success('Regra criada com sucesso');
-      }
-      await fetchRules();
-    } catch (error) { logger.error('Error saving rule', { error }); toast.error('Erro ao salvar regra'); }
-    finally { setLoading(false); }
-  }, [user, fetchRules]);
+  // ── Workflow creation ────────────────────────────────────────────────────
 
-  const deleteRule = useCallback(async (ruleId: string) => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.from('approval_rules').delete().eq('id', ruleId);
-      if (error) throw error;
-      toast.success('Regra excluída com sucesso');
-      await fetchRules();
-    } catch (error) { logger.error('Error deleting rule', { error }); toast.error('Erro ao excluir regra'); }
-    finally { setLoading(false); }
-  }, [fetchRules]);
-
-  const saveDelegation = useCallback(async (delegation: Partial<ApprovalDelegation>) => {
-    if (!organizationId) return;
-    try {
-      setLoading(true);
-      const delegationData = {
-        delegante_id: delegation.delegante_id || '', delegado_id: delegation.delegado_id || '',
-        data_inicio: delegation.data_inicio || new Date().toISOString(), data_fim: delegation.data_fim || '',
-        motivo: delegation.motivo, categorias_permitidas: JSON.stringify(delegation.categorias_permitidas || []),
-        valor_maximo: delegation.valor_maximo, ativo: delegation.ativo ?? true,
-        organization_id: organizationId
-      };
-      if (delegation.id) {
-        const { error } = await supabase.from('approval_delegations').update(delegationData).eq('id', delegation.id);
-        if (error) throw error;
-        toast.success('Delegação atualizada com sucesso');
-      } else {
-        const { error } = await supabase.from('approval_delegations').insert(delegationData);
-        if (error) throw error;
-        toast.success('Delegação criada com sucesso');
-      }
-      await fetchDelegations();
-    } catch (error) { logger.error('Error saving delegation', { error }); toast.error('Erro ao salvar delegação'); }
-    finally { setLoading(false); }
-  }, [fetchDelegations]);
-
-  const deleteDelegation = useCallback(async (delegationId: string) => {
-    try {
-      setLoading(true);
-      const { error } = await supabase.from('approval_delegations').delete().eq('id', delegationId);
-      if (error) throw error;
-      toast.success('Delegação excluída com sucesso');
-      await fetchDelegations();
-    } catch (error) { logger.error('Error deleting delegation', { error }); toast.error('Erro ao excluir delegação'); }
-    finally { setLoading(false); }
-  }, [fetchDelegations]);
-
-  const findApplicableRule = useCallback((valor: number, categoriaId?: string): ApprovalRule | null => {
-    let rule = rules.find(r => r.ativo && valor >= r.valor_min && valor <= r.valor_max && r.categoria_id === categoriaId);
-    if (!rule) rule = rules.find(r => r.ativo && valor >= r.valor_min && valor <= r.valor_max && !r.categoria_id);
-    return rule || null;
-  }, [rules]);
-
-  const findApplicableRuleRPC = useCallback(async (valor: number, categoriaId?: string): Promise<string | null> => {
-    try {
-      const { data, error } = await supabase.rpc('find_approval_rule', { p_valor: valor, p_categoria_id: categoriaId || undefined });
-      if (error) throw error;
-      return data as string | null;
-    } catch (error: unknown) { logger.error('Error finding approval rule via RPC', { error }); return null; }
-  }, []);
-
-  const getEffectiveApprover = useCallback(async (approverId: string, categoriaId?: string, valor?: number) => {
-    try {
-      const { data, error } = await supabase.rpc('get_effective_approver', { p_approver_id: approverId, p_categoria_id: categoriaId || undefined, p_valor: valor || undefined });
-      if (error) throw error;
-      return data as Array<{ approver_id: string; delegation_id: string | null }> | null;
-    } catch (error: unknown) { logger.error('Error getting effective approver', { error }); return null; }
-  }, []);
-
-  const createWorkflow = useCallback(async (solicitacaoId: string, valor: number, categoriaId?: string): Promise<ApprovalWorkflow | null> => {
+  const createWorkflow = useCallback(async (
+    solicitacaoId: string,
+    valor: number,
+    categoriaId?: string,
+  ): Promise<ApprovalWorkflow | null> => {
     if (!organizationId) return null;
     try {
       setLoading(true);
-      
+
       const { data: sol, error: solError } = await supabase
         .from('solicitacoes')
         .select('*, cost_center:cost_centers(manager_id)')
         .eq('id', solicitacaoId)
         .single();
-      
       if (solError) throw solError;
 
-      const ruleId = await findApplicableRuleRPC(valor, categoriaId);
-      let rule: ApprovalRule | null = ruleId ? rules.find(r => r.id === ruleId) || null : null;
-      if (!rule) rule = findApplicableRule(valor, categoriaId);
-      
-      const ccManagerId = (sol.cost_center as any)?.manager_id;
-      if (!rule && !ccManagerId) { 
-        toast.error('Nenhuma regra de aprovação ou gestor de Centro de Custo encontrado'); 
-        return null; 
+      const ruleId = await rulesApi.findApplicableRuleRPC(valor, categoriaId);
+      let rule = ruleId ? rulesApi.rules.find(r => r.id === ruleId) || null : null;
+      if (!rule) rule = rulesApi.findApplicableRule(valor, categoriaId);
+
+      const ccManagerId = (sol.cost_center as { manager_id: string | null } | null)?.manager_id;
+      if (!rule && !ccManagerId) {
+        toast.error('Nenhuma regra de aprovação ou gestor de Centro de Custo encontrado');
+        return null;
       }
 
       const prazoLimite = new Date();
       prazoLimite.setHours(prazoLimite.getHours() + (rule?.tempo_limite_horas || 24));
 
       const { data: workflow, error: workflowError } = await supabase.from('approval_workflows').insert({
-        solicitacao_id: solicitacaoId, 
-        rule_id: rule?.id || null, 
-        status: 'pending', 
+        solicitacao_id: solicitacaoId,
+        rule_id: rule?.id || null,
+        status: 'pending',
         etapa_atual: 1,
-        total_etapas: (rule?.aprovadores?.length || 0) + (ccManagerId ? 1 : 0), 
-        valor, 
+        total_etapas: (rule?.aprovadores?.length || 0) + (ccManagerId ? 1 : 0),
+        valor,
         categoria_id: categoriaId,
         prazo_limite: prazoLimite.toISOString(),
-        organization_id: organizationId
+        organization_id: organizationId,
       }).select().single();
-      
       if (workflowError) throw workflowError;
       const typedWorkflow = workflow as ApprovalWorkflow;
 
-      const steps = [];
+      const steps: ApprovalStepInsert[] = [];
       let stepCounter = 1;
 
       if (ccManagerId) {
-        const effective = await getEffectiveApprover(ccManagerId, categoriaId, valor);
+        const effective = await rulesApi.getEffectiveApprover(ccManagerId, categoriaId, valor);
         const effectiveId = effective?.[0]?.approver_id || ccManagerId;
         steps.push({
-          workflow_id: typedWorkflow.id, 
-          etapa: stepCounter++, 
-          aprovador_id: ccManagerId,
+          workflow_id: typedWorkflow.id, etapa: stepCounter++, aprovador_id: ccManagerId,
           aprovador_efetivo_id: effectiveId !== ccManagerId ? effectiveId : null,
           delegacao_id: effective?.[0]?.delegation_id || null,
-          prazo_limite: new Date(Date.now() + (rule?.tempo_limite_horas || 24) * 60 * 60 * 1000).toISOString(),
-          organization_id: organizationId
+          prazo_limite: new Date(Date.now() + (rule?.tempo_limite_horas || 24) * 3600_000).toISOString(),
+          organization_id: organizationId,
         });
       }
 
       if (rule) {
-        for (let index = 0; index < rule.aprovadores.length; index++) {
-          const aprovador = rule.aprovadores[index];
+        for (let i = 0; i < rule.aprovadores.length; i++) {
+          const aprovador = rule.aprovadores[i];
           if (aprovador.user_id === ccManagerId) continue;
-
-          const effective = await getEffectiveApprover(aprovador.user_id, categoriaId, valor);
+          const effective = await rulesApi.getEffectiveApprover(aprovador.user_id, categoriaId, valor);
           const effectiveId = effective?.[0]?.approver_id || aprovador.user_id;
           steps.push({
-            workflow_id: typedWorkflow.id, 
-            etapa: stepCounter++, 
-            aprovador_id: aprovador.user_id,
+            workflow_id: typedWorkflow.id, etapa: stepCounter++, aprovador_id: aprovador.user_id,
             aprovador_efetivo_id: effectiveId !== aprovador.user_id ? effectiveId : null,
             delegacao_id: effective?.[0]?.delegation_id || null,
-            prazo_limite: new Date(Date.now() + (index + 2) * (rule.tempo_limite_horas) * 60 * 60 * 1000).toISOString(),
-            organization_id: organizationId
+            prazo_limite: new Date(Date.now() + (i + 2) * rule.tempo_limite_horas * 3600_000).toISOString(),
+            organization_id: organizationId,
           });
         }
       }
@@ -264,37 +165,42 @@ export const useApprovalWorkflow = () => {
       await supabase.from('approval_history').insert({
         workflow_id: typedWorkflow.id, solicitacao_id: solicitacaoId, acao: 'created',
         usuario_id: user?.id, usuario_nome: user?.email,
-        detalhes: { rule_id: rule?.id, rule_nome: rule?.nome || 'Aprovação por Centro de Custo' }
+        detalhes: { rule_id: rule?.id, rule_nome: rule?.nome || 'Aprovação por Centro de Custo' },
       });
 
       toast.success('Workflow de aprovação criado');
       await fetchPendingWorkflows();
       return typedWorkflow;
-    } catch (error) { 
-      logger.error('Error creating workflow', { error }); 
-      toast.error('Erro ao criar workflow de aprovação'); 
-      return null; 
-    }
-    finally { setLoading(false); }
-  }, [user, findApplicableRule, fetchPendingWorkflows, getEffectiveApprover, findApplicableRuleRPC, rules]);
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      logger.error('Error creating workflow', { error });
+      pushToDLQ('create_workflow', { solicitacaoId, valor, categoriaId, organizationId, userId: user?.id }, errMsg);
+      toast.error('Erro ao criar workflow de aprovação — salvo para reprocessamento');
+      return null;
+    } finally { setLoading(false); }
+  }, [user, rulesApi, fetchPendingWorkflows, organizationId, pushToDLQ]);
+
+  // ── Step actions ─────────────────────────────────────────────────────────
 
   const approveStep = useCallback(async (stepId: string, comentario?: string) => {
     try {
       setLoading(true);
-      const { data: step, error: stepError } = await supabase.from('approval_steps').select('*, approval_workflows(*)').eq('id', stepId).single();
+      const { data: step, error: stepError } = await supabase.from('approval_steps')
+        .select('*, approval_workflows(*)')
+        .eq('id', stepId).single();
       if (stepError) throw stepError;
 
-      // Check if this step requires unanimity based on the rule
       const workflow = step.approval_workflows;
       let requiresUnanimity = false;
       if (workflow?.rule_id) {
-        const { data: rule } = await supabase.from('approval_rules').select('requer_unanimidade').eq('id', workflow.rule_id).single();
+        const { data: rule } = await supabase.from('approval_rules')
+          .select('requer_unanimidade').eq('id', workflow.rule_id).single();
         requiresUnanimity = rule?.requer_unanimidade || false;
       }
 
-
       const { error: updateError } = await supabase.from('approval_steps').update({
-        status: 'approved', aprovador_efetivo_id: user?.id, comentario, decidido_em: new Date().toISOString()
+        status: 'approved', aprovador_efetivo_id: user?.id, comentario,
+        decidido_em: new Date().toISOString(),
       }).eq('id', stepId);
       if (updateError) throw updateError;
 
@@ -303,99 +209,151 @@ export const useApprovalWorkflow = () => {
       const allApproved = allOtherSteps.every(s => s.status === 'approved' || s.status === 'skipped');
 
       if (allApproved) {
-        // Double check status consistency - avoid race condition
-        const { data: currentWorkflow } = await supabase.from('approval_workflows').select('status').eq('id', step.workflow_id).single();
-        if (currentWorkflow?.status === 'pending') {
+        const { data: current } = await supabase.from('approval_workflows').select('status').eq('id', step.workflow_id).single();
+        if (current?.status === 'pending') {
           await supabase.from('approval_workflows').update({ status: 'approved', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
           toast.success('Aprovação finalizada! Solicitação liberada.');
         }
       } else {
-        // If not requiring unanimity, move to next sequential step
-        // In this complex system, we usually have sequential steps, but let's ensure the logic holds
         const nextStep = allOtherSteps.find(s => s.status === 'pending' && s.etapa > step.etapa);
         if (nextStep) {
           await supabase.from('approval_workflows').update({ etapa_atual: nextStep.etapa, updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
         } else if (!requiresUnanimity) {
-          // If no more sequential steps and not unanimous, it's basically done
-           await supabase.from('approval_workflows').update({ status: 'approved', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
+          await supabase.from('approval_workflows').update({ status: 'approved', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
         }
       }
 
-
       await supabase.from('approval_history').insert({
         workflow_id: step.workflow_id, step_id: stepId, acao: 'approved',
-        usuario_id: user?.id, usuario_nome: user?.email, detalhes: { comentario }
+        usuario_id: user?.id, usuario_nome: user?.email, detalhes: { comentario },
       });
       toast.success('Aprovação registrada com sucesso');
-      await fetchPendingSteps(); await fetchPendingWorkflows();
-    } catch (error) { logger.error('Error approving step', { error }); toast.error('Erro ao aprovar'); }
-    finally { setLoading(false); }
-  }, [user, fetchPendingSteps, fetchPendingWorkflows]);
+      await fetchPendingSteps();
+      await fetchPendingWorkflows();
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      logger.error('Error approving step', { error });
+      pushToDLQ('approve_step', { stepId, comentario, userId: user?.id }, errMsg);
+      toast.error('Erro ao aprovar — salvo para reprocessamento');
+    } finally { setLoading(false); }
+  }, [user, fetchPendingSteps, fetchPendingWorkflows, pushToDLQ]);
 
   const rejectStep = useCallback(async (stepId: string, comentario: string) => {
     try {
       setLoading(true);
-      const { data: step, error: stepError } = await supabase.from('approval_steps').select('*').eq('id', stepId).single();
+      const { data: step, error: stepError } = await supabase.from('approval_steps')
+        .select('*').eq('id', stepId).single();
       if (stepError) throw stepError;
-      await supabase.from('approval_steps').update({ status: 'rejected', aprovador_efetivo_id: user?.id, comentario, decidido_em: new Date().toISOString() }).eq('id', stepId);
+
+      await supabase.from('approval_steps').update({
+        status: 'rejected', aprovador_efetivo_id: user?.id, comentario,
+        decidido_em: new Date().toISOString(),
+      }).eq('id', stepId);
       await supabase.from('approval_workflows').update({ status: 'rejected', updated_at: new Date().toISOString() }).eq('id', step.workflow_id);
-      
-      // Mark all other pending steps of this workflow as cancelled/skipped to prevent UI ghosting
       await supabase.from('approval_steps').update({ status: 'skipped', comentario: 'Workflow rejected at previous step' })
-        .eq('workflow_id', step.workflow_id)
-        .eq('status', 'pending');
-        
+        .eq('workflow_id', step.workflow_id).eq('status', 'pending');
       await supabase.from('approval_history').insert({
         workflow_id: step.workflow_id, step_id: stepId, acao: 'rejected',
-        usuario_id: user?.id, usuario_nome: user?.email, detalhes: { comentario }
+        usuario_id: user?.id, usuario_nome: user?.email, detalhes: { comentario },
       });
       toast.success('Rejeição registrada');
-      await fetchPendingSteps(); await fetchPendingWorkflows();
-    } catch (error) { logger.error('Error rejecting step', { error }); toast.error('Erro ao rejeitar'); }
-    finally { setLoading(false); }
-  }, [user, fetchPendingSteps, fetchPendingWorkflows]);
+      await fetchPendingSteps();
+      await fetchPendingWorkflows();
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      logger.error('Error rejecting step', { error });
+      pushToDLQ('reject_step', { stepId, comentario, userId: user?.id }, errMsg);
+      toast.error('Erro ao rejeitar — salvo para reprocessamento');
+    } finally { setLoading(false); }
+  }, [user, fetchPendingSteps, fetchPendingWorkflows, pushToDLQ]);
 
-  const fetchHistory = useCallback(async (workflowId: string): Promise<ApprovalHistory[]> => {
-    try {
-      const { data, error } = await supabase.from('approval_history').select('*').eq('workflow_id', workflowId).order('created_at', { ascending: true });
-      if (error) throw error;
-      return (data || []) as ApprovalHistory[];
-    } catch (error) { logger.error('Error fetching history', { error }); return []; }
-  }, []);
-
-  const fetchAllHistory = useCallback(async () => {
-    try {
-      const { data, error } = await supabase.from('approval_history').select('*').order('created_at', { ascending: false }).limit(100);
-      if (error) throw error;
-      setAllHistory((data || []) as ApprovalHistory[]);
-    } catch (error) { logger.error('Error fetching all history', { error }); }
-  }, []);
+  // ── Escalation polling (local UX guard — server cron is the real enforcer) ─
 
   const checkEscalations = useCallback(async () => {
     try {
-      const { data: overdueWorkflows } = await supabase.from('approval_workflows').select('*, approval_rules(*)').eq('status', 'pending').lt('prazo_limite', new Date().toISOString()).is('escalado_em', null);
-      if (!overdueWorkflows?.length) return;
-      for (const workflow of overdueWorkflows) {
-        const rule = workflow.approval_rules;
+      const { data: overdue } = await supabase.from('approval_workflows')
+        .select('*, approval_rules(*)')
+        .eq('status', 'pending')
+        .lt('prazo_limite', new Date().toISOString())
+        .is('escalado_em', null);
+      if (!overdue?.length) return;
+      for (const wf of overdue) {
+        const rule = wf.approval_rules;
         if (!rule?.escalacao_automatica || !rule?.escalacao_para) continue;
-        await supabase.from('approval_workflows').update({ status: 'escalated', escalado_em: new Date().toISOString(), escalado_para: rule.escalacao_para }).eq('id', workflow.id);
-        await supabase.from('approval_steps').insert({ workflow_id: workflow.id, etapa: workflow.etapa_atual + 1, aprovador_id: rule.escalacao_para, prazo_limite: new Date(Date.now() + rule.tempo_limite_horas * 60 * 60 * 1000).toISOString() });
-        await supabase.from('approval_history').insert({ workflow_id: workflow.id, solicitacao_id: workflow.solicitacao_id, acao: 'escalated', detalhes: { escalado_para: rule.escalacao_para, motivo: 'Prazo expirado' } });
+        await supabase.from('approval_workflows').update({
+          status: 'escalated', escalado_em: new Date().toISOString(), escalado_para: rule.escalacao_para,
+        }).eq('id', wf.id);
+        await supabase.from('approval_steps').insert({
+          workflow_id: wf.id, etapa: wf.etapa_atual + 1, aprovador_id: rule.escalacao_para,
+          prazo_limite: new Date(Date.now() + rule.tempo_limite_horas * 3600_000).toISOString(),
+        });
+        await supabase.from('approval_history').insert({
+          workflow_id: wf.id, solicitacao_id: wf.solicitacao_id, acao: 'escalated',
+          detalhes: { escalado_para: rule.escalacao_para, motivo: 'Prazo expirado' },
+        });
       }
-      await fetchPendingWorkflows(); await fetchPendingSteps();
+      await fetchPendingWorkflows();
+      await fetchPendingSteps();
     } catch (error) { logger.error('Error checking escalations', { error }); }
   }, [fetchPendingWorkflows, fetchPendingSteps]);
 
-  // Realtime subscription is now standard across the app
-  // Removed custom subscription here to avoid duplication as useRealtimeSubscription handles it globally
+  // ── Bootstrap ────────────────────────────────────────────────────────────
 
-  useEffect(() => { fetchRules(); fetchDelegations(); fetchPendingWorkflows(); fetchPendingSteps(); }, [fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps, organizationId]);
-  useEffect(() => { const interval = setInterval(checkEscalations, 60000); return () => clearInterval(interval); }, [checkEscalations]);
+  useEffect(() => {
+    void Promise.all([
+      fetchRulesRef.current(),
+      fetchDelegationsRef.current(),
+      fetchPendingWorkflows(),
+      fetchPendingSteps(),
+    ]);
+  }, [fetchPendingWorkflows, fetchPendingSteps]);
+
+  useEffect(() => {
+    latestCheckEscalations = checkEscalations;
+    escalationRefCount += 1;
+    if (escalationRefCount === 1) {
+      escalationIntervalId = setInterval(() => {
+        void latestCheckEscalations?.();
+      }, 60000);
+    }
+    return () => {
+      escalationRefCount = Math.max(0, escalationRefCount - 1);
+      if (escalationRefCount === 0) {
+        if (escalationIntervalId !== null) {
+          clearInterval(escalationIntervalId);
+          escalationIntervalId = null;
+        }
+        latestCheckEscalations = null;
+      }
+    };
+  }, [checkEscalations]);
 
   return {
-    rules, delegations, workflows, pendingSteps, allHistory, loading,
-    fetchRules, fetchDelegations, fetchPendingWorkflows, fetchPendingSteps, fetchAllHistory,
-    saveRule, deleteRule, saveDelegation, deleteDelegation,
-    createWorkflow, approveStep, rejectStep, fetchHistory, checkEscalations
+    // State
+    rules: rulesApi.rules,
+    delegations: rulesApi.delegations,
+    workflows,
+    pendingSteps,
+    allHistory: historyApi.allHistory,
+    loading: loading || rulesApi.loading,
+    // Fetches
+    fetchRules: rulesApi.fetchRules,
+    fetchDelegations: rulesApi.fetchDelegations,
+    fetchPendingWorkflows,
+    fetchPendingSteps,
+    fetchHistory: historyApi.fetchHistory,
+    fetchAllHistory: historyApi.fetchAllHistory,
+    // Rule/delegation mutations
+    saveRule: rulesApi.saveRule,
+    deleteRule: rulesApi.deleteRule,
+    saveDelegation: rulesApi.saveDelegation,
+    deleteDelegation: rulesApi.deleteDelegation,
+    // Workflow actions
+    createWorkflow,
+    approveStep,
+    rejectStep,
+    checkEscalations,
+    // Dead-letter queue
+    workflowDLQ: { dlqEntries, retryableEntries, retryEntry, removeEntry, clearDLQ },
   };
 };

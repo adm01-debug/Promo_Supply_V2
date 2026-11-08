@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from 'react';
 import { useUndoStore } from '@/stores/undoStore';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { useHapticFeedback } from '@/hooks/useMobileGestures';
 
 export function useGlobalUndo() {

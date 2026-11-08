@@ -16,6 +16,8 @@ export interface DashboardWidget {
 interface DashboardLayoutState {
   widgets: DashboardWidget[];
   isLoading: boolean;
+  /** ISO timestamp of the last local mutation — used for conflict resolution */
+  updatedAt: string | null;
   setWidgets: (widgets: DashboardWidget[]) => void;
   toggleWidgetVisibility: (id: string) => void;
   reorderWidgets: (fromIndex: number, toIndex: number) => void;
@@ -60,29 +62,32 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
     (set, get) => ({
       widgets: defaultWidgets,
       isLoading: false,
-      
-      setWidgets: (widgets) => set({ widgets }),
-      
+      updatedAt: null,
+
+      setWidgets: (widgets) => set({ widgets, updatedAt: new Date().toISOString() }),
+
       toggleWidgetVisibility: (id) => set((state) => ({
-        widgets: state.widgets.map(w => 
+        widgets: state.widgets.map(w =>
           w.id === id ? { ...w, visible: !w.visible } : w
-        )
+        ),
+        updatedAt: new Date().toISOString(),
       })),
-      
+
       reorderWidgets: (fromIndex, toIndex) => set((state) => {
         const widgets = [...state.widgets];
         const [removed] = widgets.splice(fromIndex, 1);
         widgets.splice(toIndex, 0, removed);
-        return { widgets: widgets.map((w, i) => ({ ...w, order: i })) };
+        return { widgets: widgets.map((w, i) => ({ ...w, order: i })), updatedAt: new Date().toISOString() };
       }),
-      
+
       resizeWidget: (id, size) => set((state) => ({
-        widgets: state.widgets.map(w => 
+        widgets: state.widgets.map(w =>
           w.id === id ? { ...w, size } : w
-        )
+        ),
+        updatedAt: new Date().toISOString(),
       })),
-      
-      resetLayout: () => set({ widgets: defaultWidgets }),
+
+      resetLayout: () => set({ widgets: defaultWidgets, updatedAt: new Date().toISOString() }),
 
       loadFromDb: async (dashboardId) => {
         const { data: { user } } = await supabase.auth.getUser();
@@ -92,24 +97,40 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
         try {
           const { data, error } = await supabase
             .from('dashboard_layouts')
-            .select('layout')
+            .select('layout, updated_at')
             .eq('user_id', user.id)
             .eq('dashboard_id', dashboardId)
             .maybeSingle();
 
           if (error) throw error;
           if (data?.layout) {
-            const savedWidgets = data.layout as unknown as DashboardWidget[];
-            // Merge saved layout with defaults to ensure new widgets are present
-            const mergedWidgets = [...savedWidgets];
-            
-            defaultWidgets.forEach(defaultWidget => {
-              if (!mergedWidgets.find(w => w.id === defaultWidget.id)) {
-                mergedWidgets.push(defaultWidget);
-              }
-            });
+            const { updatedAt: localUpdatedAt } = get();
 
-            set({ widgets: mergedWidgets.sort((a, b) => a.order - b.order) });
+            // Conflict resolution: DB wins only when its timestamp is strictly newer
+            // than the local copy, or the local copy has never been written.
+            const dbTs = data.updated_at ? new Date(data.updated_at).getTime() : 0;
+            const localTs = localUpdatedAt ? new Date(localUpdatedAt).getTime() : 0;
+
+            if (dbTs >= localTs) {
+              const savedWidgets = data.layout as unknown as DashboardWidget[];
+              const mergedWidgets = [...savedWidgets];
+              defaultWidgets.forEach(defaultWidget => {
+                if (!mergedWidgets.find(w => w.id === defaultWidget.id)) {
+                  mergedWidgets.push(defaultWidget);
+                }
+              });
+              // updatedAt is not bumped here — we're syncing FROM db, not mutating
+              set({ widgets: mergedWidgets.sort((a, b) => a.order - b.order), updatedAt: data.updated_at ?? localUpdatedAt });
+            } else {
+              // Local is newer — push it back to DB to avoid losing the user's work
+              const { widgets } = get();
+              await supabase.from('dashboard_layouts').upsert({
+                user_id: user.id,
+                dashboard_id: dashboardId,
+                layout: widgets as unknown as Json,
+                updated_at: localUpdatedAt ?? new Date().toISOString(),
+              }, { onConflict: 'user_id,dashboard_id' });
+            }
           }
         } catch (error) {
           logger.error('Error loading dashboard layout:', { error });
@@ -122,7 +143,8 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        const { widgets } = get();
+        const { widgets, updatedAt } = get();
+        const now = updatedAt ?? new Date().toISOString();
         try {
           const { error } = await supabase
             .from('dashboard_layouts')
@@ -130,8 +152,8 @@ export const useDashboardLayoutStore = create<DashboardLayoutState>()(
               user_id: user.id,
               dashboard_id: dashboardId,
               layout: widgets as unknown as Json,
-              updated_at: new Date().toISOString()
-            }, { onConflict: 'user_id, dashboard_id' });
+              updated_at: now,
+            }, { onConflict: 'user_id,dashboard_id' });
 
           if (error) throw error;
         } catch (error) {

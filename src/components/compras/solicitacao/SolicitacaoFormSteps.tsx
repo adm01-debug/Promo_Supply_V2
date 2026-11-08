@@ -27,7 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { formatBytes } from "@/lib/imageCompression";
 
 import { type SolicitacaoFormData as NovaSolicitacaoData } from "@/schemas/solicitacao.schema";
@@ -224,7 +224,7 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
                             />
                             <div className="flex flex-col">
                               <span>{p.nome}</span>
-                              <span className="text-xs text-muted-foreground">{p.codigo} — Ref: {p.preco_referencia?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
+                              <span className="text-xs text-muted-foreground">{p.codigo} — Ref: {p.preco_referencia != null ? formatCurrency(p.preco_referencia) : undefined}</span>
                             </div>
                           </div>
                           {p.preco_referencia && (
@@ -258,7 +258,7 @@ export function Step2Specifications({ formData, errors, updateField }: StepProps
         <div className="space-y-3">
           <Label htmlFor="quantidade" className="text-[10px] font-black uppercase text-zinc-500 tracking-widest">Quantidade Precisa *</Label>
           <Input id="quantidade" type="number" min="1" value={formData.quantidade || ''}
-            onChange={(e) => updateField('quantidade', parseInt(e.target.value) || 0)}
+            onChange={(e) => updateField('quantidade', parseInt(e.target.value, 10) || 0)}
             placeholder="0" className={cn("bg-white/5 border-white/10 h-12 rounded-xl text-white font-bold", errors.quantidade && "border-rose-500/50")} />
           {errors.quantidade && <p className="text-[10px] text-rose-400 font-black uppercase tracking-tighter flex items-center gap-1.5"><AlertCircle className="w-3 h-3" />{errors.quantidade}</p>}
         </div>
@@ -428,7 +428,7 @@ export function Step3Values({ formData, errors, updateField, budgetCheck, isChec
         {formData.anexos.length > 0 && (
           <div className="flex flex-wrap gap-2 mt-2">
             {formData.anexos.map((file, index) => (
-              <Badge key={index} variant="secondary" className="gap-1 pr-1">
+              <Badge key={`${file.name}-${file.size}-${file.lastModified}`} variant="secondary" className="gap-1 pr-1">
                 <span className="max-w-[120px] truncate">{file.name}</span>
                 <span className="text-[10px] text-muted-foreground">{formatBytes(file.size)}</span>
                 {file.type === 'image/webp' && <Check className="w-3 h-3 text-emerald-500" />}

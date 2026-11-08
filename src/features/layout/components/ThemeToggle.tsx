@@ -1,4 +1,4 @@
-import { Moon, Sun, Monitor, Check } from 'lucide-react';
+﻿import { Moon, Sun, Monitor, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -53,32 +53,34 @@ export function ThemeToggle() {
           size="icon" 
           className="relative w-9 h-9 overflow-hidden"
         >
-          <AnimatePresence mode="wait" initial={false}>
-            {isDark ? (
-              <motion.div
-                key="moon"
-                initial={{ y: -20, opacity: 0, rotate: -90 }}
-                animate={{ y: 0, opacity: 1, rotate: 0 }}
-                exit={{ y: 20, opacity: 0, rotate: 90 }}
-                transition={{ duration: 0.2, ease: 'easeInOut' }}
-                className="absolute"
-              >
-                <Moon className="h-4 w-4 text-warning" />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="sun"
-                initial={{ y: 20, opacity: 0, rotate: 90 }}
-                animate={{ y: 0, opacity: 1, rotate: 0 }}
-                exit={{ y: -20, opacity: 0, rotate: -90 }}
-                transition={{ duration: 0.2, ease: 'easeInOut' }}
-                className="absolute"
-              >
-                <Sun className="h-4 w-4 text-warning" />
-              </motion.div>
-            )}
-          </AnimatePresence>
-          <span className="sr-only">Alternar tema</span>
+          <span className="inline-flex items-center">
+            <AnimatePresence mode="sync" initial={false}>
+              {isDark ? (
+                <motion.div
+                  key="moon"
+                  initial={{ y: -20, opacity: 0, rotate: -90 }}
+                  animate={{ y: 0, opacity: 1, rotate: 0 }}
+                  exit={{ y: 20, opacity: 0, rotate: 90 }}
+                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  className="absolute"
+                >
+                  <Moon className="h-4 w-4 text-warning" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="sun"
+                  initial={{ y: 20, opacity: 0, rotate: 90 }}
+                  animate={{ y: 0, opacity: 1, rotate: 0 }}
+                  exit={{ y: -20, opacity: 0, rotate: -90 }}
+                  transition={{ duration: 0.2, ease: 'easeInOut' }}
+                  className="absolute"
+                >
+                  <Sun className="h-4 w-4 text-warning" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <span className="sr-only">Alternar tema</span>
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent 

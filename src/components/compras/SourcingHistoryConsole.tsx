@@ -16,12 +16,12 @@ import {
   Lock, SearchCode
 } from "lucide-react";
 import { usePurchaseHistory, type PurchaseRecord, type SupplierHistory } from "@/hooks/usePurchaseHistory";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { 
   LineChart, Line, ResponsiveContainer, XAxis, YAxis, 
   Tooltip as RechartsTooltip, Cell, PieChart, Pie,
@@ -49,7 +49,7 @@ const PriceTrendChart = ({ data }: { data: { date: string, price: number }[] }) 
 export const SourcingHistoryConsole = () => {
   const { purchaseRecords, suppliersHistory, isLoading } = usePurchaseHistory();
   const [searchTerm, setSearchTerm] = useState("");
-  const [viewMode, setViewMode] = useState<"client" | "supplier">("client");
+  const [viewMode, setViewMode] = useState<"client" | "supplier" | "intelligence" | "neural">("client");
   const [lastActions, setLastActions] = useState<string[]>([]);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -190,9 +190,9 @@ export const SourcingHistoryConsole = () => {
               size="sm"
               className={cn(
                 "gap-2 px-4 transition-all duration-200",
-                viewMode as string === "intelligence" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+                viewMode === "intelligence" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
               )} 
-              onClick={() => setViewMode("intelligence" as any)}
+              onClick={() => setViewMode("intelligence")}
             >
               <Globe className="w-4 h-4" /> Inteligência
             </Button>
@@ -201,9 +201,9 @@ export const SourcingHistoryConsole = () => {
               size="sm"
               className={cn(
                 "gap-2 px-4 transition-all duration-200",
-                viewMode as string === "neural" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
+                viewMode === "neural" ? "bg-background shadow-sm text-foreground" : "text-muted-foreground hover:text-foreground"
               )} 
-              onClick={() => setViewMode("neural" as any)}
+              onClick={() => setViewMode("neural")}
             >
               <Brain className="w-4 h-4" /> Neural
             </Button>
@@ -342,7 +342,7 @@ export const SourcingHistoryConsole = () => {
                         
                         <div className="flex flex-col items-end gap-2 text-right">
                           <div className="text-xl font-bold">
-                            {record.totalPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            {formatCurrency(record.totalPrice)}
                           </div>
                           <div className="flex items-center gap-2 text-xs font-medium">
                             <Badge variant="outline" className={cn(
@@ -390,7 +390,10 @@ export const SourcingHistoryConsole = () => {
                         <Sheet>
                           <SheetTrigger asChild>
                             <Button variant="ghost" size="sm" className="h-8 text-xs gap-2 hover:bg-primary/10 hover:text-primary">
-                              Ver Detalhes do Sourcing <ArrowRight className="w-3 h-3" />
+                              <span className="inline-flex items-center gap-2">
+                                Ver Detalhes do Sourcing
+                                <ArrowRight className="w-3 h-3" />
+                              </span>
                             </Button>
                           </SheetTrigger>
                           <SheetContent className="sm:max-w-xl">
@@ -467,7 +470,7 @@ export const SourcingHistoryConsole = () => {
                 </div>
               )}
             </div>
-          ) : viewMode === ("intelligence" as any) ? (
+          ) : viewMode === "intelligence" ? (
             <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
               {/* Sourcing Health Header */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-2">
@@ -656,7 +659,7 @@ export const SourcingHistoryConsole = () => {
                 </div>
               </Card>
             </div>
-          ) : viewMode === ("neural" as any) ? (
+          ) : viewMode === "neural" ? (
             <div className="space-y-6 animate-in fade-in zoom-in duration-500">
               {/* Neural Prediction Console */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

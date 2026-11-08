@@ -1,18 +1,48 @@
 import { jsPDF } from "jspdf";
 import autoTable from "jspdf-autotable";
 
-export const generateOrderPDF = (data: {
+/** jspdf-autotable injects this property at runtime. */
+interface JsPDFWithAutoTable extends jsPDF {
+  lastAutoTable: { finalY: number };
+}
+import { LegacyFornecedor } from "@/types/legacyTypes";
+import { formatCurrency } from "@/lib/utils";
+
+export interface OrderPDFCompany {
+  nome: string;
+  endereco?: string;
+  /** Short label shown in the document footer */
+  footerLabel?: string;
+}
+
+export interface OrderPDFData {
   numero: string;
   data: string;
-  fornecedor: any;
-  solicitante: any;
-  itens: any[];
+  fornecedor: Partial<LegacyFornecedor>;
+  solicitante: { email?: string; nome?: string };
+  itens: Array<{
+    descricao: string;
+    quantidade: number;
+    unidade?: string;
+    valor_unitario: number;
+  }>;
   subtotal: number;
   frete: number;
   desconto: number;
   total: number;
   observacoes?: string;
-}) => {
+  /** Company branding injected at runtime — avoids hardcoding tenant name/address. */
+  company?: Partial<OrderPDFCompany>;
+}
+
+const DEFAULT_COMPANY: OrderPDFCompany = {
+  nome: "Promo Supply",
+  endereco: "",
+  footerLabel: "Promo Supply - Sistema de Gestão de Compras",
+};
+
+export const generateOrderPDF = (data: OrderPDFData) => {
+  const company: OrderPDFCompany = { ...DEFAULT_COMPANY, ...data.company };
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
 
@@ -56,10 +86,13 @@ export const generateOrderPDF = (data: {
   doc.setFontSize(10);
   doc.setTextColor(0);
   doc.setFont("helvetica", "bold");
-  doc.text("PROMO SUPPLY LTDA", 110, 62);
+  doc.text(company.nome, 110, 62);
   doc.setFont("helvetica", "normal");
-  doc.text(`Solicitante: ${data.solicitante?.email || 'N/A'}`, 110, 67);
-  doc.text("Endereço: Av. Paulista, 1000 - São Paulo, SP", 110, 72);
+  const solicitanteLabel = data.solicitante?.nome || data.solicitante?.email || 'N/A';
+  doc.text(`Solicitante: ${solicitanteLabel}`, 110, 67);
+  if (company.endereco) {
+    doc.text(`Endereço: ${company.endereco}`, 110, 72);
+  }
 
   // Items Table
   autoTable(doc, {
@@ -70,8 +103,8 @@ export const generateOrderPDF = (data: {
       i.descricao,
       i.quantidade,
       i.unidade || 'un',
-      i.valor_unitario.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
-      (i.quantidade * i.valor_unitario).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+      formatCurrency(i.valor_unitario),
+      formatCurrency(i.quantidade * i.valor_unitario)
     ]),
     theme: 'striped',
     headStyles: { 
@@ -91,34 +124,33 @@ export const generateOrderPDF = (data: {
   });
 
   // Totals Area
-  const finalY = (doc as any).lastAutoTable.finalY + 15;
+  const finalY = (doc as JsPDFWithAutoTable).lastAutoTable.finalY + 15;
   const totalsX = pageWidth - 80;
 
   doc.setFontSize(10);
   doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
   doc.text("Subtotal:", totalsX, finalY);
   doc.setTextColor(0);
-  doc.text(data.subtotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), pageWidth - 14, finalY, { align: 'right' });
+  doc.text(formatCurrency(data.subtotal), pageWidth - 14, finalY, { align: 'right' });
 
   doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
   doc.text("Frete:", totalsX, finalY + 6);
   doc.setTextColor(0);
-  doc.text(data.frete.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), pageWidth - 14, finalY + 6, { align: 'right' });
+  doc.text(formatCurrency(data.frete), pageWidth - 14, finalY + 6, { align: 'right' });
 
   doc.setTextColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
   doc.text("Desconto:", totalsX, finalY + 12);
   doc.setTextColor(0);
-  doc.text(`- ${data.desconto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`, pageWidth - 14, finalY + 12, { align: 'right' });
+  doc.text(`- ${formatCurrency(data.desconto)}`, pageWidth - 14, finalY + 12, { align: 'right' });
 
   // Divider
-  doc.setDrawColor(200);
   doc.line(totalsX, finalY + 16, pageWidth - 14, finalY + 16);
 
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
   doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
   doc.text("TOTAL DO PEDIDO:", totalsX, finalY + 24);
-  doc.text(data.total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), pageWidth - 14, finalY + 24, { align: 'right' });
+  doc.text(formatCurrency(data.total), pageWidth - 14, finalY + 24, { align: 'right' });
 
   // Observations
   if (data.observacoes) {
@@ -136,7 +168,7 @@ export const generateOrderPDF = (data: {
   const pageHeight = doc.internal.pageSize.getHeight();
   doc.setFontSize(8);
   doc.setTextColor(150);
-  doc.text("Promo Supply - Sistema de Gestão de Compras v1.0", 14, pageHeight - 10);
+  doc.text(company.footerLabel ?? DEFAULT_COMPANY.footerLabel!, 14, pageHeight - 10);
   doc.text(`Página 1 de 1`, pageWidth - 14, pageHeight - 10, { align: 'right' });
 
   return doc;

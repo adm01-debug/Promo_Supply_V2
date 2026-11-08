@@ -3,8 +3,8 @@ import { Badge } from '@/components/ui/badge';
 import { Sparkline } from '@/components/ui/sparkline';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ArrowDownRight, AlertTriangle, Calendar, TrendingUp, Target } from 'lucide-react';
-import { formatCurrency, formatNumber } from './executiveDashboardData';
-import { cn } from '@/lib/utils';
+import { formatNumber } from './executiveDashboardData';
+import { cn, formatCurrency } from '@/lib/utils';
 
 interface MetricCardProps {
   title: string;

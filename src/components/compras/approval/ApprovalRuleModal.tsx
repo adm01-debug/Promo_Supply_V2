@@ -1,3 +1,4 @@
+import { type Dispatch, type SetStateAction } from "react";
 import { Plus, Trash2, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +31,7 @@ interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   editingRule: Partial<ApprovalRule> | null;
-  setEditingRule: (rule: Partial<ApprovalRule> | null) => void;
+  setEditingRule: Dispatch<SetStateAction<Partial<ApprovalRule> | null>>;
   onSave: () => void;
   loading: boolean;
   requerUnanimidade?: boolean;

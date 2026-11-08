@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useLicitacaoPropostas, type Licitacao } from '@/hooks/useLicitacoes';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency } from '@/lib/utils';
 
 const modalidadeLabels: Record<string, string> = {
   pregao: 'Pregão', concorrencia: 'Concorrência',
@@ -31,16 +31,13 @@ const statusConfig: Record<string, { label: string; variant: 'default' | 'second
 
 export { modalidadeLabels, statusConfig };
 
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-}
 
 interface LicitacaoDetailDialogProps {
   licitacao: Licitacao;
   open: boolean;
   onClose: () => void;
   onUpdate: (id: string, updates: Partial<Licitacao>) => Promise<boolean>;
-  fornecedores: any[];
+  fornecedores: { id: string; razao_social: string; status?: string | null }[];
 }
 
 export function LicitacaoDetailDialog({
@@ -54,7 +51,7 @@ export function LicitacaoDetailDialog({
     const result = await addProposta({
       fornecedor_id: propostaForm.fornecedor_id,
       valor_proposta: parseFloat(propostaForm.valor_proposta) || 0,
-      prazo_entrega: parseInt(propostaForm.prazo_entrega) || 0,
+      prazo_entrega: parseInt(propostaForm.prazo_entrega, 10) || 0,
       observacoes: propostaForm.observacoes || null,
       score_preco: (licitacao.valor_estimado || 0) > 0
         ? Math.max(0, 100 - ((parseFloat(propostaForm.valor_proposta) || 0) / (licitacao.valor_estimado || 0) - 1) * 100)
@@ -201,7 +198,7 @@ export function LicitacaoDetailDialog({
                     <Select value={propostaForm.fornecedor_id} onValueChange={v => setPropostaForm(f => ({ ...f, fornecedor_id: v }))}>
                       <SelectTrigger><SelectValue placeholder="Selecione" /></SelectTrigger>
                       <SelectContent>
-                        {fornecedores.filter((f: any) => f.status === 'ativo').map((f: any) => (
+                        {fornecedores.filter((f) => f.status === 'ativo').map((f) => (
                           <SelectItem key={f.id} value={f.id}>{f.razao_social}</SelectItem>
                         ))}
                       </SelectContent>

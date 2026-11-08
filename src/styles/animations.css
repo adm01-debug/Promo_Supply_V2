@@ -389,3 +389,28 @@
     margin-left: -50px; margin-top: -50px;
   }
   @keyframes ripple-animation { to { transform: scale(4); opacity: 0; } }
+
+  /* ===== PERFORMANCE GUARDRAILS =====
+     Pesa pouco no desktop, mas drift de background a 20-25s e
+     animações infinitas matam bateria/jank em mobile e em
+     usuários que pediram menos movimento. */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-bg-drift,
+    .animate-bg-drift-reverse,
+    .animate-enter,
+    .animate-exit,
+    .progressive-reveal,
+    .ripple::after,
+    .touch-ripple {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    /* Drift contínuo de background é desperdício em telas pequenas */
+    .animate-bg-drift,
+    .animate-bg-drift-reverse {
+      animation: none !important;
+    }
+  }

@@ -124,19 +124,21 @@ export function FiltrosAvancados({ filters, onFiltersChange, onApply }: FiltrosA
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button 
-          variant="outline" 
-          size="sm" 
+        <Button
+          variant="outline"
+          size="sm"
           className="h-12 w-12 rounded-xl bg-white/[0.03] border-white/5 hover:border-violet-500/40 relative shadow-lg"
         >
-          <Filter className="w-5 h-5 text-violet-400" />
-          {activeFiltersCount > 0 && (
-            <Badge 
-              className="absolute -top-2 -right-2 h-5 w-5 p-0 text-[10px] flex items-center justify-center bg-violet-500 border-none rounded-full"
-            >
-              {activeFiltersCount}
-            </Badge>
-          )}
+          <span className="relative inline-flex">
+            <Filter className="w-5 h-5 text-violet-400" />
+            {activeFiltersCount > 0 && (
+              <Badge
+                className="absolute -top-2 -right-2 h-5 w-5 p-0 text-[10px] flex items-center justify-center bg-violet-500 border-none rounded-full"
+              >
+                {activeFiltersCount}
+              </Badge>
+            )}
+          </span>
         </Button>
       </SheetTrigger>
       

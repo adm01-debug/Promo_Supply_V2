@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
 import { format } from 'date-fns';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -6,6 +6,8 @@ import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
+import { escapeIlike } from '@/lib/supabaseQuery';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Json, Database } from '@/integrations/supabase/types';
 
 export type Pagamento = Database['public']['Tables']['pagamentos']['Row'] & {
@@ -57,7 +59,10 @@ async function fetchPagamentosData(userId: string | undefined, organizationId: s
   let query = supabase
     .from('pagamentos')
     .select(`
-      *,
+      id, numero, status, fornecedor_id, pedido_id, cost_center_id,
+      valor, valor_pago, data_vencimento, data_pagamento, data_aprovacao,
+      forma_pagamento, numero_nf, chave_nf, observacoes,
+      aprovador_id, created_by, organization_id, tenant_id, created_at, updated_at,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
       pedido:pedidos(id, numero),
       cost_center:cost_centers(id, name, code)
@@ -67,7 +72,10 @@ async function fetchPagamentosData(userId: string | undefined, organizationId: s
 
   if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
   if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
-  if (filters?.search) query = query.or(`numero.ilike.%${filters.search}%,numero_nf.ilike.%${filters.search}%`);
+  if (filters?.search) {
+    const s = escapeIlike(filters.search);
+    query = query.or(`numero.ilike.%${s}%,numero_nf.ilike.%${s}%`);
+  }
   if (filters?.dateFrom) query = query.gte('data_vencimento', filters.dateFrom);
   if (filters?.dateTo) query = query.lte('data_vencimento', filters.dateTo);
 
@@ -94,7 +102,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
     refetchOnWindowFocus: false,
   });
 
-  const pagamentos = data?.data || [];
+  const pagamentos = useMemo(() => data?.data ?? [], [data]);
   const totalCount = data?.totalCount || 0;
 
   const invalidate = useCallback(() => {
@@ -117,7 +125,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
           chave_nf: input.chave_nf, observacoes: input.observacoes, created_by: user.id,
           tenant_id: organizationId,
           organization_id: organizationId,
-        } as any)
+        } as never)
         .select().single();
       if (error) {
         logger.error('Erro ao inserir pagamento no banco', { error, input });
@@ -141,7 +149,7 @@ export function usePagamentos(filters?: PagamentoFilters) {
       toast.error('Erro ao registrar pagamento: ' + msg);
       return null;
     }
-  }, [user, invalidate]);
+  }, [user, organizationId, invalidate]);
 
   const updatePagamento = useCallback(async (id: string, updates: Partial<Pagamento>) => {
     if (updates.status) {
@@ -246,17 +254,11 @@ export function usePagamentos(filters?: PagamentoFilters) {
     }
   }, [invalidate]);
 
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('pagamentos-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'pagamentos' }, () => {
-        invalidate();
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, invalidate]);
+  useRealtimeSubscription({
+    tables: ['pagamentos'],
+    queryKeysToInvalidate: [['pagamentos']],
+    enabled: !!user,
+  });
 
   return {
     pagamentos, totalCount, loading: isLoading, error: error?.message || null,

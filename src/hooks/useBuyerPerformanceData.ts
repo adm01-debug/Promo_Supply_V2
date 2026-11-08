@@ -55,8 +55,8 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
-    gcTime: 300000,
+    staleTime: 60_000,
+    gcTime: 300_000,
   });
 
   // Fetch cotacoes with period filter
@@ -72,8 +72,8 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
-    gcTime: 300000,
+    staleTime: 60_000,
+    gcTime: 300_000,
   });
 
   // Fetch solicitacoes with period filter
@@ -89,7 +89,7 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 30000,
+    staleTime: 30_000,
   });
 
   // Fetch pedidos with period filter
@@ -105,7 +105,7 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 30000,
+    staleTime: 30_000,
   });
 
   // Fetch fornecedores for names
@@ -120,7 +120,7 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   // Fetch categorias for names
@@ -135,7 +135,7 @@ export function useBuyerPerformanceData(periodMonths: number = 6) {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 120000,
+    staleTime: 120_000,
   });
 
   const fornecedorMap = useMemo(() => {

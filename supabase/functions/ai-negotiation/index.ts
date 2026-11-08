@@ -1,20 +1,13 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
-import { z } from "https://esm.sh/zod@3.22.4";
+import { NegotiationContract } from "../_shared/contracts.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
-const NegotiationInputSchema = z.object({
-  cotacoes: z.array(z.any()).min(1, "É necessário pelo menos uma cotação para análise"),
-  solicitacao: z.object({
-    id: z.string().uuid(),
-    titulo: z.string(),
-    valor_estimado: z.number().optional().nullable(),
-    quantidade: z.number().optional().nullable(),
-  }),
-  historico_precos: z.array(z.any()).optional().nullable(),
-});
 
+import { callAIGateway, AIGatewayCircuitOpenError, circuitOpenResponse } from "../_shared/ai_gateway.ts";
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
@@ -35,13 +28,20 @@ serve(async (req) => {
 
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) {
-      return new Response(JSON.stringify({ error: "Sessão inválida", requestId }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return errorResponse(new Error("Sessão inválida"), logger);
     }
 
+    // M-05: rate-limit — IA custa tokens; 20 req/min por usuário.
+    const rl = await checkRateLimit({
+      identifier: user.id,
+      endpoint: "ai-negotiation",
+      maxRequests: 20,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
     // Standardized validation with auto-telemetry
-    const validatedData = await validateBody(req, NegotiationInputSchema, logger);
+    const validatedData = await validateBody(req, NegotiationContract, logger);
     const { cotacoes, solicitacao, historico_precos } = validatedData;
 
     logger.info("Iniciando análise de negociação", { 
@@ -64,13 +64,9 @@ ${JSON.stringify(cotacoes, null, 2)}
 ${historico_precos ? `Histórico de preços anteriores: ${JSON.stringify(historico_precos)}` : ''}
 Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    const response = await callAIGateway({
+      apiKey: LOVABLE_API_KEY!,
+      body: {
         model: "google/gemini-3-flash-preview",
         messages: [
           { role: "system", content: systemPrompt },
@@ -111,14 +107,13 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
           }
         }],
         tool_choice: { type: "function", function: { name: "negotiation_analysis" } },
-      }),
+      },
     });
 
     if (!response.ok) {
       if (response.status === 429) {
-        return new Response(JSON.stringify({ error: "Limite de requisições excedido. Tente novamente em alguns minutos.", requestId }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
+        return errorResponse(new Error("Validation error: Limite de requisições excedido. Tente novamente em alguns minutos."), logger);
+
       }
       const t = await response.text();
       logger.error("Erro no AI Gateway", { status: response.status, response: t });
@@ -142,10 +137,17 @@ Valor estimado pela empresa: R$ ${solicitacao?.valor_estimado || 'N/A'}`;
 
     logger.info("Análise concluída com sucesso", { requestId });
 
-    return new Response(JSON.stringify({ ...analysis, requestId }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    return new Response(JSON.stringify({ 
+      data: analysis, 
+      requestId,
+      status: "success",
+      timestamp: new Date().toISOString()
+    }), {
+      headers: buildResponseHeaders(corsHeaders),
     });
+
   } catch (e) {
+    if (e instanceof AIGatewayCircuitOpenError) return circuitOpenResponse(corsHeaders);
     return errorResponse(e, logger);
   }
 });

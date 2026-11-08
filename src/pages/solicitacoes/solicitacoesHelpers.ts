@@ -62,5 +62,5 @@ export const statusConfig: Record<string, { label: string; color: string; indica
   AGUARDANDO_PAGAMENTO: { label: 'Em Andamento', color: 'bg-warning', indicatorStatus: 'processing' },
   ENTREGUE: { label: 'Finalizada', color: 'bg-success', indicatorStatus: 'completed' },
   REJEITADA: { label: 'Rejeitada', color: 'bg-destructive', indicatorStatus: 'error' },
-  CANCELADA: { label: 'Cancelada', color: 'bg-gray-500', indicatorStatus: 'info' },
+  CANCELADA: { label: 'Cancelada', color: 'bg-muted', indicatorStatus: 'info' },
 };

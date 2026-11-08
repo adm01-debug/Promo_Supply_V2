@@ -49,6 +49,18 @@ export interface ApprovalWorkflow {
   updated_at: string;
 }
 
+export interface ApprovalWorkflowRelations {
+  solicitacoes?: {
+    numero?: string | null;
+    titulo?: string | null;
+    prioridade?: string | null;
+    solicitante?: { full_name?: string | null } | null;
+  } | null;
+  categorias?: { nome?: string | null } | null;
+}
+
+export type ApprovalWorkflowWithRelations = ApprovalWorkflow & ApprovalWorkflowRelations;
+
 export interface ApprovalStep {
   id: string;
   workflow_id: string;

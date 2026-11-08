@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import { Check, X, Loader2, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { logger } from '@/lib/logger';
 
 interface PasswordStrengthIndicatorProps {
   password: string;
@@ -61,7 +62,7 @@ async function checkLeakedPassword(password: string): Promise<boolean> {
     
     return false;
   } catch (error) {
-    console.error('Error checking leaked password:', error);
+    logger.error('Error checking leaked password', { error });
     return false; // Fail open - don't block user if API fails
   }
 }

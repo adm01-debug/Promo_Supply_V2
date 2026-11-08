@@ -3,15 +3,38 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
 import type { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supabase-js';
 import { logger } from '@/lib/logger';
+import { useAuth } from '@/features/auth/hooks/useAuthContext';
 
-type TableName = 'solicitacoes' | 'pedidos' | 'cotacoes' | 'pagamentos' | 'notifications' | 'fornecedores' | 'contracts' | 'approval_workflows' | 'approval_steps';
+/**
+ * Tables that carry a `tenant_id` column. Realtime subscriptions on these
+ * tables MUST be scoped to the active tenant to prevent cross-tenant leakage.
+ * Keep in sync with migrations that add `tenant_id`.
+ */
+const TENANT_SCOPED_TABLES = new Set<string>([
+  'solicitacoes',
+  'pedidos',
+  'cotacoes',
+  'pagamentos',
+  'fornecedores',
+  'contracts',
+  'approval_workflows',
+  'approval_steps',
+  'devolucoes',
+  'creditos_fornecedor',
+  'contact_notes',
+  'licitacoes',
+  'licitacao_lances',
+  'notifications',
+]);
+
+type TableName = 'solicitacoes' | 'pedidos' | 'cotacoes' | 'pagamentos' | 'notifications' | 'fornecedores' | 'contracts' | 'approval_workflows' | 'approval_steps' | 'devolucoes' | 'creditos_fornecedor' | 'contact_notes' | 'licitacoes' | 'licitacao_lances';
 
 interface RealtimeOptions {
   tables: TableName[];
   queryKeysToInvalidate?: string[][];
-  onInsert?: (payload: RealtimePostgresChangesPayload<any>) => void;
-  onUpdate?: (payload: RealtimePostgresChangesPayload<any>) => void;
-  onDelete?: (payload: RealtimePostgresChangesPayload<any>) => void;
+  onInsert?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
+  onUpdate?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
+  onDelete?: (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => void;
   enabled?: boolean;
   /** Debounce interval in ms (default 1000) to batch rapid changes */
   debounceMs?: number;
@@ -35,14 +58,26 @@ export function useRealtimeSubscription({
   const pendingTablesRef = useRef<Set<string>>(new Set());
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Stash callbacks in refs so the channel handler always reads the latest
+  // versions without rebuilding the channel when consumers pass inline closures.
+  const onInsertRef = useRef(onInsert);
+  const onUpdateRef = useRef(onUpdate);
+  const onDeleteRef = useRef(onDelete);
+  const queryKeysRef = useRef(queryKeysToInvalidate);
+  useEffect(() => { onInsertRef.current = onInsert; }, [onInsert]);
+  useEffect(() => { onUpdateRef.current = onUpdate; }, [onUpdate]);
+  useEffect(() => { onDeleteRef.current = onDelete; }, [onDelete]);
+  useEffect(() => { queryKeysRef.current = queryKeysToInvalidate; }, [queryKeysToInvalidate]);
+
   const flushInvalidations = useCallback(() => {
     const tableNames = Array.from(pendingTablesRef.current);
     if (tableNames.length === 0) return;
 
     logger.debug('Realtime: flushing batch invalidations', { tables: tableNames });
 
-    if (queryKeysToInvalidate) {
-      queryKeysToInvalidate.forEach(key => {
+    const keys = queryKeysRef.current;
+    if (keys) {
+      keys.forEach(key => {
         queryClient.invalidateQueries({ queryKey: key });
       });
     } else {
@@ -57,30 +92,58 @@ export function useRealtimeSubscription({
     }
 
     pendingTablesRef.current.clear();
-  }, [queryClient, queryKeysToInvalidate]);
+  }, [queryClient]);
+
+  const { tenantId } = useAuth();
+
+  const tablesKey = tables.join(',');
 
   useEffect(() => {
     if (!enabled || tables.length === 0) return;
 
-    const channelName = `realtime-${tables.join('-')}`;
+    // SECURITY: Tenant-scoped tables require an active tenant before subscribing.
+    // Without it, Postgres CDC would broadcast every tenant's rows to this client
+    // (RLS does NOT filter Realtime payloads on its own).
+    const needsTenant = tables.some((t) => TENANT_SCOPED_TABLES.has(t));
+    if (needsTenant && !tenantId) {
+      logger.debug('Realtime: skipping subscription, awaiting tenantId', { tables });
+      return;
+    }
+
+    // Scope channel name by tenant so each tenant has an isolated channel.
+    const channelName = `realtime-${tenantId ?? 'global'}-${tables.join('-')}`;
     let channel = supabase.channel(channelName);
 
-    tables.forEach(table => {
+    tables.forEach((table) => {
+      const isTenantScoped = TENANT_SCOPED_TABLES.has(table);
+      const config: { event: '*'; schema: 'public'; table: string; filter?: string } = {
+        event: '*',
+        schema: 'public',
+        table,
+      };
+      if (isTenantScoped && tenantId) {
+        config.filter = `tenant_id=eq.${tenantId}`;
+      }
+
       channel = channel.on(
         'postgres_changes',
-        { event: '*', schema: 'public', table },
-        (payload: RealtimePostgresChangesPayload<any>) => {
-          // Queue table for batch invalidation
+        config,
+        (payload: RealtimePostgresChangesPayload<Record<string, unknown>>) => {
+          // Defense-in-depth: drop any payload that slips through with a foreign tenant.
+          const row = (payload.new ?? payload.old) as { tenant_id?: string } | null;
+          if (isTenantScoped && tenantId && row?.tenant_id && row.tenant_id !== tenantId) {
+            logger.warn('Realtime: dropped cross-tenant payload', { table, expected: tenantId });
+            return;
+          }
+
           pendingTablesRef.current.add(table);
 
-          // Debounce: reset timer on each event
           if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
           debounceTimerRef.current = setTimeout(flushInvalidations, debounceMs);
 
-          // Fire callbacks immediately
-          if (payload.eventType === 'INSERT' && onInsert) onInsert(payload);
-          if (payload.eventType === 'UPDATE' && onUpdate) onUpdate(payload);
-          if (payload.eventType === 'DELETE' && onDelete) onDelete(payload);
+          if (payload.eventType === 'INSERT') onInsertRef.current?.(payload);
+          else if (payload.eventType === 'UPDATE') onUpdateRef.current?.(payload);
+          else if (payload.eventType === 'DELETE') onDeleteRef.current?.(payload);
         }
       );
     });
@@ -95,5 +158,5 @@ export function useRealtimeSubscription({
         channelRef.current = null;
       }
     };
-  }, [enabled, tables.join(','), debounceMs]);
+  }, [enabled, tablesKey, debounceMs, flushInvalidations, tenantId, tables]);
 }

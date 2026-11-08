@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 type FiltersRecord = Record<string, unknown>;
@@ -43,6 +43,8 @@ export function useAccountFilters<T extends FiltersRecord>(
   const initializedRef = useRef(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const skipNextSaveRef = useRef(true); // Skip the very first save (right after hydration)
+  const filtersJson = JSON.stringify(filters);
+  const defaultsJson = JSON.stringify(defaults);
 
   // Load auth + initial filters
   useEffect(() => {
@@ -82,10 +84,10 @@ export function useAccountFilters<T extends FiltersRecord>(
             const merged = { ...defaults, ...legacy } as T;
             setFiltersState(merged);
             // Upsert into DB and remove legacy key
-            await supabase.from('user_filter_preferences' as any).upsert(
-              [{ user_id: uid, scope, filters: merged as unknown as any }],
-              { onConflict: 'user_id,scope' },
-            );
+            // user_filter_preferences is not in the generated type map — cast via unknown.
+            await (supabase as unknown as { from: (t: string) => ReturnType<typeof supabase.from> })
+              .from('user_filter_preferences')
+              .upsert([{ user_id: uid, scope, filters: merged }] as never, { onConflict: 'user_id,scope' });
             try {
               localStorage.removeItem(legacyStorageKey);
             } catch {
@@ -118,8 +120,8 @@ export function useAccountFilters<T extends FiltersRecord>(
       cancelled = true;
       sub.subscription.unsubscribe();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scope, legacyStorageKey]);
+
+  }, [scope, legacyStorageKey, defaultsJson]);  // eslint-disable-line react-hooks/exhaustive-deps
 
   // Debounced persistence
   useEffect(() => {
@@ -137,7 +139,9 @@ export function useAccountFilters<T extends FiltersRecord>(
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
     };
-  }, [filters, userId, scope, legacyStorageKey]);
+    // filtersJson stabilizes the dep — avoids infinite loops when caller passes a new object with same content.
+    // Intentionally NOT including the raw `filters` object — it would change reference every render.
+  }, [filtersJson, userId, scope, legacyStorageKey]);
 
   const setFilters = useCallback((next: T) => {
     setFiltersState(next);
@@ -179,10 +183,10 @@ export function useAccountFilters<T extends FiltersRecord>(
     skipNextSaveRef.current = true;
 
     return removedKeys;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId, scope, legacyStorageKey, JSON.stringify(defaults)]);
+     
+  }, [userId, scope, legacyStorageKey, defaults]);
 
-  return {
+  return useMemo(() => ({
     filters,
     loading,
     isAuthenticated,
@@ -191,7 +195,7 @@ export function useAccountFilters<T extends FiltersRecord>(
     clearFilters,
     restoreFilters,
     legacyStorageKey,
-  };
+  }), [filters, loading, isAuthenticated, setFilters, patchFilters, clearFilters, restoreFilters, legacyStorageKey]);
 }
 
 // --- helpers ---
@@ -213,10 +217,10 @@ async function persist<T extends FiltersRecord>(
   legacyKey: string,
 ): Promise<void> {
   if (userId) {
-    await supabase.from('user_filter_preferences' as any).upsert(
-      [{ user_id: userId, scope, filters: filters as unknown as any }],
-      { onConflict: 'user_id,scope' },
-    );
+    // user_filter_preferences is not in the generated type map — cast via unknown.
+    await (supabase as unknown as { from: (t: string) => ReturnType<typeof supabase.from> })
+      .from('user_filter_preferences')
+      .upsert([{ user_id: userId, scope, filters }] as never, { onConflict: 'user_id,scope' });
   } else {
     try {
       localStorage.setItem(legacyKey, JSON.stringify(filters));

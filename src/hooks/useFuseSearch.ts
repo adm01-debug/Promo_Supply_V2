@@ -9,8 +9,8 @@ export interface FuseSearchItem {
   description?: string;
   type: string;
   keywords?: string[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
+
+  [key: string]: unknown;
 }
 
 export interface FuseSearchResult<T> {
@@ -24,7 +24,7 @@ export interface FuseSearchResult<T> {
 }
 
 // Default Fuse.js options optimized for Brazilian Portuguese
-const defaultFuseOptions: IFuseOptions<any> = {
+const defaultFuseOptions: IFuseOptions<FuseSearchItem> = {
   // Search configuration
   isCaseSensitive: false,
   includeScore: true,
@@ -303,7 +303,7 @@ export function useMultiCollectionSearch<T extends FuseSearchItem>(
 }
 
 // Utility for creating search index from Supabase data
-export function createSearchIndex<T extends Record<string, any>>(
+export function createSearchIndex<T extends Record<string, unknown>>(
   data: T[],
   config: {
     idField: string;

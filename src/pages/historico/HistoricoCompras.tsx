@@ -27,7 +27,7 @@ import { ptBR } from "date-fns/locale/pt-BR";
 import { cn } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 import { exportToCSV } from "@/lib/exportData";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { usePurchaseHistory, type PurchaseRecord } from "@/hooks/usePurchaseHistory";
 
 import { COLORS } from "./HistoricoHelpers";
@@ -88,7 +88,10 @@ const HistoricoCompras = () => {
   }), []);
   const acct = useAccountFilters("historico-compras", accountDefaults);
   const hydratedRef = useRef(false);
-  
+  // Latest acct in a ref so E2 below doesn't re-run when the hook returns a new object literal.
+  const acctRef = useRef(acct);
+  acctRef.current = acct;
+
   useEffect(() => {
     if (acct.loading || hydratedRef.current) return;
     hydratedRef.current = true;
@@ -106,12 +109,12 @@ const HistoricoCompras = () => {
 
   useEffect(() => {
     if (!hydratedRef.current) return;
-    acct.patchFilters({
+    acctRef.current.patchFilters({
       searchTerm, categoryFilter, statusFilter, periodPreset,
       dateRangeFrom: dateRange?.from ? dateRange.from.toISOString() : null,
       dateRangeTo: dateRange?.to ? dateRange.to.toISOString() : null,
     });
-  }, [searchTerm, categoryFilter, statusFilter, periodPreset, dateRange, acct]);
+  }, [searchTerm, categoryFilter, statusFilter, periodPreset, dateRange]);
 
   const filteredPurchaseRecords = useMemo(() => {
     return purchaseRecords.filter((record) => {
@@ -134,7 +137,7 @@ const HistoricoCompras = () => {
     screenLabel: "Histórico de Compras",
     describeActiveFilters: () => [],
     takeSnapshot: () => ({ searchTerm, categoryFilter, statusFilter, dateRange, periodPreset }),
-    applySnapshot: (s: any) => {
+    applySnapshot: (s) => {
       setSearchTerm(s.searchTerm); setCategoryFilter(s.categoryFilter);
       setStatusFilter(s.statusFilter); setDateRange(s.dateRange); setPeriodPreset(s.periodPreset);
     },

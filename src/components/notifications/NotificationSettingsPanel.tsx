@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { useRealPushNotifications } from "@/hooks/useRealPushNotifications";
 import { toast } from "@/lib/feedbackToast";
 import { supabase } from "@/integrations/supabase/client";
+import { logger } from "@/lib/logger";
 
 export const NotificationSettingsPanel = () => {
   const {
@@ -45,7 +46,7 @@ export const NotificationSettingsPanel = () => {
         toast.error("Permita as notificações primeiro.");
       }
     } catch (error) {
-      console.error("Error testing notification:", error);
+      logger.error("notifications: falha ao enviar notificação de teste", { error: error instanceof Error ? error.message : String(error) });
       toast.error("Erro ao enviar notificação de teste.");
     } finally {
       setIsTestingNotification(false);
@@ -63,7 +64,7 @@ export const NotificationSettingsPanel = () => {
         `Verificação concluída: ${data.sla_warnings} alertas SLA, ${data.pending_approvals} aprovações pendentes, ${data.notifications_sent} notificações enviadas.`
       );
     } catch (error) {
-      console.error("Error checking alerts:", error);
+      logger.error("notifications: falha ao verificar alertas SLA", { error: error instanceof Error ? error.message : String(error) });
       toast.error("Erro ao verificar alertas.");
     } finally {
       setIsCheckingAlerts(false);

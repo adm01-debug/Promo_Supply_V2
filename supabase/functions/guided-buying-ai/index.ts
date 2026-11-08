@@ -1,8 +1,11 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { z } from "https://esm.sh/zod@3.22.4";
 import { EdgeLogger } from "../_shared/logger.ts";
 import { corsHeaders, validateBody, errorResponse } from "../_shared/validation.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+import { getAuthUser } from "../_shared/security.ts";
 
 const requestSchema = z.object({
   message: z.string().min(1),
@@ -19,7 +22,16 @@ serve(async (req) => {
   const logger = new EdgeLogger('guided-buying-ai', requestId);
 
   try {
+    const { user } = await getAuthUser(req);
+    if (!user) {
+      return new Response(JSON.stringify({ error: "unauthorized" }), { status: 401, headers: buildResponseHeaders(corsHeaders) });
+    }
+    const rl = await checkRateLimit({ identifier: user.id, endpoint: "guided-buying-ai", maxRequests: 30, windowSeconds: 60 });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
     const { message, history, context } = await validateBody(req, requestSchema);
+
+
 
     logger.info("Guided buying request received", { messageLength: message.length });
 
@@ -28,15 +40,34 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Fetch some catalog context to help the AI
+    // CRIT-C2: resolve tenant do usuário e filtrar catálogo/fornecedores por tenant_id
+    // para não vazar dados de outros tenants no prompt da IA.
+    const { getTenantId } = await import("../_shared/security.ts");
+    const { createClient: createAuthClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    const authClient = createAuthClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      { global: { headers: { Authorization: req.headers.get("authorization") ?? "" } } },
+    );
+    const tenantId = await getTenantId(authClient, user);
+    if (!tenantId) {
+      return new Response(JSON.stringify({ error: "tenant not resolved" }), {
+        status: 403,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+
+    // Fetch catalog context scoped to this tenant only
     const { data: products } = await supabaseAdmin
       .from("produtos")
       .select("nome, descricao, codigo, unidade, preco_referencia")
+      .eq("tenant_id", tenantId)
       .limit(20);
 
     const { data: suppliers } = await supabaseAdmin
       .from("fornecedores")
       .select("razao_social, nome_fantasia, categorias_atendidas")
+      .eq("tenant_id", tenantId)
       .limit(10);
 
     // System prompt for Guided Buying
@@ -74,7 +105,7 @@ serve(async (req) => {
     }
 
     return new Response(JSON.stringify({ response: aiResponse }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
 
   } catch (error) {

@@ -16,12 +16,12 @@ import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { PageHeader } from "@/components/ui/page-header";
-import { useEstoque } from "@/hooks/useEstoque";
+import { useEstoque, type EstoqueItem } from "@/hooks/useEstoque";
 import { useProdutos } from "@/hooks/useProdutos";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 const GestaoEstoque = () => {
   const { estoque, isLoading, movimentar, criarItemEstoque } = useEstoque();
@@ -29,7 +29,7 @@ const GestaoEstoque = () => {
   const [search, setSearch] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [movimentacaoOpen, setMovimentacaoOpen] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [selectedItem, setSelectedItem] = useState<EstoqueItem | null>(null);
   
   const [formData, setFormData] = useState({
     produto_id: "",
@@ -69,6 +69,7 @@ const GestaoEstoque = () => {
   };
 
   const handleMovimentar = async () => {
+    if (!selectedItem) return;
     if (movData.quantidade <= 0) {
       toast.error("Quantidade deve ser maior que zero");
       return;

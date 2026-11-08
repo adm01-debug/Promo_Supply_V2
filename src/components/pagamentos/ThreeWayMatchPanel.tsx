@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { AlertTriangle, CheckCircle2, Link2, FileText, ShoppingCart, CreditCard } from "lucide-react";
 import { format } from "date-fns/format";
 import type { Pagamento } from "@/hooks/usePagamentos";
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   pagamento: Pagamento;
@@ -41,8 +42,6 @@ export const ThreeWayMatchPanel = ({ pagamento }: Props) => {
     },
     enabled: !!pagamento.pedido_id,
   });
-
-  const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   const matchStatus = useMemo(() => {
     const items = [
@@ -92,7 +91,7 @@ export const ThreeWayMatchPanel = ({ pagamento }: Props) => {
               </div>
               <div className="text-right">
                 {item.found ? (
-                  <span className="text-xs font-bold">{item.valor ? fmt(item.valor) : '-'}</span>
+                  <span className="text-xs font-bold">{item.valor ? formatCurrency(item.valor) : '-'}</span>
                 ) : (
                   <Badge variant="outline" className="text-[10px] text-muted-foreground">Não vinculado</Badge>
                 )}

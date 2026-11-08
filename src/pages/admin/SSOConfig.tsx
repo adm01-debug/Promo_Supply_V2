@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
@@ -34,13 +34,13 @@ export default function SSOConfig() {
   });
 
   const upsertConfigMutation = useMutation({
-    mutationFn: async (vars: any) => {
+    mutationFn: async (vars: Record<string, unknown>) => {
       const { data, error } = await supabase
         .from('sso_configurations')
         .upsert({
           tenant_id: tenantId as string,
           ...vars,
-        });
+        } as never);
       if (error) throw error;
       return data;
     },
@@ -48,7 +48,7 @@ export default function SSOConfig() {
       queryClient.invalidateQueries({ queryKey: ['sso_configurations'] });
       toast.success('Configuração de SSO atualizada');
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error('Erro ao salvar configuração: ' + error.message);
     },
   });

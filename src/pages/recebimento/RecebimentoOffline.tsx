@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   Package, Check, AlertCircle, Loader2, Search, Camera,
   WifiOff, Wifi, RefreshCw, ChevronRight, CheckCircle2,
@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PageHeader } from "@/components/ui/page-header";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth";
 import { cn } from "@/lib/utils";
@@ -35,6 +35,8 @@ import {
 export default function RecebimentoOffline() {
   const { user } = useAuth();
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const isOnlineRef = useRef(isOnline);
+  isOnlineRef.current = isOnline;
   const [orders, setOrders] = useState<PendingOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -60,7 +62,7 @@ export default function RecebimentoOffline() {
 
   // Fetch pending orders
   const fetchOrders = useCallback(async () => {
-    if (!isOnline) {
+    if (!isOnlineRef.current) {
       setLoading(false);
       return;
     }
@@ -78,14 +80,14 @@ export default function RecebimentoOffline() {
 
       if (error) throw error;
 
-      const mapped: PendingOrder[] = (pedidos || []).map((p: any) => ({
+      const mapped: PendingOrder[] = (pedidos || []).map((p) => ({
         id: p.id,
         numero: p.numero,
-        fornecedor_nome: p.fornecedor?.razao_social || "Fornecedor",
+        fornecedor_nome: (p.fornecedor as { razao_social?: string } | null)?.razao_social || "Fornecedor",
         data_previsao: p.data_previsao,
         valor_total: p.valor_total || 0,
         status: p.status,
-        itens: (p.pedido_itens || []).map((i: any) => ({
+        itens: ((p.pedido_itens || []) as Array<{ id: string; descricao: string; quantidade: number; quantidade_recebida: number; unidade: string; valor_unitario: number }>).map((i) => ({
           id: i.id,
           descricao: i.descricao,
           quantidade: i.quantidade,
@@ -100,17 +102,22 @@ export default function RecebimentoOffline() {
       localStorage.setItem("offline-orders-cache", JSON.stringify(mapped));
     } catch (err: unknown) {
       // Try cached data
-      const cached = localStorage.getItem("offline-orders-cache");
-      if (cached) {
-        setOrders(JSON.parse(cached));
-        toast.info("Usando dados em cache");
-      } else {
-        toast.error("Erro ao buscar pedidos");
+      try {
+        const cached = localStorage.getItem("offline-orders-cache");
+        if (cached) {
+          setOrders(JSON.parse(cached));
+          toast.info("Usando dados em cache");
+        } else {
+          toast.error("Erro ao buscar pedidos");
+        }
+      } catch {
+        localStorage.removeItem("offline-orders-cache");
+        toast.error("Cache corrompido. Conecte-se à internet para recarregar.");
       }
     } finally {
       setLoading(false);
     }
-  }, [isOnline]);
+  }, []);
 
   useEffect(() => {
     fetchOrders();
@@ -119,10 +126,14 @@ export default function RecebimentoOffline() {
   // On mount, load cached orders if offline
   useEffect(() => {
     if (!isOnline) {
-      const cached = localStorage.getItem("offline-orders-cache");
-      if (cached) {
-        setOrders(JSON.parse(cached));
-        setLoading(false);
+      try {
+        const cached = localStorage.getItem("offline-orders-cache");
+        if (cached) {
+          setOrders(JSON.parse(cached));
+          setLoading(false);
+        }
+      } catch {
+        localStorage.removeItem("offline-orders-cache");
       }
     }
   }, [isOnline]);

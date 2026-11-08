@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { formatCurrency } from '@/lib/utils';
 import { Gavel, Clock, Trophy, TrendingDown, Users, AlertCircle, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,10 +10,6 @@ import { Progress } from '@/components/ui/progress';
 import { useLicitacaoLances, Licitacao } from '@/hooks/useLicitacoes';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale/pt-BR';
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-}
 
 interface ReverseAuctionRoomProps {
   licitacao: Licitacao;
@@ -185,7 +182,7 @@ export function ReverseAuctionRoom({ licitacao, userFornecedorId }: ReverseAucti
                           {idx === 0 ? 'NOVO MELHOR LANCE!' : 'Lance Recebido'}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          Fornecedor: {(lance as any).fornecedor?.razao_social || 'Anônimo'}
+                          Fornecedor: {(lance as { fornecedor?: { razao_social?: string } | null }).fornecedor?.razao_social || 'Anônimo'}
                         </p>
                       </div>
                     </div>
@@ -230,7 +227,7 @@ export function ReverseAuctionRoom({ licitacao, userFornecedorId }: ReverseAucti
                     }`}>
                       {i + 1}
                     </span>
-                    <span className="text-sm font-medium">{(l as any).fornecedor?.razao_social || 'Participante'}</span>
+                    <span className="text-sm font-medium">{(l as { fornecedor?: { razao_social?: string } | null }).fornecedor?.razao_social || 'Participante'}</span>
                   </div>
                   <span className={`text-sm font-bold ${i === 0 ? 'text-primary' : ''}`}>
                     {formatCurrency(l.valor_lance)}

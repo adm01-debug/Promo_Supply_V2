@@ -36,10 +36,6 @@ const Aprovacoes = () => {
 
   useEffect(() => {
     checkEscalations();
-    const interval = setInterval(() => {
-      checkEscalations();
-    }, 5 * 60 * 1000);
-    return () => clearInterval(interval);
   }, [checkEscalations]);
 
   useEffect(() => {
@@ -135,7 +131,7 @@ const Aprovacoes = () => {
                   ? allHistory.map(h => ({
                       id: h.id,
                       solicitacao: h.solicitacao_id?.substring(0, 8) || 'N/A',
-                      valor: (h as any).detalhes?.valor || 0,
+                      valor: (h.detalhes as { valor?: number } | null)?.valor || 0,
                       acao: h.acao,
                       por: h.usuario_nome || 'Sistema',
                       data: new Date(h.created_at).toLocaleString('pt-BR')

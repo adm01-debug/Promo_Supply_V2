@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+﻿import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, Loader2, ChevronRight, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +25,7 @@ export const SearchResultsList = ({
   const navigate = useNavigate();
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="sync">
       {isLoading ? (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col items-center justify-center py-12">
           <Loader2 className="w-8 h-8 text-primary animate-spin mb-3" />
@@ -77,7 +77,7 @@ export const SearchResultsList = ({
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">{nlIntent.description}</p>
-                  <p className="text-xs text-muted-foreground">Ir diretamente para a página filtrada</p>
+                  <p className="text-xs text-muted-foreground">Ir diretamente para a pÃ¡gina filtrada</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
               </motion.button>

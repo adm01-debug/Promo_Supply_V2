@@ -1,54 +1,94 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { buildResponseHeaders } from "../_shared/http.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.4";
+import { EdgeLogger } from "../_shared/logger.ts";
+import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
+import { TelemetryContract } from "../_shared/contracts.ts";
+import { buildTelemetryRow } from "../_shared/logLevel.ts";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger("telemetry", requestId);
+
   try {
+    const authHeader = req.headers.get("Authorization");
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
       {
         global: {
-          headers: { Authorization: req.headers.get("Authorization")! },
+          headers: authHeader ? { Authorization: authHeader } : {},
         },
       }
     );
 
-    const {
-      data: { user },
-    } = await supabaseClient.auth.getUser();
+    // SECURITY: require valid user token to prevent log injection from unauthenticated callers.
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+    const { data: authData } = await supabaseClient.auth.getUser();
+    const user = authData.user;
+    if (!user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
 
-    const { level, message, context, requestId, url, userAgent } = await req.json();
+    // Accept both single entry and { batch: [...] } from the frontend logger.
+    let rawBody: any;
+    try {
+      rawBody = await req.json();
+    } catch (_e) {
+      return errorResponse(new Error("Invalid JSON body"), logger);
+    }
 
-    const { error } = await supabaseClient.from("telemetry_logs").insert({
-      level,
-      message,
-      context,
-      request_id: requestId,
-      user_id: user?.id,
-      url,
-      user_agent: userAgent,
-      client_ip: req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for"),
-    });
+    const entries: any[] = Array.isArray(rawBody?.batch) ? rawBody.batch : [rawBody];
 
-    if (error) throw error;
+    const supabaseAdmin = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
 
-    return new Response(JSON.stringify({ success: true }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    const clientIp = req.headers.get("x-real-ip") || req.headers.get("x-forwarded-for");
+    const fallbackTenantId = (user?.user_metadata?.tenant_id as string) || null;
+    const rows = entries
+      .map((raw) =>
+        buildTelemetryRow({
+          raw,
+          fallbackRequestId: requestId,
+          userId: user?.id ?? null,
+          fallbackTenantId,
+          clientIp,
+        }),
+      )
+      .filter((r): r is NonNullable<typeof r> => r !== null);
+
+    if (rows.length === 0) {
+      return new Response(JSON.stringify({ success: true, inserted: 0, requestId }), {
+        headers: buildResponseHeaders(corsHeaders),
+        status: 200,
+      });
+    }
+
+    const { error } = await supabaseAdmin.from("telemetry_logs").insert(rows);
+    if (error) {
+      logger.error("Falha ao salvar log de telemetria no banco", { dbError: error });
+      throw error;
+    }
+
+    return new Response(JSON.stringify({ success: true, inserted: rows.length, requestId }), {
+      headers: buildResponseHeaders(corsHeaders),
       status: 200,
     });
   } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-      status: 400,
-    });
+    return errorResponse(error, logger);
   }
 });

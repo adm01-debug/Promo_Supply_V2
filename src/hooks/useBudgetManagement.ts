@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 
@@ -41,8 +41,8 @@ export const useBudgetManagement = () => {
     queryKey: ['cost-center-performance', organizationId],
     queryFn: async () => {
       if (!organizationId) return [];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const { data, error } = await (supabase.rpc as any)('get_cost_center_performance_report', {
+       
+      const { data, error } = await supabase.rpc('get_cost_center_performance_report', {
         p_organization_id: organizationId
       });
       if (error) throw error;
@@ -75,9 +75,10 @@ export const useBudgetManagement = () => {
       queryClient.invalidateQueries({ queryKey: ['cost-center-performance', organizationId] });
       toast.success('Orçamento criado com sucesso');
     },
-    onError: (err: any, variables) => {
-      logger.error('Erro ao criar orçamento', { error: err.message, costCenterId: variables.cost_center_id });
-      if (err.message?.includes('unique')) {
+    onError: (err: unknown, variables) => {
+      const msg = (err as Error).message ?? '';
+      logger.error('Erro ao criar orçamento', { error: msg, costCenterId: variables.cost_center_id });
+      if (msg.includes('unique')) {
         toast.error('Já existe orçamento para este centro de custo/período');
       } else {
         toast.error('Erro ao criar orçamento');
@@ -100,8 +101,8 @@ export const useBudgetManagement = () => {
       queryClient.invalidateQueries({ queryKey: ['cost-center-performance', organizationId] });
       toast.success('Orçamento atualizado');
     },
-    onError: (err: any, variables) => {
-      logger.error('Erro ao atualizar orçamento', { error: err.message, id: variables.id });
+    onError: (err: unknown, variables) => {
+      logger.error('Erro ao atualizar orçamento', { error: (err as Error).message, id: variables.id });
       toast.error('Erro ao atualizar orçamento');
     },
   });

@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { cn } from "@/lib/utils";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,7 +19,8 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
     const [isFocused, setIsFocused] = React.useState(false);
     const [hasValue, setHasValue] = React.useState(false);
     const [shake, setShake] = React.useState(false);
-    const inputId = id || React.useId();
+    const generatedId = React.useId();
+    const inputId = id || generatedId;
 
     // Shake animation when error appears
     React.useEffect(() => {
@@ -143,7 +144,7 @@ const FloatingInput = React.forwardRef<HTMLInputElement, FloatingInputProps>(
         </div>
 
         {/* Error/Success Message with Animation */}
-        <AnimatePresence mode="wait">
+        <AnimatePresence mode="sync">
           {error && (
             <motion.p 
               key="error"

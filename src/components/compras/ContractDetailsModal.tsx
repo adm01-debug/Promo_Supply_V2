@@ -41,8 +41,10 @@ import { differenceInDays } from "date-fns/differenceInDays";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
+import { useAuth } from "@/features/auth";
+import { formatCurrency, formatDate } from "@/lib/utils";
 import { logger } from "@/lib/logger";
-import type { Contract, ContractItem, ContractPenalty, ContractDocument, StatusConfig, TypeConfig } from "@/types/contract";
+import type { Contract, ContractItem, ContractPenalty, ContractDocument, ContractHistory, StatusConfig, TypeConfig } from "@/types/contract";
 import { Input } from "@/components/ui/input";
 import { ContractSLAReadonlyTab, ContractPenaltiesTab } from "./contract/ContractDetailsTabs";
 
@@ -70,12 +72,13 @@ const typeConfig: Record<string, TypeConfig> = {
 export function ContractDetailsModal({ open, onOpenChange, contract }: ContractDetailsModalProps) {
   const [items, setItems] = useState<ContractItem[]>([]);
   const [documents, setDocuments] = useState<ContractDocument[]>([]);
-  const [history, setHistory] = useState<any[]>([]);
-  const [linkedOrders, setLinkedOrders] = useState<any[]>([]);
+  const [history, setHistory] = useState<ContractHistory[]>([]);
+  const [linkedOrders, setLinkedOrders] = useState<{ id: string; contract_id: string; order_id: string; tenant_id: string; created_at: string }[]>([]);
   const [penalties, setPenalties] = useState<ContractPenalty[]>([]);
   const [loading, setLoading] = useState(true);
   const [generatingPdf, setGeneratingPdf] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const { user, tenantId } = useAuth();
 
   const fetchContractDetails = useCallback(async () => {
     setLoading(true);
@@ -84,14 +87,14 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
         supabase.from('contract_items').select('*').eq('contract_id', contract.id),
         supabase.from('contract_history').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
         supabase.from('order_contracts').select('*').eq('contract_id', contract.id),
-        (supabase as any).from('contract_penalties').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
+        supabase.from('contract_penalties').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
         supabase.from('contract_documents').select('*').eq('contract_id', contract.id).order('created_at', { ascending: false }),
       ]);
 
       setItems(itemsRes.data || []);
-      setHistory(historyRes.data || []);
+      setHistory((historyRes.data || []) as unknown as ContractHistory[]);
       setLinkedOrders(ordersRes.data || []);
-      setPenalties(penaltiesRes.data || []);
+      setPenalties((penaltiesRes.data || []) as unknown as ContractPenalty[]);
       setDocuments(docsRes.data || []);
     } catch (error) {
       logger.error('Error fetching contract details', { error });
@@ -109,9 +112,14 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
   const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!user || !tenantId) {
+      toast.error('Organização não identificada. Faça login novamente.');
+      return;
+    }
     setUploading(true);
     try {
-      const filePath = `contracts/${contract.id}/${Date.now()}_${file.name}`;
+      // Path convention enforced by storage RLS: {tenantId}/{userId}/...
+      const filePath = `${tenantId}/${user.id}/contracts/${contract.id}/${Date.now()}_${file.name}`;
       const { error: uploadError } = await supabase.storage.from('documentos').upload(filePath, file);
       if (uploadError) throw uploadError;
       const { data: urlData } = supabase.storage.from('documentos').getPublicUrl(filePath);
@@ -194,7 +202,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
                 {penalties.length > 0 && (
                   <Badge variant="destructive" className="flex items-center gap-1">
                     <ShieldAlert className="w-3 h-3" />
-                    {penalties.length} penalidade(s): {totalPenalties.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    {penalties.length} penalidade(s): {formatCurrency(totalPenalties)}
                   </Badge>
                 )}
               </div>
@@ -202,7 +210,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Valor Total</p>
               <p className="text-2xl font-bold">
-                {Number(contract.total_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                {formatCurrency(Number(contract.total_value))}
               </p>
             </div>
           </div>
@@ -248,7 +256,7 @@ export function ContractDetailsModal({ open, onOpenChange, contract }: ContractD
                   </CardHeader>
                   <CardContent>
                     <p className="font-medium">
-                      {format(new Date(contract.start_date), "dd/MM/yyyy", { locale: ptBR })} - {format(new Date(contract.end_date), "dd/MM/yyyy", { locale: ptBR })}
+                      {formatDate(contract.start_date)} - {formatDate(contract.end_date)}
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {daysRemaining > 0 ? `${daysRemaining} dias restantes` : `Expirado há ${Math.abs(daysRemaining)} dias`}

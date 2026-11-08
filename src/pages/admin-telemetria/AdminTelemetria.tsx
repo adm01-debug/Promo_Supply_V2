@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { logger } from '@/lib/logger';
 import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +14,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TelemetryCharts } from "@/components/admin/telemetry/TelemetryCharts";
 import { AppLogsView } from "@/components/admin/telemetry/AppLogsView";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { toast } from "sonner";
+import { SystemAlertsView } from "@/components/admin/telemetry/SystemAlertsView";
+import { AlertCircle } from "lucide-react";
+import { toast } from "@/lib/feedbackToast";
 import { format } from "date-fns/format";
 import {
   type TelemetryRow, type SeverityFilter, type TimeFilter,
@@ -26,7 +29,12 @@ export default function AdminTelemetriaPage() {
   const [customDateFrom, setCustomDateFrom] = useState<Date | undefined>();
   const [customDateTo, setCustomDateTo] = useState<Date | undefined>();
   const [simulationLoading, setSimulationLoading] = useState(false);
-  const [simulationResult, setSimulationResult] = useState<any>(null);
+  const [simulationResult, setSimulationResult] = useState<{
+    success: number;
+    total: number;
+    avgDuration: number;
+    details: Array<{ name: string; status: string; duration: number }>;
+  } | null>(null);
 
   const { data: rows = [], isLoading, refetch, isRefetching } = useQuery<TelemetryRow[]>({
     queryKey: ["query-telemetry", severityFilter, timeFilter, customDateFrom?.toISOString(), customDateTo?.toISOString()],
@@ -39,12 +47,12 @@ export default function AdminTelemetriaPage() {
       return (data as unknown as TelemetryRow[]) || [];
     },
     refetchInterval: 30000,
-    staleTime: 10000,
+    staleTime: 10_000,
   });
 
   const handleCleanup = async () => {
     const threshold = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-    const { error } = await supabase.from("query_telemetry" as any).delete().lt("created_at", threshold);
+    const { error } = await supabase.from("query_telemetry").delete().lt("created_at", threshold);
     if (error) toast.error("Erro ao limpar dados antigos");
     else { toast.success("Dados com mais de 7 dias removidos"); refetch(); }
   };
@@ -61,7 +69,7 @@ export default function AdminTelemetriaPage() {
       setSimulationResult(data);
       toast.success(`Simulação concluída: ${data.success} sucessos, ${data.error} falhas.`);
     } catch (error) {
-      console.error('Simulation error:', error);
+      logger.error('Simulation error', { error });
       toast.error("Falha ao executar simulação de sistema.");
     } finally {
       setSimulationLoading(false);
@@ -145,9 +153,9 @@ export default function AdminTelemetriaPage() {
                 
                 <div className="mt-6 pt-6 border-t border-violet-500/10">
                   <div className="flex flex-wrap gap-2">
-                    {simulationResult.details.map((detail: any, idx: number) => (
-                      <Badge 
-                        key={idx} 
+                    {simulationResult.details.map((detail: { name: string; status: string; duration: number }, idx: number) => (
+                      <Badge
+                        key={`${detail.name}-${idx}`}
                         variant={detail.status === 'success' ? 'secondary' : 'destructive'}
                         className="text-[9px] font-mono px-2 py-0.5"
                       >
@@ -171,6 +179,10 @@ export default function AdminTelemetriaPage() {
               <Terminal className="h-4 w-4" />
               Logs da Aplicação
             </TabsTrigger>
+            <TabsTrigger value="alerts" className="gap-2">
+              <AlertCircle className="h-4 w-4" />
+              Alertas de Sistema
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="queries" className="space-y-6">
@@ -179,7 +191,7 @@ export default function AdminTelemetriaPage() {
                 <CardHeader className="pb-3"><CardTitle className="text-base flex items-center gap-2"><Database className="h-4 w-4" />Tabelas Mais Problemáticas</CardTitle></CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {stats.topOffenders.map(([name, s]: [string, any]) => (
+                    {stats.topOffenders.map(([name, s]) => (
                       <div key={name} className="p-3 rounded-lg border border-border/50 bg-muted/30">
                         <p className="font-mono text-sm font-medium truncate" title={name}>{name}</p>
                         <div className="flex items-center gap-2 mt-1"><span className="text-xs text-muted-foreground">{s.count}× alertas</span><span className="text-xs text-destructive">max {formatDuration(s.maxMs)}</span></div>
@@ -204,9 +216,9 @@ export default function AdminTelemetriaPage() {
               </Select>
               {timeFilter === "custom" && (
                 <div className="flex items-center gap-2">
-                  <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><CalendarIcon className="h-3 w-3 mr-1" />{customDateFrom ? format(customDateFrom, "dd/MM/yyyy") : "De"}</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateFrom} onSelect={setCustomDateFrom} /></PopoverContent></Popover>
+                  <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><span className="inline-flex items-center gap-1"><CalendarIcon className="h-3 w-3" />{customDateFrom ? format(customDateFrom, "dd/MM/yyyy") : "De"}</span></Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateFrom} onSelect={setCustomDateFrom} /></PopoverContent></Popover>
                   <span className="text-xs text-muted-foreground">até</span>
-                  <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><CalendarIcon className="h-3 w-3 mr-1" />{customDateTo ? format(customDateTo, "dd/MM/yyyy") : "Até"}</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateTo} onSelect={setCustomDateTo} /></PopoverContent></Popover>
+                  <Popover><PopoverTrigger asChild><Button variant="outline" size="sm" className="text-xs"><span className="inline-flex items-center gap-1"><CalendarIcon className="h-3 w-3" />{customDateTo ? format(customDateTo, "dd/MM/yyyy") : "Até"}</span></Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={customDateTo} onSelect={setCustomDateTo} /></PopoverContent></Popover>
                 </div>
               )}
               <span className="text-xs text-muted-foreground ml-auto">{rows.length} registros · auto-refresh 30s</span>
@@ -259,6 +271,10 @@ export default function AdminTelemetriaPage() {
 
           <TabsContent value="logs">
             <AppLogsView />
+          </TabsContent>
+
+          <TabsContent value="alerts">
+            <SystemAlertsView />
           </TabsContent>
         </Tabs>
       </div>

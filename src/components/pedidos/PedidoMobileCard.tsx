@@ -21,88 +21,106 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import type { Pedido } from "@/features/pedidos";
+
+type PedidoStatus = Pedido['status'];
+
+const PEDIDO_STATUSES = ['pendente', 'aprovado', 'enviado', 'em_transito', 'entregue', 'cancelado'] as const satisfies readonly PedidoStatus[];
+
+const isPedidoStatus = (value: unknown): value is PedidoStatus =>
+  typeof value === 'string' && (PEDIDO_STATUSES as readonly string[]).includes(value);
 
 interface PedidoMobileCardProps {
   pedido: Pedido;
   onView: (pedido: Pedido) => void;
   onEdit?: (pedido: Pedido) => void;
-  onUpdateStatus?: (pedidoId: string, status: Pedido['status']) => void;
+  onUpdateStatus?: (pedidoId: string, status: PedidoStatus) => void;
 }
 
-const statusConfig: Record<string, { 
-  label: string; 
-  color: string; 
+interface StatusConfigEntry {
+  label: string;
+  color: string;
   icon: typeof CheckCircle2;
   bgGradient: string;
   glowColor: string;
-}> = {
-  pendente: { 
-    label: 'Pendente', 
-    color: 'bg-warning/10 text-warning dark:text-warning border-amber-500/20', 
+}
+
+const statusConfig: Record<PedidoStatus, StatusConfigEntry> = {
+  pendente: {
+    label: 'Pendente',
+    color: 'bg-warning/10 text-warning dark:text-warning border-amber-500/20',
     icon: Clock,
     bgGradient: 'from-amber-500/5 to-transparent',
     glowColor: 'shadow-amber-500/10'
   },
-  aprovado: { 
-    label: 'Aprovado', 
-    color: 'bg-info/10 text-info dark:text-info border-blue-500/20', 
+  aprovado: {
+    label: 'Aprovado',
+    color: 'bg-info/10 text-info dark:text-info border-blue-500/20',
     icon: CheckCircle2,
     bgGradient: 'from-blue-500/5 to-transparent',
     glowColor: 'shadow-blue-500/10'
   },
-  enviado: { 
-    label: 'Enviado', 
-    color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20', 
+  enviado: {
+    label: 'Enviado',
+    color: 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20',
     icon: FileText,
     bgGradient: 'from-indigo-500/5 to-transparent',
     glowColor: 'shadow-indigo-500/10'
   },
-  em_transito: { 
-    label: 'Em Trânsito', 
-    color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20', 
+  em_transito: {
+    label: 'Em Trânsito',
+    color: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20',
     icon: Truck,
     bgGradient: 'from-purple-500/5 to-transparent',
     glowColor: 'shadow-purple-500/10'
   },
-  entregue: { 
-    label: 'Entregue', 
-    color: 'bg-success/10 text-success dark:text-success border-emerald-500/20', 
+  entregue: {
+    label: 'Entregue',
+    color: 'bg-success/10 text-success dark:text-success border-emerald-500/20',
     icon: CheckCircle2,
     bgGradient: 'from-emerald-500/5 to-transparent',
     glowColor: 'shadow-emerald-500/10'
   },
-  cancelado: { 
-    label: 'Cancelado', 
-    color: 'bg-destructive/10 text-destructive dark:text-destructive border-red-500/20', 
+  cancelado: {
+    label: 'Cancelado',
+    color: 'bg-destructive/10 text-destructive dark:text-destructive border-red-500/20',
     icon: X,
     bgGradient: 'from-red-500/5 to-transparent',
     glowColor: 'shadow-red-500/10'
   },
 };
 
-const getPrazoStatus = (prazo: string | null, status: string) => {
+const getPrazoStatus = (prazo: string | null, status: PedidoStatus) => {
   if (!prazo) return { label: 'Sem prazo', color: 'text-muted-foreground', urgent: false, icon: Calendar };
   if (status === 'entregue' || status === 'cancelado') return { label: '', color: '', urgent: false, icon: Calendar };
-  
-  const dias = differenceInDays(new Date(prazo), new Date());
+
+  const parsed = new Date(prazo);
+  if (Number.isNaN(parsed.getTime())) return { label: 'Prazo inválido', color: 'text-muted-foreground', urgent: false, icon: Calendar };
+
+  const dias = differenceInDays(parsed, new Date());
   if (dias < 0) return { label: 'Atrasado', color: 'text-destructive', urgent: true, icon: AlertCircle };
   if (dias === 0) return { label: 'Vence hoje', color: 'text-destructive', urgent: true, icon: AlertCircle };
   if (dias <= 2) return { label: `${dias}d restante${dias > 1 ? 's' : ''}`, color: 'text-warning', urgent: true, icon: Clock };
   return { label: `${dias}d restantes`, color: 'text-muted-foreground', urgent: false, icon: Calendar };
 };
 
-export const PedidoMobileCard = ({ 
-  pedido, 
-  onView, 
+export const PedidoMobileCard = ({
+  pedido,
+  onView,
   onEdit,
-  onUpdateStatus 
+  onUpdateStatus
 }: PedidoMobileCardProps) => {
-  const config = statusConfig[pedido.status] || statusConfig["pendente"];
+  const status: PedidoStatus = isPedidoStatus(pedido.status) ? pedido.status : 'pendente';
+  const config = statusConfig[status];
   const StatusIcon = config.icon;
-  const prazoStatus = getPrazoStatus(pedido.data_previsao, pedido.status);
+  const prazoStatus = getPrazoStatus(pedido.data_previsao, status);
   const PrazoIcon = prazoStatus.icon;
+
+  const emissaoDate = pedido.data_emissao ? new Date(pedido.data_emissao) : null;
+  const emissaoLabel = emissaoDate && !Number.isNaN(emissaoDate.getTime())
+    ? `Emitido em ${format(emissaoDate, 'dd/MM/yyyy')}`
+    : 'Data de emissão indisponível';
 
   const cardContent = (
     <motion.div
@@ -114,12 +132,12 @@ export const PedidoMobileCard = ({
           "relative overflow-hidden transition-all duration-300",
           "hover:shadow-lg active:shadow-md",
           "border-l-4",
-          pedido.status === 'pendente' && "border-l-amber-500",
-          pedido.status === 'aprovado' && "border-l-blue-500",
-          pedido.status === 'enviado' && "border-l-indigo-500",
-          pedido.status === 'em_transito' && "border-l-purple-500",
-          pedido.status === 'entregue' && "border-l-emerald-500",
-          pedido.status === 'cancelado' && "border-l-red-500",
+          status === 'pendente' && "border-l-amber-500",
+          status === 'aprovado' && "border-l-blue-500",
+          status === 'enviado' && "border-l-indigo-500",
+          status === 'em_transito' && "border-l-purple-500",
+          status === 'entregue' && "border-l-emerald-500",
+          status === 'cancelado' && "border-l-red-500",
           config.glowColor
         )}
         onClick={() => onView(pedido)}
@@ -139,7 +157,7 @@ export const PedidoMobileCard = ({
                 <ChevronRight className="w-4 h-4 text-muted-foreground/50" />
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Emitido em {format(new Date(pedido.data_emissao), 'dd/MM/yyyy')}
+                {emissaoLabel}
               </p>
             </div>
             <Badge 
@@ -191,7 +209,7 @@ export const PedidoMobileCard = ({
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-success/10">
               <TrendingUp className="w-4 h-4 text-success" />
               <span className="font-bold text-success dark:text-success">
-                {pedido.valor_total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                {formatCurrency(pedido.valor_total)}
               </span>
             </div>
           </div>
@@ -210,7 +228,7 @@ export const PedidoMobileCard = ({
               <Eye className="w-4 h-4 mr-2" />
               Detalhes
             </Button>
-            {pedido.status === 'pendente' && onUpdateStatus && (
+            {status === 'pendente' && onUpdateStatus && (
               <motion.div 
                 className="flex-1"
                 whileHover={{ scale: 1.02 }}

@@ -1,4 +1,4 @@
-export type AppRole = 'admin' | 'coordinator' | 'buyer' | 'finance' | 'viewer';
+export type AppRole = 'admin' | 'coordinator' | 'buyer' | 'finance' | 'viewer' | 'supplier';
 
 // Role labels in Portuguese
 export const roleLabels: Record<AppRole, string> = {
@@ -7,6 +7,7 @@ export const roleLabels: Record<AppRole, string> = {
   buyer: 'Comprador',
   finance: 'Financeiro',
   viewer: 'Visualizador',
+  supplier: 'Fornecedor',
 };
 
 // Role colors
@@ -16,4 +17,5 @@ export const roleColors: Record<AppRole, string> = {
   buyer: 'bg-primary/10 text-primary border-primary/20',
   finance: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
   viewer: 'bg-muted text-muted-foreground border-border',
+  supplier: 'bg-orange-500/10 text-orange-600 border-orange-500/20',
 };

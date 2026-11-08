@@ -8,7 +8,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import { useApprovalWorkflow, ApprovalRule, ApprovalDelegation } from "@/hooks/useApprovalWorkflow";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { ApprovalRuleModal } from "./approval/ApprovalRuleModal";
 import { ApprovalDelegationModal } from "./approval/ApprovalDelegationModal";
 
@@ -189,13 +189,13 @@ export const DynamicApprovalMatrix = () => {
         open={ruleModalOpen} 
         onOpenChange={setRuleModalOpen} 
         editingRule={editingRule} 
-        setEditingRule={setEditingRule as any} 
+        setEditingRule={setEditingRule}
         onSave={handleSaveRule} 
         loading={loading} 
         requerUnanimidade={editingRule?.requer_unanimidade}
         onToggleUnanimidade={(val) => setEditingRule(prev => prev ? ({ ...prev, requer_unanimidade: val }) : null)}
       />
-      <ApprovalDelegationModal open={delegationModalOpen} onOpenChange={setDelegationModalOpen} editingDelegation={editingDelegation} setEditingDelegation={setEditingDelegation as any} onSave={handleSaveDelegation} loading={loading} />
+      <ApprovalDelegationModal open={delegationModalOpen} onOpenChange={setDelegationModalOpen} editingDelegation={editingDelegation} setEditingDelegation={setEditingDelegation} onSave={handleSaveDelegation} loading={loading} />
 
       {/* Delete Confirmation */}
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>

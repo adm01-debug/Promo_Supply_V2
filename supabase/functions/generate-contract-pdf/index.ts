@@ -1,10 +1,8 @@
+import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
-};
 
 function escapeHtml(str: string): string {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
@@ -23,15 +21,67 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: buildResponseHeaders(corsHeaders),
+    });
+  }
+
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  const logger = new EdgeLogger('generate-contract-pdf', requestId);
 
   try {
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('generate-contract-pdf', requestId);
 
-    const { contract_id } = await req.json();
+    // SECURITY: require authenticated caller
+    const authHeader = req.headers.get("Authorization") ?? "";
+    const token = authHeader.replace(/^Bearer\s+/i, "");
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+    const authClient = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: `Bearer ${token}` } } },
+    );
+    const { data: userData, error: userErr } = await authClient.auth.getUser(token);
+    if (userErr || !userData.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+
+    // Rate limit: geração de PDF é custosa (I/O + render). 20 req/min por usuário.
+    const rl = await checkRateLimit({
+      identifier: userData.user.id,
+      endpoint: "generate-contract-pdf",
+      maxRequests: 20,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
+    const body = await req.json().catch(() => ({}));
+    const contract_id = typeof body?.contract_id === "string" ? body.contract_id : null;
     if (!contract_id) throw new Error("contract_id é obrigatório");
 
-    logger.info("Generating contract HTML", { contractId: contract_id });
+    logger.info("Generating contract HTML", { contractId: contract_id, userId: userData.user.id });
+
+    // SECURITY: verify caller can see this contract via RLS *before* escalating
+    const { data: rlsCheck, error: rlsErr } = await authClient
+      .from("contracts")
+      .select("id")
+      .eq("id", contract_id)
+      .maybeSingle();
+    if (rlsErr || !rlsCheck) {
+      return new Response(JSON.stringify({ error: "Contrato não encontrado ou sem permissão" }), {
+        status: 403,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -199,16 +249,14 @@ Deno.serve(async (req) => {
 </html>`;
 
     return new Response(JSON.stringify({ html, contract_number: contract.contract_number }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
-    if (typeof logger !== 'undefined') {
-      logger.error("Error generating contract PDF", { error: msg });
-    }
+    logger.error("Error generating contract PDF", { error: msg });
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   }
 });

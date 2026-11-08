@@ -1,27 +1,26 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 /**
  * Hook to manage scroll restoration.
  * Saves and restores scroll position for each route.
+ *
+ * Uses a ref instead of state so the scroll handler doesn't cause re-renders
+ * on every scroll and the restore reads the latest map (not a stale snapshot).
  */
 export const useScrollRestoration = () => {
   const location = useLocation();
-  const [scrollPositions, setScrollPositions] = useState<Record<string, number>>({});
+  const scrollPositions = useRef<Record<string, number>>({});
 
   useEffect(() => {
-    // Save current position before unmounting or location change
+    const path = location.pathname;
     const handleScroll = () => {
-      setScrollPositions(prev => ({
-        ...prev,
-        [location.pathname]: window.scrollY
-      }));
+      scrollPositions.current[path] = window.scrollY;
     };
 
-    window.addEventListener("scroll", handleScroll);
-    
-    // Restore position for current path
-    const savedPosition = scrollPositions[location.pathname];
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    const savedPosition = scrollPositions.current[path];
     if (savedPosition !== undefined) {
       window.scrollTo(0, savedPosition);
     } else {

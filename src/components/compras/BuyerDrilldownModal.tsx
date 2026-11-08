@@ -115,7 +115,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
             {buyer.ultimasNegociacoes.length > 0 ? (
               <div className="space-y-3">
                 {buyer.ultimasNegociacoes.map((neg, index) => (
-                  <Card key={index} className="p-4 hover:bg-muted/30 transition-colors">
+                  <Card key={`${neg.produto}-${neg.data}-${index}`} className="p-4 hover:bg-muted/30 transition-colors">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <h4 className="font-medium text-foreground truncate">{neg.produto}</h4>
@@ -173,7 +173,7 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
             </Card>
             <div className="grid grid-cols-3 gap-3 mt-4">
               {buyer.historico.slice(-3).map((mes, index) => (
-                <Card key={index} className="p-3">
+                <Card key={`hist-${mes.mes}-${index}`} className="p-3">
                   <div className="text-xs text-muted-foreground">{mes.mes}</div>
                   <div className="text-lg font-bold text-success">
                     R$ {mes.economia.toLocaleString('pt-BR')}
@@ -188,11 +188,12 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
           <TabsContent value="fornecedores" className="mt-4">
             {buyer.fornecedores.length > 0 ? (
               <div className="space-y-3">
-                {buyer.fornecedores.map((fornecedor, index) => {
-                  const maxPedidos = Math.max(...buyer.fornecedores.map(f => f.pedidos));
-                  const progressValue = maxPedidos > 0 ? (fornecedor.pedidos / maxPedidos) * 100 : 0;
-                  return (
-                    <Card key={index} className="p-4">
+                {(() => {
+                  const maxPedidos = buyer.fornecedores.reduce((m, f) => Math.max(m, f.pedidos), 0);
+                  return buyer.fornecedores.map((fornecedor, index) => {
+                    const progressValue = maxPedidos > 0 ? (fornecedor.pedidos / maxPedidos) * 100 : 0;
+                    return (
+                    <Card key={`forn-${fornecedor.nome}-${index}`} className="p-4">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <Building2 className="w-4 h-4 text-muted-foreground" />
@@ -207,8 +208,9 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
                       </div>
                       <Progress value={progressValue} className="h-2" />
                     </Card>
-                  );
-                })}
+                    );
+                  });
+                })()}
               </div>
             ) : (
               <div className="text-center py-8 text-muted-foreground text-sm">

@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { supabase } from "@/integrations/supabase/client";
 
 interface PedidoItem {
@@ -101,7 +101,7 @@ export function ReceivingModal({
         // Fetch original pedido data
         const { data: originalPedido } = await supabase
           .from("pedidos")
-          .select("fornecedor_id, solicitacao_id, cotacao_id, condicao_pagamento, endereco_entrega, observacoes")
+          .select("fornecedor_id, solicitacao_id, cotacao_id, condicao_pagamento, endereco_entrega, observacoes, tenant_id")
           .eq("id", pedidoId)
           .single();
 
@@ -139,8 +139,8 @@ export function ReceivingModal({
               endereco_entrega: originalPedido.endereco_entrega,
               observacoes: `Pedido complementar ref. ${pedidoNumero} — saldo de recebimento parcial`,
               data_previsao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-              tenant_id: (originalPedido as any).tenant_id || '00000000-0000-0000-0000-000000000000',
-            } as any)
+              tenant_id: originalPedido.tenant_id || '00000000-0000-0000-0000-000000000000',
+            })
             .select("id")
             .single();
 
@@ -148,9 +148,9 @@ export function ReceivingModal({
             await supabase.from("pedido_itens").insert(
               complementaryItems.map((item) => ({
                 pedido_id: newPedido.id,
-                tenant_id: (originalPedido as any).tenant_id || '00000000-0000-0000-0000-000000000000',
+                tenant_id: originalPedido.tenant_id || '00000000-0000-0000-0000-000000000000',
                 ...item,
-              })) as any
+              }))
             );
             toast.info(`Pedido complementar ${numero} criado com ${complementaryItems.length} item(ns) pendente(s)`);
           }
@@ -245,7 +245,7 @@ export function ReceivingModal({
                         max={item.quantidade * 2}
                         value={received}
                         onChange={(e) =>
-                          handleQuantityChange(item.id, parseInt(e.target.value) || 0)
+                          handleQuantityChange(item.id, parseInt(e.target.value, 10) || 0)
                         }
                         className="w-20 text-center"
                       />

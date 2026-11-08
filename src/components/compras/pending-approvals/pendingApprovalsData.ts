@@ -73,10 +73,6 @@ export const mockPendingApprovals: PendingApprovalItem[] = [
   },
 ];
 
-export const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-};
-
 export const getTimeStatus = (prazoLimite: string) => {
   const now = new Date();
   const deadline = new Date(prazoLimite);

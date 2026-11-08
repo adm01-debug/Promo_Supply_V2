@@ -1,14 +1,26 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Zap, Clock, TrendingDown, CheckCircle2, ShieldCheck, ArrowRight, ExternalLink, Scale, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { VisualComparadorCotacoes } from "./VisualComparadorCotacoes";
 
+interface CotacaoItem {
+  id: string;
+  fornecedor: string;
+  total: number;
+  lead_time?: number | null;
+  rating?: number | null;
+  unit_price?: number | null;
+  stock?: number | null;
+  payment_terms?: string | null;
+  shipping?: number | null;
+}
+
 interface StrategicQuoteTableProps {
-  cotacoes: any[];
+  cotacoes: CotacaoItem[];
   quantidade: number;
 }
 
@@ -90,11 +102,11 @@ export const StrategicQuoteTable = ({ cotacoes, quantidade }: StrategicQuoteTabl
             fornecedor: c.fornecedor,
             valorUnitario: c.unit_price || (c.total / quantidade),
             quantidadeDisponivel: c.stock || quantidade,
-            prazoEntrega: c.lead_time,
+            prazoEntrega: c.lead_time ?? 0,
             frete: c.shipping || 0,
             condicaoPagamento: c.payment_terms || "N/A",
             total: c.total,
-            rating: c.rating
+            rating: c.rating ?? undefined
           }))} 
           quantidade={quantidade} 
           onSelecionar={(id) => {
@@ -149,7 +161,7 @@ export const StrategicQuoteTable = ({ cotacoes, quantidade }: StrategicQuoteTabl
                 <div>
                   <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest block mb-1">Impacto Total</span>
                   <span className="text-2xl font-black text-white tracking-tight">
-                    {strat.value?.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    {strat.value != null ? formatCurrency(strat.value) : undefined}
                   </span>
                 </div>
                 <Badge variant="outline" className={cn("text-[9px] font-black uppercase px-3 py-1 bg-black/20", strat.border, strat.color)}>

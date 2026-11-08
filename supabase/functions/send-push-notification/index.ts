@@ -1,11 +1,9 @@
+import { corsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-request-id',
-};
-
+import { fetchWithTimeout } from "../_shared/http.ts";
 interface PushPayload {
   title: string;
   message: string;
@@ -89,7 +87,8 @@ async function sendPushToSubscription(
   try {
     const payloadString = JSON.stringify(payload);
     
-    const response = await fetch(subscription.endpoint, {
+    const response = await fetchWithTimeout(subscription.endpoint, {
+      timeoutMs: 10000,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -121,7 +120,9 @@ Deno.serve(async (req) => {
 
   try {
     // SECURITY: Validate user authentication
-    await verifyAuthUser(req);
+    const _pushUserId = await verifyAuthUser(req);
+    const rlPush = await checkRateLimit({ identifier: _pushUserId, endpoint: "send-push-notification", maxRequests: 60, windowSeconds: 60 });
+    if (!rlPush.allowed) return rateLimitedResponse(rlPush.retryAfterSeconds, corsHeaders);
 
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
@@ -195,6 +196,11 @@ Deno.serve(async (req) => {
     let sentCount = 0;
     let failedCount = 0;
 
+    // HIGH-C7: track failures per-subscription. The previous global counter
+    // deleted the wrong endpoint whenever any 3 sends failed anywhere in the
+    // loop. Now we remove a subscription immediately when its own send fails
+    // — push endpoints don't recover mid-batch and Web Push spec says 404/410
+    // means "gone" so it's safe to purge on first failure.
     for (const sub of subscriptions || []) {
       const success = await sendPushToSubscription(
         { endpoint: sub.endpoint, p256dh: sub.p256dh, auth: sub.auth },
@@ -207,10 +213,14 @@ Deno.serve(async (req) => {
         sentCount++;
       } else {
         failedCount++;
-        
-        if (failedCount > 3) {
-          await supabase.from('push_subscriptions').delete().eq('id', sub.id);
-          console.log(`Removed invalid subscription ${sub.id}`);
+        const { error: delErr } = await supabase
+          .from('push_subscriptions')
+          .delete()
+          .eq('id', sub.id);
+        if (delErr) {
+          logger.warn('Failed to purge invalid subscription', { id: sub.id, error: delErr });
+        } else {
+          logger.info('Removed invalid subscription', { id: sub.id });
         }
       }
     }

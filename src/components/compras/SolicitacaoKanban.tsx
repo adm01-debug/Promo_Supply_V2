@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { memo, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   DndContext,
@@ -19,9 +19,8 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { 
-  GripVertical, 
-  Package, 
+import {
+  Package,
   Building2,
   User,
   Calendar,
@@ -38,7 +37,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { Solicitacao, getTipoLabel } from "@/types/legacyTypes";
 import { toast } from "@/lib/feedbackToast";
 
@@ -63,23 +62,48 @@ const statusConfig: Record<Solicitacao['status'], { label: string; color: string
   CANCELADA: { label: 'Cancelled', color: 'bg-zinc-600', bgColor: 'bg-zinc-600/10' },
 };
 
-function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectChange }: any) {
+interface SortableItemProps {
+  solicitacao: Solicitacao;
+  isDragging?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelectChange?: (selected: boolean) => void;
+}
+
+interface KanbanCardProps {
+  solicitacao: Solicitacao;
+  isOverlay?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  onSelectChange?: (selected: boolean) => void;
+}
+
+interface DroppableColumnProps {
+  status: Solicitacao['status'];
+  solicitacoes: Solicitacao[];
+  isOver: boolean;
+  selectable?: boolean;
+  selectedIds?: Set<string>;
+  onSelectChange?: (id: string, selected: boolean) => void;
+}
+
+const SortableItem = memo(function SortableItem({ solicitacao, isDragging, selectable, selected, onSelectChange }: SortableItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging: isSorting } = useSortable({ id: solicitacao.id });
   const style = { transform: CSS.Transform.toString(transform), transition };
   return (
-    <div ref={setNodeRef} style={style} className={cn("group", (isDragging || isSorting) && "opacity-50")}>
+    <div ref={setNodeRef} style={style} className={cn("group", (isDragging || isSorting) && "opacity-50")} {...attributes} {...listeners}>
       <SolicitacaoKanbanCard 
         solicitacao={solicitacao} 
-        dragHandleProps={{ ...attributes, ...listeners }}
+
         selectable={selectable}
         selected={selected}
         onSelectChange={onSelectChange}
       />
     </div>
   );
-}
+});
 
-function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, selectable, selected, onSelectChange }: any) {
+const SolicitacaoKanbanCard = memo(function SolicitacaoKanbanCard({ solicitacao, isOverlay, selectable, selected, onSelectChange }: KanbanCardProps) {
   const deadline = new Date(solicitacao.prazoEntrega);
   const daysRemaining = differenceInDays(deadline, new Date());
   const isOverdue = isPast(deadline) && solicitacao.status !== 'ENTREGUE';
@@ -143,15 +167,15 @@ function SolicitacaoKanbanCard({ solicitacao, dragHandleProps, isOverlay, select
         {solicitacao.valorTotal && (
           <div className="text-xs font-black text-white pt-2 border-t border-white/5 mt-1 flex justify-between items-center">
             <span className="text-zinc-500 text-[9px] uppercase tracking-widest">VALUE</span>
-            R$ {solicitacao.valorTotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+            {formatCurrency(solicitacao.valorTotal)}
           </div>
         )}
       </div>
     </motion.div>
   );
-}
+});
 
-function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds, onSelectChange }: any) {
+function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds, onSelectChange }: DroppableColumnProps) {
   const config = statusConfig[status as Solicitacao['status']];
   
   return (
@@ -170,7 +194,7 @@ function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds
       </div>
 
       <ScrollArea className="flex-1 p-4 scrollbar-thin">
-        <SortableContext items={solicitacoes.map((s: any) => s.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext items={solicitacoes.map((s) => s.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-3 min-h-[150px]">
             {solicitacoes.length === 0 ? (
               <div className={cn(
@@ -181,7 +205,7 @@ function DroppableColumn({ status, solicitacoes, isOver, selectable, selectedIds
                 {isOver ? "Drop Here" : "Empty Stage"}
               </div>
             ) : (
-              solicitacoes.map((solicitacao: any) => (
+              solicitacoes.map((solicitacao) => (
                 <SortableItem 
                   key={solicitacao.id} 
                   solicitacao={solicitacao}

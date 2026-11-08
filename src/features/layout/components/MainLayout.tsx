@@ -1,4 +1,4 @@
-import { useState, useCallback, memo, useRef, useEffect } from "react";
+﻿import { useState, useCallback, memo, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { AppSidebar } from "./AppSidebar";
 import { AdvancedSearch } from "./AdvancedSearch";
@@ -30,6 +30,7 @@ import { Separator } from "@/components/ui/separator";
 import { useQueryClient } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
 import { EliteBackground } from "@/components/layout/EliteBackground";
+import { PageTransition } from "@/features/layout/transitions";
 
 interface MainLayoutProps {
   children: React.ReactNode;
@@ -51,8 +52,10 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   const isHome = location.pathname === '/' || location.pathname === '/compras';
 
   const handleRefresh = useCallback(async () => {
-    await queryClient.invalidateQueries();
-    await new Promise(resolve => setTimeout(resolve, 800));
+    // MED-C12: invalidate only *active* queries to avoid refetching every
+    // module's cache on a single pull-to-refresh gesture. Wait for the actual
+    // refetch instead of a fake 800ms delay so the UX label is accurate.
+    await queryClient.invalidateQueries({ type: 'active' });
   }, [queryClient]);
 
   useEffect(() => {
@@ -60,7 +63,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen text-zinc-100 pb-16 md:pb-0 overflow-x-hidden selection:bg-violet-500/30">
+    <div className="min-h-screen text-foreground pb-16 md:pb-0 overflow-x-hidden selection:bg-primary/30">
       <EliteBackground />
       <NavigationProgressBar />
       <SkipLinks />
@@ -84,14 +87,14 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
       </AnimatePresence>
 
       <div className={cn(
-        "fixed left-0 top-0 z-40 h-screen w-72 bg-[#05020a]/95 border-r border-white/5 transform transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] md:hidden",
+        "fixed left-0 top-0 z-40 h-screen w-72 bg-[#05020a]/95 border-r border-white/5 transform transition-transform duration-500 ease-&lsqb;cubic-bezier(0.23,1,0.32,1)] md:hidden",
         mobileMenuOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
       )}>
         <AppSidebar collapsed={false} onToggle={() => setMobileMenuOpen(false)} />
       </div>
 
       <div className={cn(
-        "transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]", 
+        "transition-all duration-500 ease-&lsqb;cubic-bezier(0.23,1,0.32,1)]", 
         sidebarCollapsed ? "md:ml-[68px]" : "md:ml-64"
       )}>
         <header className="sticky top-0 z-30 h-16 md:h-20 border-b border-white/5 shadow-sm bg-white/[0.01] backdrop-blur-2xl print:hidden flex items-center">
@@ -103,7 +106,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
                     variant="ghost"
                     size="icon"
                     onClick={() => setMobileMenuOpen(true)}
-                    className="h-10 w-10 rounded-xl bg-white/5 border border-white/5"
+                    className="h-10 w-10 rounded-xl bg-muted border border-border"
                     aria-label="Abrir menu"
                   >
                     <Menu className="w-5 h-5 text-violet-400" />
@@ -113,7 +116,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
 
               
               {/* Desktop & Mobile Smart Back Button - Always present in header when not home */}
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="sync">
                 {!isHome && (
                   <motion.div
                     initial={{ opacity: 0, x: -20, filter: "blur(10px)" }}
@@ -132,7 +135,7 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
               {/* Sidebar toggle for desktop when collapsed */}
               {isHome && (
                 <div className="hidden md:block">
-                  <Package className="w-6 h-6 text-primary animate-pulse-gentle" />
+                  <Package className="w-6 h-6 text-primary animate-pulse-slow" />
                 </div>
               )}
             </div>
@@ -162,20 +165,10 @@ export const MainLayout = memo(({ children }: MainLayoutProps) => {
             )}
 
 
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={location.pathname}
-                initial={{ opacity: 0, y: 20, filter: "blur(8px)", scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
-                exit={{ opacity: 0, y: -20, filter: "blur(8px)", scale: 0.98 }}
-                transition={{ 
-                  duration: 0.4, 
-                  ease: [0.23, 1, 0.32, 1]
-                }}
-                className="w-full h-full"
-              >
+            <AnimatePresence mode="sync" initial={false}>
+              <PageTransition className="w-full h-full">
                 {children}
-              </motion.div>
+              </PageTransition>
             </AnimatePresence>
           </main>
         </MobileRefreshWrapper>

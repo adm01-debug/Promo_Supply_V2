@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import Fuse from "fuse.js";
 import { cn } from "@/lib/utils";
 import { 
@@ -73,7 +73,7 @@ const HighlightedText = React.memo(({
 });
 
 export const EnhancedSearch = ({
-  placeholder = "Buscar solicitações, pedidos, fornecedores...",
+  placeholder = "Buscar solicitaÃ§Ãµes, pedidos, fornecedores...",
   onSearch,
   onSelect,
   results = [],
@@ -92,14 +92,15 @@ export const EnhancedSearch = ({
   const inputRef = React.useRef<HTMLInputElement>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
-  // Prepare results with normalized text for fuzzy search
+  // Prepare results with normalized text for fuzzy search (stable identity based on length/ids)
   const preparedResults = React.useMemo(() => {
     return results.map(r => ({
       ...r,
       normalizedTitle: normalizeText(r.title),
       normalizedSubtitle: r.subtitle ? normalizeText(r.subtitle) : '',
     }));
-  }, [results]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [results.length, results.map(r => r.id).join(',')]);
 
   // Create Fuse instance
   const fuse = React.useMemo(() => {
@@ -109,7 +110,7 @@ export const EnhancedSearch = ({
   // Perform fuzzy search
   React.useEffect(() => {
     if (!enableFuzzy || !query.trim()) {
-      setFuzzyResults([]);
+      setFuzzyResults(prev => prev.length === 0 ? prev : []);
       return;
     }
 
@@ -134,7 +135,13 @@ export const EnhancedSearch = ({
       }
     });
 
-    setFuzzyResults(merged);
+    setFuzzyResults(prev => {
+      // Avoid update if same data already to prevent loop
+      if (prev.length === merged.length && prev.every((r, i) => r.id === merged[i]?.id)) {
+        return prev;
+      }
+      return merged;
+    });
   }, [query, fuse, enableFuzzy]);
 
   const displayResults = enableFuzzy && query.trim() ? fuzzyResults : results;
@@ -236,7 +243,7 @@ export const EnhancedSearch = ({
           )}
         />
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             {loading && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -265,7 +272,7 @@ export const EnhancedSearch = ({
           </AnimatePresence>
           {showShortcut && (
             <kbd className="hidden sm:inline-flex h-6 items-center gap-1 rounded-md border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground">
-              ⌘K
+              âŒ˜K
             </kbd>
           )}
         </div>
@@ -360,7 +367,7 @@ export const EnhancedSearch = ({
               <div className="p-2 border-b">
                 <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                   <Sparkles className="w-3 h-3" />
-                  Sugestões
+                  SugestÃµes
                 </div>
                 {suggestions.slice(0, 4).map((suggestion, index) => {
                   const SugIcon = suggestion.icon || Search;
@@ -449,7 +456,7 @@ export const EnhancedSearch = ({
 
             {/* Footer hint */}
             <div className="px-4 py-2.5 bg-muted/30 border-t flex items-center justify-between text-[10px] text-muted-foreground">
-              <span>Use ↑↓ para navegar, Enter para selecionar</span>
+              <span>Use â†‘â†“ para navegar, Enter para selecionar</span>
               <span>Esc para fechar</span>
             </div>
           </motion.div>

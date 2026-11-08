@@ -1,15 +1,14 @@
+import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
-};
+import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
+  const cronDenied = verifyCronSecret(req);
+  if (cronDenied) return cronDenied;
 
   try {
     const supabase = createClient(
@@ -198,6 +197,7 @@ Deno.serve(async (req) => {
 
     logger.info("Expiry check complete", { result });
 
+    await recordCronHeartbeat(supabase as any, "check-expiry-alerts");
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
@@ -206,6 +206,8 @@ Deno.serve(async (req) => {
     if (typeof logger !== 'undefined') {
       logger.error("Error in expiry check", { error: errorMessage });
     }
+    const supabaseForHb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    await recordCronHeartbeat(supabaseForHb as any, "check-expiry-alerts", errorMessage);
     return new Response(JSON.stringify({ error: errorMessage }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

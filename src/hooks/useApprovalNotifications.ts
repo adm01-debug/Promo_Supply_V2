@@ -1,5 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/features/auth/hooks/useAuthContext';
+import { safeTruncate } from '@/lib/safeTruncate';
 
 export interface ApprovalNotification {
   id: string;
@@ -25,35 +28,33 @@ interface PendingApproval {
   totalStages: number;
 }
 
-// Mock email function - simulates sending email
-const mockSendApprovalEmail = async (_notification: ApprovalNotification): Promise<boolean> => {
-  // In production, this would call an actual email API
-  await new Promise(resolve => setTimeout(resolve, 300));
-  return true;
-};
-
-// Browser push notification
 const sendBrowserNotification = (notification: ApprovalNotification) => {
   if (Notification.permission === 'granted') {
-    const icon = notification.type === 'critical' ? '🔴' : 
+    const icon = notification.type === 'critical' ? '🔴' :
                  notification.type === 'escalated' ? '⚫' : '🟡';
-    
     new Notification(`${icon} Aprovação Pendente - ${notification.requestId}`, {
       body: notification.message,
       icon: '/favicon.ico',
       tag: notification.id,
-      requireInteraction: notification.type !== 'warning'
+      requireInteraction: notification.type !== 'warning',
     });
   }
 };
 
+/**
+ * F-023 fix: replaced setInterval deadline-polling with Realtime subscription
+ * on the `notifications` table. The server-side cron (`check-approval-escalations`)
+ * inserts notification rows of type 'escalation'/'reminder'/'warning'; the client
+ * reacts immediately without polling. startMonitoring() is kept for local countdown
+ * UX (in-memory, no DB queries) but no longer drives actual escalation detection.
+ */
 export const useApprovalNotifications = () => {
   const [notifications, setNotifications] = useState<ApprovalNotification[]>([]);
   const [permissionGranted, setPermissionGranted] = useState(false);
   const monitoringRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const notifiedRef = useRef<Set<string>>(new Set());
+  const { user } = useAuth();
 
-  // Request notification permission
   useEffect(() => {
     const requestPermission = async () => {
       if ('Notification' in window) {
@@ -68,6 +69,83 @@ export const useApprovalNotifications = () => {
     requestPermission();
   }, []);
 
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (monitoringRef.current) {
+        clearInterval(monitoringRef.current);
+        monitoringRef.current = null;
+      }
+    };
+  }, []);
+
+  // F-023: Subscribe to server-inserted escalation/warning notifications via Realtime.
+  // This replaces periodic polling — cron job inserts, client reacts instantly.
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const channel = supabase
+      .channel(`approval_notifications_${user.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`,
+        },
+        (payload) => {
+          const row = payload.new as {
+            id: string;
+            type: string;
+            title: string;
+            message: string;
+            priority: string;
+            data?: Record<string, unknown>;
+          };
+
+          const isApprovalEvent = ['escalation', 'reminder', 'sla_warning', 'sla_critical', 'sla_overdue', 'order_created'].includes(row.type);
+          if (!isApprovalEvent) return;
+
+          const notifType: ApprovalNotification['type'] =
+            row.type === 'escalation' || row.priority === 'critical' ? 'escalated' :
+            row.priority === 'high' ? 'critical' : 'warning';
+
+          const notification: ApprovalNotification = {
+            id: row.id,
+            approvalId: String(row.data?.workflow_id ?? row.id),
+            requestId: String(row.data?.pedido_numero ?? row.data?.cotacao_numero ?? row.id),
+            type: notifType,
+            message: row.message,
+            createdAt: new Date(),
+            read: false,
+            requesterName: '',
+            value: Number(row.data?.valor ?? 0),
+            timeRemaining: 0,
+          };
+
+          const key = `${notification.approvalId}-${notifType}`;
+          if (notifiedRef.current.has(key)) return;
+          notifiedRef.current.add(key);
+
+          setNotifications((prev) => [notification, ...prev]);
+
+          if (permissionGranted) sendBrowserNotification(notification);
+
+          const toastType = notifType === 'warning' ? 'warning' : 'error';
+          toast[toastType](row.title, {
+            duration: notifType === 'warning' ? 5000 : 10000,
+            description: safeTruncate(row.message ?? "", 120),
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id, permissionGranted]);
+
   const sendNotification = useCallback(async (
     approvalId: string,
     requestId: string,
@@ -78,11 +156,7 @@ export const useApprovalNotifications = () => {
     timeRemaining: number
   ) => {
     const notificationKey = `${approvalId}-${type}`;
-    
-    // Avoid duplicate notifications
-    if (notifiedRef.current.has(notificationKey)) {
-      return null;
-    }
+    if (notifiedRef.current.has(notificationKey)) return null;
     notifiedRef.current.add(notificationKey);
 
     const notification: ApprovalNotification = {
@@ -95,24 +169,16 @@ export const useApprovalNotifications = () => {
       read: false,
       requesterName,
       value,
-      timeRemaining
+      timeRemaining,
     };
 
-    setNotifications(prev => [notification, ...prev]);
+    setNotifications((prev) => [notification, ...prev]);
+    if (permissionGranted) sendBrowserNotification(notification);
 
-    // Browser notification
-    if (permissionGranted) {
-      sendBrowserNotification(notification);
-    }
-
-    // Mock email
-    await mockSendApprovalEmail(notification);
-
-    // Toast
     const toastType = type === 'critical' || type === 'escalated' ? 'error' : 'warning';
-    toast[toastType](notification.message, {
+    toast[toastType](message, {
       duration: type === 'warning' ? 5000 : 10000,
-      description: `Solicitação: ${requestId} • R$ ${value.toLocaleString('pt-BR')}`
+      description: `Solicitação: ${requestId} • R$ ${value.toLocaleString('pt-BR')}`,
     });
 
     return notification;
@@ -122,71 +188,44 @@ export const useApprovalNotifications = () => {
     pendingApprovals: PendingApproval[],
     warningThresholdMinutes: number = 30,
     criticalThresholdMinutes: number = 10,
-    escalationMinutes: number = 60
   ) => {
     const now = new Date();
-
     pendingApprovals.forEach(approval => {
       const elapsedMinutes = (now.getTime() - approval.createdAt.getTime()) / (1000 * 60);
       const timeRemaining = approval.deadlineMinutes - elapsedMinutes;
-
       if (timeRemaining <= 0) {
-        // Escalated
-        sendNotification(
-          approval.id,
-          approval.solicitacaoId,
-          'escalated',
+        sendNotification(approval.id, approval.solicitacaoId, 'escalated',
           `Aprovação ESCALADA! Solicitação ${approval.solicitacaoId} ultrapassou o tempo limite.`,
-          approval.requesterName,
-          approval.value,
-          0
-        );
+          approval.requesterName, approval.value, 0);
       } else if (timeRemaining <= criticalThresholdMinutes) {
-        // Critical
-        sendNotification(
-          approval.id,
-          approval.solicitacaoId,
-          'critical',
+        sendNotification(approval.id, approval.solicitacaoId, 'critical',
           `URGENTE: Aprovação ${approval.solicitacaoId} vence em ${Math.round(timeRemaining)} minutos!`,
-          approval.requesterName,
-          approval.value,
-          Math.round(timeRemaining)
-        );
+          approval.requesterName, approval.value, Math.round(timeRemaining));
       } else if (timeRemaining <= warningThresholdMinutes) {
-        // Warning
-        sendNotification(
-          approval.id,
-          approval.solicitacaoId,
-          'warning',
+        sendNotification(approval.id, approval.solicitacaoId, 'warning',
           `Atenção: Aprovação ${approval.solicitacaoId} vence em ${Math.round(timeRemaining)} minutos.`,
-          approval.requesterName,
-          approval.value,
-          Math.round(timeRemaining)
-        );
+          approval.requesterName, approval.value, Math.round(timeRemaining));
       }
     });
   }, [sendNotification]);
 
+  /**
+   * Local countdown UX helper — computes time-remaining indicators from in-memory
+   * data without polling the DB. Real escalation events arrive via Realtime above.
+   */
   const startMonitoring = useCallback((
     getPendingApprovals: () => PendingApproval[],
-    intervalMs: number = 60000 // Check every minute
+    intervalMs: number = 60000
   ) => {
-    if (monitoringRef.current) {
-      clearInterval(monitoringRef.current);
-    }
+    if (monitoringRef.current) clearInterval(monitoringRef.current);
 
-    // Initial check
     checkApprovalDeadlines(getPendingApprovals());
-
-    // Periodic checks
     monitoringRef.current = setInterval(() => {
       checkApprovalDeadlines(getPendingApprovals());
     }, intervalMs);
 
     return () => {
-      if (monitoringRef.current) {
-        clearInterval(monitoringRef.current);
-      }
+      if (monitoringRef.current) clearInterval(monitoringRef.current);
     };
   }, [checkApprovalDeadlines]);
 
@@ -198,9 +237,7 @@ export const useApprovalNotifications = () => {
   }, []);
 
   const markAsRead = useCallback((id: string) => {
-    setNotifications(prev => 
-      prev.map(n => n.id === id ? { ...n, read: true } : n)
-    );
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
   }, []);
 
   const markAllAsRead = useCallback(() => {
@@ -224,6 +261,6 @@ export const useApprovalNotifications = () => {
     stopMonitoring,
     markAsRead,
     markAllAsRead,
-    clearNotifications
+    clearNotifications,
   };
 };

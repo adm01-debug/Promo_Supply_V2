@@ -54,11 +54,11 @@ const RFxDetails = memo(() => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'published': return 'bg-blue-500/10 text-blue-600 border-blue-200';
-      case 'in_progress': return 'bg-amber-500/10 text-amber-600 border-amber-200';
-      case 'evaluation': return 'bg-purple-500/10 text-purple-600 border-purple-200';
-      case 'awarded': return 'bg-emerald-500/10 text-emerald-600 border-emerald-200';
-      default: return 'bg-slate-500/10 text-slate-600 border-slate-200';
+      case 'published': return 'bg-info/10 text-info border-info/30';
+      case 'in_progress': return 'bg-warning/10 text-warning border-warning/30';
+      case 'evaluation': return 'bg-primary/10 text-primary border-primary/30';
+      case 'awarded': return 'bg-success/10 text-success border-success/30';
+      default: return 'bg-muted text-muted-foreground border-border';
     }
   };
 
@@ -93,7 +93,7 @@ const RFxDetails = memo(() => {
             <h1 className="text-2xl font-bold mt-1">{event.title}</h1>
           </div>
           {event.type === 'auction' && event.status === 'in_progress' && (
-            <Button className="gap-2 bg-red-600 hover:bg-red-700" onClick={() => navigate(`/sourcing/${id}/auction`)}>
+            <Button variant="destructive" className="gap-2" onClick={() => navigate(`/sourcing/${id}/auction`)}>
               <Gavel className="w-4 h-4" />
               Ver Sala de Leilão
             </Button>
@@ -162,7 +162,7 @@ const RFxDetails = memo(() => {
 
               <TabsContent value="items" className="mt-6">
                 <div className="space-y-4">
-                  {event.lots?.map((lot: { id: string; nome: string; descricao: string; preco_referencia: number }) => (
+                  {event.lots?.map((lot) => (
                     <Card key={lot.id} className="p-6">
                       <div className="flex justify-between items-start">
                         <div>
@@ -186,7 +186,7 @@ const RFxDetails = memo(() => {
               <TabsContent value="responses" className="mt-6">
                 <div className="space-y-4">
                   {event.responses && event.responses.length > 0 ? (
-                    event.responses.map((resp: { id: string; fornecedor?: { razao_social: string }; created_at: string; valor_total: number; score_total: number }) => (
+                    event.responses.map((resp) => (
                       <Card key={resp.id} className="p-4 hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-4">
@@ -201,11 +201,11 @@ const RFxDetails = memo(() => {
                           <div className="text-right flex items-center gap-6">
                             <div>
                               <span className="text-[10px] text-muted-foreground block uppercase font-bold">Valor Total</span>
-                              <span className="font-bold">{resp.valor_total?.toLocaleString('pt-BR', { style: 'currency', currency: event.currency })}</span>
+                              <span className="font-bold">{resp.total_preco?.toLocaleString('pt-BR', { style: 'currency', currency: event.currency })}</span>
                             </div>
                             <div>
                               <span className="text-[10px] text-muted-foreground block uppercase font-bold">Score</span>
-                              <Badge>{resp.score_total?.toFixed(1) || '0.0'}</Badge>
+                              <Badge>{resp.total_score?.toFixed(1) || '0.0'}</Badge>
                             </div>
                             <Button variant="ghost" size="sm">
                               <ArrowRight className="w-4 h-4" />
@@ -278,7 +278,7 @@ const RFxDetails = memo(() => {
                   <span className="text-foreground">Melhor Oferta:</span>
                   <span className="text-emerald-600">
                     {event.responses && event.responses.length > 0 
-                      ? Math.min(...event.responses.map((r: { valor_total: number }) => r.valor_total)).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
+                      ? event.responses.reduce((min: number, r) => Math.min(min, r.total_preco || 0), Infinity).toLocaleString('pt-BR', { style: 'currency', currency: event.currency })
                       : '-'}
                   </span>
                 </div>
@@ -295,7 +295,12 @@ const RFxDetails = memo(() => {
                   <p className="text-xs text-muted-foreground mb-2">Análise de IA:</p>
                   <p className="text-[13px] leading-relaxed">
                     {event.responses && event.responses.length > 0 
-                      ? `Identificamos que o fornecedor ${[...event.responses].sort((a,b) => a.valor_total - b.valor_total)[0]?.fornecedor?.razao_social} possui a melhor oferta financeira, com um saving de ${(((event.budget_estimate || 0) - Math.min(...event.responses.map((r: any) => r.valor_total))) / (event.budget_estimate || 1) * 100).toFixed(1)}% em relação ao budget.`
+                      ? (() => {
+                          const best = event.responses.reduce((b, r) => ((r.total_preco || 0) < (b.total_preco || Infinity) ? r : b), event.responses[0]);
+                          const minPrice = best.total_preco || 0;
+                          const saving = (((event.budget_estimate || 0) - minPrice) / (event.budget_estimate || 1) * 100).toFixed(1);
+                          return `Identificamos que o fornecedor ${best?.fornecedor?.razao_social} possui a melhor oferta financeira, com um saving de ${saving}% em relação ao budget.`;
+                        })()
                       : "Aguardando propostas para realizar análise comparativa de Lead Time e Preço."}
                   </p>
                 </div>

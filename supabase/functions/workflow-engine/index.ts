@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.4'
 import { EdgeLogger } from "../_shared/logger.ts";
 import { validateBody, errorResponse, corsHeaders } from "../_shared/validation.ts";
@@ -8,11 +9,26 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: buildResponseHeaders(corsHeaders),
+    });
+  }
 
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   const logger = new EdgeLogger("workflow-engine", requestId);
 
   try {
+    // SECURITY: authenticate caller and resolve tenant from DB (never trust header alone)
+    const { getAuthUser, getTenantId } = await import("../_shared/security.ts");
+    const { user } = await getAuthUser(req);
+    if (!user) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401, headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
@@ -21,11 +37,12 @@ serve(async (req) => {
     // Contract Validation: Ensures type safety and catches malformed payloads before logic execution
     const data = await validateBody(req, WorkflowContract, logger);
     const { action, template_id, instance_id, entity_type, entity_id, node_id, decision, approver_id, comment } = data;
-    
-    const tenant_id = req.headers.get('x-tenant-id')
-    if (!tenant_id) {
-      throw new Error('Validation error: Missing tenant_id header')
-    }
+
+    const tenant_id = await getTenantId(supabase, user, req);
+
+
+
+
 
     if (action === 'start_workflow') {
       if (!template_id) throw new Error('Validation error: template_id is required for start_workflow');
@@ -73,10 +90,16 @@ serve(async (req) => {
           .eq('id', instance.id)
       }
 
-      return new Response(JSON.stringify({ instance_id: instance.id, requestId }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      return new Response(JSON.stringify({ 
+        data: { instance_id: instance.id }, 
+        requestId,
+        status: "success",
+        timestamp: new Date().toISOString()
+      }), {
+        headers: buildResponseHeaders(corsHeaders),
         status: 200,
       })
+
     }
 
     if (action === 'submit_decision') {
@@ -92,10 +115,8 @@ serve(async (req) => {
 
       if (sodError) throw sodError
       if (!sodOk) {
-        return new Response(JSON.stringify({ error: 'SoD Violation: Approver cannot approve this step.', requestId }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 403,
-        })
+        return errorResponse(new Error('Security error: SoD Violation: Approver cannot approve this step.'), logger);
+
       }
 
       await supabase.from('workflow_approvals')
@@ -108,16 +129,19 @@ serve(async (req) => {
         .eq('instance_id', instance_id)
         .eq('node_id', node_id)
       
-      return new Response(JSON.stringify({ success: true, requestId }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      return new Response(JSON.stringify({ 
+        data: { success: true }, 
+        requestId,
+        status: "success",
+        timestamp: new Date().toISOString()
+      }), {
+        headers: buildResponseHeaders(corsHeaders),
         status: 200,
       })
     }
 
-    return new Response(JSON.stringify({ error: 'Invalid action', requestId }), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      status: 400,
-    })
+    throw new Error('Validation error: Invalid action');
+
 
   } catch (error) {
     return errorResponse(error, logger);

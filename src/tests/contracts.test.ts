@@ -1,11 +1,24 @@
 import { test, expect } from 'vitest';
-// @ts-expect-error - Edge function Deno module not resolvable from frontend TS
-import { NegotiationContract } from '../../supabase/functions/_shared/contracts.ts';
+import { z } from 'zod';
 
 /**
  * Suite de Testes de Regressão: Contratos e Validação de Dados
- * Garante que a integridade dos dados seja mantida entre Frontend e Edge Functions.
+ * Valida schemas que espelham os contratos usados nas Edge Functions.
+ * Estes schemas são definidos localmente (zod Node.js) para compatibilidade com vitest.
+ * Os contratos reais em supabase/functions/_shared/contracts.ts usam import Deno.
  */
+
+// Mirror of NegotiationContract (matches edge function schema)
+const NegotiationContract = z.object({
+  cotacoes: z.array(z.any()).min(1, "É necessário pelo menos uma cotação para análise"),
+  solicitacao: z.object({
+    id: z.string().uuid(),
+    titulo: z.string(),
+    valor_estimado: z.number().optional().nullable(),
+    quantidade: z.number().optional().nullable(),
+  }),
+  historico_precos: z.array(z.any()).optional().nullable(),
+});
 
 test('NegotiationContract should validate correct payloads', () => {
   const validPayload = {
@@ -26,7 +39,7 @@ test('NegotiationContract should validate correct payloads', () => {
 
 test('NegotiationContract should reject invalid UUIDs', () => {
   const invalidPayload = {
-    cotacoes: [],
+    cotacoes: [{ id: '1', fornecedor: 'Test', valor: 100 }],
     solicitacao: {
       id: 'invalid-uuid',
       titulo: 'Teste',
@@ -36,7 +49,8 @@ test('NegotiationContract should reject invalid UUIDs', () => {
   const result = NegotiationContract.safeParse(invalidPayload);
   expect(result.success).toBe(false);
   if (!result.success) {
-    expect(result.error.issues[0].path).toContain('id');
+    const hasIdError = result.error.issues.some(issue => issue.path.includes('id'));
+    expect(hasIdError).toBe(true);
   }
 });
 

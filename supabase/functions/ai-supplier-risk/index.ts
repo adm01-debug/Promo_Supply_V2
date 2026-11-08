@@ -1,11 +1,10 @@
+import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
-};
-
+import { callAIGatewayWithFallback } from "../_shared/ai_gateway.ts";
 const getLogger = (req: Request) => {
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   return new EdgeLogger("ai-supplier-risk", requestId);
@@ -39,6 +38,9 @@ Deno.serve(async (req) => {
     const logger = getLogger(req);
     // SECURITY: Validate user authentication
     const userId = await verifyAuthUser(req);
+    // M-05: rate-limit por usuário (AI = custo de token elevado).
+    const rl = await checkRateLimit({ identifier: userId, endpoint: "ai-supplier-risk", maxRequests: 20, windowSeconds: 60 });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
     logger.info("Iniciando análise de risco de fornecedor", { userId });
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
@@ -81,36 +83,53 @@ ${JSON.stringify(marketData || {}, null, 2)}
 
 Forneça uma análise de risco completa e acionável.`;
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
-        "Content-Type": "application/json",
+    const { response, usedFallback } = await callAIGatewayWithFallback(
+      {
+        apiKey: LOVABLE_API_KEY,
+        body: {
+          model: "google/gemini-2.5-flash",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+        },
       },
-      body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-      }),
-    });
+      (reason) => {
+        logger.warn("ai-supplier-risk: usando fallback determinístico", { reason });
+        // Rule-based fallback: conservatively flag as medium risk with manual review required
+        return {
+          overallScore: 50,
+          riskLevel: "medium",
+          summary: "Análise IA temporariamente indisponível. Avaliação conservadora de risco médio aplicada. Revisão manual recomendada.",
+          details: {
+            financial: { score: 50, notes: "IA indisponível — verificar balanço manualmente" },
+            delivery: { score: 50, notes: "IA indisponível — verificar histórico de entregas" },
+            compliance: { score: 50, notes: "IA indisponível — verificar certidões manualmente" },
+          },
+          recommendations: ["Realize revisão manual completa do fornecedor antes de prosseguir."],
+        };
+      },
+      corsHeaders,
+    );
+
+    if (usedFallback) {
+      logger.warn("ai-supplier-risk: resposta de fallback retornada ao cliente");
+      return response;
+    }
 
     if (!response.ok) {
       const errorText = await response.text();
       logger.error("Erro no AI Gateway", { status: response.status, response: errorText });
-      
       if (response.status === 429) {
         return new Response(JSON.stringify({ error: "Rate limit exceeded" }), {
-          status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 429, headers: buildResponseHeaders(corsHeaders),
         });
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: "AI credits exhausted" }), {
-          status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 402, headers: buildResponseHeaders(corsHeaders),
         });
       }
-      
       throw new Error(`AI Gateway error: ${response.status}`);
     }
 
@@ -138,15 +157,15 @@ Forneça uma análise de risco completa e acionável.`;
     logger.info("Análise de risco concluída", { requestId: logger.getRequestId() });
 
     return new Response(JSON.stringify(analysis), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   } catch (error: unknown) {
-    logger.error("Erro fatal na função ai-supplier-risk", { error: error.message });
+    logger.error("Erro fatal na função ai-supplier-risk", { error: (error as Error).message });
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const status = errorMessage.includes("Não autorizado") ? 401 : 500;
     return new Response(JSON.stringify({ error: errorMessage }), {
       status,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   }
 });

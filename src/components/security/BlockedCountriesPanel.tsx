@@ -9,13 +9,12 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { COMMON_COUNTRIES } from '@/hooks/useGeoRestriction';
-import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
+import { formatDateTime } from '@/lib/utils';
 
 interface BlockedCountry {
   id: string;
@@ -147,7 +146,7 @@ export const BlockedCountriesPanel = () => {
                       {country.reason || '—'}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {format(new Date(country.blocked_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                      {formatDateTime(country.blocked_at)}
                     </TableCell>
                     <TableCell>
                       <Badge variant={country.is_active ? "destructive" : "secondary"}>

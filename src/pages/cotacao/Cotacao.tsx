@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+﻿import { useState, useMemo, useEffect, useCallback } from "react";
 import { 
   Package, 
   RefreshCw, 
@@ -39,11 +39,11 @@ import { useFornecedores } from "@/hooks/useFornecedores";
 import { useCotacoes } from "@/features/cotacoes";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/lib/feedbackToast";
-import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch } from "./cotacaoHelpers";
+import { adaptCotacoesFromDB, adaptFornecedoresToLegacy, simulateAPISearch, type CotacaoAPI } from "./cotacaoHelpers";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion, AnimatePresence } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 const Cotacao = () => {
   const [searchParams] = useSearchParams();
@@ -60,7 +60,7 @@ const Cotacao = () => {
   const [isAiAnalyzing, setIsAiAnalyzing] = useState(false);
   const [aiAnalysis, setAiAnalysis] = useState<string | null>(null);
   const [buscaStatus, setBuscaStatus] = useState<'idle' | 'searching' | 'done'>('idle');
-  const [cotacoesAPI, setCotacoesAPI] = useState<any[]>([]);
+  const [cotacoesAPI, setCotacoesAPI] = useState<CotacaoAPI[]>([]);
   const [showManualModal, setShowManualModal] = useState(false);
   const [fornecedorSelecionado, setFornecedorSelecionado] = useState<string | null>(null);
   const [showHistoryModal, setShowHistoryModal] = useState(false);
@@ -111,7 +111,7 @@ const Cotacao = () => {
     try {
       // Simulation of Neural Follow-up based on user prompt
       const supplierName = allCotacoes[0]?.fornecedor || "Supplier";
-      toast.info(`Neural Follow-up: "Olá ${supplierName}, tudo bem? Notei que ainda não recebemos sua atualização sobre a caneca de alumínio. Consegue nos enviar hoje?"`, {
+      toast.info(`Neural Follow-up: "OlÃ¡ ${supplierName}, tudo bem? Notei que ainda nÃ£o recebemos sua atualizaÃ§Ã£o sobre a caneca de alumÃ­nio. Consegue nos enviar hoje?"`, {
         duration: 5000,
       });
       await new Promise(resolve => setTimeout(resolve, 1500));
@@ -156,7 +156,7 @@ const Cotacao = () => {
                 <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Quotation Cockpit</h1>
                 <div className="flex items-center gap-3 mt-3">
                    <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-amber-500/30 text-amber-400 px-3 py-1">#{solicitacao.numero}</Badge>
-                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Competitive Market Analysis</span>
+                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">â€¢ Competitive Market Analysis</span>
                 </div>
               </div>
             </div>
@@ -196,7 +196,7 @@ const Cotacao = () => {
                   <div className="space-y-1">
                     <Label className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Target Price</Label>
                     <p className="text-lg font-black text-violet-400">
-                      {solicitacao.valor_estimado ? solicitacao.valor_estimado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'TBD'}
+                      {solicitacao.valor_estimado ? formatCurrency(solicitacao.valor_estimado) : 'TBD'}
                     </p>
                   </div>
                   <div className="space-y-1">
@@ -217,7 +217,7 @@ const Cotacao = () => {
             </div>
           </motion.div>
 
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="sync">
             {(isAiAnalyzing || aiAnalysis) && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.98 }}

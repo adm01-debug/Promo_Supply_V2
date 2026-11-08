@@ -1,8 +1,8 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import type { Database } from '@/integrations/supabase/types';
 
 export type Licitacao = Database['public']['Tables']['licitacoes']['Row'] & {
@@ -19,18 +19,19 @@ export function useLicitacoes() {
   const queryClient = useQueryClient();
 
   const { data: licitacoes = [], isLoading } = useQuery({
-    queryKey: ['licitacoes', tenantId],
+    queryKey: ['licitacoes', user?.id, tenantId, organizationId],
     queryFn: async () => {
       if (!tenantId) return [];
       const { data, error } = await supabase
         .from('licitacoes')
-        .select('*, fornecedor_vencedor:fornecedores!licitacoes_fornecedor_vencedor_id_fkey(razao_social)')
+        .select('id, numero, objeto, modalidade, status, tipo, data_abertura, data_encerramento, valor_estimado, valor_vencedor, fornecedor_vencedor_id, responsavel_id, created_by, created_at, updated_at, tenant_id, organization_id, fornecedor_vencedor:fornecedores!licitacoes_fornecedor_vencedor_id_fkey(razao_social)')
         .eq('tenant_id', tenantId)
         .order('created_at', { ascending: false });
       if (error) throw error;
       return (data || []) as Licitacao[];
     },
     enabled: !!user && !!tenantId,
+    staleTime: 60_000,
   });
 
   const invalidate = useCallback(() => {
@@ -43,16 +44,18 @@ export function useLicitacoes() {
       const { data: numData } = await supabase.rpc('generate_sequential_number', { prefix: 'LIC', table_name: 'licitacoes' });
       const numero = numData || `LIC-${Date.now()}`;
       
+      // Strip joined/computed fields before inserting into the DB table
+      const { fornecedor_vencedor: _fv, propostas_count: _pc, ...inputData } = input;
       const { data, error } = await supabase
         .from('licitacoes')
-        .insert({ 
-          ...input, 
-          numero, 
-          created_by: user.id, 
-          responsavel_id: user.id, 
+        .insert({
+          ...inputData,
+          numero,
+          created_by: user.id,
+          responsavel_id: user.id,
           tenant_id: tenantId,
           organization_id: organizationId || tenantId
-        } as any)
+        } as never)
         .select()
         .single();
       
@@ -64,7 +67,7 @@ export function useLicitacoes() {
       toast.error('Erro: ' + (err instanceof Error ? err.message : 'desconhecido'));
       return null;
     }
-  }, [user, tenantId, invalidate]);
+  }, [user, tenantId, invalidate, organizationId]);
 
   const updateLicitacao = useCallback(async (id: string, updates: Partial<Licitacao>) => {
     try {
@@ -122,9 +125,11 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
   const addProposta = useCallback(async (input: Partial<LicitacaoProposta>) => {
     if (!licitacaoId) return null;
     try {
+      // Strip joined/computed fields before inserting into the DB table
+      const { fornecedor: _f, ...inputData } = input;
       const { data, error } = await supabase
         .from('licitacao_propostas')
-        .insert({ ...input, licitacao_id: licitacaoId } as any)
+        .insert({ ...inputData, licitacao_id: licitacaoId } as never)
         .select()
         .single();
       if (error) throw error;
@@ -162,33 +167,23 @@ export function useLicitacaoPropostas(licitacaoId: string | null) {
   return { propostas, isLoading, addProposta, selectWinner, invalidate };
 }
 
-export interface SourcingEvent {
-  id: string;
-  numero: string;
-  title: string;
-  description: string | null;
-  status: 'draft' | 'published' | 'in_progress' | 'evaluation' | 'awarded';
-  type: 'rfp' | 'rfq' | 'auction';
-  category_id: string | null;
+type SourcingEventRow = Database['public']['Tables']['sourcing_events']['Row'];
+type SourcingEventInsert = Database['public']['Tables']['sourcing_events']['Insert'];
+
+export type SourcingEvent = SourcingEventRow & {
   category?: { nome: string } | null;
-  lots?: any[];
-  questions?: any[];
-  criteria?: any[];
-  invitations?: any[];
-  responses?: any[];
-  created_at: string;
-  closes_at: string;
-  award_deadline: string | null;
-  budget_estimate: number | null;
-  currency: string;
-  sealed_bid?: boolean;
-}
+  lots?: Database['public']['Tables']['sourcing_event_lots']['Row'][];
+  questions?: Database['public']['Tables']['sourcing_event_questions']['Row'][];
+  criteria?: Database['public']['Tables']['sourcing_event_criteria']['Row'][];
+  invitations?: (Database['public']['Tables']['sourcing_invitations']['Row'] & { fornecedor?: { razao_social: string } | null })[];
+  responses?: (Database['public']['Tables']['sourcing_responses']['Row'] & { fornecedor?: { razao_social: string } | null })[];
+};
 
 export function useSourcingEvents() {
   const { user, tenantId, organizationId } = useAuth();
   const queryClient = useQueryClient();
 
-  const { data: events = [], isLoading } = useQuery({
+  const { data: events = [], isLoading } = useQuery<SourcingEvent[]>({
     queryKey: ['sourcing-events'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -196,26 +191,27 @@ export function useSourcingEvents() {
         .select('*, category:categorias(nome)')
         .order('created_at', { ascending: false });
       if (error) throw error;
-      return (data || []) as unknown as SourcingEvent[];
+      return (data ?? []) as SourcingEvent[];
     },
     enabled: !!user,
   });
 
   const createEvent = useMutation({
-    mutationFn: async (event: Partial<SourcingEvent>) => {
-      const { data, error } = await supabase.from('sourcing_events').insert({
+    mutationFn: async (event: Partial<SourcingEventInsert>) => {
+      const payload: SourcingEventInsert = {
         ...event,
-        organization_id: organizationId || tenantId,
-        tenant_id: tenantId || organizationId
-      } as any).select().single();
+        organization_id: organizationId || tenantId || '',
+        tenant_id: tenantId || organizationId || '',
+      } as SourcingEventInsert;
+      const { data, error } = await supabase.from('sourcing_events').insert(payload).select().single();
       if (error) throw error;
-      return data as unknown as SourcingEvent;
+      return data as SourcingEvent;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['sourcing-events'] });
       toast.success('Evento de sourcing criado!');
     },
-    onError: (err: any) => toast.error('Erro: ' + err.message)
+    onError: (err: Error) => toast.error('Erro: ' + err.message)
   });
 
   return { events, isLoading, createEvent };
@@ -223,19 +219,67 @@ export function useSourcingEvents() {
 
 export function useSourcingEventDetails(eventId: string | null) {
   const { user } = useAuth();
-  const queryClient = useQueryClient();
 
-  const { data: event, isLoading: loadingEvent } = useQuery({
+  const { data: event, isLoading: loadingEvent } = useQuery<SourcingEvent | null>({
     queryKey: ['sourcing-event', eventId],
     queryFn: async () => {
       if (!eventId) return null;
       const { data, error } = await supabase
         .from('sourcing_events')
-        .select('*, category:categorias(nome), lots:sourcing_event_lots(*), questions:sourcing_event_questions(*), criteria:sourcing_event_criteria(*), invitations:sourcing_invitations(*, fornecedor:fornecedores(razao_social)), responses:sourcing_responses(*, fornecedor:fornecedores(razao_social))')
+        .select('*')
         .eq('id', eventId)
         .single();
       if (error) throw error;
-      return data as unknown as SourcingEvent;
+      if (!data) return null;
+
+      // Fetch related child rows separately to avoid nested embed FK issues
+      const eventIdValue = (data as { id: string }).id;
+      const [categoryRes, lotsRes, questionsRes, criteriaRes, invitationsRes, responsesRes] = await Promise.all([
+        (data as { category_id?: string | null }).category_id
+          ? supabase.from('categorias').select('id, nome').eq('id', (data as { category_id: string }).category_id).maybeSingle()
+          : Promise.resolve({ data: null, error: null }),
+        supabase.from('sourcing_event_lots').select('*').eq('event_id', eventIdValue),
+        supabase.from('sourcing_event_questions').select('*').eq('event_id', eventIdValue),
+        supabase.from('sourcing_event_criteria').select('*').eq('event_id', eventIdValue),
+        supabase.from('sourcing_invitations').select('*').eq('event_id', eventIdValue),
+        supabase.from('sourcing_responses').select('*').eq('event_id', eventIdValue),
+      ]);
+
+      // Collect fornecedor ids from invitations + responses
+      const fornecedorIds = [
+        ...new Set([
+          ...((invitationsRes.data ?? []) as Array<{ fornecedor_id?: string | null }>)
+            .map(i => i.fornecedor_id).filter(Boolean),
+          ...((responsesRes.data ?? []) as Array<{ fornecedor_id?: string | null }>)
+            .map(r => r.fornecedor_id).filter(Boolean),
+        ]),
+      ] as string[];
+
+      const fornecedoresRes = fornecedorIds.length
+        ? await supabase.from('fornecedores').select('id, razao_social').in('id', fornecedorIds)
+        : { data: [] as Array<{ id: string; razao_social: string }>, error: null };
+
+      const fornecedoresMap = new Map((fornecedoresRes.data || []).map(f => [f.id, f]));
+
+      return {
+        ...(data as Record<string, unknown>),
+        category: categoryRes.data,
+        lots: lotsRes.data ?? [],
+        questions: questionsRes.data ?? [],
+        criteria: criteriaRes.data ?? [],
+        invitations: ((invitationsRes.data ?? []) as Array<Record<string, unknown>>).map(inv => ({
+          ...inv,
+          fornecedor: (inv as { fornecedor_id?: string | null }).fornecedor_id
+            ? fornecedoresMap.get((inv as { fornecedor_id: string }).fornecedor_id) ?? null
+            : null,
+        })),
+        responses: ((responsesRes.data ?? []) as Array<Record<string, unknown>>).map(resp => ({
+          ...resp,
+          fornecedor: (resp as { fornecedor_id?: string | null }).fornecedor_id
+            ? fornecedoresMap.get((resp as { fornecedor_id: string }).fornecedor_id) ?? null
+            : null,
+        })),
+      } as SourcingEvent;
     },
     enabled: !!user && !!eventId,
   });
@@ -275,8 +319,8 @@ export function useLicitacaoLances(licitacaoId: string | null) {
       queryClient.invalidateQueries({ queryKey: ['licitacao-lances', licitacaoId] });
       queryClient.invalidateQueries({ queryKey: ['licitacoes'] });
       return true;
-    } catch (err: any) {
-      toast.error('Erro ao enviar lance: ' + err.message);
+    } catch (err: unknown) {
+      toast.error('Erro ao enviar lance: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
       return false;
     }
   }, [licitacaoId, queryClient]);

@@ -1,15 +1,18 @@
+import { corsHeaders, verifyCronSecret } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-request-id",
-};
-
+import { fetchWithTimeout } from "../_shared/http.ts";
+import { recordCronHeartbeat } from "../_shared/cronHealth.ts";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+  const cronDenied = verifyCronSecret(req);
+  if (cronDenied) return cronDenied;
+
+  // MED-C10: declare logger BEFORE the try so the catch can safely reference it.
+  const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
+  let logger: EdgeLogger | undefined;
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
@@ -17,8 +20,7 @@ Deno.serve(async (req) => {
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
-    const logger = new EdgeLogger('check-cotacao-followup', requestId);
+    logger = new EdgeLogger('check-cotacao-followup', requestId);
 
     logger.info("Starting cotação follow-up check...");
 
@@ -80,7 +82,8 @@ Deno.serve(async (req) => {
             .single();
 
           if (profile?.email) {
-            const emailRes = await fetch("https://api.resend.com/emails", {
+            const emailRes = await fetchWithTimeout("https://api.resend.com/emails", {
+      timeoutMs: 10000,
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -124,13 +127,16 @@ Deno.serve(async (req) => {
             }
           }
         } catch (emailErr) {
-          console.warn("Email dispatch error:", emailErr);
+          logger?.warn("Email dispatch failed", {
+            error: emailErr instanceof Error ? emailErr.message : String(emailErr),
+          });
         }
       }
     }
 
     logger.info(`Follow-up check complete`, { followUpsSent, emailsSent, totalStale: staleCotacoes?.length });
 
+    await recordCronHeartbeat(supabase as any, "check-cotacao-followup");
     return new Response(
       JSON.stringify({ followUpsSent, emailsSent, totalStale: staleCotacoes?.length || 0 }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -142,6 +148,8 @@ Deno.serve(async (req) => {
     } else {
       console.error("Error in check-cotacao-followup:", error);
     }
+    const supabaseForHb = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    await recordCronHeartbeat(supabaseForHb as any, "check-cotacao-followup", msg);
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

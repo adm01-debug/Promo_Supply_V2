@@ -184,13 +184,15 @@ export function DigitalSignature() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <FileSignature className="h-4 w-4" />
-          Assinatura Digital
-          {pendingCount > 0 && (
-            <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">
-              {pendingCount}
-            </Badge>
-          )}
+          <span className="inline-flex items-center gap-2">
+            <FileSignature className="h-4 w-4" />
+            Assinatura Digital
+            {pendingCount > 0 && (
+              <Badge variant="destructive" className="h-5 px-1.5 text-[10px]">
+                {pendingCount}
+              </Badge>
+            )}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent aria-describedby="dialog-desc" className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">

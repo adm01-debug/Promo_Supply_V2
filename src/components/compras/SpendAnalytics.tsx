@@ -35,7 +35,7 @@ export const SpendAnalytics = () => {
       // Group by unspsc name
       const groups: Record<string, number> = {};
       data?.forEach(item => {
-        const name = (item.unspsc as any)?.nome || 'Não Classificado';
+        const name = (item.unspsc as { nome?: string } | null)?.nome || 'Não Classificado';
         groups[name] = (groups[name] || 0) + Number(item.valor_total || 0);
       });
 
@@ -74,7 +74,7 @@ export const SpendAnalytics = () => {
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(value: any) => `R$ ${value.toLocaleString('pt-BR')}`}
+                  formatter={(value: number | string) => `R$ ${Number(value).toLocaleString('pt-BR')}`}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -94,7 +94,7 @@ export const SpendAnalytics = () => {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.3} />
                 <XAxis dataKey="name" fontSize={10} hide />
                 <YAxis fontSize={10} tickFormatter={(val) => `R$ ${val/1000}k`} />
-                <Tooltip formatter={(value: any) => `R$ ${value.toLocaleString('pt-BR')}`} />
+                <Tooltip formatter={(value: number | string) => `R$ ${Number(value).toLocaleString('pt-BR')}`} />
                 <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>

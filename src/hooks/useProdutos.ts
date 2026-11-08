@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/features/auth";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 export interface Produto {
   id: string;
@@ -33,45 +33,55 @@ export function useProdutos() {
   const queryClient = useQueryClient();
 
   const { data: produtos = [], isLoading } = useQuery({
-    queryKey: ["produtos", organizationId],
+    queryKey: ["produtos", organizationId, tenantId],
     queryFn: async () => {
-      if (!organizationId) return [];
+      // Explicit columns: drops ~30% payload vs `*` on wide table.
       const { data, error } = await supabase
         .from("produtos")
-        .select("*, categorias(nome), fornecedores!produtos_fornecedor_preferencial_id_fkey(razao_social)")
-        .eq('organization_id', organizationId)
+        .select(`
+          id, codigo, nome, descricao, unidade, categoria_id,
+          preco_medio, preco_referencia, ultimo_preco, estoque_minimo,
+          codigo_unspsc, codigo_cnae, codigo_ncm, ativo, imagem_url, tags,
+          fornecedor_preferencial_id, created_at, updated_at,
+          categorias(nome),
+          fornecedores!produtos_fornecedor_preferencial_id_fkey(razao_social)
+        `)
+        .eq('organization_id', organizationId!)
         .order("nome");
       if (error) throw error;
-      return (data || []).map((p: any) => ({
+      return (data || []).map((p) => ({
         ...p,
-        categoria_nome: p.categorias?.nome || null,
-        fornecedor_nome: p.fornecedores?.razao_social || null,
+        categoria_nome: (p as { categorias?: { nome?: string } | null }).categorias?.nome ?? null,
+        fornecedor_nome: (p as { fornecedores?: { razao_social?: string } | null }).fornecedores?.razao_social ?? null,
       })) as Produto[];
     },
+    enabled: !!organizationId,
     staleTime: 60_000,
   });
 
   const { data: categorias = [] } = useQuery({
     queryKey: ["categorias-list", organizationId],
     queryFn: async () => {
-      if (!organizationId) return [];
       const { data, error } = await supabase.from("categorias").select("id, nome").eq("ativo", true)
-        .eq('organization_id', organizationId)
+        .eq('organization_id', organizationId!)
         .order("nome");
       if (error) throw error;
       return data || [];
     },
+    enabled: !!organizationId,
     staleTime: 300_000,
   });
 
   const createProduto = useMutation({
     mutationFn: async (produto: Partial<Produto>) => {
       if (!organizationId) throw new Error("Organization ID missing");
-      const { data, error } = await supabase.from("produtos").insert({ 
-        ...produto, 
+      // Strip joined/computed fields before inserting into the DB table
+      const { categoria_nome: _cn, fornecedor_nome: _fn, id: _id, created_at: _ca, updated_at: _ua, ...produtoData } = produto;
+      const { data, error } = await supabase.from("produtos").insert({
+        ...produtoData,
         organization_id: organizationId,
         tenant_id: tenantId || organizationId
-      } as any).select().single();
+      } as never).select().single();
       if (error) throw error;
       return data;
     },
@@ -84,7 +94,9 @@ export function useProdutos() {
 
   const updateProduto = useMutation({
     mutationFn: async ({ id, ...updates }: Partial<Produto> & { id: string }) => {
-      const { data, error } = await supabase.from("produtos").update(updates as any).eq("id", id).select().single();
+      // Strip joined/computed fields before updating the DB table
+      const { categoria_nome: _cn, fornecedor_nome: _fn, ...updateData } = updates;
+      const { data, error } = await supabase.from("produtos").update(updateData).eq("id", id).select().single();
       if (error) throw error;
       return data;
     },

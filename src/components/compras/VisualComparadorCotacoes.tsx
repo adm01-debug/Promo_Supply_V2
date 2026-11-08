@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Scale, 
@@ -57,7 +57,7 @@ import {
   PieChart as RechartsPieChart,
   Pie
 } from "recharts";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { RadarTab, BarsTab, PrazoTab, ScoresTab, TableTab } from "./visual-comparador/ComparadorCharts";
 
 interface Cotacao {
@@ -160,8 +160,8 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
     );
   };
 
-  const selectedCotacoes = cotacoes.filter(c => selectedIds.includes(c.id));
-  const getScore = (id: string) => analysis?.scores.find(s => s.id === id);
+  const selectedCotacoes = useMemo(() => cotacoes.filter(c => selectedIds.includes(c.id)), [cotacoes, selectedIds]);
+  const getScore = useCallback((id: string) => analysis?.scores.find(s => s.id === id), [analysis]);
 
   // Prepare chart data
   const barChartData = useMemo(() => {
@@ -216,7 +216,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
         }))
       },
     ];
-  }, [selectedCotacoes, analysis]);
+  }, [selectedCotacoes, getScore, analysis]);
 
   const pieData = useMemo(() => {
     return selectedCotacoes.map((c, index) => ({
@@ -224,7 +224,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
       value: getScore(c.id)?.score || 0,
       fill: COLORS[index % COLORS.length]
     }));
-  }, [selectedCotacoes, analysis]);
+  }, [selectedCotacoes, getScore]);
 
   if (!analysis) return null;
 
@@ -232,8 +232,10 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <Scale className="w-4 h-4" />
-          Comparador Visual
+          <span className="inline-flex items-center gap-2">
+            <Scale className="w-4 h-4" />
+            Comparador Visual
+          </span>
         </Button>
       </DialogTrigger>
 
@@ -282,7 +284,7 @@ export function VisualComparadorCotacoes({ cotacoes, quantidade, onSelecionar }:
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm truncate">{cotacao.fornecedor}</p>
                         <p className="text-xs text-muted-foreground">
-                          R$ {cotacao.total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          {formatCurrency(cotacao.total)}
                         </p>
                       </div>
                       <div className="flex flex-col items-end gap-1">

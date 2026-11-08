@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
 import {
   Building2, Package, FileText, TrendingUp, Clock,
   CheckCircle, AlertTriangle, DollarSign, Eye, Search,
@@ -20,12 +19,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { PageHeader } from '@/components/ui/page-header';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
-import { cn } from '@/lib/utils';
+import { cn, formatCurrency, formatDate } from '@/lib/utils';
 import {
   usePortalFornecedorData,
   statusPedido,
   statusCotacao,
-  formatCurrency,
 } from './portalFornecedorData';
 
 export default function PortalFornecedor() {
@@ -52,11 +50,11 @@ export default function PortalFornecedor() {
 
   // KPIs
   const kpis = useMemo(() => {
-    const pedidosAbertos = (pedidos as any[]).filter(p => !['entregue', 'cancelado'].includes(p.status)).length;
-    const cotacoesPendentes = (cotacoes as any[]).filter(c => c.status === 'pendente').length;
-    const volumeTotal = (pedidos as any[]).reduce((s: number, p: any) => s + (p.valor_total || 0), 0);
-    const entregasNoPrazo = (pedidos as any[]).filter(p => p.data_entrega && p.data_previsao && new Date(p.data_entrega) <= new Date(p.data_previsao)).length;
-    const totalEntregues = (pedidos as any[]).filter(p => p.data_entrega && p.data_previsao).length;
+    const pedidosAbertos = pedidos.filter(p => !['entregue', 'cancelado'].includes(p.status)).length;
+    const cotacoesPendentes = cotacoes.filter(c => c.status === 'pendente').length;
+    const volumeTotal = pedidos.reduce((s, p) => s + Number(p.valor_total || 0), 0);
+    const entregasNoPrazo = pedidos.filter(p => p.data_entrega && p.data_previsao && new Date(p.data_entrega) <= new Date(p.data_previsao)).length;
+    const totalEntregues = pedidos.filter(p => p.data_entrega && p.data_previsao).length;
     const otif = totalEntregues > 0 ? Math.round((entregasNoPrazo / totalEntregues) * 100) : 0;
 
     return { pedidosAbertos, cotacoesPendentes, volumeTotal, otif };
@@ -261,7 +259,7 @@ export default function PortalFornecedor() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {(pedidos as any[]).map(p => (
+                          {pedidos.map(p => (
                             <TableRow key={p.id}>
                               <TableCell className="font-mono text-xs">{p.numero}</TableCell>
                               <TableCell>
@@ -270,10 +268,10 @@ export default function PortalFornecedor() {
                                 </Badge>
                               </TableCell>
                               <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
-                                {format(new Date(p.data_emissao), 'dd/MM/yyyy', { locale: ptBR })}
+                                {formatDate(p.data_emissao)}
                               </TableCell>
                               <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
-                                {p.data_previsao ? format(new Date(p.data_previsao), 'dd/MM/yyyy', { locale: ptBR }) : '—'}
+                                {p.data_previsao ? formatDate(p.data_previsao) : '—'}
                               </TableCell>
                               <TableCell className="text-right font-medium">{formatCurrency(p.valor_total)}</TableCell>
                             </TableRow>
@@ -305,11 +303,11 @@ export default function PortalFornecedor() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {(cotacoes as any[]).map(c => (
+                          {cotacoes.map(c => (
                             <TableRow key={c.id}>
                               <TableCell className="font-mono text-xs">{c.numero}</TableCell>
                               <TableCell className="text-sm">
-                                {(c as any).solicitacao?.titulo || (c as any).solicitacao?.numero || '—'}
+                                {c.solicitacao?.titulo || c.solicitacao?.numero || '—'}
                               </TableCell>
                               <TableCell>
                                 <Badge variant={statusCotacao[c.status]?.variant || 'secondary'}>
@@ -349,7 +347,7 @@ export default function PortalFornecedor() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {contratos.map((ct: any) => (
+                          {contratos.map((ct) => (
                             <TableRow key={ct.id}>
                               <TableCell className="font-mono text-xs">{ct.contract_number}</TableCell>
                               <TableCell className="font-medium max-w-[200px] truncate">{ct.title}</TableCell>

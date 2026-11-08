@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, Sparkles, TrendingUp, Users, ArrowRight, Star, ShieldCheck, Zap } from "lucide-react";
@@ -36,7 +35,7 @@ export const SourcingIntelligenceWidget = () => {
         ];
       }
 
-      return linkedData.map((d: any) => ({
+      return linkedData.map((d) => ({
         category: d.produto?.nome || 'Insumo',
         supplier: d.fornecedor?.razao_social || 'Parceiro',
         saving: 'Optimization',

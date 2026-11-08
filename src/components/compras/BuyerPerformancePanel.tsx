@@ -5,10 +5,13 @@ import { PiggyBank, TrendingDown, Award, ArrowUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/features/auth";
 
 export const BuyerPerformancePanel = () => {
+  const { organizationId } = useAuth();
+
   const { data: cotacoes, isLoading } = useQuery({
-    queryKey: ['buyer-performance-cotacoes'],
+    queryKey: ['buyer-performance-cotacoes', organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('cotacoes')
@@ -16,11 +19,12 @@ export const BuyerPerformancePanel = () => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
+    enabled: !!organizationId,
   });
 
   const { data: solicitacoes } = useQuery({
-    queryKey: ['buyer-performance-solicitacoes'],
+    queryKey: ['buyer-performance-solicitacoes', organizationId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('solicitacoes')
@@ -28,7 +32,8 @@ export const BuyerPerformancePanel = () => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
+    enabled: !!organizationId,
   });
 
   const stats = useMemo(() => {
@@ -139,7 +144,7 @@ export const BuyerPerformancePanel = () => {
         <div className="space-y-2">
           {stats.topEconomias.length > 0 ? (
             stats.topEconomias.map((item, index) => (
-              <div key={index} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+              <div key={`${item.produto}-${index}`} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-muted-foreground w-4">
                     #{index + 1}

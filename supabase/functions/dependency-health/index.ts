@@ -1,11 +1,6 @@
+import { corsHeaders } from "../_shared/security.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-request-id",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-};
+import { safeTruncate } from "../_shared/logLevel.ts";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
@@ -76,7 +71,7 @@ async function fetchLatestCommit(
     return {
       latestCommitSha: body?.sha,
       latestCommitUrl: body?.html_url,
-      latestCommitMessage: String(body?.commit?.message ?? "").split("\n")[0]?.slice(0, 200),
+      latestCommitMessage: safeTruncate(String(body?.commit?.message ?? "").split("\n")[0] ?? "", 200),
       latestCommitAuthor: body?.commit?.author?.name ?? body?.author?.login,
       latestCommitAt: body?.commit?.author?.date,
     };
@@ -155,7 +150,7 @@ async function dispatchWorkflow(rawBase: string): Promise<DispatchInfo> {
     if (res.status !== 204) {
       const text = await res.text().catch(() => "");
       return {
-        status: `failed: HTTP ${res.status} ${text.slice(0, 200)}`,
+        status: `failed: HTTP ${res.status} ${safeTruncate(text, 200)}`,
         branch,
         dispatchedAt: dispatchedAt.toISOString(),
       };
@@ -463,6 +458,15 @@ async function handlePrSmoke(): Promise<Response> {
 }
 
 async function handleGet(req: Request): Promise<Response> {
+  // SECURITY: require authenticated user for all GET paths (internal operational data).
+  const auth = req.headers.get("Authorization");
+  if (!auth) return json({ error: "Unauthorized" }, 401);
+  const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    global: { headers: { Authorization: auth } },
+  });
+  const { data: userData, error: userErr } = await userClient.auth.getUser();
+  if (userErr || !userData.user) return json({ error: "Unauthorized" }, 401);
+
   const url = new URL(req.url);
   if (url.searchParams.get("history") === "true") {
     return await handleHistory();

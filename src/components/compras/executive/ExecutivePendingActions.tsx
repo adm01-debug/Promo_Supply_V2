@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, Clock, ArrowRight, ShieldAlert, Zap } from 'lucide-react';
-import { formatCurrency } from './executiveDashboardData';
-import { cn } from '@/lib/utils';
+
+import { cn, formatCurrency } from '@/lib/utils';
 
 interface PendingItem {
   id: string; type: string; item: string;

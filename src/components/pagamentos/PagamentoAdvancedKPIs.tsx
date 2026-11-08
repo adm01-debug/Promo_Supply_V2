@@ -13,7 +13,7 @@ import { endOfMonth } from "date-fns/endOfMonth";
 import { motion } from "framer-motion";
 import type { Pagamento } from "@/hooks/usePagamentos";
 import { ExecutiveMetricCard } from "@/components/compras/executive/ExecutiveMetricCard";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 interface PagamentoAdvancedKPIsProps {
   pagamentos: Pagamento[];
@@ -87,13 +87,11 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
     };
   }, [pagamentos]);
 
-  const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6">
-        <ExecutiveMetricCard title="Pending" value={kpis.pendentes} icon={Clock} subtitle={fmt(kpis.valorPendente)} delay={0} />
-        <ExecutiveMetricCard title="Overdue" value={kpis.vencidos} icon={AlertTriangle} subtitle={fmt(kpis.valorVencido)} delay={1} urgent={kpis.vencidos} />
+        <ExecutiveMetricCard title="Pending" value={kpis.pendentes} icon={Clock} subtitle={formatCurrency(kpis.valorPendente)} delay={0} />
+        <ExecutiveMetricCard title="Overdue" value={kpis.vencidos} icon={AlertTriangle} subtitle={formatCurrency(kpis.valorVencido)} delay={1} urgent={kpis.vencidos} />
         <ExecutiveMetricCard title="Paid (Month)" value={kpis.pagosMesAtual} icon={CheckCircle2} format="currency" delay={2} />
         <ExecutiveMetricCard title="DPO" value={kpis.dpo} icon={Timer} subtitle="Avg days to pay" delay={3} />
         <ExecutiveMetricCard title="On Time" value={kpis.onTimeRate} icon={Percent} format="percent" delay={4} />
@@ -119,7 +117,7 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
                 <div key={bucket.label} className="space-y-2">
                   <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
                     <span className="text-zinc-500">{bucket.label}</span>
-                    <span className="text-zinc-300">{fmt(bucket.value)}</span>
+                    <span className="text-zinc-300">{formatCurrency(bucket.value)}</span>
                   </div>
                   <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                     <motion.div 
@@ -148,13 +146,13 @@ export const PagamentoAdvancedKPIs = ({ pagamentos }: PagamentoAdvancedKPIsProps
             ].map((period) => (
               <div key={period.label} className="flex items-center justify-between p-4 rounded-2xl bg-white/[0.02] border border-white/5 transition-all hover:bg-white/[0.04]">
                 <span className="text-xs font-black uppercase tracking-widest text-zinc-500">{period.label}</span>
-                <span className={cn("text-base font-black tracking-tighter", period.color)}>{fmt(period.value)}</span>
+                <span className={cn("text-base font-black tracking-tighter", period.color)}>{formatCurrency(period.value)}</span>
               </div>
             ))}
             <div className="flex items-center justify-between pt-6 mt-2 border-t border-white/5">
               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-400">Total 90-Day Outlook</span>
               <span className="text-xl font-black text-white tracking-tighter">
-                {fmt(kpis.forecast30 + kpis.forecast60 + kpis.forecast90)}
+                {formatCurrency(kpis.forecast30 + kpis.forecast60 + kpis.forecast90)}
               </span>
             </div>
           </CardContent>

@@ -84,13 +84,19 @@ export const BuyerPerformanceAlerts = () => {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="relative">
-          {unreadCount > 0 ? <BellRing className="w-4 h-4 text-warning" /> : <Bell className="w-4 h-4" />}
-          <span className="ml-2 hidden sm:inline">Alertas</span>
-          {unreadCount > 0 && (
-            <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs">
-              {unreadCount > 9 ? '9+' : unreadCount}
-            </Badge>
-          )}
+          <span className="inline-flex items-center gap-1.5">
+            {unreadCount > 0 ? (
+              <BellRing className="w-4 h-4 text-warning" />
+            ) : (
+              <Bell className="w-4 h-4" />
+            )}
+            <span className="hidden sm:inline">Alertas</span>
+            {unreadCount > 0 && (
+              <Badge variant="destructive" className="h-5 min-w-5 flex items-center justify-center p-0 text-xs rounded-full">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </Badge>
+            )}
+          </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-96 p-0" align="end">

@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { logger } from '@/lib/logger';
 import { TrendingUp, TrendingDown, Minus, Calendar, BarChart3, AlertTriangle, Lightbulb, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -94,7 +95,7 @@ export function DemandPredictionPanel() {
   const { data: pedidos } = useQuery({
     queryKey: ['demand-prediction-pedidos'],
     queryFn: () => fetchAllRows<{ valor_total: number; data_emissao: string }>('pedidos', 'valor_total, data_emissao'),
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const historicalData = useMemo(() => {
@@ -137,7 +138,7 @@ export function DemandPredictionPanel() {
     try {
       const { data, error } = await supabase.functions.invoke('ai-demand-prediction', {
         body: {
-          historicalData: historicalData.map((item: any) => ({
+          historicalData: historicalData.map((item) => ({
             month: item.month,
             value: item.totalValue,
             quantity: item.totalQuantity,
@@ -156,7 +157,7 @@ export function DemandPredictionPanel() {
         description: 'A análise de demanda foi concluída com sucesso.',
       });
     } catch (error) {
-      console.error('Error generating prediction:', error);
+      logger.error('Error generating prediction', { error });
       toast({
         title: 'Erro na previsão',
         description: 'Não foi possível gerar a previsão. Tente novamente.',

@@ -63,12 +63,46 @@ export function useDeliveryEvents() {
   const { data: pedidos = [] } = useQuery({
     queryKey: ['delivery-calendar-pedidos'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: pedidoRows, error } = await supabase
         .from('pedidos')
-        .select('id, numero, status, data_previsao, data_entrega, valor_total, fornecedor_id, fornecedor:fornecedores(razao_social, nome_fantasia), pedido_itens(descricao, quantidade)')
+        .select('id, numero, status, data_previsao, data_entrega, valor_total, fornecedor_id')
         .order('data_previsao', { ascending: true });
       if (error) throw error;
-      return data || [];
+      const rows = (pedidoRows || []) as Array<{
+        id: string;
+        numero: string;
+        status: string;
+        data_previsao: string | null;
+        data_entrega: string | null;
+        valor_total: number | null;
+        fornecedor_id: string | null;
+      }>;
+
+      // Fetch related fornecedor + pedido_itens separately to avoid embed FK issues
+      const fornecedorIds = [...new Set(rows.map(r => r.fornecedor_id).filter(Boolean))] as string[];
+      const pedidoIds = rows.map(r => r.id);
+
+      const [fornecedoresRes, itensRes] = await Promise.all([
+        fornecedorIds.length
+          ? supabase.from('fornecedores').select('id, razao_social, nome_fantasia').in('id', fornecedorIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; razao_social: string; nome_fantasia: string | null }>, error: null }),
+        pedidoIds.length
+          ? supabase.from('pedido_itens').select('pedido_id, descricao, quantidade').in('pedido_id', pedidoIds)
+          : Promise.resolve({ data: [] as Array<{ pedido_id: string; descricao: string; quantidade: number }>, error: null }),
+      ]);
+
+      const fornecedoresMap = new Map((fornecedoresRes.data || []).map(f => [f.id, f]));
+      const itensByPedido = new Map<string, Array<{ descricao: string; quantidade: number }>>();
+      ((itensRes.data || []) as Array<{ pedido_id: string; descricao: string; quantidade: number }>).forEach(i => {
+        if (!itensByPedido.has(i.pedido_id)) itensByPedido.set(i.pedido_id, []);
+        itensByPedido.get(i.pedido_id)!.push({ descricao: i.descricao, quantidade: i.quantidade });
+      });
+
+      return rows.map(r => ({
+        ...r,
+        fornecedor: r.fornecedor_id ? fornecedoresMap.get(r.fornecedor_id) ?? null : null,
+        pedido_itens: itensByPedido.get(r.id) ?? [],
+      }));
     },
   });
 
@@ -92,10 +126,18 @@ export function useDeliveryEvents() {
         status = 'delayed';
       }
 
-      const fornecedor = pedido.fornecedor as any;
-      const itens = pedido.pedido_itens as any[];
-      const productName = itens?.[0]?.descricao || `Pedido #${pedido.numero}`;
-      const totalQty = itens?.reduce((acc: number, i: any) => acc + (i.quantidade || 0), 0) || 1;
+      const fornecedorRaw = pedido.fornecedor as
+        | { razao_social?: string | null; nome_fantasia?: string | null }
+        | Array<{ razao_social?: string | null; nome_fantasia?: string | null }>
+        | null
+        | undefined;
+      const fornecedor = Array.isArray(fornecedorRaw) ? fornecedorRaw[0] : fornecedorRaw;
+      const itens = (pedido.pedido_itens ?? []) as Array<{
+        descricao?: string | null;
+        quantidade?: number | null;
+      }>;
+      const productName = itens[0]?.descricao || `Pedido #${pedido.numero}`;
+      const totalQty = itens.reduce((acc, i) => acc + (i.quantidade ?? 0), 0) || 1;
 
       return {
         id: pedido.id,

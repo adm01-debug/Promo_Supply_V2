@@ -9,6 +9,11 @@ on:
 jobs:
   test-and-verify:
     runs-on: ubuntu-latest
+    env:
+      # Placeholder values so the Vite dev server can boot during E2E.
+      # Real credentials come from secrets when configured.
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL || secrets.SUPABASE_URL || 'https://placeholder.supabase.co' }}
+      VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || secrets.SUPABASE_ANON_KEY || 'placeholder-anon-key' }}
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
@@ -27,23 +32,47 @@ jobs:
       - name: Unit & Integration Tests
         run: bun run test
 
+      - name: RLS Regression Tests
+        # Only run when real Supabase credentials are configured
+        if: secrets.SUPABASE_URL != '' && secrets.SUPABASE_ANON_KEY != ''
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          RLS_TEST_USER_A: ${{ secrets.RLS_TEST_USER_A }}
+          RLS_TEST_USER_B: ${{ secrets.RLS_TEST_USER_B }}
+        run: bunx vitest run --config ./vitest.rls.config.ts
+
       - name: Playwright E2E Tests
         run: |
-          bunx playwright install --with-deps
-          bun run test:e2e
+          bunx playwright install --with-deps chromium
+          bunx playwright test --project=chromium
+        env:
+          E2E_TEST_EMAIL: ${{ secrets.E2E_TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ secrets.E2E_TEST_PASSWORD }}
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
 
       - name: Backend Stress & Load Test (Artillery)
+        # Only run when a real Supabase URL is configured via secrets
+        if: secrets.SUPABASE_URL != ''
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-        run: |
-          bun run test:load
+        run: bun run test:load
 
       - name: Edge Functions Contract & Simulation Gate
+        # Only run when both Supabase URL and service role key are configured
+        if: secrets.SUPABASE_URL != '' && secrets.SUPABASE_SERVICE_ROLE_KEY != ''
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: |
-          curl -X POST "${{ secrets.SUPABASE_URL }}/functions/v1/system-simulation" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" \
+          curl -f -X POST "$SUPABASE_URL/functions/v1/system-simulation" \
+            -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" \
             -H "Content-Type: application/json" \
             -d '{"iterations": 20, "validate_contracts": true}'

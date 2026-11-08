@@ -32,20 +32,22 @@ export const UserMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="flex items-center gap-2 h-auto py-1.5 px-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={profile?.avatar_url || undefined} />
-            <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
-          <div className="hidden md:flex flex-col items-start">
-            <span className="text-sm font-medium truncate max-w-[120px]">{displayName}</span>
-            {role && (
-              <Badge variant="outline" className={cn("text-[10px] py-0 px-1.5", roleColors[role])}>
-                {roleLabels[role]}
-              </Badge>
-            )}
-          </div>
+          <span className="inline-flex items-center gap-2">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={profile?.avatar_url || undefined} />
+              <AvatarFallback className="bg-primary text-primary-foreground text-xs">
+                {initials}
+              </AvatarFallback>
+            </Avatar>
+            <div className="hidden md:flex flex-col items-start">
+              <span className="text-sm font-medium truncate max-w-[120px]">{displayName}</span>
+              {role && (
+                <Badge variant="outline" className={cn("text-[10px] py-0 px-1.5", roleColors[role])}>
+                  {roleLabels[role]}
+                </Badge>
+              )}
+            </div>
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">

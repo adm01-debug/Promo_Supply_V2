@@ -4,8 +4,8 @@ import { GitCompare, AlertCircle } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell
 } from 'recharts';
-import { formatCurrency } from './executiveDashboardData';
-import { cn } from '@/lib/utils';
+
+import { cn, formatCurrency } from '@/lib/utils';
 
 const priceVarianceData = [
   { item: 'Notebook Dell', minPrice: 4500, maxPrice: 5800, variance: 28.8, avgPrice: 5150 },

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { logger } from '@/lib/logger';
 import { Scale, Search, TrendingDown, ArrowRight, Star, Clock, Truck, CheckCircle2, Loader2, Send, ListChecks, Brain } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -56,7 +57,7 @@ export function PriceComparator() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   // Fetch available products for selection
@@ -68,9 +69,9 @@ export function PriceComparator() {
         .select('id, nome, categoria_id')
         .limit(100);
       if (error) throw error;
-      return (data as any[]) || [];
+      return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const handleCompare = async () => {
@@ -88,7 +89,7 @@ export function PriceComparator() {
     setSelectedQuotes([]);
 
     try {
-      let linkedData: any[] = [];
+      let linkedData: { fornecedor_id: string; preco_custo?: number | null; lead_time_estimado?: number | null }[] = [];
       
       // If a product is selected, fetch its linked suppliers and prices
       if (selectedProductId) {
@@ -118,7 +119,7 @@ export function PriceComparator() {
         description: `${result.quotes.length} cotações processadas para "${displayProductName}"`,
       });
     } catch (error) {
-      console.error('Error comparing prices:', error);
+      logger.error('Error comparing prices', { error });
       toast({
         title: 'Erro na comparação',
         description: 'Não foi possível comparar os preços. Tente novamente.',
@@ -230,7 +231,7 @@ export function PriceComparator() {
                       <Brain className="w-3 h-3" /> IA Advisor Ativo
                     </Badge>
                   </div>
-                  <StrategicQuoteTable cotacoes={strategicData} quantidade={parseInt(quantity) || 100} />
+                  <StrategicQuoteTable cotacoes={strategicData as unknown as Parameters<typeof StrategicQuoteTable>[0]['cotacoes']} quantidade={parseInt(quantity, 10) || 100} />
                 </div>
 
                 {selectedQuotes.length >= 2 && (

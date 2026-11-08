@@ -30,7 +30,7 @@ import {
 } from "recharts";
 import type { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { EliteButton } from "@/components/atoms/EliteButton";
 
 const PIE_COLORS = ["hsl(var(--primary))", "#8b5cf6", "#10b981", "#f59e0b", "#ef4444", "#06b6d4", "#ec4899"];
@@ -45,7 +45,7 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameT
           <span className="text-[10px] font-bold text-muted-foreground uppercase">{entry.name}</span>
           <span className="text-sm font-black" style={{ color: entry.color }}>
             {typeof entry.value === "number"
-              ? entry.value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
+              ? formatCurrency(entry.value as number)
               : entry.value}
           </span>
         </div>
@@ -86,10 +86,11 @@ export const KPICards = ({ stats, isLoading }: { stats: Stats; isLoading: boolea
 
   return (
     <div className="grid grid-cols-2 gap-6 lg:grid-cols-4">
-      {items.map((item, idx) => (
+      {items.map((item) => (
         <motion.div
-          key={idx}
+          key={item.label}
           whileHover={{ y: -4, scale: 1.02 }}
+
           className="p-6 rounded-[2rem] border border-border/40 bg-card/40 backdrop-blur-xl shadow-xl shadow-black/5"
         >
           <div className="flex items-center justify-between mb-4">
@@ -213,7 +214,8 @@ export const SupplierPerformanceTable = ({ data }: { data: Stats['fornecedorPerf
         </thead>
         <tbody className="divide-y divide-border/5">
           {data.map((f, idx) => (
-            <tr key={idx} className="group hover:bg-primary/5 transition-colors cursor-pointer">
+            <tr key={f.nome ?? idx} className="group hover:bg-primary/5 transition-colors cursor-pointer">
+
               <td className="py-5 px-8">
                 <div className="flex items-center gap-4">
                   <div className={cn(

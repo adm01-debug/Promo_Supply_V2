@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
+import { logger } from '@/lib/logger';
 import { 
   FileText, 
   Building2, 
@@ -33,7 +34,9 @@ import { useCotacoes } from "@/features/cotacoes";
 import { Loader2 } from "lucide-react";
 
 import { getTipoLabel, buildWhatsAppMessage, buildEmailMessage } from './gerarOrdemHelpers';
+import { formatCurrency } from "@/lib/utils";
 import { generateOrderPDF } from "@/lib/pdfGenerator";
+import { LegacyFornecedor } from "@/types/legacyTypes";
 import { useAuth } from "@/features/auth";
 
 const GerarOrdem = () => {
@@ -82,7 +85,7 @@ const GerarOrdem = () => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   // Create a unified data shape
@@ -205,7 +208,7 @@ const GerarOrdem = () => {
         navigate("/acompanhamento");
       }
     } catch (error) {
-      console.error(error);
+      logger.error('Unexpected error', { error });
     } finally {
       setIsSubmitting(false);
     }
@@ -215,8 +218,8 @@ const GerarOrdem = () => {
     const doc = generateOrderPDF({
       numero: ordemNumero,
       data: new Date().toLocaleDateString('pt-BR'),
-      fornecedor,
-      solicitante: user,
+      fornecedor: fornecedor as Partial<LegacyFornecedor>,
+      solicitante: { email: user?.email },
       itens: [{
         descricao: solicitacao.produto,
         quantidade: solicitacao.quantidadeReal,
@@ -463,7 +466,7 @@ const GerarOrdem = () => {
                 <Separator />
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Subtotal</span>
-                  <span className="font-medium">R$ {subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                  <span className="font-medium">{formatCurrency(subtotal)}</span>
                 </div>
                 
                 {/* Frete Editável */}
@@ -508,7 +511,7 @@ const GerarOrdem = () => {
                 <div className="flex justify-between">
                   <span className="font-semibold text-foreground">TOTAL</span>
                   <span className="text-xl font-bold text-primary">
-                    R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                    {formatCurrency(total)}
                   </span>
                 </div>
               </div>

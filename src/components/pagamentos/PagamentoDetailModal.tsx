@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,6 +19,7 @@ import { useAuth } from "@/features/auth";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns/format";
 import type { Pagamento } from "@/hooks/usePagamentos";
+import { formatCurrency } from "@/lib/utils";
 
 interface Props {
   pagamento: Pagamento | null;
@@ -28,7 +29,7 @@ interface Props {
 }
 
 export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirmarPagamento }: Props) => {
-  const { user } = useAuth();
+  const { user, tenantId } = useAuth();
   const queryClient = useQueryClient();
   const [valorParcial, setValorParcial] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -68,7 +69,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
     enabled: !!pagamento?.id && open,
   });
 
-  const totalCreditos = creditos.reduce((s: number, c: any) => s + (c.saldo || 0), 0);
+  const totalCreditos = creditos.reduce((s: number, c) => s + (c.saldo || 0), 0);
   const saldoRestante = pagamento ? pagamento.valor - (pagamento.valor_pago || 0) : 0;
   const percentPago = pagamento ? ((pagamento.valor_pago || 0) / pagamento.valor) * 100 : 0;
   const isPago = pagamento?.status === 'pago';
@@ -76,10 +77,15 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
 
   const handleUploadComprovante = useCallback(async (file: File) => {
     if (!pagamento || !user) return;
+    if (!tenantId) {
+      toast({ title: 'Organização não identificada', description: 'Faça login novamente.', variant: 'destructive' });
+      return;
+    }
     setUploading(true);
     try {
       const ext = file.name.split('.').pop();
-      const path = `${pagamento.id}/${Date.now()}.${ext}`;
+      // Path convention enforced by storage RLS: {tenantId}/{userId}/...
+      const path = `${tenantId}/${user.id}/${pagamento.id}/${Date.now()}.${ext}`;
       const { error: uploadError } = await supabase.storage
         .from('comprovantes')
         .upload(path, file, { cacheControl: '3600' });
@@ -101,12 +107,12 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
       toast({ title: "Comprovante enviado!", description: "Arquivo salvo com sucesso." });
       queryClient.invalidateQueries({ queryKey: ['pagamentos'] });
       queryClient.invalidateQueries({ queryKey: ['payment-history', pagamento.id] });
-    } catch (err: any) {
-      toast({ title: "Erro no upload", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Erro no upload", description: (err as Error).message, variant: "destructive" });
     } finally {
       setUploading(false);
     }
-  }, [pagamento, user, queryClient]);
+  }, [pagamento, user, queryClient, tenantId]);
 
   const handleApplyCredit = useCallback(async (creditId: string, creditSaldo: number) => {
     if (!pagamento || !user) return;
@@ -138,16 +144,16 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
       await supabase.from('payment_history').insert({
         pagamento_id: pagamento.id,
         valor_parcela: aplicar,
-        observacoes: `Crédito de devolução aplicado: ${aplicar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`,
+        observacoes: `Crédito de devolução aplicado: ${formatCurrency(aplicar)}`,
         registrado_por: user.id,
       });
 
-      toast({ title: "Crédito aplicado!", description: `${aplicar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} abatido do pagamento.` });
+      toast({ title: "Crédito aplicado!", description: `${formatCurrency(aplicar)} abatido do pagamento.` });
       queryClient.invalidateQueries({ queryKey: ['pagamentos'] });
       queryClient.invalidateQueries({ queryKey: ['creditos-fornecedor'] });
       queryClient.invalidateQueries({ queryKey: ['payment-history'] });
-    } catch (err: any) {
-      toast({ title: "Erro", description: err.message, variant: "destructive" });
+    } catch (err: unknown) {
+      toast({ title: "Erro", description: (err as Error).message, variant: "destructive" });
     }
   }, [pagamento, user, saldoRestante, queryClient]);
 
@@ -157,7 +163,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
     try {
       const valor = valorParcial ? parseFloat(valorParcial) : undefined;
       if (valor && (valor <= 0 || valor > saldoRestante)) {
-        toast({ title: "Valor inválido", description: `Informe um valor entre R$ 0,01 e ${saldoRestante.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`, variant: "destructive" });
+        toast({ title: "Valor inválido", description: `Informe um valor entre R$ 0,01 e ${formatCurrency(saldoRestante)}`, variant: "destructive" });
         return;
       }
       const success = await onConfirmarPagamento(pagamento.id, valor);
@@ -184,8 +190,6 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
   };
 
   if (!pagamento) return null;
-
-  const fmt = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -219,8 +223,8 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                 </div>
                 <Progress value={percentPago} className="h-3" />
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Pago: {fmt(pagamento.valor_pago || 0)}</span>
-                  <span>Restante: {fmt(saldoRestante)}</span>
+                  <span>Pago: {formatCurrency(pagamento.valor_pago || 0)}</span>
+                  <span>Restante: {formatCurrency(saldoRestante)}</span>
                 </div>
               </div>
 
@@ -250,7 +254,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                 <div className="flex gap-2">
                   <Input
                     type="number"
-                    placeholder={`Total: ${fmt(saldoRestante)}`}
+                    placeholder={`Total: ${formatCurrency(saldoRestante)}`}
                     value={valorParcial}
                     onChange={(e) => setValorParcial(e.target.value)}
                     step="0.01"
@@ -313,7 +317,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
               </div>
               <div className="p-2 rounded bg-muted/50">
                 <p className="text-muted-foreground text-xs">Valor Total</p>
-                <p className="font-bold text-primary">{fmt(pagamento.valor)}</p>
+                <p className="font-bold text-primary">{formatCurrency(pagamento.valor)}</p>
               </div>
               <div className="p-2 rounded bg-muted/50">
                 <p className="text-muted-foreground text-xs">Vencimento</p>
@@ -349,8 +353,10 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
             {pagamento.comprovante_url && (
               <Button variant="outline" className="w-full gap-2" asChild>
                 <a href={pagamento.comprovante_url} target="_blank" rel="noopener noreferrer">
-                  <Image className="h-4 w-4" />
-                  Ver Comprovante
+                  <span className="inline-flex items-center gap-2">
+                    <Image className="h-4 w-4" />
+                    Ver Comprovante
+                  </span>
                 </a>
               </Button>
             )}
@@ -365,7 +371,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
             {historico.length === 0 ? (
               <p className="text-sm text-muted-foreground text-center py-4">Nenhum registro no histórico</p>
             ) : (
-              historico.map((h: any) => (
+              historico.map((h) => (
                 <Card key={h.id} className="p-3">
                   <div className="flex justify-between items-start">
                     <div>
@@ -374,7 +380,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                     </div>
                     {h.valor_parcela > 0 && (
                       <Badge variant="outline" className="bg-success/10 text-success">
-                        {fmt(h.valor_parcela)}
+                        {formatCurrency(h.valor_parcela)}
                       </Badge>
                     )}
                   </div>
@@ -389,10 +395,10 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
               <div className="p-3 bg-success/5 dark:bg-success/10 border border-success/20 dark:border-success/30 rounded-lg">
                 <p className="text-sm text-success dark:text-success flex items-center gap-2">
                   <DollarSign className="h-4 w-4" />
-                  {fmt(totalCreditos)} em créditos disponíveis para este fornecedor
+                  {formatCurrency(totalCreditos)} em créditos disponíveis para este fornecedor
                 </p>
               </div>
-              {creditos.map((c: any) => (
+              {creditos.map((c) => (
                 <Card key={c.id} className="p-3">
                   <div className="flex justify-between items-center">
                     <div>
@@ -400,7 +406,7 @@ export const PagamentoDetailModal = ({ pagamento, open, onOpenChange, onConfirma
                       <p className="text-xs text-muted-foreground">{c.descricao || `Emitido em ${format(new Date(c.data_emissao), 'dd/MM/yyyy')}`}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-bold text-success">{fmt(c.saldo)}</p>
+                      <p className="font-bold text-success">{formatCurrency(c.saldo)}</p>
                       <Button size="sm" variant="outline" className="mt-1" onClick={() => handleApplyCredit(c.id, c.saldo)}>
                         Aplicar
                       </Button>

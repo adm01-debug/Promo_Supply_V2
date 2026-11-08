@@ -44,19 +44,19 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { useApprovalNotifications } from "@/hooks/useApprovalNotifications";
-import { useApprovalWorkflow, type ApprovalStep } from "@/hooks/useApprovalWorkflow";
-import { toast } from "sonner";
+import { useApprovalWorkflow, type ApprovalStep, type ApprovalWorkflowWithRelations } from "@/hooks/useApprovalWorkflow";
+import { toast } from "@/lib/feedbackToast";
 import {
   PendingApprovalItem,
   SortOption,
   FilterStatus,
-  formatCurrency,
   getTimeStatus,
   getTimeProgress,
 } from "./pending-approvals/pendingApprovalsData";
 import { RejectModal, DetailsModal } from "./pending-approvals/ApprovalModals";
+import { resolveApprovalDeadline } from "./pending-approvals/deadlineFallback";
 
 export const PendingApprovalsList = () => {
   const { pendingSteps, workflows, allHistory, approveStep, rejectStep, loading: workflowLoading, fetchAllHistory } = useApprovalWorkflow();
@@ -72,25 +72,32 @@ export const PendingApprovalsList = () => {
 
   // Map pendingSteps to the format expected by the UI
   const approvals: PendingApprovalItem[] = useMemo(() => {
-    return pendingSteps.map((step: any) => {
-      const workflow = workflows.find(w => w.id === step.workflow_id);
+    return pendingSteps.map((step: ApprovalStep) => {
+      const workflow: ApprovalWorkflowWithRelations | undefined = workflows.find(w => w.id === step.workflow_id);
       const history = allHistory.filter(h => h.workflow_id === step.workflow_id && h.acao === 'approved');
-      
+      const solicitacao = workflow?.solicitacoes ?? null;
+      const categoria = workflow?.categorias ?? null;
+
       return {
         id: step.id,
         workflow_id: step.workflow_id,
-        solicitacao_id: workflow?.solicitacao_id || step.solicitacao_id || step.workflow_id,
-        solicitacao_numero: (workflow as any)?.solicitacoes?.numero || workflow?.id?.substring(0, 8) || "SOL-...",
-        descricao: (workflow as any)?.solicitacoes?.titulo || "Aprovação pendente",
-        solicitante: (workflow as any)?.solicitacoes?.solicitante?.full_name || "Sistema",
+        solicitacao_id: workflow?.solicitacao_id || step.workflow_id,
+        solicitacao_numero: solicitacao?.numero || workflow?.id?.substring(0, 8) || "SOL-...",
+        descricao: solicitacao?.titulo || "Aprovação pendente",
+        solicitante: solicitacao?.solicitante?.full_name || "Sistema",
         valor: workflow?.valor || 0,
         data_solicitacao: workflow?.created_at || step.created_at,
-        prazo_limite: step.prazo_limite,
+        prazo_limite: resolveApprovalDeadline({
+          stepPrazoLimite: step.prazo_limite,
+          workflowPrazoLimite: workflow?.prazo_limite,
+          workflowCreatedAt: workflow?.created_at,
+          stepCreatedAt: step.created_at,
+        }),
         etapa_atual: step.etapa,
         total_etapas: workflow?.total_etapas || 1,
-        urgente: (workflow as any)?.solicitacoes?.prioridade === 'urgente',
+        urgente: solicitacao?.prioridade === 'urgente',
         escalado: !!step.delegacao_id,
-        categoria: (workflow as any)?.categorias?.nome || "Geral",
+        categoria: categoria?.nome || "Geral",
         aprovadores_anteriores: history.map(h => h.usuario_nome || 'Aprovador')
       };
     });
@@ -223,7 +230,7 @@ export const PendingApprovalsList = () => {
   };
 
   const triggerNotificationCheck = () => {
-    checkApprovalDeadlines(getMonitoringApprovals(), 120, 30, 0);
+    checkApprovalDeadlines(getMonitoringApprovals(), 120, 30);
     toast.info("Verificação de prazos realizada", {
       description: "Notificações serão enviadas para aprovações próximas do limite"
     });

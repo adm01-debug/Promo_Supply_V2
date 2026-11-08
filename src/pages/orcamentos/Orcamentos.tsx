@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { formatCurrency } from '@/lib/utils';
 import { MainLayout } from '@/features/layout/components/MainLayout';
 import { ModuleErrorBoundary } from '@/features/layout/components/ModuleErrorBoundary';
 import { PageTransition } from '@/components/animations/MotionComponents';
@@ -20,8 +21,6 @@ import { motion } from 'framer-motion';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Legend, Cell
 } from 'recharts';
-
-const formatCurrency = (val: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
 const meses = [
   { value: '', label: 'Anual' },
@@ -46,8 +45,8 @@ const Orcamentos = () => {
       cost_center_id: form.cost_center_id,
       centro_custo: form.centro_custo,
       departamento: form.departamento,
-      ano: parseInt(form.ano),
-      mes: form.mes ? parseInt(form.mes) : null,
+      ano: parseInt(form.ano, 10),
+      mes: form.mes ? parseInt(form.mes, 10) : null,
       valor_total: valor,
     }, {
       onSuccess: () => {

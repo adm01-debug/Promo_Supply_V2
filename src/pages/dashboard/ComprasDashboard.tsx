@@ -28,7 +28,7 @@ import { UrgentItemsList } from "@/components/compras/UrgentItemsList";
 import { CriticalAlertsBar } from "@/components/compras/CriticalAlertsBar";
 import { PurchaseClimateWidget } from "@/components/compras/PurchaseClimateWidget";
 import { DraggableDashboard } from "@/components/compras/DraggableDashboard";
-import { useDashboardKPIs } from "@/hooks/useDashboardKPIs";
+import { useDashboardKPIs, type DashboardKPIsExtended, type PipelineData } from "@/hooks/useDashboardKPIs";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { FilterFavoritesManager } from "@/components/compras/FilterFavoritesManager";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -41,6 +41,7 @@ import { useQuery } from "@tanstack/react-query";
 import { performanceMonitor } from "@/lib/performance";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { EliteCardGrid } from "@/components/organisms/EliteCardGrid";
+import { formatCurrency } from "@/lib/utils";
 
 // Lazy load heavy panels
 const SLADistributionChart = lazy(() => import("@/components/compras/SLADistributionChart").then(m => ({ default: m.SLADistributionChart })));
@@ -55,6 +56,16 @@ const RiskHeatMap = lazy(() => import("@/components/compras/RiskHeatMap").then(m
 const DashboardInsights = lazy(() => import("@/components/compras/DashboardInsights").then(m => ({ default: m.DashboardInsights })));
 const ActiveSourcingWidget = lazy(() => import("@/components/compras/ActiveSourcingWidget").then(m => ({ default: m.ActiveSourcingWidget })));
 const SourcingIntelligenceWidget = lazy(() => import("@/components/compras/SourcingIntelligenceWidget").then(m => ({ default: m.SourcingIntelligenceWidget })));
+
+interface UrgentDashboardItem {
+  id: string;
+  numero?: string | null;
+  titulo?: string | null;
+  status: string;
+  data_necessidade?: string | null;
+  urgencia?: string | null;
+  comprador?: string | null;
+}
 
 const LazyPanel = ({ children }: { children: React.ReactNode }) => (
   <Suspense fallback={<Skeleton variant="card" />}>
@@ -78,7 +89,7 @@ const ComprasDashboard = () => {
     loading: accountFiltersLoading
   } = useAccountFilters('compras-dashboard', filterDefaults);
 
-  const { kpis, pipeline, urgentItems, loading: kpisLoading } = useDashboardKPIs(currentFilters);
+  const { kpis, pipeline, urgentItems, loading: kpisLoading } = useDashboardKPIs(currentFilters) as { kpis: DashboardKPIsExtended; pipeline: PipelineData; urgentItems: UrgentDashboardItem[]; loading: boolean };
   const loading = kpisLoading || accountFiltersLoading;
 
   useEffect(() => {
@@ -162,7 +173,7 @@ const ComprasDashboard = () => {
               sparklineData={kpis.comparisons.economia.sparkline}
               icon={PiggyBank}
               color="emerald"
-              subtitle={`${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(kpis.economiaGerada)} economizados`}
+              subtitle={`${formatCurrency(kpis.economiaGerada)} economizados`}
               format="percent"
               variant="featured"
             />
@@ -191,7 +202,7 @@ const ComprasDashboard = () => {
               <BarChart3 className="w-5 h-5 text-primary" />
               Fluxo Visual de Pedidos
             </h2>
-            <PipelineChart data={pipeline} previousData={(kpis as any).previousPipeline} />
+            <PipelineChart data={pipeline} />
           </Card>
         );
       case 'urgent-items':
@@ -207,14 +218,14 @@ const ComprasDashboard = () => {
               </EliteButton>
             </div>
             {urgentItems.length > 0 ? (
-              <UrgentItemsList items={urgentItems.map(item => ({
-                id: (item as any).numero || item.id.substring(0, 8),
+              <UrgentItemsList items={urgentItems.map((item) => ({
+                id: item.numero || item.id.substring(0, 8),
                 dbId: item.id,
-                produto: (item as any).titulo || "Item sem título",
+                produto: item.titulo || "Item sem título",
                 fornecedor: item.status || "Análise Pendente",
                 vencimento: item.data_necessidade ? new Date(item.data_necessidade).toLocaleDateString('pt-BR') : 'TBD',
-                urgencia: (item as any).urgencia || 'alto',
-                comprador: (item as any).comprador
+                urgencia: (item.urgencia || 'alto') as 'alto' | 'critico' | 'medio',
+                comprador: item.comprador ?? undefined
               }))} />
             ) : (
               <p className="text-sm text-muted-foreground text-center py-12">Nenhum item urgente detectado.</p>
@@ -300,7 +311,7 @@ const ComprasDashboard = () => {
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-border/50">
                   <SelectItem value="all">Todas as Categorias</SelectItem>
-                  {categories.map((cat: any) => (
+                  {categories.map((cat) => (
                     <SelectItem key={cat.id} value={cat.id}>{cat.nome}</SelectItem>
                   ))}
                 </SelectContent>
@@ -316,7 +327,7 @@ const ComprasDashboard = () => {
                 </SelectTrigger>
                 <SelectContent className="rounded-xl border-border/50">
                   <SelectItem value="all">Todos os Fornecedores</SelectItem>
-                  {suppliers.map((sup: any) => (
+                  {suppliers.map((sup) => (
                     <SelectItem key={sup.id} value={sup.id}>{sup.razao_social}</SelectItem>
                   ))}
                 </SelectContent>

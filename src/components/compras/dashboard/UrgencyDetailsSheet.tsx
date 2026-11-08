@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { logger } from '@/lib/logger';
 import { 
   Sheet, 
   SheetContent, 
@@ -25,12 +26,12 @@ import {
   Zap,
   Send
 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 
 interface UrgencyDetailsSheetProps {
   itemId: string | null;
@@ -58,7 +59,6 @@ export const UrgencyDetailsSheet = ({
           *,
           fornecedor:fornecedores(razao_social, nome_fantasia),
           categoria:categorias(nome),
-          solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name),
           cotacoes(id, created_at, valor_total, fornecedores(razao_social))
         `)
         .eq('id', itemId)
@@ -103,7 +103,7 @@ export const UrgencyDetailsSheet = ({
       toast.success("Status atualizado com sucesso!");
       onStatusUpdate?.(itemId, newStatus);
     } catch (error) {
-      console.error(error);
+      logger.error('Unexpected error', { error });
       toast.error("Erro ao atualizar status.");
     }
   };
@@ -225,7 +225,7 @@ export const UrgencyDetailsSheet = ({
                 <div className="space-y-3">
                   <div className="flex items-center justify-between py-2 border-b border-border/30">
                     <span className="text-xs text-muted-foreground">Solicitante</span>
-                    <span className="text-xs font-bold">{(item as any).solicitante?.full_name || "Desconhecido"}</span>
+                    <span className="text-xs font-bold">{(item as { solicitante?: { full_name?: string } | null }).solicitante?.full_name || "Desconhecido"}</span>
                   </div>
                   <div className="flex items-center justify-between py-2 border-b border-border/30">
                     <span className="text-xs text-muted-foreground">Data da Solicitação</span>
@@ -240,7 +240,7 @@ export const UrgencyDetailsSheet = ({
                   <div className="flex items-center justify-between py-2 border-b border-border/30">
                     <span className="text-xs text-muted-foreground">Valor Estimado</span>
                     <span className="text-xs font-black text-primary">
-                      {item.valor_estimado ? item.valor_estimado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : 'N/A'}
+                      {item.valor_estimado ? formatCurrency(item.valor_estimado) : 'N/A'}
                     </span>
                   </div>
                 </div>

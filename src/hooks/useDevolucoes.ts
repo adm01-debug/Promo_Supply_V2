@@ -1,9 +1,11 @@
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
 import { format } from 'date-fns';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
+import { escapeIlike } from '@/lib/supabaseQuery';
 import type { Database } from '@/integrations/supabase/types';
 
 export type Devolucao = Database['public']['Tables']['devolucoes']['Row'] & {
@@ -59,23 +61,48 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
     queryFn: async () => {
       let query = supabase
         .from('devolucoes')
-        .select(`*, fornecedor:fornecedores(id, razao_social, nome_fantasia), pedido:pedidos(id, numero)`)
+        .select('*')
         .eq('tenant_id', tenantId || organizationId || '00000000-0000-0000-0000-000000000000')
         .order('created_at', { ascending: false });
 
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
       if (filters?.fornecedor_id) query = query.eq('fornecedor_id', filters.fornecedor_id);
-      if (filters?.search) query = query.or(`numero.ilike.%${filters.search}%,motivo_detalhe.ilike.%${filters.search}%`);
+      if (filters?.search) {
+        const s = escapeIlike(filters.search);
+        query = query.or(`numero.ilike.%${s}%,motivo_detalhe.ilike.%${s}%`);
+      }
 
-      const { data, error } = await query;
+      const { data: devRows, error } = await query;
       if (error) throw error;
-      return (data || []) as unknown as Devolucao[];
+      const rows = (devRows || []) as unknown as Database['public']['Tables']['devolucoes']['Row'][];
+
+      // Fetch related fornecedor + pedido separately to avoid embed FK issues
+      const fornecedorIds = [...new Set(rows.map(r => r.fornecedor_id).filter(Boolean))] as string[];
+      const pedidoIds = [...new Set(rows.map(r => r.pedido_id).filter(Boolean))] as string[];
+
+      const [fornecedoresRes, pedidosRes] = await Promise.all([
+        fornecedorIds.length
+          ? supabase.from('fornecedores').select('id, razao_social, nome_fantasia').in('id', fornecedorIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; razao_social: string; nome_fantasia: string | null }>, error: null }),
+        pedidoIds.length
+          ? supabase.from('pedidos').select('id, numero').in('id', pedidoIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; numero: string }>, error: null }),
+      ]);
+
+      const fornecedoresMap = new Map((fornecedoresRes.data || []).map(f => [f.id, f]));
+      const pedidosMap = new Map((pedidosRes.data || []).map(p => [p.id, p]));
+
+      return rows.map(r => ({
+        ...r,
+        fornecedor: r.fornecedor_id ? fornecedoresMap.get(r.fornecedor_id) ?? null : null,
+        pedido: r.pedido_id ? pedidosMap.get(r.pedido_id) ?? null : null,
+      })) as Devolucao[];
     },
     enabled: !!user,
     staleTime: 30_000,
   });
 
-  const devolucoes = data || [];
+  const devolucoes = useMemo(() => data ?? [], [data]);
 
   const createDevolucao = useCallback(async (input: CreateDevolucaoInput) => {
     if (!user) { toast.error('Você precisa estar logado'); return null; }
@@ -97,7 +124,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
         valor_total: valorTotal,
         status: 'solicitada',
         tenant_id: tenantId || organizationId,
-      } as any).select().single();
+      } as never).select().single();
       if (error) throw error;
 
       if (input.itens.length > 0) {
@@ -110,7 +137,8 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
           valor_total: i.quantidade * i.valor_unitario,
           motivo: i.motivo || input.motivo,
         }));
-        await supabase.from('devolucao_itens').insert(itens);
+        const { error: itensError } = await supabase.from('devolucao_itens').insert(itens);
+        if (itensError) throw itensError;
       }
 
       toast.success('Devolução criada com sucesso!');
@@ -120,7 +148,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
       toast.error('Erro ao criar devolução: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
       return null;
     }
-  }, [user, queryClient]);
+  }, [user, queryClient, tenantId, organizationId]);
 
   const updateStatus = useCallback(async (id: string, newStatus: string) => {
     const dev = devolucoes.find(d => d.id === id);
@@ -151,7 +179,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
           descricao: `Crédito ref. devolução ${dev.numero}`,
           created_by: user?.id,
           tenant_id: tenantId || organizationId,
-        } as any);
+        } as never);
         toast.success('Crédito gerado automaticamente!');
       }
 
@@ -163,7 +191,7 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
       toast.error('Erro: ' + (err instanceof Error ? err.message : 'Erro desconhecido'));
       return false;
     }
-  }, [devolucoes, user, queryClient]);
+  }, [devolucoes, user, queryClient, tenantId, organizationId]);
 
   const deleteDevolucao = useCallback(async (id: string) => {
     try {
@@ -178,17 +206,11 @@ export function useDevolucoes(filters?: { status?: string; search?: string; forn
     }
   }, [queryClient]);
 
-  // Realtime
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('devolucoes-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'devolucoes' }, () => {
-        queryClient.invalidateQueries({ queryKey: ['devolucoes'] });
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, queryClient]);
+  useRealtimeSubscription({
+    tables: ['devolucoes'],
+    queryKeysToInvalidate: [['devolucoes']],
+    enabled: !!user,
+  });
 
   return { devolucoes, loading: isLoading, error: error?.message || null, refetch, createDevolucao, updateStatus, deleteDevolucao };
 }
@@ -202,20 +224,42 @@ export function useCreditosFornecedor(fornecedorId?: string) {
     queryFn: async () => {
       let query = supabase
         .from('creditos_fornecedor')
-        .select(`*, fornecedor:fornecedores(id, razao_social, nome_fantasia), devolucao:devolucoes(id, numero)`)
+        .select('*')
         .order('created_at', { ascending: false });
       if (fornecedorId) query = query.eq('fornecedor_id', fornecedorId);
       query = query.eq('tenant_id', tenantId || organizationId || '00000000-0000-0000-0000-000000000000');
-      const { data, error } = await query;
+      const { data: credRows, error } = await query;
       if (error) throw error;
-      return (data || []) as unknown as CreditoFornecedor[];
+      const rows = (credRows || []) as unknown as Database['public']['Tables']['creditos_fornecedor']['Row'][];
+
+      // Fetch related fornecedor + devolucao separately to avoid embed FK issues
+      const fornecedorIds = [...new Set(rows.map(r => r.fornecedor_id).filter(Boolean))] as string[];
+      const devolucaoIds = [...new Set(rows.map(r => r.devolucao_id).filter(Boolean))] as string[];
+
+      const [fornecedoresRes, devolucoesRes] = await Promise.all([
+        fornecedorIds.length
+          ? supabase.from('fornecedores').select('id, razao_social, nome_fantasia').in('id', fornecedorIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; razao_social: string; nome_fantasia: string | null }>, error: null }),
+        devolucaoIds.length
+          ? supabase.from('devolucoes').select('id, numero').in('id', devolucaoIds)
+          : Promise.resolve({ data: [] as Array<{ id: string; numero: string }>, error: null }),
+      ]);
+
+      const fornecedoresMap = new Map((fornecedoresRes.data || []).map(f => [f.id, f]));
+      const devolucoesMap = new Map((devolucoesRes.data || []).map(d => [d.id, d]));
+
+      return rows.map(r => ({
+        ...r,
+        fornecedor: r.fornecedor_id ? fornecedoresMap.get(r.fornecedor_id) ?? null : null,
+        devolucao: r.devolucao_id ? devolucoesMap.get(r.devolucao_id) ?? null : null,
+      })) as CreditoFornecedor[];
     },
     enabled: !!user,
     staleTime: 30_000,
   });
 
-  const creditos = data || [];
-  const saldoTotal = creditos.filter(c => c.status === 'ativo').reduce((s, c) => s + c.saldo, 0);
+  const creditos = useMemo(() => data ?? [], [data]);
+  const saldoTotal = creditos.filter(c => c.status === 'ativo').reduce((s, c) => s + (Number(c.saldo) || 0), 0);
 
   const utilizarCredito = useCallback(async (creditoId: string, valor: number, pagamentoId?: string) => {
     const credito = creditos.find(c => c.id === creditoId);
@@ -238,17 +282,11 @@ export function useCreditosFornecedor(fornecedorId?: string) {
     }
   }, [creditos, queryClient]);
 
-  // Realtime
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('creditos-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'creditos_fornecedor' }, () => {
-        queryClient.invalidateQueries({ queryKey: ['creditos-fornecedor'] });
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, queryClient]);
+  useRealtimeSubscription({
+    tables: ['creditos_fornecedor'],
+    queryKeysToInvalidate: [['creditos-fornecedor']],
+    enabled: !!user,
+  });
 
   return { creditos, saldoTotal, loading: isLoading, utilizarCredito };
 }

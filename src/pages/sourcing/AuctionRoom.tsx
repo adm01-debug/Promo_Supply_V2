@@ -26,6 +26,7 @@ import {
   Area
 } from "recharts";
 import { format } from "date-fns";
+import { formatCurrency } from "@/lib/utils";
 
 const AuctionRoom = () => {
   const { id } = useParams();
@@ -73,7 +74,7 @@ const AuctionRoom = () => {
 
   const bestBid = useMemo(() => {
     if (lances.length === 0) return event?.budget_estimate || 0;
-    return Math.min(...lances.map(l => l.valor_lance));
+    return lances.reduce((min, l) => l.valor_lance < min ? l.valor_lance : min, Infinity);
   }, [lances, event?.budget_estimate]);
 
   if (loadingEvent) return <Skeleton className="h-96 w-full" />;
@@ -88,7 +89,7 @@ const AuctionRoom = () => {
             </Button>
             <div>
               <div className="flex items-center gap-2">
-                <Badge className="bg-red-500 hover:bg-red-600 animate-pulse">AO VIVO</Badge>
+                <Badge variant="destructive" className="animate-pulse">AO VIVO</Badge>
                 <span className="text-sm font-mono text-muted-foreground">{event?.numero}</span>
               </div>
               <h1 className="text-2xl font-bold">{event?.title}</h1>
@@ -100,7 +101,7 @@ const AuctionRoom = () => {
               <Clock className="w-4 h-4" />
               <span className="text-sm font-medium uppercase tracking-wider">Tempo Restante</span>
             </div>
-            <div className="text-3xl font-mono font-bold text-red-600 tracking-tighter">
+            <div className="text-3xl font-mono font-bold text-destructive tracking-tighter">
               {timeLeft}
             </div>
           </div>
@@ -125,7 +126,7 @@ const AuctionRoom = () => {
 
               <Card className="p-4">
                 <div className="flex items-center gap-3 mb-2">
-                  <Users className="w-4 h-4 text-blue-600" />
+                  <Users className="w-4 h-4 text-info" />
                   <span className="text-xs font-semibold text-muted-foreground uppercase">Participantes Ativos</span>
                 </div>
                 <div className="text-2xl font-bold">
@@ -171,7 +172,7 @@ const AuctionRoom = () => {
                     />
                     <ChartTooltip 
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                      formatter={(value: any) => [value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), 'Lance']}
+                      formatter={(value: number) => [formatCurrency(value), 'Lance']}
                     />
                     <Area 
                       type="monotone" 
@@ -208,7 +209,7 @@ const AuctionRoom = () => {
                       </div>
                       <div className="text-right">
                         <span className={`text-sm font-bold ${l.valor_lance === bestBid ? 'text-emerald-600' : ''}`}>
-                          {l.valor_lance.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          {formatCurrency(l.valor_lance)}
                         </span>
                         {i < lances.length - 1 && (
                           <span className="text-[9px] text-muted-foreground block">

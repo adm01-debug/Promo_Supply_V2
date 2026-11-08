@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
 import { useSecurityLogs, ActiveSession } from '@/hooks/useSecurityLogs';
 import { useAuth } from '@/features/auth';
 import { format } from "date-fns/format";

@@ -21,8 +21,10 @@ export const LanguageSwitcher = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-9 w-9" title="Alterar idioma / Change language">
-          <Languages className="h-[1.2rem] w-[1.2rem]" />
-          <span className="sr-only">Toggle language</span>
+          <span className="inline-flex items-center">
+            <Languages className="h-[1.2rem] w-[1.2rem]" />
+            <span className="sr-only">Toggle language</span>
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

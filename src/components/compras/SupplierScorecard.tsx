@@ -45,7 +45,7 @@ export const SupplierScorecard = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedSupplier, setSelectedSupplier] = useState<SupplierScore | null>(null);
 
-  const { data: suppliers = [], isLoading } = useSupplierScorecardData(parseInt(selectedPeriod));
+  const { data: suppliers = [], isLoading } = useSupplierScorecardData(parseInt(selectedPeriod, 10));
 
   const filteredSuppliers = useMemo(() =>
     suppliers.filter(s => selectedCategory === "all" || s.category === selectedCategory),

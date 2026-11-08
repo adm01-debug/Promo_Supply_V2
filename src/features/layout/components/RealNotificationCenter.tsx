@@ -144,19 +144,21 @@ export function RealNotificationCenter() {
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
-          {unreadCount > 0 ? (
-            <BellRing className="h-5 w-5 animate-pulse" />
-          ) : (
-            <Bell className="h-5 w-5" />
-          )}
-          {unreadCount > 0 && (
-            <Badge
-              variant="destructive"
-              className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 text-[10px] flex items-center justify-center"
-            >
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </Badge>
-          )}
+          <span className="inline-flex items-center relative">
+            {unreadCount > 0 ? (
+              <BellRing className="h-5 w-5 animate-pulse" />
+            ) : (
+              <Bell className="h-5 w-5" />
+            )}
+            {unreadCount > 0 && (
+              <Badge
+                variant="destructive"
+                className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 text-[10px] flex items-center justify-center"
+              >
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </Badge>
+            )}
+          </span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-96 p-0" align="end">

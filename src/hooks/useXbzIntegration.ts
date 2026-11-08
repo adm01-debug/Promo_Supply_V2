@@ -1,0 +1,614 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/lib/feedbackToast';
+import { logger } from '@/lib/logger';
+import { normalizeBusca, type XbzPermissions } from '@/pages/catalogo-xbz/xbzHelpers';
+
+/**
+ * Tempo máximo (ms) que o cliente espera pelo `xbz-proxy`. O portal da XBZ é
+ * lento e instável em picos; sem esse teto o spinner ficaria preso para sempre.
+ */
+const XBZ_CLIENT_TIMEOUT_MS = 45_000;
+
+/**
+ * Ações seguras para repetir automaticamente: são somente-leitura na XBZ, logo
+ * uma nova tentativa nunca duplica pedidos, itens de carrinho ou credenciais.
+ */
+const IDEMPOTENT_ACTIONS = new Set<string>([
+  'catalogo',
+  'cores',
+  'fiscalSt',
+  'pedidos',
+  'dashboard',
+  'vendedor',
+  'pessoaToken',
+  'carrinhoResumo',
+  'carrinhoListar',
+  'entregaTipos',
+  'pagamentoTipos',
+  'credentialsStatus',
+]);
+
+/** Tentativas extras (além da inicial) e base do backoff exponencial. */
+const RETRY_MAX_ATTEMPTS = 2;
+const RETRY_BASE_DELAY_MS = 600;
+
+/** Só faz sentido repetir em falhas transitórias: timeout, rede ou 5xx. */
+function isRetryableStatus(status: number): boolean {
+  return status === 408 || status === 0 || (status >= 500 && status <= 599);
+}
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+
+
+
+/** Resposta padronizada do proxy `xbz-proxy`. */
+interface XbzEnvelope<T> {
+  data: T;
+  stockConflict?: boolean;
+  warning?: string | null;
+  error?: string;
+  /** `true` quando a resposta veio do espelho local (XBZ indisponível). */
+  stale?: boolean;
+  source?: string;
+  /** ISO da última sincronização do espelho local, quando `stale`. */
+  syncedAt?: string | null;
+}
+
+/** Resultado da busca de catálogo com indicação de origem dos dados. */
+export interface XbzCatalogoResult {
+  produtos: XbzProdutoRaw[];
+  stale: boolean;
+  syncedAt: string | null;
+}
+
+
+
+export interface XbzLoginInfo {
+  pessoaId: number;
+  razaoSocial: string | null;
+  nomeFantasia?: string | null;
+  bloqueado: boolean;
+  bloqueioMotivo?: string | null;
+  permissions: XbzPermissions;
+}
+
+export interface XbzCredentialStatus {
+  pessoa_id: number | null;
+  cnpj: string | null;
+  razao_social: string | null;
+  label: string | null;
+  permissions: XbzPermissions;
+  is_active: boolean;
+  last_login_at: string | null;
+  last_login_ok: boolean | null;
+  last_error: string | null;
+}
+
+export interface XbzDashboard {
+  mensagem?: string;
+  qtdAguardandoAprovacao?: number;
+  qtdEmitidos?: number;
+  qtdAguardandoPagamento?: number;
+  qtdProducao?: number;
+  qtdProntoParaRetirada?: number;
+}
+
+export interface XbzPedidoRaw {
+  pedidoNumero?: string;
+  numero?: string;
+  ordemDeCompra?: string;
+  dataEmissao?: string;
+  idStatus?: number;
+  statusLogistico?: string;
+  idLoteDebitoStatus?: number;
+  loteDebitoStatusCliente?: string;
+  pedidoValorTotal?: number;
+  produtoNome?: string;
+  quantidade?: number;
+  [key: string]: unknown;
+}
+
+export interface XbzProdutoRaw {
+  ProdutoId?: number;
+  Id?: number;
+  Sku?: string;
+  Nome?: string;
+  NomeCor?: string;
+  Preco?: number;
+  Quantidade?: number;
+  Disponivel?: string;
+  VendaMinima?: number;
+  Multiplos?: number;
+  LinkImagem?: string;
+  [key: string]: unknown;
+}
+
+export interface XbzCarrinhoResumo {
+  itensNoCarrinhoQtd?: number;
+  itensNoCarrinhoValor?: number;
+  itensSelecionadosValorTotal?: number;
+  pessoaRazaoSocial?: string;
+  [key: string]: unknown;
+}
+
+export interface XbzCarrinhoItem {
+  id?: number;
+  produtoId?: number;
+  produtoNome?: string;
+  quantidade?: number;
+  valorTotal?: number;
+  [key: string]: unknown;
+}
+
+export interface XbzPedidosFilters {
+  periodo?: number;
+  statusFinanceiro?: number;
+  numeroPedido?: string;
+}
+
+/** Erro da integração XBZ com o status HTTP preservado para tratamento na UI. */
+export class XbzRequestError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'XbzRequestError';
+    this.status = status;
+  }
+}
+
+/** Rejeita com `XbzRequestError` (status 408) se a promessa exceder o teto de tempo. */
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new XbzRequestError('A XBZ demorou demais para responder. Tente novamente.', 408));
+    }, ms);
+    promise.then(
+      (value) => { clearTimeout(timer); resolve(value); },
+      (err: unknown) => { clearTimeout(timer); reject(err); },
+    );
+  });
+}
+
+/** Chama o proxy e normaliza erros/avisos (inclui o HTTP 425 de conflito de estoque). */
+async function callXbz<T>(action: string, params: Record<string, unknown> = {}): Promise<XbzEnvelope<T>> {
+  const { data, error } = await withTimeout(
+    supabase.functions.invoke<XbzEnvelope<T>>('xbz-proxy', { body: { action, ...params } }),
+    XBZ_CLIENT_TIMEOUT_MS,
+  );
+
+
+  if (error) {
+    let details = error.message;
+    let status = 0;
+    const context = (error as { context?: { status?: number; text?: () => Promise<string> } }).context;
+    if (typeof context?.status === 'number') status = context.status;
+    if (context?.text) {
+      try {
+        const body = await context.text();
+        const parsed = JSON.parse(body) as { error?: string; retry_after_seconds?: number };
+        if (parsed?.error === 'rate_limited') {
+          const retry = parsed.retry_after_seconds ?? 0;
+          details = retry > 0
+            ? `Muitas tentativas seguidas. Tente novamente em ${retry}s.`
+            : 'Muitas tentativas seguidas. Aguarde alguns instantes.';
+        } else if (parsed?.error) {
+          details = parsed.error;
+        }
+      } catch {
+        /* mantém a mensagem original */
+      }
+    }
+    throw new XbzRequestError(details || 'Falha na comunicação com a XBZ', status);
+  }
+
+  if (!data) throw new XbzRequestError('Resposta vazia da integração XBZ', 0);
+  if (data.error) throw new XbzRequestError(data.error, 0);
+  return data;
+}
+
+/**
+ * Coalescência de chamadas idempotentes em voo: duas telas (ou dois efeitos do
+ * React em StrictMode) pedindo o mesmo recurso ao mesmo tempo compartilham a
+ * mesma promessa, em vez de abrirem duas sessões no portal da XBZ — que é lento
+ * e aplica rate limit por conta.
+ */
+const inFlightReads = new Map<string, Promise<XbzEnvelope<unknown>>>();
+
+/** Chave estável: ação + params ordenados (JSON.stringify não garante ordem). */
+function inFlightKey(action: string, params: Record<string, unknown>): string {
+  const sorted = Object.keys(params)
+    .sort()
+    .map((k) => `${k}=${JSON.stringify(params[k])}`)
+    .join('&');
+  return `${action}?${sorted}`;
+}
+
+/**
+ * Cache de curta duração para tabelas praticamente estáticas da XBZ (cores,
+ * tipos de entrega e de pagamento). Elas raramente mudam e são pedidas em
+ * quase toda tela do catálogo/carrinho — sem cache, cada navegação gastava
+ * uma chamada ao portal e aproximava o rate limit.
+ */
+const STATIC_CACHE_TTL_MS = 5 * 60_000;
+const STATIC_ACTIONS = new Set<string>(['cores', 'entregaTipos', 'pagamentoTipos']);
+
+interface CacheEntry { expiresAt: number; envelope: XbzEnvelope<unknown> }
+const staticCache = new Map<string, CacheEntry>();
+
+/**
+ * Contadores de eficiência da camada de rede da XBZ. Servem para responder,
+ * com dado real, "quantas chamadas ao portal o cache/coalescing evitou?" —
+ * métrica direta de risco de rate limit e de latência percebida.
+ */
+export interface XbzNetworkStats {
+  /** Chamadas que efetivamente saíram para o `xbz-proxy`. */
+  network: number;
+  /** Respostas servidas do cache TTL de tabelas estáticas. */
+  cacheHits: number;
+  /** Chamadas que aproveitaram uma requisição já em voo. */
+  coalesced: number;
+}
+
+const networkStats: XbzNetworkStats = { network: 0, cacheHits: 0, coalesced: 0 };
+
+/** Snapshot imutável dos contadores (o objeto interno é mutável). */
+export function getXbzNetworkStats(): XbzNetworkStats {
+  return { ...networkStats };
+}
+
+/** Zera os contadores — usado em testes e ao trocar de conta. */
+export function resetXbzNetworkStats(): void {
+  networkStats.network = 0;
+  networkStats.cacheHits = 0;
+  networkStats.coalesced = 0;
+}
+
+/** Razão de economia: fração das chamadas que não tocaram no portal (0..1). */
+export function getXbzSavedRatio(): number {
+  const saved = networkStats.cacheHits + networkStats.coalesced;
+  const total = saved + networkStats.network;
+  return total === 0 ? 0 : saved / total;
+}
+
+/** Limpa o cache estático (usado ao trocar de credencial/pessoa na XBZ). */
+export function clearXbzStaticCache(): void {
+  staticCache.clear();
+}
+
+/**
+ * Envolve `callXbz` com backoff exponencial, mas **apenas** para ações
+ * idempotentes e falhas transitórias. Escritas (gerarPedidos, itemLancar…)
+ * nunca são repetidas automaticamente para não duplicar efeitos na XBZ.
+ */
+async function callXbzWithRetry<T>(
+  action: string,
+  params: Record<string, unknown> = {},
+): Promise<XbzEnvelope<T>> {
+  if (!IDEMPOTENT_ACTIONS.has(action)) {
+    networkStats.network += 1;
+    return callXbz<T>(action, params);
+  }
+
+  const key = inFlightKey(action, params);
+  const cacheable = STATIC_ACTIONS.has(action);
+
+  if (cacheable) {
+    const cached = staticCache.get(key);
+    if (cached && cached.expiresAt > Date.now()) {
+      networkStats.cacheHits += 1;
+      logger.debug('XBZ: cache hit', { integration: 'xbz', action, source: 'static-cache' });
+      return cached.envelope as XbzEnvelope<T>;
+    }
+    if (cached) staticCache.delete(key);
+  }
+
+  const existing = inFlightReads.get(key);
+  if (existing) {
+    networkStats.coalesced += 1;
+    logger.debug('XBZ: chamada coalescida', { integration: 'xbz', action, source: 'in-flight' });
+    return existing as Promise<XbzEnvelope<T>>;
+  }
+
+  networkStats.network += 1;
+
+
+  const request = (async (): Promise<XbzEnvelope<T>> => {
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= RETRY_MAX_ATTEMPTS; attempt += 1) {
+      try {
+        return await callXbz<T>(action, params);
+      } catch (err: unknown) {
+        lastError = err;
+        const status = err instanceof XbzRequestError ? err.status : -1;
+        if (status === -1 || !isRetryableStatus(status) || attempt === RETRY_MAX_ATTEMPTS) break;
+        // Backoff exponencial com jitter para evitar rajadas sincronizadas.
+        const delay = RETRY_BASE_DELAY_MS * 2 ** attempt + Math.floor(Math.random() * 200);
+        await sleep(delay);
+      }
+    }
+    throw lastError;
+  })();
+
+  // Guarda a promessa (mesmo em erro) só enquanto estiver em voo.
+  inFlightReads.set(key, request as Promise<XbzEnvelope<unknown>>);
+  try {
+    const envelope = await request;
+    // Nunca cacheia respostas do espelho local (`stale`): elas devem ser
+    // reavaliadas assim que a XBZ voltar a responder.
+    if (cacheable && envelope.stale !== true) {
+      staticCache.set(key, { expiresAt: Date.now() + STATIC_CACHE_TTL_MS, envelope });
+    }
+    return envelope;
+  } finally {
+    inFlightReads.delete(key);
+  }
+}
+
+
+
+/**
+ * Telemetria de latência por ação da XBZ. Serve para calibrar o teto de tempo
+ * (`XBZ_CLIENT_TIMEOUT_MS`) com dados reais em vez de suposições.
+ * Alinhado aos limiares do sistema: 3s = lenta, 8s = muito lenta.
+ */
+const XBZ_SLOW_MS = 3_000;
+const XBZ_VERY_SLOW_MS = 8_000;
+
+function logXbzLatency(
+  action: string,
+  durationMs: number,
+  outcome: 'ok' | 'error',
+  status?: number,
+): void {
+  const context = {
+    integration: 'xbz',
+    action,
+    duration_ms: Math.round(durationMs),
+    outcome,
+    ...(status !== undefined ? { status } : {}),
+  };
+
+  if (outcome === 'error' || durationMs >= XBZ_VERY_SLOW_MS) {
+    logger.warn('XBZ: chamada degradada', context);
+    return;
+  }
+  if (durationMs >= XBZ_SLOW_MS) {
+    logger.info('XBZ: chamada lenta', context);
+    return;
+  }
+  logger.debug('XBZ: chamada concluída', context);
+}
+
+
+
+export function useXbzIntegration() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const inFlight = useRef(0);
+  // Evita atualizar estado após o componente sair da tela (navegação durante
+  // uma chamada lenta da XBZ geraria warning do React e vazamento de estado).
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => { mounted.current = false; };
+  }, []);
+
+  const runEnvelope = useCallback(async <T,>(
+    action: string,
+    params: Record<string, unknown> = {},
+    options: { silent?: boolean } = {},
+  ): Promise<XbzEnvelope<T> | null> => {
+    inFlight.current += 1;
+    if (mounted.current) {
+      setLoading(true);
+      setError(null);
+    }
+    const startedAt = performance.now();
+    try {
+      const envelope = await callXbzWithRetry<T>(action, params);
+      logXbzLatency(action, performance.now() - startedAt, 'ok');
+      if (envelope.warning && mounted.current) toast.warning(envelope.warning);
+      return envelope;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Erro desconhecido na XBZ';
+      const status = err instanceof XbzRequestError ? err.status : 0;
+      logXbzLatency(action, performance.now() - startedAt, 'error', status);
+      if (mounted.current) setError(message);
+      if (!options.silent && mounted.current) {
+        // 409 (duplicidade), 429 (excesso de tentativas) e 408 (timeout) não são
+        // falhas de sistema: são avisos de fluxo e merecem tom diferente do erro.
+        if (status === 409 || status === 429 || status === 408) toast.warning(message);
+        else toast.error(`XBZ: ${message}`);
+      }
+      return null;
+
+
+
+    } finally {
+      inFlight.current -= 1;
+      if (inFlight.current <= 0) {
+        inFlight.current = 0;
+        if (mounted.current) setLoading(false);
+      }
+    }
+
+  }, []);
+
+  const run = useCallback(async <T,>(
+    action: string,
+    params: Record<string, unknown> = {},
+    options: { silent?: boolean } = {},
+  ): Promise<T | null> => {
+    const envelope = await runEnvelope<T>(action, params, options);
+    return envelope ? envelope.data : null;
+  }, [runEnvelope]);
+
+
+  // ---------------------------------------------------------------- estado
+  const getCredentialStatus = useCallback(
+    () => run<XbzCredentialStatus | null>('credentialsStatus', {}, { silent: true }),
+    [run],
+  );
+
+  const saveCredentials = useCallback(
+    (portalUser: string, portalPassword: string, cnpj?: string, label?: string) => {
+      // Troca de credencial pode mudar a pessoa/CNPJ na XBZ: descarta o cache
+      // estático para não misturar tabelas de duas contas diferentes.
+      clearXbzStaticCache();
+      return run<XbzLoginInfo>('saveCredentials', { portalUser, portalPassword, cnpj, label });
+    },
+    [run],
+  );
+
+
+  const testConnection = useCallback(
+    () => run<XbzLoginInfo>('testConnection'),
+    [run],
+  );
+
+  const login = useCallback(() => run<XbzLoginInfo>('login', {}, { silent: true }), [run]);
+
+  const getDashboard = useCallback(() => run<XbzDashboard>('dashboard'), [run]);
+
+  const getPessoaToken = useCallback(
+    () => run<{ token?: string; vencimentoData?: string; valido?: boolean }>('pessoaToken'),
+    [run],
+  );
+
+  const getVendedor = useCallback(
+    () => run<{ nomeExibicao?: string; telefone?: string; whatsapp?: string; email?: string }>('vendedor'),
+    [run],
+  );
+
+  // --------------------------------------------------------------- pedidos
+  const getPedidos = useCallback(
+    (filters: XbzPedidosFilters = {}) => run<XbzPedidoRaw[]>('pedidos', {
+      periodo: filters.periodo ?? 1,
+      statusFinanceiro: filters.statusFinanceiro ?? 0,
+      numeroPedido: filters.numeroPedido ?? '',
+    }),
+    [run],
+  );
+
+  const cancelarPedido = useCallback(
+    (numeroPedido: string) => run<unknown>('cancelarPedido', { numeroPedido }),
+    [run],
+  );
+
+  // -------------------------------------------------------------- catálogo
+  const buscarProdutos = useCallback(
+    (busca: string, extras: Record<string, unknown> = {}) =>
+      run<XbzProdutoRaw[]>('catalogo', { busca: normalizeBusca(busca), ...extras }),
+    [run],
+  );
+
+  /**
+   * Igual a `buscarProdutos`, mas informa se os dados vieram do espelho local
+   * (`stale: true`) porque a XBZ estava indisponível.
+   */
+  const buscarProdutosDetalhado = useCallback(
+    async (busca: string, extras: Record<string, unknown> = {}): Promise<XbzCatalogoResult | null> => {
+      const envelope = await runEnvelope<XbzProdutoRaw[]>('catalogo', {
+        busca: normalizeBusca(busca),
+        ...extras,
+      });
+      if (!envelope) return null;
+      return {
+        produtos: Array.isArray(envelope.data) ? envelope.data : [],
+        stale: envelope.stale === true,
+        syncedAt: typeof envelope.syncedAt === 'string' ? envelope.syncedAt : null,
+      };
+
+    },
+    [runEnvelope],
+  );
+
+
+  const getCores = useCallback(
+    () => run<Array<{ Id: number; NomeCor: string; SiglaCor: string }>>('cores'),
+    [run],
+  );
+
+  const getFiscal = useCallback(
+    (produtoId: number) => run<Record<string, unknown>>('fiscalSt', { produtoId }),
+    [run],
+  );
+
+  // -------------------------------------------------------------- carrinho
+  const getCarrinhoResumo = useCallback(() => run<XbzCarrinhoResumo>('carrinhoResumo'), [run]);
+  const getCarrinhoItens = useCallback(() => run<XbzCarrinhoItem[]>('carrinhoListar'), [run]);
+
+  const adicionarItem = useCallback(
+    async (produtoId: number, quantidade: number) => {
+      const result = await run<unknown>('itemLancar', { produtoId, quantidade });
+      if (result !== null) toast.success('Produto adicionado ao carrinho XBZ');
+      return result;
+    },
+    [run],
+  );
+
+  const alterarQuantidade = useCallback(
+    (item: Record<string, unknown>) => run<unknown>('itemAlterarQuantidade', { item }),
+    [run],
+  );
+
+  const removerItem = useCallback(
+    async (itemId: number) => {
+      const result = await run<unknown>('itemRemover', { itemId });
+      if (result !== null) toast.success('Item removido do carrinho XBZ');
+      return result;
+    },
+    [run],
+  );
+
+  const getEntregaTipos = useCallback(
+    () => run<Array<{ id: number; nome: string }>>('entregaTipos'),
+    [run],
+  );
+
+  const getPagamentoTipos = useCallback(
+    () => run<Array<{ id: number; nome: string }>>('pagamentoTipos'),
+    [run],
+  );
+
+  /** ⚠️ Emite pedidos reais na XBZ — exige confirmação explícita. */
+  const gerarPedidos = useCallback(
+    async () => {
+      const result = await run<unknown>('gerarPedidos', { confirm: true });
+      if (result !== null) toast.success('Pedidos gerados na XBZ');
+      return result;
+    },
+    [run],
+  );
+
+  return {
+    loading,
+    error,
+    getCredentialStatus,
+    saveCredentials,
+    testConnection,
+    login,
+    getDashboard,
+    getPessoaToken,
+    getVendedor,
+    getPedidos,
+    cancelarPedido,
+    buscarProdutos,
+    buscarProdutosDetalhado,
+
+    getCores,
+    getFiscal,
+    getCarrinhoResumo,
+    getCarrinhoItens,
+    adicionarItem,
+    alterarQuantidade,
+    removerItem,
+    getEntregaTipos,
+    getPagamentoTipos,
+    gerarPedidos,
+  };
+}

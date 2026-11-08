@@ -21,7 +21,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import type { Pagamento } from "@/hooks/usePagamentos";
 
 interface PagamentoMobileCardProps {
@@ -221,7 +221,7 @@ export const PagamentoMobileCard = ({
                 "font-bold text-lg",
                 isPago ? "text-success dark:text-success" : "text-primary"
               )}>
-                {pagamento.valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                {formatCurrency(pagamento.valor)}
               </span>
             </div>
           </div>

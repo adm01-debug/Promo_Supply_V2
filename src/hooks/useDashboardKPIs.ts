@@ -42,7 +42,7 @@ export interface DashboardKPIsExtended {
     sla: KPIComparison;
   };
   pipeline: PipelineData;
-  urgentItems: any[];
+  urgentItems: { id: string; status: string; data_necessidade: string | null; [key: string]: unknown }[];
   charts: {
     monthlyTrends: { month: string; pedidos: number; cotacoes: number; economia: number }[];
     cotacaoStatus: { name: string; value: number; color: string }[];
@@ -50,7 +50,17 @@ export interface DashboardKPIsExtended {
   };
 }
 
-export function useDashboardKPIs(filters?: any) {
+interface RpcKpi { current: number; previous: number }
+interface RpcDashboardMetrics {
+  kpis: { aguardando: RpcKpi; volume: RpcKpi; economia: RpcKpi };
+  pipeline: PipelineData;
+  urgentItems: DashboardKPIsExtended['urgentItems'];
+  trends: DashboardKPIsExtended['charts']['monthlyTrends'];
+  cotacaoStatus: DashboardKPIsExtended['charts']['cotacaoStatus'];
+  topCategories: DashboardKPIsExtended['charts']['topCategories'];
+}
+
+export function useDashboardKPIs(filters?: { category?: string; supplier?: string; period?: string }) {
   const { tenantId, user } = useAuth();
   
   const categoryId = (filters?.category && filters.category !== 'all') ? filters.category : null;
@@ -65,8 +75,8 @@ export function useDashboardKPIs(filters?: any) {
       const { data, error } = await supabase.rpc('get_compras_dashboard_metrics', {
         p_organization_id: tenantId,
         p_period: period,
-        p_category_id: categoryId,
-        p_supplier_id: supplierId
+        p_category_id: (categoryId as string | undefined),
+        p_supplier_id: (supplierId as string | undefined)
       });
 
       if (error) {
@@ -74,19 +84,18 @@ export function useDashboardKPIs(filters?: any) {
         throw error;
       }
 
-      const rpcData = data as any;
+      const rpcData = data as unknown as RpcDashboardMetrics;
       
       const calculateTrend = (current: number, previous: number) => {
         if (previous === 0) return 0;
         return ((current - previous) / previous) * 100;
       };
 
-      const generateSparkline = (base: number, count: number = 7) => {
-        return Array.from({ length: count }).map((_, i) => {
-          const factor = 0.8 + (Math.random() * 0.4);
-          return Math.round(base * factor);
-        });
-      };
+      // Without real time-series data, return an empty sparkline. The consumer
+      // renders a placeholder. (Previously Math.random() generated a new fake
+      // line on every refetch, causing the UI to flicker and showing
+      // misleading "data".)
+      const generateSparkline = (_base: number, _count: number = 7): number[] => [];
 
       const extended: DashboardKPIsExtended = {
         aguardandoCotacao: rpcData.pipeline.solicitacao,

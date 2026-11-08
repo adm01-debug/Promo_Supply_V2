@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
@@ -6,6 +6,8 @@ import { logger } from '@/lib/logger';
 import { auditHelpers } from '@/services/auditService';
 import { toast } from '@/lib/feedbackToast';
 import { format } from 'date-fns';
+import { escapeIlike } from '@/lib/supabaseQuery';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Database } from '@/integrations/supabase/types';
 
 export type Fornecedor = Database['public']['Tables']['fornecedores']['Row'];
@@ -34,23 +36,27 @@ export interface FornecedorFilters {
 }
 
 export function useFornecedores(filters?: FornecedorFilters) {
-  const { user, tenantId } = useAuth();
-  const queryKey = ['fornecedores', user?.id, tenantId, filters?.tipo, filters?.status, filters?.search];
+  const { user, tenantId, organizationId } = useAuth();
+  const queryClient = useQueryClient();
+  const queryKey = ['fornecedores', user?.id, tenantId, organizationId, filters?.tipo, filters?.status, filters?.search];
 
   const { data: fornecedores = [], isLoading: loading, error, refetch } = useQuery({
     queryKey,
     queryFn: async () => {
       if (!tenantId) return [];
-      
+
       let query = supabase
         .from('fornecedores')
         .select('id, codigo, razao_social, nome_fantasia, cnpj, email, telefone, endereco, cidade, estado, cep, website, tipo, segmento, status, avaliacao, condicoes_pagamento, prazo_medio_entrega, integrado_api, api_endpoint, observacoes, limite_credito, saldo_comprometido, created_at, updated_at, created_by')
         .order('razao_social', { ascending: true })
-        .eq('organization_id', tenantId);
+        .eq('organization_id', organizationId || tenantId);
 
       if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
       if (filters?.status && filters.status !== 'todos') query = query.eq('status', filters.status);
-      if (filters?.search) query = query.or(`razao_social.ilike.%${filters.search}%,nome_fantasia.ilike.%${filters.search}%,cnpj.ilike.%${filters.search}%`);
+      if (filters?.search) {
+        const s = escapeIlike(filters.search);
+        query = query.or(`razao_social.ilike.%${s}%,nome_fantasia.ilike.%${s}%,cnpj.ilike.%${s}%`);
+      }
 
       const { data, error: fetchError } = await query;
       if (fetchError) throw fetchError;
@@ -66,15 +72,15 @@ export function useFornecedores(filters?: FornecedorFilters) {
     if (clean.length !== 14) return false;
     if (/^(\d)\1+$/.test(clean)) return false;
     const calc = (str: string, weights: number[]) =>
-      str.split('').reduce((sum, d, i) => sum + parseInt(d) * weights[i], 0);
+      str.split('').reduce((sum, d, i) => sum + parseInt(d, 10) * weights[i], 0);
     const w1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     const w2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
     const d1 = calc(clean.slice(0, 12), w1) % 11;
     const check1 = d1 < 2 ? 0 : 11 - d1;
-    if (parseInt(clean[12]) !== check1) return false;
+    if (parseInt(clean[12], 10) !== check1) return false;
     const d2 = calc(clean.slice(0, 13), w2) % 11;
     const check2 = d2 < 2 ? 0 : 11 - d2;
-    return parseInt(clean[13]) === check2;
+    return parseInt(clean[13], 10) === check2;
   }, []);
 
   // Create new fornecedor
@@ -129,7 +135,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
           created_by: user.id,
           organization_id: tenantId,
           tenant_id: tenantId,
-        } as any)
+        })
         .select()
         .single();
 
@@ -148,7 +154,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
 
       logger.info('Fornecedor cadastrado com sucesso', { id: data.id, razaoSocial: data.razao_social });
       toast.success('Fornecedor cadastrado com sucesso!');
-      refetch();
+      queryClient.invalidateQueries({ queryKey: ['fornecedores'] });
       return data;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
@@ -156,7 +162,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
       toast.error('Erro ao cadastrar fornecedor: ' + errorMessage);
       return null;
     }
-  }, [user, tenantId, refetch, validateCNPJ]);
+  }, [user, tenantId, queryClient, validateCNPJ]);
 
   // Update fornecedor
   const updateFornecedor = useCallback(async (id: string, updates: Partial<Fornecedor>) => {
@@ -173,7 +179,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
       }
 
       toast.success('Fornecedor atualizado!');
-      refetch();
+      queryClient.invalidateQueries({ queryKey: ['fornecedores'] });
       return true;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
@@ -181,7 +187,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
       toast.error('Erro ao atualizar: ' + errorMessage);
       return false;
     }
-  }, [refetch]);
+  }, [queryClient]);
 
   // Delete fornecedor
   const deleteFornecedor = useCallback(async (id: string) => {
@@ -199,7 +205,7 @@ export function useFornecedores(filters?: FornecedorFilters) {
       logger.info('Fornecedor excluído com sucesso', { id });
 
       toast.success('Fornecedor excluído!');
-      refetch();
+      queryClient.invalidateQueries({ queryKey: ['fornecedores'] });
       return true;
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : 'Erro desconhecido';
@@ -207,32 +213,13 @@ export function useFornecedores(filters?: FornecedorFilters) {
       toast.error('Erro ao excluir: ' + errorMessage);
       return false;
     }
-  }, [refetch]);
+  }, [queryClient]);
 
-
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-
-    const channel = supabase
-      .channel('fornecedores-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'fornecedores'
-        },
-        () => {
-          refetch();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, refetch]);
+  useRealtimeSubscription({
+    tables: ['fornecedores'],
+    queryKeysToInvalidate: [['fornecedores']],
+    enabled: !!user,
+  });
 
   return {
     fornecedores,

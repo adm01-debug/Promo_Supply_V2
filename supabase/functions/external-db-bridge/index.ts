@@ -1,10 +1,10 @@
+import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
+import { assertBridgeRequest, MAX_SELECT_LIMIT } from "../_shared/external-bridge-allowlist.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-request-id",
-};
 
 const SLOW_QUERY_THRESHOLD_MS = 3000;
 const VERY_SLOW_QUERY_THRESHOLD_MS = 8000;
@@ -94,16 +94,45 @@ Deno.serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  if (req.method !== "POST") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: buildResponseHeaders(corsHeaders),
+    });
+  }
+
   const requestId = req.headers.get('x-request-id') || crypto.randomUUID();
   const logger = new EdgeLogger('external-db-bridge', requestId);
 
   try {
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+
+    const localUrl = Deno.env.get("SUPABASE_URL")!;
+    const localKey = Deno.env.get("SUPABASE_ANON_KEY")!;
+    const localClient = createClient(localUrl, localKey);
+    const { data: { user }, error: authError } = await localClient.auth.getUser(
+      authHeader.slice("Bearer ".length)
+    );
+
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: buildResponseHeaders(corsHeaders),
+      });
+    }
+
     const {
       operation = "select",
       table,
       rpcName,
       selectColumns = "*",
-      limit = 100,
+      limit: rawLimit = 100,
       offset = 0,
       countMode = "none",
       filters = {},
@@ -111,35 +140,45 @@ Deno.serve(async (req) => {
       data: bodyData,
     } = await req.json();
 
+    // Clamp de limit para evitar dump silencioso do DB externo.
+    const limit = Math.min(Math.max(1, Number(rawLimit) || 100), MAX_SELECT_LIMIT);
+
+    // A-01 · Allowlist estrita (rejeita antes de tocar no DB externo).
+    const authz = assertBridgeRequest({ operation, table, rpcName, countMode, filters, limit });
+    if (!authz.ok) {
+      logger.warn("bridge request rejected", { userId: user.id, operation, table, rpcName, reason: authz.reason });
+      return new Response(
+        JSON.stringify({ error: authz.reason }),
+        { status: authz.status, headers: buildResponseHeaders(corsHeaders) },
+      );
+    }
+
+    // Rate limit por usuário (60 req/min) — protege o DB externo de abuso.
+    const rl = await checkRateLimit({
+      identifier: `user:${user.id}`,
+      endpoint: "external-db-bridge",
+      maxRequests: 60,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) {
+      logger.warn("bridge rate limited", { userId: user.id, retryAfter: rl.retryAfterSeconds });
+      return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    }
+
     // Get external DB credentials
     const externalUrl = Deno.env.get("EXTERNAL_DB_URL");
     const externalKey = Deno.env.get("EXTERNAL_DB_KEY");
 
+
+
     if (!externalUrl || !externalKey) {
       return new Response(
         JSON.stringify({ error: "External database not configured" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 500, headers: buildResponseHeaders(corsHeaders) }
       );
     }
 
     const externalClient = createClient(externalUrl, externalKey);
-
-    // Get user ID from auth header
-    const authHeader = req.headers.get("Authorization");
-    let userId: string | null = null;
-    if (authHeader) {
-      try {
-        const localUrl = Deno.env.get("SUPABASE_URL")!;
-        const localKey = Deno.env.get("SUPABASE_ANON_KEY")!;
-        const localClient = createClient(localUrl, localKey);
-        const { data: { user } } = await localClient.auth.getUser(
-          authHeader.replace("Bearer ", "")
-        );
-        userId = user?.id || null;
-      } catch (_) {
-        // ignore auth errors
-      }
-    }
 
     let result: { data: unknown; error: unknown; count?: number | null } = {
       data: null,
@@ -219,7 +258,7 @@ Deno.serve(async (req) => {
       default:
         return new Response(
           JSON.stringify({ error: `Unsupported operation: ${operation}` }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 400, headers: buildResponseHeaders(corsHeaders) }
         );
     }
 
@@ -239,13 +278,13 @@ Deno.serve(async (req) => {
       status,
       recordCount,
       error: hasError ? (result.error as { message?: string })?.message : undefined,
-      userId,
+      userId: user.id,
     });
 
     if (hasError) {
       return new Response(
         JSON.stringify({ error: (result.error as { message?: string })?.message }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 400, headers: buildResponseHeaders(corsHeaders) }
       );
     }
 
@@ -255,7 +294,7 @@ Deno.serve(async (req) => {
         count: result.count ?? null,
         meta: { durationMs, status, recordCount },
       }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { headers: buildResponseHeaders(corsHeaders) }
     );
   } catch (err) {
     if (typeof logger !== 'undefined') {
@@ -265,7 +304,7 @@ Deno.serve(async (req) => {
     }
     return new Response(
       JSON.stringify({ error: err.message || "Internal server error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      { status: 500, headers: buildResponseHeaders(corsHeaders) }
     );
   }
 });

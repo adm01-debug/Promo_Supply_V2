@@ -23,7 +23,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 30000,
+    staleTime: 30_000,
   });
 
   const { data: pedidos } = useQuery({
@@ -36,7 +36,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 30000,
+    staleTime: 30_000,
   });
 
   const { data: workflows } = useQuery({
@@ -49,7 +49,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 30000,
+    staleTime: 30_000,
   });
 
   const alerts = useMemo(() => {
@@ -87,7 +87,7 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
       }
       
       // Check for first piece audit status
-      if ((ped as any).status_producao === 'primeira_peca') {
+      if ((ped as { status_producao?: string }).status_producao === 'primeira_peca') {
         prodAuditCount++;
         if (prodAuditItems.length < 3) prodAuditItems.push(ped.numero);
       }
@@ -178,8 +178,10 @@ export const CriticalAlertsBar = forwardRef<HTMLDivElement>((_props, ref) => {
                   className="flex-1 sm:flex-none h-9 gap-1 font-black uppercase text-[10px] tracking-widest shadow-lg shadow-destructive/20"
                 >
                   <Link to="/solicitacoes">
-                    Resolver Agora
-                    <ChevronRight className="h-4 w-4" />
+                    <span className="inline-flex items-center gap-1">
+                      Resolver Agora
+                      <ChevronRight className="h-4 w-4" />
+                    </span>
                   </Link>
                 </Button>
                 

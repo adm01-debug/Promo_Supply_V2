@@ -43,12 +43,16 @@ export function supportsWebP(): boolean {
 /**
  * Load image from file
  */
-function loadImage(file: File): Promise<HTMLImageElement> {
+function loadImage(file: File): Promise<{ img: HTMLImageElement; url: string }> {
   return new Promise((resolve, reject) => {
     const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = URL.createObjectURL(file);
+    const url = URL.createObjectURL(file);
+    img.onload = () => resolve({ img, url });
+    img.onerror = (err) => {
+      URL.revokeObjectURL(url);
+      reject(err);
+    };
+    img.src = url;
   });
 }
 
@@ -105,76 +109,61 @@ export async function compressImage(
   // Skip already small images (less than 100KB)
   const skipCompression = file.size < 100 * 1024;
   
-  // Load the image
-  const img = await loadImage(file);
-  const originalWidth = img.width;
-  const originalHeight = img.height;
-
-  // Calculate new dimensions
-  const { width, height } = calculateDimensions(
-    originalWidth,
-    originalHeight,
-    opts.maxWidth!,
-    opts.maxHeight!
-  );
-
-  // Create canvas for compression
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-
-  const ctx = canvas.getContext('2d');
-  if (!ctx) {
-    throw new Error('Could not get canvas context');
-  }
-
-  // Enable image smoothing for better quality
-  ctx.imageSmoothingEnabled = true;
-  ctx.imageSmoothingQuality = 'high';
-
-  // Draw image on canvas
-  ctx.drawImage(img, 0, 0, width, height);
-
-  // Clean up object URL
-  URL.revokeObjectURL(img.src);
-
-  // Determine output format
-  const useWebP = opts.convertToWebP && supportsWebP();
-  const mimeType = useWebP ? 'image/webp' : 'image/jpeg';
-  const extension = useWebP ? '.webp' : '.jpg';
-
-  // Convert to blob
-  const blob = await new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob(
-      (b) => {
-        if (b) resolve(b);
-        else reject(new Error('Failed to create blob'));
-      },
-      mimeType,
-      skipCompression ? 1 : opts.quality
+  // Load image and always revoke the object URL, even if downstream steps throw
+  const { img, url: objectUrl } = await loadImage(file);
+  try {
+    const { width, height } = calculateDimensions(
+      img.width,
+      img.height,
+      opts.maxWidth!,
+      opts.maxHeight!
     );
-  });
 
-  // Create new filename
-  const originalName = file.name.replace(/\.[^/.]+$/, '');
-  const newFileName = `${originalName}${extension}`;
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
 
-  // Create new file
-  const compressedFile = new File([blob], newFileName, {
-    type: mimeType,
-    lastModified: Date.now(),
-  });
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Could not get canvas context');
 
-  return {
-    blob,
-    file: compressedFile,
-    width,
-    height,
-    originalSize: file.size,
-    compressedSize: blob.size,
-    compressionRatio: Math.round((1 - blob.size / file.size) * 100),
-    format: useWebP ? 'webp' : 'jpeg',
-  };
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(img, 0, 0, width, height);
+
+    const useWebP = opts.convertToWebP && supportsWebP();
+    const mimeType = useWebP ? 'image/webp' : 'image/jpeg';
+    const extension = useWebP ? '.webp' : '.jpg';
+
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob(
+        (b) => {
+          if (b) resolve(b);
+          else reject(new Error('Failed to create blob'));
+        },
+        mimeType,
+        skipCompression ? 1 : opts.quality
+      );
+    });
+
+    const originalName = file.name.replace(/\.[^/.]+$/, '');
+    const compressedFile = new File([blob], `${originalName}${extension}`, {
+      type: mimeType,
+      lastModified: Date.now(),
+    });
+
+    return {
+      blob,
+      file: compressedFile,
+      width,
+      height,
+      originalSize: file.size,
+      compressedSize: blob.size,
+      compressionRatio: Math.round((1 - blob.size / file.size) * 100),
+      format: useWebP ? 'webp' : 'jpeg',
+    };
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
 }
 
 /**

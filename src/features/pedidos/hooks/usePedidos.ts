@@ -1,10 +1,12 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
+import { escapeIlike } from '@/lib/supabaseQuery';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Database } from '@/integrations/supabase/types';
 
 export type Pedido = Database['public']['Tables']['pedidos']['Row'] & {
@@ -73,7 +75,10 @@ async function fetchPedidosData(userId: string | undefined, tenantId: string | n
   let query = supabase
     .from('pedidos')
     .select(`
-      *,
+      id, numero, status, fornecedor_id, solicitacao_id, cotacao_id,
+      valor_total, valor_frete, desconto, data_emissao, data_previsao, data_entrega,
+      condicao_pagamento, endereco_entrega, observacoes, comprador_id,
+      organization_id, tenant_id, created_at, updated_at,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
       solicitacao:solicitacoes(id, numero, titulo)
     `, { count: 'exact' })
@@ -88,7 +93,7 @@ async function fetchPedidosData(userId: string | undefined, tenantId: string | n
     query = query.eq('fornecedor_id', filters.fornecedor_id);
   }
   if (filters?.search) {
-    query = query.or(`numero.ilike.%${filters.search}%`);
+    query = query.or(`numero.ilike.%${escapeIlike(filters.search)}%`);
   }
   if (filters?.dateFrom) {
     query = query.gte('data_emissao', filters.dateFrom);
@@ -121,7 +126,7 @@ export function usePedidos(filters?: PedidoFilters) {
     refetchOnWindowFocus: false,
   });
 
-  const pedidos = data?.data || [];
+  const pedidos = useMemo(() => data?.data ?? [], [data]);
   const totalCount = data?.totalCount || 0;
 
   // Create new pedido
@@ -146,7 +151,7 @@ export function usePedidos(filters?: PedidoFilters) {
           comprador_id: user.id,
           tenant_id: organizationId,
           organization_id: organizationId,
-        } as any)
+        })
         .select().single();
 
       if (error) {
@@ -169,7 +174,7 @@ export function usePedidos(filters?: PedidoFilters) {
           valor_total: item.quantidade * item.valor_unitario,
           tenant_id: organizationId,
         }));
-        await supabase.from('pedido_itens').insert(itensToInsert as any);
+        await supabase.from('pedido_itens').insert(itensToInsert);
       }
 
       logger.info('Pedido criado com sucesso', { id: data.id, numero: data.numero });
@@ -276,17 +281,11 @@ export function usePedidos(filters?: PedidoFilters) {
     }
   }, [queryClient]);
 
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('pedidos-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'pedidos' }, () => {
-        queryClient.invalidateQueries({ queryKey: ['pedidos'] });
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, queryClient]);
+  useRealtimeSubscription({
+    tables: ['pedidos'],
+    queryKeysToInvalidate: [['pedidos']],
+    enabled: !!user,
+  });
 
   return {
     pedidos,

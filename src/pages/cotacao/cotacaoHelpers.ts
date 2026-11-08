@@ -1,6 +1,35 @@
 import { nullishStr, nullishNum, nullishBool } from "@/lib/dbMapping";
 import { supabase } from "@/integrations/supabase/client";
 
+interface FornecedorRow {
+  id: string;
+  nome_fantasia?: string | null;
+  razao_social: string;
+  cnpj?: string | null;
+  tipo?: string | null;
+  segmento?: string | null;
+  email?: string | null;
+  telefone?: string | null;
+  integrado_api?: boolean | null;
+  avaliacao?: number | null;
+}
+
+interface CotacaoRow {
+  id: string;
+  fornecedor?: { nome_fantasia?: string | null; razao_social?: string | null } | null;
+  valor_unitario?: number | null;
+  quantidade?: number | null;
+  prazo_entrega?: number | null;
+  valor_frete?: number | null;
+  condicao_pagamento?: string | null;
+  valor_total?: number | null;
+  selecionada?: boolean | null;
+  score_preco?: number | null;
+  score_prazo?: number | null;
+  score_qualidade?: number | null;
+  score_total?: number | null;
+}
+
 export interface CotacaoAPI {
   id: string;
   fornecedor: string;
@@ -23,6 +52,8 @@ export interface CotacaoAPI {
 
 export interface LegacyFornecedor {
   id: string;
+  nome_fantasia: string;
+  razao_social: string;
   nomeFantasia: string;
   razaoSocial: string;
   cnpj: string;
@@ -41,9 +72,11 @@ export interface LegacyFornecedor {
 // DB rows here are `any` (Supabase joined queries don't carry generated types).
 // We still funnel every nullable column through `nullishStr` / `nullishNum`
 // so consumers see plain non-null fields instead of `T | null`.
-export function adaptFornecedoresToLegacy(fornecedores: any[]): LegacyFornecedor[] {
+export function adaptFornecedoresToLegacy(fornecedores: FornecedorRow[]): LegacyFornecedor[] {
   return fornecedores.map(f => ({
     id: f.id,
+    nome_fantasia: nullishStr(f.nome_fantasia, f.razao_social),
+    razao_social: f.razao_social,
     nomeFantasia: nullishStr(f.nome_fantasia, f.razao_social),
     razaoSocial: f.razao_social,
     cnpj: nullishStr(f.cnpj),
@@ -61,7 +94,7 @@ export function adaptFornecedoresToLegacy(fornecedores: any[]): LegacyFornecedor
   }));
 }
 
-export function adaptCotacoesFromDB(cotacoes: any[]): CotacaoAPI[] {
+export function adaptCotacoesFromDB(cotacoes: CotacaoRow[]): CotacaoAPI[] {
   return cotacoes.map(c => {
     const valorFrete = nullishNum(c.valor_frete);
     return {
@@ -88,7 +121,7 @@ export function adaptCotacoesFromDB(cotacoes: any[]): CotacaoAPI[] {
 }
 
 export async function simulateAPISearch(
-  fornecedores: any[],
+  fornecedores: FornecedorRow[],
   quantidade: number,
   produtoId?: string
 ): Promise<CotacaoAPI[]> {
@@ -106,7 +139,8 @@ export async function simulateAPISearch(
     if (linkedSuppliers && linkedSuppliers.length > 0) {
       // Logic: Boost linked suppliers or filter specifically to them
       // For simulation, we'll just ensure they are included and have accurate initial data
-      console.log('Using linked suppliers for simulation', linkedSuppliers);
+      // Debug: Using linked suppliers for simulation
+      // logger.debug('Using linked suppliers for simulation', { linkedSuppliersCount: linkedSuppliers.length });
     }
   }
 

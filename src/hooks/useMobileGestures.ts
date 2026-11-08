@@ -20,12 +20,16 @@ export function useSwipeGesture(
 ) {
   const { threshold = 50, enabled = true } = options;
   const touchStart = useRef<{ x: number; y: number } | null>(null);
-  const [swipeState, setSwipeState] = useState<SwipeState>({
+  // Mirror swipe progress in a ref so touchend reads the latest delta/direction
+  // without depending on React state (which lags one frame and forces handler
+  // re-creation on every move).
+  const swipeStateRef = useRef<SwipeState>({
     swiping: false,
     direction: null,
     deltaX: 0,
     deltaY: 0,
   });
+  const [swipeState, setSwipeState] = useState<SwipeState>(swipeStateRef.current);
 
   const handleTouchStart = useCallback((e: TouchEvent) => {
     if (!enabled) return;
@@ -33,30 +37,32 @@ export function useSwipeGesture(
       x: e.touches[0].clientX,
       y: e.touches[0].clientY,
     };
-    setSwipeState({ swiping: true, direction: null, deltaX: 0, deltaY: 0 });
+    swipeStateRef.current = { swiping: true, direction: null, deltaX: 0, deltaY: 0 };
+    setSwipeState(swipeStateRef.current);
   }, [enabled]);
 
   const handleTouchMove = useCallback((e: TouchEvent) => {
     if (!enabled || !touchStart.current) return;
-    
+
     const deltaX = e.touches[0].clientX - touchStart.current.x;
     const deltaY = e.touches[0].clientY - touchStart.current.y;
-    
+
     let direction: SwipeState['direction'] = null;
     if (Math.abs(deltaX) > Math.abs(deltaY)) {
       direction = deltaX > 0 ? 'right' : 'left';
     } else {
       direction = deltaY > 0 ? 'down' : 'up';
     }
-    
-    setSwipeState({ swiping: true, direction, deltaX, deltaY });
+
+    swipeStateRef.current = { swiping: true, direction, deltaX, deltaY };
+    setSwipeState(swipeStateRef.current);
   }, [enabled]);
 
   const handleTouchEnd = useCallback(() => {
     if (!enabled || !touchStart.current) return;
-    
-    const { deltaX, deltaY, direction } = swipeState;
-    
+
+    const { deltaX, deltaY, direction } = swipeStateRef.current;
+
     if (Math.abs(deltaX) > threshold && direction === 'left') {
       handlers.onSwipeLeft?.();
     } else if (Math.abs(deltaX) > threshold && direction === 'right') {
@@ -66,10 +72,11 @@ export function useSwipeGesture(
     } else if (Math.abs(deltaY) > threshold && direction === 'down') {
       handlers.onSwipeDown?.();
     }
-    
+
     touchStart.current = null;
-    setSwipeState({ swiping: false, direction: null, deltaX: 0, deltaY: 0 });
-  }, [enabled, threshold, swipeState, handlers]);
+    swipeStateRef.current = { swiping: false, direction: null, deltaX: 0, deltaY: 0 };
+    setSwipeState(swipeStateRef.current);
+  }, [enabled, threshold, handlers]);
 
   return {
     swipeState,

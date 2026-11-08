@@ -3,6 +3,7 @@ import {
   ClipboardList, 
   Search, 
   FileText, 
+  BookOpen, 
   CreditCard, 
   Factory,
   Building2,
@@ -34,22 +35,30 @@ import {
   LogOut,
   Settings,
   Settings2,
-  Boxes
+  Boxes,
+  Activity,
+  Database,
+  KeyRound,
+  LineChart,
+  Network
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { PrefetchLink } from "@/components/PrefetchLink";
 import { useAuth } from "@/features/auth";
+import { useCriticalAlertsBadge } from "@/hooks/useCriticalAlertsBadge";
+import { useSidebarBadges } from "@/hooks/useSidebarBadges";
 
 interface NavItemDef {
   title: string;
   icon: React.ElementType;
   href: string;
-  badge?: number;
+  /** Key into SidebarBadges for a live count. Static badge is gone. */
+  badgeKey?: 'solicitacoes' | 'cotacoes' | 'pagamentos' | 'aprovacoes';
 }
 
 interface NavSection {
@@ -71,9 +80,9 @@ const sections: NavSection[] = [
     id: "operations",
     label: "Operações",
     items: [
-      { title: "Solicitações", icon: ClipboardList, href: "/solicitacoes", badge: 5 },
+      { title: "Solicitações", icon: ClipboardList, href: "/solicitacoes", badgeKey: 'solicitacoes' },
       { title: "Kanban", icon: Columns3, href: "/kanban" },
-      { title: "Cotações", icon: Search, href: "/cotacao", badge: 3 },
+      { title: "Cotações", icon: Search, href: "/cotacao", badgeKey: 'cotacoes' },
       { title: "Negociação IA", icon: Brain, href: "/negociacao-ia" },
       { title: "Pedidos", icon: FileText, href: "/pedidos" },
       { title: "Recompra", icon: RefreshCw, href: "/recompra-inteligente" },
@@ -88,7 +97,7 @@ const sections: NavSection[] = [
     id: "finance",
     label: "Financeiro",
     items: [
-      { title: "Pagamentos", icon: CreditCard, href: "/pagamentos", badge: 2 },
+      { title: "Pagamentos", icon: CreditCard, href: "/pagamentos", badgeKey: 'pagamentos' },
       { title: "Contratos", icon: FileSignature, href: "/contratos" },
       { title: "Sourcing (RFx)", icon: Gavel, href: "/sourcing" },
       { title: "Licitações", icon: Gavel, href: "/licitacoes" },
@@ -104,6 +113,8 @@ const sections: NavSection[] = [
     items: [
       { title: "Cadastros", icon: Factory, href: "/fornecedores" },
       { title: "SPOT / Stricker", icon: Sparkles, href: "/catalogo-spot" },
+      { title: "XBZ Brindes", icon: Sparkles, href: "/catalogo-xbz" },
+
       { title: "Performance", icon: Users, href: "/supplier-performance" },
       { title: "Qualificação", icon: ShieldCheck, href: "/qualificacao-fornecedores" },
       { title: "Histórico", icon: ShoppingCart, href: "/historico-compras" },
@@ -122,7 +133,7 @@ const sections: NavSection[] = [
     id: "admin",
     label: "Admin",
     items: [
-      { title: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badge: 4 },
+      { title: "Aprovações", icon: ClipboardCheck, href: "/aprovacoes", badgeKey: 'aprovacoes' },
       { title: "Auditoria", icon: History, href: "/auditoria" },
       { title: "Workflows", icon: Settings2, href: "/admin/workflows" },
       { title: "Segurança", icon: Shield, href: "/seguranca" },
@@ -130,6 +141,12 @@ const sections: NavSection[] = [
       { title: "ERP Sync", icon: RefreshCw, href: "/admin/erp" },
       { title: "Sourcing Pipeline", icon: TrendingUp, href: "/admin/sourcing-pipeline" },
       { title: "Fiscal", icon: FileCheck, href: "/admin/fiscal" },
+      { title: "Documentação", icon: BookOpen, href: "/admin/docs" },
+      { title: "Saúde do Sistema", icon: Activity, href: "/admin/health" },
+      { title: "Telemetria", icon: LineChart, href: "/admin/telemetria" },
+      { title: "Dep. Health", icon: Network, href: "/admin/dependency-health" },
+      { title: "SSO / SCIM", icon: KeyRound, href: "/admin/sso" },
+      { title: "Migração Storage", icon: Database, href: "/admin/storage-migration" },
     ],
   },
 ];
@@ -140,13 +157,19 @@ function isItemActive(pathname: string, href: string) {
 }
 
 /* ─── Badge ─── */
-const CountBadge = ({ count }: { count: number }) => (
-  <motion.span 
+const CountBadge = ({ count, critical = false }: { count: number; critical?: boolean }) => (
+  <motion.span
     initial={{ scale: 0.8, opacity: 0 }}
     animate={{ scale: 1, opacity: 1 }}
-    className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[9px] font-bold shadow-sm"
+    className={cn(
+      "ml-auto flex h-5 min-w-5 items-center justify-center rounded-full text-[9px] font-bold shadow-sm px-1",
+      critical
+        ? "bg-destructive text-destructive-foreground animate-pulse ring-2 ring-destructive/40"
+        : "bg-primary text-primary-foreground"
+    )}
+    aria-label={critical ? `${count} alertas críticos` : undefined}
   >
-    {count}
+    {count > 99 ? "99+" : count}
   </motion.span>
 );
 
@@ -155,12 +178,19 @@ const SidebarItem = ({
   item,
   active,
   collapsed,
+  criticalBadge = 0,
+  liveBadge = 0,
 }: {
   item: NavItemDef;
   active: boolean;
   collapsed: boolean;
+  criticalBadge?: number;
+  liveBadge?: number;
 }) => {
   const Icon = item.icon;
+  const showCritical = criticalBadge > 0;
+  const badgeValue = showCritical ? criticalBadge : (item.badgeKey ? liveBadge : undefined);
+  const hasBadge = badgeValue != null && badgeValue > 0;
 
   const content = (
     <PrefetchLink
@@ -176,29 +206,35 @@ const SidebarItem = ({
     >
       {/* Indicator Bar */}
       {active && (
-        <motion.span 
+        <motion.span
           layoutId="sidebar-active-indicator"
-          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[4px] rounded-r-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.5)]" 
+          className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-[4px] rounded-r-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.5)]"
         />
       )}
 
       <Icon
         className={cn(
           "h-[18px] w-[18px] shrink-0 transition-colors",
-          active ? "text-violet-400" : "text-zinc-500 group-hover:text-zinc-100"
+          showCritical && "text-destructive animate-pulse",
+          !showCritical && (active ? "text-primary" : "text-muted-foreground group-hover:text-foreground")
         )}
       />
 
       {!collapsed && (
         <>
           <span className="truncate">{item.title}</span>
-          {item.badge != null && item.badge > 0 && <CountBadge count={item.badge} />}
+          {hasBadge && <CountBadge count={badgeValue!} critical={showCritical} />}
         </>
       )}
 
       {/* Collapsed badge dot */}
-      {collapsed && item.badge != null && item.badge > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-primary ring-2 ring-sidebar-background" />
+      {collapsed && hasBadge && (
+        <span
+          className={cn(
+            "absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full ring-2 ring-sidebar-background",
+            showCritical ? "bg-destructive animate-pulse" : "bg-primary"
+          )}
+        />
       )}
     </PrefetchLink>
   );
@@ -209,8 +245,10 @@ const SidebarItem = ({
         <TooltipTrigger asChild>{content}</TooltipTrigger>
         <TooltipContent side="right" className="text-xs font-medium">
           {item.title}
-          {item.badge != null && item.badge > 0 && (
-            <span className="ml-1.5 text-primary">({item.badge})</span>
+          {hasBadge && (
+            <span className={cn("ml-1.5", showCritical ? "text-destructive" : "text-primary")}>
+              ({badgeValue})
+            </span>
           )}
         </TooltipContent>
       </Tooltip>
@@ -225,19 +263,45 @@ const SidebarSection = ({
   section,
   pathname,
   collapsed,
+  criticalHealthCount,
+  badges,
+  sectionBadge = 0,
+  sectionBadgeCritical = false,
 }: {
   section: NavSection;
   pathname: string;
   collapsed: boolean;
+  criticalHealthCount: number;
+  badges: Record<string, number>;
+  sectionBadge?: number;
+  sectionBadgeCritical?: boolean;
 }) => (
   <div className="space-y-0.5">
     {/* Section label — hidden when collapsed */}
     {!collapsed && (
-      <p className="px-4 pb-2 pt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 select-none">
-        {section.label}
-      </p>
+      <div className="flex items-center gap-2 px-4 pb-2 pt-4 select-none">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/50 flex-1">
+          {section.label}
+        </p>
+        {sectionBadge > 0 && (
+          <CountBadge count={sectionBadge} critical={sectionBadgeCritical} />
+        )}
+      </div>
     )}
-    {collapsed && <div className="my-1.5 mx-2 h-px bg-border/40" />}
+    {collapsed && (
+      <div className="relative my-1.5 mx-2">
+        <div className="h-px bg-border/40" />
+        {sectionBadge > 0 && (
+          <span
+            className={cn(
+              "absolute -top-1 right-0 h-2 w-2 rounded-full ring-2 ring-sidebar-background",
+              sectionBadgeCritical ? "bg-destructive animate-pulse" : "bg-primary"
+            )}
+            aria-label={sectionBadgeCritical ? `${sectionBadge} alertas críticos` : undefined}
+          />
+        )}
+      </div>
+    )}
 
     {section.items.map((item) => (
       <SidebarItem
@@ -245,6 +309,8 @@ const SidebarSection = ({
         item={item}
         active={isItemActive(pathname, item.href)}
         collapsed={collapsed}
+        criticalBadge={item.href === "/admin/health" ? criticalHealthCount : 0}
+        liveBadge={item.badgeKey ? (badges[item.badgeKey] ?? 0) : 0}
       />
     ))}
   </div>
@@ -259,17 +325,26 @@ interface AppSidebarProps {
 export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
   const { pathname } = useLocation();
   const { signOut } = useAuth();
+  const { count: criticalHealthCount, markAsSeen } = useCriticalAlertsBadge();
+  const { data: badgeData } = useSidebarBadges();
+  const badges = badgeData ?? { solicitacoes: 0, cotacoes: 0, pagamentos: 0, aprovacoes: 0 };
+
+  useEffect(() => {
+    if (pathname.startsWith("/admin/health")) {
+      markAsSeen();
+    }
+  }, [pathname, markAsSeen]);
 
   return (
     <aside
       data-tour="sidebar"
       className={cn(
-        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-white/5 bg-white/[0.02] backdrop-blur-3xl transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)]",
+        "fixed left-0 top-0 z-40 flex h-screen flex-col border-r border-border bg-card/10 backdrop-blur-3xl transition-[width] duration-300 ease-&lsqb;cubic-bezier(0.4,0,0.2,1)]",
         collapsed ? "w-[68px]" : "w-64"
       )}
     >
       {/* ── Header ── */}
-      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-white/5 px-4">
+      <div className="flex h-16 shrink-0 items-center gap-3 border-b border-border px-4">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-600 shadow-lg shadow-violet-500/20 transition-transform hover:scale-105 active:scale-95">
           <Package className="h-5 w-5 text-primary-foreground" />
         </div>
@@ -282,10 +357,10 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
               className="flex flex-col leading-none"
               style={{ fontFamily: 'Outfit, sans-serif' }}
             >
-              <span className="text-[15px] font-black uppercase tracking-tighter text-white">
-                PROMO <span className="text-violet-400">SUPPLY</span>
+              <span className="text-[15px] font-black uppercase tracking-tighter text-foreground">
+                PROMO <span className="text-primary">SUPPLY</span>
               </span>
-              <span className="text-[9px] tracking-[0.22em] uppercase text-zinc-500 font-semibold mt-1">
+              <span className="text-[9px] tracking-[0.22em] uppercase text-muted-foreground font-semibold mt-1">
                 Gestão de Compras
               </span>
             </motion.div>
@@ -320,9 +395,14 @@ export const AppSidebar = ({ collapsed, onToggle }: AppSidebarProps) => {
             section={section}
             pathname={pathname}
             collapsed={collapsed}
+            criticalHealthCount={criticalHealthCount}
+            badges={badges as unknown as Record<string, number>}
+            sectionBadge={section.id === "admin" ? criticalHealthCount : 0}
+            sectionBadgeCritical={section.id === "admin"}
           />
         ))}
       </nav>
+
 
       <div className="mt-auto space-y-1 p-2 border-t border-border/10 bg-muted/20">
         {!collapsed && (

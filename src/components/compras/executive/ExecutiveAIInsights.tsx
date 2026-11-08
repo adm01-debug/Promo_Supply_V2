@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, TrendingUp, AlertTriangle, CheckCircle2, ArrowRight, Zap } from "lucide-react";
+import { Sparkles, TrendingUp, AlertTriangle, CheckCircle2, ArrowRight, Zap, type LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ExecutiveMetrics } from "@/hooks/useExecutiveDashboardData";
 import { cn } from "@/lib/utils";
@@ -18,7 +18,7 @@ interface Insight {
   title: string;
   description: string;
   impact: string;
-  icon: any;
+  icon: LucideIcon;
   action?: string;
 }
 

@@ -2,7 +2,7 @@ import { lazy, Suspense } from "react";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@/features/auth/components/ProtectedRoute";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
-import { motion, AnimatePresence } from "framer-motion";
+
 import { Shell } from "@/features/layout/components/Shell";
 import { RouteSkeleton } from "@/components/navigation/RouteSkeleton";
 import { PageLoader } from "@/features/layout/components/PageLoader";
@@ -29,6 +29,8 @@ const ComplianceDashboard = lazy(() => import("@/pages/compliance/ComplianceDash
 const Auth = lazy(() => import("@/pages/auth/Auth"));
 const Seguranca = lazy(() => import("@/pages/seguranca/Seguranca"));
 const CatalogoSpot = lazy(() => import("@/pages/catalogo-spot/CatalogoSpot"));
+const CatalogoXbz = lazy(() => import("@/pages/catalogo-xbz/CatalogoXbz"));
+
 const QualificacaoFornecedores = lazy(() => import("@/pages/qualificacao/QualificacaoFornecedores"));
 const Orcamentos = lazy(() => import("@/pages/orcamentos/Orcamentos"));
 const NegociacaoIA = lazy(() => import("@/pages/negociacao-ia/NegociacaoIA"));
@@ -54,15 +56,23 @@ const ConfiguracoesCentroCusto = lazy(() => import("@/pages/configuracoes/Config
 const FiscalDashboard = lazy(() => import("@/pages/admin/FiscalDashboard"));
 const SourcingPipeline = lazy(() => import("@/pages/admin/SourcingPipeline"));
 const WorkflowDesigner = lazy(() => import("@/pages/admin/WorkflowAdmin"));
+const DeveloperDocs = lazy(() => import("@/pages/admin/DeveloperDocs"));
+const StorageMigration = lazy(() => import("@/pages/admin/StorageMigration"));
+const HealthDashboard = lazy(() => import("@/pages/admin/HealthDashboard"));
+const AlertDetail = lazy(() => import("@/pages/admin/AlertDetail"));
+
 const NotFound = lazy(() => import("@/pages/NotFound"));
+
+/** Harness dev-only usado pelos testes E2E do painel de rede XBZ. */
+const XbzNetworkPanelHarness = lazy(() => import("@/pages/dev/XbzNetworkPanelHarness"));
 
 export const AnimatedRoutes = () => {
   const location = useLocation();
 
   return (
     <div className="w-full min-h-screen">
-      <AnimatePresence mode="wait">
-        <Routes location={location} key={location.pathname}>
+      <Routes location={location}>
+
           <Route path="/auth" element={
             <Suspense fallback={<PageLoader />}>
               <Auth />
@@ -93,6 +103,8 @@ export const AnimatedRoutes = () => {
             <Route path="/auditoria" element={<ModuleErrorBoundary module="relatorios"><RouteSkeleton variant="table"><Auditoria /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/seguranca" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><Seguranca /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/catalogo-spot" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><CatalogoSpot /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/catalogo-xbz" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><CatalogoXbz /></RouteSkeleton></ModuleErrorBoundary>} />
+
             <Route path="/qualificacao-fornecedores" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="table"><QualificacaoFornecedores /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/orcamentos" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><Orcamentos /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/negociacao-ia" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><NegociacaoIA /></RouteSkeleton></ModuleErrorBoundary>} />
@@ -108,25 +120,38 @@ export const AnimatedRoutes = () => {
             <Route path="/sourcing/:id/auction" element={<ModuleErrorBoundary module="cotacoes"><RouteSkeleton variant="full"><AuctionRoom /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/licitacoes" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><Licitacoes /></RouteSkeleton></ModuleErrorBoundary>} />
             <Route path="/recebimento" element={<ModuleErrorBoundary module="pedidos"><RouteSkeleton variant="form"><RecebimentoOffline /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/telemetria" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><AdminTelemetria /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/dependency-health" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><DependencyHealth /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/sso" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><SSOConfig /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/punchout" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><PunchOutCatalogs /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/erp" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><ERPConnections /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/fiscal" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><FiscalDashboard /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/sourcing-pipeline" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="kanban"><SourcingPipeline /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/admin/workflows" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><WorkflowDesigner /></RouteSkeleton></ModuleErrorBoundary>} />
-            <Route path="/portal-fornecedor" element={<ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="dashboard"><PortalFornecedor /></RouteSkeleton></ModuleErrorBoundary>} />
+            <Route path="/admin/telemetria" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><AdminTelemetria /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/dependency-health" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><DependencyHealth /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/sso" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><SSOConfig /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/punchout" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><PunchOutCatalogs /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/erp" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="table"><ERPConnections /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/fiscal" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><FiscalDashboard /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/sourcing-pipeline" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="kanban"><SourcingPipeline /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/workflows" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><WorkflowDesigner /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/docs" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="full"><DeveloperDocs /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/storage-migration" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><StorageMigration /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/health" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><HealthDashboard /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+            <Route path="/admin/health/alerts/:id" element={<ProtectedRoute requiredRole="admin"><ModuleErrorBoundary module="default"><RouteSkeleton variant="dashboard"><AlertDetail /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
+
+            <Route path="/portal-fornecedor" element={<ProtectedRoute requiredRole={['supplier', 'admin']}><ModuleErrorBoundary module="fornecedores"><RouteSkeleton variant="dashboard"><PortalFornecedor /></RouteSkeleton></ModuleErrorBoundary></ProtectedRoute>} />
             <Route path="/configuracoes-centro-custo" element={<ModuleErrorBoundary module="default"><RouteSkeleton variant="form"><ConfiguracoesCentroCusto /></RouteSkeleton></ModuleErrorBoundary>} />
           </Route>
+
+          {import.meta.env.DEV ? (
+            <Route path="/__dev/xbz-network-panel" element={
+              <Suspense fallback={<PageLoader />}>
+                <XbzNetworkPanelHarness />
+              </Suspense>
+            } />
+          ) : null}
 
           <Route path="*" element={
             <Suspense fallback={<PageLoader />}>
               <NotFound />
             </Suspense>
-          } />
-        </Routes>
-      </AnimatePresence>
+        } />
+      </Routes>
     </div>
   );
 };
+

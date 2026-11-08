@@ -1,9 +1,7 @@
+import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
+import { checkRateLimit, rateLimitedResponse } from "../_shared/rate_limit.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
 
 function base64UrlEncode(buffer: Uint8Array | ArrayBuffer): string {
   const bytes = buffer instanceof Uint8Array ? buffer : new Uint8Array(buffer);
@@ -48,16 +46,38 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'method_not_allowed' }), {
+      status: 405,
+      headers: buildResponseHeaders(corsHeaders),
+    });
+  }
 
   try {
     // SECURITY: Validate the caller's identity
     const authenticatedUserId = await verifyAuthUser(req);
 
+    // Rate limit por usuário para evitar registro em massa/enumeração
+    const rl = await checkRateLimit({
+      identifier: authenticatedUserId,
+      endpoint: 'webauthn-register',
+      maxRequests: 15,
+      windowSeconds: 60,
+    });
+    if (!rl.allowed) return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { action, userId, email, credential, credentialName } = await req.json();
+    const body = await req.json().catch(() => ({}));
+    const { action, userId, email, credential, credentialName } = body ?? {};
+    if (!action || (action !== 'start' && action !== 'finish')) {
+      throw new Error('Invalid action');
+    }
+    if (typeof email !== 'string' || !email.includes('@') || email.length > 254) {
+      throw new Error('Email inválido');
+    }
     console.log(`WebAuthn register action: ${action}`);
 
     // SECURITY: Ensure the userId from the body matches the authenticated user
@@ -132,7 +152,7 @@ Deno.serve(async (req) => {
       console.log('Registration options generated for:', email);
 
       return new Response(JSON.stringify({ options }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: buildResponseHeaders(corsHeaders),
       });
     }
 
@@ -189,7 +209,7 @@ Deno.serve(async (req) => {
       console.log('Passkey registered successfully for user:', safeUserId);
 
       return new Response(JSON.stringify({ success: true }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        headers: buildResponseHeaders(corsHeaders),
       });
     }
 
@@ -200,7 +220,7 @@ Deno.serve(async (req) => {
     const status = errorMessage.includes("Não autorizado") ? 401 : 400;
     return new Response(
       JSON.stringify({ error: errorMessage }),
-      { status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      { status, headers: buildResponseHeaders(corsHeaders) }
     );
   }
 });

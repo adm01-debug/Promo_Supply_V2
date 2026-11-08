@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { logger } from '@/lib/logger';
 import { Shield, AlertTriangle, CheckCircle2, XCircle, TrendingUp, TrendingDown, Loader2, RefreshCw, Target, AlertCircle, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -85,7 +86,7 @@ export function SupplierRiskAnalysis() {
       if (error) throw error;
       return data || [];
     },
-    staleTime: 60000,
+    staleTime: 60_000,
   });
 
   const handleAnalyze = async () => {
@@ -150,7 +151,7 @@ export function SupplierRiskAnalysis() {
         description: 'A análise de risco foi gerada com sucesso.',
       });
     } catch (error) {
-      console.error('Error analyzing supplier risk:', error);
+      logger.error('Error analyzing supplier risk', { error });
       toast({
         title: 'Erro na análise',
         description: 'Não foi possível gerar a análise. Tente novamente.',
@@ -172,8 +173,10 @@ export function SupplierRiskAnalysis() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <Shield className="h-4 w-4" />
-          Análise de Risco
+          <span className="inline-flex items-center gap-2">
+            <Shield className="h-4 w-4" />
+            Análise de Risco
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent aria-describedby="dialog-desc" className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">

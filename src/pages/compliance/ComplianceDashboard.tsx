@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { logger } from '@/lib/logger';
 import { PenaltyEscalationConfigPanel } from "@/components/compras/PenaltyEscalationConfigPanel";
 import { SupplierBonificationsPanel } from "@/components/compras/SupplierBonificationsPanel";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,6 +18,7 @@ import {
   TrendingUp, Award, Ban, Star, Package, Clock, BarChart3,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { formatCurrency } from "@/lib/utils";
 import { toast } from "@/lib/feedbackToast";
 import {
   type ComplianceData,
@@ -40,13 +42,13 @@ export default function ComplianceDashboard() {
   const fetchData = async () => {
     try {
       const [compRes, rulesRes] = await Promise.all([
-        supabase.from('supplier_compliance_summary' as any).select('*'),
-        supabase.from('penalty_escalation_config' as any).select('*').order('level', { ascending: true }),
+        supabase.from('supplier_compliance_summary').select('*'),
+        supabase.from('penalty_escalation_config').select('*').order('level', { ascending: true }),
       ]);
-      setData((compRes.data as any[]) || []);
-      setRules((rulesRes.data as any[]) || []);
+      setData((compRes.data as unknown as ComplianceData[]) || []);
+      setRules((rulesRes.data as unknown as EscalationRule[]) || []);
     } catch (error: unknown) {
-      console.error('Error fetching compliance data:', error);
+      logger.error('Error fetching compliance data', { error });
       toast.error("Erro ao carregar dados de compliance");
     } finally {
       setLoading(false);
@@ -105,7 +107,7 @@ export default function ComplianceDashboard() {
                 <div>
                   <p className="text-xs text-muted-foreground">Total Penalidades</p>
                   <p className="text-2xl font-bold text-destructive">
-                    {totalPenaltyValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    {formatCurrency(totalPenaltyValue)}
                   </p>
                 </div>
                 <div className="w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center">
@@ -178,7 +180,7 @@ export default function ComplianceDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {sortedData.map((item: any, idx: number) => {
+                    {sortedData.map((item, idx) => {
                       const status = getComplianceStatus(item);
                       const StatusIcon = status.icon;
                       return (
@@ -232,7 +234,7 @@ export default function ComplianceDashboard() {
                             )}
                           </TableCell>
                           <TableCell className="text-right font-bold text-destructive">
-                            {Number(item.total_penalty_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                            {formatCurrency(Number(item.total_penalty_value))}
                           </TableCell>
                         </TableRow>
                       );

@@ -11,7 +11,7 @@ import type { Solicitacao } from "@/types/legacyTypes";
 import { getTipoLabel, getStatusColor } from "@/types/legacyTypes";
 import { SwipeableListItem } from "@/components/mobile/SwipeableListItem";
 import { useHapticFeedback } from "@/hooks/useMobileGestures";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { differenceInDays } from "date-fns/differenceInDays";
 import { isPast } from "date-fns/isPast";
 import {
@@ -73,7 +73,7 @@ const statusActions: Record<string, {
     primary: { label: 'View Order', icon: Eye, href: '/pedidos' },
     secondary: null,
   },
-  ENTREGUE: { label: 'View Details', icon: Eye } as any,
+  ENTREGUE: { primary: { label: 'View Details', icon: Eye }, secondary: null },
 };
 
 export const SolicitacaoCard = ({ 
@@ -332,13 +332,17 @@ export const SolicitacaoCard = ({
             >
               {actions.primary.href ? (
                 <Link to={`${actions.primary.href}?${actions.primary.param ?? 'id'}=${solicitacao.id}`}>
-                  <actions.primary.icon className="w-4 h-4 mr-2" />
-                  {actions.primary.label}
+                  <span className="inline-flex items-center gap-2">
+                    <actions.primary.icon className="w-4 h-4" />
+                    {actions.primary.label}
+                  </span>
                 </Link>
               ) : (
                 <button>
-                  <actions.primary.icon className="w-4 h-4 mr-2" />
-                  {actions.primary.label}
+                  <span className="inline-flex items-center gap-2">
+                    <actions.primary.icon className="w-4 h-4" />
+                    {actions.primary.label}
+                  </span>
                 </button>
               )}
             </Button>

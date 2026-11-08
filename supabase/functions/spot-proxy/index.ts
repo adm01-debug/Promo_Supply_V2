@@ -1,11 +1,11 @@
+import { corsHeaders } from "../_shared/security.ts";
+import { buildResponseHeaders } from "../_shared/http.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { EdgeLogger } from "../_shared/logger.ts";
+import { getBreaker } from "../_shared/circuit_breaker.ts";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-request-id",
-};
+// INT-01: Circuit breaker para SPOT — abre após 5 falhas, cooldown 30s.
+const spotBreaker = getBreaker("spot-login", { failureThreshold: 5, cooldownMs: 30_000 });
 
 const SPOT_BASE = "https://www.spotgifts.com.br";
 const LANG = "pt";
@@ -135,7 +135,14 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     throw new Error("Credenciais SPOT não configuradas no backend");
   }
 
+  // INT-01: Circuit breaker — falha rápido se SPOT está fora do ar.
+  if (!spotBreaker.canRequest()) {
+    throw new HttpError(503, "SPOT temporariamente indisponível (circuit breaker aberto)");
+  }
+
   const loginUrl = `${SPOT_BASE}/${LANG}/area-reservada/login/`;
+
+  try {
 
   // GET initial page to obtain PHPSESSID
   const initRes = await fetch(loginUrl, {
@@ -206,7 +213,12 @@ async function loginToSpot(supabase: ReturnType<typeof getSupabaseAdmin>): Promi
     is_valid: true,
   });
 
-  return cookie;
+    spotBreaker.recordSuccess();
+    return cookie;
+  } catch (err) {
+    spotBreaker.recordFailure();
+    throw err;
+  }
 }
 
 async function spotFetch(
@@ -760,7 +772,7 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") {
     return new Response(JSON.stringify({ error: "Método não permitido" }), {
       status: 405,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   }
 
@@ -772,6 +784,14 @@ Deno.serve(async (req) => {
 
     // Verify authentication BEFORE processing
     const userId = await verifyAuth(req, supabase);
+
+    // M-05: rate limit uniforme por usuário (60 req/min).
+    const { checkRateLimit, rateLimitedResponse } = await import("../_shared/rate_limit.ts");
+    const rl = await checkRateLimit({ identifier: userId, endpoint: "spot-proxy", maxRequests: 60, windowSeconds: 60 });
+    if (!rl.allowed) {
+      logger.warn("spot-proxy rate limited", { userId, retry: rl.retryAfterSeconds });
+      return rateLimitedResponse(rl.retryAfterSeconds, corsHeaders);
+    }
 
     const body = await readJsonBody(req);
     const action = readRequestAction(body);
@@ -838,7 +858,7 @@ Deno.serve(async (req) => {
     }
 
     return new Response(JSON.stringify(result), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : "Erro desconhecido";
@@ -851,7 +871,7 @@ Deno.serve(async (req) => {
 
     return new Response(JSON.stringify({ error: msg }), {
       status,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+      headers: buildResponseHeaders(corsHeaders),
     });
   }
 });

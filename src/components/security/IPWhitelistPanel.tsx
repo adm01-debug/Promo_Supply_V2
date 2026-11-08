@@ -8,8 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { toast } from "@/lib/feedbackToast";
 import { useSecurityLogs, IPWhitelist } from '@/hooks/useSecurityLogs';
-import { format } from "date-fns/format";
-import { ptBR } from "date-fns/locale/pt-BR";
+import { formatDateTime } from '@/lib/utils';
 
 export const IPWhitelistPanel = () => {
   const { ipWhitelist, isLoading, addToWhitelist, removeFromWhitelist } = useSecurityLogs();
@@ -107,7 +106,7 @@ export const IPWhitelistPanel = () => {
                       {ip.description || '-'}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {format(new Date(ip.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                      {formatDateTime(ip.created_at)}
                     </TableCell>
                     <TableCell className="text-right">
                       <Button

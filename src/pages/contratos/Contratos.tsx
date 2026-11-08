@@ -1,4 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { logger } from '@/lib/logger';
+import type { LucideIcon } from "lucide-react";
 import { ModuleErrorBoundary } from "@/features/layout/components/ModuleErrorBoundary";
 import { TableSkeleton, KPICardSkeleton } from "@/components/ui/contextual-skeletons";
 import { IllustratedEmptyState } from "@/components/ui/illustrated-empty-state";
@@ -49,9 +51,9 @@ import type { Contract } from "@/types/contract";
 import { ElitePageWrapper } from "@/components/organisms/ElitePageWrapper";
 import { EliteButton } from "@/components/atoms/EliteButton";
 import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
-const statusConfig: Record<string, { label: string; color: string; icon: any }> = {
+const statusConfig: Record<string, { label: string; color: string; icon: LucideIcon }> = {
   draft: { label: "Rascunho", color: "bg-muted text-muted-foreground", icon: FileText },
   pending_approval: { label: "Aguard. Aprovação", color: "bg-warning/10 text-warning", icon: History },
   active: { label: "Ativo", color: "bg-success/10 text-success", icon: CheckCircle2 },
@@ -69,15 +71,18 @@ export default function Contratos() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-  useEffect(() => { fetchContracts(); }, []);
-
-  const fetchContracts = async () => {
+  const fetchContracts = useCallback(async () => {
+    setLoading(true);
     try {
       const { data, error } = await supabase.from('contracts').select('*').order('created_at', { ascending: false });
       if (error) throw error;
-      setContracts(data || []);
+      setContracts((data as unknown as Contract[]) || []);
+    } catch (err) {
+      logger.error('Erro ao buscar contratos', { error: err });
     } finally { setLoading(false); }
-  };
+  }, []);
+
+  useEffect(() => { fetchContracts(); }, [fetchContracts]);
 
   const filteredContracts = contracts.filter(contract => {
     const matchesSearch = contract.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -244,7 +249,7 @@ export default function Contratos() {
                       </TableCell>
                       <TableCell className="text-right">
                         <span className="font-black text-foreground">
-                          {Number(contract.total_value).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                          {formatCurrency(Number(contract.total_value))}
                         </span>
                       </TableCell>
                       <TableCell className="pr-8">

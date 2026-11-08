@@ -24,6 +24,7 @@ import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { normalizeText } from "@/hooks/useFuseSearch";
 import { ChatArea } from "./chat/ChatArea";
+import { logger } from "@/lib/logger";
 
 interface ChatContact {
   id: string;
@@ -133,8 +134,8 @@ export function SupplierChat() {
       .on('presence', { event: 'sync' }, () => {
         const state = channel.presenceState();
         const usersTyping: string[] = [];
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        Object.values(state).forEach((presences: any[]) => {
+         
+        Object.values(state).forEach((presences) => {
           presences.forEach((presence: Record<string, unknown>) => {
             if (presence["isTyping"] && presence["userId"] !== user.id) {
               usersTyping.push((presence["userName"] as string) || 'Alguém');
@@ -160,7 +161,7 @@ export function SupplierChat() {
         presenceChannelRef.current = null;
       }
     };
-  }, [selectedContact?.fornecedorId, user]);
+  }, [selectedContact, user]);
 
   const updateTypingStatus = useCallback(async (typing: boolean) => {
     if (!presenceChannelRef.current || !user) return;
@@ -172,7 +173,7 @@ export function SupplierChat() {
         online_at: new Date().toISOString(),
       });
     } catch (error: unknown) {
-      console.error('Error updating typing status:', error);
+      logger.error('SupplierChat: falha ao atualizar status de typing', { error });
     }
   }, [user]);
 

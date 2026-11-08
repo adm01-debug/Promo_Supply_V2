@@ -1,10 +1,11 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/features/auth';
 import { logger } from '@/lib/logger';
 import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import type { Json, Database } from '@/integrations/supabase/types';
 
 export type Cotacao = Database['public']['Tables']['cotacoes']['Row'] & {
@@ -39,7 +40,11 @@ async function fetchCotacoesData(userId: string | undefined, organizationId: str
   let query = supabase
     .from('cotacoes')
     .select(`
-      *,
+      id, numero, status, solicitacao_id, fornecedor_id,
+      valor_unitario, quantidade, valor_total, valor_frete, desconto_percentual,
+      prazo_entrega, validade_proposta, condicao_pagamento, observacoes,
+      selecionada, justificativa_selecao, score_total, score_preco, score_prazo, score_qualidade,
+      organization_id, tenant_id, created_at, updated_at,
       fornecedor:fornecedores(id, razao_social, nome_fantasia),
       solicitacao:solicitacoes(id, numero, titulo, produto_id)
     `)
@@ -94,7 +99,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
           condicao_pagamento: input.condicao_pagamento, observacoes: input.observacoes,
           organization_id: organizationId,
           tenant_id: organizationId,
-        } as any)
+        })
         .select().single();
       if (error) {
         logger.error('Erro ao inserir cotação no banco', { error, input });
@@ -120,7 +125,7 @@ export function useCotacoes(filters?: CotacaoFilters) {
       toast.error('Erro ao adicionar cotação: ' + msg);
       return null;
     }
-  }, [user, invalidate]);
+  }, [user, invalidate, organizationId]);
 
   const updateCotacao = useCallback(async (id: string, updates: Partial<Cotacao>) => {
     try {
@@ -192,17 +197,11 @@ export function useCotacoes(filters?: CotacaoFilters) {
     }
   }, [invalidate]);
 
-  // Realtime subscription
-  useEffect(() => {
-    if (!user) return;
-    const channel = supabase
-      .channel('cotacoes-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'cotacoes' }, () => {
-        invalidate();
-      })
-      .subscribe();
-    return () => { supabase.removeChannel(channel); };
-  }, [user, invalidate]);
+  useRealtimeSubscription({
+    tables: ['cotacoes'],
+    queryKeysToInvalidate: [['cotacoes']],
+    enabled: !!user,
+  });
 
   return {
     cotacoes, loading: isLoading, error: error?.message || null,

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
@@ -15,7 +14,7 @@ import {
 } from 'lucide-react';
 import { supabase } from "@/integrations/supabase/client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { toast } from "@/lib/feedbackToast";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/features/auth";
 import { cn } from "@/lib/utils";
@@ -50,11 +49,9 @@ const ERPConnections = () => {
 
   const syncMutation = useMutation({
     mutationFn: async ({ connectionId, entity }: { connectionId: string, entity: string }) => {
-      if (!organizationId) throw new Error("ID da organização não encontrado");
-      
+      // M-02: tenant agora é resolvido no servidor a partir do JWT (user_tenants).
       const { data, error } = await supabase.functions.invoke('erp-sync', {
         body: { action: 'pull', connectionId, entity },
-        headers: { 'x-tenant-id': organizationId }
       });
       if (error) throw error;
       return data;
@@ -63,7 +60,7 @@ const ERPConnections = () => {
       toast.success("Sincronização iniciada com sucesso");
       queryClient.invalidateQueries({ queryKey: ['erp-sync-logs'] });
     },
-    onError: (error: any) => {
+    onError: (error: Error) => {
       toast.error("Erro ao sincronizar: " + error.message);
     }
   });

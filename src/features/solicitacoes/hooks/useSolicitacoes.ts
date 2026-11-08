@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useMemo } from 'react';
 import { logger } from '@/lib/logger';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,7 +7,8 @@ import { toast } from '@/lib/feedbackToast';
 import { auditHelpers } from '@/services/auditService';
 import { useApprovalWorkflow } from '@/hooks/useApprovalWorkflow';
 import { fetchAllRows } from '@/lib/paginatedFetch';
-import type { Json, Database } from '@/integrations/supabase/types';
+import { escapeIlike } from '@/lib/supabaseQuery';
+import type { Database } from '@/integrations/supabase/types';
 import { CreateSolicitacaoSchema, type CreateSolicitacaoInput } from '@/features/solicitacoes';
 
 export type CostCenter = Database['public']['Tables']['cost_centers']['Row'] & {
@@ -58,12 +59,14 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
   let query = supabase
     .from('solicitacoes')
     .select(`
-      *,
+      id, numero, titulo, descricao, tipo, status, prioridade,
+      valor_estimado, quantidade, unidade, data_necessidade,
+      departamento, centro_custo, cost_center_id, categoria_id, fornecedor_id,
+      justificativa, solicitante_id, aprovador_id, organization_id, tenant_id,
+      created_at, updated_at,
       fornecedor:fornecedores(razao_social, nome_fantasia),
       categoria:categorias(nome),
-      cost_center:cost_centers(name, code),
-      aprovador:profiles!solicitacoes_aprovador_id_fkey(full_name),
-      solicitante:profiles!solicitacoes_solicitante_id_fkey(full_name)
+      cost_center:cost_centers(name, code)
     `, { count: 'exact' })
     .order('created_at', { ascending: false })
     .eq('organization_id', organizationId)
@@ -72,7 +75,10 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
   if (filters?.status && filters.status !== 'todas') query = query.eq('status', filters.status);
   if (filters?.tipo && filters.tipo !== 'todos') query = query.eq('tipo', filters.tipo);
   if (filters?.prioridade && filters.prioridade !== 'todas') query = query.eq('prioridade', filters.prioridade);
-  if (filters?.search) query = query.or(`titulo.ilike.%${filters.search}%,numero.ilike.%${filters.search}%,descricao.ilike.%${filters.search}%`);
+  if (filters?.search) {
+    const s = escapeIlike(filters.search);
+    query = query.or(`titulo.ilike.%${s}%,numero.ilike.%${s}%,descricao.ilike.%${s}%`);
+  }
   if (filters?.dateFrom) query = query.gte('data_necessidade', filters.dateFrom);
   if (filters?.dateTo) query = query.lte('data_necessidade', filters.dateTo);
   if (filters?.valorMin !== undefined) query = query.gte('valor_estimado', filters.valorMin);
@@ -80,7 +86,7 @@ async function fetchSolicitacoesData(userId: string | undefined, organizationId:
 
   const { data, error, count } = await query;
   if (error) throw error;
-  return { data: (data as Solicitacao[]) || [], totalCount: count || 0 };
+  return { data: (data as unknown as Solicitacao[]) || [], totalCount: count || 0 };
 }
 
 export function useSolicitacoes(filters?: SolicitacaoFilters) {
@@ -103,7 +109,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
     refetchOnWindowFocus: false,
   });
 
-  const solicitacoes = data?.data || [];
+  const solicitacoes = useMemo(() => data?.data ?? [], [data]);
   const totalCount = data?.totalCount || 0;
 
   const invalidate = useCallback(() => {
@@ -132,12 +138,12 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
         
         if (budgetError) {
           logger.error('Erro ao verificar orçamento', { error: budgetError, costCenterId: input.cost_center_id });
-        } else if (availability && !(availability as any).available) {
-          logger.warn('Saldo insuficiente no centro de custo', { 
-            costCenterId: input.cost_center_id, 
-            valor: input.valor_estimado 
+        } else if (availability && !(availability as { available: boolean; message?: string }).available) {
+          logger.warn('Saldo insuficiente no centro de custo', {
+            costCenterId: input.cost_center_id,
+            valor: input.valor_estimado
           });
-          toast.error((availability as any).message || 'Saldo insuficiente no centro de custo.');
+          toast.error((availability as { available: boolean; message?: string }).message || 'Saldo insuficiente no centro de custo.');
           if (input.prioridade !== 'urgente') {
             return null;
           }
@@ -154,8 +160,8 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
           numero, 
           titulo: validated.data.titulo, 
           descricao: validated.data.descricao, 
-          tipo: validated.data.tipo as any, // Database enum type
-          prioridade: validated.data.prioridade as any,
+          tipo: validated.data.tipo,
+          prioridade: validated.data.prioridade,
           valor_estimado: validated.data.valor_estimado,
           quantidade: validated.data.quantidade, 
           unidade: validated.data.unidade,
@@ -276,7 +282,7 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
       titulo: `${original.titulo} (Cópia)`,
       descricao: original.descricao || undefined,
       tipo: original.tipo,
-      prioridade: original.prioridade as any,
+      prioridade: original.prioridade as CreateSolicitacaoInput['prioridade'],
       valor_estimado: original.valor_estimado || undefined,
       quantidade: original.quantidade,
       unidade: original.unidade || 'un',
@@ -288,19 +294,24 @@ export function useSolicitacoes(filters?: SolicitacaoFilters) {
   }, [solicitacoes, createSolicitacao]);
 
   const { data: costCenters = [], isLoading: loadingCostCenters } = useQuery({
-    queryKey: ['cost-centers'],
+    queryKey: ['cost-centers', organizationId],
     queryFn: async () => {
+      if (!organizationId) return [] as CostCenter[];
+      // RLS already scopes by tenant/group; explicit columns trim payload.
       const { data, error } = await supabase
         .from('cost_centers')
         .select(`
-          *,
+          id, name, code, tenant_id, manager_id, parent_id, is_active,
+          department, approval_threshold, total_budget, committed_amount, used_amount,
+          created_at, updated_at,
           manager:profiles(full_name)
         `)
         .eq('is_active', true)
         .order('name');
       if (error) throw error;
-      return (data || []) as CostCenter[];
+      return (data || []) as unknown as CostCenter[];
     },
+    enabled: !!organizationId,
     staleTime: 300_000,
   });
 

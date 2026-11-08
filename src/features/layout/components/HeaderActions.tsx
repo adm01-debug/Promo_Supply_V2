@@ -10,6 +10,7 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { AccessibilityPanel } from "@/components/accessibility/AdvancedAccessibility";
 import { FeedbackSettingsPanel } from "@/components/settings/FeedbackSettingsPanel";
 import { TenantSwitcher } from "@/components/admin/TenantSwitcher";
+import { EmpresaSelector } from "@/features/empresas";
 import { Keyboard, HelpCircle, Command, Settings2, Accessibility } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -35,11 +36,13 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
             className="hidden md:flex items-center gap-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-all active:scale-[0.98]"
             aria-label="Abrir Command Palette"
           >
-            <Command className="w-4 h-4" />
-            <span className="text-xs font-medium">Buscar...</span>
-            <kbd className="ml-2 pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[9px] font-bold text-muted-foreground/70 uppercase">
-              <span className="text-[10px]">⌘</span>K
-            </kbd>
+            <span className="inline-flex items-center gap-1.5">
+              <Command className="w-4 h-4" />
+              <span className="text-xs font-medium">Buscar...</span>
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[9px] font-bold text-muted-foreground/70 uppercase">
+                <span className="text-[10px]">⌘</span>K
+              </kbd>
+            </span>
           </Button>
         </TooltipTrigger>
         <TooltipContent className="bg-foreground text-background font-bold text-[10px] uppercase tracking-widest">
@@ -49,6 +52,7 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
 
       <ThemeToggle />
       <LanguageSwitcher />
+      <EmpresaSelector className="hidden md:inline-flex" />
       <TenantSwitcher />
 
       <Suspense fallback={null}>
@@ -135,7 +139,7 @@ export const HeaderActions = memo(({ onOpenCommandPalette, onRestartTour }: Head
       </div>
       <SLASettingsPanel />
 
-      <div className="pl-2 ml-1 sm:pl-3 sm:ml-2 border-l border-border">
+      <div className="pl-2 ml-1 sm:pl-3 sm:ml-2 border-l border-border/50">
         <UserMenu />
       </div>
     </div>

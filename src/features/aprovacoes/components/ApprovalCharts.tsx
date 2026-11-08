@@ -35,7 +35,7 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameT
       <div className="bg-popover border border-border rounded-lg shadow-lg p-3">
         <p className="font-medium text-foreground">{label}</p>
         {(payload as PayloadEntry[]).map((entry, index: number) => (
-          <p key={index} className="text-sm" style={{ color: entry.color }}>
+          <p key={`${String(entry.name ?? 'series')}-${index}`} className="text-sm" style={{ color: entry.color }}>
             {entry.name}: {entry.value}{String(entry.name).includes('Tempo') ? 'h' : ''}
           </p>
         ))}
@@ -103,7 +103,7 @@ export const StatusDistributionChart = ({ data }: { data: StatusDistributionItem
       </ResponsiveContainer>
       <div className="flex-1 space-y-2">
         {data.map((item, idx) => (
-          <div key={idx} className="flex items-center justify-between">
+          <div key={`${item.name}-${idx}`} className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
               <span className="text-sm">{item.name}</span>
@@ -124,7 +124,7 @@ export const BottleneckAnalysis = ({ data }: { data: BottleneckItem[] }) => (
     </h3>
     <div className="space-y-4">
       {data.map((item, idx) => (
-        <div key={idx}>
+        <div key={`${item.etapa}-${idx}`}>
           <div className="flex items-center justify-between mb-1">
             <span className="text-sm text-foreground">{item.etapa}</span>
             <div className="flex items-center gap-2">

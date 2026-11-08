@@ -106,7 +106,7 @@ export function ReceivingFormView({
                         value={received}
                         onChange={e => onSetReceivedQty(prev => ({
                           ...prev,
-                          [item.id]: Math.max(0, parseInt(e.target.value) || 0),
+                          [item.id]: Math.max(0, parseInt(e.target.value, 10) || 0),
                         }))}
                         className="w-16 text-center h-8"
                       />

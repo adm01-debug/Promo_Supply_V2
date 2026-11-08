@@ -136,7 +136,7 @@ export const ProductSupplierManager = ({ produtoId, produtoNome }: ProductSuppli
                   <Input 
                     type="number" 
                     value={newLink.lead_time_estimado} 
-                    onChange={(e) => setNewLink({...newLink, lead_time_estimado: parseInt(e.target.value)})}
+                    onChange={(e) => setNewLink({...newLink, lead_time_estimado: parseInt(e.target.value, 10)})}
                     className="bg-white/5 border-white/10 h-12"
                   />
                 </div>

@@ -1,5 +1,6 @@
 import { format } from "date-fns/format";
-import { toast } from 'sonner';
+import { toast } from '@/lib/feedbackToast';
+import { logger } from '@/lib/logger';
 
 export interface TelemetryRow {
   id: string;
@@ -145,7 +146,7 @@ export async function exportPDF(rows: TelemetryRow[], timeFilter: string, stats:
     doc.save(`telemetria_${format(now, "yyyy-MM-dd")}_${timeFilter}.pdf`);
     toast.success("PDF exportado com sucesso");
   } catch (err) {
-    console.error("PDF export error:", err);
+    logger.error('PDF export error', { error: err });
     toast.error("Erro ao gerar PDF");
   }
 }

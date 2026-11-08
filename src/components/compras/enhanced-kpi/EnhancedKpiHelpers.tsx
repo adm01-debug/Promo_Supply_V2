@@ -1,4 +1,4 @@
-import { LucideIcon, TrendingUp, TrendingDown, Minus } from "lucide-react";
+﻿import { LucideIcon, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { useState, useEffect, useMemo, forwardRef } from "react";
@@ -73,7 +73,7 @@ export const DeltaIndicator = forwardRef<HTMLDivElement, {
   return (
     <motion.div ref={ref} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
       className={cn("inline-flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-lg uppercase tracking-tight", colorClass)}>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="sync">
         {isPositive && !isNeutral && <motion.div key="up" initial={{ rotate: 45 }} animate={{ rotate: 0 }}><TrendingUp className="w-3 h-3" /></motion.div>}
         {!isPositive && !isNeutral && <motion.div key="down" initial={{ rotate: -45 }} animate={{ rotate: 0 }}><TrendingDown className="w-3 h-3" /></motion.div>}
         {isNeutral && <motion.div key="neutral" initial={{ opacity: 0 }} animate={{ opacity: 1 }}><Minus className="w-3 h-3" /></motion.div>}
@@ -84,7 +84,14 @@ export const DeltaIndicator = forwardRef<HTMLDivElement, {
 });
 DeltaIndicator.displayName = 'DeltaIndicator';
 
-export const TargetProgressRing = ({ progress, size = 44, strokeWidth = 4, color }: any) => {
+interface TargetProgressRingProps {
+  progress: number;
+  size?: number;
+  strokeWidth?: number;
+  color: string;
+}
+
+export const TargetProgressRing = ({ progress, size = 44, strokeWidth = 4, color }: TargetProgressRingProps) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
   const colors = colorClasses[color] || colorClasses['violet'];

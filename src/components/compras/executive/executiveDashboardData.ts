@@ -157,16 +157,35 @@ export const allSuppliers = Array.from(new Set(topSuppliers.map(s => s.name))).s
 
 export const COLORS = ['hsl(var(--primary))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))', 'hsl(var(--chart-5))', 'hsl(var(--muted))'];
 
-export interface DrillDownData {
-  type: 'category' | 'supplier' | 'buyer' | 'pending';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any;
+export interface DrillDownPayload {
+  name?: string;
+  id?: string;
+  value?: number;
+  previousValue?: number;
+  percentage?: number;
+  orders?: number;
+  previousOrders?: number;
+  supplier?: string;
+  spend?: number;
+  previousSpend?: number;
+  savings?: number;
+  previousSavings?: number;
+  compliance?: number;
+  categories?: string[];
+  suppliers?: string[];
+  avgCycle?: number;
+  risk?: string;
+  item?: string;
+  days?: number;
+  priority?: string;
+  category?: string;
+  type?: string;
 }
 
-export const formatCurrency = (value: number) => {
-  if (value === undefined || value === null) return 'R$ 0,00';
-  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
-};
+export interface DrillDownData {
+  type: 'category' | 'supplier' | 'buyer' | 'pending';
+  data: DrillDownPayload;
+}
 
 export const formatNumber = (value: number) => {
   if (value === undefined || value === null) return '0';

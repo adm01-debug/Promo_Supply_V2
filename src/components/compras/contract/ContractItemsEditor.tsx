@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, Trash2 } from "lucide-react";
 import type { ContractItem } from "@/types/contract";
+import { formatCurrency } from "@/lib/utils";
 
 interface ContractItemsEditorProps {
   items: ContractItem[];
@@ -80,7 +81,7 @@ export function ContractItemsEditor({ items, totalValue, onAddItem, onUpdateItem
         <div className="text-right">
           <p className="text-sm text-muted-foreground">Valor Total</p>
           <p className="text-2xl font-bold">
-            {totalValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            {formatCurrency(totalValue)}
           </p>
         </div>
       </div>

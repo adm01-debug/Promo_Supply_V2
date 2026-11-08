@@ -1,31 +1,12 @@
-import { createContext, useContext, useEffect, useState, useRef, useCallback, ReactNode, useMemo } from 'react';
+import { useEffect, useState, useRef, useCallback, ReactNode, useMemo } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { queryClient } from '@/lib/query-client';
 import { logger } from '@/lib/logger';
 import { toast } from 'sonner';
 import type { AppRole } from '../types/authRoles';
 import { UserProfileSchema, type UserProfile, type Tenant } from '../schemas/auth.schemas';
-
-export type { UserProfile };
-
-interface AuthContextType {
-  user: User | null;
-  session: Session | null;
-  profile: UserProfile | null;
-  role: AppRole | null;
-  organizationId: string | null;
-  tenantId: string | null;
-  availableTenants: Tenant[];
-  loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: Error | null }>;
-  signOut: () => Promise<void>;
-  switchTenant: (tenantId: string) => Promise<void>;
-  hasRole: (requiredRole: AppRole | AppRole[]) => boolean;
-  isAdmin: boolean;
-}
-
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext } from './AuthContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -35,24 +16,51 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [organizationId, setOrganizationId] = useState<string | null>(null);
   const [tenantId, setTenantId] = useState<string | null>(null);
   const [availableTenants, setAvailableTenants] = useState<Tenant[]>([]);
+  const [selectedEmpresaId, setSelectedEmpresaIdState] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return window.localStorage.getItem('selectedEmpresaId');
+  });
   const [loading, setLoading] = useState(true);
   const fetchedUserIdRef = useRef<string | null>(null);
   const isFetchingRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // CRIT-C1/C8: monotonic generation invalidates in-flight fetches when
+  // signOut / SIGNED_OUT / user-switch occurs, preventing stale data from a
+  // previous user leaking into the newly-cleared state.
+  const fetchGenerationRef = useRef(0);
+
+  const setSelectedEmpresa = useCallback((empresaId: string | null) => {
+    setSelectedEmpresaIdState(empresaId);
+    if (typeof window !== 'undefined') {
+      if (empresaId) window.localStorage.setItem('selectedEmpresaId', empresaId);
+      else window.localStorage.removeItem('selectedEmpresaId');
+    }
+    // Invalida queries para refetch com novo filtro
+    queryClient.invalidateQueries();
+  }, []);
 
   const fetchUserData = useCallback(async (userId: string) => {
     // Deduplicate: skip if already fetched for this user or currently fetching
     if (fetchedUserIdRef.current === userId || isFetchingRef.current) return;
     isFetchingRef.current = true;
-    logger.debug('Fetching auth user data', { userId });
+    // CRIT-C1/C8: snapshot generation at start; any signOut / user-switch
+    // increments fetchGenerationRef and we discard the result silently.
+    const gen = fetchGenerationRef.current;
+    logger.debug('Fetching auth user data', { userId, gen });
 
     try {
       const [profileRes, roleRes, tenantIdRes, availableTenantsRes] = await Promise.all([
         supabase.from('profiles').select('*').eq('user_id', userId).maybeSingle(),
         supabase.from('user_roles').select('role').eq('user_id', userId).maybeSingle(),
-        supabase.rpc('current_tenant_id'), // Renomeado internamente para refletir o que é
-        supabase.from('user_tenants').select('tenant:tenants(id, name, slug)').eq('user_id', userId),
+        supabase.rpc('current_tenant_id'),
+        supabase.from('user_tenants').select('tenant:tenants(id, name, slug, cnpj, razao_social, nome_fantasia, uf, regime_tributario, cor_identificacao, empresa_codigo, organization_id)').eq('user_id', userId),
       ]);
+
+      // Discard obsolete result — user changed / signed out mid-flight.
+      if (gen !== fetchGenerationRef.current) {
+        logger.debug('Discarding stale auth fetch result', { userId, gen, current: fetchGenerationRef.current });
+        return;
+      }
 
       if (profileRes.error) {
         logger.error('Error fetching profile', { error: profileRes.error, userId });
@@ -63,6 +71,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (tenantIdRes.error) {
         logger.error('Error fetching current tenant', { error: tenantIdRes.error, userId });
       }
+      if (availableTenantsRes.error) {
+        logger.error('Error fetching available tenants', { error: availableTenantsRes.error, userId });
+      }
 
       if (profileRes.data) {
         const validatedProfile = UserProfileSchema.safeParse(profileRes.data);
@@ -70,7 +81,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setProfile(validatedProfile.data);
         } else {
           logger.error('Profile validation failed', { error: validatedProfile.error, data: profileRes.data });
-          setProfile(profileRes.data as UserProfile); // Fallback but logged
+          setProfile(profileRes.data as UserProfile);
         }
       } else {
         setProfile(null);
@@ -78,10 +89,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setRole(roleRes.data?.role ? (roleRes.data.role as AppRole) : null);
       setOrganizationId(profileRes.data?.current_organization_id || tenantIdRes.data || null);
       setTenantId(tenantIdRes.data || null);
-      
+      logger.setTenantId(tenantIdRes.data || null);
+
       if (availableTenantsRes.data) {
         const tenants = availableTenantsRes.data
-          .map((ut: any) => ut.tenant)
+          .map((ut: { tenant: Tenant | null }) => ut.tenant)
           .filter(Boolean) as Tenant[];
         setAvailableTenants(tenants);
       }
@@ -119,47 +131,71 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (mounted) setLoading(false);
     });
 
+    // Fix #2: Synchronous callback — defer async work via setTimeout to avoid
+    // deadlocks in Supabase's internal state machine (token refresh / tab switch).
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         if (!mounted) return;
-        
-        // Optimistic session/user update
+
+        // Optimistic, synchronous session/user update
         setSession(session);
         setUser(session?.user ?? null);
 
         if (session?.user) {
           if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-            // For sign-in, we might want to show a loader if profile is missing
             if (event === 'SIGNED_IN') setLoading(true);
-            
-            try {
-              await fetchUserData(session.user.id);
-            } finally {
-              if (mounted) setLoading(false);
-            }
+            setTimeout(() => {
+              if (!mounted) return;
+              fetchUserData(session.user.id).finally(() => {
+                if (mounted) setLoading(false);
+              });
+            }, 0);
           }
         } else {
+          // CRIT-C1/C8: invalidate any fetch in flight before clearing state
+          fetchGenerationRef.current += 1;
           setProfile(null);
           setRole(null);
           setOrganizationId(null);
           setTenantId(null);
+          logger.setTenantId(null);
           setAvailableTenants([]);
           fetchedUserIdRef.current = null;
           if (event === 'SIGNED_OUT') {
+            queryClient.clear();
             setLoading(false);
           }
         }
       }
     );
 
+    // Fix #5: Cross-tab logout sync — when Supabase clears its token in another
+    // tab, mirror the cleanup here so in-memory state doesn't keep stale data.
+    const handleStorageLogout = (e: StorageEvent) => {
+      if (!mounted) return;
+      if (e.key && e.key.startsWith('sb-') && e.key.endsWith('-auth-token') && e.newValue === null) {
+        queryClient.clear();
+        setUser(null);
+        setSession(null);
+        setProfile(null);
+        setRole(null);
+        setOrganizationId(null);
+        setTenantId(null);
+        setAvailableTenants([]);
+        fetchedUserIdRef.current = null;
+      }
+    };
+    window.addEventListener('storage', handleStorageLogout);
+
     return () => {
       mounted = false;
       subscription.unsubscribe();
+      window.removeEventListener('storage', handleStorageLogout);
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [fetchUserData]);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = useCallback(async (email: string, password: string) => {
     const normalizedEmail = email.trim().toLowerCase();
 
     const { error } = await supabase.auth.signInWithPassword({
@@ -169,9 +205,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (error) logger.warn('Sign in failed', { email: normalizedEmail, error: error.message });
     else logger.info('Sign in successful', { email: normalizedEmail });
     return { error: error as Error | null };
-  };
+  }, []);
 
-  const signUp = async (email: string, password: string, fullName: string) => {
+  const signUp = useCallback(async (email: string, password: string, fullName: string) => {
     const redirectUrl = `${window.location.origin}/`;
     const normalizedEmail = email.trim().toLowerCase();
 
@@ -186,13 +222,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       },
     });
     return { error: error as Error | null };
-  };
+  }, []);
 
-  const signOut = async () => {
+  const signOut = useCallback(async () => {
     const userId = user?.id;
     logger.info('Signing out', { userId });
+    // CRIT-C1/C8: invalidate any in-flight fetchUserData BEFORE clearing state
+    // so a late-arriving Promise cannot restore the outgoing user's profile/role.
+    fetchGenerationRef.current += 1;
     fetchedUserIdRef.current = null;
     await supabase.auth.signOut();
+    queryClient.clear();
     setUser(null);
     setSession(null);
     setProfile(null);
@@ -200,9 +240,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setOrganizationId(null);
     setTenantId(null);
     setAvailableTenants([]);
-  };
+  }, [user?.id]);
 
-  const switchTenant = async (newTenantId: string) => {
+  const switchTenant = useCallback(async (newTenantId: string) => {
     if (!user) return;
     try {
       setLoading(true);
@@ -235,7 +275,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, fetchUserData]);
 
   const hasRole = useCallback((requiredRole: AppRole | AppRole[]): boolean => {
     if (!role) return false;
@@ -252,34 +292,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const isAdmin = useMemo(() => role === 'admin', [role]);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        session,
-        profile,
-        role,
-        organizationId,
-        tenantId,
-        availableTenants,
-        loading,
-        signIn,
-        signUp,
-        signOut,
-        switchTenant,
-        hasRole,
-        isAdmin,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const ctxValue = useMemo(
+    () => ({
+      user,
+      session,
+      profile,
+      role,
+      organizationId,
+      grupoId: organizationId,
+      tenantId,
+      selectedEmpresaId,
+      availableTenants,
+      availableEmpresas: availableTenants,
+      loading,
+      signIn,
+      signUp,
+      signOut,
+      switchTenant,
+      setSelectedEmpresa,
+      hasRole,
+      isAdmin,
+    }),
+    [
+      user,
+      session,
+      profile,
+      role,
+      organizationId,
+      tenantId,
+      selectedEmpresaId,
+      availableTenants,
+      loading,
+      signIn,
+      signUp,
+      signOut,
+      switchTenant,
+      setSelectedEmpresa,
+      hasRole,
+      isAdmin,
+    ]
   );
-};
 
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  return <AuthContext.Provider value={ctxValue}>{children}</AuthContext.Provider>;
 };

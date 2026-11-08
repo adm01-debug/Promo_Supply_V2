@@ -50,7 +50,7 @@ function useNavBadges() {
       };
     },
     refetchInterval: 30000, // Atualiza a cada 30 segundos
-    staleTime: 10000,
+    staleTime: 10_000,
   });
 }
 
