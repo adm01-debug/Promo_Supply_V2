@@ -20,7 +20,7 @@ test.describe('Freight Quest Production Readiness', () => {
     await page.goto('/auth');
     
     // Check for essential UI elements on landing/auth
-    await expect(page.locator('img[alt*="Logo"]')).toBeVisible();
+    await expect(page.locator('input[type="email"]')).toBeVisible();
     
     // Verify responsive design (mobile menu presence if simulated)
     // For desktop, we check sidebar presence if logged in, but here we can check if the auth container is centered
