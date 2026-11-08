@@ -1,0 +1,17 @@
+{
+  "_comentario": [
+    "Fonte unica das versoes de ferramenta deste repositorio. Lido por scripts/ci/bump-toolchain.mjs,",
+    "que compara com o ultimo release de cada projeto e publica o resultado no Job Summary da",
+    "auditoria semanal (.github/workflows/branch-hygiene-audit.yml). Verificacao informativa: nunca",
+    "derruba job. Ao subir uma versao aqui, suba tambem onde ela aparece nos workflows.",
+    "Medido em 2026-11-08 a partir dos proprios workflows e do package.json:",
+    "bun = types-sync.yml (bun-version); node = contexto/types-sync/inventario (node-version);",
+    "playwright = package.json devDependencies.",
+    "NAO declarados de proposito: deno (main.yml usa a faixa flutuante 'v1.x', nao uma versao fixa)",
+    "e supabase-cli (o repo pina a ACTION supabase/setup-cli v3.1.0, que instala a CLI 'latest' —",
+    "a versao da CLI nao esta fixada em lugar nenhum deste repo)."
+  ],
+  "bun": "1.4.0",
+  "node": "22",
+  "playwright": "1.60.0"
+}
