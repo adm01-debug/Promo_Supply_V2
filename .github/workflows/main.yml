@@ -17,6 +17,17 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: CI Scripts Unit Tests (AGENTS.md baseline)
+        run: node --test scripts/ci/*.unit.mjs
+
+      - name: Integrity Guard AGENTS.md (PRs only)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch origin ${{ github.base_ref }} --depth=1
+          node scripts/ci/check-agents-md-integrity.mjs
+        env:
+          AGENTS_MD_BASE: origin/${{ github.base_ref }}
+
       - name: Linting
         run: bun run lint
 
@@ -52,6 +63,13 @@ jobs:
           # Set VITE_SUPABASE_URL to a real project URL via CI secrets to run them.
           export VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL || 'http://localhost:54321' }}"
           export VITE_SUPABASE_PUBLISHABLE_KEY="${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'placeholder-anon-key' }}"
+          # supabase/functions/run-audit/rls_test.ts le SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY
+          # (nomes sem prefixo VITE_) para montar um client admin via service role.
+          # Sem isso o teste morre com "supabaseUrl is required". SUPABASE_SERVICE_ROLE_KEY
+          # ainda precisa ser cadastrado como secret pelo dono (nunca passa por este workflow
+          # como valor hardcoded).
+          export SUPABASE_URL="${{ secrets.SUPABASE_URL || secrets.VITE_SUPABASE_URL || 'http://localhost:54321' }}"
+          export SUPABASE_SERVICE_ROLE_KEY="${{ secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}"
           # Alvo: supabase/functions/ (nao supabase/functions/tests/). Aquela pasta so tem
           # fuzzing_suite.ts e integration_suite.ts, nomes que o Deno nao reconhece como teste
           # (*_test.ts / *.test.ts), entao o passo morria com "No test modules found" e os 9
