@@ -1,95 +1,122 @@
-# AGENTS.md — Promo_Supply_V2
+# AGENTS.md — Promo Supply V2
 
-Regras de ouro — Perfil Otimizado (Hermes Agent / multi-agente).
-Auto-carregado por agentes compatíveis (Hermes, Claude Code, Codex, OpenCode).
+Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histórico). Detalhe em
+`docs/agentes/<tema>.md`; divergiu da realidade → corrija no mesmo PR do fix. Responda sempre em PT-BR.
 
-## Idioma
+## Postura
+- O dono não é dev: decide negócio; o agente executa a engenharia inteira via MCP. Nunca passo manual do
+  dono nem pedir que ele revise diff.
+- Qualidade + velocidade, mínimo de tokens. Decida como dev sênior; pergunte só com custo, arquitetura,
+  dado destrutivo em produção, trade-off de negócio ou item "chame o dono". Para ler, não peça permissão.
+- Verdade acima de validação: não sabe → diga; falhou → diga. Afirmação sobre código cita evidência
+  (arquivo:linha, diff, saída de comando); sem evidência = "NÃO VERIFICADO" + motivo; nunca "testado" sem
+  ter rodado. Branch/commit/PR não provam nada — leia o código.
+- Diff mínimo, zero churn: causa raiz, não reescrita; não refatore, renomeie ou comente o que não foi pedido;
+  não reescreva arquivo inteiro para mudar 3 linhas. Dependência nova ou bump major só se indispensável (avise na PR).
+- `APROVADO` = execute o plano como descrito, sem reconfirmar.
+- Uma tarefa por vez, cada uma com sua branch/PR. Outro bug → "Próximos passos". Travou → reporte o erro
+  exato e pare; não contorne regra. Releia o pedido antes de concluir.
+- Tokens: leia só o trecho necessário; `inventario/estado/` e o contexto gerado antes de buscar por texto;
+  exploração ampla → subagente; nenhuma tool "por garantia"; não gere código que não será aplicado.
+- Segredos nunca em código, commit ou resposta — só em env/secret do serviço (edge: `supabase secrets set`
+  ou painel; workflow: secret do GitHub). PAT exposto em chat → rotacionar na hora. Nunca imprima nem
+  commite token, `service_role` ou `SUPABASE_DB_URL`. O `.env` deste repo está comitado e o `.gitignore` não
+  tem entrada de env: não acrescente nada sensível a ele.
 
-**SEMPRE comunicar em Português do Brasil (pt-BR)** — respostas, comentários de código, mensagens de commit, descrições de PR e qualquer saída de texto em pt-BR. Nunca alternar para inglês.
+## Bugs e funcionalidades
+- Diagnóstico antes de patch: logs e estado real, ponto exato (arquivo:linha), causa; várias causas → liste
+  todas, corrija a pedida.
+- Antes da PR: `npm run typecheck`, `npx eslint <arquivos tocados>` e `npx vitest run <caminho>` do que tocou
+  (edge em Deno → `deno test --allow-net --allow-env --allow-read supabase/functions/<pasta>`). **Não há hook
+  de git neste repo** (sem `.husky/`, `"prepare": ""`, sem `commitlint`): nada roda sozinho no commit. Só erro
+  seu conta; erro herdado da `main` → "Próximos passos".
+- "Pronto" = PR mergeada + deploy confirmado + comportamento verificado (log, query ou request real); faltou
+  um → diga onde parou. Merge em `main` = deploy de produção na Vercel, e **não há branch protection**:
+  conferir o resultado do CI antes de mergear é obrigação de quem mergeia.
+- Funcionalidade pronta = integrada ponta a ponta (rota em `src/routes/AppRoutes.tsx`, entrada na UI,
+  hook/edge chamados, tabela com RLS, estados erro/loading/vazio, submit), sem mock, hardcode ou TODO. Pela
+  metade não é pronto; não cabe na sessão → entregue o funcional e liste o que falta, em ordem, com arquivos.
+  Nunca deixe código morto ou feature "quase" sem dizer — aqui 99 das 162 tabelas de produção estão vazias e
+  três fluxos têm o fio cortado (`docs/agentes/regras-dominio.md`).
 
-## Sistema
+## Comunicação
+- Resultado primeiro, só o que muda decisão do dono. Sem introdução, recapitulação, narração, hedging,
+  disclaimer, lição de moral ou cortesia. Efeito no negócio; técnica só se perguntarem. Resposta e plano
+  proporcionais ao tamanho do fix; não despeje log — cite a linha que importa. Caminhos, comandos e links
+  completos. Destrutivo de verdade: uma linha ("isso apaga X, sem volta — confirma?").
+- Toda execução fecha com exatamente 3 "Próximos passos" (`N. [título] — [por quê] · [arquivo]`), por
+  impacto, do que você viu, executáveis via MCP, para não-dev; nada de genérico ("adicionar testes",
+  "melhorar documentação", "revisar segurança"). É um menu: `1`, `1 e 3`, `APROVADO 2`, "todos" ou o bloco
+  devolvido = executar na ordem, sem reconfirmar. Só consulta, já rejeitadas ou nada pendente →
+  `Próximos passos: nada pendente neste escopo.`
 
-- **Repo:** adm01-debug/Promo_Supply_V2
-- **Visibilidade:** privado
-- **Descrição:** —
-- **Branch padrão:** main
+## Fluxo Git — detalhe em `docs/agentes/github-ci.md`
+- Repo `adm01-debug/Promo_Supply_V2`, `main`, **privado**. Escrita no GitHub: MCP **`GITHUB - MCP - FOREVER`**
+  (`github_push_files`: `files` + `delete` num commit); o MCP padrão do GitHub dá 403 em write. `git push`/`gh`
+  só em repo autorizado na sessão.
+- Nunca commite em `main`. Só escreva em branch que **você** criou nesta sessão; branch alheia ou já
+  existente é somente leitura. Antes do push, confira que o último commit é seu.
+- PR aberta nos mesmos arquivos → pare e avise o dono (liste via `github_graphql`; `github_list_pull_requests`
+  estoura o contexto).
+- Branch de `main` atualizado: `claude/<fix|feat|chore|ci>-<slug>-<AAMMDD-HHMM>`.
+- Commit PT-BR, 1 atômico, `<tipo>(<escopo>): <assunto ≥10 chars, sem ponto>`; tipos
+  `feat fix docs style refactor perf test build ci chore security revert` (não há `infra:` — branch `infra`
+  → `ci:`/`chore:`). Nada cobra isso por máquina aqui; siga mesmo assim.
+- PR sempre: título = o que muda; corpo = causa + o que foi verificado, com evidência.
+- Mergeie sem aprovação (squash, **apague a branch à mão** — `delete_branch_on_merge=false`) PR sua pronta:
+  CI verde, sem conflito, escopo comum (front, edge, config). **Deixe aberta e chame o dono**: DDL/migration
+  em produção; CI/workflows, segredos, Dockerfile, infra; deleção de dado, arquitetura ou custo; conflito com
+  PR de outro agente.
+- Conflito: rebase em `main`; `--force-with-lease` só na sua branch.
+- Merge = produção: confira o deploy na Vercel e reporte. CI vermelha → leia o resumo da falha antes de
+  qualquer patch; do seu merge → `fix:` em branch nova na mesma sessão.
+- Fim: link da PR + estado.
 
-## Regra de ouro antes de agir
+## Banco — ler `docs/agentes/banco.md` antes de SQL, migration ou teste que fale com o Supabase
+- Oficial: Supabase Cloud **`lmypcdfsrgfftzhxawao`** ("Promo Supply - V2"); SQL pelo MCP apontado para esse
+  ref — **confira o ref antes do primeiro comando**.
+- NÃO escrever em `trwgmplubeqxrxpncdgf` nem `apuzcrkeqodktmpwobnz` (refs errados que o código apontou até o
+  commit `0bdc3cb`; ainda citados em migrations antigas e em comentários desatualizados de workflow).
+  `pgxfvjmuubtbowutlide` (MCP "GESTÃO DE CLIENTES"/CRM) e `doufsxqlfjyuvxuezpln` (MCP "GESTÃO DE PRODUTOS")
+  são outros projetos: só leitura.
+- **Não existe banco local nem desvio:** `.env` está comitado e aponta para produção, então `npm run dev`,
+  `npm run test:rls` e o E2E falam com **produção**. Diagnóstico = só leitura. `npm run test:rls` com
+  `RLS_TEST_USER_A/B` faz login real. O passo "RLS Audit" do CI é **no-op** (sai `exit 0` sem os secrets).
+- **Não há ledger de migration** (`supabase_migrations.schema_migrations` ausente) e nenhum workflow aplica
+  DDL: 279 arquivos sem registro do que rodou. Ordem obrigatória: arquivo → PR → merge → deploy do código →
+  apply, e **pergunte ao dono qual é o caminho do apply** antes do primeiro DDL. Destrutivo, segredos e
+  rotação: só com o dono.
+- `src/integrations/supabase/types.ts` é gerado pelo `types-sync.yml` — nunca editar à mão.
 
-0. **Leia o contexto gerado antes de planejar:** `git fetch origin contexto && git show origin/contexto:docs/contexto/00-INDEX.md`. Ele diz qual das três fontes (banco real / código / regras de negócio) é dona de cada fato. Detalhe em `docs/agentes/contexto-ia.md`.
-1. **Leia o README.md** (se existir) e qualquer doc em `docs/` antes de qualquer mudança — ele é a fonte de verdade do projeto.
-2. **Pronto = ligado em produção com tráfego real.** Código existir não é pronto.
-3. **Diagnóstico antes de patch.** Em bug de produção: leia logs/estado real antes de qualquer fix.
+## Serviços
+- **Deploy** — ler `docs/agentes/deploy.md` ao confirmar deploy ou mexer em env/domínio. Front na **Vercel**
+  (projeto `promo-supply-v2`, team `juca1`): merge em `main` = produção. **Edge: deploy manual** por
+  `deploy_edge_functions_promo_supply.sh` (32 das 39); nenhum workflow publica edge. Nunca segredo de servidor
+  na Vercel; `VITE_*` é público.
+- **Serviços externos** — ler `docs/agentes/servicos-externos.md` ao mexer em edge que fale com fora (XBZ,
+  Spot Gifts, AI Gateway da Lovable, SEFAZ, Resend/Slack, `external-db-bridge`, punchout, `erp-sync`, SCIM,
+  WebAuthn). CORS/auth/tenant vêm de `supabase/functions/_shared/security.ts`.
+- **GitHub/CI** — ler `docs/agentes/github-ci.md` ao mexer em settings ou `.github/workflows/`. São 4
+  workflows (`main`, `contexto`, `types-sync`, `inventario-estado-semanal`); `main.yml` ainda se chama
+  "Freight Quest CI/CD". `scripts/ci/*.unit.mjs` **não roda em nenhum workflow** — rode à mão.
+- **Regras de domínio** — ler `docs/agentes/regras-dominio.md` antes de mexer em solicitação, cotação,
+  aprovação, acompanhamento ou login/passkey.
 
-## GIT: Isolamento Worktree (OBRIGATÓRIO)
+## Stack e comandos — detalhe em `docs/agentes/mapa-repo.md`
+- Vite + React + TS (`src/`), Supabase (`supabase/functions/` Deno, `supabase/migrations/`), Playwright
+  (`tests-e2e/`), Vitest (`src/**/__tests__/`, `tests-rls/`), i18next (pt/en/es), Zustand, TanStack Query.
+- CI instala com **bun** (`bun install`); o repo tem `bun.lock`, `bun.lockb` **e** `package-lock.json` e não
+  declara `engines`/`packageManager`/`.nvmrc` (a Vercel lê `.nvmrc`; criar o arquivo mudaria o build).
+- `npm run typecheck` (`tsc --noEmit`) · `npx eslint <arquivos>` · `npx vitest run <caminho>` ·
+  `npm run test:rls` (produção!) · `npm run test:e2e` · `deno test --allow-net --allow-env --allow-read supabase/functions/` ·
+  guards: `npm run test:scripts` e `node scripts/ci/check-agents-md-integrity.mjs`.
+- Automação em `scripts/<nome>/` com README (leia antes de alterar); nunca em `supabase/` nem `src/`.
+- `inventario/estado/*.json` (gerado) antes de grep. `ESTADO_ATUAL.md` + `DOCS/ESTADO/` = o que está quebrado
+  e onde fica cada prova.
 
-**NUNCA usar `git checkout -b` diretamente.** Sempre criar worktree isolado:
-
-```bash
-# 1. Gerar ID único
-HERMES_BRANCH_ID="{{ h$(date +%s | tail -c 7) }}"
-BRANCH="fix/hermes-${HERMES_BRANCH_ID}-<descricao>"
-WORKSPACE="$HOME/hermes-workspaces/chat-${HERMES_BRANCH_ID}"
-
-# 2. Criar worktree
-git worktree add "$WORKSPACE" -b "$BRANCH" && cd "$WORKSPACE"
-
-# 3. Verificar isolamento
-[ "$(git branch --show-current)" = "$BRANCH" ] || exit 1
-
-# ... trabalhar, commit, push, PR, merge ...
-
-# 4. Cleanup obrigatório
-git branch -D "$BRANCH"
-git worktree remove "$WORKSPACE" --force
-git worktree prune
-```
-
-**Por quê:** múltiplos agentes/chats no mesmo repo = colisão de branches.
-
-## PR Flow
-
-branch → commit (--no-verify) → push → PR via GitHub → CI → merge squash → delete branch.
-Workers/editores NUNCA mexem em git/branches — só o orquestrador.
-
-## Regras de trabalho
-
-1. **Aja como dev sênior e decida.** Escolha de biblioteca, nome de arquivo, abordagem de fix: decida e siga. Só pergunte se envolver custo, mudança de arquitetura, dado destrutivo em produção ou trade-off real de negócio.
-2. **Verdade acima de validação.** Não sabe → diga. Falhou → diga. Nunca "sucesso" fabricado.
-3. **Zero churn / diff mínimo.** Não refatore nem reescreva arquivo inteiro para mudar 3 linhas.
-4. **Execução end-to-end.** Nunca proponha "copie e cole" — execute inteiro até o artefato funcionar, com evidência real.
-
-## Contexto gerado (scripts autônomos)
-
-O repositório se mantém descrito sozinho. **Não leia o repo inteiro para descobrir onde algo fica** — leia a fonte certa.
-
-| Preciso de… | Fonte (dona do fato) | Onde ler |
-|---|---|---|
-| Rotas, telas, módulos, hooks, edge functions, grafo de imports, testes, convenções | **código** | `docs/contexto/codigo/INDEX.md` |
-| Tabelas, colunas, RLS/policies, funções, triggers, cron, storage, lints — como está **em produção agora** | **banco real** | `docs/contexto/supabase/` |
-| O que pode/não pode: RLS por operação, estados, validações, fórmulas, prazos, erros de negócio, lacunas | **regras de negócio** | `docs/contexto/regras/07-REGRAS-DE-NEGOCIO.md` |
-| Quem é dono de cada fato + frescor de cada fonte | **índice** | `docs/contexto/00-INDEX.md` |
-
-Tudo isso vive na branch gerada **`contexto`** (nunca em `main`, nunca abra PR dela):
-
-```bash
-git fetch origin contexto
-git show origin/contexto:docs/contexto/00-INDEX.md
-git show origin/contexto:docs/contexto/codigo/INDEX.md
-git show origin/contexto:docs/contexto/supabase/lints.md   # antes de mexer em RLS/função/índice
-```
-
-Pelo MCP do GitHub: `github_get_file(owner='adm01-debug', repo='Promo_Supply_V2', path='docs/contexto/00-INDEX.md', ref='contexto')`.
-Repo privado: `raw.githubusercontent.com` só responde com token.
-
-Quem gera (`.github/workflows/contexto.yml`, a cada push em `main` e a cada 10 min):
-
-- `scripts/ai-context/gerar.mjs` → `codigo/` (zero dependência, ~1 s)
-- `scripts/supabase_snapshot/snapshot.py` → `supabase/` (precisa do secret `SUPABASE_DB_URL`)
-- `scripts/regras_negocio/generate.py` → `regras/` (stdlib, ~8 s)
-- `scripts/regras_negocio/indice.py` → `00-INDEX.md`
-
-Regra que só o negócio sabe → escreva em `docs/contexto/regras/manual/*.md` **na main**; entra no 07 com prioridade máxima e nunca é sobrescrita.
-
-Rodar local: `npm run contexto:codigo`, `npm run contexto:regras`, `npm run contexto:indice`. Testes dos geradores: `npm run test:scripts`.
-Mexeu em `scripts/ai-context/`, `scripts/regras_negocio/` ou `scripts/supabase_snapshot/` → rode `npm run test:scripts` antes da PR.
+## Contexto gerado
+Antes de qualquer tarefa ou planejamento: `git fetch origin contexto && git show origin/contexto:docs/contexto/00-INDEX.md`
+— diz qual fonte é dona de cada fato (banco ao vivo, código, regras de negócio) e a ordem de leitura.
+Regerado a cada 10 min pelo `contexto.yml` na branch **`contexto`**; nunca editar, nunca abrir PR dela.
+Regra que só o negócio sabe → `docs/contexto/regras/manual/*.md` na `main`. Como funciona, secrets e
+diagnóstico: `docs/agentes/contexto-ia.md`.
