@@ -87,7 +87,7 @@ export default defineConfig(({ mode }) => ({
           },
           // Supabase REST (transactional) — NetworkFirst, short TTL
           {
-            urlPattern: /^https:\/\/apuzcrkeqodktmpwobnz\.supabase\.co\/rest\/.*/i,
+            urlPattern: /^https:\/\/lmypcdfsrgfftzhxawao\.supabase\.co\/rest\/.*/i,
             handler: "NetworkFirst",
             options: {
               cacheName: "supabase-rest-cache",
@@ -103,7 +103,7 @@ export default defineConfig(({ mode }) => ({
           },
           // Supabase Storage (files/images) — CacheFirst, longer TTL
           {
-            urlPattern: /^https:\/\/apuzcrkeqodktmpwobnz\.supabase\.co\/storage\/.*/i,
+            urlPattern: /^https:\/\/lmypcdfsrgfftzhxawao\.supabase\.co\/storage\/.*/i,
             handler: "CacheFirst",
             options: {
               cacheName: "supabase-storage-cache",
@@ -118,7 +118,7 @@ export default defineConfig(({ mode }) => ({
           },
           // Supabase Edge Functions — NetworkOnly (never cache mutations)
           {
-            urlPattern: /^https:\/\/apuzcrkeqodktmpwobnz\.supabase\.co\/functions\/.*/i,
+            urlPattern: /^https:\/\/lmypcdfsrgfftzhxawao\.supabase\.co\/functions\/.*/i,
             handler: "NetworkOnly",
           },
           {

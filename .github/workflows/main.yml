@@ -52,7 +52,11 @@ jobs:
           # Set VITE_SUPABASE_URL to a real project URL via CI secrets to run them.
           export VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL || 'http://localhost:54321' }}"
           export VITE_SUPABASE_PUBLISHABLE_KEY="${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY || 'placeholder-anon-key' }}"
-          deno test --allow-net --allow-env --allow-read supabase/functions/tests/
+          # Alvo: supabase/functions/ (nao supabase/functions/tests/). Aquela pasta so tem
+          # fuzzing_suite.ts e integration_suite.ts, nomes que o Deno nao reconhece como teste
+          # (*_test.ts / *.test.ts), entao o passo morria com "No test modules found" e os 9
+          # arquivos de teste reais sob supabase/functions/ nunca rodaram.
+          deno test --allow-net --allow-env --allow-read supabase/functions/
 
   e2e-tests:
     name: End-to-End Tests (Playwright)

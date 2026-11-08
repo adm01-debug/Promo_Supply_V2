@@ -87,7 +87,7 @@ describe('performanceMonitor.measure', () => {
 
   it('returns 0 when window is undefined (SSR)', () => {
     const originalWindow = global.window;
-    // @ts-ignore
+    // @ts-expect-error simula SSR: global.window nao e opcional no tipo global
     delete global.window;
     const result = performanceMonitor.measure('name', 'start', 'end');
     expect(result).toBe(0);

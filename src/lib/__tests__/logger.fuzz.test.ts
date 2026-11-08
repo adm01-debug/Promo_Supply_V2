@@ -11,12 +11,22 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { createFuzzRng } from "./fuzzSeed";
 
-const { invokeMock } = vi.hoisted(() => ({
+const { invokeMock, getSessionMock } = vi.hoisted(() => ({
   invokeMock: vi.fn().mockResolvedValue({ data: null, error: null }),
+  // sendBatchToTelemetry chama supabase.auth.getSession() e descarta o lote
+  // quando nao ha sessao (evita 401 na tela de login). Sem este mock o acesso
+  // a supabase.auth lanca, o catch do logger engole o erro e invoke nunca e
+  // chamado — era por isso que os testes de envio falhavam.
+  getSessionMock: vi
+    .fn()
+    .mockResolvedValue({ data: { session: { access_token: "test-token" } }, error: null }),
 }));
 
 vi.mock("@/integrations/supabase/client", () => ({
-  supabase: { functions: { invoke: invokeMock } },
+  supabase: {
+    functions: { invoke: invokeMock },
+    auth: { getSession: getSessionMock },
+  },
 }));
 
 import { logger } from "@/lib/logger";
@@ -97,6 +107,11 @@ async function flush() {
 describe("logger (frontend) — fuzz & property", () => {
   beforeEach(() => {
     invokeMock.mockClear();
+    getSessionMock.mockClear();
+    getSessionMock.mockResolvedValue({
+      data: { session: { access_token: "test-token" } },
+      error: null,
+    });
     // Reset singleton internal state to isolate tests
     const l = logger as unknown as Record<string, unknown>;
     l.telemetryQueue = [];
@@ -178,6 +193,14 @@ describe("logger (frontend) — fuzz & property", () => {
     logger.error("no-tenant");
     await flush();
     expect(invokeMock).toHaveBeenCalled();
+  });
+
+  it("sem sessao autenticada o lote e descartado em vez de virar 401", async () => {
+    getSessionMock.mockResolvedValue({ data: { session: null }, error: null });
+    logger.error("deslogado");
+    await flush();
+    expect(getSessionMock).toHaveBeenCalled();
+    expect(invokeMock).not.toHaveBeenCalled();
   });
 
   it("UTF-8 multibyte: preserva encoding e sobrevive a JSON round-trip", async () => {
