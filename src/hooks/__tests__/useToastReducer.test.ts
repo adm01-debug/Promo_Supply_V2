@@ -140,7 +140,6 @@ describe('reducer — invariants', () => {
       { type: 'REMOVE_TOAST' as const },
     ];
     for (const action of actions) {
-      // @ts-ignore — deliberately mixing action types
       const result = reducer(emptyState, action);
       expect(Array.isArray(result.toasts)).toBe(true);
     }
