@@ -1,0 +1,4345 @@
+{
+  "format_version": 1,
+  "fonte": "scripts/inventario/gerar-rotas.mjs (le src/routes/AppRoutes.tsx e os imports de cada pagina)",
+  "resumo": {
+    "urls": 55,
+    "paginas": 53,
+    "protegidas": 52,
+    "hooks_distintos": 89,
+    "problemas": 0
+  },
+  "urls": [
+    {
+      "caminho": "*",
+      "componente": "NotFound",
+      "arquivo": "src/pages/NotFound.tsx",
+      "protegida": false,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 5,
+      "hooks": [],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [],
+      "tabelas": [],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/",
+      "componente": null,
+      "arquivo": null,
+      "protegida": true,
+      "papeis": [],
+      "redireciona": "/compras",
+      "arquivos_lidos": 0,
+      "hooks": [],
+      "buckets": [],
+      "edges": [],
+      "rpcs": [],
+      "tabelas": [],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/__dev/xbz-network-panel",
+      "componente": "XbzNetworkPanelHarness",
+      "arquivo": "src/pages/dev/XbzNetworkPanelHarness.tsx",
+      "protegida": false,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 1,
+      "hooks": [],
+      "buckets": [],
+      "edges": [],
+      "rpcs": [],
+      "tabelas": [],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/acompanhamento",
+      "componente": "Acompanhamento",
+      "arquivo": "src/pages/acompanhamento/Acompanhamento.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 22,
+      "hooks": [
+        {
+          "nome": "useAccountFilters",
+          "arquivo": "src/hooks/useAccountFilters.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/hooks/useAuthContext.ts"
+        },
+        {
+          "nome": "useClearFiltersFlow",
+          "arquivo": "src/hooks/useClearFiltersFlow.tsx"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [],
+      "tabelas": [
+        "fornecedores",
+        "pedidos",
+        "solicitacoes",
+        "user_filter_preferences"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/dependency-health",
+      "componente": "DependencyHealth",
+      "arquivo": "src/pages/admin/DependencyHealth.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 17,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "dependency-health",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "profiles",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/docs",
+      "componente": "DeveloperDocs",
+      "arquivo": "src/pages/admin/DeveloperDocs.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 4,
+      "hooks": [
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "external-db-bridge",
+        "process-solicitacao-neural",
+        "telemetry"
+      ],
+      "rpcs": [],
+      "tabelas": [],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/erp",
+      "componente": "ERPConnections",
+      "arquivo": "src/pages/admin/ERPConnections.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 12,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "erp-sync",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "erp_connections",
+        "erp_sync_log",
+        "profiles",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/fiscal",
+      "componente": "FiscalDashboard",
+      "arquivo": "src/pages/admin/FiscalDashboard.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 1,
+      "hooks": [],
+      "buckets": [],
+      "edges": [],
+      "rpcs": [],
+      "tabelas": [
+        "fiscal_events"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/health",
+      "componente": "HealthDashboard",
+      "arquivo": "src/pages/admin/HealthDashboard.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 12,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "admin_scan_runs_sla_status",
+        "alerts_mttr_by_type",
+        "alerts_noisy_scanners",
+        "alerts_severity_timeseries",
+        "current_tenant_id",
+        "resolve_alert"
+      ],
+      "tabelas": [
+        "alert_subscriptions",
+        "health_scan_runs",
+        "profiles",
+        "system_alerts",
+        "user_roles",
+        "user_tenants",
+        "v_system_health_overview"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/health/alerts/:id",
+      "componente": "AlertDetail",
+      "arquivo": "src/pages/admin/AlertDetail.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 2,
+      "hooks": [],
+      "buckets": [],
+      "edges": [],
+      "rpcs": [],
+      "tabelas": [],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/punchout",
+      "componente": "PunchOutCatalogs",
+      "arquivo": "src/pages/admin/PunchOutCatalogs.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 4,
+      "hooks": [
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "punchout-setup",
+        "telemetry"
+      ],
+      "rpcs": [],
+      "tabelas": [
+        "punchout_catalogs"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/sourcing-pipeline",
+      "componente": "SourcingPipeline",
+      "arquivo": "src/pages/admin/SourcingPipeline.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 1,
+      "hooks": [],
+      "buckets": [],
+      "edges": [],
+      "rpcs": [],
+      "tabelas": [
+        "savings_tracker",
+        "sourcing_projects"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/sso",
+      "componente": "SSOConfig",
+      "arquivo": "src/pages/admin/SSOConfig.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 11,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "profiles",
+        "sso_configurations",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/storage-migration",
+      "componente": "StorageMigration",
+      "arquivo": "src/pages/admin/StorageMigration.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 2,
+      "hooks": [],
+      "buckets": [],
+      "edges": [
+        "migrate-storage-paths"
+      ],
+      "rpcs": [
+        "count_legacy_storage_urls"
+      ],
+      "tabelas": [],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/telemetria",
+      "componente": "AdminTelemetria",
+      "arquivo": "src/pages/admin-telemetria/AdminTelemetria.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 8,
+      "hooks": [
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "system-simulation",
+        "telemetry"
+      ],
+      "rpcs": [],
+      "tabelas": [
+        "query_telemetry",
+        "system_alerts",
+        "telemetry_logs"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/admin/workflows",
+      "componente": "WorkflowDesigner",
+      "arquivo": "src/pages/admin/WorkflowAdmin.tsx",
+      "protegida": true,
+      "papeis": [
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 1,
+      "hooks": [],
+      "buckets": [],
+      "edges": [],
+      "rpcs": [],
+      "tabelas": [
+        "workflow_sod_rules",
+        "workflow_templates"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/aprovacoes",
+      "componente": "Aprovacoes",
+      "arquivo": "src/pages/aprovacoes/Aprovacoes.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 39,
+      "hooks": [
+        {
+          "nome": "useApprovalHistory",
+          "arquivo": "src/hooks/useApprovalHistory.ts"
+        },
+        {
+          "nome": "useApprovalNotifications",
+          "arquivo": "src/hooks/useApprovalNotifications.ts"
+        },
+        {
+          "nome": "useApprovalRules",
+          "arquivo": "src/hooks/useApprovalRules.ts"
+        },
+        {
+          "nome": "useApprovalWorkflow",
+          "arquivo": "src/hooks/useApprovalWorkflow.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useSolicitacoes",
+          "arquivo": "src/features/solicitacoes/index.ts"
+        },
+        {
+          "nome": "useWorkflowDLQ",
+          "arquivo": "src/hooks/useWorkflowDLQ.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "check_budget_availability",
+        "current_tenant_id",
+        "find_approval_rule",
+        "generate_sequential_number",
+        "get_effective_approver",
+        "get_solicitacoes_kpis"
+      ],
+      "tabelas": [
+        "approval_delegations",
+        "approval_history",
+        "approval_rules",
+        "approval_steps",
+        "approval_workflows",
+        "audit_logs",
+        "cost_centers",
+        "profiles",
+        "solicitacoes",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/auditoria",
+      "componente": "Auditoria",
+      "arquivo": "src/pages/auditoria/Auditoria.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 9,
+      "hooks": [
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "audit_logs"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/auth",
+      "componente": "Auth",
+      "arquivo": "src/pages/auth/Auth.tsx",
+      "protegida": false,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 18,
+      "hooks": [
+        {
+          "nome": "useAccountLockout",
+          "arquivo": "src/hooks/useAccountLockout.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useWebAuthn",
+          "arquivo": "src/hooks/useWebAuthn.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry",
+        "webauthn-authenticate",
+        "webauthn-register"
+      ],
+      "rpcs": [
+        "clear_login_lockout",
+        "current_tenant_id",
+        "is_account_locked",
+        "log_login_attempt",
+        "record_failed_login"
+      ],
+      "tabelas": [
+        "profiles",
+        "user_roles",
+        "user_tenants",
+        "webauthn_credentials"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/buyer-performance",
+      "componente": "BuyerPerformanceDashboard",
+      "arquivo": "src/pages/buyer/BuyerPerformanceDashboard.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 15,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useBuyerAlertsStore",
+          "arquivo": "src/stores/buyerAlertsStore.ts"
+        },
+        {
+          "nome": "useBuyerPerformanceData",
+          "arquivo": "src/hooks/useBuyerPerformanceData.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "categorias",
+        "cotacoes",
+        "fornecedores",
+        "pedidos",
+        "profiles",
+        "solicitacoes",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/catalogo-produtos",
+      "componente": "CatalogoProdutos",
+      "arquivo": "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 17,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useAutoImageCompression",
+          "arquivo": "src/hooks/useImageCompression.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useProdutoFornecedores",
+          "arquivo": "src/hooks/useProdutoFornecedores.ts"
+        },
+        {
+          "nome": "useProdutos",
+          "arquivo": "src/hooks/useProdutos.ts"
+        }
+      ],
+      "buckets": [
+        "product-images"
+      ],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "categorias",
+        "fornecedores",
+        "produto_fornecedores",
+        "produtos",
+        "profiles",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/catalogo-spot",
+      "componente": "CatalogoSpot",
+      "arquivo": "src/pages/catalogo-spot/CatalogoSpot.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 95,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCommandPalette",
+          "arquivo": "src/features/layout/components/CommandPalette.tsx"
+        },
+        {
+          "nome": "useContactNotes",
+          "arquivo": "src/hooks/useContactNotes.ts"
+        },
+        {
+          "nome": "useCriticalAlertsBadge",
+          "arquivo": "src/hooks/useCriticalAlertsBadge.ts"
+        },
+        {
+          "nome": "useFeedback",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useGlobalUndo",
+          "arquivo": "src/hooks/useGlobalUndo.ts"
+        },
+        {
+          "nome": "useGuidedBuying",
+          "arquivo": "src/hooks/useGuidedBuying.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useKeyboardShortcuts",
+          "arquivo": "src/hooks/useKeyboardShortcuts.ts"
+        },
+        {
+          "nome": "useNavigation",
+          "arquivo": "src/hooks/useNavigation.tsx"
+        },
+        {
+          "nome": "useOfflineSync",
+          "arquivo": "src/hooks/useOfflineSync.ts"
+        },
+        {
+          "nome": "usePageTransition",
+          "arquivo": "src/features/layout/transitions/usePageTransition.ts"
+        },
+        {
+          "nome": "usePerformanceMonitor",
+          "arquivo": "src/hooks/usePerformanceMonitor.ts"
+        },
+        {
+          "nome": "usePermissions",
+          "arquivo": "src/hooks/usePermissions.ts"
+        },
+        {
+          "nome": "usePrefetch",
+          "arquivo": "src/hooks/usePrefetch.ts"
+        },
+        {
+          "nome": "usePullToRefresh",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useRealPushNotifications",
+          "arquivo": "src/hooks/useRealPushNotifications.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useRecentlyViewed",
+          "arquivo": "src/hooks/useRecentlyViewed.ts"
+        },
+        {
+          "nome": "useScrollRestoration",
+          "arquivo": "src/hooks/useScrollRestoration.ts"
+        },
+        {
+          "nome": "useSessionIdleTimeout",
+          "arquivo": "src/hooks/useSessionIdleTimeout.ts"
+        },
+        {
+          "nome": "useSidebarBadges",
+          "arquivo": "src/hooks/useSidebarBadges.ts"
+        },
+        {
+          "nome": "useSLASettings",
+          "arquivo": "src/stores/slaSettingsStore.ts"
+        },
+        {
+          "nome": "useSpotIntegration",
+          "arquivo": "src/hooks/useSpotIntegration.ts"
+        },
+        {
+          "nome": "useSpotProducts",
+          "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts"
+        },
+        {
+          "nome": "useSpotSkus",
+          "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts"
+        },
+        {
+          "nome": "useSpotStock",
+          "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts"
+        },
+        {
+          "nome": "useSpotSyncStatus",
+          "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "guided-buying-ai",
+        "spot-proxy",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_fornecedores_kpis"
+      ],
+      "tabelas": [
+        "audit_logs",
+        "contact_notes",
+        "contracts",
+        "cotacoes",
+        "fornecedores",
+        "notification_preferences",
+        "notifications",
+        "pagamentos",
+        "pedidos",
+        "permissions",
+        "profiles",
+        "push_subscriptions",
+        "role_permissions",
+        "solicitacoes",
+        "spot_api_sync_log",
+        "spot_estoque",
+        "spot_produtos",
+        "spot_skus",
+        "system_alerts",
+        "user_roles",
+        "user_tenants",
+        "workflow_approvals"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/catalogo-xbz",
+      "componente": "CatalogoXbz",
+      "arquivo": "src/pages/catalogo-xbz/CatalogoXbz.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 99,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCommandPalette",
+          "arquivo": "src/features/layout/components/CommandPalette.tsx"
+        },
+        {
+          "nome": "useContactNotes",
+          "arquivo": "src/hooks/useContactNotes.ts"
+        },
+        {
+          "nome": "useCooldown",
+          "arquivo": "src/hooks/useCooldown.ts"
+        },
+        {
+          "nome": "useCriticalAlertsBadge",
+          "arquivo": "src/hooks/useCriticalAlertsBadge.ts"
+        },
+        {
+          "nome": "useFeedback",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useGlobalUndo",
+          "arquivo": "src/hooks/useGlobalUndo.ts"
+        },
+        {
+          "nome": "useGuidedBuying",
+          "arquivo": "src/hooks/useGuidedBuying.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useKeyboardShortcuts",
+          "arquivo": "src/hooks/useKeyboardShortcuts.ts"
+        },
+        {
+          "nome": "useNavigation",
+          "arquivo": "src/hooks/useNavigation.tsx"
+        },
+        {
+          "nome": "useOfflineSync",
+          "arquivo": "src/hooks/useOfflineSync.ts"
+        },
+        {
+          "nome": "usePageTransition",
+          "arquivo": "src/features/layout/transitions/usePageTransition.ts"
+        },
+        {
+          "nome": "usePerformanceMonitor",
+          "arquivo": "src/hooks/usePerformanceMonitor.ts"
+        },
+        {
+          "nome": "usePermissions",
+          "arquivo": "src/hooks/usePermissions.ts"
+        },
+        {
+          "nome": "usePrefetch",
+          "arquivo": "src/hooks/usePrefetch.ts"
+        },
+        {
+          "nome": "usePullToRefresh",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useRealPushNotifications",
+          "arquivo": "src/hooks/useRealPushNotifications.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useRecentlyViewed",
+          "arquivo": "src/hooks/useRecentlyViewed.ts"
+        },
+        {
+          "nome": "useScrollRestoration",
+          "arquivo": "src/hooks/useScrollRestoration.ts"
+        },
+        {
+          "nome": "useSessionIdleTimeout",
+          "arquivo": "src/hooks/useSessionIdleTimeout.ts"
+        },
+        {
+          "nome": "useSidebarBadges",
+          "arquivo": "src/hooks/useSidebarBadges.ts"
+        },
+        {
+          "nome": "useSLASettings",
+          "arquivo": "src/stores/slaSettingsStore.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        },
+        {
+          "nome": "useXbzIntegration",
+          "arquivo": "src/hooks/useXbzIntegration.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "guided-buying-ai",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_fornecedores_kpis"
+      ],
+      "tabelas": [
+        "audit_logs",
+        "contact_notes",
+        "contracts",
+        "cotacoes",
+        "fornecedores",
+        "notification_preferences",
+        "notifications",
+        "pagamentos",
+        "pedidos",
+        "permissions",
+        "profiles",
+        "push_subscriptions",
+        "role_permissions",
+        "solicitacoes",
+        "system_alerts",
+        "user_roles",
+        "user_tenants",
+        "workflow_approvals"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/compliance",
+      "componente": "ComplianceDashboard",
+      "arquivo": "src/pages/compliance/ComplianceDashboard.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 15,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "fornecedores",
+        "penalty_escalation_config",
+        "profiles",
+        "supplier_bonifications",
+        "supplier_compliance_summary",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/compras",
+      "componente": "ComprasDashboard",
+      "arquivo": "src/pages/dashboard/ComprasDashboard.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 46,
+      "hooks": [
+        {
+          "nome": "useAccountFilters",
+          "arquivo": "src/hooks/useAccountFilters.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useDashboardKPIs",
+          "arquivo": "src/hooks/useDashboardKPIs.ts"
+        },
+        {
+          "nome": "useDashboardLayoutStore",
+          "arquivo": "src/stores/dashboardLayoutStore.ts"
+        },
+        {
+          "nome": "useDeliveryEvents",
+          "arquivo": "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useMonthStats",
+          "arquivo": "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useSLASettings",
+          "arquivo": "src/stores/slaSettingsStore.ts"
+        },
+        {
+          "nome": "useSourcingEvents",
+          "arquivo": "src/hooks/useLicitacoes.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        },
+        {
+          "nome": "useUpcomingDeliveries",
+          "arquivo": "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "ai-demand-prediction",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_compras_dashboard_metrics"
+      ],
+      "tabelas": [
+        "approval_workflows",
+        "categorias",
+        "cotacoes",
+        "dashboard_filter_favorites",
+        "fornecedores",
+        "licitacao_lances",
+        "licitacao_propostas",
+        "licitacoes",
+        "pagamentos",
+        "pedido_itens",
+        "pedidos",
+        "produto_fornecedores",
+        "profiles",
+        "solicitacoes",
+        "sourcing_event_criteria",
+        "sourcing_event_lots",
+        "sourcing_event_questions",
+        "sourcing_events",
+        "sourcing_invitations",
+        "sourcing_responses",
+        "user_filter_preferences",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/configuracoes-centro-custo",
+      "componente": "ConfiguracoesCentroCusto",
+      "arquivo": "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 99,
+      "hooks": [
+        {
+          "nome": "useApprovalHistory",
+          "arquivo": "src/hooks/useApprovalHistory.ts"
+        },
+        {
+          "nome": "useApprovalRules",
+          "arquivo": "src/hooks/useApprovalRules.ts"
+        },
+        {
+          "nome": "useApprovalWorkflow",
+          "arquivo": "src/hooks/useApprovalWorkflow.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCommandPalette",
+          "arquivo": "src/features/layout/components/CommandPalette.tsx"
+        },
+        {
+          "nome": "useContactNotes",
+          "arquivo": "src/hooks/useContactNotes.ts"
+        },
+        {
+          "nome": "useCriticalAlertsBadge",
+          "arquivo": "src/hooks/useCriticalAlertsBadge.ts"
+        },
+        {
+          "nome": "useFeedback",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useGlobalUndo",
+          "arquivo": "src/hooks/useGlobalUndo.ts"
+        },
+        {
+          "nome": "useGuidedBuying",
+          "arquivo": "src/hooks/useGuidedBuying.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useKeyboardShortcuts",
+          "arquivo": "src/hooks/useKeyboardShortcuts.ts"
+        },
+        {
+          "nome": "useNavigation",
+          "arquivo": "src/hooks/useNavigation.tsx"
+        },
+        {
+          "nome": "useOfflineSync",
+          "arquivo": "src/hooks/useOfflineSync.ts"
+        },
+        {
+          "nome": "usePageTransition",
+          "arquivo": "src/features/layout/transitions/usePageTransition.ts"
+        },
+        {
+          "nome": "usePerformanceMonitor",
+          "arquivo": "src/hooks/usePerformanceMonitor.ts"
+        },
+        {
+          "nome": "usePermissions",
+          "arquivo": "src/hooks/usePermissions.ts"
+        },
+        {
+          "nome": "usePrefetch",
+          "arquivo": "src/hooks/usePrefetch.ts"
+        },
+        {
+          "nome": "usePullToRefresh",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useRealPushNotifications",
+          "arquivo": "src/hooks/useRealPushNotifications.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useRecentlyViewed",
+          "arquivo": "src/hooks/useRecentlyViewed.ts"
+        },
+        {
+          "nome": "useScrollRestoration",
+          "arquivo": "src/hooks/useScrollRestoration.ts"
+        },
+        {
+          "nome": "useSessionIdleTimeout",
+          "arquivo": "src/hooks/useSessionIdleTimeout.ts"
+        },
+        {
+          "nome": "useSidebarBadges",
+          "arquivo": "src/hooks/useSidebarBadges.ts"
+        },
+        {
+          "nome": "useSLASettings",
+          "arquivo": "src/stores/slaSettingsStore.ts"
+        },
+        {
+          "nome": "useSolicitacoes",
+          "arquivo": "src/features/solicitacoes/index.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        },
+        {
+          "nome": "useWorkflowDLQ",
+          "arquivo": "src/hooks/useWorkflowDLQ.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "guided-buying-ai",
+        "telemetry"
+      ],
+      "rpcs": [
+        "check_budget_availability",
+        "current_tenant_id",
+        "find_approval_rule",
+        "generate_sequential_number",
+        "get_effective_approver",
+        "get_fornecedores_kpis",
+        "get_solicitacoes_kpis"
+      ],
+      "tabelas": [
+        "approval_delegations",
+        "approval_history",
+        "approval_rules",
+        "approval_steps",
+        "approval_workflows",
+        "audit_logs",
+        "contact_notes",
+        "contracts",
+        "cost_centers",
+        "cotacoes",
+        "fornecedores",
+        "notification_preferences",
+        "notifications",
+        "pagamentos",
+        "pedidos",
+        "permissions",
+        "profiles",
+        "push_subscriptions",
+        "role_permissions",
+        "solicitacoes",
+        "system_alerts",
+        "user_roles",
+        "user_tenants",
+        "workflow_approvals"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/contratos",
+      "componente": "Contratos",
+      "arquivo": "src/pages/contratos/Contratos.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 24,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        }
+      ],
+      "buckets": [
+        "documentos"
+      ],
+      "edges": [
+        "generate-contract-pdf",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "contract_documents",
+        "contract_history",
+        "contract_items",
+        "contract_penalties",
+        "contracts",
+        "order_contracts",
+        "profiles",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/cotacao",
+      "componente": "Cotacao",
+      "arquivo": "src/pages/cotacao/Cotacao.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 45,
+      "hooks": [
+        {
+          "nome": "useApprovalHistory",
+          "arquivo": "src/hooks/useApprovalHistory.ts"
+        },
+        {
+          "nome": "useApprovalRules",
+          "arquivo": "src/hooks/useApprovalRules.ts"
+        },
+        {
+          "nome": "useApprovalWorkflow",
+          "arquivo": "src/hooks/useApprovalWorkflow.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCotacoes",
+          "arquivo": "src/features/cotacoes/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "usePriceHistoryAnalysis",
+          "arquivo": "src/components/compras/price-history/priceHistoryHelpers.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useSolicitacoes",
+          "arquivo": "src/features/solicitacoes/index.ts"
+        },
+        {
+          "nome": "useWorkflowDLQ",
+          "arquivo": "src/hooks/useWorkflowDLQ.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "check_budget_availability",
+        "current_tenant_id",
+        "find_approval_rule",
+        "generate_sequential_number",
+        "get_effective_approver",
+        "get_fornecedores_kpis",
+        "get_solicitacoes_kpis"
+      ],
+      "tabelas": [
+        "approval_delegations",
+        "approval_history",
+        "approval_rules",
+        "approval_steps",
+        "approval_workflows",
+        "audit_logs",
+        "cost_centers",
+        "cotacoes",
+        "fornecedores",
+        "produto_fornecedores",
+        "profiles",
+        "solicitacoes",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/cotacao/:id",
+      "componente": "Cotacao",
+      "arquivo": "src/pages/cotacao/Cotacao.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 45,
+      "hooks": [
+        {
+          "nome": "useApprovalHistory",
+          "arquivo": "src/hooks/useApprovalHistory.ts"
+        },
+        {
+          "nome": "useApprovalRules",
+          "arquivo": "src/hooks/useApprovalRules.ts"
+        },
+        {
+          "nome": "useApprovalWorkflow",
+          "arquivo": "src/hooks/useApprovalWorkflow.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCotacoes",
+          "arquivo": "src/features/cotacoes/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "usePriceHistoryAnalysis",
+          "arquivo": "src/components/compras/price-history/priceHistoryHelpers.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useSolicitacoes",
+          "arquivo": "src/features/solicitacoes/index.ts"
+        },
+        {
+          "nome": "useWorkflowDLQ",
+          "arquivo": "src/hooks/useWorkflowDLQ.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "check_budget_availability",
+        "current_tenant_id",
+        "find_approval_rule",
+        "generate_sequential_number",
+        "get_effective_approver",
+        "get_fornecedores_kpis",
+        "get_solicitacoes_kpis"
+      ],
+      "tabelas": [
+        "approval_delegations",
+        "approval_history",
+        "approval_rules",
+        "approval_steps",
+        "approval_workflows",
+        "audit_logs",
+        "cost_centers",
+        "cotacoes",
+        "fornecedores",
+        "produto_fornecedores",
+        "profiles",
+        "solicitacoes",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/dashboard-executivo",
+      "componente": "DashboardExecutivo",
+      "arquivo": "src/pages/dashboard/DashboardExecutivo.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 44,
+      "hooks": [
+        {
+          "nome": "useAccountFilters",
+          "arquivo": "src/hooks/useAccountFilters.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useClearFiltersFlow",
+          "arquivo": "src/hooks/useClearFiltersFlow.tsx"
+        },
+        {
+          "nome": "useDashboardFilters",
+          "arquivo": "src/hooks/useDashboardFilters.ts"
+        },
+        {
+          "nome": "useExecutiveDashboardData",
+          "arquivo": "src/hooks/useExecutiveDashboardData.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useOnboardingTour",
+          "arquivo": "src/components/onboarding/OnboardingTour.tsx"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useRenderProfiler",
+          "arquivo": "src/hooks/useRenderProfiler.ts"
+        },
+        {
+          "nome": "useSwipeGesture",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "category_strategies",
+        "dashboard_filter_favorites",
+        "pagamentos",
+        "pedidos",
+        "profiles",
+        "solicitacoes",
+        "user_filter_preferences",
+        "user_roles",
+        "user_tenants",
+        "user_tour_preferences"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/devolucoes",
+      "componente": "Devolucoes",
+      "arquivo": "src/pages/devolucoes/Devolucoes.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 23,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCreditosFornecedor",
+          "arquivo": "src/hooks/useDevolucoes.ts"
+        },
+        {
+          "nome": "useDevolucoes",
+          "arquivo": "src/hooks/useDevolucoes.ts"
+        },
+        {
+          "nome": "useDevolucoesKPIs",
+          "arquivo": "src/hooks/useDevolucoes.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_fornecedores_kpis"
+      ],
+      "tabelas": [
+        "audit_logs",
+        "creditos_fornecedor",
+        "devolucao_itens",
+        "devolucoes",
+        "fornecedores",
+        "pedidos",
+        "profiles",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/documentos-fiscais",
+      "componente": "DocumentosFiscais",
+      "arquivo": "src/pages/documentos/DocumentosFiscais.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 6,
+      "hooks": [
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [
+        "fiscal-documents"
+      ],
+      "edges": [
+        "process-invoice-idp",
+        "telemetry"
+      ],
+      "rpcs": [],
+      "tabelas": [
+        "fiscal_documents",
+        "pedidos"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/estoque",
+      "componente": "GestaoEstoque",
+      "arquivo": "src/pages/estoque/GestaoEstoque.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 14,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useEstoque",
+          "arquivo": "src/hooks/useEstoque.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useProdutos",
+          "arquivo": "src/hooks/useProdutos.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "categorias",
+        "estoque",
+        "estoque_movimentacoes",
+        "produtos",
+        "profiles",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/fornecedores",
+      "componente": "Fornecedores",
+      "arquivo": "src/pages/fornecedores/Fornecedores.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 33,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useFornecedoresKPIs",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "ai-supplier-risk",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_fornecedores_kpis"
+      ],
+      "tabelas": [
+        "audit_logs",
+        "fornecedores",
+        "pedidos",
+        "produto_fornecedores",
+        "produtos",
+        "profiles",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/gerar-ordem",
+      "componente": "GerarOrdem",
+      "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 23,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCotacoes",
+          "arquivo": "src/features/cotacoes/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "usePedidos",
+          "arquivo": "src/features/pedidos/index.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_pedidos_kpis"
+      ],
+      "tabelas": [
+        "audit_logs",
+        "cotacoes",
+        "fornecedores",
+        "pedido_itens",
+        "pedidos",
+        "profiles",
+        "solicitacoes",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/historico-compras",
+      "componente": "HistoricoCompras",
+      "arquivo": "src/pages/historico/HistoricoCompras.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 25,
+      "hooks": [
+        {
+          "nome": "useAccountFilters",
+          "arquivo": "src/hooks/useAccountFilters.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useClearFiltersFlow",
+          "arquivo": "src/hooks/useClearFiltersFlow.tsx"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "usePurchaseHistory",
+          "arquivo": "src/hooks/usePurchaseHistory.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "categorias",
+        "cost_centers",
+        "fornecedores",
+        "pedido_itens",
+        "pedidos",
+        "produtos",
+        "profiles",
+        "solicitacoes",
+        "user_filter_preferences",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/kanban",
+      "componente": "KanbanWorkflow",
+      "arquivo": "src/pages/kanban/KanbanWorkflow.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 4,
+      "hooks": [
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [],
+      "tabelas": [
+        "solicitacoes"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/licitacoes",
+      "componente": "Licitacoes",
+      "arquivo": "src/pages/licitacoes/Licitacoes.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 93,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCommandPalette",
+          "arquivo": "src/features/layout/components/CommandPalette.tsx"
+        },
+        {
+          "nome": "useContactNotes",
+          "arquivo": "src/hooks/useContactNotes.ts"
+        },
+        {
+          "nome": "useCriticalAlertsBadge",
+          "arquivo": "src/hooks/useCriticalAlertsBadge.ts"
+        },
+        {
+          "nome": "useFeedback",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useGlobalUndo",
+          "arquivo": "src/hooks/useGlobalUndo.ts"
+        },
+        {
+          "nome": "useGuidedBuying",
+          "arquivo": "src/hooks/useGuidedBuying.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useKeyboardShortcuts",
+          "arquivo": "src/hooks/useKeyboardShortcuts.ts"
+        },
+        {
+          "nome": "useLicitacaoLances",
+          "arquivo": "src/hooks/useLicitacoes.ts"
+        },
+        {
+          "nome": "useLicitacaoPropostas",
+          "arquivo": "src/hooks/useLicitacoes.ts"
+        },
+        {
+          "nome": "useLicitacoes",
+          "arquivo": "src/hooks/useLicitacoes.ts"
+        },
+        {
+          "nome": "useNavigation",
+          "arquivo": "src/hooks/useNavigation.tsx"
+        },
+        {
+          "nome": "useOfflineSync",
+          "arquivo": "src/hooks/useOfflineSync.ts"
+        },
+        {
+          "nome": "usePageTransition",
+          "arquivo": "src/features/layout/transitions/usePageTransition.ts"
+        },
+        {
+          "nome": "usePerformanceMonitor",
+          "arquivo": "src/hooks/usePerformanceMonitor.ts"
+        },
+        {
+          "nome": "usePermissions",
+          "arquivo": "src/hooks/usePermissions.ts"
+        },
+        {
+          "nome": "usePrefetch",
+          "arquivo": "src/hooks/usePrefetch.ts"
+        },
+        {
+          "nome": "usePullToRefresh",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useRealPushNotifications",
+          "arquivo": "src/hooks/useRealPushNotifications.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useRecentlyViewed",
+          "arquivo": "src/hooks/useRecentlyViewed.ts"
+        },
+        {
+          "nome": "useScrollRestoration",
+          "arquivo": "src/hooks/useScrollRestoration.ts"
+        },
+        {
+          "nome": "useSessionIdleTimeout",
+          "arquivo": "src/hooks/useSessionIdleTimeout.ts"
+        },
+        {
+          "nome": "useSidebarBadges",
+          "arquivo": "src/hooks/useSidebarBadges.ts"
+        },
+        {
+          "nome": "useSLASettings",
+          "arquivo": "src/stores/slaSettingsStore.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "guided-buying-ai",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_fornecedores_kpis"
+      ],
+      "tabelas": [
+        "audit_logs",
+        "categorias",
+        "contact_notes",
+        "contracts",
+        "cotacoes",
+        "fornecedores",
+        "licitacao_lances",
+        "licitacao_propostas",
+        "licitacoes",
+        "notification_preferences",
+        "notifications",
+        "pagamentos",
+        "pedidos",
+        "permissions",
+        "profiles",
+        "push_subscriptions",
+        "role_permissions",
+        "solicitacoes",
+        "sourcing_event_criteria",
+        "sourcing_event_lots",
+        "sourcing_event_questions",
+        "sourcing_events",
+        "sourcing_invitations",
+        "sourcing_responses",
+        "system_alerts",
+        "user_roles",
+        "user_tenants",
+        "workflow_approvals"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/negociacao-ia",
+      "componente": "NegociacaoIA",
+      "arquivo": "src/pages/negociacao-ia/NegociacaoIA.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 14,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "ai-negotiation",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "cotacoes",
+        "negotiation_analyses",
+        "profiles",
+        "solicitacoes",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/orcamentos",
+      "componente": "Orcamentos",
+      "arquivo": "src/pages/orcamentos/Orcamentos.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 101,
+      "hooks": [
+        {
+          "nome": "useApprovalHistory",
+          "arquivo": "src/hooks/useApprovalHistory.ts"
+        },
+        {
+          "nome": "useApprovalRules",
+          "arquivo": "src/hooks/useApprovalRules.ts"
+        },
+        {
+          "nome": "useApprovalWorkflow",
+          "arquivo": "src/hooks/useApprovalWorkflow.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useBudgetManagement",
+          "arquivo": "src/hooks/useBudgetManagement.ts"
+        },
+        {
+          "nome": "useCommandPalette",
+          "arquivo": "src/features/layout/components/CommandPalette.tsx"
+        },
+        {
+          "nome": "useContactNotes",
+          "arquivo": "src/hooks/useContactNotes.ts"
+        },
+        {
+          "nome": "useCriticalAlertsBadge",
+          "arquivo": "src/hooks/useCriticalAlertsBadge.ts"
+        },
+        {
+          "nome": "useFeedback",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useGlobalUndo",
+          "arquivo": "src/hooks/useGlobalUndo.ts"
+        },
+        {
+          "nome": "useGuidedBuying",
+          "arquivo": "src/hooks/useGuidedBuying.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useKeyboardShortcuts",
+          "arquivo": "src/hooks/useKeyboardShortcuts.ts"
+        },
+        {
+          "nome": "useNavigation",
+          "arquivo": "src/hooks/useNavigation.tsx"
+        },
+        {
+          "nome": "useOfflineSync",
+          "arquivo": "src/hooks/useOfflineSync.ts"
+        },
+        {
+          "nome": "usePageTransition",
+          "arquivo": "src/features/layout/transitions/usePageTransition.ts"
+        },
+        {
+          "nome": "usePerformanceMonitor",
+          "arquivo": "src/hooks/usePerformanceMonitor.ts"
+        },
+        {
+          "nome": "usePermissions",
+          "arquivo": "src/hooks/usePermissions.ts"
+        },
+        {
+          "nome": "usePrefetch",
+          "arquivo": "src/hooks/usePrefetch.ts"
+        },
+        {
+          "nome": "usePullToRefresh",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useRealPushNotifications",
+          "arquivo": "src/hooks/useRealPushNotifications.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useRecentlyViewed",
+          "arquivo": "src/hooks/useRecentlyViewed.ts"
+        },
+        {
+          "nome": "useScrollRestoration",
+          "arquivo": "src/hooks/useScrollRestoration.ts"
+        },
+        {
+          "nome": "useSessionIdleTimeout",
+          "arquivo": "src/hooks/useSessionIdleTimeout.ts"
+        },
+        {
+          "nome": "useSidebarBadges",
+          "arquivo": "src/hooks/useSidebarBadges.ts"
+        },
+        {
+          "nome": "useSLASettings",
+          "arquivo": "src/stores/slaSettingsStore.ts"
+        },
+        {
+          "nome": "useSolicitacoes",
+          "arquivo": "src/features/solicitacoes/index.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        },
+        {
+          "nome": "useWorkflowDLQ",
+          "arquivo": "src/hooks/useWorkflowDLQ.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "guided-buying-ai",
+        "telemetry"
+      ],
+      "rpcs": [
+        "check_budget_availability",
+        "current_tenant_id",
+        "find_approval_rule",
+        "generate_sequential_number",
+        "get_cost_center_performance_report",
+        "get_effective_approver",
+        "get_fornecedores_kpis",
+        "get_solicitacoes_kpis"
+      ],
+      "tabelas": [
+        "approval_delegations",
+        "approval_history",
+        "approval_rules",
+        "approval_steps",
+        "approval_workflows",
+        "audit_logs",
+        "contact_notes",
+        "contracts",
+        "cost_centers",
+        "cotacoes",
+        "department_budgets",
+        "fornecedores",
+        "notification_preferences",
+        "notifications",
+        "pagamentos",
+        "pedidos",
+        "permissions",
+        "profiles",
+        "push_subscriptions",
+        "role_permissions",
+        "solicitacoes",
+        "system_alerts",
+        "user_roles",
+        "user_tenants",
+        "workflow_approvals"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/pagamentos",
+      "componente": "Pagamentos",
+      "arquivo": "src/pages/pagamentos/Pagamentos.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 35,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "usePagamentos",
+          "arquivo": "src/hooks/usePagamentos.ts"
+        },
+        {
+          "nome": "usePagamentosKPIs",
+          "arquivo": "src/hooks/usePagamentos.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        }
+      ],
+      "buckets": [
+        "comprovantes"
+      ],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_pagamentos_kpis"
+      ],
+      "tabelas": [
+        "audit_logs",
+        "creditos_fornecedor",
+        "fiscal_documents",
+        "pagamentos",
+        "payment_history",
+        "pedidos",
+        "profiles",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/pedidos",
+      "componente": "Pedidos",
+      "arquivo": "src/pages/pedidos/Pedidos.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 37,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "usePedidos",
+          "arquivo": "src/features/pedidos/index.ts"
+        },
+        {
+          "nome": "usePedidosKPIs",
+          "arquivo": "src/features/pedidos/index.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_fornecedores_kpis",
+        "get_pedidos_kpis"
+      ],
+      "tabelas": [
+        "audit_logs",
+        "fornecedores",
+        "pedido_itens",
+        "pedidos",
+        "produto_fornecedores",
+        "profiles",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/portal-fornecedor",
+      "componente": "PortalFornecedor",
+      "arquivo": "src/pages/portal-fornecedor/PortalFornecedor.tsx",
+      "protegida": true,
+      "papeis": [
+        "supplier",
+        "admin"
+      ],
+      "redireciona": null,
+      "arquivos_lidos": 90,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCommandPalette",
+          "arquivo": "src/features/layout/components/CommandPalette.tsx"
+        },
+        {
+          "nome": "useContactNotes",
+          "arquivo": "src/hooks/useContactNotes.ts"
+        },
+        {
+          "nome": "useCriticalAlertsBadge",
+          "arquivo": "src/hooks/useCriticalAlertsBadge.ts"
+        },
+        {
+          "nome": "useFeedback",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useGlobalUndo",
+          "arquivo": "src/hooks/useGlobalUndo.ts"
+        },
+        {
+          "nome": "useGuidedBuying",
+          "arquivo": "src/hooks/useGuidedBuying.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useKeyboardShortcuts",
+          "arquivo": "src/hooks/useKeyboardShortcuts.ts"
+        },
+        {
+          "nome": "useNavigation",
+          "arquivo": "src/hooks/useNavigation.tsx"
+        },
+        {
+          "nome": "useOfflineSync",
+          "arquivo": "src/hooks/useOfflineSync.ts"
+        },
+        {
+          "nome": "usePageTransition",
+          "arquivo": "src/features/layout/transitions/usePageTransition.ts"
+        },
+        {
+          "nome": "usePerformanceMonitor",
+          "arquivo": "src/hooks/usePerformanceMonitor.ts"
+        },
+        {
+          "nome": "usePermissions",
+          "arquivo": "src/hooks/usePermissions.ts"
+        },
+        {
+          "nome": "usePortalFornecedorData",
+          "arquivo": "src/pages/portal-fornecedor/portalFornecedorData.ts"
+        },
+        {
+          "nome": "usePrefetch",
+          "arquivo": "src/hooks/usePrefetch.ts"
+        },
+        {
+          "nome": "usePullToRefresh",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useRealPushNotifications",
+          "arquivo": "src/hooks/useRealPushNotifications.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useRecentlyViewed",
+          "arquivo": "src/hooks/useRecentlyViewed.ts"
+        },
+        {
+          "nome": "useScrollRestoration",
+          "arquivo": "src/hooks/useScrollRestoration.ts"
+        },
+        {
+          "nome": "useSessionIdleTimeout",
+          "arquivo": "src/hooks/useSessionIdleTimeout.ts"
+        },
+        {
+          "nome": "useSidebarBadges",
+          "arquivo": "src/hooks/useSidebarBadges.ts"
+        },
+        {
+          "nome": "useSLASettings",
+          "arquivo": "src/stores/slaSettingsStore.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "guided-buying-ai",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_fornecedores_kpis"
+      ],
+      "tabelas": [
+        "audit_logs",
+        "contact_notes",
+        "contracts",
+        "cotacoes",
+        "fornecedores",
+        "notification_preferences",
+        "notifications",
+        "pagamentos",
+        "pedidos",
+        "permissions",
+        "profiles",
+        "push_subscriptions",
+        "role_permissions",
+        "solicitacoes",
+        "supplier_qualification_scores",
+        "system_alerts",
+        "user_roles",
+        "user_tenants",
+        "workflow_approvals"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/qualificacao-fornecedores",
+      "componente": "QualificacaoFornecedores",
+      "arquivo": "src/pages/qualificacao/QualificacaoFornecedores.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 93,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCommandPalette",
+          "arquivo": "src/features/layout/components/CommandPalette.tsx"
+        },
+        {
+          "nome": "useContactNotes",
+          "arquivo": "src/hooks/useContactNotes.ts"
+        },
+        {
+          "nome": "useCriticalAlertsBadge",
+          "arquivo": "src/hooks/useCriticalAlertsBadge.ts"
+        },
+        {
+          "nome": "useFeedback",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useGlobalUndo",
+          "arquivo": "src/hooks/useGlobalUndo.ts"
+        },
+        {
+          "nome": "useGuidedBuying",
+          "arquivo": "src/hooks/useGuidedBuying.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useKeyboardShortcuts",
+          "arquivo": "src/hooks/useKeyboardShortcuts.ts"
+        },
+        {
+          "nome": "useNavigation",
+          "arquivo": "src/hooks/useNavigation.tsx"
+        },
+        {
+          "nome": "useOfflineSync",
+          "arquivo": "src/hooks/useOfflineSync.ts"
+        },
+        {
+          "nome": "usePageTransition",
+          "arquivo": "src/features/layout/transitions/usePageTransition.ts"
+        },
+        {
+          "nome": "usePerformanceMonitor",
+          "arquivo": "src/hooks/usePerformanceMonitor.ts"
+        },
+        {
+          "nome": "usePermissions",
+          "arquivo": "src/hooks/usePermissions.ts"
+        },
+        {
+          "nome": "usePrefetch",
+          "arquivo": "src/hooks/usePrefetch.ts"
+        },
+        {
+          "nome": "usePullToRefresh",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useRealPushNotifications",
+          "arquivo": "src/hooks/useRealPushNotifications.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useRecentlyViewed",
+          "arquivo": "src/hooks/useRecentlyViewed.ts"
+        },
+        {
+          "nome": "useScrollRestoration",
+          "arquivo": "src/hooks/useScrollRestoration.ts"
+        },
+        {
+          "nome": "useSessionIdleTimeout",
+          "arquivo": "src/hooks/useSessionIdleTimeout.ts"
+        },
+        {
+          "nome": "useSidebarBadges",
+          "arquivo": "src/hooks/useSidebarBadges.ts"
+        },
+        {
+          "nome": "useSLASettings",
+          "arquivo": "src/stores/slaSettingsStore.ts"
+        },
+        {
+          "nome": "useSupplierQualification",
+          "arquivo": "src/hooks/useSupplierQualification.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "guided-buying-ai",
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_fornecedores_kpis"
+      ],
+      "tabelas": [
+        "audit_logs",
+        "contact_notes",
+        "contracts",
+        "cotacoes",
+        "fornecedores",
+        "notification_preferences",
+        "notifications",
+        "pagamentos",
+        "pedidos",
+        "permissions",
+        "profiles",
+        "push_subscriptions",
+        "qualification_history",
+        "qualification_requirements",
+        "role_permissions",
+        "solicitacoes",
+        "supplier_documents",
+        "supplier_qualification_scores",
+        "system_alerts",
+        "user_roles",
+        "user_tenants",
+        "workflow_approvals"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/recebimento",
+      "componente": "RecebimentoOffline",
+      "arquivo": "src/pages/recebimento/RecebimentoOffline.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 14,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "pedido_itens",
+        "pedidos",
+        "profiles",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/recompra-inteligente",
+      "componente": "RecompraInteligente",
+      "arquivo": "src/pages/recompra/RecompraInteligente.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 12,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "fornecedores",
+        "pedido_itens",
+        "produtos",
+        "profiles",
+        "repurchase_suggestions",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/relatorios",
+      "componente": "Relatorios",
+      "arquivo": "src/pages/relatorios/Relatorios.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 21,
+      "hooks": [
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useKPITargetsStore",
+          "arquivo": "src/stores/kpiTargetsStore.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "ai-demand-prediction",
+        "telemetry"
+      ],
+      "rpcs": [
+        "get_cost_center_performance_report"
+      ],
+      "tabelas": [
+        "category_strategies",
+        "fornecedores",
+        "pedido_itens",
+        "pedidos",
+        "solicitacoes"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/relatorios/negociacoes",
+      "componente": "RelatorioNegociacoes",
+      "arquivo": "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 7,
+      "hooks": [
+        {
+          "nome": "useRelatorioNegociacoes",
+          "arquivo": "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [],
+      "tabelas": [
+        "categorias",
+        "cotacoes",
+        "fornecedores",
+        "produtos",
+        "profiles",
+        "solicitacoes"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/seguranca",
+      "componente": "Seguranca",
+      "arquivo": "src/pages/seguranca/Seguranca.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 111,
+      "hooks": [
+        {
+          "nome": "useAllTourPreferences",
+          "arquivo": "src/hooks/useTourPreferences.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useCommandPalette",
+          "arquivo": "src/features/layout/components/CommandPalette.tsx"
+        },
+        {
+          "nome": "useContactNotes",
+          "arquivo": "src/hooks/useContactNotes.ts"
+        },
+        {
+          "nome": "useCriticalAlertsBadge",
+          "arquivo": "src/hooks/useCriticalAlertsBadge.ts"
+        },
+        {
+          "nome": "useFeedback",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useFornecedores",
+          "arquivo": "src/hooks/useFornecedores.ts"
+        },
+        {
+          "nome": "useGeoRestriction",
+          "arquivo": "src/hooks/useGeoRestriction.ts"
+        },
+        {
+          "nome": "useGlobalUndo",
+          "arquivo": "src/hooks/useGlobalUndo.ts"
+        },
+        {
+          "nome": "useGuidedBuying",
+          "arquivo": "src/hooks/useGuidedBuying.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useKeyboardShortcuts",
+          "arquivo": "src/hooks/useKeyboardShortcuts.ts"
+        },
+        {
+          "nome": "useMFA",
+          "arquivo": "src/hooks/useMFA.ts"
+        },
+        {
+          "nome": "useNavigation",
+          "arquivo": "src/hooks/useNavigation.tsx"
+        },
+        {
+          "nome": "useOfflineSync",
+          "arquivo": "src/hooks/useOfflineSync.ts"
+        },
+        {
+          "nome": "usePageTransition",
+          "arquivo": "src/features/layout/transitions/usePageTransition.ts"
+        },
+        {
+          "nome": "usePasswordResetRequests",
+          "arquivo": "src/hooks/usePasswordResetRequests.ts"
+        },
+        {
+          "nome": "usePerformanceMonitor",
+          "arquivo": "src/hooks/usePerformanceMonitor.ts"
+        },
+        {
+          "nome": "usePermissions",
+          "arquivo": "src/hooks/usePermissions.ts"
+        },
+        {
+          "nome": "usePrefetch",
+          "arquivo": "src/hooks/usePrefetch.ts"
+        },
+        {
+          "nome": "usePullToRefresh",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useRealPushNotifications",
+          "arquivo": "src/hooks/useRealPushNotifications.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useRecentlyViewed",
+          "arquivo": "src/hooks/useRecentlyViewed.ts"
+        },
+        {
+          "nome": "useScrollRestoration",
+          "arquivo": "src/hooks/useScrollRestoration.ts"
+        },
+        {
+          "nome": "useSecurityLogs",
+          "arquivo": "src/hooks/useSecurityLogs.ts"
+        },
+        {
+          "nome": "useSessionIdleTimeout",
+          "arquivo": "src/hooks/useSessionIdleTimeout.ts"
+        },
+        {
+          "nome": "useSidebarBadges",
+          "arquivo": "src/hooks/useSidebarBadges.ts"
+        },
+        {
+          "nome": "useSLASettings",
+          "arquivo": "src/stores/slaSettingsStore.ts"
+        },
+        {
+          "nome": "useToast",
+          "arquivo": "src/hooks/use-toast.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        },
+        {
+          "nome": "useWebAuthn",
+          "arquivo": "src/hooks/useWebAuthn.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "check-sla-alerts",
+        "guided-buying-ai",
+        "telemetry",
+        "webauthn-authenticate",
+        "webauthn-register"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number",
+        "get_fornecedores_kpis"
+      ],
+      "tabelas": [
+        "active_sessions",
+        "allowed_countries",
+        "audit_logs",
+        "blocked_countries",
+        "blocked_ips",
+        "contact_notes",
+        "contracts",
+        "cotacoes",
+        "fornecedores",
+        "geo_access_logs",
+        "geo_settings",
+        "ip_whitelist",
+        "login_attempts",
+        "mfa_settings",
+        "notification_preferences",
+        "notifications",
+        "pagamentos",
+        "password_reset_requests",
+        "pedidos",
+        "permissions",
+        "profiles",
+        "push_subscriptions",
+        "rate_limit_logs",
+        "role_permissions",
+        "security_logs",
+        "solicitacoes",
+        "system_alerts",
+        "user_roles",
+        "user_tenants",
+        "user_tour_preferences",
+        "webauthn_credentials",
+        "workflow_approvals"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/solicitacoes",
+      "componente": "Solicitacoes",
+      "arquivo": "src/pages/solicitacoes/Solicitacoes.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 58,
+      "hooks": [
+        {
+          "nome": "useAccountFilters",
+          "arquivo": "src/hooks/useAccountFilters.ts"
+        },
+        {
+          "nome": "useApprovalHistory",
+          "arquivo": "src/hooks/useApprovalHistory.ts"
+        },
+        {
+          "nome": "useApprovalRules",
+          "arquivo": "src/hooks/useApprovalRules.ts"
+        },
+        {
+          "nome": "useApprovalWorkflow",
+          "arquivo": "src/hooks/useApprovalWorkflow.ts"
+        },
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useClearFiltersFlow",
+          "arquivo": "src/hooks/useClearFiltersFlow.tsx"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useHapticFeedback",
+          "arquivo": "src/hooks/useMobileGestures.ts"
+        },
+        {
+          "nome": "useImageCompression",
+          "arquivo": "src/hooks/useImageCompression.ts"
+        },
+        {
+          "nome": "useIsMobile",
+          "arquivo": "src/hooks/use-mobile.tsx"
+        },
+        {
+          "nome": "useProdutos",
+          "arquivo": "src/hooks/useProdutos.ts"
+        },
+        {
+          "nome": "useRealtimeSubscription",
+          "arquivo": "src/hooks/useRealtimeSubscription.ts"
+        },
+        {
+          "nome": "useSolicitacoes",
+          "arquivo": "src/features/solicitacoes/index.ts"
+        },
+        {
+          "nome": "useUndoStore",
+          "arquivo": "src/stores/undoStore.ts"
+        },
+        {
+          "nome": "useWorkflowDLQ",
+          "arquivo": "src/hooks/useWorkflowDLQ.ts"
+        }
+      ],
+      "buckets": [
+        "documentos"
+      ],
+      "edges": [
+        "process-solicitacao-neural",
+        "telemetry"
+      ],
+      "rpcs": [
+        "check_budget_availability",
+        "current_tenant_id",
+        "find_approval_rule",
+        "generate_sequential_number",
+        "get_effective_approver",
+        "get_solicitacoes_kpis"
+      ],
+      "tabelas": [
+        "approval_delegations",
+        "approval_history",
+        "approval_rules",
+        "approval_steps",
+        "approval_workflows",
+        "audit_logs",
+        "categorias",
+        "cost_centers",
+        "produtos",
+        "profiles",
+        "solicitacoes",
+        "user_filter_preferences",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/sourcing",
+      "componente": "Sourcing",
+      "arquivo": "src/pages/sourcing/Sourcing.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 12,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useSourcingEvents",
+          "arquivo": "src/hooks/useLicitacoes.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number"
+      ],
+      "tabelas": [
+        "categorias",
+        "fornecedores",
+        "licitacao_lances",
+        "licitacao_propostas",
+        "licitacoes",
+        "profiles",
+        "sourcing_event_criteria",
+        "sourcing_event_lots",
+        "sourcing_event_questions",
+        "sourcing_events",
+        "sourcing_invitations",
+        "sourcing_responses",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/sourcing/:id",
+      "componente": "RFxDetails",
+      "arquivo": "src/pages/sourcing/RFxDetails.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 12,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useSourcingEventDetails",
+          "arquivo": "src/hooks/useLicitacoes.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number"
+      ],
+      "tabelas": [
+        "categorias",
+        "fornecedores",
+        "licitacao_lances",
+        "licitacao_propostas",
+        "licitacoes",
+        "profiles",
+        "sourcing_event_criteria",
+        "sourcing_event_lots",
+        "sourcing_event_questions",
+        "sourcing_events",
+        "sourcing_invitations",
+        "sourcing_responses",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/sourcing/:id/auction",
+      "componente": "AuctionRoom",
+      "arquivo": "src/pages/sourcing/AuctionRoom.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 13,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useLicitacaoLances",
+          "arquivo": "src/hooks/useLicitacoes.ts"
+        },
+        {
+          "nome": "useSourcingEventDetails",
+          "arquivo": "src/hooks/useLicitacoes.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number"
+      ],
+      "tabelas": [
+        "categorias",
+        "fornecedores",
+        "licitacao_lances",
+        "licitacao_propostas",
+        "licitacoes",
+        "profiles",
+        "sourcing_event_criteria",
+        "sourcing_event_lots",
+        "sourcing_event_questions",
+        "sourcing_events",
+        "sourcing_invitations",
+        "sourcing_responses",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/sourcing/novo",
+      "componente": "RFxCreate",
+      "arquivo": "src/pages/sourcing/RFxCreate.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 12,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useFeedbackPreferences",
+          "arquivo": "src/hooks/useFeedback.ts"
+        },
+        {
+          "nome": "useSourcingEvents",
+          "arquivo": "src/hooks/useLicitacoes.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id",
+        "generate_sequential_number"
+      ],
+      "tabelas": [
+        "categorias",
+        "fornecedor_categorias",
+        "fornecedores",
+        "licitacao_lances",
+        "licitacao_propostas",
+        "licitacoes",
+        "profiles",
+        "sourcing_event_criteria",
+        "sourcing_event_lots",
+        "sourcing_event_questions",
+        "sourcing_events",
+        "sourcing_invitations",
+        "sourcing_responses",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    },
+    {
+      "caminho": "/supplier-performance",
+      "componente": "SupplierPerformance",
+      "arquivo": "src/pages/fornecedores/SupplierPerformance.tsx",
+      "protegida": true,
+      "papeis": [],
+      "redireciona": null,
+      "arquivos_lidos": 17,
+      "hooks": [
+        {
+          "nome": "useAuth",
+          "arquivo": "src/features/auth/index.ts"
+        },
+        {
+          "nome": "useSLASettings",
+          "arquivo": "src/stores/slaSettingsStore.ts"
+        },
+        {
+          "nome": "useSupplierScorecardData",
+          "arquivo": "src/components/compras/scorecard/supplierScorecardData.ts"
+        }
+      ],
+      "buckets": [],
+      "edges": [
+        "telemetry"
+      ],
+      "rpcs": [
+        "current_tenant_id"
+      ],
+      "tabelas": [
+        "devolucoes",
+        "fornecedores",
+        "pedidos",
+        "profiles",
+        "supplier_qualification_scores",
+        "user_roles",
+        "user_tenants"
+      ],
+      "imports_quebrados": []
+    }
+  ],
+  "hooks": {
+    "useAccountFilters": {
+      "arquivo": "src/hooks/useAccountFilters.ts",
+      "urls": [
+        "/acompanhamento",
+        "/compras",
+        "/dashboard-executivo",
+        "/historico-compras",
+        "/solicitacoes"
+      ]
+    },
+    "useAccountLockout": {
+      "arquivo": "src/hooks/useAccountLockout.ts",
+      "urls": [
+        "/auth"
+      ]
+    },
+    "useAllTourPreferences": {
+      "arquivo": "src/hooks/useTourPreferences.ts",
+      "urls": [
+        "/seguranca"
+      ]
+    },
+    "useApprovalHistory": {
+      "arquivo": "src/hooks/useApprovalHistory.ts",
+      "urls": [
+        "/aprovacoes",
+        "/configuracoes-centro-custo",
+        "/cotacao",
+        "/cotacao/:id",
+        "/orcamentos",
+        "/solicitacoes"
+      ]
+    },
+    "useApprovalNotifications": {
+      "arquivo": "src/hooks/useApprovalNotifications.ts",
+      "urls": [
+        "/aprovacoes"
+      ]
+    },
+    "useApprovalRules": {
+      "arquivo": "src/hooks/useApprovalRules.ts",
+      "urls": [
+        "/aprovacoes",
+        "/configuracoes-centro-custo",
+        "/cotacao",
+        "/cotacao/:id",
+        "/orcamentos",
+        "/solicitacoes"
+      ]
+    },
+    "useApprovalWorkflow": {
+      "arquivo": "src/hooks/useApprovalWorkflow.ts",
+      "urls": [
+        "/aprovacoes",
+        "/configuracoes-centro-custo",
+        "/cotacao",
+        "/cotacao/:id",
+        "/orcamentos",
+        "/solicitacoes"
+      ]
+    },
+    "useAuth": {
+      "arquivo": "src/features/auth/hooks/useAuthContext.ts",
+      "urls": [
+        "/acompanhamento",
+        "/admin/dependency-health",
+        "/admin/erp",
+        "/admin/health",
+        "/admin/sso",
+        "/aprovacoes",
+        "/auth",
+        "/buyer-performance",
+        "/catalogo-produtos",
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/compliance",
+        "/compras",
+        "/configuracoes-centro-custo",
+        "/contratos",
+        "/cotacao",
+        "/cotacao/:id",
+        "/dashboard-executivo",
+        "/devolucoes",
+        "/estoque",
+        "/fornecedores",
+        "/gerar-ordem",
+        "/historico-compras",
+        "/licitacoes",
+        "/negociacao-ia",
+        "/orcamentos",
+        "/pagamentos",
+        "/pedidos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/recebimento",
+        "/recompra-inteligente",
+        "/seguranca",
+        "/solicitacoes",
+        "/sourcing",
+        "/sourcing/:id",
+        "/sourcing/:id/auction",
+        "/sourcing/novo",
+        "/supplier-performance"
+      ]
+    },
+    "useAutoImageCompression": {
+      "arquivo": "src/hooks/useImageCompression.ts",
+      "urls": [
+        "/catalogo-produtos"
+      ]
+    },
+    "useBudgetManagement": {
+      "arquivo": "src/hooks/useBudgetManagement.ts",
+      "urls": [
+        "/orcamentos"
+      ]
+    },
+    "useBuyerAlertsStore": {
+      "arquivo": "src/stores/buyerAlertsStore.ts",
+      "urls": [
+        "/buyer-performance"
+      ]
+    },
+    "useBuyerPerformanceData": {
+      "arquivo": "src/hooks/useBuyerPerformanceData.ts",
+      "urls": [
+        "/buyer-performance"
+      ]
+    },
+    "useClearFiltersFlow": {
+      "arquivo": "src/hooks/useClearFiltersFlow.tsx",
+      "urls": [
+        "/acompanhamento",
+        "/dashboard-executivo",
+        "/historico-compras",
+        "/solicitacoes"
+      ]
+    },
+    "useCommandPalette": {
+      "arquivo": "src/features/layout/components/CommandPalette.tsx",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useContactNotes": {
+      "arquivo": "src/hooks/useContactNotes.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useCooldown": {
+      "arquivo": "src/hooks/useCooldown.ts",
+      "urls": [
+        "/catalogo-xbz"
+      ]
+    },
+    "useCotacoes": {
+      "arquivo": "src/features/cotacoes/index.ts",
+      "urls": [
+        "/cotacao",
+        "/cotacao/:id",
+        "/gerar-ordem"
+      ]
+    },
+    "useCreditosFornecedor": {
+      "arquivo": "src/hooks/useDevolucoes.ts",
+      "urls": [
+        "/devolucoes"
+      ]
+    },
+    "useCriticalAlertsBadge": {
+      "arquivo": "src/hooks/useCriticalAlertsBadge.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useDashboardFilters": {
+      "arquivo": "src/hooks/useDashboardFilters.ts",
+      "urls": [
+        "/dashboard-executivo"
+      ]
+    },
+    "useDashboardKPIs": {
+      "arquivo": "src/hooks/useDashboardKPIs.ts",
+      "urls": [
+        "/compras"
+      ]
+    },
+    "useDashboardLayoutStore": {
+      "arquivo": "src/stores/dashboardLayoutStore.ts",
+      "urls": [
+        "/compras"
+      ]
+    },
+    "useDeliveryEvents": {
+      "arquivo": "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
+      "urls": [
+        "/compras"
+      ]
+    },
+    "useDevolucoes": {
+      "arquivo": "src/hooks/useDevolucoes.ts",
+      "urls": [
+        "/devolucoes"
+      ]
+    },
+    "useDevolucoesKPIs": {
+      "arquivo": "src/hooks/useDevolucoes.ts",
+      "urls": [
+        "/devolucoes"
+      ]
+    },
+    "useEstoque": {
+      "arquivo": "src/hooks/useEstoque.ts",
+      "urls": [
+        "/estoque"
+      ]
+    },
+    "useExecutiveDashboardData": {
+      "arquivo": "src/hooks/useExecutiveDashboardData.ts",
+      "urls": [
+        "/dashboard-executivo"
+      ]
+    },
+    "useFeedback": {
+      "arquivo": "src/hooks/useFeedback.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useFeedbackPreferences": {
+      "arquivo": "src/hooks/useFeedback.ts",
+      "urls": [
+        "/acompanhamento",
+        "/admin/docs",
+        "/admin/erp",
+        "/admin/punchout",
+        "/admin/sso",
+        "/admin/telemetria",
+        "/aprovacoes",
+        "/auditoria",
+        "/auth",
+        "/buyer-performance",
+        "/catalogo-produtos",
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/compliance",
+        "/compras",
+        "/configuracoes-centro-custo",
+        "/contratos",
+        "/cotacao",
+        "/cotacao/:id",
+        "/dashboard-executivo",
+        "/devolucoes",
+        "/documentos-fiscais",
+        "/estoque",
+        "/fornecedores",
+        "/gerar-ordem",
+        "/historico-compras",
+        "/kanban",
+        "/licitacoes",
+        "/negociacao-ia",
+        "/orcamentos",
+        "/pagamentos",
+        "/pedidos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/recebimento",
+        "/recompra-inteligente",
+        "/relatorios",
+        "/seguranca",
+        "/solicitacoes",
+        "/sourcing",
+        "/sourcing/:id",
+        "/sourcing/:id/auction",
+        "/sourcing/novo"
+      ]
+    },
+    "useFornecedores": {
+      "arquivo": "src/hooks/useFornecedores.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/cotacao",
+        "/cotacao/:id",
+        "/devolucoes",
+        "/fornecedores",
+        "/licitacoes",
+        "/orcamentos",
+        "/pedidos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useFornecedoresKPIs": {
+      "arquivo": "src/hooks/useFornecedores.ts",
+      "urls": [
+        "/fornecedores"
+      ]
+    },
+    "useGeoRestriction": {
+      "arquivo": "src/hooks/useGeoRestriction.ts",
+      "urls": [
+        "/seguranca"
+      ]
+    },
+    "useGlobalUndo": {
+      "arquivo": "src/hooks/useGlobalUndo.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useGuidedBuying": {
+      "arquivo": "src/hooks/useGuidedBuying.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useHapticFeedback": {
+      "arquivo": "src/hooks/useMobileGestures.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/dashboard-executivo",
+        "/licitacoes",
+        "/orcamentos",
+        "/pagamentos",
+        "/pedidos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca",
+        "/solicitacoes"
+      ]
+    },
+    "useImageCompression": {
+      "arquivo": "src/hooks/useImageCompression.ts",
+      "urls": [
+        "/solicitacoes"
+      ]
+    },
+    "useIsMobile": {
+      "arquivo": "src/hooks/use-mobile.tsx",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/dashboard-executivo",
+        "/fornecedores",
+        "/licitacoes",
+        "/orcamentos",
+        "/pagamentos",
+        "/pedidos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca",
+        "/solicitacoes"
+      ]
+    },
+    "useKPITargetsStore": {
+      "arquivo": "src/stores/kpiTargetsStore.ts",
+      "urls": [
+        "/relatorios"
+      ]
+    },
+    "useKeyboardShortcuts": {
+      "arquivo": "src/hooks/useKeyboardShortcuts.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useLicitacaoLances": {
+      "arquivo": "src/hooks/useLicitacoes.ts",
+      "urls": [
+        "/licitacoes",
+        "/sourcing/:id/auction"
+      ]
+    },
+    "useLicitacaoPropostas": {
+      "arquivo": "src/hooks/useLicitacoes.ts",
+      "urls": [
+        "/licitacoes"
+      ]
+    },
+    "useLicitacoes": {
+      "arquivo": "src/hooks/useLicitacoes.ts",
+      "urls": [
+        "/licitacoes"
+      ]
+    },
+    "useMFA": {
+      "arquivo": "src/hooks/useMFA.ts",
+      "urls": [
+        "/seguranca"
+      ]
+    },
+    "useMonthStats": {
+      "arquivo": "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
+      "urls": [
+        "/compras"
+      ]
+    },
+    "useNavigation": {
+      "arquivo": "src/hooks/useNavigation.tsx",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useOfflineSync": {
+      "arquivo": "src/hooks/useOfflineSync.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useOnboardingTour": {
+      "arquivo": "src/components/onboarding/OnboardingTour.tsx",
+      "urls": [
+        "/dashboard-executivo"
+      ]
+    },
+    "usePagamentos": {
+      "arquivo": "src/hooks/usePagamentos.ts",
+      "urls": [
+        "/pagamentos"
+      ]
+    },
+    "usePagamentosKPIs": {
+      "arquivo": "src/hooks/usePagamentos.ts",
+      "urls": [
+        "/pagamentos"
+      ]
+    },
+    "usePageTransition": {
+      "arquivo": "src/features/layout/transitions/usePageTransition.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "usePasswordResetRequests": {
+      "arquivo": "src/hooks/usePasswordResetRequests.ts",
+      "urls": [
+        "/seguranca"
+      ]
+    },
+    "usePedidos": {
+      "arquivo": "src/features/pedidos/index.ts",
+      "urls": [
+        "/gerar-ordem",
+        "/pedidos"
+      ]
+    },
+    "usePedidosKPIs": {
+      "arquivo": "src/features/pedidos/index.ts",
+      "urls": [
+        "/pedidos"
+      ]
+    },
+    "usePerformanceMonitor": {
+      "arquivo": "src/hooks/usePerformanceMonitor.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "usePermissions": {
+      "arquivo": "src/hooks/usePermissions.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "usePortalFornecedorData": {
+      "arquivo": "src/pages/portal-fornecedor/portalFornecedorData.ts",
+      "urls": [
+        "/portal-fornecedor"
+      ]
+    },
+    "usePrefetch": {
+      "arquivo": "src/hooks/usePrefetch.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "usePriceHistoryAnalysis": {
+      "arquivo": "src/components/compras/price-history/priceHistoryHelpers.ts",
+      "urls": [
+        "/cotacao",
+        "/cotacao/:id"
+      ]
+    },
+    "useProdutoFornecedores": {
+      "arquivo": "src/hooks/useProdutoFornecedores.ts",
+      "urls": [
+        "/catalogo-produtos"
+      ]
+    },
+    "useProdutos": {
+      "arquivo": "src/hooks/useProdutos.ts",
+      "urls": [
+        "/catalogo-produtos",
+        "/estoque",
+        "/solicitacoes"
+      ]
+    },
+    "usePullToRefresh": {
+      "arquivo": "src/hooks/useMobileGestures.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "usePurchaseHistory": {
+      "arquivo": "src/hooks/usePurchaseHistory.ts",
+      "urls": [
+        "/historico-compras"
+      ]
+    },
+    "useRealPushNotifications": {
+      "arquivo": "src/hooks/useRealPushNotifications.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useRealtimeSubscription": {
+      "arquivo": "src/hooks/useRealtimeSubscription.ts",
+      "urls": [
+        "/acompanhamento",
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/compras",
+        "/configuracoes-centro-custo",
+        "/cotacao",
+        "/cotacao/:id",
+        "/dashboard-executivo",
+        "/devolucoes",
+        "/fornecedores",
+        "/gerar-ordem",
+        "/licitacoes",
+        "/orcamentos",
+        "/pagamentos",
+        "/pedidos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca",
+        "/solicitacoes"
+      ]
+    },
+    "useRecentlyViewed": {
+      "arquivo": "src/hooks/useRecentlyViewed.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useRelatorioNegociacoes": {
+      "arquivo": "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts",
+      "urls": [
+        "/relatorios/negociacoes"
+      ]
+    },
+    "useRenderProfiler": {
+      "arquivo": "src/hooks/useRenderProfiler.ts",
+      "urls": [
+        "/dashboard-executivo"
+      ]
+    },
+    "useSLASettings": {
+      "arquivo": "src/stores/slaSettingsStore.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/compras",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca",
+        "/supplier-performance"
+      ]
+    },
+    "useScrollRestoration": {
+      "arquivo": "src/hooks/useScrollRestoration.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useSecurityLogs": {
+      "arquivo": "src/hooks/useSecurityLogs.ts",
+      "urls": [
+        "/seguranca"
+      ]
+    },
+    "useSessionIdleTimeout": {
+      "arquivo": "src/hooks/useSessionIdleTimeout.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useSidebarBadges": {
+      "arquivo": "src/hooks/useSidebarBadges.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca"
+      ]
+    },
+    "useSolicitacoes": {
+      "arquivo": "src/features/solicitacoes/index.ts",
+      "urls": [
+        "/aprovacoes",
+        "/configuracoes-centro-custo",
+        "/cotacao",
+        "/cotacao/:id",
+        "/orcamentos",
+        "/solicitacoes"
+      ]
+    },
+    "useSourcingEventDetails": {
+      "arquivo": "src/hooks/useLicitacoes.ts",
+      "urls": [
+        "/sourcing/:id",
+        "/sourcing/:id/auction"
+      ]
+    },
+    "useSourcingEvents": {
+      "arquivo": "src/hooks/useLicitacoes.ts",
+      "urls": [
+        "/compras",
+        "/sourcing",
+        "/sourcing/novo"
+      ]
+    },
+    "useSpotIntegration": {
+      "arquivo": "src/hooks/useSpotIntegration.ts",
+      "urls": [
+        "/catalogo-spot"
+      ]
+    },
+    "useSpotProducts": {
+      "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts",
+      "urls": [
+        "/catalogo-spot"
+      ]
+    },
+    "useSpotSkus": {
+      "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts",
+      "urls": [
+        "/catalogo-spot"
+      ]
+    },
+    "useSpotStock": {
+      "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts",
+      "urls": [
+        "/catalogo-spot"
+      ]
+    },
+    "useSpotSyncStatus": {
+      "arquivo": "src/pages/catalogo-spot/useSpotCatalog.ts",
+      "urls": [
+        "/catalogo-spot"
+      ]
+    },
+    "useSupplierQualification": {
+      "arquivo": "src/hooks/useSupplierQualification.ts",
+      "urls": [
+        "/qualificacao-fornecedores"
+      ]
+    },
+    "useSupplierScorecardData": {
+      "arquivo": "src/components/compras/scorecard/supplierScorecardData.ts",
+      "urls": [
+        "/supplier-performance"
+      ]
+    },
+    "useSwipeGesture": {
+      "arquivo": "src/hooks/useMobileGestures.ts",
+      "urls": [
+        "/dashboard-executivo"
+      ]
+    },
+    "useToast": {
+      "arquivo": "src/hooks/use-toast.ts",
+      "urls": [
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/compras",
+        "/configuracoes-centro-custo",
+        "/contratos",
+        "/fornecedores",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/relatorios",
+        "/seguranca"
+      ]
+    },
+    "useUndoStore": {
+      "arquivo": "src/stores/undoStore.ts",
+      "urls": [
+        "/acompanhamento",
+        "/catalogo-spot",
+        "/catalogo-xbz",
+        "/configuracoes-centro-custo",
+        "/dashboard-executivo",
+        "/historico-compras",
+        "/licitacoes",
+        "/orcamentos",
+        "/portal-fornecedor",
+        "/qualificacao-fornecedores",
+        "/seguranca",
+        "/solicitacoes"
+      ]
+    },
+    "useUpcomingDeliveries": {
+      "arquivo": "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts",
+      "urls": [
+        "/compras"
+      ]
+    },
+    "useWebAuthn": {
+      "arquivo": "src/hooks/useWebAuthn.ts",
+      "urls": [
+        "/auth",
+        "/seguranca"
+      ]
+    },
+    "useWorkflowDLQ": {
+      "arquivo": "src/hooks/useWorkflowDLQ.ts",
+      "urls": [
+        "/aprovacoes",
+        "/configuracoes-centro-custo",
+        "/cotacao",
+        "/cotacao/:id",
+        "/orcamentos",
+        "/solicitacoes"
+      ]
+    },
+    "useXbzIntegration": {
+      "arquivo": "src/hooks/useXbzIntegration.ts",
+      "urls": [
+        "/catalogo-xbz"
+      ]
+    }
+  },
+  "problemas": []
+}

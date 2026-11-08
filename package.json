@@ -19,6 +19,11 @@
     "test:all": "npm run lint && npm run typecheck && npm run test && npm run test:coverage && npm run test:e2e",
     "test:simulate": "curl -X POST \"$VITE_SUPABASE_URL/functions/v1/system-simulation\" -H \"Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY\" -H \"Content-Type: application/json\" -d '{\"iterations\": 50}'",
     "typecheck": "tsc --noEmit",
+    "contexto:codigo": "node scripts/ai-context/gerar.mjs --out docs/contexto/codigo",
+    "contexto:regras": "python3 scripts/regras_negocio/generate.py --repo . --out docs/contexto/regras --profile regras --schema-snapshot docs/contexto/supabase --no-pointer",
+    "contexto:banco": "python3 scripts/supabase_snapshot/snapshot.py",
+    "contexto:indice": "python3 scripts/regras_negocio/indice.py --repo . --out docs/contexto/00-INDEX.md --fonte \"banco real=docs/contexto/supabase\" --fonte \"código=docs/contexto/codigo\" --fonte \"regras de negócio=docs/contexto/regras\"",
+    "test:scripts": "node --test scripts/ci/*.unit.mjs",
     "prepare": ""
   },
   "dependencies": {
