@@ -1,0 +1,294 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "total": 24,
+ "scripts": [
+  {
+   "arquivo": "scripts/ai-context/cenarios.mjs",
+   "descricao": "Simulação de cenários do gerador: monta centenas de repositórios sintéticos (variantes de SQL, rotas, menus, edges, workflows, monorepo, Python, arquivos corrompidos, fuzz) e confere:",
+   "linhas": 173,
+   "env": [
+    "A",
+    "K",
+    "NODE_ENV",
+    "SCRIPT_ONLY",
+    "SRK",
+    "SUPABASE_URL",
+    "VITE_A",
+    "VITE_C",
+    "VITE_FEATURE_X",
+    "X"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "descricao": "Gera o contexto de projeto para agentes de IA (padrão: inventario/ia/*). Zero dependências. Node >= 18. Genérico: funciona em qualquer repositório.",
+   "linhas": 924,
+   "env": [
+    "AI_CONTEXT_DIR",
+    "AI_CONTEXT_PUBLICACAO",
+    "AI_CONTEXT_ROOT"
+   ],
+   "npm_scripts": [
+    "contexto:codigo"
+   ],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/db-explain-analyze.ts",
+   "descricao": "* B-03: Benchmark versionado de queries quentes via EXPLAIN (ANALYZE, BUFFERS).",
+   "linhas": 81,
+   "env": [
+    "EXPLAIN_LIMIT_MS",
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/inventario/banco.sql",
+   "descricao": null,
+   "linhas": 147,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/inventario/gerar-banco.mjs",
+   "descricao": "* Inventario do banco oficial -> inventario/estado/banco.json (fonte de consulta dos agentes).",
+   "linhas": 321,
+   "env": [
+    "SUPABASE_ACCESS_TOKEN",
+    "SUPABASE_API_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "inventario-estado-semanal.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/inventario/gerar-repo.mjs",
+   "descricao": "Inventario gerado do lado do repositorio (sem acesso ao banco):  - edge functions: linhas, segredos lidos (Deno.env.get) e quem as invoca (src, migrations, outras edges, e2e, CI)",
+   "linhas": 89,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "inventario-estado-semanal.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/inventario/gerar-rotas.mjs",
+   "descricao": "* Inventario das rotas do front -> inventario/estado/rotas.json (fonte de consulta dos agentes).",
+   "linhas": 321,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "inventario-estado-semanal.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/inventario/mudou-conteudo.mjs",
+   "descricao": "* O inventario mudou de verdade? Compara cada arquivo de inventario/estado/ com a versao do",
+   "linhas": 85,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "inventario-estado-semanal.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/realtime-audit.ts",
+   "descricao": "* OPS-02: Auditoria de canais Realtime — detecta subscribe sem unsubscribe.",
+   "linhas": 47,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/regras_negocio/generate.py",
+   "descricao": null,
+   "linhas": 2138,
+   "env": [],
+   "npm_scripts": [
+    "contexto:regras"
+   ],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/regras_negocio/indice.py",
+   "descricao": null,
+   "linhas": 237,
+   "env": [],
+   "npm_scripts": [
+    "contexto:indice"
+   ],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/regras_negocio/publish.sh",
+   "descricao": "Publica docs/ai-context gerados: commit + push na branch padrão, ou PR quando a branch é protegida. Variáveis:",
+   "linhas": 195,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/rls-audit.ts",
+   "descricao": "* TEST-01 — RLS Policy Audit (refactored)",
+   "linhas": 74,
+   "env": [
+    "SUPABASE_SERVICE_ROLE_KEY",
+    "SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/squash-migrations.sh",
+   "descricao": "scripts/squash-migrations.sh F-031: Migration squash tooling",
+   "linhas": 170,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/stress-test.ts",
+   "descricao": "* Stress Test Script for Freight Quest Edge Functions",
+   "linhas": 93,
+   "env": [
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/supabase_snapshot/snapshot.py",
+   "descricao": "Somente leitura no banco (sessão read-only, statement_timeout, lock_timeout). Nunca grava linhas de tabelas, valores de segredos, chaves, senhas ou DSN.",
+   "linhas": 1791,
+   "env": [],
+   "npm_scripts": [
+    "contexto:banco"
+   ],
+   "workflows": [
+    "contexto.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/types-sync/check-remocoes-destrutivas.mjs",
+   "descricao": "scripts/types-sync/check-remocoes-destrutivas.mjs   node scripts/types-sync/check-remocoes-destrutivas.mjs <types-antigo.ts> <types-novo.ts>",
+   "linhas": 178,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "types-sync.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/types-sync/gen-types.sh",
+   "descricao": "gen-types.sh [--local] [output_path] Gera src/integrations/supabase/types.ts a partir do schema do banco.",
+   "linhas": 156,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "types-sync.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/types-sync/identidade-banco.mjs",
+   "descricao": "scripts/types-sync/identidade-banco.mjs Identidade do banco + endurecimento de TLS, sem nunca exibir a credencial.",
+   "linhas": 192,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/types-sync/install-pgbouncer.sh",
+   "descricao": "GitHub-hosted runners incluem repositorios de terceiros (Chrome, Microsoft, etc.). Um espelho inconsistente nesses repositorios nao pode impedir jobs que",
+   "linhas": 37,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "types-sync.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/types-sync/install-postgresql-client.sh",
+   "descricao": "GitHub-hosted runners incluem repositorios de terceiros (Chrome, Microsoft, etc.). Um espelho inconsistente nesses repositorios nao pode impedir jobs que",
+   "linhas": 37,
+   "env": [],
+   "npm_scripts": [],
+   "workflows": [
+    "types-sync.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/types-sync/local-pg-proxy.mjs",
+   "descricao": "scripts/types-sync/local-pg-proxy.mjs <diretorio-temporario-0700> Escreve a config de um pgbouncer LOCAL (bind 127.0.0.1) que repassa para o",
+   "linhas": 130,
+   "env": [
+    "SUPABASE_DB_URL"
+   ],
+   "npm_scripts": [],
+   "workflows": [],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/types-sync/typecheck-ratchet.mjs",
+   "descricao": "scripts/types-sync/typecheck-ratchet.mjs   node scripts/types-sync/typecheck-ratchet.mjs <baseline.ts> <candidato.ts>",
+   "linhas": 126,
+   "env": [
+    "TYPES_SYNC_TSCONFIG"
+   ],
+   "npm_scripts": [],
+   "workflows": [
+    "types-sync.yml"
+   ],
+   "orfao": false
+  },
+  {
+   "arquivo": "scripts/validate-bridge.ts",
+   "descricao": null,
+   "linhas": 73,
+   "env": [
+    "SUPABASE_ANON_KEY",
+    "SUPABASE_URL"
+   ],
+   "npm_scripts": [
+    "test:bridge"
+   ],
+   "workflows": [],
+   "orfao": false
+  }
+ ]
+}

@@ -1,0 +1,1403 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "frameworks": [
+  "vitest",
+  "playwright"
+ ],
+ "total": 127,
+ "por_tipo": {
+  "contrato": 4,
+  "pytest": 2,
+  "unit": 121
+ },
+ "onde_ficam": [
+  {
+   "padrao": "co-localizado (__tests__)",
+   "arquivos": 93
+  },
+  {
+   "padrao": "co-localizado (*.test)",
+   "arquivos": 24
+  },
+  {
+   "padrao": "outro",
+   "arquivos": 10
+  }
+ ],
+ "arquivos": [
+  {
+   "arquivo": "scripts/ai-context/gerar.unit.mjs",
+   "tipo": "unit",
+   "linhas": 361,
+   "testa": [
+    "src/routes/AppRoutes.tsx"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "scripts/ci/ai-context-generator.unit.mjs",
+   "tipo": "unit",
+   "linhas": 3,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "scripts/ci/regras-negocio.unit.mjs",
+   "tipo": "unit",
+   "linhas": 288,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "scripts/ci/supabase-snapshot.unit.mjs",
+   "tipo": "unit",
+   "linhas": 19,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "scripts/regras_negocio/test_generate.py",
+   "tipo": "pytest",
+   "linhas": 164,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "scripts/supabase_snapshot/test_snapshot.py",
+   "tipo": "pytest",
+   "linhas": 878,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "src/components/accessibility/__tests__/accessibilityHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 315,
+   "testa": [
+    "src/components/accessibility/accessibilityHelpers.ts"
+   ],
+   "casos": 55
+  },
+  {
+   "arquivo": "src/components/animations/__tests__/motionVariants.test.ts",
+   "tipo": "unit",
+   "linhas": 162,
+   "testa": [
+    "src/components/animations/motionVariants.ts"
+   ],
+   "casos": 28
+  },
+  {
+   "arquivo": "src/components/compras/__tests__/kanbanTypeGuards.test.ts",
+   "tipo": "unit",
+   "linhas": 129,
+   "testa": [
+    "src/components/compras/KanbanBoard.tsx"
+   ],
+   "casos": 21
+  },
+  {
+   "arquivo": "src/components/compras/__tests__/PipelineChart.test.tsx",
+   "tipo": "unit",
+   "linhas": 74,
+   "testa": [
+    "src/components/compras/PipelineChart.tsx",
+    "src/components/ui/tooltip.tsx"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/components/compras/bulk-operations/__tests__/bulkOperationsTypes.test.ts",
+   "tipo": "unit",
+   "linhas": 107,
+   "testa": [
+    "src/components/compras/bulk-operations/bulkOperationsTypes.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/components/compras/delivery-calendar/__tests__/deliveryCalendarHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 165,
+   "testa": [
+    "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts"
+   ],
+   "casos": 21
+  },
+  {
+   "arquivo": "src/components/compras/digital-signature/__tests__/signatureHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 131,
+   "testa": [
+    "src/components/compras/digital-signature/signatureHelpers.ts"
+   ],
+   "casos": 21
+  },
+  {
+   "arquivo": "src/components/compras/enhanced-kpi/__tests__/colorClasses.test.ts",
+   "tipo": "unit",
+   "linhas": 136,
+   "testa": [
+    "src/components/compras/enhanced-kpi/EnhancedKpiHelpers.tsx"
+   ],
+   "casos": 17
+  },
+  {
+   "arquivo": "src/components/compras/executive/__tests__/executiveDashboardData.test.ts",
+   "tipo": "unit",
+   "linhas": 394,
+   "testa": [
+    "src/components/compras/executive/executiveDashboardData.ts"
+   ],
+   "casos": 64
+  },
+  {
+   "arquivo": "src/components/compras/pending-approvals/__tests__/deadlineFallback.test.ts",
+   "tipo": "unit",
+   "linhas": 240,
+   "testa": [
+    "src/components/compras/pending-approvals/deadlineFallback.ts",
+    "src/components/compras/pending-approvals/pendingApprovalsData.ts"
+   ],
+   "casos": 17
+  },
+  {
+   "arquivo": "src/components/compras/pending-approvals/__tests__/pendingApprovalsData.test.ts",
+   "tipo": "unit",
+   "linhas": 199,
+   "testa": [
+    "src/components/compras/pending-approvals/pendingApprovalsData.ts"
+   ],
+   "casos": 27
+  },
+  {
+   "arquivo": "src/components/compras/price-comparator/__tests__/priceComparatorHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 165,
+   "testa": [
+    "src/components/compras/price-comparator/priceComparatorHelpers.ts"
+   ],
+   "casos": 21
+  },
+  {
+   "arquivo": "src/components/compras/price-history/__tests__/priceHistoryHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 110,
+   "testa": [
+    "src/components/compras/price-history/priceHistoryHelpers.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/components/compras/procurement-kpis/__tests__/kpiMockData.test.ts",
+   "tipo": "unit",
+   "linhas": 234,
+   "testa": [
+    "src/components/compras/procurement-kpis/kpiMockData.ts"
+   ],
+   "casos": 35
+  },
+  {
+   "arquivo": "src/components/compras/scorecard/__tests__/supplierScorecardData.test.ts",
+   "tipo": "unit",
+   "linhas": 140,
+   "testa": [
+    "src/components/compras/scorecard/supplierScorecardData.ts"
+   ],
+   "casos": 23
+  },
+  {
+   "arquivo": "src/components/compras/sla-analysis/__tests__/slaAnalysisData.test.ts",
+   "tipo": "unit",
+   "linhas": 209,
+   "testa": [
+    "src/components/compras/sla-analysis/slaAnalysisData.ts"
+   ],
+   "casos": 32
+  },
+  {
+   "arquivo": "src/components/compras/timeline/__tests__/timelineConfig.test.ts",
+   "tipo": "unit",
+   "linhas": 123,
+   "testa": [
+    "src/components/compras/timeline/timelineConfig.ts"
+   ],
+   "casos": 22
+  },
+  {
+   "arquivo": "src/components/onboarding/__tests__/tourStepDefinitions.test.ts",
+   "tipo": "unit",
+   "linhas": 152,
+   "testa": [
+    "src/components/onboarding/tourStepDefinitions.ts"
+   ],
+   "casos": 19
+  },
+  {
+   "arquivo": "src/components/pagamentos/__tests__/applyAdvancedFilters.test.ts",
+   "tipo": "unit",
+   "linhas": 297,
+   "testa": [
+    "src/components/pagamentos/PagamentoAdvancedFilters.tsx"
+   ],
+   "casos": 28
+  },
+  {
+   "arquivo": "src/components/ui/__tests__/celebrationConfigs.test.ts",
+   "tipo": "unit",
+   "linhas": 130,
+   "testa": [
+    "src/components/ui/celebration-particles.tsx"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/components/ui/__tests__/chartColors.test.ts",
+   "tipo": "unit",
+   "linhas": 138,
+   "testa": [
+    "src/components/ui/chart.tsx"
+   ],
+   "casos": 20
+  },
+  {
+   "arquivo": "src/components/ui/__tests__/enhanced-search-helpers.test.ts",
+   "tipo": "unit",
+   "linhas": 155,
+   "testa": [
+    "src/components/ui/enhanced-search-helpers.ts"
+   ],
+   "casos": 24
+  },
+  {
+   "arquivo": "src/components/ui/indicators/__tests__/statusConfigs.test.ts",
+   "tipo": "unit",
+   "linhas": 133,
+   "testa": [
+    "src/components/ui/indicators/StatusIndicator.tsx"
+   ],
+   "casos": 19
+  },
+  {
+   "arquivo": "src/features/auth/__tests__/useAuth.test.tsx",
+   "tipo": "unit",
+   "linhas": 84,
+   "testa": [
+    "src/features/auth/index.ts",
+    "src/integrations/supabase/client.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/features/auth/schemas/__tests__/auth.schemas.test.ts",
+   "tipo": "unit",
+   "linhas": 190,
+   "testa": [
+    "src/features/auth/schemas/auth.schemas.ts"
+   ],
+   "casos": 29
+  },
+  {
+   "arquivo": "src/features/auth/types/__tests__/authRoles.test.ts",
+   "tipo": "unit",
+   "linhas": 100,
+   "testa": [
+    "src/features/auth/types/authRoles.ts"
+   ],
+   "casos": 19
+  },
+  {
+   "arquivo": "src/features/layout/components/search/__tests__/searchConfig.test.ts",
+   "tipo": "unit",
+   "linhas": 335,
+   "testa": [
+    "src/features/layout/components/search/searchConfig.ts"
+   ],
+   "casos": 56
+  },
+  {
+   "arquivo": "src/features/layout/components/sla-settings/__tests__/knownSuppliers.test.ts",
+   "tipo": "unit",
+   "linhas": 103,
+   "testa": [
+    "src/features/layout/components/sla-settings/SupplierThresholdConfig.tsx"
+   ],
+   "casos": 15
+  },
+  {
+   "arquivo": "src/features/layout/transitions/__tests__/config.test.ts",
+   "tipo": "unit",
+   "linhas": 101,
+   "testa": [
+    "src/features/layout/transitions/config.ts"
+   ],
+   "casos": 31
+  },
+  {
+   "arquivo": "src/features/layout/transitions/__tests__/presets.test.ts",
+   "tipo": "unit",
+   "linhas": 189,
+   "testa": [
+    "src/features/layout/transitions/presets.ts"
+   ],
+   "casos": 29
+  },
+  {
+   "arquivo": "src/features/solicitacoes/hooks/__tests__/useSolicitacoes.test.tsx",
+   "tipo": "unit",
+   "linhas": 68,
+   "testa": [
+    "src/features/solicitacoes/hooks/useSolicitacoes.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/features/solicitacoes/schemas/__tests__/solicitacao.schemas.test.ts",
+   "tipo": "unit",
+   "linhas": 193,
+   "testa": [
+    "src/features/solicitacoes/schemas/solicitacao.schemas.ts"
+   ],
+   "casos": 34
+  },
+  {
+   "arquivo": "src/hooks/__tests__/hookConstants.test.ts",
+   "tipo": "unit",
+   "linhas": 295,
+   "testa": [
+    "src/hooks/useBulkOperations.ts",
+    "src/hooks/useFeedback.ts",
+    "src/hooks/useGeoRestriction.ts",
+    "src/hooks/useRecentlyViewed.ts"
+   ],
+   "casos": 43
+  },
+  {
+   "arquivo": "src/hooks/__tests__/keyboardShortcutsData.test.ts",
+   "tipo": "unit",
+   "linhas": 145,
+   "testa": [
+    "src/hooks/useKeyboardShortcuts.ts"
+   ],
+   "casos": 22
+  },
+  {
+   "arquivo": "src/hooks/__tests__/permissionsConstants.test.ts",
+   "tipo": "unit",
+   "linhas": 123,
+   "testa": [
+    "src/hooks/usePermissions.ts"
+   ],
+   "casos": 21
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useApprovalHistory.test.ts",
+   "tipo": "unit",
+   "linhas": 97,
+   "testa": [
+    "src/hooks/useApprovalHistory.ts"
+   ],
+   "casos": 4
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useFuseSearch.test.ts",
+   "tipo": "unit",
+   "linhas": 112,
+   "testa": [
+    "src/hooks/useFuseSearch.ts"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useImageCompression.test.ts",
+   "tipo": "unit",
+   "linhas": 63,
+   "testa": [
+    "src/hooks/useImageCompression.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/hooks/__tests__/usePermissions.test.tsx",
+   "tipo": "unit",
+   "linhas": 133,
+   "testa": [
+    "src/features/auth/index.ts",
+    "src/hooks/usePermissions.ts",
+    "src/integrations/supabase/client.ts"
+   ],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useToastReducer.test.ts",
+   "tipo": "unit",
+   "linhas": 164,
+   "testa": [
+    "src/hooks/use-toast.ts"
+   ],
+   "casos": 19
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useWorkflowDLQ.test.ts",
+   "tipo": "unit",
+   "linhas": 157,
+   "testa": [
+    "src/hooks/useWorkflowDLQ.ts"
+   ],
+   "casos": 9
+  },
+  {
+   "arquivo": "src/hooks/__tests__/useXbzIntegration.cache.test.tsx",
+   "tipo": "unit",
+   "linhas": 132,
+   "testa": [
+    "src/hooks/useXbzIntegration.ts"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/lib/__tests__/clearFiltersShortcut.test.ts",
+   "tipo": "unit",
+   "linhas": 295,
+   "testa": [
+    "src/lib/clearFiltersShortcut.ts"
+   ],
+   "casos": 46
+  },
+  {
+   "arquivo": "src/lib/__tests__/dbMapping.test.ts",
+   "tipo": "unit",
+   "linhas": 264,
+   "testa": [
+    "src/lib/dbMapping.ts"
+   ],
+   "casos": 50
+  },
+  {
+   "arquivo": "src/lib/__tests__/exportData.test.ts",
+   "tipo": "unit",
+   "linhas": 208,
+   "testa": [
+    "src/lib/exportData.ts"
+   ],
+   "casos": 36
+  },
+  {
+   "arquivo": "src/lib/__tests__/feedbackToast.test.ts",
+   "tipo": "unit",
+   "linhas": 156,
+   "testa": [
+    "src/lib/feedbackToast.ts"
+   ],
+   "casos": 19
+  },
+  {
+   "arquivo": "src/lib/__tests__/filterClearReporter.test.ts",
+   "tipo": "unit",
+   "linhas": 201,
+   "testa": [
+    "src/lib/filterClearReporter.ts"
+   ],
+   "casos": 30
+  },
+  {
+   "arquivo": "src/lib/__tests__/fuzzSeed.ts",
+   "tipo": "unit",
+   "linhas": 82,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "src/lib/__tests__/haptics.test.ts",
+   "tipo": "unit",
+   "linhas": 104,
+   "testa": [
+    "src/lib/haptics.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "src/lib/__tests__/imageCompression.test.ts",
+   "tipo": "unit",
+   "linhas": 119,
+   "testa": [
+    "src/lib/imageCompression.ts"
+   ],
+   "casos": 20
+  },
+  {
+   "arquivo": "src/lib/__tests__/logger.fuzz.test.ts",
+   "tipo": "unit",
+   "linhas": 283,
+   "testa": [
+    "src/lib/logger.ts"
+   ],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/lib/__tests__/logger.test.ts",
+   "tipo": "unit",
+   "linhas": 156,
+   "testa": [
+    "src/lib/logger.ts"
+   ],
+   "casos": 24
+  },
+  {
+   "arquivo": "src/lib/__tests__/paginatedFetch.test.ts",
+   "tipo": "unit",
+   "linhas": 201,
+   "testa": [
+    "src/lib/paginatedFetch.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/lib/__tests__/pdfGenerator.test.ts",
+   "tipo": "unit",
+   "linhas": 167,
+   "testa": [
+    "src/lib/pdfGenerator.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/lib/__tests__/performance.test.ts",
+   "tipo": "unit",
+   "linhas": 154,
+   "testa": [
+    "src/lib/performance.ts"
+   ],
+   "casos": 19
+  },
+  {
+   "arquivo": "src/lib/__tests__/queryClient.test.ts",
+   "tipo": "unit",
+   "linhas": 113,
+   "testa": [
+    "src/lib/query-client.ts"
+   ],
+   "casos": 20
+  },
+  {
+   "arquivo": "src/lib/__tests__/queryClientConstants.test.ts",
+   "tipo": "unit",
+   "linhas": 108,
+   "testa": [
+    "src/lib/query-client.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/lib/__tests__/routePrefetch.test.ts",
+   "tipo": "unit",
+   "linhas": 130,
+   "testa": [
+    "src/lib/routePrefetch.ts"
+   ],
+   "casos": 17
+  },
+  {
+   "arquivo": "src/lib/__tests__/safeDisplay.test.ts",
+   "tipo": "unit",
+   "linhas": 115,
+   "testa": [
+    "src/lib/safeDisplay.ts"
+   ],
+   "casos": 15
+  },
+  {
+   "arquivo": "src/lib/__tests__/safeTruncate.test.ts",
+   "tipo": "unit",
+   "linhas": 126,
+   "testa": [
+    "src/lib/safeTruncate.ts"
+   ],
+   "casos": 17
+  },
+  {
+   "arquivo": "src/lib/__tests__/secureStorage.test.ts",
+   "tipo": "unit",
+   "linhas": 144,
+   "testa": [
+    "src/lib/secureStorage.ts"
+   ],
+   "casos": 20
+  },
+  {
+   "arquivo": "src/lib/__tests__/security.test.ts",
+   "tipo": "unit",
+   "linhas": 98,
+   "testa": [
+    "src/lib/security.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/lib/__tests__/supabaseQuery.test.ts",
+   "tipo": "unit",
+   "linhas": 83,
+   "testa": [
+    "src/lib/supabaseQuery.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/lib/__tests__/supabaseRpc.test.ts",
+   "tipo": "unit",
+   "linhas": 170,
+   "testa": [
+    "src/lib/supabaseRpc.ts"
+   ],
+   "casos": 22
+  },
+  {
+   "arquivo": "src/lib/__tests__/utils.test.ts",
+   "tipo": "unit",
+   "linhas": 114,
+   "testa": [
+    "src/lib/utils.ts"
+   ],
+   "casos": 21
+  },
+  {
+   "arquivo": "src/pages/acompanhamento/__tests__/AcompanhamentoHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 237,
+   "testa": [
+    "src/pages/acompanhamento/AcompanhamentoHelpers.ts"
+   ],
+   "casos": 28
+  },
+  {
+   "arquivo": "src/pages/admin-telemetria/__tests__/telemetriaHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 254,
+   "testa": [
+    "src/pages/admin-telemetria/telemetriaHelpers.ts"
+   ],
+   "casos": 25
+  },
+  {
+   "arquivo": "src/pages/admin/__tests__/alertRunbooks.test.ts",
+   "tipo": "unit",
+   "linhas": 115,
+   "testa": [
+    "src/pages/admin/alertRunbooks.ts"
+   ],
+   "casos": 18
+  },
+  {
+   "arquivo": "src/pages/aprovacoes/__tests__/aprovacoesData.test.ts",
+   "tipo": "unit",
+   "linhas": 211,
+   "testa": [
+    "src/pages/aprovacoes/aprovacoesData.ts"
+   ],
+   "casos": 30
+  },
+  {
+   "arquivo": "src/pages/buyer/__tests__/buyerDashboardHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 121,
+   "testa": [
+    "src/pages/buyer/buyerDashboardHelpers.tsx"
+   ],
+   "casos": 19
+  },
+  {
+   "arquivo": "src/pages/catalogo-spot/__tests__/spotHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 149,
+   "testa": [
+    "src/lib/feedbackToast.ts",
+    "src/pages/catalogo-spot/spotHelpers.ts"
+   ],
+   "casos": 22
+  },
+  {
+   "arquivo": "src/pages/catalogo-xbz/__tests__/xbzNetworkHealth.test.ts",
+   "tipo": "unit",
+   "linhas": 41,
+   "testa": [
+    "src/pages/catalogo-xbz/xbzNetworkHealth.ts"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/pages/catalogo-xbz/__tests__/xbzNetworkTrend.test.ts",
+   "tipo": "unit",
+   "linhas": 64,
+   "testa": [
+    "src/pages/catalogo-xbz/xbzNetworkTrend.ts"
+   ],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/pages/compliance/__tests__/complianceHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 241,
+   "testa": [
+    "src/pages/compliance/complianceHelpers.ts"
+   ],
+   "casos": 29
+  },
+  {
+   "arquivo": "src/pages/cotacao/__tests__/cotacaoHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 257,
+   "testa": [
+    "src/pages/cotacao/cotacaoHelpers.ts"
+   ],
+   "casos": 28
+  },
+  {
+   "arquivo": "src/pages/devolucoes/__tests__/devolucoesData.test.ts",
+   "tipo": "unit",
+   "linhas": 189,
+   "testa": [
+    "src/pages/devolucoes/devolucoesData.ts"
+   ],
+   "casos": 35
+  },
+  {
+   "arquivo": "src/pages/devolucoes/__tests__/devolucoesModals.test.ts",
+   "tipo": "unit",
+   "linhas": 130,
+   "testa": [
+    "src/pages/devolucoes/DevolucoesModals.tsx"
+   ],
+   "casos": 19
+  },
+  {
+   "arquivo": "src/pages/fornecedores/__tests__/fornecedorHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 208,
+   "testa": [
+    "src/hooks/useFornecedores.ts",
+    "src/pages/fornecedores/fornecedorHelpers.ts"
+   ],
+   "casos": 31
+  },
+  {
+   "arquivo": "src/pages/gerar-ordem/__tests__/gerarOrdemHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 176,
+   "testa": [
+    "src/pages/gerar-ordem/gerarOrdemHelpers.ts"
+   ],
+   "casos": 26
+  },
+  {
+   "arquivo": "src/pages/historico/__tests__/historicoColors.test.ts",
+   "tipo": "unit",
+   "linhas": 45,
+   "testa": [
+    "src/pages/historico/HistoricoHelpers.tsx"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "src/pages/historico/__tests__/historicoHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 41,
+   "testa": [
+    "src/pages/historico/HistoricoHelpers.tsx"
+   ],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/pages/portal-fornecedor/__tests__/portalFornecedorData.test.ts",
+   "tipo": "unit",
+   "linhas": 127,
+   "testa": [
+    "src/pages/portal-fornecedor/portalFornecedorData.ts"
+   ],
+   "casos": 22
+  },
+  {
+   "arquivo": "src/pages/recebimento/__tests__/recebimentoHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 178,
+   "testa": [
+    "src/pages/recebimento/recebimentoHelpers.ts"
+   ],
+   "casos": 20
+  },
+  {
+   "arquivo": "src/pages/relatorio-negociacoes/__tests__/relatorioNegociacoesData.test.ts",
+   "tipo": "unit",
+   "linhas": 176,
+   "testa": [
+    "src/pages/relatorio-negociacoes/relatorioNegociacoesData.ts"
+   ],
+   "casos": 25
+  },
+  {
+   "arquivo": "src/pages/solicitacoes/__tests__/solicitacoesHelpers.test.ts",
+   "tipo": "unit",
+   "linhas": 202,
+   "testa": [
+    "src/features/solicitacoes/index.ts",
+    "src/pages/solicitacoes/solicitacoesHelpers.ts"
+   ],
+   "casos": 26
+  },
+  {
+   "arquivo": "src/schemas/__tests__/solicitacao.schema.test.ts",
+   "tipo": "unit",
+   "linhas": 159,
+   "testa": [
+    "src/schemas/solicitacao.schema.ts"
+   ],
+   "casos": 30
+  },
+  {
+   "arquivo": "src/services/__tests__/auditServiceConstants.test.ts",
+   "tipo": "unit",
+   "linhas": 152,
+   "testa": [
+    "src/services/auditService.ts"
+   ],
+   "casos": 24
+  },
+  {
+   "arquivo": "src/stores/__tests__/buyerAlertsStore.test.ts",
+   "tipo": "unit",
+   "linhas": 400,
+   "testa": [
+    "src/integrations/supabase/client.ts",
+    "src/stores/buyerAlertsStore.ts"
+   ],
+   "casos": 34
+  },
+  {
+   "arquivo": "src/stores/__tests__/dashboardLayoutStore.test.ts",
+   "tipo": "unit",
+   "linhas": 262,
+   "testa": [
+    "src/integrations/supabase/client.ts",
+    "src/stores/dashboardLayoutStore.ts"
+   ],
+   "casos": 22
+  },
+  {
+   "arquivo": "src/stores/__tests__/kpiTargetsStore.test.ts",
+   "tipo": "unit",
+   "linhas": 325,
+   "testa": [
+    "src/stores/kpiTargetsStore.ts"
+   ],
+   "casos": 41
+  },
+  {
+   "arquivo": "src/stores/__tests__/slaSettingsStore.test.ts",
+   "tipo": "unit",
+   "linhas": 192,
+   "testa": [
+    "src/stores/slaSettingsStore.ts"
+   ],
+   "casos": 28
+  },
+  {
+   "arquivo": "src/stores/__tests__/undoStore.test.ts",
+   "tipo": "unit",
+   "linhas": 394,
+   "testa": [
+    "src/lib/logger.ts",
+    "src/stores/undoStore.ts"
+   ],
+   "casos": 46
+  },
+  {
+   "arquivo": "src/test/setup.ts",
+   "tipo": "unit",
+   "linhas": 16,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "src/tests/contracts-elite.test.ts",
+   "tipo": "contrato",
+   "linhas": 123,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "src/tests/contracts.test.ts",
+   "tipo": "contrato",
+   "linhas": 69,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/tests/fuzzing/edge-functions.test.ts",
+   "tipo": "unit",
+   "linhas": 44,
+   "testa": [],
+   "casos": 1
+  },
+  {
+   "arquivo": "src/tests/fuzzing/payload-integrity.test.ts",
+   "tipo": "unit",
+   "linhas": 24,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/tests/integration/contract-testing.test.ts",
+   "tipo": "contrato",
+   "linhas": 30,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "src/tests/integration/contract-validation.test.ts",
+   "tipo": "contrato",
+   "linhas": 41,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "src/tests/integration/core-integrity.test.ts",
+   "tipo": "unit",
+   "linhas": 25,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "src/tests/integration/shared-schemas.ts",
+   "tipo": "unit",
+   "linhas": 29,
+   "testa": [],
+   "casos": 0
+  },
+  {
+   "arquivo": "src/tests/integration/supabase-db.test.ts",
+   "tipo": "unit",
+   "linhas": 221,
+   "testa": [],
+   "casos": 12
+  },
+  {
+   "arquivo": "src/tests/spot/spotApi.test.ts",
+   "tipo": "unit",
+   "linhas": 150,
+   "testa": [
+    "supabase/functions/_shared/spot_api.ts"
+   ],
+   "casos": 23
+  },
+  {
+   "arquivo": "src/types/__tests__/legacyTypes.test.ts",
+   "tipo": "unit",
+   "linhas": 124,
+   "testa": [
+    "src/types/legacyTypes.ts"
+   ],
+   "casos": 22
+  },
+  {
+   "arquivo": "supabase/functions/_shared/logger.fuzz.test.ts",
+   "tipo": "unit",
+   "linhas": 267,
+   "testa": [
+    "supabase/functions/_shared/fuzzSeed.ts",
+    "supabase/functions/_shared/logger.ts"
+   ],
+   "casos": 10
+  },
+  {
+   "arquivo": "supabase/functions/_shared/logLevel.test.ts",
+   "tipo": "unit",
+   "linhas": 440,
+   "testa": [
+    "supabase/functions/_shared/fuzzSeed.ts",
+    "supabase/functions/_shared/logLevel.ts"
+   ],
+   "casos": 13
+  },
+  {
+   "arquivo": "supabase/functions/_shared/xbz_catalog_cache.test.ts",
+   "tipo": "unit",
+   "linhas": 67,
+   "testa": [
+    "supabase/functions/_shared/xbz_catalog_cache.ts"
+   ],
+   "casos": 6
+  },
+  {
+   "arquivo": "supabase/functions/dependency-health/index.test.ts",
+   "tipo": "unit",
+   "linhas": 180,
+   "testa": [],
+   "casos": 6
+  },
+  {
+   "arquivo": "supabase/functions/scim-v2/conformance.test.ts",
+   "tipo": "unit",
+   "linhas": 219,
+   "testa": [],
+   "casos": 8
+  },
+  {
+   "arquivo": "supabase/functions/telemetry/index.test.ts",
+   "tipo": "unit",
+   "linhas": 82,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "supabase/functions/tests/fuzzing_suite.ts",
+   "tipo": "unit",
+   "linhas": 65,
+   "testa": [
+    "supabase/functions/_shared/contracts.ts",
+    "supabase/functions/_shared/fuzzer.ts"
+   ],
+   "casos": 1
+  },
+  {
+   "arquivo": "supabase/functions/tests/integration_suite.ts",
+   "tipo": "unit",
+   "linhas": 115,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "supabase/functions/workflow-engine/fuzz.test.ts",
+   "tipo": "unit",
+   "linhas": 74,
+   "testa": [
+    "supabase/functions/_shared/contracts.ts",
+    "supabase/functions/_shared/fuzzer.ts"
+   ],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests-e2e/auth-navigation.spec.ts",
+   "tipo": "unit",
+   "linhas": 74,
+   "testa": [],
+   "casos": 4
+  },
+  {
+   "arquivo": "tests-e2e/critical-flows.spec.ts",
+   "tipo": "unit",
+   "linhas": 51,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests-e2e/dashboard-ui.spec.ts",
+   "tipo": "unit",
+   "linhas": 37,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests-e2e/elite-validation.spec.ts",
+   "tipo": "unit",
+   "linhas": 55,
+   "testa": [],
+   "casos": 2
+  },
+  {
+   "arquivo": "tests-e2e/production-ready.spec.ts",
+   "tipo": "unit",
+   "linhas": 61,
+   "testa": [],
+   "casos": 5
+  },
+  {
+   "arquivo": "tests-e2e/workflow-advanced.spec.ts",
+   "tipo": "unit",
+   "linhas": 51,
+   "testa": [],
+   "casos": 3
+  },
+  {
+   "arquivo": "tests-e2e/xbz-network-panel.spec.ts",
+   "tipo": "unit",
+   "linhas": 144,
+   "testa": [],
+   "casos": 10
+  },
+  {
+   "arquivo": "tests-rls/rls-isolation.test.ts",
+   "tipo": "unit",
+   "linhas": 213,
+   "testa": [],
+   "casos": 9
+  }
+ ],
+ "sql": [],
+ "cobertura_por_arquivo": {
+  "src/components/accessibility/accessibilityHelpers.ts": 1,
+  "src/components/animations/motionVariants.ts": 1,
+  "src/components/compras/KanbanBoard.tsx": 1,
+  "src/components/compras/PipelineChart.tsx": 1,
+  "src/components/compras/bulk-operations/bulkOperationsTypes.ts": 1,
+  "src/components/compras/delivery-calendar/deliveryCalendarHelpers.ts": 1,
+  "src/components/compras/digital-signature/signatureHelpers.ts": 1,
+  "src/components/compras/enhanced-kpi/EnhancedKpiHelpers.tsx": 1,
+  "src/components/compras/executive/executiveDashboardData.ts": 1,
+  "src/components/compras/pending-approvals/deadlineFallback.ts": 1,
+  "src/components/compras/pending-approvals/pendingApprovalsData.ts": 2,
+  "src/components/compras/price-comparator/priceComparatorHelpers.ts": 1,
+  "src/components/compras/price-history/priceHistoryHelpers.ts": 1,
+  "src/components/compras/procurement-kpis/kpiMockData.ts": 1,
+  "src/components/compras/scorecard/supplierScorecardData.ts": 1,
+  "src/components/compras/sla-analysis/slaAnalysisData.ts": 1,
+  "src/components/compras/timeline/timelineConfig.ts": 1,
+  "src/components/onboarding/tourStepDefinitions.ts": 1,
+  "src/components/pagamentos/PagamentoAdvancedFilters.tsx": 1,
+  "src/components/ui/celebration-particles.tsx": 1,
+  "src/components/ui/chart.tsx": 1,
+  "src/components/ui/enhanced-search-helpers.ts": 1,
+  "src/components/ui/indicators/StatusIndicator.tsx": 1,
+  "src/components/ui/tooltip.tsx": 1,
+  "src/features/auth/index.ts": 2,
+  "src/features/auth/schemas/auth.schemas.ts": 1,
+  "src/features/auth/types/authRoles.ts": 1,
+  "src/features/layout/components/search/searchConfig.ts": 1,
+  "src/features/layout/components/sla-settings/SupplierThresholdConfig.tsx": 1,
+  "src/features/layout/transitions/config.ts": 1,
+  "src/features/layout/transitions/presets.ts": 1,
+  "src/features/solicitacoes/hooks/useSolicitacoes.ts": 1,
+  "src/features/solicitacoes/index.ts": 1,
+  "src/features/solicitacoes/schemas/solicitacao.schemas.ts": 1,
+  "src/hooks/use-toast.ts": 1,
+  "src/hooks/useApprovalHistory.ts": 1,
+  "src/hooks/useBulkOperations.ts": 1,
+  "src/hooks/useFeedback.ts": 1,
+  "src/hooks/useFornecedores.ts": 1,
+  "src/hooks/useFuseSearch.ts": 1,
+  "src/hooks/useGeoRestriction.ts": 1,
+  "src/hooks/useImageCompression.ts": 1,
+  "src/hooks/useKeyboardShortcuts.ts": 1,
+  "src/hooks/usePermissions.ts": 2,
+  "src/hooks/useRecentlyViewed.ts": 1,
+  "src/hooks/useWorkflowDLQ.ts": 1,
+  "src/hooks/useXbzIntegration.ts": 1,
+  "src/integrations/supabase/client.ts": 4,
+  "src/lib/clearFiltersShortcut.ts": 1,
+  "src/lib/dbMapping.ts": 1,
+  "src/lib/exportData.ts": 1,
+  "src/lib/feedbackToast.ts": 2,
+  "src/lib/filterClearReporter.ts": 1,
+  "src/lib/haptics.ts": 1,
+  "src/lib/imageCompression.ts": 1,
+  "src/lib/logger.ts": 3,
+  "src/lib/paginatedFetch.ts": 1,
+  "src/lib/pdfGenerator.ts": 1,
+  "src/lib/performance.ts": 1,
+  "src/lib/query-client.ts": 2,
+  "src/lib/routePrefetch.ts": 1,
+  "src/lib/safeDisplay.ts": 1,
+  "src/lib/safeTruncate.ts": 1,
+  "src/lib/secureStorage.ts": 1,
+  "src/lib/security.ts": 1,
+  "src/lib/supabaseQuery.ts": 1,
+  "src/lib/supabaseRpc.ts": 1,
+  "src/lib/utils.ts": 1,
+  "src/pages/acompanhamento/AcompanhamentoHelpers.ts": 1,
+  "src/pages/admin-telemetria/telemetriaHelpers.ts": 1,
+  "src/pages/admin/alertRunbooks.ts": 1,
+  "src/pages/aprovacoes/aprovacoesData.ts": 1,
+  "src/pages/buyer/buyerDashboardHelpers.tsx": 1,
+  "src/pages/catalogo-spot/spotHelpers.ts": 1,
+  "src/pages/catalogo-xbz/xbzNetworkHealth.ts": 1,
+  "src/pages/catalogo-xbz/xbzNetworkTrend.ts": 1,
+  "src/pages/compliance/complianceHelpers.ts": 1,
+  "src/pages/cotacao/cotacaoHelpers.ts": 1,
+  "src/pages/devolucoes/DevolucoesModals.tsx": 1,
+  "src/pages/devolucoes/devolucoesData.ts": 1,
+  "src/pages/fornecedores/fornecedorHelpers.ts": 1,
+  "src/pages/gerar-ordem/gerarOrdemHelpers.ts": 1,
+  "src/pages/historico/HistoricoHelpers.tsx": 2,
+  "src/pages/portal-fornecedor/portalFornecedorData.ts": 1,
+  "src/pages/recebimento/recebimentoHelpers.ts": 1,
+  "src/pages/relatorio-negociacoes/relatorioNegociacoesData.ts": 1,
+  "src/pages/solicitacoes/solicitacoesHelpers.ts": 1,
+  "src/routes/AppRoutes.tsx": 1,
+  "src/schemas/solicitacao.schema.ts": 1,
+  "src/services/auditService.ts": 1,
+  "src/stores/buyerAlertsStore.ts": 1,
+  "src/stores/dashboardLayoutStore.ts": 1,
+  "src/stores/kpiTargetsStore.ts": 1,
+  "src/stores/slaSettingsStore.ts": 1,
+  "src/stores/undoStore.ts": 1,
+  "src/types/legacyTypes.ts": 1,
+  "supabase/functions/_shared/contracts.ts": 2,
+  "supabase/functions/_shared/fuzzSeed.ts": 2,
+  "supabase/functions/_shared/fuzzer.ts": 2,
+  "supabase/functions/_shared/logLevel.ts": 1,
+  "supabase/functions/_shared/logger.ts": 1,
+  "supabase/functions/_shared/spot_api.ts": 1,
+  "supabase/functions/_shared/xbz_catalog_cache.ts": 1
+ },
+ "sem_teste": {
+  "telas": [
+   "src/features/layout/components/PageLoader.tsx",
+   "src/pages/NotFound.tsx",
+   "src/pages/acompanhamento/Acompanhamento.tsx",
+   "src/pages/admin-telemetria/AdminTelemetria.tsx",
+   "src/pages/admin/AlertDetail.tsx",
+   "src/pages/admin/DependencyHealth.tsx",
+   "src/pages/admin/DeveloperDocs.tsx",
+   "src/pages/admin/ERPConnections.tsx",
+   "src/pages/admin/FiscalDashboard.tsx",
+   "src/pages/admin/HealthDashboard.tsx",
+   "src/pages/admin/PunchOutCatalogs.tsx",
+   "src/pages/admin/SSOConfig.tsx",
+   "src/pages/admin/SourcingPipeline.tsx",
+   "src/pages/admin/StorageMigration.tsx",
+   "src/pages/admin/WorkflowAdmin.tsx",
+   "src/pages/aprovacoes/Aprovacoes.tsx",
+   "src/pages/auditoria/Auditoria.tsx",
+   "src/pages/buyer/BuyerPerformanceDashboard.tsx",
+   "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
+   "src/pages/catalogo-spot/CatalogoSpot.tsx",
+   "src/pages/catalogo-xbz/CatalogoXbz.tsx",
+   "src/pages/compliance/ComplianceDashboard.tsx",
+   "src/pages/configuracoes/ConfiguracoesCentroCusto.tsx",
+   "src/pages/contratos/Contratos.tsx",
+   "src/pages/cotacao/Cotacao.tsx",
+   "src/pages/dashboard/ComprasDashboard.tsx",
+   "src/pages/dashboard/DashboardExecutivo.tsx",
+   "src/pages/dev/XbzNetworkPanelHarness.tsx",
+   "src/pages/devolucoes/Devolucoes.tsx",
+   "src/pages/documentos/DocumentosFiscais.tsx",
+   "src/pages/estoque/GestaoEstoque.tsx",
+   "src/pages/fornecedores/Fornecedores.tsx",
+   "src/pages/fornecedores/SupplierPerformance.tsx",
+   "src/pages/gerar-ordem/GerarOrdem.tsx",
+   "src/pages/historico/HistoricoCompras.tsx",
+   "src/pages/kanban/KanbanWorkflow.tsx",
+   "src/pages/licitacoes/Licitacoes.tsx",
+   "src/pages/negociacao-ia/NegociacaoIA.tsx",
+   "src/pages/orcamentos/Orcamentos.tsx",
+   "src/pages/pagamentos/Pagamentos.tsx",
+   "src/pages/pedidos/Pedidos.tsx",
+   "src/pages/portal-fornecedor/PortalFornecedor.tsx",
+   "src/pages/qualificacao/QualificacaoFornecedores.tsx",
+   "src/pages/recebimento/RecebimentoOffline.tsx",
+   "src/pages/recompra/RecompraInteligente.tsx",
+   "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
+   "src/pages/relatorios/Relatorios.tsx",
+   "src/pages/seguranca/Seguranca.tsx",
+   "src/pages/solicitacoes/Solicitacoes.tsx",
+   "src/pages/sourcing/AuctionRoom.tsx",
+   "src/pages/sourcing/RFxCreate.tsx",
+   "src/pages/sourcing/RFxDetails.tsx",
+   "src/pages/sourcing/Sourcing.tsx"
+  ],
+  "hooks": [
+   "scripts/ai-context/cenarios.mjs",
+   "src/components/accessibility/AdvancedAccessibility.tsx",
+   "src/components/onboarding/OnboardingTour.tsx",
+   "src/components/ui/celebration.tsx",
+   "src/components/ui/form.tsx",
+   "src/components/ui/sidebar.tsx",
+   "src/components/ui/undo-toast.tsx",
+   "src/features/auth/hooks/useAuth.tsx",
+   "src/features/auth/hooks/useAuthContext.ts",
+   "src/features/cotacoes/hooks/useCotacoes.ts",
+   "src/features/empresas/hooks/useEmpresaFilter.ts",
+   "src/features/empresas/index.ts",
+   "src/features/layout/components/CommandPalette.tsx",
+   "src/features/layout/transitions/index.ts",
+   "src/features/layout/transitions/usePageTransition.ts",
+   "src/features/pedidos/hooks/usePedidos.ts",
+   "src/hooks/use-mobile.tsx",
+   "src/hooks/useAccountFilters.ts",
+   "src/hooks/useAccountLockout.ts",
+   "src/hooks/useApprovalNotifications.ts",
+   "src/hooks/useApprovalRules.ts",
+   "src/hooks/useApprovalWorkflow.ts",
+   "src/hooks/useBudgetManagement.ts",
+   "src/hooks/useBuyerPerformanceData.ts",
+   "src/hooks/useClearFiltersFlow.tsx",
+   "src/hooks/useContactNotes.ts",
+   "src/hooks/useCooldown.ts",
+   "src/hooks/useCriticalAlertsBadge.ts",
+   "src/hooks/useDashboardFilters.ts",
+   "src/hooks/useDashboardKPIs.ts",
+   "src/hooks/useDevolucoes.ts",
+   "src/hooks/useEstoque.ts",
+   "src/hooks/useExecutiveDashboardData.ts",
+   "src/hooks/useFlashHighlight.ts",
+   "src/hooks/useFormDataProtection.ts",
+   "src/hooks/useFormDirty.ts",
+   "src/hooks/useGlobalUndo.ts",
+   "src/hooks/useGuidedBuying.ts",
+   "src/hooks/useLicitacoes.ts",
+   "src/hooks/useMFA.ts",
+   "src/hooks/useMobileGestures.ts",
+   "src/hooks/useNavigation.tsx",
+   "src/hooks/useNProgress.ts",
+   "src/hooks/useOfflineSync.ts",
+   "src/hooks/usePagamentos.ts",
+   "src/hooks/usePasswordResetRequests.ts",
+   "src/hooks/usePerformanceMonitor.ts",
+   "src/hooks/usePrefetch.ts",
+   "src/hooks/useProdutoFornecedores.ts",
+   "src/hooks/useProdutos.ts",
+   "src/hooks/usePurchaseHistory.ts",
+   "src/hooks/useRealPushNotifications.ts",
+   "src/hooks/useRealtimeSubscription.ts",
+   "src/hooks/useRenderProfiler.ts",
+   "src/hooks/useScrollRestoration.ts",
+   "src/hooks/useSecurityLogs.ts",
+   "src/hooks/useSessionIdleTimeout.ts",
+   "src/hooks/useSidebarBadges.ts",
+   "src/hooks/useSpotIntegration.ts",
+   "src/hooks/useSupplierQualification.ts",
+   "src/hooks/useTourPreferences.ts",
+   "src/hooks/useUnsavedChangesWarning.ts",
+   "src/hooks/useWebAuthn.ts",
+   "src/pages/catalogo-spot/useSpotCatalog.ts",
+   "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts"
+  ],
+  "edges": [
+   "ai-demand-prediction",
+   "ai-negotiation",
+   "ai-supplier-risk",
+   "ai-supplier-suggestion",
+   "alert-dispatcher",
+   "check-approval-escalations",
+   "check-cotacao-followup",
+   "check-expiry-alerts",
+   "check-sla-alerts",
+   "erp-sync",
+   "external-db-bridge",
+   "fiscal-orchestrator",
+   "generate-contract-pdf",
+   "guided-buying-ai",
+   "health-dashboard",
+   "maintain-partitions",
+   "migrate-helper",
+   "migrate-storage-paths",
+   "process-invoice-idp",
+   "process-outbox",
+   "punchout-receive",
+   "punchout-setup",
+   "run-audit",
+   "send-push-notification",
+   "spot-api",
+   "spot-proxy",
+   "system-simulation",
+   "webauthn-authenticate",
+   "webauthn-register",
+   "weekly-report",
+   "weekly-summary-report",
+   "xbz-proxy",
+   "xbz-sync-pedidos"
+  ],
+  "servicos": [
+   "src/services/auditTypes.ts"
+  ]
+ }
+}

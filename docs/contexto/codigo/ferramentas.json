@@ -1,0 +1,730 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "stack": {
+  "linguagens": [
+   "TypeScript (679)",
+   "SQL (280)",
+   "Markdown (56)",
+   "JSON (16)",
+   "JavaScript (16)",
+   "CSS (6)",
+   "Shell (6)",
+   "Python (5)"
+  ],
+  "linguagem_principal": "TypeScript",
+  "framework": "React",
+  "backend_http": [],
+  "bundler": "Vite",
+  "roteador": "react-router",
+  "banco": "Supabase",
+  "testes": [
+   "vitest",
+   "playwright"
+  ],
+  "ui": [
+   "tailwind",
+   "radix/shadcn"
+  ],
+  "estado": [
+   "react-query",
+   "zustand"
+  ],
+  "gerenciador_pacotes": "bun",
+  "node": null,
+  "python": null,
+  "deploy": [],
+  "monorepo": null,
+  "pastas_fonte": [
+   "src"
+  ]
+ },
+ "workspaces": [],
+ "package": {
+  "nome": "vite_react_shadcn_ts",
+  "versao": "0.0.0",
+  "scripts": {
+   "build": "vite build",
+   "build:dev": "vite build --mode development",
+   "contexto:banco": "python3 scripts/supabase_snapshot/snapshot.py",
+   "contexto:codigo": "node scripts/ai-context/gerar.mjs --out docs/contexto/codigo",
+   "contexto:indice": "python3 scripts/regras_negocio/indice.py --repo . --out docs/contexto/00-INDEX.md --fonte \"banco real=docs/contexto/supabase\" --fonte \"código=docs/contexto/codigo\" --fonte \"regras de negócio=docs/contexto/regras\"",
+   "contexto:regras": "python3 scripts/regras_negocio/generate.py --repo . --out docs/contexto/regras --profile regras --schema-snapshot docs/contexto/supabase --no-pointer",
+   "dev": "vite",
+   "lint": "eslint .",
+   "prepare": "",
+   "preview": "vite preview",
+   "test": "vitest run",
+   "test:all": "npm run lint && npm run typecheck && npm run test && npm run test:coverage && npm run test:e2e",
+   "test:bridge": "bun run scripts/validate-bridge.ts",
+   "test:coverage": "vitest run --coverage",
+   "test:e2e": "playwright test",
+   "test:load": "npx artillery run src/tests/load/backend-stress.yml",
+   "test:rls": "vitest run --config ./vitest.rls.config.ts",
+   "test:scripts": "node --test scripts/ci/*.unit.mjs",
+   "test:simulate": "curl -X POST \"$VITE_SUPABASE_URL/functions/v1/system-simulation\" -H \"Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY\" -H \"Content-Type: application/json\" -d '{\"iterations\": 50}'",
+   "test:watch": "vitest",
+   "typecheck": "tsc --noEmit"
+  },
+  "dependencias": 78,
+  "dev_dependencias": 23,
+  "principais": {
+   "@supabase/supabase-js": "^2.87.3",
+   "@tanstack/query-sync-storage-persister": "^5.100.10",
+   "@tanstack/react-query": "^5.83.0",
+   "@tanstack/react-query-persist-client": "^5.100.10",
+   "date-fns": "3.6.0",
+   "framer-motion": "^12.24.7",
+   "i18next": "^26.0.10",
+   "i18next-browser-languagedetector": "^8.2.1",
+   "next-themes": "^0.3.0",
+   "react": "^18.3.1",
+   "react-day-picker": "^8.10.1",
+   "react-dom": "^18.3.1",
+   "react-error-boundary": "^6.1.1",
+   "react-hook-form": "^7.61.1",
+   "react-i18next": "^17.0.7",
+   "react-markdown": "^10.1.0",
+   "react-router-dom": "^6.30.1",
+   "recharts": "^2.15.4",
+   "tailwindcss-animate": "^1.0.7",
+   "vite-plugin-pwa": "0.21.1",
+   "vitest": "^3.2.4",
+   "zod": "^3.25.76",
+   "zustand": "^5.0.9"
+  },
+  "engines": null,
+  "packageManager": null
+ },
+ "python": {
+  "dependencias": [
+   "psycopg"
+  ]
+ },
+ "configs": [
+  "ai-context.config.json",
+  "components.json",
+  "eslint.config.js",
+  "package.json",
+  "playwright.config.ts",
+  "postcss.config.js",
+  "supabase/config.toml",
+  "tailwind.config.ts",
+  "tsconfig.app.json",
+  "tsconfig.json",
+  "tsconfig.node.json",
+  "vite.config.ts",
+  "vitest.config.ts"
+ ],
+ "workflows": [
+  {
+   "arquivo": ".github/workflows/contexto.yml",
+   "nome": "Contexto para agentes de IA (10 min)",
+   "gatilhos": [
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "3-59/10 * * * *"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "gate",
+    "codigo",
+    "banco",
+    "regras",
+    "publicar"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/ai-context/gerar.mjs",
+    "scripts/regras_negocio/generate.py",
+    "scripts/regras_negocio/indice.py",
+    "scripts/regras_negocio/test_generate.py",
+    "scripts/supabase_snapshot/snapshot.py",
+    "scripts/supabase_snapshot/test_snapshot.py"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "SUPABASE_DB_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/download-artifact",
+    "actions/setup-node",
+    "actions/upload-artifact"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/inventario-estado-semanal.yml",
+   "nome": "Inventário do estado real (semanal)",
+   "gatilhos": [
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "41 10 * * 1"
+   ],
+   "branches": [],
+   "jobs": [
+    "gerar"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/inventario/gerar-banco.mjs",
+    "scripts/inventario/gerar-repo.mjs",
+    "scripts/inventario/gerar-rotas.mjs",
+    "scripts/inventario/mudou-conteudo.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "SUPABASE_ACCESS_TOKEN",
+    "VITE_SUPABASE_PROJECT_ID",
+    "VITE_SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/github-script",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "peter-evans/create-pull-request"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/main.yml",
+   "nome": "Freight Quest CI/CD",
+   "gatilhos": [
+    "pull_request",
+    "push"
+   ],
+   "crons": [],
+   "branches": [
+    "develop",
+    "main"
+   ],
+   "jobs": [
+    "quality-gate",
+    "unit-integration-tests",
+    "e2e-tests"
+   ],
+   "permissoes": [],
+   "scripts_usados": [],
+   "npm_scripts": [
+    "lint",
+    "test",
+    "typecheck"
+   ],
+   "secrets": [
+    "E2E_TEST_EMAIL",
+    "E2E_TEST_PASSWORD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "actions": [
+    "actions/checkout",
+    "actions/upload-artifact",
+    "denoland/setup-deno",
+    "oven-sh/setup-bun"
+   ]
+  },
+  {
+   "arquivo": ".github/workflows/types-sync.yml",
+   "nome": "types-sync",
+   "gatilhos": [
+    "push",
+    "schedule",
+    "workflow_dispatch"
+   ],
+   "crons": [
+    "7-59/10 * * * *"
+   ],
+   "branches": [
+    "main"
+   ],
+   "jobs": [
+    "preflight",
+    "ler-banco",
+    "gates-e-pr"
+   ],
+   "permissoes": [
+    "contents: read"
+   ],
+   "scripts_usados": [
+    "scripts/types-sync/check-remocoes-destrutivas.mjs",
+    "scripts/types-sync/gen-types.sh",
+    "scripts/types-sync/install-pgbouncer.sh",
+    "scripts/types-sync/install-postgresql-client.sh",
+    "scripts/types-sync/typecheck-ratchet.mjs"
+   ],
+   "npm_scripts": [],
+   "secrets": [
+    "GITHUB_TOKEN",
+    "SUPABASE_DB_URL",
+    "TYPES_SYNC_PR_TOKEN",
+    "VITE_SUPABASE_PROJECT_ID"
+   ],
+   "actions": [
+    "actions/cache",
+    "actions/checkout",
+    "actions/download-artifact",
+    "actions/github-script",
+    "actions/setup-node",
+    "actions/upload-artifact",
+    "oven-sh/setup-bun",
+    "peter-evans/create-pull-request",
+    "supabase/setup-cli"
+   ]
+  }
+ ],
+ "hooks_git": [],
+ "docs_raiz": [
+  {
+   "arquivo": "AGENTS.md",
+   "titulo": "AGENTS.md — Promo_Supply_V2",
+   "linhas": 96
+  },
+  {
+   "arquivo": "ESTADO_ATUAL.md",
+   "titulo": "ESTADO ATUAL DO SISTEMA — Promo Supply V2",
+   "linhas": 264
+  },
+  {
+   "arquivo": "README.md",
+   "titulo": "Welcome to your Lovable project",
+   "linhas": 59
+  }
+ ],
+ "docs_em_subpastas": [
+  {
+   "pasta": "docs/contexto",
+   "arquivos_md": 2
+  },
+  {
+   "pasta": "docs/agentes",
+   "arquivos_md": 1
+  },
+  {
+   "pasta": "docs/conventions",
+   "arquivos_md": 1
+  }
+ ],
+ "changelog_topo": null,
+ "env": {
+  "declaradas_no_env_example": [
+   "VITE_APP_ENV",
+   "VITE_APP_NAME",
+   "VITE_BITRIX_WEBHOOK_URL",
+   "VITE_ENABLE_ANALYTICS",
+   "VITE_ENABLE_DEBUG",
+   "VITE_SUPABASE_ANON_KEY",
+   "VITE_SUPABASE_URL"
+  ],
+  "usadas_no_front": [
+   "DEV",
+   "FUZZ_SEED",
+   "INTEGRATION_TESTS",
+   "PROD",
+   "SUPABASE_ANON_KEY",
+   "SUPABASE_SERVICE_ROLE_KEY",
+   "VITE_SUPABASE_ANON_KEY",
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_SUPABASE_URL"
+  ],
+  "usadas_nas_edges": [
+   "ALERT_EMAIL_FROM",
+   "ALLOWED_ORIGINS",
+   "APP_URL",
+   "CRON_SECRET",
+   "EXTERNAL_DB_KEY",
+   "EXTERNAL_DB_URL",
+   "FUZZ_SEED",
+   "GITHUB_DISPATCH_TOKEN",
+   "GITHUB_REPO_RAW_BASE",
+   "LOVABLE_API_KEY",
+   "QA_ADMIN_EMAIL",
+   "QA_ADMIN_PASSWORD",
+   "QA_USER_EMAIL",
+   "QA_USER_PASSWORD",
+   "RESEND_API_KEY",
+   "SCIM_TEST_BASE_URL",
+   "SCIM_TEST_TOKEN",
+   "SEFAZ_API_TOKEN",
+   "SEFAZ_WEBHOOK_URL",
+   "SLACK_WEBHOOK_URL",
+   "SPOT_API_ACCESS_KEY",
+   "SPOT_API_BASE_URL",
+   "SPOT_CRON_KEY",
+   "SPOT_PASSWORD",
+   "SPOT_USERNAME",
+   "SUPABASE_ANON_KEY",
+   "SUPABASE_DB_URL",
+   "SUPABASE_SERVICE_ROLE_KEY",
+   "SUPABASE_URL",
+   "VAPID_PRIVATE_KEY",
+   "VAPID_PUBLIC_KEY",
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_SUPABASE_URL",
+   "XBZ_ENCRYPTION_KEY"
+  ],
+  "usadas_no_python": [
+   "AI_CONTEXT_INDEX",
+   "AI_CONTEXT_MODEL",
+   "AI_CONTEXT_PROFILE",
+   "AI_CONTEXT_SCHEMA_SNAPSHOT",
+   "ANTHROPIC_API_KEY",
+   "CODE_SCAN_DIRS",
+   "GEN_TYPES",
+   "PGDUMP",
+   "PGDUMP_SCHEMAS",
+   "REPO_ROOT",
+   "SNAPSHOT_DIR",
+   "SNAPSHOT_EXCLUDE_SCHEMAS",
+   "SNAPSHOT_INCLUDE_SCHEMAS",
+   "SUPABASE_ACCESS_TOKEN",
+   "SUPABASE_DB_URL",
+   "SUPABASE_PROJECT_REF",
+   "SUPABASE_SNAPSHOT_PUBLICACAO"
+  ],
+  "usadas_mas_nao_declaradas": [
+   "DEV",
+   "FUZZ_SEED",
+   "INTEGRATION_TESTS",
+   "PROD",
+   "SUPABASE_ANON_KEY",
+   "SUPABASE_SERVICE_ROLE_KEY",
+   "VITE_SUPABASE_PUBLISHABLE_KEY"
+  ],
+  "secrets_em_workflows": [
+   "E2E_TEST_EMAIL",
+   "E2E_TEST_PASSWORD",
+   "GITHUB_TOKEN",
+   "SUPABASE_ACCESS_TOKEN",
+   "SUPABASE_DB_URL",
+   "TYPES_SYNC_PR_TOKEN",
+   "VITE_SUPABASE_PROJECT_ID",
+   "VITE_SUPABASE_PUBLISHABLE_KEY",
+   "VITE_SUPABASE_URL"
+  ]
+ },
+ "deploy": {
+  "alvos": [],
+  "dockerfiles": [],
+  "compose": [],
+  "vercel": null
+ },
+ "integracoes": {
+  "sdks": [
+   {
+    "pacote": "i18next",
+    "servico": "i18next",
+    "versao": "^26.0.10"
+   },
+   {
+    "pacote": "react-i18next",
+    "servico": "i18next",
+    "versao": "^17.0.7"
+   },
+   {
+    "pacote": "@tanstack/react-query",
+    "servico": "react-query",
+    "versao": "^5.83.0"
+   },
+   {
+    "pacote": "@supabase/supabase-js",
+    "servico": "Supabase",
+    "versao": "^2.87.3"
+   },
+   {
+    "pacote": "zod",
+    "servico": "zod",
+    "versao": "^3.25.76"
+   }
+  ],
+  "hosts_externos": [
+   {
+    "host": "api.resend.com",
+    "arquivos": 3
+   },
+   {
+    "host": "ws.spotgifts.com.br",
+    "arquivos": 3
+   },
+   {
+    "host": "www.spotgifts.com.br",
+    "arquivos": 3
+   },
+   {
+    "host": "wa.me",
+    "arquivos": 2
+   },
+   {
+    "host": "x.supabase.co",
+    "arquivos": 2
+   },
+   {
+    "host": "ai.gateway.lovable.dev",
+    "arquivos": 1
+   },
+   {
+    "host": "api.pwnedpasswords.com",
+    "arquivos": 1
+   },
+   {
+    "host": "api.supabase.com",
+    "arquivos": 1
+   },
+   {
+    "host": "api.x.com",
+    "arquivos": 1
+   },
+   {
+    "host": "example.okta.com",
+    "arquivos": 1
+   },
+   {
+    "host": "hooks.slack.com",
+    "arquivos": 1
+   },
+   {
+    "host": "hub-harmony-unite.lovable.app",
+    "arquivos": 1
+   },
+   {
+    "host": "lmypcdfsrgfftzhxawao.supabase.co",
+    "arquivos": 1
+   },
+   {
+    "host": "raw.githubusercontent.com",
+    "arquivos": 1
+   },
+   {
+    "host": "spotgifts.com.br",
+    "arquivos": 1
+   },
+   {
+    "host": "spotgifts.evil.com",
+    "arquivos": 1
+   },
+   {
+    "host": "xml.cxml.org",
+    "arquivos": 1
+   }
+  ],
+  "env_de_integracao": [
+   "CRON_SECRET",
+   "GITHUB_DISPATCH_TOKEN",
+   "LOVABLE_API_KEY",
+   "RESEND_API_KEY",
+   "SCIM_TEST_TOKEN",
+   "SEFAZ_API_TOKEN",
+   "SEFAZ_WEBHOOK_URL",
+   "SLACK_WEBHOOK_URL",
+   "VITE_BITRIX_WEBHOOK_URL"
+  ],
+  "webhooks_recebidos": [
+   "migrate-helper"
+  ],
+  "realtime": [
+   "approval_notifications_${user.id}",
+   "critical_alerts_badge",
+   "licitacao-bids-${licitacaoId}",
+   "notifications-realtime",
+   "rate-limit-alerts",
+   "system_alerts_admin"
+  ]
+ },
+ "permissoes": {
+  "papeis_no_codigo": [
+   {
+    "papel": "admin",
+    "ocorrencias": 9
+   },
+   {
+    "papel": "user",
+    "ocorrencias": 6
+   },
+   {
+    "papel": "system",
+    "ocorrencias": 4
+   },
+   {
+    "papel": "alert",
+    "ocorrencias": 3
+   },
+   {
+    "papel": "status",
+    "ocorrencias": 3
+   },
+   {
+    "papel": "dialog",
+    "ocorrencias": 2
+   },
+   {
+    "papel": "group",
+    "ocorrencias": 2
+   },
+   {
+    "papel": "agent",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "assistant",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "button",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "buyer",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "combobox",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "link",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "main",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "navigation",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "presentation",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "separator",
+    "ocorrencias": 1
+   },
+   {
+    "papel": "sup",
+    "ocorrencias": 1
+   }
+  ],
+  "enums_de_papel": [
+   {
+    "enum": "app_role",
+    "valores": [
+     "admin",
+     "coordinator",
+     "buyer",
+     "finance",
+     "viewer",
+     "supplier"
+    ]
+   }
+  ],
+  "rpcs_de_autorizacao": [
+   "admin_scan_runs_sla_status",
+   "has_role",
+   "is_account_locked"
+  ],
+  "guards": [
+   "src/features/auth/components/ProtectedRoute.tsx"
+  ],
+  "rotas_protegidas": 14,
+  "rotas_publicas": [
+   "/__dev/xbz-network-panel",
+   "/*",
+   "/acompanhamento",
+   "/aprovacoes",
+   "/auditoria",
+   "/buyer-performance",
+   "/catalogo-produtos",
+   "/catalogo-spot",
+   "/catalogo-xbz",
+   "/compliance",
+   "/compras",
+   "/configuracoes-centro-custo",
+   "/contratos",
+   "/cotacao",
+   "/cotacao/:id",
+   "/dashboard-executivo",
+   "/devolucoes",
+   "/documentos-fiscais",
+   "/estoque",
+   "/fornecedores",
+   "/gerar-ordem",
+   "/historico-compras",
+   "/kanban",
+   "/licitacoes",
+   "/negociacao-ia",
+   "/orcamentos",
+   "/pagamentos",
+   "/pedidos",
+   "/qualificacao-fornecedores",
+   "/recebimento",
+   "/recompra-inteligente",
+   "/relatorios",
+   "/relatorios/negociacoes",
+   "/seguranca",
+   "/solicitacoes",
+   "/sourcing",
+   "/sourcing/:id",
+   "/sourcing/:id/auction",
+   "/sourcing/novo",
+   "/supplier-performance"
+  ],
+  "menu_com_papeis": [],
+  "tabelas_sem_rls": []
+ },
+ "feature_flags": {
+  "total": 3,
+  "flags": [
+   {
+    "flag": "FEATURE_X",
+    "arquivos": 1
+   },
+   {
+    "flag": "nova-tela",
+    "arquivos": 1
+   },
+   {
+    "flag": "novo-inbox",
+    "arquivos": 1
+   }
+  ],
+  "tabelas_de_flag": [
+   "geo_settings",
+   "mfa_settings"
+  ]
+ },
+ "providers": {
+  "entrada": "src/main.tsx",
+  "providers": [
+   "AccessibilityProvider",
+   "AuthProvider",
+   "BrowserRouter",
+   "GlobalErrorBoundary",
+   "NavigationProvider",
+   "PersistQueryClientProvider",
+   "ThemeProvider",
+   "TooltipProvider"
+  ]
+ },
+ "i18n": {
+  "arquivos": 7,
+  "idiomas": [
+   "en",
+   "es",
+   "pt"
+  ],
+  "lib": [
+   "i18next"
+  ]
+ }
+}

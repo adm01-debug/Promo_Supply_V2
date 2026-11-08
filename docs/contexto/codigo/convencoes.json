@@ -1,0 +1,82 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "onde_ficam": {
+  "telas": [
+   "src/pages (52)",
+   "src/features (1)"
+  ],
+  "componentes": [
+   "src/components (214)",
+   "src/pages (76)",
+   "src/features (33)"
+  ],
+  "hooks": [
+   "src/hooks (60)",
+   "src/features (11)",
+   "src/components (10)"
+  ],
+  "servicos_logica": [
+   "src/lib (20)",
+   "src/stores (5)",
+   "src/integrations (3)"
+  ],
+  "testes": [
+   "co-localizado (__tests__) (93)",
+   "co-localizado (*.test) (24)",
+   "outro (10)"
+  ],
+  "edge_functions": "supabase/functions",
+  "migrations": "supabase/migrations",
+  "scripts": [
+   "scripts/types-sync (7)",
+   "scripts/inventario (5)",
+   "scripts/regras_negocio (3)"
+  ],
+  "docs": [
+   "(raiz) (3)"
+  ]
+ },
+ "nomenclatura": {
+  "componentes": "PascalCase (84%)",
+  "hooks": "use + PascalCase",
+  "servicos": "camelCase (94%)",
+  "edge_functions": "kebab-case (95%)",
+  "tabelas": "snake_case (88%)"
+ },
+ "barrels_index": 4,
+ "extensao_componentes": [
+  ".tsx (326)"
+ ],
+ "alias_imports": {
+  "(raiz)": {
+   "@/": "src/",
+   "~/": "src/"
+  }
+ },
+ "commits": {
+  "convencao": "livre",
+  "exemplos": [
+   "feat(contexto): porta sistema de contexto autônomo do Zapp para Promo Supply V2 (#15)",
+   "fix(supabase): aponta todo o código ativo para o projeto Supabase oficial",
+   "chore(ci): remove ci.yml, workflow duplicado que nunca executou um job (#18)",
+   "fix(testes): destrava o CI da main (lint + 3 testes do logger) (#17)",
+   "Visual edit in Lovable"
+  ]
+ },
+ "pr_template": null,
+ "codeowners": null,
+ "contributing": null,
+ "instrucoes_agentes": [
+  "AGENTS.md"
+ ],
+ "typescript": {
+  "strict": true,
+  "noImplicitAny": null,
+  "tsconfigs": [
+   "tsconfig.app.json",
+   "tsconfig.json",
+   "tsconfig.node.json"
+  ]
+ }
+}

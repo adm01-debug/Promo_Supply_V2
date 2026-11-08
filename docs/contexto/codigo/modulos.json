@@ -1,0 +1,8106 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "descricao": "menu → módulo (pasta de domínio) → telas/rotas → hooks → edge functions → tabelas → dependências entre módulos. edges/tabelas/rpcs são TRANSITIVOS (tudo que os arquivos do módulo puxam); `diretos` tem só o que está escrito nos arquivos do próprio módulo.",
+ "modulos": [
+  {
+   "modulo": "components",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 74,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useClearFiltersFlow",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealtimeSubscription",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSwipeGesture",
+    "useToast",
+    "useUndoStore",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "licitacao-bids-${licitacaoId}"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "combobox"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "features/layout"
+   ],
+   "depende_de_modulos": [
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "components/accessibility",
+   "arquivos": 5,
+   "testes": 1,
+   "linhas": 798,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 4,
+   "hooks_locais": [
+    "useAccessibility"
+   ],
+   "hooks_definidos": [
+    "useAccessibility",
+    "useFocusTrap"
+   ],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [
+    "status"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "features/layout"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "components/admin",
+   "arquivos": 9,
+   "testes": 0,
+   "linhas": 1450,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 9,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "usePermissions",
+    "useToast"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "permissions",
+    "profiles",
+    "role_permissions",
+    "system_alerts",
+    "telemetry_logs",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "system_alerts",
+     "telemetry_logs"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "features/layout",
+    "pages/admin",
+    "pages/admin-telemetria"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "features/auth",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "lucide-react",
+    "react-router-dom",
+    "recharts"
+   ]
+  },
+  {
+   "modulo": "components/animations",
+   "arquivos": 2,
+   "testes": 1,
+   "linhas": 437,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "pages/configuracoes",
+    "pages/orcamentos",
+    "pages/qualificacao"
+   ],
+   "depende_de_modulos": [
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion"
+   ]
+  },
+  {
+   "modulo": "components/atoms",
+   "arquivos": 4,
+   "testes": 0,
+   "linhas": 187,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 4,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/compras",
+    "components/molecules",
+    "pages",
+    "pages/acompanhamento",
+    "pages/contratos",
+    "pages/cotacao",
+    "pages/dashboard",
+    "pages/fornecedores",
+    "pages/pagamentos",
+    "pages/pedidos",
+    "pages/relatorios",
+    "pages/solicitacoes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "components/compras",
+   "arquivos": 102,
+   "testes": 15,
+   "linhas": 24695,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 89,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useBuyerAlertsStore",
+    "useBuyerPerformanceData",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSupplierScorecardData",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [
+    "useDeliveryEvents",
+    "useMonthStats",
+    "useUpcomingDeliveries",
+    "usePriceHistoryAnalysis",
+    "useSupplierScorecardData"
+   ],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "penalty_escalation_config",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "qualification_history",
+    "role_permissions",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "supplier_bonifications",
+    "supplier_qualification_scores",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [
+     "ai-demand-prediction",
+     "ai-supplier-risk",
+     "generate-contract-pdf",
+     "process-solicitacao-neural"
+    ],
+    "tabelas": [
+     "approval_workflows",
+     "category_strategies",
+     "contract_documents",
+     "contract_history",
+     "contract_items",
+     "contract_penalties",
+     "contracts",
+     "cotacoes",
+     "devolucoes",
+     "documentos",
+     "fornecedores",
+     "order_contracts",
+     "pagamentos",
+     "pedido_itens",
+     "pedidos",
+     "penalty_escalation_config",
+     "produto_fornecedores",
+     "produtos",
+     "qualification_history",
+     "solicitacoes",
+     "supplier_bonifications",
+     "supplier_qualification_scores"
+    ],
+    "rpcs": [
+     "check_budget_availability",
+     "generate_sequential_number",
+     "get_cost_center_performance_report"
+    ]
+   },
+   "importado_por_outros_modulos": [
+    "components/pagamentos",
+    "hooks",
+    "pages/acompanhamento",
+    "pages/aprovacoes",
+    "pages/buyer",
+    "pages/catalogo-produtos",
+    "pages/compliance",
+    "pages/contratos",
+    "pages/cotacao",
+    "pages/dashboard",
+    "pages/devolucoes",
+    "pages/fornecedores",
+    "pages/historico",
+    "pages/negociacao-ia",
+    "pages/pedidos",
+    "pages/qualificacao",
+    "pages/relatorio-negociacoes",
+    "pages/relatorios",
+    "pages/solicitacoes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/mobile",
+    "components/organisms",
+    "components/ui",
+    "features/auth",
+    "features/layout",
+    "features/pedidos",
+    "features/solicitacoes",
+    "hooks",
+    "integrations/supabase",
+    "lib",
+    "schemas",
+    "stores",
+    "types"
+   ],
+   "pacotes_externos": [
+    "@dnd-kit/core",
+    "@dnd-kit/sortable",
+    "@dnd-kit/utilities",
+    "@tanstack/react-query",
+    "date-fns",
+    "dompurify",
+    "framer-motion",
+    "fuse.js",
+    "lucide-react",
+    "react-router-dom",
+    "recharts",
+    "sonner"
+   ]
+  },
+  {
+   "modulo": "components/feedback",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 79,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [
+    "components/ui",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "lucide-react",
+    "react-error-boundary",
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "components/filters",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 94,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "hooks"
+   ],
+   "depende_de_modulos": [
+    "components/ui"
+   ],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "components/fornecedores",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 290,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useHapticFeedback",
+    "useIsMobile",
+    "useLongPress",
+    "usePullToRefresh",
+    "useSwipeGesture"
+   ],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [
+    "components/mobile",
+    "components/ui",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "components/layout",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 10,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "features/layout",
+    "pages/auth"
+   ],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "components/licitacoes",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 277,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useSourcingEventDetails",
+    "useSourcingEvents"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "categorias",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "profiles",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number"
+   ],
+   "buckets": [],
+   "canais_realtime": [
+    "licitacao-bids-${licitacaoId}"
+   ],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "pages/licitacoes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "date-fns",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "components/mobile",
+   "arquivos": 3,
+   "testes": 0,
+   "linhas": 828,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 3,
+   "hooks_locais": [
+    "useHapticFeedback",
+    "useIsMobile",
+    "useLongPress",
+    "usePullToRefresh",
+    "useSwipeGesture"
+   ],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [
+    "pagamentos",
+    "pedidos",
+    "solicitacoes"
+   ],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "pagamentos",
+     "pedidos",
+     "solicitacoes"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/compras",
+    "components/fornecedores",
+    "components/pagamentos",
+    "components/pedidos",
+    "features/layout"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "framer-motion",
+    "lucide-react",
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "components/molecules",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 104,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/organisms"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/ui",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion"
+   ]
+  },
+  {
+   "modulo": "components/navigation",
+   "arquivos": 5,
+   "testes": 0,
+   "linhas": 469,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 5,
+   "hooks_locais": [
+    "useNavigation"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "dialog"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "features/layout",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "lucide-react",
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "components/notifications",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 297,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useRealPushNotifications",
+    "useToast"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "check-sla-alerts",
+    "telemetry"
+   ],
+   "tabelas": [
+    "notification_preferences",
+    "notifications",
+    "profiles",
+    "push_subscriptions",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [
+    "notifications-realtime"
+   ],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [
+     "check-sla-alerts"
+    ],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "pages/seguranca"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "components/onboarding",
+   "arquivos": 3,
+   "testes": 1,
+   "linhas": 795,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [
+    "useAuth",
+    "useHapticFeedback",
+    "useIsMobile",
+    "useLongPress",
+    "usePullToRefresh",
+    "useSwipeGesture"
+   ],
+   "hooks_definidos": [
+    "useOnboardingTour"
+   ],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "profiles",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "pages/dashboard"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "components/organisms",
+   "arquivos": 3,
+   "testes": 0,
+   "linhas": 120,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 3,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/compras",
+    "pages/acompanhamento",
+    "pages/contratos",
+    "pages/cotacao",
+    "pages/dashboard",
+    "pages/fornecedores",
+    "pages/pagamentos",
+    "pages/pedidos",
+    "pages/relatorio-negociacoes",
+    "pages/relatorios",
+    "pages/solicitacoes"
+   ],
+   "depende_de_modulos": [
+    "components/molecules",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion"
+   ]
+  },
+  {
+   "modulo": "components/pagamentos",
+   "arquivos": 9,
+   "testes": 1,
+   "linhas": 1724,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 9,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useHapticFeedback",
+    "useIsMobile",
+    "useLongPress",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePullToRefresh",
+    "useRealtimeSubscription",
+    "useSwipeGesture",
+    "useToast"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs",
+    "comprovantes",
+    "creditos_fornecedor",
+    "fiscal_documents",
+    "pagamentos",
+    "payment_history",
+    "pedidos",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number",
+    "get_pagamentos_kpis"
+   ],
+   "buckets": [
+    "comprovantes"
+   ],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "comprovantes",
+     "creditos_fornecedor",
+     "fiscal_documents",
+     "pagamentos",
+     "payment_history",
+     "pedidos"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "pages/pagamentos"
+   ],
+   "depende_de_modulos": [
+    "components/compras",
+    "components/mobile",
+    "components/ui",
+    "features/auth",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "framer-motion",
+    "lucide-react",
+    "recharts"
+   ]
+  },
+  {
+   "modulo": "components/pedidos",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 266,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useHapticFeedback",
+    "useIsMobile",
+    "useLongPress",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePullToRefresh",
+    "useRealtimeSubscription",
+    "useSwipeGesture"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs",
+    "pedido_itens",
+    "pedidos",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number",
+    "get_pedidos_kpis"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "pages/pedidos"
+   ],
+   "depende_de_modulos": [
+    "components/mobile",
+    "components/ui",
+    "features/pedidos",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "date-fns",
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "components/pwa",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 161,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useToast"
+   ],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [
+    "components/ui",
+    "hooks"
+   ],
+   "pacotes_externos": [
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "components/security",
+   "arquivos": 15,
+   "testes": 0,
+   "linhas": 3392,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 15,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useGeoRestriction",
+    "useMFA",
+    "usePasswordResetRequests",
+    "usePermissions",
+    "useSecurityLogs",
+    "useWebAuthn"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry",
+    "webauthn-authenticate",
+    "webauthn-register"
+   ],
+   "tabelas": [
+    "active_sessions",
+    "allowed_countries",
+    "blocked_countries",
+    "blocked_ips",
+    "geo_access_logs",
+    "geo_settings",
+    "ip_whitelist",
+    "login_attempts",
+    "mfa_settings",
+    "password_reset_requests",
+    "permissions",
+    "profiles",
+    "rate_limit_logs",
+    "role_permissions",
+    "security_logs",
+    "user_roles",
+    "user_tenants",
+    "webauthn_credentials"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [
+    "rate-limit-alerts"
+   ],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "separator"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "blocked_countries",
+     "geo_access_logs",
+     "role_permissions"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "pages/auth",
+    "pages/seguranca"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "features/auth",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "lucide-react",
+    "recharts"
+   ]
+  },
+  {
+   "modulo": "components/settings",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 330,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [
+    "useAllTourPreferences",
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "profiles",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "features/layout",
+    "pages/seguranca"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "components/ui",
+   "arquivos": 61,
+   "testes": 4,
+   "linhas": 7477,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 57,
+   "hooks_locais": [
+    "useCelebration",
+    "useChartTheme",
+    "useFormField",
+    "useHapticFeedback",
+    "useIsMobile",
+    "useLongPress",
+    "usePullToRefresh",
+    "useSidebar",
+    "useSwipeGesture",
+    "useToast",
+    "useTriggerCelebration",
+    "useUndoToast"
+   ],
+   "hooks_definidos": [
+    "useCelebration",
+    "useTriggerCelebration",
+    "useChartTheme",
+    "useFormField",
+    "useSidebar",
+    "useUndoToast"
+   ],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "alert",
+    "link",
+    "presentation",
+    "separator"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/accessibility",
+    "components/admin",
+    "components/atoms",
+    "components/compras",
+    "components/feedback",
+    "components/filters",
+    "components/fornecedores",
+    "components/licitacoes",
+    "components/mobile",
+    "components/molecules",
+    "components/navigation",
+    "components/notifications",
+    "components/onboarding",
+    "components/pagamentos",
+    "components/pedidos",
+    "components/pwa",
+    "components/security",
+    "components/settings",
+    "features/aprovacoes",
+    "features/empresas",
+    "features/layout",
+    "hooks",
+    "pages/acompanhamento",
+    "pages/admin",
+    "pages/admin-telemetria",
+    "pages/aprovacoes",
+    "pages/auditoria",
+    "pages/auth",
+    "pages/buyer",
+    "pages/catalogo-produtos",
+    "pages/catalogo-spot",
+    "pages/catalogo-xbz",
+    "pages/compliance",
+    "pages/configuracoes",
+    "pages/contratos",
+    "pages/cotacao",
+    "pages/dashboard",
+    "pages/devolucoes",
+    "pages/documentos",
+    "pages/estoque",
+    "pages/fornecedores",
+    "pages/gerar-ordem",
+    "pages/historico",
+    "pages/kanban",
+    "pages/licitacoes",
+    "pages/negociacao-ia",
+    "pages/orcamentos",
+    "pages/pagamentos",
+    "pages/pedidos",
+    "pages/portal-fornecedor",
+    "pages/qualificacao",
+    "pages/recebimento",
+    "pages/recompra",
+    "pages/relatorio-negociacoes",
+    "pages/relatorios",
+    "pages/seguranca",
+    "pages/solicitacoes",
+    "pages/sourcing"
+   ],
+   "depende_de_modulos": [
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@radix-ui/react-accordion",
+    "@radix-ui/react-alert-dialog",
+    "@radix-ui/react-avatar",
+    "@radix-ui/react-checkbox",
+    "@radix-ui/react-collapsible",
+    "@radix-ui/react-dialog",
+    "@radix-ui/react-dropdown-menu",
+    "@radix-ui/react-label",
+    "@radix-ui/react-popover",
+    "@radix-ui/react-progress",
+    "@radix-ui/react-scroll-area",
+    "@radix-ui/react-select",
+    "@radix-ui/react-separator",
+    "@radix-ui/react-slider",
+    "@radix-ui/react-slot",
+    "@radix-ui/react-switch",
+    "@radix-ui/react-tabs",
+    "@radix-ui/react-toast",
+    "@radix-ui/react-tooltip",
+    "class-variance-authority",
+    "cmdk",
+    "framer-motion",
+    "fuse.js",
+    "input-otp",
+    "lucide-react",
+    "next-themes",
+    "react-day-picker",
+    "react-hook-form",
+    "react-router-dom",
+    "recharts",
+    "sonner",
+    "vaul",
+    "zustand"
+   ]
+  },
+  {
+   "modulo": "features/aprovacoes",
+   "arquivos": 4,
+   "testes": 0,
+   "linhas": 279,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "pages/aprovacoes"
+   ],
+   "depende_de_modulos": [
+    "components/ui"
+   ],
+   "pacotes_externos": [
+    "lucide-react",
+    "recharts"
+   ]
+  },
+  {
+   "modulo": "features/auth",
+   "arquivos": 7,
+   "testes": 3,
+   "linhas": 487,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [
+    "useAuth"
+   ],
+   "hooks_definidos": [
+    "useAuth",
+    "useAuth"
+   ],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "profiles",
+     "user_roles",
+     "user_tenants"
+    ],
+    "rpcs": [
+     "current_tenant_id"
+    ]
+   },
+   "importado_por_outros_modulos": [
+    "components/admin",
+    "components/compras",
+    "components/pagamentos",
+    "components/security",
+    "features/cotacoes",
+    "features/empresas",
+    "features/layout",
+    "features/pedidos",
+    "features/solicitacoes",
+    "hooks",
+    "pages/admin",
+    "pages/auth",
+    "pages/cotacao",
+    "pages/gerar-ordem",
+    "pages/negociacao-ia",
+    "pages/portal-fornecedor",
+    "pages/recebimento",
+    "pages/recompra",
+    "pages/seguranca",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@supabase/supabase-js",
+    "lucide-react",
+    "react-router-dom",
+    "sonner",
+    "zod"
+   ]
+  },
+  {
+   "modulo": "features/cotacoes",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 213,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [
+    "useAuth",
+    "useCotacoes",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useRealtimeSubscription"
+   ],
+   "hooks_definidos": [
+    "useCotacoes"
+   ],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs",
+    "cotacoes",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "cotacoes"
+    ],
+    "rpcs": [
+     "generate_sequential_number"
+    ]
+   },
+   "importado_por_outros_modulos": [
+    "pages/cotacao",
+    "pages/gerar-ordem"
+   ],
+   "depende_de_modulos": [
+    "features/auth",
+    "hooks",
+    "integrations/supabase",
+    "lib",
+    "services"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query"
+   ]
+  },
+  {
+   "modulo": "features/empresas",
+   "arquivos": 4,
+   "testes": 0,
+   "linhas": 269,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [
+    "useAuth",
+    "useEmpresaFilter"
+   ],
+   "hooks_definidos": [
+    "useEmpresaFilter",
+    "useEmpresaFilter"
+   ],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "features/layout"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "features/auth",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "features/layout",
+   "arquivos": 32,
+   "testes": 4,
+   "linhas": 5039,
+   "itens_menu": [],
+   "telas": [
+    "/auth"
+   ],
+   "rotas_http": [],
+   "componentes": 27,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [
+    "useCommandPalette",
+    "usePageTransition",
+    "usePageTransition"
+   ],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "role_permissions",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/compras",
+    "pages/acompanhamento",
+    "pages/aprovacoes",
+    "pages/auth",
+    "pages/catalogo-spot",
+    "pages/catalogo-xbz",
+    "pages/configuracoes",
+    "pages/contratos",
+    "pages/cotacao",
+    "pages/dashboard",
+    "pages/devolucoes",
+    "pages/documentos",
+    "pages/fornecedores",
+    "pages/licitacoes",
+    "pages/orcamentos",
+    "pages/pagamentos",
+    "pages/pedidos",
+    "pages/portal-fornecedor",
+    "pages/qualificacao",
+    "pages/relatorios",
+    "pages/seguranca",
+    "pages/solicitacoes",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components",
+    "components/accessibility",
+    "components/admin",
+    "components/layout",
+    "components/mobile",
+    "components/navigation",
+    "components/settings",
+    "components/ui",
+    "features/auth",
+    "features/empresas",
+    "hooks",
+    "integrations/supabase",
+    "lib",
+    "stores"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "framer-motion",
+    "fuse.js",
+    "lucide-react",
+    "next-themes",
+    "react-i18next",
+    "react-markdown",
+    "react-router-dom",
+    "sonner"
+   ]
+  },
+  {
+   "modulo": "features/pedidos",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 339,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "usePedidos",
+    "usePedidosKPIs",
+    "useRealtimeSubscription"
+   ],
+   "hooks_definidos": [
+    "usePedidos",
+    "usePedidosKPIs"
+   ],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs",
+    "pedido_itens",
+    "pedidos",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number",
+    "get_pedidos_kpis"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "pedido_itens",
+     "pedidos"
+    ],
+    "rpcs": [
+     "generate_sequential_number",
+     "get_pedidos_kpis"
+    ]
+   },
+   "importado_por_outros_modulos": [
+    "components/compras",
+    "components/pedidos",
+    "pages/gerar-ordem",
+    "pages/pedidos"
+   ],
+   "depende_de_modulos": [
+    "features/auth",
+    "hooks",
+    "integrations/supabase",
+    "lib",
+    "services"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query"
+   ]
+  },
+  {
+   "modulo": "features/solicitacoes",
+   "arquivos": 3,
+   "testes": 2,
+   "linhas": 387,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [
+    "useApprovalHistory",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [
+    "useSolicitacoes",
+    "useSolicitacoesKPIs"
+   ],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "cost_centers",
+    "profiles",
+    "solicitacoes",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_effective_approver",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "cost_centers",
+     "solicitacoes"
+    ],
+    "rpcs": [
+     "check_budget_availability",
+     "generate_sequential_number",
+     "get_solicitacoes_kpis"
+    ]
+   },
+   "importado_por_outros_modulos": [
+    "components/compras",
+    "pages/configuracoes",
+    "pages/cotacao",
+    "pages/orcamentos",
+    "pages/solicitacoes"
+   ],
+   "depende_de_modulos": [
+    "features/auth",
+    "hooks",
+    "integrations/supabase",
+    "lib",
+    "services"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "zod"
+   ]
+  },
+  {
+   "modulo": "hooks",
+   "arquivos": 61,
+   "testes": 0,
+   "linhas": 10710,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useApprovalHistory",
+    "useApprovalRules",
+    "useAuth",
+    "useAutoImageCompression",
+    "useBulkOperations",
+    "useBuyerPerformanceData",
+    "useContactNotes",
+    "useCooldown",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardKPIs",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useOfflineSync",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePerformanceMonitor",
+    "usePrefetch",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSpotIntegration",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useUndoStore",
+    "useUndoableAction",
+    "useUnsavedChangesWarning",
+    "useWebAuthn",
+    "useWorkflowDLQ",
+    "useXbzIntegration"
+   ],
+   "hooks_definidos": [
+    "useIsMobile",
+    "useToast",
+    "useAccountFilters",
+    "useAccountLockout",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useBudgetManagement",
+    "useBulkOperations",
+    "useBuyerPerformanceData",
+    "useClearFiltersFlow",
+    "useContactNotes",
+    "useCooldown",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useCreditosFornecedor",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFlashHighlight",
+    "useFormDataProtection",
+    "useFormDirty",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useFuseSearch",
+    "useMultiCollectionSearch",
+    "useGeoRestriction",
+    "useGlobalUndo",
+    "useUndoableAction",
+    "useGuidedBuying",
+    "useAutoImageCompression",
+    "useImageCompression",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useMFA",
+    "useHapticFeedback",
+    "useLongPress",
+    "usePullToRefresh",
+    "useSwipeGesture",
+    "useNavigation",
+    "useNProgress",
+    "useOfflineSync",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePasswordResetRequests",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePrefetch",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useTrackPageView",
+    "useRenderProfiler",
+    "useScrollRestoration",
+    "useSecurityLogs",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSpotIntegration",
+    "useSupplierQualification",
+    "useAllTourPreferences",
+    "useTourPreferences",
+    "useUnsavedChangesWarning",
+    "useWebAuthn",
+    "useWorkflowDLQ",
+    "useXbzIntegration"
+   ],
+   "edges": [
+    "spot-proxy",
+    "telemetry",
+    "webauthn-authenticate",
+    "webauthn-register"
+   ],
+   "tabelas": [
+    "active_sessions",
+    "allowed_countries",
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "blocked_ips",
+    "categorias",
+    "contact_notes",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "department_budgets",
+    "devolucao_itens",
+    "devolucoes",
+    "estoque",
+    "estoque_movimentacoes",
+    "fornecedores",
+    "geo_settings",
+    "ip_whitelist",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "login_attempts",
+    "mfa_settings",
+    "notification_preferences",
+    "notifications",
+    "pagamentos",
+    "password_reset_requests",
+    "pedido_itens",
+    "pedidos",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "qualification_requirements",
+    "rate_limit_logs",
+    "role_permissions",
+    "security_logs",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "supplier_documents",
+    "supplier_qualification_scores",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "webauthn_credentials",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "clear_login_lockout",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "is_account_locked",
+    "record_failed_login"
+   ],
+   "buckets": [],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "assistant",
+    "dialog",
+    "user"
+   ],
+   "diretos": {
+    "edges": [
+     "spot-proxy",
+     "webauthn-authenticate",
+     "webauthn-register"
+    ],
+    "tabelas": [
+     "active_sessions",
+     "allowed_countries",
+     "approval_delegations",
+     "approval_history",
+     "approval_rules",
+     "approval_steps",
+     "approval_workflows",
+     "blocked_ips",
+     "categorias",
+     "contact_notes",
+     "contracts",
+     "cost_centers",
+     "cotacoes",
+     "creditos_fornecedor",
+     "dashboard_filter_favorites",
+     "department_budgets",
+     "devolucao_itens",
+     "devolucoes",
+     "estoque",
+     "estoque_movimentacoes",
+     "fornecedores",
+     "geo_settings",
+     "ip_whitelist",
+     "licitacao_lances",
+     "licitacao_propostas",
+     "licitacoes",
+     "login_attempts",
+     "mfa_settings",
+     "notification_preferences",
+     "notifications",
+     "pagamentos",
+     "password_reset_requests",
+     "pedido_itens",
+     "pedidos",
+     "permissions",
+     "produto_fornecedores",
+     "produtos",
+     "profiles",
+     "push_subscriptions",
+     "qualification_requirements",
+     "rate_limit_logs",
+     "role_permissions",
+     "security_logs",
+     "solicitacoes",
+     "sourcing_event_criteria",
+     "sourcing_event_lots",
+     "sourcing_event_questions",
+     "sourcing_events",
+     "sourcing_invitations",
+     "sourcing_responses",
+     "supplier_documents",
+     "supplier_qualification_scores",
+     "system_alerts",
+     "user_filter_preferences",
+     "user_tour_preferences",
+     "webauthn_credentials",
+     "workflow_approvals"
+    ],
+    "rpcs": [
+     "check_budget_availability",
+     "clear_login_lockout",
+     "find_approval_rule",
+     "generate_sequential_number",
+     "get_compras_dashboard_metrics",
+     "get_cost_center_performance_report",
+     "get_effective_approver",
+     "get_fornecedores_kpis",
+     "get_pagamentos_kpis",
+     "is_account_locked",
+     "record_failed_login"
+    ]
+   },
+   "importado_por_outros_modulos": [
+    "components",
+    "components/admin",
+    "components/compras",
+    "components/fornecedores",
+    "components/licitacoes",
+    "components/mobile",
+    "components/navigation",
+    "components/notifications",
+    "components/onboarding",
+    "components/pagamentos",
+    "components/pwa",
+    "components/security",
+    "components/settings",
+    "components/ui",
+    "features/cotacoes",
+    "features/layout",
+    "features/pedidos",
+    "features/solicitacoes",
+    "lib",
+    "pages/acompanhamento",
+    "pages/admin",
+    "pages/aprovacoes",
+    "pages/auth",
+    "pages/buyer",
+    "pages/catalogo-produtos",
+    "pages/catalogo-spot",
+    "pages/catalogo-xbz",
+    "pages/cotacao",
+    "pages/dashboard",
+    "pages/dev",
+    "pages/devolucoes",
+    "pages/estoque",
+    "pages/fornecedores",
+    "pages/gerar-ordem",
+    "pages/historico",
+    "pages/licitacoes",
+    "pages/orcamentos",
+    "pages/pagamentos",
+    "pages/pedidos",
+    "pages/qualificacao",
+    "pages/seguranca",
+    "pages/solicitacoes",
+    "pages/sourcing"
+   ],
+   "depende_de_modulos": [
+    "components/compras",
+    "components/filters",
+    "components/ui",
+    "features/auth",
+    "integrations/supabase",
+    "lib",
+    "pages/catalogo-xbz",
+    "services",
+    "stores"
+   ],
+   "pacotes_externos": [
+    "@supabase/supabase-js",
+    "@tanstack/react-query",
+    "date-fns",
+    "fuse.js",
+    "nprogress",
+    "react-hook-form",
+    "react-router-dom",
+    "zustand"
+   ]
+  },
+  {
+   "modulo": "hooks/__tests__",
+   "arquivos": 0,
+   "testes": 10,
+   "linhas": 0,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "i18n",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 37,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [
+    "locales/en",
+    "locales/es",
+    "locales/pt"
+   ],
+   "pacotes_externos": [
+    "i18next",
+    "i18next-browser-languagedetector",
+    "react-i18next"
+   ]
+  },
+  {
+   "modulo": "integrations/lovable",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 39,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "pages/auth"
+   ],
+   "depende_de_modulos": [
+    "integrations/supabase"
+   ],
+   "pacotes_externos": [
+    "@lovable.dev/cloud-auth-js"
+   ]
+  },
+  {
+   "modulo": "integrations/supabase",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 10114,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/admin",
+    "components/compras",
+    "components/mobile",
+    "components/notifications",
+    "components/pagamentos",
+    "components/security",
+    "features/auth",
+    "features/cotacoes",
+    "features/layout",
+    "features/pedidos",
+    "features/solicitacoes",
+    "hooks",
+    "integrations/lovable",
+    "lib",
+    "pages/acompanhamento",
+    "pages/admin",
+    "pages/admin-telemetria",
+    "pages/auth",
+    "pages/catalogo-produtos",
+    "pages/catalogo-spot",
+    "pages/compliance",
+    "pages/configuracoes",
+    "pages/contratos",
+    "pages/cotacao",
+    "pages/dashboard",
+    "pages/documentos",
+    "pages/gerar-ordem",
+    "pages/kanban",
+    "pages/negociacao-ia",
+    "pages/pedidos",
+    "pages/portal-fornecedor",
+    "pages/recebimento",
+    "pages/recompra",
+    "pages/relatorio-negociacoes",
+    "pages/relatorios",
+    "pages/sourcing",
+    "services",
+    "stores"
+   ],
+   "depende_de_modulos": [],
+   "pacotes_externos": [
+    "@supabase/supabase-js"
+   ]
+  },
+  {
+   "modulo": "lib",
+   "arquivos": 20,
+   "testes": 0,
+   "linhas": 1909,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useClearFiltersFlow",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealtimeSubscription",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSwipeGesture",
+    "useToast",
+    "useUndoStore",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences"
+   ],
+   "rpcs": [
+    "admin_scan_runs_sla_status",
+    "check_budget_availability",
+    "clear_login_lockout",
+    "count_legacy_storage_urls",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis",
+    "has_role",
+    "is_account_locked",
+    "log_login_attempt",
+    "record_failed_login",
+    "resolve_alert"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "licitacao-bids-${licitacaoId}"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "combobox"
+   ],
+   "diretos": {
+    "edges": [
+     "telemetry"
+    ],
+    "tabelas": [],
+    "rpcs": [
+     "admin_scan_runs_sla_status",
+     "check_budget_availability",
+     "clear_login_lockout",
+     "count_legacy_storage_urls",
+     "current_tenant_id",
+     "find_approval_rule",
+     "generate_sequential_number",
+     "get_compras_dashboard_metrics",
+     "get_cost_center_performance_report",
+     "get_effective_approver",
+     "get_fornecedores_kpis",
+     "get_pagamentos_kpis",
+     "get_pedidos_kpis",
+     "get_solicitacoes_kpis",
+     "has_role",
+     "is_account_locked",
+     "log_login_attempt",
+     "record_failed_login",
+     "resolve_alert"
+    ]
+   },
+   "importado_por_outros_modulos": [
+    "components",
+    "components/accessibility",
+    "components/admin",
+    "components/animations",
+    "components/atoms",
+    "components/compras",
+    "components/feedback",
+    "components/fornecedores",
+    "components/licitacoes",
+    "components/mobile",
+    "components/molecules",
+    "components/navigation",
+    "components/notifications",
+    "components/onboarding",
+    "components/organisms",
+    "components/pagamentos",
+    "components/pedidos",
+    "components/security",
+    "components/settings",
+    "components/ui",
+    "features/auth",
+    "features/cotacoes",
+    "features/empresas",
+    "features/layout",
+    "features/pedidos",
+    "features/solicitacoes",
+    "hooks",
+    "pages",
+    "pages/acompanhamento",
+    "pages/admin",
+    "pages/admin-telemetria",
+    "pages/auditoria",
+    "pages/auth",
+    "pages/buyer",
+    "pages/catalogo-produtos",
+    "pages/catalogo-spot",
+    "pages/catalogo-xbz",
+    "pages/compliance",
+    "pages/configuracoes",
+    "pages/contratos",
+    "pages/cotacao",
+    "pages/dashboard",
+    "pages/devolucoes",
+    "pages/documentos",
+    "pages/estoque",
+    "pages/fornecedores",
+    "pages/gerar-ordem",
+    "pages/historico",
+    "pages/kanban",
+    "pages/licitacoes",
+    "pages/negociacao-ia",
+    "pages/orcamentos",
+    "pages/pagamentos",
+    "pages/pedidos",
+    "pages/portal-fornecedor",
+    "pages/recebimento",
+    "pages/recompra",
+    "pages/relatorios",
+    "pages/solicitacoes",
+    "pages/sourcing",
+    "services",
+    "stores"
+   ],
+   "depende_de_modulos": [
+    "hooks",
+    "integrations/supabase",
+    "pages/acompanhamento",
+    "pages/aprovacoes",
+    "pages/catalogo-produtos",
+    "pages/contratos",
+    "pages/cotacao",
+    "pages/dashboard",
+    "pages/devolucoes",
+    "pages/estoque",
+    "pages/fornecedores",
+    "pages/gerar-ordem",
+    "pages/historico",
+    "pages/kanban",
+    "pages/pagamentos",
+    "pages/pedidos",
+    "pages/relatorios",
+    "pages/solicitacoes",
+    "types"
+   ],
+   "pacotes_externos": [
+    "@supabase/supabase-js",
+    "@tanstack/query-sync-storage-persister",
+    "@tanstack/react-query",
+    "clsx",
+    "date-fns",
+    "dompurify",
+    "jspdf",
+    "jspdf-autotable",
+    "sonner",
+    "tailwind-merge"
+   ]
+  },
+  {
+   "modulo": "lib/__tests__",
+   "arquivos": 0,
+   "testes": 23,
+   "linhas": 0,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "pages",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 67,
+   "itens_menu": [],
+   "telas": [
+    "/*"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "lucide-react",
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "pages/acompanhamento",
+   "arquivos": 2,
+   "testes": 1,
+   "linhas": 609,
+   "itens_menu": [
+    "Acompanhamento"
+   ],
+   "telas": [
+    "/acompanhamento"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAccountFilters",
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useRealtimeSubscription",
+    "useUndoStore"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "fornecedores",
+    "pedidos",
+    "solicitacoes",
+    "user_filter_preferences"
+   ],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "fornecedores",
+     "pedidos",
+     "solicitacoes"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/compras",
+    "components/organisms",
+    "components/ui",
+    "features/layout",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/admin",
+   "arquivos": 14,
+   "testes": 1,
+   "linhas": 5059,
+   "itens_menu": [
+    "Dep. Health",
+    "Documentação",
+    "ERP Sync",
+    "Fiscal",
+    "Migração Storage",
+    "PunchOut",
+    "Saúde do Sistema",
+    "Sourcing Pipeline",
+    "SSO / SCIM",
+    "Workflows"
+   ],
+   "telas": [
+    "/admin/dependency-health",
+    "/admin/docs",
+    "/admin/erp",
+    "/admin/fiscal",
+    "/admin/health",
+    "/admin/health/alerts/:id",
+    "/admin/punchout",
+    "/admin/sourcing-pipeline",
+    "/admin/sso",
+    "/admin/storage-migration",
+    "/admin/workflows"
+   ],
+   "rotas_http": [],
+   "componentes": 13,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useToast"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "dependency-health",
+    "erp-sync",
+    "external-db-bridge",
+    "migrate-storage-paths",
+    "process-solicitacao-neural",
+    "punchout-setup",
+    "scim-v2",
+    "telemetry"
+   ],
+   "tabelas": [
+    "alert_subscriptions",
+    "erp_connections",
+    "erp_sync_log",
+    "fiscal_events",
+    "health_scan_runs",
+    "profiles",
+    "punchout_catalogs",
+    "savings_tracker",
+    "sourcing_projects",
+    "sso_configurations",
+    "system_alerts",
+    "user_roles",
+    "user_tenants",
+    "v_system_health_overview",
+    "workflow_sod_rules",
+    "workflow_templates"
+   ],
+   "rpcs": [
+    "admin_scan_runs_sla_status",
+    "alerts_mttr_by_type",
+    "alerts_noisy_scanners",
+    "alerts_severity_timeseries",
+    "count_legacy_storage_urls",
+    "current_tenant_id",
+    "resolve_alert"
+   ],
+   "buckets": [],
+   "canais_realtime": [
+    "system_alerts_admin"
+   ],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert"
+   ],
+   "diretos": {
+    "edges": [
+     "dependency-health",
+     "erp-sync",
+     "external-db-bridge",
+     "migrate-storage-paths",
+     "process-solicitacao-neural",
+     "punchout-setup",
+     "scim-v2"
+    ],
+    "tabelas": [
+     "alert_subscriptions",
+     "erp_connections",
+     "erp_sync_log",
+     "fiscal_events",
+     "health_scan_runs",
+     "punchout_catalogs",
+     "savings_tracker",
+     "sourcing_projects",
+     "sso_configurations",
+     "system_alerts",
+     "v_system_health_overview",
+     "workflow_sod_rules",
+     "workflow_templates"
+    ],
+    "rpcs": [
+     "admin_scan_runs_sla_status",
+     "alerts_mttr_by_type",
+     "alerts_noisy_scanners",
+     "alerts_severity_timeseries",
+     "count_legacy_storage_urls",
+     "resolve_alert"
+    ]
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/admin",
+    "components/ui",
+    "features/auth",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@mui/icons-material",
+    "@tanstack/react-query",
+    "date-fns",
+    "framer-motion",
+    "lodash",
+    "lucide-react",
+    "ramda",
+    "react-icons",
+    "react-markdown",
+    "react-router-dom",
+    "recharts",
+    "rxjs",
+    "sonner"
+   ]
+  },
+  {
+   "modulo": "pages/admin-telemetria",
+   "arquivos": 2,
+   "testes": 1,
+   "linhas": 437,
+   "itens_menu": [
+    "Telemetria"
+   ],
+   "telas": [
+    "/admin/telemetria"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "system-simulation",
+    "telemetry"
+   ],
+   "tabelas": [
+    "query_telemetry",
+    "system_alerts",
+    "telemetry_logs"
+   ],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [
+     "system-simulation"
+    ],
+    "tabelas": [
+     "query_telemetry"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/admin",
+    "components/ui",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "framer-motion",
+    "jspdf",
+    "jspdf-autotable",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/aprovacoes",
+   "arquivos": 2,
+   "testes": 1,
+   "linhas": 330,
+   "itens_menu": [
+    "Aprovações"
+   ],
+   "telas": [
+    "/aprovacoes"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "cost_centers",
+    "profiles",
+    "solicitacoes",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_effective_approver",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [],
+   "canais_realtime": [
+    "approval_notifications_${user.id}"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/compras",
+    "components/ui",
+    "features/aprovacoes",
+    "features/layout",
+    "hooks"
+   ],
+   "pacotes_externos": [
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/auditoria",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 390,
+   "itens_menu": [
+    "Auditoria"
+   ],
+   "telas": [
+    "/auditoria"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "lib",
+    "services"
+   ],
+   "pacotes_externos": [
+    "date-fns",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/auth",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 534,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [
+    "useAccountLockout",
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useWebAuthn"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry",
+    "webauthn-authenticate",
+    "webauthn-register"
+   ],
+   "tabelas": [
+    "profiles",
+    "user_roles",
+    "user_tenants",
+    "webauthn_credentials"
+   ],
+   "rpcs": [
+    "clear_login_lockout",
+    "current_tenant_id",
+    "is_account_locked",
+    "log_login_attempt",
+    "record_failed_login"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": [
+     "log_login_attempt"
+    ]
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/layout",
+    "components/security",
+    "components/ui",
+    "features/auth",
+    "features/layout",
+    "hooks",
+    "integrations/lovable",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "lucide-react",
+    "react-router-dom",
+    "zod"
+   ]
+  },
+  {
+   "modulo": "pages/buyer",
+   "arquivos": 3,
+   "testes": 1,
+   "linhas": 745,
+   "itens_menu": [
+    "Compradores"
+   ],
+   "telas": [
+    "/buyer-performance"
+   ],
+   "rotas_http": [],
+   "componentes": 3,
+   "hooks_locais": [
+    "useAuth",
+    "useBuyerAlertsStore",
+    "useBuyerPerformanceData",
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "categorias",
+    "cotacoes",
+    "fornecedores",
+    "pedidos",
+    "profiles",
+    "solicitacoes",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/compras",
+    "components/ui",
+    "hooks",
+    "lib",
+    "stores"
+   ],
+   "pacotes_externos": [
+    "lucide-react",
+    "recharts"
+   ]
+  },
+  {
+   "modulo": "pages/catalogo-produtos",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 489,
+   "itens_menu": [
+    "Catálogo"
+   ],
+   "telas": [
+    "/catalogo-produtos"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useAutoImageCompression",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useImageCompression",
+    "useProdutoFornecedores",
+    "useProdutos"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "categorias",
+    "fornecedores",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/compras",
+    "components/ui",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "lucide-react",
+    "react-i18next"
+   ]
+  },
+  {
+   "modulo": "pages/catalogo-spot",
+   "arquivos": 6,
+   "testes": 1,
+   "linhas": 1041,
+   "itens_menu": [
+    "SPOT / Stricker"
+   ],
+   "telas": [
+    "/catalogo-spot"
+   ],
+   "rotas_http": [],
+   "componentes": 4,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSpotIntegration",
+    "useSpotProducts",
+    "useSpotSkus",
+    "useSpotStock",
+    "useSpotSyncStatus",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [
+    "useSpotProducts",
+    "useSpotSkus",
+    "useSpotStock",
+    "useSpotSyncStatus"
+   ],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "spot-proxy",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "role_permissions",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "spot_api_sync_log",
+    "spot_estoque",
+    "spot_produtos",
+    "spot_skus",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "button",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "spot_api_sync_log",
+     "spot_estoque",
+     "spot_produtos",
+     "spot_skus"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "features/layout",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/catalogo-xbz",
+   "arquivos": 9,
+   "testes": 2,
+   "linhas": 1158,
+   "itens_menu": [
+    "XBZ Brindes"
+   ],
+   "telas": [
+    "/catalogo-xbz"
+   ],
+   "rotas_http": [],
+   "componentes": 6,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCooldown",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ",
+    "useXbzIntegration"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "role_permissions",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "hooks",
+    "pages/dev",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "features/layout",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/compliance",
+   "arquivos": 2,
+   "testes": 1,
+   "linhas": 448,
+   "itens_menu": [
+    "Compliance"
+   ],
+   "telas": [
+    "/compliance"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "fornecedores",
+    "penalty_escalation_config",
+    "profiles",
+    "supplier_bonifications",
+    "supplier_compliance_summary",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "penalty_escalation_config",
+     "supplier_compliance_summary"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/compras",
+    "components/ui",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/configuracoes",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 329,
+   "itens_menu": [
+    "Centros de Custo"
+   ],
+   "telas": [
+    "/configuracoes-centro-custo"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "role_permissions",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "cost_centers",
+     "profiles"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/animations",
+    "components/ui",
+    "features/layout",
+    "features/solicitacoes",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/contratos",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 275,
+   "itens_menu": [
+    "Contratos"
+   ],
+   "telas": [
+    "/contratos"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useToast"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "generate-contract-pdf",
+    "telemetry"
+   ],
+   "tabelas": [
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "documentos",
+    "order_contracts",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [
+    "documentos"
+   ],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "contracts"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/compras",
+    "components/organisms",
+    "components/ui",
+    "features/layout",
+    "integrations/supabase",
+    "lib",
+    "types"
+   ],
+   "pacotes_externos": [
+    "date-fns",
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/cotacao",
+   "arquivos": 2,
+   "testes": 1,
+   "linhas": 561,
+   "itens_menu": [
+    "Cotações"
+   ],
+   "telas": [
+    "/cotacao",
+    "/cotacao/:id"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useApprovalHistory",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useCotacoes",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "usePriceHistoryAnalysis",
+    "useRealtimeSubscription",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "cost_centers",
+    "cotacoes",
+    "fornecedores",
+    "produto_fornecedores",
+    "profiles",
+    "solicitacoes",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "produto_fornecedores"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/compras",
+    "components/organisms",
+    "components/ui",
+    "features/auth",
+    "features/cotacoes",
+    "features/layout",
+    "features/solicitacoes",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "lucide-react",
+    "react-markdown",
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "pages/dashboard",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 401,
+   "itens_menu": [
+    "Executivo"
+   ],
+   "telas": [
+    "/compras",
+    "/dashboard-executivo"
+   ],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [
+    "useAccountFilters",
+    "useAuth",
+    "useClearFiltersFlow",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useHapticFeedback",
+    "useIsMobile",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useOnboardingTour",
+    "usePullToRefresh",
+    "useRealtimeSubscription",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSwipeGesture",
+    "useToast",
+    "useUndoStore",
+    "useUpcomingDeliveries"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_workflows",
+    "categorias",
+    "category_strategies",
+    "cotacoes",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "pagamentos",
+    "pedido_itens",
+    "pedidos",
+    "produto_fornecedores",
+    "profiles",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics"
+   ],
+   "buckets": [],
+   "canais_realtime": [
+    "licitacao-bids-${licitacaoId}"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "categorias",
+     "fornecedores"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/compras",
+    "components/onboarding",
+    "components/organisms",
+    "components/ui",
+    "features/layout",
+    "hooks",
+    "integrations/supabase",
+    "lib",
+    "stores"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "framer-motion",
+    "lucide-react",
+    "react-i18next",
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "pages/dev",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 81,
+   "itens_menu": [],
+   "telas": [
+    "/__dev/xbz-network-panel"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useXbzIntegration"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "alert"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "hooks",
+    "pages/catalogo-xbz"
+   ],
+   "pacotes_externos": [
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "pages/devolucoes",
+   "arquivos": 3,
+   "testes": 2,
+   "linhas": 546,
+   "itens_menu": [
+    "Devoluções"
+   ],
+   "telas": [
+    "/devolucoes"
+   ],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [
+    "useAuth",
+    "useCreditosFornecedor",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useRealtimeSubscription"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs",
+    "creditos_fornecedor",
+    "devolucao_itens",
+    "devolucoes",
+    "fornecedores",
+    "pedidos",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number",
+    "get_fornecedores_kpis"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/compras",
+    "components/ui",
+    "features/layout",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "date-fns",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/documentos",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 351,
+   "itens_menu": [
+    "Docs Fiscais"
+   ],
+   "telas": [
+    "/documentos-fiscais"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "fiscal_documents",
+    "pedidos"
+   ],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "fiscal_documents",
+     "pedidos"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "features/layout",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/estoque",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 359,
+   "itens_menu": [
+    "Estoque"
+   ],
+   "telas": [
+    "/estoque"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useEstoque",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useProdutos"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "categorias",
+    "estoque",
+    "estoque_movimentacoes",
+    "produtos",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/fornecedores",
+   "arquivos": 3,
+   "testes": 1,
+   "linhas": 452,
+   "itens_menu": [
+    "Fornec.",
+    "Cadastros",
+    "Performance"
+   ],
+   "telas": [
+    "/fornecedores",
+    "/supplier-performance"
+   ],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useIsMobile",
+    "useRealtimeSubscription",
+    "useSLASettings",
+    "useSupplierScorecardData",
+    "useToast"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-supplier-risk",
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs",
+    "devolucoes",
+    "fornecedores",
+    "pedidos",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "supplier_qualification_scores",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number",
+    "get_fornecedores_kpis"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/compras",
+    "components/organisms",
+    "components/ui",
+    "features/layout",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/gerar-ordem",
+   "arquivos": 2,
+   "testes": 1,
+   "linhas": 669,
+   "itens_menu": [],
+   "telas": [
+    "/gerar-ordem"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useCotacoes",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "usePedidos",
+    "usePedidosKPIs",
+    "useRealtimeSubscription",
+    "useToast"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs",
+    "cotacoes",
+    "fornecedores",
+    "pedido_itens",
+    "pedidos",
+    "profiles",
+    "solicitacoes",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number",
+    "get_pedidos_kpis"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "fornecedores",
+     "solicitacoes"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "features/auth",
+    "features/cotacoes",
+    "features/pedidos",
+    "hooks",
+    "integrations/supabase",
+    "lib",
+    "types"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "lucide-react",
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "pages/historico",
+   "arquivos": 7,
+   "testes": 2,
+   "linhas": 1174,
+   "itens_menu": [
+    "Histórico"
+   ],
+   "telas": [
+    "/historico-compras"
+   ],
+   "rotas_http": [],
+   "componentes": 7,
+   "hooks_locais": [
+    "useAccountFilters",
+    "useAuth",
+    "useClearFiltersFlow",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "usePurchaseHistory",
+    "useUndoStore"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "categorias",
+    "cost_centers",
+    "fornecedores",
+    "pedido_itens",
+    "pedidos",
+    "produtos",
+    "profiles",
+    "solicitacoes",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/compras",
+    "components/ui",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "date-fns",
+    "lucide-react",
+    "react-day-picker",
+    "recharts"
+   ]
+  },
+  {
+   "modulo": "pages/kanban",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 191,
+   "itens_menu": [
+    "Kanban"
+   ],
+   "telas": [
+    "/kanban"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "solicitacoes"
+   ],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "solicitacoes"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/licitacoes",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 476,
+   "itens_menu": [
+    "Licitações"
+   ],
+   "telas": [
+    "/licitacoes"
+   ],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "role_permissions",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/licitacoes",
+    "components/ui",
+    "features/layout",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "date-fns",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/negociacao-ia",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 604,
+   "itens_menu": [
+    "Negociação IA"
+   ],
+   "telas": [
+    "/negociacao-ia"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-negotiation",
+    "telemetry"
+   ],
+   "tabelas": [
+    "cotacoes",
+    "negotiation_analyses",
+    "profiles",
+    "solicitacoes",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [
+     "ai-negotiation"
+    ],
+    "tabelas": [
+     "cotacoes",
+     "negotiation_analyses",
+     "solicitacoes"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/compras",
+    "components/ui",
+    "features/auth",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/orcamentos",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 315,
+   "itens_menu": [
+    "Orçamentos"
+   ],
+   "telas": [
+    "/orcamentos"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useBudgetManagement",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "department_budgets",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "role_permissions",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/animations",
+    "components/ui",
+    "features/layout",
+    "features/solicitacoes",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "lucide-react",
+    "recharts"
+   ]
+  },
+  {
+   "modulo": "pages/pagamentos",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 294,
+   "itens_menu": [
+    "Pagamentos"
+   ],
+   "telas": [
+    "/pagamentos"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useHapticFeedback",
+    "useIsMobile",
+    "useLongPress",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePullToRefresh",
+    "useRealtimeSubscription",
+    "useSwipeGesture",
+    "useToast"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs",
+    "comprovantes",
+    "creditos_fornecedor",
+    "fiscal_documents",
+    "pagamentos",
+    "payment_history",
+    "pedidos",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number",
+    "get_pagamentos_kpis"
+   ],
+   "buckets": [
+    "comprovantes"
+   ],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/organisms",
+    "components/pagamentos",
+    "components/ui",
+    "features/layout",
+    "hooks",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "date-fns",
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/pedidos",
+   "arquivos": 3,
+   "testes": 0,
+   "linhas": 841,
+   "itens_menu": [
+    "Pedidos"
+   ],
+   "telas": [
+    "/pedidos"
+   ],
+   "rotas_http": [],
+   "componentes": 3,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useHapticFeedback",
+    "useIsMobile",
+    "useLongPress",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePullToRefresh",
+    "useRealtimeSubscription",
+    "useSwipeGesture"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs",
+    "fornecedores",
+    "pedido_itens",
+    "pedidos",
+    "produto_fornecedores",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number",
+    "get_fornecedores_kpis",
+    "get_pedidos_kpis"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "pedido_itens"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/compras",
+    "components/organisms",
+    "components/pedidos",
+    "components/ui",
+    "features/layout",
+    "features/pedidos",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/portal-fornecedor",
+   "arquivos": 2,
+   "testes": 1,
+   "linhas": 515,
+   "itens_menu": [],
+   "telas": [
+    "/portal-fornecedor"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePortalFornecedorData",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [
+    "usePortalFornecedorData"
+   ],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "role_permissions",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "supplier_qualification_scores",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "contracts",
+     "cotacoes",
+     "fornecedores",
+     "pedidos",
+     "supplier_qualification_scores"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "features/auth",
+    "features/layout",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/qualificacao",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 270,
+   "itens_menu": [
+    "Qualificação"
+   ],
+   "telas": [
+    "/qualificacao-fornecedores"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSupplierQualification",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "qualification_history",
+    "qualification_requirements",
+    "role_permissions",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "supplier_documents",
+    "supplier_qualification_scores",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/animations",
+    "components/compras",
+    "components/ui",
+    "features/layout",
+    "hooks"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/recebimento",
+   "arquivos": 3,
+   "testes": 1,
+   "linhas": 621,
+   "itens_menu": [
+    "Recebimento"
+   ],
+   "telas": [
+    "/recebimento"
+   ],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "pedido_itens",
+    "pedidos",
+    "profiles",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "pedido_itens",
+     "pedidos"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "features/auth",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "date-fns",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/recompra",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 333,
+   "itens_menu": [
+    "Recompra"
+   ],
+   "telas": [
+    "/recompra-inteligente"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "fornecedores",
+    "pedido_itens",
+    "produtos",
+    "profiles",
+    "repurchase_suggestions",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "fornecedores",
+     "pedido_itens",
+     "produtos",
+     "repurchase_suggestions"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "features/auth",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/relatorio-negociacoes",
+   "arquivos": 3,
+   "testes": 1,
+   "linhas": 741,
+   "itens_menu": [
+    "Negociações"
+   ],
+   "telas": [
+    "/relatorios/negociacoes"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAuth",
+    "useBuyerPerformanceData",
+    "useRelatorioNegociacoes"
+   ],
+   "hooks_definidos": [
+    "useRelatorioNegociacoes"
+   ],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "categorias",
+    "cotacoes",
+    "fornecedores",
+    "pedidos",
+    "produtos",
+    "profiles",
+    "solicitacoes",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "categorias",
+     "cotacoes",
+     "fornecedores",
+     "produtos",
+     "profiles",
+     "solicitacoes"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/compras",
+    "components/organisms",
+    "components/ui",
+    "integrations/supabase"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "lucide-react",
+    "recharts"
+   ]
+  },
+  {
+   "modulo": "pages/relatorios",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 508,
+   "itens_menu": [
+    "Relatórios"
+   ],
+   "telas": [
+    "/relatorios"
+   ],
+   "rotas_http": [],
+   "componentes": 2,
+   "hooks_locais": [
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useKPITargetsStore",
+    "useToast"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "telemetry"
+   ],
+   "tabelas": [
+    "category_strategies",
+    "fornecedores",
+    "pedido_itens",
+    "pedidos",
+    "solicitacoes"
+   ],
+   "rpcs": [
+    "get_cost_center_performance_report"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "fornecedores",
+     "pedidos",
+     "solicitacoes"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/compras",
+    "components/organisms",
+    "components/ui",
+    "features/layout",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "framer-motion",
+    "lucide-react",
+    "recharts"
+   ]
+  },
+  {
+   "modulo": "pages/seguranca",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 315,
+   "itens_menu": [
+    "Segurança"
+   ],
+   "telas": [
+    "/seguranca"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useAllTourPreferences",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGeoRestriction",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMFA",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePasswordResetRequests",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSecurityLogs",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWebAuthn",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-supplier-risk",
+    "check-sla-alerts",
+    "generate-contract-pdf",
+    "process-solicitacao-neural",
+    "telemetry",
+    "webauthn-authenticate",
+    "webauthn-register"
+   ],
+   "tabelas": [
+    "active_sessions",
+    "allowed_countries",
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "blocked_countries",
+    "blocked_ips",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fornecedores",
+    "geo_access_logs",
+    "geo_settings",
+    "ip_whitelist",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "login_attempts",
+    "mfa_settings",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "password_reset_requests",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "push_subscriptions",
+    "rate_limit_logs",
+    "role_permissions",
+    "security_logs",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "system_alerts",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "webauthn_credentials",
+    "workflow_approvals"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime",
+    "rate-limit-alerts"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "separator",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/notifications",
+    "components/security",
+    "components/settings",
+    "components/ui",
+    "features/auth",
+    "features/layout",
+    "hooks"
+   ],
+   "pacotes_externos": [
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/solicitacoes",
+   "arquivos": 2,
+   "testes": 1,
+   "linhas": 507,
+   "itens_menu": [
+    "Solicitações"
+   ],
+   "telas": [
+    "/solicitacoes"
+   ],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAccountFilters",
+    "useApprovalHistory",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useLongPress",
+    "useProdutos",
+    "usePullToRefresh",
+    "useRealtimeSubscription",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSwipeGesture",
+    "useUndoStore",
+    "useWorkflowDLQ"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "process-solicitacao-neural",
+    "telemetry"
+   ],
+   "tabelas": [
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "categorias",
+    "cost_centers",
+    "documentos",
+    "produtos",
+    "profiles",
+    "solicitacoes",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "check_budget_availability",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_effective_approver",
+    "get_solicitacoes_kpis"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "combobox"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "lib",
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/atoms",
+    "components/compras",
+    "components/organisms",
+    "components/ui",
+    "features/layout",
+    "features/solicitacoes",
+    "hooks",
+    "lib",
+    "types"
+   ],
+   "pacotes_externos": [
+    "framer-motion",
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "pages/sourcing",
+   "arquivos": 4,
+   "testes": 0,
+   "linhas": 1263,
+   "itens_menu": [
+    "Sourcing (RFx)"
+   ],
+   "telas": [
+    "/sourcing",
+    "/sourcing/:id",
+    "/sourcing/:id/auction",
+    "/sourcing/novo"
+   ],
+   "rotas_http": [],
+   "componentes": 4,
+   "hooks_locais": [
+    "useAuth",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useSourcingEventDetails",
+    "useSourcingEvents"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "categorias",
+    "fornecedor_categorias",
+    "fornecedores",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "profiles",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_responses",
+    "user_roles",
+    "user_tenants"
+   ],
+   "rpcs": [
+    "current_tenant_id",
+    "generate_sequential_number"
+   ],
+   "buckets": [],
+   "canais_realtime": [
+    "licitacao-bids-${licitacaoId}"
+   ],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "categorias",
+     "fornecedor_categorias",
+     "fornecedores",
+     "sourcing_event_criteria",
+     "sourcing_event_lots",
+     "sourcing_invitations"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "routes"
+   ],
+   "depende_de_modulos": [
+    "components/ui",
+    "hooks",
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "@tanstack/react-query",
+    "date-fns",
+    "lucide-react",
+    "react-router-dom",
+    "recharts"
+   ]
+  },
+  {
+   "modulo": "routes",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 158,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 1,
+   "hooks_locais": [
+    "useAccessibility",
+    "useAccountFilters",
+    "useAccountLockout",
+    "useAllTourPreferences",
+    "useApprovalHistory",
+    "useApprovalNotifications",
+    "useApprovalRules",
+    "useApprovalWorkflow",
+    "useAuth",
+    "useAutoImageCompression",
+    "useBudgetManagement",
+    "useBuyerAlertsStore",
+    "useBuyerPerformanceData",
+    "useCelebration",
+    "useClearFiltersFlow",
+    "useCommandPalette",
+    "useContactNotes",
+    "useCooldown",
+    "useCotacoes",
+    "useCreditosFornecedor",
+    "useCriticalAlertsBadge",
+    "useDashboardFilters",
+    "useDashboardKPIs",
+    "useDashboardLayoutStore",
+    "useDeliveryEvents",
+    "useDevolucoes",
+    "useDevolucoesKPIs",
+    "useEmpresaFilter",
+    "useEstoque",
+    "useExecutiveDashboardData",
+    "useFeedback",
+    "useFeedbackPreferences",
+    "useFornecedores",
+    "useFornecedoresKPIs",
+    "useGeoRestriction",
+    "useGlobalUndo",
+    "useGuidedBuying",
+    "useHapticFeedback",
+    "useImageCompression",
+    "useIsMobile",
+    "useKPITargetsStore",
+    "useKeyboardShortcuts",
+    "useLicitacaoLances",
+    "useLicitacaoPropostas",
+    "useLicitacoes",
+    "useLongPress",
+    "useMFA",
+    "useMonthStats",
+    "useNavigation",
+    "useOfflineSync",
+    "useOnboardingTour",
+    "usePagamentos",
+    "usePagamentosKPIs",
+    "usePageTransition",
+    "usePasswordResetRequests",
+    "usePedidos",
+    "usePedidosKPIs",
+    "usePerformanceMonitor",
+    "usePermissions",
+    "usePortalFornecedorData",
+    "usePrefetch",
+    "usePriceHistoryAnalysis",
+    "useProdutoFornecedores",
+    "useProdutos",
+    "usePullToRefresh",
+    "usePurchaseHistory",
+    "useRealPushNotifications",
+    "useRealtimeSubscription",
+    "useRecentlyViewed",
+    "useRelatorioNegociacoes",
+    "useRenderProfiler",
+    "useSLASettings",
+    "useScrollRestoration",
+    "useSecurityLogs",
+    "useSessionIdleTimeout",
+    "useSidebarBadges",
+    "useSolicitacoes",
+    "useSolicitacoesKPIs",
+    "useSourcingEventDetails",
+    "useSourcingEvents",
+    "useSpotIntegration",
+    "useSpotProducts",
+    "useSpotSkus",
+    "useSpotStock",
+    "useSpotSyncStatus",
+    "useSupplierQualification",
+    "useSupplierScorecardData",
+    "useSwipeGesture",
+    "useToast",
+    "useTrackPageView",
+    "useTriggerCelebration",
+    "useUndoStore",
+    "useUndoToast",
+    "useUndoableAction",
+    "useUpcomingDeliveries",
+    "useWebAuthn",
+    "useWorkflowDLQ",
+    "useXbzIntegration"
+   ],
+   "hooks_definidos": [],
+   "edges": [
+    "ai-demand-prediction",
+    "ai-negotiation",
+    "ai-supplier-risk",
+    "check-sla-alerts",
+    "dependency-health",
+    "erp-sync",
+    "external-db-bridge",
+    "generate-contract-pdf",
+    "migrate-storage-paths",
+    "process-solicitacao-neural",
+    "punchout-setup",
+    "scim-v2",
+    "spot-proxy",
+    "system-simulation",
+    "telemetry",
+    "webauthn-authenticate",
+    "webauthn-register"
+   ],
+   "tabelas": [
+    "active_sessions",
+    "alert_subscriptions",
+    "allowed_countries",
+    "approval_delegations",
+    "approval_history",
+    "approval_rules",
+    "approval_steps",
+    "approval_workflows",
+    "audit_logs",
+    "blocked_countries",
+    "blocked_ips",
+    "categorias",
+    "category_strategies",
+    "comprovantes",
+    "contact_notes",
+    "contract_documents",
+    "contract_history",
+    "contract_items",
+    "contract_penalties",
+    "contracts",
+    "cost_centers",
+    "cotacoes",
+    "creditos_fornecedor",
+    "dashboard_filter_favorites",
+    "dashboard_layouts",
+    "department_budgets",
+    "devolucao_itens",
+    "devolucoes",
+    "documentos",
+    "erp_connections",
+    "erp_sync_log",
+    "estoque",
+    "estoque_movimentacoes",
+    "fiscal_documents",
+    "fiscal_events",
+    "fornecedor_categorias",
+    "fornecedores",
+    "geo_access_logs",
+    "geo_settings",
+    "health_scan_runs",
+    "ip_whitelist",
+    "licitacao_lances",
+    "licitacao_propostas",
+    "licitacoes",
+    "login_attempts",
+    "mfa_settings",
+    "negotiation_analyses",
+    "notification_preferences",
+    "notifications",
+    "order_contracts",
+    "pagamentos",
+    "password_reset_requests",
+    "payment_history",
+    "pedido_itens",
+    "pedidos",
+    "penalty_escalation_config",
+    "permissions",
+    "produto_fornecedores",
+    "produtos",
+    "profiles",
+    "punchout_catalogs",
+    "push_subscriptions",
+    "qualification_history",
+    "qualification_requirements",
+    "query_telemetry",
+    "rate_limit_logs",
+    "repurchase_suggestions",
+    "role_permissions",
+    "savings_tracker",
+    "security_logs",
+    "solicitacoes",
+    "sourcing_event_criteria",
+    "sourcing_event_lots",
+    "sourcing_event_questions",
+    "sourcing_events",
+    "sourcing_invitations",
+    "sourcing_projects",
+    "sourcing_responses",
+    "spot_api_sync_log",
+    "spot_estoque",
+    "spot_produtos",
+    "spot_skus",
+    "sso_configurations",
+    "supplier_bonifications",
+    "supplier_compliance_summary",
+    "supplier_documents",
+    "supplier_qualification_scores",
+    "system_alerts",
+    "telemetry_logs",
+    "user_filter_preferences",
+    "user_roles",
+    "user_tenants",
+    "user_tour_preferences",
+    "v_system_health_overview",
+    "webauthn_credentials",
+    "workflow_approvals",
+    "workflow_sod_rules",
+    "workflow_templates"
+   ],
+   "rpcs": [
+    "admin_scan_runs_sla_status",
+    "alerts_mttr_by_type",
+    "alerts_noisy_scanners",
+    "alerts_severity_timeseries",
+    "check_budget_availability",
+    "clear_login_lockout",
+    "count_legacy_storage_urls",
+    "current_tenant_id",
+    "find_approval_rule",
+    "generate_sequential_number",
+    "get_compras_dashboard_metrics",
+    "get_cost_center_performance_report",
+    "get_effective_approver",
+    "get_fornecedores_kpis",
+    "get_pagamentos_kpis",
+    "get_pedidos_kpis",
+    "get_solicitacoes_kpis",
+    "is_account_locked",
+    "log_login_attempt",
+    "record_failed_login",
+    "resolve_alert"
+   ],
+   "buckets": [
+    "comprovantes",
+    "documentos"
+   ],
+   "canais_realtime": [
+    "approval_notifications_${user.id}",
+    "critical_alerts_badge",
+    "licitacao-bids-${licitacaoId}",
+    "notifications-realtime",
+    "rate-limit-alerts",
+    "system_alerts_admin"
+   ],
+   "env": [
+    "DEV",
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [
+    "admin",
+    "alert",
+    "assistant",
+    "button",
+    "combobox",
+    "dialog",
+    "group",
+    "link",
+    "navigation",
+    "presentation",
+    "separator",
+    "status",
+    "user"
+   ],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [
+    "components/navigation",
+    "features/auth",
+    "features/layout",
+    "pages",
+    "pages/acompanhamento",
+    "pages/admin",
+    "pages/admin-telemetria",
+    "pages/aprovacoes",
+    "pages/auditoria",
+    "pages/auth",
+    "pages/buyer",
+    "pages/catalogo-produtos",
+    "pages/catalogo-spot",
+    "pages/catalogo-xbz",
+    "pages/compliance",
+    "pages/configuracoes",
+    "pages/contratos",
+    "pages/cotacao",
+    "pages/dashboard",
+    "pages/dev",
+    "pages/devolucoes",
+    "pages/documentos",
+    "pages/estoque",
+    "pages/fornecedores",
+    "pages/gerar-ordem",
+    "pages/historico",
+    "pages/kanban",
+    "pages/licitacoes",
+    "pages/negociacao-ia",
+    "pages/orcamentos",
+    "pages/pagamentos",
+    "pages/pedidos",
+    "pages/portal-fornecedor",
+    "pages/qualificacao",
+    "pages/recebimento",
+    "pages/recompra",
+    "pages/relatorio-negociacoes",
+    "pages/relatorios",
+    "pages/seguranca",
+    "pages/solicitacoes",
+    "pages/sourcing"
+   ],
+   "pacotes_externos": [
+    "react-router-dom"
+   ]
+  },
+  {
+   "modulo": "schemas",
+   "arquivos": 1,
+   "testes": 0,
+   "linhas": 25,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/compras"
+   ],
+   "depende_de_modulos": [],
+   "pacotes_externos": [
+    "zod"
+   ]
+  },
+  {
+   "modulo": "schemas/__tests__",
+   "arquivos": 0,
+   "testes": 1,
+   "linhas": 0,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "services",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 216,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "audit_logs"
+   ],
+   "rpcs": [
+    "current_tenant_id"
+   ],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "audit_logs"
+    ],
+    "rpcs": [
+     "current_tenant_id"
+    ]
+   },
+   "importado_por_outros_modulos": [
+    "features/cotacoes",
+    "features/pedidos",
+    "features/solicitacoes",
+    "hooks",
+    "pages/auditoria"
+   ],
+   "depende_de_modulos": [
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "services/__tests__",
+   "arquivos": 0,
+   "testes": 1,
+   "linhas": 0,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "stores",
+   "arquivos": 5,
+   "testes": 0,
+   "linhas": 793,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [
+    "useBuyerAlertsStore",
+    "useDashboardLayoutStore",
+    "useKPITargetsStore",
+    "useSLASettings",
+    "useUndoStore"
+   ],
+   "edges": [
+    "telemetry"
+   ],
+   "tabelas": [
+    "dashboard_layouts",
+    "profiles"
+   ],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [
+    "PROD",
+    "VITE_SUPABASE_PUBLISHABLE_KEY",
+    "VITE_SUPABASE_URL"
+   ],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [
+     "dashboard_layouts",
+     "profiles"
+    ],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/compras",
+    "features/layout",
+    "hooks",
+    "pages/buyer",
+    "pages/dashboard"
+   ],
+   "depende_de_modulos": [
+    "integrations/supabase",
+    "lib"
+   ],
+   "pacotes_externos": [
+    "zustand"
+   ]
+  },
+  {
+   "modulo": "stores/__tests__",
+   "arquivos": 0,
+   "testes": 5,
+   "linhas": 0,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "test",
+   "arquivos": 0,
+   "testes": 1,
+   "linhas": 0,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "tests",
+   "arquivos": 0,
+   "testes": 10,
+   "linhas": 0,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
+  },
+  {
+   "modulo": "types",
+   "arquivos": 2,
+   "testes": 0,
+   "linhas": 220,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [
+    "components/compras",
+    "lib",
+    "pages/contratos",
+    "pages/gerar-ordem",
+    "pages/solicitacoes"
+   ],
+   "depende_de_modulos": [],
+   "pacotes_externos": [
+    "lucide-react"
+   ]
+  },
+  {
+   "modulo": "types/__tests__",
+   "arquivos": 0,
+   "testes": 1,
+   "linhas": 0,
+   "itens_menu": [],
+   "telas": [],
+   "rotas_http": [],
+   "componentes": 0,
+   "hooks_locais": [],
+   "hooks_definidos": [],
+   "edges": [],
+   "tabelas": [],
+   "rpcs": [],
+   "buckets": [],
+   "canais_realtime": [],
+   "env": [],
+   "flags": [],
+   "papeis": [],
+   "diretos": {
+    "edges": [],
+    "tabelas": [],
+    "rpcs": []
+   },
+   "importado_por_outros_modulos": [],
+   "depende_de_modulos": [],
+   "pacotes_externos": []
+  }
+ ]
+}

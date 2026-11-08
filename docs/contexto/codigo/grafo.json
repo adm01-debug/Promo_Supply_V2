@@ -1,0 +1,318 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "nos": 571,
+ "arestas": 2607,
+ "hubs": [
+  {
+   "arquivo": "src/lib/utils.ts",
+   "importado_por": 220
+  },
+  {
+   "arquivo": "src/components/ui/badge.tsx",
+   "importado_por": 175
+  },
+  {
+   "arquivo": "src/components/ui/button.tsx",
+   "importado_por": 169
+  },
+  {
+   "arquivo": "src/components/ui/card.tsx",
+   "importado_por": 163
+  },
+  {
+   "arquivo": "src/integrations/supabase/client.ts",
+   "importado_por": 126
+  },
+  {
+   "arquivo": "src/lib/feedbackToast.ts",
+   "importado_por": 86
+  },
+  {
+   "arquivo": "src/components/ui/input.tsx",
+   "importado_por": 70
+  },
+  {
+   "arquivo": "src/features/auth/index.ts",
+   "importado_por": 65
+  },
+  {
+   "arquivo": "src/lib/logger.ts",
+   "importado_por": 61
+  },
+  {
+   "arquivo": "src/components/ui/label.tsx",
+   "importado_por": 58
+  },
+  {
+   "arquivo": "src/components/ui/dialog.tsx",
+   "importado_por": 56
+  },
+  {
+   "arquivo": "src/components/ui/select.tsx",
+   "importado_por": 54
+  },
+  {
+   "arquivo": "src/components/ui/table.tsx",
+   "importado_por": 53
+  },
+  {
+   "arquivo": "src/components/ui/skeleton.tsx",
+   "importado_por": 40
+  },
+  {
+   "arquivo": "src/components/ui/progress.tsx",
+   "importado_por": 36
+  },
+  {
+   "arquivo": "src/components/ui/tabs.tsx",
+   "importado_por": 33
+  },
+  {
+   "arquivo": "supabase/functions/_shared/security.ts",
+   "importado_por": 32
+  },
+  {
+   "arquivo": "src/components/ui/tooltip.tsx",
+   "importado_por": 30
+  },
+  {
+   "arquivo": "supabase/functions/_shared/http.ts",
+   "importado_por": 28
+  },
+  {
+   "arquivo": "supabase/functions/_shared/logger.ts",
+   "importado_por": 27
+  },
+  {
+   "arquivo": "src/components/ui/scroll-area.tsx",
+   "importado_por": 26
+  },
+  {
+   "arquivo": "src/components/ui/separator.tsx",
+   "importado_por": 25
+  },
+  {
+   "arquivo": "src/components/ui/textarea.tsx",
+   "importado_por": 23
+  },
+  {
+   "arquivo": "src/components/ui/switch.tsx",
+   "importado_por": 18
+  },
+  {
+   "arquivo": "src/hooks/use-toast.ts",
+   "importado_por": 17
+  },
+  {
+   "arquivo": "src/integrations/supabase/types.ts",
+   "importado_por": 17
+  },
+  {
+   "arquivo": "src/features/layout/components/ModuleErrorBoundary.tsx",
+   "importado_por": 16
+  },
+  {
+   "arquivo": "supabase/functions/_shared/rate_limit.ts",
+   "importado_por": 16
+  },
+  {
+   "arquivo": "src/components/ui/dropdown-menu.tsx",
+   "importado_por": 15
+  },
+  {
+   "arquivo": "src/components/atoms/EliteButton.tsx",
+   "importado_por": 13
+  },
+  {
+   "arquivo": "src/components/ui/alert.tsx",
+   "importado_por": 13
+  },
+  {
+   "arquivo": "src/components/organisms/ElitePageWrapper.tsx",
+   "importado_por": 11
+  },
+  {
+   "arquivo": "src/components/ui/checkbox.tsx",
+   "importado_por": 11
+  },
+  {
+   "arquivo": "supabase/functions/_shared/contracts.ts",
+   "importado_por": 11
+  },
+  {
+   "arquivo": "src/components/ui/popover.tsx",
+   "importado_por": 10
+  },
+  {
+   "arquivo": "src/features/layout/components/MainLayout.tsx",
+   "importado_por": 10
+  },
+  {
+   "arquivo": "src/hooks/usePagamentos.ts",
+   "importado_por": 10
+  },
+  {
+   "arquivo": "src/hooks/useRealtimeSubscription.ts",
+   "importado_por": 10
+  },
+  {
+   "arquivo": "src/features/solicitacoes/index.ts",
+   "importado_por": 9
+  },
+  {
+   "arquivo": "src/hooks/usePurchaseHistory.ts",
+   "importado_por": 9
+  }
+ ],
+ "ciclos": {
+  "total": 2,
+  "maiores": [
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/components/onboarding/OnboardingTour.tsx",
+     "src/components/onboarding/tourStepDefinitions.ts"
+    ]
+   },
+   {
+    "tamanho": 2,
+    "arquivos": [
+     "src/features/solicitacoes/hooks/useSolicitacoes.ts",
+     "src/features/solicitacoes/index.ts"
+    ]
+   }
+  ]
+ },
+ "orfaos": [
+  "src/components/atoms/EliteImage.tsx",
+  "src/components/atoms/PreloadLink.tsx",
+  "src/components/compras/HistoricoComprasModal.tsx",
+  "src/components/compras/MainLayout.tsx",
+  "src/components/compras/OrderPreviewModal.tsx",
+  "src/components/compras/ReceivingModal.tsx",
+  "src/components/compras/SourcingHistoryConsole.tsx",
+  "src/components/fornecedores/FornecedorMobileCard.tsx",
+  "src/components/molecules/EliteFormField.tsx",
+  "src/components/organisms/Organism.tsx",
+  "src/components/ui/chart.tsx",
+  "src/components/ui/form.tsx",
+  "src/components/ui/kbd.tsx",
+  "src/components/ui/sidebar.tsx",
+  "src/components/ui/status-indicators.tsx",
+  "src/hooks/useBulkOperations.ts",
+  "src/hooks/useFlashHighlight.ts",
+  "src/hooks/useFormDataProtection.ts",
+  "src/hooks/useFormDirty.ts",
+  "src/hooks/useUnsavedChangesWarning.ts",
+  "src/lib/secureStorage.ts",
+  "src/lib/security.ts",
+  "src/lib/supabaseRpc.ts",
+  "supabase/functions/run-audit/rls_test.ts",
+  "tests-e2e/fixtures.ts",
+  "tests-e2e/global-setup.ts"
+ ],
+ "modulos_mais_acoplados": [
+  {
+   "modulo": "lib",
+   "depende_de": 19,
+   "importado_por": 62
+  },
+  {
+   "modulo": "components/ui",
+   "depende_de": 2,
+   "importado_por": 58
+  },
+  {
+   "modulo": "hooks",
+   "depende_de": 9,
+   "importado_por": 43
+  },
+  {
+   "modulo": "routes",
+   "depende_de": 41,
+   "importado_por": 0
+  },
+  {
+   "modulo": "integrations/supabase",
+   "depende_de": 0,
+   "importado_por": 38
+  },
+  {
+   "modulo": "features/layout",
+   "depende_de": 14,
+   "importado_por": 23
+  },
+  {
+   "modulo": "components/compras",
+   "depende_de": 14,
+   "importado_por": 19
+  },
+  {
+   "modulo": "features/auth",
+   "depende_de": 2,
+   "importado_por": 20
+  },
+  {
+   "modulo": "components/atoms",
+   "depende_de": 2,
+   "importado_por": 12
+  },
+  {
+   "modulo": "components/organisms",
+   "depende_de": 2,
+   "importado_por": 11
+  },
+  {
+   "modulo": "pages/cotacao",
+   "depende_de": 11,
+   "importado_por": 2
+  },
+  {
+   "modulo": "pages/dashboard",
+   "depende_de": 10,
+   "importado_por": 2
+  },
+  {
+   "modulo": "pages/pedidos",
+   "depende_de": 10,
+   "importado_por": 2
+  },
+  {
+   "modulo": "pages/solicitacoes",
+   "depende_de": 9,
+   "importado_por": 2
+  },
+  {
+   "modulo": "features/solicitacoes",
+   "depende_de": 5,
+   "importado_por": 5
+  },
+  {
+   "modulo": "pages/acompanhamento",
+   "depende_de": 8,
+   "importado_por": 2
+  },
+  {
+   "modulo": "pages/auth",
+   "depende_de": 9,
+   "importado_por": 1
+  },
+  {
+   "modulo": "pages/contratos",
+   "depende_de": 8,
+   "importado_por": 2
+  },
+  {
+   "modulo": "pages/gerar-ordem",
+   "depende_de": 8,
+   "importado_por": 2
+  },
+  {
+   "modulo": "components/mobile",
+   "depende_de": 4,
+   "importado_por": 5
+  }
+ ],
+ "arestas_em": "docs/contexto/codigo/grafo-arestas.json"
+}

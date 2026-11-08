@@ -1,0 +1,424 @@
+# Contexto do projeto para agentes de IA
+
+GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `d44bb8fa9bc24ed6aa0ae40e84b9e5db54f4082d` (2026-11-08T15:40:29-03:00).
+
+## Como usar (leia antes de planejar ou executar qualquer tarefa)
+1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
+2. **Hook/serviço/lógica** → `hooks.json`, `logica.json` (quem usa, o que toca, se tem teste).
+3. **Edge function / serverless** → `edge-functions.json` (verify_jwt, tabelas, env, quem chama, órfãs).
+4. **Banco** → `banco.json` (colunas, RLS, policies, índices, FKs, triggers, cron jobs, buckets, drift migration×types, uso no código) — visão do código; para o banco vivo use o MCP.
+5. **Antes de criar arquivo** → `convencoes.json` (onde ficam as coisas, nomenclatura, alias), `componentes.json` (nomes duplicados, órfãos), `grafo.json` (hubs, ciclos de import) e `grafo-graphify.json` (grafo por AST: comunidades, símbolos mais chamados, comunidade de cada arquivo).
+6. **CI/scripts/deploy/env/integrações/permissões/flags** → `ferramentas.json` e `scripts.json`.
+7. **Antes de abrir PR** → `testes.json` (o que tem e não tem teste, onde os testes ficam), `baseline.json` (alertas, TODOs, hotspots, últimos commits).
+Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
+
+## Stack
+- linguagens: TypeScript (679), SQL (280), Markdown (56), JSON (16), JavaScript (16), CSS (6), Shell (6), Python (5)
+- linguagem_principal: TypeScript
+- framework: React
+- backend_http: n/d
+- bundler: Vite
+- roteador: react-router
+- banco: Supabase
+- testes: vitest, playwright
+- ui: tailwind, radix/shadcn
+- estado: react-query, zustand
+- gerenciador_pacotes: bun
+- node: n/d
+- python: n/d
+- deploy: n/d
+- monorepo: n/d
+- pastas_fonte: src
+
+## Números
+| item | qtd |
+|---|---|
+| arquivos_total | 1090 |
+| arquivos_codigo | 698 |
+| linhas_codigo | 139610 |
+| rotas | 55 |
+| rotas_http_backend | 12 |
+| vistas_por_id | 0 |
+| itens_menu | 48 |
+| modulos | 86 |
+| componentes | 326 |
+| hooks | 90 |
+| edge_functions | 38 |
+| tabelas | 164 |
+| migrations | 279 |
+| cron_jobs | 68 |
+| testes | 127 |
+| workflows | 4 |
+| scripts | 24 |
+| docs_md | 56 |
+
+## Onde ficam as coisas
+- telas: src/pages (52), src/features (1)
+- componentes: src/components (214), src/pages (76), src/features (33)
+- hooks: src/hooks (60), src/features (11), src/components (10)
+- servicos_logica: src/lib (20), src/stores (5), src/integrations (3)
+- testes: co-localizado (__tests__) (93), co-localizado (*.test) (24), outro (10)
+- edge_functions: supabase/functions
+- migrations: supabase/migrations
+- scripts: scripts/types-sync (7), scripts/inventario (5), scripts/regras_negocio (3)
+- docs: (raiz) (3)
+- nomenclatura: {"componentes":"PascalCase (84%)","hooks":"use + PascalCase","servicos":"camelCase (94%)","edge_functions":"kebab-case (95%)","tabelas":"snake_case (88%)"}
+- instruções para agentes no repo: AGENTS.md
+
+## Módulos (menu → domínio)
+| módulo | itens de menu | telas/rotas | arquivos | hooks locais | edges | tabelas |
+|---|---|---|---|---|---|---|
+| components/accessibility | 0 | 0 | 5 | 1 | 0 | 0 |
+| components/admin | 0 | 0 | 9 | 5 | 1 | 7 |
+| components/compras | 0 | 0 | 102 | 80 | 5 | 60 |
+| components/navigation | 0 | 0 | 5 | 1 | 1 | 0 |
+| components/pagamentos | 0 | 0 | 9 | 12 | 1 | 10 |
+| components/security | 0 | 0 | 15 | 9 | 3 | 18 |
+| components/ui | 0 | 0 | 61 | 12 | 1 | 0 |
+| features/auth | 0 | 0 | 7 | 1 | 1 | 3 |
+| features/layout | 0 | 1 | 32 | 77 | 5 | 56 |
+| hooks | 0 | 0 | 61 | 56 | 4 | 60 |
+| lib | 0 | 0 | 20 | 53 | 5 | 48 |
+| pages | 0 | 1 | 1 | 0 | 1 | 0 |
+| pages/acompanhamento | 1 | 1 | 2 | 6 | 1 | 4 |
+| pages/admin | 10 | 11 | 14 | 4 | 8 | 16 |
+| pages/admin-telemetria | 1 | 1 | 2 | 2 | 2 | 3 |
+| pages/aprovacoes | 1 | 1 | 2 | 10 | 1 | 11 |
+| pages/auditoria | 1 | 1 | 1 | 2 | 1 | 1 |
+| pages/buyer | 1 | 1 | 3 | 5 | 1 | 8 |
+| pages/catalogo-produtos | 1 | 1 | 1 | 7 | 1 | 7 |
+| pages/catalogo-spot | 1 | 1 | 6 | 82 | 6 | 60 |
+| pages/catalogo-xbz | 1 | 1 | 9 | 79 | 5 | 56 |
+| pages/compliance | 1 | 1 | 2 | 3 | 1 | 7 |
+| pages/configuracoes | 1 | 1 | 1 | 77 | 5 | 56 |
+| pages/contratos | 1 | 1 | 1 | 4 | 2 | 10 |
+| pages/cotacao | 1 | 2 | 2 | 14 | 1 | 14 |
+| pages/dashboard | 1 | 2 | 2 | 28 | 2 | 26 |
+| pages/dev | 0 | 1 | 1 | 3 | 1 | 0 |
+| pages/devolucoes | 1 | 1 | 3 | 9 | 1 | 9 |
+| pages/documentos | 1 | 1 | 1 | 2 | 1 | 2 |
+| pages/estoque | 1 | 1 | 1 | 5 | 1 | 7 |
+| pages/fornecedores | 3 | 2 | 3 | 10 | 2 | 10 |
+| pages/gerar-ordem | 0 | 1 | 2 | 8 | 1 | 9 |
+| pages/historico | 1 | 1 | 7 | 7 | 1 | 11 |
+| pages/kanban | 1 | 1 | 1 | 2 | 1 | 1 |
+| pages/licitacoes | 1 | 1 | 2 | 77 | 5 | 56 |
+| pages/negociacao-ia | 1 | 1 | 1 | 3 | 2 | 6 |
+| pages/orcamentos | 1 | 1 | 1 | 78 | 5 | 57 |
+| pages/pagamentos | 1 | 1 | 1 | 12 | 1 | 10 |
+| pages/pedidos | 1 | 1 | 3 | 13 | 1 | 8 |
+| pages/portal-fornecedor | 0 | 1 | 2 | 78 | 5 | 57 |
+| pages/qualificacao | 1 | 1 | 1 | 78 | 5 | 60 |
+| pages/recebimento | 1 | 1 | 3 | 3 | 1 | 5 |
+| pages/recompra | 1 | 1 | 1 | 3 | 1 | 7 |
+| pages/relatorio-negociacoes | 1 | 1 | 3 | 3 | 1 | 9 |
+| pages/relatorios | 1 | 1 | 2 | 4 | 2 | 5 |
+| pages/seguranca | 1 | 1 | 1 | 83 | 8 | 69 |
+| pages/solicitacoes | 1 | 1 | 2 | 20 | 2 | 15 |
+| pages/sourcing | 1 | 4 | 4 | 8 | 1 | 15 |
+| stores | 0 | 0 | 5 | 0 | 1 | 2 |
+
+## Rotas (url → arquivo)
+- `/` [redirect] → **ARQUIVO NÃO RESOLVIDO**
+- `/__dev/xbz-network-panel` [tela] → src/pages/dev/XbzNetworkPanelHarness.tsx
+- `/*` [tela] → src/pages/NotFound.tsx
+- `/acompanhamento` [tela] → src/pages/acompanhamento/Acompanhamento.tsx
+- `/admin/dependency-health` [tela] → src/pages/admin/DependencyHealth.tsx (protegida)
+- `/admin/docs` [tela] → src/pages/admin/DeveloperDocs.tsx (protegida)
+- `/admin/erp` [tela] → src/pages/admin/ERPConnections.tsx (protegida)
+- `/admin/fiscal` [tela] → src/pages/admin/FiscalDashboard.tsx (protegida)
+- `/admin/health` [tela] → src/pages/admin/HealthDashboard.tsx (protegida)
+- `/admin/health/alerts/:id` [tela] → src/pages/admin/AlertDetail.tsx (protegida)
+- `/admin/punchout` [tela] → src/pages/admin/PunchOutCatalogs.tsx (protegida)
+- `/admin/sourcing-pipeline` [tela] → src/pages/admin/SourcingPipeline.tsx (protegida)
+- `/admin/sso` [tela] → src/pages/admin/SSOConfig.tsx (protegida)
+- `/admin/storage-migration` [tela] → src/pages/admin/StorageMigration.tsx (protegida)
+- `/admin/telemetria` [tela] → src/pages/admin-telemetria/AdminTelemetria.tsx (protegida)
+- `/admin/workflows` [tela] → src/pages/admin/WorkflowAdmin.tsx (protegida)
+- `/aprovacoes` [tela] → src/pages/aprovacoes/Aprovacoes.tsx
+- `/auditoria` [tela] → src/pages/auditoria/Auditoria.tsx
+- `/auth` [tela] → src/features/layout/components/PageLoader.tsx (protegida)
+- `/buyer-performance` [tela] → src/pages/buyer/BuyerPerformanceDashboard.tsx
+- `/catalogo-produtos` [tela] → src/pages/catalogo-produtos/CatalogoProdutos.tsx
+- `/catalogo-spot` [tela] → src/pages/catalogo-spot/CatalogoSpot.tsx
+- `/catalogo-xbz` [tela] → src/pages/catalogo-xbz/CatalogoXbz.tsx
+- `/compliance` [tela] → src/pages/compliance/ComplianceDashboard.tsx
+- `/compras` [tela] → src/pages/dashboard/ComprasDashboard.tsx
+- `/configuracoes-centro-custo` [tela] → src/pages/configuracoes/ConfiguracoesCentroCusto.tsx
+- `/contratos` [tela] → src/pages/contratos/Contratos.tsx
+- `/cotacao` [tela] → src/pages/cotacao/Cotacao.tsx
+- `/cotacao/:id` [tela] → src/pages/cotacao/Cotacao.tsx
+- `/dashboard-executivo` [tela] → src/pages/dashboard/DashboardExecutivo.tsx
+- `/devolucoes` [tela] → src/pages/devolucoes/Devolucoes.tsx
+- `/documentos-fiscais` [tela] → src/pages/documentos/DocumentosFiscais.tsx
+- `/estoque` [tela] → src/pages/estoque/GestaoEstoque.tsx
+- `/fornecedores` [tela] → src/pages/fornecedores/Fornecedores.tsx
+- `/gerar-ordem` [tela] → src/pages/gerar-ordem/GerarOrdem.tsx
+- `/historico-compras` [tela] → src/pages/historico/HistoricoCompras.tsx
+- `/kanban` [tela] → src/pages/kanban/KanbanWorkflow.tsx
+- `/licitacoes` [tela] → src/pages/licitacoes/Licitacoes.tsx
+- `/negociacao-ia` [tela] → src/pages/negociacao-ia/NegociacaoIA.tsx
+- `/orcamentos` [tela] → src/pages/orcamentos/Orcamentos.tsx
+- `/pagamentos` [tela] → src/pages/pagamentos/Pagamentos.tsx
+- `/pedidos` [tela] → src/pages/pedidos/Pedidos.tsx
+- `/portal-fornecedor` [tela] → src/pages/portal-fornecedor/PortalFornecedor.tsx (protegida)
+- `/qualificacao-fornecedores` [tela] → src/pages/qualificacao/QualificacaoFornecedores.tsx
+- `/recebimento` [tela] → src/pages/recebimento/RecebimentoOffline.tsx
+- `/recompra-inteligente` [tela] → src/pages/recompra/RecompraInteligente.tsx
+- `/relatorios` [tela] → src/pages/relatorios/Relatorios.tsx
+- `/relatorios/negociacoes` [tela] → src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx
+- `/seguranca` [tela] → src/pages/seguranca/Seguranca.tsx
+- `/solicitacoes` [tela] → src/pages/solicitacoes/Solicitacoes.tsx
+- `/sourcing` [tela] → src/pages/sourcing/Sourcing.tsx
+- `/sourcing/:id` [tela] → src/pages/sourcing/RFxDetails.tsx
+- `/sourcing/:id/auction` [tela] → src/pages/sourcing/AuctionRoom.tsx
+- `/sourcing/novo` [tela] → src/pages/sourcing/RFxCreate.tsx
+- `/supplier-performance` [tela] → src/pages/fornecedores/SupplierPerformance.tsx
+
+## Rotas HTTP de backend
+- `GET /{t}` → scripts/ai-context/cenarios.mjs
+- `GET /a` → scripts/ai-context/cenarios.mjs
+- `GET /a` → scripts/ai-context/cenarios.mjs
+- `POST /b` → scripts/ai-context/cenarios.mjs
+- `POST /b` → scripts/ai-context/cenarios.mjs
+- `DELETE /c` → scripts/ai-context/cenarios.mjs
+- `PUT /d` → scripts/ai-context/cenarios.mjs
+- `GET /items` → scripts/ai-context/gerar.unit.mjs
+- `GET /u` → scripts/ai-context/cenarios.mjs
+- `GET /users` → scripts/ai-context/cenarios.mjs
+- `POST /users/:id` → scripts/ai-context/cenarios.mjs
+- `GET /x` → scripts/ai-context/cenarios.mjs
+
+## Vistas por id (menu/ViewRouter → arquivo)
+- (nenhum)
+
+## Edge functions
+- `ai-demand-prediction` — tabelas: -; chamada por 1 arquivo(s) do front
+- `ai-negotiation` — tabelas: -; chamada por 1 arquivo(s) do front
+- `ai-supplier-risk` — tabelas: -; chamada por 1 arquivo(s) do front
+- `ai-supplier-suggestion` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `alert-dispatcher` — tabelas: notifications, system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `check-approval-escalations` — tabelas: approval_history, approval_steps, approval_workflows, notifications; chamada por 0 arquivo(s) do front, por SQL/cron
+- `check-cotacao-followup` — tabelas: cotacoes, notifications, profiles; chamada por 0 arquivo(s) do front, por SQL/cron
+- `check-expiry-alerts` — tabelas: cotacoes, notifications, pagamentos, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
+- `check-sla-alerts` — tabelas: notifications, pagamentos, pedidos, solicitacoes, user_roles; chamada por 1 arquivo(s) do front, por SQL/cron
+- `dependency-health` — tabelas: audit_logs, dependency_health, dependency_health_history; chamada por 1 arquivo(s) do front
+- `erp-sync` — tabelas: erp_connections, erp_sync_log; chamada por 1 arquivo(s) do front
+- `external-db-bridge` — tabelas: query_telemetry; chamada por 1 arquivo(s) do front
+- `fiscal-orchestrator` — tabelas: fiscal_events; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `generate-contract-pdf` — tabelas: contract_items, contract_penalties, contracts; chamada por 1 arquivo(s) do front
+- `guided-buying-ai` — tabelas: fornecedores, produtos; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `health-dashboard` — tabelas: audit_logs, health_scan_runs, system_alerts, v_system_health_overview; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `maintain-partitions` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `migrate-helper` (verify_jwt=false) — tabelas: -; chamada por 0 arquivo(s) do front
+- `migrate-storage-paths` — tabelas: profiles; chamada por 1 arquivo(s) do front
+- `process-invoice-idp` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `process-outbox` — tabelas: integration_outbox, system_alerts; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `punchout-receive` — tabelas: punchout_sessions, solicitacoes; chamada por 0 arquivo(s) do front
+- `punchout-setup` — tabelas: punchout_catalogs, punchout_sessions, user_tenants; chamada por 1 arquivo(s) do front
+- `run-audit` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `scim-v2` — tabelas: sso_configurations; chamada por 1 arquivo(s) do front
+- `send-push-notification` — tabelas: notifications, push_subscriptions; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `spot-api` — tabelas: spot_api_sync_log, spot_pedidos, spot_sessions, user_roles; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `spot-proxy` — tabelas: spot_pedidos, spot_sessions, user_roles; chamada por 1 arquivo(s) do front
+- `system-simulation` — tabelas: -; chamada por 1 arquivo(s) do front
+- `telemetry` — tabelas: telemetry_logs; chamada por 1 arquivo(s) do front
+- `tests` — tabelas: -; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `webauthn-authenticate` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
+- `webauthn-register` — tabelas: webauthn_challenges, webauthn_credentials; chamada por 1 arquivo(s) do front
+- `weekly-report` — tabelas: cotacoes, notifications, pagamentos, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
+- `weekly-summary-report` — tabelas: cotacoes, notifications, pedidos, solicitacoes, user_roles; chamada por 0 arquivo(s) do front, por SQL/cron
+- `workflow-engine` — tabelas: workflow_approvals, workflow_edges, workflow_instances, workflow_logs, workflow_nodes; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `xbz-proxy` — tabelas: xbz_carrinho_log, xbz_credentials; chamada por 0 arquivo(s) do front — **ÓRFÃ**
+- `xbz-sync-pedidos` — tabelas: system_alerts, xbz_credentials, xbz_pedido_status_history, xbz_pedidos; chamada por 0 arquivo(s) do front, por SQL/cron
+
+## Cron jobs (pg_cron / vercel)
+- `alert-dispatcher-1min` * * * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
+- `approval-escalation-check` */15 * * * * → edge check-approval-escalations (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
+- `archive-audit-logs-old-partitions` 30 3 2 * * (20260712223354_e00522cc-ebe6-4957-bfef-dd6d115c4f5b.sql)
+- `archive-telemetry-logs-old-partitions` 45 3 3 * * (20260712223444_2608de7b-4f9c-4f50-a31a-d8f8834233e9.sql)
+- `check_secret_rotation_due_daily` 0 6 * * * (20260712222404_4c5c4e92-d7a7-4548-9b05-5a5607c29869.sql)
+- `cleanup_expired_password_resets_daily` 35 3 * * * (20260712222142_a253a878-d059-471c-bcd0-7a8f1ce178b9.sql)
+- `cleanup-audit-logs-daily` 15 3 * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
+- `cleanup-deadlock-snapshots-daily` 15 4 * * * (20260712193607_e90c84a9-d4eb-42b3-8564-899bacc01fa2.sql)
+- `cleanup-geo-access-logs` 05 4 * * * (20260711183924_3acc4e45-ed15-45d8-b20d-15add5c34b87.sql)
+- `cleanup-health-scan-runs-daily` 5 8 * * * (20260712195527_2f3ed84f-104a-4828-8d30-2e569a97d1e9.sql)
+- `cleanup-integration-outbox-daily` 30 3 * * * (20260711183148_8694a780-0861-49f9-a337-d565e5e15ef4.sql)
+- `cleanup-login-attempts` 55 3 * * * (20260711183924_3acc4e45-ed15-45d8-b20d-15add5c34b87.sql)
+- `cleanup-query-telemetry` 55 3 * * * (20260711191946_872a6814-ab1c-4596-b6d7-c3e5c8379396.sql)
+- `cleanup-rate-limit-logs` 00 4 * * * (20260711183924_3acc4e45-ed15-45d8-b20d-15add5c34b87.sql)
+- `cleanup-security-logs-daily` 0 3 * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
+- `cleanup-system-alerts` 45 3 * * * (20260711183647_cb1ddb07-f7db-40d3-bb0e-d42adfb914a0.sql)
+- `cleanup-telemetry-hourly` 30 * * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
+- `cleanup-telemetry-logs` 50 3 * * * (20260711183924_3acc4e45-ed15-45d8-b20d-15add5c34b87.sql)
+- `cleanup-temp-file-snapshots-daily` 20 3 * * * (20260712221049_be67ff27-0f0f-4271-9017-6ebe0acafe1b.sql)
+- `cleanup-wal-rate-snapshots-daily` 25 3 * * * (20260712221049_be67ff27-0f0f-4271-9017-6ebe0acafe1b.sql)
+- `cleanup-webhook-events-daily` 15 3 * * * (20260711183148_8694a780-0861-49f9-a337-d565e5e15ef4.sql)
+- `contract-expiry-check` 0 7 * * * → edge check-expiry-alerts (20260402113249_b5e59bf9-8946-423d-8295-96738436f121.sql)
+- `cotacao-followup-check` 0 12 * * * → edge check-cotacao-followup (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
+- `cron-watchdog` */5 * * * * (20260711183343_43dc2b31-4f1c-4e2d-bea9-1da967fe29e5.sql)
+- `ensure-audit-logs-next-partition` 0 4 25 * * (20260712223300_6f689f47-2c15-468b-b667-679e47facc11.sql)
+- `ensure-telemetry-logs-next-partition` 0 4 25 * * (20260712222930_cd4547af-7aac-44d8-8ac2-48991a40dfbf.sql)
+- `expiry-alerts-check` 0 10 * * * → edge check-expiry-alerts (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
+- `lgpd_retention_daily` 15 3 * * * (20260712215341_6309002c-447e-4a28-8473-3fdc3c8fe92e.sql)
+- `outbox-worker-1min` * * * * * (20260711153258_f292f3e6-aff3-4382-9b85-99a3edd5224b.sql)
+- `pg-activity-watchdog` */2 * * * * (20260712110815_762ad29c-b3f7-4e44-a0ec-f6b624174ca3.sql)
+- `refresh-mv-dashboard-kpis` */15 * * * * (20260712222620_110cc02b-1d32-42e6-a778-96d41f60eeb2.sql)
+- `run-all-health-scans-hourly` 17 * * * * (20260712195527_2f3ed84f-104a-4828-8d30-2e569a97d1e9.sql)
+- `scan_duplicate_indexes_weekly` 47 4 * * 1 (20260713110159_94ff935c-b0ce-41ae-8d40-bda6ca91f908.sql)
+- `scan_table_growth_daily` 17 3 * * * (20260713105907_4b197a0e-74a0-4812-9175-87b9ca7c56ba.sql)
+- `scan_txid_wraparound_30min` */30 * * * * (20260713110314_5a4d642f-daaa-45c3-903b-93a46d92bfa6.sql)
+- `scan_unused_indexes_weekly` 23 4 * * 1 (20260713110028_8ada5be7-193d-41f7-be83-9cd839c1ea56.sql)
+- `scan-autovacuum-starvation-daily` 45 5 * * * (20260712193915_b284d70d-8be1-40ea-bc27-9960670c2653.sql)
+- `scan-blocking-locks-1m` * * * * * (20260713105330_daf01ebf-ca7d-477b-b37a-d968d74afc67.sql)
+- `scan-cache-hit-ratio-30m` */30 * * * * (20260713105021_ef02f040-6e49-4cd8-b68f-8a9c06e9abdb.sql)
+- `scan-connection-saturation-5m` */5 * * * * (20260713105021_ef02f040-6e49-4cd8-b68f-8a9c06e9abdb.sql)
+- `scan-dangerous-statements` 17 * * * * (20260712110143_e51c0b00-e688-4f8e-971f-74952f32cac7.sql)
+- `scan-deadlocks-conflicts-15min` */15 * * * * (20260712193607_e90c84a9-d4eb-42b3-8564-899bacc01fa2.sql)
+- `scan-idle-in-txn-2m` */2 * * * * (20260713105624_e9839757-2d20-4362-9acb-6a4c4e20a482.sql)
+- `scan-invalid-dup-indexes-daily` 45 4 * * * (20260712194543_ce151ace-bcd7-41ef-a90a-45b137ebd495.sql)
+- `scan-lock-waits-2min` */2 * * * * (20260712195141_7ca09192-718b-4750-8fc4-0c2f7e582404.sql)
+- `scan-long-running-queries-2m` */2 * * * * (20260713105021_ef02f040-6e49-4cd8-b68f-8a9c06e9abdb.sql)
+- `scan-long-running-transactions-10min` */10 * * * * (20260712142817_cb94f248-eabf-4053-bdd7-aa03f4bf09f1.sql)
+- `scan-long-running-txn-5min` */5 * * * * (20260712195030_ff90d369-cac2-4bc6-949e-efc30b3cb9f9.sql)
+- `scan-partition-candidates-weekly` 0 6 * * 3 (20260712141935_8b9bcc8b-e10f-4daf-9fff-34edf503ca62.sql)
+- `scan-replication-slots-30m` */30 * * * * (20260712194423_2774c8d2-c16b-490e-baec-5530d857a2d8.sql)
+- `scan-rollback-rate-15m` */15 * * * * (20260713104844_2b93e809-e50c-42b3-8e4d-116073563946.sql)
+- `scan-scan-runs-sla` */10 * * * * (20260712224134_ca41be74-9d7b-4676-9337-9ebbdecedab3.sql)
+- `scan-schema-hygiene-weekly` 0 7 * * 0 (20260712195253_10a16ba3-8b4a-424c-ba4b-2c3af454030a.sql)
+- `scan-sequence-exhaustion-daily` 15 6 * * * (20260712194927_357b0d5b-8b64-42dd-8df1-0dcedef79735.sql)
+- `scan-slow-query-hotspots-1h` 7 * * * * (20260713105738_d761e68c-1321-43bc-b757-9ede7dc86517.sql)
+- `scan-stale-alerts-daily` 30 7 * * * (20260712195408_36fb0763-69fd-42de-8270-201660eb8fe7.sql)
+- `scan-tables-without-pk-daily` 15 5 * * * (20260712192008_74f174de-700f-4c1e-93fe-f8cea3ca8355.sql)
+- `scan-temp-file-usage-10min` */10 * * * * (20260712192153_2a9b74d6-8ba5-4308-ba55-87b4b9396331.sql)
+- `scan-temp-spill-15m` */15 * * * * (20260713105504_34c5b9f6-89bd-47ed-956a-449faeb0d993.sql)
+- `scan-toast-bloat-weekly` 0 6 * * 0 (20260712194040_3b7d19ab-d3dd-42ee-933b-4340975fe077.sql)
+- `scan-unindexed-fks-weekly` 30 5 * * 1 (20260713105146_e80e0d55-eec6-4fb9-a279-49501a05bb70.sql)
+- `scan-unused-indexes-weekly` 15 5 * * 1 (20260712194659_702ebacc-eef1-4a7a-a2fc-2a58f8ea316e.sql)
+- `scan-xid-wraparound-daily` 30 3 * * * (20260712194304_ad9d9443-9507-4e9f-8751-193ff290401e.sql)
+- `security_definer_drift_quarterly` 0 4 1 1,4,7,10 * (20260712215549_fcc6489a-009e-4050-8955-9ac162d4f3dd.sql)
+- `sla-alert-check` 0 */4 * * * → edge check-sla-alerts (20260402113249_b5e59bf9-8946-423d-8295-96738436f121.sql)
+- `sla-alerts-check` */30 * * * * → edge check-sla-alerts (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
+- `weekly-procurement-report` 0 11 * * 1 → edge weekly-report (20260402114640_da3f3e68-f49b-4af1-8a41-32869d820cda.sql)
+- `weekly-summary-report-job` 0 8 * * 1 → edge weekly-summary-report (20260507194402_b30cf397-f164-4a9e-b0d1-bbe8d1ecc990.sql)
+
+## Integrações externas
+- SDKs: Supabase, i18next, react-query, zod
+- hosts mais citados: api.resend.com, ws.spotgifts.com.br, www.spotgifts.com.br, wa.me, x.supabase.co, ai.gateway.lovable.dev, api.pwnedpasswords.com, api.supabase.com, api.x.com, example.okta.com, hooks.slack.com, hub-harmony-unite.lovable.app, lmypcdfsrgfftzhxawao.supabase.co, raw.githubusercontent.com, spotgifts.com.br
+- webhooks recebidos: migrate-helper
+- env de integração (só nomes): CRON_SECRET, GITHUB_DISPATCH_TOKEN, LOVABLE_API_KEY, RESEND_API_KEY, SCIM_TEST_TOKEN, SEFAZ_API_TOKEN, SEFAZ_WEBHOOK_URL, SLACK_WEBHOOK_URL, VITE_BITRIX_WEBHOOK_URL
+
+## Permissões / papéis
+- papéis no código: admin (9), user (6), system (4), alert (3), status (3), dialog (2), group (2), agent (1), assistant (1), button (1), buyer (1), combobox (1), link (1), main (1), navigation (1), presentation (1), separator (1), sup (1)
+- enums de papel: app_role: admin|coordinator|buyer|finance|viewer|supplier
+- guards: src/features/auth/components/ProtectedRoute.tsx · rotas protegidas: 14 · públicas: /__dev/xbz-network-panel, /*, /acompanhamento, /aprovacoes, /auditoria, /buyer-performance, /catalogo-produtos, /catalogo-spot, /catalogo-xbz, /compliance, /compras, /configuracoes-centro-custo, /contratos, /cotacao, /cotacao/:id, /dashboard-executivo, /devolucoes, /documentos-fiscais, /estoque, /fornecedores, /gerar-ordem, /historico-compras, /kanban, /licitacoes, /negociacao-ia, /orcamentos, /pagamentos, /pedidos, /qualificacao-fornecedores, /recebimento, /recompra-inteligente, /relatorios, /relatorios/negociacoes, /seguranca, /solicitacoes, /sourcing, /sourcing/:id, /sourcing/:id/auction, /sourcing/novo, /supplier-performance
+- feature flags: FEATURE_X, nova-tela, novo-inbox
+
+## Alertas (baseline.json → alertas)
+- rotas_sem_arquivo: 0
+- componentes_ambiguos: 0
+- menu_sem_destino: 2 — ex.: Fechar -> close-modal, Mais -> more
+- edges_orfas: 14 — ex.: ai-supplier-suggestion, alert-dispatcher, fiscal-orchestrator
+- edges_chamadas_sem_pasta: 1 — ex.: process-solicitacao-neural
+- tabelas_sem_rls: 0
+- tabelas_usadas_sem_definicao: 2 — ex.: comprovantes, documentos
+- tabelas_com_drift_migration_vs_types: 49 — ex.: active_sessions, approval_delegations, approval_hierarchy
+- rpcs_sem_definicao: 0
+- componentes_orfaos: 13 — ex.: src/components/atoms/EliteImage.tsx, src/components/atoms/PreloadLink.tsx, src/components/compras/HistoricoComprasModal.tsx
+- componentes_com_nome_duplicado: 10 — ex.: AnimatedCounter, COLORS, Confetti
+- scripts_orfaos: 0
+- env_usadas_nao_declaradas: 7 — ex.: DEV, FUZZ_SEED, INTEGRATION_TESTS
+- ciclos_de_import: 2
+- possiveis_segredos_no_codigo: 1 — ex.: scripts/ai-context/cenarios.mjs:102
+
+## Grafo de código (graphify)
+- não gerado neste run. uvx --from "graphifyy[sql]" graphify update .  (ou: bun run graph:update); saída em graphify-out/ — graph.json e graph.html NÃO são versionados (dezenas de MB); use `graphify query/path/explain` localmente
+
+## Hotspots (arquivos mais alterados, 90 dias)
+- ESTADO_ATUAL.md (3)
+- supabase/config.toml (3)
+- AGENTS.md (2)
+- DOCS/ESTADO/00_INDICE.md (2)
+- DOCS/ESTADO/L01_ROTAS_E_PAGINAS_NUCLEO.md (2)
+- DOCS/ESTADO/L07_HOOKS.md (2)
+- DOCS/ESTADO/L12_BANCO_E_RUNTIME.md (2)
+- DOCS/ESTADO/L14_VERIFICACAO_INDEPENDENTE.md (2)
+- supabase/functions/migrate-helper/index.ts (2)
+- .github/workflows/contexto.yml (1)
+- .github/workflows/inventario-estado-semanal.yml (1)
+- .github/workflows/main.yml (1)
+- .github/workflows/types-sync.yml (1)
+- DOCS/ESTADO/L02_PAGINAS_FLUXO_COMPRAS.md (1)
+- DOCS/ESTADO/L03_PAGINAS_CATALOGO_IA_RELATORIOS.md (1)
+
+## Workflows
+- `contexto.yml` — Contexto para agentes de IA (10 min) (push, schedule, workflow_dispatch; cron 3-59/10 * * * *)
+- `inventario-estado-semanal.yml` — Inventário do estado real (semanal) (schedule, workflow_dispatch; cron 41 10 * * 1)
+- `main.yml` — Freight Quest CI/CD (pull_request, push)
+- `types-sync.yml` — types-sync (push, schedule, workflow_dispatch; cron 7-59/10 * * * *)
+
+## Scripts npm
+- `dev`: `vite`
+- `build`: `vite build`
+- `build:dev`: `vite build --mode development`
+- `lint`: `eslint .`
+- `preview`: `vite preview`
+- `test`: `vitest run`
+- `test:rls`: `vitest run --config ./vitest.rls.config.ts`
+- `test:bridge`: `bun run scripts/validate-bridge.ts`
+- `test:watch`: `vitest`
+- `test:e2e`: `playwright test`
+- `test:load`: `npx artillery run src/tests/load/backend-stress.yml`
+- `test:coverage`: `vitest run --coverage`
+- `test:all`: `npm run lint && npm run typecheck && npm run test && npm run test:coverage && npm run test:e2e`
+- `test:simulate`: `curl -X POST "$VITE_SUPABASE_URL/functions/v1/system-simulation" -H "Authorization: Bearer $SUPABASE_SERVICE_ROLE_KEY" -H "Content-Type: application/json" -d '{"iterations": 50}'`
+- `typecheck`: `tsc --noEmit`
+- `contexto:codigo`: `node scripts/ai-context/gerar.mjs --out docs/contexto/codigo`
+- `contexto:regras`: `python3 scripts/regras_negocio/generate.py --repo . --out docs/contexto/regras --profile regras --schema-snapshot docs/contexto/supabase --no-pointer`
+- `contexto:banco`: `python3 scripts/supabase_snapshot/snapshot.py`
+- `contexto:indice`: `python3 scripts/regras_negocio/indice.py --repo . --out docs/contexto/00-INDEX.md --fonte "banco real=docs/contexto/supabase" --fonte "código=docs/contexto/codigo" --fonte "regras de negócio=docs/contexto/regras"`
+- `test:scripts`: `node --test scripts/ci/*.unit.mjs`
+- `prepare`: ``
+
+## Documentos (raiz e docs/)
+- `AGENTS.md` — AGENTS.md — Promo_Supply_V2 (96 linhas)
+- `ESTADO_ATUAL.md` — ESTADO ATUAL DO SISTEMA — Promo Supply V2 (264 linhas)
+- `README.md` — Welcome to your Lovable project (59 linhas)
+- subpastas de docs/: docs/contexto (2), docs/agentes (1), docs/conventions (1)
+
+
+## Últimos commits
+- 2026-11-08 `d44bb8f` feat(contexto): porta sistema de contexto autônomo do Zapp para Promo Supply V2 (#15)
+- 2026-11-08 `0bdc3cb` fix(supabase): aponta todo o código ativo para o projeto Supabase oficial
+- 2026-11-08 `32c06b2` chore(ci): remove ci.yml, workflow duplicado que nunca executou um job (#18)
+- 2026-11-08 `153e02d` fix(testes): destrava o CI da main (lint + 3 testes do logger) (#17)
+- 2026-08-28 `97b6efc` Visual edit in Lovable
+- 2026-08-18 `d56d214` chore(hermes): adiciona .hermes.md (regras da casa Hermes)
+- 2026-08-18 `d429b88` chore(agents): adiciona AGENTS.md padrao (contexto multi-agente)
+- 2026-08-18 `a7406f9` Merge pull request #13 from adm01-debug/claude/system-status-roadmap-ei4jyi
+- 2026-08-16 `f49b29c` docs(auditoria): meta-auditoria adversarial da propria auditoria (L15)
+- 2026-08-16 `d18393f` docs(auditoria): documento executivo ESTADO_ATUAL.md e lote 11
+- 2026-08-16 `3f91cb5` docs(auditoria): lote 10 (edge functions) e verificações da Fase D
+- 2026-08-16 `addf5e4` docs(auditoria): lotes 03, 06-09 e verificação independente (Fase D)
+- 2026-08-16 `1a591df` docs(auditoria): lotes de evidência 01-05, 07, 12-13 da auditoria de estado
+- 2026-08-11 `58f4fc8` security: remove migrate-helper edge function (exposes service_role key)
+- 2026-08-07 `686ef28` merge: master para main
+
+## Arquivos deste diretório
+- `docs/contexto/codigo/rotas.json`
+- `docs/contexto/codigo/modulos.json`
+- `docs/contexto/codigo/componentes.json`
+- `docs/contexto/codigo/hooks.json`
+- `docs/contexto/codigo/edge-functions.json`
+- `docs/contexto/codigo/banco.json`
+- `docs/contexto/codigo/ferramentas.json`
+- `docs/contexto/codigo/scripts.json`
+- `docs/contexto/codigo/testes.json`
+- `docs/contexto/codigo/logica.json`
+- `docs/contexto/codigo/grafo.json`
+- `docs/contexto/codigo/grafo-arestas.json`
+- `docs/contexto/codigo/convencoes.json`
+- `docs/contexto/codigo/grafo-graphify.json`
+- `docs/contexto/codigo/baseline.json`
+- `docs/contexto/codigo/manifest.json` (commit, data, hashes, erros — único arquivo com data/hora)

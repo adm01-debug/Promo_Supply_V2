@@ -1,0 +1,766 @@
+{
+ "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
+ "format_version": 2,
+ "git": {
+  "commit": "d44bb8fa9bc24ed6aa0ae40e84b9e5db54f4082d",
+  "branch": "main",
+  "data_commit": "2026-11-08T15:40:29-03:00",
+  "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
+  "ultimos_commits": [
+   {
+    "sha": "d44bb8f",
+    "data": "2026-11-08",
+    "assunto": "feat(contexto): porta sistema de contexto autônomo do Zapp para Promo Supply V2 (#15)"
+   },
+   {
+    "sha": "0bdc3cb",
+    "data": "2026-11-08",
+    "assunto": "fix(supabase): aponta todo o código ativo para o projeto Supabase oficial"
+   },
+   {
+    "sha": "32c06b2",
+    "data": "2026-11-08",
+    "assunto": "chore(ci): remove ci.yml, workflow duplicado que nunca executou um job (#18)"
+   },
+   {
+    "sha": "153e02d",
+    "data": "2026-11-08",
+    "assunto": "fix(testes): destrava o CI da main (lint + 3 testes do logger) (#17)"
+   },
+   {
+    "sha": "97b6efc",
+    "data": "2026-08-28",
+    "assunto": "Visual edit in Lovable"
+   },
+   {
+    "sha": "d56d214",
+    "data": "2026-08-18",
+    "assunto": "chore(hermes): adiciona .hermes.md (regras da casa Hermes)"
+   },
+   {
+    "sha": "d429b88",
+    "data": "2026-08-18",
+    "assunto": "chore(agents): adiciona AGENTS.md padrao (contexto multi-agente)"
+   },
+   {
+    "sha": "a7406f9",
+    "data": "2026-08-18",
+    "assunto": "Merge pull request #13 from adm01-debug/claude/system-status-roadmap-ei4jyi"
+   },
+   {
+    "sha": "f49b29c",
+    "data": "2026-08-16",
+    "assunto": "docs(auditoria): meta-auditoria adversarial da propria auditoria (L15)"
+   },
+   {
+    "sha": "d18393f",
+    "data": "2026-08-16",
+    "assunto": "docs(auditoria): documento executivo ESTADO_ATUAL.md e lote 11"
+   },
+   {
+    "sha": "3f91cb5",
+    "data": "2026-08-16",
+    "assunto": "docs(auditoria): lote 10 (edge functions) e verificações da Fase D"
+   },
+   {
+    "sha": "addf5e4",
+    "data": "2026-08-16",
+    "assunto": "docs(auditoria): lotes 03, 06-09 e verificação independente (Fase D)"
+   },
+   {
+    "sha": "1a591df",
+    "data": "2026-08-16",
+    "assunto": "docs(auditoria): lotes de evidência 01-05, 07, 12-13 da auditoria de estado"
+   },
+   {
+    "sha": "58f4fc8",
+    "data": "2026-08-11",
+    "assunto": "security: remove migrate-helper edge function (exposes service_role key)"
+   },
+   {
+    "sha": "686ef28",
+    "data": "2026-08-07",
+    "assunto": "merge: master para main"
+   },
+   {
+    "sha": "e8909e3",
+    "data": "2026-08-07",
+    "assunto": "feat: Migração Banco Lovable para Supabase Promo Supply - V2"
+   },
+   {
+    "sha": "8db6fe0",
+    "data": "2026-07-26",
+    "assunto": "Migrou schema e API SPOT"
+   },
+   {
+    "sha": "d4125ed",
+    "data": "2026-07-26",
+    "assunto": "Changes"
+   },
+   {
+    "sha": "1439f2d",
+    "data": "2026-07-26",
+    "assunto": "Changes"
+   },
+   {
+    "sha": "588e3f0",
+    "data": "2026-07-26",
+    "assunto": "Changes"
+   },
+   {
+    "sha": "c6bdde1",
+    "data": "2026-07-26",
+    "assunto": "Changes"
+   },
+   {
+    "sha": "cb097e2",
+    "data": "2026-07-26",
+    "assunto": "Changes"
+   },
+   {
+    "sha": "bd3080c",
+    "data": "2026-07-26",
+    "assunto": "Changes"
+   },
+   {
+    "sha": "394a8f7",
+    "data": "2026-07-26",
+    "assunto": "Changes"
+   },
+   {
+    "sha": "ae5d5f0",
+    "data": "2026-07-26",
+    "assunto": "Changes"
+   }
+  ],
+  "arquivos_mudados_7d": 55,
+  "pastas_mais_mudadas_30d": [
+   {
+    "pasta": "docs/contexto/regras",
+    "mudancas": 2
+   },
+   {
+    "pasta": "src/lib/__tests__",
+    "mudancas": 2
+   },
+   {
+    "pasta": ".github/workflows/ci.yml",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".github/workflows/contexto.yml",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".github/workflows/inventario-estado-semanal.yml",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".github/workflows/main.yml",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".github/workflows/types-sync.yml",
+    "mudancas": 1
+   },
+   {
+    "pasta": ".gitignore",
+    "mudancas": 1
+   },
+   {
+    "pasta": "AGENTS.md",
+    "mudancas": 1
+   },
+   {
+    "pasta": "ESTADO_ATUAL.md",
+    "mudancas": 1
+   },
+   {
+    "pasta": "ai-context.config.json",
+    "mudancas": 1
+   },
+   {
+    "pasta": "docs/agentes/contexto-ia.md",
+    "mudancas": 1
+   },
+   {
+    "pasta": "index.html",
+    "mudancas": 1
+   },
+   {
+    "pasta": "inventario/README.md",
+    "mudancas": 1
+   },
+   {
+    "pasta": "inventario/estado/edges.json",
+    "mudancas": 1
+   }
+  ],
+  "arquivos_mais_mudados_90d": [
+   {
+    "arquivo": "ESTADO_ATUAL.md",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "supabase/config.toml",
+    "mudancas": 3
+   },
+   {
+    "arquivo": "AGENTS.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "DOCS/ESTADO/00_INDICE.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L01_ROTAS_E_PAGINAS_NUCLEO.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L07_HOOKS.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L12_BANCO_E_RUNTIME.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L14_VERIFICACAO_INDEPENDENTE.md",
+    "mudancas": 2
+   },
+   {
+    "arquivo": "supabase/functions/migrate-helper/index.ts",
+    "mudancas": 2
+   },
+   {
+    "arquivo": ".github/workflows/contexto.yml",
+    "mudancas": 1
+   },
+   {
+    "arquivo": ".github/workflows/inventario-estado-semanal.yml",
+    "mudancas": 1
+   },
+   {
+    "arquivo": ".github/workflows/main.yml",
+    "mudancas": 1
+   },
+   {
+    "arquivo": ".github/workflows/types-sync.yml",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L02_PAGINAS_FLUXO_COMPRAS.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L03_PAGINAS_CATALOGO_IA_RELATORIOS.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L04_COMPONENTS_COMPRAS_P1.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L05_COMPONENTS_COMPRAS_P2.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L06_COMPONENTS_TRANSVERSAIS.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L08_FEATURES.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L09_LIB_STORES_SERVICES.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L10_EDGE_FUNCTIONS.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L11_CI_TESTES_E_DOCS.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L13_MIGRATIONS.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "DOCS/ESTADO/L15_META_AUDITORIA.md",
+    "mudancas": 1
+   },
+   {
+    "arquivo": "ai-context.config.json",
+    "mudancas": 1
+   }
+  ],
+  "autores_30d": [
+   {
+    "autor": "adm01-debug",
+    "commits": 4
+   }
+  ]
+ },
+ "contagens": {
+  "arquivos_total": 1090,
+  "arquivos_codigo": 698,
+  "linhas_codigo": 139610,
+  "rotas": 55,
+  "rotas_http_backend": 12,
+  "vistas_por_id": 0,
+  "itens_menu": 48,
+  "modulos": 86,
+  "componentes": 326,
+  "hooks": 90,
+  "edge_functions": 38,
+  "tabelas": 164,
+  "migrations": 279,
+  "cron_jobs": 68,
+  "testes": 127,
+  "workflows": 4,
+  "scripts": 24,
+  "docs_md": 56
+ },
+ "por_pasta": {
+  "eslint.config.js": {
+   "arquivos": 1,
+   "linhas": 39
+  },
+  "playwright.config.ts": {
+   "arquivos": 1,
+   "linhas": 22
+  },
+  "postcss.config.js": {
+   "arquivos": 1,
+   "linhas": 7
+  },
+  "scripts/ai-context": {
+   "arquivos": 3,
+   "linhas": 1458
+  },
+  "scripts/ci": {
+   "arquivos": 3,
+   "linhas": 310
+  },
+  "scripts/db-explain-analyze.ts": {
+   "arquivos": 1,
+   "linhas": 81
+  },
+  "scripts/inventario": {
+   "arquivos": 4,
+   "linhas": 816
+  },
+  "scripts/realtime-audit.ts": {
+   "arquivos": 1,
+   "linhas": 47
+  },
+  "scripts/regras_negocio": {
+   "arquivos": 3,
+   "linhas": 2539
+  },
+  "scripts/rls-audit.ts": {
+   "arquivos": 1,
+   "linhas": 74
+  },
+  "scripts/stress-test.ts": {
+   "arquivos": 1,
+   "linhas": 93
+  },
+  "scripts/supabase_snapshot": {
+   "arquivos": 2,
+   "linhas": 2669
+  },
+  "scripts/types-sync": {
+   "arquivos": 4,
+   "linhas": 626
+  },
+  "scripts/validate-bridge.ts": {
+   "arquivos": 1,
+   "linhas": 73
+  },
+  "src/App.tsx": {
+   "arquivos": 1,
+   "linhas": 91
+  },
+  "src/components": {
+   "arquivos": 257,
+   "linhas": 48392
+  },
+  "src/features": {
+   "arquivos": 63,
+   "linhas": 8376
+  },
+  "src/hooks": {
+   "arquivos": 71,
+   "linhas": 12131
+  },
+  "src/i18n": {
+   "arquivos": 1,
+   "linhas": 37
+  },
+  "src/integrations": {
+   "arquivos": 3,
+   "linhas": 10153
+  },
+  "src/lib": {
+   "arquivos": 43,
+   "linhas": 5500
+  },
+  "src/main.tsx": {
+   "arquivos": 1,
+   "linhas": 55
+  },
+  "src/pages": {
+   "arquivos": 117,
+   "linhas": 27461
+  },
+  "src/routes": {
+   "arquivos": 1,
+   "linhas": 158
+  },
+  "src/schemas": {
+   "arquivos": 2,
+   "linhas": 184
+  },
+  "src/services": {
+   "arquivos": 3,
+   "linhas": 368
+  },
+  "src/stores": {
+   "arquivos": 10,
+   "linhas": 2366
+  },
+  "src/test": {
+   "arquivos": 1,
+   "linhas": 16
+  },
+  "src/tests": {
+   "arquivos": 10,
+   "linhas": 756
+  },
+  "src/types": {
+   "arquivos": 3,
+   "linhas": 344
+  },
+  "supabase/functions": {
+   "arquivos": 70,
+   "linhas": 12818
+  },
+  "tailwind.config.ts": {
+   "arquivos": 1,
+   "linhas": 384
+  },
+  "tests-e2e/auth-navigation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 74
+  },
+  "tests-e2e/critical-flows.spec.ts": {
+   "arquivos": 1,
+   "linhas": 51
+  },
+  "tests-e2e/dashboard-ui.spec.ts": {
+   "arquivos": 1,
+   "linhas": 37
+  },
+  "tests-e2e/elite-validation.spec.ts": {
+   "arquivos": 1,
+   "linhas": 55
+  },
+  "tests-e2e/fixtures.ts": {
+   "arquivos": 1,
+   "linhas": 36
+  },
+  "tests-e2e/global-setup.ts": {
+   "arquivos": 1,
+   "linhas": 50
+  },
+  "tests-e2e/production-ready.spec.ts": {
+   "arquivos": 1,
+   "linhas": 61
+  },
+  "tests-e2e/workflow-advanced.spec.ts": {
+   "arquivos": 1,
+   "linhas": 51
+  },
+  "tests-e2e/xbz-network-panel.spec.ts": {
+   "arquivos": 1,
+   "linhas": 144
+  },
+  "tests-rls/rls-isolation.test.ts": {
+   "arquivos": 1,
+   "linhas": 213
+  },
+  "vite.config.ts": {
+   "arquivos": 1,
+   "linhas": 326
+  },
+  "vitest.config.ts": {
+   "arquivos": 1,
+   "linhas": 45
+  },
+  "vitest.rls.config.ts": {
+   "arquivos": 1,
+   "linhas": 23
+  }
+ },
+ "maiores_arquivos": [
+  {
+   "arquivo": "src/integrations/supabase/types.ts",
+   "linhas": 10094
+  },
+  {
+   "arquivo": "scripts/regras_negocio/generate.py",
+   "linhas": 2138
+  },
+  {
+   "arquivo": "scripts/supabase_snapshot/snapshot.py",
+   "linhas": 1791
+  },
+  {
+   "arquivo": "src/pages/admin/DependencyHealth.tsx",
+   "linhas": 1338
+  },
+  {
+   "arquivo": "src/components/compras/SourcingHistoryConsole.tsx",
+   "linhas": 973
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "linhas": 924
+  },
+  {
+   "arquivo": "supabase/functions/spot-proxy/index.ts",
+   "linhas": 878
+  },
+  {
+   "arquivo": "src/pages/admin/HealthDashboard.tsx",
+   "linhas": 855
+  },
+  {
+   "arquivo": "supabase/functions/dependency-health/index.ts",
+   "linhas": 708
+  },
+  {
+   "arquivo": "src/components/ui/sidebar.tsx",
+   "linhas": 638
+  },
+  {
+   "arquivo": "supabase/functions/spot-api/index.ts",
+   "linhas": 623
+  },
+  {
+   "arquivo": "src/hooks/useXbzIntegration.ts",
+   "linhas": 615
+  },
+  {
+   "arquivo": "src/components/compras/ComparadorCotacoes.tsx",
+   "linhas": 604
+  },
+  {
+   "arquivo": "src/pages/negociacao-ia/NegociacaoIA.tsx",
+   "linhas": 604
+  },
+  {
+   "arquivo": "src/pages/gerar-ordem/GerarOrdem.tsx",
+   "linhas": 564
+  },
+  {
+   "arquivo": "src/components/compras/ContractModal.tsx",
+   "linhas": 524
+  },
+  {
+   "arquivo": "src/components/compras/EnhancedPedidoTimeline.tsx",
+   "linhas": 520
+  },
+  {
+   "arquivo": "src/components/compras/BulkOperationsPreview.tsx",
+   "linhas": 515
+  },
+  {
+   "arquivo": "src/pages/buyer/BuyerPerformanceDashboard.tsx",
+   "linhas": 511
+  },
+  {
+   "arquivo": "src/pages/sourcing/RFxCreate.tsx",
+   "linhas": 505
+  },
+  {
+   "arquivo": "src/components/compras/PriceComparator.tsx",
+   "linhas": 498
+  },
+  {
+   "arquivo": "src/pages/catalogo-produtos/CatalogoProdutos.tsx",
+   "linhas": 489
+  },
+  {
+   "arquivo": "src/hooks/useRealPushNotifications.ts",
+   "linhas": 483
+  },
+  {
+   "arquivo": "src/components/compras/AdvancedProcurementKPIs.tsx",
+   "linhas": 481
+  },
+  {
+   "arquivo": "supabase/functions/xbz-proxy/index.ts",
+   "linhas": 481
+  }
+ ],
+ "qualidade": {
+  "any": 101,
+  "console_log": 54,
+  "ts_ignore": 0,
+  "eslint_disable": 1,
+  "todos": 3,
+  "arquivos_acima_500_linhas": 20
+ },
+ "todos": [
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "linha": 188,
+   "tipo": "TODO",
+   "texto": "|FIXME|HACK|XXX)\\b[:\\s-]*([^\\n]{0,100})/.exec(line); if (m) todos.push({ linha: ln, tipo: m[1], text"
+  },
+  {
+   "arquivo": "scripts/ai-context/gerar.mjs",
+   "linha": 222,
+   "tipo": "TODO",
+   "texto": "|FIXME|HACK|XXX)\\b[:\\s-]*([^\\n]{0,100})/.exec(l); return m ? { linha: i + 1, tipo: m[1], texto: m[2]"
+  },
+  {
+   "arquivo": "scripts/regras_negocio/generate.py",
+   "linha": 570,
+   "tipo": "TODO",
+   "texto": "\", \"http\", \"import\")) and \"://\" not in c:"
+  }
+ ],
+ "alertas": {
+  "rotas_sem_arquivo": [],
+  "componentes_ambiguos": [],
+  "menu_sem_destino": [
+   "Fechar -> close-modal",
+   "Mais -> more"
+  ],
+  "edges_orfas": [
+   "ai-supplier-suggestion",
+   "alert-dispatcher",
+   "fiscal-orchestrator",
+   "guided-buying-ai",
+   "health-dashboard",
+   "maintain-partitions",
+   "process-invoice-idp",
+   "process-outbox",
+   "run-audit",
+   "send-push-notification",
+   "spot-api",
+   "tests",
+   "workflow-engine",
+   "xbz-proxy"
+  ],
+  "edges_chamadas_sem_pasta": [
+   "process-solicitacao-neural"
+  ],
+  "tabelas_sem_rls": [],
+  "tabelas_usadas_sem_definicao": [
+   "comprovantes",
+   "documentos"
+  ],
+  "tabelas_com_drift_migration_vs_types": [
+   "active_sessions",
+   "approval_delegations",
+   "approval_hierarchy",
+   "approval_history",
+   "approval_rules",
+   "approval_steps",
+   "approval_workflows",
+   "auction_bids",
+   "budget_transactions",
+   "categorias",
+   "category_strategies",
+   "contact_notes",
+   "contract_documents",
+   "contract_history",
+   "contract_items",
+   "contract_penalties",
+   "contracts",
+   "cost_centers",
+   "cotacoes",
+   "creditos_fornecedor",
+   "department_budgets",
+   "devolucao_itens",
+   "devolucoes",
+   "fornecedores",
+   "licitacao_lances",
+   "licitacao_propostas",
+   "licitacoes",
+   "notifications",
+   "order_contracts",
+   "pagamentos",
+   "payment_history",
+   "pedido_itens",
+   "penalty_escalation_config",
+   "produtos",
+   "receiving_checklists",
+   "solicitacoes",
+   "sourcing_awards",
+   "sourcing_event_criteria",
+   "sourcing_event_lots",
+   "sourcing_event_questions",
+   "sourcing_events",
+   "sourcing_invitations",
+   "sourcing_pipeline",
+   "sourcing_response_answers",
+   "sourcing_response_items",
+   "sourcing_responses",
+   "spend_forecasts",
+   "supplier_bonifications",
+   "tenants"
+  ],
+  "rpcs_sem_definicao": [],
+  "componentes_orfaos": [
+   "src/components/atoms/EliteImage.tsx",
+   "src/components/atoms/PreloadLink.tsx",
+   "src/components/compras/HistoricoComprasModal.tsx",
+   "src/components/compras/OrderPreviewModal.tsx",
+   "src/components/compras/ReceivingModal.tsx",
+   "src/components/compras/SourcingHistoryConsole.tsx",
+   "src/components/fornecedores/FornecedorMobileCard.tsx",
+   "src/components/molecules/EliteFormField.tsx",
+   "src/components/organisms/Organism.tsx",
+   "src/components/ui/chart.tsx",
+   "src/components/ui/form.tsx",
+   "src/components/ui/kbd.tsx",
+   "src/components/ui/sidebar.tsx"
+  ],
+  "componentes_com_nome_duplicado": [
+   "AnimatedCounter",
+   "COLORS",
+   "Confetti",
+   "DashboardSkeleton",
+   "LiveRegion",
+   "PageHeaderQuickActions",
+   "PageHeaderStats",
+   "PageHero",
+   "PageTransition",
+   "Toaster"
+  ],
+  "scripts_orfaos": [],
+  "env_usadas_nao_declaradas": [
+   "DEV",
+   "FUZZ_SEED",
+   "INTEGRATION_TESTS",
+   "PROD",
+   "SUPABASE_ANON_KEY",
+   "SUPABASE_SERVICE_ROLE_KEY",
+   "VITE_SUPABASE_PUBLISHABLE_KEY"
+  ],
+  "ciclos_de_import": 2,
+  "possiveis_segredos_no_codigo": [
+   "scripts/ai-context/cenarios.mjs:102"
+  ]
+ },
+ "erros_do_gerador": []
+}
