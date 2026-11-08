@@ -261,11 +261,11 @@ export default function SSOConfig() {
             <div className="space-y-3">
               <div>
                 <p className="text-[10px] text-muted-foreground uppercase font-bold">ACS URL (Assertion Consumer Service)</p>
-                <p className="text-xs font-mono break-all mt-1">https://trwgmplubeqxrxpncdgf.supabase.co/auth/v1/sso/saml/acs</p>
+                <p className="text-xs font-mono break-all mt-1">https://lmypcdfsrgfftzhxawao.supabase.co/auth/v1/sso/saml/acs</p>
               </div>
               <div>
                 <p className="text-[10px] text-muted-foreground uppercase font-bold">Entity ID (Audience Restriction)</p>
-                <p className="text-xs font-mono break-all mt-1">https://trwgmplubeqxrxpncdgf.supabase.co/auth/v1/sso/saml/metadata</p>
+                <p className="text-xs font-mono break-all mt-1">https://lmypcdfsrgfftzhxawao.supabase.co/auth/v1/sso/saml/metadata</p>
               </div>
             </div>
           </div>
