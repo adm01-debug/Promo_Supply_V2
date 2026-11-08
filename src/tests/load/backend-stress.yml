@@ -1,5 +1,5 @@
 config:
-  target: "https://trwgmplubeqxrxpncdgf.supabase.co/functions/v1"
+  target: "https://lmypcdfsrgfftzhxawao.supabase.co/functions/v1"
   phases:
     - duration: 60
       arrivalRate: 5

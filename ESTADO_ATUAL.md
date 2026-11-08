@@ -150,14 +150,24 @@ Nenhuma rede pegou isso: edge functions **não são cobertas pelo `tsc`** do app
 
 **Zero `TODO`/`FIXME` em todo o código de produção** — nada disso está marcado como pendência. Está apresentado como concluído. É por isso que o sistema *parece* pronto.
 
-### 8. 🟡 Quatro project IDs de Supabase divergentes
+### 8. ✅ Project IDs de Supabase divergentes — CORRIGIDO
 
-| Local | Project ID | Efeito |
+Todo o código ativo aponta para `lmypcdfsrgfftzhxawao`, confirmado como o projeto oficial por três
+evidências independentes: o MCP do projeto responde `project_ref: lmypcdfsrgfftzhxawao`; a anon key do
+`.env` carrega `ref: lmypcdfsrgfftzhxawao` no payload; e as 144 tabelas de `public` nesse banco batem
+uma a uma com as definições de `src/integrations/supabase/types.ts`.
+
+| Local | Project ID antes | Estado |
 |---|---|---|
-| `.env` | `lmypcdfsrgfftzhxawao` | ✅ o correto — confirmado como o banco que a app usa |
-| `supabase/config.toml:1` | `trwgmplubeqxrxpncdgf` | **`supabase db push` mira o projeto errado** |
-| `vite.config.ts:90,106,121` · `index.html:13-14` | `apuzcrkeqodktmpwobnz` | **cache PWA do Supabase nunca casa** — offline inerte |
-| `SSOConfig.tsx:264,268` | `trwgmplubeqxrxpncdgf` | endpoints SAML errados entregues ao admin |
+| `.env` | `lmypcdfsrgfftzhxawao` | ✅ já estava correto |
+| `supabase/config.toml:1` | `trwgmplubeqxrxpncdgf` | ✅ corrigido |
+| `vite.config.ts:90,106,121` · `index.html:13-14` | `apuzcrkeqodktmpwobnz` | ✅ corrigido — cache PWA e preconnect agora batem com o host real |
+| `SSOConfig.tsx:264,268` | `trwgmplubeqxrxpncdgf` | ✅ corrigido — endpoints SAML entregues ao admin agora são os do projeto oficial |
+| `src/tests/load/backend-stress.yml:2` | `trwgmplubeqxrxpncdgf` | ✅ corrigido |
+| `tests-rls/rls-isolation.test.ts:17-21` | `trwgmplubeqxrxpncdgf` (fallback + anon key embutida) | ✅ fallback removido — a suíte agora exige as variáveis do projeto oficial e falha com mensagem clara em vez de testar o banco errado |
+
+Os únicos resquícios ficam em `supabase/migrations/*.sql` (histórico já aplicado, não se reescreve) e na
+documentação em `DOCS/ESTADO/`, que descreve o estado anterior.
 
 ### 9. 🟡 Storage vazio com 111 documentos órfãos
 

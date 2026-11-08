@@ -14,11 +14,18 @@
 import { describe, it, expect, beforeAll } from "vitest";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-const SUPABASE_URL =
-  process.env.VITE_SUPABASE_URL ?? "https://trwgmplubeqxrxpncdgf.supabase.co";
-const SUPABASE_ANON_KEY =
-  process.env.VITE_SUPABASE_PUBLISHABLE_KEY ??
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRyd2dtcGx1YmVxeHJ4cG5jZGdmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg0NzY5MTgsImV4cCI6MjA5NDA1MjkxOH0.duCmV9VwETKxO6dI35u5cm9tDN1760EP3OoOjM3Iatg";
+// Sem fallback embutido de propósito: o fallback anterior apontava para outro
+// projeto Supabase (e carregava a anon key dele), então rodar sem as variáveis
+// testava o RLS do banco errado e dava verde sem significado.
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  throw new Error(
+    "RLS suite exige VITE_SUPABASE_URL e VITE_SUPABASE_PUBLISHABLE_KEY do projeto oficial. " +
+      "Defina as duas antes de rodar (no CI vêm dos secrets).",
+  );
+}
 
 /** Tabelas que jamais devem retornar linhas sem autenticação. */
 const PROTECTED_TABLES = [
