@@ -12,8 +12,14 @@
 // gate ficaria vermelho para sempre num repositorio que ja nao typechecka
 // limpo, e o sync pararia de propor PR.
 //
+// Para medir, o script PRECISA escrever em src/integrations/supabase/types.ts
+// (o tsc le o arquivo no lugar onde o codigo o importa). Ele troca o conteudo
+// duas vezes e devolve SEMPRE o conteudo que encontrou ao comecar — em
+// sucesso, em falha, em excecao e em SIGINT/SIGTERM. Nenhuma invocacao deste
+// script, nem interrompida, deve deixar o arquivo do repositorio alterado.
+//
 // Saida:
-//   exit 0 — nao piorou (o candidato fica aplicado em disco)
+//   exit 0 — nao piorou
 //   exit 1 — piorou; lista os erros novos
 //   exit 2 — uso invalido ou tsc indisponivel
 import { spawnSync } from 'node:child_process';
@@ -62,7 +68,27 @@ function rodarTsc(rotulo) {
   return erros;
 }
 
+// Conteudo encontrado ao comecar. Restaurado em qualquer saida — inclusive
+// interrupcao: sem isto, um run morto no meio da medicao deixa no repositorio
+// o types.ts da outra ponta da comparacao.
 const original = fs.readFileSync(ALVO);
+let restaurado = false;
+function restaurar() {
+  if (restaurado) return;
+  restaurado = true;
+  try {
+    fs.writeFileSync(ALVO, original);
+  } catch (erro) {
+    console.error('ERRO: nao foi possivel restaurar ' + ALVO + ': ' + (erro?.message || erro));
+  }
+}
+for (const sinal of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+  process.on(sinal, () => {
+    restaurar();
+    process.exit(2);
+  });
+}
+
 try {
   fs.copyFileSync(baseline, ALVO);
   const antes = rodarTsc('antes (types.ts commitado)');
@@ -81,16 +107,19 @@ try {
 
   if (novos.length === 0 && depois.length <= antes.length) {
     console.log(`OK: TypeScript nao piorou (${antes.length} -> ${depois.length} erro(s)).`);
+    restaurar();
     process.exit(0);
   }
 
   console.error(`ERRO: o types.ts candidato introduz ${novos.length} erro(s) de TypeScript (${antes.length} -> ${depois.length}).`);
   for (const erro of novos.slice(0, 40)) console.error('  ' + erro);
   if (novos.length > 40) console.error(`  ... e ${novos.length - 40} outro(s).`);
+  restaurar();
   process.exit(1);
 } catch (erro) {
-  // Falha de infraestrutura: devolve o arquivo original e sinaliza uso/ambiente.
-  fs.writeFileSync(ALVO, original);
   console.error('ERRO: ' + (erro?.message || String(erro)));
+  restaurar();
   process.exit(2);
+} finally {
+  restaurar();
 }

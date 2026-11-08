@@ -28,7 +28,7 @@ os dois discordarem.
 | `local-pg-proxy.mjs` | Escreve a config do pgbouncer loopback. Existe porque a CLI entrega a `--db-url` em texto puro a um container Docker, onde a credencial ficaria visível via `/proc` a processos irmãos do mesmo job. |
 | `install-postgresql-client.sh` | Instala `psql`/`pg_isready` dos repositórios oficiais do Ubuntu (ignora espelhos de terceiros do runner). |
 | `install-pgbouncer.sh` | Idem para o `pgbouncer`. |
-| `typecheck-ratchet.mjs` | **Gate 1**: roda `tsc --noEmit -p tsconfig.app.json` com o `types.ts` commitado e com o candidato; reprova só se o candidato introduzir erro novo. Erro que a `main` já tem nunca bloqueia o sync. |
+| `typecheck-ratchet.mjs` | **Gate 1**: roda `tsc --noEmit -p tsconfig.app.json` com o `types.ts` commitado e com o candidato; reprova só se o candidato introduzir erro novo. Erro que a `main` já tem nunca bloqueia o sync. Para medir ele troca o conteúdo de `src/integrations/supabase/types.ts` em disco e **restaura o conteúdo que encontrou** em qualquer saída, inclusive interrupção. |
 | `check-remocoes-destrutivas.mjs` | **Gate 2**: compara o inventário de objetos (`Tables`, `Views`, `Functions`, `Enums`, `CompositeTypes`) dos dois `types.ts` e bloqueia a remoção de objeto que `src/` ainda consome (`.from()`, `.rpc()`, `Tables<'x'>`, acesso indexado). Remoção sem consumidor passa com aviso. |
 
 ## Uso manual
@@ -37,7 +37,7 @@ os dois discordarem.
 # gerar o candidato a partir do banco (precisa de supabase CLI + pgbouncer)
 SUPABASE_DB_URL="postgresql://..." sh scripts/types-sync/gen-types.sh /tmp/types.new.ts
 
-# Gate 1 (precisa de node_modules; deixa o candidato aplicado se passar)
+# Gate 1 (precisa de node_modules; devolve o types.ts como estava, sempre)
 node scripts/types-sync/typecheck-ratchet.mjs src/integrations/supabase/types.ts /tmp/types.new.ts
 
 # Gate 2 (não precisa de dependências)
