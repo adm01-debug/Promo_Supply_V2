@@ -1,3 +1,12 @@
+# docs:
+#   gatilho: push em main/develop e pull_request para main
+#   prova: lint, typecheck, guard de integridade do AGENTS.md (em PR), Vitest do front, testes Deno das edges e E2E Playwright
+#   falha: o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado
+#   avisa: ninguem no PR; falha na main abre issue pelo notifica-falha-main.yml
+# nao-e-bug:
+#   - nome-do-arquivo: o `name:` ainda e "Freight Quest CI/CD", herdado de outro projeto; renomear quebraria a lista de `workflows:` do notifica-falha-main.yml, que casa por nome
+#   - deno-faixa-flutuante: `deno-version: v1.x` nao e versao fixa de proposito, e por isso deno NAO esta em .github/toolchain.json
+#   - e2e-com-placeholder: sem os secrets VITE_*, o E2E sobe o dev server com valores de placeholder e falha nos fluxos logados
 name: Freight Quest CI/CD
 
 on:
@@ -17,8 +26,10 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: CI Scripts Unit Tests (AGENTS.md baseline)
-        run: node --test scripts/ci/*.unit.mjs
+      # As suites de scripts/ rodam no job `suites` do guards.yml, que cobre
+      # `scripts/ci/*.unit.mjs` E `scripts/lib/*.test.mjs` e ainda roda o
+      # check-test-inventory.mjs (que reprova suite sem passo em workflow). Rodar aqui
+      # tambem pagava o mesmo minuto de Actions duas vezes por PR, em repo privado.
 
       - name: Integrity Guard AGENTS.md (PRs only)
         if: github.event_name == 'pull_request'

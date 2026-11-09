@@ -63,9 +63,17 @@ workflows vem inline (`22`).
 - E2E: `npm run test:e2e` (Playwright; `baseURL` `http://localhost:8080`, `testDir` `tests-e2e/`);
 - edges (Deno), como no CI: `deno test --allow-net --allow-env --allow-read supabase/functions/`;
 - RLS: `npm run test:rls` — **lê o banco oficial por HTTP**; exige as env vars de `docs/agentes/banco.md`;
-- guardas antes da PR: `npm run test:scripts` (`node --test scripts/ci/*.unit.mjs`) e
-  `node scripts/ci/check-agents-md-integrity.mjs` (vigia `AGENTS.md` + `docs/agentes/`).
+- guardas antes da PR: `npm run guards` — `npm run test:scripts`
+  (`node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs`), `check-test-inventory.mjs` e o `--check` de
+  `render-workflow-docs.mjs` e `gerar-matriz-edge-tabela.mjs`; é o mesmo conjunto do job `suites` do
+  `guards.yml` e roda em node puro (não precisa de `bun install`);
+- `node scripts/ci/check-agents-md-integrity.mjs` (vigia `AGENTS.md` + `docs/agentes/`) — **o CI já roda isto em PR** (`main.yml`, job `quality-gate`, com `AGENTS_MD_BASE=origin/<base>`); à mão serve para ver o resultado antes do push, e sem a variável a comparação é HEAD×HEAD, logo no-op;
+- docs geradas, se você mexeu na fonte delas: `npm run docs:ci` (bloco `# docs:` dos workflows →
+  `docs/ci/README.md`) e `npm run docs:matriz-edge` (`.from()` das edges → `docs/mapa/MATRIZ_EDGE_TABELA.md`).
 
 **Não há hook de git neste repo:** não existe `.husky/`, `package.json` tem `"prepare": ""` e não há
-`commitlint`. Nada valida mensagem de commit, lint ou typecheck localmente — a convenção de commit é
-responsabilidade de quem escreve (`.claude/skills/promo-supply-v2/SKILL.md`), e o CI só cobra depois do push.
+`commitlint`. **Nada roda localmente no commit** — a convenção de commit é responsabilidade de quem escreve
+(`.claude/skills/promo-supply-v2/SKILL.md`). Depois do push, quem cobra a mensagem é o job `commits` do
+`guards.yml`: ele roda `scripts/ci/commit-msg-lint.mjs` em cada commit do intervalo da PR e falha o check
+(`<tipo>(<escopo>): <assunto ≥10 caracteres, sem ponto final>`; `Merge`/`Revert`/`fixup!` passam direto).
+Para conferir antes do push: `git log -1 --format=%B > /tmp/msg && node scripts/ci/commit-msg-lint.mjs /tmp/msg`.

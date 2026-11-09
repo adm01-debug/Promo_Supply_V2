@@ -1,0 +1,217 @@
+# docs:
+#   gatilho: pull_request e push em main (jobs de node puro); o job do bundle so em push em main e dispatch
+#   prova: docs/ci/README.md e docs/mapa/MATRIZ_EDGE_TABELA.md batem com o repo, toda suite de scripts/ roda, mensagens de commit no padrao, nenhum advisory HIGH/CRITICAL em dependencia de producao e nenhum JWT service_role no bundle publicado
+#   falha: o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado
+#   avisa: ninguem (o resultado do check e a prova); falha em push na main abre issue pelo notifica-falha-main.yml
+# nao-e-bug:
+#   - doc-desatualizada: `--check` vermelho significa que o YAML mudou e a doc gerada nao foi regerada; rode o gerador e comite, nao edite o .md
+#   - suite-orfa: check-test-inventory vermelho significa que uma suite nova de scripts/ nao tem passo que a execute em nenhum workflow
+#   - bundle-so-na-main: o job do bundle precisa de `bun run build` (minutos de Actions em repo privado), entao roda no push que vai para producao, nao em cada PR
+# ==================================================================
+# Guards offline do repositorio (portados do Zapp_Web_V2, de scripts/ci/).
+# Separado do main.yml de proposito: este arquivo e novo e nao conflita com nenhuma PR
+# aberta. Os dois geradores de documentacao (`render-workflow-docs` e
+# `gerar-matriz-edge-tabela`) sao a parte que mantem o repo descrevendo o estado real --
+# o `--check` e o que impede a doc de apodrecer em silencio.
+#
+# Duplicacao resolvida: a PR adm01-debug/Promo_Supply_V2#22 mergeou e tinha ligado
+# `node --test scripts/ci/*.unit.mjs` no main.yml. O passo de la foi removido nesta PR --
+# a suite roda SO aqui, onde tambem roda `scripts/lib/*.test.mjs` e o
+# check-test-inventory.mjs. O guard do AGENTS.md continua no main.yml, que e quem tem o
+# `github.base_ref` do PR.
+# ==================================================================
+
+name: Guards offline do repositorio
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -euo pipefail {0}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: guards-${{ github.ref }}
+  # Cancela run antigo APENAS em PR. Em push na main o grupo seria o mesmo para todo merge,
+  # e dois merges em sequencia cancelariam o job `bundle` do primeiro -- o unico que varre
+  # `service_role` no bundle que vai para producao. Run cancelado tambem nao e `failure`,
+  # entao o notifica-falha-main.yml nao avisaria. Os outros workflows agendados deste repo
+  # usam `false` pelo mesmo motivo.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  suites:
+    name: Suites e documentacao gerada
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    # Node puro: nenhum `bun install`, nenhuma dependencia de npm. E o job mais barato do
+    # repo e o que pega drift de documentacao.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # fetch-depth 0, nao 1: o agents-docs-baseline.unit.mjs invoca o
+          # check-agents-md-integrity.mjs, que compara o conjunto de instrucoes com
+          # AGENTS_MD_BASE. Sem o historico (e sem a variavel) ele comparava HEAD com HEAD e
+          # passava de graca. `persist-credentials: false` apaga a credencial do `origin`, e
+          # repo privado nao aceita fetch anonimo: por isso a ref vem no checkout, nao num
+          # `git fetch` depois.
+          fetch-depth: 0
+
+      - name: Setup Node
+        # node-version inline, sem .nvmrc: a Vercel le .nvmrc e criar o arquivo mudaria o
+        # build de producao deste repo.
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+
+      - name: Suites de scripts/
+        # Toda suite Node de scripts/ roda aqui. O passo seguinte cobra justamente isto:
+        # suite no disco sem passo que a execute e suite que ninguem roda.
+        # AGENTS_MD_BASE: base real da comparacao do check-agents-md-integrity.mjs (invocado
+        # pelo agents-docs-baseline.unit.mjs). Em PR e a branch de destino; em push na main,
+        # o commit anterior -- nos dois casos algo diferente de HEAD, senao o guard e no-op.
+        env:
+          AGENTS_MD_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
+        run: node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs
+
+      - name: Inventario de testes (nenhuma suite orfa)
+        run: node scripts/ci/check-test-inventory.mjs
+
+      - name: docs/ci/README.md bate com os blocos `# docs:` dos workflows
+        run: node scripts/ci/render-workflow-docs.mjs --check
+
+      - name: docs/mapa/MATRIZ_EDGE_TABELA.md bate com as edge functions
+        run: node scripts/ci/gerar-matriz-edge-tabela.mjs --check
+
+  commits:
+    name: Mensagens de commit da PR
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          # Precisa do historico da PR para ler as mensagens commit a commit.
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+
+      - name: 'Validar `<tipo>(<escopo>): <assunto>` em cada commit da PR'
+        # Este repo nao tem hook de git (sem .husky/, sem commitlint): a convencao do
+        # AGENTS.md nao era cobrada por maquina em lugar nenhum. Este passo e o canal real.
+        # Merge/Revert/fixup! passam direto (o proprio commit-msg-lint.mjs os ignora).
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          falhas=0
+          mensagem="$RUNNER_TEMP/commit-msg.txt"
+          # %H por linha: assunto e corpo vao para o arquivo um commit por vez, sem o risco
+          # de uma mensagem multilinha se misturar com a proxima.
+          for sha in $(git rev-list "$BASE_SHA".."$HEAD_SHA"); do
+            git log -1 --format=%B "$sha" > "$mensagem"
+            if ! node scripts/ci/commit-msg-lint.mjs "$mensagem"; then
+              echo "::error::commit $(git log -1 --format=%h "$sha") fora do padrao"
+              falhas=$((falhas + 1))
+            fi
+          done
+          rm -f "$mensagem"
+          if [ "$falhas" -gt 0 ]; then
+            echo "::error::$falhas commit(s) fora do padrao <tipo>(<escopo>): <assunto>"
+            exit 1
+          fi
+          echo "todas as mensagens de commit da PR estao no padrao"
+
+  dependencias:
+    name: Advisory em dependencia de producao
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: '1.4.0'
+
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+
+      - name: Coletar advisories (`bun audit`)
+        # `bun audit` sai 1 tanto para advisory quanto para falha de registry; o status vai
+        # para o arquivo e o audit-prod.mjs decide -- o passo aqui nunca mascara o resultado.
+        run: |
+          set -euo pipefail
+          status=0
+          bun audit --audit-level=low > audit-report.txt 2>&1 || status=$?
+          echo "$status" > audit-status.txt
+          cat audit-report.txt
+
+      - name: Bloquear HIGH/CRITICAL alcancavel por `dependencies`
+        # Advisory que so existe em devDependencies (vite, vitest, eslint) segue informativo:
+        # nao chega ao bundle nem as edge functions.
+        run: node scripts/ci/audit-prod.mjs --level high --input audit-report.txt --status audit-status.txt
+
+  bundle:
+    name: Segredo no bundle publicado
+    # So no que vai para producao: `bun run build` custa minuto de Actions e este repo e
+    # privado. Merge em main = deploy da Vercel, entao este e o momento em que importa.
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          fetch-depth: 1
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: '1.4.0'
+
+      - name: Setup Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+
+      - name: Instalar dependencias
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        # SEM bloco `env:` de proposito. O `.env` deste repo esta versionado e ja traz os
+        # valores publicos de producao (`VITE_*` e publico por definicao). Passar
+        # `${{ secrets.X }}` aqui seria pior: secret ausente ou renomeado chega ao processo
+        # como string VAZIA, e variavel de ambiente vazia tem precedencia sobre o `.env` no
+        # loadEnv do Vite -- o build nao falharia, geraria um bundle com `createClient("","")`
+        # e a varredura do passo seguinte sairia verde sobre um bundle que nao e o de producao.
+        run: bun run build
+
+      - name: Nenhum JWT `service_role` no bundle
+        # Fail-closed: dist ausente ou sem nenhum .js sai != 0 -- varredura que nao leu
+        # arquivo nenhum nao pode se declarar OK. `--env .env`: neste repo o arquivo de
+        # ambiente versionado e `.env` (o Zapp_Web_V2, de onde o script veio, usa
+        # `.env.production`). O script nunca imprime o valor da chave, so o claim `role`.
+        run: node scripts/ci/check-bundle-secrets.mjs --dist dist --env .env

@@ -1,0 +1,106 @@
+# docs:
+#   gatilho: workflow_run (conclusao dos workflows deste repo na main)
+#   prova: issue `[falha-main]` aberta (ou comentada) quando um workflow termina em failure, startup_failure ou timed_out na main
+#   falha: a falha do workflow original fica sem issue de acompanhamento
+#   avisa: o dono, pela issue `[falha-main] <workflow> falhou na main` com label `falha-main`
+# nao-e-bug:
+#   - sem-comentario: falha repetida do mesmo workflow dentro de 6 h nao gera comentario novo (a issue aberta ja aponta o problema); a janela existe para o contexto.yml, que roda a cada 10 min, nao transformar a issue em 144 comentarios por dia
+#   - issue-aberta-depois-do-verde: a issue nao fecha sozinha; quem corrigiu fecha a issue (nenhum workflow sabe dizer que a causa raiz foi resolvida)
+# ==================================================================
+# Fecha o laco de observabilidade: sem isto, um workflow agendado pode falhar por semanas
+# sem ninguem ver (o dono nao fica olhando a aba Actions). Portado do Zapp_Web_V2
+# (mesmo nome de arquivo); a janela de 6 h entre comentarios e a unica diferenca de
+# comportamento, e existe porque aqui o contexto.yml e o types-sync.yml rodam a cada
+# 10 minutos -- no Zapp nenhum dos workflows monitorados tem essa cadencia.
+# ==================================================================
+
+name: Notifica falha na main
+
+on:
+  workflow_run: # zizmor: ignore[dangerous-triggers]
+    workflows:
+      - Freight Quest CI/CD
+      - Contexto para agentes de IA (10 min)
+      - types-sync
+      - Inventário do estado real (semanal)
+      - Branch Hygiene Audit
+      - Guards offline do repositorio
+    branches: [main]
+    types: [completed]
+
+defaults:
+  run:
+    shell: bash --noprofile --norc -euo pipefail {0}
+
+permissions: {}
+
+jobs:
+  notificar:
+    name: Notificar falha
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    # `failure` sozinho nao cobre YAML invalido mergeado na main (`startup_failure`) nem
+    # job estourando o timeout (`timed_out`) — exatamente as duas regressoes que uma mudanca
+    # em .github/workflows/ pode introduzir, e as duas deixariam a aba Actions quebrada em
+    # silencio. `cancelled` fica fora de proposito: cancelar e acao deliberada.
+    if: ${{ contains(fromJSON('["failure","startup_failure","timed_out"]'), github.event.workflow_run.conclusion) }}
+    permissions:
+      issues: write
+    steps:
+      - name: Abrir ou atualizar issue de falha
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          JANELA_HORAS: '6'
+        with:
+          script: |
+            const wf = context.payload.workflow_run;
+            const titulo = `[falha-main] ${wf.name} falhou na main`;
+            const corpo = [
+              `**Workflow:** ${wf.name}`,
+              `**Branch:** ${wf.head_branch}`,
+              `**Commit:** ${wf.head_sha.slice(0, 7)}`,
+              `**Run:** ${wf.html_url}`,
+              `**Quando:** ${wf.updated_at}`,
+            ].join('\n');
+
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'falha-main',
+            });
+
+            const existente = issues.find((i) => i.title.startsWith(`[falha-main] ${wf.name}`));
+
+            if (!existente) {
+              const { data: nova } = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: titulo,
+                body: corpo,
+                labels: ['falha-main'],
+              });
+              core.info(`issue criada: #${nova.number}`);
+              return;
+            }
+
+            // Janela anti-poluicao: o contexto.yml roda a cada 10 min; sem isto, uma falha
+            // persistente renderia ~144 comentarios por dia e a issue ficaria ilegivel.
+            // `updated_at` da issue cobre tanto a criacao quanto o ultimo comentario.
+            const janelaMs = Number(process.env.JANELA_HORAS) * 3600 * 1000;
+            const desdeUltimoMovimento = Date.now() - Date.parse(existente.updated_at);
+            if (desdeUltimoMovimento < janelaMs) {
+              core.info(
+                `issue #${existente.number} teve movimento ha ${Math.round(desdeUltimoMovimento / 60000)} min ` +
+                  `(janela de ${process.env.JANELA_HORAS} h): nenhum comentario novo.`,
+              );
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: existente.number,
+              body: corpo,
+            });
+            core.info(`issue #${existente.number} comentada`);

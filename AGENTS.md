@@ -96,9 +96,13 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
 - **Serviços externos** — ler `docs/agentes/servicos-externos.md` ao mexer em edge que fale com fora (XBZ,
   Spot Gifts, AI Gateway da Lovable, SEFAZ, Resend/Slack, `external-db-bridge`, punchout, `erp-sync`, SCIM,
   WebAuthn). CORS/auth/tenant vêm de `supabase/functions/_shared/security.ts`.
-- **GitHub/CI** — ler `docs/agentes/github-ci.md` ao mexer em settings ou `.github/workflows/`. São 4
-  workflows (`main`, `contexto`, `types-sync`, `inventario-estado-semanal`); `main.yml` ainda se chama
-  "Freight Quest CI/CD". `scripts/ci/*.unit.mjs` **não roda em nenhum workflow** — rode à mão.
+- **GitHub/CI** — ler `docs/agentes/github-ci.md` ao mexer em settings ou `.github/workflows/`. São 7
+  workflows (`main`, `contexto`, `types-sync`, `inventario-estado-semanal`, `guards`,
+  `branch-hygiene-audit`, `notifica-falha-main`); `main.yml` ainda se chama "Freight Quest CI/CD". A tabela
+  do que cada um prova é **gerada** em `docs/ci/README.md` a partir do bloco `# docs:` do YAML — não edite
+  o README. As suítes de `scripts/` rodam no `guards.yml`, e `check-test-inventory.mjs` reprova suíte nova
+  sem passo em workflow. O que foi portado do Zapp e o que faltou (com motivo) está no fim do
+  `docs/agentes/github-ci.md`.
 - **Regras de domínio** — ler `docs/agentes/regras-dominio.md` antes de mexer em solicitação, cotação,
   aprovação, acompanhamento ou login/passkey.
 
@@ -109,7 +113,8 @@ Regras do dono para qualquer agente de IA; vencem `DOCS/` e `.lovable/` (histór
   declara `engines`/`packageManager`/`.nvmrc` (a Vercel lê `.nvmrc`; criar o arquivo mudaria o build).
 - `npm run typecheck` (`tsc --noEmit`) · `npx eslint <arquivos>` · `npx vitest run <caminho>` ·
   `npm run test:rls` (produção!) · `npm run test:e2e` · `deno test --allow-net --allow-env --allow-read supabase/functions/` ·
-  guards: `npm run test:scripts` e `node scripts/ci/check-agents-md-integrity.mjs`.
+  guards: `npm run guards` (suítes de `scripts/` + inventário de testes + `--check` das docs geradas) e
+  `node scripts/ci/check-agents-md-integrity.mjs`.
 - Automação em `scripts/<nome>/` com README (leia antes de alterar); nunca em `supabase/` nem `src/`.
 - `inventario/estado/*.json` (gerado) antes de grep. `ESTADO_ATUAL.md` + `DOCS/ESTADO/` = o que está quebrado
   e onde fica cada prova.

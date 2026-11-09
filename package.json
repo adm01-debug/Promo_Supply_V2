@@ -23,7 +23,10 @@
     "contexto:regras": "python3 scripts/regras_negocio/generate.py --repo . --out docs/contexto/regras --profile regras --schema-snapshot docs/contexto/supabase --no-pointer",
     "contexto:banco": "python3 scripts/supabase_snapshot/snapshot.py",
     "contexto:indice": "python3 scripts/regras_negocio/indice.py --repo . --out docs/contexto/00-INDEX.md --fonte \"banco real=docs/contexto/supabase\" --fonte \"código=docs/contexto/codigo\" --fonte \"regras de negócio=docs/contexto/regras\"",
-    "test:scripts": "node --test scripts/ci/*.unit.mjs",
+    "test:scripts": "node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs",
+    "docs:ci": "node scripts/ci/render-workflow-docs.mjs",
+    "docs:matriz-edge": "node scripts/ci/gerar-matriz-edge-tabela.mjs",
+    "guards": "npm run test:scripts && node scripts/ci/check-test-inventory.mjs && node scripts/ci/render-workflow-docs.mjs --check && node scripts/ci/gerar-matriz-edge-tabela.mjs --check",
     "prepare": ""
   },
   "dependencies": {
