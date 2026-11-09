@@ -74,11 +74,11 @@ const MULTIBYTE_SAMPLES = [
   "日本語テスト",                 // 3-byte CJK
   "😀🎉🚀",                       // 4-byte surrogate pairs
   "👨‍👩‍👧‍👦",                    // ZWJ family
-  "e\u0301\u0302\u0303",         // combining marks
+  "é̂̃",         // combining marks
   "مرحبا بالعالم",               // RTL Árabe
   "שלום עולם",                   // RTL Hebraico
-  "\u200B\u200C\u200D zero-width",
-  "\uD83D\uDCA9 pilha",           // surrogate válido explícito
+  "​‌‍ zero-width",
+  "💩 pilha",           // surrogate válido explícito
   "\uD800lone-surrogate",         // lone high surrogate (inválido)
   "\uDFFFlone-low",               // lone low surrogate
 ] as const;
@@ -100,8 +100,8 @@ const SENSITIVE_CTX: Record<string, unknown> = {
 };
 
 async function flush() {
-  // logger tem timer de 5s; forçamos várias micro-tasks + timers
-  await vi.runAllTimersAsync();
+  // logger tem timer de 5 s; avança 6 s sem disparar re-agendamentos recursivos
+  await vi.advanceTimersByTimeAsync(6000);
 }
 
 describe("logger (frontend) — fuzz & property", () => {
@@ -122,6 +122,7 @@ describe("logger (frontend) — fuzz & property", () => {
   });
 
   afterEach(() => {
+    vi.clearAllTimers();
     vi.useRealTimers();
   });
 
@@ -214,7 +215,7 @@ describe("logger (frontend) — fuzz & property", () => {
       const body = invokeMock.mock.calls[0][1].body;
       const entry = body.batch[0];
       // O logger não deve alterar codepoints válidos; lone surrogates viram
-      // replacement (\uFFFD) em qualquer serialização segura, mas em memória
+      // replacement (�) em qualquer serialização segura, mas em memória
       // JS `JSON.stringify` mantém como \uD800 (escapado). Ambos são aceitos:
       // exigimos apenas que o round-trip seja idempotente e não lance.
       const roundTrip = JSON.parse(JSON.stringify(entry));
@@ -245,7 +246,7 @@ describe("logger (frontend) — fuzz & property", () => {
       const parsed = JSON.parse(serialized);
       expect(typeof parsed.message).toBe("string");
       // Nenhum caractere U+FFFD foi introduzido em codepoints válidos.
-      expect(parsed.message.includes("\uFFFD")).toBe(false);
+      expect(parsed.message.includes("�")).toBe(false);
       // Se logger truncar no futuro, deve cortar em fronteira de codepoint:
       // qualquer sufixo permanece re-encodável sem erro.
       expect(() => new TextEncoder().encode(parsed.message)).not.toThrow();
