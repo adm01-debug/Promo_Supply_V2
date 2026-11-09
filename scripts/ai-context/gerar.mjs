@@ -10,7 +10,9 @@
 // Config opcional na raiz do repo: ai-context.config.json
 //   { "out": "inventario/ia", "skipDirs": [...], "srcDirs": [...], "menuFiles": [...],
 //     "routeFiles": [...], "aliases": { "@/": "src/" }, "typesFile": "...", "maxFileMB": 8, "publicacao": "texto do rodapé do INDEX.md" }
-// Saída determinística: só manifest.json carrega data/hora.
+// Saída determinística: só manifest.json carrega data/hora (mesmo commit + mesma árvore = mesmos bytes,
+// em qualquer máquina, locale ou dia: as janelas de 7/30/90 dias do git contam a partir da data do HEAD).
+// Exit code: 0 = gerou (seções com falha ficam em manifest.json → erros); 2 = uso inválido, nada é escrito.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -19,8 +21,23 @@ import { execFileSync } from 'node:child_process';
 
 const FORMAT_VERSION = 2;
 const args = process.argv.slice(2);
+const USO = 'Uso: node scripts/ai-context/gerar.mjs [--root <dir>] [--out <dir>] [--quiet]';
+const usoInvalido = (msg) => { console.error(`[contexto-ia] ERRO: ${msg}\n${USO}`); process.exit(2); };
+// Argumento desconhecido ou flag sem valor derrubam a execução: ignorar em silêncio fazia um `--out` digitado
+// errado (ou com variável vazia) gravar no destino padrão, dentro do repo, com exit 0.
+for (let i = 0; i < args.length; i++) {
+  if (args[i] === '--quiet') continue;
+  if (args[i] === '--help' || args[i] === '-h') { console.log(USO); process.exit(0); }
+  if (args[i] === '--root' || args[i] === '--out') { const v = args[++i]; if (!v || v.startsWith('--')) usoInvalido(`${args[i - 1]} exige um valor`); continue; }
+  usoInvalido(`argumento desconhecido: ${args[i]}`);
+}
+// localeCompare sem locale segue LANG/LC_ALL do processo (da_DK ordena "aa" depois de "z"): fixa a
+// colação para a ordem dos arquivos gerados não depender da máquina.
+const COLACAO = new Intl.Collator('en');
+String.prototype.localeCompare = function (outro) { return COLACAO.compare(String(this), String(outro)); };
 const argOf = (k, d) => { const i = args.indexOf(k); return i >= 0 && args[i + 1] ? args[i + 1] : d; };
 const ROOT = path.resolve(argOf('--root', process.env.AI_CONTEXT_ROOT || process.cwd()));
+if (!fs.existsSync(ROOT) || !fs.statSync(ROOT).isDirectory()) usoInvalido(`a raiz do repositório não é um diretório: ${ROOT}`);
 const QUIET = args.includes('--quiet');
 const log = (...m) => { if (!QUIET) console.log('[contexto-ia]', ...m); };
 const ERROS = [];
@@ -29,16 +46,26 @@ const secao = (nome, fn, fallback) => { try { return fn(); } catch (e) { ERROS.p
 // ---------- util ----------
 const rel = (p) => path.relative(ROOT, p).split(path.sep).join('/');
 const abs = (p) => path.join(ROOT, p);
-const CFG = (() => { try { return JSON.parse(fs.readFileSync(abs('ai-context.config.json'), 'utf8')); } catch { return {}; } })();
+// Config ausente = padrões. Config presente mas inválida também cai nos padrões, porém fica registrada em
+// erros_do_gerador (antes era indistinguível de "sem config").
+const CFG = (() => {
+  let texto; try { texto = fs.readFileSync(abs('ai-context.config.json'), 'utf8'); } catch { return {}; }
+  try { const j = JSON.parse(texto.replace(/^\uFEFF/, '')); if (j && typeof j === 'object' && !Array.isArray(j)) return j; throw new Error('precisa ser um objeto JSON'); } catch (e) { ERROS.push({ secao: 'config', erro: `ai-context.config.json inválido (${e.message}) — usando os padrões` }); log(`ERRO: ai-context.config.json inválido (${e.message}) — usando os padrões`); return {}; }
+})();
 const OUT = path.resolve(ROOT, argOf('--out', process.env.AI_CONTEXT_DIR || CFG.out || 'inventario/ia'));
+// A varredura pula a pasta de saída; com a saída na própria raiz os JSONs gerados entrariam na execução seguinte.
+if (OUT === ROOT) usoInvalido('--out não pode ser a raiz do repositório (a saída seria lida de volta na próxima execução)');
 const OUT_REL = rel(OUT);
 const MAX_FILE_BYTES = (CFG.maxFileMB || 8) * 1024 * 1024;
 // Rodapé do INDEX.md: onde este contexto é publicado. Genérico por padrão; cada repo descreve o seu
 // workflow/branch em ai-context.config.json → "publicacao" (ou env AI_CONTEXT_PUBLICACAO).
 const PUBLICACAO = process.env.AI_CONTEXT_PUBLICACAO || CFG.publicacao || 'Publicado pelo workflow de contexto do repositório (ver .github/workflows).';
 const exists = (p) => fs.existsSync(abs(p));
-const readText = (p) => { try { const a = path.isAbsolute(p) ? p : abs(p); if (fs.statSync(a).size > MAX_FILE_BYTES) return ''; return fs.readFileSync(a, 'utf8'); } catch { return ''; } };
-const readJson = (p) => { try { return JSON.parse(readText(p).replace(/^﻿/, '')); } catch { return null; } };
+const NAO_LIDOS_POR_TAMANHO = new Set();
+const readText = (p) => { try { const a = path.isAbsolute(p) ? p : abs(p); const st = fs.statSync(a); if (st.size > MAX_FILE_BYTES) { if (st.isFile()) NAO_LIDOS_POR_TAMANHO.add(rel(a)); return ''; } return fs.readFileSync(a, 'utf8'); } catch { return ''; } };
+// tsconfig/jsconfig são JSONC (comentário e vírgula final): tenta JSON estrito e, se falhar, limpa fora das strings.
+const jsonc = (s) => s.replace(/("(?:[^"\\]|\\.)*")|\/\/[^\n]*|\/\*[\s\S]*?\*\//g, (m, str) => str ?? '').replace(/("(?:[^"\\]|\\.)*")|,(\s*[}\]])/g, (m, str, fim) => str ?? fim);
+const readJson = (p) => { const t = readText(p).replace(/^\uFEFF/, ''); try { return JSON.parse(t); } catch { try { return JSON.parse(jsonc(t)); } catch { return null; } } };
 const uniq = (a) => [...new Set(a)].sort();
 const sortObj = (o) => Object.fromEntries(Object.entries(o).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 const sha = (s) => crypto.createHash('sha256').update(s).digest('hex').slice(0, 16);
@@ -74,7 +101,9 @@ log(`arquivos no repo: ${ALL.length}`);
 // ---------- linguagens / stack ----------
 const EXT_LANG = { '.ts': 'TypeScript', '.tsx': 'TypeScript', '.mts': 'TypeScript', '.cts': 'TypeScript', '.js': 'JavaScript', '.jsx': 'JavaScript', '.mjs': 'JavaScript', '.cjs': 'JavaScript', '.vue': 'Vue', '.svelte': 'Svelte', '.astro': 'Astro', '.py': 'Python', '.go': 'Go', '.rs': 'Rust', '.java': 'Java', '.kt': 'Kotlin', '.rb': 'Ruby', '.php': 'PHP', '.cs': 'C#', '.swift': 'Swift', '.dart': 'Dart', '.sql': 'SQL', '.sh': 'Shell', '.css': 'CSS', '.scss': 'SCSS', '.html': 'HTML', '.md': 'Markdown', '.json': 'JSON', '.yml': 'YAML', '.yaml': 'YAML', '.toml': 'TOML' };
 const CODE_EXT = new Set(['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.mts', '.cts', '.vue', '.svelte', '.astro']);
-const TEST_RE = /(\.(test|spec|e2e|contract|contracts|unit|fixture|fixtures)\.[cm]?[jt]sx?$)|(^|\/)(__tests__|tests?|fixtures|__fixtures__|e2e|qa|__mocks__|spec|cypress|playwright)\/|(^|\/)(test_\w+\.py|\w+_test\.py|conftest\.py)$/;
+// `_test.ts` é a convenção do `deno test`; `tests-e2e/`, `tests-rls/` etc. só valem na raiz do repo
+// (uma pasta `src/pages/test-drive/` continua sendo aplicação).
+const TEST_RE = /(\.(test|spec|e2e|contract|contracts|unit|fixture|fixtures)\.[cm]?[jt]sx?$)|(_test\.[cm]?[jt]sx?$)|(^tests?[-_][\w.-]+\/)|(^|\/)(__tests__|tests?|fixtures|__fixtures__|e2e|qa|__mocks__|spec|cypress|playwright)\/|(^|\/)(test_\w+\.py|\w+_test\.py|conftest\.py)$/;
 const STORY_RE = /\.stories\.[cm]?[jt]sx?$/;
 const pkg = readJson('package.json') || {};
 const deps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}), ...(pkg.peerDependencies || {}) };
@@ -120,8 +149,11 @@ for (const tc of ALL.filter((f) => /(^|\/)(tsconfig[\w.-]*|jsconfig)\.json$/.tes
   if (bu) map.__baseUrl__ = bu;
 }
 for (const [a, t] of Object.entries(CFG.aliases || {})) (aliasesByBase[''] = aliasesByBase[''] || {})[a] = t;
-if (!Object.keys(aliasesByBase[''] || {}).filter((k) => k !== '__baseUrl__').length && exists('src')) (aliasesByBase[''] = aliasesByBase[''] || {})['@/'] = 'src/';
-if (exists('src') && !(aliasesByBase[''] || {})['~/']) (aliasesByBase[''] = aliasesByBase[''] || {})['~/'] = has('nuxt') ? '' : 'src/';
+// Alias presumido (não declarado em tsconfig/config): serve para resolver import, mas só vai para
+// convencoes.alias_imports se algum import da aplicação o usar — senão o contexto anunciaria um alias que não existe.
+const ALIAS_PRESUMIDOS = new Set();
+if (!Object.keys(aliasesByBase[''] || {}).filter((k) => k !== '__baseUrl__').length && exists('src')) { (aliasesByBase[''] = aliasesByBase[''] || {})['@/'] = 'src/'; ALIAS_PRESUMIDOS.add('@/'); }
+if (exists('src') && !(aliasesByBase[''] || {})['~/']) { (aliasesByBase[''] = aliasesByBase[''] || {})['~/'] = has('nuxt') ? '' : 'src/'; ALIAS_PRESUMIDOS.add('~/'); }
 const aliasesFor = (f) => Object.keys(aliasesByBase).filter((b) => f.startsWith(b)).sort((a, b) => b.length - a.length).map((b) => aliasesByBase[b]);
 const isAliasSpec = (f, spec) => aliasesFor(f).some((m) => Object.keys(m).some((a) => a !== '__baseUrl__' && spec.startsWith(a)));
 const RESOLVE_EXT = [...CODE_EXT, '.d.ts', '.json'];
@@ -152,22 +184,27 @@ const RE = {
   dyn: /import\(\s*['"]([^'"]+)['"]\s*\)/g,
   req: /require\(\s*['"]([^'"]+)['"]\s*\)/g,
   hook: /\b(use[A-Z]\w*)\s*\(/g,
-  from: /\.from\(\s*['"`]([\w.]+)['"`]/g,
+  // `storage.from('bucket')` (inclusive quebrado em duas linhas) é bucket de storage, não tabela.
+  from: /(?<!storage\s*)\.from\(\s*['"`]([\w.]+)['"`]/g,
   rpc: /\.rpc\(\s*['"`](\w+)['"`]/g,
-  invoke: /functions\.invoke\(\s*['"`]([\w-]+)['"`]/g,
+  // Aceita genérico (`invoke<T>(`) e nome seguido de query string ou interpolação (`'fn?x=1'`, `` `fn?id=${id}` ``).
+  invoke: /functions\s*\.\s*invoke\s*(?:<[^()]*>)?\s*\(\s*['"`]([\w-]*\w)(?=['"`?]|\$\{)/g,
   fnUrl: /\/functions\/v1\/([\w-]+)/g,
   envVite: /import\.meta\.env\.(\w+)/g,
   envNode: /process\.env\.(\w+)/g,
   envDeno: /Deno\.env\.get\(\s*['"](\w+)['"]/g,
   exp: /export\s+(?:async\s+)?(?:const|let|var|function\*?|class|enum|interface|type|abstract\s+class)\s+([A-Za-z_$][\w$]*)/g,
   expList: /export\s*\{([^}]+)\}/g,
-  expDefault: /export\s+default\s+(?:async\s+)?(?:function\s*\*?\s*|class\s+)?([A-Za-z_$][\w$]*)?/g,
-  storage: /storage\.from\(\s*['"`]([\w-]+)['"`]/g,
+  // `export default memo(Pagina)` / `withX(Pagina, ...)`: o nome exportado é o componente embrulhado, não o HOC.
+  expDefault: /export\s+default\s+(?:(?:async\s+)?function\s*\*?\s*|class\s+|(?:[\w$.]+(?:<[^()]*>)?\s*\(\s*)+(?:(?:async\s+)?function\s*\*?\s*)?)?([A-Za-z_$][\w$]*)?/g,
+  storage: /storage\s*\.from\(\s*['"`]([\w-]+)['"`]/g,
   channel: /\.channel\(\s*['"`]([^'"`]+)['"`]/g,
   urlHost: /https?:\/\/([a-z0-9.-]+\.[a-z]{2,})(?=[/'"`\s)?]|$)/gi,
   flag: /(?:isFeatureEnabled|useFeatureFlag|useFlag|useFeature|getFlag|featureFlag|isEnabled)\(\s*['"`]([\w.:-]+)['"`]/g,
   flagEnv: /\b(?:VITE_|NEXT_PUBLIC_|REACT_APP_|PUBLIC_)?(FEATURE_[A-Z0-9_]+|FF_[A-Z0-9_]+|ENABLE_[A-Z0-9_]+)\b/g,
   role: /\b(?:role|roles|papel|userRole|requiredRole|allowedRoles|hasRole|requireRole)\b\s*(?:[:=!]=?=?|\(|\.includes\(|:\s*\[)\s*\[?\s*['"`](\w+)['"`]/g,
+  // Atributo WAI-ARIA (`role="alert"`) não é papel de permissão.
+  ariaRole: /\brole=(["'])(?:alert|alertdialog|application|article|banner|button|cell|checkbox|columnheader|combobox|complementary|contentinfo|definition|dialog|directory|document|feed|figure|form|grid|gridcell|group|heading|img|link|list|listbox|listitem|log|main|marquee|math|menu|menubar|menuitem|menuitemcheckbox|menuitemradio|meter|navigation|none|note|option|presentation|progressbar|radio|radiogroup|region|row|rowgroup|rowheader|scrollbar|search|searchbox|separator|slider|spinbutton|status|switch|tab|table|tablist|tabpanel|term|textbox|timer|toolbar|tooltip|tree|treegrid|treeitem)\1/g,
   zod: /\b(?:z|zod)\.object\(/g,
   prisma: /\bprisma\.(\w+)\.(?:findMany|findFirst|findUnique|create|update|delete|upsert|count|aggregate)/g,
   drizzleTable: /\b(?:pgTable|mysqlTable|sqliteTable)\(\s*['"](\w+)['"]/g,
@@ -175,7 +212,8 @@ const RE = {
   nestRoute: /@(Get|Post|Put|Patch|Delete|All)\(\s*(?:['"`]([^'"`]*)['"`])?\s*\)/g,
   nestCtrl: /@Controller\(\s*(?:['"`]([^'"`]*)['"`])?\s*\)/,
 };
-const envNames = (s) => uniq([...allMatches(RE.envVite, s), ...allMatches(RE.envNode, s), ...allMatches(RE.envDeno, s)]);
+// MODE/DEV/PROD/SSR/BASE_URL são embutidos do Vite em import.meta.env, não variáveis a declarar no .env.
+const envNames = (s) => uniq([...allMatches(RE.envVite, s).filter((n) => !/^(MODE|DEV|PROD|SSR|BASE_URL)$/.test(n)), ...allMatches(RE.envNode, s), ...allMatches(RE.envDeno, s)]);
 for (const f of CODE_FILES) secao(`arquivo:${f}`, () => {
   const raw = readText(f);
   const src = stripComments(raw);
@@ -197,7 +235,7 @@ for (const f of CODE_FILES) secao(`arquivo:${f}`, () => {
     hooks: uniq(allMatches(RE.hook, src)), tabelas: uniq([...allMatches(RE.from, src), ...allMatches(RE.prisma, src)]), rpcs: uniq(allMatches(RE.rpc, src)),
     edges: uniq([...allMatches(RE.invoke, src), ...allMatches(RE.fnUrl, src)]), env: envNames(src), buckets: uniq(allMatches(RE.storage, src)), canais_realtime: uniq(allMatches(RE.channel, src)),
     hosts_externos: uniq(allMatches(RE.urlHost, src).map((h) => h.toLowerCase())).filter((h) => !/localhost|example\.(com|org)|w3\.org|schema\.org|github\.com|npmjs\.com|deno\.land|esm\.sh|jsdelivr|unpkg/.test(h)),
-    flags: uniq([...allMatches(RE.flag, src), ...allMatches(RE.flagEnv, src)]), papeis: uniq(allMatches(RE.role, src)), zod: (src.match(RE.zod) || []).length,
+    flags: uniq([...allMatches(RE.flag, src), ...allMatches(RE.flagEnv, src)]), papeis: uniq(allMatches(RE.role, src.replace(RE.ariaRole, ''))), zod: (src.match(RE.zod) || []).length,
     rotas_http: rotasHttp, drizzle: uniq(allMatches(RE.drizzleTable, src)),
     todos, teste: isTest, story: isStory,
     componente: temJsx && !isTest && !isStory && (exportsNamed.some((e) => /^[A-Z]/.test(e)) || /\.(vue|svelte|astro)$/.test(f)),
@@ -222,6 +260,13 @@ for (const f of PY_FILES) secao(`py:${f}`, () => {
   PY.set(f, { linhas: countLines(raw), imports: local, externos: uniq(mods.filter((m) => !m.startsWith('.')).map((m) => m.split('.')[0])).filter((m) => !PY_MODS.has(m)), defs: uniq(allMatches(/^(?:async\s+)?def\s+(\w+)/gm, src)), classes: uniq(allMatches(/^class\s+(\w+)/gm, src)), rotas_http: rotas, env: uniq([...allMatches(/os\.environ(?:\.get)?\s*[[(]\s*['"](\w+)['"]/g, src), ...allMatches(/getenv\(\s*['"](\w+)['"]/g, src)]), teste: TEST_RE.test(f), modelos: uniq(allMatches(/^class\s+(\w+)\((?:[\w.]*(?:Model|Base|BaseModel|DeclarativeBase)[\w.]*)\)/gm, src)), hooks: [], tabelas: [], rpcs: [], edges: [], buckets: [], canais_realtime: [], flags: [], papeis: [], todos: raw.split('\n').map((l, i) => { const m = /\b(TODO|FIXME|HACK|XXX)\b[:\s-]*([^\n]{0,100})/.exec(l); return m ? { linha: i + 1, tipo: m[1], texto: m[2].trim() } : null; }).filter(Boolean) });
 });
 const anyFile = (f) => FILE.get(f) || PY.get(f);
+// Exemplos, testes e ferramentas continuam no inventário, mas não provam uso pela aplicação.
+// srcDirs explícito permite tratar uma raiz de ferramentas como código de aplicação.
+// Vale para tudo que descreve a APLICAÇÃO (rotas HTTP, hooks, tabelas de ORM, flags, papéis, hosts, buckets):
+// um script com trechos de código em string (ex.: os cenários deste gerador) não pode virar fato do sistema.
+const TOOLING_ROOT = /^(?:(?:apps|packages|services|libs)\/[^/]+\/)?(?:scripts|bin|tools|\.github|docs|inventario|analise|examples?|samples?)\//;
+const ehApp = (f, d) => !d.teste && !d.story && (isSrc(f) || !TOOLING_ROOT.test(f));
+const appFiles = [...FILE.entries()].filter(([f, d]) => ehApp(f, d));
 
 // ---------- grafo reverso / fecho ----------
 const USED_BY = new Map();
@@ -262,7 +307,7 @@ const localHooks = (hooks) => hooks.filter((h) => HOOK_FILES_BY_NAME.has(h));
 const hooksOut = secao('hooks', () => {
   const out = [];
   for (const [f, d] of FILE) {
-    if (d.teste) continue;
+    if (!ehApp(f, d)) continue;
     const names = d.exports.filter((e) => /^use[A-Z]/.test(e));
     if (!names.length && !d.hook_arquivo) continue;
     for (const n of names) if (!HOOK_FILES_BY_NAME.has(n)) HOOK_FILES_BY_NAME.set(n, f);
@@ -299,16 +344,18 @@ const rotas = [];
 const routeFiles = uniq([...CODE_FILES.filter((f) => !FILE.get(f)?.teste && (isSrc(f) || /^(app|pages|routes|server|api)\//.test(f)) && (/<Route\b/.test(FILE.get(f).conteudo) || /create(Browser|Hash|Memory)Router|createRoutesFromElements|\bRouteObject\b|new\s+VueRouter|createRouter\(/.test(FILE.get(f).conteudo))), ...(CFG.routeFiles || [])]);
 secao('rotas-jsx', () => {
   for (const rf of routeFiles) {
-    const src = FILE.get(rf)?.conteudo || ''; const stack = [];
+    const src = FILE.get(rf)?.conteudo || ''; const stack = []; const protecao = [];
     const re = /<Route\b((?:[^>{/]|\/(?!>)|\{(?:[^{}]|\{[^{}]*\})*\})*)(\/?)>|<\/Route\s*>/g; let m;
     while ((m = re.exec(src))) {
-      if (m[0].startsWith('</')) { stack.pop(); continue; }
+      if (m[0].startsWith('</')) { stack.pop(); protecao.pop(); continue; }
       const attrs = m[1] || ''; const self = m[2] === '/';
       const p = /\bpath=["']([^"']*)["']/.exec(attrs) || /\bpath:\s*["']([^"']*)["']/.exec(attrs); const isIndex = /\bindex\b/.test(attrs);
       const parent = stack.length ? stack[stack.length - 1] : null;
       const full = p ? joinPath(parent, p[1]) : isIndex ? parent || '/' : parent;
-      const tags = [...attrs.matchAll(/<([A-Z]\w*)/g)].map((x) => x[1]);
-      const props = [...attrs.matchAll(/\w+=\{\s*([A-Z]\w*)\s*\}/g)].map((x) => x[1]);
+      // `fallback={<Loader/>}` e `errorElement={<Erro/>}` não são a tela da rota: ficam fora dos candidatos e dos wrappers.
+      const elemento = attrs.replace(/\b(?:fallback|errorElement)=\{(?:[^{}]|\{[^{}]*\})*\}/g, '');
+      const tags = [...elemento.matchAll(/<([A-Z]\w*)/g)].map((x) => x[1]);
+      const props = [...elemento.matchAll(/\w+=\{\s*([A-Z]\w*)\s*\}/g)].map((x) => x[1]);
       const GENERIC = /^(Navigate|Redirect|Suspense|Fragment|Outlet|LazyPage|Lazy\w*|Loadable|ErrorBoundary|\w*Boundary|\w*Provider|\w*Layout|\w*Route|\w*Guard|Protected\w*|Private\w*|Require\w*|Auth\w*)$/;
       // candidato: prop Component={X} > tag mais interna > demais; prefere o que resolve por lazy/import (strict), depois busca global
       const ordem = uniq([...props, ...tags.slice().reverse()]).sort((a, b) => (props.includes(b) ? 1 : 0) - (props.includes(a) ? 1 : 0) || tags.lastIndexOf(b) - tags.lastIndexOf(a));
@@ -317,9 +364,12 @@ secao('rotas-jsx', () => {
       if (!comp) for (const cnd of ordem.filter((x) => !GENERIC.test(x))) { const fl = componentFile(cnd, rf); if (fl) { comp = cnd; file = fl; break; } }
       if (!comp) { const inner = tags[tags.length - 1]; if (inner && !/^(Navigate|Redirect)$/.test(inner)) { comp = inner; file = componentFile(inner, rf); } }
       const redir = /<(?:Navigate|Redirect)\b[^>]*\bto=["']([^"']+)["']/.exec(attrs);
-      const paiProtegido = parent ? !!rotas.find((r) => r.caminho === parent && r.definida_em === rf && r.protegida) : false;
-      if (p || isIndex) rotas.push(mk({ caminho: full, componente: comp, arquivo: file, protegida: tags.some((w) => /Protected|Private|Auth|Guard|Require|Admin/i.test(w)) || paiProtegido, wrappers: tags.filter((t) => t !== comp), pai: parent, indice: isIndex, definida_em: rf, lazy: comp ? lazyMap.has(comp) : false, tipo: redir && !comp ? 'redirect' : 'tela', redireciona: redir ? redir[1] : null }));
-      if (!self) stack.push(full);
+      // Proteção herda pela pilha de <Route>, inclusive de rota-layout sem `path` (`<Route element={<ProtectedRoute>…}>`).
+      // A tag mais interna é a própria tela: `Auth`/`AdminPainel` só contam como guarda se o nome for de guarda.
+      const paiProtegido = protecao.length ? protecao[protecao.length - 1] : false;
+      const protegida = tags.some((w, i) => (i < tags.length - 1 ? /Protected|Private|Auth|Guard|Require|Admin/i : /Protected|Private|Guard|Require|(?:Auth|Admin)\w*(?:Route|Gate|Only)$/i).test(w)) || paiProtegido;
+      if (p || isIndex) rotas.push(mk({ caminho: full, componente: comp, arquivo: file, protegida, wrappers: tags.filter((t) => t !== comp), pai: parent, indice: isIndex, definida_em: rf, lazy: comp ? lazyMap.has(comp) : false, tipo: redir && !comp ? 'redirect' : 'tela', redireciona: redir ? redir[1] : null }));
+      if (!self) { stack.push(full); protecao.push(protegida); }
     }
     const scanObjs = (text, parent, depth) => {
       const re2 = /\{\s*(?:[^{}]*?\b)?path:\s*['"]([^'"]*)['"]([^{}]*(?:\{[^{}]*\}[^{}]*)*)/g; let mm;
@@ -350,7 +400,7 @@ secao('rotas-fs', () => {
   }
 });
 const apiHttp = [];
-for (const [f, d] of [...FILE, ...PY]) for (const r of d.rotas_http || []) apiHttp.push({ ...r, arquivo: f, tabelas: d.tabelas || [], env: d.env || [] });
+for (const [f, d] of [...FILE, ...PY]) if (ehApp(f, d)) for (const r of d.rotas_http || []) apiHttp.push({ ...r, arquivo: f, tabelas: d.tabelas || [], env: d.env || [] });
 apiHttp.sort((a, b) => a.caminho.localeCompare(b.caminho) || a.metodo.localeCompare(b.metodo) || a.arquivo.localeCompare(b.arquivo));
 const vistas = [];
 secao('vistas', () => {
@@ -399,7 +449,9 @@ secao('menu', () => {
 });
 const menuUniq = Object.values(Object.fromEntries(menu.map((v) => [v.destino + '|' + v.rotulo, v]))).sort((a, b) => (a.grupo || '').localeCompare(b.grupo || '') || a.rotulo.localeCompare(b.rotulo));
 const norm = (p) => String(p).replace(/^\//, '').replace(/\/$/, '').split('?')[0];
-const resolveDestino = (dest) => rotasEnriched.find((r) => r.caminho === dest) || vistasEnriched.find((v) => v.id === dest) || rotasEnriched.find((r) => norm(r.caminho) === norm(dest)) || vistasEnriched.find((v) => norm(v.id) === norm(dest)) || null;
+const acharDestino = (dest) => rotasEnriched.find((r) => r.caminho === dest) || vistasEnriched.find((v) => v.id === dest) || rotasEnriched.find((r) => norm(r.caminho) === norm(dest)) || vistasEnriched.find((v) => norm(v.id) === norm(dest)) || null;
+// Item de menu que aponta para uma rota só de redirect (`/` → `/compras`) resolve para a tela de destino.
+const resolveDestino = (dest) => { const r = acharDestino(dest); return r && r.tipo === 'redirect' && !r.arquivo && r.redireciona ? rotasEnriched.find((x) => x.caminho === r.redireciona && x.arquivo) || r : r; };
 
 // ---------- módulos ----------
 const dominios = new Map();
@@ -533,9 +585,9 @@ secao('banco-orm', () => {
     while ((m = re.exec(s))) { const t = T(m[1]); t.criada_em = path.posix.basename(f); for (const l of m[2].split('\n')) { const cm = /^\s*(\w+)\s+([\w[\]?]+)(.*)$/.exec(l); if (cm && !cm[1].startsWith('@')) { const ref = /@relation/.test(cm[3]) ? cm[2].replace(/[[\]?]/g, '') : null; t.colunas[cm[1]] = { tipo: cm[2].toLowerCase(), nn: !cm[2].endsWith('?'), pk: /@id/.test(cm[3]), default: (/@default\(([^)]*)\)/.exec(cm[3]) || [])[1] || null, ref }; if (ref) t.fks.push({ coluna: cm[1], ref }); } } }
     const re2 = /enum\s+(\w+)\s*\{([^}]*)\}/g; while ((m = re2.exec(s))) banco.enums[m[1]] = m[2].split(/\s+/).map((x) => x.trim()).filter((x) => /^\w+$/.test(x) && !/^@/.test(x));
   }
-  for (const [f, d] of FILE) for (const t of d.drizzle) { const tb = T(t); tb.criada_em = tb.criada_em || f; if (!banco.fonte.includes('drizzle')) banco.fonte.push('drizzle'); const m = new RegExp(`(?:pgTable|mysqlTable|sqliteTable)\\(\\s*['"]${t}['"]\\s*,\\s*\\{([^}]*)\\}`).exec(d.conteudo); if (m) for (const cm of m[1].matchAll(/(\w+)\s*:\s*(\w+)\(/g)) tb.colunas[cm[1]] = tb.colunas[cm[1]] || { tipo: cm[2], nn: /notNull/.test(m[1]), pk: false, default: null, ref: null }; }
-  for (const [f, d] of FILE) { let m; const re = /@Entity\(\s*(?:['"](\w+)['"])?\s*\)[\s\S]*?class\s+(\w+)/g; while ((m = re.exec(d.conteudo))) { const tb = T(m[1] || m[2]); tb.criada_em = tb.criada_em || f; if (!banco.fonte.includes('typeorm')) banco.fonte.push('typeorm'); for (const cm of d.conteudo.matchAll(/@(?:Primary\w*|Column|CreateDateColumn|UpdateDateColumn)\([^)]*\)\s*\n\s*(\w+)\s*[?!]?:\s*([\w[\]]+)/g)) tb.colunas[cm[1]] = tb.colunas[cm[1]] || { tipo: cm[2].toLowerCase(), nn: true, pk: false, default: null, ref: null }; } }
-  for (const [f, d] of PY) for (const cls of d.modelos) { const tb = T(cls); tb.criada_em = tb.criada_em || f; if (!banco.fonte.includes('python-models')) banco.fonte.push('python-models'); }
+  for (const [f, d] of appFiles) for (const t of d.drizzle) { const tb = T(t); tb.criada_em = tb.criada_em || f; if (!banco.fonte.includes('drizzle')) banco.fonte.push('drizzle'); const m = new RegExp(`(?:pgTable|mysqlTable|sqliteTable)\\(\\s*['"]${t}['"]\\s*,\\s*\\{([^}]*)\\}`).exec(d.conteudo); if (m) for (const cm of m[1].matchAll(/(\w+)\s*:\s*(\w+)\(/g)) tb.colunas[cm[1]] = tb.colunas[cm[1]] || { tipo: cm[2], nn: /notNull/.test(m[1]), pk: false, default: null, ref: null }; }
+  for (const [f, d] of appFiles) { let m; const re = /@Entity\(\s*(?:['"](\w+)['"])?\s*\)[\s\S]*?class\s+(\w+)/g; while ((m = re.exec(d.conteudo))) { const tb = T(m[1] || m[2]); tb.criada_em = tb.criada_em || f; if (!banco.fonte.includes('typeorm')) banco.fonte.push('typeorm'); for (const cm of d.conteudo.matchAll(/@(?:Primary\w*|Column|CreateDateColumn|UpdateDateColumn)\([^)]*\)\s*\n\s*(\w+)\s*[?!]?:\s*([\w[\]]+)/g)) tb.colunas[cm[1]] = tb.colunas[cm[1]] || { tipo: cm[2].toLowerCase(), nn: true, pk: false, default: null, ref: null }; } }
+  for (const [f, d] of PY) if (ehApp(f, d)) for (const cls of d.modelos) { const tb = T(cls); tb.criada_em = tb.criada_em || f; if (!banco.fonte.includes('python-models')) banco.fonte.push('python-models'); }
 });
 const tabelasTypes = {};
 secao('banco-types', () => {
@@ -551,17 +603,13 @@ secao('banco-types', () => {
 });
 for (const [t, cols] of Object.entries(tabelasTypes)) T(t).colunas_types = cols;
 const EDGE_DIR = ['supabase/functions', 'functions', 'netlify/functions', 'edge-functions'].find((d) => exists(d)) || 'supabase/functions';
-// Exemplos, testes e ferramentas continuam no inventário, mas não provam uso pela aplicação.
-// srcDirs explícito permite tratar uma raiz de ferramentas como código de aplicação.
-const TOOLING_ROOT = /^(?:(?:apps|packages|services|libs)\/[^/]+\/)?(?:scripts|bin|tools|\.github|docs|inventario|analise|examples?|samples?)\//;
-const appFiles = [...FILE.entries()].filter(([f, d]) => !d.teste && !d.story && (isSrc(f) || !TOOLING_ROOT.test(f)));
 const tabelasUsadas = new Map();
 for (const [f, d] of appFiles) for (const t of d.tabelas) { if (!tabelasUsadas.has(t)) tabelasUsadas.set(t, { front: [], edges: [] }); (f.startsWith(EDGE_DIR) ? tabelasUsadas.get(t).edges : tabelasUsadas.get(t).front).push(f); }
 const bancoOut = {
   fonte: uniq(banco.fonte), migrations: banco.migrations, seeds: banco.seeds, avisos: banco.ddl_dinamico ? [`${banco.ddl_dinamico} bloco(s) com DDL dinâmico (EXECUTE format/...) não modelado — policies/colunas criadas dinamicamente podem faltar; confira no banco vivo`] : [], extensoes: [...banco.extensoes].sort(), enums: sortObj(banco.enums), views: [...banco.views].sort(), funcoes: [...banco.funcoes].sort(),
   triggers: banco.triggers.sort((a, b) => a.tabela.localeCompare(b.tabela) || a.nome.localeCompare(b.nome)),
   cron_jobs: banco.cron.sort((a, b) => a.nome.localeCompare(b.nome)),
-  buckets: uniq([...banco.buckets_sql, ...[...FILE.values()].flatMap((d) => d.buckets)]).map((b) => ({ nome: b, criado_em_sql: banco.buckets_sql.has(b), usado_em: [...FILE.values()].filter((d) => d.buckets.includes(b)).length })),
+  buckets: uniq([...banco.buckets_sql, ...appFiles.flatMap(([, d]) => d.buckets)]).map((b) => ({ nome: b, criado_em_sql: banco.buckets_sql.has(b), usado_em: appFiles.filter(([, d]) => d.buckets.includes(b)).length })),
   tabelas: sortObj(Object.fromEntries(Object.entries(banco.tabelas).map(([n, t]) => {
     const uso = tabelasUsadas.get(n) || { front: [], edges: [] };
     const cols = Object.keys(t.colunas); const colsT = t.colunas_types ? Object.keys(t.colunas_types) : null;
@@ -582,6 +630,7 @@ const edges = secao('edges', () => {
     if (!fs.statSync(abs(dir)).isDirectory() || name.startsWith('_')) continue;
     const entry = ['index.ts', 'index.js', 'main.ts', 'handler.ts', 'mod.ts'].map((e) => `${dir}/${e}`).find((p) => FILESET.has(p));
     const files = ALL.filter((f) => f.startsWith(dir + '/') && CODE_EXT.has(path.extname(f)) && !TEST_RE.test(f));
+    if (!entry && !files.length) continue; // pasta só de testes/dados (ex.: functions/tests/): não é função publicável
     const a = aggregate(files);
     const srcAll = files.map((f) => FILE.get(f)?.conteudo || '').join('\n');
     const callers = uniq(appFiles.filter(([f, d]) => !f.startsWith(EDGE_DIR) && d.edges.includes(name)).map(([f]) => f));
@@ -605,12 +654,13 @@ const edgesSemPasta = uniq(appFiles.flatMap(([, d]) => d.edges)).filter((e) => !
 // ---------- ferramentas / scripts / workflows / deploy ----------
 const workflows = secao('workflows', () => ALL.filter((f) => /^\.github\/workflows\/.+\.ya?ml$/.test(f)).map((f) => {
   const y = readText(f);
+  const yc = y.replace(/^[ \t]*#.*$/gm, ''); // linhas só de comentário não executam nada
   const name = (/^name:\s*(.+)$/m.exec(y) || [])[1]?.trim().replace(/^['"]|['"]$/g, '') || path.posix.basename(f);
   const onBlock = (y.split(/^on:/m)[1] || '').split(/^[a-z]/m)[0];
   const gatilhos = uniq([...onBlock.matchAll(/^\s{2}([a-z_]+):/gm)].map((m) => m[1]).concat((/^on:\s*\[([^\]]*)\]/m.exec(y) || [, ''])[1].split(',').map((s) => s.trim()).filter(Boolean)));
   const jobs = [...(y.split(/^jobs:/m)[1] || '').matchAll(/^\s{2}([\w-]+):\s*$/gm)].map((m) => m[1]);
   const branches = uniq([...onBlock.matchAll(/branches:\s*\[([^\]]*)\]/g)].flatMap((m) => m[1].split(',').map((s) => s.trim().replace(/['"]/g, ''))).concat([...onBlock.matchAll(/branches:\s*\n((?:\s+-\s*.+\n)+)/g)].flatMap((m) => (m[1].match(/-\s*(\S+)/g) || []).map((x) => x.replace(/-\s*/, '').replace(/['"]/g, '')))).filter(Boolean));
-  return { arquivo: f, nome: name, gatilhos, crons: [...y.matchAll(/cron:\s*['"]([^'"]+)['"]/g)].map((m) => m[1]), branches, jobs, permissoes: (/^permissions:[ \t]*\n((?:[ \t]+[\w-]+:[^\n]*\n)+)/m.exec(y) || [])[1]?.trim().split('\n').map((l) => l.trim()) || [], scripts_usados: uniq([...y.matchAll(/(?:node|bash|sh|npx tsx|bun|python3?|deno run)\s+((?:scripts|\.github|tools|bin)\/[\w./-]+)/g)].map((m) => m[1])), npm_scripts: uniq([...y.matchAll(/(?:npm|bun|pnpm|yarn)\s+(?:run\s+)?([\w:-]+)/g)].map((m) => m[1]).filter((s) => pkg.scripts && pkg.scripts[s])), secrets: uniq([...y.matchAll(/secrets\.(\w+)/g)].map((m) => m[1])), actions: uniq([...y.matchAll(/uses:\s*([\w./-]+)@/g)].map((m) => m[1])) };
+  return { arquivo: f, nome: name, gatilhos, crons: [...yc.matchAll(/cron:\s*['"]([^'"]+)['"]/g)].map((m) => m[1]), branches, jobs, permissoes: (/^permissions:[ \t]*\n((?:[ \t]+[\w-]+:[^\n]*\n)+)/m.exec(y) || [])[1]?.trim().split('\n').map((l) => l.trim()) || [], scripts_usados: uniq([...yc.matchAll(/(?:(?:node|bash|sh|npx tsx|bun(?:\s+run)?|python3?|deno run)\s+|\bfrom\s+['"]\.\/|\bimport\(\s*['"]\.\/)((?:scripts|\.github|tools|bin)\/[\w./-]+)/g)].map((m) => m[1])), npm_scripts: uniq([...yc.matchAll(/(?:npm|bun|pnpm|yarn)\s+(?:run\s+)?([\w:-]+)/g)].map((m) => m[1]).filter((s) => pkg.scripts && pkg.scripts[s])), secrets: uniq([...yc.matchAll(/(?<![\w./-])secrets\.(\w+)/g)].map((m) => m[1])), actions: uniq([...yc.matchAll(/uses:\s*([\w./-]+)@/g)].map((m) => m[1])) };
 }).sort((a, b) => a.arquivo.localeCompare(b.arquivo)), []);
 const TEXT_CORPUS = ALL.filter((o) => /\.(mjs|cjs|js|ts|tsx|sh|ya?ml|json|md|toml|py)$/.test(o) && !o.startsWith(OUT_REL)).map((o) => [o, FILE.get(o)?.conteudo ?? (fs.statSync(abs(o)).size < 512 * 1024 ? readText(o) : '')]);
 const scriptsRepo = secao('scripts', () => ALL.filter((f) => /^(scripts|bin|tools|\.github\/scripts)\//.test(f) && /\.(mjs|cjs|js|ts|sh|py|sql|ps1)$/.test(f) && !TEST_RE.test(f)).map((f) => {
@@ -621,9 +671,9 @@ const scriptsRepo = secao('scripts', () => ALL.filter((f) => /^(scripts|bin|tool
   return { arquivo: f, descricao: first.slice(0, 2).join(' ').slice(0, 200) || null, linhas: countLines(src), env: envNames(src), npm_scripts: usadoPorNpm, workflows: usadoPorWf, orfao: !usadoPorNpm.length && !usadoPorWf.length && !TEXT_CORPUS.some(([o, t]) => o !== f && t.includes(bn)) };
 }), []);
 const envExample = uniq(ALL.filter((f) => /(^|\/)\.env\.(example|sample|template)$/.test(f)).flatMap((f) => [...readText(f).matchAll(/^\s*(?:export\s+)?([A-Z][A-Z0-9_]+)\s*=/gm)].map((m) => m[1])));
-const envUsadas = uniq([...FILE.entries()].filter(([f]) => isSrc(f)).flatMap(([, d]) => d.env));
+const envUsadas = uniq([...FILE.entries()].filter(([f, d]) => isSrc(f) && !d.teste).flatMap(([, d]) => d.env));
 const envPython = uniq([...PY.values()].flatMap((d) => d.env));
-const envEdges = uniq([...FILE.entries()].filter(([f]) => f.startsWith(EDGE_DIR)).flatMap(([, d]) => d.env));
+const envEdges = uniq([...FILE.entries()].filter(([f, d]) => f.startsWith(EDGE_DIR) && !d.teste).flatMap(([, d]) => d.env));
 const configs = ALL.filter((cf) => /^(vite|next|nuxt|svelte|astro|vitest|jest|playwright|cypress|eslint|prettier|tailwind|postcss|webpack|tsup|rollup|babel|commitlint|lint-staged|knip|dependency-cruiser)\.config\.[cm]?[jt]s$|^(tsconfig[\w.-]*|jsconfig|biome|deno|components|renovate|\.?release|lerna|nx|turbo|package)\.json$|^(vercel\.json|netlify\.toml|fly\.toml|render\.yaml|wrangler\.toml|serverless\.yml|Dockerfile[\w.-]*|docker-(compose|stack)[\w.-]*\.ya?ml|supabase\/config\.toml|\.nvmrc|\.python-version|pyproject\.toml|setup\.cfg|Makefile|\.husky\/[\w-]+|CODEOWNERS|\.github\/CODEOWNERS|\.github\/dependabot\.ya?ml|\.github\/PULL_REQUEST_TEMPLATE\.md|\.editorconfig|\.prettierrc[\w.]*|\.eslintrc[\w.]*|\.gitlab-ci\.yml|ai-context\.config\.json)$/.test(cf));
 const docTitle = (f) => { const s = readText(f); return (/^#\s+(.+)$/m.exec(s) || [])[1]?.trim().slice(0, 100) || null; };
 const docsRaiz = ALL.filter((f) => /^[A-Za-z][\w.-]*\.md$/.test(f) || /^docs\/[^/]+\.md$/.test(f) || /^\.github\/[\w-]+\.md$/.test(f)).map((f) => ({ arquivo: f, titulo: docTitle(f), linhas: countLines(readText(f)) }));
@@ -635,13 +685,13 @@ const changelogTopo = (() => { const s = readText(ALL.find((f) => /^CHANGELOG\.m
 const integracoes = secao('integracoes', () => {
   const SDK = { stripe: 'Stripe', '@stripe/stripe-js': 'Stripe', twilio: 'Twilio', openai: 'OpenAI', '@anthropic-ai/sdk': 'Anthropic', '@google/generative-ai': 'Gemini', '@elevenlabs/react': 'ElevenLabs', '@sentry/react': 'Sentry', '@sentry/node': 'Sentry', '@sentry/nextjs': 'Sentry', 'posthog-js': 'PostHog', mixpanel: 'Mixpanel', '@segment/analytics-next': 'Segment', resend: 'Resend', nodemailer: 'SMTP', '@sendgrid/mail': 'SendGrid', 'aws-sdk': 'AWS', '@aws-sdk/client-s3': 'AWS S3', firebase: 'Firebase', 'firebase-admin': 'Firebase', '@upstash/redis': 'Upstash', ioredis: 'Redis', redis: 'Redis', 'socket.io': 'Socket.IO', pusher: 'Pusher', 'web-push': 'Web Push', '@vercel/analytics': 'Vercel Analytics', 'next-auth': 'NextAuth', '@clerk/nextjs': 'Clerk', '@auth0/auth0-react': 'Auth0', axios: 'HTTP (axios)', i18next: 'i18next', 'react-i18next': 'i18next', zod: 'zod', '@tanstack/react-query': 'react-query', 'googleapis': 'Google APIs', '@supabase/supabase-js': 'Supabase' };
   const sdks = Object.keys(deps).filter((d) => SDK[d]).map((d) => ({ pacote: d, servico: SDK[d], versao: deps[d] })).sort((a, b) => a.servico.localeCompare(b.servico) || a.pacote.localeCompare(b.pacote));
-  const hosts = byCount([...FILE.values()].flatMap((d) => d.hosts_externos)).map(([h, n]) => ({ host: h, arquivos: n }));
+  const hosts = byCount(appFiles.flatMap(([, d]) => d.hosts_externos)).map(([h, n]) => ({ host: h, arquivos: n }));
   const envHints = uniq([...envUsadas, ...envEdges, ...envExample]).filter((e) => /(API_KEY|TOKEN|SECRET|WEBHOOK|DSN|SID|CLIENT_ID|SMTP|S3|BUCKET|STRIPE|TWILIO|OPENAI|ELEVEN|SENTRY|EVOLUTION|WHATSAPP|GMAIL|GOOGLE|FIREBASE|REDIS|RESEND)/i.test(e));
   const webhooks = edges.filter((e) => !e.verify_jwt).map((e) => e.nome).concat(apiHttp.filter((r) => /webhook|callback|hook/i.test(r.caminho)).map((r) => `${r.metodo} ${r.caminho}`));
-  return { sdks, hosts_externos: hosts, env_de_integracao: envHints, webhooks_recebidos: uniq(webhooks), realtime: uniq([...FILE.values()].flatMap((d) => d.canais_realtime)) };
+  return { sdks, hosts_externos: hosts, env_de_integracao: envHints, webhooks_recebidos: uniq(webhooks), realtime: uniq(appFiles.flatMap(([, d]) => d.canais_realtime)) };
 }, { sdks: [], hosts_externos: [], env_de_integracao: [], webhooks_recebidos: [], realtime: [] });
 const permissoes = secao('permissoes', () => ({
-  papeis_no_codigo: byCount([...FILE.values()].flatMap((d) => d.papeis)).map(([p, n]) => ({ papel: p, ocorrencias: n })),
+  papeis_no_codigo: byCount(appFiles.flatMap(([, d]) => d.papeis)).map(([p, n]) => ({ papel: p, ocorrencias: n })),
   enums_de_papel: Object.entries(banco.enums).filter(([k]) => /role|papel|perfil|permission/i.test(k)).map(([k, v]) => ({ enum: k, valores: v })),
   rpcs_de_autorizacao: bancoOut.rpcs_usadas_no_codigo.filter((r) => /admin|role|permission|can_|has_|is_|auth/i.test(r.nome)).map((r) => r.nome),
   guards: uniq([...FILE.entries()].filter(([, d]) => d.componente && /Protected|Guard|RequireAuth|RequireRole|PrivateRoute|Authorized/.test(d.exports.join(' '))).map(([f]) => f)),
@@ -649,7 +699,7 @@ const permissoes = secao('permissoes', () => ({
   menu_com_papeis: menuUniq.filter((m) => m.papeis.length).map((m) => ({ rotulo: m.rotulo, papeis: m.papeis })),
   tabelas_sem_rls: Object.entries(bancoOut.tabelas).filter(([, t]) => t.sem_rls).map(([n]) => n),
 }), {});
-const flags = secao('flags', () => { const all = byCount([...FILE.values()].flatMap((d) => d.flags)); return { total: all.length, flags: all.map(([f, n]) => ({ flag: f, arquivos: n })), tabelas_de_flag: Object.keys(bancoOut.tabelas).filter((t) => /flag|feature|toggle|setting/i.test(t)) }; }, { total: 0, flags: [], tabelas_de_flag: [] });
+const flags = secao('flags', () => { const all = byCount(appFiles.flatMap(([, d]) => d.flags)); return { total: all.length, flags: all.map(([f, n]) => ({ flag: f, arquivos: n })), tabelas_de_flag: Object.keys(bancoOut.tabelas).filter((t) => /flag|feature|toggle|setting/i.test(t)) }; }, { total: 0, flags: [], tabelas_de_flag: [] });
 const providers = secao('providers', () => { const entry = ALL.find((f) => /^(?:src\/)?(main|index)\.[tj]sx$/.test(f)) || ALL.find((f) => /^(?:src\/)?(App|app|root|_app)\.[tj]sx$/.test(f)) || ALL.find((f) => /^(?:src\/)?app\/layout\.tsx$/.test(f)); if (!entry) return { entrada: null, providers: [] }; const files = [entry, ...closure(entry).filter((f) => /App\.[tj]sx$|providers?\//i.test(f)).slice(0, 10)]; return { entrada: entry, providers: uniq(files.flatMap((f) => allMatches(/<([A-Z]\w*(?:Provider|Context|Boundary|Router|Client|Store)\b[\w.]*)/g, FILE.get(f)?.conteudo || ''))) }; }, { entrada: null, providers: [] });
 const i18n = secao('i18n', () => { const arqs = ALL.filter((f) => /(^|\/)(i18n|locales?|lang|translations?)\/.+\.(json|ts|js|yml|yaml)$/.test(f)); const LANG = /^[a-z]{2}(?:[-_][A-Za-z]{2,4})?$/; const idiomas = uniq(arqs.map((f) => { const partes = f.split('/'); const i = partes.findIndex((p0) => /^(i18n|locales?|lang|translations?)$/.test(p0)); const resto = partes.slice(i + 1); const b0 = baseOf(f).split('.')[0]; return resto.slice(0, -1).find((p0) => LANG.test(p0)) || (LANG.test(b0) ? b0 : null); }).filter(Boolean)); return { arquivos: arqs.length, idiomas, lib: [has('i18next') && 'i18next', has('react-intl') && 'react-intl', has('vue-i18n') && 'vue-i18n', has('next-intl') && 'next-intl'].filter(Boolean) }; }, { arquivos: 0, idiomas: [], lib: [] });
 const ferramentas = {
@@ -667,11 +717,11 @@ const testFiles = [...FILE.entries(), ...PY.entries()].filter(([, d]) => d.teste
 const cobertoPor = new Map();
 for (const [, d] of testFiles) for (const i of d.imports) { if (anyFile(i)?.teste) continue; cobertoPor.set(i, (cobertoPor.get(i) || 0) + 1); }
 for (const h of hooksOut) h.coberto_por_testes = cobertoPor.get(h.arquivo) || 0;
-const tipoTeste = (f) => (/(^|\/)(e2e|cypress|playwright)\/|\.e2e\./.test(f) ? 'e2e' : /contract/.test(f) ? 'contrato' : /\/qa\//.test(f) ? 'qa' : /\.py$/.test(f) ? 'pytest' : 'unit');
+const tipoTeste = (f) => (/(^|\/)(?:[\w.-]+[-_])?(e2e|cypress|playwright)(?:[-_][\w.-]+)?\/|\.e2e\./.test(f) ? 'e2e' : /contract/.test(f) ? 'contrato' : /\/qa\//.test(f) ? 'qa' : /\.py$/.test(f) ? 'pytest' : 'unit');
 const testes = secao('testes', () => ({
   frameworks: stack.testes, total: testFiles.length + ALL.filter((f) => /^supabase\/tests\/.*\.sql$/.test(f)).length,
   por_tipo: sortObj(testFiles.reduce((acc, [f]) => { const t = tipoTeste(f); acc[t] = (acc[t] || 0) + 1; return acc; }, {})),
-  onde_ficam: byCount(testFiles.map(([f]) => (/__tests__\//.test(f) ? 'co-localizado (__tests__)' : /\.(test|spec)\./.test(f) && !/^(tests?|e2e|qa)\//.test(f) ? 'co-localizado (*.test)' : /^e2e\//.test(f) ? 'e2e/' : /^tests?\//.test(f) ? 'tests/' : 'outro'))).map(([k, n]) => ({ padrao: k, arquivos: n })),
+  onde_ficam: byCount(testFiles.map(([f]) => (/__tests__\//.test(f) ? 'co-localizado (__tests__)' : /\.(test|spec)\./.test(f) && !/^(tests?(?:[-_][\w.-]+)?|e2e|qa)\//.test(f) ? 'co-localizado (*.test)' : /^e2e\//.test(f) ? 'e2e/' : /^tests?\//.test(f) ? 'tests/' : /^tests?[-_][\w.-]+\//.test(f) ? f.split('/')[0] + '/' : 'outro'))).map(([k, n]) => ({ padrao: k, arquivos: n })),
   arquivos: testFiles.map(([f, d]) => ({ arquivo: f, tipo: tipoTeste(f), linhas: d.linhas, testa: d.imports.filter((i) => !anyFile(i)?.teste), casos: d.conteudo ? (d.conteudo.match(/\b(?:it|test)(?:\.(?:each|only|skip|concurrent|todo))?\s*\(/g) || []).length : (d.defs || []).filter((x) => /^test_/.test(x)).length })).sort((a, b) => a.arquivo.localeCompare(b.arquivo)),
   sql: ALL.filter((f) => /^supabase\/tests\/.*\.sql$/.test(f)),
   cobertura_por_arquivo: sortObj(Object.fromEntries(cobertoPor)),
@@ -754,7 +804,7 @@ const convencoes = secao('convencoes', () => {
   return {
     onde_ficam: { telas: topDir(uniq([...rotasEnriched, ...vistasEnriched].map((r) => r.arquivo).filter(Boolean))), componentes: topDir(comps), hooks: topDir(hooksOut.map((h) => h.arquivo)), servicos_logica: topDir(logica.map((l) => l.arquivo)), testes: testes.onde_ficam.slice(0, 3).map((t) => `${t.padrao} (${t.arquivos})`), edge_functions: edges.length ? EDGE_DIR : null, migrations: migDir || null, scripts: topDir(scriptsRepo.map((s) => s.arquivo)), docs: byCount(docsRaiz.map((d) => dirOf(d.arquivo))).slice(0, 3).map(([d, n]) => `${d === '.' ? '(raiz)' : d} (${n})`) },
     nomenclatura: { componentes: nameStyle(comps), hooks: hooksOut.length ? 'use + PascalCase' : null, servicos: nameStyle(logica.map((l) => l.arquivo)), edge_functions: nameStyle(edges.map((e) => e.nome)), tabelas: nameStyle(Object.keys(bancoOut.tabelas)) },
-    barrels_index: barrels, extensao_componentes: byCount(comps.map((f) => path.extname(f))).map(([e, n]) => `${e} (${n})`), alias_imports: Object.fromEntries(Object.entries(aliasesByBase).map(([b, m]) => [b || '(raiz)', m])),
+    barrels_index: barrels, extensao_componentes: byCount(comps.map((f) => path.extname(f))).map(([e, n]) => `${e} (${n})`), alias_imports: Object.fromEntries(Object.entries(aliasesByBase).map(([b, m]) => [b || '(raiz)', b ? m : Object.fromEntries(Object.entries(m).filter(([a]) => !ALIAS_PRESUMIDOS.has(a) || appFiles.some(([, d]) => new RegExp(`(?:\\bfrom\\s*|\\bimport\\s*\\(?\\s*|\\brequire\\(\\s*)['"]${a.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')}`).test(d.conteudo))))])),
     commits: { convencao: exists('commitlint.config.js') || exists('.commitlintrc.json') || has('@commitlint/cli') ? 'commitlint' : subj.filter((s) => /^(feat|fix|chore|docs|refactor|test|ci|build|perf|infra|style)(\(.+\))?!?:/.test(s)).length > subj.length / 2 ? 'conventional commits (observado)' : 'livre', exemplos: subj.slice(0, 5) },
     pr_template: ALL.find((f) => /PULL_REQUEST_TEMPLATE/i.test(f)) || null, codeowners: ALL.find((f) => /CODEOWNERS$/.test(f)) || null, contributing: ALL.find((f) => /^CONTRIBUTING\.md$/i.test(f)) || null,
     instrucoes_agentes: ALL.filter((f) => /^(CLAUDE|AGENTS|GEMINI|\.cursorrules)(\.md)?$|^\.github\/copilot-instructions\.md$|^\.claude\/[^/]+\.md$|^\.cursor\/rules\//i.test(f)),
@@ -763,13 +813,21 @@ const convencoes = secao('convencoes', () => {
 }, { onde_ficam: {}, nomenclatura: {}, instrucoes_agentes: [] });
 
 // ---------- baseline ----------
+// Credencial fixa no código sem prefixo conhecido: `const ACCESS_KEY = "<32+ caracteres com dígitos>"`.
+// Exige 4+ dígitos para não acusar chave de cache/localStorage (`'app-dashboard-layout-settings-v2'`);
+// nome com public/publishable/anon é chave pública por definição (VAPID pública, anon key) e fica de fora.
+const credencialLiteral = (linha) => { const m = /\b(\w*(?:key|secret|token|password|passwd)\w*)\s*[:=]\s*['"]([A-Za-z0-9+/_=-]{32,})['"]/i.exec(linha); return !!m && !/public|publishable|anon/i.test(m[1]) && (m[2].match(/\d/g) || []).length >= 4 && /[A-Za-z]/.test(m[2]); };
+// Janelas de "últimos N dias" contam a partir da data do commit HEAD, não do relógio: o mesmo commit
+// gera o mesmo baseline.json hoje ou daqui a um mês. Sem git, cai no relativo (git devolve vazio de todo jeito).
+const HEAD_EPOCH = Number(git('log', '-1', '--format=%ct')) || 0;
+const desde = (dias) => (HEAD_EPOCH ? `--since=${new Date((HEAD_EPOCH - dias * 86400) * 1000).toISOString().replace(/\.\d+Z$/, 'Z')}` : `--since=${dias}.days`);
 const gitInfo = secao('git', () => ({
   commit: git('rev-parse', 'HEAD') || null, branch: git('rev-parse', '--abbrev-ref', 'HEAD') || null, data_commit: git('log', '-1', '--format=%cI') || null, remote: git('remote', 'get-url', 'origin').replace(/\/\/[^@]+@/, '//') || null,
   ultimos_commits: git('log', '-25', '--format=%h|%cs|%s').split('\n').filter(Boolean).map((l) => { const [h, d, ...s] = l.split('|'); return { sha: h, data: d, assunto: s.join('|').slice(0, 120) }; }),
-  arquivos_mudados_7d: uniq(git('log', '--since=7.days', '--name-only', '--format=').split('\n').filter(Boolean)).length,
-  pastas_mais_mudadas_30d: byCount(git('log', '--since=30.days', '--name-only', '--format=').split('\n').filter(Boolean).map((f) => f.split('/').slice(0, 3).join('/'))).slice(0, 15).map(([pasta, n]) => ({ pasta, mudancas: n })),
-  arquivos_mais_mudados_90d: byCount(git('log', '--since=90.days', '--name-only', '--format=').split('\n').filter((f) => f && FILESET.has(f))).slice(0, 25).map(([arquivo, n]) => ({ arquivo, mudancas: n })),
-  autores_30d: byCount(git('log', '--since=30.days', '--format=%an').split('\n').filter(Boolean)).slice(0, 10).map(([a, n]) => ({ autor: a, commits: n })),
+  arquivos_mudados_7d: uniq(git('log', desde(7), '--name-only', '--format=').split('\n').filter(Boolean)).length,
+  pastas_mais_mudadas_30d: byCount(git('log', desde(30), '--name-only', '--format=').split('\n').filter(Boolean).map((f) => f.split('/').slice(0, 3).join('/'))).slice(0, 15).map(([pasta, n]) => ({ pasta, mudancas: n })),
+  arquivos_mais_mudados_90d: byCount(git('log', desde(90), '--name-only', '--format=').split('\n').filter((f) => f && FILESET.has(f))).slice(0, 25).map(([arquivo, n]) => ({ arquivo, mudancas: n })),
+  autores_30d: byCount(git('log', desde(30), '--format=%an').split('\n').filter(Boolean)).slice(0, 10).map(([a, n]) => ({ autor: a, commits: n })),
 }), {});
 const byDir = {};
 for (const [f, d] of [...FILE, ...PY]) { const k = f.split('/').slice(0, 2).join('/'); byDir[k] = byDir[k] || { arquivos: 0, linhas: 0 }; byDir[k].arquivos++; byDir[k].linhas += d.linhas; }
@@ -794,9 +852,10 @@ const baseline = {
     componentes_orfaos: componentes.filter((co) => co.orfao).map((co) => co.arquivo).slice(0, 200),
     componentes_com_nome_duplicado: Object.keys(componentesDuplicados),
     scripts_orfaos: scriptsRepo.filter((s) => s.orfao).map((s) => s.arquivo),
+    arquivos_nao_lidos_por_tamanho: [...NAO_LIDOS_POR_TAMANHO].sort(),
     env_usadas_nao_declaradas: ferramentas.env.usadas_mas_nao_declaradas,
     ciclos_de_import: grafo.ciclos.total,
-    possiveis_segredos_no_codigo: cap([...FILE.entries(), ...PY.entries()].flatMap(([f, d]) => { const out = []; let ln = 0; for (const line of (d.conteudo || readText(f)).split('\n')) { ln++; if (/eyJ[a-zA-Z0-9_-]{30,}\.[a-zA-Z0-9_-]{10,}|sk_live_[a-zA-Z0-9]{10,}|sk-[a-zA-Z0-9]{32,}|AKIA[0-9A-Z]{16}|ghp_[a-zA-Z0-9]{30,}|xox[baprs]-[a-zA-Z0-9-]{10,}|-----BEGIN (RSA|EC|OPENSSH) PRIVATE/.test(line) && !/example|placeholder|xxx|mock|fake|dummy/i.test(line)) out.push(`${f}:${ln}`); } return out; }), 50),
+    possiveis_segredos_no_codigo: cap([...FILE.entries(), ...PY.entries()].flatMap(([f, d]) => { const out = []; let ln = 0; for (const line of (d.conteudo || readText(f)).split('\n')) { ln++; if ((/eyJ[a-zA-Z0-9_-]{30,}\.[a-zA-Z0-9_-]{10,}|sk_live_[a-zA-Z0-9]{10,}|sk-[a-zA-Z0-9]{32,}|AKIA[0-9A-Z]{16}|ghp_[a-zA-Z0-9]{30,}|xox[baprs]-[a-zA-Z0-9-]{10,}|-----BEGIN (RSA|EC|OPENSSH) PRIVATE/.test(line) || credencialLiteral(line)) && !/example|placeholder|xxx|mock|fake|dummy/i.test(line)) out.push(`${f}:${ln}`); } return out; }), 50),
   },
   erros_do_gerador: ERROS,
 };

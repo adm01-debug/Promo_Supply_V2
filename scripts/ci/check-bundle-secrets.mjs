@@ -14,6 +14,10 @@
 //      A chave anon (role=anon) PODE estar no bundle — e o que o Vite injeta.
 //   2. le .env.production (versionado) e reprova qualquer JWT cujo `role` NAO
 //      seja `anon`: no arquivo so e aceita a chave publica.
+//   3. nos dois lugares, reprova tambem a chave secreta no formato novo do Supabase
+//      (`sb_secret_...`): ela NAO e JWT, nao tem `role`, e passava invisivel pela varredura.
+//   4. alem dos .js, varre os .html de dist/: o Vite troca `%VITE_X%` por valor de ambiente
+//      dentro do index.html, e HTML publicado chega ao navegador igual ao JS.
 //
 // NUNCA imprime o valor da chave: a violacao sai como arquivo:linha + o claim
 // `role` encontrado.
@@ -27,16 +31,28 @@
 // Uso:
 //   node scripts/ci/check-bundle-secrets.mjs [--dist dist] [--env .env.production]
 
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, realpathSync, statSync } from 'node:fs';
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 
 const EXTENSOES = ['.js', '.mjs', '.cjs'];
+// Varridos alem do JS. Ficam FORA da contagem do fail-closed de proposito: dist so com
+// index.html continua sendo "o build nao gerou bundle" (exit 2).
+const EXTENSOES_HTML = ['.html', '.htm'];
 
 // JWT = "eyJ" + base64url "." base64url "." base64url. O lookbehind impede casar
 // um "eyJ" que seja o inicio de uma sequencia base64url maior (ex.: um hash
 // colado antes do token), em vez de confiar so no \b (que casa com "_").
 const RE_JWT = /(?<![A-Za-z0-9_-])eyJ[A-Za-z0-9_-]{4,}\.[A-Za-z0-9_-]{4,}\.[A-Za-z0-9_-]{4,}/gu;
+
+// Chave secreta do Supabase no formato novo: prefixo fixo + corpo base64url. A publica
+// (`sb_publishable_...`) pode estar no bundle; a secreta nunca.
+const RE_SB_SECRET = /sb_secret_[A-Za-z0-9_-]{20,}/gu;
+
+/** Extrai as chaves secretas `sb_secret_...` de um texto. */
+export function extrairChavesSecretas(texto) {
+  return [...texto.matchAll(RE_SB_SECRET)].map((m) => m[0]);
+}
 
 /** Extrai os tokens JWT ("eyJ...") de um texto. */
 export function extrairTokens(texto) {
@@ -55,20 +71,20 @@ export function decodificarPayload(token) {
   }
 }
 
-/** Retorna true se o nome e de um arquivo varrido (.js/.mjs/.cjs). */
-export function ehArquivoVarrido(nome) {
-  return EXTENSOES.some((ext) => nome.endsWith(ext));
+/** Retorna true se o nome e de um arquivo varrido (.js/.mjs/.cjs, salvo outra lista). */
+export function ehArquivoVarrido(nome, extensoes = EXTENSOES) {
+  return extensoes.some((ext) => nome.endsWith(ext));
 }
 
 /** Lista recursivamente os .js/.mjs/.cjs de um diretorio (sourcemaps fora). */
-export function listarArquivosVarridos(dir) {
+export function listarArquivosVarridos(dir, extensoes = EXTENSOES) {
   const arquivos = [];
   const percorrer = (atual) => {
     const entradas = readdirSync(atual, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name));
     for (const entrada of entradas) {
       const caminho = path.join(atual, entrada.name);
       if (entrada.isDirectory()) percorrer(caminho);
-      else if (entrada.isFile() && ehArquivoVarrido(entrada.name)) arquivos.push(caminho);
+      else if (entrada.isFile() && ehArquivoVarrido(entrada.name, extensoes)) arquivos.push(caminho);
     }
   };
   percorrer(dir);
@@ -78,7 +94,7 @@ export function listarArquivosVarridos(dir) {
 /** Varre dist/ e devolve os JWTs com role=service_role (o que nao pode publicar). */
 export function varrer(distDir) {
   const violacoes = [];
-  for (const arquivo of listarArquivosVarridos(distDir)) {
+  for (const arquivo of listarArquivosVarridos(distDir, [...EXTENSOES, ...EXTENSOES_HTML])) {
     const conteudo = readFileSync(arquivo, 'utf8');
     conteudo.split(/\r?\n/u).forEach((linha, indice) => {
       for (const token of extrairTokens(linha)) {
@@ -87,6 +103,9 @@ export function varrer(distDir) {
           violacoes.push({ arquivo, linha: indice + 1, tipo: 'bundle', role: 'service_role' });
         }
       }
+      extrairChavesSecretas(linha).forEach(() => {
+        violacoes.push({ arquivo, linha: indice + 1, tipo: 'bundle', role: 'sb_secret' });
+      });
     });
   }
   return violacoes;
@@ -106,17 +125,24 @@ export function varrerEnv(caminhoEnv) {
           violacoes.push({ arquivo: caminhoEnv, linha: indice + 1, tipo: 'env', role: role ?? 'ausente' });
         }
       }
+      extrairChavesSecretas(linha).forEach(() => {
+        violacoes.push({ arquivo: caminhoEnv, linha: indice + 1, tipo: 'env', role: 'sb_secret' });
+      });
     });
   return violacoes;
 }
 
 /** Formata as violacoes em uma linha legivel cada (nunca imprime o token). */
 export function avaliar(violacoes) {
-  return violacoes.map((v) =>
-    v.tipo === 'bundle'
+  return violacoes.map((v) => {
+    if (v.role === 'sb_secret') {
+      const onde = v.tipo === 'bundle' ? 'no bundle publicado' : 'no arquivo de ambiente (so a chave publica e aceita)';
+      return `${v.arquivo}:${v.linha} — chave secreta sb_secret_ do Supabase ${onde}`;
+    }
+    return v.tipo === 'bundle'
       ? `${v.arquivo}:${v.linha} — JWT com role=service_role no bundle publicado`
-      : `${v.arquivo}:${v.linha} — JWT no arquivo de ambiente com role=${v.role} (so a chave anon e aceita)`,
-  );
+      : `${v.arquivo}:${v.linha} — JWT no arquivo de ambiente com role=${v.role} (so a chave anon e aceita)`;
+  });
 }
 
 /** Avalia o bundle e o .env.production reais: varre + formata. */
@@ -130,6 +156,9 @@ function parseArgs(argv) {
     if (argv[i] === '--dist') args.dist = argv[++i];
     else if (argv[i] === '--env') args.env = argv[++i];
     else throw new Error(`Argumento desconhecido: ${argv[i]}`);
+    // Flag no fim da linha, sem valor: `path.resolve(root, undefined)` estourava com stack
+    // trace e status 1 (o codigo de "segredo encontrado") em vez de erro de uso (2).
+    if (argv[i] === undefined) throw new Error(`${argv[i - 1]} exige um valor`);
   }
   return args;
 }
@@ -173,11 +202,22 @@ export function main(argv = process.argv.slice(2), root = process.cwd()) {
     return 1;
   }
   console.log(
-    `OK: nenhum JWT service_role no bundle (${arquivos.length} arquivo(s) .js/.mjs/.cjs varrido(s)) e ${path.relative(root, caminhoEnv) || args.env} so com chave anon.`,
+    `OK: nenhum JWT service_role nem chave sb_secret_ no bundle (${arquivos.length} arquivo(s) .js/.mjs/.cjs varrido(s), mais os .html) e ${path.relative(root, caminhoEnv) || args.env} so com chave anon.`,
   );
   return 0;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href) {
+// Comparacao por caminho real: chamado por link simbolico, `argv[1]` e o caminho do link e
+// `import.meta.url` o do arquivo -- a igualdade textual falhava, `main` nao rodava e a
+// guarda saia 0 sem ter varrido arquivo nenhum.
+function chamadoDireto() {
+  try {
+    return realpathSync(path.resolve(process.argv[1])) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (process.argv[1] && chamadoDireto()) {
   process.exit(main());
 }

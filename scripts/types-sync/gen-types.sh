@@ -35,7 +35,13 @@ fi
 
 OUTPUT="${1:-/tmp/types.generated.ts}"
 TMP="$(mktemp /tmp/types.XXXXXX.ts)"
-trap 'rm -f "$TMP" "${TMP}.normalized"' EXIT HUP INT TERM
+trap 'rm -f "$TMP" "${TMP}.normalized"' EXIT
+# Sinal ENCERRA o script; a limpeza fica com o trap de EXIT. Com a limpeza direto no trap do
+# sinal (sem `exit`), o shell limpava e continuava: Ctrl-C/SIGTERM no meio caia em "nova
+# tentativa" e o script podia terminar em exit 0.
+trap 'exit 129' HUP
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
 # Retry com backoff em volta do `supabase gen types`: rajadas transitorias de
 # saturacao do banco (statement timeout, connection reset) fazem o handshake
@@ -79,9 +85,14 @@ else
   # pgbouncer->producao preserva a postura de TLS. Sem pgbouncer (uso manual
   # local), cai no comportamento direto.
   if command -v pgbouncer >/dev/null 2>&1; then
+    # Sem pg_isready a espera abaixo estoura sempre e acusava o pgbouncer ("nao subiu a tempo").
+    if ! command -v pg_isready >/dev/null 2>&1; then
+      echo "Erro: pg_isready ausente (pacote postgresql-client); sem ele nao da para saber se o proxy local subiu." >&2
+      exit 1
+    fi
     PROXY_DIR="$(mktemp -d /tmp/pg-proxy.XXXXXX)"
     chmod 700 "$PROXY_DIR"
-    trap 'rm -f "$TMP" "${TMP}.normalized"; kill "${PROXY_PID:-}" 2>/dev/null || true; rm -rf "$PROXY_DIR"' EXIT HUP INT TERM
+    trap 'rm -f "$TMP" "${TMP}.normalized"; kill "${PROXY_PID:-}" 2>/dev/null || true; rm -rf "$PROXY_DIR"' EXIT
 
     PROXY_PORT="$(node scripts/types-sync/local-pg-proxy.mjs "$PROXY_DIR")"
 
@@ -133,6 +144,13 @@ else
       --db-url "$SUPABASE_DB_URL" \
       --schema public
   fi
+fi
+
+# `supabase gen types` saindo 0 com saida vazia ou com texto de erro nao pode virar "types
+# gerado": sem a declaracao do Database isto nao e um types.ts e o OUTPUT fica como estava.
+if ! grep -q '^export type Database = {' "$TMP"; then
+  echo "Erro: a saida do 'supabase gen types' nao tem 'export type Database = {' (vazia ou nao e um types.ts); nada foi gravado em ${OUTPUT}." >&2
+  exit 1
 fi
 
 # A CLI pode emitir mais de uma quebra de linha no EOF. Normaliza apenas as

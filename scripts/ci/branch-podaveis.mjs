@@ -29,7 +29,7 @@
 // <txt>: um nome de branch protegida por linha.
 // Markdown no stdout; sempre exit 0 (informativo, não bloqueia a auditoria).
 
-import { readFileSync } from 'node:fs';
+import { readFileSync, realpathSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 export const DIAS_MINIMOS = 7;
@@ -98,7 +98,11 @@ export function relatorio({ elegiveis, fora }) {
   const linhas = ['', '### Comando pronto para poda', '', REGRA, ''];
   if (elegiveis.length) {
     linhas.push(`${elegiveis.length} branch(es) elegível(is):`, '', '```sh');
-    for (const b of elegiveis) linhas.push(`git push origin --delete ${b}`);
+    // Ref COMPLETA (`refs/heads/<branch>`), nunca o nome curto: com o nome curto o git
+    // procura a ref no remoto e, se a branch ja tiver sido apagada e existir uma TAG de
+    // mesmo nome, o comando colado apaga a tag (medido com git 2.43); com branch e tag
+    // de mesmo nome ele falha com "matches more than one".
+    for (const b of elegiveis) linhas.push(`git push origin --delete refs/heads/${b}`);
     linhas.push('```');
   } else {
     linhas.push('Nenhuma branch elegível para poda.');
@@ -130,7 +134,9 @@ export function lerEquivalentes(texto) {
     const tab = linha.lastIndexOf('\t');
     if (tab < 0) return { branch: linha, commitEpoch: Number.NaN };
     const bruto = linha.slice(tab + 1).trim();
-    return { branch: linha.slice(0, tab), commitEpoch: bruto === '' ? Number.NaN : Number(bruto) };
+    // So' digitos: `Number()` aceitava `0x10`, `1e9` e `12.5`, e um epoch malformado virava
+    // data de 1970/2001 -- "antiga" o bastante para a branch entrar no comando de poda.
+    return { branch: linha.slice(0, tab), commitEpoch: /^\d+$/.test(bruto) ? Number(bruto) : Number.NaN };
   });
 }
 
@@ -150,15 +156,25 @@ export function lerProtegidas(texto) {
   return texto.split('\n').map((l) => l.trim()).filter(Boolean);
 }
 
+const ARGUMENTOS = new Set(['equivalentes', 'prs', 'protegidas', 'limite-prs']);
+
 function argumentos(argv) {
   const saida = {};
   for (let i = 0; i < argv.length; i += 2) {
     const chave = argv[i];
     if (!chave?.startsWith('--') || argv[i + 1] === undefined) throw new Error(`argumento inválido: ${chave}`);
+    // Argumento desconhecido era aceito calado: `--limite-pr 500` (erro de digitacao)
+    // desligava a trava de "lista de PRs cheia" sem ninguem ver.
+    if (!ARGUMENTOS.has(chave.slice(2))) throw new Error(`argumento desconhecido: ${chave}`);
     saida[chave.slice(2)] = argv[i + 1];
   }
   for (const obrigatorio of ['equivalentes', 'prs', 'protegidas']) {
     if (!saida[obrigatorio]) throw new Error(`falta --${obrigatorio}`);
+  }
+  // Limite que nao e' inteiro positivo virava NaN e a trava de lista cheia era pulada
+  // (`abc`), ou virava 0 e a recusa saia com o motivo errado ("veio cheia (0 >= limite 0)").
+  if (saida['limite-prs'] !== undefined && !/^[1-9]\d*$/.test(saida['limite-prs'])) {
+    throw new Error(`--limite-prs inválido (esperado inteiro positivo): ${JSON.stringify(saida['limite-prs'])}`);
   }
   return saida;
 }
@@ -197,4 +213,14 @@ function main() {
   process.stdout.write(saida);
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) main();
+// `process.argv[1]` e' o caminho como foi digitado; o do modulo vem com symlink resolvido.
+// Comparar os dois crus fazia o script sair 0 sem escrever nada quando chamado por symlink.
+function executadoDireto() {
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (executadoDireto()) main();

@@ -6,7 +6,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { assertBlocking, conditionOf, jobOf, onlyStep, permission, shellCode, stepsOf } from './workflow-test-support.mjs';
@@ -29,7 +29,7 @@ function classificar(equivalentes, { prsAbertas = [], protegidas = [] } = {}) {
 test('branch patch-equivalente, antiga e sem PR é elegível e vira comando', () => {
   const r = classificar([eq('claude/fix-antigo', 20)]);
   assert.deepEqual(r.elegiveis, ['claude/fix-antigo']);
-  assert.match(relatorio(r), /```sh\ngit push origin --delete claude\/fix-antigo\n```/);
+  assert.match(relatorio(r), /```sh\ngit push origin --delete refs\/heads\/claude\/fix-antigo\n```/);
 });
 
 test('branch com PR aberta fica fora do comando', () => {
@@ -60,7 +60,7 @@ test('main nunca entra, mesmo antiga e sem PR', () => {
   const r = classificar([eq('main', 400)]);
   assert.deepEqual(r.elegiveis, []);
   assert.deepEqual(r.fora.principal, ['main']);
-  assert.doesNotMatch(relatorio(r), /--delete main/);
+  assert.doesNotMatch(relatorio(r), /--delete (refs\/heads\/)?main/);
 });
 
 test('branch protegida nunca entra', () => {
@@ -128,7 +128,7 @@ const TSV = `velha\t${epochDiasAtras(30)}\n`;
 test('caminho feliz pelos arquivos', () => {
   const r = rodar({ eq: TSV, prs: '[]', prot: 'main\n' }, ['--limite-prs', '500']);
   assert.equal(r.aviso, undefined);
-  assert.match(r.saida, /git push origin --delete velha/);
+  assert.match(r.saida, /git push origin --delete refs\/heads\/velha\n/);
 });
 
 test('lista de PRs ilegível ou de erro: nenhum comando gerado', () => {
@@ -177,4 +177,73 @@ test('o workflow chama o script e nunca executa a poda', () => {
   const executaveis = steps.map(shellCode).join('\n');
   assert.doesNotMatch(executaveis, /\bgit\s+push\b/, 'o workflow não pode apagar branch (W98 = só comando pronto)');
   assert.doesNotMatch(executaveis, /(?:-X|--method)\s+DELETE\b/, 'nem pela API');
+});
+
+// --- auditoria 09/11/2026: defeitos reproduzidos contra fixtures antes da correcao ---
+
+test('o comando usa a ref completa refs/heads/<branch>: nome curto podia apagar uma TAG de mesmo nome', () => {
+  // Medido num remoto de teste (git 2.43): com a branch `rel-1` ja apagada e a tag `rel-1`
+  // existindo, `git push origin --delete rel-1` apagava a tag. `refs/heads/rel-1` nao toca nela.
+  const r = classificar([eq('rel-1', 30), eq('refs/heads/main', 30), eq('v1.0', 30)]);
+  const comandos = relatorio(r).split('\n').filter((l) => l.startsWith('git '));
+  assert.deepEqual(comandos, [
+    'git push origin --delete refs/heads/refs/heads/main',
+    'git push origin --delete refs/heads/rel-1',
+    'git push origin --delete refs/heads/v1.0',
+  ]);
+  for (const c of comandos) assert.match(c, /^git push origin --delete refs\/heads\/[A-Za-z0-9][A-Za-z0-9._/-]*$/);
+});
+
+test('epoch que nao e so digitos nao prova idade (0x10, 1e9 e 12.5 viravam data antiga)', () => {
+  const linhas = lerEquivalentes('hex\t0x10\nexp\t1e9\nfloat\t12.5\nneg\t-5\ntexto\tabc\nvazio\t\ncrlf\t100\r\nespaco\t 200 \n');
+  const invalidas = linhas.filter((l) => Number.isNaN(l.commitEpoch)).map((l) => l.branch);
+  assert.deepEqual(invalidas, ['hex', 'exp', 'float', 'neg', 'texto', 'vazio']);
+  assert.deepEqual(linhas.slice(-2), [{ branch: 'crlf', commitEpoch: 100 }, { branch: 'espaco', commitEpoch: 200 }]);
+  const r = rodar({ eq: 'hex\t0x10\nexp\t1e9\n', prs: '[]', prot: '' });
+  assert.doesNotMatch(r.saida, /git push origin --delete/, 'antes: as duas entravam no comando de poda');
+  assert.match(r.saida, /com commit nos últimos 7 dias: 2/);
+});
+
+test('--limite-prs inválido ou argumento desconhecido: falha fechada em vez de pular a trava de lista cheia', () => {
+  const duasPrs = JSON.stringify([{ headRefName: 'x' }, { headRefName: 'y' }]);
+  for (const extra of [['--limite-prs', 'abc'], ['--limite-pr', '2'], ['--limite-prs', ''], ['--limite-prs', '0'], ['--limite-prs', '-1'], ['--limite-prs', '2.5']]) {
+    const r = rodar({ eq: TSV, prs: duasPrs, prot: '' }, extra);
+    assert.ok(r.aviso, extra.join(' '));
+    assert.match(r.aviso, /--limite-prs inválido|argumento desconhecido: --limite-pr/, extra.join(' '));
+    assert.doesNotMatch(r.saida, /git push origin --delete/, `${extra.join(' ')}: antes gerava comando sem conferir o limite`);
+  }
+  assert.match(rodar({ eq: TSV, prs: duasPrs, prot: '' }, ['--limite-prs', '3']).saida, /git push origin --delete refs\/heads\/velha/);
+  assert.match(rodar({ eq: TSV, prs: duasPrs, prot: '' }).saida, /git push origin --delete refs\/heads\/velha/, 'sem --limite-prs continua opcional');
+});
+
+test('main, master, contexto, protegida e com PR nunca viram comando, mesmo todas antigas', () => {
+  const r = classificar(
+    [eq('main', 400), eq('master', 400), eq('contexto', 400), eq('HEAD', 400), eq('release/x', 400), eq('feat/pr', 400), eq('livre', 400)],
+    { prsAbertas: ['feat/pr'], protegidas: ['release/x'] },
+  );
+  assert.deepEqual(r.elegiveis, ['livre']);
+  assert.deepEqual(r.fora.principal, ['main', 'master', 'contexto', 'HEAD']);
+  const comandos = relatorio(r).split('\n').filter((l) => l.startsWith('git '));
+  assert.deepEqual(comandos, ['git push origin --delete refs/heads/livre']);
+});
+
+test('CLI: executa com espaço no caminho e chamado por symlink (antes saía 0 sem escrever nada)', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'w98 com espaço '));
+  try {
+    mkdirSync(join(dir, 'real'));
+    cpSync(SCRIPT, join(dir, 'real', 'branch-podaveis.mjs'));
+    symlinkSync(join(dir, 'real'), join(dir, 'atalho'));
+    writeFileSync(join(dir, 'eq.tsv'), TSV.replace(/\t\d+/, `\t${Math.floor(Date.now() / 1000) - 30 * 86_400}`));
+    writeFileSync(join(dir, 'prs.json'), '[]');
+    writeFileSync(join(dir, 'prot.txt'), '');
+    for (const script of [join(dir, 'real', 'branch-podaveis.mjs'), join(dir, 'atalho', 'branch-podaveis.mjs')]) {
+      const r = spawnSync(process.execPath, [
+        script, '--equivalentes', join(dir, 'eq.tsv'), '--prs', join(dir, 'prs.json'), '--protegidas', join(dir, 'prot.txt'), '--limite-prs', '500',
+      ], { encoding: 'utf8' });
+      assert.equal(r.status, 0, script);
+      assert.match(r.stdout, /git push origin --delete refs\/heads\/velha\n/, script);
+    }
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

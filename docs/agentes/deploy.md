@@ -22,21 +22,26 @@ Ler quando for confirmar um deploy, mexer em env var do front, domínio ou publi
   seriam ~144 deploys de produção por dia.
 - **Edge functions: deploy manual, nenhum workflow publica.** Grep por `functions deploy` em
   `.github/workflows/` = zero. O caminho é `deploy_edge_functions_promo_supply.sh`:
-  `supabase link --project-ref lmypcdfsrgfftzhxawao` (`:31`) + loop de `supabase functions deploy` sobre
-  **32** funções listadas (`:33-73`), smoke test em 6 críticas e, no fim, passos manuais (conferir
-  `supabase secrets list`, ativar `pg_cron` no dashboard).
-- **Há 39 pastas em `supabase/functions/` e 32 na lista do script** — `xbz-proxy`, `xbz-sync-pedidos`,
+  `supabase link --project-ref lmypcdfsrgfftzhxawao` + loop de `supabase functions deploy` sobre
+  **31** funções listadas (`FUNCTIONS=(`), smoke test em 6 críticas e, no fim, passos manuais (conferir
+  `supabase secrets list`, ativar `pg_cron` no dashboard). `--dry-run` mostra o plano sem chamar nada,
+  `--only a,b` publica só as citadas, e o script **sai 1** se algum deploy ou smoke test falhar.
+- **`migrate-helper` está bloqueada no script (`BLOCKED_FUNCTIONS`) e não pode voltar para a lista:** o
+  código em `supabase/functions/migrate-helper/index.ts` devolve `service_role` e `SUPABASE_DB_URL` a quem
+  mandar uma chave que está fixa no próprio arquivo. Foi removida em `58f4fc8` e voltou em `97b6efc`
+  ("Visual edit in Lovable"). Apagar a pasta e despublicar a função em produção: só com o dono.
+- **Há 39 pastas em `supabase/functions/` e 31 na lista do script** — `xbz-proxy`, `xbz-sync-pedidos`,
   `health-dashboard` e parte dos `check-*`/`process-*`/`maintain-partitions` ficam de fora. Rodar o script
   **não** publica tudo; publique a função que você mexeu e diga na PR qual foi.
 - **`--no-verify-jwt` divergente do `config.toml`:** o script passa `--no-verify-jwt` para
   `punchout-receive`, `webauthn-authenticate`, `run-audit`, `system-simulation`, `dependency-health` e
-  `telemetry` (`:95-102`), mas `supabase/config.toml` declara isso **só** para `migrate-helper`. Um deploy
+  `telemetry` (`NO_JWT_FUNCTIONS`), mas `supabase/config.toml` declara isso **só** para `migrate-helper`. Um deploy
   pelo CLI padrão (sem o script) fecharia essas 6 — ou um `config.toml` atualizado sem cuidado abriria
   outras. Mexeu em verificação de JWT: alinhe os dois no mesmo PR.
-- **`deploy_edge_functions_promo_supply.sh:10` tem a chave anon literal no arquivo.** Anon/publishable é
-  pública por design (vai no bundle do front), então não é vazamento de segredo de servidor — mas o script
-  deveria lê-la do ambiente, e o `.gitignore` sem entrada de env é o que permitiria commitar uma
-  `service_role` por acidente. Segredo de servidor **nunca** no repo: `supabase secrets set` para edges,
+- **A chave anon do smoke test não fica mais no script:** vem de `SUPABASE_ANON_KEY` ou, na falta, de
+  `VITE_SUPABASE_PUBLISHABLE_KEY` no `.env`. Anon/publishable é pública por design (vai no bundle do
+  front), então nunca foi vazamento de segredo de servidor — mas o `.gitignore` sem entrada de env é o que
+  permitiria commitar uma `service_role` por acidente. Segredo de servidor **nunca** no repo: `supabase secrets set` para edges,
   secret do GitHub para workflows.
 
 ## Regras de env var do front

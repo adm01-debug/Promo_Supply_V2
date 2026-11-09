@@ -4,8 +4,8 @@ Mantém um retrato completo do banco de produção para agentes de IA lerem **an
 qualquer tarefa ou planejamento que toque banco, RLS, functions, cron, storage ou edge functions.
 
 O destino é definido **só** pelo secret `SUPABASE_DB_URL`; nenhum project ref está escrito no código.
-Atenção: este repo tem divergência de ref — `supabase/config.toml` diz `trwgmplubeqxrxpncdgf` e `.env`
-diz `lmypcdfsrgfftzhxawao`. Aponte o secret para o banco que o front realmente usa e resolva a divergência.
+O projeto oficial é `lmypcdfsrgfftzhxawao` (`supabase/config.toml` e `.env` já concordam; fonte de verdade:
+`docs/agentes/banco.md`). Aponte o secret para ele.
 
 ## Onde está o resultado (neste repo)
 
@@ -43,9 +43,10 @@ o runner só tem `pg_dump` 16 (banco é PG 17) e `types.ts` já vem do `types-sy
    `postgresql://postgres.<ref>:<senha>@aws-0-<regiao>.pooler.supabase.com:5432/postgres`.
 2. **Usuário `postgres` (recomendado).** O `cron.job` e `cron.job_run_details` têm RLS com policy
    `username = current_user`; um role read-only comum enxerga zero jobs. O `postgres` do Supabase tem
-   `BYPASSRLS`. O script abre a sessão em `default_transaction_read_only = on` — mesmo com `postgres`
-   nada é escrito.
-3. Se preferir um role separado (perde o cron, vê o resto): SQL abaixo.
+   `BYPASSRLS`. Cada consulta roda numa transação `READ ONLY` — mesmo com `postgres` nada é escrito.
+3. Se preferir um role separado (perde o cron, vê o resto, inclusive grants): SQL abaixo.
+4. **Senha com `@ : / % ? #` precisa de percent-encoding** (`%40 %3A %2F %25 %3F %23`). Sem isso a URL é
+   interpretada errado e a conexão falha; a mensagem de erro sai sem a URL e sem pedaços da senha.
 
 ## O que é coletado
 
@@ -53,7 +54,7 @@ o runner só tem `pg_dump` 16 (banco é PG 17) e `types.ts` já vem do `types-sy
 |---|---|
 | Postgres (catálogo) | schemas (+USAGE das roles da API), tabelas (RLS on/forced, partições, replica identity), colunas (tipo, default, identity/generated, enum, comentário), constraints (PK/FK/UNIQUE/CHECK com ON DELETE/UPDATE e referências reversas), índices (método, colunas, predicado), views + materialized (security_invoker, dependências), functions/procedures (corpo, security definer, search_path, quem pode executar via RPC), triggers (timing/eventos; inclui `auth.users` e `storage.objects`), policies RLS (inclui `storage` e `realtime.messages`), enums (+ onde são usados)/domains/composites, extensões, sequences (owned by), grants (tabela, coluna, sequence, **default privileges**), roles (+`rolconfig`: timeouts por role) |
 | Supabase | `cron.job`, `pgmq` (filas), `supabase_migrations.schema_migrations` (com SQL), `storage.buckets`, `vault.secrets` (só nomes), Database Webhooks, realtime publications, foreign servers (credenciais redigidas) |
-| Lints (`lints.md`) | RLS desabilitado / sem policies, tabela sem PK, FK sem índice, SECURITY DEFINER sem `search_path`, view em `public` sem `security_invoker`, função chamável por `anon`, extensão em `public`, policy com `auth.uid()` sem `(select …)`, tabela no Realtime sem REPLICA IDENTITY FULL |
+| Lints (`lints.md`) | RLS desabilitado / sem policies, tabela sem PK, FK sem índice (cobre a FK o índice válido e não parcial cujas primeiras colunas são as da FK, em qualquer ordem), SECURITY DEFINER sem `search_path`, view em `public` sem `security_invoker` (`on`/`true`/`yes`/`1` valem o mesmo), função chamável por `anon`, extensão em `public`, policy com `auth.uid()` sem `(select …)`, tabela no Realtime sem REPLICA IDENTITY FULL. Não há lint para policy permissiva `USING (true)`: confira `policies.md` |
 | Relacionamentos | todas as FKs + diagrama ER Mermaid (até 120 tabelas) |
 | Referências a cada função (`functions.md`, `snapshot.json` → `db.functions[].callers`) | referências estáticas (`.rpc('fn')` ou `fn(` em `src/`, `supabase/functions/`, migrations ativas, scripts operacionais…), jobs do pg_cron, triggers, outras funções e views |
 | Management API (opcional) | edge functions (versão, verify_jwt, entrypoint, URL), nomes dos secrets, auth (providers, hooks, config), PostgREST (schemas expostos, max_rows), Postgres/pooler/storage config, network/SSL, branches, PITR/backups — segredos redigidos |
@@ -61,6 +62,13 @@ o runner só tem `pg_dump` 16 (banco é PG 17) e `types.ts` já vem do `types-sy
 | Ferramentas | `schema.sql` (pg_dump --schema-only), `types.ts` (supabase gen types) |
 
 Nunca sai: linha de tabela, dado de usuário, valor de secret/chave/senha, connection string.
+
+Todo texto vindo do banco (corpo de função, comando de cron, trigger, migration, comentário, `schema.sql`)
+passa pelo mesmo filtro: JWT, chaves `sb_*`, `Bearer`/`Basic`, `PASSWORD '…'` (também dentro de SQL dinâmico),
+chaves de provedores e DSN — que vira `esquema://[REDACTED]@host`, sem usuário, para não casar com o guard de
+segredos do `contexto.yml`. Opções de foreign server cujo nome contém `password`, `secret`, `token`, `key`,
+`credential`, `conn_string` ou `dsn` saem como `[REDACTED]`. O filtro erra para o lado seguro: um valor que
+pareça token pode sair redigido mesmo sem ser segredo.
 
 ### Estatísticas de consultas
 
@@ -101,6 +109,8 @@ create role snapshot_reader login password '<senha-forte>';
 grant pg_read_all_data to snapshot_reader;           -- leitura de todos os schemas
 grant usage on schema cron, vault, storage, auth, supabase_migrations to snapshot_reader;
 ```
+Grants de tabela e coluna são lidos do ACL do catálogo (`pg_class.relacl`, `pg_attribute.attacl`), visível a
+qualquer role; no Postgres 17 `GRANT ALL` aparece com `MAINTAIN`.
 `pg_read_all_data` cobre `cron.job`, `vault.secrets` (só metadados; o valor descriptografado fica em `vault.decrypted_secrets`, que o script não lê), `storage`, `auth` e `supabase_migrations`. Para `pg_stat_statements` e `pg_stat_activity` completos, adicione `grant pg_read_all_stats to snapshot_reader;`. Monte a `SUPABASE_DB_URL` com esse usuário.
 
 ## Variáveis opcionais (no workflow, bloco `env`)
@@ -122,12 +132,13 @@ grant usage on schema cron, vault, storage, auth, supabase_migrations to snapsho
 
 - Só há commit quando o conteúdo estrutural mudou. Métricas voláteis vivem em `stats.md`/`stats.json`/`cron-runs.md`; quando só elas mudam, o commit é limitado a 1 por hora (`VOLATILE_MIN_INTERVAL_MIN` no workflow).
 - Schemas internos do Supabase (`auth`, `storage`, `realtime`, `extensions`, `graphql*`, `net`, `pgsodium`, `vault`…) ficam fora da introspecção geral para não poluir; o que importa deles entra em seções dedicadas. Use `SNAPSHOT_INCLUDE_SCHEMAS` para forçar um deles.
-- Uma seção que falha (ex.: sem permissão em `vault`) é reaproveitada da coleta anterior com aviso no topo do arquivo — nunca gera "tudo removido" no CHANGELOG.
+- Uma seção que falha (ex.: sem permissão em `vault`) é reaproveitada da coleta anterior com aviso no topo do arquivo — nunca gera "tudo removido" no CHANGELOG. O aviso também aparece dentro de cada `tables/<schema>/<tabela>.md`, no bloco que depende da seção (colunas, constraints, índices, policies, triggers, grants), e em `stats.md`/`cron-runs.md`: sem versão anterior o bloco diz "indisponível", nunca "_nenhum_" sem explicação. A mesma regra vale para a Management API (`api.<seção>` em `carried`).
 - `CHANGELOG.md` registra, a cada mudança, o que foi adicionado/removido/alterado por categoria.
 - Falha em uma seção (ex.: sem permissão em `vault`) não derruba as outras: vai para `errors.md` e para o README. O job só falha se o banco inteiro não responder, se o push falhar 3 vezes, ou se o guard de segredos detectar algo.
-- Sessão read-only no Postgres, `statement_timeout` 90s, `lock_timeout` 5s.
+- Códigos de saída: `0` coleta concluída (pode ser parcial — veja `erros`/`carried` no `manifest.json`); `1` não conectou, nenhuma seção respondeu ou a escrita falhou no meio (sem `manifest.json` novo); `2` configuração inválida (`SUPABASE_DB_URL` ausente, inteiro inválido, `SNAPSHOT_DIR` inseguro ou de terceiros).
+- Somente leitura por transação: cada consulta abre `BEGIN` + `SET TRANSACTION READ ONLY` com `statement_timeout` 90s e `lock_timeout` 5s locais. Nada é configurado na sessão — num pooler em transaction mode um `SET` de sessão ficaria na conexão do servidor e valeria para o próximo cliente do pool (as escritas do app falhariam). `statement_timeout (global)` no README do snapshot é o valor configurado no banco, não o do coletor.
 - A Management API devolve só o bundle compilado das edge functions, então o snapshot guarda metadados (`edge-functions/<slug>/README.md`); o fonte canônico é `supabase/functions/<slug>/` no repo.
-- Conexão com `prepare_threshold=None`: funciona tanto na conexão direta quanto no pooler (session ou transaction mode). `pg_dump` exige session mode ou conexão direta.
+- Conexão com `prepare_threshold=None` e sem estado de sessão: funciona na conexão direta e no pooler em session ou transaction mode (verificado com PgBouncer local; Supavisor não foi testado — prefira o session pooler). `pg_dump` exige session mode ou conexão direta.
 - `concurrency` impede duas coletas simultâneas; push faz `pull --rebase` com 3 tentativas para conviver com outros agentes comitando na `main`.
 - Commits levam `[skip ci]` para não disparar deploy (Vercel/Lovable ignoram; se o deploy for por GitHub Actions, confira que o workflow respeita a flag ou adicione `paths-ignore: docs/supabase/**`).
 
@@ -156,6 +167,26 @@ além de fontes vazias, indisponíveis e recuperação, preservando a base anter
 Os casos de frescor verificam o manifest em UTC, coleta sem mudança estrutural, falha/recuperação e
 sua prioridade sobre um CHANGELOG antigo no índice; chamadas em DEFAULTs da assinatura também têm regressão.
 O adaptador Node fica em `scripts/ci/supabase-snapshot.unit.mjs` (rode com `npm run test:scripts`) e executa a mesma suíte Python; o job `banco` do `contexto.yml` também a roda antes de coletar.
+
+Também sem banco: máscara da URL e de pedaços da senha em erros do driver e de subprocesso, falha de
+conexão (exit 1, sem traceback), filtro de segredos contra a mesma expressão do guard do `contexto.yml`,
+`schema.sql` filtrado, transação `READ ONLY` por consulta e nenhum comando fora dela, avisos por bloco nos
+arquivos de tabela em coleta parcial, reaproveitamento da Management API e o texto das consultas de catálogo
+(ordem das colunas de PK/FK, lint de FK, `security_invoker`, opções de foreign server, grants por ACL).
+
+### Teste opcional com Postgres local
+
+As consultas de catálogo só são executadas de verdade se `SNAPSHOT_TEST_DB_URL` apontar para um Postgres
+**local e descartável** (host `127.0.0.1`/`localhost`; qualquer outro é recusado). O teste cria e apaga o banco
+`snapshot_live_<pid>`; os roles `anon`, `authenticated`, `service_role` e `snapshot_live_reader` são criados
+se faltarem e ficam no cluster:
+
+```sh
+SNAPSHOT_TEST_DB_URL='postgresql://postgres:<senha>@127.0.0.1:5432/postgres' \
+  python3 scripts/supabase_snapshot/test_snapshot.py SnapshotLivePostgresTests -v
+```
+
+Sem a variável (CI incluído) esses 6 testes ficam como `skipped`. Nunca aponte para o Supabase.
 
 A matriz de estatísticas usa somente resultados sintéticos: schemas fora do `search_path`, aspas,
 espaços, `%` e palavras SQL no identificador; extensão ausente ou coleta desligada; erros de catálogo,

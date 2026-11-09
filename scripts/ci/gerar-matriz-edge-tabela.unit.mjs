@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -83,4 +84,78 @@ test("--check reprova arquivo ausente e arquivo divergente, e aprova o commitado
     writeFileSync(destino, original);
   }
   assert.equal(main(["--check"]), 0, "restaurado, volta a bater");
+});
+
+// ── Regressao ─────────────────────────────────────────────────────────────────
+test("teste Deno nomeado `*_test.ts` fica fora da matriz, como o `*.test.ts`", () => {
+  // Medido: so `.test.ts`/`.spec.ts` eram excluidos; este repo tem `run-audit/rls_test.ts` e
+  // `_shared/integrity_test.ts`, e um `.from()` neles entrava como tabela da funcao.
+  const dir = mkdtempSync(path.join(tmpdir(), "edge-matriz-"));
+  try {
+    mkdirSync(path.join(dir, "fn-a"));
+    mkdirSync(path.join(dir, "_shared"));
+    writeFileSync(path.join(dir, "fn-a", "index.ts"), "sb.from('real')");
+    writeFileSync(path.join(dir, "fn-a", "rls_test.ts"), "sb.from('so_no_teste_deno')");
+    writeFileSync(path.join(dir, "fn-a", "x.spec.ts"), "sb.from('so_no_spec')");
+    writeFileSync(path.join(dir, "fn-a", "contest.ts"), "sb.from('nao_e_teste')");
+    writeFileSync(path.join(dir, "_shared", "integrity_test.ts"), "sb.from('so_no_teste_shared')");
+    assert.deepEqual(montarMatriz(dir).get("fn-a"), ["nao_e_teste", "real"]);
+    assert.equal(tabelasDeShared(dir).size, 0);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("extrairTabelas: aspas, template string, quebra de linha, CRLF e o que fica de fora", () => {
+  const tabelas = (fonte) => [...extrairTabelas(fonte)].sort();
+  assert.deepEqual(tabelas("sb.from('a'); sb.from(\"b\"); sb.from(`c`)"), ["a", "b", "c"]);
+  assert.deepEqual(tabelas("sb\r\n  .from(\r\n    'quebrada'\r\n  )"), ["quebrada"]);
+  assert.deepEqual(tabelas("sb.schema('audit').from('logs'); sb.from('pedidos' as any)"), ["logs", "pedidos"]);
+  // Nome dinamico nao e tabela conhecida: variavel, template com interpolacao, aspas trocadas.
+  assert.deepEqual(tabelas("sb.from(nome); sb.from(`pedidos_${ano}`); sb.from('x\")"), []);
+  assert.deepEqual(tabelas("import x from 'modulo'"), []);
+});
+
+test("matriz e deterministica e independe da ordem de criacao dos arquivos", () => {
+  const dir = mkdtempSync(path.join(tmpdir(), "edge-matriz-"));
+  try {
+    for (const funcao of ["zeta", "alfa"]) {
+      mkdirSync(path.join(dir, funcao, "sub"), { recursive: true });
+      writeFileSync(path.join(dir, funcao, "sub", "b.ts"), "sb.from('z_tabela'); sb.from('a_tabela')");
+      writeFileSync(path.join(dir, funcao, "a.ts"), "sb.from('m_tabela')");
+    }
+    mkdirSync(path.join(dir, "vazia"));
+    const md = renderizar(montarMatriz(dir), tabelasDeShared(dir));
+    assert.equal(renderizar(montarMatriz(dir), tabelasDeShared(dir)), md);
+    assert.ok(md.indexOf("| `alfa` |") < md.indexOf("| `zeta` |"));
+    assert.match(md, /\| `alfa` \| `a_tabela`, `m_tabela`, `z_tabela` \|/u);
+    assert.match(md, /\| `vazia` \| — \|/u);
+    assert.ok(md.endsWith("\n") && !md.includes("\r"));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("argumento desconhecido reprova e NAO regera o arquivo", () => {
+  // Medido: `--chek` (erro de digitacao) caia no modo de escrita e saia 0.
+  const destino = path.join(RAIZ_REPO, SAIDA_REL);
+  const antes = statSync(destino).mtimeMs;
+  assert.equal(main(["--chek"]), 2);
+  assert.equal(main(["--check", "--outro"]), 2);
+  assert.equal(statSync(destino).mtimeMs, antes, "o arquivo gerado nao pode ter sido reescrito");
+});
+
+test("CLI roda de verdade quando chamado por link simbolico", () => {
+  // Medido: a guarda de modulo principal comparava texto; por link `main` nao rodava e o
+  // processo saia 0 sem comparar nada (nem o erro de uso aparecia).
+  const dir = mkdtempSync(path.join(tmpdir(), "edge-matriz-link-"));
+  try {
+    const link = path.join(dir, "matriz-por-link.mjs");
+    symlinkSync(path.join(RAIZ_REPO, "scripts", "ci", "gerar-matriz-edge-tabela.mjs"), link);
+    const uso = spawnSync(process.execPath, [link, "--chek"], { encoding: "utf8" });
+    assert.equal(uso.status, 2, `por link o CLI deveria sair com 2: ${uso.stdout}${uso.stderr}`);
+    assert.equal(spawnSync(process.execPath, [link, "--check"], { encoding: "utf8" }).status, 0);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

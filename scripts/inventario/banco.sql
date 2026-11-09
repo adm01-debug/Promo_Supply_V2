@@ -83,8 +83,15 @@ SELECT jsonb_build_object(
     'triggers_public', (SELECT coalesce(sum(g.n), 0) FROM gatilhos g JOIN tabelas t ON t.oid = g.oid),
     'cron_jobs', (SELECT count(*) FROM cron.job),
     'cron_ativos', (SELECT count(*) FROM cron.job WHERE active),
-    'ledger_registros', (SELECT count(*) FROM supabase_migrations.schema_migrations),
-    'ledger_versao_max', (SELECT max(version) FROM supabase_migrations.schema_migrations),
+    -- Ledger via query_to_xml (como o count das tabelas): citar supabase_migrations.schema_migrations
+    -- direto aborta o SELECT inteiro no banco que nao tem a tabela. Assim a ausencia vira null e o
+    -- gerar-banco.mjs recusa a resposta dizendo a causa.
+    'ledger_registros', CASE WHEN to_regclass('supabase_migrations.schema_migrations') IS NULL THEN NULL
+      ELSE (xpath('/row/n/text()', query_to_xml(
+             'SELECT count(*) AS n FROM supabase_migrations.schema_migrations', false, true, '')))[1]::text::bigint END,
+    'ledger_versao_max', CASE WHEN to_regclass('supabase_migrations.schema_migrations') IS NULL THEN NULL
+      ELSE (xpath('/row/v/text()', query_to_xml(
+             'SELECT max(version) AS v FROM supabase_migrations.schema_migrations', false, true, '')))[1]::text END,
     'max_connections', current_setting('max_connections')::int,
     'tamanho_bytes', pg_database_size(current_database())
   ),
@@ -99,7 +106,9 @@ SELECT jsonb_build_object(
              'linhas', t.linhas,
              'linhas_exatas', t.linhas_exatas,
              'bytes', t.bytes,
-             'citada_no_banco', EXISTS (SELECT 1 FROM corpos c WHERE c.txt ~ ('\m' || t.nome || '\M'))
+             -- nome escapado: um "(" ou "[" no nome da tabela virava regex invalida e abortava tudo
+             'citada_no_banco', EXISTS (SELECT 1 FROM corpos c
+                                         WHERE c.txt ~ ('\m' || regexp_replace(t.nome, '([^[:alnum:]_])', '\\\1', 'g') || '\M'))
            ) ORDER BY t.nome), '[]'::jsonb)
       FROM tabelas t
       LEFT JOIN policies p ON p.nome = t.nome

@@ -10,29 +10,30 @@ Rodar tudo que não precisa de rede: `npm run guards`.
 
 | Script | Gera | Quem chama |
 |---|---|---|
-| `render-workflow-docs.mjs` | `docs/ci/README.md`, projeção do bloco `# docs:`/`# nao-e-bug:` de cada workflow | `guards.yml` (job `suites`, com `--check`) · `npm run docs:ci` |
-| `gerar-matriz-edge-tabela.mjs` | `docs/mapa/MATRIZ_EDGE_TABELA.md`, matriz edge function × tabela por `.from()` | `guards.yml` (job `suites`, com `--check`) · `npm run docs:matriz-edge` |
+| `render-workflow-docs.mjs` | `docs/ci/README.md`, projeção do bloco `# docs:`/`# nao-e-bug:` de cada workflow. Cada campo/item ocupa **uma** linha: continuação, campo repetido, `kpi.json` que não é JSON e pasta sem workflow reprovam | `guards.yml` (job `suites`, com `--check`) · `npm run docs:ci` |
+| `gerar-matriz-edge-tabela.mjs` | `docs/mapa/MATRIZ_EDGE_TABELA.md`, matriz edge function × tabela por `.from()` (sem `*.test.ts`/`*_test.ts`/`*.spec.ts`) | `guards.yml` (job `suites`, com `--check`) · `npm run docs:matriz-edge` |
 
 Os dois são **determinísticos** (nenhuma data no conteúdo) — é o que permite o `--check` ser um guard
-em vez de um gerador de ruído. Não edite os `.md`: mude a fonte e regere.
+em vez de um gerador de ruído. Não edite os `.md`: mude a fonte e regere. O único argumento aceito é
+`--check`; qualquer outro sai `2` **sem escrever** (um `--chek` digitado errado regerava e saía 0).
 
 ## Guards de PR (só validam; comunicam por exit code)
 
 | Script | O que reprova | Quem chama |
 |---|---|---|
-| `check-test-inventory.mjs` | suíte de teste no disco sem passo que a execute em algum workflow | `guards.yml` (job `suites`) |
-| `commit-msg-lint.mjs` | mensagem de commit fora de `<tipo>(<escopo>): <assunto>` | `guards.yml` (job `commits`), um commit por vez |
-| `audit-prod.mjs` | advisory HIGH/CRITICAL alcançável por `dependencies` (dev não bloqueia) | `guards.yml` (job `dependencias`) |
-| `check-bundle-secrets.mjs` | JWT `service_role` em `dist/` ou no arquivo de ambiente versionado | `guards.yml` (job `bundle`, só em push/dispatch) |
-| `check-agents-md-integrity.mjs` | `AGENTS.md`/`docs/agentes/` apagados ou encolhidos >30% vs a base | `main.yml` (job `quality-gate`, só em PR) |
+| `check-test-inventory.mjs` | suíte Node de `scripts/` (`.test.mjs`/`.unit.mjs`/`.integration.mjs`) ou teste Deno das edges (`*.test.ts`/`*_test.ts`) sem passo que a execute em algum workflow. Só conta o que está em bloco `run:`, fora de comentário (linha inteira **ou** fim de linha) | `guards.yml` (job `suites`) |
+| `commit-msg-lint.mjs` | mensagem de commit fora de `<tipo>(<escopo>): <assunto>`. Passam direto só as formas que o git/GitHub geram (`Merge branch/tag/commit/pull request …`, `Revert "…"`, `Reapply "…"`, `fixup!`/`squash!`/`amend!`) | `guards.yml` (job `commits`), um commit por vez |
+| `audit-prod.mjs` | advisory HIGH/CRITICAL alcançável por `dependencies` (dev não bloqueia). Lê o texto do `bun audit` 1.4.0 (`pacote@versão`, cadeia ` > `, `(direct dependency)`); sai `1` = advisory, `2` = relatório/argumento/status inválido | `guards.yml` (job `dependencias`) |
+| `check-bundle-secrets.mjs` | JWT `service_role` ou chave `sb_secret_…` nos `.js`/`.mjs`/`.cjs`/`.html` de `dist/` ou no arquivo de ambiente versionado | `guards.yml` (job `bundle`, só em push/dispatch) |
+| `check-agents-md-integrity.mjs` | `AGENTS.md`/`docs/agentes/` apagados ou encolhidos >30% vs a base (>50% por arquivo); `AGENTS_MD_BASE` que não resolve para um commit também reprova | `main.yml` (job `quality-gate`, só em PR) · `agents-docs-baseline.unit.mjs` no `guards.yml` |
 
 ## Auditoria semanal (somente leitura; publica em issue)
 
 | Script | O que publica | Quem chama |
 |---|---|---|
 | `actions-kpi.mjs` | issue `[kpi-actions]`: runs, taxa de falha e **minutos** por workflow (7 d) | `branch-hygiene-audit.yml` |
-| `branch-podaveis.mjs` | bloco `git push origin --delete` revisável — **nunca apaga nada** | idem |
-| `bump-toolchain.mjs` | versões novas das ferramentas de `.github/toolchain.json` (informativo, sai 0) | idem |
+| `branch-podaveis.mjs` | bloco `git push origin --delete refs/heads/<branch>` revisável (ref completa: nome curto pode acertar uma tag) — **nunca apaga nada** | idem |
+| `bump-toolchain.mjs` | versões novas das ferramentas de `.github/toolchain.json` (informativo, sai 0 até com o arquivo ilegível; pin parcial como `22` é faixa; chave sem mapeamento sai em "não foi possível verificar") | idem |
 | `sla-code-scanning.mjs` | SLA dos alertas de code scanning (14 d alto / 30 d baixo) | idem |
 
 `sla-code-scanning.mjs` hoje sempre avisa "não foi possível consultar": **não há code scanning ligado
@@ -50,6 +51,8 @@ neste repositório** (a API responde 403). O passo fica no lugar para o dia em q
 
 - Node puro: nenhum `import` de pacote npm, para o job mais barato do CI não precisar de `bun install`.
 - Fail-closed: varredura que não conseguiu ler nada sai `!= 0` em vez de se declarar OK.
+- Guarda de módulo principal por **caminho real** (`realpathSync` dos dois lados): comparando texto, o
+  script chamado por link simbólico (ou de pasta com espaço/acento) não rodava `main` e saía 0 calado.
 - Nenhum script imprime valor de segredo — só caminho, linha e o claim que motivou a reprovação.
 - Vieram do `Zapp_Web_V2`. Onde o comportamento diferiu, a adaptação está comentada no próprio arquivo,
   com o que foi **medido** aqui. O inventário do que foi portado (e do que não foi, com o motivo) está

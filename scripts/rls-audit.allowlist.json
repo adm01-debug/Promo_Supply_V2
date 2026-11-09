@@ -1,0 +1,4 @@
+{
+  "_leia": "Exceções aceitas pelo dono para scripts/rls-audit.ts. Cada item libera UMA política aberta (USING/WITH CHECK true) de UMA tabela e exige motivo. Entrada que não casa com política aberta real vira aviso de 'exceção obsoleta'. Formato: { \"table\": \"...\", \"policy\": \"...\", \"motivo\": \"...\" }.",
+  "excecoes": []
+}

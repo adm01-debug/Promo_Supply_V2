@@ -11,11 +11,12 @@
 //   <tipo>(<escopo>): <descricao>   (escopo opcional)
 //   tipos: feat fix docs style refactor perf test build ci chore security revert
 //   assunto com pelo menos 10 caracteres e sem ponto final.
-// Mensagens que o proprio git cria (Merge, Revert, fixup!, squash!, amend!) passam direto.
+// Mensagens que o proprio git cria (Merge branch/tag/commit/pull request, Revert "...",
+// Reapply "...", fixup!, squash!, amend!) passam direto.
 
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import path from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 
 export const TIPOS = [
   "feat",
@@ -37,8 +38,12 @@ export const SUBJECT_MIN_LENGTH = 10;
 // <tipo>: <assunto>, <tipo>(<escopo>): <assunto> ou <tipo>!: <assunto>
 const CABECALHO = /^([a-z]+)(?:\(([^)\s]+)\))?(!)?: (.+)$/u;
 
-// Mensagens montadas pelo proprio git: nao ha o que validar.
-const IGNORADAS = /^(?:Merge |Revert |fixup! |squash! |amend! )/u;
+// Mensagens montadas pelo proprio git: nao ha o que validar. So as FORMAS que o git (e o
+// GitHub) geram: com `Merge ` e `Revert ` soltos, "Merge do login sem padrao" e "Revert tudo"
+// escritos a mao passavam pelo gate sem tipo nenhum. `Reapply "..."` e o que o git >= 2.43
+// escreve ao reverter um revert -- sem ele o gate reprovava mensagem que ninguem digitou.
+const IGNORADAS =
+  /^(?:Merge (?:branch(?:es)?|tags?|commits?|remote-tracking branch(?:es)?|pull request) |Merge \S+ into \S+$|Revert "|Reapply "|fixup! |squash! |amend! )/u;
 
 export function cabecalhoDaMensagem(mensagem) {
   for (const linha of String(mensagem ?? "").split("\n")) {
@@ -101,10 +106,21 @@ export function main(argv = process.argv.slice(2)) {
   for (const problema of problemas) console.error(`  - ${problema}`);
   console.error(`  cabecalho lido: ${JSON.stringify(cabecalho)}`);
   console.error("  padrao: <tipo>(<escopo>): <descricao> (escopo opcional)");
-  console.error(`  tipos: ${TIPOS.join(", ")} (veja CONTRIBUTING.md > Padrao de Commits)`);
+  console.error(`  tipos: ${TIPOS.join(", ")} (veja AGENTS.md > Fluxo Git)`);
   return 1;
 }
 
-if (process.argv[1] && pathToFileURL(path.resolve(process.argv[1])).href === import.meta.url) {
+// Comparacao por caminho real: chamado por link simbolico, `argv[1]` e o caminho do link e
+// `import.meta.url` o do arquivo -- a igualdade textual falhava, `main` nao rodava e o gate
+// saia 0 sem ter lido a mensagem.
+function chamadoDireto() {
+  try {
+    return realpathSync(path.resolve(process.argv[1])) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (process.argv[1] && chamadoDireto()) {
   process.exitCode = main();
 }

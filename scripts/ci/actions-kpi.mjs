@@ -14,7 +14,8 @@
 // O nucleo e puro de proposito: `agregar`, `maisLentos`, `paginaTemMais` e `tabela`
 // nao tocam rede nem disco, entao a conta e testavel com runs sinteticos. O CLI so
 // busca, chama e publica.
-import { appendFileSync } from 'node:fs';
+import { appendFileSync, realpathSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 
 const CANCELADOS = new Set(['cancelled']);
 const FALHAS = new Set(['failure', 'timed_out', 'startup_failure']);
@@ -28,10 +29,17 @@ export function duracaoMinutos(run) {
   return (fim - inicio) / 60000;
 }
 
+// Quando o run comecou, para decidir se ele e' da janela. Run sem `run_started_at` (campo
+// opcional na API: fila, aguardando aprovacao) sumia do KPI sem aviso -- nem contava como
+// run. `created_at` sempre vem, entao ele entra na contagem (com 0 minutos, ver acima).
+function inicioDoRun(run) {
+  return Date.parse(run?.run_started_at ?? run?.created_at ?? '');
+}
+
 export function runsNaJanela(runs, { janelaDias = 7, agora = Date.now() } = {}) {
   const corte = agora - janelaDias * UM_DIA;
   return (runs ?? []).filter((run) => {
-    const inicio = Date.parse(run.run_started_at ?? '');
+    const inicio = inicioDoRun(run);
     return Number.isFinite(inicio) && inicio >= corte;
   });
 }
@@ -65,7 +73,7 @@ export function agregar(runs, { janelaDias = 7, agora = Date.now() } = {}) {
 export function paginaTemMais(pagina, { janelaDias = 7, agora = Date.now(), porPagina = POR_PAGINA } = {}) {
   const runs = pagina ?? [];
   if (runs.length < porPagina) return false;
-  const tempos = runs.map((r) => Date.parse(r.run_started_at ?? '')).filter(Number.isFinite);
+  const tempos = runs.map(inicioDoRun).filter(Number.isFinite);
   if (!tempos.length) return false;
   const maisAntigo = Math.min(...tempos);
   return maisAntigo >= agora - janelaDias * UM_DIA;
@@ -137,14 +145,31 @@ const CABECALHOS = (token) => ({
 
 async function pedir(caminho, token, { metodo = 'GET', corpo, tentativas = 4, delaysMs = [5000, 10000, 20000] } = {}) {
   for (let i = 0; i < tentativas; i++) {
-    const r = await fetch(`${API}${caminho}`, {
-      method: metodo,
-      headers: { ...CABECALHOS(token), ...(corpo ? { 'Content-Type': 'application/json' } : {}) },
-      body: corpo ? JSON.stringify(corpo) : undefined,
-    });
-    if (r.ok) return r.json();
+    let r;
+    try {
+      r = await fetch(`${API}${caminho}`, {
+        method: metodo,
+        headers: { ...CABECALHOS(token), ...(corpo ? { 'Content-Type': 'application/json' } : {}) },
+        body: corpo ? JSON.stringify(corpo) : undefined,
+      });
+    } catch (e) {
+      // O `fetch` sem resposta so' dizia "fetch failed": nem qual pedido, nem por que.
+      throw new Error(`${metodo} ${caminho} -> sem resposta (${e.cause?.code ?? e.cause?.message ?? e.message})`);
+    }
+    if (r.ok) {
+      return r.json().catch((e) => {
+        throw new Error(`${metodo} ${caminho} -> ${r.status} com corpo que nao e JSON (${e.message})`);
+      });
+    }
     const transitorio = r.status === 502 || r.status === 503 || r.status === 504;
-    if (!transitorio || i >= tentativas - 1) throw new Error(`${metodo} ${caminho} -> ${r.status}`);
+    if (!transitorio || i >= tentativas - 1) {
+      // So' o numero escondia a causa: 403 de rate limit e 403 de permissao saiam iguais. O
+      // `message` da API vai junto, e o `status` fica no erro para quem chama decidir.
+      const detalhe = await r.json().then((j) => j?.message, () => undefined);
+      const erro = new Error(`${metodo} ${caminho} -> ${r.status}${detalhe ? ` (${detalhe})` : ''}`);
+      erro.status = r.status;
+      throw erro;
+    }
     await new Promise((res) => setTimeout(res, delaysMs[Math.min(i, delaysMs.length - 1)]));
   }
 }
@@ -168,11 +193,11 @@ export async function coletarRuns({
       token,
     );
     todos.push(...runs);
-    if (!paginaTemMais(runs, { janelaDias, agora, porPagina })) {
-      if (pagina === maxPaginas && runs.length >= porPagina) {
-        console.error(`::warning::paginacao de runs parou no teto de ${maxPaginas} paginas`);
-      }
-      break;
+    if (!paginaTemMais(runs, { janelaDias, agora, porPagina })) break;
+    // O aviso ficava DENTRO do `if` acima: saia quando a ultima pagina ja estava fora da
+    // janela (nada cortado) e ficava mudo quando o teto cortava runs da janela de verdade.
+    if (pagina === maxPaginas) {
+      console.error(`::warning::paginacao de runs parou no teto de ${maxPaginas} paginas; ha runs da janela fora do KPI`);
     }
   }
   return todos;
@@ -189,10 +214,18 @@ export async function coletarJobs(
     const id = run.id ?? run.run_id;
     if (id === undefined || id === null) continue;
     for (let pagina = 1; pagina <= maxPaginas; pagina += 1) {
-      const { jobs: paginaJobs = [] } = await buscar(
-        `/repos/${repo}/actions/runs/${id}/jobs?per_page=${porPagina}&page=${pagina}`,
-        token,
-      );
+      let resposta;
+      try {
+        resposta = await buscar(`/repos/${repo}/actions/runs/${id}/jobs?per_page=${porPagina}&page=${pagina}`, token);
+      } catch (erro) {
+        // Run apagado entre a listagem e esta consulta responde 404: um run a menos no
+        // ranking nao pode derrubar o KPI (e, com ele, a auditoria inteira). Qualquer outro
+        // erro (403, 5xx) continua fatal -- ranking vazio por falta de permissao seria mentira.
+        if (erro?.status !== 404) throw erro;
+        console.error(`::warning::run ${id} sumiu antes da leitura dos jobs (404); fica fora do ranking`);
+        break;
+      }
+      const { jobs: paginaJobs = [] } = resposta;
       for (const job of paginaJobs) {
         jobs.push({ ...job, workflow_name: job.workflow_name ?? run.name ?? '' });
       }
@@ -202,7 +235,15 @@ export async function coletarJobs(
   return jobs;
 }
 
-export async function publicarIssue({ repo, token, marca, corpo }) {
+export async function publicarIssue({
+  repo,
+  token,
+  marca,
+  corpo,
+  porPagina = POR_PAGINA,
+  maxPaginas = 100,
+  pedir: buscar = pedir,
+}) {
   // Uma issue por semana, nao uma pilha: procura a aberta com a etiqueta e atualiza;
   // se nao houver, cria com o corpo do dia. Idempotente roda duas vezes no mesmo dia
   // nao duplica nada.
@@ -210,18 +251,25 @@ export async function publicarIssue({ repo, token, marca, corpo }) {
   // labels sao as sete padrao do GitHub), e se ela nao for criada -- ou alguem a remover da
   // issue -- a busca por label nao acha nada e o script passa a abrir uma issue por semana.
   // O passo [branch-hygiene] do mesmo workflow ja usa busca por titulo, por este motivo.
-  const abertas = await pedir(`/repos/${repo}/issues?state=open&per_page=100`, token);
-  const existente = (abertas ?? []).find((i) => !i.pull_request && String(i.title).startsWith('[kpi-actions]'));
+  // Pagina a busca: este endpoint devolve issues E PRs, do mais novo para o mais antigo. Com
+  // 100 itens abertos mais novos que a `[kpi-actions]`, ela caia na pagina 2, a busca de uma
+  // pagina so' nao a achava e o script abria uma issue nova por semana.
+  let existente;
+  for (let pagina = 1; pagina <= maxPaginas && !existente; pagina += 1) {
+    const abertas = (await buscar(`/repos/${repo}/issues?state=open&per_page=${porPagina}&page=${pagina}`, token)) ?? [];
+    existente = abertas.find((i) => !i.pull_request && String(i.title).startsWith('[kpi-actions]'));
+    if (abertas.length < porPagina) break;
+  }
   if (existente) {
     // Atualiza o titulo tambem para refletir a semana corrente
     // (sem isso o titulo fica preso na semana em que a issue foi criada).
-    await pedir(`/repos/${repo}/issues/${existente.number}`, token, {
+    await buscar(`/repos/${repo}/issues/${existente.number}`, token, {
       metodo: 'PATCH',
       corpo: { title: marca, body: corpo },
     });
     return { acao: 'atualizada', numero: existente.number };
   }
-  const criada = await pedir(`/repos/${repo}/issues`, token, {
+  const criada = await buscar(`/repos/${repo}/issues`, token, {
     metodo: 'POST',
     corpo: { title: marca, body: corpo, labels: ['kpi-actions'] },
   });
@@ -256,7 +304,18 @@ async function principal() {
   console.log(`issue ${r.acao}: #${r.numero}`);
 }
 
-if (process.argv[1] && import.meta.url === `file://${process.argv[1]}`) {
+// `import.meta.url` vem codificado (espaco = %20) e com symlink resolvido; `process.argv[1]`
+// e' o caminho como foi digitado. Comparar os dois como texto fazia o script sair 0 sem
+// executar nada quando o caminho tinha espaco ou passava por symlink.
+function executadoDireto() {
+  try {
+    return realpathSync(process.argv[1]) === realpathSync(fileURLToPath(import.meta.url));
+  } catch {
+    return false;
+  }
+}
+
+if (executadoDireto()) {
   principal().catch((e) => {
     console.error(`::error::${e.message}`);
     process.exit(1);

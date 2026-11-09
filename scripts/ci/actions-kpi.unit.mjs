@@ -1,7 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { assertBlocking, conditionOf, jobOf, onlyStep, permission, shellCode, stepsOf } from './workflow-test-support.mjs';
-import { readFileSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync } from 'node:fs';
+import { spawn } from 'node:child_process';
+import http from 'node:http';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import {
   agregar,
   coletarJobs,
@@ -10,6 +14,8 @@ import {
   duracaoMinutos,
   maisLentos,
   paginaTemMais,
+  publicarIssue,
+  runsNaJanela,
   tabela,
   tabelaLentos,
 } from './actions-kpi.mjs';
@@ -191,4 +197,180 @@ test('#365: o corpo do KPI publica o ranking real dos jobs, nao um ranking vazio
   assert.match(md, /build/, 'o job mais lento tem de aparecer — antes o ranking saia vazio');
   assert.doesNotMatch(md, /nenhum job/, 'com jobs reais o placeholder nao pode aparecer');
   assert.match(md, /\| workflow \| runs \|/);
+});
+
+// ---------------------------------------------------------------- auditoria 09/11/2026
+// Cada teste abaixo reproduz um defeito medido contra fixtures (API falsa em 127.0.0.1 ou
+// `pedir` injetado) antes da correcao.
+
+test('run sem run_started_at conta pela created_at em vez de sumir do KPI', () => {
+  const naFila = { name: 'CI', conclusion: null, created_at: new Date(AGORA - 60000).toISOString(), updated_at: new Date(AGORA).toISOString() };
+  const nulo = { ...naFila, run_started_at: null };
+  assert.equal(runsNaJanela([naFila, nulo], { agora: AGORA }).length, 2, 'antes: 0 -- os dois sumiam');
+  const [ci] = agregar([naFila, nulo, run('CI', 4, 'success')], { agora: AGORA });
+  assert.equal(ci.runs, 3);
+  assert.equal(ci.minutos, 4, 'run que nao comecou soma 0 minutos, mas conta como run');
+  const velho = { name: 'CI', created_at: new Date(AGORA - 30 * 86400000).toISOString() };
+  assert.equal(runsNaJanela([velho], { agora: AGORA }).length, 0, 'created_at fora da janela continua fora');
+  const cheia = Array.from({ length: 100 }, () => naFila);
+  assert.equal(paginaTemMais(cheia, { agora: AGORA }), true, 'pagina cheia so com created_at nao pode encerrar a paginacao');
+});
+
+test('coletarRuns avisa quando o teto de paginas corta runs da janela, e so nesse caso', async (t) => {
+  const avisos = [];
+  t.mock.method(console, 'error', (m) => avisos.push(String(m)));
+  const cheia = (dias) => Array.from({ length: 2 }, () => run('CI', 1, 'success', dias));
+
+  let chamadas = 0;
+  const runs = await coletarRuns({
+    repo: 'o/r', token: 't', agora: AGORA, porPagina: 2, maxPaginas: 3,
+    pedir: async () => { chamadas += 1; return { workflow_runs: cheia(0) }; },
+  });
+  assert.equal(chamadas, 3);
+  assert.equal(runs.length, 6);
+  assert.equal(avisos.length, 1, 'antes: nenhum aviso -- o corte era silencioso');
+  assert.match(avisos[0], /::warning::paginacao de runs parou no teto de 3 paginas/);
+
+  avisos.length = 0;
+  chamadas = 0;
+  await coletarRuns({
+    repo: 'o/r', token: 't', agora: AGORA, porPagina: 2, maxPaginas: 2,
+    pedir: async () => { chamadas += 1; return { workflow_runs: cheia(chamadas === 2 ? 30 : 0) }; },
+  });
+  assert.deepEqual(avisos, [], 'ultima pagina ja fora da janela: nada foi cortado, nao ha o que avisar');
+});
+
+test('coletarJobs tolera o 404 de um run apagado, mas nao engole outros erros', async (t) => {
+  const avisos = [];
+  t.mock.method(console, 'error', (m) => avisos.push(String(m)));
+  const erroHttp = (status) => Object.assign(new Error(`GET x -> ${status}`), { status });
+  const job = { name: 'build', started_at: '2026-10-03T10:00:00Z', completed_at: '2026-10-03T10:05:00Z' };
+  const pedir404 = async (caminho) => {
+    if (caminho.includes('/runs/2/jobs')) throw erroHttp(404);
+    return { jobs: [job] };
+  };
+  const jobs = await coletarJobs([{ id: 1, name: 'CI' }, { id: 2, name: 'CI' }, { id: 3, name: 'CI' }], { repo: 'o/r', token: 't', pedir: pedir404 });
+  assert.equal(jobs.length, 2, 'os jobs dos outros runs continuam no ranking');
+  assert.equal(avisos.length, 1);
+  assert.match(avisos[0], /::warning::run 2 sumiu/);
+
+  await assert.rejects(
+    coletarJobs([{ id: 1, name: 'CI' }], { repo: 'o/r', token: 't', pedir: async () => { throw erroHttp(403); } }),
+    /-> 403/,
+    '403 (permissao/rate limit) em todo run viraria "nenhum job registrado" se fosse engolido',
+  );
+});
+
+test('publicarIssue acha a [kpi-actions] na pagina 2 das abertas em vez de criar outra', async () => {
+  const outras = Array.from({ length: 100 }, (_, i) => ({ number: 2000 - i, title: `PR ${i}`, pull_request: {} }));
+  const pedidos = [];
+  const pedirFake = async (caminho, _token, opcoes = {}) => {
+    pedidos.push(`${opcoes.metodo ?? 'GET'} ${caminho}`);
+    if (opcoes.metodo === 'PATCH') return { number: 42 };
+    if (opcoes.metodo === 'POST') return { number: 999 };
+    return paginaDe(caminho) === 1 ? outras : [{ number: 42, title: '[kpi-actions] Semana de 2026-10-01' }];
+  };
+  const r = await publicarIssue({ repo: 'o/r', token: 't', marca: '[kpi-actions] Semana de 2026-11-09', corpo: 'x', pedir: pedirFake });
+  assert.deepEqual(r, { acao: 'atualizada', numero: 42 }, 'antes: { acao: "criada" } -- uma issue nova por semana');
+  assert.deepEqual(pedidos, [
+    'GET /repos/o/r/issues?state=open&per_page=100&page=1',
+    'GET /repos/o/r/issues?state=open&per_page=100&page=2',
+    'PATCH /repos/o/r/issues/42',
+  ]);
+});
+
+test('publicarIssue cria quando nao ha issue aberta, e PR com o mesmo titulo nao conta', async () => {
+  const pedidos = [];
+  const pedirFake = async (caminho, _token, opcoes = {}) => {
+    pedidos.push(`${opcoes.metodo ?? 'GET'} ${caminho}`);
+    if (opcoes.metodo === 'POST') return { number: 7 };
+    return [{ number: 5, title: '[kpi-actions] PR com o titulo', pull_request: {} }];
+  };
+  const r = await publicarIssue({ repo: 'o/r', token: 't', marca: 'm', corpo: 'x', pedir: pedirFake });
+  assert.deepEqual(r, { acao: 'criada', numero: 7 });
+  assert.deepEqual(pedidos, ['GET /repos/o/r/issues?state=open&per_page=100&page=1', 'POST /repos/o/r/issues']);
+});
+
+// --- CLI de verdade contra uma API falsa local (nenhuma chamada sai de 127.0.0.1)
+const SCRIPT = new URL('./actions-kpi.mjs', import.meta.url).pathname;
+
+function apiFalsa(responder) {
+  const pedidos = [];
+  const servidor = http.createServer((req, res) => {
+    pedidos.push(`${req.method} ${req.url}`);
+    const { status = 200, tipo = 'application/json', corpo } = responder(req.method, new URL(req.url, 'http://x'));
+    res.writeHead(status, { 'content-type': tipo });
+    res.end(typeof corpo === 'string' ? corpo : JSON.stringify(corpo));
+  });
+  return new Promise((ok) => {
+    servidor.listen(0, '127.0.0.1', () => ok({ servidor, pedidos, url: `http://127.0.0.1:${servidor.address().port}` }));
+  });
+}
+
+function cli(env, script = SCRIPT) {
+  return new Promise((ok) => {
+    const filho = spawn(process.execPath, [script], { env: { PATH: process.env.PATH, ...env } });
+    let stdout = '';
+    let stderr = '';
+    filho.stdout.on('data', (d) => { stdout += d; });
+    filho.stderr.on('data', (d) => { stderr += d; });
+    filho.on('close', (status) => ok({ status, stdout, stderr }));
+  });
+}
+
+test('CLI: zero runs publica a tabela vazia e cria a issue; falha de API diz a causa', async () => {
+  const vazia = await apiFalsa((metodo, u) => {
+    if (metodo === 'POST') return { status: 201, corpo: { number: 11 } };
+    return { corpo: u.pathname.endsWith('/issues') ? [] : { workflow_runs: [] } };
+  });
+  try {
+    const r = await cli({ GITHUB_API_URL: vazia.url, GITHUB_REPOSITORY: 'o/r', GH_TOKEN: 't', JANELA_DIAS: '7' });
+    assert.equal(r.status, 0, r.stderr);
+    assert.match(r.stdout, /Total: \*\*0\*\* runs, \*\*0\*\* minutos\./);
+    assert.match(r.stdout, /_nenhum job registrado na janela_/);
+    assert.match(r.stdout, /issue criada: #11/);
+    assert.equal(vazia.pedidos.at(-1), 'POST /repos/o/r/issues');
+  } finally {
+    vazia.servidor.close();
+  }
+
+  const limite = await apiFalsa(() => ({ status: 403, corpo: { message: 'API rate limit exceeded' } }));
+  try {
+    const r = await cli({ GITHUB_API_URL: limite.url, GITHUB_REPOSITORY: 'o/r', GH_TOKEN: 't' });
+    assert.equal(r.status, 1);
+    assert.equal(r.stdout, '', 'sem dado nao publica nada');
+    assert.match(r.stderr, /::error::GET \/repos\/o\/r\/actions\/runs\?per_page=100&page=1 -> 403 \(API rate limit exceeded\)/, 'antes: so "-> 403"');
+  } finally {
+    limite.servidor.close();
+  }
+
+  const html = await apiFalsa(() => ({ tipo: 'text/html', corpo: '<html>proxy</html>' }));
+  try {
+    const r = await cli({ GITHUB_API_URL: html.url, GITHUB_REPOSITORY: 'o/r', GH_TOKEN: 't' });
+    assert.equal(r.status, 1);
+    assert.match(r.stderr, /::error::GET \/repos\/o\/r\/actions\/runs[^\n]* -> 200 com corpo que nao e JSON/);
+  } finally {
+    html.servidor.close();
+  }
+
+  // Porta de um servidor ja fechado: ninguem escuta, o fetch nao recebe resposta.
+  const r = await cli({ GITHUB_API_URL: html.url, GITHUB_REPOSITORY: 'o/r', GH_TOKEN: 't' });
+  assert.equal(r.status, 1);
+  assert.match(r.stderr, /::error::GET \/repos\/o\/r\/actions\/runs[^\n]* -> sem resposta \(/, 'antes: so "fetch failed"');
+});
+
+test('CLI: executa mesmo com espaco no caminho e chamado por symlink (antes saia 0 sem fazer nada)', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'kpi com espaco '));
+  try {
+    mkdirSync(join(dir, 'real'));
+    cpSync(SCRIPT, join(dir, 'real', 'actions-kpi.mjs'));
+    symlinkSync(join(dir, 'real'), join(dir, 'atalho'));
+    for (const caminho of [join(dir, 'real', 'actions-kpi.mjs'), join(dir, 'atalho', 'actions-kpi.mjs')]) {
+      const r = await cli({}, caminho);
+      assert.equal(r.status, 2, `${caminho}: sem GITHUB_REPOSITORY/GH_TOKEN tem de sair 2, nao 0`);
+      assert.match(r.stderr, /::error::GITHUB_REPOSITORY e GH_TOKEN sao obrigatorios/);
+    }
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

@@ -8,8 +8,11 @@
 import { readdirSync, readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const RAIZ = new URL('../../', import.meta.url).pathname;
+// fileURLToPath, nao `.pathname`: o pathname vem percent-encoded e, com espaco ou acento no caminho
+// do repo, o script criava uma pasta `meu%20repo/` ao lado e morria com ENOENT.
+const RAIZ = fileURLToPath(new URL('../../', import.meta.url));
 const FDIR = join(RAIZ, 'supabase/functions');
 const OUT = join(RAIZ, 'inventario/estado');
 mkdirSync(OUT, { recursive: true });

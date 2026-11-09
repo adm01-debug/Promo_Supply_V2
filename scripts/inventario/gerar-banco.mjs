@@ -140,6 +140,11 @@ export function conferirOrigem(dado, tabelasManifesto, versoesRepo = null) {
     throw new Error('sem supabase/migrations/ para conferir o ledger: nao da para garantir a origem da resposta.');
   }
   const { ledger_versao_max: max, ledger_registros: registros } = dado.resumo ?? {};
+  // banco.sql devolve null quando o banco nao tem a tabela do ledger e 0 quando ela esta vazia.
+  if (registros === null || registros === 0) {
+    throw new Error(`o banco consultado ${registros === null ? 'nao tem' : 'tem vazio'} o ledger supabase_migrations.schema_migrations: `
+      + 'sem ele nao da para conferir a origem da resposta e nada foi gravado (ver docs/agentes/banco.md).');
+  }
   if (!max || !Number.isFinite(registros)) {
     throw new Error('a resposta nao traz resumo.ledger_versao_max/ledger_registros; rode o banco.sql atual.');
   }
@@ -182,7 +187,7 @@ export function compararEdges(publicadasApi, noRepo) {
     status: f.status,
     verify_jwt: f.verify_jwt,
     atualizada_em: f.updated_at ? new Date(f.updated_at).toISOString().slice(0, 16) + 'Z' : null,
-  })).sort((a, b) => a.slug.localeCompare(b.slug));
+  })).sort((a, b) => a.slug.localeCompare(b.slug, 'en')); // 'en' fixo: a ordem nao pode depender do LC_ALL de quem roda
   const slugs = new Set(publicadas.map((f) => f.slug));
   return {
     publicadas,
@@ -314,7 +319,9 @@ async function main(argv) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main(process.argv.slice(2)).catch((error) => {
-    console.error(`ERRO: ${error.message}`);
+    // `fetch failed` sozinho esconde a causa (ECONNREFUSED, ENOTFOUND...): o codigo vem em error.cause.
+    const causa = typeof error.cause?.code === 'string' ? ` (${error.cause.code})` : '';
+    console.error(`ERRO: ${error.message}${causa}`);
     process.exit(2);
   });
 }

@@ -843,6 +843,545 @@ class SnapshotConfigurationTests(unittest.TestCase):
                 self.assertNotIn("Traceback", message)
 
 
+def table(name="orders", **overrides):
+    record = {
+        "schema": "public", "name": name, "kind": "table", "rls_enabled": True, "rls_forced": False,
+        "owner": "postgres", "comment": None, "is_partition": False, "parent": None, "partition_key": None,
+        "partition_bound": None, "replica_identity": "default", "from_extension": False,
+    }
+    record.update(overrides)
+    return record
+
+
+def column(name="id", table_name="orders"):
+    return {"schema": "public", "table": table_name, "position": 1, "name": name, "type": "integer", "nullable": False,
+            "default": None, "identity": None, "generated": None, "comment": None, "is_enum": False}
+
+
+def policy(name="owner_only", table_name="orders"):
+    return {"schema": "public", "table": table_name, "name": name, "permissive": "PERMISSIVE", "roles": ["authenticated"],
+            "cmd": "SELECT", "using": "(owner = auth.uid())", "with_check": None}
+
+
+class SnapshotPartialOutputTests(SnapshotFixture):
+    """Seção que falhou não pode aparecer como "_nenhum_" dentro do arquivo que o agente lê."""
+
+    VOLATILE = {"cron_runs", "table_stats", "index_stats", "db_stats"}
+
+    def collect_sections(self, records, failures=()):
+        snapshot = self.snapshot
+        snapshot.ERRORS.clear()
+        snapshot.CARRIED.clear()
+        snapshot._SLUG_SEEN.clear()
+        records = {"server": {"server_version": "offline-fixture"}, **records}
+
+        def section(name):
+            @snapshot.section(name, volatile=name in self.VOLATILE)
+            def collect_section(_conn):
+                if name in failures:
+                    raise PermissionError(f"Falha simulada na seção {name}")
+                return copy.deepcopy(records[name])
+            return collect_section
+
+        snapshot.DB_SECTIONS = [section(name) for name in records]
+        with mock.patch.object(snapshot.psycopg, "connect", return_value=OfflineConnection()):
+            with mock.patch.object(snapshot, "scan_code_files", return_value=[]):
+                with contextlib.redirect_stdout(io.StringIO()):
+                    return snapshot.main()
+
+    def table_file(self):
+        return (self.out / "tables" / "public" / "orders.md").read_text(encoding="utf-8")
+
+    def records(self, policies=None):
+        return {"tables": [table()], "columns": [column()], "constraints": [], "indexes": [],
+                "policies": [policy()] if policies is None else policies, "triggers": [],
+                "grants": {"tables": [], "columns": [], "sequences": [], "default_privileges": []},
+                "cron_runs": [], "table_stats": [], "index_stats": [], "db_stats": {}}
+
+    def test_healthy_collection_has_no_warning_and_keeps_real_rls_alert(self):
+        self.assertEqual(self.collect_sections(self.records(policies=[])), 0)
+        document = self.table_file()
+        self.assertNotIn("⚠️ Seção", document)
+        self.assertIn("RLS habilitado **sem policies**", document)
+        for name in ("tables.md", "stats.md", "cron-runs.md"):
+            self.assertNotIn("⚠️ Seção", (self.out / name).read_text(encoding="utf-8"))
+
+    def test_first_collection_failures_are_flagged_inside_each_table_file(self):
+        failed = {"columns", "constraints", "indexes", "policies", "triggers", "grants",
+                  "cron_runs", "table_stats", "index_stats", "db_stats"}
+        self.assertEqual(self.collect_sections(self.records(), failures=failed), 0)
+        document = self.table_file()
+        for name in ("columns", "constraints", "indexes", "policies", "triggers", "grants"):
+            self.assertIn(f"Seção `{name}` indisponível", document)
+        # Policies não coletadas não provam "RLS sem policies".
+        self.assertNotIn("sem policies", document)
+        index = (self.out / "tables.md").read_text(encoding="utf-8")
+        self.assertIn("Seção `columns` indisponível", index)
+        self.assertIn("Seção `policies` indisponível", index)
+        stats = (self.out / "stats.md").read_text(encoding="utf-8")
+        for name in ("table_stats", "index_stats", "db_stats"):
+            self.assertIn(f"Seção `{name}` indisponível", stats)
+        self.assertIn("Seção `cron_runs` indisponível", (self.out / "cron-runs.md").read_text(encoding="utf-8"))
+
+    def test_carried_sections_are_flagged_as_previous_inside_each_table_file(self):
+        self.assertEqual(self.collect_sections(self.records()), 0)
+        self.assertEqual(self.collect_sections(self.records(policies=[]), failures={"policies"}), 0)
+        document = self.table_file()
+        self.assertIn("Seção `policies` não pôde ser atualizada", document)
+        self.assertIn("### `owner_only`", document)
+        self.assertNotIn("Seção `columns`", document)
+        self.assertEqual(self.collect_sections(self.records()), 0)
+        self.assertNotIn("⚠️ Seção", self.table_file())
+
+
+class SnapshotSecretTests(SnapshotFixture):
+    DSN = "postgresql://postgres.ref:pAss%SEGREDOabc@aws-0-sa-east-1.pooler.supabase.com:5432/postgres"
+
+    def workflow_guard(self):
+        """Mesma expressão do passo "Guard — nenhum segredo na saída" do contexto.yml."""
+        workflow = pathlib.Path(__file__).resolve().parents[2] / ".github" / "workflows" / "contexto.yml"
+        found = re.search(r"grep -rIEl '([^']+)' \"\$SNAPSHOT_DIR\"", workflow.read_text(encoding="utf-8"))
+        self.assertIsNotNone(found, "guard de segredos não encontrado no contexto.yml")
+        return re.compile(found.group(1))
+
+    def test_scrub_covers_basic_auth_dynamic_sql_passwords_and_dsn(self):
+        cases = [
+            ('{"Authorization":"Basic U0VOVElORUxBdXNlcjpTRU5USU5FTEFwYXNzMTIz"}', '{"Authorization":"Basic [REDACTED]"}'),
+            ('{"Authorization":"Bearer abcdefghijklmnop0123"}', '{"Authorization":"Bearer [REDACTED]"}'),
+            ("EXECUTE 'ALTER ROLE x PASSWORD ''segredo-dinamico''';", "EXECUTE 'ALTER ROLE x PASSWORD ''[REDACTED]''';"),
+            ("ALTER ROLE x PASSWORD 'it''s-secret';", "ALTER ROLE x PASSWORD '[REDACTED]';"),
+            ("ALTER ROLE x PASSWORD 'simples';", "ALTER ROLE x PASSWORD '[REDACTED]';"),
+            ("ALTER ROLE x PASSWORD NULL; SELECT 'a';", "ALTER ROLE x PASSWORD NULL; SELECT 'a';"),
+            ("select dblink('postgresql://app:segredo-dsn@db.test:5432/app')", "select dblink('postgresql://[REDACTED]@db.test:5432/app')"),
+            ("-- basic authentication is required", "-- basic authentication is required"),
+        ]
+        for text, expected in cases:
+            with self.subTest(text=text):
+                self.assertEqual(self.snapshot.scrub(text), expected)
+
+    def test_scrubbed_text_never_trips_the_workflow_secret_guard(self):
+        guard = self.workflow_guard()
+        secrets = [
+            "select dblink('postgresql://app:segredo-dsn@db.test:5432/app')",
+            "postgres://postgres.ref:segredo@aws-0-sa-east-1.pooler.supabase.com:6543/postgres",
+            '{"Authorization":"Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoic2VydmljZSJ9.abcdefghijklmnop"}',
+            "apikey: sb_secret_abcdefgh12345678", "key sb_publishable_abcdefgh12345678",
+            "IF chave LIKE 'sb_secret_%' THEN", "-- aceita sb_publishable_ e sb_secret_abc",
+        ]
+        for text in secrets:
+            with self.subTest(text=text):
+                self.assertRegex(text, guard, "a fixture precisa ser um segredo que o guard reconhece")
+                self.assertNotRegex(self.snapshot.scrub(text), guard)
+
+    def test_slug_never_yields_hidden_files_or_parent_directories(self):
+        slug = self.snapshot.slug
+        self.assertEqual([slug(name) for name in ("..", ".oculta", "../escape", "v1.2.", "a.b", "Órgão_Ação", "___")],
+                         ["_", "oculta", "escape", "v1.2", "a.b", "rg_o_A_o", "_"])
+        self.assertEqual(self.collect(functions=[{**function(".oculta"), "schema": ".."}]), 0)
+        written = [p.relative_to(self.out).as_posix() for p in (self.out / "functions").rglob("*.sql")]
+        self.assertEqual(written, [f"functions/_/oculta__{self.snapshot.sha('')}.sql"])
+        self.assertIn(f"](functions/_/oculta__{self.snapshot.sha('')}.sql)", (self.out / "functions.md").read_text(encoding="utf-8"))
+
+    def test_mask_dsn_removes_url_and_password_fragments_from_driver_messages(self):
+        cases = [  # (SUPABASE_DB_URL, mensagem do driver/subprocesso, trechos proibidos, trecho preservado)
+            (self.DSN, 'invalid percent-encoded token: "pAss%SEGREDOabc"', ["SEGREDO", "pAss"], "invalid percent-encoded token"),
+            ("postgresql://u:p@ss:w/rd%x@127.0.0.1:5432/db", 'invalid percent-encoded token: "rd%x@127.0.0.1:5432/db"', ["rd%x"], "token"),
+            ("postgresql://u:SEGREDOxyz@abc@127.0.0.1:5432/db", "failed to resolve host 'abc@127.0.0.1': erro", ["abc@"], "failed to resolve host"),
+            ("postgresql://u:Xy/SEGREDO@127.0.0.1:5432/db", 'invalid integer value "Xy" for connection option "port"', ['"Xy"'], '"port"'),
+            ("u:SEGREDOsemesquema@127.0.0.1:5432/db", 'missing "=" after "u:SEGREDOsemesquema@127.0.0.1:5432/db" in connection info string', ["SEGREDO"], 'missing "="'),
+            ("host=127.0.0.1 user=postgres password=SEGREDOkv dbname=db", "falha com SEGREDOkv no meio", ["SEGREDO"], "falha com"),
+            (self.DSN, f"Command '['pg_dump', '--schema', 'public', '{self.DSN}']' timed out after 600 seconds", ["SEGREDO", "pAss"], "timed out after 600 seconds"),
+            (self.DSN, 'connection to server at "aws-0-sa-east-1.pooler.supabase.com", port 5432 failed: FATAL:  password authentication failed for user "postgres.ref"',
+             ["SEGREDO"], 'server at "aws-0-sa-east-1.pooler.supabase.com", port 5432 failed: FATAL:  password authentication failed for user "postgres.ref"'),
+            ("postgresql://postgres@127.0.0.1:5432/db", 'connection to server at "127.0.0.1", port 5432 failed', [], 'connection to server at "127.0.0.1", port 5432 failed'),
+        ]
+        for url, message, forbidden, kept in cases:
+            with self.subTest(url=url):
+                self.snapshot.DB_URL = url
+                masked = self.snapshot.mask_dsn(message)
+                for fragment in forbidden:
+                    self.assertNotIn(fragment, masked)
+                self.assertIn(kept, masked)
+
+    def test_subprocess_timeout_does_not_write_the_connection_string(self):
+        snapshot = self.snapshot
+        snapshot.DB_URL, snapshot.PGDUMP = self.DSN, True
+        timeout = snapshot.subprocess.TimeoutExpired(["pg_dump", "--schema", "public", self.DSN], 600)
+        with mock.patch.object(snapshot.shutil, "which", return_value="/usr/bin/pg_dump"):
+            with mock.patch.object(snapshot.subprocess, "run", side_effect=timeout):
+                with contextlib.redirect_stdout(io.StringIO()) as output:
+                    self.assertIsNone(snapshot.run_pg_dump())
+        recorded = json.dumps(snapshot.ERRORS) + output.getvalue()
+        self.assertIn("timed out", recorded)
+        self.assertNotIn("SEGREDO", recorded)
+        self.assertNotIn("pAss", recorded)
+
+    def test_pg_dump_output_is_scrubbed_like_every_other_database_text(self):
+        snapshot = self.snapshot
+        snapshot.PGDUMP = True
+        dump = types.SimpleNamespace(returncode=0, stderr="", stdout=(
+            "-- Dumped from database version 17\nCREATE FUNCTION public.f() RETURNS void AS $$\n"
+            "  PERFORM net.http_post('https://x.test', '{\"Authorization\": \"Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoieCJ9.abcdefghijklmnop\"}');\n"
+            "  EXECUTE 'ALTER ROLE x PASSWORD ''segredo-do-dump''';\n$$;\n"))
+        with mock.patch.object(snapshot.shutil, "which", return_value="/usr/bin/pg_dump"):
+            with mock.patch.object(snapshot.subprocess, "run", return_value=dump):
+                with contextlib.redirect_stdout(io.StringIO()):
+                    text = snapshot.run_pg_dump()
+        self.assertIn("CREATE FUNCTION public.f()", text)
+        self.assertNotIn("Dumped from", text)
+        self.assertNotIn("eyJhbGci", text)
+        self.assertNotIn("segredo-do-dump", text)
+
+    def test_connection_failure_exits_1_without_traceback_or_password(self):
+        snapshot = self.snapshot
+        snapshot.DB_URL = self.DSN
+        failure = RuntimeError('invalid percent-encoded token: "pAss%SEGREDOabc"\nsegunda linha')
+        with mock.patch.object(snapshot.psycopg, "connect", side_effect=failure):
+            with contextlib.redirect_stdout(io.StringIO()) as output, contextlib.redirect_stderr(io.StringIO()) as errors:
+                self.assertEqual(snapshot.main(), 1)
+        printed = output.getvalue() + errors.getvalue()
+        self.assertIn("Falha ao conectar no banco (RuntimeError): invalid percent-encoded token", printed)
+        self.assertIn("percent-encoding", printed)
+        for fragment in ("SEGREDO", "pAss", "Traceback", "segunda linha"):
+            self.assertNotIn(fragment, printed)
+        # Só o marcador de posse da pasta: nenhuma saída que pareça coleta concluída.
+        self.assertEqual([p.name for p in self.out.iterdir()], [snapshot.OUTPUT_MARKER])
+
+
+class RecordingConnection:
+    """Conexão falsa que registra a ordem dos comandos e se cada um rodou dentro de transação."""
+
+    def __init__(self, rows=(), failure=None):
+        self.rows, self.failure = list(rows), failure
+        self.log, self.outside, self.depth = [], [], 0
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_):
+        return False
+
+    @contextlib.contextmanager
+    def transaction(self):
+        self.log.append("BEGIN")
+        self.depth += 1
+        try:
+            yield
+        except BaseException:
+            self.log.append("ROLLBACK")
+            raise
+        else:
+            self.log.append("COMMIT")
+        finally:
+            self.depth -= 1
+
+    def execute(self, sql, params=None):
+        self.log.append(sql)
+        if not self.depth:
+            self.outside.append(sql)
+
+    def cursor(self, row_factory=None):
+        connection = self
+
+        class Cursor:
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *_):
+                return False
+
+            def execute(self, sql, params=None):
+                connection.execute(sql, params)
+                if connection.failure:
+                    raise connection.failure
+
+            def fetchall(self):
+                return connection.rows
+
+        return Cursor()
+
+    def rollback(self):
+        pass
+
+
+class SnapshotReadOnlyTransactionTests(SnapshotFixture):
+    """Somente leitura e prazos por transação: SET de sessão vaza para outros clientes de um pooler."""
+
+    def test_every_query_runs_inside_its_own_read_only_transaction(self):
+        snapshot = self.snapshot
+        conn = RecordingConnection(rows=[{"command": "Authorization: Bearer abcdefghijklmnop0123"}])
+        rows = snapshot.q(conn, "SELECT 1")
+        self.assertEqual(conn.log, ["BEGIN", snapshot.TX_GUARD, "SELECT 1", "COMMIT"])
+        self.assertEqual(conn.outside, [])
+        self.assertEqual(rows, [{"command": "Authorization: Bearer [REDACTED]"}])
+        self.assertIn("SET TRANSACTION READ ONLY", snapshot.TX_GUARD)
+        self.assertIn("SET LOCAL statement_timeout", snapshot.TX_GUARD)
+        self.assertIn("SET LOCAL lock_timeout", snapshot.TX_GUARD)
+        self.assertIsNone(re.search(r"\bSET\s+(?!TRANSACTION\b|LOCAL\b)", snapshot.TX_GUARD), "SET de sessão no guard")
+
+    def test_failed_query_rolls_back_and_propagates_to_the_section(self):
+        conn = RecordingConnection(failure=PermissionError("permission denied for schema vault"))
+        with self.assertRaises(PermissionError):
+            self.snapshot.q(conn, "SELECT name FROM vault.secrets")
+        self.assertEqual(conn.log[-1], "ROLLBACK")
+        self.assertEqual(conn.outside, [])
+
+    def test_collection_never_changes_session_settings(self):
+        snapshot = self.snapshot
+        conn = RecordingConnection(rows=[{"present": 1}])
+
+        @snapshot.section("extensions")
+        def collect_section(connection):
+            return snapshot.has_ext(connection, "pg_cron")
+
+        snapshot.DB_SECTIONS = [collect_section]
+        with mock.patch.object(snapshot.psycopg, "connect", return_value=conn):
+            with contextlib.redirect_stdout(io.StringIO()):
+                database, _ = snapshot.introspect_db(None)
+        self.assertEqual(database, {"extensions": True})
+        self.assertEqual(conn.outside, [], "comando fora de transação (SET de sessão vaza em pooler transaction mode)")
+        self.assertEqual(conn.log[:2], ["BEGIN", snapshot.TX_GUARD])
+        source = pathlib.Path(__file__).with_name("snapshot.py").read_text(encoding="utf-8")
+        self.assertEqual(re.findall(r"conn\.execute\(([^)]*)\)", source), ["TX_GUARD"],
+                         "toda consulta deve passar por q(); conn.execute direto escapa da transação READ ONLY")
+
+
+class SnapshotCatalogQueryTests(SnapshotFixture):
+    """Regressões de SQL sem banco: captura o texto enviado a q() e exercita os padrões em Python."""
+
+    def run_section(self, getter, answers=()):
+        captured, pending = [], list(answers)
+
+        def query(_conn, sql, params=None):
+            captured.append(" ".join(sql.split()))
+            return pending.pop(0) if pending else []
+
+        self.snapshot.ERRORS.clear()
+        with mock.patch.object(self.snapshot, "q", side_effect=query):
+            with contextlib.redirect_stdout(io.StringIO()):
+                data = getter(OfflineConnection())
+        self.assertEqual(self.snapshot.ERRORS, [])
+        return captured, data
+
+    def test_constraint_columns_keep_the_declared_order(self):
+        (sql,), _ = self.run_section(self.snapshot.get_constraints)
+        self.assertEqual(sql.count("WITH ORDINALITY k(attnum, ord)"), 2)
+        self.assertEqual(sql.count("ORDER BY k.ord) AS columns") + sql.count("ORDER BY k.ord) AS ref_columns"), 2)
+
+    def test_foreign_key_lint_accepts_any_column_order_and_ignores_partial_or_invalid_indexes(self):
+        queries, lints = self.run_section(self.snapshot.get_lints)
+        self.assertEqual(lints, [])
+        (sql,) = [text for text in queries if "con.contype = 'f'" in text]
+        self.assertIn("ORDER BY k.ord) AS cols", sql)
+        self.assertIn("ix.indisvalid AND ix.indpred IS NULL", sql)
+        self.assertEqual(sql.count("@>"), 2)
+        self.assertNotIn("= con.conkey::int2[]", sql)
+
+    def test_security_invoker_accepts_every_true_spelling(self):
+        queries, _ = self.run_section(self.snapshot.get_views)
+        lint_queries, _ = self.run_section(self.snapshot.get_lints)
+        (lint,) = [text for text in lint_queries if "c.relkind = 'v'" in text]
+        self.assertIn(f"NOT {self.snapshot.SECURITY_INVOKER_ON}", lint)
+        self.assertIn(f"(c.relkind = 'v' AND {self.snapshot.SECURITY_INVOKER_ON}) AS security_invoker", queries[0])
+        self.assertNotIn("security_invoker=true%", queries[0] + lint)
+        pattern = re.compile(re.search(r"o ~\* '([^']+)'", self.snapshot.SECURITY_INVOKER_ON).group(1), re.I)
+        for option in ("security_invoker=on", "security_invoker=true", "security_invoker=1", "security_invoker=yes",
+                       "security_invoker=TRUE", "security_invoker=t"):
+            self.assertRegex(option, pattern)
+        for option in ("security_invoker=off", "security_invoker=false", "security_invoker=0", "security_invoker=no",
+                       "security_barrier=true", "x_security_invoker=on"):
+            self.assertNotRegex(option, pattern)
+
+    def test_server_reads_timezone_and_the_configured_statement_timeout(self):
+        answers = [[{"name": "timezone", "setting": "America/Sao_Paulo"}, {"name": "statement_timeout", "setting": "120000"}],
+                   [{"db": "postgres"}]]
+        queries, server = self.run_section(self.snapshot.get_server, answers)
+        self.assertIn("lower(name) AS name", queries[0])
+        self.assertIn("WHERE lower(name) IN (", queries[0])
+        self.assertIn("CASE WHEN name = 'statement_timeout' THEN reset_val ELSE setting END", queries[0])
+        self.assertEqual(server["timezone"], "America/Sao_Paulo")
+
+    def test_foreign_server_options_redact_by_key_substring(self):
+        (sql,), _ = self.run_section(self.snapshot.get_foreign)
+        pattern = re.search(r"regexp_replace\(o, '([^']+)', '\\1=\[REDACTED\]', 'i'\)", sql)
+        self.assertIsNotNone(pattern, sql)
+        redact = lambda option: re.sub(pattern.group(1), r"\1=[REDACTED]", option, flags=re.I)
+        for key in ("password", "api_key", "aws_secret_access_key", "aws_access_key_id", "sa_key", "api_token",
+                    "client_secret", "conn_string", "motherduck_token", "Service_Key"):
+            self.assertEqual(redact(f"{key}=valor-secreto"), f"{key}=[REDACTED]")
+        for option in ("region=sa-east-1", "api_url=https://erp.test/v1?token=abc", "project_id=demo"):
+            self.assertEqual(redact(option), option)
+
+    def test_grants_come_from_catalog_acls_visible_to_any_role(self):
+        queries, grants = self.run_section(self.snapshot.get_grants)
+        self.assertEqual(set(grants), {"tables", "columns", "sequences", "default_privileges"})
+        for sql in queries[:2]:
+            self.assertNotIn("information_schema.", sql)
+            self.assertIn("aclexplode(COALESCE(c.relacl, acldefault('r', c.relowner)))", sql)
+        self.assertIn("aclexplode(att.attacl)", queries[1])
+
+
+class SnapshotManagementApiTests(SnapshotFixture):
+    """Falha transitória da Management API reaproveita a coleta anterior, como as seções do banco."""
+
+    RESPONSES = {
+        "/projects/ref": {"id": "ref", "name": "Fixture", "region": "sa-east-1"},
+        "/projects/ref/functions": [{"slug": "zeta", "name": "zeta", "version": 2}, {"slug": "alfa", "name": "alfa", "version": 1}],
+        "/projects/ref/secrets": [{"name": "ERP_TOKEN", "value": "valor-secreto"}],
+        "/projects/ref/config/auth": {"site_url": "https://app.test", "smtp_pass": "valor-secreto"},
+        "/projects/ref/postgrest": {"db_schema": "public"},
+        "/projects/ref/config/database/pooler": [{"pool_mode": "transaction"}],
+    }
+
+    def collect_api(self, failing=()):
+        snapshot = self.snapshot
+        snapshot.PROJECT_REF, snapshot.ACCESS_TOKEN = "ref", "token-fixture"
+
+        def api(path):
+            path = path.split("?")[0]
+            if path in failing:
+                raise snapshot.urllib.error.HTTPError(path, 500, "erro interno", None, None)
+            if path not in self.RESPONSES:
+                raise snapshot.urllib.error.HTTPError(path, 404, "não encontrado", None, None)
+            return copy.deepcopy(self.RESPONSES[path])
+
+        with mock.patch.object(snapshot, "api", side_effect=api):
+            return self.collect()
+
+    def test_transient_api_failure_keeps_previous_edge_functions_and_changelog(self):
+        self.assertEqual(self.collect_api(), 0)
+        first = self.metadata()
+        changelog = (self.out / "CHANGELOG.md").read_bytes()
+        self.assertEqual([f["slug"] for f in first["api"]["edge_functions"]], ["alfa", "zeta"])
+        self.assertNotIn("valor-secreto", (self.out / "snapshot.json").read_text(encoding="utf-8"))
+
+        failing = {"/projects/ref/functions", "/projects/ref/config/auth"}
+        self.assertEqual(self.collect_api(failing=failing), 0)
+        metadata = self.metadata()
+        self.assertEqual(metadata["api"]["edge_functions"], first["api"]["edge_functions"])
+        self.assertEqual(metadata["api"]["auth_config"], first["api"]["auth_config"])
+        self.assertEqual(metadata["carried"], ["api.edge_functions", "api.auth_config"])
+        self.assertEqual(self.error_sections(), {"api.edge_functions", "api.auth_config"})
+        self.assertEqual((self.out / "CHANGELOG.md").read_bytes(), changelog, "falha de API não é remoção")
+        self.assertTrue((self.out / "edge-functions" / "alfa" / "README.md").is_file())
+        self.assertIn("versão anterior", (self.out / "edge-functions.md").read_text(encoding="utf-8"))
+        self.assertIn("versão anterior", (self.out / "auth.md").read_text(encoding="utf-8"))
+
+        self.assertEqual(self.collect_api(), 0)
+        self.assertEqual(self.metadata()["carried"], [])
+        self.assertEqual(self.metadata()["errors"], [])
+        self.assertEqual((self.out / "CHANGELOG.md").read_bytes(), changelog)
+        self.assertNotIn("versão anterior", (self.out / "edge-functions.md").read_text(encoding="utf-8"))
+
+    def test_first_collection_api_failure_has_nothing_to_carry(self):
+        self.assertEqual(self.collect_api(failing={"/projects/ref/functions"}), 0)
+        self.assertEqual(self.metadata()["carried"], [])
+        self.assertEqual(self.metadata()["api"]["edge_functions"], [])
+        self.assertEqual(self.error_sections(), {"api.edge_functions"})
+
+
+LIVE_DB_URL = os.environ.get("SNAPSHOT_TEST_DB_URL", "").strip()
+LIVE_FIXTURE = """
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon') THEN CREATE ROLE anon NOLOGIN; END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN CREATE ROLE authenticated NOLOGIN; END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role') THEN CREATE ROLE service_role NOLOGIN; END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'snapshot_live_reader') THEN
+    CREATE ROLE snapshot_live_reader NOLOGIN; GRANT pg_read_all_data TO snapshot_live_reader;
+  END IF;
+END $$;
+CREATE TABLE public.par (x int, y int, PRIMARY KEY (y, x), UNIQUE (x, y));
+CREATE TABLE public.filho (id int PRIMARY KEY, a int, b int, c int, d int,
+  CONSTRAINT filho_fk FOREIGN KEY (c, a) REFERENCES public.par (x, y),
+  CONSTRAINT filho_parcial_fk FOREIGN KEY (d) REFERENCES public.filho (id));
+CREATE INDEX filho_a_c ON public.filho (a, c);
+CREATE INDEX filho_d_parcial ON public.filho (d) WHERE b IS NULL;
+CREATE VIEW public.v_on WITH (security_invoker = on) AS SELECT 1 AS x;
+CREATE VIEW public.v_true WITH (security_invoker = true) AS SELECT 1 AS x;
+CREATE VIEW public.v_off WITH (security_invoker = off) AS SELECT 1 AS x;
+CREATE VIEW public.v_none AS SELECT 1 AS x;
+CREATE FOREIGN DATA WRAPPER snapshot_live_fdw;
+CREATE SERVER snapshot_live_srv FOREIGN DATA WRAPPER snapshot_live_fdw
+  OPTIONS (aws_secret_access_key 'LIVE-SECRET-1', sa_key 'LIVE-SECRET-2', api_token 'LIVE-SECRET-3', region 'sa-east-1');
+GRANT SELECT ON public.par TO anon;
+GRANT SELECT (a) ON public.filho TO authenticated;
+"""
+
+
+@unittest.skipUnless(LIVE_DB_URL, "opcional: SNAPSHOT_TEST_DB_URL aponta para um Postgres LOCAL descartável")
+class SnapshotLivePostgresTests(unittest.TestCase):
+    """Executa as consultas de catálogo de verdade. Nunca roda no CI e recusa host que não seja loopback."""
+
+    @classmethod
+    def setUpClass(cls):
+        import psycopg
+        from psycopg import conninfo
+        cls.psycopg = psycopg
+        cls.admin = conninfo.conninfo_to_dict(LIVE_DB_URL)
+        if cls.admin.get("host") not in ("127.0.0.1", "localhost", "::1"):
+            raise unittest.SkipTest("SNAPSHOT_TEST_DB_URL recusada: só Postgres local (host loopback)")
+        cls.database = f"snapshot_live_{os.getpid()}"
+        with psycopg.connect(LIVE_DB_URL, autocommit=True) as conn:
+            conn.execute(f"CREATE DATABASE {cls.database}")
+            conn.execute(f"ALTER DATABASE {cls.database} SET statement_timeout = '7s'")
+            conn.execute(f"ALTER DATABASE {cls.database} SET timezone = 'America/Sao_Paulo'")
+        cls.url = conninfo.make_conninfo(LIVE_DB_URL, dbname=cls.database)
+        with psycopg.connect(cls.url, autocommit=True) as conn:
+            conn.execute(LIVE_FIXTURE)
+        cls.temp = tempfile.TemporaryDirectory(prefix="snapshot-live-test-")
+        spec = importlib.util.spec_from_file_location("snapshot_live", pathlib.Path(__file__).with_name("snapshot.py"))
+        cls.snapshot = importlib.util.module_from_spec(spec)
+        # O role sem vínculo com grantor/grantee é o caso em que information_schema escondia os grants.
+        env = {"SUPABASE_DB_URL": conninfo.make_conninfo(cls.url, options="-c role=snapshot_live_reader"),
+               "SNAPSHOT_DIR": str(pathlib.Path(cls.temp.name) / "output"), "PGDUMP": "false", "GEN_TYPES": "false", "REPO_ROOT": ""}
+        with mock.patch.dict(os.environ, env, clear=True):
+            spec.loader.exec_module(cls.snapshot)
+        with contextlib.redirect_stdout(io.StringIO()):
+            cls.db, _ = cls.snapshot.introspect_db(None)
+
+    @classmethod
+    def tearDownClass(cls):
+        with cls.psycopg.connect(LIVE_DB_URL, autocommit=True) as conn:
+            conn.execute(f"DROP DATABASE IF EXISTS {cls.database} WITH (FORCE)")
+        cls.temp.cleanup()
+
+    def test_constraint_columns_follow_the_declared_order(self):
+        constraints = {c["name"]: c for c in self.db["constraints"]}
+        self.assertEqual(constraints["par_pkey"]["columns"], ["y", "x"])
+        self.assertEqual((constraints["filho_fk"]["columns"], constraints["filho_fk"]["ref_columns"]), (["c", "a"], ["x", "y"]))
+
+    def test_lints_have_no_obvious_false_positive_or_negative(self):
+        found = {(lint["code"], lint["object"]) for lint in self.db["lints"]}
+        self.assertEqual({o for code, o in found if code == "fk_without_index"}, {"public.filho.filho_parcial_fk"})
+        self.assertEqual({o for code, o in found if code == "view_security_definer"}, {"public.v_none", "public.v_off"})
+        self.assertEqual({v["name"] for v in self.db["views"] if v["security_invoker"]}, {"v_on", "v_true"})
+
+    def test_foreign_server_credentials_are_redacted(self):
+        (server,) = self.db["foreign_servers"]
+        self.assertNotIn("LIVE-SECRET", json.dumps(server))
+        self.assertIn("region=sa-east-1", server["options"])
+
+    def test_grants_are_visible_to_a_role_outside_grantor_and_grantee(self):
+        tables = {(g["table"], g["grantee"]): g["privileges"] for g in self.db["grants"]["tables"]}
+        self.assertEqual(tables[("par", "anon")], "SELECT")
+        self.assertIn({"schema": "public", "table": "filho", "column": "a", "grantee": "authenticated", "privileges": "SELECT"},
+                      self.db["grants"]["columns"])
+
+    def test_server_reports_database_settings_not_the_collector_session(self):
+        self.assertEqual(self.db["server"]["timezone"], "America/Sao_Paulo")
+        self.assertEqual(self.db["server"]["statement_timeout"], "7000")
+
+    def test_queries_are_read_only_and_leave_the_session_untouched(self):
+        with self.psycopg.connect(self.url, autocommit=True, prepare_threshold=None) as conn:
+            self.assertEqual(self.snapshot.q(conn, "SELECT current_setting('transaction_read_only') AS ro")[0]["ro"], "on")
+            for statement in ("CREATE TABLE public.escrita (id int)", "INSERT INTO public.par VALUES (1, 1)"):
+                with self.assertRaisesRegex(self.psycopg.Error, "read-only transaction"):
+                    self.snapshot.q(conn, statement)
+            session = conn.execute("SELECT current_setting('default_transaction_read_only'), current_setting('statement_timeout'), "
+                                   "current_setting('lock_timeout')").fetchone()
+            self.assertEqual(session, ("off", "7s", "0"))
+
+
 def db_stats_case(method, *args):
     def run(self):
         getattr(self, method)(*args)

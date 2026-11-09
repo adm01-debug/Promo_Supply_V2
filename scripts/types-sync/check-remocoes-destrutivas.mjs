@@ -107,6 +107,8 @@ function padroes(nome, secao) {
   if (secao === 'Tables' || secao === 'Views') {
     comuns.push(new RegExp(`\\.from\\(\\s*${q}${n}${q}`));
     comuns.push(new RegExp(`\\.(channel|on)\\([^)]*${q}${n}${q}`));
+    // realtime formatado em varias linhas: o `table: 'x'` fica numa linha sem o `.on(`
+    comuns.push(new RegExp(`\\btable:\\s*${q}${n}${q}`));
   }
   if (secao === 'Functions') {
     comuns.push(new RegExp(`\\.rpc\\(\\s*${q}${n}${q}`));
