@@ -329,7 +329,7 @@ jobs:
           git worktree remove --force "$PUB" 2>/dev/null || true
           rm -rf "$PUB"; git worktree prune
           REMOTE="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-          if git fetch --quiet --depth 1 origin "$CONTEXTO_BRANCH" 2>/dev/null; then
+          if git fetch --quiet origin "$CONTEXTO_BRANCH" 2>/dev/null; then
             git worktree add --quiet --detach "$PUB" FETCH_HEAD
             ( cd "$PUB" && git checkout --quiet -B "$CONTEXTO_BRANCH" )
           else
@@ -379,17 +379,17 @@ jobs:
             if [ -d "$ART/contexto-supabase" ]; then
               # HEAD contém o manifest já publicado, mesmo no checkout raso e após commits só de código.
               LAST=$(git show "HEAD:$CONTEXTO_DIR/supabase/manifest.json" 2>/dev/null | python3 -c '
-          import json, sys
-          from datetime import datetime, timezone
-          try:
-              stamp = json.load(sys.stdin).get("gerado_em", "")
-              value = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
-              timestamp = int(value.timestamp())
-              now = int(datetime.now(timezone.utc).timestamp())
-              print(timestamp if value.tzinfo is not None and 0 < timestamp <= now else 0)
-          except Exception:
-              print(0)
-          ') || LAST=0
+import json, sys
+from datetime import datetime, timezone
+try:
+    stamp = json.load(sys.stdin).get("gerado_em", "")
+    value = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
+    timestamp = int(value.timestamp())
+    now = int(datetime.now(timezone.utc).timestamp())
+    print(timestamp if value.tzinfo is not None and 0 < timestamp <= now else 0)
+except Exception:
+    print(0)
+') || LAST=0
               if [ "$LAST" -eq 0 ]; then
                 echo "Não foi possível validar a data bancária publicada — publicando sem esperar."
               fi
