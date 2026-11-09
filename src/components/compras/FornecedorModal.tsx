@@ -6,13 +6,14 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 import { Fornecedor } from "@/types/legacyTypes";
 
 interface FornecedorModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   fornecedor?: Fornecedor | null;
-  onSave: (fornecedor: Partial<Fornecedor>) => void;
+  onSave: (fornecedor: Partial<Fornecedor>) => void | Promise<unknown>;
 }
 
 const ramosDisponiveis = [
@@ -22,6 +23,7 @@ const ramosDisponiveis = [
 ];
 
 export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: FornecedorModalProps) => {
+  const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState({
     razao_social: "",
     nome_fantasia: "",
@@ -72,15 +74,25 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
     setFormData({ ...formData, ramos: formData.ramos.filter(r => r !== ramo) });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSaving) return;
+    setIsSaving(true);
     const dataToSave = {
       ...formData,
       tipo: formData.tipo || undefined,
       vendeProduto: formData.vendeProduto || undefined,
     };
-    onSave(dataToSave as Partial<Fornecedor>);
-    onOpenChange(false);
+    try {
+      await onSave(dataToSave as Partial<Fornecedor>);
+      onOpenChange(false);
+    } catch {
+      // Surface a fallback toast in case onSave doesn't show one.
+      // Modal stays open so the user can correct and retry.
+      toast.error("Não foi possível salvar o fornecedor. Tente novamente.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const formatCNPJ = (value: string) => {
@@ -245,7 +257,7 @@ export const FornecedorModal = ({ open, onOpenChange, fornecedor, onSave }: Forn
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancelar
             </Button>
-            <Button type="submit">
+            <Button type="submit" disabled={isSaving}>
               {fornecedor ? "Salvar Alterações" : "Cadastrar Fornecedor"}
             </Button>
           </div>

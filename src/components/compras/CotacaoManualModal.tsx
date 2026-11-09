@@ -58,18 +58,31 @@ export const CotacaoManualModal = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
+    // Numeric validation: reject empty/NaN; reject decimals on integer fields
+    // (the HTML `min="1"` prevents most cases but a paste of "3.7" still gets
+    // through here and parseInt would silently truncate to 3).
+    const valorUnitario = Number(formData.valorUnitario);
+    const quantidadeDisponivel = Number(formData.quantidadeDisponivel);
+    const prazoEntrega = Number(formData.prazoEntrega);
+    if (!Number.isFinite(valorUnitario) || valorUnitario <= 0) return;
+    if (!Number.isFinite(quantidadeDisponivel) || quantidadeDisponivel <= 0 || !Number.isInteger(quantidadeDisponivel)) return;
+    if (!Number.isFinite(prazoEntrega) || prazoEntrega <= 0 || !Number.isInteger(prazoEntrega)) return;
+
+    // Fornecedor must be selected; if "novo", a name must be provided.
+    if (!formData.fornecedor) return;
     const selectedFornecedor = fornecedores.find(f => f.id === formData.fornecedor);
-    const fornecedorNome = formData.fornecedor === 'novo' 
-      ? formData.novoFornecedor 
+    const fornecedorNome = formData.fornecedor === 'novo'
+      ? formData.novoFornecedor.trim()
       : selectedFornecedor?.nomeFantasia || '';
+    if (!fornecedorNome) return;
 
     onSave({
       fornecedor: fornecedorNome,
       fornecedor_id: formData.fornecedor === 'novo' ? undefined : formData.fornecedor,
-      valorUnitario: parseFloat(formData.valorUnitario),
-      quantidadeDisponivel: parseInt(formData.quantidadeDisponivel, 10),
-      prazoEntrega: parseInt(formData.prazoEntrega, 10),
+      valorUnitario,
+      quantidadeDisponivel,
+      prazoEntrega,
       frete: parseFloat(formData.frete) || 0,
       freteInfo: parseFloat(formData.frete) > 0 ? `+R$ ${formData.frete}` : 'Incluso',
       condicaoPagamento: formData.condicaoPagamento === 'a_vista' ? 'À vista' : '30 dias',

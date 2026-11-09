@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Shield, Key, Globe, Plus, Trash2, Check, AlertTriangle, ExternalLink, Users } from 'lucide-react';
 import { useAuth } from '@/features/auth';
 import { supabase } from '@/integrations/supabase/client';
@@ -53,6 +53,16 @@ export default function SSOConfig() {
     },
   });
 
+  const samlConfig = configs?.find(c => c.protocol === 'saml');
+
+  // Hydrate the IdP metadata URL field from server data once it loads.
+  // Kept above the admin guard so the hook count stays stable when
+  // `isAdmin` flips from false to true after the role resolves.
+  const [metadataUrl, setMetadataUrl] = useState('');
+  useEffect(() => {
+    setMetadataUrl(samlConfig?.idp_metadata_url || '');
+  }, [samlConfig?.idp_metadata_url]);
+
   if (!isAdmin) {
     return (
       <div className="p-8 text-center">
@@ -62,8 +72,6 @@ export default function SSOConfig() {
       </div>
     );
   }
-
-  const samlConfig = configs?.find(c => c.protocol === 'saml');
 
   const handleAddDomain = () => {
     if (!newDomain || !newDomain.includes('.')) {
@@ -131,13 +139,14 @@ export default function SSOConfig() {
                 <div className="grid gap-2">
                   <Label htmlFor="metadata-url">IdP Metadata URL</Label>
                   <div className="flex gap-2">
-                    <Input 
-                      id="metadata-url" 
+                    <Input
+                      id="metadata-url"
                       placeholder="https://example.okta.com/app/.../metadata.xml"
-                      defaultValue={samlConfig?.idp_metadata_url || ''}
+                      value={metadataUrl}
+                      onChange={(e) => setMetadataUrl(e.target.value)}
                       onBlur={(e) => upsertConfigMutation.mutate({ protocol: 'saml', idp_metadata_url: e.target.value })}
                     />
-                    <Button variant="outline" onClick={() => samlConfig?.idp_metadata_url && window.open(samlConfig.idp_metadata_url, '_blank')} disabled={!samlConfig?.idp_metadata_url}>
+                    <Button variant="outline" onClick={() => metadataUrl && window.open(metadataUrl, '_blank')} disabled={!metadataUrl}>
                       <ExternalLink className="h-4 w-4" />
                     </Button>
                   </div>

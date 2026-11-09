@@ -35,9 +35,11 @@ export const EnhancedPedidoTimeline = ({
 }: EnhancedPedidoTimelineProps) => {
   const [expandedStep, setExpandedStep] = useState<string | null>(null);
   
-  const progressPercent = Math.round(
-    (etapas.filter(e => e.status === 'concluido').length / etapas.length) * 100
-  );
+  const progressPercent = etapas.length
+    ? Math.round(
+        (etapas.filter(e => e.status === 'concluido').length / etapas.length) * 100
+      )
+    : 0;
 
   const etapaAtual = etapas.find(e => e.status === 'atual');
   const prazoInfo = prazoFinal ? calcularPrazo(prazoFinal) : null;
@@ -148,8 +150,10 @@ export const EnhancedPedidoTimeline = ({
           <motion.div
             className="absolute top-9 left-0 h-1 bg-gradient-to-r from-success via-primary to-primary rounded-full"
             initial={{ width: 0 }}
-            animate={{ 
-              width: `${(etapas.filter(e => e.status === 'concluido').length / (etapas.length - 1)) * 100}%` 
+            animate={{
+              width: etapas.length > 1
+                ? `${(etapas.filter(e => e.status === 'concluido').length / (etapas.length - 1)) * 100}%`
+                : "0%"
             }}
             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
           />

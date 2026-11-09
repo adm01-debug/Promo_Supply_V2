@@ -10,9 +10,8 @@ import { useDevolucoes, type CreateDevolucaoInput, type Devolucao } from "@/hook
 import { useFornecedores } from "@/hooks/useFornecedores";
 import { RotateCcw, Plus, X, Clock } from "lucide-react";
 import { format } from "date-fns/format";
-
 import { toast } from "@/lib/feedbackToast";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, generateUniqueKey } from "@/lib/utils";
 
 export const MOTIVO_LABELS: Record<string, string> = {
   defeito: "Defeito de Fabricação",
@@ -34,7 +33,7 @@ export const RESOLUCAO_LABELS: Record<string, string> = {
 export function NovaDevolucaoModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { createDevolucao } = useDevolucoes();
   const { fornecedores } = useFornecedores();
-  const newItem = () => ({ _uid: crypto.randomUUID(), descricao: "", quantidade: 1, valor_unitario: 0 });
+  const newItem = () => ({ _uid: generateUniqueKey(), descricao: "", quantidade: 1, valor_unitario: 0 });
   const [form, setForm] = useState({
     fornecedor_id: "",
     tipo: "devolucao" as const,

@@ -39,8 +39,10 @@ interface SolicitacaoCardProps {
   onDuplicate?: () => void;
 }
 
-const statusActions: Record<string, { 
-  primary: { label: string; icon: React.ElementType; href?: string } | null; 
+const statusActions: Record<string, {
+  // `param` overrides the default `id` query key. Used when the destination
+  // page expects a specific param name (e.g. `/gerar-ordem?solicitacao=`).
+  primary: { label: string; icon: React.ElementType; href?: string; param?: string } | null;
   secondary: { label: string; icon: React.ElementType } | null;
 }> = {
   AGUARDANDO_COTACAO: {
@@ -52,23 +54,23 @@ const statusActions: Record<string, {
     secondary: { label: 'Select', icon: Check },
   },
   FORNECEDOR_SELECIONADO: {
-    primary: { label: 'Generate PO', icon: FileText },
+    primary: { label: 'Generate PO', icon: FileText, href: '/gerar-ordem', param: 'solicitacao' },
     secondary: { label: 'View', icon: Eye },
   },
   AGUARDANDO_PAGAMENTO: {
-    primary: { label: 'Pay Now', icon: FileText },
+    primary: { label: 'Pay Now', icon: FileText, href: '/pagamentos' },
     secondary: { label: 'View', icon: Eye },
   },
   PAGO: {
-    primary: { label: 'Track Order', icon: Eye },
+    primary: { label: 'Track Order', icon: Eye, href: '/pedidos' },
     secondary: null,
   },
   EM_TRANSITO: {
-    primary: { label: 'Track Delivery', icon: Eye },
+    primary: { label: 'Track Delivery', icon: Eye, href: '/pedidos' },
     secondary: null,
   },
   PEDIDO_GERADO: {
-    primary: { label: 'View Order', icon: Eye },
+    primary: { label: 'View Order', icon: Eye, href: '/pedidos' },
     secondary: null,
   },
   ENTREGUE: { primary: { label: 'View Details', icon: Eye }, secondary: null },
@@ -329,7 +331,7 @@ export const SolicitacaoCard = ({
               )}
             >
               {actions.primary.href ? (
-                <Link to={`${actions.primary.href}?id=${solicitacao.id}`}>
+                <Link to={`${actions.primary.href}?${actions.primary.param ?? 'id'}=${solicitacao.id}`}>
                   <span className="inline-flex items-center gap-2">
                     <actions.primary.icon className="w-4 h-4" />
                     {actions.primary.label}
