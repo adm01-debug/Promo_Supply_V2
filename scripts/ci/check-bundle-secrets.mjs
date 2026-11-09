@@ -92,7 +92,7 @@ export function varrer(distDir) {
   return violacoes;
 }
 
-/** Le .env.production e devolve todo JWT cujo role NAO seja anon. */
+/** Le o arquivo de ambiente e devolve todo JWT cujo role NAO seja anon. */
 export function varrerEnv(caminhoEnv) {
   if (!existsSync(caminhoEnv) || !statSync(caminhoEnv).isFile()) return [];
   const violacoes = [];
@@ -115,7 +115,7 @@ export function avaliar(violacoes) {
   return violacoes.map((v) =>
     v.tipo === 'bundle'
       ? `${v.arquivo}:${v.linha} — JWT com role=service_role no bundle publicado`
-      : `${v.arquivo}:${v.linha} — JWT em .env.production com role=${v.role} (so a chave anon e aceita)`,
+      : `${v.arquivo}:${v.linha} — JWT no arquivo de ambiente com role=${v.role} (so a chave anon e aceita)`,
   );
 }
 
@@ -155,6 +155,14 @@ export function main(argv = process.argv.slice(2), root = process.cwd()) {
     return 2;
   }
   const caminhoEnv = path.resolve(root, args.env);
+  // Fail-closed, igual ao dist: `--env` apontando para arquivo inexistente nao pode sair OK
+  // dizendo que o arquivo "so tem chave anon" -- era metade do guard desligada em silencio.
+  if (!existsSync(caminhoEnv) || !statSync(caminhoEnv).isFile()) {
+    console.error(
+      `ERRO: ${caminhoEnv} nao existe (ou nao e arquivo). A varredura do arquivo de ambiente nao leu nada e nao pode se declarar OK (fail-closed).`,
+    );
+    return 2;
+  }
   const listadas = avaliar([...varrer(distDir), ...varrerEnv(caminhoEnv)]);
   if (listadas.length > 0) {
     console.error('VIOLACAO: o bundle publicado expoe chave secreta do Supabase\n');
@@ -165,7 +173,7 @@ export function main(argv = process.argv.slice(2), root = process.cwd()) {
     return 1;
   }
   console.log(
-    `OK: nenhum JWT service_role no bundle (${arquivos.length} arquivo(s) .js/.mjs/.cjs varrido(s)) e .env.production so com chave anon.`,
+    `OK: nenhum JWT service_role no bundle (${arquivos.length} arquivo(s) .js/.mjs/.cjs varrido(s)) e ${path.relative(root, caminhoEnv) || args.env} so com chave anon.`,
   );
   return 0;
 }

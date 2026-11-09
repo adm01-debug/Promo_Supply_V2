@@ -33,7 +33,12 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
 export const DIAS_MINIMOS = 7;
-export const SEMPRE_FORA = new Set(['main', 'HEAD']);
+// `master` e `contexto` entram aqui porque a segunda perna da regra (a lista de branches
+// protegidas da API) esta VAZIA neste repo -- medido: GET /branches?protected=true nao
+// devolve nada. Sem isto, `master` (patch-equivalente a main) virava comando de delete, e
+// `contexto` (branch gerada a cada 10 min, que o AGENTS.md proibe mexer) escapava so por
+// ter sempre commit recente.
+export const SEMPRE_FORA = new Set(['main', 'HEAD', 'master', 'contexto']);
 
 // Subconjunto dos nomes que o git aceita, sem nada que o shell interprete.
 const NOME_SEGURO = /^[A-Za-z0-9][A-Za-z0-9._/-]*$/;
@@ -68,14 +73,17 @@ export function selecionarPodaveis({ equivalentes, prsAbertas, protegidas, agora
   for (const { branch, commitEpoch } of equivalentes) {
     if (SEMPRE_FORA.has(branch)) { fora.principal.push(branch); continue; }
     if (protegida.has(branch)) { fora.protegidas.push(branch); continue; }
-    const motivo = motivoNomeInseguro(branch);
-    if (motivo) { fora.recusadas.push({ branch, motivo }); continue; }
     if (comPr.has(branch)) { fora.comPr.push(branch); continue; }
     // Epoch ausente/0/inválido: não dá para provar que é antiga -> fica de fora.
     if (!Number.isFinite(commitEpoch) || commitEpoch <= 0 || agoraMs - commitEpoch * 1000 <= corteMs) {
       fora.recentes.push(branch);
       continue;
     }
+    // O teste de nome vem DEPOIS de PR aberta e idade: antes, uma branch com PR aberta e
+    // commit de hoje saia no relatorio como "nome recusado: apagar a mao", aconselhando
+    // deleção manual de algo que as regras (b) e (c) nem tinham avaliado.
+    const motivo = motivoNomeInseguro(branch);
+    if (motivo) { fora.recusadas.push({ branch, motivo }); continue; }
     elegiveis.push(branch);
   }
   elegiveis.sort((a, b) => a.localeCompare(b));
@@ -84,10 +92,10 @@ export function selecionarPodaveis({ equivalentes, prsAbertas, protegidas, agora
 
 const REGRA = `Regra: patch-equivalente à \`main\` (zero commits únicos), último commit há mais de ${DIAS_MINIMOS} dias, `
   + 'nenhuma PR aberta com a branch como head, fora de `main` e das branches protegidas, e nome só com `[A-Za-z0-9._/-]`. '
-  + '**Nada é apagado automaticamente** (W98): rodar o bloco é decisão do dono.';
+  + '**Nada é apagado automaticamente**: rodar o bloco é decisão do dono.';
 
 export function relatorio({ elegiveis, fora }) {
-  const linhas = ['', '### Comando pronto para poda (W98)', '', REGRA, ''];
+  const linhas = ['', '### Comando pronto para poda', '', REGRA, ''];
   if (elegiveis.length) {
     linhas.push(`${elegiveis.length} branch(es) elegível(is):`, '', '```sh');
     for (const b of elegiveis) linhas.push(`git push origin --delete ${b}`);
@@ -99,7 +107,7 @@ export function relatorio({ elegiveis, fora }) {
     ['com PR aberta', fora.comPr],
     [`com commit nos últimos ${DIAS_MINIMOS} dias`, fora.recentes],
     ['protegidas', fora.protegidas],
-    ['main', fora.principal],
+    ['`main`/`HEAD`/`master`/`contexto`', fora.principal],
   ].filter(([, lista]) => lista.length);
   if (resumo.length || fora.recusadas.length) {
     linhas.push('', 'Patch-equivalentes deixadas fora do comando:');

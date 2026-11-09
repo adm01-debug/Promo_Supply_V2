@@ -1,6 +1,6 @@
 # docs:
 #   gatilho: workflow_run (conclusao dos workflows deste repo na main)
-#   prova: issue `[falha-main]` aberta (ou comentada) quando um workflow falha na main
+#   prova: issue `[falha-main]` aberta (ou comentada) quando um workflow termina em failure, startup_failure ou timed_out na main
 #   falha: a falha do workflow original fica sem issue de acompanhamento
 #   avisa: o dono, pela issue `[falha-main] <workflow> falhou na main` com label `falha-main`
 # nao-e-bug:
@@ -39,7 +39,11 @@ jobs:
     name: Notificar falha
     runs-on: ubuntu-24.04
     timeout-minutes: 5
-    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    # `failure` sozinho nao cobre YAML invalido mergeado na main (`startup_failure`) nem
+    # job estourando o timeout (`timed_out`) — exatamente as duas regressoes que uma mudanca
+    # em .github/workflows/ pode introduzir, e as duas deixariam a aba Actions quebrada em
+    # silencio. `cancelled` fica fora de proposito: cancelar e acao deliberada.
+    if: ${{ contains(fromJSON('["failure","startup_failure","timed_out"]'), github.event.workflow_run.conclusion) }}
     permissions:
       issues: write
     steps:

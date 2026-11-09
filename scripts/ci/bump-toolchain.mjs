@@ -35,9 +35,14 @@ async function latestRelease(repo) {
   }
 }
 
-/** Remove prefixo 'v' para comparar versões como semver puro. */
+/**
+ * Remove qualquer prefixo nao numerico para comparar versoes como semver puro.
+ * Nao basta tirar o `v`: a tag de release do bun e `bun-v1.5.0`, e com `replace(/^v/)`
+ * o primeiro componente virava `parseInt('bun-v1') = NaN -> 0`, entao bun NUNCA reportava
+ * atualizacao -- sendo uma das duas ferramentas que o toolchain.json declara.
+ */
 function semver(v) {
-  return String(v ?? '').replace(/^v/, '');
+  return String(v ?? '').replace(/^[^0-9]*/u, '');
 }
 
 /** Compara versões simples: retorna true se remota > local. */
@@ -79,6 +84,13 @@ const FERRAMENTAS = [
     chave: 'actionlint-version',
     repo: 'rhysd/actionlint',
     changelog: 'https://github.com/rhysd/actionlint/releases',
+  },
+  {
+    // Sem esta entrada, `node` no .github/toolchain.json era valor inerte: estava escrito,
+    // nunca lido, e bump de Node nunca seria avisado.
+    chave: 'node',
+    repo: 'nodejs/node',
+    changelog: 'https://github.com/nodejs/node/releases',
   },
 ];
 
@@ -125,10 +137,14 @@ async function main() {
     }
     linhas.push('');
     linhas.push(
-      '> Para atualizar: edite `.github/toolchain.json` e os SHAs nos workflows afetados (W88).',
+      '> Para atualizar: edite `.github/toolchain.json` e os SHAs nos workflows afetados.',
     );
+  } else if (erros.length > 0 && checks.filter(Boolean).length === erros.length) {
+    // Nenhuma ferramenta pode ser consultada: dizer "esta na versao mais recente" com ✅
+    // e o dono lendo verde onde nada foi verificado.
+    linhas.push('⚠️ Nenhuma ferramenta pôde ser verificada nesta execução (ver abaixo).');
   } else {
-    linhas.push('✅ Todas as ferramentas estão na versão mais recente (ou não foi possível verificar).');
+    linhas.push('✅ Todas as ferramentas verificadas estão na versão mais recente.');
   }
 
   if (erros.length > 0) {

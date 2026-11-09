@@ -30,6 +30,13 @@ export function avaliarSla(alertas, agoraMs = Date.now()) {
     const sev = nivel(a);
     const prazo = sev === 'high' || sev === 'critical' ? SLA_DIAS.alto : SLA_DIAS.baixo;
     const dias = Math.floor((agoraMs - new Date(a.created_at).getTime()) / 86_400_000);
+    // created_at ausente, ilegível ou no futuro dava NaN/negativo: `NaN > prazo` é false e o
+    // alerta entrava na contagem como se estivesse no prazo, escapando do SLA para sempre.
+    if (!Number.isFinite(dias) || dias < 0) {
+      const local = a.most_recent_instance?.location?.path ?? '?';
+      violacoes.push(`${sev.toUpperCase()} (created_at ausente ou invalido: nao avaliado) — #${a.number}: ${a.rule?.id ?? '?'} em ${local}`);
+      continue;
+    }
     if (dias > prazo) {
       const local = a.most_recent_instance?.location?.path ?? '?';
       violacoes.push(`${sev.toUpperCase()} (${dias}d > ${prazo}d) — #${a.number}: ${a.rule?.id ?? '?'} em ${local}`);
@@ -41,7 +48,7 @@ export function avaliarSla(alertas, agoraMs = Date.now()) {
 export function relatorio({ total, violacoes }) {
   const linhas = [
     '',
-    '### 🔒 Code Scanning — SLA (W83)',
+    '### 🔒 Code Scanning — SLA',
     '',
     `SLA: high/critical → ${SLA_DIAS.alto}d · medium/low → ${SLA_DIAS.baixo}d`,
     '',
@@ -63,14 +70,14 @@ function main() {
     alertas = null;
   }
   if (!Array.isArray(alertas)) {
-    console.error('::warning::W83: a API não devolveu uma lista de alertas');
-    process.stdout.write('\n### ⚠️ Code Scanning — SLA (W83)\n\nNão foi possível consultar os alertas (permissão ou API).\n');
+    console.error('::warning::a API de code scanning não devolveu uma lista de alertas');
+    process.stdout.write('\n### ⚠️ Code Scanning — SLA\n\nNão foi possível consultar os alertas (code scanning desligado, permissão ou API).\n');
     return;
   }
   const r = avaliarSla(alertas);
   process.stdout.write(relatorio(r));
   if (r.violacoes.length) {
-    for (const v of r.violacoes) console.error(`::error::W83: SLA vencido — ${v}`);
+    for (const v of r.violacoes) console.error(`::error::SLA de code scanning — ${v}`);
     process.exitCode = 1;
   }
 }

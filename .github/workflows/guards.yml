@@ -14,10 +14,11 @@
 # `gerar-matriz-edge-tabela`) sao a parte que mantem o repo descrevendo o estado real --
 # o `--check` e o que impede a doc de apodrecer em silencio.
 #
-# ATENCAO (duplicacao conhecida): a PR adm01-debug/Promo_Supply_V2#22, aberta, liga
-# `npm run test:scripts` e o guard do AGENTS.md no main.yml. Quando ela mergear, remova
-# daqui o passo "Suites de scripts/" OU remova de la -- rodar a mesma suite nos dois
-# workflows e minuto de Actions pago duas vezes.
+# Duplicacao resolvida: a PR adm01-debug/Promo_Supply_V2#22 mergeou e tinha ligado
+# `node --test scripts/ci/*.unit.mjs` no main.yml. O passo de la foi removido nesta PR --
+# a suite roda SO aqui, onde tambem roda `scripts/lib/*.test.mjs` e o
+# check-test-inventory.mjs. O guard do AGENTS.md continua no main.yml, que e quem tem o
+# `github.base_ref` do PR.
 # ==================================================================
 
 name: Guards offline do repositorio
@@ -38,7 +39,12 @@ permissions:
 
 concurrency:
   group: guards-${{ github.ref }}
-  cancel-in-progress: true
+  # Cancela run antigo APENAS em PR. Em push na main o grupo seria o mesmo para todo merge,
+  # e dois merges em sequencia cancelariam o job `bundle` do primeiro -- o unico que varre
+  # `service_role` no bundle que vai para producao. Run cancelado tambem nao e `failure`,
+  # entao o notifica-falha-main.yml nao avisaria. Os outros workflows agendados deste repo
+  # usam `false` pelo mesmo motivo.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   suites:
@@ -52,9 +58,13 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          # fetch-depth 0: check-agents-md-integrity e o mudou-conteudo comparam com a main;
-          # aqui o inventario de testes usa `git ls-files`, que precisa do repo, nao do historico.
-          fetch-depth: 1
+          # fetch-depth 0, nao 1: o agents-docs-baseline.unit.mjs invoca o
+          # check-agents-md-integrity.mjs, que compara o conjunto de instrucoes com
+          # AGENTS_MD_BASE. Sem o historico (e sem a variavel) ele comparava HEAD com HEAD e
+          # passava de graca. `persist-credentials: false` apaga a credencial do `origin`, e
+          # repo privado nao aceita fetch anonimo: por isso a ref vem no checkout, nao num
+          # `git fetch` depois.
+          fetch-depth: 0
 
       - name: Setup Node
         # node-version inline, sem .nvmrc: a Vercel le .nvmrc e criar o arquivo mudaria o
@@ -66,6 +76,11 @@ jobs:
       - name: Suites de scripts/
         # Toda suite Node de scripts/ roda aqui. O passo seguinte cobra justamente isto:
         # suite no disco sem passo que a execute e suite que ninguem roda.
+        # AGENTS_MD_BASE: base real da comparacao do check-agents-md-integrity.mjs (invocado
+        # pelo agents-docs-baseline.unit.mjs). Em PR e a branch de destino; em push na main,
+        # o commit anterior -- nos dois casos algo diferente de HEAD, senao o guard e no-op.
+        env:
+          AGENTS_MD_BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || 'HEAD~1' }}
         run: node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs
 
       - name: Inventario de testes (nenhuma suite orfa)
@@ -186,12 +201,12 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Build
-        env:
-          # Valores publicos: sao os mesmos que o bundle recebe em producao (`VITE_*` e
-          # publico por definicao). Segredo de servidor NUNCA entra aqui -- e exatamente o
-          # que o passo seguinte verifica.
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
+        # SEM bloco `env:` de proposito. O `.env` deste repo esta versionado e ja traz os
+        # valores publicos de producao (`VITE_*` e publico por definicao). Passar
+        # `${{ secrets.X }}` aqui seria pior: secret ausente ou renomeado chega ao processo
+        # como string VAZIA, e variavel de ambiente vazia tem precedencia sobre o `.env` no
+        # loadEnv do Vite -- o build nao falharia, geraria um bundle com `createClient("","")`
+        # e a varredura do passo seguinte sairia verde sobre um bundle que nao e o de producao.
         run: bun run build
 
       - name: Nenhum JWT `service_role` no bundle

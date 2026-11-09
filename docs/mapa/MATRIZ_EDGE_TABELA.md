@@ -5,6 +5,8 @@
 >
 > Não cobre: tabelas acessadas por `.rpc()` (chamada de função, não de tabela), por nome em variável
 > (`from(nome)`) nem por SQL cru. Chamadas `storage.from('bucket')` são bucket de storage, não tabela, e ficam de fora.
+> Também conta `.from()` que esteja dentro de código comentado — é varredura de texto, não AST.
+> As tabelas usadas por `_shared/` saem na última seção: elas valem para TODA função que importa o helper.
 
 ## Por função
 
@@ -99,3 +101,17 @@
 | `xbz_credentials` | `xbz-proxy`, `xbz-sync-pedidos` |
 | `xbz_pedido_status_history` | `xbz-sync-pedidos` |
 | `xbz_pedidos` | `xbz-sync-pedidos` |
+
+## Por helper de `_shared/` (herdado por quem importa)
+
+> Estas tabelas NÃO estão nas seções acima: o `.from()` está no helper, não na função.
+> Quem importa o helper toca a tabela.
+
+| Helper | Tabelas |
+|---|---|
+| `_shared/idempotency.ts` | `webhook_events` |
+| `_shared/logger.ts` | `telemetry_logs` |
+| `_shared/security.ts` | `user_tenants` |
+| `_shared/telemetry.ts` | `telemetry_logs` |
+| `_shared/xbz_auth.ts` | `user_roles`, `user_tenants`, `xbz_carrinho_log`, `xbz_credentials` |
+| `_shared/xbz_catalog_cache.ts` | `xbz_produtos` |

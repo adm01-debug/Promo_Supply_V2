@@ -43,7 +43,7 @@ test('CLI: lê o JSON do stdin, sai 1 com violação e 0 sem', () => {
   const r1 = cli(JSON.stringify([{ number: 9, rule: { id: 'js/z', security_severity_level: 'high' }, created_at: '2020-01-01T00:00:00Z' }]));
   assert.equal(r1.status, 1);
   assert.match(r1.stdout, /#9: js\/z/);
-  assert.match(r1.stderr, /::error::W83/);
+  assert.match(r1.stderr, /::error::SLA de code scanning/);
   const r0 = cli('[]');
   assert.equal(r0.status, 0);
   assert.match(r0.stdout, /Nenhuma violação/);
@@ -53,14 +53,14 @@ test('CLI: resposta que não é lista (erro de permissão) ou JSON inválido avi
   for (const entrada of [JSON.stringify({ message: 'Resource not accessible by integration' }), 'não é json', '']) {
     const r = cli(entrada);
     assert.equal(r.status, 0, entrada);
-    assert.match(r.stderr, /::warning::W83/);
+    assert.match(r.stderr, /::warning::a API de code scanning/);
   }
 });
 
 test('o workflow passa os alertas pelo stdin e não tem mais Node inline', () => {
   const wf = readFileSync(new URL('../../.github/workflows/branch-hygiene-audit.yml', import.meta.url), 'utf8');
   const job = jobOf(wf, 'audit');
-  const step = onlyStep(stepsOf(job), (s) => /^\s*node scripts\/ci\/sla-code-scanning\.mjs\b/m.test(shellCode(s)), 'SLA W83');
+  const step = onlyStep(stepsOf(job), (s) => /^\s*node scripts\/ci\/sla-code-scanning\.mjs\b/m.test(shellCode(s)), 'SLA de code scanning');
   const code = shellCode(step);
   assert.equal(permission(job, 'security-events'), 'read');
   assert.equal(conditionOf(step), 'success()');

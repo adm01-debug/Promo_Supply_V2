@@ -1,13 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import {
   ALLOWLIST_NODE,
   RAIZ,
   casaPadrao,
+  codigoExecutavelDeWorkflow,
+  comandoExecutadoNoWorkflow,
   orfaosNode,
   padroesNodeDeWorkflow,
   suitesCobertasPorImport,
@@ -127,4 +129,47 @@ test('R2-INF-013: importar o verificador nao roda o inventario (o teste importa 
   });
   assert.equal(r.status, 0, r.stderr);
   assert.equal(r.stdout, '', 'importar nao pode imprimir o relatorio do inventario');
+});
+
+// ── Regressao: desligar um passo tem de reprovar igual a apagar ───────────────
+// A versao anterior testava o regex do `deno test` contra o YAML CRU. Comentar a linha --
+// que e como um passo e desligado na pratica -- mantinha o guard verde enquanto os testes
+// das edges deixavam de rodar. Estes casos trancam as duas pontas: o que executa conta, o
+// que esta atras de `#` ou fora de `run:` nao conta.
+const COMANDO_EDGES = /deno test[^\n]*\bsupabase\/functions\/?(?:\s|$)/;
+
+const passoLiteral = (corpo) => ['jobs:', '  x:', '    steps:', '      - name: etapa', '        run: |', ...corpo.map((l) => `          ${l}`), ''].join('\n');
+
+test('comando dentro de bloco `run:` conta como executado', () => {
+  assert.equal(comandoExecutadoNoWorkflow(passoLiteral(['deno test --allow-net supabase/functions/']), COMANDO_EDGES), true);
+});
+
+test('comando comentado dentro do bloco NAO conta (passo desligado)', () => {
+  assert.equal(comandoExecutadoNoWorkflow(passoLiteral(['# deno test --allow-net supabase/functions/']), COMANDO_EDGES), false);
+  assert.equal(comandoExecutadoNoWorkflow(passoLiteral(['echo oi', '# TODO: deno test supabase/functions/ depois']), COMANDO_EDGES), false);
+});
+
+test('comando citado fora de `run:` NAO conta (nome da etapa)', () => {
+  const yaml = ['jobs:', '  x:', '    steps:', '      - name: deno test supabase/functions/', '        run: echo oi', ''].join('\n');
+  assert.equal(comandoExecutadoNoWorkflow(yaml, COMANDO_EDGES), false);
+});
+
+test('`- run:` na mesma linha do item conta, e comentado nao', () => {
+  const inline = ['jobs:', '  x:', '    steps:', '      - run: node --test scripts/zz/x.unit.mjs', ''].join('\n');
+  const comentado = ['jobs:', '  x:', '    steps:', '      - run: # node --test scripts/zz/x.unit.mjs', ''].join('\n');
+  assert.deepEqual(padroesNodeDeWorkflow(inline), ['scripts/zz/x.unit.mjs']);
+  assert.deepEqual(padroesNodeDeWorkflow(comentado), []);
+});
+
+test('codigoExecutavelDeWorkflow devolve so o corpo dos blocos `run:`', () => {
+  const yaml = ['jobs:', '  x:', '    env:', '      A: scripts/ci/nao-conta.unit.mjs', '    steps:', '      - name: etapa', '        run: |', '          echo um', '          # echo dois', '        env:', '          B: 1', ''].join('\n');
+  const codigo = codigoExecutavelDeWorkflow(yaml);
+  assert.match(codigo, /echo um/u);
+  assert.doesNotMatch(codigo, /echo dois/u, 'linha comentada nao entra');
+  assert.doesNotMatch(codigo, /nao-conta/u, '`env:` do job nao entra');
+});
+
+test('o main.yml real continua cobrindo os .test.ts das edges por pasta', () => {
+  const yaml = readFileSync(join(RAIZ, '.github/workflows/main.yml'), 'utf8');
+  assert.equal(comandoExecutadoNoWorkflow(yaml, COMANDO_EDGES), true);
 });

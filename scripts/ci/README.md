@@ -1,0 +1,56 @@
+# `scripts/ci/` — guards e geradores de documentação
+
+Scripts de **node puro** (sem `bun install`, sem dependência de npm) que o CI executa. Dois papéis:
+**gerar** documentação a partir do estado real do repo, e **reprovar** quando o repo e a documentação
+divergem. Leia este arquivo antes de alterar qualquer um deles — a coluna "quem chama" diz o que quebra.
+
+Rodar tudo que não precisa de rede: `npm run guards`.
+
+## Geradores (escrevem arquivo; `--check` reprova divergência)
+
+| Script | Gera | Quem chama |
+|---|---|---|
+| `render-workflow-docs.mjs` | `docs/ci/README.md`, projeção do bloco `# docs:`/`# nao-e-bug:` de cada workflow | `guards.yml` (job `suites`, com `--check`) · `npm run docs:ci` |
+| `gerar-matriz-edge-tabela.mjs` | `docs/mapa/MATRIZ_EDGE_TABELA.md`, matriz edge function × tabela por `.from()` | `guards.yml` (job `suites`, com `--check`) · `npm run docs:matriz-edge` |
+
+Os dois são **determinísticos** (nenhuma data no conteúdo) — é o que permite o `--check` ser um guard
+em vez de um gerador de ruído. Não edite os `.md`: mude a fonte e regere.
+
+## Guards de PR (só validam; comunicam por exit code)
+
+| Script | O que reprova | Quem chama |
+|---|---|---|
+| `check-test-inventory.mjs` | suíte de teste no disco sem passo que a execute em algum workflow | `guards.yml` (job `suites`) |
+| `commit-msg-lint.mjs` | mensagem de commit fora de `<tipo>(<escopo>): <assunto>` | `guards.yml` (job `commits`), um commit por vez |
+| `audit-prod.mjs` | advisory HIGH/CRITICAL alcançável por `dependencies` (dev não bloqueia) | `guards.yml` (job `dependencias`) |
+| `check-bundle-secrets.mjs` | JWT `service_role` em `dist/` ou no arquivo de ambiente versionado | `guards.yml` (job `bundle`, só em push/dispatch) |
+| `check-agents-md-integrity.mjs` | `AGENTS.md`/`docs/agentes/` apagados ou encolhidos >30% vs a base | `main.yml` (job `quality-gate`, só em PR) |
+
+## Auditoria semanal (somente leitura; publica em issue)
+
+| Script | O que publica | Quem chama |
+|---|---|---|
+| `actions-kpi.mjs` | issue `[kpi-actions]`: runs, taxa de falha e **minutos** por workflow (7 d) | `branch-hygiene-audit.yml` |
+| `branch-podaveis.mjs` | bloco `git push origin --delete` revisável — **nunca apaga nada** | idem |
+| `bump-toolchain.mjs` | versões novas das ferramentas de `.github/toolchain.json` (informativo, sai 0) | idem |
+| `sla-code-scanning.mjs` | SLA dos alertas de code scanning (14 d alto / 30 d baixo) | idem |
+
+`sla-code-scanning.mjs` hoje sempre avisa "não foi possível consultar": **não há code scanning ligado
+neste repositório** (a API responde 403). O passo fica no lugar para o dia em que for ligado.
+
+## Suítes e baselines
+
+- Toda `*.unit.mjs` daqui roda em `guards.yml` → `node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs`.
+  **Suíte nova sem passo em workflow reprova** no `check-test-inventory.mjs` — é de propósito.
+- `workflow-test-support.mjs` é biblioteca das suítes (lê job/step/permissão de um YAML de workflow em
+  blocos); não é parser YAML geral e não roda sozinho.
+- `scripts/ci/*.json` são baselines lidos pelos scripts, não configuração para editar à mão.
+
+## Convenções
+
+- Node puro: nenhum `import` de pacote npm, para o job mais barato do CI não precisar de `bun install`.
+- Fail-closed: varredura que não conseguiu ler nada sai `!= 0` em vez de se declarar OK.
+- Nenhum script imprime valor de segredo — só caminho, linha e o claim que motivou a reprovação.
+- Vieram do `Zapp_Web_V2`. Onde o comportamento diferiu, a adaptação está comentada no próprio arquivo,
+  com o que foi **medido** aqui. O inventário do que foi portado (e do que não foi, com o motivo) está
+  no fim de `docs/agentes/github-ci.md`.

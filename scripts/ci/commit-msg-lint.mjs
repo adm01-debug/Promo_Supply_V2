@@ -1,10 +1,13 @@
 #!/usr/bin/env node
 
-// Gate de mensagem de commit: a funcao do commitlint sem dependencia nova (os pacotes
-// lint-staged/commitlint sao proibidos pelas regras da 2a leva). O hook .husky/commit-msg
-// chama este arquivo com o caminho do arquivo de mensagem que o git passa em $1.
+// Gate de mensagem de commit: a funcao do commitlint sem dependencia nova.
 //
-// Padrao cobrado (CONTRIBUTING.md > Padrao de Commits + etapa 001 do plano de paridade V1/V3):
+// Quem chama: o job `commits` do .github/workflows/guards.yml, uma vez por commit do
+// intervalo da PR, passando o arquivo de mensagem em $1. Este repo NAO tem hook de git
+// (sem .husky/, `"prepare": ""`, sem commitlint) -- o CI e o unico canal, e e por isso que
+// o unit test confere o passo do workflow junto com o CLI.
+//
+// Padrao cobrado (AGENTS.md > Fluxo Git):
 //   <tipo>(<escopo>): <descricao>   (escopo opcional)
 //   tipos: feat fix docs style refactor perf test build ci chore security revert
 //   assunto com pelo menos 10 caracteres e sem ponto final.
@@ -75,7 +78,7 @@ export function validarMensagem(mensagem) {
       `assunto com ${descricao.length} caractere(s): o minimo e ${SUBJECT_MIN_LENGTH}`,
     );
   }
-  if (descricao.endsWith(".")) problemas.push("assunto nao termina com ponto final");
+  if (descricao.endsWith(".")) problemas.push("assunto termina com ponto final: remova o ponto");
   return { ok: problemas.length === 0, cabecalho, problemas };
 }
 

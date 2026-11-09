@@ -73,6 +73,9 @@ export function paginaTemMais(pagina, { janelaDias = 7, agora = Date.now(), porP
 
 export function maisLentos(jobs, { limite = 5 } = {}) {
   return (jobs ?? [])
+    // Job ainda em andamento (`completed_at` nulo) media 0 min e caia para o fim do
+    // ranking: o job mais caro da janela podia ser exatamente o que lia zero.
+    .filter((j) => j && j.completed_at)
     .map((j) => ({
       job: j.name,
       workflow: j.workflow_name ?? '',
@@ -90,7 +93,7 @@ export function tabela(agregado, { titulo = 'KPI do GitHub Actions — 7 dias' }
     '| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
     ...agregado.map(
       (l) =>
-        `| ${l.workflow} | ${l.runs} | ${l.cancelados} | ${l.taxaCancelamento}% | ${l.falhas} | ${l.taxaFalha}% | ${l.minutos} |`,
+        `| ${String(l.workflow).replaceAll('|', '\\|')} | ${l.runs} | ${l.cancelados} | ${l.taxaCancelamento}% | ${l.falhas} | ${l.taxaFalha}% | ${l.minutos} |`,
     ),
   ];
   const totalRuns = agregado.reduce((a, l) => a + l.runs, 0);
@@ -99,25 +102,28 @@ export function tabela(agregado, { titulo = 'KPI do GitHub Actions — 7 dias' }
   return linhas.join('\n');
 }
 
-export function tabelaLentos(lentos) {
+export function tabelaLentos(lentos, { amostra = null } = {}) {
   if (!lentos.length) return '_nenhum job registrado na janela_';
   return [
-    '### 5 jobs mais lentos',
+    // O ranking le os jobs de uma AMOSTRA dos runs, nao de todos: sem dizer quantos, o
+    // titulo prometia o ranking da janela inteira.
+    amostra ? `### 5 jobs mais lentos (dos ${amostra} runs mais recentes da janela)` : '### 5 jobs mais lentos',
     '',
     '| job | workflow | minutos |',
     '| --- | --- | ---: |',
-    ...lentos.map((l) => `| ${l.job} | ${l.workflow} | ${l.minutos} |`),
+    ...lentos.map((l) => `| ${String(l.job).replaceAll('|', '\\|')} | ${String(l.workflow).replaceAll('|', '\\|')} | ${l.minutos} |`),
   ].join('\n');
 }
 
 // Monta o corpo publicado (Job Summary + issue): tabela por workflow + ranking dos
 // jobs. Puro, para o teste provar que o ranking saem dos jobs reais e nao vazio.
-export function corpoDoKpi(runs, jobs, { janelaDias = 7, agora = Date.now(), titulo } = {}) {
+export function corpoDoKpi(runs, jobs, { janelaDias = 7, agora = Date.now(), titulo, amostra = null } = {}) {
   const agregado = agregar(runs, { janelaDias, agora });
+  const dias = Number.isFinite(janelaDias) ? janelaDias : 7;
   return [
-    tabela(agregado, { titulo: titulo ?? `KPI do GitHub Actions — ${janelaDias} dias` }),
+    tabela(agregado, { titulo: titulo ?? `KPI do GitHub Actions — ${dias} dias` }),
     '',
-    tabelaLentos(maisLentos(jobs, { limite: 5 })),
+    tabelaLentos(maisLentos(jobs, { limite: 5 }), { amostra }),
   ].join('\n');
 }
 
@@ -200,10 +206,14 @@ export async function publicarIssue({ repo, token, marca, corpo }) {
   // Uma issue por semana, nao uma pilha: procura a aberta com a etiqueta e atualiza;
   // se nao houver, cria com o corpo do dia. Idempotente roda duas vezes no mesmo dia
   // nao duplica nada.
-  const abertas = await pedir(`/repos/${repo}/issues?state=open&labels=kpi-actions&per_page=10`, token);
+  // Procura por TITULO, nao por label: a label `kpi-actions` nao existe neste repo (as
+  // labels sao as sete padrao do GitHub), e se ela nao for criada -- ou alguem a remover da
+  // issue -- a busca por label nao acha nada e o script passa a abrir uma issue por semana.
+  // O passo [branch-hygiene] do mesmo workflow ja usa busca por titulo, por este motivo.
+  const abertas = await pedir(`/repos/${repo}/issues?state=open&per_page=100`, token);
   const existente = (abertas ?? []).find((i) => !i.pull_request && String(i.title).startsWith('[kpi-actions]'));
   if (existente) {
-    // W92: atualiza o titulo tambem para refletir a semana corrente
+    // Atualiza o titulo tambem para refletir a semana corrente
     // (sem isso o titulo fica preso na semana em que a issue foi criada).
     await pedir(`/repos/${repo}/issues/${existente.number}`, token, {
       metodo: 'PATCH',
@@ -225,11 +235,20 @@ async function principal() {
     console.error('::error::GITHUB_REPOSITORY e GH_TOKEN sao obrigatorios');
     process.exit(2);
   }
-  const janela = Number(process.env.JANELA_DIAS ?? 7);
+  const janelaBruta = Number(process.env.JANELA_DIAS ?? 7);
+  // JANELA_DIAS nao numerico virava `NaN dias` no titulo publicado.
+  const janela = Number.isFinite(janelaBruta) && janelaBruta > 0 ? janelaBruta : 7;
   const runs = await coletarRuns({ repo, token, janelaDias: janela });
-  // Limita a 50 runs mais recentes para evitar timeout (1 req HTTP por run).
-  const jobs = await coletarJobs(runsNaJanela(runs, { janelaDias: janela }).slice(0, 50), { repo, token });
-  const corpo = corpoDoKpi(runs, jobs, { janelaDias: janela });
+  // Limita a 50 runs mais recentes para evitar timeout (1 req HTTP por run). O numero vai
+  // para o titulo do ranking: na janela de 7 dias deste repo ha ~112 runs, entao o ranking
+  // le menos da metade e isso tem de estar escrito.
+  const AMOSTRA_RUNS = 50;
+  const naJanela = runsNaJanela(runs, { janelaDias: janela });
+  const jobs = await coletarJobs(naJanela.slice(0, AMOSTRA_RUNS), { repo, token });
+  const corpo = corpoDoKpi(runs, jobs, {
+    janelaDias: janela,
+    amostra: Math.min(AMOSTRA_RUNS, naJanela.length),
+  });
   console.log(corpo);
   if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, corpo + '\n');
   const marca = `[kpi-actions] Semana de ${new Date().toISOString().slice(0, 10)}`;

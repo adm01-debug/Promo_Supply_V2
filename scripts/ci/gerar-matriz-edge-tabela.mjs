@@ -8,13 +8,31 @@ import { fileURLToPath } from "node:url";
 
 const RAIZ = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const SAIDA = "docs/mapa/MATRIZ_EDGE_TABELA.md";
-// `(?<!storage)` evita casar `sb.storage.from('bucket')`: bucket de storage não é tabela.
-const PADRAO_FROM = /(?<!storage)\.from\(\s*(['"`])([A-Za-z_][\w.]*)\1/g;
+// `(?<!storage\s*)` evita casar `sb.storage.from('bucket')`: bucket de storage não é tabela.
+// O lookbehind aceita espaço/quebra de linha porque `supabaseAdmin.storage\n  .from('x')` é
+// a forma escrita em supabase/functions/process-invoice-idp/index.ts:44 — com o lookbehind
+// ancorado só no caractere anterior, aquele bucket entrava na matriz como se fosse tabela.
+// `[\w.-]` aceita hífen: nome de tabela com hífen existe em Postgres e era descartado em
+// silêncio (o que, por acidente, era a única razão pela qual o bucket `fiscal-documents` não
+// aparecia como tabela).
+const PADRAO_FROM = /(?<!storage\s{0,40})\.from\(\s*(['"`])([A-Za-z_][\w.-]*)\1/g;
 
 export function extrairTabelas(fonte) {
   const tabelas = new Set();
   for (const m of fonte.matchAll(PADRAO_FROM)) tabelas.add(m[2]);
   return tabelas;
+}
+
+/** Tabelas citadas em `supabase/functions/_shared/*.ts`, por arquivo de helper. */
+export function tabelasDeShared(dirFuncoes) {
+  const dir = path.join(dirFuncoes, '_shared');
+  if (!existsSync(dir)) return new Map();
+  const porHelper = new Map();
+  for (const arq of listarTs(dir)) {
+    const tabelas = [...extrairTabelas(readFileSync(arq, "utf8"))].sort();
+    if (tabelas.length > 0) porHelper.set(path.relative(dirFuncoes, arq), tabelas);
+  }
+  return new Map([...porHelper.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)));
 }
 
 function listarTs(dir) {
@@ -41,7 +59,7 @@ export function montarMatriz(dirFuncoes) {
   return matriz;
 }
 
-export function renderizar(matriz) {
+export function renderizar(matriz, shared = new Map()) {
   const porTabela = new Map();
   for (const [f, ts] of matriz) for (const t of ts) porTabela.set(t, [...(porTabela.get(t) ?? []), f]);
   const linhas = [
@@ -52,6 +70,8 @@ export function renderizar(matriz) {
     ">",
     "> Não cobre: tabelas acessadas por `.rpc()` (chamada de função, não de tabela), por nome em variável",
     "> (`from(nome)`) nem por SQL cru. Chamadas `storage.from('bucket')` são bucket de storage, não tabela, e ficam de fora.",
+    "> Também conta `.from()` que esteja dentro de código comentado — é varredura de texto, não AST.",
+    "> As tabelas usadas por `_shared/` saem na última seção: elas valem para TODA função que importa o helper.",
     "",
     "## Por função",
     "",
@@ -63,14 +83,36 @@ export function renderizar(matriz) {
   for (const t of [...porTabela.keys()].sort()) {
     linhas.push(`| \`${t}\` | ${porTabela.get(t).map((f) => `\`${f}\``).join(", ")} |`);
   }
+  // Sem esta seção, tabela tocada só por helper compartilhado (ex. `webhook_events` via
+  // `_shared/idempotency.ts`) não aparecia em lugar nenhum e a pergunta "quem escreve nela?"
+  // era respondida com "ninguém".
+  linhas.push(
+    "",
+    "## Por helper de `_shared/` (herdado por quem importa)",
+    "",
+    "> Estas tabelas NÃO estão nas seções acima: o `.from()` está no helper, não na função.",
+    "> Quem importa o helper toca a tabela.",
+    "",
+    "| Helper | Tabelas |",
+    "|---|---|",
+  );
+  if (shared.size === 0) linhas.push("| — | — |");
+  for (const [helper, tabelas] of shared) {
+    linhas.push(`| \`${helper}\` | ${tabelas.map((t) => `\`${t}\``).join(", ")} |`);
+  }
   return linhas.join("\n") + "\n";
 }
 
 export function main(argv = process.argv.slice(2)) {
-  const md = renderizar(montarMatriz(path.join(RAIZ, "supabase/functions")));
+  const dirFuncoes = path.join(RAIZ, "supabase/functions");
+  const md = renderizar(montarMatriz(dirFuncoes), tabelasDeShared(dirFuncoes));
   const destino = path.join(RAIZ, SAIDA);
   if (argv.includes("--check")) {
-    if (!existsSync(destino) || readFileSync(destino, "utf8") !== md) {
+    if (!existsSync(destino)) {
+      console.error(`${SAIDA} não existe: rode node scripts/ci/gerar-matriz-edge-tabela.mjs`);
+      return 1;
+    }
+    if (readFileSync(destino, "utf8") !== md) {
       console.error(`${SAIDA} desatualizado: rode node scripts/ci/gerar-matriz-edge-tabela.mjs`);
       return 1;
     }

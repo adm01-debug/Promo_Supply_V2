@@ -67,7 +67,7 @@ workflows vem inline (`22`).
   (`node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs`), `check-test-inventory.mjs` e o `--check` de
   `render-workflow-docs.mjs` e `gerar-matriz-edge-tabela.mjs`; é o mesmo conjunto do job `suites` do
   `guards.yml` e roda em node puro (não precisa de `bun install`);
-- `node scripts/ci/check-agents-md-integrity.mjs` (vigia `AGENTS.md` + `docs/agentes/`);
+- `node scripts/ci/check-agents-md-integrity.mjs` (vigia `AGENTS.md` + `docs/agentes/`) — **o CI já roda isto em PR** (`main.yml`, job `quality-gate`, com `AGENTS_MD_BASE=origin/<base>`); à mão serve para ver o resultado antes do push, e sem a variável a comparação é HEAD×HEAD, logo no-op;
 - docs geradas, se você mexeu na fonte delas: `npm run docs:ci` (bloco `# docs:` dos workflows →
   `docs/ci/README.md`) e `npm run docs:matriz-edge` (`.from()` das edges → `docs/mapa/MATRIZ_EDGE_TABELA.md`).
 

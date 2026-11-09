@@ -3,7 +3,8 @@
 // teste no disco tem um passo que o execute em ALGUM workflow — os .test.ts das edges
 // (supabase/functions/) e as suites Node de scripts/ (.test.mjs, .unit.mjs, .integration.mjs).
 // Aqui o workflow de CI é main.yml e a suíte Deno é descoberta por pasta, não listada arquivo
-// a arquivo; scripts/db-audit/ (suite shell de contrato de banco) não existe neste repo.
+// a arquivo; scripts/db-audit/ (suite shell de contrato de banco) não existe neste repo, então
+// a varredura de `.test.sh` do original saiu junto.
 // R2-INF-013: o inventário só olhava .test.ts e .test.sh — as suites Node de scripts/
 // (.test.mjs, .unit.mjs, .integration.mjs) eram invisíveis. Quatro suites já existiam fora
 // dos globos de CI e ninguém notava; uma suite nova nascia sem passo nenhum e este
@@ -82,14 +83,20 @@ const ciYaml = read('.github/workflows/main.yml');
 
 // Cobre todos os .test.ts: `deno test [flags] supabase/functions/` (pasta, não arquivo).
 const CI_TS_GLOB = 'deno test ... supabase/functions/';
-const ciUsesGlob = /deno test[^\n]*\bsupabase\/functions\/?(?:\s|$)/.test(ciYaml);
+const COMANDO_DENO_EDGES = /deno test[^\n]*\bsupabase\/functions\/?(?:\s|$)/;
 
-// ── 2. .test.sh ───────────────────────────────────────────────────────────────
-// Não se aplica aqui: este repo não tem `scripts/db-audit/` (a suíte de contrato de banco em
-// shell é do Zapp_Web_V2). A varredura fica vazia em vez de ler um workflow que não existe.
+/**
+ * O comando roda DE FATO neste YAML? Só conta dentro de um bloco `run:` e fora de linha
+ * comentada — a mesma regra que `padroesNodeDeWorkflow` aplica às suites Node.
+ * Medido: a versão anterior testava o regex contra o YAML cru, então comentar a linha do
+ * `deno test` (que é como um passo é desligado na prática) mantinha o guard verde enquanto
+ * os 7 testes das edges deixavam de rodar. Desligar o passo tem de reprovar igual a apagar.
+ */
+export function comandoExecutadoNoWorkflow(yaml, padrao) {
+  return padrao.test(codigoExecutavelDeWorkflow(yaml));
+}
 
-const testShOnDisk = [];
-const testShInGuard = new Set();
+const ciUsesGlob = comandoExecutadoNoWorkflow(ciYaml, COMANDO_DENO_EDGES);
 
 // ── 3. Suites Node: disco vs passos de workflow ───────────────────────────────
 // O caminho da suite conta como coberto quando aparece dentro de um bloco `run:` de algum
@@ -99,15 +106,23 @@ const testShInGuard = new Set();
 const SUFIXO_SUITE_NODE = /\.(?:test|unit|integration)\.mjs$/;
 const CAMINHO_SUITE_NODE = /scripts\/[A-Za-z0-9_./*-]+\.(?:test|unit|integration)\.mjs/g;
 
-/** Caminhos e globos de suites Node citados nos blocos `run:` de um workflow. */
-export function padroesNodeDeWorkflow(yaml) {
+/**
+ * Só o que o runner executa: a concatenação dos blocos `run:` do workflow, sem as linhas
+ * comentadas. Citação em nome de etapa, em `env:` ou atrás de `#` fica de fora — é o que
+ * separa registro de execução.
+ */
+export function codigoExecutavelDeWorkflow(yaml) {
   const linhas = String(yaml).split('\n');
-  const padroes = new Set();
+  const blocos = [];
   for (let i = 0; i < linhas.length; i += 1) {
-    const abertura = /^(\s*)run:\s*(.*)$/.exec(linhas[i]);
+    // `- run: ...` (run como primeira chave do item) é YAML válido e tão executável quanto
+    // `run:` indentado; sem o `-` opcional um passo escrito nessa forma ficava invisível.
+    const abertura = /^(\s*(?:-\s+)?)run:\s*(.*)$/.exec(linhas[i]);
     if (!abertura) continue;
     const recuo = abertura[1].length;
-    const bloco = [abertura[2]];
+    // A primeira linha também passa pelo filtro de comentário: `run: # node --test ...`
+    // é um passo desligado, não um passo que executa.
+    const bloco = abertura[2].trimStart().startsWith('#') ? [] : [abertura[2]];
     for (let j = i + 1; j < linhas.length; j += 1) {
       const linha = linhas[j];
       if (linha.trim() === '') continue; // linha vazia não fecha o bloco
@@ -115,8 +130,14 @@ export function padroesNodeDeWorkflow(yaml) {
       if (linha.trimStart().startsWith('#')) continue; // passo comentado não executa nada
       bloco.push(linha);
     }
-    for (const padrao of bloco.join('\n').match(CAMINHO_SUITE_NODE) ?? []) padroes.add(padrao);
+    blocos.push(bloco.join('\n'));
   }
+  return blocos.join('\n');
+}
+
+/** Caminhos e globos de suites Node citados nos blocos `run:` de um workflow. */
+export function padroesNodeDeWorkflow(yaml) {
+  const padroes = new Set(codigoExecutavelDeWorkflow(yaml).match(CAMINHO_SUITE_NODE) ?? []);
   return [...padroes].sort();
 }
 

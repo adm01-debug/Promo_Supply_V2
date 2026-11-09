@@ -4,7 +4,7 @@
 #   falha: SLA vencido deixa o job vermelho e publica o diagnostico se o relatorio foi gerado
 #   avisa: issue `[branch-hygiene]` (relatorio) e issue `[kpi-actions]` (custo do Actions)
 # nao-e-bug:
-#   - code-scanning-vazio: este repo nao tem code scanning ligado, entao a consulta devolve 404, o passo avisa e segue (o SLA passa a valer no dia em que o dono ligar)
+#   - code-scanning-vazio: este repo nao tem code scanning ligado, entao a consulta devolve 403 "Code scanning is not enabled for this repository", o passo avisa e segue (o SLA passa a valer no dia em que o dono ligar)
 #   - nada-podavel: relatorio sem nenhuma branch listada significa que nao ha branch patch-equivalente a main com mais de 7 dias
 # ==================================================================
 # Auditoria semanal de higiene de branches (somente leitura)
@@ -43,7 +43,9 @@ permissions:
 
 concurrency:
   group: branch-hygiene-audit
-  cancel-in-progress: true
+  # `false`: um dispatch nao pode cortar o cron no meio do `gh issue edit` da
+  # [branch-hygiene]. Mesma escolha dos outros agendados do repo.
+  cancel-in-progress: false
 
 jobs:
   audit:
@@ -96,7 +98,11 @@ jobs:
           REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
-          git fetch origin main --quiet
+          # Sem `git fetch origin main`: o checkout deste job usa `fetch-depth: 0`, que ja
+          # traz `origin/main` e todas as refs remotas que o `git branch -r` abaixo precisa.
+          # E `persist-credentials: false` apaga a credencial do `origin`, entao um fetch
+          # aqui sairia != 0 em repo privado e o `set -e` mataria o passo ANTES de escrever
+          # a primeira linha do relatorio -- derrubando a auditoria inteira toda segunda.
 
           # $RUNNER_TEMP sobrevive entre passos (cada `run:` e um shell novo);
           # `mktemp` sozinho nao -- o caminho morreria com o shell do passo 1.
@@ -183,7 +189,8 @@ jobs:
           RELATORIO="$RUNNER_TEMP/branch-hygiene.md"
           ARQUIVO="$RUNNER_TEMP/code-scanning-alerts.json"
           # Todas as paginas, em uma unica lista JSON para o CLI ler pelo stdin. Sem code
-          # scanning ligado a API responde 404: o script recebe o objeto de erro, avisa e
+          # scanning ligado a API responde 403 ("Code scanning is not enabled for this
+          # repository" — medido em 08/11/2026): o script recebe o objeto de erro, avisa e
           # sai 0 (nao transforma "nao consegui olhar" em "nenhum alerta vencido").
           if ! gh api --paginate --slurp "repos/$REPO/code-scanning/alerts?state=open&per_page=100" | jq 'add' > "$ARQUIVO"; then
             echo '{"message":"falha ao consultar a API de code scanning"}' > "$ARQUIVO"

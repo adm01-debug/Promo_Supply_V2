@@ -36,20 +36,15 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const AQUI = dirname(fileURLToPath(import.meta.url));
-const RAIZ = join(AQUI, '..', '..');
+// RENDER_WF_RAIZ existe para a suite montar uma arvore minima em tmp e exercitar o gerador
+// de verdade (mesmo padrao de MIGRATIONS_DIR/AI_CONTEXT_ROOT nos outros scripts do repo).
+const RAIZ = process.env.RENDER_WF_RAIZ || join(AQUI, '..', '..');
 const DIR_WF = join(RAIZ, '.github', 'workflows');
 const README = join(RAIZ, 'docs', 'ci', 'README.md');
 const KPI_PATH = join(RAIZ, 'docs', 'ci', 'kpi.json');
 
 const CAMPOS = ['gatilho', 'prova', 'falha', 'avisa'];
 
-// Ratchet: workflows que AINDA nao declaram o bloco `# docs:`. A lista existe para a
-// convencao entrar sem precisar editar um arquivo que outra sessao esta mexendo; ela so
-// pode encolher. Entrada que deixou de existir tambem reprova, para a lista nao apodrecer.
-//   main.yml — a PR adm01-debug/Promo_Supply_V2#22 esta aberta justamente neste arquivo
-//   (liga os unit tests de CI). O bloco `# docs:` entra na PR que fechar a #22; enquanto
-//   ela estiver aberta, duas sessoes editando o mesmo YAML e conflito garantido.
-export const SEM_BLOCO_PERMITIDO = new Set(['main.yml']);
 
 /** Extrai o bloco `# docs:` do topo do arquivo. Devolve null se não houver. */
 function extrairDocs(texto) {
@@ -99,6 +94,11 @@ function extrairNaoEBug(texto) {
       itens.push({ chave: m[1], descricao: m[2] });
       continue;
     }
+    // Item que PARECE item mas nao casa (`#   - sem dois pontos`) antes caia no `break`
+    // abaixo: o item e todos os seguintes desapareciam do README e o CI seguia verde.
+    if (/^#\s+-\s+/.test(linha)) {
+      return { erro: `item malformado em # nao-e-bug: ${linha.trim()} (use "#   - <chave>: <descricao>")` };
+    }
     // Linha de comentário vazia continua; qualquer outra coisa (inclusive docs:) encerra.
     if (/^#\s*$/.test(linha)) continue;
     break;
@@ -121,7 +121,7 @@ try {
   // sem KPI → colunas ficam "—"
 }
 
-const arquivos = (await readdir(DIR_WF)).filter((f) => f.endsWith('.yml')).sort();
+const arquivos = (await readdir(DIR_WF)).filter((f) => /\.ya?ml$/.test(f)).sort();
 
 const docs = [];
 const semBloco = [];
@@ -139,25 +139,29 @@ for (const arquivo of arquivos) {
     console.error(`ERRO: ${arquivo} tem bloco # docs: sem ${faltando.join(', ')}`);
     process.exit(1);
   }
+  // Campo fora dos quatro nao vai para parte nenhuma do README; aceitar em silencio era
+  // perder o texto que alguem escreveu achando que seria publicado.
+  const desconhecidos = Object.keys(bloco).filter((c) => !CAMPOS.includes(c));
+  if (desconhecidos.length) {
+    console.error(`ERRO: ${arquivo} tem campo nao reconhecido no bloco # docs:: ${desconhecidos.join(', ')}`);
+    console.error(`Campos aceitos: ${CAMPOS.join(', ')}.`);
+    process.exit(1);
+  }
   const nome = nomeDe(texto, arquivo);
   const naoEBug = extrairNaoEBug(texto);
+  if (!Array.isArray(naoEBug)) {
+    console.error(`ERRO: ${arquivo}: ${naoEBug.erro}`);
+    process.exit(1);
+  }
   for (const item of naoEBug) {
     naoEBugGlobal.push({ workflow: nome, arquivo, ...item });
   }
   docs.push({ arquivo, nome, ...bloco });
 }
 
-const semBlocoNaoPermitido = semBloco.filter((f) => !SEM_BLOCO_PERMITIDO.has(f));
-if (semBlocoNaoPermitido.length) {
-  console.error(`ERRO: workflow sem bloco '# docs:' no topo: ${semBlocoNaoPermitido.join(', ')}`);
+if (semBloco.length) {
+  console.error(`ERRO: workflow sem bloco '# docs:' no topo: ${semBloco.join(', ')}`);
   console.error('Cada workflow precisa declarar gatilho, prova, falha e avisa.');
-  process.exit(1);
-}
-
-const permitidosQueSumiram = [...SEM_BLOCO_PERMITIDO].filter((f) => !arquivos.includes(f) || !semBloco.includes(f));
-if (permitidosQueSumiram.length) {
-  console.error(`ERRO: SEM_BLOCO_PERMITIDO tem entrada morta: ${permitidosQueSumiram.join(', ')}`);
-  console.error('O workflow ja declara o bloco (ou nao existe mais): remova-o da lista.');
   process.exit(1);
 }
 
@@ -168,14 +172,16 @@ const linhas = [
   '> `--check` e falha se este arquivo divergir do bloco `# docs:` de cada workflow.',
   '> Para mudar o que está aqui, mude o bloco no YAML.',
   '',
-  `**${docs.length} workflows documentados**${semBloco.length ? ` · ${semBloco.length} ainda sem bloco \`# docs:\`: ${semBloco.map((f) => `\`${f}\``).join(', ')}` : ''}.`,
+  `**${docs.length} workflows.**`,
   '',
   '| Workflow | Arquivo | Gatilho | O que prova | Quando falha | Quem é avisado | Custo/sem (min) | Falha (7 d) |',
   '|---|---|---|---|---|---|---|---|',
   ...docs.map((d) => {
     const custo = kpi[d.arquivo]?.custo_semana_min ?? '—';
     const falha7d = kpi[d.arquivo]?.taxa_falha_7d ?? '—';
-    return `| ${d.nome} | [\`${d.arquivo}\`](../../.github/workflows/${d.arquivo}) | ${d.gatilho} | ${d.prova} | ${d.falha} | ${d.avisa} | ${custo} | ${falha7d} |`;
+    // `|` no texto de um campo abriria uma coluna nova e desalinharia a tabela inteira.
+    const c = (v) => String(v).replaceAll('|', '\\|');
+    return `| ${c(d.nome)} | [\`${d.arquivo}\`](../../.github/workflows/${d.arquivo}) | ${c(d.gatilho)} | ${c(d.prova)} | ${c(d.falha)} | ${c(d.avisa)} | ${custo} | ${falha7d} |`;
   }),
   '',
   '## Detalhe',
@@ -202,7 +208,7 @@ if (naoEBugGlobal.length > 0) {
     '|---|---|---|',
     ...naoEBugGlobal.map(
       (i) =>
-        `| [\`${i.arquivo}\`](../../.github/workflows/${i.arquivo}) | **${i.chave}** | ${i.descricao} |`,
+        `| [\`${i.arquivo}\`](../../.github/workflows/${i.arquivo}) | **${String(i.chave).replaceAll('|', '\\|')}** | ${String(i.descricao).replaceAll('|', '\\|')} |`,
     ),
     '',
   );

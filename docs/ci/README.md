@@ -4,7 +4,7 @@
 > `--check` e falha se este arquivo divergir do bloco `# docs:` de cada workflow.
 > Para mudar o que está aqui, mude o bloco no YAML.
 
-**6 workflows documentados** · 1 ainda sem bloco `# docs:`: `main.yml`.
+**7 workflows.**
 
 | Workflow | Arquivo | Gatilho | O que prova | Quando falha | Quem é avisado | Custo/sem (min) | Falha (7 d) |
 |---|---|---|---|---|---|---|---|
@@ -12,7 +12,8 @@
 | Contexto para agentes de IA (10 min) | [`contexto.yml`](../../.github/workflows/contexto.yml) | push em main que toque código, banco, scripts das automações ou docs/contexto/regras/manual/; a cada 10 min (minuto 3); dispatch | branch contexto com docs/contexto/{codigo,supabase,regras}/ regerados das três fontes de verdade (código em main, banco oficial, código+migrations+manual/) e docs/contexto/00-INDEX.md montado a partir dos manifests | falha fatal de produtor reprova o workflow; fontes com artefato publicam e as demais mantêm a última versão; erro de download impede a publicação | ninguém (a branch contexto é a prova; errors.md em supabase/ e erros_do_gerador em codigo/ listam seções com falha) | — | — |
 | Guards offline do repositorio | [`guards.yml`](../../.github/workflows/guards.yml) | pull_request e push em main (jobs de node puro); o job do bundle so em push em main e dispatch | docs/ci/README.md e docs/mapa/MATRIZ_EDGE_TABELA.md batem com o repo, toda suite de scripts/ roda, mensagens de commit no padrao, nenhum advisory HIGH/CRITICAL em dependencia de producao e nenhum JWT service_role no bundle publicado | o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado | ninguem (o resultado do check e a prova); falha em push na main abre issue pelo notifica-falha-main.yml | — | — |
 | Inventário do estado real (semanal) | [`inventario-estado-semanal.yml`](../../.github/workflows/inventario-estado-semanal.yml) | agendado (seg 10:41 UTC) e dispatch | inventario/estado (banco, rotas, edges) regerado do banco do projeto e do codigo | rotas/edges quebrados deixam o job vermelho; no agendado, banco sem secret so avisa | PR automation/inventario-estado com o inventario novo | — | — |
-| Notifica falha na main | [`notifica-falha-main.yml`](../../.github/workflows/notifica-falha-main.yml) | workflow_run (conclusao dos workflows deste repo na main) | issue `[falha-main]` aberta (ou comentada) quando um workflow falha na main | a falha do workflow original fica sem issue de acompanhamento | o dono, pela issue `[falha-main] <workflow> falhou na main` com label `falha-main` | — | — |
+| Freight Quest CI/CD | [`main.yml`](../../.github/workflows/main.yml) | push em main/develop e pull_request para main | lint, typecheck, guard de integridade do AGENTS.md (em PR), Vitest do front, testes Deno das edges e E2E Playwright | o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado | ninguem no PR; falha na main abre issue pelo notifica-falha-main.yml | — | — |
+| Notifica falha na main | [`notifica-falha-main.yml`](../../.github/workflows/notifica-falha-main.yml) | workflow_run (conclusao dos workflows deste repo na main) | issue `[falha-main]` aberta (ou comentada) quando um workflow termina em failure, startup_failure ou timed_out na main | a falha do workflow original fica sem issue de acompanhamento | o dono, pela issue `[falha-main] <workflow> falhou na main` com label `falha-main` | — | — |
 | types-sync | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | push na main que toque supabase/migrations ou scripts/types-sync; a cada 10 min (minuto 7); dispatch | src/integrations/supabase/types.ts gerado do banco oficial bate com o commitado (Gates 1 e 2) | PR em `automation/types-sync` ou issue `[types-sync]`; nunca passa com tipo divergente | PR de types e issue de gate | — | — |
 
 ## Detalhe
@@ -45,10 +46,17 @@
 - **Quando falha:** rotas/edges quebrados deixam o job vermelho; no agendado, banco sem secret so avisa
 - **Quem é avisado:** PR automation/inventario-estado com o inventario novo
 
+### Freight Quest CI/CD (`main.yml`)
+
+- **Gatilho:** push em main/develop e pull_request para main
+- **O que prova:** lint, typecheck, guard de integridade do AGENTS.md (em PR), Vitest do front, testes Deno das edges e E2E Playwright
+- **Quando falha:** o check fica vermelho; nao ha branch protection neste repo, entao quem mergeia e responsavel por ler o resultado
+- **Quem é avisado:** ninguem no PR; falha na main abre issue pelo notifica-falha-main.yml
+
 ### Notifica falha na main (`notifica-falha-main.yml`)
 
 - **Gatilho:** workflow_run (conclusao dos workflows deste repo na main)
-- **O que prova:** issue `[falha-main]` aberta (ou comentada) quando um workflow falha na main
+- **O que prova:** issue `[falha-main]` aberta (ou comentada) quando um workflow termina em failure, startup_failure ou timed_out na main
 - **Quando falha:** a falha do workflow original fica sem issue de acompanhamento
 - **Quem é avisado:** o dono, pela issue `[falha-main] <workflow> falhou na main` com label `falha-main`
 
@@ -66,7 +74,7 @@
 
 | Workflow | Situação | Por quê não é bug |
 |---|---|---|
-| [`branch-hygiene-audit.yml`](../../.github/workflows/branch-hygiene-audit.yml) | **code-scanning-vazio** | este repo nao tem code scanning ligado, entao a consulta devolve 404, o passo avisa e segue (o SLA passa a valer no dia em que o dono ligar) |
+| [`branch-hygiene-audit.yml`](../../.github/workflows/branch-hygiene-audit.yml) | **code-scanning-vazio** | este repo nao tem code scanning ligado, entao a consulta devolve 403 "Code scanning is not enabled for this repository", o passo avisa e segue (o SLA passa a valer no dia em que o dono ligar) |
 | [`branch-hygiene-audit.yml`](../../.github/workflows/branch-hygiene-audit.yml) | **nada-podavel** | relatorio sem nenhuma branch listada significa que nao ha branch patch-equivalente a main com mais de 7 dias |
 | [`contexto.yml`](../../.github/workflows/contexto.yml) | **sem-commit** | "nada mudou" no publicar significa que nenhuma das três fontes mudou desde a última publicação |
 | [`contexto.yml`](../../.github/workflows/contexto.yml) | **metricas** | métricas/manifests do banco aguardam 60 min desde a coleta publicada; commits de código não reiniciam o prazo; data ausente/inválida/futura e mudanças de saúde/estado do índice publicam sem espera |
@@ -74,6 +82,9 @@
 | [`guards.yml`](../../.github/workflows/guards.yml) | **doc-desatualizada** | `--check` vermelho significa que o YAML mudou e a doc gerada nao foi regerada; rode o gerador e comite, nao edite o .md |
 | [`guards.yml`](../../.github/workflows/guards.yml) | **suite-orfa** | check-test-inventory vermelho significa que uma suite nova de scripts/ nao tem passo que a execute em nenhum workflow |
 | [`guards.yml`](../../.github/workflows/guards.yml) | **bundle-so-na-main** | o job do bundle precisa de `bun run build` (minutos de Actions em repo privado), entao roda no push que vai para producao, nao em cada PR |
+| [`main.yml`](../../.github/workflows/main.yml) | **nome-do-arquivo** | o `name:` ainda e "Freight Quest CI/CD", herdado de outro projeto; renomear quebraria a lista de `workflows:` do notifica-falha-main.yml, que casa por nome |
+| [`main.yml`](../../.github/workflows/main.yml) | **deno-faixa-flutuante** | `deno-version: v1.x` nao e versao fixa de proposito, e por isso deno NAO esta em .github/toolchain.json |
+| [`main.yml`](../../.github/workflows/main.yml) | **e2e-com-placeholder** | sem os secrets VITE_*, o E2E sobe o dev server com valores de placeholder e falha nos fluxos logados |
 | [`notifica-falha-main.yml`](../../.github/workflows/notifica-falha-main.yml) | **sem-comentario** | falha repetida do mesmo workflow dentro de 6 h nao gera comentario novo (a issue aberta ja aponta o problema); a janela existe para o contexto.yml, que roda a cada 10 min, nao transformar a issue em 144 comentarios por dia |
 | [`notifica-falha-main.yml`](../../.github/workflows/notifica-falha-main.yml) | **issue-aberta-depois-do-verde** | a issue nao fecha sozinha; quem corrigiu fecha a issue (nenhum workflow sabe dizer que a causa raiz foi resolvida) |
 | [`types-sync.yml`](../../.github/workflows/types-sync.yml) | **banco-pulado** | sem o secret SUPABASE_DB_URL o job sai VERDE com aviso no agendamento e no push; no workflow_dispatch falha de proposito, para a pessoa ver |
