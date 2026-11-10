@@ -43,6 +43,16 @@ neste repositório** (a API responde 403). O passo fica no lugar para o dia em q
 
 - Toda `*.unit.mjs` daqui roda em `guards.yml` → `node --test scripts/ci/*.unit.mjs scripts/lib/*.test.mjs`.
   **Suíte nova sem passo em workflow reprova** no `check-test-inventory.mjs` — é de propósito.
+- `scripts-operacionais.unit.mjs` cobre os scripts da raiz de `scripts/` (`rls-audit`, `db-explain-analyze`,
+  `realtime-audit`, `stress-test`, `validate-bridge`, `squash-migrations.sh`) e o
+  `deploy_edge_functions_promo_supply.sh`. Tudo offline: servidor HTTP em 127.0.0.1, `psql`/`supabase`/`curl`
+  de mentira no PATH e repositório git descartável em `os.tmpdir()`.
+- `inventario-types.unit.mjs` é um **agregador**: importa as suítes de `inventario-types/` (que testam
+  `scripts/inventario/*` e `scripts/types-sync/*`). Elas ficam em subpasta de propósito — o glob
+  `scripts/ci/*.unit.mjs` não desce nela, então cada caso roda uma vez, e o `check-test-inventory` as
+  considera cobertas por import estático. Suíte nova ali precisa entrar na lista de imports do agregador.
+  Recurso externo ausente (`rg`, `typescript`, Postgres, pgbouncer) vira `skip` com o motivo; o Postgres
+  efêmero só sobe com `INVENTARIO_TEST_PG_BIN` (ver `inventario-types/pg.mjs`).
 - `workflow-test-support.mjs` é biblioteca das suítes (lê job/step/permissão de um YAML de workflow em
   blocos); não é parser YAML geral e não roda sozinho.
 - `scripts/ci/*.json` são baselines lidos pelos scripts, não configuração para editar à mão.
