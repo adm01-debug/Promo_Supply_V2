@@ -55,7 +55,7 @@ export function useRelatorioNegociacoes(periodo: string) {
       const { data, error } = await supabase
         .from("cotacoes")
         .select(
-          "id, numero, solicitacao_id, fornecedor_id, valor_total, valor_unitario, desconto_percentual, status, selecionada, avaliador_id, created_at, prazo_entrega",
+          "id, numero, solicitacao_id, fornecedor_id, valor_total, valor_unitario, desconto_percentual, status, selecionada, avaliador_id, created_at, prazo_entrega, score_total",
         )
         .gte("created_at", dateFrom)
         .order("created_at", { ascending: true });
@@ -80,7 +80,7 @@ export function useRelatorioNegociacoes(periodo: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("profiles")
-        .select("id, full_name, display_name, email");
+        .select("id, full_name, email");
       if (error) throw error;
       return data || [];
     },
@@ -184,7 +184,7 @@ export function useRelatorioNegociacoes(periodo: string) {
     const comparativoCompradores: Comprador[] = Array.from(byAval.entries())
       .map(([id, v]) => {
         const prof = avalById.get(id);
-        const fullName = prof?.full_name || prof?.display_name || prof?.email || "Usuário";
+        const fullName = prof?.full_name || prof?.email || "Usuário";
         const initials = fullName
           .split(/\s+/)
           .filter(Boolean)
@@ -209,7 +209,7 @@ export function useRelatorioNegociacoes(periodo: string) {
       .slice(0, 8);
 
     // 3) Economia por categoria (via solicitacao -> produto -> categoria)
-    const byCat = new Map<string, { economia: number; volume: number }>();
+    const byCat = new Map<string, { economia: number; volume: number; _nome?: string }>();
     for (const c of cotacoes) {
       const sol = c.solicitacao_id ? solById.get(c.solicitacao_id) : undefined;
       if (!sol) continue;
@@ -219,10 +219,10 @@ export function useRelatorioNegociacoes(periodo: string) {
       const cur = byCat.get(catId) || { economia: 0, volume: 0 };
       cur.economia += economiaPorCotacao(c);
       cur.volume += Number(c.valor_total) || 0;
-      byCat.set(catId, { ...cur, _nome: catNome } as any);
+      byCat.set(catId, { ...cur, _nome: catNome });
     }
     const economiaPorCategoria: EconomiaCategoria[] = Array.from(byCat.entries())
-      .map(([id, v]: any) => {
+      .map(([id, v]) => {
         const vol = v.volume || 1;
         return {
           categoria: v._nome || id,
