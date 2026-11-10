@@ -52,7 +52,15 @@ neste repositório** (a API responde 403). O passo fica no lugar para o dia em q
   `scripts/ci/*.unit.mjs` não desce nela, então cada caso roda uma vez, e o `check-test-inventory` as
   considera cobertas por import estático. Suíte nova ali precisa entrar na lista de imports do agregador.
   Recurso externo ausente (`rg`, `typescript`, Postgres, pgbouncer) vira `skip` com o motivo; o Postgres
-  efêmero só sobe com `INVENTARIO_TEST_PG_BIN` (ver `inventario-types/pg.mjs`).
+  efêmero só sobe com `INVENTARIO_TEST_PG_BIN` (ver `inventario-types/pg.mjs`). Variáveis opt-in:
+  `INVENTARIO_TEST_PG_BIN` (pasta com `initdb`/`pg_ctl`/`postgres`/`psql`; liga o Postgres efêmero),
+  `INVENTARIO_TEST_PG_USER` (obrigatória como root: o Postgres recusa subir; exige `setpriv`),
+  `INVENTARIO_TEST_PGBOUNCER` (caminho do `pgbouncer`; sem ele só os casos de proxy real ficam em skip) e
+  `INVENTARIO_TEST_TYPESCRIPT` (pasta do pacote `typescript`; padrão `node_modules/typescript`).
+  **Limitação no CI:** o job `suites` do `guards.yml` não instala dependências, então os 22 casos do Gate 1
+  que compilam com `tsc` de verdade ficam sempre em skip lá (os com `tsc` falso rodam). Alguns casos leem o
+  texto de `.github/workflows/types-sync.yml` e as rotas de `src/routes/AppRoutes.tsx`: mudar esse workflow
+  reprova a suíte de propósito.
 - `workflow-test-support.mjs` é biblioteca das suítes (lê job/step/permissão de um YAML de workflow em
   blocos); não é parser YAML geral e não roda sozinho.
 - `scripts/ci/*.json` são baselines lidos pelos scripts, não configuração para editar à mão.
