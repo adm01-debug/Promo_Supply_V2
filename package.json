@@ -31,7 +31,16 @@
     "docs:ci": "node scripts/ci/render-workflow-docs.mjs",
     "docs:matriz-edge": "node scripts/ci/gerar-matriz-edge-tabela.mjs",
     "guards": "npm run test:scripts && node scripts/ci/check-test-inventory.mjs && node scripts/ci/render-workflow-docs.mjs --check && node scripts/ci/gerar-matriz-edge-tabela.mjs --check",
-    "prepare": ""
+    "prepare": "",
+    "automation:doctor": "node scripts/automation.mjs doctor",
+    "automation:test": "node scripts/automation.mjs test",
+    "automation:check": "node scripts/automation.mjs check --ref HEAD",
+    "automation:heal": "node scripts/automation.mjs heal --ref origin/main",
+    "automation:nightly": "node scripts/automation.mjs nightly --ref origin/main",
+    "automation:graph": "node scripts/automation.mjs graph",
+    "automation:status": "node scripts/automation.mjs graph status",
+    "automation:install-hooks": "node scripts/automation.mjs install-hooks",
+    "automation:uninstall-hooks": "node scripts/automation.mjs uninstall-hooks"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
