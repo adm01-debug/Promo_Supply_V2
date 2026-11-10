@@ -42,7 +42,7 @@ As suites usam fixtures descartáveis e não executam os scripts operacionais do
 
 ## Registro exato dos demais scripts
 
-Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores; não são incluídos automaticamente no novo pipeline. Referência literal indica onde o arquivo é citado, sem garantir que esse caminho rode nem autorização para executar operações contra serviços. Sem referência, o arquivo é mantido manual porque função, parâmetros e ambiente precisam de revisão antes de ativar qualquer gatilho. Scripts novos não cobertos por registro fazem `doctor --static` falhar; não existe registro genérico `scripts/**` para ocultá-los.
+Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores; não são incluídos automaticamente no novo pipeline. Para arquivos TypeScript de apoio sem runner comprovado, o comando listado só valida o inventário; os chamadores originais continuam sendo a referência de execução. Referência literal indica onde o arquivo é citado, sem garantir que esse caminho rode nem autorização para executar operações contra serviços. Sem referência, o arquivo é mantido manual porque função, parâmetros e ambiente precisam de revisão antes de ativar qualquer gatilho. Scripts novos não cobertos por registro fazem `doctor --static` falhar; não existe registro genérico `scripts/**` para ocultá-los.
 
 | Arquivo exato | Invocação manual de inventário | Chamadores literais / justificativa |
 |---|---|---|
@@ -76,21 +76,21 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/ci/supabase-snapshot.unit.mjs` | `node --test scripts/ci/supabase-snapshot.unit.mjs` | package.json:scripts, .github/workflows/guards.yml, .github/workflows/main.yml |
 | `scripts/ci/toolchain-schedule.unit.mjs` | `node --test scripts/ci/toolchain-schedule.unit.mjs` | package.json:scripts, .github/workflows/guards.yml, .github/workflows/main.yml |
 | `scripts/ci/workflow-test-support.mjs` | `node scripts/ci/workflow-test-support.mjs` | package.json:scripts, .github/workflows/guards.yml, .github/workflows/main.yml |
-| `scripts/db-explain-analyze.ts` | `bun scripts/db-explain-analyze.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/db-explain-analyze.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/inventario/gerar-banco.mjs` | `node scripts/inventario/gerar-banco.mjs` | .github/workflows/inventario-estado-semanal.yml |
 | `scripts/inventario/gerar-repo.mjs` | `node scripts/inventario/gerar-repo.mjs` | .github/workflows/inventario-estado-semanal.yml |
 | `scripts/inventario/gerar-rotas.mjs` | `node scripts/inventario/gerar-rotas.mjs` | .github/workflows/inventario-estado-semanal.yml |
 | `scripts/inventario/mudou-conteudo.mjs` | `node scripts/inventario/mudou-conteudo.mjs` | .github/workflows/inventario-estado-semanal.yml |
 | `scripts/lib/seguranca-processo.mjs` | `node scripts/lib/seguranca-processo.mjs` | package.json:scripts, .github/workflows/guards.yml, .github/workflows/main.yml |
 | `scripts/lib/seguranca-processo.test.mjs` | `node --test scripts/lib/seguranca-processo.test.mjs` | package.json:scripts, .github/workflows/guards.yml, .github/workflows/main.yml |
-| `scripts/realtime-audit.ts` | `bun scripts/realtime-audit.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/realtime-audit.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/regras_negocio/generate.py` | `python3 scripts/regras_negocio/generate.py` | package.json:scripts, .github/workflows/contexto.yml |
 | `scripts/regras_negocio/indice.py` | `python3 scripts/regras_negocio/indice.py` | package.json:scripts, .github/workflows/contexto.yml |
 | `scripts/regras_negocio/publish.sh` | `sh scripts/regras_negocio/publish.sh` | .github/workflows/contexto.yml |
 | `scripts/regras_negocio/test_generate.py` | `python3 scripts/regras_negocio/test_generate.py` | .github/workflows/contexto.yml |
-| `scripts/rls-audit.ts` | `bun scripts/rls-audit.ts` | .github/workflows/main.yml |
+| `scripts/rls-audit.ts` | `node scripts/automation.mjs doctor --static` | .github/workflows/main.yml |
 | `scripts/squash-migrations.sh` | `sh scripts/squash-migrations.sh` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
-| `scripts/stress-test.ts` | `bun scripts/stress-test.ts` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
+| `scripts/stress-test.ts` | `node scripts/automation.mjs doctor --static` | Sem chamador literal; manter manual e revisar parâmetros/ambiente antes de executar. |
 | `scripts/supabase_snapshot/snapshot.py` | `python3 scripts/supabase_snapshot/snapshot.py` | package.json:scripts, .github/workflows/contexto.yml |
 | `scripts/supabase_snapshot/test_snapshot.py` | `python3 scripts/supabase_snapshot/test_snapshot.py` | .github/workflows/contexto.yml |
 | `scripts/types-sync/check-remocoes-destrutivas.mjs` | `node scripts/types-sync/check-remocoes-destrutivas.mjs` | .github/workflows/types-sync.yml |
@@ -100,7 +100,7 @@ Os registros `legacy` abaixo preservam ferramentas anteriores e seus chamadores;
 | `scripts/types-sync/install-postgresql-client.sh` | `sh scripts/types-sync/install-postgresql-client.sh` | .github/workflows/types-sync.yml |
 | `scripts/types-sync/local-pg-proxy.mjs` | `node scripts/types-sync/local-pg-proxy.mjs` | .github/workflows/types-sync.yml |
 | `scripts/types-sync/typecheck-ratchet.mjs` | `node scripts/types-sync/typecheck-ratchet.mjs` | .github/workflows/types-sync.yml |
-| `scripts/validate-bridge.ts` | `bun scripts/validate-bridge.ts` | package.json:scripts |
+| `scripts/validate-bridge.ts` | `node scripts/automation.mjs doctor --static` | package.json:scripts |
 
 ## Hooks e workflows anteriores
 
