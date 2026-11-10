@@ -26,6 +26,7 @@ em vez de um gerador de ruído. Não edite os `.md`: mude a fonte e regere. O ú
 | `audit-prod.mjs` | advisory HIGH/CRITICAL alcançável por `dependencies` (dev não bloqueia). Lê o texto do `bun audit` 1.4.0 (`pacote@versão`, cadeia ` > `, `(direct dependency)`); sai `1` = advisory, `2` = relatório/argumento/status inválido | `guards.yml` (job `dependencias`) |
 | `check-bundle-secrets.mjs` | JWT `service_role` ou chave `sb_secret_…` nos `.js`/`.mjs`/`.cjs`/`.html` de `dist/` ou no arquivo de ambiente versionado | `guards.yml` (job `bundle`, só em push/dispatch) |
 | `check-agents-md-integrity.mjs` | `AGENTS.md`/`docs/agentes/` apagados ou encolhidos >30% vs a base (>50% por arquivo); `AGENTS_MD_BASE` que não resolve para um commit também reprova | `main.yml` (job `quality-gate`, só em PR) · `agents-docs-baseline.unit.mjs` no `guards.yml` |
+| `workflow-yaml-guard.mjs` (suíte `workflow-yaml-guard.unit.mjs`) | bloco `run: \|` com linha fora do recuo e tab no recuo em qualquer `.github/workflows/*.yml` — classe de erro que quebrou o `contexto.yml` no `908b045` sem nenhum guard acusar. Não é parser YAML: só reprova o que tem certeza | `guards.yml` (job `suites`, pelo glob `scripts/ci/*.unit.mjs`) |
 
 ## Auditoria semanal (somente leitura; publica em issue)
 
