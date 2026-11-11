@@ -23,6 +23,25 @@ const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY")!;
 const FN_URL = `${SUPABASE_URL}/functions/v1/dependency-health`;
 
+// Guard: skip integration tests when Supabase is not reachable (e.g., CI
+// without Docker or with placeholder credentials).
+async function isSupabaseReachable(): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+      signal: controller.signal,
+      headers: { apikey: SUPABASE_ANON_KEY },
+    });
+    clearTimeout(timeoutId);
+    return res.status < 500;
+  } catch {
+    return false;
+  }
+}
+
+const SUPABASE_AVAILABLE = await isSupabaseReachable();
+
 // QA admin (see mem://reference/qa-credentials)
 const QA_ADMIN_EMAIL = Deno.env.get("QA_ADMIN_EMAIL") ?? "qa-admin@promobrindes.test";
 const QA_ADMIN_PASSWORD = Deno.env.get("QA_ADMIN_PASSWORD") ?? "QaTest@2026!";
@@ -83,7 +102,10 @@ function assertSnapshotShape(payload: unknown) {
 }
 
 // ── tests ────────────────────────────────────────────────────────
-Deno.test("GET dependency-health → 200 with valid snapshot shape", async () => {
+Deno.test({
+  name: "GET dependency-health → 200 with valid snapshot shape",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const res = await fetch(FN_URL, {
     method: "GET",
     headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
@@ -91,9 +113,13 @@ Deno.test("GET dependency-health → 200 with valid snapshot shape", async () =>
   const body = await res.json();
   assertEquals(res.status, 200);
   assertSnapshotShape(body);
+  },
 });
 
-Deno.test("GET dependency-health?history=true → 200 with history array", async () => {
+Deno.test({
+  name: "GET dependency-health?history=true → 200 with history array",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const res = await fetch(`${FN_URL}?history=true`, {
     method: "GET",
     headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` },
@@ -105,9 +131,13 @@ Deno.test("GET dependency-health?history=true → 200 with history array", async
   if (res.status === 200) {
     assert(Array.isArray(body?.history), "history should be an array");
   }
+  },
 });
 
-Deno.test("POST dependency-health (no auth) → 403", async () => {
+Deno.test({
+  name: "POST dependency-health (no auth) → 403",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const res = await fetch(FN_URL, {
     method: "POST",
     headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
@@ -116,9 +146,13 @@ Deno.test("POST dependency-health (no auth) → 403", async () => {
   const body = await res.json();
   assertEquals(res.status, 403);
   assertEquals(body?.error, "Forbidden: admin role required");
+  },
 });
 
-Deno.test("POST dependency-health (non-admin user) → 403", async () => {
+Deno.test({
+  name: "POST dependency-health (non-admin user) → 403",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const token = await signUpEphemeral();
   if (!token) {
     console.warn("⚠ Skipping non-admin POST test — could not create ephemeral user");
@@ -136,9 +170,13 @@ Deno.test("POST dependency-health (non-admin user) → 403", async () => {
   const body = await res.json();
   assertEquals(res.status, 403);
   assert(typeof body?.error === "string" && body.error.toLowerCase().includes("admin"));
+  },
 });
 
-Deno.test("POST dependency-health (admin) → 200 or config-dependent error", async () => {
+Deno.test({
+  name: "POST dependency-health (admin) → 200 or config-dependent error",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const token = await signIn(QA_ADMIN_EMAIL, QA_ADMIN_PASSWORD);
   if (!token) {
     console.warn("⚠ Skipping admin POST test — QA admin login failed");
@@ -169,11 +207,16 @@ Deno.test("POST dependency-health (admin) → 200 or config-dependent error", as
   } else if (res.status === 403) {
     console.warn("⚠ QA account lacks admin role — admin success path not covered");
   }
+  },
 });
 
-Deno.test("OPTIONS dependency-health → 204 with CORS headers", async () => {
+Deno.test({
+  name: "OPTIONS dependency-health → 204 with CORS headers",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const res = await fetch(FN_URL, { method: "OPTIONS" });
   await res.text();
   assertEquals(res.status, 204);
   assertEquals(res.headers.get("access-control-allow-origin"), "*");
+  },
 });

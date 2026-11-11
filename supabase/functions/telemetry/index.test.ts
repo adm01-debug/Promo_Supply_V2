@@ -25,6 +25,25 @@ const baseHeaders = {
   "Content-Type": "application/json",
 };
 
+// Guard: skip integration tests when Supabase is not reachable (e.g., CI
+// without a live project or with placeholder credentials).
+async function isSupabaseReachable(): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+      signal: controller.signal,
+      headers: { apikey: SUPABASE_ANON_KEY },
+    });
+    clearTimeout(timeoutId);
+    return res.status < 500;
+  } catch {
+    return false;
+  }
+}
+
+const SUPABASE_AVAILABLE = await isSupabaseReachable();
+
 async function signIn(): Promise<string | null> {
   const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
     method: "POST",
@@ -44,12 +63,19 @@ async function post(token: string | null, payload: unknown) {
   return { status: res.status, body };
 }
 
-Deno.test("telemetry rejects unauthenticated requests", async () => {
+Deno.test({
+  name: "telemetry rejects unauthenticated requests",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const { status } = await post(null, { message: "hi", level: "info" });
   assertEquals(status, 401);
+  },
 });
 
-Deno.test("telemetry accepts { batch: [...] } from the frontend logger", async () => {
+Deno.test({
+  name: "telemetry accepts { batch: [...] } from the frontend logger",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const token = await signIn();
   if (!token) return; // skip when QA creds ausentes
 
@@ -60,17 +86,25 @@ Deno.test("telemetry accepts { batch: [...] } from the frontend logger", async (
   const { status, body } = await post(token, { batch });
   assertEquals(status, 200);
   assertEquals(body.inserted, 2);
+  },
 });
 
-Deno.test("telemetry accepts single-entry payload", async () => {
+Deno.test({
+  name: "telemetry accepts single-entry payload",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const token = await signIn();
   if (!token) return;
   const { status, body } = await post(token, { level: "info", message: "single-entry-test" });
   assertEquals(status, 200);
   assertEquals(body.inserted, 1);
+  },
 });
 
-Deno.test("telemetry filtra entradas sem message em vez de retornar 400", async () => {
+Deno.test({
+  name: "telemetry filtra entradas sem message em vez de retornar 400",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const token = await signIn();
   if (!token) return;
   const { status, body } = await post(token, {
@@ -78,4 +112,5 @@ Deno.test("telemetry filtra entradas sem message em vez de retornar 400", async 
   });
   assertEquals(status, 200);
   assertEquals(body.inserted, 1);
+  },
 });

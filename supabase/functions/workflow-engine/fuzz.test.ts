@@ -10,6 +10,25 @@ const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY")!;
 const FN_URL = `${SUPABASE_URL}/functions/v1/workflow-engine`;
 
+// Guard: skip integration tests when Supabase is not reachable (e.g., CI
+// without Docker or with placeholder credentials).
+async function isSupabaseReachable(): Promise<boolean> {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+      signal: controller.signal,
+      headers: { apikey: SUPABASE_ANON_KEY },
+    });
+    clearTimeout(timeoutId);
+    return res.status < 500;
+  } catch {
+    return false;
+  }
+}
+
+const SUPABASE_AVAILABLE = await isSupabaseReachable();
+
 // M-02: header legado x-tenant-id removido. Tenant é resolvido via JWT (user_tenants).
 const baseHeaders = {
   apikey: SUPABASE_ANON_KEY,
@@ -17,7 +36,10 @@ const baseHeaders = {
   "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
 };
 
-Deno.test("Fuzzing: Workflow Engine rejects malformed payloads", async () => {
+Deno.test({
+  name: "Fuzzing: Workflow Engine rejects malformed payloads",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   const validBase = {
     action: "start_workflow",
     template_id: "00000000-0000-0000-0000-000000000001",
@@ -44,9 +66,13 @@ Deno.test("Fuzzing: Workflow Engine rejects malformed payloads", async () => {
     assertEquals(body.status, "error");
     assert(body.requestId !== undefined);
   }
+  },
 });
 
-Deno.test("Security: Workflow Engine rejects unauthenticated requests", async () => {
+Deno.test({
+  name: "Security: Workflow Engine rejects unauthenticated requests",
+  ignore: !SUPABASE_AVAILABLE,
+  async fn() {
   // M-02: sem JWT válido, o tenant não pode ser resolvido → 401.
   const res = await fetch(FN_URL, {
     method: "POST",
@@ -69,5 +95,6 @@ Deno.test("Security: Workflow Engine rejects unauthenticated requests", async ()
     `Should reject unauthenticated request (got ${res.status})`
   );
   assertEquals(body.status ?? "error", "error");
+  },
 });
 
