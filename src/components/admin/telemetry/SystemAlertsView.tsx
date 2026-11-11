@@ -30,7 +30,7 @@ export function SystemAlertsView() {
         .select("*")
         .order("created_at", { ascending: false })
         .limit(50);
-      
+
       if (error) throw error;
       return (data as unknown) as SystemAlert[];
     },
@@ -40,9 +40,9 @@ export function SystemAlertsView() {
   const handleResolve = async (id: string) => {
     const { error } = await supabase
       .from("system_alerts")
-      .update({ 
+      .update({
         resolved_at: new Date().toISOString(),
-        // resolved_by: (await supabase.auth.getUser()).data.user?.id 
+        // resolved_by: (await supabase.auth.getUser()).data.user?.id
       })
       .eq("id", id);
 
@@ -92,8 +92,8 @@ export function SystemAlertsView() {
         ) : (
           <div className="divide-y max-h-[600px] overflow-y-auto">
             {alerts.map((alert) => (
-              <div 
-                key={alert.id} 
+              <div
+                key={alert.id}
                 className={`p-4 transition-colors ${alert.resolved_at ? 'bg-muted/20 opacity-60' : 'bg-background hover:bg-muted/30'}`}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -123,9 +123,9 @@ export function SystemAlertsView() {
                     </div>
                   </div>
                   {!alert.resolved_at && (
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
+                    <Button
+                      size="sm"
+                      variant="outline"
                       className="h-8 text-xs hover:bg-emerald-50 hover:text-emerald-600 hover:border-emerald-200"
                       onClick={() => handleResolve(alert.id)}
                     >

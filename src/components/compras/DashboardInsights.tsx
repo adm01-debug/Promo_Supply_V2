@@ -1,11 +1,11 @@
 import { useState, useMemo } from 'react';
 import { LucideIcon } from 'lucide-react';
-import { 
-  Sparkles, 
-  Lightbulb, 
-  TrendingUp, 
-  TrendingDown, 
-  AlertTriangle, 
+import {
+  Sparkles,
+  Lightbulb,
+  TrendingUp,
+  TrendingDown,
+  AlertTriangle,
   ArrowRight,
   Zap,
   ShieldCheck,
@@ -175,7 +175,7 @@ export const DashboardInsights = () => {
                     {insight.description}
                   </p>
                 </div>
-                
+
                 <div className="mt-auto space-y-3">
                   <div className="p-2 rounded bg-background/50 border border-border/50">
                     <p className="text-[10px] font-semibold flex items-center gap-1">

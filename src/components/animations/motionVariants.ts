@@ -3,8 +3,8 @@ import { type Variants } from "framer-motion";
 // Fade In animation variants
 export const fadeInVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.4, ease: "easeOut" }
   }
@@ -13,8 +13,8 @@ export const fadeInVariants: Variants = {
 // Scale animation variants
 export const scaleVariants: Variants = {
   hidden: { opacity: 0, scale: 0.9 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     scale: 1,
     transition: { duration: 0.3, ease: "easeOut" }
   }
@@ -23,8 +23,8 @@ export const scaleVariants: Variants = {
 // Slide animation variants
 export const slideInLeftVariants: Variants = {
   hidden: { opacity: 0, x: -30 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
     transition: { duration: 0.4, ease: "easeOut" }
   }
@@ -32,8 +32,8 @@ export const slideInLeftVariants: Variants = {
 
 export const slideInRightVariants: Variants = {
   hidden: { opacity: 0, x: 30 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     x: 0,
     transition: { duration: 0.4, ease: "easeOut" }
   }
@@ -54,8 +54,8 @@ export const staggerContainerVariants: Variants = {
 // Stagger item variants
 export const staggerItemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
     transition: { duration: 0.3, ease: "easeOut" }
   }
@@ -69,11 +69,11 @@ export const buttonTapVariants = {
 
 // Card hover animations
 export const cardHoverVariants = {
-  rest: { 
+  rest: {
     scale: 1,
     boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1)"
   },
-  hover: { 
+  hover: {
     scale: 1.02,
     boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)",
     transition: { duration: 0.2 }

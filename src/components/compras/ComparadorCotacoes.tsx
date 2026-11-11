@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react";
-import { 
-  Scale, 
-  Check, 
-  X, 
+import {
+  Scale,
+  Check,
+  X,
   Trophy,
   Clock,
   Truck,
@@ -17,11 +17,11 @@ import {
   Sparkles,
   Info
 } from "lucide-react";
-import { 
-  Radar, 
-  RadarChart, 
-  PolarGrid, 
-  PolarAngleAxis, 
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
   ResponsiveContainer,
   Legend
 } from 'recharts';
@@ -100,20 +100,20 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
     // Calculate score for each cotacao (0-100)
     const scores = cotacoes.map(cotacao => {
       let score = 0;
-      
+
       // Price weight: 50%
-      const priceScore = maxTotal === minTotal ? 100 : 
+      const priceScore = maxTotal === minTotal ? 100 :
         ((maxTotal - cotacao.total) / (maxTotal - minTotal)) * 100;
       score += priceScore * 0.5;
-      
+
       // Delivery time weight: 30%
       const maxPrazo = Math.max(...cotacoes.map(c => c.prazoEntrega));
       const prazoScore = maxPrazo === minPrazo ? 100 :
         ((maxPrazo - cotacao.prazoEntrega) / (maxPrazo - minPrazo)) * 100;
       score += prazoScore * 0.3;
-      
+
       // Stock availability weight: 20%
-      const stockScore = cotacao.quantidadeDisponivel >= quantidade ? 100 : 
+      const stockScore = cotacao.quantidadeDisponivel >= quantidade ? 100 :
         (cotacao.quantidadeDisponivel / quantidade) * 100;
       score += stockScore * 0.2;
 
@@ -134,10 +134,10 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
   }, [cotacoes, quantidade]);
 
   const toggleSelection = (id: string) => {
-    setSelectedIds(prev => 
-      prev.includes(id) 
+    setSelectedIds(prev =>
+      prev.includes(id)
         ? prev.filter(x => x !== id)
-        : prev.length < 4 
+        : prev.length < 4
           ? [...prev, id]
           : prev
     );
@@ -148,7 +148,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
 
   const radarData = useMemo(() => {
     if (selectedCotacoes.length < 1) return [];
-    
+
     const radarMetrics = [
       { name: 'Preço', key: 'total', invert: true },
       { name: 'Prazo', key: 'prazoEntrega', invert: true },
@@ -164,12 +164,12 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
         const allVals = cotacoes.map(x => Number(x[m.key as keyof Cotacao]) || 0);
         const min = Math.min(...allVals);
         const max = Math.max(...allVals);
-        
+
         let score = 0;
         if (max === min) score = 100;
         else if (m.invert) score = ((max - val) / (max - min)) * 100;
         else score = ((val - min) / (max - min)) * 100;
-        
+
         dataPoint[c.fornecedor] = Math.round(score);
       });
       return dataPoint;
@@ -366,7 +366,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
             <p className="text-sm text-muted-foreground">
               Selecione até 4 cotações para comparar lado a lado:
             </p>
-            
+
             <div className="flex flex-wrap gap-2">
               {cotacoes.map(cotacao => {
                 const isSelected = selectedIds.includes(cotacao.id);
@@ -378,15 +378,15 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                         <button
                           className={cn(
                             "flex items-center gap-2 px-3 py-2 rounded-lg border-2 transition-all",
-                            isSelected 
-                              ? "border-primary bg-primary/10" 
+                            isSelected
+                              ? "border-primary bg-primary/10"
                               : "border-muted hover:border-muted-foreground/30"
                           )}
                           onClick={() => toggleSelection(cotacao.id)}
                         >
                           <Checkbox checked={isSelected} />
                           <span className="font-medium text-sm">{cotacao.fornecedor}</span>
-                          <Badge 
+                          <Badge
                             variant={score >= 70 ? "default" : score >= 40 ? "secondary" : "outline"}
                             className="text-xs"
                           >
@@ -493,8 +493,8 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                         Critério
                       </th>
                       {selectedCotacoes.map((cotacao, i) => (
-                        <th 
-                          key={cotacao.id} 
+                        <th
+                          key={cotacao.id}
                           className={cn(
                             "p-3 bg-muted/50 text-center",
                             i === selectedCotacoes.length - 1 && "rounded-tr-lg"
@@ -515,7 +515,7 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                   </thead>
                   <tbody>
                     {metrics.map((metric, rowIndex) => (
-                      <tr 
+                      <tr
                         key={metric.key}
                         className={cn(
                           "border-b border-border",
@@ -531,8 +531,8 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                         {selectedCotacoes.map(cotacao => {
                           const isBest = metric.getBest(selectedCotacoes) === cotacao.id;
                           return (
-                            <td 
-                              key={cotacao.id} 
+                            <td
+                              key={cotacao.id}
                               className={cn(
                                 "p-3 text-center",
                                 isBest && metric.key !== 'score' && metric.key !== 'condicaoPagamento' && "bg-success/10"
@@ -540,10 +540,10 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
                             >
                               <div className="flex justify-center">
                                 {metric.format(
-                                  metric.key === 'score' 
-                                    ? getScore(cotacao.id) 
-                                    : (typeof cotacao[metric.key as keyof Cotacao] === 'number' 
-                                        ? cotacao[metric.key as keyof Cotacao] as number 
+                                  metric.key === 'score'
+                                    ? getScore(cotacao.id)
+                                    : (typeof cotacao[metric.key as keyof Cotacao] === 'number'
+                                        ? cotacao[metric.key as keyof Cotacao] as number
                                         : 0),
                                   cotacao,
                                   selectedCotacoes
@@ -575,14 +575,14 @@ export function ComparadorCotacoes({ cotacoes, quantidade, onSelecionar }: Compa
               <div className="text-sm text-muted-foreground">
                 {selectedCotacoes.length} cotação(ões) selecionada(s)
               </div>
-              
+
               <div className="flex gap-2">
                 <Button variant="outline" onClick={() => setSelectedIds([])}>
                   Limpar Seleção
                 </Button>
-                
+
                 {selectedCotacoes.length === 1 && (
-                  <Button 
+                  <Button
                     className="gap-2"
                     onClick={() => {
                       onSelecionar(selectedCotacoes[0].id);

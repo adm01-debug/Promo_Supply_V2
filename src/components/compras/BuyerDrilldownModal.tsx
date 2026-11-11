@@ -1,12 +1,12 @@
-import { 
-  Dialog, DialogContent, DialogHeader, DialogTitle 
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle
 } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { 
+import {
   TrendingDown, Calendar, Building2,
   ArrowUpRight, ArrowDownRight, CheckCircle2, Clock
 } from "lucide-react";
@@ -54,8 +54,8 @@ export const BuyerDrilldownModal = ({ open, onOpenChange, buyer: buyerProp, comp
           <p className="font-medium text-foreground">{label}</p>
           {payload.map((entry, index: number) => (
             <p key={index} className="text-sm" style={{ color: entry.color }}>
-              {entry.name}: {entry.dataKey === 'economia' 
-                ? `R$ ${Number(entry.value).toLocaleString('pt-BR')}` 
+              {entry.name}: {entry.dataKey === 'economia'
+                ? `R$ ${Number(entry.value).toLocaleString('pt-BR')}`
                 : entry.value}
             </p>
           ))}

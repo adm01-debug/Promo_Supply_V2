@@ -56,7 +56,7 @@ export const BuscaAutomatica = ({ status, resultados }: BuscaAutomaticaProps) =>
            </div>
         )}
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <AnimatePresence mode="popLayout">
           {status === 'searching' ? (
@@ -68,8 +68,8 @@ export const BuscaAutomatica = ({ status, resultados }: BuscaAutomaticaProps) =>
                 transition={{ delay: index * 0.1 }}
                 className={cn(
                   "flex items-center gap-4 p-4 rounded-2xl border transition-all duration-500 backdrop-blur-xl",
-                  index < 2 
-                    ? "border-emerald-500/20 bg-emerald-500/5 shadow-lg shadow-emerald-500/5" 
+                  index < 2
+                    ? "border-emerald-500/20 bg-emerald-500/5 shadow-lg shadow-emerald-500/5"
                     : "border-white/5 bg-white/[0.02]"
                 )}
               >
@@ -102,8 +102,8 @@ export const BuscaAutomatica = ({ status, resultados }: BuscaAutomaticaProps) =>
                 transition={{ delay: index * 0.1 }}
                 className={cn(
                   "flex items-center gap-4 p-4 rounded-2xl border transition-all duration-500 backdrop-blur-xl",
-                  r.status === 'encontrado' 
-                    ? "border-emerald-500/20 bg-emerald-500/5 shadow-lg shadow-emerald-500/5" 
+                  r.status === 'encontrado'
+                    ? "border-emerald-500/20 bg-emerald-500/5 shadow-lg shadow-emerald-500/5"
                     : "border-rose-500/20 bg-rose-500/5"
                 )}
               >

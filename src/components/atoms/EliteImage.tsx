@@ -11,12 +11,12 @@ interface EliteImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
  * Atom: EliteImage
  * Premium image loader with shimmer skeleton and fade-in transition.
  */
-export const EliteImage: React.FC<EliteImageProps> = ({ 
-  src, 
-  alt, 
-  className, 
+export const EliteImage: React.FC<EliteImageProps> = ({
+  src,
+  alt,
+  className,
   containerClassName,
-  ...props 
+  ...props
 }) => {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);

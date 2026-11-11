@@ -102,13 +102,13 @@ export const AdvancedProcurementKPIs = () => {
       if (!target || !target.enabled) return;
 
       const { status } = checkKPIStatus(id, value, target, isInverse);
-      
+
       if (status !== 'success') {
         addAlert({
           kpiId: id,
           kpiName: target.name,
           type: status,
-          message: status === 'critical' 
+          message: status === 'critical'
             ? `KPI crítico! Valor atual ${value.toFixed(1)}${target.unit} está muito abaixo da meta ${target.target}${target.unit}`
             : `Atenção: ${value.toFixed(1)}${target.unit} está abaixo da meta ${target.target}${target.unit}`,
           currentValue: value,
@@ -120,8 +120,8 @@ export const AdvancedProcurementKPIs = () => {
 
     toast({
       title: "Verificação Concluída",
-      description: alertsGenerated > 0 
-        ? `${alertsGenerated} alerta(s) gerado(s)` 
+      description: alertsGenerated > 0
+        ? `${alertsGenerated} alerta(s) gerado(s)`
         : "Todos os KPIs estão dentro das metas",
     });
   };
@@ -130,11 +130,11 @@ export const AdvancedProcurementKPIs = () => {
   const getKPIStatusIndicator = (kpiId: string, currentValue: number, isInverse: boolean = false) => {
     const target = targets.find(t => t.id === kpiId);
     if (!target || !target.enabled) return null;
-    
+
     const { status } = checkKPIStatus(kpiId, currentValue, target, isInverse);
-    
+
     if (status === 'success') return null;
-    
+
     return (
       <div className={cn(
         "absolute top-2 right-2 w-2 h-2 rounded-full animate-pulse",
@@ -159,13 +159,13 @@ export const AdvancedProcurementKPIs = () => {
             <SelectItem value="365">Último ano</SelectItem>
           </SelectContent>
         </Select>
-        
+
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={checkAllKPIs} className="gap-2">
             <RefreshCw className="w-4 h-4" />
             Verificar KPIs
           </Button>
-          
+
           <KPITargetsConfig />
         </div>
       </div>
@@ -187,8 +187,8 @@ export const AdvancedProcurementKPIs = () => {
           <p className="text-3xl font-bold text-foreground">{kpiData.procurementROI.current}x</p>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-xs text-muted-foreground">Meta: {targets.find(t => t.id === 'procurement_roi')?.target || kpiData.procurementROI.target}x</span>
-            <Progress 
-              value={(kpiData.procurementROI.current / (targets.find(t => t.id === 'procurement_roi')?.target || kpiData.procurementROI.target)) * 100} 
+            <Progress
+              value={(kpiData.procurementROI.current / (targets.find(t => t.id === 'procurement_roi')?.target || kpiData.procurementROI.target)) * 100}
               className="h-1.5 flex-1"
             />
           </div>
@@ -214,8 +214,8 @@ export const AdvancedProcurementKPIs = () => {
           <p className="text-3xl font-bold text-warning">{kpiData.maverickSpend.percentage}%</p>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-xs text-muted-foreground">R$ {kpiData.maverickSpend.maverick.toLocaleString('pt-BR')}</span>
-            <Progress 
-              value={kpiData.maverickSpend.percentage} 
+            <Progress
+              value={kpiData.maverickSpend.percentage}
               className="h-1.5 flex-1 [&>div]:bg-warning"
             />
           </div>
@@ -241,8 +241,8 @@ export const AdvancedProcurementKPIs = () => {
           <p className="text-3xl font-bold text-foreground">{kpiData.contractCompliance.percentage}%</p>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-xs text-muted-foreground">Meta: {targets.find(t => t.id === 'contract_compliance')?.target || kpiData.contractCompliance.target}%</span>
-            <Progress 
-              value={kpiData.contractCompliance.percentage} 
+            <Progress
+              value={kpiData.contractCompliance.percentage}
               className="h-1.5 flex-1"
             />
           </div>
@@ -315,10 +315,10 @@ export const AdvancedProcurementKPIs = () => {
                     <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                   </linearGradient>
                 </defs>
-                <Area 
-                  type="monotone" 
-                  dataKey="days" 
-                  stroke="hsl(var(--primary))" 
+                <Area
+                  type="monotone"
+                  dataKey="days"
+                  stroke="hsl(var(--primary))"
                   fill="url(#colorDays)"
                   strokeWidth={2}
                 />
@@ -385,8 +385,8 @@ export const AdvancedProcurementKPIs = () => {
               Meta: {targets.find(t => t.id === 'first_time_match')?.target || kpiData.firstTimeMatchRate.target}%
             </Badge>
           </div>
-          <Progress 
-            value={kpiData.firstTimeMatchRate.current} 
+          <Progress
+            value={kpiData.firstTimeMatchRate.current}
             className="h-2 mt-3"
           />
           <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
@@ -416,10 +416,10 @@ export const AdvancedProcurementKPIs = () => {
                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} />
                 <XAxis type="number" tickFormatter={(v) => `R$ ${(v/1000).toFixed(0)}k`} />
                 <YAxis type="category" dataKey="name" width={80} />
-                <Tooltip 
+                <Tooltip
                   formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR')}`, 'Valor']}
-                  contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))', 
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--card))',
                     border: '1px solid hsl(var(--border))',
                     borderRadius: '8px'
                   }}
@@ -451,8 +451,8 @@ export const AdvancedProcurementKPIs = () => {
             </div>
             <Badge className={cn(
               "ml-auto",
-              kpiData.savingsRealization.percentage >= 80 
-                ? "bg-success/10 text-success" 
+              kpiData.savingsRealization.percentage >= 80
+                ? "bg-success/10 text-success"
                 : "bg-warning/10 text-warning"
             )}>
               {kpiData.savingsRealization.percentage}% realizado
@@ -464,10 +464,10 @@ export const AdvancedProcurementKPIs = () => {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
                 <XAxis dataKey="quarter" />
                 <YAxis tickFormatter={(v) => `${(v/1000).toFixed(0)}k`} />
-                <Tooltip 
+                <Tooltip
                   formatter={(value: number) => [`R$ ${value.toLocaleString('pt-BR')}`, '']}
-                  contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))', 
+                  contentStyle={{
+                    backgroundColor: 'hsl(var(--card))',
                     border: '1px solid hsl(var(--border))',
                     borderRadius: '8px'
                   }}

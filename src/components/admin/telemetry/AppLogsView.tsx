@@ -104,15 +104,15 @@ export function AppLogsView() {
                       </div>
                     </div>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => setExpandedId(expandedId === log.id ? null : log.id)}
                   >
                     {expandedId === log.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                   </Button>
                 </div>
-                
+
                 {expandedId === log.id && (
                   <div className="mt-3 p-3 bg-muted rounded-md overflow-x-auto">
                     <pre className="text-[10px] font-mono whitespace-pre-wrap">
