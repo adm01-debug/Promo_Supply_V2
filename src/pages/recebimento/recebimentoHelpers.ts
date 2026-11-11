@@ -39,3 +39,18 @@ export function getOfflineEntries(): ReceivingEntry[] {
 export function saveOfflineEntries(entries: ReceivingEntry[]) {
   localStorage.setItem(OFFLINE_STORAGE_KEY, JSON.stringify(entries));
 }
+
+export const ORDERS_CACHE_KEY = "offline-orders-cache";
+
+export function getCachedOrders(): PendingOrder[] | null {
+  try {
+    const cached = localStorage.getItem(ORDERS_CACHE_KEY);
+    return cached ? (JSON.parse(cached) as PendingOrder[]) : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveCachedOrders(orders: PendingOrder[]) {
+  localStorage.setItem(ORDERS_CACHE_KEY, JSON.stringify(orders));
+}

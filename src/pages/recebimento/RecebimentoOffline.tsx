@@ -30,6 +30,8 @@ import {
   OFFLINE_STORAGE_KEY,
   getOfflineEntries,
   saveOfflineEntries,
+  getCachedOrders,
+  saveCachedOrders,
 } from "./recebimentoHelpers";
 
 export default function RecebimentoOffline() {
@@ -99,20 +101,15 @@ export default function RecebimentoOffline() {
 
       setOrders(mapped);
       // Cache for offline use
-      localStorage.setItem("offline-orders-cache", JSON.stringify(mapped));
+      saveCachedOrders(mapped);
     } catch (err: unknown) {
       // Try cached data
-      try {
-        const cached = localStorage.getItem("offline-orders-cache");
-        if (cached) {
-          setOrders(JSON.parse(cached));
-          toast.info("Usando dados em cache");
-        } else {
-          toast.error("Erro ao buscar pedidos");
-        }
-      } catch {
-        localStorage.removeItem("offline-orders-cache");
-        toast.error("Cache corrompido. Conecte-se à internet para recarregar.");
+      const cached = getCachedOrders();
+      if (cached) {
+        setOrders(cached);
+        toast.info("Usando dados em cache");
+      } else {
+        toast.error("Erro ao buscar pedidos");
       }
     } finally {
       setLoading(false);
@@ -126,14 +123,10 @@ export default function RecebimentoOffline() {
   // On mount, load cached orders if offline
   useEffect(() => {
     if (!isOnline) {
-      try {
-        const cached = localStorage.getItem("offline-orders-cache");
-        if (cached) {
-          setOrders(JSON.parse(cached));
-          setLoading(false);
-        }
-      } catch {
-        localStorage.removeItem("offline-orders-cache");
+      const cached = getCachedOrders();
+      if (cached) {
+        setOrders(cached);
+        setLoading(false);
       }
     }
   }, [isOnline]);

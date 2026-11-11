@@ -3,6 +3,8 @@
  * Suporta formatação BRL, datas pt-BR e nomes de colunas traduzidos.
  */
 
+import { parseLocalDate } from './dateUtils';
+
 interface ExportColumn {
   key: string;
   label: string;
@@ -17,16 +19,14 @@ const formatCurrency = (value: unknown): string => {
 
 const formatDate = (value: unknown): string => {
   if (!value) return '';
-  const d = new Date(String(value));
-  if (isNaN(d.getTime())) return String(value);
-  return d.toLocaleDateString('pt-BR');
+  const d = parseLocalDate(value as string);
+  return d ? d.toLocaleDateString('pt-BR') : String(value);
 };
 
 const formatDateTime = (value: unknown): string => {
   if (!value) return '';
-  const d = new Date(String(value));
-  if (isNaN(d.getTime())) return String(value);
-  return d.toLocaleString('pt-BR');
+  const d = parseLocalDate(value as string);
+  return d ? d.toLocaleString('pt-BR') : String(value);
 };
 
 // Escape CSV value and prevent formula injection (OWASP CSV injection)
