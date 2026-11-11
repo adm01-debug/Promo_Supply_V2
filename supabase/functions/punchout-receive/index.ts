@@ -128,9 +128,20 @@ serve(async (req) => {
 
     if (sessionError || !session) throw new Error("Session not found");
 
-    const createdAt = new Date(session.created_at).getTime();
-    const isExpired = !Number.isFinite(createdAt) || Date.now() - createdAt > 30 * 60 * 1000;
-    if (isExpired) throw new Error("Session expired");
+    // Session must be open. Reject reused or expired cookies so a stolen one
+    // can't reopen completed sessions to inject more solicitations.
+    if (session.status !== "open") {
+      return new Response(JSON.stringify({ error: "Session not open" }), {
+        status: 409,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (session.expires_at && new Date(session.expires_at) < new Date()) {
+      return new Response(JSON.stringify({ error: "Session expired" }), {
+        status: 410,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const cart = { items: cartItems };
 

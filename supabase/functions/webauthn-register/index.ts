@@ -149,7 +149,7 @@ Deno.serve(async (req) => {
         attestation: 'none',
       };
 
-      console.log('Registration options generated for:', email);
+      console.log('Registration options generated for user', safeUserId);
 
       return new Response(JSON.stringify({ options }), {
         headers: buildResponseHeaders(corsHeaders),
