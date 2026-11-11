@@ -23,18 +23,22 @@ const SUPABASE_URL = Deno.env.get("VITE_SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("VITE_SUPABASE_PUBLISHABLE_KEY")!;
 const FN_URL = `${SUPABASE_URL}/functions/v1/dependency-health`;
 
-// Guard: skip integration tests when Supabase is not reachable (e.g., CI
-// without Docker or with placeholder credentials).
+// Guard: skip integration tests when the edge function is not reachable with
+// the credentials this environment provides (e.g., CI against placeholder or
+// unauthenticated projects). A 401/403 from the gateway means valid JWT
+// credentials are missing, so the integration cannot run here.
 async function isSupabaseReachable(): Promise<boolean> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+    const res = await fetch(FN_URL, {
       signal: controller.signal,
       headers: { apikey: SUPABASE_ANON_KEY },
     });
     clearTimeout(timeoutId);
-    return res.status < 500;
+    // 2xx/4xx/5xx (except gateway auth barriers) means the function is live;
+    // 401/403 means this env has no credentials to exercise it.
+    return res.status !== 401 && res.status !== 403;
   } catch {
     return false;
   }

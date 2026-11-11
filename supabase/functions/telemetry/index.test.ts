@@ -25,18 +25,22 @@ const baseHeaders = {
   "Content-Type": "application/json",
 };
 
-// Guard: skip integration tests when Supabase is not reachable (e.g., CI
-// without a live project or with placeholder credentials).
+// Guard: skip integration tests when the edge function is not reachable with
+// the credentials this environment provides (e.g., CI against placeholder or
+// unauthenticated projects). A 401/403 from the gateway means valid
+// credentials are missing, so the integration cannot run here.
 async function isSupabaseReachable(): Promise<boolean> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+    const res = await fetch(FN_URL, {
+      method: "POST",
       signal: controller.signal,
-      headers: { apikey: SUPABASE_ANON_KEY },
+      headers: { apikey: SUPABASE_ANON_KEY, "Content-Type": "application/json" },
+      body: "{}",
     });
     clearTimeout(timeoutId);
-    return res.status < 500;
+    return res.status !== 401 && res.status !== 403;
   } catch {
     return false;
   }
