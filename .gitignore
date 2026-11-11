@@ -41,3 +41,7 @@ inventario/estado/*.tmp
 # Python bytecode dos geradores de contexto
 __pycache__/
 *.py[cod]
+
+# Estado local privado dos novos adaptadores de automação
+/.tools/repo-automation/
+/.tools/graphify/local-state/
