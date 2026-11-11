@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import type { Tables } from "@/integrations/supabase/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -76,14 +77,10 @@ interface NoisyRow {
   last_seen: string;
 }
 
-interface OpenAlertRow {
-  id: string;
-  alert_type: string;
-  severity: string;
-  message: string | null;
-  created_at: string;
-  metadata: Record<string, unknown> | null;
-}
+type OpenAlertRow = Pick<
+  Tables<"system_alerts">,
+  "id" | "alert_type" | "severity" | "message" | "created_at" | "metadata"
+>;
 
 interface DashboardResponse {
   generated_at: string;
@@ -121,11 +118,20 @@ function SeverityBadge({ severity }: { severity: string }) {
 
 // Pivots timeseries rows into the format the chart expects
 function pivotTimeseries(rows: Array<{ day: string; severity: string; cnt: number }>): TimeseriesRow[] {
-  const tsMap = new Map<string, Record<string, string | number>>();
+  const tsMap = new Map<string, TimeseriesRow>();
   for (const row of rows) {
     const key = String(row.day);
     const bucket = tsMap.get(key) ?? { day: key };
-    bucket[row.severity] = Number(row.cnt);
+    switch (row.severity) {
+      case "EMERGENCY":
+      case "CRITICAL":
+      case "HIGH":
+      case "MEDIUM":
+      case "LOW":
+      case "INFO":
+        bucket[row.severity] = Number(row.cnt);
+        break;
+    }
     tsMap.set(key, bucket);
   }
   return Array.from(tsMap.values()).sort((a, b) =>
@@ -149,9 +155,9 @@ async function fetchHealth(): Promise<DashboardResponse> {
       .select("alert_type, severity, total_open, last_24h, last_1h, oldest_open, most_recent")
       .then(({ data, error }) => {
         if (error) throw new Error(error.message);
-        return data!.map((r) => ({
-          alert_type: r.alert_type,
-          severity: r.severity,
+        return (data ?? []).map((r) => ({
+          alert_type: r.alert_type ?? "UNKNOWN",
+          severity: r.severity ?? "UNKNOWN",
           open_count: Number(r.total_open),
           last_1h: Number(r.last_1h),
           last_24h: Number(r.last_24h),
@@ -181,7 +187,7 @@ async function fetchHealth(): Promise<DashboardResponse> {
         if (error) throw new Error(error.message);
         const counts: SeverityCounts = {};
         for (const row of data ?? []) {
-          const sev = (row as { severity: string }).severity ?? "UNKNOWN";
+          const sev = row.severity ?? "UNKNOWN";
           counts[sev] = (counts[sev] ?? 0) + 1;
         }
         return counts;
@@ -190,7 +196,7 @@ async function fetchHealth(): Promise<DashboardResponse> {
     // Timeseries 7d
     supabase.rpc("alerts_severity_timeseries", { days: 7 }).then(({ data, error }) => {
       if (error) throw new Error(error.message);
-      return pivotTimeseries(data as Array<{ day: string; severity: string; cnt: number }>);
+      return pivotTimeseries(data ?? []);
     }),
 
     // MTTR 7d
@@ -296,7 +302,8 @@ export default function HealthDashboard() {
     const needle = typeFilter.trim().toLowerCase();
     return rows.filter((r) => {
       if (!sevFilter.has(r.severity)) return false;
-      if (cutoff && new Date(r.created_at).getTime() < cutoff) return false;
+      const createdAt = r.created_at ? Date.parse(r.created_at) : Number.NaN;
+      if (cutoff && (!Number.isFinite(createdAt) || createdAt < cutoff)) return false;
       if (needle && !r.alert_type.toLowerCase().includes(needle) && !(r.message ?? "").toLowerCase().includes(needle)) {
         return false;
       }
@@ -745,7 +752,7 @@ export default function HealthDashboard() {
                     {filteredAlerts.map((row) => (
                       <tr key={row.id} className="border-b last:border-0 align-top">
                         <td className="py-2 pr-3 text-muted-foreground whitespace-nowrap">
-                          {new Date(row.created_at).toLocaleString("pt-BR")}
+                          {row.created_at ? new Date(row.created_at).toLocaleString("pt-BR") : "—"}
                         </td>
                         <td className="py-2 pr-3 font-mono text-xs">{row.alert_type}</td>
                         <td className="py-2 pr-3"><SeverityBadge severity={row.severity} /></td>
