@@ -38,6 +38,7 @@ import { BulkPlanningConsole } from './BulkPlanningConsole';
 
 export const ExecutiveDashboard = () => {
   const [drillDown, setDrillDown] = useState<DrillDownData | null>(null);
+  const kraljicRef = useRef<HTMLDivElement>(null);
   const [selectedPeriod, setSelectedPeriod] = useState('6m');
   const [showComparison, setShowComparison] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -312,7 +313,7 @@ export const ExecutiveDashboard = () => {
                 <p className="text-xs text-zinc-400 leading-relaxed font-medium mb-6">
                   Sua matriz de risco Kraljic foi atualizada com base nos dados de mercado deste mês. Recomendamos revisar os fornecedores críticos.
                 </p>
-                <EliteButton variant="outline" className="w-full rounded-2xl h-12 text-[10px] font-black uppercase tracking-[0.2em] border-white/10 hover:bg-white/5 text-zinc-300">VER MATRIZ KRALJIC</EliteButton>
+                <EliteButton variant="outline" onClick={() => kraljicRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })} className="w-full rounded-2xl h-12 text-[10px] font-black uppercase tracking-[0.2em] border-white/10 hover:bg-white/5 text-zinc-300">VER MATRIZ KRALJIC</EliteButton>
               </Card>
            </div>
         </div>
@@ -325,7 +326,7 @@ export const ExecutiveDashboard = () => {
           onBuyerDrillDown={(b) => setDrillDown({ type: 'buyer', data: b })}
         />
         
-        <div className="pt-8">
+        <div ref={kraljicRef} className="pt-8">
            <KraljicMatrix />
         </div>
       </div>
