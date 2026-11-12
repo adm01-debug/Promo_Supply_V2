@@ -1,6 +1,7 @@
 import { logger } from '@/lib/logger';
 import { ContractSLASection } from "./contract/ContractSLASection";
 import { ContractItemsEditor } from "./contract/ContractItemsEditor";
+import { replaceContractItems } from "./contract/replaceContractItems";
 import { useState, useEffect } from "react";
 import {
   Dialog,
@@ -229,26 +230,8 @@ export function ContractModal({ open, onOpenChange, contract, onSuccess }: Contr
 
         if (error) throw error;
 
-        // Update items - delete old and insert new
-        await supabase.from('contract_items').delete().eq('contract_id', contract.id);
-        
-        if (items.length > 0) {
-          const itemsToInsert = items.map(item => ({
-            contract_id: contract.id,
-            item_name: item.item_name,
-            description: item.description,
-            unit: item.unit,
-            quantity: item.quantity,
-            unit_price: item.unit_price,
-            total_price: item.total_price,
-          }));
-          
-          const { error: itemsError } = await supabase
-            .from('contract_items')
-            .insert(itemsToInsert);
-          
-          if (itemsError) throw itemsError;
-        }
+        // Update items - insert new first, then delete old (no loss if insert fails)
+        await replaceContractItems(supabase, contract.id, items);
 
         // Add history entry
         await supabase.from('contract_history').insert({
