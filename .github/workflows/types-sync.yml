@@ -1,5 +1,5 @@
 # docs:
-#   gatilho: push na main que toque supabase/migrations ou scripts/types-sync; a cada 10 min (minuto 7); dispatch
+#   gatilho: push na main que toque supabase/migrations ou scripts/types-sync; a cada hora (minuto 7); dispatch
 #   prova: src/integrations/supabase/types.ts gerado do banco oficial bate com o commitado (Gates 1 e 2)
 #   falha: PR em `automation/types-sync` ou issue `[types-sync]`; nunca passa com tipo divergente
 #   avisa: PR de types e issue de gate
@@ -46,9 +46,10 @@ on:
       - 'scripts/types-sync/**'
       - '.github/workflows/types-sync.yml'
   schedule:
-    # Minuto 7 de 10 em 10: fora do minuto 0 (onde o GitHub concentra a fila de
-    # agendamentos) e fora do minuto 3, usado pelo contexto.yml.
-    - cron: '7-59/10 * * * *'
+    # Minuto 7 de cada hora: fora do minuto 0 (onde o GitHub concentra a fila de
+    # agendamentos) e fora do minuto 3, usado pelo contexto.yml. Era de 10 em 10 min
+    # e estourou o orçamento de Actions da conta em 2026-11 (decisão do dono).
+    - cron: '7 * * * *'
   workflow_dispatch:
 
 defaults:

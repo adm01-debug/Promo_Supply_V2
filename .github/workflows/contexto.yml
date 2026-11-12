@@ -1,5 +1,5 @@
 # docs:
-#   gatilho: push em main que toque código, banco, scripts das automações ou docs/contexto/regras/manual/; a cada 10 min (minuto 3); dispatch
+#   gatilho: push em main que toque código, banco, scripts das automações ou docs/contexto/regras/manual/; a cada hora (minuto 3); dispatch
 #   prova: branch contexto com docs/contexto/{codigo,supabase,regras}/ regerados das três fontes de verdade (código em main, banco oficial, código+migrations+manual/) e docs/contexto/00-INDEX.md montado a partir dos manifests
 #   falha: falha fatal de produtor reprova o workflow; fontes com artefato publicam e as demais mantêm a última versão; erro de download impede a publicação
 #   avisa: ninguém (a branch contexto é a prova; errors.md em supabase/ e erros_do_gerador em codigo/ listam seções com falha)
@@ -45,7 +45,7 @@ on:
       - '.env.example'
       - '.github/workflows/**'
   schedule:
-    - cron: '3-59/10 * * * *' # minuto 3: fora do minuto 0 (fila do GitHub) e dos outros crons do repo
+    - cron: '3 * * * *' # minuto 3 de cada hora: fora do minuto 0 (fila do GitHub) e dos outros crons; era de 10 em 10 min e estourou o orçamento de Actions (2026-11)
   workflow_dispatch:
     inputs:
       force:

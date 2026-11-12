@@ -37,7 +37,7 @@ git show origin/contexto:docs/contexto/supabase/lints.md
 ## Gatilhos e custo
 
 - `push` em `main` nos paths de código/banco/scripts/`manual/` → regera `codigo/` e `regras/` (não coleta banco).
-- `schedule` a cada 10 min, no minuto 3 → só coleta o que mudou; o banco sempre coleta.
+- `schedule` a cada hora, no minuto 3 → só coleta o que mudou; o banco sempre coleta.
 - `workflow_dispatch` → tem `force` para ignorar o estado anterior.
 
 O repo é **privado**, então minuto de Actions é cobrado. O `gate` compara o HEAD da `main` com o `commit` dos
