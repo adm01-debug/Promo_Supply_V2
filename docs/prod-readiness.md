@@ -9,13 +9,13 @@
 | Área | Situação |
 |---|---|
 | Build / typecheck / lint / testes (local, `main`) | OK — ver §1 |
-| GitHub Actions na `main` | BLOQUEADO até a fila do Actions rodar — ver §2 |
-| Banco: RLS | 162/162 tabelas com RLS; 6 sem policy (lixo) → PR #42 |
-| Banco: advisors nível ERROR | 2 views `SECURITY DEFINER` → PR #41 |
-| **Segurança crítica** | `execute_read_query` executável por visitante sem login e permite escrita como `postgres` → **PR #40** |
+| GitHub Actions na `main` | orçamento liberado pelo dono; runs #367/#36/#18 re-executados → SUCCESS — ver §2 |
+| Banco: RLS | OK — após #42: **156/156 tabelas com RLS, 0 sem policy** |
+| Banco: advisors nível ERROR | OK — após #41: 0 `security_definer_view`, 0 `rls_disabled_in_public`, 0 `policy_exists_rls_disabled`, 0 `user_metadata` |
+| **Segurança crítica** | OK — após #40 (aplicada com aprovação do dono): `anon` → `permission denied for function execute_read_query` |
 | Produção front | OK — SPA 200, 0 erro de runtime em 24h |
 | Edges | 27 no ar; 5 não publicadas + 1 inexistente; 5 com 500 — ver §4 |
-| Código pela metade | 0 TODO/FIXME/WIP; 70 elementos clicáveis sem ação, mocks no dashboard executivo — ver §5 |
+| Código pela metade | 0 TODO/FIXME/WIP; 8 botões ligados (#43, #46); restam 65 elementos clicáveis sem ação + mocks no dashboard executivo e card fictício — BLOQUEADO por definição de negócio, ver §5 |
 
 ## 1. Linha de base de qualidade (antes de qualquer mudança)
 
@@ -39,10 +39,10 @@ Causa das falhas da `main` em `4cc1a7a` (11:02 UTC): anotação do check-run →
 
 | Workflow | Último run na `main` | Status |
 |---|---|---|
-| `main.yml` (Freight Quest CI/CD) | #367 re-executado 13:40, `QUEUED` até 14:05 | BLOQUEADO — orçamento de Actions esgotado (custo, decisão do dono); cada passo reproduzido localmente passa (§1) |
-| `guards.yml` | #36 re-executado 13:40, `QUEUED` | BLOQUEADO — idem |
-| `automation-local.yml` | #18 re-executado 13:40, `QUEUED` | BLOQUEADO — idem |
-| `types-sync.yml` (a cada 10 min) | #483 success (13:14); #484–#487 `QUEUED` desde 13:24 | BLOQUEADO — mesma fila parada por orçamento |
+| `main.yml` (Freight Quest CI/CD) | #367 re-executado → `COMPLETED SUCCESS` (14:28) após o dono liberar o orçamento | OK |
+| `guards.yml` | #36 re-executado → `COMPLETED SUCCESS` (14:15) | OK |
+| `automation-local.yml` | #18 re-executado → `COMPLETED SUCCESS` (14:07) | OK |
+| `types-sync.yml` (a cada 10 min) | #483 success (13:14); fila retomada após liberação do orçamento | OK |
 | `contexto.yml` (a cada 10 min) | #170 success (12:54); #172/#173 `cancelled` por concorrência (run novo cancela o anterior) | OK |
 | `branch-hygiene-audit.yml` (semanal) | #1 success | OK |
 | `notifica-falha-main.yml` | último `skipped` (nada a notificar) | OK |
@@ -57,14 +57,15 @@ Causa das falhas da `main` em `4cc1a7a` (11:02 UTC): anotação do check-run →
 | `policy_exists_rls_disabled` | 0 | OK |
 | `auth_users_exposed` | 0 | OK |
 | `rls_references_user_metadata` | 0 | OK |
-| `security_definer_view` | `supplier_compliance_summary`, `v_system_health_overview` — e como `anon`: `select count(*) from supplier_compliance_summary` → **10 linhas sem login** | BLOQUEADO → PR #41 (DDL, aguardando dono) |
-| (WARN) `materialized_view_in_api` | `mv_dashboard_kpis` legível por `anon` (0 linhas hoje) | BLOQUEADO → PR #41 |
-| **Função `execute_read_query`** | `SECURITY DEFINER`, executável por `anon`/`authenticated`; como `anon`, `EXPLAIN (ANALYZE) WITH d AS (INSERT …) SELECT …` inseriu 1 linha (teste em transação revertida) | BLOQUEADO → **PR #40** (crítico, aguardando dono) |
+| `security_definer_view` | antes: `supplier_compliance_summary`, `v_system_health_overview` (anon lia 10 linhas). **Depois da #41 aplicada**: lint → `[]`; anon → `permission denied for view supplier_compliance_summary`; admin logado → compliance 10, saúde 2 | OK |
+| (WARN) `materialized_view_in_api` | `mv_dashboard_kpis`: anon_sel `false` após #41 | OK |
+| **Função `execute_read_query`** | antes: executável por `anon` e permitia escrita como `postgres` (1 linha inserida em teste revertido). **Depois da #40 aplicada**: `anon_exec=false`, `auth_exec=false`, `service_exec=true`; chamada como anon → `permission denied for function execute_read_query` | OK |
+| SECURITY DEFINER com SQL dinâmico executável por `anon` | `[]` | OK |
 
 ### 3.2 Migrations × banco
 BLOQUEADO — não existe ledger: `supabase_db_migrations` → "Tabela supabase_migrations.schema_migrations não encontrada neste projeto". 280 arquivos em `supabase/migrations/` sem registro do que rodou. Amostra: a migration mais recente (`20261107150000_execute_read_query.sql`) está aplicada (função existe, corpo com o filtro `EXPLAIN`), **mas** o `REVOKE … FROM PUBLIC` dela não tirou `anon`/`authenticated` (ver 3.1). Comparar os 280 exige decidir com o dono o caminho de apply/baseline.
 
-### 3.3 Tabelas (162) — RLS e policies
+### 3.3 Tabelas (162 na linha de base; 156 após remover as 6 tabelas-lixo na #42) — RLS e policies
 | Tabela | Linhas (est.) | Policies | Status |
 |---|---|---|---|
 | `account_lockouts` | 4 | 2 | OK — RLS ativo + 2 policy(s) |
@@ -203,12 +204,12 @@ BLOQUEADO — não existe ledger: `supabase_db_migrations` → "Tabela supabase_
 | `user_roles` | 5 | 2 | OK — RLS ativo + 2 policy(s) |
 | `user_tenants` | 5 | 1 | OK — RLS ativo + 1 policy(s) |
 | `user_tour_preferences` | 2 | 4 | OK — RLS ativo + 4 policy(s) |
-| `v_cotacao_status` | 1 | 0 | BLOQUEADO — RLS sem policy; tabela-lixo criada por `SELECT … INTO` fora de função; remoção na PR #42 (aguardando dono) |
-| `v_kpis` | 1 | 0 | BLOQUEADO — RLS sem policy; tabela-lixo criada por `SELECT … INTO` fora de função; remoção na PR #42 (aguardando dono) |
-| `v_pipeline` | 0 | 0 | BLOQUEADO — RLS sem policy; tabela-lixo criada por `SELECT … INTO` fora de função; remoção na PR #42 (aguardando dono) |
-| `v_top_categories` | 1 | 0 | BLOQUEADO — RLS sem policy; tabela-lixo criada por `SELECT … INTO` fora de função; remoção na PR #42 (aguardando dono) |
-| `v_trends` | 1 | 0 | BLOQUEADO — RLS sem policy; tabela-lixo criada por `SELECT … INTO` fora de função; remoção na PR #42 (aguardando dono) |
-| `v_urgent_items` | 1 | 0 | BLOQUEADO — RLS sem policy; tabela-lixo criada por `SELECT … INTO` fora de função; remoção na PR #42 (aguardando dono) |
+| `v_cotacao_status` | 1 | 0 | REMOVIDA (PR #42 aplicada): tabela-lixo criada por `SELECT … INTO` fora de função; 0 dependências, sem uso no código |
+| `v_kpis` | 1 | 0 | REMOVIDA (PR #42 aplicada): tabela-lixo criada por `SELECT … INTO` fora de função; 0 dependências, sem uso no código |
+| `v_pipeline` | 0 | 0 | REMOVIDA (PR #42 aplicada): tabela-lixo criada por `SELECT … INTO` fora de função; 0 dependências, sem uso no código |
+| `v_top_categories` | 1 | 0 | REMOVIDA (PR #42 aplicada): tabela-lixo criada por `SELECT … INTO` fora de função; 0 dependências, sem uso no código |
+| `v_trends` | 1 | 0 | REMOVIDA (PR #42 aplicada): tabela-lixo criada por `SELECT … INTO` fora de função; 0 dependências, sem uso no código |
+| `v_urgent_items` | 1 | 0 | REMOVIDA (PR #42 aplicada): tabela-lixo criada por `SELECT … INTO` fora de função; 0 dependências, sem uso no código |
 | `wal_rate_snapshots` | 0 | 1 | OK — RLS ativo + 1 policy(s) |
 | `webauthn_challenges` | 0 | 3 | OK — RLS ativo + 3 policy(s) |
 | `webauthn_credentials` | 0 | 4 | OK — RLS ativo + 4 policy(s) |
@@ -283,7 +284,7 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 | Rotas não registradas | 0 — 55 caminhos em `AppRoutes.tsx`, todos com componente; `/__dev` só em DEV | OK |
 | Mojibake (acentuação corrompida) em 12 telas | corrigido na PR #44 | ver §6 |
 | `onClick={() => {}}` em CSV (Relatórios), EXPORT REPORT (Executivo), VER TUDO (Compras) | ligados na PR #43 | ver §6 |
-| Elementos clicáveis sem ação (varredura AST em 269 `.tsx`) | 3 ligados na PR #43 e 5 na PR #46; restam **70** (contagem feita após #43): 1 no-op, 3 só com toast "em desenvolvimento", 59 botões sem handler, 7 itens de menu sem handler (+8 limítrofes que funcionam por bolha de clique) | BLOQUEADO — cada um é uma funcionalidade a definir (ex.: "Chat com Fornecedores", "Cobrar Fornecedores (WhatsApp)", "Gerar Token SCIM", "Autorizar Redespacho", "Bloquear fornecedor"); exigem regra de negócio e, em parte, integração/custo. Lista completa em §5.1 |
+| Elementos clicáveis sem ação (varredura AST em 269 `.tsx`) | 3 ligados na PR #43 e 5 na PR #46 (ambas mergeadas); restam **65** (70 contados após #43, menos os 5 da #46): 1 no-op, 3 só com toast "em desenvolvimento", 59 botões sem handler, 7 itens de menu sem handler (+8 limítrofes que funcionam por bolha de clique) | BLOQUEADO — cada um é uma funcionalidade a definir (ex.: "Chat com Fornecedores", "Cobrar Fornecedores (WhatsApp)", "Gerar Token SCIM", "Autorizar Redespacho", "Bloquear fornecedor"); exigem regra de negócio e, em parte, integração/custo. Lista completa em §5.1 |
 | Dados fixos (mock) em produção | `src/components/compras/executive/executiveDashboardData.ts` alimenta `ExecutiveDashboard.tsx` (fallback `rm.x \|\| executiveMetrics.x`), `ExecutiveChartsRow`, `ExecutiveFiltersBar`, `ExecutiveDrillDownModal`; `procurement-kpis/kpiMockData` em `AdvancedProcurementKPIs.tsx:47` | BLOQUEADO — substituir exige definir metas (targets) e séries reais; não há tabela de metas no banco |
 | Card fictício `AISupplierSuggestion` | `src/components/compras/AISupplierSuggestion.tsx:36-39` exibe fornecedores escritos no código ("AluTech Indústria 98% Match", "12 qualified suppliers") nas telas Cotação e Fornecedores | BLOQUEADO — decidir: ligar à edge `ai-supplier-suggestion` (hoje 500) ou retirar o card |
 | Fio cortado: front chama edge `process-solicitacao-neural` | não existe | BLOQUEADO (§4) |
@@ -377,19 +378,21 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 
 | PR | O quê | Evidência | Estado |
 |---|---|---|---|
-| [#40](https://github.com/adm01-debug/Promo_Supply_V2/pull/40) | revoga `execute_read_query` de `anon`/`authenticated` | §3.1; migration em transação revertida: `anon_depois=false`, `service_depois=true` | **aberta, aguardando dono** (DDL em produção) |
-| [#41](https://github.com/adm01-debug/Promo_Supply_V2/pull/41) | views com `security_invoker` + revoga SELECT de `anon` | rollback: `definer_restantes=0`, `anon_scs=false`, `auth_scs=true` | **aberta, aguardando dono** (DDL) |
-| [#42](https://github.com/adm01-debug/Promo_Supply_V2/pull/42) | remove 6 tabelas-lixo `v_*` | sem uso no código, 0 dependências | **aberta, aguardando dono** (DDL + deleção) |
-| [#43](https://github.com/adm01-debug/Promo_Supply_V2/pull/43) | liga CSV, EXPORT REPORT e VER TUDO | typecheck OK, eslint 0, vitest 368/368 nas áreas tocadas | aberta, aguardando CI (fila do Actions) |
-| [#46](https://github.com/adm01-debug/Promo_Supply_V2/pull/46) | liga Novo Evento, Ver Pedido, Rastrear Entrega e 2× Exportar | typecheck OK, eslint 0 erros, vitest 395/395 nas áreas tocadas | aberta, aguardando CI (fila do Actions) |
-| [#44](https://github.com/adm01-debug/Promo_Supply_V2/pull/44) | corrige acentuação corrompida em 12 telas | vitest 2250/2262 (= linha de base), typecheck OK | aberta, aguardando CI (fila do Actions) |
+| [#40](https://github.com/adm01-debug/Promo_Supply_V2/pull/40) | revoga `execute_read_query` de `anon`/`authenticated` | aplicada em produção com aprovação do dono; anon → `permission denied` | **mergeada** (`c9488d5`), CI verde |
+| [#41](https://github.com/adm01-debug/Promo_Supply_V2/pull/41) | views com `security_invoker` + revoga SELECT de `anon` | aplicada; anon → `permission denied`; admin ainda lê 10/2 | **mergeada** (`5001fc3`), CI verde |
+| [#42](https://github.com/adm01-debug/Promo_Supply_V2/pull/42) | remove 6 tabelas-lixo `v_*` | aplicada; 156/156 com RLS, 0 sem policy | **mergeada** (`aca8fbd`), CI verde |
+| [#43](https://github.com/adm01-debug/Promo_Supply_V2/pull/43) | liga CSV, EXPORT REPORT e VER TUDO | CI verde; deploy Vercel `dpl_7XG4VrRHuztHknoQLcj6rJ284j4o` READY (`e897b42`) | **mergeada** |
+| [#46](https://github.com/adm01-debug/Promo_Supply_V2/pull/46) | liga Novo Evento, Ver Pedido, Rastrear Entrega e 2× Exportar | typecheck OK, eslint 0 erros, vitest 395/395 nas áreas tocadas | **mergeada** (`5cdeeac`), CI verde incl. E2E |
+| [#44](https://github.com/adm01-debug/Promo_Supply_V2/pull/44) | corrige acentuação corrompida em 12 telas | CI verde; `main`+#44+#46 local: typecheck OK, 2250/2262 (= linha de base), build OK | **mergeada** (`257a4c4`) |
 
 ## 9. Aguardando decisão do dono
-1. **Aplicar PR #40 já** — hoje qualquer pessoa com a chave pública do site consegue escrever no banco como `postgres`. Falta definir o caminho de apply (não há ledger).
-2. PR #41 (vazamento de fornecedores/penalidades sem login) e PR #42.
-2b. **Orçamento do GitHub Actions** (US$ 209,59 cobráveis em novembro): sem aumento, nenhum CI roda e as PRs #43, #44, #45 e #46 não podem ser mergeadas com CI verde.
-2c. Cadastrar o segredo `MIGRATE_HELPER_ACCESS_KEY` nas edges.
-3. Permitir que o GitHub Actions abra PR (Settings → Actions) para o inventário semanal.
-4. Publicar as 5 edges ausentes e diagnosticar o 500 das 4 de IA (precisa de `SUPABASE_ACCESS_TOKEN` ou acesso aos logs do projeto).
-5. Definir o comportamento dos 70 botões sem ação e as metas reais do dashboard executivo.
-6. O repositório está **público** (`"visibility":"public"` na API do GitHub), embora o `AGENTS.md` diga privado.
+Decididos e executados nesta sessão: aplicar #40/#41/#42 em produção (feito e verificado) e liberar o orçamento do Actions (feito; CI voltou a rodar).
+
+Ainda pendentes (BLOQUEADO):
+1. **Edge functions** — publicar `health-dashboard`, `maintain-partitions`, `spot-api`, `xbz-proxy`, `xbz-sync-pedidos`; republicar as 4 `ai-*`; cadastrar o segredo `MIGRATE_HELPER_ACCESS_KEY`. Exige `SUPABASE_ACCESS_TOKEN` (PAT `sbp_…`): o dono recusou fornecê-lo nesta sessão; o MCP Promo Supply V2 e o gateway `supabase-supply-mcp` não publicam edge (`supabase_functions_list` → "Listagem requer SUPABASE_ACCESS_TOKEN"); os MCPs que publicam ("GESTÃO DE CLIENTES/PRODUTOS") estão presos a outros projetos.
+2. **`process-solicitacao-neural`** — criar a edge ou remover a chamada do front (decisão de produto).
+3. **65 elementos clicáveis sem ação, card fictício `AISupplierSuggestion` e métricas fixas do dashboard executivo** — exigem definição de negócio (o que cada ação faz; metas reais).
+4. **Ledger de migrations** — o banco não tem `supabase_migrations.schema_migrations`; decidir se cria baseline (a partir de agora os arquivos `20261112*` documentam exatamente o que foi aplicado hoje).
+5. **Inventário semanal** — habilitar "Allow GitHub Actions to create and approve pull requests" (Settings → Actions).
+6. **Segurança** — o repositório está **público** (`"visibility":"public"`) embora o `AGENTS.md` diga privado; um token Vercel (`vcp_…`) foi colado no chat desta sessão e deve ser revogado.
+7. **Custo de Actions** — `types-sync` e `contexto` rodam a cada 10 min e são o maior gasto recorrente deste repo.
