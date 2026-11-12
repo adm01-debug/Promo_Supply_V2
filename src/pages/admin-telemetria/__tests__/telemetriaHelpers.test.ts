@@ -97,8 +97,9 @@ describe('getTimeThreshold', () => {
   });
 
   it('custom with both from and to dates sets end of to-day at 23:59:59', () => {
-    const customFrom = new Date('2024-06-10');
-    const customTo = new Date('2024-06-12');
+    // dias do calendário chegam como Date LOCAL (react-day-picker), não como meia-noite UTC
+    const customFrom = new Date(2024, 5, 10);
+    const customTo = new Date(2024, 5, 12);
     const { from, to } = getTimeThreshold('custom', customFrom, customTo);
     const fromDate = new Date(from);
     expect(fromDate.getFullYear()).toBe(2024);
