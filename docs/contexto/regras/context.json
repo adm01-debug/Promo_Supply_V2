@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "5cdeeacaae4f9af3216a94b88cc0768a070cfc90",
+  "sha": "5507e4330da9097dcc81fb92f224ff44edd8bd27",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-12 16:11 UTC",
+  "generated_at": "2026-11-12 19:04 UTC",
   "files_total": 1157,
   "code_files": 1021,
-  "code_lines": 172892
+  "code_lines": 172915
  },
  "version": "1.3.2",
- "facts_hash": "3e0f8329f5140975",
+ "facts_hash": "5fb121d2028e7d06",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -31489,7 +31489,7 @@
   {
    "module": "(raiz)",
    "files": 7,
-   "lines": 846,
+   "lines": 852,
    "tables": [],
    "exports": [
     "eslint.config.js: tseslint",
@@ -31734,7 +31734,7 @@
   {
    "module": "src/components",
    "files": 257,
-   "lines": 48491,
+   "lines": 48494,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -32486,7 +32486,7 @@
   {
    "module": "src/lib",
    "files": 45,
-   "lines": 5586,
+   "lines": 5598,
    "tables": [],
    "exports": [
     "clearFiltersShortcut.ts: ShortcutCombo, DEFAULT_CLEAR_FILTERS_SHORTCUT, RESERVED_SHORTCUTS, isSameCombo, findReservedConflict, isInvalidCombo",
@@ -32509,7 +32509,7 @@
     "security.ts: security",
     "supabaseQuery.ts: escapeIlike",
     "supabaseRpc.ts: BudgetAvailability, KpiMetrics, ApprovalRule, EffectiveApprover, AccountLockStatus, LoginAttemptResult",
-    "utils.ts: cn, generateUniqueKey, formatCurrency, formatDate, formatDateTime",
+    "utils.ts: cn, generateUniqueKey, formatCurrency, parseDateValue, formatDate, formatDateTime",
     "fuzzSeed.ts: mulberry32, FuzzRng, createFuzzRng"
    ],
    "docs": [
@@ -32589,7 +32589,7 @@
   {
    "module": "src/pages",
    "files": 119,
-   "lines": 27707,
+   "lines": 27708,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -32825,7 +32825,7 @@
   {
    "module": "src/schemas",
    "files": 2,
-   "lines": 184,
+   "lines": 185,
    "tables": [],
    "exports": [
     "solicitacao.schema.ts: solicitacaoSchema, SolicitacaoFormData"
@@ -32835,7 +32835,9 @@
     "vitest",
     "zod"
    ],
-   "imports_modules": [],
+   "imports_modules": [
+    "src/lib"
+   ],
    "file_list": [
     "src/schemas/solicitacao.schema.ts",
     "src/schemas/__tests__/solicitacao.schema.test.ts"
@@ -35738,6 +35740,9 @@
    "TYPES_SYNC_TSCONFIG": [
     "scripts/types-sync/typecheck-ratchet.mjs"
    ],
+   "TZ": [
+    "vitest.config.ts"
+   ],
    "VAPID_PRIVATE_KEY": [
     "supabase/functions/send-push-notification/index.ts"
    ],
@@ -36465,7 +36470,7 @@
     "file": "src/schemas/solicitacao.schema.ts",
     "name": "solicitacaoSchema",
     "kind": "object",
-    "body": "{ empresa: z.string().min(1, \"Selecione a empresa\"), vendedor: z.string().min(1, \"Selecione o vendedor\"), produto: z.string().min(2, \"O nome do produto deve ter pelo menos 2 caracteres\").max(200, \"Nome do produto muito longo\"), categoriaId: z.string().min(1, \"Selecione a categoria\"), quantidade: z.number().int().positive(\"A quantidade deve ser maior que zero\"), tipo: z.enum(['PE_LISO', 'FAB_LISO', 'FAB_PERSONALIZADO']), prazoEntrega: z.string().min(1, \"Informe o prazo de entrega\").refine((val) => { const date = new Date(val); const today = new Date(); today.setHours(0, 0, 0, 0); return !isNaN(date.getTime()) && date >= today; }, \"O prazo de entrega deve ser uma data futura\"), observacoes: z.string().max(2000, \"As observações não podem exceder 2000 caracteres\").optional().default(\"\"), prior …",
+    "body": "{ empresa: z.string().min(1, \"Selecione a empresa\"), vendedor: z.string().min(1, \"Selecione o vendedor\"), produto: z.string().min(2, \"O nome do produto deve ter pelo menos 2 caracteres\").max(200, \"Nome do produto muito longo\"), categoriaId: z.string().min(1, \"Selecione a categoria\"), quantidade: z.number().int().positive(\"A quantidade deve ser maior que zero\"), tipo: z.enum(['PE_LISO', 'FAB_LISO', 'FAB_PERSONALIZADO']), prazoEntrega: z.string().min(1, \"Informe o prazo de entrega\").refine((val) => { const date = parseDateValue(val); const today = new Date(); today.setHours(0, 0, 0, 0); return !isNaN(date.getTime()) && date >= today; }, \"O prazo de entrega deve ser uma data futura\"), observacoes: z.string().max(2000, \"As observações não podem exceder 2000 caracteres\").optional().default(\"\"), …",
     "refines": [
      "O prazo de entrega deve ser uma data futura"
     ],
@@ -38532,6 +38537,10 @@
     "text": "Forms & validation"
    },
    {
+    "file": "vitest.config.ts",
+    "text": "ficavam invisíveis: \"2024-06-15\" exibido como 14/06 e \"hoje\" recusado no prazo"
+   },
+   {
     "file": "src/components/compras/CotacaoManualModal.tsx",
     "text": "Numeric validation: reject empty/NaN; reject decimals on integer fields"
    },
@@ -38722,6 +38731,10 @@
    {
     "file": "src/lib/security.ts",
     "text": "Handles sanitization, security validation and audit logging."
+   },
+   {
+    "file": "src/lib/utils.ts",
+    "text": "exibia 14/06 para \"2024-06-15\" e recusava \"hoje\" no prazo de entrega."
    },
    {
     "file": "src/pages/admin/DeveloperDocs.tsx",
@@ -81080,9 +81093,15 @@
   },
   "vitest.config.ts": {
    "path": "vitest.config.ts",
-   "lines": 45,
+   "lines": 51,
    "exports": [
     "default defineConfig"
+   ],
+   "env": [
+    "TZ"
+   ],
+   "rule_comments": [
+    "ficavam invisíveis: \"2024-06-15\" exibido como 14/06 e \"hoje\" recusado no prazo"
    ]
   },
   "vitest.rls.config.ts": {
@@ -84129,7 +84148,7 @@
   },
   "src/components/compras/ExecutiveDashboard.tsx": {
    "path": "src/components/compras/ExecutiveDashboard.tsx",
-   "lines": 341,
+   "lines": 342,
    "exports": [
     "const ExecutiveDashboard"
    ],
@@ -85839,7 +85858,7 @@
   },
   "src/components/compras/dashboard/UrgencyDetailsSheet.tsx": {
    "path": "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
-   "lines": 308,
+   "lines": 310,
    "exports": [
     "const UrgencyDetailsSheet"
    ],
@@ -85858,6 +85877,9 @@
      "id"
     ]
    },
+   "navigates": [
+    "/cotacao?id="
+   ],
    "errors": [
     "Erro ao atualizar status."
    ],
@@ -94156,13 +94178,17 @@
   },
   "src/lib/utils.ts": {
    "path": "src/lib/utils.ts",
-   "lines": 34,
+   "lines": 46,
    "exports": [
     "function cn",
     "function generateUniqueKey",
     "const formatCurrency",
+    "const parseDateValue",
     "const formatDate",
     "const formatDateTime"
+   ],
+   "rule_comments": [
+    "exibia 14/06 para \"2024-06-15\" e recusava \"hoje\" no prazo de entrega."
    ],
    "calc_fns": [
     {
@@ -95890,7 +95916,7 @@
   },
   "src/pages/admin-telemetria/__tests__/telemetriaHelpers.test.ts": {
    "path": "src/pages/admin-telemetria/__tests__/telemetriaHelpers.test.ts",
-   "lines": 254,
+   "lines": 255,
    "is_test": true,
    "tests": [
     "formatDuration",
@@ -99306,7 +99332,7 @@
   },
   "src/schemas/solicitacao.schema.ts": {
    "path": "src/schemas/solicitacao.schema.ts",
-   "lines": 25,
+   "lines": 26,
    "exports": [
     "const solicitacaoSchema",
     "type SolicitacaoFormData"
@@ -99315,7 +99341,7 @@
     {
      "name": "solicitacaoSchema",
      "kind": "object",
-     "body": "{ empresa: z.string().min(1, \"Selecione a empresa\"), vendedor: z.string().min(1, \"Selecione o vendedor\"), produto: z.string().min(2, \"O nome do produto deve ter pelo menos 2 caracteres\").max(200, \"Nome do produto muito longo\"), categoriaId: z.string().min(1, \"Selecione a categoria\"), quantidade: z.number().int().positive(\"A quantidade deve ser maior que zero\"), tipo: z.enum(['PE_LISO', 'FAB_LISO', 'FAB_PERSONALIZADO']), prazoEntrega: z.string().min(1, \"Informe o prazo de entrega\").refine((val) => { const date = new Date(val); const today = new Date(); today.setHours(0, 0, 0, 0); return !isNaN(date.getTime()) && date >= today; }, \"O prazo de entrega deve ser uma data futura\"), observacoes: z.string().max(2000, \"As observações não podem exceder 2000 caracteres\").optional().default(\"\"), prior …",
+     "body": "{ empresa: z.string().min(1, \"Selecione a empresa\"), vendedor: z.string().min(1, \"Selecione o vendedor\"), produto: z.string().min(2, \"O nome do produto deve ter pelo menos 2 caracteres\").max(200, \"Nome do produto muito longo\"), categoriaId: z.string().min(1, \"Selecione a categoria\"), quantidade: z.number().int().positive(\"A quantidade deve ser maior que zero\"), tipo: z.enum(['PE_LISO', 'FAB_LISO', 'FAB_PERSONALIZADO']), prazoEntrega: z.string().min(1, \"Informe o prazo de entrega\").refine((val) => { const date = parseDateValue(val); const today = new Date(); today.setHours(0, 0, 0, 0); return !isNaN(date.getTime()) && date >= today; }, \"O prazo de entrega deve ser uma data futura\"), observacoes: z.string().max(2000, \"As observações não podem exceder 2000 caracteres\").optional().default(\"\"), …",
      "refines": [
       "O prazo de entrega deve ser uma data futura"
      ],
@@ -105670,10 +105696,42 @@
   }
  },
  "git": {
-  "sha": "5cdeeacaae4f9af3216a94b88cc0768a070cfc90",
+  "sha": "5507e4330da9097dcc81fb92f224ff44edd8bd27",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5507e43",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(ui): citar agora abre a cotacao da solicitacao certa (#48)",
+    "files": [
+     "src/components/compras/UrgentItemsList.tsx"
+    ]
+   },
+   {
+    "sha": "ffcc71a",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(datas): data sem hora lida como dia LOCAL; testes no fuso dos usuários (6 falhas → 0) (#49)",
+    "files": [
+     "src/components/compras/delivery-calendar/__tests__/deliveryCalendarHelpers.test.ts",
+     "src/lib/utils.ts",
+     "src/pages/admin-telemetria/__tests__/telemetriaHelpers.test.ts",
+     "src/schemas/solicitacao.schema.ts",
+     "vitest.config.ts"
+    ]
+   },
+   {
+    "sha": "dd8f1fd",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(ui): liga iniciar cotacao imediata e ver matriz kraljic (#47)",
+    "files": [
+     "src/components/compras/ExecutiveDashboard.tsx",
+     "src/components/compras/dashboard/UrgencyDetailsSheet.tsx"
+    ]
+   },
    {
     "sha": "5cdeeac",
     "date": "2026-11-12",
@@ -106079,34 +106137,6 @@
     "author": "copilot-swe-agent[bot]",
     "subject": "Merge remote-tracking branch 'refs/remotes/origin/main' into fix/ui-render-and-math",
     "files": []
-   },
-   {
-    "sha": "97b6efc",
-    "date": "2026-08-28",
-    "author": "gpt-engineer-app[bot]",
-    "subject": "Visual edit in Lovable",
-    "files": [
-     "supabase/config.toml",
-     "supabase/functions/migrate-helper/index.ts"
-    ]
-   },
-   {
-    "sha": "d56d214",
-    "date": "2026-08-18",
-    "author": "adm01-debug",
-    "subject": "chore(hermes): adiciona .hermes.md (regras da casa Hermes)",
-    "files": [
-     ".hermes.md"
-    ]
-   },
-   {
-    "sha": "d429b88",
-    "date": "2026-08-18",
-    "author": "adm01-debug",
-    "subject": "chore(agents): adiciona AGENTS.md padrao (contexto multi-agente)",
-    "files": [
-     "AGENTS.md"
-    ]
    }
   ],
   "hot_files": [
@@ -106119,12 +106149,16 @@
     4
    ],
    [
-    "AGENTS.md",
-    4
-   ],
-   [
     ".github/workflows/contexto.yml",
     3
+   ],
+   [
+    "AGENTS.md",
+    3
+   ],
+   [
+    "src/components/compras/ExecutiveDashboard.tsx",
+    2
    ],
    [
     "src/pages/relatorios/Relatorios.tsx",
@@ -106151,43 +106185,39 @@
     2
    ],
    [
-    ".hermes.md",
-    2
-   ],
-   [
     "docs/agentes/contexto-ia.md",
     2
    ],
    [
-    "supabase/config.toml",
-    2
+    "src/components/compras/UrgentItemsList.tsx",
+    1
+   ],
+   [
+    "src/components/compras/delivery-calendar/__tests__/deliveryCalendarHelpers.test.ts",
+    1
+   ],
+   [
+    "src/lib/utils.ts",
+    1
+   ],
+   [
+    "src/pages/admin-telemetria/__tests__/telemetriaHelpers.test.ts",
+    1
+   ],
+   [
+    "src/schemas/solicitacao.schema.ts",
+    1
+   ],
+   [
+    "vitest.config.ts",
+    1
+   ],
+   [
+    "src/components/compras/dashboard/UrgencyDetailsSheet.tsx",
+    1
    ],
    [
     "src/components/compras/CostCenterPerformanceAnalysis.tsx",
-    1
-   ],
-   [
-    "src/components/compras/DeliveryCalendar.tsx",
-    1
-   ],
-   [
-    "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
-    1
-   ],
-   [
-    "src/pages/sourcing/Sourcing.tsx",
-    1
-   ],
-   [
-    "src/components/compras/executive/ExecutiveDrillDownModal.tsx",
-    1
-   ],
-   [
-    "src/components/onboarding/OnboardingTour.tsx",
-    1
-   ],
-   [
-    "src/components/ui/enhanced-search.tsx",
     1
    ]
   ]

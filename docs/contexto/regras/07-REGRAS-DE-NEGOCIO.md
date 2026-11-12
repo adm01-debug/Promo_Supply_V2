@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5cdeeacaae` · branch `main` · 2026-11-12 16:11 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5507e4330d` · branch `main` · 2026-11-12 19:04 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -1163,7 +1163,7 @@ Erros lançados por funções SQL (`RAISE EXCEPTION` = regra de negócio no banc
   ```
 - **solicitacaoSchema** (`src/schemas/solicitacao.schema.ts`, z.object):
   ```ts
-  { empresa: z.string().min(1, "Selecione a empresa"), vendedor: z.string().min(1, "Selecione o vendedor"), produto: z.string().min(2, "O nome do produto deve ter pelo menos 2 caracteres").max(200, "Nome do produto muito longo"), categoriaId: z.string().min(1, "Selecione a categoria"), quantidade: z.number().int().positive("A quantidade deve ser maior que zero"), tipo: z.enum(['PE_LISO', 'FAB_LISO', 'FAB_PERSONALIZADO']), prazoEntrega: z.string().min(1, "Informe o prazo de entrega").refine((val) => { const date = new Date(val); const today = new Date(); today.setHours(0, 0, 0, 0); return !isNaN(date.getTime()) && date >= today; }, "O prazo de entrega deve ser uma data futura"), observacoes: z.string().max(2000, "As observações não podem exceder 2000 caracteres").optional().default(""), prior …
+  { empresa: z.string().min(1, "Selecione a empresa"), vendedor: z.string().min(1, "Selecione o vendedor"), produto: z.string().min(2, "O nome do produto deve ter pelo menos 2 caracteres").max(200, "Nome do produto muito longo"), categoriaId: z.string().min(1, "Selecione a categoria"), quantidade: z.number().int().positive("A quantidade deve ser maior que zero"), tipo: z.enum(['PE_LISO', 'FAB_LISO', 'FAB_PERSONALIZADO']), prazoEntrega: z.string().min(1, "Informe o prazo de entrega").refine((val) => { const date = parseDateValue(val); const today = new Date(); today.setHours(0, 0, 0, 0); return !isNaN(date.getTime()) && date >= today; }, "O prazo de entrega deve ser uma data futura"), observacoes: z.string().max(2000, "As observações não podem exceder 2000 caracteres").optional().default(""), …
   ```
   - Regras cruzadas (refine): “O prazo de entrega deve ser uma data futura”
 - **NegotiationContract** (`supabase/functions/_shared/contracts.ts`, z.object):
@@ -2400,6 +2400,7 @@ _nenhum item encontrado_
 | Comentário | Arquivo |
 |---|---|
 | Forms & validation | `vite.config.ts` |
+| ficavam invisíveis: "2024-06-15" exibido como 14/06 e "hoje" recusado no prazo | `vitest.config.ts` |
 | Numeric validation: reject empty/NaN; reject decimals on integer fields | `src/components/compras/CotacaoManualModal.tsx` |
 | Fornecedor must be selected; if "novo", a name must be provided. | `src/components/compras/CotacaoManualModal.tsx` |
 | Check solicitacoes near deadline | `src/components/compras/CriticalAlertsBar.tsx` |
@@ -2448,6 +2449,7 @@ _nenhum item encontrado_
 | Se o ellipsis já não cabe, apenas trunca sem sufixo. | `src/lib/safeDisplay.ts` |
 | * Trunca uma string em no máximo `maxUnits` UTF-16 code units SEM quebrar | `src/lib/safeTruncate.ts` |
 | Handles sanitization, security validation and audit logging. | `src/lib/security.ts` |
+| exibia 14/06 para "2024-06-15" e recusava "hoje" no prazo de entrega. | `src/lib/utils.ts` |
 | *Hooks** \| \`src/hooks/\` \| Lógica de negócio, integração com queries e estados complexos. Quase toda a inteligência reside aqui. \| | `src/pages/admin/DeveloperDocs.tsx` |
 | **Validação Rigorosa:** Shared utilities para validação de esquemas \`zod\` em Edge Functions e chamadas RPC. | `src/pages/admin/DeveloperDocs.tsx` |
 | *Regra**: Componentes compartilhados continuam em \`src/components/ui\` ou \`src/components/common\`.`, | `src/pages/admin/DeveloperDocs.tsx` |

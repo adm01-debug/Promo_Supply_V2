@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5cdeeacaae4f9af3216a94b88cc0768a070cfc90` (2026-11-12T11:40:40-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5507e4330da9097dcc81fb92f224ff44edd8bd27` (2026-11-12T13:04:27-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -36,7 +36,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 |---|---|
 | arquivos_total | 1155 |
 | arquivos_codigo | 735 |
-| linhas_codigo | 151098 |
+| linhas_codigo | 151121 |
 | rotas | 55 |
 | rotas_http_backend | 12 |
 | vistas_por_id | 0 |
@@ -350,7 +350,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - docs/agentes/github-ci.md (2)
 - docs/agentes/mapa-repo.md (2)
 - docs/ci/README.md (2)
-- src/lib/__tests__/logger.fuzz.test.ts (2)
+- src/components/compras/ExecutiveDashboard.tsx (2)
 
 ## Workflows
 - `automation-local.yml` — Automação local (pull_request, push, workflow_dispatch)
@@ -411,6 +411,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-12 `5507e433` fix(ui): citar agora abre a cotacao da solicitacao certa (#48)
+- 2026-11-12 `ffcc71ad` fix(datas): data sem hora lida como dia LOCAL; testes no fuso dos usuários (6 falhas → 0) (#49)
+- 2026-11-12 `dd8f1fd8` fix(ui): liga iniciar cotacao imediata e ver matriz kraljic (#47)
 - 2026-11-12 `5cdeeaca` fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)
 - 2026-11-12 `257a4c44` fix(ui): corrige acentuacao corrompida em 12 telas (#44)
 - 2026-11-12 `e897b429` fix(ui): liga exportacao CSV e ver tudo em botoes que nao faziam nada (#43)
@@ -423,9 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-11 `6ea00349` fix(edge): require JWT and validate identity/tenant across edge functions (#36)
 - 2026-11-11 `a2eadc4d` fix: bugs de infra de testes, datas em fuso BR, crashes e fluxo de pagamentos (#35)
 - 2026-11-11 `3f0aa49a` chore(automacao): conecta testes, grafo e manutenção aos gatilhos (#32)
-- 2026-11-11 `491c6cfc` fix(e2e): corrigir 7 seletores Playwright incompatíveis com DOM real (#19)
-- 2026-11-11 `90c35fb5` fix(tipos): corrige contratos do painel de saúde e relatório (#33)
-- 2026-11-11 `7ad9425f` fix(deno): skip testes de integracao quando Supabase nao acessivel (#34)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

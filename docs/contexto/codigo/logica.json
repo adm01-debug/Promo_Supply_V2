@@ -1016,10 +1016,11 @@
     "formatCurrency",
     "formatDate",
     "formatDateTime",
-    "generateUniqueKey"
+    "generateUniqueKey",
+    "parseDateValue"
    ],
    "export_default": null,
-   "linhas": 34,
+   "linhas": 46,
    "tabelas": [],
    "rpcs": [],
    "edges": [],
@@ -1032,7 +1033,7 @@
    "zod_schemas": 0,
    "flags": [],
    "papeis": [],
-   "usado_por": 220,
+   "usado_por": 221,
    "usado_por_modulos": [
     "components/accessibility",
     "components/admin",
@@ -1082,7 +1083,8 @@
     "pages/recompra",
     "pages/relatorios",
     "pages/solicitacoes",
-    "pages/sourcing"
+    "pages/sourcing",
+    "schemas"
    ],
    "coberto_por_testes": 1,
    "orfao": false
@@ -1095,7 +1097,7 @@
     "solicitacaoSchema"
    ],
    "export_default": null,
-   "linhas": 25,
+   "linhas": 26,
    "tabelas": [],
    "rpcs": [],
    "edges": [],

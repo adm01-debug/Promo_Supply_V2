@@ -3295,6 +3295,9 @@
    "src/pages/sourcing/RFxDetails.tsx",
    "src/pages/sourcing/Sourcing.tsx"
   ],
+  "src/schemas/solicitacao.schema.ts": [
+   "src/lib/utils.ts"
+  ],
   "src/services/auditService.ts": [
    "src/integrations/supabase/client.ts",
    "src/integrations/supabase/types.ts",

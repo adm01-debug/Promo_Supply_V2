@@ -813,7 +813,7 @@
   {
    "arquivo": "src/pages/admin-telemetria/__tests__/telemetriaHelpers.test.ts",
    "tipo": "unit",
-   "linhas": 254,
+   "linhas": 255,
    "testa": [
     "src/pages/admin-telemetria/telemetriaHelpers.ts"
    ],

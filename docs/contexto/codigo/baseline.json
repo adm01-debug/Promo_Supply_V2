@@ -2,11 +2,26 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "5cdeeacaae4f9af3216a94b88cc0768a070cfc90",
+  "commit": "5507e4330da9097dcc81fb92f224ff44edd8bd27",
   "branch": "main",
-  "data_commit": "2026-11-12T11:40:40-03:00",
+  "data_commit": "2026-11-12T13:04:27-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5507e433",
+    "data": "2026-11-12",
+    "assunto": "fix(ui): citar agora abre a cotacao da solicitacao certa (#48)"
+   },
+   {
+    "sha": "ffcc71ad",
+    "data": "2026-11-12",
+    "assunto": "fix(datas): data sem hora lida como dia LOCAL; testes no fuso dos usuários (6 falhas → 0) (#49)"
+   },
+   {
+    "sha": "dd8f1fd8",
+    "data": "2026-11-12",
+    "assunto": "fix(ui): liga iniciar cotacao imediata e ver matriz kraljic (#47)"
+   },
    {
     "sha": "5cdeeaca",
     "data": "2026-11-12",
@@ -116,28 +131,13 @@
     "sha": "7e7efb63",
     "data": "2026-11-08",
     "assunto": "chore(agentes): adota o padrão CLAUDE.md + AGENTS.md + docs/agentes do Zapp"
-   },
-   {
-    "sha": "d44bb8fa",
-    "data": "2026-11-08",
-    "assunto": "feat(contexto): porta sistema de contexto autônomo do Zapp para Promo Supply V2 (#15)"
-   },
-   {
-    "sha": "0bdc3cbf",
-    "data": "2026-11-08",
-    "assunto": "fix(supabase): aponta todo o código ativo para o projeto Supabase oficial"
-   },
-   {
-    "sha": "32c06b27",
-    "data": "2026-11-08",
-    "assunto": "chore(ci): remove ci.yml, workflow duplicado que nunca executou um job (#18)"
    }
   ],
-  "arquivos_mudados_7d": 175,
+  "arquivos_mudados_7d": 182,
   "pastas_mais_mudadas_30d": [
    {
     "pasta": "src/components/compras",
-    "mudancas": 8
+    "mudancas": 12
    },
    {
     "pasta": ".github/workflows/main.yml",
@@ -254,6 +254,10 @@
     "mudancas": 2
    },
    {
+    "arquivo": "src/components/compras/ExecutiveDashboard.tsx",
+    "mudancas": 2
+   },
+   {
     "arquivo": "src/lib/__tests__/logger.fuzz.test.ts",
     "mudancas": 2
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": ".github/workflows/notifica-falha-main.yml",
     "mudancas": 1
-   },
-   {
-    "arquivo": ".github/workflows/types-sync.yml",
-    "mudancas": 1
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 26
+    "commits": 29
    },
    {
     "autor": "copilot-swe-agent[bot]",
@@ -312,7 +312,7 @@
  "contagens": {
   "arquivos_total": 1155,
   "arquivos_codigo": 735,
-  "linhas_codigo": 151098,
+  "linhas_codigo": 151121,
   "rotas": 55,
   "rotas_http_backend": 12,
   "vistas_por_id": 0,
@@ -416,7 +416,7 @@
   },
   "src/components": {
    "arquivos": 257,
-   "linhas": 48491
+   "linhas": 48494
   },
   "src/features": {
    "arquivos": 63,
@@ -436,7 +436,7 @@
   },
   "src/lib": {
    "arquivos": 44,
-   "linhas": 5566
+   "linhas": 5578
   },
   "src/main.tsx": {
    "arquivos": 1,
@@ -444,7 +444,7 @@
   },
   "src/pages": {
    "arquivos": 119,
-   "linhas": 27707
+   "linhas": 27708
   },
   "src/routes": {
    "arquivos": 1,
@@ -452,7 +452,7 @@
   },
   "src/schemas": {
    "arquivos": 2,
-   "linhas": 184
+   "linhas": 185
   },
   "src/services": {
    "arquivos": 3,
@@ -528,7 +528,7 @@
   },
   "vitest.config.ts": {
    "arquivos": 1,
-   "linhas": 45
+   "linhas": 51
   },
   "vitest.rls.config.ts": {
    "arquivos": 1,

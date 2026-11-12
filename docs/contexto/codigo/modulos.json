@@ -377,7 +377,7 @@
    "modulo": "components/compras",
    "arquivos": 102,
    "testes": 15,
-   "linhas": 24794,
+   "linhas": 24797,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -2935,7 +2935,7 @@
    "modulo": "lib",
    "arquivos": 21,
    "testes": 0,
-   "linhas": 1974,
+   "linhas": 1986,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3183,6 +3183,7 @@
     "pages/relatorios",
     "pages/solicitacoes",
     "pages/sourcing",
+    "schemas",
     "services",
     "stores"
    ],
@@ -7766,7 +7767,7 @@
    "modulo": "schemas",
    "arquivos": 1,
    "testes": 0,
-   "linhas": 25,
+   "linhas": 26,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -7789,7 +7790,9 @@
    "importado_por_outros_modulos": [
     "components/compras"
    ],
-   "depende_de_modulos": [],
+   "depende_de_modulos": [
+    "lib"
+   ],
    "pacotes_externos": [
     "zod"
    ]

@@ -674,7 +674,7 @@
     "UrgencyDetailsSheet"
    ],
    "export_default": null,
-   "linhas": 308,
+   "linhas": 310,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [
@@ -978,7 +978,7 @@
     "ExecutiveDashboard"
    ],
    "export_default": null,
-   "linhas": 341,
+   "linhas": 342,
    "dominio": "components/compras",
    "hooks_locais": [
     "useClearFiltersFlow",

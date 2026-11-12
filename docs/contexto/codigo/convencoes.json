@@ -58,11 +58,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
+   "fix(ui): citar agora abre a cotacao da solicitacao certa (#48)",
+   "fix(datas): data sem hora lida como dia LOCAL; testes no fuso dos usuários (6 falhas → 0) (#49)",
+   "fix(ui): liga iniciar cotacao imediata e ver matriz kraljic (#47)",
    "fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)",
-   "fix(ui): corrige acentuacao corrompida em 12 telas (#44)",
-   "fix(ui): liga exportacao CSV e ver tudo em botoes que nao faziam nada (#43)",
-   "chore(banco): remove seis tabelas v_ orfas criadas por engano (#42)",
-   "security(banco): views com security_invoker e sem leitura anonima (#41)"
+   "fix(ui): corrige acentuacao corrompida em 12 telas (#44)"
   ]
  },
  "pr_template": null,
