@@ -6,7 +6,7 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { safeTruncate } from "./logLevel.ts";
 
-const MAX_LOG_MESSAGE_LEN = 4000;
+const MAX_LOG_MESSAGE_LEN = 45000;
 const MAX_ERR_MESSAGE_LEN = 500;
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
