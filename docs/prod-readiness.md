@@ -35,14 +35,14 @@
 
 ## 2. GitHub Actions (8 workflows do repo + 2 dinâmicos do Copilot)
 
-Causa das falhas da `main` em `4cc1a7a` (11:02 UTC): anotação do check-run → **"The job was not started because an Actions budget is preventing further use."** Os jobs não chegaram a executar (`steps: []`, `runner_id: 0`, log 404). Runs posteriores executaram (types-sync 13:14 ✅, contexto 12:54 ✅), então os 3 runs foram re-executados às 13:40 UTC; reproduzi localmente cada passo deles (§1) e todos passam.
+Causa das falhas da `main` em `4cc1a7a` (11:02 UTC): anotação do check-run → **"The job was not started because an Actions budget is preventing further use."** Os jobs não chegaram a executar (`steps: []`, `runner_id: 0`, log 404). Consumo da conta em novembro (`GET /users/adm01-debug/settings/billing/usage/summary`): **444.980 min Linux brutos, 34.931 cobráveis = US$ 209,59** — o orçamento de Actions foi atingido. Os agendados `types-sync` e `contexto` (cada um a cada 10 min) são os maiores consumidores recorrentes deste repo. Runs posteriores executaram (types-sync 13:14 ✅, contexto 12:54 ✅), então os 3 runs foram re-executados às 13:40 UTC; reproduzi localmente cada passo deles (§1) e todos passam.
 
 | Workflow | Último run na `main` | Status |
 |---|---|---|
-| `main.yml` (Freight Quest CI/CD) | #367 re-executado, na fila | BLOQUEADO até rodar — falha original = orçamento do Actions, não código |
-| `guards.yml` | #36 re-executado, na fila | BLOQUEADO até rodar — idem |
-| `automation-local.yml` | #18 re-executado, na fila | BLOQUEADO até rodar — idem |
-| `types-sync.yml` (a cada 10 min) | #483 success (13:14) | OK |
+| `main.yml` (Freight Quest CI/CD) | #367 re-executado 13:40, `QUEUED` até 14:05 | BLOQUEADO — orçamento de Actions esgotado (custo, decisão do dono); cada passo reproduzido localmente passa (§1) |
+| `guards.yml` | #36 re-executado 13:40, `QUEUED` | BLOQUEADO — idem |
+| `automation-local.yml` | #18 re-executado 13:40, `QUEUED` | BLOQUEADO — idem |
+| `types-sync.yml` (a cada 10 min) | #483 success (13:14); #484–#487 `QUEUED` desde 13:24 | BLOQUEADO — mesma fila parada por orçamento |
 | `contexto.yml` (a cada 10 min) | #170 success (12:54); #172/#173 `cancelled` por concorrência (run novo cancela o anterior) | OK |
 | `branch-hygiene-audit.yml` (semanal) | #1 success | OK |
 | `notifica-falha-main.yml` | último `skipped` (nada a notificar) | OK |
@@ -235,10 +235,10 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 
 | Edge | Chamada pelo front | HTTP no ping | Status | Prova / pendência |
 |---|---|---|---|---|
-| `ai-demand-prediction` | `DemandPredictionPanel.tsx` | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`: falha no boot do worker, comum às 4 edges de IA. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
-| `ai-negotiation` | `NegociacaoIA.tsx` | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`: falha no boot do worker, comum às 4 edges de IA. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
-| `ai-supplier-risk` | `SupplierRiskAnalysis.tsx` | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`: falha no boot do worker, comum às 4 edges de IA. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
-| `ai-supplier-suggestion` | — | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`: falha no boot do worker, comum às 4 edges de IA. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
+| `ai-demand-prediction` | `DemandPredictionPanel.tsx` | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`, e nada chega a `telemetry_logs`: o worker cai antes do código rodar. O código da `main` carrega: `deno check supabase/functions/_shared/ai_gateway.ts` OK e `import()` do módulo em runtime → `carregou: AIGatewayCircuitOpenError,callAIGateway,…`. Logo a versão **publicada** difere da `main` ou falta variável de ambiente; republicar exige `SUPABASE_ACCESS_TOKEN`. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
+| `ai-negotiation` | `NegociacaoIA.tsx` | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`, e nada chega a `telemetry_logs`: o worker cai antes do código rodar. O código da `main` carrega: `deno check supabase/functions/_shared/ai_gateway.ts` OK e `import()` do módulo em runtime → `carregou: AIGatewayCircuitOpenError,callAIGateway,…`. Logo a versão **publicada** difere da `main` ou falta variável de ambiente; republicar exige `SUPABASE_ACCESS_TOKEN`. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
+| `ai-supplier-risk` | `SupplierRiskAnalysis.tsx` | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`, e nada chega a `telemetry_logs`: o worker cai antes do código rodar. O código da `main` carrega: `deno check supabase/functions/_shared/ai_gateway.ts` OK e `import()` do módulo em runtime → `carregou: AIGatewayCircuitOpenError,callAIGateway,…`. Logo a versão **publicada** difere da `main` ou falta variável de ambiente; republicar exige `SUPABASE_ACCESS_TOKEN`. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
+| `ai-supplier-suggestion` | — | 500 | BLOQUEADO | ping 500 — `GET` devolve texto puro `Internal Server Error`, não o JSON de `_shared/validation.ts:42`, e nada chega a `telemetry_logs`: o worker cai antes do código rodar. O código da `main` carrega: `deno check supabase/functions/_shared/ai_gateway.ts` OK e `import()` do módulo em runtime → `carregou: AIGatewayCircuitOpenError,callAIGateway,…`. Logo a versão **publicada** difere da `main` ou falta variável de ambiente; republicar exige `SUPABASE_ACCESS_TOKEN`. Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
 | `alert-dispatcher` | — | 200 | OK | `supabase_functions_ping` → 200: responde |
 | `check-approval-escalations` | — | 200 | OK | `supabase_functions_ping` → 200: responde |
 | `check-cotacao-followup` | — | 200 | OK | `supabase_functions_ping` → 200: responde |
@@ -252,7 +252,7 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 | `guided-buying-ai` | — | 401 | OK | `supabase_functions_ping` → 401: publicada; exige JWT de usuário (esperado) |
 | `health-dashboard` | — | 404 | BLOQUEADO | não publicada em `lmypcdfsrgfftzhxawao` (ping 404). Deploy de edge é manual (`deploy_edge_functions_promo_supply.sh`, exige `SUPABASE_ACCESS_TOKEN`); o MCP desta sessão não publica edge (`supabase_functions_list` → "requer SUPABASE_ACCESS_TOKEN") |
 | `maintain-partitions` | — | 404 | BLOQUEADO | não publicada em `lmypcdfsrgfftzhxawao` (ping 404). Deploy de edge é manual (`deploy_edge_functions_promo_supply.sh`, exige `SUPABASE_ACCESS_TOKEN`); o MCP desta sessão não publica edge (`supabase_functions_list` → "requer SUPABASE_ACCESS_TOKEN") |
-| `migrate-helper` | — | 500 | BLOQUEADO | ping 500 (não invocada: chamada negada pelo classificador de permissões por ser função de migração). Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
+| `migrate-helper` | — | 500 | BLOQUEADO | ping 500. Log real em `telemetry_logs` (13:48:27 UTC): **`[migrate-helper] server_misconfigured: MIGRATE_HELPER_ACCESS_KEY ausente`** — falta o segredo `MIGRATE_HELPER_ACCESS_KEY` nas secrets das edges (decisão do dono; segredo nunca passa por PR). Sem acesso a log de edge (nenhum MCP de logs para este projeto; `*.supabase.co` bloqueado pelo proxy desta sessão; `deno test` local falha em `Import https://esm.sh/zod@3.22.4 failed`) |
 | `migrate-storage-paths` | `StorageMigration.tsx` | 405 | OK | `supabase_functions_ping` → 405: publicada; ping usa método não aceito (só POST/OPTIONS) — esperado |
 | `process-invoice-idp` | — | 401 | OK | `supabase_functions_ping` → 401: publicada; exige JWT de usuário (esperado) |
 | `process-outbox` | — | 200 | OK | `supabase_functions_ping` → 200: responde |
@@ -283,8 +283,9 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 | Rotas não registradas | 0 — 55 caminhos em `AppRoutes.tsx`, todos com componente; `/__dev` só em DEV | OK |
 | Mojibake (acentuação corrompida) em 12 telas | corrigido na PR #44 | ver §6 |
 | `onClick={() => {}}` em CSV (Relatórios), EXPORT REPORT (Executivo), VER TUDO (Compras) | ligados na PR #43 | ver §6 |
-| Elementos clicáveis sem ação (varredura AST em 269 `.tsx`) | **70**: 1 no-op, 3 só com toast "em desenvolvimento", 59 botões sem handler, 7 itens de menu sem handler (+8 limítrofes que funcionam por bolha de clique) | BLOQUEADO — cada um é uma funcionalidade a definir (ex.: "Chat com Fornecedores", "Cobrar Fornecedores (WhatsApp)", "Gerar Token SCIM", "Autorizar Redespacho", "Bloquear fornecedor"); exigem regra de negócio e, em parte, integração/custo. Lista completa em §5.1 |
+| Elementos clicáveis sem ação (varredura AST em 269 `.tsx`) | 3 ligados na PR #43 e 5 na PR #46; restam **70** (contagem feita após #43): 1 no-op, 3 só com toast "em desenvolvimento", 59 botões sem handler, 7 itens de menu sem handler (+8 limítrofes que funcionam por bolha de clique) | BLOQUEADO — cada um é uma funcionalidade a definir (ex.: "Chat com Fornecedores", "Cobrar Fornecedores (WhatsApp)", "Gerar Token SCIM", "Autorizar Redespacho", "Bloquear fornecedor"); exigem regra de negócio e, em parte, integração/custo. Lista completa em §5.1 |
 | Dados fixos (mock) em produção | `src/components/compras/executive/executiveDashboardData.ts` alimenta `ExecutiveDashboard.tsx` (fallback `rm.x \|\| executiveMetrics.x`), `ExecutiveChartsRow`, `ExecutiveFiltersBar`, `ExecutiveDrillDownModal`; `procurement-kpis/kpiMockData` em `AdvancedProcurementKPIs.tsx:47` | BLOQUEADO — substituir exige definir metas (targets) e séries reais; não há tabela de metas no banco |
+| Card fictício `AISupplierSuggestion` | `src/components/compras/AISupplierSuggestion.tsx:36-39` exibe fornecedores escritos no código ("AluTech Indústria 98% Match", "12 qualified suppliers") nas telas Cotação e Fornecedores | BLOQUEADO — decidir: ligar à edge `ai-supplier-suggestion` (hoje 500) ou retirar o card |
 | Fio cortado: front chama edge `process-solicitacao-neural` | não existe | BLOQUEADO (§4) |
 
 ### 5.1 Elementos clicáveis sem ação (arquivo:linha · rótulo)
@@ -292,10 +293,10 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 - `src/pages/catalogo-spot/CatalogoSpot.tsx:216` Finalizar Pedido (toast "Em desenvolvimento") · `src/components/compras/dashboard/UrgencyDetailsSheet.tsx:253` Iniciar Cotação Imediata (toast) · `src/components/compras/BulkOperationsPreview.tsx:189` Desfazer (toast)
 - `src/pages/admin/ERPConnections.tsx`: 80, 119, 159, 208, 224 · `PunchOutCatalogs.tsx`: 52, 91 · `SSOConfig.tsx:214` · `WorkflowAdmin.tsx`: 54, 136, 167, 204
 - `src/pages/portal-fornecedor/PortalFornecedor.tsx:378` · `src/pages/negociacao-ia/NegociacaoIA.tsx:590`
-- `src/pages/relatorios/RelatoriosCharts.tsx`: 202, 247 · `src/pages/relatorios/Relatorios.tsx:228` · `src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx:127`
+- `src/pages/relatorios/RelatoriosCharts.tsx`: 202, 247 · `src/pages/relatorios/Relatorios.tsx:228` 
 - `src/pages/pedidos/PedidoDetailsDialog.tsx`: 193, 196, 430 · `src/pages/historico/HistoricoSourcingTab.tsx`: 294, 329
-- `src/pages/sourcing/Sourcing.tsx`: 112, 173 · `src/pages/sourcing/RFxDetails.tsx`: 210, 255, 259, 263, 307, 310 · `src/pages/estoque/GestaoEstoque.tsx:166`
-- `src/components/compras/`: `IAAdvisor.tsx` 40, 43 · `executive/ExecutiveAIInsights.tsx:173` · `BulkPlanningConsole.tsx` 105, 242, 257 · `SupplierIntelligenceConsole.tsx:173` · `ExecutiveDashboard.tsx:298` · `ProductionRoutingEngine.tsx:174` · `SourcingHistoryConsole.tsx` 615, 702, 763, 764, 879 · `EnhancedPedidoTimeline.tsx:294` · `CostCenterPerformanceAnalysis.tsx:183` · `AISupplierSuggestion.tsx:59` · `DeliveryCalendar.tsx` 313, 314 · `SolicitacaoCard.tsx` 303, 318, 341 · `DashboardInsights.tsx:186` · `DigitalSignature.tsx:273` · `PendingApprovalsList.tsx:433`
+- `src/pages/sourcing/Sourcing.tsx`: 112 (173 → PR #46) · `src/pages/sourcing/RFxDetails.tsx`: 210, 255, 259, 263, 307, 310 · `src/pages/estoque/GestaoEstoque.tsx:166`
+- `src/components/compras/`: `IAAdvisor.tsx` 40, 43 · `executive/ExecutiveAIInsights.tsx:173` · `BulkPlanningConsole.tsx` 105, 242, 257 · `SupplierIntelligenceConsole.tsx:173` · `ExecutiveDashboard.tsx:298` · `ProductionRoutingEngine.tsx:174` · `SourcingHistoryConsole.tsx` 615, 702, 763, 764, 879 · `EnhancedPedidoTimeline.tsx:294` · `AISupplierSuggestion.tsx:59` (card fictício) · (`CostCenterPerformanceAnalysis.tsx:183`, `DeliveryCalendar.tsx` 313/314 e `RelatorioNegociacoes.tsx:127` → PR #46) · `SolicitacaoCard.tsx` 303, 318, 341 · `DashboardInsights.tsx:186` · `DigitalSignature.tsx:273` · `PendingApprovalsList.tsx:433`
 - `src/features/layout/components/chat/ChatArea.tsx`: 132, 135, 145, 146, 147, 149, 221, 240 · `src/features/layout/components/UserMenu.tsx`: 75 Meu Perfil, 79 Configurações
 
 ## 6. Inventário de telas (55 rotas)
@@ -380,11 +381,14 @@ Prova: `supabase_functions_ping` (MCP Promo Supply V2) em cada nome, 2026-11-12 
 | [#41](https://github.com/adm01-debug/Promo_Supply_V2/pull/41) | views com `security_invoker` + revoga SELECT de `anon` | rollback: `definer_restantes=0`, `anon_scs=false`, `auth_scs=true` | **aberta, aguardando dono** (DDL) |
 | [#42](https://github.com/adm01-debug/Promo_Supply_V2/pull/42) | remove 6 tabelas-lixo `v_*` | sem uso no código, 0 dependências | **aberta, aguardando dono** (DDL + deleção) |
 | [#43](https://github.com/adm01-debug/Promo_Supply_V2/pull/43) | liga CSV, EXPORT REPORT e VER TUDO | typecheck OK, eslint 0, vitest 368/368 nas áreas tocadas | aberta, aguardando CI (fila do Actions) |
+| [#46](https://github.com/adm01-debug/Promo_Supply_V2/pull/46) | liga Novo Evento, Ver Pedido, Rastrear Entrega e 2× Exportar | typecheck OK, eslint 0 erros, vitest 395/395 nas áreas tocadas | aberta, aguardando CI (fila do Actions) |
 | [#44](https://github.com/adm01-debug/Promo_Supply_V2/pull/44) | corrige acentuação corrompida em 12 telas | vitest 2250/2262 (= linha de base), typecheck OK | aberta, aguardando CI (fila do Actions) |
 
 ## 9. Aguardando decisão do dono
 1. **Aplicar PR #40 já** — hoje qualquer pessoa com a chave pública do site consegue escrever no banco como `postgres`. Falta definir o caminho de apply (não há ledger).
 2. PR #41 (vazamento de fornecedores/penalidades sem login) e PR #42.
+2b. **Orçamento do GitHub Actions** (US$ 209,59 cobráveis em novembro): sem aumento, nenhum CI roda e as PRs #43, #44, #45 e #46 não podem ser mergeadas com CI verde.
+2c. Cadastrar o segredo `MIGRATE_HELPER_ACCESS_KEY` nas edges.
 3. Permitir que o GitHub Actions abra PR (Settings → Actions) para o inventário semanal.
 4. Publicar as 5 edges ausentes e diagnosticar o 500 das 4 de IA (precisa de `SUPABASE_ACCESS_TOKEN` ou acesso aos logs do projeto).
 5. Definir o comportamento dos 70 botões sem ação e as metas reais do dashboard executivo.
