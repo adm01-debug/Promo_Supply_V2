@@ -42,7 +42,8 @@ Causa das falhas da `main` em `4cc1a7a` (11:02 UTC): anotação do check-run →
 | `main.yml` (Freight Quest CI/CD) | #367 re-executado → `COMPLETED SUCCESS` (14:28) após o dono liberar o orçamento | OK |
 | `guards.yml` | #36 re-executado → `COMPLETED SUCCESS` (14:15) | OK |
 | `automation-local.yml` | #18 re-executado → `COMPLETED SUCCESS` (14:07) | OK |
-| `types-sync.yml` (a cada 10 min) | #483 success (13:14); fila retomada após liberação do orçamento | OK |
+| `types-sync.yml` (a cada 10 min) | #483 success (13:14) | OK |
+| **Execução após o último merge (`5cdeeac`, 14:40)** | `main.yml`, `guards.yml`, `automation-local.yml` e os checks das PRs #45/#47/#48/#50 ficaram `queued` de 14:40 até pelo menos 15:23; consumo subiu de 34.931 para 35.889 min cobráveis (US$ 215,33) | BLOQUEADO — o novo teto de orçamento foi atingido de novo (custo, decisão do dono). Os mesmos passos rodados localmente na `main`+#44+#46: typecheck OK, vitest 2250/2262, build OK |
 | `contexto.yml` (a cada 10 min) | #170 success (12:54); #172/#173 `cancelled` por concorrência (run novo cancela o anterior) | OK |
 | `branch-hygiene-audit.yml` (semanal) | #1 success | OK |
 | `notifica-falha-main.yml` | último `skipped` (nada a notificar) | OK |
@@ -424,7 +425,7 @@ Workflow de 35 agentes (1 por arquivo + 1 verificador cético por classificaçã
 ## 7. Integrações externas
 | Integração | Onde | Status |
 |---|---|---|
-| Vercel (front) | projeto `promo-supply-v2` | OK — produção READY em `4cc1a7a`; `GET https://promo-supply-v2.vercel.app/` → 200; `get_runtime_errors(24h)` → "No runtime errors found" |
+| Vercel (front) | projeto `promo-supply-v2` | OK na home — deploys de produção READY para #43 (`e897b42`), #44 (`257a4c4`) e #46 (`5cdeeac`, `dpl_Gpa7SE4Auyd2wWzKr4HSpjgUJBQZ`); `get_runtime_errors(2h)` → "No runtime errors found". **BLOQUEADO em links diretos**: `GET /compras` → 404 `NOT_FOUND` (já era assim na linha de base `4cc1a7a`): falta `vercel.json` com rewrite da SPA → PR #50; preview `promo-supply-v2-3kf2yhzhf`: `/compras` → 200 `index.html` e `/manifest.webmanifest` → 200 `application/manifest+json` |
 | Supabase Auth/DB | `lmypcdfsrgfftzhxawao` | OK — 12 usuários, 5 papéis admin; simulando um admin (`request.jwt.claims` + `role authenticated`, transação revertida): solicitações 11, pedidos 34, cotações 61, fornecedores 10, pagamentos 3; como `anon`: 0 em todas essas |
 | AI Gateway (Lovable) | edges `ai-*` | BLOQUEADO — as 4 edges de IA devolvem 500 (§4) |
 | XBZ | `xbz-proxy`, `xbz-sync-pedidos` | BLOQUEADO — não publicadas (404) |
@@ -447,12 +448,14 @@ Workflow de 35 agentes (1 por arquivo + 1 verificador cético por classificaçã
 | [#46](https://github.com/adm01-debug/Promo_Supply_V2/pull/46) | liga Novo Evento, Ver Pedido, Rastrear Entrega e 2× Exportar | typecheck OK, eslint 0 erros, vitest 395/395 nas áreas tocadas | **mergeada** (`5cdeeac`), CI verde incl. E2E |
 | [#47](https://github.com/adm01-debug/Promo_Supply_V2/pull/47) | Iniciar Cotação Imediata abre a cotação; VER MATRIZ KRALJIC rola até a matriz | typecheck OK, eslint 0, vitest 368/368 | ver estado final no PR |
 | [#48](https://github.com/adm01-debug/Promo_Supply_V2/pull/48) | "Citar Agora" usava o número de exibição como id → cotação vazia | produção: 11/11 solicitações com `numero` (ex.: `SOL-2026-1000`), busca do número como id → 0; vitest 368/368 | ver estado final no PR |
+| [#50](https://github.com/adm01-debug/Promo_Supply_V2/pull/50) | `vercel.json` com rewrite da SPA (link direto/F5 em qualquer tela dava 404) | produção `/compras` → 404; preview da PR → 200 | aberta, aguardando CI (Actions sem orçamento) |
 | [#44](https://github.com/adm01-debug/Promo_Supply_V2/pull/44) | corrige acentuação corrompida em 12 telas | CI verde; `main`+#44+#46 local: typecheck OK, 2250/2262 (= linha de base), build OK | **mergeada** (`257a4c4`) |
 
 ## 9. Aguardando decisão do dono
 Decididos e executados nesta sessão: aplicar #40/#41/#42 em produção (feito e verificado) e liberar o orçamento do Actions (feito; CI voltou a rodar).
 
 Ainda pendentes (BLOQUEADO):
+0. **Orçamento do Actions esgotado de novo** (US$ 215,33): sem ele, o CI pós-merge da `main` e o das PRs #45, #47, #48 e #50 não rodam, e elas não podem ser mergeadas com CI verde.
 1. **Edge functions** — publicar `health-dashboard`, `maintain-partitions`, `spot-api`, `xbz-proxy`, `xbz-sync-pedidos`; republicar as 4 `ai-*`; cadastrar o segredo `MIGRATE_HELPER_ACCESS_KEY`. Exige `SUPABASE_ACCESS_TOKEN` (PAT `sbp_…`): o dono recusou fornecê-lo nesta sessão; o MCP Promo Supply V2 e o gateway `supabase-supply-mcp` não publicam edge (`supabase_functions_list` → "Listagem requer SUPABASE_ACCESS_TOKEN"); os MCPs que publicam ("GESTÃO DE CLIENTES/PRODUTOS") estão presos a outros projetos.
 2. **`process-solicitacao-neural`** — criar a edge ou remover a chamada do front (decisão de produto).
 3. **Elementos clicáveis sem ação triados como "negócio" (§5.1), card fictício `AISupplierSuggestion` e métricas fixas do dashboard executivo** — exigem definição de negócio (o que cada ação faz; metas reais).
