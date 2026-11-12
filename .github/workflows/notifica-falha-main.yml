@@ -20,7 +20,7 @@ on:
   workflow_run: # zizmor: ignore[dangerous-triggers]
     workflows:
       - Freight Quest CI/CD
-      - Contexto para agentes de IA (10 min)
+      - Contexto para agentes de IA (1h)
       - types-sync
       - Inventário do estado real (semanal)
       - Branch Hygiene Audit
@@ -84,7 +84,7 @@ jobs:
               return;
             }
 
-            // Janela anti-poluicao: o contexto.yml roda a cada 10 min; sem isto, uma falha
+            // Janela anti-poluicao: o contexto.yml roda a cada hora; sem isto, uma falha
             // persistente renderia ~144 comentarios por dia e a issue ficaria ilegivel.
             // `updated_at` da issue cobre tanto a criacao quanto o ultimo comentario.
             const janelaMs = Number(process.env.JANELA_HORAS) * 3600 * 1000;

@@ -10,7 +10,7 @@ diz `lmypcdfsrgfftzhxawao`. Aponte o secret para o banco que o front realmente u
 ## Onde está o resultado (neste repo)
 
 A Vercel está ligada ao repo e faria um deploy de produção a cada push, então o snapshot **não** é
-comitado na main: o job `banco` de `.github/workflows/contexto.yml` roda a cada 10 min e publica em `docs/contexto/supabase/` da branch
+comitado na main: o job `banco` de `.github/workflows/contexto.yml` roda a cada hora e publica em `docs/contexto/supabase/` da branch
 **`contexto`** (junto com `codigo/` e `regras/`; índice em `docs/contexto/00-INDEX.md`). Só há commit quando algo mudou.
 
 Como ler, sem trocar de branch:

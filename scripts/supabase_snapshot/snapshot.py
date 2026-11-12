@@ -1628,7 +1628,7 @@ def render_readme(snap: dict, api_: dict, caller_sources: dict[str, str] | None 
     server = db.get("server") or {}
     md = [
         "# Snapshot Supabase — contexto para agentes de IA\n",
-        os.environ.get("SUPABASE_SNAPSHOT_PUBLICACAO", "Gerado automaticamente a cada 10 min pelo workflow `contexto` (job `banco`). **Não edite manualmente.**") + "\n",
+        os.environ.get("SUPABASE_SNAPSHOT_PUBLICACAO", "Gerado automaticamente a cada hora pelo workflow `contexto` (job `banco`). **Não edite manualmente.**") + "\n",
         "Última coleta concluída publicada: `manifest.json` → `gerado_em` (UTC), com erros e seções reaproveitadas. "
         "Última publicação: `git log -1 --format=%cI -- docs/contexto/supabase`. Mudanças estruturais estão em `CHANGELOG.md`.\n",
         "## Protocolo para agentes\n",

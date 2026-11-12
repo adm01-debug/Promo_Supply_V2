@@ -7,7 +7,7 @@
 #   - sem-commit: "nada mudou" no publicar significa que nenhuma das três fontes mudou desde a última publicação
 #   - metricas: métricas/manifests do banco aguardam 60 min desde a coleta publicada; commits de código não reiniciam o prazo; data ausente/inválida/futura e mudanças de saúde/estado do índice publicam sem espera
 #   - banco-pulado: sem o secret SUPABASE_DB_URL o job do banco sai verde com aviso e a pasta supabase/ fica como estava
-name: Contexto para agentes de IA (10 min)
+name: Contexto para agentes de IA (1h)
 
 # UM workflow, TRÊS produtores independentes (um job cada), UM índice, UMA branch:
 # Falha fatal deixa o workflow vermelho; publicar ainda reúne as fontes disponíveis via !cancelled().
@@ -19,7 +19,7 @@ name: Contexto para agentes de IA (10 min)
 #
 # Cada fato tem um dono: schema real = supabase/; onde fica o código = codigo/; o que pode/não pode = regras/.
 # Onde fica: branch `contexto` (gerada, com histórico; nunca abra PR dela). Não é comitado na main porque a
-# Vercel está ligada ao repo e faria um deploy de produção a cada 10 min. Push com GITHUB_TOKEN não dispara
+# Vercel está ligada ao repo e faria um deploy de produção a cada execução agendada. Push com GITHUB_TOKEN não dispara
 # outros workflows (anti-loop) e o vercel.json escrito na branch desliga o preview deploy dela.
 # Como ler: git fetch origin contexto && git show origin/contexto:docs/contexto/00-INDEX.md, ou MCP
 # get_file(ref=contexto). Repo privado: raw.githubusercontent.com exige token.
@@ -321,7 +321,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_MAIN: ${{ github.sha }}
-          VOLATILE_MIN_INTERVAL_MIN: '60'
+          VOLATILE_MIN_INTERVAL_MIN: '50'
           HUSKY: '0'
         run: |
           ART="$RUNNER_TEMP/art"
@@ -361,7 +361,7 @@ jobs:
           # Branch gerada: contexto para agentes de IA
 
           Comece por `docs/contexto/00-INDEX.md`. Pastas `codigo/`, `supabase/` e `regras/` são regeradas a cada
-          10 min pelo workflow `contexto.yml` da main — não edite nem abra PR desta branch. Regras humanas vivem
+          hora pelo workflow `contexto.yml` da main — não edite nem abra PR desta branch. Regras humanas vivem
           em `docs/contexto/regras/manual/` na **main**.
           EOF
           # Sem isto a Vercel faria um preview deploy a cada push (a Vercel lê o vercel.json do commit deployado).
