@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   Calendar as CalendarIcon, 
   ChevronLeft, 
@@ -48,6 +49,7 @@ import {
 } from "./delivery-calendar/deliveryCalendarHelpers";
 
 export function DeliveryCalendar() {
+  const navigate = useNavigate();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<DeliveryEvent | null>(null);
@@ -310,8 +312,8 @@ export function DeliveryCalendar() {
                 </div>
               </div>
               <div className="flex gap-2 pt-4 border-t">
-                <Button variant="outline" className="flex-1" size="sm">Ver Pedido</Button>
-                <Button className="flex-1" size="sm">Rastrear Entrega</Button>
+                <Button variant="outline" className="flex-1" size="sm" onClick={() => navigate("/pedidos")}>Ver Pedido</Button>
+                <Button className="flex-1" size="sm" onClick={() => navigate("/acompanhamento")}>Rastrear Entrega</Button>
               </div>
             </div>
           )}

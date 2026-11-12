@@ -17,6 +17,7 @@ import {
   PieChart, Pie
 } from 'recharts';
 import { Button } from "@/components/ui/button";
+import { exportToCSV } from "@/lib/exportData";
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8', '#82ca9d'];
 
@@ -180,7 +181,21 @@ export const CostCenterPerformanceAnalysis = () => {
                 onChange={e => setSearchTerm(e.target.value)}
               />
             </div>
-            <Button variant="outline" size="sm" className="h-8 gap-1.5 text-xs">
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-8 gap-1.5 text-xs"
+              disabled={isLoading || filteredReport.length === 0}
+              onClick={() => exportToCSV(filteredReport, [
+                { key: "cost_center_code", label: "Código" },
+                { key: "cost_center_name", label: "Centro de custo" },
+                { key: "total_budget", label: "Orçamento", formatter: (v) => formatCurrency(Number(v)) },
+                { key: "total_committed", label: "Comprometido", formatter: (v) => formatCurrency(Number(v)) },
+                { key: "total_used", label: "Utilizado", formatter: (v) => formatCurrency(Number(v)) },
+                { key: "available_balance", label: "Saldo", formatter: (v) => formatCurrency(Number(v)) },
+                { key: "usage_percentage", label: "Uso (%)" },
+              ], "centros-de-custo")}
+            >
               <Download className="w-3.5 h-3.5" /> Exportar
             </Button>
           </div>

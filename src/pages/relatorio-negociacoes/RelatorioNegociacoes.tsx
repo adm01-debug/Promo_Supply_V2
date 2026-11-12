@@ -42,6 +42,8 @@ import {
 import type { TooltipProps } from "recharts";
 import type { ValueType, NameType } from "recharts/types/component/DefaultTooltipContent";
 import { useRelatorioNegociacoes, type Comprador } from "./useRelatorioNegociacoes";
+import { exportToCSV } from "@/lib/exportData";
+import { toast } from "@/lib/feedbackToast";
 
 const COLORS = [
   "hsl(var(--primary))",
@@ -124,7 +126,25 @@ const RelatorioNegociacoes = () => {
                 <SelectItem value="12m">Último ano</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" size="sm" className="ml-auto gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto gap-2"
+              disabled={isLoading}
+              onClick={() => {
+                if (comparativoCompradores.length === 0) {
+                  toast.info("Nenhuma negociação no período para exportar.");
+                  return;
+                }
+                exportToCSV(comparativoCompradores, [
+                  { key: "nome", label: "Comprador" },
+                  { key: "economia", label: "Economia (R$)" },
+                  { key: "percentual", label: "Economia (%)" },
+                  { key: "cotacoes", label: "Cotações" },
+                  { key: "melhorPreco", label: "Melhor preço" },
+                ], `relatorio-negociacoes-${periodo}`);
+              }}
+            >
               <Download className="h-4 w-4" />
               Exportar
             </Button>
