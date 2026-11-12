@@ -36,19 +36,19 @@
 
 ## 2. GitHub Actions (8 workflows do repo + 2 dinâmicos do Copilot)
 
-Causa das falhas da `main` em `4cc1a7a` (11:02 UTC): anotação do check-run → **"The job was not started because an Actions budget is preventing further use."** Os jobs não chegaram a executar (`steps: []`, `runner_id: 0`, log 404). Consumo da conta em novembro (`GET /users/adm01-debug/settings/billing/usage/summary`): **444.980 min Linux brutos, 34.931 cobráveis = US$ 209,59** — o orçamento de Actions foi atingido. Os agendados `types-sync` e `contexto` (cada um a cada 10 min) são os maiores consumidores recorrentes deste repo. Runs posteriores executaram (types-sync 13:14 ✅, contexto 12:54 ✅), então os 3 runs foram re-executados às 13:40 UTC; reproduzi localmente cada passo deles (§1) e todos passam.
+Histórico do dia: às 11:02 UTC os jobs da `main` não iniciaram — anotação do check-run: **"The job was not started because an Actions budget is preventing further use."** O dono liberou o orçamento duas vezes; nos intervalos o CI rodou e **todas as PRs desta auditoria tiveram CI verde antes do merge** (§8). A #51 (aprovada pelo dono) reduziu `types-sync`/`contexto` de 10 min para 1 h.
 
-| Workflow | Último run na `main` | Status |
+| Workflow | Última execução conferida | Status |
 |---|---|---|
-| `main.yml` (Freight Quest CI/CD) | #367 re-executado → `COMPLETED SUCCESS` (14:28) após o dono liberar o orçamento | OK |
-| `guards.yml` | #36 re-executado → `COMPLETED SUCCESS` (14:15) | OK |
-| `automation-local.yml` | #18 re-executado → `COMPLETED SUCCESS` (14:07) | OK |
-| `types-sync.yml` (a cada 10 min) | #483 success (13:14) | OK |
-| **Execução após o último merge (`5cdeeac`, 14:40)** | `main.yml`, `guards.yml`, `automation-local.yml` e os checks das PRs #45/#47/#48/#50 ficaram `queued` de 14:40 até pelo menos 15:23; consumo subiu de 34.931 para 35.889 min cobráveis (US$ 215,33) | BLOQUEADO — o novo teto de orçamento foi atingido de novo (custo, decisão do dono). Os mesmos passos rodados localmente na `main`+#44+#46: typecheck OK, vitest 2250/2262, build OK |
-| `contexto.yml` (a cada 10 min) | #170 success (12:54); #172/#173 `cancelled` por concorrência (run novo cancela o anterior) | OK |
-| `branch-hygiene-audit.yml` (semanal) | #1 success | OK |
-| `notifica-falha-main.yml` | último `skipped` (nada a notificar) | OK |
-| `inventario-estado-semanal.yml` (semanal) | #1 failure no passo "Abrir ou atualizar PR do inventário": `##[error]GitHub Actions is not permitted to create or approve pull requests.` | BLOQUEADO — configuração do repositório (Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests"); é setting de CI/segurança, decisão do dono |
+| `main.yml` (Freight Quest CI/CD) | verde em cada PR mergeada (ex.: #48, #50, #59 com 8/8 checks incl. E2E) | OK nas PRs; ver linha final |
+| `guards.yml` | verde nas PRs; local na `main` final `b6e0427`: `npm run guards` → 196/196, exit 0 | OK |
+| `automation-local.yml` | verde nas PRs; local: `node scripts/automation.mjs doctor --static` → `"status":"healthy"` | OK |
+| `types-sync.yml` | #483 success; agora 1x/hora (#51) | OK |
+| `contexto.yml` | #170 success; agora 1x/hora (#51) | OK |
+| `branch-hygiene-audit.yml` | #1 success | OK |
+| `notifica-falha-main.yml` | `skipped` (nada a notificar) | OK |
+| `inventario-estado-semanal.yml` | #1 failure: `GitHub Actions is not permitted to create or approve pull requests.` | BLOQUEADO — setting do repositório (decisão do dono) |
+| **Execução pós-último-merge na `main` (`b6e0427`, 19:57 UTC)** | 3 checks success, 9 `queued` por mais de 1 h; o repositório tem 38 runs `queued` e nenhum iniciando; consumo cobrável estável (35.951 min, US$ 215,71), ou seja, não é o orçamento | BLOQUEADO — fila de runners da conta parada; não há o que corrigir no código. Prova de qualidade da mesma `main`, rodada localmente: typecheck 0, eslint 0 erros, vitest 2297/2309 (12 skipped), build 0, guards 196/196, Deno 36/36, E2E 30/30 |
 
 ## 3. Banco (`lmypcdfsrgfftzhxawao`)
 
@@ -459,7 +459,7 @@ Workflow de 35 agentes (1 por arquivo + 1 verificador cético por classificaçã
 | [#54](https://github.com/adm01-debug/Promo_Supply_V2/pull/54) | revoga 141 SECURITY DEFINER de anon | 150 → 9; login sem sessão OK | mergeada + aplicada |
 | [#55](https://github.com/adm01-debug/Promo_Supply_V2/pull/55) | dashboard de compras volta a carregar, restrito ao grupo | admin: KPIs + 4 urgências; anon → `permission denied` | mergeada + aplicada |
 | [#56](https://github.com/adm01-debug/Promo_Supply_V2/pull/56) | `tenant_isolation_*` RESTRICTIVE em 35 tabelas | admin vê tudo; sem papel: fornecedores 10 → 0 | mergeada + aplicada |
-| [#57](https://github.com/adm01-debug/Promo_Supply_V2/pull/57) | seta do tour corrompida + guard de encoding | local: guards 198/198, vitest onboarding 59/59 | ver estado no PR |
+| [#57](https://github.com/adm01-debug/Promo_Supply_V2/pull/57) | seta do tour corrompida + guard de encoding | local após rebase: guards 198/198, vitest onboarding 59/59, doctor healthy | aberta — aguardando CI (fila parada, §2) |
 | [#58](https://github.com/adm01-debug/Promo_Supply_V2/pull/58) | números do CSV em formato pt-BR | CI verde | mergeada |
 | [#59](https://github.com/adm01-debug/Promo_Supply_V2/pull/59) | vencimento das urgências um dia antes | `main`+#59: typecheck OK, 1011/1011 | mergeada |
 
