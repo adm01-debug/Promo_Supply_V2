@@ -30,10 +30,10 @@ export const ExecutiveDrillDownModal = ({ drillDown, onClose }: Props) => {
                 animate={{ opacity: 1, x: 0 }}
                 key={drillDown?.type}
               >
-                {drillDown?.type === 'category' && `ExploraÃ§Ã£o: ${drillDown.data?.name}`}
+                {drillDown?.type === 'category' && `Exploração: ${drillDown.data?.name}`}
                 {drillDown?.type === 'supplier' && `Perfil: ${drillDown.data?.name}`}
                 {drillDown?.type === 'buyer' && `Performance: ${drillDown.data?.name}`}
-                {drillDown?.type === 'pending' && 'Central de AÃ§Ãµes CrÃ­ticas'}
+                {drillDown?.type === 'pending' && 'Central de Ações Críticas'}
               </motion.span>
             </DialogTitle>
           </DialogHeader>
@@ -74,7 +74,7 @@ export const ExecutiveDrillDownModal = ({ drillDown, onClose }: Props) => {
                   {[
                     { label: 'Volume Negociado', value: formatCurrency(drillDown.data.spend), icon: DollarSign },
                     { label: 'Savings Realizados', value: formatCurrency(drillDown.data.savings), icon: TrendingUp, color: 'text-success' },
-                    { label: 'Compliance HistÃ³rico', value: `${drillDown.data.compliance}%`, icon: ShieldCheck },
+                    { label: 'Compliance Histórico', value: `${drillDown.data.compliance}%`, icon: ShieldCheck },
                     { label: 'Total de Pedidos', value: drillDown.data.orders, icon: Package }
                   ].map((stat, i) => (
                     <motion.div 
@@ -96,8 +96,8 @@ export const ExecutiveDrillDownModal = ({ drillDown, onClose }: Props) => {
                   {[
                     { label: 'Produtividade', value: `${drillDown.data.orders} Pedidos`, icon: Target },
                     { label: 'Economia Direta', value: formatCurrency(drillDown.data.savings), icon: TrendingUp, color: 'text-success' },
-                    { label: 'Ciclo MÃ©dio', value: `${drillDown.data.avgCycle} Dias`, icon: Clock },
-                    { label: 'NÃ­vel de Rigor', value: `${drillDown.data.compliance}%`, icon: ShieldCheck }
+                    { label: 'Ciclo Médio', value: `${drillDown.data.avgCycle} Dias`, icon: Clock },
+                    { label: 'Nível de Rigor', value: `${drillDown.data.compliance}%`, icon: ShieldCheck }
                   ].map((stat, i) => (
                     <motion.div 
                       key={stat.label}
@@ -155,8 +155,8 @@ export const ExecutiveDrillDownModal = ({ drillDown, onClose }: Props) => {
                   <div className="p-4 rounded-xl bg-primary/5 border border-primary/10 flex items-start gap-3">
                     <TrendingUp className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                     <p className="text-xs leading-relaxed text-muted-foreground">
-                      Esta anÃ¡lise considera dados histÃ³ricos consolidados dos Ãºltimos 6 meses. 
-                      TendÃªncia de crescimento projetada em <span className="text-primary font-bold">+8.4%</span> para o prÃ³ximo trimestre com base no pipeline atual.
+                      Esta análise considera dados históricos consolidados dos últimos 6 meses. 
+                      Tendência de crescimento projetada em <span className="text-primary font-bold">+8.4%</span> para o próximo trimestre com base no pipeline atual.
                     </p>
                   </div>
                 </div>

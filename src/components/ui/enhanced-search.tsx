@@ -73,7 +73,7 @@ const HighlightedText = React.memo(({
 });
 
 export const EnhancedSearch = ({
-  placeholder = "Buscar solicitaÃ§Ãµes, pedidos, fornecedores...",
+  placeholder = "Buscar solicitações, pedidos, fornecedores...",
   onSearch,
   onSelect,
   results = [],
@@ -272,7 +272,7 @@ export const EnhancedSearch = ({
           </AnimatePresence>
           {showShortcut && (
             <kbd className="hidden sm:inline-flex h-6 items-center gap-1 rounded-md border bg-muted px-2 font-mono text-[10px] font-medium text-muted-foreground">
-              âŒ˜K
+              ⌘K
             </kbd>
           )}
         </div>
@@ -367,7 +367,7 @@ export const EnhancedSearch = ({
               <div className="p-2 border-b">
                 <div className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
                   <Sparkles className="w-3 h-3" />
-                  SugestÃµes
+                  Sugestões
                 </div>
                 {suggestions.slice(0, 4).map((suggestion, index) => {
                   const SugIcon = suggestion.icon || Search;
@@ -456,7 +456,7 @@ export const EnhancedSearch = ({
 
             {/* Footer hint */}
             <div className="px-4 py-2.5 bg-muted/30 border-t flex items-center justify-between text-[10px] text-muted-foreground">
-              <span>Use â†‘â†“ para navegar, Enter para selecionar</span>
+              <span>Use ↑↓ para navegar, Enter para selecionar</span>
               <span>Esc para fechar</span>
             </div>
           </motion.div>
