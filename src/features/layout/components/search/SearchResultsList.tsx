@@ -77,7 +77,7 @@ export const SearchResultsList = ({
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium">{nlIntent.description}</p>
-                  <p className="text-xs text-muted-foreground">Ir diretamente para a pÃ¡gina filtrada</p>
+                  <p className="text-xs text-muted-foreground">Ir diretamente para a página filtrada</p>
                 </div>
                 <ChevronRight className="w-4 h-4 text-muted-foreground shrink-0" />
               </motion.button>

@@ -111,7 +111,7 @@ const Cotacao = () => {
     try {
       // Simulation of Neural Follow-up based on user prompt
       const supplierName = allCotacoes[0]?.fornecedor || "Supplier";
-      toast.info(`Neural Follow-up: "OlÃ¡ ${supplierName}, tudo bem? Notei que ainda nÃ£o recebemos sua atualizaÃ§Ã£o sobre a caneca de alumÃ­nio. Consegue nos enviar hoje?"`, {
+      toast.info(`Neural Follow-up: "Olá ${supplierName}, tudo bem? Notei que ainda não recebemos sua atualização sobre a caneca de alumínio. Consegue nos enviar hoje?"`, {
         duration: 5000,
       });
       await new Promise(resolve => setTimeout(resolve, 1500));
@@ -156,7 +156,7 @@ const Cotacao = () => {
                 <h1 className="text-4xl font-black text-white tracking-tight uppercase leading-none" style={{ fontFamily: 'Outfit, sans-serif' }}>Quotation Cockpit</h1>
                 <div className="flex items-center gap-3 mt-3">
                    <Badge variant="outline" className="text-[10px] font-black uppercase tracking-widest border-amber-500/30 text-amber-400 px-3 py-1">#{solicitacao.numero}</Badge>
-                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">â€¢ Competitive Market Analysis</span>
+                   <span className="text-[10px] text-zinc-500 uppercase font-black tracking-widest opacity-50">• Competitive Market Analysis</span>
                 </div>
               </div>
             </div>
