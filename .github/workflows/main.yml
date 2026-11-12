@@ -18,7 +18,7 @@ on:
 jobs:
   quality-gate:
     name: Quality Gate (Lint, Typecheck, RLS Audit)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
@@ -54,7 +54,7 @@ jobs:
 
   unit-integration-tests:
     name: Unit & Integration Tests (Frontend + Edge)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
@@ -89,7 +89,7 @@ jobs:
 
   e2e-tests:
     name: End-to-End Tests (Playwright)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [quality-gate]
     env:
       # Minimal placeholder values so the Vite dev server can start.
