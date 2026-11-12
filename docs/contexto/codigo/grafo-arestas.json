@@ -254,6 +254,7 @@
    "src/components/ui/progress.tsx",
    "src/components/ui/table.tsx",
    "src/integrations/supabase/client.ts",
+   "src/lib/exportData.ts",
    "src/lib/utils.ts"
   ],
   "src/components/compras/CotacaoManualModal.tsx": [
@@ -389,6 +390,7 @@
    "src/hooks/useDashboardFilters.ts",
    "src/hooks/useExecutiveDashboardData.ts",
    "src/hooks/useRealtimeSubscription.ts",
+   "src/lib/exportData.ts",
    "src/lib/utils.ts"
   ],
   "src/components/compras/FilterFavoritesManager.tsx": [
@@ -3096,6 +3098,8 @@
    "src/components/ui/progress.tsx",
    "src/components/ui/select.tsx",
    "src/components/ui/skeleton.tsx",
+   "src/lib/exportData.ts",
+   "src/lib/feedbackToast.ts",
    "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts"
   ],
   "src/pages/relatorio-negociacoes/useRelatorioNegociacoes.ts": [
@@ -3118,6 +3122,7 @@
    "src/components/ui/tabs.tsx",
    "src/features/layout/components/ModuleErrorBoundary.tsx",
    "src/integrations/supabase/client.ts",
+   "src/lib/exportData.ts",
    "src/lib/feedbackToast.ts",
    "src/lib/utils.ts",
    "src/pages/relatorios/RelatoriosCharts.tsx"

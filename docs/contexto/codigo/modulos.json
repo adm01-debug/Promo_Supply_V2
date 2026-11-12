@@ -377,7 +377,7 @@
    "modulo": "components/compras",
    "arquivos": 102,
    "testes": 15,
-   "linhas": 24760,
+   "linhas": 24794,
    "itens_menu": [],
    "telas": [],
    "rotas_http": [],
@@ -3179,6 +3179,7 @@
     "pages/portal-fornecedor",
     "pages/recebimento",
     "pages/recompra",
+    "pages/relatorio-negociacoes",
     "pages/relatorios",
     "pages/solicitacoes",
     "pages/sourcing",
@@ -4871,7 +4872,7 @@
    "modulo": "pages/dashboard",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 401,
+   "linhas": 402,
    "itens_menu": [
     "Executivo"
    ],
@@ -6830,7 +6831,7 @@
    "modulo": "pages/relatorio-negociacoes",
    "arquivos": 3,
    "testes": 2,
-   "linhas": 741,
+   "linhas": 761,
    "itens_menu": [
     "Negociações"
    ],
@@ -6842,6 +6843,8 @@
    "hooks_locais": [
     "useAuth",
     "useBuyerPerformanceData",
+    "useFeedback",
+    "useFeedbackPreferences",
     "useRelatorioNegociacoes"
    ],
    "hooks_definidos": [
@@ -6895,7 +6898,8 @@
     "components/compras",
     "components/organisms",
     "components/ui",
-    "integrations/supabase"
+    "integrations/supabase",
+    "lib"
    ],
    "pacotes_externos": [
     "@tanstack/react-query",
@@ -6907,7 +6911,7 @@
    "modulo": "pages/relatorios",
    "arquivos": 2,
    "testes": 0,
-   "linhas": 508,
+   "linhas": 520,
    "itens_menu": [
     "Relatórios"
    ],

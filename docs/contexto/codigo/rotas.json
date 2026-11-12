@@ -2350,7 +2350,7 @@
    "papeis": [
     "admin"
    ],
-   "arquivos_puxados": 63
+   "arquivos_puxados": 65
   },
   {
    "protegida": false,
@@ -4365,7 +4365,7 @@
    "canais_realtime": [],
    "flags": [],
    "papeis": [],
-   "arquivos_puxados": 41
+   "arquivos_puxados": 43
   },
   {
    "protegida": false,
@@ -4388,6 +4388,8 @@
     "useCallback",
     "useContext",
     "useEffect",
+    "useFeedback",
+    "useFeedbackPreferences",
     "useMemo",
     "useQuery",
     "useRef",
@@ -4397,6 +4399,8 @@
    "hooks_locais": [
     "useAuth",
     "useBuyerPerformanceData",
+    "useFeedback",
+    "useFeedbackPreferences",
     "useRelatorioNegociacoes"
    ],
    "tabelas": [
@@ -4422,7 +4426,7 @@
     "admin",
     "alert"
    ],
-   "arquivos_puxados": 28
+   "arquivos_puxados": 31
   },
   {
    "protegida": false,

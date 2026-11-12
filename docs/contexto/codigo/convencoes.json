@@ -58,11 +58,11 @@
  "commits": {
   "convencao": "conventional commits (observado)",
   "exemplos": [
-   "fix(scripts): hardening e evolução dos scripts de auditoria/ops (#14)",
-   "fix(ci): fixa runner ubuntu-24.04 no main.yml (ubuntu-latest migrou para 26.04 e quebra Playwright 1.60) (#39)",
-   "fix(contexto): corrige indentacao do bloco python em contexto.yml (#37)",
-   "fix(edge): require JWT and validate identity/tenant across edge functions (#36)",
-   "fix: bugs de infra de testes, datas em fuso BR, crashes e fluxo de pagamentos (#35)"
+   "fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)",
+   "fix(ui): corrige acentuacao corrompida em 12 telas (#44)",
+   "fix(ui): liga exportacao CSV e ver tudo em botoes que nao faziam nada (#43)",
+   "chore(banco): remove seis tabelas v_ orfas criadas por engano (#42)",
+   "security(banco): views com security_invoker e sem leitura anonima (#41)"
   ]
  },
  "pr_template": null,

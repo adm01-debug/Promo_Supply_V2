@@ -1,7 +1,7 @@
 # Contexto do projeto para agentes de IA
 
 GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.
-Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `4cc1a7a96bc4160e5b1102577e41d6b84aee12fc` (2026-11-12T08:02:29-03:00).
+Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR dela) a cada push em `main` e a cada 10 minutos pelo workflow `contexto.yml`; índice único das três fontes em `docs/contexto/00-INDEX.md`. Gere local com `node scripts/ai-context/gerar.mjs`. Commit-base: `5cdeeacaae4f9af3216a94b88cc0768a070cfc90` (2026-11-12T11:40:40-03:00).
 
 ## Como usar (leia antes de planejar ou executar qualquer tarefa)
 1. **Tela/rota/menu** → `rotas.json` (url/vista/menu → arquivo → hooks → tabelas → edges; `rotas_http_backend` para APIs) e `modulos.json` (módulo inteiro + dependências entre módulos).
@@ -14,7 +14,7 @@ Publicado em `docs/contexto/codigo/` na branch `contexto` (gerada, nunca abra PR
 Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua tarefa; não carregue tudo.
 
 ## Stack
-- linguagens: TypeScript (682), SQL (281), Markdown (70), JavaScript (50), JSON (21), YAML (9), Shell (7), CSS (6)
+- linguagens: TypeScript (682), SQL (284), Markdown (70), JavaScript (50), JSON (21), YAML (9), Shell (7), CSS (6)
 - linguagem_principal: TypeScript
 - framework: React
 - backend_http: n/d
@@ -34,9 +34,9 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 ## Números
 | item | qtd |
 |---|---|
-| arquivos_total | 1152 |
+| arquivos_total | 1155 |
 | arquivos_codigo | 735 |
-| linhas_codigo | 151031 |
+| linhas_codigo | 151098 |
 | rotas | 55 |
 | rotas_http_backend | 12 |
 | vistas_por_id | 0 |
@@ -46,7 +46,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | hooks | 90 |
 | edge_functions | 38 |
 | tabelas | 164 |
-| migrations | 280 |
+| migrations | 283 |
 | cron_jobs | 68 |
 | testes | 145 |
 | workflows | 8 |
@@ -112,7 +112,7 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 | pages/qualificacao | 1 | 1 | 1 | 78 | 5 | 60 |
 | pages/recebimento | 1 | 1 | 3 | 3 | 1 | 5 |
 | pages/recompra | 1 | 1 | 1 | 3 | 1 | 7 |
-| pages/relatorio-negociacoes | 1 | 1 | 3 | 3 | 1 | 9 |
+| pages/relatorio-negociacoes | 1 | 1 | 3 | 5 | 1 | 9 |
 | pages/relatorios | 1 | 1 | 2 | 4 | 2 | 5 |
 | pages/seguranca | 1 | 1 | 1 | 83 | 8 | 69 |
 | pages/solicitacoes | 1 | 1 | 2 | 20 | 2 | 15 |
@@ -411,6 +411,12 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 
 
 ## Últimos commits
+- 2026-11-12 `5cdeeaca` fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)
+- 2026-11-12 `257a4c44` fix(ui): corrige acentuacao corrompida em 12 telas (#44)
+- 2026-11-12 `e897b429` fix(ui): liga exportacao CSV e ver tudo em botoes que nao faziam nada (#43)
+- 2026-11-12 `aca8fbd9` chore(banco): remove seis tabelas v_ orfas criadas por engano (#42)
+- 2026-11-12 `5001fc3a` security(banco): views com security_invoker e sem leitura anonima (#41)
+- 2026-11-12 `c9488d5d` security(banco): revoga execute_read_query de anon e authenticated (#40)
 - 2026-11-12 `4cc1a7a9` fix(scripts): hardening e evolução dos scripts de auditoria/ops (#14)
 - 2026-11-11 `75c0e960` fix(ci): fixa runner ubuntu-24.04 no main.yml (ubuntu-latest migrou para 26.04 e quebra Playwright 1.60) (#39)
 - 2026-11-11 `b7db2755` fix(contexto): corrige indentacao do bloco python em contexto.yml (#37)
@@ -420,12 +426,6 @@ Os JSONs são grandes: filtre com `grep`/`jq` pelo caminho/arquivo/tabela da sua
 - 2026-11-11 `491c6cfc` fix(e2e): corrigir 7 seletores Playwright incompatíveis com DOM real (#19)
 - 2026-11-11 `90c35fb5` fix(tipos): corrige contratos do painel de saúde e relatório (#33)
 - 2026-11-11 `7ad9425f` fix(deno): skip testes de integracao quando Supabase nao acessivel (#34)
-- 2026-11-09 `dc3d95d1` Merge pull request #4 from adm01-debug/fix/ui-render-and-math
-- 2026-11-08 `1a7756c8` ci: porta os guards offline e a auditoria semanal autônoma do Zapp_Web_V2
-- 2026-11-08 `908b045f` fix(ci): remove --depth 1 do fetch da branch contexto no job de publicação
-- 2026-11-08 `7e181fcf` fix(tests): corrige timer infinito no Vitest logger fuzz test
-- 2026-11-08 `8e8f9cbf` fix(edge): corrige asserção de truncamento no teste Deno logger
-- 2026-11-08 `0bdcd6fb` ci(quality-gate): liga unit tests de CI e guard de integridade do AGENTS.md (#22)
 
 ## Arquivos deste diretório
 - `docs/contexto/codigo/rotas.json`

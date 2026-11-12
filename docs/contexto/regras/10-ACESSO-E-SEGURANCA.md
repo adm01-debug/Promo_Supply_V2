@@ -1,6 +1,6 @@
 # 10 · ACESSO E SEGURANÇA — quem pode o quê
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4cc1a7a96b` · branch `main` · 2026-11-12 12:26 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5cdeeacaae` · branch `main` · 2026-11-12 16:11 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## Perfis / roles identificados
@@ -182,7 +182,7 @@
 
 > `—` com RLS ligado = ninguém além de service_role. `sem RLS` = qualquer chave anon lê/escreve tudo.
 
-## Onde o RLS é IGNORADO (service_role) — 153 arquivo(s)
+## Onde o RLS é IGNORADO (service_role) — 155 arquivo(s)
 
 - `scripts/ai-context/cenarios.mjs`
 - `scripts/ai-context/gerar.unit.mjs`
@@ -334,7 +334,7 @@
 - `supabase/migrations/20260726144435_a37d5b86-9ad7-4c72-abcb-fe538eaed177.sql`
 - `supabase/migrations/20260726150655_1f9cbe7a-16a8-4845-905b-e2a4f3e0848e.sql`
 - `supabase/migrations/20260726151043_a116a5d7-40e9-4e45-8824-3ad60a74dacc.sql`
-- … +3 (lista completa em `context.json`)
+- … +5 (lista completa em `context.json`)
 
 ## Funções SQL `SECURITY DEFINER` (rodam com privilégio do dono, ignoram RLS)
 
@@ -526,7 +526,7 @@ Middleware matcher (Next.js): nenhum
 | grant | authenticated, service_role | select | `cron_job_staleness` |
 | grant | postgres | select | `mv_dashboard_kpis` |
 | grant | service_role | all | `telemetry_logs`, `system_alerts`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions`, `erp_connections`, `punchout_catalogs`, `aliquotas_tributarias`, `webhook_events`, `integration_outbox`, `wal_rate_snapshots`, `checkpoint_snapshots` … +25 |
-| grant | service_role | execute | `update_estoque_saldo`, `exec_sql`, `exec_sql`, `log_security_event`, `log_audit_event`, `count_legacy_storage_urls`, `cleanup_expired_challenges`, `cleanup_old_telemetry`, `grant_tenant_access_on_insert`, `grant_tenant_access_on_insert`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +78 |
+| grant | service_role | execute | `update_estoque_saldo`, `exec_sql`, `exec_sql`, `log_security_event`, `log_audit_event`, `count_legacy_storage_urls`, `cleanup_expired_challenges`, `cleanup_old_telemetry`, `grant_tenant_access_on_insert`, `grant_tenant_access_on_insert`, `cleanup_old_security_logs`, `cleanup_old_audit_logs`, `_invoke_edge_function`, `cleanup_old_webhook_events`, `cleanup_old_integration_outbox` … +79 |
 | grant | service_role | select | `v_system_health_overview` |
 | grant | service_role | usage, select | `wal_rate_snapshots_id_seq`, `checkpoint_snapshots_id_seq` |
 | grant | service_role, authenticated | execute | `check_rate_limit` |
@@ -535,10 +535,11 @@ Middleware matcher (Next.js): nenhum
 | revoke | PUBLIC, anon | all | `cron_job_staleness` |
 | revoke | PUBLIC, anon | execute | `generate_sequential_number`, `normalize_email_lowercase`, `is_valid_cnpj`, `normalize_cnpj_digits`, `get_cron_job_staleness`, `get_dashboard_kpis` |
 | revoke | PUBLIC, anon, authenticated | all | `exec_sql`, `scan_stale_statistics`, `scan_cache_hit_ratio`, `xbz_cron_key_get`, `verify_xbz_cron_key`, `_invoke_xbz_sync`, `xbz_sync_watchdog` |
-| revoke | PUBLIC, anon, authenticated | execute | `apply_penalty_escalation`, `calc_checklist_overall_score`, `check_telemetry_alerts`, `cleanup_old_telemetry`, `mask_sensitive_data`, `cleanup_expired_challenges`, `cleanup_old_query_telemetry`, `audit_user_roles_changes`, `scan_dangerous_statements`, `pg_activity_watchdog`, `scan_unused_indexes`, `scan_table_bloat`, `scan_sequence_exhaustion`, `scan_fk_without_cascade`, `scan_duplicate_indexes` … +21 |
+| revoke | PUBLIC, anon, authenticated | execute | `apply_penalty_escalation`, `calc_checklist_overall_score`, `check_telemetry_alerts`, `cleanup_old_telemetry`, `mask_sensitive_data`, `cleanup_expired_challenges`, `cleanup_old_query_telemetry`, `audit_user_roles_changes`, `scan_dangerous_statements`, `pg_activity_watchdog`, `scan_unused_indexes`, `scan_table_bloat`, `scan_sequence_exhaustion`, `scan_fk_without_cascade`, `scan_duplicate_indexes` … +22 |
 | revoke | anon | all | `exec_sql`, `audit_logs`, `produto_fornecedores`, `repurchase_suggestions` |
 | revoke | anon | execute | `log_security_event`, `log_audit_event`, `check_rate_limit`, `get_user_grupo_id`, `get_user_role`, `grant_tenant_access_on_insert`, `has_permission`, `has_role`, `is_ip_blocked`, `tenant_in_my_group`, `tenants_in_my_group` |
 | revoke | anon | insert | `audit_logs` |
+| revoke | anon | select | `supplier_compliance_summary`, `v_system_health_overview`, `mv_dashboard_kpis` |
 | revoke | anon, authenticated | all | `telemetry_logs_legacy_20260712` |
 | revoke | authenticated | all | `exec_sql` |
 | revoke | authenticated | update, delete | `audit_logs` |

@@ -1,15 +1,15 @@
 {
  "meta": {
-  "sha": "4cc1a7a96bc4160e5b1102577e41d6b84aee12fc",
+  "sha": "5cdeeacaae4f9af3216a94b88cc0768a070cfc90",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
-  "generated_at": "2026-11-12 12:26 UTC",
-  "files_total": 1154,
-  "code_files": 1018,
-  "code_lines": 172765
+  "generated_at": "2026-11-12 16:11 UTC",
+  "files_total": 1157,
+  "code_files": 1021,
+  "code_lines": 172892
  },
  "version": "1.3.2",
- "facts_hash": "9fbe6154d6686ffa",
+ "facts_hash": "3e0f8329f5140975",
  "stack": {
   "frameworks": [
    "React + Vite",
@@ -222,7 +222,7 @@
   "languages": {
    ".tsx": 342,
    ".ts": 340,
-   ".sql": 281,
+   ".sql": 284,
    ".mjs": 48,
    ".py": 5,
    ".js": 2
@@ -25488,6 +25488,9 @@
    "supabase/migrations/20260805160000_fix_frontend_comms.sql",
    "supabase/migrations/20260806180000_seed_devolucoes_creditos.sql",
    "supabase/migrations/20261107150000_execute_read_query.sql",
+   "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql",
+   "supabase/migrations/20261112135000_views_security_invoker.sql",
+   "supabase/migrations/20261112135500_drop_tabelas_v_orfas.sql",
    "src/integrations/supabase/types.ts"
   ],
   "rls": {
@@ -29026,6 +29029,46 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261107150000_execute_read_query.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "supplier_compliance_summary",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112135000_views_security_invoker.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "v_system_health_overview",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112135000_views_security_invoker.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "mv_dashboard_kpis",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112135000_views_security_invoker.sql"
    }
   ],
   "raises": [
@@ -31691,7 +31734,7 @@
   {
    "module": "src/components",
    "files": 257,
-   "lines": 48457,
+   "lines": 48491,
    "tables": [
     "approval_workflows",
     "blocked_countries",
@@ -32546,7 +32589,7 @@
   {
    "module": "src/pages",
    "files": 119,
-   "lines": 27674,
+   "lines": 27707,
    "tables": [
     "alert_subscriptions",
     "categorias",
@@ -33103,8 +33146,8 @@
   },
   {
    "module": "supabase/migrations",
-   "files": 280,
-   "lines": 21539,
+   "files": 283,
+   "lines": 21599,
    "tables": [],
    "exports": [],
    "docs": [],
@@ -37886,7 +37929,7 @@
    },
    {
     "file": "src/pages/pedidos/PedidoDetailsDialog.tsx",
-    "msg": "Erro ao atualizar produÃ§Ã£o: "
+    "msg": "Erro ao atualizar produção: "
    },
    {
     "file": "src/pages/recebimento/RecebimentoOffline.tsx",
@@ -74447,7 +74490,9 @@
    "supabase/migrations/20260726151043_a116a5d7-40e9-4e45-8824-3ad60a74dacc.sql",
    "supabase/migrations/20260726151350_0ea0eb79-cca6-494d-8e97-faa5c5945f2c.sql",
    "supabase/migrations/20260726184620_c68f43ce-7781-436c-a2f2-4473e66093d5.sql",
-   "supabase/migrations/20261107150000_execute_read_query.sql"
+   "supabase/migrations/20261107150000_execute_read_query.sql",
+   "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql",
+   "supabase/migrations/20261112135000_views_security_invoker.sql"
   ],
   "security_definer_fns": [
    "_invoke_edge_function",
@@ -77984,6 +78029,46 @@
     "objkind": "function",
     "roles": "service_role",
     "src": "supabase/migrations/20261107150000_execute_read_query.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "execute",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "PUBLIC, anon, authenticated",
+    "src": "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql"
+   },
+   {
+    "kind": "grant",
+    "privs": "execute",
+    "object": "execute_read_query",
+    "objkind": "function",
+    "roles": "service_role",
+    "src": "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "supplier_compliance_summary",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112135000_views_security_invoker.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "v_system_health_overview",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112135000_views_security_invoker.sql"
+   },
+   {
+    "kind": "revoke",
+    "privs": "select",
+    "object": "mv_dashboard_kpis",
+    "objkind": "table",
+    "roles": "anon",
+    "src": "supabase/migrations/20261112135000_views_security_invoker.sql"
    }
   ],
   "guards": [
@@ -83578,7 +83663,7 @@
   },
   "src/components/compras/CostCenterPerformanceAnalysis.tsx": {
    "path": "src/components/compras/CostCenterPerformanceAnalysis.tsx",
-   "lines": 246,
+   "lines": 261,
    "exports": [
     "const CostCenterPerformanceAnalysis"
    ],
@@ -83701,9 +83786,13 @@
   },
   "src/components/compras/DeliveryCalendar.tsx": {
    "path": "src/components/compras/DeliveryCalendar.tsx",
-   "lines": 323,
+   "lines": 325,
    "exports": [
     "function DeliveryCalendar"
+   ],
+   "navigates": [
+    "/acompanhamento",
+    "/pedidos"
    ],
    "status_values": [
     {
@@ -84040,7 +84129,7 @@
   },
   "src/components/compras/ExecutiveDashboard.tsx": {
    "path": "src/components/compras/ExecutiveDashboard.tsx",
-   "lines": 324,
+   "lines": 341,
    "exports": [
     "const ExecutiveDashboard"
    ],
@@ -96814,7 +96903,7 @@
   },
   "src/pages/dashboard/ComprasDashboard.tsx": {
    "path": "src/pages/dashboard/ComprasDashboard.tsx",
-   "lines": 377,
+   "lines": 378,
    "exports": [
     "default memo"
    ],
@@ -96839,6 +96928,9 @@
      "status"
     ]
    },
+   "navigates": [
+    "/solicitacoes"
+   ],
    "status_values": [
     {
      "field": "status",
@@ -97860,7 +97952,7 @@
     ]
    },
    "errors": [
-    "Erro ao atualizar produÃ§Ã£o: "
+    "Erro ao atualizar produção: "
    ],
    "status_values": [
     {
@@ -98308,7 +98400,7 @@
   },
   "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx": {
    "path": "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
-   "lines": 392,
+   "lines": 412,
    "exports": [
     "default RelatorioNegociacoes"
    ],
@@ -98474,7 +98566,7 @@
   },
   "src/pages/relatorios/Relatorios.tsx": {
    "path": "src/pages/relatorios/Relatorios.tsx",
-   "lines": 250,
+   "lines": 262,
    "exports": [
     "default Relatorios"
    ],
@@ -105344,6 +105436,20 @@
    "lines": 51,
    "uses_service_role": true
   },
+  "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql": {
+   "path": "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql",
+   "lines": 17,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112135000_views_security_invoker.sql": {
+   "path": "supabase/migrations/20261112135000_views_security_invoker.sql",
+   "lines": 22,
+   "uses_service_role": true
+  },
+  "supabase/migrations/20261112135500_drop_tabelas_v_orfas.sql": {
+   "path": "supabase/migrations/20261112135500_drop_tabelas_v_orfas.sql",
+   "lines": 21
+  },
   "tests-e2e/auth-navigation.spec.ts": {
    "path": "tests-e2e/auth-navigation.spec.ts",
    "lines": 74,
@@ -105564,10 +105670,80 @@
   }
  },
  "git": {
-  "sha": "4cc1a7a96bc4160e5b1102577e41d6b84aee12fc",
+  "sha": "5cdeeacaae4f9af3216a94b88cc0768a070cfc90",
   "branch": "main",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "commits": [
+   {
+    "sha": "5cdeeac",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)",
+    "files": [
+     "src/components/compras/CostCenterPerformanceAnalysis.tsx",
+     "src/components/compras/DeliveryCalendar.tsx",
+     "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
+     "src/pages/sourcing/Sourcing.tsx"
+    ]
+   },
+   {
+    "sha": "257a4c4",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(ui): corrige acentuacao corrompida em 12 telas (#44)",
+    "files": [
+     "src/components/compras/executive/ExecutiveDrillDownModal.tsx",
+     "src/components/onboarding/OnboardingTour.tsx",
+     "src/components/ui/enhanced-search.tsx",
+     "src/features/layout/components/QuickActionsFAB.tsx",
+     "src/features/layout/components/search/SearchResultsList.tsx",
+     "src/pages/acompanhamento/Acompanhamento.tsx",
+     "src/pages/cotacao/Cotacao.tsx",
+     "src/pages/fornecedores/SupplierPerformance.tsx",
+     "src/pages/pagamentos/Pagamentos.tsx",
+     "src/pages/pedidos/PedidoDetailsDialog.tsx",
+     "src/pages/relatorios/Relatorios.tsx",
+     "src/pages/solicitacoes/Solicitacoes.tsx"
+    ]
+   },
+   {
+    "sha": "e897b42",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "fix(ui): liga exportacao CSV e ver tudo em botoes que nao faziam nada (#43)",
+    "files": [
+     "src/components/compras/ExecutiveDashboard.tsx",
+     "src/pages/dashboard/ComprasDashboard.tsx",
+     "src/pages/relatorios/Relatorios.tsx"
+    ]
+   },
+   {
+    "sha": "aca8fbd",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "chore(banco): remove seis tabelas v_ orfas criadas por engano (#42)",
+    "files": [
+     "supabase/migrations/20261112135500_drop_tabelas_v_orfas.sql"
+    ]
+   },
+   {
+    "sha": "5001fc3",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "security(banco): views com security_invoker e sem leitura anonima (#41)",
+    "files": [
+     "supabase/migrations/20261112135000_views_security_invoker.sql"
+    ]
+   },
+   {
+    "sha": "c9488d5",
+    "date": "2026-11-12",
+    "author": "adm01-debug",
+    "subject": "security(banco): revoga execute_read_query de anon e authenticated (#40)",
+    "files": [
+     "supabase/migrations/20261112134500_execute_read_query_revoke_anon.sql"
+    ]
+   },
    {
     "sha": "4cc1a7a",
     "date": "2026-11-12",
@@ -105931,76 +106107,6 @@
     "files": [
      "AGENTS.md"
     ]
-   },
-   {
-    "sha": "a7406f9",
-    "date": "2026-08-18",
-    "author": "adm01-debug",
-    "subject": "Merge pull request #13 from adm01-debug/claude/system-status-roadmap-ei4jyi",
-    "files": []
-   },
-   {
-    "sha": "f49b29c",
-    "date": "2026-08-16",
-    "author": "Claude",
-    "subject": "docs(auditoria): meta-auditoria adversarial da propria auditoria (L15)",
-    "files": [
-     "DOCS/ESTADO/00_INDICE.md",
-     "DOCS/ESTADO/L01_ROTAS_E_PAGINAS_NUCLEO.md",
-     "DOCS/ESTADO/L15_META_AUDITORIA.md",
-     "ESTADO_ATUAL.md"
-    ]
-   },
-   {
-    "sha": "d18393f",
-    "date": "2026-08-16",
-    "author": "Claude",
-    "subject": "docs(auditoria): documento executivo ESTADO_ATUAL.md e lote 11",
-    "files": [
-     "DOCS/ESTADO/00_INDICE.md",
-     "DOCS/ESTADO/L11_CI_TESTES_E_DOCS.md",
-     "ESTADO_ATUAL.md"
-    ]
-   },
-   {
-    "sha": "3f91cb5",
-    "date": "2026-08-16",
-    "author": "Claude",
-    "subject": "docs(auditoria): lote 10 (edge functions) e verificações da Fase D",
-    "files": [
-     "DOCS/ESTADO/L12_BANCO_E_RUNTIME.md",
-     "DOCS/ESTADO/L14_VERIFICACAO_INDEPENDENTE.md"
-    ]
-   },
-   {
-    "sha": "addf5e4",
-    "date": "2026-08-16",
-    "author": "Claude",
-    "subject": "docs(auditoria): lotes 03, 06-09 e verificação independente (Fase D)",
-    "files": [
-     "DOCS/ESTADO/L06_COMPONENTS_TRANSVERSAIS.md",
-     "DOCS/ESTADO/L07_HOOKS.md",
-     "DOCS/ESTADO/L08_FEATURES.md",
-     "DOCS/ESTADO/L09_LIB_STORES_SERVICES.md",
-     "DOCS/ESTADO/L10_EDGE_FUNCTIONS.md",
-     "DOCS/ESTADO/L14_VERIFICACAO_INDEPENDENTE.md"
-    ]
-   },
-   {
-    "sha": "1a591df",
-    "date": "2026-08-16",
-    "author": "Claude",
-    "subject": "docs(auditoria): lotes de evidência 01-05, 07, 12-13 da auditoria de estado",
-    "files": [
-     "DOCS/ESTADO/L01_ROTAS_E_PAGINAS_NUCLEO.md",
-     "DOCS/ESTADO/L02_PAGINAS_FLUXO_COMPRAS.md",
-     "DOCS/ESTADO/L03_PAGINAS_CATALOGO_IA_RELATORIOS.md",
-     "DOCS/ESTADO/L04_COMPONENTS_COMPRAS_P1.md",
-     "DOCS/ESTADO/L05_COMPONENTS_COMPRAS_P2.md",
-     "DOCS/ESTADO/L07_HOOKS.md",
-     "DOCS/ESTADO/L12_BANCO_E_RUNTIME.md",
-     "DOCS/ESTADO/L13_MIGRATIONS.md"
-    ]
    }
   ],
   "hot_files": [
@@ -106021,8 +106127,8 @@
     3
    ],
    [
-    "ESTADO_ATUAL.md",
-    3
+    "src/pages/relatorios/Relatorios.tsx",
+    2
    ],
    [
     ".gitignore",
@@ -106057,31 +106163,31 @@
     2
    ],
    [
-    "DOCS/ESTADO/00_INDICE.md",
-    2
-   ],
-   [
-    "DOCS/ESTADO/L01_ROTAS_E_PAGINAS_NUCLEO.md",
-    2
-   ],
-   [
-    "DOCS/ESTADO/L12_BANCO_E_RUNTIME.md",
-    2
-   ],
-   [
-    "DOCS/ESTADO/L14_VERIFICACAO_INDEPENDENTE.md",
-    2
-   ],
-   [
-    "DOCS/ESTADO/L07_HOOKS.md",
-    2
-   ],
-   [
-    "deploy_edge_functions_promo_supply.sh",
+    "src/components/compras/CostCenterPerformanceAnalysis.tsx",
     1
    ],
    [
-    "scripts/db-explain-analyze.ts",
+    "src/components/compras/DeliveryCalendar.tsx",
+    1
+   ],
+   [
+    "src/pages/relatorio-negociacoes/RelatorioNegociacoes.tsx",
+    1
+   ],
+   [
+    "src/pages/sourcing/Sourcing.tsx",
+    1
+   ],
+   [
+    "src/components/compras/executive/ExecutiveDrillDownModal.tsx",
+    1
+   ],
+   [
+    "src/components/onboarding/OnboardingTour.tsx",
+    1
+   ],
+   [
+    "src/components/ui/enhanced-search.tsx",
     1
    ]
   ]

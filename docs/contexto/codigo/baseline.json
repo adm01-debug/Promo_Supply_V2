@@ -2,11 +2,41 @@
  "aviso": "GERADO AUTOMATICAMENTE por scripts/ai-context/gerar.mjs — não editar à mão; será sobrescrito.",
  "format_version": 2,
  "git": {
-  "commit": "4cc1a7a96bc4160e5b1102577e41d6b84aee12fc",
+  "commit": "5cdeeacaae4f9af3216a94b88cc0768a070cfc90",
   "branch": "main",
-  "data_commit": "2026-11-12T08:02:29-03:00",
+  "data_commit": "2026-11-12T11:40:40-03:00",
   "remote": "https://github.com/adm01-debug/Promo_Supply_V2",
   "ultimos_commits": [
+   {
+    "sha": "5cdeeaca",
+    "data": "2026-11-12",
+    "assunto": "fix(ui): liga novo evento, ver pedido, rastrear e exportar sem acao (#46)"
+   },
+   {
+    "sha": "257a4c44",
+    "data": "2026-11-12",
+    "assunto": "fix(ui): corrige acentuacao corrompida em 12 telas (#44)"
+   },
+   {
+    "sha": "e897b429",
+    "data": "2026-11-12",
+    "assunto": "fix(ui): liga exportacao CSV e ver tudo em botoes que nao faziam nada (#43)"
+   },
+   {
+    "sha": "aca8fbd9",
+    "data": "2026-11-12",
+    "assunto": "chore(banco): remove seis tabelas v_ orfas criadas por engano (#42)"
+   },
+   {
+    "sha": "5001fc3a",
+    "data": "2026-11-12",
+    "assunto": "security(banco): views com security_invoker e sem leitura anonima (#41)"
+   },
+   {
+    "sha": "c9488d5d",
+    "data": "2026-11-12",
+    "assunto": "security(banco): revoga execute_read_query de anon e authenticated (#40)"
+   },
    {
     "sha": "4cc1a7a9",
     "data": "2026-11-12",
@@ -101,50 +131,20 @@
     "sha": "32c06b27",
     "data": "2026-11-08",
     "assunto": "chore(ci): remove ci.yml, workflow duplicado que nunca executou um job (#18)"
-   },
-   {
-    "sha": "153e02d0",
-    "data": "2026-11-08",
-    "assunto": "fix(testes): destrava o CI da main (lint + 3 testes do logger) (#17)"
-   },
-   {
-    "sha": "8ed0f37e",
-    "data": "2026-11-08",
-    "assunto": "Merge remote-tracking branch 'refs/remotes/origin/main' into fix/ui-render-and-math"
-   },
-   {
-    "sha": "97b6efcc",
-    "data": "2026-08-28",
-    "assunto": "Visual edit in Lovable"
-   },
-   {
-    "sha": "d56d2146",
-    "data": "2026-08-18",
-    "assunto": "chore(hermes): adiciona .hermes.md (regras da casa Hermes)"
-   },
-   {
-    "sha": "d429b88b",
-    "data": "2026-08-18",
-    "assunto": "chore(agents): adiciona AGENTS.md padrao (contexto multi-agente)"
-   },
-   {
-    "sha": "a7406f95",
-    "data": "2026-08-18",
-    "assunto": "Merge pull request #13 from adm01-debug/claude/system-status-roadmap-ei4jyi"
    }
   ],
-  "arquivos_mudados_7d": 154,
+  "arquivos_mudados_7d": 175,
   "pastas_mais_mudadas_30d": [
+   {
+    "pasta": "src/components/compras",
+    "mudancas": 8
+   },
    {
     "pasta": ".github/workflows/main.yml",
     "mudancas": 4
    },
    {
     "pasta": "package.json",
-    "mudancas": 4
-   },
-   {
-    "pasta": "src/components/compras",
     "mudancas": 4
    },
    {
@@ -161,6 +161,10 @@
    },
    {
     "pasta": "src/pages/admin",
+    "mudancas": 3
+   },
+   {
+    "pasta": "src/pages/relatorio-negociacoes",
     "mudancas": 3
    },
    {
@@ -189,10 +193,6 @@
    },
    {
     "pasta": "docs/contexto/regras",
-    "mudancas": 2
-   },
-   {
-    "pasta": "src/pages/recebimento",
     "mudancas": 2
    }
   ],
@@ -258,6 +258,10 @@
     "mudancas": 2
    },
    {
+    "arquivo": "src/pages/relatorios/Relatorios.tsx",
+    "mudancas": 2
+   },
+   {
     "arquivo": "supabase/config.toml",
     "mudancas": 2
    },
@@ -292,16 +296,12 @@
    {
     "arquivo": ".github/workflows/types-sync.yml",
     "mudancas": 1
-   },
-   {
-    "arquivo": "CLAUDE.md",
-    "mudancas": 1
    }
   ],
   "autores_30d": [
    {
     "autor": "adm01-debug",
-    "commits": 20
+    "commits": 26
    },
    {
     "autor": "copilot-swe-agent[bot]",
@@ -310,9 +310,9 @@
   ]
  },
  "contagens": {
-  "arquivos_total": 1152,
+  "arquivos_total": 1155,
   "arquivos_codigo": 735,
-  "linhas_codigo": 151031,
+  "linhas_codigo": 151098,
   "rotas": 55,
   "rotas_http_backend": 12,
   "vistas_por_id": 0,
@@ -322,7 +322,7 @@
   "hooks": 90,
   "edge_functions": 38,
   "tabelas": 164,
-  "migrations": 280,
+  "migrations": 283,
   "cron_jobs": 68,
   "testes": 145,
   "workflows": 8,
@@ -416,7 +416,7 @@
   },
   "src/components": {
    "arquivos": 257,
-   "linhas": 48457
+   "linhas": 48491
   },
   "src/features": {
    "arquivos": 63,
@@ -444,7 +444,7 @@
   },
   "src/pages": {
    "arquivos": 119,
-   "linhas": 27674
+   "linhas": 27707
   },
   "src/routes": {
    "arquivos": 1,

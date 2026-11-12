@@ -1,6 +1,6 @@
 # 07 · REGRAS DE NEGÓCIO
 
-> Gerado automaticamente por AI Context Sync v1.3.2 · commit `4cc1a7a96b` · branch `main` · 2026-11-12 12:26 UTC
+> Gerado automaticamente por AI Context Sync v1.3.2 · commit `5cdeeacaae` · branch `main` · 2026-11-12 16:11 UTC
 > Não edite à mão — regras humanas vão em `manual/`.
 
 ## A. Regras escritas por humanos (`manual/` — prioridade máxima, nunca sobrescrito)
@@ -2205,7 +2205,7 @@ _nenhum item encontrado_
 | Selecione um produto | `src/pages/estoque/GestaoEstoque.tsx` |
 | Dados insuficientes para gerar a ordem. | `src/pages/gerar-ordem/GerarOrdem.tsx` |
 | Sem dados para exportar | `src/pages/historico/HistoricoCompras.tsx` |
-| Erro ao atualizar produÃ§Ã£o:  | `src/pages/pedidos/PedidoDetailsDialog.tsx` |
+| Erro ao atualizar produção:  | `src/pages/pedidos/PedidoDetailsDialog.tsx` |
 | Erro ao buscar pedidos | `src/pages/recebimento/RecebimentoOffline.tsx` |
 | Sem conexão — modo offline ativo | `src/pages/recebimento/RecebimentoOffline.tsx` |
 | Organização ativa não identificada | `src/pages/recompra/RecompraInteligente.tsx` |

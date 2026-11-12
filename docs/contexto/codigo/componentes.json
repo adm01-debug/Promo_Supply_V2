@@ -625,7 +625,7 @@
     "CostCenterPerformanceAnalysis"
    ],
    "export_default": null,
-   "linhas": 246,
+   "linhas": 261,
    "dominio": "components/compras",
    "hooks_locais": [],
    "tabelas": [],
@@ -706,7 +706,7 @@
     "DeliveryCalendar"
    ],
    "export_default": null,
-   "linhas": 323,
+   "linhas": 325,
    "dominio": "components/compras",
    "hooks_locais": [
     "useDeliveryEvents",
@@ -978,7 +978,7 @@
     "ExecutiveDashboard"
    ],
    "export_default": null,
-   "linhas": 324,
+   "linhas": 341,
    "dominio": "components/compras",
    "hooks_locais": [
     "useClearFiltersFlow",
@@ -5241,7 +5241,7 @@
     "RelatorioNegociacoes"
    ],
    "export_default": "RelatorioNegociacoes",
-   "linhas": 392,
+   "linhas": 412,
    "dominio": "pages/relatorio-negociacoes",
    "hooks_locais": [
     "useRelatorioNegociacoes"
@@ -5257,7 +5257,7 @@
     "Relatorios"
    ],
    "export_default": "Relatorios",
-   "linhas": 250,
+   "linhas": 262,
    "dominio": "pages/relatorios",
    "hooks_locais": [],
    "tabelas": [
