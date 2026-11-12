@@ -2,6 +2,12 @@ import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
+// Testes rodam no fuso dos usuários (Brasil). Em UTC (CI) bugs de data sem hora
+// ficavam invisíveis: "2024-06-15" exibido como 14/06 e "hoje" recusado no prazo
+// de entrega. Fixar aqui torna o resultado igual em qualquer máquina e na CI.
+// Workers herdam o ambiente, então todo arquivo de teste vê este fuso.
+process.env.TZ = "America/Sao_Paulo";
+
 
 export default defineConfig({
   plugins: [react()],

@@ -120,18 +120,18 @@ describe('getEventsForDay', () => {
       makeEvent('2024-06-15T14:00:00'),
       makeEvent('2024-06-16T09:00:00'),
     ];
-    const result = getEventsForDay(events, new Date('2024-06-15'));
+    const result = getEventsForDay(events, new Date(2024, 5, 15));
     expect(result).toHaveLength(2);
   });
 
   it('returns empty array when no events match', () => {
     const events = [makeEvent('2024-06-15T10:00:00')];
-    const result = getEventsForDay(events, new Date('2024-06-20'));
+    const result = getEventsForDay(events, new Date(2024, 5, 20));
     expect(result).toHaveLength(0);
   });
 
   it('returns empty array for empty input', () => {
-    expect(getEventsForDay([], new Date('2024-06-15'))).toHaveLength(0);
+    expect(getEventsForDay([], new Date(2024, 5, 15))).toHaveLength(0);
   });
 
   it('returns all events when all match the day', () => {
@@ -140,7 +140,7 @@ describe('getEventsForDay', () => {
       makeEvent('2024-12-25T12:00:00'),
       makeEvent('2024-12-25T23:59:00'),
     ];
-    const result = getEventsForDay(events, new Date('2024-12-25'));
+    const result = getEventsForDay(events, new Date(2024, 11, 25));
     expect(result).toHaveLength(3);
   });
 
@@ -150,13 +150,13 @@ describe('getEventsForDay', () => {
       makeEvent('2024-06-15T00:00:00'),
       makeEvent('2024-06-16T00:00:00'),
     ];
-    const result = getEventsForDay(events, new Date('2024-06-15'));
+    const result = getEventsForDay(events, new Date(2024, 5, 15));
     expect(result).toHaveLength(1);
   });
 
   it('preserves all fields of matching events', () => {
     const event = makeEvent('2024-06-15T10:00:00', { id: 'test-id', status: 'delivered', type: 'pickup' });
-    const result = getEventsForDay([event], new Date('2024-06-15'));
+    const result = getEventsForDay([event], new Date(2024, 5, 15));
     expect(result[0].id).toBe('test-id');
     expect(result[0].status).toBe('delivered');
     expect(result[0].type).toBe('pickup');
