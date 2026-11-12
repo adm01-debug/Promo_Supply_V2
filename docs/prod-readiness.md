@@ -30,8 +30,8 @@
 | Segredo no bundle | `node scripts/ci/check-bundle-secrets.mjs --dist dist --env .env` | OK — `nenhum JWT service_role no bundle (137 arquivo(s))` |
 | Advisory de produção | `bun audit` + `node scripts/ci/audit-prod.mjs --level high` | OK — `nenhuma advisory >= high alcancavel por dependencia de producao` (179 advisories totais, todas em devDependencies ou abaixo de high) |
 | Automação local | `node scripts/automation.mjs doctor --static` / `test` | OK — `"status":"healthy"`, `issues: []`; testes exit 0 |
-| Testes edge (Deno) | `deno test --allow-net --allow-env --allow-read supabase/functions/` | BLOQUEADO nesta sessão: `error: Import 'https://esm.sh/zod@3.22.4' failed` (proxy bloqueia esm.sh). Roda no job "Unit & Integration Tests" do CI |
-| E2E (Playwright) | — | BLOQUEADO nesta sessão: o app em produção chama `*.supabase.co`, bloqueado pelo proxy (`curl: (56) CONNECT tunnel failed, response 403`). Roda no job E2E do CI |
+| Testes edge (Deno) | `deno test --no-check --node-modules-dir=none --allow-net --allow-env --allow-read --import-map=<local> supabase/functions/` | OK — `ok \| 36 passed \| 0 failed \| 13 ignored`, exit 0. O import map (só local, fora do repo) troca `esm.sh`/`deno.land` (bloqueados pelo proxy desta sessão) pelos mesmos pacotes em `npm:`/`jsr:`; os 13 ignorados são os de integração, que se pulam sem Supabase local (igual ao CI). `--no-check` porque o `@std/dotenv` do jsr não tem `allowEmptyValues` da std 0.224 — diferença da substituição, não do repo |
+| E2E (Playwright) | `npx playwright test --project=chromium --trace off` (dev server em `127.0.0.1:8080`; build 1234 do Chromium apontado para o 1243 instalado) | OK — `30 passed (22.5s)`, exit 0 |
 
 ## 2. GitHub Actions (8 workflows do repo + 2 dinâmicos do Copilot)
 
