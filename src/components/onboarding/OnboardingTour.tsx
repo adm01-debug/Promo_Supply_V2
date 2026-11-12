@@ -410,7 +410,7 @@ export const OnboardingTour = ({ steps, isOpen, onComplete, onSkip }: Onboarding
                   transition={{ delay: 0.5 }}
                   className="text-xs text-muted-foreground/60 text-center mt-2"
                 >
-                  â† Deslize para navegar →
+                  ← Deslize para navegar →
                 </motion.p>
               )}
             </div>

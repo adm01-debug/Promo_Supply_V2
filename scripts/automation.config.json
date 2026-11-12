@@ -226,6 +226,14 @@
       "reason": "Legado mantido no fluxo existente; referências literais: package.json:scripts, .github/workflows/guards.yml, .github/workflows/main.yml. O dispatcher não executa esta operação."
     },
     {
+      "id": "legacy-a0adaec730242020",
+      "kind": "legacy",
+      "files": ["scripts/ci/encoding-src.unit.mjs"],
+      "manual": ["node", "--test", "scripts/ci/encoding-src.unit.mjs"],
+      "triggers": ["manual"],
+      "reason": "Legado mantido no fluxo existente; referências literais: .github/workflows/guards.yml (glob scripts/ci/*.unit.mjs). O dispatcher não executa esta operação."
+    },
+    {
       "id": "legacy-1156df645ee824e4",
       "kind": "legacy",
       "files": ["scripts/ci/commit-msg-lint.unit.mjs"],
